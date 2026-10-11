@@ -21,21 +21,7 @@ export interface FieldIntegerBatch {
   budgetUsed: number;
 }
 
-/** Recovered batch selector and its threshold prepasses; scan-derived candidates are supplied. */
-export function selectFieldIntegerBatch(
-  input: FieldIntegerCandidates,
-  budget: number,
-  threshold: number,
-): FieldIntegerBatch {
-  if (
-    !Number.isFinite(budget) ||
-    budget < 0 ||
-    !Number.isFinite(threshold) ||
-    threshold < 0
-  )
-    throw new Error(
-      "Integer selection budget and threshold must be finite and nonnegative.",
-    );
+function integerCandidates(input: FieldIntegerCandidates) {
   const { solution, variables, marked, scales } = input;
   if (
     marked.length !== variables.length ||
@@ -45,7 +31,7 @@ export function selectFieldIntegerBatch(
       "Integer candidate flags and scales must match the candidate count.",
     );
   const seen = new Set<number>();
-  const candidates = Array.from(variables, (variable, ordinal) => {
+  return Array.from(variables, (variable, ordinal) => {
     if (
       variable >= solution.length ||
       seen.has(variable) ||
@@ -77,6 +63,50 @@ export function selectFieldIntegerBatch(
       residual: Math.abs(scaled - rounded),
     };
   });
+}
+
+/** Recovered unscaled single-choice branch; tie order is the candidate ordinal order. */
+export function selectFieldIntegerVariable(
+  input: Omit<FieldIntegerCandidates, "scales">,
+): { choice: FieldIntegerChoice | null; marked: Uint8Array } {
+  const candidates = integerCandidates({ ...input, scales: undefined });
+  let nearest: (typeof candidates)[number] | undefined;
+  for (const candidate of candidates)
+    if (
+      !input.marked[candidate.ordinal] &&
+      (!nearest || candidate.residual < nearest.residual)
+    )
+      nearest = candidate;
+  const marked = input.marked.slice();
+  if (!nearest) return { choice: null, marked };
+  marked[nearest.ordinal] = 1;
+  return {
+    choice: {
+      ordinal: nearest.ordinal,
+      variable: nearest.variable,
+      value: nearest.value,
+    },
+    marked,
+  };
+}
+
+/** Recovered batch selector and its threshold prepasses; scan-derived candidates are supplied. */
+export function selectFieldIntegerBatch(
+  input: FieldIntegerCandidates,
+  budget: number,
+  threshold: number,
+): FieldIntegerBatch {
+  if (
+    !Number.isFinite(budget) ||
+    budget < 0 ||
+    !Number.isFinite(threshold) ||
+    threshold < 0
+  )
+    throw new Error(
+      "Integer selection budget and threshold must be finite and nonnegative.",
+    );
+  const candidates = integerCandidates(input);
+  const { marked } = input;
   const output: FieldIntegerBatch = {
     choices: [],
     marked: marked.slice(),

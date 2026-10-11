@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { selectFieldIntegerBatch } from "../src/field-integer-selection";
+import {
+  selectFieldIntegerBatch,
+  selectFieldIntegerVariable,
+} from "../src/field-integer-selection";
 import { fixFieldVariables } from "../src/field-variable-fixing";
 import { assembleFieldSystem } from "../src/field-system-assembly";
 import {
@@ -34,6 +37,70 @@ function solve(system: FieldLinearSystem) {
 }
 
 describe("recovered integer batch selection", () => {
+  it("single selection marks exactly one mapped candidate, preserving first ties and signed rounding", () => {
+    const source = input([-1.5, 1.5, 2, 3], [1, 0, 3, 2], [0, 0, 1, 1]);
+    const before = structuredClone(source);
+    const first = selectFieldIntegerVariable(source);
+    expect(first.choice).toEqual({ ordinal: 0, variable: 1, value: 2 });
+    expect(Array.from(first.marked)).toEqual([1, 0, 1, 1]);
+    const second = selectFieldIntegerVariable({
+      ...source,
+      marked: first.marked,
+    });
+    expect(second.choice).toEqual({ ordinal: 1, variable: 0, value: -2 });
+    expect(
+      selectFieldIntegerVariable({ ...source, marked: second.marked }).choice,
+    ).toBeNull();
+    expect(source).toEqual(before);
+  });
+  it("single selection chooses only one exact integer and shares malformed-input rejection", () => {
+    const source = input([2, 3, 4], [2, 1, 0]);
+    const result = selectFieldIntegerVariable(source);
+    expect(result.choice).toEqual({ ordinal: 0, variable: 2, value: 4 });
+    expect(Array.from(result.marked)).toEqual([1, 0, 0]);
+    expect(selectFieldIntegerVariable(input([])).choice).toBeNull();
+    expect(() => selectFieldIntegerVariable(input([NaN]))).toThrow();
+    expect(() => selectFieldIntegerVariable(input([1], [0, 0]))).toThrow();
+  });
+  it("re-solves after each single choice while retaining previously fixed variables", () => {
+    let system = assembleFieldSystem(
+      2,
+      [{ left: 0, right: 1, transportAngle: 0, quarterTurns: 0 }],
+      1,
+      [],
+      [{ node: 0, angle: 1.2, strength: 2 }],
+    ).system;
+    let marked: Uint8Array = new Uint8Array(2);
+    const fixedValues = new Map<number, number>();
+    for (let step = 0; step < 2; step++) {
+      const continuous = solve(system);
+      expect(continuous.status).toBe("converged");
+      const selection = selectFieldIntegerVariable({
+        solution: continuous.solution,
+        variables: Uint32Array.from([1, 0]),
+        marked,
+      });
+      expect(selection.choice).not.toBeNull();
+      const choice = selection.choice!;
+      expect(fixedValues.has(choice.variable)).toBe(false);
+      fixedValues.set(choice.variable, choice.value);
+      system = fixFieldVariables(system, [choice]);
+      marked = selection.marked;
+      const result = solve(system);
+      expect(result.status).toBe("converged");
+      for (const [variable, value] of fixedValues)
+        expect(result.solution[variable]).toBeCloseTo(value, 10);
+      for (let row = 0; row < 2; row++) {
+        let product = 0;
+        for (let k = system.offsets[row]; k < system.offsets[row + 1]; k++)
+          product +=
+            system.coefficients[k] * result.solution[system.indices[k]];
+        expect(product).toBeCloseTo(system.rightHandSide[row], 10);
+      }
+    }
+    expect(fixedValues.size).toBe(2);
+    expect(Array.from(marked)).toEqual([1, 1]);
+  });
   it("uses nearest residual order, mapped variables and first-ordinal ties with immutable inputs", () => {
     const source = input([0.25, -0.25, 1.1, 2.1], [3, 1, 0, 2]);
     const before = structuredClone(source);
