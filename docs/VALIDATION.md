@@ -433,3 +433,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - REA identifies the scale measure as cached surface area and recovers the percentage interpolation tables, scale override, radius caps and original-ratio stage counting. Triangle-area-to-bounds-to-schedule integration is covered.
 - Bounded probes released executable memory and their exact PIDs were absent. The REA provider and its recorded child PIDs were absent. Existing loopback preview remained HTTP 200; its finite resource lease remains recorded. No UI-bound bundle change occurred in this component slice.
 - Explicit-count owner bounds, full owner/cache routing, reconstruction UI binding and downstream field/quad/NURBS workflows remain unvalidated or unimplemented. Full feature parity remains incomplete.
+
+### Recovered explicit-count curvature radius bounds - 2026-10-12
+
+- `npm run build`: TypeScript and Vite passed with zero warnings/errors; offline manifest regenerated.
+- `npx vitest run tests/field-curvature-explicit-bounds.test.ts tests/field-curvature-bounds.test.ts tests/field-curvature-schedule.test.ts --maxWorkers=1`: 510 passed in 3 files.
+- `npm test`: 1,697 passed in 85 files.
+- 120 isolated original explicit-count numerical-block captures exactly match all bound values and preserved stage count. Owned wrapper/exit and selected-area/combined-area inputs do not establish native geometry routing or installed application workflow parity.
+- Eighteen additional cases cover descending schedule integration, preserved count/ratio, cap order, zero-stage semantics, input guards and overflow/underflow.
+- Probe executable memory was released, its exact PID was absent, and the existing preview remained HTTP 200 under its recorded finite lease. The UI bundle is unchanged because these recovered components are not yet bound to the reconstruction UI.
+- Full geometry routing, cache/partition lifecycle, downstream field/quad/NURBS reconstruction and UI workflow parity remain incomplete.

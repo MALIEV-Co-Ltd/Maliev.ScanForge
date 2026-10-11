@@ -16,6 +16,54 @@ export interface PercentageRadiusParameters {
   combinedSurfaceArea?: number;
 }
 
+export interface ExplicitRadiusParameters {
+  /** Area selected by the caller's native geometry-routing branch. */
+  surfaceArea: number;
+  targetCount: number;
+  ratio: number;
+  /** This branch preserves the owner stage count instead of deriving one. */
+  stageCount: number;
+  combinedSurfaceArea?: number;
+}
+
+/** Explicit-count numerical branch after the caller resolves the area source. */
+export function deriveExplicitCurvatureRadiusBounds(
+  parameters: ExplicitRadiusParameters,
+): CurvatureRadiusBounds {
+  const f = Math.fround;
+  const area = f(parameters.surfaceArea);
+  const ratio = f(parameters.ratio);
+  const combined =
+    parameters.combinedSurfaceArea === undefined
+      ? undefined
+      : f(parameters.combinedSurfaceArea);
+  if (
+    ![area, ratio].every((v) => Number.isFinite(v) && v > 0) ||
+    !Number.isInteger(parameters.targetCount) ||
+    parameters.targetCount < 1 ||
+    parameters.targetCount > 2147483647 ||
+    !Number.isInteger(parameters.stageCount) ||
+    parameters.stageCount < 0 ||
+    parameters.stageCount > 2147483647 ||
+    (combined !== undefined && (!Number.isFinite(combined) || combined <= 0))
+  )
+    throw new Error("Curvature explicit bound inputs are invalid.");
+  let root = f(Math.sqrt(f(area / f(parameters.targetCount))));
+  if (combined !== undefined)
+    root = Math.min(root, f(Math.sqrt(f(combined / 24))));
+  const minimum = f(root * 0.5);
+  const maximum = f(minimum * ratio);
+  if (![minimum, maximum].every((v) => Number.isFinite(v) && v > 0))
+    throw new Error("Curvature explicit bounds overflowed or underflowed.");
+  return {
+    minimum,
+    maximum,
+    ratio,
+    referenceMinimum: minimum,
+    count: parameters.stageCount,
+  };
+}
+
 /** The recovered fixed control table, including its backward-segment float order. */
 export function interpolateCurvatureRadiusFactor(
   control: number,
