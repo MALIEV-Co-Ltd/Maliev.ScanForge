@@ -146,14 +146,23 @@ describe("recovered axis vertex symmetry matcher", () => {
     expect(empty.partners.length).toBe(0);
     expect(empty.positiveSide.bitCount).toBe(0);
   });
-  it("rejects malformed permutations, unsorted coordinates, nonfinite inputs and overflow", () => {
+  it("retains a non-monotonic supplied order instead of substituting a coordinate sort", () => {
+    const result = matchAxisVertexSymmetry(
+      new Float32Array([-1, 0, 0, 1, 0, 0]),
+      0,
+      0,
+      1,
+      new Uint32Array([1, 0]),
+    );
+    expect(Array.from(result.partners)).toEqual([-1, 1]);
+    // The mask follows all ordinals after the first positive source.
+    expect(Array.from(result.positiveSide.bits)).toEqual([3]);
+  });
+  it("rejects malformed permutations, nonfinite inputs and overflow", () => {
     const positions = new Float32Array([-1, 0, 0, 1, 0, 0]);
     expect(() =>
       matchAxisVertexSymmetry(positions, 0, 0, 1, new Uint32Array([0, 0])),
     ).toThrow(/permutation/);
-    expect(() =>
-      matchAxisVertexSymmetry(positions, 0, 0, 1, new Uint32Array([1, 0])),
-    ).toThrow(/nondecreasing/);
     expect(() =>
       matchAxisVertexSymmetry(positions, 0, 0, -1, new Uint32Array([0, 1])),
     ).toThrow(/settings/);

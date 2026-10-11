@@ -39,14 +39,9 @@ export function matchAxisVertexSymmetry(
   if (![center, radius, twiceCenter, toleranceSquared].every(Number.isFinite))
     throw new Error("Axis symmetry arithmetic overflow.");
   const seen = new Uint8Array(vertices);
-  let previous = -Infinity;
   for (const vertex of orderedVertices) {
     if (vertex >= vertices || seen[vertex])
       throw new Error("Axis symmetry order must be a vertex permutation.");
-    const coordinate = positions[vertex * 3 + axis];
-    if (coordinate < previous)
-      throw new Error("Axis symmetry order must be nondecreasing on its axis.");
-    previous = coordinate;
     seen[vertex] = 1;
   }
   const partners = new Int32Array(vertices).fill(-1);
