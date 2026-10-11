@@ -1,0 +1,136 @@
+import { useState } from "react";
+import type { Entity } from "../types";
+import { Field, Panel } from "./controls";
+export function SolidTools({
+  entities,
+  selected,
+  busy,
+  onBoolean,
+  onExtrude,
+}: {
+  entities: Entity[];
+  selected?: Entity;
+  busy: boolean;
+  onBoolean: (
+    operation: "union" | "subtract" | "intersect",
+    otherId: string,
+  ) => void;
+  onExtrude: (points: [number, number][], height: number) => void;
+}) {
+  const [operation, setOperation] = useState<
+    "union" | "subtract" | "intersect"
+  >("subtract");
+  const [otherId, setOtherId] = useState("");
+  const [sketch, setSketch] = useState("-20,-15\n20,-15\n20,15\n-20,15");
+  const [height, setHeight] = useState(10);
+  const points = sketch
+    .trim()
+    .split("\n")
+    .map((line) => line.split(",").map(Number))
+    .filter((p) => p.length === 2 && p.every(Number.isFinite)) as [
+    number,
+    number,
+  ][];
+  const candidates = entities.filter(
+    (e) => e.kernelId && e.id !== selected?.id,
+  );
+  return (
+    <>
+      <Panel title="Solid modeling">
+        <label className="select-field">
+          Operation
+          <select
+            aria-label="Boolean operation"
+            value={operation}
+            onChange={(e) => setOperation(e.target.value as typeof operation)}
+          >
+            <option value="union">Union</option>
+            <option value="subtract">Subtract</option>
+            <option value="intersect">Intersect</option>
+          </select>
+        </label>
+        <label className="select-field">
+          Tool body
+          <select
+            aria-label="Boolean tool body"
+            value={otherId}
+            onChange={(e) => setOtherId(e.target.value)}
+          >
+            <option value="">Choose CAD object</option>
+            {candidates.map((e) => (
+              <option value={e.id} key={e.id}>
+                {e.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          className="wide"
+          disabled={
+            busy ||
+            !selected?.kernelId ||
+            !candidates.some((e) => e.id === otherId)
+          }
+          onClick={() => onBoolean(operation, otherId)}
+        >
+          Create boolean result
+        </button>
+        <p className="muted">
+          Selected CAD object is the base. Input bodies are retained and hidden
+          when a result is created.
+        </p>
+      </Panel>
+      <Panel title="Polygon sketch → extrusion">
+        <svg
+          className="sketch-preview"
+          viewBox="-50 -50 100 100"
+          aria-label="XY sketch preview"
+        >
+          <path
+            d="M -50 0 H 50 M 0 -50 V 50"
+            stroke="#36515e"
+            strokeWidth=".5"
+          />
+          <polygon
+            points={points.map(([x, y]) => `${x},${-y}`).join(" ")}
+            fill="#31bfa830"
+            stroke="#42c9b5"
+            strokeWidth=".8"
+          />
+        </svg>
+        <label className="sketch-input">
+          XY vertices (mm), one x,y pair per line
+          <textarea
+            aria-label="Sketch vertices"
+            value={sketch}
+            onChange={(e) => setSketch(e.target.value)}
+            rows={4}
+            spellCheck={false}
+          />
+        </label>
+        <Field
+          label="Extrusion (mm)"
+          value={height}
+          step={1}
+          min={0.001}
+          onChange={setHeight}
+        />
+        <button
+          className="wide"
+          disabled={busy}
+          onClick={() => {
+            const rows = sketch.trim().split("\n");
+            if (points.length !== rows.length) onExtrude([], height);
+            else onExtrude(points, height);
+          }}
+        >
+          Extrude sketch to CAD
+        </button>
+        <p className="muted">
+          Closed simple XY polygon, straight edges, Z extrusion.
+          Self-intersections and holes are unsupported.
+        </p>
+      </Panel>
+    </>
+  );
+}

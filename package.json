@@ -1,0 +1,40 @@
+{
+  "name": "maliev-scanforge",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge.git"
+  },
+  "scripts": {
+    "predev": "node scripts/prepare-kernel.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "node scripts/resource-check.mjs && node scripts/prepare-kernel.mjs",
+    "build": "tsc --noEmit && vite build",
+    "postbuild": "node scripts/offline-manifest.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --maxWorkers=1",
+    "test:cad": "node --max-old-space-size=768 tests/kernel-smoke.mjs",
+    "format:check": "prettier --check .",
+    "preview": "vite preview --host 127.0.0.1",
+    "prepare:kernel": "node scripts/prepare-kernel.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "opencascade.js": "1.1.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.1",
+    "@types/react-dom": "^19.1.1",
+    "@types/three": "^0.180.0",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vitest": "^5.0.3"
+  }
+}
