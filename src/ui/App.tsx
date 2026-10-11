@@ -34,11 +34,7 @@ import {
   type HidAccess,
   type SpaceMousePreferences,
 } from "../spacemouse";
-import {
-  selectTriangles,
-  partitionTriangles,
-  selectionCount,
-} from "../selection";
+import { partitionTriangles, selectionCount } from "../selection";
 import { fittedPrimitive } from "../fitted-primitive";
 import {
   alignPrincipalAxes,
@@ -135,7 +131,16 @@ export function App() {
   const [dirty, setDirty] = useState(false);
   const [wireframe, setWireframe] = useState(false);
   const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
-  const [brushRadius, setBrushRadius] = useState(8);
+  const [brushRadius, setBrushRadius] = useState(24);
+  const [selectionTool, setSelectionTool] = useState<
+    "brush" | "rectangle" | "circle" | "wand"
+  >("brush");
+  const [selectThrough, setSelectThrough] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const wandRef = useRef<(mask: Uint8Array, remove: boolean) => void>(() => {});
   const [selectionAngle, setSelectionAngle] = useState(30);
   const [selectionTolerance, setSelectionTolerance] = useState(0.001);
   const selectionAbort = useRef<AbortController | null>(null);
@@ -144,7 +149,15 @@ export function App() {
     entity: Entity | undefined;
     radius: number;
     subtract: boolean;
-  }>({ entity: undefined, radius: 8, subtract: false });
+    tool: "brush" | "rectangle" | "circle" | "wand";
+    through: boolean;
+  }>({
+    entity: undefined,
+    radius: 24,
+    subtract: false,
+    tool: "brush",
+    through: false,
+  });
   const [axis, setAxis] = useState<"x" | "y" | "z">("z");
   const [offset, setOffset] = useState(10);
   const [measure, setMeasure] = useState<Vec3[]>([]);
@@ -181,7 +194,10 @@ export function App() {
     entity: selected,
     radius: brushRadius,
     subtract: subtractBrush,
+    tool: selectionTool,
+    through: selectThrough,
   };
+  wandRef.current = (mask, remove) => growSelection(mask, remove);
   const selectedTriangleCount = useMemo(
     () => (triangleMask ? selectionCount(triangleMask) : 0),
     [triangleMask],
@@ -221,19 +237,7 @@ export function App() {
         (point, id) => {
           if (busyRef.current) return;
           setSelectedId(id);
-          if (modeRef.current === "brush") {
-            const brush = brushRef.current;
-            if (brush.entity?.id === id)
-              setTriangleMask((previous) =>
-                selectTriangles(
-                  brush.entity!.positions,
-                  point,
-                  brush.radius,
-                  previous ?? undefined,
-                  brush.subtract ? "remove" : "add",
-                ),
-              );
-          } else if (modeRef.current === "measure")
+          if (modeRef.current === "measure")
             setMeasure((previous) =>
               previous.length === 1 ? [previous[0], point] : [point],
             );
@@ -241,6 +245,32 @@ export function App() {
         },
         (id) => {
           if (!busyRef.current) setSelectedId(id);
+        },
+        (id, mask, remove) => {
+          if (busyRef.current || brushRef.current.entity?.id !== id) return;
+          if (brushRef.current.tool === "wand") {
+            wandRef.current(mask, remove);
+            return;
+          }
+          setTriangleMask((previous) =>
+            Uint8Array.from(mask, (value, index) =>
+              value ? (remove ? 0 : 1) : (previous?.[index] ?? 0),
+            ),
+          );
+        },
+        (factor) => {
+          if (brushRef.current.tool === "wand")
+            setSelectionAngle((previous) =>
+              Math.max(0, Math.min(90, previous + (factor > 1 ? 1 : -1))),
+            );
+          else
+            setBrushRadius((previous) =>
+              Math.max(2, Math.min(500, previous * factor)),
+            );
+        },
+        (message) => setError(message),
+        (x, y) => {
+          if (!busyRef.current) setContextMenu({ x, y });
         },
       );
       viewport.current.setTheme(resolveTheme(theme));
@@ -288,6 +318,14 @@ export function App() {
   useEffect(() => {
     viewport.current?.setBrush(mode === "brush");
   }, [mode]);
+  useEffect(() => {
+    viewport.current?.setSelectionOptions(
+      selectionTool,
+      brushRadius,
+      selectThrough,
+      subtractBrush,
+    );
+  }, [selectionTool, brushRadius, selectThrough, subtractBrush]);
   useEffect(() => {
     setTriangleMask(null);
   }, [selectedId, selected?.positions]);
@@ -610,10 +648,15 @@ export function App() {
       );
     });
   }
-  function growSelection() {
-    if (!selected || !triangleMask || !selectedTriangleCount || busy) return;
+  function growSelection(clickedSeeds?: Uint8Array, remove = false) {
+    if (
+      !selected ||
+      busy ||
+      (!clickedSeeds && (!triangleMask || !selectedTriangleCount))
+    )
+      return;
     const source = selected;
-    const seeds = new Uint8Array(triangleMask);
+    const seeds = new Uint8Array(clickedSeeds ?? triangleMask!);
     void action("Growing connected selection…", async () => {
       const controller = new AbortController();
       selectionAbort.current = controller;
@@ -637,9 +680,22 @@ export function App() {
           result.selection.length !== source.positions.length / 9
         )
           throw new Error("Invalid connected selection result.");
-        setTriangleMask(result.selection);
+        const region =
+          clickedSeeds && !brushRef.current.through
+            ? viewport.current!.visibleSelection(source.id, result.selection)
+            : result.selection;
+        setTriangleMask((previous) =>
+          clickedSeeds
+            ? Uint8Array.from(region, (value, index) =>
+                value ? (remove ? 0 : 1) : (previous?.[index] ?? 0),
+              )
+            : region,
+        );
         setMessage(
-          selectionCount(result.selection) + " connected triangles selected",
+          selectionCount(region) +
+            (remove
+              ? " triangles in subtraction region"
+              : " triangles in connected selection region"),
         );
       } catch (error) {
         if (controller.signal.aborted)
@@ -1473,6 +1529,76 @@ export function App() {
               </button>
             </div>
           )}
+          {contextMenu && (
+            <div
+              className="viewport-context-menu"
+              role="menu"
+              aria-label="Viewport selection actions"
+              style={{
+                left: Math.min(
+                  contextMenu.x,
+                  Math.max(0, (viewportHost.current?.clientWidth ?? 300) - 190),
+                ),
+                top: Math.min(
+                  contextMenu.y,
+                  Math.max(
+                    0,
+                    (viewportHost.current?.clientHeight ?? 300) - 230,
+                  ),
+                ),
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setContextMenu(null);
+              }}
+            >
+              <button
+                role="menuitem"
+                onClick={() => {
+                  viewport.current?.fitView();
+                  setContextMenu(null);
+                }}
+              >
+                Fit visible objects
+              </button>
+              <button
+                role="menuitem"
+                disabled={!selected}
+                onClick={() => {
+                  setMode("brush");
+                  setWorkspace("edit");
+                  setToolPanelOpen(true);
+                  setContextMenu(null);
+                }}
+              >
+                Edit scan selection
+              </button>
+              <button
+                role="menuitem"
+                disabled={!selected}
+                onClick={() => {
+                  if (selected)
+                    setTriangleMask(
+                      new Uint8Array(selected.positions.length / 9).fill(1),
+                    );
+                  setContextMenu(null);
+                }}
+              >
+                Select all triangles
+              </button>
+              <button
+                role="menuitem"
+                onClick={() => {
+                  setTriangleMask(null);
+                  setContextMenu(null);
+                }}
+              >
+                Clear triangle selection
+              </button>
+              <button role="menuitem" onClick={() => setContextMenu(null)}>
+                Close menu
+              </button>
+            </div>
+          )}
           <div className="view-controls">
             <span>Perspective</span>
             {(["iso", "top", "front", "right"] as const).map((view) => (
@@ -1493,12 +1619,12 @@ export function App() {
           </div>
           <div className="canvas-hint">
             {mode === "brush"
-              ? "Drag on the scan to brush triangles · right-drag to pan"
+              ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
               : mode === "measure"
                 ? "Click two points on a surface to measure distance"
                 : mode === "section"
                   ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                  : "Drag to orbit · right-drag to pan · scroll to zoom"}
+                  : "Left-click selects · middle-drag rotates · Ctrl+middle pans · Shift+middle zooms"}
           </div>
           {mode === "measure" && (
             <div className="measurement">
@@ -1566,13 +1692,48 @@ export function App() {
                     >
                       Brush selection
                     </button>
-                    <button onClick={() => setMode("inspect")}>Orbit</button>
+                    <button onClick={() => setMode("inspect")}>
+                      Object selection
+                    </button>
                   </div>
                   <Field
-                    label="Brush radius (mm)"
+                    label="Brush radius (pixels)"
                     value={brushRadius}
                     onChange={(value) => setBrushRadius(Math.max(0.01, value))}
                   />
+                  <label>
+                    Selection tool
+                    <select
+                      aria-label="Selection tool"
+                      value={selectionTool}
+                      onChange={(e) =>
+                        setSelectionTool(
+                          e.target.value as
+                            "brush" | "rectangle" | "circle" | "wand",
+                        )
+                      }
+                    >
+                      <option value="wand">Connected region wand</option>
+                      <option value="brush">Screen brush</option>
+                      <option value="rectangle">Rectangle</option>
+                      <option value="circle">Circle / ellipse</option>
+                    </select>
+                  </label>
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={selectThrough}
+                      onChange={(e) => setSelectThrough(e.target.checked)}
+                    />
+                    Select through the mesh
+                  </label>
+                  <p className="muted">
+                    Left-drag selects triangle centroids. Alt-drag subtracts.
+                    Visible mode checks self-occlusion on this mesh; Select
+                    through includes hidden layers. Ctrl+wheel changes brush
+                    size. Middle-drag rotates; Ctrl+middle pans; Shift+middle
+                    zooms.
+                  </p>
                   <label className="check">
                     <input
                       type="checkbox"
@@ -1600,7 +1761,7 @@ export function App() {
                   />
                   <button
                     disabled={busy || !selectedTriangleCount}
-                    onClick={growSelection}
+                    onClick={() => growSelection()}
                   >
                     Grow connected selection
                   </button>

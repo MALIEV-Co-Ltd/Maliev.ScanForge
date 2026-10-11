@@ -96,3 +96,7 @@ REA 6.4.0 and Ghidra inspected a 428,032-byte installed numeric DLL (SHA-256 `91
 Function evidence `ev_64e03aae81b573739507fe78dde799c227564aee59ff0de09c9858581a2048b5` covers its 159-byte wrapper: initialize output/workspace pointers, delegate when the fourth argument is nonzero, free both workspaces, release output on failure and retain it on success. This establishes observed ownership behavior only. The internal numerical callee was not analyzed; inferred decompiler pointer types are not original declarations. No geometric equations, closed-body reconstruction, dependency rebuild or mesh repair algorithm was recovered.
 
 The new shell, feature DAG and sheet-repair implementations are independently authored and tested. Native inspection used unchanged 3,072 MiB admission, a 1,536 MiB JVM heap and finite command leases. Tracked helpers exited. Raw binaries, decompiler text and private tools remain excluded from publication. Full functional equivalence remains unresolved.
+
+## Mouse interaction continuation — 2026-10-11
+
+REA retained evidence and installed reference documentation establish configurable input schemes, default middle-button navigation, right-click context actions, selection tools and depth/modifier controls. See INPUT_INTERACTION.md for manual page references, source hashes, independent choices and remaining operations. No original mouse-handler function was recovered and native runtime equivalence remains unverified. Raw reference text, resources and private installation paths remain excluded from publication.

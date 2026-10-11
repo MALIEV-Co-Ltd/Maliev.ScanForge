@@ -1508,3 +1508,27 @@ dd {
   align-items: center;
   margin: 10px 0;
 }
+
+.screen-selection-overlay {
+  position: absolute;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.viewport-context-menu {
+  position: absolute;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px #0006;
+}
+.viewport-context-menu button {
+  justify-content: flex-start;
+  border: 0;
+}

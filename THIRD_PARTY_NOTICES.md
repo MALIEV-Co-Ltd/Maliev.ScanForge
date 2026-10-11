@@ -5,6 +5,7 @@ ScanForge makes use of facilities provided by Open CASCADE Technology. Its indep
 | Component                   | License                                         | Source                                                   |
 | --------------------------- | ----------------------------------------------- | -------------------------------------------------------- |
 | Three.js                    | MIT                                             | https://github.com/mrdoob/three.js                       |
+| three-mesh-bvh 0.9.16       | MIT                                             | https://github.com/gkjohnson/three-mesh-bvh              |
 | React / React DOM           | MIT                                             | https://github.com/facebook/react                        |
 | Lucide                      | ISC                                             | https://github.com/lucide-icons/lucide                   |
 | OpenCascade.js 1.1.1        | LGPL-2.1-only                                   | https://github.com/donalffons/opencascade.js/tree/v1.1.1 |

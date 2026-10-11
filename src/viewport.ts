@@ -2,9 +2,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
+import { middleMouseAction, subtractSelection } from "./mouse-input";
+import { ScreenSelectionIndex, type ScreenRegion } from "./screen-selection";
 import { navigateCamera } from "./camera-navigation";
 
 type Item = {
+  selectionIndex?: ScreenSelectionIndex;
   positions: Positions;
   color: string;
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
@@ -26,6 +29,11 @@ export class Viewport {
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
   private brushing = false;
+  private selectionTool: "brush" | "rectangle" | "circle" | "wand" = "brush";
+  private brushPixels = 24;
+  private selectThrough = false;
+  private subtract = false;
+  private readonly selectionOverlay = document.createElement("div");
   private lastBrush = 0;
   private readonly clippingPlane = new THREE.Plane();
   private readonly triad = document.createElementNS(
@@ -52,6 +60,14 @@ export class Viewport {
     private readonly container: HTMLElement,
     private readonly onPick: (point: Vec3, entityId: string) => void,
     private readonly onSelect: (id: string) => void,
+    private readonly onSelection?: (
+      id: string,
+      mask: Uint8Array,
+      remove: boolean,
+    ) => void,
+    private readonly onBrushScale?: (factor: number) => void,
+    private readonly onSelectionError?: (message: string) => void,
+    private readonly onContext?: (x: number, y: number) => void,
   ) {
     this.scene.background = new THREE.Color("#e9eef2");
     this.camera.up.set(0, 0, 1);
@@ -98,6 +114,9 @@ export class Viewport {
     }
     container.appendChild(this.triad);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.mouseButtons.LEFT = null;
+    this.controls.mouseButtons.MIDDLE = THREE.MOUSE.ROTATE;
+    this.controls.mouseButtons.RIGHT = null;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.12;
     this.controls.screenSpacePanning = true;
@@ -117,7 +136,19 @@ export class Viewport {
       this.measurement,
       this.triangleSelection,
     );
-    this.renderer.domElement.addEventListener("pointerdown", this.pointerDown);
+    this.selectionOverlay.className = "screen-selection-overlay";
+    this.selectionOverlay.hidden = true;
+    container.appendChild(this.selectionOverlay);
+    this.renderer.domElement.addEventListener(
+      "pointerdown",
+      this.pointerDown,
+      true,
+    );
+    this.renderer.domElement.addEventListener("wheel", this.selectionWheel, {
+      capture: true,
+      passive: false,
+    });
+    this.renderer.domElement.addEventListener("contextmenu", this.contextMenu);
     this.renderer.domElement.addEventListener("pointermove", this.pointerMove);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
     this.renderer.domElement.addEventListener(
@@ -192,6 +223,10 @@ export class Viewport {
   };
 
   private pointerDown = (event: PointerEvent): void => {
+    this.controls.mouseButtons.MIDDLE =
+      middleMouseAction(event) === "zoom"
+        ? THREE.MOUSE.DOLLY
+        : THREE.MOUSE.ROTATE;
     if (event.button !== 0 || !event.isPrimary) return;
     this.pointer = {
       x: event.clientX,
@@ -199,17 +234,26 @@ export class Viewport {
       id: event.pointerId,
       moved: false,
     };
+    if (this.brushing && this.selectionTool === "brush")
+      this.paintScreen(event);
   };
 
   private pointerMove = (event: PointerEvent): void => {
     if (
       this.brushing &&
       this.pointer?.id === event.pointerId &&
+      this.selectionTool === "brush" &&
       performance.now() - this.lastBrush > 80
     ) {
       this.lastBrush = performance.now();
-      this.pickAt(event);
+      this.paintScreen(event);
     }
+    if (
+      this.brushing &&
+      this.pointer?.id === event.pointerId &&
+      (this.selectionTool === "rectangle" || this.selectionTool === "circle")
+    )
+      this.drawSelectionRegion(event);
     if (
       this.pointer?.id === event.pointerId &&
       Math.hypot(
@@ -223,6 +267,7 @@ export class Viewport {
 
   private pointerCancel = (): void => {
     this.pointer = null;
+    this.selectionOverlay.hidden = true;
   };
 
   private pointerUp = (event: PointerEvent): void => {
@@ -236,7 +281,90 @@ export class Viewport {
           Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 4))
     )
       return;
-    this.pickAt(event);
+    this.selectionOverlay.hidden = true;
+    if (this.brushing) {
+      if (this.selectionTool === "brush") this.paintScreen(event);
+      else if (this.selectionTool === "wand") this.pickAt(event);
+      else
+        this.applyScreenRegion(event, {
+          kind: this.selectionTool,
+          start: this.screenPoint(pointer.x, pointer.y),
+          end: this.screenPoint(event.clientX, event.clientY),
+        });
+    } else this.pickAt(event);
+  };
+  private contextMenu = (event: MouseEvent): void => {
+    event.preventDefault();
+    const [x, y] = this.screenPoint(event.clientX, event.clientY);
+    this.onContext?.(x, y);
+  };
+  visibleSelection(id: string, mask: Uint8Array): Uint8Array {
+    const item = this.objects.get(id);
+    if (!item) return new Uint8Array(mask.length);
+    item.selectionIndex ??= new ScreenSelectionIndex(item.positions);
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const visible = item.selectionIndex.select(
+      this.camera,
+      { kind: "rectangle", start: [0, 0], end: [rect.width, rect.height] },
+      { width: rect.width, height: rect.height, through: false },
+    );
+    return Uint8Array.from(mask, (value, i) => (value && visible[i] ? 1 : 0));
+  }
+  private screenPoint(x: number, y: number): [number, number] {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    return [x - rect.left, y - rect.top];
+  }
+  private paintScreen(event: PointerEvent): void {
+    const [x, y] = this.screenPoint(event.clientX, event.clientY),
+      r = this.brushPixels;
+    this.applyScreenRegion(event, {
+      kind: "circle",
+      start: [x - r, y - r],
+      end: [x + r, y + r],
+    });
+  }
+  private applyScreenRegion(event: PointerEvent, region: ScreenRegion): void {
+    const id = this.selectedId,
+      item = id ? this.objects.get(id) : undefined;
+    if (!id || !item?.mesh.visible || !this.onSelection) return;
+    try {
+      item.selectionIndex ??= new ScreenSelectionIndex(item.positions);
+      const rect = this.renderer.domElement.getBoundingClientRect();
+      this.onSelection(
+        id,
+        item.selectionIndex.select(this.camera, region, {
+          width: rect.width,
+          height: rect.height,
+          through: this.selectThrough,
+        }),
+        subtractSelection(this.subtract, event.altKey),
+      );
+    } catch (error) {
+      this.onSelectionError?.(
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+  private drawSelectionRegion(event: PointerEvent): void {
+    if (!this.pointer) return;
+    const a = this.screenPoint(this.pointer.x, this.pointer.y),
+      b = this.screenPoint(event.clientX, event.clientY);
+    Object.assign(this.selectionOverlay.style, {
+      left: Math.min(a[0], b[0]) + "px",
+      top: Math.min(a[1], b[1]) + "px",
+      width: Math.abs(a[0] - b[0]) + "px",
+      height: Math.abs(a[1] - b[1]) + "px",
+      borderRadius: this.selectionTool === "circle" ? "50%" : "0",
+    });
+    this.selectionOverlay.hidden = false;
+  }
+  private selectionWheel = (event: WheelEvent): void => {
+    if (!this.brushing || !event.ctrlKey || !this.onBrushScale) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.onBrushScale(
+      Math.exp(-Math.max(-100, Math.min(100, event.deltaY)) * 0.005),
+    );
   };
   private pickAt = (event: PointerEvent): void => {
     const rect = this.renderer.domElement.getBoundingClientRect();
@@ -261,7 +389,20 @@ export class Viewport {
     if (!hit) return;
     const id = hit.object.userData.entityId as string;
     this.onSelect(id);
-    this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
+    if (
+      this.brushing &&
+      this.selectionTool === "wand" &&
+      hit.faceIndex != null
+    ) {
+      const item = this.objects.get(id)!;
+      const mask = new Uint8Array(item.positions.length / 9);
+      mask[hit.faceIndex] = 1;
+      this.onSelection?.(
+        id,
+        mask,
+        subtractSelection(this.subtract, event.altKey),
+      );
+    } else this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
   };
 
   setEntities(entities: Entity[], selectedId: string | null): void {
@@ -271,6 +412,7 @@ export class Viewport {
     for (const [id, item] of this.objects) {
       if (!ids.has(id)) {
         this.scene.remove(item.mesh);
+        item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
         item.mesh.material.dispose();
         this.objects.delete(id);
@@ -293,7 +435,9 @@ export class Viewport {
         this.scene.add(mesh);
       }
       if (item.positions !== entity.positions) {
+        item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
+        item.selectionIndex = undefined;
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
@@ -399,7 +543,18 @@ export class Viewport {
   }
   setBrush(enabled: boolean): void {
     this.brushing = enabled;
-    this.controls.mouseButtons.LEFT = enabled ? null : THREE.MOUSE.ROTATE;
+    this.controls.mouseButtons.LEFT = null;
+  }
+  setSelectionOptions(
+    tool: "brush" | "rectangle" | "circle" | "wand",
+    radiusPixels: number,
+    through: boolean,
+    subtract: boolean,
+  ): void {
+    this.selectionTool = tool;
+    this.brushPixels = radiusPixels;
+    this.selectThrough = through;
+    this.subtract = subtract;
   }
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
@@ -565,11 +720,14 @@ export class Viewport {
     this.controls.removeEventListener("change", this.invalidate);
     this.controls.dispose();
     const canvas = this.renderer.domElement;
-    canvas.removeEventListener("pointerdown", this.pointerDown);
+    canvas.removeEventListener("pointerdown", this.pointerDown, true);
+    canvas.removeEventListener("wheel", this.selectionWheel, true);
+    canvas.removeEventListener("contextmenu", this.contextMenu);
     canvas.removeEventListener("pointermove", this.pointerMove);
     canvas.removeEventListener("pointerup", this.pointerUp);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
     for (const item of this.objects.values()) {
+      item.selectionIndex?.dispose();
       item.mesh.geometry.dispose();
       item.mesh.material.dispose();
     }
@@ -586,5 +744,6 @@ export class Viewport {
     this.renderer.forceContextLoss();
     canvas.remove();
     this.triad.remove();
+    this.selectionOverlay.remove();
   }
 }
