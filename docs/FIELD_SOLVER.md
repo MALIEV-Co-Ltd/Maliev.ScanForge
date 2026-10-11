@@ -1,6 +1,6 @@
 # Direction-field numerical component
 
-`src/field-linear-solver.ts` implements the recovered active-support conjugate-gradient recurrence and optional inverse-diagonal scaling. It is a numerical component for the reconstruction pipeline under investigation. It is not connected to the freeform command, and does not assemble geometric equations, fix integer variables or generate patches/topology.
+`src/field-linear-solver.ts` implements the recovered active-support conjugate-gradient recurrence and optional inverse-diagonal scaling. It is a numerical component for the reconstruction pipeline under investigation. It is not connected to the freeform command and does not generate patches/topology.
 
 `src/field-system-assembly.ts` now supplies the recovered connection equations to this solver. Its graph, fixed values, integer quarter-turns, anchor classification and global connection weight remain explicit caller inputs. It does not infer any of them from a scan. The native producer and UI option mapping remain unrecovered.
 
@@ -18,7 +18,15 @@ Six assembly tests cover fixed-neighbor elimination, an oriented chain solved th
 
 The caller supplies a full symmetric positive-definite matrix as sparse rows (`offsets`, `indices`, `coefficients`), a right-hand side, an initial solution and unique residual seed indices. Symmetry and positive-definiteness are caller preconditions, not certificates produced by this component. Missing or zero diagonal entries use scaling one. Recovered scaling lookup semantics for duplicate diagonal entries are unresolved; callers should supply unique matrix entries.
 
-The seed list initializes residual support. It is not a mask of variables that must remain fixed. Sparse multiplication expands support into neighboring indices, including explicit zero entries, and retains isolated seed indices. Integer fixing and matrix elimination must be performed by a separate producer whose original contract remains unrecovered.
+The seed list initializes residual support. It is not a mask of variables that must remain fixed. Sparse multiplication expands support into neighboring indices, including explicit zero entries, and retains isolated seed indices. Variable fixing is a separate operation described below; selecting integer targets from scan-derived state remains unresolved.
+
+## Fixed-variable update
+
+`src/field-variable-fixing.ts` implements the recovered full compressed-row branch from REA evidence `ev_7f5d5f386506c9187eae505a76b1f2e323a8bf5641868093027987ca1b6fde55`. For a chosen variable and value, the diagonal becomes one, its right-hand side becomes the chosen value, and its off-diagonal coefficients become zero. Each paired neighbor coefficient is also cleared after subtracting that coefficient times the chosen value from the neighbor's right-hand side. Explicit zero entries and the sparse dimensions remain intact. Multiple distinct choices are applied sequentially.
+
+The browser component copies all arrays and requires sorted unique full symmetric rows with an explicit diagonal in every row. Validation of malformed inputs, duplicate choices, nonfinite numbers and overflow is independent browser hardening. Symmetry is checked; positive-definiteness is not certified. Each variable must be fixed only once per original system: already-cleared coefficients cannot restore earlier contributions if a target is changed later. The native nested-container branches have different storage/update paths and are not implemented by this CSR component.
+
+Six tests cover paired elimination, input ownership, solving fixed equations, adjacent choices in either order, explicit zero neighbors, empty inputs, malformed/asymmetric systems and overflow. A pipeline test compares the full fixed system against independently assembled fixed-node reduction on an oriented connection graph, then checks every solved equation. These are synthetic numerical checks; native runtime and complete scan workflow parity remain unverified.
 
 Input arrays are immutable. Results contain a separately owned solution, iteration count, active count and initial/final residual statistics. Malformed dimensions, invalid indices, duplicate seeds, nonfinite inputs and invalid limits are rejected. Nonfinite intermediate statistics and denominators return breakdown; these browser guards are independent input hardening, not established native failure parity. Cancellation is checked before allocation and at iteration boundaries; execution remains synchronous and has no worker transport yet.
 
@@ -38,4 +46,4 @@ These contracts derive from canonical REA evidence `ev_79c45654af004a2f7defbbebf
 
 Seven tests cover a known coupled system, a 64-variable manufactured system with every equation checked and scaling both on/off, support expansion, nonzero initial values, input ownership, small-residual/last-iteration policies, zero denominator, zero iteration allowance, malformed inputs and pre-aborted cancellation. These validate the browser numerical contract, not a native runtime comparison or bitwise equivalence.
 
-The sparse-factorization branch remains separate and is not implemented by this iterative component. Original reconstruction matrix assembly, boundary constraints, integer selection/fixing callbacks and topology extraction must be recovered and integrated before automatic freeform reconstruction can be claimed. The existing projected-grid fitter remains independent.
+The sparse-factorization branch remains separate and is not implemented by this iterative component. Scan-derived connection assembly, boundary constraints, integer selection and owner callbacks, and topology extraction must be recovered and integrated before automatic freeform reconstruction can be claimed. The existing projected-grid fitter remains independent.
