@@ -1378,6 +1378,79 @@ dd {
   gap: 7px;
   margin: 10px 0;
 }
+.edit-scan-dialog {
+  padding: 14px;
+  font-size: 12px;
+}
+.scan-diagnostics > div,
+.scan-sensitivity,
+.scan-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 7px 0;
+}
+.scan-diagnostics {
+  margin-bottom: 22px;
+}
+.scan-tool-row,
+.edit-scan-dialog .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 10px 0;
+}
+.scan-tool-row button {
+  width: 30px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 3px;
+}
+.scan-tool-row button[aria-pressed="true"] {
+  background: var(--hover);
+  border-color: var(--text);
+}
+.scan-sensitivity > input {
+  min-width: 70px;
+  width: 100%;
+}
+.scan-sensitivity label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.scan-sensitivity input[type="number"] {
+  width: 58px;
+}
+.edit-scan-dialog .check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0;
+}
+.edit-scan-dialog fieldset {
+  margin: 14px 0;
+  padding: 7px;
+  border: 1px solid var(--border);
+}
+.edit-scan-dialog button svg {
+  vertical-align: middle;
+}
+.edit-scan-dialog form {
+  padding: 9px;
+  border: 1px solid var(--border);
+}
+.edit-scan-dialog form label {
+  display: grid;
+  gap: 5px;
+}
+.scan-dialog-footer {
+  justify-content: flex-end;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
 @media (max-width: 760px) {
   .workbench {
     height: auto;
