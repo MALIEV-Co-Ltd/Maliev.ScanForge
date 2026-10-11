@@ -43,6 +43,12 @@ ScanForge's existing generic fitting panel does not reproduce this staged dialog
 
 ## Remaining application-wide work
 
+### Sketch dimensions and construction references - 2026-10-11
+
+Installed manual PDF84 documents straight, horizontal and vertical point distances; PDF86 documents construction geometry as a reference excluded from solid creation. Sketch constraints now distinguish Euclidean, horizontal and vertical distances. Directional dimensions are nonnegative coordinate separations, solved independently of the orthogonal coordinate. New relations solve before replacing the draft; conflicting or unsolved additions preserve the previous sketch. Construction lines/arcs remain in the constraint graph and are dashed in the preview, but profile extraction omits them. Existing sketches without construction flags retain their behavior; the project/sketch parsers validate the new fields and dimensions.
+
+Deleting a point cascades only into incident lines/arcs and dependent relations; deleting a curve retains surviving point dimensions and independent constraints. This corrects the prior blanket constraint removal. Native deletion policy, sign/annotation conventions, constraint solver and interactive dimension placement remain unrecovered. The current editor still lacks the documented Create Sketch slicing stage and viewport drawing/contextual dimension workflow; these changes do not establish full sketch parity.
+
 ### Fit Surface transaction - 2026-10-11
 
 The installed manual PDF38-39 documents selected scan data, initial U/V10, Apply, Analysis and OK. Fit Surface now opens a dedicated session with a copied selected-visible region, axis orientation, U/V counts and temporary surface preview. Apply does not alter entities or modeling history; Cancel discards the preview; OK creates one linked purple surface while preserving the scan. Changing options requires Apply again, and source geometry changes invalidate the session. Fitting runs in the existing cancellable, leased worker.

@@ -7,6 +7,7 @@ export interface SketchSegment {
   id: string;
   a: string;
   b: string;
+  construction?: boolean;
 }
 export interface SketchArc {
   id: string;
@@ -14,12 +15,19 @@ export interface SketchArc {
   b: string;
   center: string;
   clockwise: boolean;
+  construction?: boolean;
 }
 export type SketchConstraint =
   | { id: string; kind: "fixed"; point: string; x: number; y: number }
   | { id: string; kind: "coincident"; a: string; b: string }
   | { id: string; kind: "horizontal" | "vertical"; segment: string }
-  | { id: string; kind: "distance"; a: string; b: string; value: number }
+  | {
+      id: string;
+      kind: "distance" | "horizontalDistance" | "verticalDistance";
+      a: string;
+      b: string;
+      value: number;
+    }
   | { id: string; kind: "radius"; arc: string; value: number }
   | {
       id: string;
@@ -72,7 +80,13 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     if (!object(p) || !string(p.id) || !finite(p.x) || !finite(p.y))
       throw new Error("Sketch point structure is invalid.");
   for (const s of value.segments)
-    if (!object(s) || !string(s.id) || !string(s.a) || !string(s.b))
+    if (
+      !object(s) ||
+      !string(s.id) ||
+      !string(s.a) ||
+      !string(s.b) ||
+      (s.construction !== undefined && typeof s.construction !== "boolean")
+    )
       throw new Error("Sketch segment structure is invalid.");
   if (value.arcs !== undefined && !Array.isArray(value.arcs))
     throw new Error("Sketch arcs must be an array.");
@@ -83,7 +97,8 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       !string(arc.a) ||
       !string(arc.b) ||
       !string(arc.center) ||
-      typeof arc.clockwise !== "boolean"
+      typeof arc.clockwise !== "boolean" ||
+      (arc.construction !== undefined && typeof arc.construction !== "boolean")
     )
       throw new Error("Sketch arc structure is invalid.");
   for (const c of value.constraints) {
@@ -92,11 +107,16 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     if (c.kind === "fixed") {
       if (!string(c.point) || !finite(c.x) || !finite(c.y))
         throw new Error("Fixed constraint structure is invalid.");
-    } else if (c.kind === "coincident" || c.kind === "distance") {
+    } else if (
+      c.kind === "coincident" ||
+      c.kind === "distance" ||
+      c.kind === "horizontalDistance" ||
+      c.kind === "verticalDistance"
+    ) {
       if (
         !string(c.a) ||
         !string(c.b) ||
-        (c.kind === "distance" && !finite(c.value))
+        (c.kind !== "coincident" && !finite(c.value))
       )
         throw new Error("Point constraint structure is invalid.");
     } else if (c.kind === "horizontal" || c.kind === "vertical") {
@@ -161,7 +181,10 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     const refs =
       c.kind === "fixed"
         ? [c.point]
-        : c.kind === "coincident" || c.kind === "distance"
+        : c.kind === "coincident" ||
+            c.kind === "distance" ||
+            c.kind === "horizontalDistance" ||
+            c.kind === "verticalDistance"
           ? [c.a, c.b]
           : [];
     if (refs.some((id) => !points.has(id)))
@@ -196,7 +219,11 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       throw new Error("Constraint segment is missing.");
     if (
       "value" in c &&
-      (!Number.isFinite(c.value) || (c.kind === "distance" && c.value < 0))
+      (!Number.isFinite(c.value) ||
+        (["distance", "horizontalDistance", "verticalDistance"].includes(
+          c.kind,
+        ) &&
+          c.value < 0))
     )
       throw new Error("Constraint dimension is invalid.");
     if (c.kind === "fixed" && ![c.x, c.y].every(Number.isFinite))
@@ -211,6 +238,58 @@ export function parseSketch(text: string): Sketch {
 export function serializeSketch(sketch: Sketch): string {
   validateSketch(sketch);
   return JSON.stringify(sketch);
+}
+
+/** Remove a primitive and only relations whose referenced geometry disappeared. */
+export function removeSketchGeometry(
+  sketch: Sketch,
+  kind: "point" | "segment" | "arc",
+  id: string,
+): Sketch {
+  validateSketch(sketch);
+  const points = sketch.points.filter((p) => kind !== "point" || p.id !== id);
+  const pointIds = new Set(points.map((p) => p.id));
+  const segments = sketch.segments.filter(
+    (s) =>
+      (kind !== "segment" || s.id !== id) &&
+      pointIds.has(s.a) &&
+      pointIds.has(s.b),
+  );
+  const arcs = (sketch.arcs ?? []).filter(
+    (a) =>
+      (kind !== "arc" || a.id !== id) &&
+      [a.a, a.b, a.center].every((p) => pointIds.has(p)),
+  );
+  const segmentIds = new Set(segments.map((s) => s.id));
+  const arcIds = new Set(arcs.map((a) => a.id));
+  const curveIds = new Set([...segmentIds, ...arcIds]);
+  const constraints = sketch.constraints.filter((c) => {
+    if (c.kind === "fixed") return pointIds.has(c.point);
+    if (
+      c.kind === "coincident" ||
+      c.kind === "distance" ||
+      c.kind === "horizontalDistance" ||
+      c.kind === "verticalDistance"
+    )
+      return pointIds.has(c.a) && pointIds.has(c.b);
+    if (c.kind === "horizontal" || c.kind === "vertical")
+      return segmentIds.has(c.segment);
+    if (c.kind === "radius") return arcIds.has(c.arc);
+    if (c.kind === "tangent")
+      return (
+        pointIds.has(c.point) && curveIds.has(c.first) && curveIds.has(c.second)
+      );
+    return "first" in c && segmentIds.has(c.first) && segmentIds.has(c.second);
+  });
+  const next = {
+    ...sketch,
+    points,
+    segments,
+    arcs: sketch.arcs === undefined ? undefined : arcs,
+    constraints,
+  };
+  validateSketch(next);
+  return next;
 }
 
 function rank(matrix: number[][], tolerance = 1e-7) {
@@ -290,10 +369,21 @@ export function solveSketch(
           b = point(x, c.b);
         return [a[0] - b[0], a[1] - b[1]];
       }
-      if (c.kind === "distance") {
+      if (
+        c.kind === "distance" ||
+        c.kind === "horizontalDistance" ||
+        c.kind === "verticalDistance"
+      ) {
         const a = point(x, c.a),
           b = point(x, c.b);
-        return [Math.hypot(a[0] - b[0], a[1] - b[1]) - c.value];
+        return [
+          (c.kind === "distance"
+            ? Math.hypot(a[0] - b[0], a[1] - b[1])
+            : Math.abs(
+                a[c.kind === "horizontalDistance" ? 0 : 1] -
+                  b[c.kind === "horizontalDistance" ? 0 : 1],
+              )) - c.value,
+        ];
       }
       if (c.kind === "radius") {
         const arc = arcs.get(c.arc)!,
@@ -476,7 +566,9 @@ export function sketchProfile(
   chordTolerance = 0.1,
 ): [number, number][] {
   validateSketch(sketch);
-  const curves = [...sketch.segments, ...(sketch.arcs ?? [])];
+  const curves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+    (curve) => !curve.construction,
+  );
   if (curves.length < 2)
     throw new Error("Extrusion requires one closed profile.");
   const adjacent = new Map(sketch.points.map((p) => [p.id, [] as string[]]));
@@ -571,4 +663,18 @@ export function rectangleSketch(width = 40, height = 30): Sketch {
       { id: "c7", kind: "distance", a: "p2", b: "p3", value: height },
     ],
   };
+}
+
+/** Resolve a new relation atomically; a failed solve leaves the caller's draft intact. */
+export function constrainSketch(
+  sketch: Sketch,
+  constraint: SketchConstraint,
+): Sketch {
+  const solution = solveSketch({
+    ...sketch,
+    constraints: [...sketch.constraints, constraint],
+  });
+  if (!solution.converged)
+    throw new Error(`Conflicting or unsolved constraint: ${constraint.kind}.`);
+  return solution.sketch;
 }

@@ -4,6 +4,8 @@ import {
   sketchProfile,
   solveSketch,
   sampleSketchArc,
+  removeSketchGeometry,
+  constrainSketch,
   type Sketch,
   type SketchConstraint,
 } from "../sketch";
@@ -18,6 +20,13 @@ export interface SketchToolsProps {
   ) => void;
   disabled?: boolean;
 }
+
+const constraintLabel = (kind: string) =>
+  kind === "horizontalDistance"
+    ? "Horizontal distance"
+    : kind === "verticalDistance"
+      ? "Vertical distance"
+      : kind;
 
 export function SketchTools({
   value,
@@ -81,7 +90,11 @@ export function SketchTools({
         constraint = { id, kind, point: first, x: p.x, y: p.y };
       } else if (kind === "horizontal" || kind === "vertical")
         constraint = { id, kind, segment: first };
-      else if (kind === "distance")
+      else if (
+        kind === "distance" ||
+        kind === "horizontalDistance" ||
+        kind === "verticalDistance"
+      )
         constraint = { id, kind, a: first, b: second, value: dimension };
       else if (kind === "coincident")
         constraint = { id, kind, a: first, b: second };
@@ -92,12 +105,7 @@ export function SketchTools({
       else if (kind === "tangent")
         constraint = { id, kind, first, second, point: tangentPoint };
       else constraint = { id, kind, first, second };
-      const next = {
-        ...sketch,
-        constraints: [...sketch.constraints, constraint],
-      };
-      solveSketch(next);
-      update(next);
+      update(constrainSketch(sketch, constraint));
     });
   const preview = sketch.points;
   const arcPreview = (sketch.arcs ?? []).map((arc) => {
@@ -147,6 +155,9 @@ export function SketchTools({
               y2={b.y}
               stroke="currentColor"
               strokeWidth={spanX / 150}
+              strokeDasharray={
+                s.construction ? `${spanX / 60} ${spanX / 100}` : undefined
+              }
             />
           ) : null;
         })}
@@ -157,6 +168,11 @@ export function SketchTools({
             stroke="currentColor"
             strokeWidth={spanX / 150}
             fill="none"
+            strokeDasharray={
+              sketch.arcs?.find((a) => a.id === arc.id)?.construction
+                ? `${spanX / 60} ${spanX / 100}`
+                : undefined
+            }
           />
         ))}
         {preview.map((p) => (
@@ -197,17 +213,7 @@ export function SketchTools({
             <button
               aria-label={`Remove point ${p.id}`}
               onClick={() =>
-                update({
-                  ...sketch,
-                  points: sketch.points.filter((q) => q.id !== p.id),
-                  segments: sketch.segments.filter(
-                    (s) => s.a !== p.id && s.b !== p.id,
-                  ),
-                  arcs: (sketch.arcs ?? []).filter(
-                    (arc) => ![arc.a, arc.b, arc.center].includes(p.id),
-                  ),
-                  constraints: [],
-                })
+                update(removeSketchGeometry(sketch, "point", p.id))
               }
             >
               ×
@@ -278,22 +284,29 @@ export function SketchTools({
             <button
               aria-label={`Remove arc ${arc.id}`}
               onClick={() =>
-                update({
-                  ...sketch,
-                  arcs: (sketch.arcs ?? []).filter((a) => a.id !== arc.id),
-                  constraints: sketch.constraints.filter(
-                    (c) =>
-                      !(c.kind === "radius" && c.arc === arc.id) &&
-                      !(
-                        c.kind === "tangent" &&
-                        (c.first === arc.id || c.second === arc.id)
-                      ),
-                  ),
-                })
+                update(removeSketchGeometry(sketch, "arc", arc.id))
               }
             >
               ×
             </button>
+            <label className="check">
+              <input
+                type="checkbox"
+                aria-label={`${arc.id} For construction`}
+                checked={!!arc.construction}
+                onChange={(e) =>
+                  update({
+                    ...sketch,
+                    arcs: sketch.arcs?.map((a) =>
+                      a.id === arc.id
+                        ? { ...a, construction: e.target.checked }
+                        : a,
+                    ),
+                  })
+                }
+              />
+              For construction
+            </label>
           </div>
         ))}
         <button
@@ -383,15 +396,29 @@ export function SketchTools({
             <button
               aria-label={`Remove segment ${s.id}`}
               onClick={() =>
-                update({
-                  ...sketch,
-                  segments: sketch.segments.filter((q) => q.id !== s.id),
-                  constraints: [],
-                })
+                update(removeSketchGeometry(sketch, "segment", s.id))
               }
             >
               ×
             </button>
+            <label className="check">
+              <input
+                type="checkbox"
+                aria-label={`${s.id} For construction`}
+                checked={!!s.construction}
+                onChange={(e) =>
+                  update({
+                    ...sketch,
+                    segments: sketch.segments.map((segment) =>
+                      segment.id === s.id
+                        ? { ...segment, construction: e.target.checked }
+                        : segment,
+                    ),
+                  })
+                }
+              />
+              For construction
+            </label>
           </div>
         ))}
         <button
@@ -418,7 +445,7 @@ export function SketchTools({
         {sketch.constraints.map((c) => (
           <div className="field-row" key={c.id}>
             <span>
-              {c.kind}
+              {constraintLabel(c.kind)}
               {"value" in c ? ` ${c.value}` : ""}
             </span>
             {"value" in c && (
@@ -469,6 +496,8 @@ export function SketchTools({
               "horizontal",
               "vertical",
               "distance",
+              "horizontalDistance",
+              "verticalDistance",
               "parallel",
               "perpendicular",
               "equal",
@@ -476,7 +505,9 @@ export function SketchTools({
               "radius",
               "tangent",
             ].map((k) => (
-              <option key={k}>{k}</option>
+              <option key={k} value={k}>
+                {constraintLabel(k)}
+              </option>
             ))}
           </select>
         </label>
@@ -517,7 +548,13 @@ export function SketchTools({
             </select>
           </label>
         )}
-        {(kind === "distance" || kind === "angle" || kind === "radius") && (
+        {[
+          "distance",
+          "horizontalDistance",
+          "verticalDistance",
+          "angle",
+          "radius",
+        ].includes(kind) && (
           <label>
             Dimension
             <input
