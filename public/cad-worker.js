@@ -658,9 +658,51 @@ function polygonPoints(inputPoints) {
   return points;
 }
 
+function sketchPlacement(input) {
+  const frame =
+    input === undefined
+      ? {
+          origin: [0, 0, 0],
+          u: [1, 0, 0],
+          v: [0, 1, 0],
+          normal: [0, 0, 1],
+        }
+      : input;
+  if (!frame || typeof frame !== "object")
+    throw new Error("Sketch frame must be an object.");
+  for (const key of ["origin", "u", "v", "normal"]) {
+    const vector = frame[key];
+    if (
+      !Array.isArray(vector) ||
+      vector.length !== 3 ||
+      vector.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e9)
+    )
+      throw new Error(
+        "Sketch frame vectors must contain three finite coordinates.",
+      );
+  }
+  const dot = (a, b) => a.reduce((sum, n, i) => sum + n * b[i], 0);
+  const { u, v, normal } = frame;
+  const cross = [
+    u[1] * v[2] - u[2] * v[1],
+    u[2] * v[0] - u[0] * v[2],
+    u[0] * v[1] - u[1] * v[0],
+  ];
+  if (
+    [u, v, normal].some((axis) => Math.abs(dot(axis, axis) - 1) > 1e-8) ||
+    Math.abs(dot(u, v)) > 1e-8 ||
+    Math.abs(dot(u, normal)) > 1e-8 ||
+    Math.abs(dot(v, normal)) > 1e-8 ||
+    cross.some((n, i) => Math.abs(n - normal[i]) > 1e-8)
+  )
+    throw new Error("Sketch frame must be orthonormal and right-handed.");
+  return frame;
+}
+
 function extrudeShape(oc, input) {
   const { height } = input;
   const points = polygonPoints(input.points);
+  const frame = sketchPlacement(input.frame);
   if (!Number.isFinite(height) || height <= 0 || height > 1e9)
     throw new Error(
       "Extrusion height must be positive and at most one billion.",
@@ -673,7 +715,14 @@ function extrudeShape(oc, input) {
   try {
     const polygon = keep(new oc.BRepBuilderAPI_MakePolygon_1());
     for (const point of points) {
-      const nativePoint = new oc.gp_Pnt_3(point[0], point[1], 0);
+      const world = frame.origin.map(
+        (n, i) => n + frame.u[i] * point[0] + frame.v[i] * point[1],
+      );
+      if (world.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e9))
+        throw new Error(
+          "Placed sketch coordinates must be finite and bounded.",
+        );
+      const nativePoint = new oc.gp_Pnt_3(...world);
       try {
         polygon.Add_1(nativePoint);
       } finally {
@@ -687,7 +736,9 @@ function extrudeShape(oc, input) {
     if (!faceMaker.IsDone())
       throw new Error("CAD polygon face construction failed.");
     const face = keep(faceMaker.Face());
-    const direction = keep(new oc.gp_Vec_4(0, 0, height));
+    const direction = keep(
+      new oc.gp_Vec_4(...frame.normal.map((n) => n * height)),
+    );
     const prism = keep(
       new oc.BRepPrimAPI_MakePrism_1(face, direction, true, true),
     );

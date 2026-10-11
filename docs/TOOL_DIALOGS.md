@@ -43,6 +43,12 @@ ScanForge's existing generic fitting panel does not reproduce this staged dialog
 
 ## Remaining application-wide work
 
+### Sketch placement and exact CAD boundary - 2026-10-11
+
+The installed manual PDF55-61 documents coordinate planes, offsets and placing a sketch on the slicing plane or projecting it onto the reference plane. Sketches now persist an optional rigid world frame; legacy sketches retain XY at Z=0. The editor exposes coordinate-plane placement and offset without adding a model-history operation. Exact extrusion builds the polygon at its world placement and extrudes along the frame normal. Parametric recipes retain the frame and rebuild through the same CAD request; STEP therefore contains the placed geometry. Invalid scaled, sheared, reflected or nonfinite frames are rejected before native shape registration.
+
+The declared right-handed conventions are OXY U=X/V=Y/+Z, OYZ U=Y/V=Z/+X, and OXZ U=Z/V=X/+Y. The native screen-axis conventions remain unobserved; these conventions do not claim equivalence to recovered native implementation. This fixes a placement boundary required by scan-to-sketch creation. The scan slicing/selected-visible extraction, separate reference-data persistence, per-sketch object ownership, interactive plane handle and full Create Sketch dialog remain unfinished. The existing editor still opens its saved global draft, initially a rectangle, rather than a newly extracted scan sketch.
+
 ### Sketch dimensions and construction references - 2026-10-11
 
 Installed manual PDF84 documents straight, horizontal and vertical point distances; PDF86 documents construction geometry as a reference excluded from solid creation. Sketch constraints now distinguish Euclidean, horizontal and vertical distances. Directional dimensions are nonnegative coordinate separations, solved independently of the orthogonal coordinate. New relations solve before replacing the draft; conflicting or unsolved additions preserve the previous sketch. Construction lines/arcs remain in the constraint graph and are dashed in the preview, but profile extraction omits them. Existing sketches without construction flags retain their behavior; the project/sketch parsers validate the new fields and dimensions.

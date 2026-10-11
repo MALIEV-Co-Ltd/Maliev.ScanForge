@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CadClient } from "../src/cad/client";
+import { coordinateSketchFrame } from "../src/sketch-frame";
 class WorkerDouble {
   static instances: WorkerDouble[] = [];
   messages: { id: number; operation: string; payload: unknown }[] = [];
@@ -47,6 +48,11 @@ describe("CAD worker ownership and cancellation", () => {
       [0, 2],
     ];
     const cases: [() => Promise<unknown>, string, unknown][] = [
+      [
+        () => client.extrude(points, 10, coordinateSketchFrame("OYZ", 7)),
+        "extrude",
+        { points, height: 10, frame: coordinateSketchFrame("OYZ", 7) },
+      ],
       [
         () =>
           client.loft(

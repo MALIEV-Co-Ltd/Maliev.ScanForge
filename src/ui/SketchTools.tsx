@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { coordinateSketchFrame } from "../sketch-frame";
 import {
   rectangleSketch,
   sketchProfile,
@@ -36,6 +37,19 @@ export function SketchTools({
 }: SketchToolsProps) {
   const [local, setLocal] = useState<Sketch>(() => rectangleSketch());
   const sketch = value ?? local;
+  const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0);
+  const plane =
+    frame.normal[2] === 1 && frame.u[0] === 1 && frame.v[1] === 1
+      ? "OXY"
+      : frame.normal[0] === 1 && frame.u[1] === 1 && frame.v[2] === 1
+        ? "OYZ"
+        : frame.normal[1] === 1 && frame.u[2] === 1 && frame.v[0] === 1
+          ? "OXZ"
+          : "Custom";
+  const offset = frame.origin.reduce(
+    (sum, n, i) => sum + n * frame.normal[i],
+    0,
+  );
   const [height, setHeight] = useState(20);
   const [error, setError] = useState("");
   const [kind, setKind] = useState<SketchConstraint["kind"]>("distance");
@@ -130,8 +144,52 @@ export function SketchTools({
     <section className="panel sketch-panel" aria-label="Parametric sketch">
       <h3>Parametric sketch</h3>
       <p className="muted">
-        XY plane · dimensions in mm · signed angles in degrees
+        Local UV dimensions in mm · signed angles in degrees
       </p>
+      <label>
+        Sketch plane
+        <select
+          value={plane}
+          disabled={disabled}
+          onChange={(event) =>
+            update({
+              ...sketch,
+              frame: coordinateSketchFrame(
+                event.target.value as "OXY" | "OYZ" | "OXZ",
+                offset,
+              ),
+            })
+          }
+        >
+          <option value="OXY">OXY · U=X, V=Y</option>
+          <option value="OYZ">OYZ · U=Y, V=Z</option>
+          <option value="OXZ">OXZ · U=Z, V=X</option>
+          {plane === "Custom" && (
+            <option value="Custom" disabled>
+              Custom plane
+            </option>
+          )}
+        </select>
+      </label>
+      <label>
+        Plane offset (mm)
+        <input
+          type="number"
+          value={offset}
+          disabled={disabled}
+          onChange={(event) =>
+            attempt(() => {
+              const next = Number(event.target.value);
+              const origin = frame.origin.map(
+                (n, i) => n + (next - offset) * frame.normal[i],
+              ) as typeof frame.origin;
+              const placed = { ...sketch, frame: { ...frame, origin } };
+              solveSketch(placed);
+              update(placed);
+            })
+          }
+        />
+      </label>
       <svg
         role="img"
         aria-label="Sketch profile preview"

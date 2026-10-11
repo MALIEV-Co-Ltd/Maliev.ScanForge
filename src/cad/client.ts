@@ -1,5 +1,6 @@
 import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
+import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
 
 export type CadPattern =
   | { kind: "linear"; count: number; step: Vec3 }
@@ -73,8 +74,17 @@ export class CadClient {
     }) as Promise<KernelMesh>;
   }
 
-  extrude(points: [number, number][], height: number): Promise<KernelMesh> {
-    return this.request("extrude", { points, height }) as Promise<KernelMesh>;
+  extrude(
+    points: [number, number][],
+    height: number,
+    frame?: SketchFrame,
+  ): Promise<KernelMesh> {
+    if (frame !== undefined) validateSketchFrame(frame);
+    return this.request("extrude", {
+      points,
+      height,
+      frame,
+    }) as Promise<KernelMesh>;
   }
 
   /** Revolve a closed radius/Z meridian polygon about the world Z axis. */

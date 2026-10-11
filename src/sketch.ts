@@ -1,3 +1,5 @@
+import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
+
 export interface SketchPoint {
   id: string;
   x: number;
@@ -45,6 +47,7 @@ export type SketchConstraint =
   | { id: string; kind: "angle"; first: string; second: string; value: number };
 export interface Sketch {
   version: 1;
+  frame?: SketchFrame;
   points: SketchPoint[];
   segments: SketchSegment[];
   arcs?: SketchArc[];
@@ -62,6 +65,8 @@ export interface SketchSolution {
 export function validateSketch(input: unknown): asserts input is Sketch {
   if (!input || typeof input !== "object")
     throw new Error("Sketch must be an object.");
+  if ((input as Sketch).frame !== undefined)
+    validateSketchFrame((input as Sketch).frame);
   const value = input as Record<string, unknown>;
   if (
     value.version !== 1 ||

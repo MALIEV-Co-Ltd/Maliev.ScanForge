@@ -275,6 +275,76 @@ try {
   bounds(extrusion.positions).forEach((value, i) =>
     close(value, [0, 0, 0, 10, 20, 3][i], "Extrusion bounds"),
   );
+  // Actual worker and STEP output must share the sketch's rigid placement.
+  const profile = [
+    [0, 0],
+    [10, 0],
+    [10, 20],
+    [0, 20],
+  ];
+  for (const [frame, expected] of [
+    [
+      { origin: [0, 0, 7], u: [1, 0, 0], v: [0, 1, 0], normal: [0, 0, 1] },
+      [0, 0, 7, 10, 20, 10],
+    ],
+    [
+      { origin: [21, 0, 0], u: [0, 1, 0], v: [0, 0, 1], normal: [1, 0, 0] },
+      [21, 0, 0, 24, 10, 20],
+    ],
+    [
+      { origin: [0, -5, 0], u: [0, 0, 1], v: [1, 0, 0], normal: [0, 1, 0] },
+      [0, -5, 0, 20, -2, 10],
+    ],
+    [
+      {
+        origin: [4, 5, 6],
+        u: [0.6, 0.8, 0],
+        v: [-0.8, 0.6, 0],
+        normal: [0, 0, 1],
+      },
+      [-12, 5, 6, 10, 25, 9],
+    ],
+    [
+      {
+        origin: [4, 5, 6],
+        u: [0.6, 0, 0.8],
+        v: [0, 1, 0],
+        normal: [-0.8, 0, 0.6],
+      },
+      [1.6, 5, 6, 10, 25, 15.8],
+    ],
+  ]) {
+    const placed = await request("extrude", {
+      points: profile,
+      height: 3,
+      frame,
+    });
+    bounds(placed.positions).forEach((n, i) =>
+      close(n, expected[i], "Placed extrusion bounds"),
+    );
+    close(volume(placed.positions), 600, "Placed extrusion volume");
+    const data = await request("export", [placed.kernelId]);
+    const restored = await request("import", { data, extension: "step" });
+    bounds(restored.positions).forEach((n, i) =>
+      close(n, expected[i], "Placed STEP roundtrip bounds"),
+    );
+    await request("release", [placed.kernelId, restored.kernelId]);
+  }
+  const handlesBeforeBadFrame = vm.runInContext("shapes.size", context);
+  for (const frame of [
+    { origin: [0, 0, 0], u: [2, 0, 0], v: [0, 1, 0], normal: [0, 0, 1] },
+    { origin: [0, 0, 0], u: [1, 0, 0], v: [0, 1, 0], normal: [0, 0, -1] },
+    { origin: [NaN, 0, 0], u: [1, 0, 0], v: [0, 1, 0], normal: [0, 0, 1] },
+  ])
+    await assert.rejects(
+      request("extrude", { points: profile, height: 3, frame }),
+      /frame/i,
+    );
+  assert.equal(
+    vm.runInContext("shapes.size", context),
+    handlesBeforeBadFrame,
+    "Invalid frame retains handle ownership",
+  );
   const concave = await request("extrude", {
     points: [
       [0, 0],

@@ -7,6 +7,7 @@ import {
   type Sketch,
 } from "./sketch";
 import { validatePatch, type NurbsPatch } from "./surfaces";
+import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
 
 export interface FeatureRef {
   readonly featureId: string;
@@ -18,7 +19,11 @@ export type ParametricProfile =
       readonly sketch: Sketch;
       readonly chordTolerance?: number;
     }
-  | { readonly kind: "polygon"; readonly points: [number, number][] };
+  | {
+      readonly kind: "polygon";
+      readonly points: [number, number][];
+      readonly frame?: SketchFrame;
+    };
 export type ParametricRecipe =
   | { readonly kind: "primitive"; readonly input: KernelPrimitive }
   | { readonly kind: "importBrep"; readonly brep: string }
@@ -272,8 +277,10 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     case "extrude": {
       const p = value.profile;
       if (!record(p)) throw new Error("Extrusion profile is missing.");
-      if (p.kind === "polygon") requirePolygon(p.points);
-      else if (p.kind === "sketch") {
+      if (p.kind === "polygon") {
+        requirePolygon(p.points);
+        if (p.frame !== undefined) validateSketchFrame(p.frame);
+      } else if (p.kind === "sketch") {
         validateSketch(p.sketch);
         if (p.chordTolerance !== undefined)
           requirePositive(p.chordTolerance, "Arc chord tolerance");
@@ -677,7 +684,11 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
               );
             points = sketchProfile(solution.sketch, r.profile.chordTolerance);
           }
-          output = await client.extrude(points, r.height);
+          const frame =
+            r.profile.kind === "polygon"
+              ? r.profile.frame
+              : r.profile.sketch.frame;
+          output = await client.extrude(points, r.height, frame);
           break;
         }
         case "revolve":

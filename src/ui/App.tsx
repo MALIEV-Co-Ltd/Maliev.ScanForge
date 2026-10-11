@@ -1544,7 +1544,11 @@ export function App() {
     sketchProfile?: { sketch: Sketch; chordTolerance: number },
   ) {
     void action("Extruding polygon sketch…", async () => {
-      const result = await cad.current!.extrude(points, height);
+      const result = await cad.current!.extrude(
+        points,
+        height,
+        sketchProfile?.sketch.frame,
+      );
       const entity: Entity = {
         id: crypto.randomUUID(),
         name: "Polygon extrusion",

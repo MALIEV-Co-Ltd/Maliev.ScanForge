@@ -1,5 +1,11 @@
 # Initial workbench validation — 2026-10-11
 
+Sketch world placement - 2026-10-11
+
+Build passed with zero warnings/errors,28 offline assets and manifest scanforge-be82accd6946d0c2. Focused sketch/frame/client/parametric/project tests passed49/49; the full suite passed258 tests across43 files. The actual CAD worker smoke suite passed: legacy XY extrusion, offset OXY/OYZ/OXZ, in-plane rotation and tilted-normal placement, expected world bounds and volumes, STEP export/re-import placement, invalid-frame rejection with unchanged shape ownership, complete native-handle release and virtual-file cleanup. Targeted formatting and git diff --check passed.
+
+Browser: changing the saved draft to OYZ offset21 leaves modeling history at0. Extrusion creates one history entry and exact body bounds20x40x30mm, volume24000mm3. Editing its parametric recipe to OXZ offset-5 and height12 rebuilds to bounds30x12x40mm, volume14400mm3 and a second history entry. Undo restores the first bounds and volume; redo restores the rebuilt operation. Project download completion is visible, but automated download-path retrieval timed out; downloaded-file readback was not completed. Persistence is covered by both project serializer/parser paths in automated tests. Browser error/warning logs were empty. A bounded screenshot of the verified plane controls is retained privately at .resources/sketch-plane-proof.png; a larger screenshot timed out. Full scan-to-sketch/native-UI parity, gigabyte scans and physical SpaceMouse were not tested by this slice.
+
 This validates the implemented 0.1 foundation, not the unimplemented capabilities listed in CAPABILITIES.md.
 
 ## Executed automated checks
