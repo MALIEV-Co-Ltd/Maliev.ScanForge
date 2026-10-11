@@ -379,3 +379,14 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 This slice used retained canonical REA worker/helper evidence plus independent digest-verified PE reads for referenced double constants. No additional REA provider worker was started. Two bounded native numerical runs released executable allocations and exited; the final exact worker PID was verified absent. Probe scripts, original executable bytes and private constant reports remain excluded from the repository. Public fixtures contain owned input/output measurements only.
 
 Targeted Prettier and `git diff --check` passed. The finite-lease development preview returned HTTP 200 with unchanged bundle `scanforge-0252d3aa394134e3`; no browser reload was needed. Fallback radius selection, neighbor propagation, complete native worker/cache lifecycle and reconstruction integration remain incomplete. Full-resolution gigabyte browser workflows and physical SpaceMouse validation were not rerun and remain unverified.
+
+### Recovered radius-index neighbor finalization - 2026-10-12
+
+- `npm run build`: passed, zero warnings/errors; 28 offline assets.
+- `npx vitest run tests/field-curvature-propagation.test.ts tests/field-curvature-radius.test.ts tests/field-curvature-constrained.test.ts --maxWorkers=1`: 148 tests passed in 3 files.
+- `npm test`: 1023 tests passed in 80 files.
+- Eighty owned input/output fixtures exactly match isolated native radius-index finalization. Complete retained REA assembly confirms repeated corner-zero neighbor weighting, separate frozen input/output indices and the original-index-excluding candidate search.
+- Independent digest-verified PE constant reads supplement retained REA evidence; no new REA provider session was started. Native executable allocation was released, the bounded numerical probe exited and its exact PID was verified absent.
+- Targeted Prettier and `git diff --check`: passed.
+- Live preview returned HTTP 200. Bundle `scanforge-0252d3aa394134e3` is unchanged because this computational component is not yet bound to reconstruction UI; no browser draft was reset.
+- Fallback direction/strength production, full cache/worker lifecycle, quad/NURBS generation, native application workflow parity and physical SpaceMouse validation remain incomplete or unverified.
