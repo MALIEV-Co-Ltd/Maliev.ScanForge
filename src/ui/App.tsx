@@ -216,6 +216,8 @@ export function App() {
   const operationLabel = useRef<string | null>(null);
   const viewportHost = useRef<HTMLDivElement>(null);
   const viewport = useRef<Viewport | null>(null);
+  // Consume after geometry upload, avoiding animation-frame races on import.
+  const pendingImportFit = useRef<string | null | undefined>(undefined);
   const cad = useRef<CadClient | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const modeRef = useRef(mode);
@@ -353,6 +355,10 @@ export function App() {
   }, [spaceMousePreferences]);
   useEffect(() => {
     viewport.current?.setEntities(entities, selectedId);
+    if (pendingImportFit.current !== undefined) {
+      viewport.current?.fitView(pendingImportFit.current ?? undefined);
+      pendingImportFit.current = undefined;
+    }
   }, [entities, selectedId]);
   useEffect(() => {
     viewport.current?.setWireframe(wireframe);
@@ -820,6 +826,7 @@ export function App() {
           cad.current?.dispose();
           cad.current = restoredCad;
           knownKernelIds.current = new Set();
+          pendingImportFit.current = null;
           setEntities(restored);
           setSelectedId(restored[0]?.id ?? null);
           setName(project.name);
@@ -887,14 +894,12 @@ export function App() {
             scanSource,
           };
         }
+        pendingImportFit.current = entity.id;
         commit([...entities, entity]);
         setSelectedId(entity.id);
       }
       setMessage(
         `Opened ${file.name} · assumed millimetres for unitless scans`,
-      );
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => viewport.current?.fitView()),
       );
     });
   }

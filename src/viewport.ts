@@ -539,16 +539,26 @@ export class Viewport {
     this.invalidate();
   }
 
-  fitView(): void {
-    const center = this.bounds.isEmpty()
+  fitView(entityId?: string): void {
+    const item = entityId ? this.objects.get(entityId) : undefined;
+    if (entityId && !item) return;
+    const bounds = item
+      ? new THREE.Box3().setFromObject(item.mesh)
+      : this.bounds;
+    const extent = bounds.isEmpty()
+      ? this.extent
+      : Math.max(...bounds.getSize(new THREE.Vector3()).toArray(), 0.00001);
+    const center = bounds.isEmpty()
       ? new THREE.Vector3()
-      : this.bounds.getCenter(new THREE.Vector3());
+      : bounds.getCenter(new THREE.Vector3());
     const direction = this.camera.position
       .clone()
       .sub(this.controls.target)
       .normalize();
     if (direction.lengthSq() === 0) direction.set(1, -1, 0.8).normalize();
-    const radius = this.extent / 2;
+    const radius = bounds.isEmpty()
+      ? extent / 2
+      : Math.max(bounds.getBoundingSphere(new THREE.Sphere()).radius, 0.00001);
     const vertical = THREE.MathUtils.degToRad(this.camera.fov) / 2;
     const horizontal = Math.atan(Math.tan(vertical) * this.camera.aspect);
     const distance = (radius / Math.sin(Math.min(vertical, horizontal))) * 1.18;
@@ -557,7 +567,7 @@ export class Viewport {
     this.camera.near = Math.max(distance / 10000, 0.00001);
     this.camera.far = Math.max(distance * 100, this.extent * 100);
     this.camera.updateProjectionMatrix();
-    this.controls.minDistance = this.extent * 0.0001;
+    this.controls.minDistance = extent * 0.0001;
     this.controls.maxDistance = distance * 20;
     this.controls.update();
     this.invalidate();
