@@ -26,6 +26,10 @@ export interface SketchToolsProps {
   drawingConstraints?: boolean;
   onDrawingConstraints?: (enabled: boolean) => void;
   onNormalView?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
+  onUndo?: () => void;
+  onRedo?: () => void;
   showControlPoints?: boolean;
   onShowControlPoints?: (enabled: boolean) => void;
   showMeshPoints?: boolean;
@@ -49,6 +53,10 @@ export function SketchTools({
   drawingConstraints = true,
   onDrawingConstraints,
   onNormalView,
+  canUndo = false,
+  canRedo = false,
+  onUndo,
+  onRedo,
   showControlPoints = true,
   onShowControlPoints,
   showMeshPoints = true,
@@ -201,6 +209,12 @@ export function SketchTools({
               </button>
             ))}
             <button onClick={onNormalView}>Normal to sketch</button>
+            <button disabled={disabled || !canUndo} onClick={onUndo}>
+              Undo sketch edit
+            </button>
+            <button disabled={disabled || !canRedo} onClick={onRedo}>
+              Redo sketch edit
+            </button>
           </div>
           <label className="check">
             <input

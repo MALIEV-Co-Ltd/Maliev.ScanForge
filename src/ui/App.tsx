@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
+import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import {
   referenceWorldSegments,
@@ -153,6 +154,7 @@ export function App() {
   const [workspace, setWorkspace] = useState("measure");
   const [savedSketches, setSavedSketches] = useState<SavedSketch[]>([]);
   const [activeSketchId, setActiveSketchId] = useState<string | null>(null);
+  const sketchUndoSessions = useRef(new Map<string, SketchUndo>());
   const [sketchDrawingTool, setSketchDrawingTool] =
     useState<SketchDrawingTool>("navigate");
   const [sketchDrawingConstraints, setSketchDrawingConstraints] =
@@ -864,7 +866,9 @@ export function App() {
     if (command && (key === "z" || key === "y")) {
       event.preventDefault();
       const repeat = key === "y" || event.shiftKey;
-      if (mode === "brush") selectionUndo(repeat);
+      if (workspace === "sketch" && toolPanelOpen && !createSketch)
+        sketchUndo(repeat);
+      else if (mode === "brush") selectionUndo(repeat);
       else if (repeat) redo();
       else undo();
     }
@@ -1182,6 +1186,7 @@ export function App() {
   }
   function newDocument() {
     if (busy) return;
+    sketchUndoSessions.current.clear();
     cancelSketchCreation();
     setSavedSketches([]);
     setActiveSketchId(null);
@@ -1257,6 +1262,7 @@ export function App() {
               : (restored[0]?.id ?? null),
           );
           setName(project.name);
+          sketchUndoSessions.current.clear();
           setSavedSketches(project.authoring?.sketches ?? []);
           legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
           setActiveSketchId(project.authoring?.activeSketchId ?? null);
@@ -1757,6 +1763,27 @@ export function App() {
     );
   }
   function updateSketchDraft(sketch: Sketch) {
+    const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
+    let session = sketchUndoSessions.current.get(key);
+    if (!session) {
+      session = new SketchUndo();
+      sketchUndoSessions.current.set(key, session);
+    }
+    session.record(sketchDraft, sketch);
+    applySketchDraft(sketch);
+  }
+  function sketchUndo(repeat = false) {
+    if (busy) return;
+    const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
+    const session = sketchUndoSessions.current.get(key);
+    const sketch = repeat
+      ? session?.redo(sketchDraft)
+      : session?.undo(sketchDraft);
+    if (!sketch) return;
+    applySketchDraft(sketch);
+    setMessage(repeat ? "Sketch edit reapplied" : "Sketch edit undone");
+  }
+  function applySketchDraft(sketch: Sketch) {
     setError("");
     setSketchDraft(sketch);
     if (!activeSketchId) legacySketch.current = sketch;
@@ -2226,7 +2253,9 @@ export function App() {
                 ? "Object actions"
                 : contextMenu.kind === "history"
                   ? "History actions"
-                  : "Viewport selection actions"
+                  : workspace === "sketch" && toolPanelOpen && !createSketch
+                    ? "Sketch actions"
+                    : "Viewport selection actions"
           }
           onClose={closeContextMenu}
           actions={
@@ -2322,108 +2351,139 @@ export function App() {
                       },
                       { label: "Close menu", run: () => {} },
                     ]
-                  : [
-                      {
-                        label: "Fit visible objects",
-                        disabled: busy,
-                        run: () => viewport.current?.fitView(),
-                      },
-                      {
-                        label: "Object properties",
-                        disabled: busy || !selected,
-                        run: () => showTools("properties"),
-                      },
-                      {
-                        label: "Edit scan selection",
-                        disabled: busy || !selected,
-                        run: () => {
-                          setMode("brush");
-                          setWorkspace("mesh");
-                          setToolPanelOpen(true);
+                  : workspace === "sketch" && toolPanelOpen && !createSketch
+                    ? [
+                        {
+                          label: "Undo",
+                          disabled:
+                            busy ||
+                            !sketchUndoSessions.current.get(
+                              activeSketchId
+                                ? `saved:${activeSketchId}`
+                                : "legacy",
+                            )?.canUndo,
+                          run: () => sketchUndo(),
                         },
-                      },
-                      {
-                        label: "Select all triangles",
-                        disabled: busy || !selected,
-                        run: () => {
-                          if (selected)
-                            changeSelection(
-                              new Uint8Array(
-                                selected.positions.length / 9,
-                              ).fill(1),
-                            );
+                        {
+                          label: "Redo",
+                          disabled:
+                            busy ||
+                            !sketchUndoSessions.current.get(
+                              activeSketchId
+                                ? `saved:${activeSketchId}`
+                                : "legacy",
+                            )?.canRedo,
+                          run: () => sketchUndo(true),
                         },
-                      },
-                      {
-                        label: "Invert triangle selection",
-                        disabled: busy || !selected,
-                        run: () => {
-                          if (selected)
-                            changeSelection(
-                              Uint8Array.from(
-                                { length: selected.positions.length / 9 },
-                                (_, i) => (triangleMask?.[i] ? 0 : 1),
-                              ),
-                            );
+                        {
+                          label: "Normal to sketch",
+                          disabled: busy,
+                          run: () => viewport.current?.viewSketchNormal(),
                         },
-                      },
-                      {
-                        label: "Hide selected triangles",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => selectionVisibility("hide"),
-                      },
-                      {
-                        label: "Isolate selected triangles",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => selectionVisibility("isolate"),
-                      },
-                      {
-                        label: "Show hidden triangles",
-                        disabled:
-                          busy || !selected?.meshSelection?.hidden.length,
-                        run: () => selectionVisibility("reveal"),
-                      },
-                      {
-                        label: "Undo selection",
-                        disabled: busy || !selectionSession?.canUndo,
-                        run: () => selectionUndo(),
-                      },
-                      {
-                        label: "Redo selection",
-                        disabled: busy || !selectionSession?.canRedo,
-                        run: () => selectionUndo(true),
-                      },
-                      {
-                        label: "Save selection",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => {
-                          setMode("brush");
-                          setWorkspace("mesh");
-                          setToolPanelOpen(true);
+                        { label: "Close menu", run: () => {} },
+                      ]
+                    : [
+                        {
+                          label: "Fit visible objects",
+                          disabled: busy,
+                          run: () => viewport.current?.fitView(),
                         },
-                      },
-                      {
-                        label: "Clear triangle selection",
-                        disabled: busy,
-                        run: () => changeSelection(null),
-                      },
-                      {
-                        label: "Copy selected triangles",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => editSelection("copy"),
-                      },
-                      {
-                        label: "Cut selected triangles",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => editSelection("cut"),
-                      },
-                      {
-                        label: "Delete selected triangles",
-                        disabled: busy || !selectedTriangleCount,
-                        run: () => editSelection("delete"),
-                      },
-                      { label: "Close menu", run: () => {} },
-                    ]
+                        {
+                          label: "Object properties",
+                          disabled: busy || !selected,
+                          run: () => showTools("properties"),
+                        },
+                        {
+                          label: "Edit scan selection",
+                          disabled: busy || !selected,
+                          run: () => {
+                            setMode("brush");
+                            setWorkspace("mesh");
+                            setToolPanelOpen(true);
+                          },
+                        },
+                        {
+                          label: "Select all triangles",
+                          disabled: busy || !selected,
+                          run: () => {
+                            if (selected)
+                              changeSelection(
+                                new Uint8Array(
+                                  selected.positions.length / 9,
+                                ).fill(1),
+                              );
+                          },
+                        },
+                        {
+                          label: "Invert triangle selection",
+                          disabled: busy || !selected,
+                          run: () => {
+                            if (selected)
+                              changeSelection(
+                                Uint8Array.from(
+                                  { length: selected.positions.length / 9 },
+                                  (_, i) => (triangleMask?.[i] ? 0 : 1),
+                                ),
+                              );
+                          },
+                        },
+                        {
+                          label: "Hide selected triangles",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => selectionVisibility("hide"),
+                        },
+                        {
+                          label: "Isolate selected triangles",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => selectionVisibility("isolate"),
+                        },
+                        {
+                          label: "Show hidden triangles",
+                          disabled:
+                            busy || !selected?.meshSelection?.hidden.length,
+                          run: () => selectionVisibility("reveal"),
+                        },
+                        {
+                          label: "Undo selection",
+                          disabled: busy || !selectionSession?.canUndo,
+                          run: () => selectionUndo(),
+                        },
+                        {
+                          label: "Redo selection",
+                          disabled: busy || !selectionSession?.canRedo,
+                          run: () => selectionUndo(true),
+                        },
+                        {
+                          label: "Save selection",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => {
+                            setMode("brush");
+                            setWorkspace("mesh");
+                            setToolPanelOpen(true);
+                          },
+                        },
+                        {
+                          label: "Clear triangle selection",
+                          disabled: busy,
+                          run: () => changeSelection(null),
+                        },
+                        {
+                          label: "Copy selected triangles",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => editSelection("copy"),
+                        },
+                        {
+                          label: "Cut selected triangles",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => editSelection("cut"),
+                        },
+                        {
+                          label: "Delete selected triangles",
+                          disabled: busy || !selectedTriangleCount,
+                          run: () => editSelection("delete"),
+                        },
+                        { label: "Close menu", run: () => {} },
+                      ]
           }
         />
       )}
@@ -2585,6 +2645,7 @@ export function App() {
                     <button
                       aria-label={`Delete ${item.name}`}
                       onClick={() => {
+                        sketchUndoSessions.current.delete(`saved:${item.id}`);
                         setSavedSketches((previous) =>
                           previous.filter((s) => s.id !== item.id),
                         );
@@ -3303,6 +3364,18 @@ export function App() {
                   drawingConstraints={sketchDrawingConstraints}
                   onDrawingConstraints={setSketchDrawingConstraints}
                   onNormalView={() => viewport.current?.viewSketchNormal()}
+                  canUndo={
+                    sketchUndoSessions.current.get(
+                      activeSketchId ? `saved:${activeSketchId}` : "legacy",
+                    )?.canUndo
+                  }
+                  canRedo={
+                    sketchUndoSessions.current.get(
+                      activeSketchId ? `saved:${activeSketchId}` : "legacy",
+                    )?.canRedo
+                  }
+                  onUndo={() => sketchUndo()}
+                  onRedo={() => sketchUndo(true)}
                   showControlPoints={sketchControlPoints}
                   onShowControlPoints={setSketchControlPoints}
                   showMeshPoints={sketchMeshPoints}
