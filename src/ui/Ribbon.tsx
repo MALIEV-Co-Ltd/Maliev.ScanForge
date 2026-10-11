@@ -1,4 +1,4 @@
-import { useId, useRef, type KeyboardEvent } from "react";
+import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
 import {
   AlignCenter,
   ArrowUpFromLine,
@@ -77,12 +77,14 @@ export interface RibbonProps extends RibbonState {
   activeTab: string;
   onTabChange: (id: string) => void;
   actions: RibbonActions;
+  utilityHeader?: ReactNode;
 }
 
 export function Ribbon({
   activeTab,
   onTabChange,
   actions,
+  utilityHeader,
   ...state
 }: RibbonProps) {
   const instance = useId();
@@ -110,30 +112,42 @@ export function Ribbon({
   }
   return (
     <section className="ribbon" aria-label="Workspace commands">
-      <div
-        className="ribbon-tabs"
-        role="tablist"
-        aria-label="Command categories"
-      >
-        {RIBBON_TABS.map((tab, index) => (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            ref={(element) => {
-              tabButtons.current[index] = element;
-            }}
-            id={`${instance}-tab-${tab.id}`}
-            aria-controls={`${instance}-panel-${tab.id}`}
-            aria-selected={active.id === tab.id}
-            tabIndex={active.id === tab.id ? 0 : -1}
-            className={active.id === tab.id ? "active" : undefined}
-            onClick={() => onTabChange(tab.id)}
-            onKeyDown={(event) => navigateTabs(event, index)}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="ribbon-tab-row">
+        <div
+          className="ribbon-tabs"
+          role="tablist"
+          aria-label="Command categories"
+        >
+          {RIBBON_TABS.map((tab, index) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              ref={(element) => {
+                tabButtons.current[index] = element;
+              }}
+              id={`${instance}-tab-${tab.id}`}
+              aria-controls={`${instance}-panel-${tab.id}`}
+              aria-selected={active.id === tab.id}
+              tabIndex={active.id === tab.id ? 0 : -1}
+              className={active.id === tab.id ? "active" : undefined}
+              onClick={() => onTabChange(tab.id)}
+              onKeyDown={(event) => navigateTabs(event, index)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        {utilityHeader && (
+          <div className="header-reveal">
+            <button
+              className="header-reveal-trigger"
+              aria-label="Show project actions"
+              type="button"
+            />
+            {utilityHeader}
+          </div>
+        )}
       </div>
       <div
         className="ribbon-tools"

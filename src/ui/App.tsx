@@ -1440,60 +1440,64 @@ export function App() {
         if (file && !busy) void openFile(file);
       }}
     >
-      <header className="header">
-        <div className="brand">
-          <div className="brand-mark">SF</div>
-          <div className="brand-copy">
-            <span>ScanForge</span>
-            <small>SCAN TO CAD · 0.1</small>
-          </div>
-        </div>
-        <div className="header-actions">
-          <button
-            title="Undo"
-            aria-label="Undo"
-            disabled={busy || !history.length}
-            onClick={undo}
-          >
-            <Undo2 size={16} />
-          </button>
-          <button
-            title="Redo"
-            aria-label="Redo"
-            disabled={busy || !future.length}
-            onClick={redo}
-          >
-            <Redo2 size={16} />
-          </button>
-          <button disabled={busy} onClick={() => fileInput.current?.click()}>
-            <FolderOpen size={17} />
-            Open scan
-          </button>
-          <button disabled={busy} onClick={save}>
-            <Save size={17} />
-            Save project
-          </button>
-          <button disabled={busy} onClick={exportStep}>
-            <Download size={17} />
-            Export STEP
-          </button>
-          <button
-            aria-label="Object properties"
-            title="Object properties"
-            onClick={() => setToolPanelOpen(!toolPanelOpen)}
-          >
-            <Crosshair size={17} />
-          </button>
-          <button
-            aria-label="Settings"
-            title="Settings"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <Settings size={17} />
-          </button>
-        </div>
-      </header>
       <Ribbon
+        utilityHeader={
+          <header className="header">
+            <div className="brand">
+              <div className="brand-copy">
+                <span>ScanForge</span>
+                <small>SCAN TO CAD · 0.1</small>
+              </div>
+            </div>
+            <div className="header-actions">
+              <button
+                title="Undo"
+                aria-label="Undo"
+                disabled={busy || !history.length}
+                onClick={undo}
+              >
+                <Undo2 size={16} />
+              </button>
+              <button
+                title="Redo"
+                aria-label="Redo"
+                disabled={busy || !future.length}
+                onClick={redo}
+              >
+                <Redo2 size={16} />
+              </button>
+              <button
+                disabled={busy}
+                onClick={() => fileInput.current?.click()}
+              >
+                <FolderOpen size={17} />
+                Open scan
+              </button>
+              <button disabled={busy} onClick={save}>
+                <Save size={17} />
+                Save project
+              </button>
+              <button disabled={busy} onClick={exportStep}>
+                <Download size={17} />
+                Export STEP
+              </button>
+              <button
+                aria-label="Object properties"
+                title="Object properties"
+                onClick={() => setToolPanelOpen(!toolPanelOpen)}
+              >
+                <Crosshair size={17} />
+              </button>
+              <button
+                aria-label="Settings"
+                title="Settings"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <Settings size={17} />
+              </button>
+            </div>
+          </header>
+        }
         activeTab={ribbonTab}
         onTabChange={setRibbonTab}
         disabled={busy}

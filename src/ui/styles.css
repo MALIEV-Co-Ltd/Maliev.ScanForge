@@ -920,17 +920,6 @@ dd {
   gap: 10px;
   align-items: center;
 }
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  background: var(--accent);
-  color: var(--surface);
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 2px;
-}
 .brand-copy {
   display: flex;
   flex-direction: column;
@@ -1551,4 +1540,64 @@ dd {
 .saved-selection-list button {
   font-size: 11px;
   padding: 3px 5px;
+}
+
+/* Reveal project actions only from the top edge after the category tabs. */
+.ribbon-tab-row {
+  display: flex;
+  position: relative;
+}
+.ribbon-tab-row .ribbon-tabs {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.header-reveal {
+  flex: 1 0 32px;
+  position: relative;
+}
+.header-reveal-trigger {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 6px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.header-reveal .header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 40;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  height: auto;
+  min-height: 44px;
+  padding: 6px 12px;
+  gap: 18px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px #0003;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.header-reveal:has(.header-reveal-trigger:hover) .header,
+.header-reveal:focus-within .header,
+.header-reveal .header:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.header-reveal .header-actions {
+  width: auto;
+  flex-wrap: wrap;
+}
+@media (hover: none) {
+  .header-reveal-trigger {
+    height: 100%;
+  }
 }

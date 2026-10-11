@@ -180,3 +180,9 @@ REA 6.4.0 re-inspected the retained native bundle (three records; existing overv
 - Final visible preview: 100 selected, 1,352 hidden, saved child and zero model steps; no captured browser warning/error logs. Screenshot: `.resources/screenshots/selection-state-menu.png`. Existing user project tabs were preserved. A stale test preview after server restart was explicitly refreshed before final menu validation.
 
 One build attempt was refused at 1,368 MiB by the unchanged 1,536 MiB memory guard; later builds were admitted after capacity rose. The previous preview expired and exited before its replacement started; an earlier duplicate launch was refused by strict port binding and exited. The replacement is loopback-only with a two-hour lease. Native CAD smoke was not rerun because no kernel contract changed. No new gigabyte topology or physical SpaceMouse run occurred. Complete original context-menu parity remains unverified; INPUT_INTERACTION.md lists unresolved operations and export semantics.
+
+## Auto-hidden project header — 2026-10-11
+
+Removed the SF mark and moved the project header into a floating ribbon slot. The pointer trigger occupies only the six-pixel top edge of the blank space after Help; tabs retain their own row. Keyboard focus also reveals the controls.
+
+Validation: `npm run build` passed with zero warnings/errors and 25 offline assets; `npm test` passed 200 tests in 27 files; Prettier and `git diff --check` passed. Browser checks verified hidden initial state, no reveal over Help, reveal over the top edge after Help, retention over the actions, dismissal when leaving, keyboard access to Open scan and dismissal after focusing a tab. The mark is absent from the DOM. Screenshots remain in ignored local evidence. The isolated test tab was closed; existing user tabs and unsaved projects were preserved. The existing loopback preview process was re-observed and retained within its finite lease.
