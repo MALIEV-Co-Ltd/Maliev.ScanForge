@@ -1673,18 +1673,21 @@ dd {
 .header-reveal .header {
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
   z-index: 40;
-  width: max-content;
-  max-width: calc(100vw - 16px);
+  width: 100%;
+  max-width: none;
   height: auto;
-  min-height: 44px;
-  padding: 6px 12px;
+  min-height: 100%;
+  padding: 2px 12px;
   gap: 18px;
+  justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 24px #0003;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1699,6 +1702,15 @@ dd {
 .header-reveal .header-actions {
   width: auto;
   flex-wrap: wrap;
+}
+@media (max-width: 1050px) {
+  .header-reveal {
+    position: static;
+  }
+  .header-reveal-trigger {
+    position: relative;
+    display: block;
+  }
 }
 @media (hover: none) {
   .header-reveal-trigger {
