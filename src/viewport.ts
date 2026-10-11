@@ -102,11 +102,11 @@ export class Viewport {
     this.controls.dampingFactor = 0.12;
     this.controls.screenSpacePanning = true;
     this.controls.addEventListener("change", this.invalidate);
-    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x6b7d86, 2.1));
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.1));
     const key = new THREE.DirectionalLight(0xffffff, 3);
     key.position.set(120, -140, 220);
     this.scene.add(key);
-    const fill = new THREE.DirectionalLight(0xd8eeff, 1.4);
+    const fill = new THREE.DirectionalLight(0xffffff, 1.4);
     fill.position.set(-120, 80, 50);
     this.scene.add(fill);
     this.grid = new THREE.GridHelper(400, 20, "#a7b6bd", "#d0dadf");

@@ -1,3 +1,4 @@
+import { DEFAULT_PART_COLOR } from "./appearance";
 import * as THREE from "three";
 import { geometryPositions } from "./io";
 import type { Entity } from "./types";
@@ -43,7 +44,7 @@ export function demonstrationBracket(): Entity {
       name: "Demonstration bracket",
       kind: "mesh",
       positions: [...geometryPositions(a), ...geometryPositions(b)],
-      color: "#5b9ed9",
+      color: DEFAULT_PART_COLOR,
       visible: true,
       opacity: 1,
       source: "Synthetic example · millimetres",

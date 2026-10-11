@@ -45,6 +45,51 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("clones selection seeds and transfers the actual worker result mask", async () => {
+    const seeds = new Uint8Array([1]);
+    const pending = processMesh({
+      kind: "connectedSelection",
+      positions,
+      seeds,
+      tolerance: 0.001,
+      angleDegrees: 30,
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.transfers).toHaveLength(2);
+    expect((worker.sent as { seeds: Uint8Array }).seeds).not.toBe(seeds);
+    worker.reply({
+      result: {
+        kind: "connectedSelection",
+        selection: new Uint8Array([1]),
+        diagnostics: { selectedTriangles: 1 },
+      },
+    });
+    expect((await pending).selection).toEqual(seeds);
+    expect(worker.terminated).toBe(true);
+    const replies: { message: unknown; transfers?: Transferable[] }[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: ProcessingRequest }) => void) | null,
+      postMessage: (message: unknown, transfers?: Transferable[]) =>
+        replies.push({ message, transfers }),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "connectedSelection",
+        positions,
+        seeds,
+        tolerance: 0.001,
+        angleDegrees: 30,
+      },
+    });
+    const final = replies.at(-1)!;
+    const result = (final.message as { result: ProcessingResult }).result;
+    expect(result.selection).toEqual(seeds);
+    expect(final.transfers).toEqual([result.selection!.buffer]);
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("transfers cloned input while preserving the scene buffer and releases the successful worker", async () => {
     const pending = processMesh(request);
     const worker = ProcessingWorkerDouble.latest;

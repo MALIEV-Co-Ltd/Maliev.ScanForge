@@ -138,3 +138,13 @@ REA portable resource evidence was refreshed; native handler/solver recovery rem
 - SpaceMouse synthetic HID/camera coverage passed. Chrome reported secure context and WebHID with no authorized devices; Windows exposed only the KMJ emulator. Physical hardware navigation remains unverified.
 
 Local screenshots: `.resources/screenshots/parametric-reopen-browser.png` and `.resources/screenshots/gigabyte-closed-workflows.png`. Disposable scan fixtures and exited helpers are cleaned; the requested loopback preview has a finite recorded lease. REA recovered one numeric wrapper's ownership behavior only, as recorded in FEATURE_EVIDENCE.md. General automatic closed-scan reconstruction, persistent topology naming, arbitrary self-intersection repair and complete application equivalence remain unresolved.
+
+## CAD gray, connected selection and DXF — 2026-10-11
+
+Newly imported/created parts, including the demonstration, segmented and split outputs, use the shared neutral CAD-gray default. Neutral hemisphere/fill lighting removes the previous blue cast. Existing saved colors remain unchanged. Dark interface shades remain monochrome.
+
+- Strict TypeScript/Vite production build passed without warnings/errors; 25 offline assets. Unit suite: 164 tests in 22 files. New manufactured tests cover coplanar region growth, reversed winding, creases, vertex-only contacts, ambiguous edges, mask validation and cancellation. Worker contract tests verify seed cloning, result-buffer transfer and worker disposal. DXF tests validate units, world endpoints, unique handles, actual section intersections and invalid/zero-length geometry.
+- Browser gray material value was `#a6a6a6`. A 33-triangle brush seed grew to 200 triangles at a 5-degree local threshold. Copy created a 200-triangle object, and Undo restored the original scene. Result geometry remains unchanged by selection growth.
+- Browser cross section reported 128 segments and 152 mm length. DXF control completed the application export path. The browser download event timed out, so a browser-saved file or third-party CAD import is not claimed. Generated DXF content is verified by automated tests. It represents tessellated LINE entities, not fitted analytic curves.
+
+No native CAD kernel contract changed in this slice; kernel smoke is not rerun locally. General reconstruction, persistent topology naming, arbitrary intersection repair, screen lasso and arbitrary sketch-plane features remain unresolved. Full-size gigabyte rendering and physical SpaceMouse evidence retain their previously documented limits.

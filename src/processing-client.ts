@@ -4,6 +4,13 @@ import type { RegionClassification } from "./mesh-processing";
 import type { MeshSheetDiagnostics } from "./mesh-processing";
 
 export type ProcessingRequest =
+  | {
+      kind: "connectedSelection";
+      positions: Positions;
+      seeds: Uint8Array;
+      tolerance: number;
+      angleDegrees: number;
+    }
   | { kind: "report"; positions: Positions; tolerance: number }
   | {
       kind: "repair";
@@ -59,6 +66,7 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  selection?: Uint8Array;
   kind: ProcessingRequest["kind"];
   positions?: Float32Array;
   segments?: Float32Array[];
@@ -189,6 +197,10 @@ export function processMesh(
               target: clone(request.target),
             }
           : { ...request, positions: clone(request.positions) };
+      if (copied.kind === "connectedSelection") {
+        copied.seeds = new Uint8Array(copied.seeds);
+        transfers.push(copied.seeds.buffer);
+      }
       worker.postMessage(copied, transfers);
     } catch (error) {
       fail(error);

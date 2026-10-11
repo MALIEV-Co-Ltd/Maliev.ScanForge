@@ -1,3 +1,4 @@
+import { growConnectedSelection } from "./connected-selection";
 import {
   analyzeMesh,
   classifyRegion,
@@ -50,7 +51,21 @@ scope.onmessage = ({ data: request }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "report")
+    if (request.kind === "connectedSelection") {
+      result.selection = growConnectedSelection(
+        request.positions,
+        request.seeds,
+        {
+          tolerance: request.tolerance,
+          angleDegrees: request.angleDegrees,
+          onProgress: progress,
+        },
+      );
+      result.diagnostics.selectedTriangles = result.selection.reduce(
+        (count, value) => count + value,
+        0,
+      );
+    } else if (request.kind === "report")
       result.topology = summarize(
         analyzeMesh(request.positions, {
           tolerance: request.tolerance,
@@ -224,6 +239,7 @@ scope.onmessage = ({ data: request }) => {
       }
     }
     const transfers: Transferable[] = [];
+    if (result.selection) transfers.push(result.selection.buffer);
     if (result.positions) transfers.push(result.positions.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     scope.postMessage({ result }, transfers);

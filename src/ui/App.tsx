@@ -22,6 +22,9 @@ import {
   Undo2,
   X,
 } from "lucide-react";
+import { DEFAULT_PART_COLOR } from "../appearance";
+import { exportSectionDxf } from "../section-dxf";
+import { processMesh } from "../processing-client";
 import { CadClient } from "../cad/client";
 import { changeLabel, type Revision } from "../history";
 import { Ribbon } from "./Ribbon";
@@ -133,6 +136,9 @@ export function App() {
   const [wireframe, setWireframe] = useState(false);
   const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
   const [brushRadius, setBrushRadius] = useState(8);
+  const [selectionAngle, setSelectionAngle] = useState(30);
+  const [selectionTolerance, setSelectionTolerance] = useState(0.001);
+  const selectionAbort = useRef<AbortController | null>(null);
   const [subtractBrush, setSubtractBrush] = useState(false);
   const brushRef = useRef<{
     entity: Entity | undefined;
@@ -253,6 +259,7 @@ export function App() {
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
         importAbort.current?.abort();
+        selectionAbort.current?.abort();
         cad.current?.dispose();
         viewport.current?.dispose();
         void spaceMouse.current
@@ -550,7 +557,7 @@ export function App() {
             name: file.name,
             kind: "cad",
             ...result,
-            color: "#78a8db",
+            color: DEFAULT_PART_COLOR,
             visible: true,
             opacity: 1,
             source: file.name,
@@ -585,7 +592,7 @@ export function App() {
                 : ""),
             kind: "mesh",
             positions,
-            color: "#5b9ed9",
+            color: DEFAULT_PART_COLOR,
             visible: true,
             opacity: 1,
             source: file.name,
@@ -601,6 +608,46 @@ export function App() {
       requestAnimationFrame(() =>
         requestAnimationFrame(() => viewport.current?.fitView()),
       );
+    });
+  }
+  function growSelection() {
+    if (!selected || !triangleMask || !selectedTriangleCount || busy) return;
+    const source = selected;
+    const seeds = new Uint8Array(triangleMask);
+    void action("Growing connected selection…", async () => {
+      const controller = new AbortController();
+      selectionAbort.current = controller;
+      try {
+        const result = await processMesh(
+          {
+            kind: "connectedSelection",
+            positions: source.positions,
+            seeds,
+            tolerance: selectionTolerance,
+            angleDegrees: selectionAngle,
+          },
+          {
+            signal: controller.signal,
+            onProgress: (fraction, stage) =>
+              setMessage(stage + " · " + Math.round(fraction * 100) + "%"),
+          },
+        );
+        if (
+          !result.selection ||
+          result.selection.length !== source.positions.length / 9
+        )
+          throw new Error("Invalid connected selection result.");
+        setTriangleMask(result.selection);
+        setMessage(
+          selectionCount(result.selection) + " connected triangles selected",
+        );
+      } catch (error) {
+        if (controller.signal.aborted)
+          setMessage("Selection cancelled; previous selection retained.");
+        else throw error;
+      } finally {
+        selectionAbort.current = null;
+      }
     });
   }
   function editSelection(operation: "copy" | "cut" | "delete") {
@@ -712,7 +759,7 @@ export function App() {
       name: label,
       kind: input.kind,
       ...result,
-      color: "#78a8db",
+      color: DEFAULT_PART_COLOR,
       visible: true,
       opacity: 0.85,
       parametric: featureBinding(label, { kind: "primitive", input }),
@@ -742,7 +789,7 @@ export function App() {
             name: "Fitted plane reference",
             kind: "plane",
             positions: geometryPositions(geometry),
-            color: "#ffbd65",
+            color: DEFAULT_PART_COLOR,
             visible: true,
             opacity: 0.5,
           };
@@ -823,7 +870,7 @@ export function App() {
         name: `${operation} result`,
         kind: "cad",
         ...result,
-        color: "#78a8db",
+        color: DEFAULT_PART_COLOR,
         visible: true,
         opacity: 1,
         parametric: featureBinding(`${operation} result`, {
@@ -857,7 +904,7 @@ export function App() {
         name: "Polygon extrusion",
         kind: "cad",
         ...result,
-        color: "#78a8db",
+        color: DEFAULT_PART_COLOR,
         visible: true,
         opacity: 1,
         parametric: featureBinding("Polygon extrusion", {
@@ -884,7 +931,7 @@ export function App() {
       name: label,
       kind: "mesh",
       positions,
-      color: "#78a8db",
+      color: DEFAULT_PART_COLOR,
       opacity: 1,
       visible: true,
       surfacePatch,
@@ -926,7 +973,7 @@ export function App() {
         kind: "mesh",
         positions,
         fit: classifications?.[index]?.fit,
-        color: `#${new THREE.Color().setHSL((index * 0.618) % 1, 0.5, 0.58).getHexString()}`,
+        color: DEFAULT_PART_COLOR,
         opacity: 1,
         visible: true,
       }));
@@ -969,7 +1016,7 @@ export function App() {
         id: crypto.randomUUID(),
         name: label.replace(/…$/, ""),
         kind: "cad",
-        color: "#78a8db",
+        color: DEFAULT_PART_COLOR,
         opacity: 1,
         visible: true,
         surfacePatch: patch,
@@ -1079,7 +1126,7 @@ export function App() {
         name: "Revolved solid",
         kind: "cad",
         ...result,
-        color: "#78a8db",
+        color: DEFAULT_PART_COLOR,
         visible: true,
         opacity: 1,
         parametric: featureBinding("Revolved solid", {
@@ -1327,6 +1374,7 @@ export function App() {
                   </button>
                   <button
                     className="object-name"
+                    disabled={busy}
                     onClick={() => setSelectedId(entity.id)}
                   >
                     <span>
@@ -1417,6 +1465,14 @@ export function App() {
               </button>
             </div>
           )}
+          {busy && selectionAbort.current && (
+            <div className="import-progress">
+              <span>{message}</span>
+              <button onClick={() => selectionAbort.current?.abort()}>
+                Cancel connected selection
+              </button>
+            </div>
+          )}
           <div className="view-controls">
             <span>Perspective</span>
             {(["iso", "top", "front", "right"] as const).map((view) => (
@@ -1482,7 +1538,7 @@ export function App() {
           </h2>
           {selected && stats ? (
             <>
-              <div inert={processingBusy}>
+              <div inert={processingBusy || !!selectionAbort.current}>
                 <div className="selected-title">
                   <Triangle size={25} />
                   <div>
@@ -1528,6 +1584,32 @@ export function App() {
                     Subtract from selection
                   </label>
                   <p>{number(selectedTriangleCount)} selected triangles</p>
+                  <Field
+                    label="Connected selection angle (°)"
+                    value={selectionAngle}
+                    min={0}
+                    max={90}
+                    onChange={setSelectionAngle}
+                  />
+                  <Field
+                    label="Selection weld tolerance (mm)"
+                    value={selectionTolerance}
+                    min={0.000001}
+                    step={0.001}
+                    onChange={setSelectionTolerance}
+                  />
+                  <button
+                    disabled={busy || !selectedTriangleCount}
+                    onClick={growSelection}
+                  >
+                    Grow connected selection
+                  </button>
+                  <p className="muted">
+                    Brush a seed first. Growth follows shared manifold edges and
+                    stops at local creases. Winding is ignored; vertex-only
+                    contacts and nonmanifold edges are barriers. Full topology
+                    requires memory proportional to the mesh.
+                  </p>
                   <div className="button-row">
                     <button
                       onClick={() =>
@@ -1740,6 +1822,24 @@ export function App() {
                         }}
                       >
                         Export section CSV
+                      </button>
+                      <button
+                        className="wide"
+                        disabled={busy || !section.segments.length}
+                        onClick={() =>
+                          void action("Exporting section DXF…", () => {
+                            download(
+                              exportSectionDxf(section),
+                              "section.dxf",
+                              "application/dxf",
+                            );
+                            setMessage(
+                              "Cross section exported to DXF · world XYZ millimetres",
+                            );
+                          })
+                        }
+                      >
+                        Export section DXF
                       </button>
                     </>
                   )}
@@ -2011,7 +2111,7 @@ export function App() {
                     id: crypto.randomUUID(),
                     name: `Split ${index === 0 ? "inside" : "outside"}`,
                     kind: "cad",
-                    color: index === 0 ? "#78a8db" : "#d8a36f",
+                    color: DEFAULT_PART_COLOR,
                     visible: true,
                     opacity: 1,
                     parametric: { ...binding, output: index },
