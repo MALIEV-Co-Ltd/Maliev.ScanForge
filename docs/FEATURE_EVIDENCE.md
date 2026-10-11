@@ -237,3 +237,5 @@ This resolves the supplied-graph connection-pool boundary and two geometric inpu
 - Indexed triangle adjacency: implemented the recovered vertex/corner traversal, signed face-edge mapping, sorted endpoints and ordered edge incidence. Seven tests include nonmanifold and degenerate faces and an integration path through normal/frame/angle production. Native runtime comparison, polygon/quad topology, large-browser workflows and UI reconstruction binding remain outstanding.
 
 - Tiny-face normal repair: implemented the recovered mode-2 neighbor-selection and propagation rules with native pass-limit status preserved separately from actual repair counts. Nine tests include indexed scan geometry through recovered cache/adjacency/repair. UI binding, native runtime comparison and large-browser workflows remain unverified.
+
+- Default field constraints: implemented inclusive fixed-strength classification, first-face fallback and ordered supplied symmetry transfers, preserving opaque lane bits and pre-transfer fixed masks. Six focused tests include scan-derived connection-pool integration. Automatic symmetry detection and UI reconstruction binding remain incomplete.
