@@ -2,6 +2,18 @@
 
 `src/field-linear-solver.ts` implements the recovered active-support conjugate-gradient recurrence and optional inverse-diagonal scaling. It is a numerical component for the reconstruction pipeline under investigation. It is not connected to the freeform command, and does not assemble geometric equations, fix integer variables or generate patches/topology.
 
+`src/field-system-assembly.ts` now supplies the recovered connection equations to this solver. Its graph, fixed values, integer quarter-turns, anchor classification and global connection weight remain explicit caller inputs. It does not infer any of them from a scan. The native producer and UI option mapping remain unrecovered.
+
+## Connection assembly
+
+For a connection from node L to node R, weight w adds w to both free diagonals and -w to the paired free off-diagonals. A fixed neighbor instead contributes its angle times w to the free node's right-hand side. For L, the transported angle times w is added and the integer quarter-turn count times w times float pi/2 is subtracted; R uses the opposite signs. Transported angles use float precision, while accumulation uses double precision. The quarter-turn constant is 1.5707963705062866.
+
+Anchor strengths use float precision. Only strengths strictly above float 0.000002 contribute to a free node: strength goes on its diagonal, and strength times the supplied target angle goes on its right-hand side. Fixed nodes are eliminated in ascending node order; their anchors do not affect the remaining system. The browser representation combines repeated matrix entries and sorts column indices. This is an independently authored sparse representation, not native container or bitwise arithmetic equivalence.
+
+The assembled equations are supported by REA evidence `ev_91d61461e811b599c9c2108d3fc1f32b528e09ef018bce814535d8fdc37b55f2`, specifically the row-assembly section of the recovered smoothing solve. No scan classification or weight/default semantics follow from those equations. An unanchored connected component can remain singular; assembly does not certify a unique solution. Do not treat the iterative solver's stopping status as a positive-definiteness certificate.
+
+Six assembly tests cover fixed-neighbor elimination, an oriented chain solved through the iterative component, quarter-turn constants and orientation reversal, the strict anchor cutoff, fixed anchors, repeated connections, sorted sparse entries, explicit zero rows and invalid/overflowing input. These are synthetic numerical tests, not a full scan-to-surface workflow.
+
 ## Input and ownership
 
 The caller supplies a full symmetric positive-definite matrix as sparse rows (`offsets`, `indices`, `coefficients`), a right-hand side, an initial solution and unique residual seed indices. Symmetry and positive-definiteness are caller preconditions, not certificates produced by this component. Missing or zero diagonal entries use scaling one. Recovered scaling lookup semantics for duplicate diagonal entries are unresolved; callers should supply unique matrix entries.
