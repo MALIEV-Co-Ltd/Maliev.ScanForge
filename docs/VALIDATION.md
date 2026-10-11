@@ -463,3 +463,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Twenty additional cases cover native gates/state preservation, independent returned state, context/embedded area distinction, multi-part cap gating, required-cache rejection, signed input guards and integration into the radius schedule.
 - Bounded probe executable memory and all owned vectors were released, and its exact PID was absent. Existing preview remained HTTP 200 under its recorded finite lease; the browser bundle remains unchanged because these recovered components are not yet bound to reconstruction UI.
 - Cache/partition/thread lifecycle, downstream field/quad/NURBS reconstruction and full UI/feature parity remain incomplete.
+
+### Recovered curvature boundary direction constraints - 2026-10-12
+
+- `npm run build`: TypeScript and Vite passed with zero warnings/errors after correcting test-fixture types; offline manifest regenerated.
+- `npx vitest run tests/field-curvature-boundary.test.ts tests/field-curvature-constrained.test.ts tests/field-curvature-fallback.test.ts --maxWorkers=1`: 196 passed in 3 files.
+- `npm test`: 1,981 passed in 88 files.
+- All 72 original classifier/direction-function captures match ordered classification arrays, face directions and exact flag replacement. Native functions use owned populated cache headers/preallocated capacity and a supplied cache-valid query stub; cache construction, capacity growth and application workflows remain outside comparison scope.
+- Eight additional cases cover edge-incidence boundaries, last-write order, exact flag assignment, independent outputs, invalid dimensions/references and folded-mesh boundary-to-constrained-direction integration with fixed strength preservation.
+- The bounded probe released executable memory and its exact PID was absent. Existing loopback preview remained HTTP 200 under its finite recorded lease; no UI-bound bundle change occurred in this component slice.
+- Cache/constraint initialization, alternate direction mode, partition/thread lifecycle, downstream field/quad/NURBS reconstruction and full UI/feature parity remain incomplete.
