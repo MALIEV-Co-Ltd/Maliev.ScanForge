@@ -157,3 +157,14 @@ No native CAD kernel contract changed in this slice; kernel smoke is not rerun l
 - Source geometry is preserved; the BVH uses indirect triangle indices. Selection-cache disposal accompanies geometry/object/viewport disposal. Visible mode checks only selected-mesh self-occlusion at triangle centroids. Edge-only inclusion and other-object occlusion are not implemented. Acceleration construction and screen scans remain synchronous and are not validated on the full gigabyte source.
 
 Screenshot retained locally as `.resources/screenshots/mouse-selection-workflows.png`. No native kernel contract changed; the kernel smoke was not rerun in this slice. No new gigabyte import or physical SpaceMouse check was performed. Their existing limits remain unchanged. INPUT_INTERACTION.md lists unfinished selection/navigation operations and the unrecovered original handler boundary.
+
+## Context menus and preview freshness — 2026-10-11
+
+The user's existing in-app tab still displayed an earlier build (world-space brush radius and right-drag navigation), with an imported scan and unsaved changes. It was preserved without reloading. A separate current in-app preview was opened. This explains absence of the new viewport menu in the observed old tab; cache or hot-reload failure was not independently established.
+
+Context menus now cover the viewport, object rows and model history. Actions reuse existing selection, visibility, deletion, dependency validation and revision handlers. A shared body portal prevents panel clipping; measured bounds clamp menu placement to the window. Menus focus enabled actions, support Arrow/Home/End, restore focus, and dismiss on Escape, outside pointer input, Tab, resize or an action. Mutation actions are disabled while processing. Exact original menu equivalence remains unverified.
+
+- Production build passed strict TypeScript/Vite with zero warnings/errors; 25 offline assets.
+- Unit suite: 172 tests in 25 files, including placement and enabled-action keyboard traversal.
+- In-app browser: right-click opened object, history and viewport menus. Hide produced a history step; Restore returned the visible original; viewport Select All then Copy created a 1,452-triangle second object and one undo step. Undo restored the single object. ArrowDown focus, Escape and outside-click dismissal passed. No captured warning/error console entries.
+- Screenshot: ignored `.resources/screenshots/context-menu-in-app.png`. Existing unsaved scan tab remains intact. No native kernel contract changed and its smoke was not rerun.

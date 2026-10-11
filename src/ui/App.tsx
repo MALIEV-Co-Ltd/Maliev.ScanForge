@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
   Box,
@@ -27,6 +27,7 @@ import { exportSectionDxf } from "../section-dxf";
 import { processMesh } from "../processing-client";
 import { CadClient } from "../cad/client";
 import { changeLabel, type Revision } from "../history";
+import { ContextMenu } from "./ContextMenu";
 import { Ribbon } from "./Ribbon";
 import {
   SpaceMouseController,
@@ -139,7 +140,11 @@ export function App() {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
+    kind?: "object" | "history";
+    objectId?: string;
+    revision?: number;
   } | null>(null);
+  const closeContextMenu = useCallback(() => setContextMenu(null), []);
   const wandRef = useRef<(mask: Uint8Array, remove: boolean) => void>(() => {});
   const [selectionAngle, setSelectionAngle] = useState(30);
   const [selectionTolerance, setSelectionTolerance] = useState(0.001);
@@ -270,7 +275,10 @@ export function App() {
         },
         (message) => setError(message),
         (x, y) => {
-          if (!busyRef.current) setContextMenu({ x, y });
+          if (!busyRef.current) {
+            const rect = viewportHost.current!.getBoundingClientRect();
+            setContextMenu({ x: x + rect.left, y: y + rect.top });
+          }
         },
       );
       viewport.current.setTheme(resolveTheme(theme));
@@ -1384,6 +1392,151 @@ export function App() {
           if (file) void openFile(file);
         }}
       />
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          label={
+            contextMenu.kind === "object"
+              ? "Object actions"
+              : contextMenu.kind === "history"
+                ? "History actions"
+                : "Viewport selection actions"
+          }
+          onClose={closeContextMenu}
+          actions={
+            contextMenu.kind === "history"
+              ? [
+                  {
+                    label: "Restore this revision",
+                    disabled:
+                      busy ||
+                      contextMenu.revision === undefined ||
+                      contextMenu.revision >= history.length,
+                    run: () => {
+                      if (contextMenu.revision !== undefined)
+                        restoreRevision(contextMenu.revision);
+                    },
+                  },
+                  {
+                    label: "Undo",
+                    disabled: busy || !history.length,
+                    run: undo,
+                  },
+                  {
+                    label: "Redo",
+                    disabled: busy || !future.length,
+                    run: redo,
+                  },
+                  { label: "Close menu", run: () => {} },
+                ]
+              : contextMenu.kind === "object"
+                ? [
+                    {
+                      label: "Object properties",
+                      disabled: busy,
+                      run: () => setToolPanelOpen(true),
+                    },
+                    {
+                      label: selected?.visible ? "Hide object" : "Show object",
+                      disabled: busy || !selected,
+                      run: () => {
+                        if (selected)
+                          commit(
+                            entities.map((e) =>
+                              e.id === selected.id
+                                ? { ...e, visible: !e.visible }
+                                : e,
+                            ),
+                          );
+                      },
+                    },
+                    {
+                      label: "Edit scan selection",
+                      disabled: busy || !selected || selected.kind !== "mesh",
+                      run: () => {
+                        setMode("brush");
+                        setWorkspace("edit");
+                        setToolPanelOpen(true);
+                      },
+                    },
+                    {
+                      label: "Delete object",
+                      disabled: busy || !selected,
+                      run: deleteSelected,
+                    },
+                    { label: "Close menu", run: () => {} },
+                  ]
+                : [
+                    {
+                      label: "Fit visible objects",
+                      disabled: busy,
+                      run: () => viewport.current?.fitView(),
+                    },
+                    {
+                      label: "Object properties",
+                      disabled: busy || !selected,
+                      run: () => setToolPanelOpen(true),
+                    },
+                    {
+                      label: "Edit scan selection",
+                      disabled: busy || !selected,
+                      run: () => {
+                        setMode("brush");
+                        setWorkspace("edit");
+                        setToolPanelOpen(true);
+                      },
+                    },
+                    {
+                      label: "Select all triangles",
+                      disabled: busy || !selected,
+                      run: () => {
+                        if (selected)
+                          setTriangleMask(
+                            new Uint8Array(selected.positions.length / 9).fill(
+                              1,
+                            ),
+                          );
+                      },
+                    },
+                    {
+                      label: "Invert triangle selection",
+                      disabled: busy || !selected,
+                      run: () => {
+                        if (selected)
+                          setTriangleMask(
+                            Uint8Array.from(
+                              { length: selected.positions.length / 9 },
+                              (_, i) => (triangleMask?.[i] ? 0 : 1),
+                            ),
+                          );
+                      },
+                    },
+                    {
+                      label: "Clear triangle selection",
+                      disabled: busy,
+                      run: () => setTriangleMask(null),
+                    },
+                    {
+                      label: "Copy selected triangles",
+                      disabled: busy || !selectedTriangleCount,
+                      run: () => editSelection("copy"),
+                    },
+                    {
+                      label: "Cut selected triangles",
+                      disabled: busy || !selectedTriangleCount,
+                      run: () => editSelection("cut"),
+                    },
+                    {
+                      label: "Delete selected triangles",
+                      disabled: busy || !selectedTriangleCount,
+                      run: () => editSelection("delete"),
+                    },
+                    { label: "Close menu", run: () => {} },
+                  ]
+          }
+        />
+      )}
       <main className="workspace">
         <aside className="explorer" inert={busy}>
           <div className="objects-panel">
@@ -1409,6 +1562,17 @@ export function App() {
               {entities.map((entity) => (
                 <li
                   key={entity.id}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                    if (busy) return;
+                    setSelectedId(entity.id);
+                    setContextMenu({
+                      x: event.clientX,
+                      y: event.clientY,
+                      kind: "object",
+                      objectId: entity.id,
+                    });
+                  }}
                   className={entity.id === selectedId ? "selected" : ""}
                 >
                   <button
@@ -1446,7 +1610,19 @@ export function App() {
               ))}
             </ul>
           </div>
-          <section className="history-panel" aria-label="Model history">
+          <section
+            className="history-panel"
+            aria-label="Model history"
+            onContextMenu={(event) => {
+              event.preventDefault();
+              if (!busy)
+                setContextMenu({
+                  x: event.clientX,
+                  y: event.clientY,
+                  kind: "history",
+                });
+            }}
+          >
             <div className="history-heading">
               <h2>History</h2>
               <div>
@@ -1472,6 +1648,17 @@ export function App() {
               <li>
                 <button
                   disabled={busy || !history.length}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (!busy)
+                      setContextMenu({
+                        x: event.clientX,
+                        y: event.clientY,
+                        kind: "history",
+                        revision: 0,
+                      });
+                  }}
                   onClick={() => restoreRevision(0)}
                 >
                   <Layers size={14} />
@@ -1481,6 +1668,17 @@ export function App() {
               {history.map((revision, index) => (
                 <li key={index}>
                   <button
+                    onContextMenu={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      if (!busy)
+                        setContextMenu({
+                          x: event.clientX,
+                          y: event.clientY,
+                          kind: "history",
+                          revision: index + 1,
+                        });
+                    }}
                     title={`Restore model after ${revision.label}`}
                     aria-current={
                       index === history.length - 1 ? "step" : undefined
@@ -1526,76 +1724,6 @@ export function App() {
               <span>{message}</span>
               <button onClick={() => selectionAbort.current?.abort()}>
                 Cancel connected selection
-              </button>
-            </div>
-          )}
-          {contextMenu && (
-            <div
-              className="viewport-context-menu"
-              role="menu"
-              aria-label="Viewport selection actions"
-              style={{
-                left: Math.min(
-                  contextMenu.x,
-                  Math.max(0, (viewportHost.current?.clientWidth ?? 300) - 190),
-                ),
-                top: Math.min(
-                  contextMenu.y,
-                  Math.max(
-                    0,
-                    (viewportHost.current?.clientHeight ?? 300) - 230,
-                  ),
-                ),
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") setContextMenu(null);
-              }}
-            >
-              <button
-                role="menuitem"
-                onClick={() => {
-                  viewport.current?.fitView();
-                  setContextMenu(null);
-                }}
-              >
-                Fit visible objects
-              </button>
-              <button
-                role="menuitem"
-                disabled={!selected}
-                onClick={() => {
-                  setMode("brush");
-                  setWorkspace("edit");
-                  setToolPanelOpen(true);
-                  setContextMenu(null);
-                }}
-              >
-                Edit scan selection
-              </button>
-              <button
-                role="menuitem"
-                disabled={!selected}
-                onClick={() => {
-                  if (selected)
-                    setTriangleMask(
-                      new Uint8Array(selected.positions.length / 9).fill(1),
-                    );
-                  setContextMenu(null);
-                }}
-              >
-                Select all triangles
-              </button>
-              <button
-                role="menuitem"
-                onClick={() => {
-                  setTriangleMask(null);
-                  setContextMenu(null);
-                }}
-              >
-                Clear triangle selection
-              </button>
-              <button role="menuitem" onClick={() => setContextMenu(null)}>
-                Close menu
               </button>
             </div>
           )}

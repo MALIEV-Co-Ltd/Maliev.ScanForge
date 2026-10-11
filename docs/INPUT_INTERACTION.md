@@ -40,3 +40,7 @@ REA reviewed retained evidence IDs `ev_3079f2c83a8851aa2eb804b297ee45adc7fb263f9
 - Native runtime comparison of click, double-click, modifier and threshold semantics.
 
 Current browser checks and counts are in [validation](VALIDATION.md). This ledger records implemented behavior and unresolved comparisons; complete application equivalence is not claimed.
+
+## Context menus
+
+Right-click object rows for properties, visibility, scan editing and dependency-checked deletion. Right-click history for Undo/Redo; eligible earlier revision rows also offer restoration. Viewport actions include fitting, properties, selection editing, select/invert/clear and copy/cut/delete. These reuse the existing undoable commands. Menus support keyboard focus, Escape/outside dismissal and window-edge placement. They are independently designed; complete reference menu coverage remains unresolved.
