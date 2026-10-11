@@ -1,0 +1,2415 @@
+{
+  "origin": "Owned input/output facts from original complete bound preparation function with supplied cached-area and owned vector allocation/append/free callbacks; no native cache/allocator construction, DLL initialization or application workflow",
+  "cases": [
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 1.133072853088379,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 1.133072853088379,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.75,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.75,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.133072853088379,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.75,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.75,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 50,
+        "maximumControl": 50,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.33000001311302185,
+        "maximum": 1.133072853088379,
+        "ratio": 5.303030014038086,
+        "referenceMinimum": 0.33000001311302185,
+        "count": 5
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 1.133072853088379,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 6.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0.5,
+        "maximumControl": 1000,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.11999999731779099,
+        "maximum": 1.133072853088379,
+        "ratio": 50.0,
+        "referenceMinimum": 0.11999999731779099,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 72.125,
+        "maximumControl": 12.5,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.8183673620223999,
+        "maximum": 1.0229592323303223,
+        "ratio": 1.25,
+        "referenceMinimum": 0.8183673620223999,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 0,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 100,
+        "maximumControl": 1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": true,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 123.25,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.6399999856948853,
+        "maximum": 0.800000011920929,
+        "ratio": 1.25,
+        "referenceMinimum": 0.6399999856948853,
+        "count": 2
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.23999999463558197,
+        "maximum": 12.0,
+        "ratio": 50.0,
+        "referenceMinimum": 0.23999999463558197,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": false,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.25,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": false,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 0,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.25,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 10,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 0
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 1.1999999284744263,
+        "maximum": 60.0,
+        "ratio": 50.000003814697266,
+        "referenceMinimum": 1.1999999284744263,
+        "count": 6
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded"],
+      "result": {
+        "minimum": 1.5,
+        "maximum": 3.0,
+        "ratio": 2.0,
+        "referenceMinimum": 1.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate"],
+      "result": {
+        "minimum": 0.7071067690849304,
+        "maximum": 1.4142135381698608,
+        "ratio": 2.0,
+        "referenceMinimum": 0.7071067690849304,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded"],
+      "result": {
+        "minimum": 1.5,
+        "maximum": 3.0,
+        "ratio": 2.0,
+        "referenceMinimum": 1.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate"],
+      "result": {
+        "minimum": 0.7071067690849304,
+        "maximum": 1.4142135381698608,
+        "ratio": 2.0,
+        "referenceMinimum": 0.7071067690849304,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded"],
+      "result": {
+        "minimum": 1.5,
+        "maximum": 3.0,
+        "ratio": 2.0,
+        "referenceMinimum": 1.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate"],
+      "result": {
+        "minimum": 0.7071067690849304,
+        "maximum": 1.4142135381698608,
+        "ratio": 2.0,
+        "referenceMinimum": 0.7071067690849304,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": -1,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded"],
+      "result": {
+        "minimum": 1.5,
+        "maximum": 3.0,
+        "ratio": 2.0,
+        "referenceMinimum": 1.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate"],
+      "result": {
+        "minimum": 0.7071067690849304,
+        "maximum": 1.4142135381698608,
+        "ratio": 2.0,
+        "referenceMinimum": 0.7071067690849304,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 1,
+        "maximumControl": -1,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded"],
+      "result": {
+        "minimum": 1.5,
+        "maximum": 3.0,
+        "ratio": 2.0,
+        "referenceMinimum": 1.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate"],
+      "result": {
+        "minimum": 0.7071067690849304,
+        "maximum": 1.4142135381698608,
+        "ratio": 2.0,
+        "referenceMinimum": 0.7071067690849304,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 2,
+            "indexElementCount": 3,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["embedded", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 1,
+            "indexElementCount": 3,
+            "embeddedArea": 900,
+            "alternateArea": 200
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["alternate", "context"],
+      "result": {
+        "minimum": 0.5,
+        "maximum": 1.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.5,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 0,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 2,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 24,
+          "model": {
+            "storageMode": 0,
+            "indexElementCount": 1,
+            "embeddedArea": 900
+          }
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 3
+        }
+      },
+      "calls": ["context", "context"],
+      "result": {
+        "minimum": 0.24494896829128265,
+        "maximum": 0.4898979365825653,
+        "ratio": 2.0,
+        "referenceMinimum": 0.24494896829128265,
+        "count": 3
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 0,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.25,
+        "count": 7
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": -1,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 2,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": 2.0,
+        "referenceMinimum": 0.25,
+        "count": 7
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 0,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": 0.0,
+        "referenceMinimum": 0.25,
+        "count": 7
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 100,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": -1,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": [],
+      "result": {
+        "minimum": 0.125,
+        "maximum": 8.0,
+        "ratio": -1.0,
+        "referenceMinimum": 0.25,
+        "count": 7
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 16777217,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 1.25,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": ["base"],
+      "result": {
+        "minimum": 0.001220703125,
+        "maximum": 0.00152587890625,
+        "ratio": 1.25,
+        "referenceMinimum": 0.001220703125,
+        "count": 7
+      }
+    },
+    {
+      "state": {
+        "geometryPresent": true,
+        "minimumControl": 0,
+        "maximumControl": 100,
+        "targetCount": 2147483647,
+        "baseLength": 1,
+        "overrideScale": false,
+        "partCount": 1,
+        "areas": {
+          "baseArea": 100,
+          "contextArea": 40000
+        },
+        "previous": {
+          "minimum": 0.125,
+          "maximum": 8,
+          "ratio": 0.5,
+          "referenceMinimum": 0.25,
+          "count": 7
+        }
+      },
+      "calls": ["base"],
+      "result": {
+        "minimum": 0.0001078959321603179,
+        "maximum": 5.394796608015895e-5,
+        "ratio": 0.5,
+        "referenceMinimum": 0.0001078959321603179,
+        "count": 7
+      }
+    }
+  ]
+}

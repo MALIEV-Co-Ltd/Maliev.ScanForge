@@ -453,3 +453,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Fifteen additional tests cover zero-mode empty arrays, present zero-area sources, fallback priority, float storage and invalid input guards. Source selection uses supplied cached areas; native cache/inheritance accessors and every representation remain unvalidated.
 - The bounded probe released executable memory and its exact PID was absent. Existing preview remained HTTP 200 under its recorded finite lease. The browser bundle is unchanged because these components are not yet connected to the reconstruction UI.
 - Full owner dispatch, cache/partition lifecycle and downstream field/quad/NURBS workflows remain incomplete. Full feature parity is not established by these component checks.
+
+### Recovered combined curvature bound-owner preparation - 2026-10-12
+
+- `npm run build`: TypeScript and Vite passed with zero warnings/errors; offline manifest regenerated.
+- `npx vitest run tests/field-curvature-owner-bounds.test.ts tests/field-curvature-area-source.test.ts tests/field-curvature-explicit-bounds.test.ts tests/field-curvature-bounds.test.ts tests/field-curvature-schedule.test.ts --maxWorkers=1`: 714 passed in 5 files.
+- `npm test`: 1,901 passed in 87 files.
+- All 70 complete original bound-preparation function captures match stored minimum, maximum, ratio, reference minimum and stage count. Original branch dispatch/source routing/math/cleanup control flow runs with supplied cached-area and owned vector insert/append/free dependency callbacks. Native cache construction/allocator behavior and installed-application workflows remain outside the comparison.
+- Twenty additional cases cover native gates/state preservation, independent returned state, context/embedded area distinction, multi-part cap gating, required-cache rejection, signed input guards and integration into the radius schedule.
+- Bounded probe executable memory and all owned vectors were released, and its exact PID was absent. Existing preview remained HTTP 200 under its recorded finite lease; the browser bundle remains unchanged because these recovered components are not yet bound to reconstruction UI.
+- Cache/partition/thread lifecycle, downstream field/quad/NURBS reconstruction and full UI/feature parity remain incomplete.
