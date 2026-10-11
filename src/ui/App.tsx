@@ -173,6 +173,7 @@ export function App() {
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
   const wandRef = useRef<(mask: Uint8Array, remove: boolean) => void>(() => {});
   const [selectionAngle, setSelectionAngle] = useState(30);
+  const [allConnected, setAllConnected] = useState(false);
   const [selectionTolerance, setSelectionTolerance] = useState(0.001);
   const selectionAbort = useRef<AbortController | null>(null);
   const [subtractBrush, setSubtractBrush] = useState(false);
@@ -917,6 +918,7 @@ export function App() {
             seeds,
             tolerance: selectionTolerance,
             angleDegrees: selectionAngle,
+            allConnected,
           },
           {
             signal: controller.signal,
@@ -930,7 +932,7 @@ export function App() {
         )
           throw new Error("Invalid connected selection result.");
         const region =
-          clickedSeeds && !brushRef.current.through
+          clickedSeeds && !allConnected && !brushRef.current.through
             ? viewport.current!.visibleSelection(source.id, result.selection)
             : result.selection;
         changeSelection((previous) =>
@@ -2188,6 +2190,8 @@ export function App() {
               }}
               angle={selectionAngle}
               onAngle={setSelectionAngle}
+              allConnected={allConnected}
+              onAllConnected={setAllConnected}
               brushRadius={brushRadius}
               through={selectThrough}
               onThrough={setSelectThrough}

@@ -5,6 +5,27 @@ const flat = [0, 0, 0, 10, 0, 0, 0, 10, 0];
 const neighbor = [10, 0, 0, 10, 10, 0, 0, 10, 0];
 const options = { tolerance: 0.001, angleDegrees: 30 };
 describe("connected triangle selection", () => {
+  it("selects an entire bent component while retaining separate islands and the angle setting", () => {
+    const bent = [10, 0, 0, 0, 0, 0, 0, 0, 10];
+    const island = [50, 0, 0, 60, 0, 0, 50, 10, 0];
+    const seeds = new Uint8Array([1, 0, 0]);
+    const settings = { ...options, angleDegrees: 1.84, allConnected: true };
+    expect(
+      Array.from(
+        growConnectedSelection([...flat, ...bent, ...island], seeds, settings),
+      ),
+    ).toEqual([1, 1, 0]);
+    expect(Array.from(seeds)).toEqual([1, 0, 0]);
+    expect(settings.angleDegrees).toBe(1.84);
+    expect(
+      Array.from(
+        growConnectedSelection([...flat, ...bent, ...island], seeds, {
+          ...settings,
+          allConnected: false,
+        }),
+      ),
+    ).toEqual([1, 0, 0]);
+  });
   it("grows coplanar welded neighbors without changing seeds or coordinates", () => {
     const positions = new Float32Array([
       ...flat,

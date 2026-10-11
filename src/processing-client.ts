@@ -6,6 +6,7 @@ import type { MeshSheetDiagnostics } from "./mesh-processing";
 export type ProcessingRequest =
   | {
       kind: "connectedSelection";
+      allConnected?: boolean;
       positions: Positions;
       seeds: Uint8Array;
       tolerance: number;

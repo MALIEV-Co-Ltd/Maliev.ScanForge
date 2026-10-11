@@ -58,6 +58,7 @@ scope.onmessage = ({ data: request }) => {
         {
           tolerance: request.tolerance,
           angleDegrees: request.angleDegrees,
+          allConnected: request.allConnected,
           onProgress: progress,
         },
       );

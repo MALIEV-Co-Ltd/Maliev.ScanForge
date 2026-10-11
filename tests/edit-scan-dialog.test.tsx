@@ -11,6 +11,8 @@ const defaults: EditScanDialogProps = {
   onTool: noop,
   angle: 30,
   onAngle: noop,
+  allConnected: false,
+  onAllConnected: noop,
   brushRadius: 24,
   through: false,
   onThrough: noop,
@@ -43,6 +45,20 @@ function button(markup: string, label: string) {
   )?.[0];
 }
 describe("dedicated scan edit dialog", () => {
+  it("disables angle filtering for connected-component wand selection", () => {
+    const html = render({ tool: "wand", allConnected: true });
+    expect(
+      html.match(/<input[^>]*aria-label="Selection sensitivity"[^>]*>/)?.[0],
+    ).toContain("disabled");
+    expect(
+      html.match(/<input[^>]*aria-label="Sensitivity degrees"[^>]*>/)?.[0],
+    ).toContain("disabled");
+    expect(
+      render({ tool: "wand" }).match(
+        /<input[^>]*aria-label="Sensitivity degrees"[^>]*>/,
+      )?.[0],
+    ).not.toContain("disabled");
+  });
   it("keeps unrecovered tools unavailable rather than substituting another operation", () => {
     const html = render();
     for (const label of [

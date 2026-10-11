@@ -21,6 +21,8 @@ export interface EditScanDialogProps {
   onTool: (tool: ScanSelectionTool) => void;
   angle: number;
   onAngle: (angle: number) => void;
+  allConnected: boolean;
+  onAllConnected: (enabled: boolean) => void;
   brushRadius: number;
   through: boolean;
   onThrough: (through: boolean) => void;
@@ -110,6 +112,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
         <div className="scan-sensitivity">
           <input
             aria-label="Selection sensitivity"
+            disabled={props.allConnected}
             type="range"
             min="0"
             max="90"
@@ -120,6 +123,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
           <label>
             <input
               aria-label="Sensitivity degrees"
+              disabled={props.allConnected}
               type="number"
               min="0"
               max="90"
@@ -140,7 +144,12 @@ export function EditScanDialog(props: EditScanDialogProps) {
         </p>
       )}
       <label className="check">
-        <input type="checkbox" disabled title={pending} />
+        <input
+          type="checkbox"
+          checked={props.allConnected}
+          disabled={props.tool !== "wand"}
+          onChange={(event) => props.onAllConnected(event.target.checked)}
+        />
         Select all connected triangles
       </label>
       <div

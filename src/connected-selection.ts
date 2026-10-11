@@ -1,11 +1,14 @@
 import { analyzeMesh, type MeshProcessingOptions } from "./mesh-processing";
 import type { Positions } from "./types";
 
-/** Grow existing seeds over welded manifold edges. Vertex-only contacts and ambiguous edges stop growth. */
+/** Angle mode grows over welded manifold edges; all-connected mode uses the existing edge-component inventory. */
 export function growConnectedSelection(
   positions: Positions,
   seeds: Uint8Array,
-  options: MeshProcessingOptions & { angleDegrees: number },
+  options: MeshProcessingOptions & {
+    angleDegrees: number;
+    allConnected?: boolean;
+  },
 ): Uint8Array {
   if (!(seeds instanceof Uint8Array) || seeds.length !== positions.length / 9)
     throw new Error("Selection mask must have one byte per triangle.");
@@ -20,6 +23,15 @@ export function growConnectedSelection(
       "Connected selection angle must be between 0 and 90 degrees.",
     );
   const topology = analyzeMesh(positions, options);
+  // Reuse the topology component inventory when angle filtering is disabled.
+  if (options.allConnected) {
+    const result = new Uint8Array(seeds);
+    for (const component of topology.components)
+      if (component.some((face) => seeds[face]))
+        for (const face of component) result[face] = 1;
+    options.onProgress?.(1, "Connected selection complete");
+    return result;
+  }
   const normals = new Float64Array(seeds.length * 3);
   for (let face = 0; face < seeds.length; face++) {
     if (face % 4096 === 0 && options.signal?.aborted)
