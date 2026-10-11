@@ -412,3 +412,14 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Folded geometry integration connects the radius schedule, edge tensors, neighborhoods, eigenpairs, qualification, stable/constrained/fallback composition and radius finalization. Reconstruction workflow/quad/NURBS integration remains incomplete.
 - Native executable memory and temporary buffers were released, the bounded probe exited, and its exact PID was verified absent.
 - Targeted Prettier and `git diff --check`: passed. Preview HTTP 200, current unchanged bundle `scanforge-0252d3aa394134e3`; no browser draft was reset.
+
+### Recovered curvature normal-angle sine caches - 2026-10-12
+
+- `npm run build`: passed, zero warnings/errors; 28 offline assets.
+- `npx vitest run tests/field-curvature-normal-thresholds.test.ts tests/field-curvature-schedule.test.ts --maxWorkers=1`: 193 passed in 2 files.
+- `npm test`: 1301 passed in 83 files.
+- Seventy-two isolated original instruction-block cases exactly match all four normal-sine caches. Original numerical instructions run with an owned ABI wrapper/exit and corresponding Windows system CRT sinf; owner initialization, cache construction, thread dispatch and installed application workflows are excluded.
+- Complete retained REA owner-entry assembly was digest checked. Independent original import-thunk inspection supplements the retained evidence; no new REA provider session was started. Arbitrary platform math-library equivalence remains unproven.
+- Folded-mesh component integration now uses recovered normal-sine preparation for qualification and direction scoring. Field/quad/NURBS and browser reconstruction integration remain incomplete.
+- Executable memory was released, the bounded probe exited and its exact PID was verified absent.
+- Targeted Prettier and `git diff --check`: passed. Preview HTTP 200, unchanged current bundle `scanforge-0252d3aa394134e3`; no browser draft was reset.
