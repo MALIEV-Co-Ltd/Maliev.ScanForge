@@ -1602,38 +1602,14 @@ dd {
   }
 }
 
-.ribbon-command-image,
-.ribbon-primitive-icon {
+.ribbon-cad-icon {
   width: 34px;
   height: 34px;
-  object-fit: contain;
   flex-shrink: 0;
 }
-.ribbon-line-icon {
-  color: #d9b757;
-  flex-shrink: 0;
-}
-.ribbon-line-icon:is(.icon-folder, .icon-newDocument, .icon-save) {
-  color: #8ab88d;
-}
-.ribbon-line-icon:is(.icon-delete, .icon-cleanup) {
-  color: #dc936f;
-}
-.ribbon-line-icon:is(
-  .icon-measure,
-  .icon-align,
-  .icon-section,
-  .icon-transform
-) {
-  color: #c5b5d5;
-}
-.ribbon-button:disabled
-  :is(.ribbon-command-image, .ribbon-primitive-icon, .ribbon-line-icon) {
+.ribbon-button:disabled .ribbon-cad-icon {
   filter: grayscale(1);
   opacity: 0.45;
-}
-[data-theme="light"] .ribbon-line-icon {
-  filter: brightness(0.65);
 }
 
 .new-document-actions {

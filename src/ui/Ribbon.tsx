@@ -1,152 +1,11 @@
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
-import {
-  AlignCenter,
-  ArrowUpFromLine,
-  Blend,
-  Box,
-  Circle,
-  Cone,
-  Cylinder,
-  Download,
-  Eye,
-  FolderOpen,
-  FilePlus,
-  Pencil,
-  Grid2X2,
-  HelpCircle,
-  Layers,
-  Maximize,
-  MousePointer2,
-  Move3D,
-  Palette,
-  Redo2,
-  Rotate3D,
-  Ruler,
-  Save,
-  ScanLine,
-  Settings,
-  Sparkles,
-  Spline,
-  Square,
-  Trash2,
-  Triangle,
-  Undo2,
-  Waves,
-  type LucideIcon,
-} from "lucide-react";
+import { RibbonCommandIcon } from "./RibbonCommandIcon";
 import {
   RIBBON_TABS,
   ribbonToolAvailability,
   type RibbonActions,
-  type RibbonIcon,
   type RibbonState,
 } from "./ribbon-model";
-
-const icons: Record<RibbonIcon, LucideIcon> = {
-  newDocument: FilePlus,
-  editScan: Pencil,
-  folder: FolderOpen,
-  save: Save,
-  undo: Undo2,
-  redo: Redo2,
-  select: MousePointer2,
-  fit: Maximize,
-  view: Eye,
-  plane: Square,
-  cylinder: Cylinder,
-  cone: Cone,
-  sphere: Circle,
-  box: Box,
-  align: AlignCenter,
-  transform: Move3D,
-  section: ScanLine,
-  extrude: ArrowUpFromLine,
-  revolve: Rotate3D,
-  boolean: Blend,
-  measure: Ruler,
-  deviation: Waves,
-  cleanup: Sparkles,
-  delete: Trash2,
-  export: Download,
-  settings: Settings,
-  wireframe: Triangle,
-  color: Palette,
-  curve: Spline,
-  surface: Layers,
-  pattern: Grid2X2,
-  help: HelpCircle,
-};
-
-function CommandIcon({
-  icon,
-  fallback: Icon,
-}: {
-  icon: RibbonIcon;
-  fallback: LucideIcon;
-}) {
-  if (icon === "editScan" || icon === "plane")
-    return (
-      <img
-        className="ribbon-command-image"
-        src={icon === "plane" ? "/icons/plane.png" : "/icons/edit-scan.png"}
-        alt=""
-        aria-hidden="true"
-      />
-    );
-  if (
-    icon === "cylinder" ||
-    icon === "cone" ||
-    icon === "sphere" ||
-    icon === "box"
-  )
-    return (
-      <svg
-        className="ribbon-primitive-icon"
-        viewBox="0 0 32 32"
-        aria-hidden="true"
-        stroke="#705817"
-        strokeWidth="1.1"
-        strokeLinejoin="round"
-      >
-        {icon === "cylinder" && (
-          <>
-            <path fill="#e5b837" d="M6 8v17c0 5 20 5 20 0V8" />
-            <ellipse cx="16" cy="8" rx="10" ry="4" fill="#ffe185" />
-            <path d="M6 25c0 5 20 5 20 0" fill="none" />
-          </>
-        )}
-        {icon === "cone" && (
-          <>
-            <path d="M16 3 4 25c0 6 24 6 24 0Z" fill="#f3c84d" />
-            <path d="M4 25c0-5 24-5 24 0" strokeDasharray="2 2" fill="none" />
-            <path d="M16 3 21 27" fill="none" />
-          </>
-        )}
-        {icon === "sphere" && (
-          <>
-            <circle cx="16" cy="16" r="12" fill="#f3c84d" />
-            <ellipse cx="16" cy="16" rx="5" ry="12" fill="#ffe185" />
-            <ellipse cx="16" cy="16" rx="12" ry="4" fill="none" />
-          </>
-        )}
-        {icon === "box" && (
-          <>
-            <path d="m16 3 12 6-12 7L4 9Z" fill="#ffe185" />
-            <path d="m4 9 12 7v13L4 22Z" fill="#f3c84d" />
-            <path d="m16 16 12-7v13l-12 7Z" fill="#c79729" />
-          </>
-        )}
-      </svg>
-    );
-  return (
-    <Icon
-      className={`ribbon-line-icon icon-${icon}`}
-      size={30}
-      strokeWidth={1.7}
-      aria-hidden="true"
-    />
-  );
-}
 
 export interface RibbonProps extends RibbonState {
   activeTab: string;
@@ -240,7 +99,6 @@ export function Ribbon({
           >
             <div className="ribbon-group-tools">
               {group.tools.map((tool) => {
-                const Icon = icons[tool.icon];
                 const availability = ribbonToolAvailability(
                   tool,
                   state,
@@ -261,7 +119,7 @@ export function Ribbon({
                         : undefined
                     }
                   >
-                    <CommandIcon icon={tool.icon} fallback={Icon} />
+                    <RibbonCommandIcon command={tool.id} />
                     <span className="ribbon-button-label">{tool.label}</span>
                   </button>
                 );
