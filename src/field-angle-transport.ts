@@ -102,6 +102,31 @@ function validateFrames(normals: Float32Array, tangents: Float32Array) {
         throw new Error("Field angle frames must be finite.");
 }
 
+/** Project upstream directions into each face and derive the native double-stored reference angle. */
+export function deriveFieldReferenceAngles(
+  normals: Float32Array,
+  tangents: Float32Array,
+  directions: Float32Array,
+): Float64Array {
+  validateFrames(normals, tangents);
+  validateFrames(normals, directions);
+  const angles = new Float64Array(normals.length / 3);
+  for (let face = 0; face < angles.length; face++) {
+    const normal = at(normals, face);
+    const direction = at(directions, face);
+    const projection = dot(direction, normal);
+    const planar = direction.map((value, axis) =>
+      sub(value, mul(normal[axis], projection)),
+    ) as Vector;
+    if (planar.some((value) => !Number.isFinite(value)))
+      throw new Error("Field direction projection arithmetic overflowed.");
+    const angle = f(signedAngle(at(tangents, face), planar, normal));
+    // The native reference array stores doubles: wrapping follows float promotion.
+    angles[face] = angle > f(Math.PI) ? angle - f(2 * Math.PI) : angle;
+  }
+  return angles;
+}
+
 /** Recovered edge transport policy over upstream indexed halfedge incidence. */
 export function deriveFieldTransportAngles(
   normals: Float32Array,
