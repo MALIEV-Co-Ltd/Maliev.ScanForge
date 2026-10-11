@@ -567,7 +567,6 @@ export function App() {
     <div className="workbench">
       <header className="header">
         <div className="brand">
-          <strong>MALIEV</strong>
           <span>ScanForge</span>
           <small>0.1</small>
         </div>

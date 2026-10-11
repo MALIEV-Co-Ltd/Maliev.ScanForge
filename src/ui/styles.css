@@ -118,11 +118,6 @@ h3 {
   gap: 14px;
   align-items: baseline;
 }
-.brand strong {
-  font-size: 26px;
-  letter-spacing: 2px;
-  font-weight: 650;
-}
 .brand > span {
   font-size: 25px;
   font-weight: 600;
@@ -709,7 +704,6 @@ dd {
     padding: 6px 8px;
     font-size: 11px;
   }
-  .brand strong,
   .brand > span {
     font-size: 21px;
   }

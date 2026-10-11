@@ -1,4 +1,4 @@
-# MALIEV ScanForge
+# ScanForge
 
 An independently authored, open-source scan-to-CAD workbench that runs in a modern browser. TypeScript and React provide the interface, Three.js renders geometry, and OpenCascade.js processes exact CAD inside an isolated WebAssembly worker.
 
