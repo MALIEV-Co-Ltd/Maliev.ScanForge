@@ -43,6 +43,12 @@ ScanForge's existing generic fitting panel does not reproduce this staged dialog
 
 ## Remaining application-wide work
 
+### Fit Surface transaction - 2026-10-11
+
+The installed manual PDF38-39 documents selected scan data, initial U/V10, Apply, Analysis and OK. Fit Surface now opens a dedicated session with a copied selected-visible region, axis orientation, U/V counts and temporary surface preview. Apply does not alter entities or modeling history; Cancel discards the preview; OK creates one linked purple surface while preserving the scan. Changing options requires Apply again, and source geometry changes invalidate the session. Fitting runs in the existing cancellable, leased worker.
+
+This is partial workflow parity using the independently authored height-field solver. Selection-bounds minimum-box orientation, surface smoothness, adaptive tolerance fitting through50x50 and native deviation visualization remain missing. Analysis currently reports projected residual statistics, not a native deviation map. Control counts remain bounded4-16 until larger solver memory and numerical behavior are validated. Exact native fitting computation is unrecovered. Generic Freeform authoring remains a separate unfinished workflow.
+
 ### Alignment input coverage - 2026-10-11
 
 Manual PDF pages 49 and 54 describe fine alignment of an approximately aligned scan, using selected regions as priority data when available. Fine alignment now passes the selected visible triangle mask to the worker, or uses visible triangles when selection is empty. Sampling is bounded within that region; the derived rigid pose is applied to the entire source scan. The fixed target geometry is not changed. This uses independently authored sampled point-to-point ICP, not recovered native CAD-surface registration. Dedicated Preview/OK/Cancel dialogs, coordinate-system and interactive alignment, ordered viewport landmarks, simultaneous multi-scan fine alignment and original convergence policies remain unfinished.

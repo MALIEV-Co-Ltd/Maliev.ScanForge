@@ -643,7 +643,9 @@ export class Viewport {
   }
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
-    if (positions && mask) {
+    // A selection reset can render one effect after the newly selected geometry.
+    // Never upload stale triangle slots from the previous object.
+    if (positions && mask && mask.length * 9 === positions.length) {
       let count = 0;
       for (const value of mask) count += value;
       if (count) {

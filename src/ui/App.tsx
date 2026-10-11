@@ -91,6 +91,16 @@ import { applyWandRegion } from "../wand-selection";
 import { Field, Panel, VectorField } from "./controls";
 import { SolidTools } from "./SolidTools";
 import { SurfaceTools } from "./SurfaceTools";
+import { FitSurfaceDialog } from "./FitSurfaceDialog";
+import { fitGridSurfaceAsync } from "../surface-client";
+import {
+  beginSurfaceFit,
+  surfaceFitSourceUnchanged,
+  surfaceFitEntity,
+  acceptSurfaceFit,
+  type SurfaceFitSession,
+} from "../surface-fit-session";
+import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
@@ -249,6 +259,10 @@ export function App() {
   const viewport = useRef<Viewport | null>(null);
   // Consume after geometry upload, avoiding animation-frame races on import.
   const pendingImportFit = useRef<string | null | undefined>(undefined);
+  const [surfaceFit, setSurfaceFit] = useState<SurfaceFitSession | null>(null);
+  const surfaceFitRef = useRef(surfaceFit);
+  surfaceFitRef.current = surfaceFit;
+  const surfaceFitAbort = useRef<AbortController | null>(null);
   const cad = useRef<CadClient | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const modeRef = useRef(mode);
@@ -299,6 +313,7 @@ export function App() {
         viewportHost.current!,
         (point, id) => {
           if (busyRef.current) return;
+          if (surfaceFitRef.current) return;
           if (nPointsRef.current) {
             if (nPointsRef.current.preview) {
               setMessage(
@@ -321,7 +336,8 @@ export function App() {
           else setAnchor(point);
         },
         (id) => {
-          if (!busyRef.current && !nPointsRef.current) setSelectedId(id);
+          if (!busyRef.current && !nPointsRef.current && !surfaceFitRef.current)
+            setSelectedId(id);
         },
         (id, mask, remove) => {
           if (busyRef.current || brushRef.current.entity?.id !== id) return;
@@ -406,7 +422,9 @@ export function App() {
               ? { ...e, positions: nPoints.preview!.positions! }
               : e,
           )
-        : entities,
+        : surfaceFit?.preview && surfaceFitSourceUnchanged(surfaceFit, entities)
+          ? [...entities, surfaceFitEntity(surfaceFit, "surface-fit-preview")]
+          : entities,
       selectedId,
     );
     viewport.current?.setAlignmentMarkers(
@@ -423,7 +441,12 @@ export function App() {
       viewport.current?.fitView(pendingImportFit.current ?? undefined);
       pendingImportFit.current = undefined;
     }
-  }, [entities, selectedId, nPoints, landmarkPickSide]);
+  }, [entities, selectedId, nPoints, landmarkPickSide, surfaceFit]);
+  useEffect(() => {
+    if (surfaceFit && !surfaceFitSourceUnchanged(surfaceFit, entities))
+      cancelSurfaceFit();
+  }, [entities, surfaceFit]);
+  useEffect(() => () => surfaceFitAbort.current?.abort(), []);
   useEffect(() => {
     if (nPoints && !landmarkSceneUnchanged(nPoints, entities))
       cancelLandmarks();
@@ -847,9 +870,74 @@ export function App() {
   }
   function showTools(nextWorkspace: string) {
     cancelLandmarks();
+    cancelSurfaceFit();
     setWorkspace(nextWorkspace);
     setToolPanelOpen(true);
     if (nextWorkspace === "properties") setMode("inspect");
+  }
+  function cancelSurfaceFit() {
+    surfaceFitAbort.current?.abort();
+    surfaceFitRef.current = null;
+    setSurfaceFit(null);
+    setToolPanelOpen(false);
+  }
+  function openSurfaceFit() {
+    if (!selected) return;
+    try {
+      const session = beginSurfaceFit(
+        selected,
+        triangleMask,
+        sessionFor(selected).state.hidden,
+      );
+      cancelLandmarks();
+      setMode("inspect");
+      setSurfaceFit(session);
+      setToolPanelOpen(true);
+      setError("");
+    } catch (error) {
+      setError(errorText(error));
+    }
+  }
+  async function previewSurfaceFit(options: SurfaceFitOptions) {
+    const session = surfaceFitRef.current;
+    if (!session || surfaceFitAbort.current) return;
+    const controller = new AbortController();
+    surfaceFitAbort.current = controller;
+    setProcessingBusy(true);
+    setSurfaceFit({ ...session, preview: undefined });
+    try {
+      const preview = await fitGridSurfaceAsync(session.scan, options, {
+        signal: controller.signal,
+      });
+      if (
+        !controller.signal.aborted &&
+        surfaceFitRef.current?.source === session.source
+      )
+        setSurfaceFit({ ...session, preview });
+    } catch (error) {
+      if (!controller.signal.aborted) setError(errorText(error));
+    } finally {
+      if (surfaceFitAbort.current === controller) {
+        surfaceFitAbort.current = null;
+        setProcessingBusy(false);
+      }
+    }
+  }
+  function acceptSurfacePreview() {
+    if (!surfaceFit) return;
+    try {
+      const id = crypto.randomUUID();
+      const next = acceptSurfaceFit(surfaceFit, entities, id);
+      operationLabel.current = "Fit surface";
+      commit(next);
+      setSelectedId(id);
+      cancelSurfaceFit();
+      setMessage("Fitted surface created · scan preserved");
+    } catch (error) {
+      setError(errorText(error));
+    } finally {
+      operationLabel.current = null;
+    }
   }
   function cancelLandmarks() {
     landmarkAbort.current?.abort();
@@ -1799,7 +1887,7 @@ export function App() {
         }
         activeTab={ribbonTab}
         onTabChange={setRibbonTab}
-        disabled={busy || !!nPoints}
+        disabled={busy || !!nPoints || !!surfaceFit}
         hasSelection={!!selected}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -1862,7 +1950,7 @@ export function App() {
           sewSurfaces: () => showTools("advancedCad"),
           shell: () => showTools("advancedCad"),
           surfaceThicken: () => showTools("advancedCad"),
-          fitSurface: () => showTools("surface"),
+          fitSurface: openSurfaceFit,
           nurbsSurface: () => showTools("surface"),
           newFreeform: () => showTools("surface"),
           autoFreeform: () => showTools("surface"),
@@ -2104,7 +2192,7 @@ export function App() {
         />
       )}
       <main className="workspace">
-        <aside className="explorer" inert={busy || !!nPoints}>
+        <aside className="explorer" inert={busy || !!nPoints || !!surfaceFit}>
           <div className="objects-panel">
             <h2>
               Objects <Layers size={15} />
@@ -2412,6 +2500,15 @@ export function App() {
             </div>
           )}
         </section>
+        {surfaceFit && (
+          <FitSurfaceDialog
+            session={surfaceFit}
+            busy={busy}
+            onApply={(options) => void previewSurfaceFit(options)}
+            onAccept={acceptSurfacePreview}
+            onCancel={cancelSurfaceFit}
+          />
+        )}
         {nPoints && (
           <LandmarkAlignmentDialog
             session={nPoints}
@@ -2446,7 +2543,7 @@ export function App() {
         )}
         <aside
           className="inspector"
-          style={nPoints ? { display: "none" } : undefined}
+          style={nPoints || surfaceFit ? { display: "none" } : undefined}
           inert={actionBusy}
           aria-label="Tool options"
         >
