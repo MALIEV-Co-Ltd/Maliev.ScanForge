@@ -47,6 +47,7 @@ export class Viewport {
     sketch: Sketch;
     tool: SketchDrawingTool;
     constraints: boolean;
+    showControlPoints?: boolean;
     onChange: (sketch: Sketch) => void;
     onError: (message: string) => void;
   };
@@ -523,10 +524,12 @@ export class Viewport {
           sketch.segments.filter((s) => s.a === p.id || s.b === p.id).length > 1
         )
           constrained.add(p.id);
-      for (const [hasConstraint, color] of [
-        [false, "#ee933d"],
-        [true, "#398ce5"],
-      ] as const) {
+      for (const [hasConstraint, color] of editor.showControlPoints === false
+        ? []
+        : ([
+            [false, "#ee933d"],
+            [true, "#398ce5"],
+          ] as const)) {
         const positions = sketch.points
           .filter((p) => constrained.has(p.id) === hasConstraint)
           .flatMap((p) => world([p.x, p.y]));
@@ -557,6 +560,8 @@ export class Viewport {
     const frame =
       this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
     const bounds = new THREE.Box3().setFromObject(this.sketchGeometry);
+    if (this.sketchEditor.sketch.reference && this.section.visible)
+      bounds.union(new THREE.Box3().setFromObject(this.section));
     const center = bounds.isEmpty()
       ? new THREE.Vector3(...frame.origin)
       : bounds.getCenter(new THREE.Vector3());
@@ -1030,6 +1035,7 @@ export class Viewport {
   setView(
     view: "iso" | "top" | "bottom" | "front" | "back" | "left" | "right",
   ): void {
+    this.camera.up.set(0, 0, 1);
     const direction =
       view === "top"
         ? new THREE.Vector3(0, -0.00001, 1)
@@ -1140,8 +1146,14 @@ export class Viewport {
     segments: number[],
     color = "#ed8a30",
     projected?: number[],
+    display?: "points" | "lines" | "hidden",
   ): void {
     this.clearGroup(this.section);
+    if (display !== undefined) this.section.visible = display !== "hidden";
+    if (display === "hidden") {
+      this.invalidate();
+      return;
+    }
     for (const [lines, tint] of [
       [segments, color],
       [projected ?? [], "#888888"],
@@ -1152,12 +1164,23 @@ export class Viewport {
           "position",
           new THREE.Float32BufferAttribute(lines, 3),
         );
-        this.section.add(
-          new THREE.LineSegments(
-            geometry,
-            new THREE.LineBasicMaterial({ color: tint, depthTest: false }),
-          ),
-        );
+        const primitive =
+          display === "points"
+            ? new THREE.Points(
+                geometry,
+                new THREE.PointsMaterial({
+                  color: tint,
+                  size: 3,
+                  sizeAttenuation: false,
+                  depthTest: false,
+                }),
+              )
+            : new THREE.LineSegments(
+                geometry,
+                new THREE.LineBasicMaterial({ color: tint, depthTest: false }),
+              );
+        primitive.renderOrder = 9;
+        this.section.add(primitive);
       }
     }
     this.invalidate();

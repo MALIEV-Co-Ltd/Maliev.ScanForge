@@ -26,6 +26,10 @@ export interface SketchToolsProps {
   drawingConstraints?: boolean;
   onDrawingConstraints?: (enabled: boolean) => void;
   onNormalView?: () => void;
+  showControlPoints?: boolean;
+  onShowControlPoints?: (enabled: boolean) => void;
+  showMeshPoints?: boolean;
+  onShowMeshPoints?: (enabled: boolean) => void;
 }
 
 const constraintLabel = (kind: string) =>
@@ -45,6 +49,10 @@ export function SketchTools({
   drawingConstraints = true,
   onDrawingConstraints,
   onNormalView,
+  showControlPoints = true,
+  onShowControlPoints,
+  showMeshPoints = true,
+  onShowMeshPoints,
 }: SketchToolsProps) {
   const [local, setLocal] = useState<Sketch>(() => rectangleSketch());
   const sketch = value ?? local;
@@ -197,6 +205,23 @@ export function SketchTools({
           <label className="check">
             <input
               type="checkbox"
+              checked={showControlPoints}
+              onChange={(event) => onShowControlPoints?.(event.target.checked)}
+            />
+            Control points
+          </label>
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={showMeshPoints}
+              disabled={!sketch.reference}
+              onChange={(event) => onShowMeshPoints?.(event.target.checked)}
+            />
+            Mesh points · extracted scan references
+          </label>
+          <label className="check">
+            <input
+              type="checkbox"
               checked={drawingConstraints}
               onChange={(event) => onDrawingConstraints?.(event.target.checked)}
             />
@@ -272,7 +297,7 @@ export function SketchTools({
           border: "1px solid var(--border)",
         }}
       >
-        {referencePath && (
+        {showMeshPoints && referencePath && (
           <path
             aria-label="Scan section references"
             d={referencePath}
@@ -313,7 +338,7 @@ export function SketchTools({
             }
           />
         ))}
-        {preview.map((p) => (
+        {(showControlPoints ? preview : []).map((p) => (
           <circle
             key={p.id}
             cx={p.x}

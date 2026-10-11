@@ -157,6 +157,8 @@ export function App() {
     useState<SketchDrawingTool>("navigate");
   const [sketchDrawingConstraints, setSketchDrawingConstraints] =
     useState(true);
+  const [sketchControlPoints, setSketchControlPoints] = useState(true);
+  const [sketchMeshPoints, setSketchMeshPoints] = useState(true);
   const [createSketch, setCreateSketch] = useState<{
     source: Entity;
     hidden: number[];
@@ -602,15 +604,37 @@ export function App() {
     viewport.current?.setSectionLines(
       preview
         ? preview.actualSegments
-        : workspace === "sketch" && sketchDraft.reference && sketchDraft.frame
-          ? referenceWorldSegments(sketchDraft.frame, sketchDraft.reference)
+        : workspace === "sketch"
+          ? sketchDraft.reference &&
+            sketchDraft.frame &&
+            sketchMeshPoints &&
+            toolPanelOpen
+            ? referenceWorldSegments(sketchDraft.frame, sketchDraft.reference)
+            : []
           : section.segments,
       preview ? "#eeeeee" : workspace === "sketch" ? "#888888" : "#ed8a30",
       preview && !preview.reference.onSlicingPlane
         ? preview.placedSegments
         : undefined,
+      preview
+        ? "lines"
+        : workspace === "sketch"
+          ? sketchMeshPoints && toolPanelOpen
+            ? "points"
+            : "hidden"
+          : undefined,
     );
-  }, [axis, offset, mode, section, createSketch, workspace, sketchDraft]);
+  }, [
+    axis,
+    offset,
+    mode,
+    section,
+    createSketch,
+    workspace,
+    sketchDraft,
+    sketchMeshPoints,
+    toolPanelOpen,
+  ]);
   useEffect(() => {
     viewport.current?.setSketchEditor(
       workspace === "sketch" && toolPanelOpen && !createSketch
@@ -618,6 +642,7 @@ export function App() {
             sketch: sketchDraft,
             tool: busy ? "navigate" : sketchDrawingTool,
             constraints: sketchDrawingConstraints,
+            showControlPoints: sketchControlPoints,
             onChange: updateSketchDraft,
             onError: setError,
           }
@@ -630,6 +655,7 @@ export function App() {
     sketchDraft,
     sketchDrawingTool,
     sketchDrawingConstraints,
+    sketchControlPoints,
     busy,
     activeSketchId,
   ]);
@@ -3277,6 +3303,10 @@ export function App() {
                   drawingConstraints={sketchDrawingConstraints}
                   onDrawingConstraints={setSketchDrawingConstraints}
                   onNormalView={() => viewport.current?.viewSketchNormal()}
+                  showControlPoints={sketchControlPoints}
+                  onShowControlPoints={setSketchControlPoints}
+                  showMeshPoints={sketchMeshPoints}
+                  onShowMeshPoints={setSketchMeshPoints}
                   onChange={updateSketchDraft}
                   onExtrude={extrude}
                   disabled={busy}

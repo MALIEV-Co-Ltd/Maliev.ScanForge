@@ -30,6 +30,12 @@ function fixture(aspect = 1) {
 }
 
 describe("import camera fit", () => {
+  it("restores the world up axis when leaving a sketch-normal camera view", () => {
+    const { view, camera } = fixture();
+    camera.up.set(0, 1, 0);
+    view.setView("iso");
+    expect(camera.up.toArray()).toEqual([0, 0, 1]);
+  });
   it.each([0.4, 1, 2.5])(
     "frames the imported object instead of existing objects at aspect %s",
     (aspect) => {
