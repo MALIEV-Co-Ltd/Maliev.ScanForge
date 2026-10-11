@@ -401,3 +401,14 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Mixed-face integration exercises stable, constrained and fallback branch composition. Full downstream field/quad/NURBS and browser reconstruction integration remain incomplete.
 - Native executable memory and temporary allocation buffers were released, the bounded probe exited and its exact PID was verified absent.
 - Targeted Prettier and `git diff --check`: passed. Live preview returned HTTP 200; UI bundle `scanforge-0252d3aa394134e3` remains current and unchanged. No browser draft was reset.
+
+### Recovered owner curvature radius schedule - 2026-10-12
+
+- `npm run build`: passed, zero warnings/errors; 28 offline assets.
+- `npx vitest run tests/field-curvature-schedule.test.ts tests/field-curvature-fallback.test.ts --maxWorkers=1`: 199 tests passed in 2 files.
+- `npm test`: 1222 tests passed in 82 files.
+- Ninety-six isolated native radius-preparation cases exactly match radius and reciprocal-threshold arrays, including empty/single-stage, ascending/descending/constant and mode-selection branches. Supplied owner vectors use an owned resize callback; native allocator/cache lifecycle is not claimed equivalent.
+- Complete retained REA preparation assembly was digest checked. System CRT log10f/powf bindings follow independently inspected digest-verified original import thunks; no new REA provider session was started. Arbitrary platform math-library equivalence is unproven.
+- Folded geometry integration connects the radius schedule, edge tensors, neighborhoods, eigenpairs, qualification, stable/constrained/fallback composition and radius finalization. Reconstruction workflow/quad/NURBS integration remains incomplete.
+- Native executable memory and temporary buffers were released, the bounded probe exited, and its exact PID was verified absent.
+- Targeted Prettier and `git diff --check`: passed. Preview HTTP 200, current unchanged bundle `scanforge-0252d3aa394134e3`; no browser draft was reset.
