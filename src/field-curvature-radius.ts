@@ -18,6 +18,39 @@ export interface StableCurvatureDirections {
   completed: Uint8Array;
 }
 
+/** Acute angle from the recovered float helpers promoted to double. */
+export function curvatureRadiusAngle(
+  a: Float32Array,
+  b: Float32Array,
+  base: number,
+): number {
+  const f = Math.fround;
+  const length = (v: Float32Array) =>
+    f(
+      Math.sqrt(
+        f(
+          f(f(v[base] * v[base]) + f(v[base + 1] * v[base + 1])) +
+            f(v[base + 2] * v[base + 2]),
+        ),
+      ),
+    );
+  const product = length(a) * length(b);
+  if (product === 0) return 0;
+  const dot = f(
+    f(f(a[base + 1] * b[base + 1]) + f(a[base] * b[base])) +
+      f(a[base + 2] * b[base + 2]),
+  );
+  const cosine = Math.abs(dot / product);
+  const value = cosine < 1 ? f(Math.acos(cosine)) : 0;
+  if (
+    !Number.isFinite(value) ||
+    !Number.isFinite(product) ||
+    !Number.isFinite(dot)
+  )
+    throw new Error("Curvature radius angle overflowed.");
+  return value;
+}
+
 /** Recovered initial stable-radius branch; constrained and fallback branches remain separate. */
 export function produceStableCurvatureDirections(
   radii: CurvatureRadiusData[],
@@ -110,32 +143,6 @@ export function produceStableCurvatureDirections(
       throw new Error("Previous stable curvature data must be finite.");
   const marked = (mask: Uint8Array | undefined, face: number) =>
     !!(mask && face < mask.length * 8 && mask[face >> 3] & (1 << (face & 7)));
-  const length = (v: Float32Array, base: number) =>
-    f(
-      Math.sqrt(
-        f(
-          f(f(v[base] * v[base]) + f(v[base + 1] * v[base + 1])) +
-            f(v[base + 2] * v[base + 2]),
-        ),
-      ),
-    );
-  const angle = (a: Float32Array, b: Float32Array, base: number) => {
-    const product = length(a, base) * length(b, base);
-    if (product === 0) return 0;
-    const dot = f(
-      f(f(a[base + 1] * b[base + 1]) + f(a[base] * b[base])) +
-        f(a[base + 2] * b[base + 2]),
-    );
-    const cosine = Math.abs(dot / product);
-    const value = cosine < 1 ? f(Math.acos(cosine)) : 0;
-    if (
-      !Number.isFinite(value) ||
-      !Number.isFinite(product) ||
-      !Number.isFinite(dot)
-    )
-      throw new Error("Curvature radius angle overflowed.");
-    return value;
-  };
   const clamped = (
     value: number,
     lower: number,
@@ -178,7 +185,7 @@ export function produceStableCurvatureDirections(
         if (other !== radius)
           sum = f(
             sum +
-              angle(
+              curvatureRadiusAngle(
                 radii[other].directions,
                 radii[radius].directions,
                 face * 3,
