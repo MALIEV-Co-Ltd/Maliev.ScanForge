@@ -136,11 +136,11 @@ export class Viewport {
 
   setTheme(theme: "light" | "dark"): void {
     this.scene.background = new THREE.Color(
-      theme === "dark" ? "#1c1e21" : "#f4f5f6",
+      theme === "dark" ? "#1c1c1c" : "#f4f5f6",
     );
     const color = this.grid.geometry.getAttribute("color");
-    const major = new THREE.Color(theme === "dark" ? "#40464d" : "#c3c8ce");
-    const minor = new THREE.Color(theme === "dark" ? "#2c3035" : "#e0e3e6");
+    const major = new THREE.Color(theme === "dark" ? "#454545" : "#c3c8ce");
+    const minor = new THREE.Color(theme === "dark" ? "#303030" : "#e0e3e6");
     for (let i = 0; i < color.count; i++) {
       const value = Math.floor(i / 4) === 10 ? major : minor;
       color.setXYZ(i, value.r, value.g, value.b);

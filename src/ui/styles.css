@@ -17,17 +17,18 @@
   --hover: #e3e8ed;
 }
 :root[data-theme="dark"] {
-  --background: #1c1e21;
-  --surface: #25282c;
-  --chrome: #202226;
-  --input: #202327;
-  --border: #3b4047;
-  --muted: #a2a9b2;
-  --text: #e2e5e9;
-  --accent: #69ace2;
-  --selected: #293f53;
-  --selected-text: #b9ddfa;
-  --hover: #33383f;
+  color-scheme: dark;
+  --background: #1c1c1c;
+  --surface: #272727;
+  --chrome: #222222;
+  --input: #202020;
+  --border: #454545;
+  --muted: #aaaaaa;
+  --text: #e5e5e5;
+  --accent: #cccccc;
+  --selected: #3c3c3c;
+  --selected-text: #f2f2f2;
+  --hover: #353535;
 }
 
 * {
@@ -647,7 +648,7 @@ dd {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: #081016a6;
+  background: #000000a6;
   display: flex;
   align-items: center;
   justify-content: center;
