@@ -1,12 +1,15 @@
 import * as THREE from "three";
 import { MeshBVH } from "three-mesh-bvh";
 import type { Positions } from "./types";
+import { brushTrianglePoint, type ScreenPoint } from "./brush-coverage";
 
-export type ScreenRegion = {
-  kind: "rectangle" | "circle";
-  start: [number, number];
-  end: [number, number];
-};
+export type ScreenRegion =
+  | {
+      kind: "rectangle" | "circle";
+      start: [number, number];
+      end: [number, number];
+    }
+  | { kind: "brush"; points: ScreenPoint[]; radius: number };
 export interface SelectionView {
   width: number;
   height: number;
@@ -57,12 +60,18 @@ export class ScreenSelectionIndex {
     view: SelectionView,
   ): Uint8Array {
     if (
-      ![view.width, view.height, ...region.start, ...region.end].every(
-        Number.isFinite,
-      ) ||
+      ![
+        view.width,
+        view.height,
+        ...(region.kind === "brush"
+          ? [region.radius, ...region.points.flat()]
+          : [...region.start, ...region.end]),
+      ].every(Number.isFinite) ||
       view.width <= 0 ||
       view.height <= 0 ||
-      !["rectangle", "circle"].includes(region.kind)
+      (region.kind === "brush"
+        ? !region.points.length || region.radius <= 0
+        : !["rectangle", "circle"].includes(region.kind))
     )
       throw new Error("Invalid screen selection region.");
     camera.updateMatrixWorld();
@@ -71,15 +80,23 @@ export class ScreenSelectionIndex {
       projected = new THREE.Vector3();
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
-    const minX = Math.min(region.start[0], region.end[0]),
-      maxX = Math.max(region.start[0], region.end[0]);
-    const minY = Math.min(region.start[1], region.end[1]),
-      maxY = Math.max(region.start[1], region.end[1]);
+    const start = region.kind === "brush" ? [0, 0] : region.start;
+    const end =
+      region.kind === "brush" ? [view.width, view.height] : region.end;
+    const minX = Math.min(start[0], end[0]),
+      maxX = Math.max(start[0], end[0]);
+    const minY = Math.min(start[1], end[1]),
+      maxY = Math.max(start[1], end[1]);
     const cx = (minX + maxX) / 2,
       cy = (minY + maxY) / 2,
       rx = (maxX - minX) / 2,
       ry = (maxY - minY) / 2;
     const hiddenSet = new Set(this.hidden);
+    const vertices = [
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+    ];
     for (let i = 0; i < this.positions.length; i += 9) {
       if (hiddenSet.has(i / 9)) continue;
       point.set(
@@ -95,8 +112,48 @@ export class ScreenSelectionIndex {
       );
       projected.copy(point).project(camera);
       if (projected.z < -1 || projected.z > 1) continue;
-      const x = ((projected.x + 1) * view.width) / 2,
+      let x = ((projected.x + 1) * view.width) / 2,
         y = ((1 - projected.y) * view.height) / 2;
+      if (region.kind === "brush") {
+        const triangle = vertices.map((vertex, corner) => {
+          vertex.fromArray(this.positions, i + corner * 3);
+          projected.copy(vertex).project(camera);
+          return [
+            ((projected.x + 1) * view.width) / 2,
+            ((1 - projected.y) * view.height) / 2,
+          ] as ScreenPoint;
+        });
+        const touch = brushTrianglePoint(
+          triangle,
+          region.points,
+          region.radius,
+        );
+        if (!touch) continue;
+        // Move an edge contact fractionally inward so ray/triangle roundoff
+        // does not discard a triangle that the brush actually touched.
+        x =
+          touch[0] +
+          ((triangle[0][0] + triangle[1][0] + triangle[2][0]) / 3 - touch[0]) *
+            1e-7;
+        y =
+          touch[1] +
+          ((triangle[0][1] + triangle[1][1] + triangle[2][1]) / 3 - touch[1]) *
+            1e-7;
+        ndc.set((x / view.width) * 2 - 1, 1 - (y / view.height) * 2);
+        raycaster.setFromCamera(ndc, camera);
+        if (
+          !raycaster.ray.intersectTriangle(
+            vertices[0],
+            vertices[1],
+            vertices[2],
+            false,
+            point,
+          )
+        )
+          continue;
+        projected.copy(point).project(camera);
+        if (projected.z < -1 || projected.z > 1) continue;
+      }
       if (x < minX || x > maxX || y < minY || y > maxY) continue;
       if (
         region.kind === "circle" &&

@@ -2236,7 +2236,7 @@ export function App() {
                     Select through the mesh
                   </label>
                   <p className="muted">
-                    Left-drag selects triangle centroids. Alt-drag subtracts.
+                    Left-drag paints continuous strokes. Alt-drag subtracts.
                     Visible mode checks self-occlusion on this mesh; Select
                     through includes hidden layers. Ctrl+wheel changes brush
                     size. Middle-drag rotates; Ctrl+middle pans; Shift+middle

@@ -37,6 +37,7 @@ export class Viewport {
   private subtract = false;
   private readonly selectionOverlay = document.createElement("div");
   private lastBrush = 0;
+  private brushPath: [number, number][] = [];
   private readonly clippingPlane = new THREE.Plane();
   private readonly triad = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -240,19 +241,27 @@ export class Viewport {
     };
     if (this.brushing && this.selectionTool !== "wand")
       this.onSelectionGesture?.("begin");
-    if (this.brushing && this.selectionTool === "brush")
+    if (this.brushing && this.selectionTool === "brush") {
+      this.brushPath = [];
+      this.lastBrush = performance.now();
+      this.renderer.domElement.setPointerCapture(event.pointerId);
       this.paintScreen(event);
+    }
   };
 
   private pointerMove = (event: PointerEvent): void => {
     if (
       this.brushing &&
       this.pointer?.id === event.pointerId &&
-      this.selectionTool === "brush" &&
-      performance.now() - this.lastBrush > 80
+      this.selectionTool === "brush"
     ) {
-      this.lastBrush = performance.now();
-      this.paintScreen(event);
+      const samples = event.getCoalescedEvents?.() ?? [];
+      for (const sample of samples.length ? samples : [event])
+        this.brushPath.push(this.screenPoint(sample.clientX, sample.clientY));
+      if (performance.now() - this.lastBrush > 80) {
+        this.lastBrush = performance.now();
+        this.paintScreen(event);
+      }
     }
     if (
       this.brushing &&
@@ -274,6 +283,7 @@ export class Viewport {
   private pointerCancel = (): void => {
     if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
+    this.brushPath = [];
     this.selectionOverlay.hidden = true;
   };
 
@@ -301,6 +311,9 @@ export class Viewport {
     } else this.pickAt(event);
     if (this.brushing && this.selectionTool !== "wand")
       this.onSelectionGesture?.("end");
+    this.brushPath = [];
+    if (this.renderer.domElement.hasPointerCapture(event.pointerId))
+      this.renderer.domElement.releasePointerCapture(event.pointerId);
   };
   private contextMenu = (event: MouseEvent): void => {
     event.preventDefault();
@@ -327,13 +340,14 @@ export class Viewport {
     return [x - rect.left, y - rect.top];
   }
   private paintScreen(event: PointerEvent): void {
-    const [x, y] = this.screenPoint(event.clientX, event.clientY),
-      r = this.brushPixels;
+    const endpoint = this.screenPoint(event.clientX, event.clientY);
+    this.brushPath.push(endpoint);
     this.applyScreenRegion(event, {
-      kind: "circle",
-      start: [x - r, y - r],
-      end: [x + r, y + r],
+      kind: "brush",
+      points: this.brushPath,
+      radius: this.brushPixels,
     });
+    this.brushPath = [endpoint];
   }
   private applyScreenRegion(event: PointerEvent, region: ScreenRegion): void {
     const id = this.selectedId,
