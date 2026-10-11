@@ -423,3 +423,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Folded-mesh component integration now uses recovered normal-sine preparation for qualification and direction scoring. Field/quad/NURBS and browser reconstruction integration remain incomplete.
 - Executable memory was released, the bounded probe exited and its exact PID was verified absent.
 - Targeted Prettier and `git diff --check`: passed. Preview HTTP 200, unchanged current bundle `scanforge-0252d3aa394134e3`; no browser draft was reset.
+
+### Recovered geometry-derived radius bounds - 2026-10-12
+
+- `npm run build`: passed TypeScript and Vite build with zero warnings/errors; generated offline assets. An initial test-fixture signature error was corrected before validation.
+- `npx vitest run tests/field-curvature-bounds.test.ts tests/field-curvature-schedule.test.ts tests/field-triangle-normals.test.ts --maxWorkers=1`: 378 passed in 3 files.
+- `npm test`: 1,559 passed in 84 files.
+- 120 original finalization-block captures and 108 pure original table-helper captures match exactly. Captures use owned inputs/buffers and documented dependency boundaries; they do not execute the installed application workflow or prove whole-owner parity.
+- REA identifies the scale measure as cached surface area and recovers the percentage interpolation tables, scale override, radius caps and original-ratio stage counting. Triangle-area-to-bounds-to-schedule integration is covered.
+- Bounded probes released executable memory and their exact PIDs were absent. The REA provider and its recorded child PIDs were absent. Existing loopback preview remained HTTP 200; its finite resource lease remains recorded. No UI-bound bundle change occurred in this component slice.
+- Explicit-count owner bounds, full owner/cache routing, reconstruction UI binding and downstream field/quad/NURBS workflows remain unvalidated or unimplemented. Full feature parity remains incomplete.
