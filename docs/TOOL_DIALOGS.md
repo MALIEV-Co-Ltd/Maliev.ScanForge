@@ -19,17 +19,17 @@ Original binaries, localization, manual pages, screenshots and analysis bundles 
 
 Manual PDF pages 26–27 and 219–220 establish a dedicated mesh-edit dialog, rather than a mixed property/modeling inspector. Localization lines 2530–2579, 510–529, 1507–1508 and 7598–7608 corroborate the groups. The user-supplied dialog screenshot establishes placement of mesh diagnostics, selection rows, submesh creation and presentation toggles.
 
-| Control group                        | Current implementation                                                           | Still unresolved                                                                |
-| ------------------------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Individual meshes, holes, boundaries | Explicit unavailable Edit controls                                               | Original diagnostics, editing subdialogs, boundary outlines and repair behavior |
-| Selection tools                      | Wand, filled brush, rectangle, circle; through mode independent                  | Separate freehand and line tools; exact coverage and native defaults            |
-| Sensitivity                          | Wand angle slider/number input using existing connected-selection implementation | Native range/default, recomputing a prior wand region after sensitivity changes |
-| Connectivity                         | Connected-component wand checkbox; sensitivity disabled while checked            | Exact native adjacency, tolerance, hidden-face traversal and nonmanifold rules  |
-| Selection actions                    | Hide, isolate, reveal, invert, clear; existing selection undo/redo               | Enlarge/shrink and native state/undo equivalence                                |
-| Save selection status                | Dedicated naming form; existing sparse-index persistence                         | Original saved-visibility representation and name editing/undo                  |
-| New mesh from selection              | Existing Cut & Create and Copy & Create                                          | Native result naming, history and export comparisons                            |
-| Clipping box                         | Explicit unavailable control                                                     | Interactive box manipulation and clipping semantics                             |
-| Presentation                         | Quick selection actions toggle, wireframe toggle, Close                          | Original floating quick-toolbar arrangement and additional tools                |
+| Control group                        | Current implementation                                                                     | Still unresolved                                                                |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Individual meshes, holes, boundaries | Explicit unavailable Edit controls                                                         | Original diagnostics, editing subdialogs, boundary outlines and repair behavior |
+| Selection tools                      | Wand, filled brush, rectangle, circle; through mode independent                            | Separate freehand and line tools; exact coverage and native defaults            |
+| Sensitivity                          | Slider, number field and Ctrl+wheel replay the last region against its pre-click selection | Native range/default, curvature calculation and threshold mapping               |
+| Connectivity                         | Connected-component wand checkbox; sensitivity disabled while checked                      | Exact native adjacency, tolerance, hidden-face traversal and nonmanifold rules  |
+| Selection actions                    | Hide, isolate, reveal, invert, clear; existing selection undo/redo                         | Enlarge/shrink and native state/undo equivalence                                |
+| Save selection status                | Dedicated naming form; existing sparse-index persistence                                   | Original saved-visibility representation and name editing/undo                  |
+| New mesh from selection              | Existing Cut & Create and Copy & Create                                                    | Native result naming, history and export comparisons                            |
+| Clipping box                         | Explicit unavailable control                                                               | Interactive box manipulation and clipping semantics                             |
+| Presentation                         | Quick selection actions toggle, wireframe toggle, Close                                    | Original floating quick-toolbar arrangement and additional tools                |
 
 ScanForge's existing algorithms are retained for working actions. No new reconstruction algorithm or substitution was added in this dialog correction. Unavailable controls cannot silently invoke smoothing, topology repair, a different selection mode or another modeling operation. Closing mesh editing returns to camera/object mode. Object properties open the property workspace separately.
 

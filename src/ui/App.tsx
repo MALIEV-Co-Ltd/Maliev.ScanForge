@@ -87,6 +87,7 @@ import type {
   Vec3,
 } from "../types";
 import { Viewport } from "../viewport";
+import { applyWandRegion } from "../wand-selection";
 import { Field, Panel, VectorField } from "./controls";
 import { SolidTools } from "./SolidTools";
 import { SurfaceTools } from "./SurfaceTools";
@@ -176,6 +177,19 @@ export function App() {
   const [allConnected, setAllConnected] = useState(false);
   const [selectionTolerance, setSelectionTolerance] = useState(0.001);
   const selectionAbort = useRef<AbortController | null>(null);
+  const wandRefreshAbort = useRef<AbortController | null>(null);
+  const [wandVersion, setWandVersion] = useState(0);
+  const wandRegion = useRef<{
+    entityId: string;
+    positions: Entity["positions"];
+    seeds: Uint8Array;
+    baseline: Uint8Array;
+    subtract: boolean;
+    angle: number;
+    tolerance: number;
+    allConnected: boolean;
+    through: boolean;
+  } | null>(null);
   const [subtractBrush, setSubtractBrush] = useState(false);
   const brushRef = useRef<{
     entity: Entity | undefined;
@@ -384,6 +398,92 @@ export function App() {
     setSelectionVersion((v) => v + 1);
   }, [selectedId, selected?.positions]);
   useEffect(() => {
+    const origin = wandRegion.current;
+    if (!origin) return;
+    if (
+      origin.entityId !== selectedId ||
+      origin.positions !== selected?.positions ||
+      mode !== "brush" ||
+      selectionTool !== "wand"
+    ) {
+      wandRegion.current = null;
+      return;
+    }
+    if (
+      busy ||
+      (origin.angle === selectionAngle &&
+        origin.tolerance === selectionTolerance &&
+        origin.allConnected === allConnected &&
+        origin.through === selectThrough)
+    )
+      return;
+    const source = selected;
+    const controller = new AbortController();
+    wandRefreshAbort.current = controller;
+    const timer = window.setTimeout(() => {
+      void processMesh(
+        {
+          kind: "connectedSelection",
+          positions: origin.positions,
+          seeds: origin.seeds,
+          tolerance: selectionTolerance,
+          angleDegrees: selectionAngle,
+          allConnected,
+        },
+        { signal: controller.signal },
+      )
+        .then((result) => {
+          if (controller.signal.aborted || wandRegion.current !== origin)
+            return;
+          if (!result.selection)
+            throw new Error("Missing wand selection result.");
+          const region =
+            !allConnected && !selectThrough
+              ? viewport.current!.visibleSelection(source.id, result.selection)
+              : result.selection;
+          const session = sessionFor(source);
+          session.set({
+            mask: applyWandRegion(
+              origin.baseline,
+              region,
+              origin.subtract,
+              session.state.hidden,
+            ),
+            hidden: session.state.hidden,
+          });
+          origin.angle = selectionAngle;
+          origin.tolerance = selectionTolerance;
+          origin.allConnected = allConnected;
+          origin.through = selectThrough;
+          applySelectionState(source, session.state);
+          setMessage(
+            `${selectionCount(session.state.mask)} triangles selected`,
+          );
+        })
+        .catch((error) => {
+          if (!controller.signal.aborted)
+            setError(error instanceof Error ? error.message : String(error));
+        });
+    }, 150);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+      if (wandRefreshAbort.current === controller)
+        wandRefreshAbort.current = null;
+    };
+  }, [
+    selectedId,
+    selected?.positions,
+    selectionAngle,
+    selectionTolerance,
+    allConnected,
+    selectThrough,
+    selectionTool,
+    mode,
+    busy,
+    wandVersion,
+  ]);
+  useEffect(() => {
     viewport.current?.setTriangleSelection(
       selected?.positions,
       triangleMask ?? undefined,
@@ -485,6 +585,8 @@ export function App() {
     next:
       Uint8Array | null | ((previous: Uint8Array | null) => Uint8Array | null),
   ) {
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
     const entity = brushRef.current.entity;
     if (!entity) return;
     const session = sessionFor(entity);
@@ -499,6 +601,8 @@ export function App() {
     applySelectionState(entity, session.state);
   }
   function selectionVisibility(operation: "hide" | "isolate" | "reveal") {
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
     if (!selected || busy) return;
     const session = sessionFor(selected);
     session.set(
@@ -510,6 +614,8 @@ export function App() {
     setDirty(true);
   }
   function selectionUndo(redo = false) {
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
     const entity = brushRef.current.entity;
     if (!entity || busyRef.current) return;
     const session = sessionFor(entity);
@@ -542,6 +648,8 @@ export function App() {
   function restoreSelection(entity: Entity, id: string) {
     const saved = entity.meshSelection?.saved.find((s) => s.id === id);
     if (!saved || busy) return;
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
     setSelectedId(entity.id);
     setMode("brush");
     setWorkspace("mesh");
@@ -912,6 +1020,8 @@ export function App() {
       return;
     const source = selected;
     const seeds = new Uint8Array(clickedSeeds ?? triangleMask!);
+    const baseline = new Uint8Array(sessionFor(source).state.mask);
+    const through = brushRef.current.through;
     void action("Growing connected selection…", async () => {
       const controller = new AbortController();
       selectionAbort.current = controller;
@@ -937,7 +1047,7 @@ export function App() {
         )
           throw new Error("Invalid connected selection result.");
         const region =
-          clickedSeeds && !allConnected && !brushRef.current.through
+          clickedSeeds && !allConnected && !through
             ? viewport.current!.visibleSelection(source.id, result.selection)
             : result.selection;
         changeSelection((previous) =>
@@ -947,6 +1057,20 @@ export function App() {
               )
             : region,
         );
+        if (clickedSeeds) {
+          wandRegion.current = {
+            entityId: source.id,
+            positions: source.positions,
+            seeds,
+            baseline,
+            subtract: remove,
+            angle: selectionAngle,
+            tolerance: selectionTolerance,
+            allConnected,
+            through,
+          };
+          setWandVersion((version) => version + 1);
+        }
         setMessage(
           selectionCount(region) +
             (remove

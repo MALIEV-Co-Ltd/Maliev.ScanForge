@@ -37,7 +37,6 @@ REA reviewed retained evidence IDs `ev_3079f2c83a8851aa2eb804b297ee45adc7fb263f9
 - Freehand filled lasso and line selection.
 - Region enlargement/shrinking.
 - Named selection rename and undo of saved-name creation/deletion; exact reference saved-visibility semantics.
-- Recompute an existing wand region when its angle changes.
 - Configurable navigation presets, rotation centers and rotation methods.
 - Scene-wide occlusion and scalable asynchronous screen selection.
 - Native runtime comparison of click, double-click, modifier and threshold semantics.
@@ -70,4 +69,10 @@ The installed manual PDF page 26 documents a manual brush, Ctrl+wheel sizing and
 
 The reported gap was traced directly to ScanForge: each accepted event stamped one circle, with an 80ms throttle and no connecting stroke. The brush now retains intermediate/coalesced pointer positions and covers their connected path in one screen-selection pass. Pointer capture keeps the gesture active until release over another UI area. The final buffered segment is applied before closing its single selection-undo step. Triangles touched by the brush boundary are included even when their centroids lie outside it; the visibility probe moves fractionally inward to avoid ray/edge roundoff. Alt subtraction, through mode, hidden masks and unchanged source geometry remain supported. These are independently authored corrections to documented intent, not claims that the original implementation was recovered.
 
-Remaining original comparisons include exact coverage, sampling, visibility and modifier semantics. Wand sensitivity replay, distinct freehand/line modes and other interaction work above remain unresolved. Brush selection still runs on the main thread, tests only self-occlusion and has not been validated at full gigabyte scale.
+Remaining original comparisons include exact coverage, sampling, visibility and modifier semantics. Distinct freehand/line modes and other interaction work above remain unresolved. Brush selection still runs on the main thread, tests only self-occlusion and has not been validated at full gigabyte scale.
+
+## Wand sensitivity replay - 2026-10-11
+
+The installed manual PDF page 219 describes expanding or shrinking a clicked wand region by adjusting sensitivity. The slider, number field and Ctrl+wheel now recompute the latest region against its immutable pre-click selection. This preserves other regions and lets a smaller subtraction region restore triangles it previously removed. Hidden triangles stay excluded. Switching selection mode, changing geometry, restoring a named selection, hiding geometry or using selection undo discards that replay context. Debounced worker requests are cancelled when superseded; selection changes remain separate from model history.
+
+This implements the documented interaction with the existing independently authored connected-region calculation. Native curvature weighting, tolerance, defaults and exact threshold mapping remain unrecovered.
