@@ -1,0 +1,1474 @@
+{
+  "origin": "Owned inputs/output facts from original explicit source routing and bounds instructions with owned layout headers and tagged supplied-area callback; no native cache getters, owner construction or application workflow",
+  "cases": [
+    {
+      "state": {
+        "baseArea": 100
+      },
+      "source": "base",
+      "surfaceArea": 100.0,
+      "minimum": 5.0,
+      "maximum": 10.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "contextArea": 400
+      },
+      "source": "base",
+      "surfaceArea": 100.0,
+      "minimum": 5.0,
+      "maximum": 10.0
+    },
+    {
+      "state": {
+        "baseArea": 0,
+        "contextArea": 400
+      },
+      "source": "base",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 1,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 0,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 4,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 1,
+          "indexElementCount": 8,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 0,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 6,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": -1,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        }
+      },
+      "source": "none",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "context",
+      "surfaceArea": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "context",
+      "surfaceArea": 400.0,
+      "minimum": 10.0,
+      "maximum": 20.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 2,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "alternate",
+      "surfaceArea": 200.0,
+      "minimum": 7.071067810058594,
+      "maximum": 14.142135620117188
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 7,
+          "indexElementCount": 3,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900,
+          "alternateArea": 0
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        }
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900
+        },
+        "contextArea": 0
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    },
+    {
+      "state": {
+        "baseArea": 100,
+        "model": {
+          "storageMode": 2,
+          "indexElementCount": 2147483647,
+          "embeddedArea": 900,
+          "alternateArea": 200
+        },
+        "contextArea": 400
+      },
+      "source": "embedded",
+      "surfaceArea": 900.0,
+      "minimum": 15.0,
+      "maximum": 30.0
+    }
+  ]
+}

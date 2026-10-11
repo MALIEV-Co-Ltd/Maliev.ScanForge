@@ -443,3 +443,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Eighteen additional cases cover descending schedule integration, preserved count/ratio, cap order, zero-stage semantics, input guards and overflow/underflow.
 - Probe executable memory was released, its exact PID was absent, and the existing preview remained HTTP 200 under its recorded finite lease. The UI bundle is unchanged because these recovered components are not yet bound to the reconstruction UI.
 - Full geometry routing, cache/partition lifecycle, downstream field/quad/NURBS reconstruction and UI workflow parity remain incomplete.
+
+### Recovered explicit curvature geometry area routing - 2026-10-12
+
+- `npm run build`: TypeScript and Vite passed with zero warnings/errors; offline manifest regenerated.
+- `npx vitest run tests/field-curvature-area-source.test.ts tests/field-curvature-explicit-bounds.test.ts tests/field-curvature-bounds.test.ts --maxWorkers=1`: 510 passed in 3 files.
+- `npm test`: 1,811 passed in 86 files.
+- All 99 original source-routing captures match source selection. Positive-area cases also exactly match downstream native bounds. Zero-area/no-source cases preserve source identity and verify native zero bounds before independent browser guard rejection.
+- Fifteen additional tests cover zero-mode empty arrays, present zero-area sources, fallback priority, float storage and invalid input guards. Source selection uses supplied cached areas; native cache/inheritance accessors and every representation remain unvalidated.
+- The bounded probe released executable memory and its exact PID was absent. Existing preview remained HTTP 200 under its recorded finite lease. The browser bundle is unchanged because these components are not yet connected to the reconstruction UI.
+- Full owner dispatch, cache/partition lifecycle and downstream field/quad/NURBS workflows remain incomplete. Full feature parity is not established by these component checks.
