@@ -332,3 +332,10 @@ Executable allocations were released and both exact owned oracle processes were 
 Two serial bounded REA sessions retained 23 successful, digest-checked canonical operations. Both closed successfully; all four exact Node/JVM processes were verified absent. The existing development preview remains running under its finite lease. The production application bundle remains `scanforge-0252d3aa394134e3` because this computational stage is not yet UI-bound; preview draft state was preserved. Full-resolution gigabyte browser reconstruction and physical SpaceMouse workflows remain unverified and were not rerun in this slice.
 
 Targeted Prettier checks for both implementation/test files and the updated documentation passed; git diff --check passed. No browser reload was needed for the unchanged application bundle.
+
+## Recovered edge curvature and direction constraints - 2026-10-12
+
+`npm run build` passed with zero warnings/errors and 28 offline assets. Focused edge curvature, adjacency and normal checks passed 23 tests across three files. `npm test` passed 489 tests across 74 files. New tests exercise geometry-derived signed dihedrals, float reciprocal normalization, ordered double tensor entries, boundary/nonmanifold handling and ordered boundary/symmetry direction overrides. These tests validate the implemented computational stages, not a complete native application workflow.
+
+Sixteen successful canonical REA operations were retained with the verified companion digest. The bounded REA session closed successfully and its exact Node/JVM processes were verified absent. The development preview returned HTTP 200 on port 5173. The application bundle remains `scanforge-0252d3aa394134e3` because the new computation is not yet UI-bound; existing preview drafts were preserved. Full-resolution gigabyte browser reconstruction and physical SpaceMouse workflows were not rerun and remain unverified.
+Targeted Prettier and `git diff --check` passed for the changed implementation, tests and documentation.
