@@ -88,6 +88,98 @@ function event(x: number, y: number, extra = {}) {
   } as unknown as PointerEvent;
 }
 describe("sketch model-view pointer routing", () => {
+  it.each(["OXY", "OYZ", "OXZ"] as const)(
+    "creates a circle by center/radius drag on %s",
+    (plane) => {
+      const f = fixture(plane);
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool: "circle",
+        constraints: true,
+        onChange: f.change,
+        onError: f.error,
+      });
+      f.hooks.pointerDown(event(500, 500));
+      f.hooks.pointerMove(event(650, 500));
+      expect(f.change).not.toHaveBeenCalled();
+      expect(f.preview.children.length).toBeGreaterThan(0);
+      f.hooks.pointerUp(event(650, 500));
+      expect(f.change).toHaveBeenCalledOnce();
+      expect(f.error).not.toHaveBeenCalled();
+      expect(f.change.mock.calls[0][0].arcs).toHaveLength(2);
+      expect(f.change.mock.calls[0][0].frame).toEqual(f.sketch.frame);
+      expect(f.capture.size).toBe(0);
+      expect(f.preview.children).toHaveLength(0);
+    },
+  );
+  it.each(["circle3", "arc3"] as const)(
+    "commits %s only after its third pick",
+    (tool) => {
+      const f = fixture();
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool,
+        constraints: false,
+        onChange: f.change,
+        onError: f.error,
+      });
+      for (const [x, y] of [
+        [650, 500],
+        [500, 350],
+      ]) {
+        f.hooks.pointerDown(event(x, y));
+        f.hooks.pointerUp(event(x, y));
+      }
+      expect(f.change).not.toHaveBeenCalled();
+      expect(f.preview.children.length).toBeGreaterThan(0);
+      expect(f.capture.size).toBe(0);
+      f.hooks.pointerMove(event(350, 500));
+      f.hooks.pointerDown(event(350, 500));
+      f.hooks.pointerUp(event(350, 500));
+      expect(f.change).toHaveBeenCalledOnce();
+      expect(f.error).not.toHaveBeenCalled();
+      expect(f.change.mock.calls[0][0].arcs).toHaveLength(
+        tool === "circle3" ? 2 : 1,
+      );
+      expect(f.preview.children).toHaveLength(0);
+    },
+  );
+  it("discards incomplete three-point picks on Escape and tool changes, and recovers after collinearity rejection", () => {
+    const f = fixture();
+    const activate = () =>
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool: "arc3",
+        constraints: false,
+        onChange: f.change,
+        onError: f.error,
+      });
+    const click = (x: number, y: number) => {
+      f.hooks.pointerDown(event(x, y));
+      f.hooks.pointerUp(event(x, y));
+    };
+    activate();
+    click(650, 500);
+    click(500, 350);
+    f.hooks.sketchKeyDown({
+      key: "Escape",
+      preventDefault: vi.fn(),
+    } as unknown as KeyboardEvent);
+    expect(f.preview.children).toHaveLength(0);
+    expect(f.change).not.toHaveBeenCalled();
+    click(650, 500);
+    activate();
+    click(650, 500);
+    click(500, 500);
+    click(350, 500);
+    expect(f.error).toHaveBeenCalledOnce();
+    expect(f.change).not.toHaveBeenCalled();
+    click(650, 500);
+    click(500, 350);
+    click(350, 500);
+    expect(f.change).toHaveBeenCalledOnce();
+    expect(f.preview.children).toHaveLength(0);
+  });
   it("rejects out-of-range authoring coordinates before GPU upload", () => {
     const f = fixture();
     f.sketch.points = [{ id: "bad", x: 1e20, y: 0 }];

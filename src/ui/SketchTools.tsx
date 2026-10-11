@@ -172,17 +172,24 @@ export function SketchTools({
         <fieldset disabled={disabled}>
           <legend>Model-view drawing</legend>
           <div className="button-row">
-            {(["navigate", "line", "move"] as const).map((tool) => (
+            {(
+              ["navigate", "line", "circle", "circle3", "arc3", "move"] as const
+            ).map((tool) => (
               <button
                 key={tool}
                 aria-pressed={drawingTool === tool}
                 onClick={() => onDrawingTool(tool)}
               >
-                {tool === "navigate"
-                  ? "Navigate"
-                  : tool === "line"
-                    ? "Line"
-                    : "Move endpoint"}
+                {
+                  {
+                    navigate: "Navigate",
+                    line: "Line",
+                    circle: "Circle · center/radius",
+                    circle3: "Circle · 3 points",
+                    arc3: "Arc · 3 points",
+                    move: "Move endpoint",
+                  }[tool]
+                }
               </button>
             ))}
             <button onClick={onNormalView}>Normal to sketch</button>
@@ -199,6 +206,11 @@ export function SketchTools({
             Left-drag draws a line or moves an endpoint. Middle-drag navigates;
             Escape cancels. Orange endpoints are free; blue endpoints have
             relations.
+          </p>
+          <p className="muted">
+            Circle: drag from center to radius. Three-point tools: click three
+            points; for arcs, use start, a point on the arc, then end. Escape
+            discards unfinished picks.
           </p>
         </fieldset>
       )}
@@ -458,6 +470,7 @@ export function SketchTools({
         <button
           onClick={() =>
             update({
+              ...sketch,
               version: 1,
               points: [
                 { id: "center", x: 0, y: 0 },

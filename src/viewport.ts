@@ -9,6 +9,9 @@ import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
 import {
   drawSketchLine,
+  drawSketchCircle,
+  drawThreePointCurve,
+  previewSketchCurve,
   moveSketchEndpoint,
   type SketchDrawingTool,
   type SketchUV,
@@ -54,6 +57,8 @@ export class Viewport {
     pointId?: string;
     tolerance: number;
   };
+  private sketchCurvePoints: SketchUV[] = [];
+  private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
@@ -303,6 +308,11 @@ export class Viewport {
       }
       return;
     }
+    if (this.sketchCurvePoints.length && this.sketchEditor) {
+      this.sketchCurveHover =
+        this.sketchPlanePoint(event.clientX, event.clientY) ?? undefined;
+      this.renderSketchDrag();
+    }
     if (
       this.brushing &&
       this.pointer?.id === event.pointerId &&
@@ -347,18 +357,43 @@ export class Viewport {
         editor = this.sketchEditor;
       const end =
         this.sketchPlanePoint(event.clientX, event.clientY) ?? drag.end;
-      this.cancelSketchDrag();
+      const threePoint = editor.tool === "circle3" || editor.tool === "arc3";
+      this.cancelSketchDrag(!threePoint);
       try {
+        if (threePoint) {
+          this.sketchCurvePoints.push(end);
+          this.sketchCurveHover = undefined;
+          if (this.sketchCurvePoints.length < 3) {
+            this.renderSketchDrag();
+            return;
+          }
+          const picked = [...this.sketchCurvePoints] as [
+            SketchUV,
+            SketchUV,
+            SketchUV,
+          ];
+          this.cancelSketchDrag();
+          editor.onChange(
+            drawThreePointCurve(
+              editor.sketch,
+              picked,
+              editor.tool as "circle3" | "arc3",
+            ),
+          );
+          return;
+        }
         editor.onChange(
           drag.pointId
             ? moveSketchEndpoint(editor.sketch, drag.pointId, end)
-            : drawSketchLine(
-                editor.sketch,
-                drag.start,
-                end,
-                drag.tolerance,
-                editor.constraints,
-              ),
+            : editor.tool === "circle"
+              ? drawSketchCircle(editor.sketch, drag.start, end)
+              : drawSketchLine(
+                  editor.sketch,
+                  drag.start,
+                  end,
+                  drag.tolerance,
+                  editor.constraints,
+                ),
         );
       } catch (error) {
         editor.onError(
@@ -396,7 +431,7 @@ export class Viewport {
   }
   private contextMenu = (event: MouseEvent): void => {
     event.preventDefault();
-    if (this.sketchDrag) {
+    if (this.sketchDrag || this.sketchCurvePoints.length) {
       this.cancelSketchDrag();
       return;
     }
@@ -583,7 +618,11 @@ export class Viewport {
       new THREE.Vector3(...frame.origin),
     );
     const hit = this.raycaster.ray.intersectPlane(plane, new THREE.Vector3());
-    if (!hit) return null;
+    if (
+      !hit ||
+      hit.toArray().some((n) => !Number.isFinite(n) || Math.abs(n) > 1e9)
+    )
+      return null;
     hit.sub(new THREE.Vector3(...frame.origin));
     return [
       hit.dot(new THREE.Vector3(...frame.u)),
@@ -646,6 +685,62 @@ export class Viewport {
   }
   private renderSketchDrag(): void {
     this.clearGroup(this.sketchPreview);
+    if (
+      this.sketchEditor &&
+      ["circle", "circle3", "arc3"].includes(this.sketchEditor.tool)
+    ) {
+      const drag = this.sketchDrag;
+      const picked =
+        this.sketchEditor.tool === "circle"
+          ? drag
+            ? [drag.start, drag.end]
+            : []
+          : [
+              ...this.sketchCurvePoints,
+              ...(drag
+                ? [drag.end]
+                : this.sketchCurveHover
+                  ? [this.sketchCurveHover]
+                  : []),
+            ];
+      const frame =
+        this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+      try {
+        const points = previewSketchCurve(this.sketchEditor.tool, picked);
+        const positions: number[] = [];
+        for (let i = 1; i < points.length; i++)
+          positions.push(
+            ...sketchWorldPoint(frame, points[i - 1]),
+            ...sketchWorldPoint(frame, points[i]),
+          );
+        this.addSketchLines(this.sketchPreview, positions, "#ee933d");
+        if (this.sketchCurvePoints.length) {
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(
+              this.sketchCurvePoints.flatMap((p) => sketchWorldPoint(frame, p)),
+              3,
+            ),
+          );
+          const markers = new THREE.Points(
+            geometry,
+            new THREE.PointsMaterial({
+              color: "#ee933d",
+              size: 8,
+              sizeAttenuation: false,
+              depthTest: false,
+            }),
+          );
+          markers.renderOrder = 11;
+          this.sketchPreview.add(markers);
+        }
+      } catch {
+        /* Invalid transient geometry is rejected on acceptance. */
+      }
+      this.invalidate();
+      return;
+    }
     if (this.sketchDrag && this.sketchEditor) {
       const frame =
         this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
@@ -664,18 +759,23 @@ export class Viewport {
     }
     this.invalidate();
   }
-  private cancelSketchDrag(): void {
+  private cancelSketchDrag(resetCurvePoints = true): void {
     if (
       this.sketchDrag &&
       this.renderer.domElement.hasPointerCapture(this.sketchDrag.id)
     )
       this.renderer.domElement.releasePointerCapture(this.sketchDrag.id);
     this.sketchDrag = undefined;
+    if (resetCurvePoints) this.sketchCurvePoints = [];
+    this.sketchCurveHover = undefined;
     this.clearGroup(this.sketchPreview);
     this.invalidate();
   }
   private sketchKeyDown(event: KeyboardEvent): void {
-    if (event.key === "Escape" && this.sketchDrag) {
+    if (
+      event.key === "Escape" &&
+      (this.sketchDrag || this.sketchCurvePoints.length)
+    ) {
       this.cancelSketchDrag();
       event.preventDefault();
     }

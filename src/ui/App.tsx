@@ -1731,6 +1731,7 @@ export function App() {
     );
   }
   function updateSketchDraft(sketch: Sketch) {
+    setError("");
     setSketchDraft(sketch);
     if (!activeSketchId) legacySketch.current = sketch;
     if (activeSketchId)
