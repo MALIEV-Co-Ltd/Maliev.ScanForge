@@ -120,6 +120,7 @@ export function App() {
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [newDocumentDialog, setNewDocumentDialog] = useState(false);
   const [previewImport, setPreviewImport] = useState(false);
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
@@ -741,6 +742,47 @@ export function App() {
       operationLabel.current = null;
       setBusy(false);
     }
+  }
+  function requestNewDocument() {
+    if (busy) return;
+    if (dirty) setNewDocumentDialog(true);
+    else newDocument();
+  }
+  function newDocument() {
+    if (busy) return;
+    setNewDocumentDialog(false);
+    cad.current?.dispose();
+    cad.current = new CadClient();
+    knownKernelIds.current.clear();
+    selectionAbort.current?.abort();
+    selectionSessions.current.clear();
+    setEntities([]);
+    setSelectedId(null);
+    setTriangleMask(null);
+    setSelectionVersion((value) => value + 1);
+    setSelectionName("Selection 1");
+    setName("Untitled project");
+    setSketchDraft(rectangleSketch());
+    setHistory([]);
+    setFuture([]);
+    setMeasure([]);
+    setAnchor(null);
+    setFit(null);
+    setShowDeviation(false);
+    setContextMenu(null);
+    setPrimitiveDialog(false);
+    setSettingsOpen(false);
+    setToolPanelOpen(false);
+    setMode("inspect");
+    setRibbonTab("main");
+    setTranslation([0, 0, 0]);
+    setRotation([0, 0, 0]);
+    setScale(1);
+    setDirty(false);
+    setError("");
+    setMessage("New document created");
+    if (fileInput.current) fileInput.current.value = "";
+    viewport.current?.setView("iso");
   }
   async function openFile(file: File) {
     await action(`Opening ${file.name}…`, async () => {
@@ -1505,6 +1547,7 @@ export function App() {
         canUndo={!!history.length}
         canRedo={!!future.length}
         actions={{
+          newDocument: requestNewDocument,
           open: () => fileInput.current?.click(),
           save,
           undo,
@@ -2886,6 +2929,57 @@ export function App() {
           </div>
         </aside>
       </main>
+      {newDocumentDialog && (
+        <div className="modal-backdrop">
+          <section
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="new-document-title"
+            onKeyDown={(event) => {
+              event.stopPropagation();
+              if (event.key === "Escape") {
+                event.preventDefault();
+                setNewDocumentDialog(false);
+              }
+              if (event.key === "Tab") {
+                const buttons = event.currentTarget.querySelectorAll("button");
+                const first = buttons[0],
+                  last = buttons[buttons.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                  event.preventDefault();
+                  last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                  event.preventDefault();
+                  first.focus();
+                }
+              }
+            }}
+          >
+            <h2 id="new-document-title">Create a new document?</h2>
+            <p>
+              Unsaved changes will be lost. Save your project before continuing
+              if you want to keep them.
+            </p>
+            <div className="new-document-actions">
+              <button autoFocus onClick={() => setNewDocumentDialog(false)}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  save();
+                  setNewDocumentDialog(false);
+                }}
+              >
+                Save project
+              </button>
+              <button onClick={newDocument} disabled={busy}>
+                Discard and create new
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
       {settingsOpen && (
         <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
           <section

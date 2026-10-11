@@ -14,6 +14,22 @@ const ready: RibbonState = {
   canRedo: true,
 };
 describe("ribbon command inventory", () => {
+  it("offers a new document without requiring an object and disables it during an operation", () => {
+    const metadata = getRibbonToolMetadata("newDocument")!;
+    const actions = { newDocument: vi.fn() };
+    expect(RIBBON_TABS[0].groups[0].tools[0]).toBe(metadata);
+    expect(
+      ribbonToolAvailability(
+        metadata,
+        { ...ready, hasSelection: false },
+        actions,
+      ).available,
+    ).toBe(true);
+    expect(
+      ribbonToolAvailability(metadata, { ...ready, disabled: true }, actions)
+        .available,
+    ).toBe(false);
+  });
   it("exposes the requested workflow tabs in order and unique commands in each tab", () => {
     expect(RIBBON_TABS.map((tab) => tab.label)).toEqual([
       "Main",

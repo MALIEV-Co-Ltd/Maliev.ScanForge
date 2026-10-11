@@ -10,6 +10,8 @@ import {
   Download,
   Eye,
   FolderOpen,
+  FilePlus,
+  Pencil,
   Grid2X2,
   HelpCircle,
   Layers,
@@ -41,6 +43,8 @@ import {
 } from "./ribbon-model";
 
 const icons: Record<RibbonIcon, LucideIcon> = {
+  newDocument: FilePlus,
+  editScan: Pencil,
   folder: FolderOpen,
   save: Save,
   undo: Undo2,
@@ -72,6 +76,77 @@ const icons: Record<RibbonIcon, LucideIcon> = {
   pattern: Grid2X2,
   help: HelpCircle,
 };
+
+function CommandIcon({
+  icon,
+  fallback: Icon,
+}: {
+  icon: RibbonIcon;
+  fallback: LucideIcon;
+}) {
+  if (icon === "editScan" || icon === "plane")
+    return (
+      <img
+        className="ribbon-command-image"
+        src={icon === "plane" ? "/icons/plane.png" : "/icons/edit-scan.png"}
+        alt=""
+        aria-hidden="true"
+      />
+    );
+  if (
+    icon === "cylinder" ||
+    icon === "cone" ||
+    icon === "sphere" ||
+    icon === "box"
+  )
+    return (
+      <svg
+        className="ribbon-primitive-icon"
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+        stroke="#705817"
+        strokeWidth="1.1"
+        strokeLinejoin="round"
+      >
+        {icon === "cylinder" && (
+          <>
+            <path fill="#e5b837" d="M6 8v17c0 5 20 5 20 0V8" />
+            <ellipse cx="16" cy="8" rx="10" ry="4" fill="#ffe185" />
+            <path d="M6 25c0 5 20 5 20 0" fill="none" />
+          </>
+        )}
+        {icon === "cone" && (
+          <>
+            <path d="M16 3 4 25c0 6 24 6 24 0Z" fill="#f3c84d" />
+            <path d="M4 25c0-5 24-5 24 0" strokeDasharray="2 2" fill="none" />
+            <path d="M16 3 21 27" fill="none" />
+          </>
+        )}
+        {icon === "sphere" && (
+          <>
+            <circle cx="16" cy="16" r="12" fill="#f3c84d" />
+            <ellipse cx="16" cy="16" rx="5" ry="12" fill="#ffe185" />
+            <ellipse cx="16" cy="16" rx="12" ry="4" fill="none" />
+          </>
+        )}
+        {icon === "box" && (
+          <>
+            <path d="m16 3 12 6-12 7L4 9Z" fill="#ffe185" />
+            <path d="m4 9 12 7v13L4 22Z" fill="#f3c84d" />
+            <path d="m16 16 12-7v13l-12 7Z" fill="#c79729" />
+          </>
+        )}
+      </svg>
+    );
+  return (
+    <Icon
+      className={`ribbon-line-icon icon-${icon}`}
+      size={30}
+      strokeWidth={1.7}
+      aria-hidden="true"
+    />
+  );
+}
 
 export interface RibbonProps extends RibbonState {
   activeTab: string;
@@ -186,7 +261,7 @@ export function Ribbon({
                         : undefined
                     }
                   >
-                    <Icon size={25} strokeWidth={1.6} aria-hidden="true" />
+                    <CommandIcon icon={tool.icon} fallback={Icon} />
                     <span className="ribbon-button-label">{tool.label}</span>
                   </button>
                 );

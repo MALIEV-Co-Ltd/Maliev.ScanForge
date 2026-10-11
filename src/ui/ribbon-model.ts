@@ -1,4 +1,5 @@
 export const RIBBON_ACTION_IDS = [
+  "newDocument",
   "open",
   "save",
   "undo",
@@ -63,6 +64,8 @@ export const RIBBON_ACTION_IDS = [
 export type RibbonActionId = (typeof RIBBON_ACTION_IDS)[number];
 export type RibbonActions = Partial<Record<string, () => void>>;
 export type RibbonIcon =
+  | "newDocument"
+  | "editScan"
   | "folder"
   | "save"
   | "undo"
@@ -133,12 +136,13 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
     groups: [
       group(
         "File",
+        tool("newDocument", "New", "newDocument"),
         tool("open", "Import", "folder"),
         tool("save", "Save project", "save"),
       ),
       group(
         "Scan Data",
-        tool("editScan", "Edit scan", "cleanup", true),
+        tool("editScan", "Edit scan", "editScan", true),
         tool("cleanup", "Clean mesh", "cleanup", true),
         tool("repairMesh", "Repair topology", "cleanup", true),
         tool("segmentMesh", "Segment surfaces", "surface", true),
@@ -213,7 +217,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
     groups: [
       group(
         "Edit scan data",
-        tool("editScan", "Edit", "cleanup", true),
+        tool("editScan", "Edit", "editScan", true),
         tool("select", "Select", "select"),
         planned("deselectAll", "Deselect all", "select"),
         planned("showHidden", "Show hidden", "view"),
