@@ -339,3 +339,11 @@ Targeted Prettier checks for both implementation/test files and the updated docu
 
 Sixteen successful canonical REA operations were retained with the verified companion digest. The bounded REA session closed successfully and its exact Node/JVM processes were verified absent. The development preview returned HTTP 200 on port 5173. The application bundle remains `scanforge-0252d3aa394134e3` because the new computation is not yet UI-bound; existing preview drafts were preserved. Full-resolution gigabyte browser reconstruction and physical SpaceMouse workflows were not rerun and remain unverified.
 Targeted Prettier and `git diff --check` passed for the changed implementation, tests and documentation.
+
+## Recovered curvature eigensolver - 2026-10-12
+
+`npm run build` passed with zero warnings/errors and 28 offline assets. Focused eigensolver tests passed 328/328; `npm test` passed 817 tests across 75 files. The implementation exactly matches 324 captured isolated native numerical cases, including partially iterated outputs, vector signs and absolute-value sorting ties. Additional checks cover eigenvector residuals/orthogonality, strict tolerance and independent browser input safety. These are numerical-unit comparisons, not installed-application workflow validation.
+
+Six successful canonical REA records were checked against the companion digest. The bounded REA session exited successfully; exact Node/JVM processes were verified absent. The isolated numerical worker released its executable allocation and exited. Its private script and executable bytes are excluded from the repository; the public fixture contains owned inputs and measured numerical outputs only. Targeted Prettier and `git diff --check` passed.
+
+The development preview remains on loopback port 5173 under its finite lease. The application bundle remains `scanforge-0252d3aa394134e3` because this computation is not yet UI-bound, so user drafts were preserved. Curvature neighborhood aggregation/worker integration, complete Freeform reconstruction, full-resolution gigabyte browser workflows and physical SpaceMouse validation remain incomplete and were not claimed by this slice.
