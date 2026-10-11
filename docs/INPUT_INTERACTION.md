@@ -32,8 +32,8 @@ REA reviewed retained evidence IDs `ev_3079f2c83a8851aa2eb804b297ee45adc7fb263f9
 ## Remaining interaction work
 
 - Freehand filled lasso and line selection.
-- Region enlargement/shrinking, isolation and per-triangle hide/reveal.
-- Persistent named selections and selection-specific undo history.
+- Region enlargement/shrinking.
+- Named selection rename and undo of saved-name creation/deletion; exact reference saved-visibility semantics.
 - Recompute an existing wand region when its angle changes.
 - Configurable navigation presets, rotation centers and rotation methods.
 - Scene-wide occlusion and scalable asynchronous screen selection.
@@ -44,3 +44,13 @@ Current browser checks and counts are in [validation](VALIDATION.md). This ledge
 ## Context menus
 
 Right-click object rows for properties, visibility, scan editing and dependency-checked deletion. Right-click history for Undo/Redo; eligible earlier revision rows also offer restoration. Viewport actions include fitting, properties, selection editing, select/invert/clear and copy/cut/delete. These reuse the existing undoable commands. Menus support keyboard focus, Escape/outside dismissal and window-edge placement. They are independently designed; complete reference menu coverage remains unresolved.
+
+## Selection state and modeling history
+
+Hide selected adds triangle slots to a display mask and clears selection. Isolate hides every unselected slot, leaving the selected region. Show hidden clears the display mask. Hidden triangles are excluded from picking, screen selection and occlusion tests without modifying source coordinates. A compact render index maps picked faces back to original triangle slots. Geometry replacement clears stale triangle authoring metadata; model undo can restore the metadata valid for its earlier geometry.
+
+Each mesh has a separate session selection undo/redo stack (20 steps). A screen brush/rectangle/ellipse gesture produces one step; wand, select/clear/invert and hide/isolate/reveal are individual steps. Ctrl+Z and Ctrl+Shift+Z/Ctrl+Y operate on selection in mesh-edit mode and model history outside it. Text fields retain their native editing shortcuts. W/B choose wand/brush; U toggles through; Ctrl+Q clears. These undo grouping and redo semantics are independently chosen, not recovered handlers. Session stacks are transient and require memory proportional to stored masks.
+
+Named selections persist under `Entity.meshSelection` as sorted original triangle slots with IDs/names. The mesh-child entry restores by double-click, an explicit Restore button or its context menu. Restoration reveals selected slots and keeps unrelated hidden slots; the reference's exact saved-visibility format is unknown. Saved-name deletion is available, but saved-name create/delete/rename undo is not implemented. Both save paths and project parsing validate sparse indices and remain compatible with older projects.
+
+Model history now records object creation/removal and geometry, kernel or parametric authoring changes. Opacity, color, names, object visibility, hidden triangles and named selections do not create steps or clear model redo. Model restoration retains current display settings for surviving objects. This display/history separation follows the user's instruction, not an inferred original implementation. Hidden triangles are display state: current mesh/STEP export retains source geometry. Export-visible triangle parity, region morphology, freehand/line tools, configurable navigation and native handler equivalence remain unresolved.

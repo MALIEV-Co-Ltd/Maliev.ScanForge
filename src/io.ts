@@ -3,10 +3,57 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
-import type { Entity, Project, Positions } from "./types";
+import type { Entity, Project, Positions, MeshSelectionState } from "./types";
 import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
+
+/** Validate sparse triangle slots without allocating a mask proportional to mesh size. */
+export function validateMeshSelection(
+  value: unknown,
+  triangleCount: number,
+): asserts value is MeshSelectionState {
+  const invalid = () => {
+    throw new Error("Invalid mesh selection metadata.");
+  };
+  if (!Number.isSafeInteger(triangleCount) || triangleCount < 1) invalid();
+  if (!value || typeof value !== "object" || Array.isArray(value)) invalid();
+  const state = value as Partial<MeshSelectionState>;
+  const validateSlots = (slots: unknown) => {
+    if (!Array.isArray(slots) || slots.length > triangleCount) invalid();
+    let previous = -1;
+    for (const slot of slots as unknown[]) {
+      if (
+        typeof slot !== "number" ||
+        !Number.isSafeInteger(slot) ||
+        slot <= previous ||
+        slot >= triangleCount
+      )
+        invalid();
+      previous = slot as number;
+    }
+  };
+  validateSlots(state.hidden);
+  if (!Array.isArray(state.saved)) invalid();
+  const ids = new Set<string>();
+  for (const saved of state.saved!) {
+    if (
+      !saved ||
+      typeof saved !== "object" ||
+      Array.isArray(saved) ||
+      typeof saved.id !== "string" ||
+      !saved.id.trim() ||
+      saved.id.length > 200 ||
+      ids.has(saved.id) ||
+      typeof saved.name !== "string" ||
+      !saved.name.trim() ||
+      saved.name.length > 200
+    )
+      invalid();
+    ids.add(saved.id);
+    validateSlots(saved.triangles);
+  }
+}
 
 export function validatePositions(value: unknown): asserts value is Positions {
   if (
@@ -128,6 +175,8 @@ export function parseProject(text: string): Project {
     )
       throw new Error("Invalid project object.");
     ids.add(entity.id);
+    if (entity.meshSelection !== undefined)
+      validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
     if (
       entity.scanSource !== undefined &&
       (!Number.isSafeInteger(entity.scanSource.bytes) ||
@@ -156,6 +205,19 @@ export function parseProject(text: string): Project {
       color: entity.color,
       visible: entity.visible,
       opacity: entity.opacity,
+      meshSelection:
+        entity.meshSelection === undefined
+          ? undefined
+          : {
+              hidden: [...entity.meshSelection.hidden],
+              saved: entity.meshSelection.saved.map(
+                ({ id, name, triangles }) => ({
+                  id,
+                  name,
+                  triangles: [...triangles],
+                }),
+              ),
+            },
       brep: entity.brep,
       surfacePatch: entity.surfacePatch,
       surfaceScanId: entity.surfaceScanId,
@@ -191,6 +253,9 @@ export function serializeProject(
   entities: Entity[],
   authoring?: Project["authoring"],
 ): string {
+  for (const entity of entities)
+    if (entity.meshSelection !== undefined)
+      validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
   return JSON.stringify({
     format: "maliev-scanforge",
     version: 1,
@@ -220,6 +285,8 @@ export async function serializeProjectBlob(
       ...metadata
     } = entities[index];
     validatePositions(positions);
+    if (metadata.meshSelection !== undefined)
+      validateMeshSelection(metadata.meshSelection, positions.length / 9);
     if (index) parts.push(",");
     parts.push(JSON.stringify(metadata).slice(0, -1), ',"positions":[');
     for (let start = 0; start < positions.length; start += 65_536) {

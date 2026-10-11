@@ -3,6 +3,11 @@ import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
 import type { ParametricFeature } from "./parametric";
 export type Positions = number[] | Float32Array;
+/** Triangle slots refer to the current triangulation and must be sorted and unique. */
+export interface MeshSelectionState {
+  hidden: number[];
+  saved: { id: string; name: string; triangles: number[] }[];
+}
 export type EntityKind =
   "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "cone" | "box";
 export interface Entity {
@@ -13,6 +18,7 @@ export interface Entity {
   color: string;
   visible: boolean;
   opacity: number;
+  meshSelection?: MeshSelectionState;
   // Geometry is stored in world coordinates in millimetres.
   source?: string;
   /** Source counts for sampled imports; project geometry contains only the display sample. */

@@ -30,7 +30,7 @@ Before distributing bundled kernel binaries, resolve the dependency provenance l
 
 ## Appearance
 
-Settings offers Light, Dark and System. The selected theme covers editor panels, controls and the 3D viewport and persists on this device. A tabbed ribbon groups scan, construction, surfacing, CAD and analysis commands. Objects and session History share the left sidebar; contextual tool options float beside the viewport. Unsupported commands are disabled and identified in their tooltips.
+Settings offers Light, Dark and System. The selected theme covers editor panels, controls and the 3D viewport and persists on this device. Opacity, color and visibility changes stay outside modeling history. Mesh editing has separate selection undo/redo, hide/isolate/reveal and persistent named selections. A tabbed ribbon groups scan, construction, surfacing, CAD and analysis commands. Objects and session History share the left sidebar; contextual tool options float beside the viewport. Unsupported commands are disabled and identified in their tooltips.
 
 Dark mode uses monochrome charcoal shades. Newly imported and created parts start in neutral CAD gray under neutral studio lighting. Saved project colors and user color edits remain authored properties.
 

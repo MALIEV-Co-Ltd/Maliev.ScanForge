@@ -3,6 +3,42 @@ export interface Revision {
   entities: Entity[];
   label: string;
 }
+/** Display and selection authoring changes never enter the modeling timeline. */
+export function modelChanged(before: Entity[], after: Entity[]): boolean {
+  if (before.length !== after.length) return true;
+  return after.some((next) => {
+    const old = before.find((e) => e.id === next.id);
+    return (
+      !old ||
+      old.kind !== next.kind ||
+      old.positions !== next.positions ||
+      old.kernelId !== next.kernelId ||
+      old.brep !== next.brep ||
+      old.surfacePatch !== next.surfacePatch ||
+      old.parametric !== next.parametric
+    );
+  });
+}
+export function restoreModelDisplay(
+  target: Entity[],
+  current: Entity[],
+): Entity[] {
+  return target.map((entity) => {
+    const live = current.find((e) => e.id === entity.id);
+    if (!live) return entity;
+    return {
+      ...entity,
+      name: live.name,
+      color: live.color,
+      opacity: live.opacity,
+      visible: live.visible,
+      meshSelection:
+        entity.positions === live.positions
+          ? live.meshSelection
+          : entity.meshSelection,
+    };
+  });
+}
 export function changeLabel(before: Entity[], after: Entity[]): string {
   const added = after.filter(
     (entity) => !before.some((old) => old.id === entity.id),

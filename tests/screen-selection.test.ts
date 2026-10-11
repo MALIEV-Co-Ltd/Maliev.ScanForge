@@ -14,6 +14,42 @@ const full = {
   end: [200, 200] as [number, number],
 };
 describe("screen-space mesh selection", () => {
+  it("returns an empty selection when every triangle is hidden", () => {
+    const index = new ScreenSelectionIndex([...front, ...back], [0, 1]);
+    try {
+      expect([
+        ...index.select(camera, full, {
+          width: 200,
+          height: 200,
+          through: false,
+        }),
+      ]).toEqual([0, 0]);
+    } finally {
+      index.dispose();
+    }
+  });
+  it("hidden front triangles neither select nor occlude revealed back triangles", () => {
+    const data = new Float32Array([...front, ...back]);
+    const index = new ScreenSelectionIndex(data, [0]);
+    try {
+      expect([
+        ...index.select(camera, full, {
+          width: 200,
+          height: 200,
+          through: false,
+        }),
+      ]).toEqual([0, 1]);
+      expect([
+        ...index.select(camera, full, {
+          width: 200,
+          height: 200,
+          through: true,
+        }),
+      ]).toEqual([0, 1]);
+    } finally {
+      index.dispose();
+    }
+  });
   it("excludes occluded layers by default and includes them explicitly through the mesh", () => {
     const data = new Float32Array([...front, ...back]);
     const original = Array.from(data);

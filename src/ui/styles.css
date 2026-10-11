@@ -1535,3 +1535,20 @@ dd {
   justify-content: flex-start;
   border: 0;
 }
+.object-list > li {
+  flex-wrap: wrap;
+}
+.saved-selection-list {
+  width: 100%;
+  padding: 0 0 0 25px;
+  list-style: none;
+}
+.saved-selection-list li {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.saved-selection-list button {
+  font-size: 11px;
+  padding: 3px 5px;
+}

@@ -7,6 +7,8 @@ import { ScreenSelectionIndex, type ScreenRegion } from "./screen-selection";
 import { navigateCamera } from "./camera-navigation";
 
 type Item = {
+  hidden?: number[];
+  triangleSlots?: number[];
   selectionIndex?: ScreenSelectionIndex;
   positions: Positions;
   color: string;
@@ -68,6 +70,7 @@ export class Viewport {
     private readonly onBrushScale?: (factor: number) => void,
     private readonly onSelectionError?: (message: string) => void,
     private readonly onContext?: (x: number, y: number) => void,
+    private readonly onSelectionGesture?: (phase: "begin" | "end") => void,
   ) {
     this.scene.background = new THREE.Color("#e9eef2");
     this.camera.up.set(0, 0, 1);
@@ -234,6 +237,8 @@ export class Viewport {
       id: event.pointerId,
       moved: false,
     };
+    if (this.brushing && this.selectionTool !== "wand")
+      this.onSelectionGesture?.("begin");
     if (this.brushing && this.selectionTool === "brush")
       this.paintScreen(event);
   };
@@ -266,6 +271,7 @@ export class Viewport {
   };
 
   private pointerCancel = (): void => {
+    if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
     this.selectionOverlay.hidden = true;
   };
@@ -292,6 +298,8 @@ export class Viewport {
           end: this.screenPoint(event.clientX, event.clientY),
         });
     } else this.pickAt(event);
+    if (this.brushing && this.selectionTool !== "wand")
+      this.onSelectionGesture?.("end");
   };
   private contextMenu = (event: MouseEvent): void => {
     event.preventDefault();
@@ -301,7 +309,10 @@ export class Viewport {
   visibleSelection(id: string, mask: Uint8Array): Uint8Array {
     const item = this.objects.get(id);
     if (!item) return new Uint8Array(mask.length);
-    item.selectionIndex ??= new ScreenSelectionIndex(item.positions);
+    item.selectionIndex ??= new ScreenSelectionIndex(
+      item.positions,
+      item.hidden,
+    );
     const rect = this.renderer.domElement.getBoundingClientRect();
     const visible = item.selectionIndex.select(
       this.camera,
@@ -328,7 +339,10 @@ export class Viewport {
       item = id ? this.objects.get(id) : undefined;
     if (!id || !item?.mesh.visible || !this.onSelection) return;
     try {
-      item.selectionIndex ??= new ScreenSelectionIndex(item.positions);
+      item.selectionIndex ??= new ScreenSelectionIndex(
+        item.positions,
+        item.hidden,
+      );
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.onSelection(
         id,
@@ -396,7 +410,7 @@ export class Viewport {
     ) {
       const item = this.objects.get(id)!;
       const mask = new Uint8Array(item.positions.length / 9);
-      mask[hit.faceIndex] = 1;
+      mask[item.triangleSlots?.[hit.faceIndex] ?? hit.faceIndex] = 1;
       this.onSelection?.(
         id,
         mask,
@@ -434,7 +448,10 @@ export class Viewport {
         this.objects.set(entity.id, item);
         this.scene.add(mesh);
       }
-      if (item.positions !== entity.positions) {
+      if (
+        item.positions !== entity.positions ||
+        item.hidden !== entity.meshSelection?.hidden
+      ) {
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
         item.selectionIndex = undefined;
@@ -445,6 +462,25 @@ export class Viewport {
             ? new THREE.BufferAttribute(entity.positions, 3)
             : new THREE.Float32BufferAttribute(entity.positions, 3),
         );
+        item.triangleSlots = undefined;
+        if (entity.meshSelection?.hidden.length) {
+          const hidden = new Set(entity.meshSelection.hidden);
+          const slots: number[] = [],
+            indices = new Uint32Array(
+              (entity.positions.length / 9 - hidden.size) * 3,
+            );
+          let offset = 0;
+          for (let i = 0; i < entity.positions.length / 9; i++)
+            if (!hidden.has(i)) {
+              slots.push(i);
+              indices[offset++] = i * 3;
+              indices[offset++] = i * 3 + 1;
+              indices[offset++] = i * 3 + 2;
+            }
+          geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+          item.triangleSlots = slots;
+        }
+        item.hidden = entity.meshSelection?.hidden;
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();

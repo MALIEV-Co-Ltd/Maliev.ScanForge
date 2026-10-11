@@ -26,7 +26,19 @@ import { DEFAULT_PART_COLOR } from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
 import { processMesh } from "../processing-client";
 import { CadClient } from "../cad/client";
-import { changeLabel, type Revision } from "../history";
+import {
+  SelectionSession,
+  hideRegion,
+  maskIndices,
+  indicesMask,
+  type SelectionState,
+} from "../selection-session";
+import {
+  changeLabel,
+  modelChanged,
+  restoreModelDisplay,
+  type Revision,
+} from "../history";
 import { ContextMenu } from "./ContextMenu";
 import { Ribbon } from "./Ribbon";
 import {
@@ -90,7 +102,6 @@ import {
 } from "../parametric";
 import { tessellatePatch, type NurbsPatch } from "../surfaces";
 import { rectangleSketch, type Sketch } from "../sketch";
-
 const number = (n: number) =>
   n.toLocaleString("en", { maximumFractionDigits: 3 });
 type Mode = "inspect" | "measure" | "section" | "brush";
@@ -131,6 +142,14 @@ export function App() {
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
   const [wireframe, setWireframe] = useState(false);
+  const selectionSessions = useRef(
+    new Map<
+      string,
+      { positions: Entity["positions"]; session: SelectionSession }
+    >(),
+  );
+  const [selectionVersion, setSelectionVersion] = useState(0);
+  const [selectionName, setSelectionName] = useState("Selection 1");
   const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
   const [brushRadius, setBrushRadius] = useState(24);
   const [selectionTool, setSelectionTool] = useState<
@@ -140,7 +159,8 @@ export function App() {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    kind?: "object" | "history";
+    kind?: "object" | "history" | "saved";
+    savedId?: string;
     objectId?: string;
     revision?: number;
   } | null>(null);
@@ -218,7 +238,6 @@ export function App() {
         : { segments: [], length: 0 },
     [mode, selected?.positions, axis, offset],
   );
-
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
@@ -233,7 +252,6 @@ export function App() {
     media.addEventListener("change", apply);
     return () => media.removeEventListener("change", apply);
   }, [theme]);
-
   useEffect(() => {
     cad.current = new CadClient();
     try {
@@ -257,7 +275,7 @@ export function App() {
             wandRef.current(mask, remove);
             return;
           }
-          setTriangleMask((previous) =>
+          changeSelection((previous) =>
             Uint8Array.from(mask, (value, index) =>
               value ? (remove ? 0 : 1) : (previous?.[index] ?? 0),
             ),
@@ -278,6 +296,15 @@ export function App() {
           if (!busyRef.current) {
             const rect = viewportHost.current!.getBoundingClientRect();
             setContextMenu({ x: x + rect.left, y: y + rect.top });
+          }
+        },
+        (phase) => {
+          const entity = brushRef.current.entity;
+          if (entity) {
+            const session = sessionFor(entity);
+            if (phase === "begin") session.begin();
+            else session.end();
+            setSelectionVersion((v) => v + 1);
           }
         },
       );
@@ -335,7 +362,13 @@ export function App() {
     );
   }, [selectionTool, brushRadius, selectThrough, subtractBrush]);
   useEffect(() => {
-    setTriangleMask(null);
+    if (!selected) {
+      setTriangleMask(null);
+      return;
+    }
+    const session = sessionFor(selected);
+    setTriangleMask(new Uint8Array(session.state.mask));
+    setSelectionVersion((v) => v + 1);
   }, [selectedId, selected?.positions]);
   useEffect(() => {
     viewport.current?.setTriangleSelection(
@@ -399,9 +432,170 @@ export function App() {
         ?.release(unused)
         .catch((e) => setError(`CAD cleanup: ${errorText(e)}`));
   }, [entities, history, future]);
-
+  function sessionFor(entity: Entity): SelectionSession {
+    let record = selectionSessions.current.get(entity.id);
+    if (!record || record.positions !== entity.positions) {
+      record = {
+        positions: entity.positions,
+        session: new SelectionSession(
+          entity.positions.length / 9,
+          entity.meshSelection?.hidden,
+        ),
+      };
+      selectionSessions.current.set(entity.id, record);
+    }
+    return record.session;
+  }
+  function applySelectionState(entity: Entity, state: SelectionState) {
+    setTriangleMask(new Uint8Array(state.mask));
+    setSelectionVersion((v) => v + 1);
+    setEntities((previous) =>
+      previous.map((e) => {
+        if (e.id !== entity.id) return e;
+        const old = e.meshSelection?.hidden ?? [];
+        if (
+          old.length === state.hidden.length &&
+          old.every((v, i) => v === state.hidden[i])
+        )
+          return e;
+        return {
+          ...e,
+          meshSelection: {
+            hidden: [...state.hidden],
+            saved: e.meshSelection?.saved ?? [],
+          },
+        };
+      }),
+    );
+  }
+  function changeSelection(
+    next:
+      Uint8Array | null | ((previous: Uint8Array | null) => Uint8Array | null),
+  ) {
+    const entity = brushRef.current.entity;
+    if (!entity) return;
+    const session = sessionFor(entity);
+    const mask =
+      (typeof next === "function" ? next(session.state.mask) : next) ??
+      new Uint8Array(entity.positions.length / 9);
+    const hidden = new Set(session.state.hidden);
+    session.set({
+      mask: Uint8Array.from(mask, (v, i) => (hidden.has(i) ? 0 : v)),
+      hidden: session.state.hidden,
+    });
+    applySelectionState(entity, session.state);
+  }
+  function selectionVisibility(operation: "hide" | "isolate" | "reveal") {
+    if (!selected || busy) return;
+    const session = sessionFor(selected);
+    session.set(
+      operation === "reveal"
+        ? { mask: session.state.mask, hidden: [] }
+        : hideRegion(session.state, operation === "isolate"),
+    );
+    applySelectionState(selected, session.state);
+    setDirty(true);
+  }
+  function selectionUndo(redo = false) {
+    const entity = brushRef.current.entity;
+    if (!entity || busyRef.current) return;
+    const session = sessionFor(entity);
+    applySelectionState(entity, redo ? session.redo() : session.undo());
+    setDirty(true);
+  }
+  function saveSelection() {
+    if (!selected || !selectedTriangleCount || busy) return;
+    const name = selectionName.trim();
+    if (!name || name.length > 200) {
+      setError("Enter a selection name between 1 and 200 characters.");
+      return;
+    }
+    const state = selected.meshSelection ?? { hidden: [], saved: [] };
+    updateSelected({
+      meshSelection: {
+        ...state,
+        saved: [
+          ...state.saved,
+          {
+            id: crypto.randomUUID(),
+            name,
+            triangles: maskIndices(triangleMask!),
+          },
+        ],
+      },
+    });
+    setMessage(`Saved selection ${name}`);
+  }
+  function restoreSelection(entity: Entity, id: string) {
+    const saved = entity.meshSelection?.saved.find((s) => s.id === id);
+    if (!saved || busy) return;
+    setSelectedId(entity.id);
+    setMode("brush");
+    setWorkspace("mesh");
+    setToolPanelOpen(true);
+    const session = sessionFor(entity),
+      chosen = new Set(saved.triangles);
+    session.set({
+      mask: indicesMask(entity.positions.length / 9, saved.triangles),
+      hidden: session.state.hidden.filter((i) => !chosen.has(i)),
+    });
+    applySelectionState(entity, session.state);
+    setMessage(`Restored selection ${saved.name}`);
+  }
+  const selectionSession = selected ? sessionFor(selected) : undefined;
+  void selectionVersion;
+  useEffect(() => {
+    const live = new Map(entities.map((e) => [e.id, e.positions]));
+    for (const [id, record] of selectionSessions.current)
+      if (live.get(id) !== record.positions)
+        selectionSessions.current.delete(id);
+  }, [entities]);
+  const inputCommands = useRef<(event: KeyboardEvent) => void>(() => {});
+  inputCommands.current = (event) => {
+    const target = event.target as HTMLElement;
+    if (
+      busy ||
+      target.closest('input,textarea,select,[contenteditable="true"]')
+    )
+      return;
+    const command = event.ctrlKey || event.metaKey,
+      key = event.key.toLowerCase();
+    if (command && (key === "z" || key === "y")) {
+      event.preventDefault();
+      const repeat = key === "y" || event.shiftKey;
+      if (mode === "brush") selectionUndo(repeat);
+      else if (repeat) redo();
+      else undo();
+    }
+    if (mode !== "brush") return;
+    if (command && key === "q") {
+      event.preventDefault();
+      changeSelection(null);
+    }
+    if (!command && !event.altKey) {
+      if (key === "u") setSelectThrough((v) => !v);
+      if (key === "w") setSelectionTool("wand");
+      if (key === "b") setSelectionTool("brush");
+    }
+  };
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => inputCommands.current(e);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
   function commit(next: Entity[]) {
+    next = next.map((entity) => {
+      const old = entities.find((e) => e.id === entity.id);
+      return old && old.positions !== entity.positions
+        ? { ...entity, meshSelection: undefined }
+        : entity;
+    });
     entityFeatureModel(next);
+    if (!modelChanged(entities, next)) {
+      setEntities(next);
+      setDirty(true);
+      return;
+    }
     const label =
       operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
     setHistory((previous) => [...previous.slice(-19), { entities, label }]);
@@ -428,7 +622,7 @@ export function App() {
     if (history.length) {
       const next = history[history.length - 1];
       setFuture((p) => [{ entities, label: next.label }, ...p]);
-      setEntities(next.entities);
+      setEntities(restoreModelDisplay(next.entities, entities));
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -443,7 +637,7 @@ export function App() {
     if (future.length) {
       const next = future[0];
       setHistory((p) => [...p.slice(-19), { entities, label: next.label }]);
-      setEntities(next.entities);
+      setEntities(restoreModelDisplay(next.entities, entities));
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -462,7 +656,7 @@ export function App() {
       entities: i + 1 < undone.length ? undone[i + 1].entities : entities,
       label: revision.label,
     }));
-    setEntities(target.entities);
+    setEntities(restoreModelDisplay(target.entities, entities));
     setSelectedId(
       target.entities.some((entity) => entity.id === selectedId)
         ? selectedId
@@ -692,7 +886,7 @@ export function App() {
           clickedSeeds && !brushRef.current.through
             ? viewport.current!.visibleSelection(source.id, result.selection)
             : result.selection;
-        setTriangleMask((previous) =>
+        changeSelection((previous) =>
           clickedSeeds
             ? Uint8Array.from(region, (value, index) =>
                 value ? (remove ? 0 : 1) : (previous?.[index] ?? 0),
@@ -753,6 +947,7 @@ export function App() {
         name: `${selected.name} selection`,
         kind: "mesh",
         positions: picked,
+        meshSelection: undefined,
         kernelId: undefined,
         brep: undefined,
         surfacePatch: undefined,
@@ -766,7 +961,7 @@ export function App() {
     operationLabel.current = `${operation === "copy" ? "Copy" : operation === "cut" ? "Cut" : "Delete"} ${selectedTriangleCount} triangles`;
     commit(next);
     operationLabel.current = null;
-    setTriangleMask(null);
+    changeSelection(null);
     setMessage(
       `${selectedTriangleCount} triangles ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
     );
@@ -1397,143 +1592,210 @@ export function App() {
           x={contextMenu.x}
           y={contextMenu.y}
           label={
-            contextMenu.kind === "object"
-              ? "Object actions"
-              : contextMenu.kind === "history"
-                ? "History actions"
-                : "Viewport selection actions"
+            contextMenu.kind === "saved"
+              ? "Saved selection actions"
+              : contextMenu.kind === "object"
+                ? "Object actions"
+                : contextMenu.kind === "history"
+                  ? "History actions"
+                  : "Viewport selection actions"
           }
           onClose={closeContextMenu}
           actions={
-            contextMenu.kind === "history"
+            contextMenu.kind === "saved"
               ? [
                   {
-                    label: "Restore this revision",
-                    disabled:
-                      busy ||
-                      contextMenu.revision === undefined ||
-                      contextMenu.revision >= history.length,
+                    label: "Restore saved selection",
+                    disabled: busy || !selected,
                     run: () => {
-                      if (contextMenu.revision !== undefined)
-                        restoreRevision(contextMenu.revision);
+                      if (selected && contextMenu.savedId)
+                        restoreSelection(selected, contextMenu.savedId);
                     },
                   },
                   {
-                    label: "Undo",
-                    disabled: busy || !history.length,
-                    run: undo,
-                  },
-                  {
-                    label: "Redo",
-                    disabled: busy || !future.length,
-                    run: redo,
+                    label: "Delete saved selection",
+                    disabled: busy || !selected,
+                    run: () => {
+                      if (selected && contextMenu.savedId)
+                        updateSelected({
+                          meshSelection: {
+                            hidden: selected.meshSelection?.hidden ?? [],
+                            saved:
+                              selected.meshSelection?.saved.filter(
+                                (s) => s.id !== contextMenu.savedId,
+                              ) ?? [],
+                          },
+                        });
+                    },
                   },
                   { label: "Close menu", run: () => {} },
                 ]
-              : contextMenu.kind === "object"
+              : contextMenu.kind === "history"
                 ? [
                     {
-                      label: "Object properties",
-                      disabled: busy,
-                      run: () => setToolPanelOpen(true),
-                    },
-                    {
-                      label: selected?.visible ? "Hide object" : "Show object",
-                      disabled: busy || !selected,
+                      label: "Restore this revision",
+                      disabled:
+                        busy ||
+                        contextMenu.revision === undefined ||
+                        contextMenu.revision >= history.length,
                       run: () => {
-                        if (selected)
-                          commit(
-                            entities.map((e) =>
-                              e.id === selected.id
-                                ? { ...e, visible: !e.visible }
-                                : e,
-                            ),
-                          );
+                        if (contextMenu.revision !== undefined)
+                          restoreRevision(contextMenu.revision);
                       },
                     },
                     {
-                      label: "Edit scan selection",
-                      disabled: busy || !selected || selected.kind !== "mesh",
-                      run: () => {
-                        setMode("brush");
-                        setWorkspace("edit");
-                        setToolPanelOpen(true);
-                      },
+                      label: "Undo",
+                      disabled: busy || !history.length,
+                      run: undo,
                     },
                     {
-                      label: "Delete object",
-                      disabled: busy || !selected,
-                      run: deleteSelected,
+                      label: "Redo",
+                      disabled: busy || !future.length,
+                      run: redo,
                     },
                     { label: "Close menu", run: () => {} },
                   ]
-                : [
-                    {
-                      label: "Fit visible objects",
-                      disabled: busy,
-                      run: () => viewport.current?.fitView(),
-                    },
-                    {
-                      label: "Object properties",
-                      disabled: busy || !selected,
-                      run: () => setToolPanelOpen(true),
-                    },
-                    {
-                      label: "Edit scan selection",
-                      disabled: busy || !selected,
-                      run: () => {
-                        setMode("brush");
-                        setWorkspace("edit");
-                        setToolPanelOpen(true);
+                : contextMenu.kind === "object"
+                  ? [
+                      {
+                        label: "Object properties",
+                        disabled: busy,
+                        run: () => setToolPanelOpen(true),
                       },
-                    },
-                    {
-                      label: "Select all triangles",
-                      disabled: busy || !selected,
-                      run: () => {
-                        if (selected)
-                          setTriangleMask(
-                            new Uint8Array(selected.positions.length / 9).fill(
-                              1,
-                            ),
-                          );
+                      {
+                        label: selected?.visible
+                          ? "Hide object"
+                          : "Show object",
+                        disabled: busy || !selected,
+                        run: () => {
+                          if (selected)
+                            commit(
+                              entities.map((e) =>
+                                e.id === selected.id
+                                  ? { ...e, visible: !e.visible }
+                                  : e,
+                              ),
+                            );
+                        },
                       },
-                    },
-                    {
-                      label: "Invert triangle selection",
-                      disabled: busy || !selected,
-                      run: () => {
-                        if (selected)
-                          setTriangleMask(
-                            Uint8Array.from(
-                              { length: selected.positions.length / 9 },
-                              (_, i) => (triangleMask?.[i] ? 0 : 1),
-                            ),
-                          );
+                      {
+                        label: "Edit scan selection",
+                        disabled: busy || !selected || selected.kind !== "mesh",
+                        run: () => {
+                          setMode("brush");
+                          setWorkspace("mesh");
+                          setToolPanelOpen(true);
+                        },
                       },
-                    },
-                    {
-                      label: "Clear triangle selection",
-                      disabled: busy,
-                      run: () => setTriangleMask(null),
-                    },
-                    {
-                      label: "Copy selected triangles",
-                      disabled: busy || !selectedTriangleCount,
-                      run: () => editSelection("copy"),
-                    },
-                    {
-                      label: "Cut selected triangles",
-                      disabled: busy || !selectedTriangleCount,
-                      run: () => editSelection("cut"),
-                    },
-                    {
-                      label: "Delete selected triangles",
-                      disabled: busy || !selectedTriangleCount,
-                      run: () => editSelection("delete"),
-                    },
-                    { label: "Close menu", run: () => {} },
-                  ]
+                      {
+                        label: "Delete object",
+                        disabled: busy || !selected,
+                        run: deleteSelected,
+                      },
+                      { label: "Close menu", run: () => {} },
+                    ]
+                  : [
+                      {
+                        label: "Fit visible objects",
+                        disabled: busy,
+                        run: () => viewport.current?.fitView(),
+                      },
+                      {
+                        label: "Object properties",
+                        disabled: busy || !selected,
+                        run: () => setToolPanelOpen(true),
+                      },
+                      {
+                        label: "Edit scan selection",
+                        disabled: busy || !selected,
+                        run: () => {
+                          setMode("brush");
+                          setWorkspace("mesh");
+                          setToolPanelOpen(true);
+                        },
+                      },
+                      {
+                        label: "Select all triangles",
+                        disabled: busy || !selected,
+                        run: () => {
+                          if (selected)
+                            changeSelection(
+                              new Uint8Array(
+                                selected.positions.length / 9,
+                              ).fill(1),
+                            );
+                        },
+                      },
+                      {
+                        label: "Invert triangle selection",
+                        disabled: busy || !selected,
+                        run: () => {
+                          if (selected)
+                            changeSelection(
+                              Uint8Array.from(
+                                { length: selected.positions.length / 9 },
+                                (_, i) => (triangleMask?.[i] ? 0 : 1),
+                              ),
+                            );
+                        },
+                      },
+                      {
+                        label: "Hide selected triangles",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => selectionVisibility("hide"),
+                      },
+                      {
+                        label: "Isolate selected triangles",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => selectionVisibility("isolate"),
+                      },
+                      {
+                        label: "Show hidden triangles",
+                        disabled:
+                          busy || !selected?.meshSelection?.hidden.length,
+                        run: () => selectionVisibility("reveal"),
+                      },
+                      {
+                        label: "Undo selection",
+                        disabled: busy || !selectionSession?.canUndo,
+                        run: () => selectionUndo(),
+                      },
+                      {
+                        label: "Redo selection",
+                        disabled: busy || !selectionSession?.canRedo,
+                        run: () => selectionUndo(true),
+                      },
+                      {
+                        label: "Save selection",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => {
+                          setMode("brush");
+                          setWorkspace("mesh");
+                          setToolPanelOpen(true);
+                        },
+                      },
+                      {
+                        label: "Clear triangle selection",
+                        disabled: busy,
+                        run: () => changeSelection(null),
+                      },
+                      {
+                        label: "Copy selected triangles",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => editSelection("copy"),
+                      },
+                      {
+                        label: "Cut selected triangles",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => editSelection("cut"),
+                      },
+                      {
+                        label: "Delete selected triangles",
+                        disabled: busy || !selectedTriangleCount,
+                        run: () => editSelection("delete"),
+                      },
+                      { label: "Close menu", run: () => {} },
+                    ]
           }
         />
       )}
@@ -1606,6 +1868,67 @@ export function App() {
                     </span>
                     <span>{entity.name}</span>
                   </button>
+                  {!!entity.meshSelection?.saved.length && (
+                    <ul className="saved-selection-list">
+                      {entity.meshSelection.saved.map((saved) => (
+                        <li
+                          key={saved.id}
+                          onContextMenu={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            if (!busy) {
+                              setSelectedId(entity.id);
+                              setContextMenu({
+                                x: event.clientX,
+                                y: event.clientY,
+                                kind: "saved",
+                                savedId: saved.id,
+                                objectId: entity.id,
+                              });
+                            }
+                          }}
+                        >
+                          <button
+                            title="Double-click to restore selection"
+                            onDoubleClick={() =>
+                              restoreSelection(entity, saved.id)
+                            }
+                          >
+                            {saved.name}
+                          </button>
+                          <button
+                            aria-label={`Restore selection ${saved.name}`}
+                            onClick={() => restoreSelection(entity, saved.id)}
+                          >
+                            Restore
+                          </button>
+                          <button
+                            aria-label={`Delete selection ${saved.name}`}
+                            onClick={() => {
+                              setEntities((previous) =>
+                                previous.map((e) =>
+                                  e.id === entity.id
+                                    ? {
+                                        ...e,
+                                        meshSelection: {
+                                          hidden: e.meshSelection?.hidden ?? [],
+                                          saved: e.meshSelection!.saved.filter(
+                                            (s) => s.id !== saved.id,
+                                          ),
+                                        },
+                                      }
+                                    : e,
+                                ),
+                              );
+                              setDirty(true);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
@@ -1902,17 +2225,17 @@ export function App() {
                   <div className="button-row">
                     <button
                       onClick={() =>
-                        setTriangleMask(
+                        changeSelection(
                           new Uint8Array(selected.positions.length / 9).fill(1),
                         )
                       }
                     >
                       Select all
                     </button>
-                    <button onClick={() => setTriangleMask(null)}>Clear</button>
+                    <button onClick={() => changeSelection(null)}>Clear</button>
                     <button
                       onClick={() =>
-                        setTriangleMask(
+                        changeSelection(
                           Uint8Array.from(
                             { length: selected.positions.length / 9 },
                             (_, index) => (triangleMask?.[index] ? 0 : 1),
@@ -1949,6 +2272,65 @@ export function App() {
                     </p>
                   )}
                 </Panel>
+                {mode === "brush" && (
+                  <Panel title="Selection state">
+                    <p>
+                      {selected.meshSelection?.hidden.length ?? 0} hidden
+                      triangles
+                    </p>
+                    <div className="button-row">
+                      <button
+                        disabled={busy || !selectedTriangleCount}
+                        onClick={() => selectionVisibility("hide")}
+                      >
+                        Hide selected
+                      </button>
+                      <button
+                        disabled={busy || !selectedTriangleCount}
+                        onClick={() => selectionVisibility("isolate")}
+                      >
+                        Isolate selected
+                      </button>
+                      <button
+                        disabled={
+                          busy || !selected.meshSelection?.hidden.length
+                        }
+                        onClick={() => selectionVisibility("reveal")}
+                      >
+                        Show hidden
+                      </button>
+                    </div>
+                    <div className="button-row">
+                      <button
+                        disabled={busy || !selectionSession?.canUndo}
+                        onClick={() => selectionUndo()}
+                      >
+                        Undo selection
+                      </button>
+                      <button
+                        disabled={busy || !selectionSession?.canRedo}
+                        onClick={() => selectionUndo(true)}
+                      >
+                        Redo selection
+                      </button>
+                    </div>
+                    <label className="field">
+                      <span>Selection name</span>
+                      <input
+                        aria-label="Selection name"
+                        value={selectionName}
+                        maxLength={200}
+                        onChange={(e) => setSelectionName(e.target.value)}
+                      />
+                    </label>
+                    <button
+                      disabled={busy || !selectedTriangleCount}
+                      onClick={saveSelection}
+                    >
+                      Save selection
+                    </button>
+                  </Panel>
+                )}
                 <Panel title="Geometry" className="geometry-panel">
                   {selected.fit && (
                     <p className="muted">

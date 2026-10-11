@@ -16,8 +16,11 @@ export interface SelectionView {
 /** Screen centroid selection with exact accelerated ray tests for self-occlusion of the selected mesh. */
 export class ScreenSelectionIndex {
   private readonly geometry = new THREE.BufferGeometry();
-  private readonly tree: MeshBVH;
-  constructor(private readonly positions: Positions) {
+  private readonly tree: MeshBVH | undefined;
+  constructor(
+    private readonly positions: Positions,
+    private readonly hidden: number[] = [],
+  ) {
     if (!positions.length || positions.length % 9)
       throw new Error("Screen selection requires finite complete triangles.");
     for (let i = 0; i < positions.length; i++)
@@ -31,7 +34,22 @@ export class ScreenSelectionIndex {
         ? new THREE.BufferAttribute(positions, 3)
         : new THREE.Float32BufferAttribute(positions, 3),
     );
-    this.tree = new MeshBVH(this.geometry, { indirect: true });
+    if (hidden.length) {
+      const hiddenSet = new Set(hidden),
+        indices = new Uint32Array((positions.length / 9 - hidden.length) * 3);
+      let offset = 0;
+      for (let i = 0; i < positions.length / 9; i++)
+        if (!hiddenSet.has(i)) {
+          indices[offset++] = i * 3;
+          indices[offset++] = i * 3 + 1;
+          indices[offset++] = i * 3 + 2;
+        }
+      this.geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    }
+    this.tree =
+      hidden.length === positions.length / 9
+        ? undefined
+        : new MeshBVH(this.geometry, { indirect: true });
   }
   select(
     camera: THREE.Camera,
@@ -61,7 +79,9 @@ export class ScreenSelectionIndex {
       cy = (minY + maxY) / 2,
       rx = (maxX - minX) / 2,
       ry = (maxY - minY) / 2;
+    const hiddenSet = new Set(this.hidden);
     for (let i = 0; i < this.positions.length; i += 9) {
+      if (hiddenSet.has(i / 9)) continue;
       point.set(
         (this.positions[i] + this.positions[i + 3] + this.positions[i + 6]) / 3,
         (this.positions[i + 1] +
@@ -86,7 +106,7 @@ export class ScreenSelectionIndex {
       if (!view.through) {
         ndc.set(projected.x, projected.y);
         raycaster.setFromCamera(ndc, camera);
-        const hit = this.tree.raycastFirst(
+        const hit = this.tree?.raycastFirst(
           raycaster.ray,
           THREE.DoubleSide,
           camera instanceof THREE.PerspectiveCamera ? camera.near : 0,
