@@ -137,3 +137,7 @@ The separate fixed-variable re-solve computes residual-like values from the supp
 Batch variable selection differs from the single nearest-integer rule. It can scale values by supplied per-variable factors, accumulate rounding residuals against a budget, and initialize an adaptive selection pass using budget multipliers 0.00001, 0.0001, 0.001, 0.01 and 0.05. Its delegate and parameter semantics remain unresolved. Evidence: `ev_16034cc9ae1fd3f80a3f0d015d9115a41cb9b1617a59d9eb55b8359950dbd740`.
 
 These are static arithmetic, call and ownership observations. They do not establish the surface objective, geometry constraints, positive-definiteness, matrix assembly, complete failure contract or an equivalent browser implementation. No application behavior changed in this inspection slice.
+
+## Iterative numerical component — 2026-10-12
+
+Subsequent REA helper recovery established active-support sparse multiplication, subset dot products/norms, solution and residual updates, direction recurrence and inverse-diagonal scaling. Together with the prior solve body and call-site assembly, this establishes conjugate gradient with an optional diagonal preconditioner. The independently written browser numerical component and its precise validation/remaining integration boundary are documented in [FIELD_SOLVER.md](FIELD_SOLVER.md). It is not connected to automatic reconstruction; the original geometry-to-matrix assembly, integer-fixing callbacks and topology producer remain unresolved.
