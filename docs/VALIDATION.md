@@ -390,3 +390,14 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Targeted Prettier and `git diff --check`: passed.
 - Live preview returned HTTP 200. Bundle `scanforge-0252d3aa394134e3` is unchanged because this computational component is not yet bound to reconstruction UI; no browser draft was reset.
 - Fallback direction/strength production, full cache/worker lifecycle, quad/NURBS generation, native application workflow parity and physical SpaceMouse validation remain incomplete or unverified.
+
+### Recovered fallback curvature direction/strength branch - 2026-10-12
+
+- `npm run build`: passed, zero warnings/errors; 28 offline assets.
+- Focused fallback/stable/constrained/propagation tests: 233 passed in 4 files.
+- `npm test`: 1108 passed in 81 files.
+- Seventy-two isolated native fallback cases exactly match index, direction, eigenvalue, flag and strength outputs. This comparison uses supplied valid caches and owned allocation/free callbacks; it does not validate native allocation, cache lifecycle or complete application workflows.
+- Retained REA worker assembly supplies branch logic. Independent digest-verified PE reads establish constants and original powf import jumps; no new REA provider session was started. System CRT powf/acos are bound only within the isolated owned-memory probe. Arbitrary power-function equivalence remains unproven.
+- Mixed-face integration exercises stable, constrained and fallback branch composition. Full downstream field/quad/NURBS and browser reconstruction integration remain incomplete.
+- Native executable memory and temporary allocation buffers were released, the bounded probe exited and its exact PID was verified absent.
+- Targeted Prettier and `git diff --check`: passed. Live preview returned HTTP 200; UI bundle `scanforge-0252d3aa394134e3` remains current and unchanged. No browser draft was reset.
