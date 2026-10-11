@@ -703,20 +703,29 @@ export class Viewport {
     }
   }
 
-  setSectionLines(segments: number[]): void {
+  setSectionLines(
+    segments: number[],
+    color = "#ed8a30",
+    projected?: number[],
+  ): void {
     this.clearGroup(this.section);
-    if (segments.length) {
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(segments, 3),
-      );
-      this.section.add(
-        new THREE.LineSegments(
-          geometry,
-          new THREE.LineBasicMaterial({ color: "#ed8a30", depthTest: false }),
-        ),
-      );
+    for (const [lines, tint] of [
+      [segments, color],
+      [projected ?? [], "#888888"],
+    ] as const) {
+      if (lines.length) {
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(lines, 3),
+        );
+        this.section.add(
+          new THREE.LineSegments(
+            geometry,
+            new THREE.LineBasicMaterial({ color: tint, depthTest: false }),
+          ),
+        );
+      }
     }
     this.invalidate();
   }

@@ -1,4 +1,8 @@
 import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
+import {
+  validateSketchReference,
+  type SketchReference,
+} from "./sketch-reference";
 
 export interface SketchPoint {
   id: string;
@@ -48,6 +52,7 @@ export type SketchConstraint =
 export interface Sketch {
   version: 1;
   frame?: SketchFrame;
+  reference?: SketchReference;
   points: SketchPoint[];
   segments: SketchSegment[];
   arcs?: SketchArc[];
@@ -67,6 +72,11 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     throw new Error("Sketch must be an object.");
   if ((input as Sketch).frame !== undefined)
     validateSketchFrame((input as Sketch).frame);
+  if ((input as Sketch).reference !== undefined) {
+    if (!(input as Sketch).frame)
+      throw new Error("Scan reference requires a sketch frame.");
+    validateSketchReference((input as Sketch).reference);
+  }
   const value = input as Record<string, unknown>;
   if (
     value.version !== 1 ||

@@ -132,14 +132,28 @@ export function SketchTools({
       return { id: arc.id, samples: [] as [number, number][] };
     }
   });
-  const bounds = [
-    ...preview.map((p) => [p.x, p.y]),
-    ...arcPreview.flatMap((arc) => arc.samples),
-  ];
-  const minX = Math.min(0, ...bounds.map((p) => p[0])) - 10,
-    minY = Math.min(0, ...bounds.map((p) => p[1])) - 10;
-  const spanX = Math.max(10, ...bounds.map((p) => p[0])) - minX + 10,
-    spanY = Math.max(10, ...bounds.map((p) => p[1])) - minY + 10;
+  let lowX = 0,
+    lowY = 0,
+    highX = 10,
+    highY = 10;
+  const extend = (x: number, y: number) => {
+    lowX = Math.min(lowX, x);
+    lowY = Math.min(lowY, y);
+    highX = Math.max(highX, x);
+    highY = Math.max(highY, y);
+  };
+  for (const p of preview) extend(p.x, p.y);
+  for (const arc of arcPreview) for (const p of arc.samples) extend(p[0], p[1]);
+  const referenceSegments = sketch.reference?.segments ?? [];
+  for (let i = 0; i < referenceSegments.length; i += 2)
+    extend(referenceSegments[i], referenceSegments[i + 1]);
+  const minX = lowX - 10,
+    minY = lowY - 10,
+    spanX = highX - minX + 10,
+    spanY = highY - minY + 10;
+  let referencePath = "";
+  for (let i = 0; i < referenceSegments.length; i += 4)
+    referencePath += `M${referenceSegments[i]},${referenceSegments[i + 1]}L${referenceSegments[i + 2]},${referenceSegments[i + 3]} `;
   return (
     <section className="panel sketch-panel" aria-label="Parametric sketch">
       <h3>Parametric sketch</h3>
@@ -201,6 +215,15 @@ export function SketchTools({
           border: "1px solid var(--border)",
         }}
       >
+        {referencePath && (
+          <path
+            aria-label="Scan section references"
+            d={referencePath}
+            fill="none"
+            stroke="#888888"
+            strokeWidth={spanX / 250}
+          />
+        )}
         {sketch.segments.map((s) => {
           const a = preview.find((p) => p.id === s.a),
             b = preview.find((p) => p.id === s.b);

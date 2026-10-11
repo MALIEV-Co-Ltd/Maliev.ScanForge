@@ -61,7 +61,16 @@ export interface Project {
   name: string;
   units: "mm";
   entities: Entity[];
-  authoring?: { sketch?: Sketch };
+  authoring?: {
+    sketch?: Sketch;
+    sketches?: SavedSketch[];
+    activeSketchId?: string;
+  };
+}
+export interface SavedSketch {
+  id: string;
+  name: string;
+  sketch: Sketch;
 }
 export type KernelPrimitive =
   | { kind: "box"; center: Vec3; size: Vec3 }

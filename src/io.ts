@@ -237,14 +237,43 @@ export function parseProject(text: string): Project {
     throw new Error("Invalid authoring metadata.");
   if (input.authoring?.sketch !== undefined)
     validateSketch(input.authoring.sketch);
+  if (input.authoring?.sketches !== undefined) {
+    if (!Array.isArray(input.authoring.sketches))
+      throw new Error("Invalid saved sketches.");
+    const sketchIds = new Set<string>();
+    for (const item of input.authoring.sketches) {
+      if (
+        !item ||
+        typeof item.id !== "string" ||
+        !item.id ||
+        sketchIds.has(item.id) ||
+        typeof item.name !== "string" ||
+        item.name.length > 200
+      )
+        throw new Error("Invalid saved sketch identity.");
+      sketchIds.add(item.id);
+      validateSketch(item.sketch);
+    }
+  }
+  if (
+    input.authoring?.activeSketchId !== undefined &&
+    !input.authoring.sketches?.some(
+      (s) => s.id === input.authoring!.activeSketchId,
+    )
+  )
+    throw new Error("Active saved sketch is missing.");
   return {
     format: "maliev-scanforge",
     version: 1,
     name: input.name,
     units: "mm",
     entities,
-    authoring: input.authoring?.sketch
-      ? { sketch: input.authoring.sketch }
+    authoring: input.authoring
+      ? {
+          sketch: input.authoring.sketch,
+          sketches: input.authoring.sketches,
+          activeSketchId: input.authoring.activeSketchId,
+        }
       : undefined,
   };
 }

@@ -598,7 +598,13 @@ export function sectionMesh(
   positions: Positions,
   axis: "x" | "y" | "z",
   offset: number,
+  options: {
+    includeTriangle?: (slot: number) => boolean;
+    onProgress?: (fraction: number, stage: string) => void;
+  } = {},
 ): SectionResult {
+  if (!["x", "y", "z"].includes(axis))
+    throw new Error("Unsupported section axis.");
   if (!Number.isFinite(offset))
     throw new Error("Section offset must be finite.");
   validatePositions(positions, true);
@@ -611,6 +617,9 @@ export function sectionMesh(
     seen = new Set<string>();
   let length = 0;
   for (let i = 0; i < positions.length; i += 9) {
+    if (i % (4096 * 9) === 0)
+      options.onProgress?.(i / positions.length, "Extracting scan section");
+    if (options.includeTriangle && !options.includeTriangle(i / 9)) continue;
     const triangle: Vec3[] = [
       [positions[i]!, positions[i + 1]!, positions[i + 2]!],
       [positions[i + 3]!, positions[i + 4]!, positions[i + 5]!],
@@ -643,6 +652,7 @@ export function sectionMesh(
     segments.push(...a, ...b);
     length += norm(sub(b, a));
   }
+  options.onProgress?.(1, "Scan section extracted");
   return { segments, length };
 }
 

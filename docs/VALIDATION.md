@@ -1,4 +1,14 @@
+Final continuation recheck: build passed with zero warnings/errors (offline manifest scanforge-988ed468f9cfd043); focused checks passed 37/37 and full suite passed 267/267 after the document-reset guard correction. Targeted Prettier and diff whitespace checks passed. The retained browser screenshot predates the final inspector-header wording change; fresh browser inventory attempts timed out, so no fresh render claim is made. Codex preview opening returned queued. The existing loopback preview returned HTTP 200 and retains its finite lease.
+
 # Initial workbench validation — 2026-10-11
+
+Scan-section sketch workflow - 2026-10-11
+
+Build passed with zero warnings/errors and28 offline assets. Focused section/geometry/project/dialog/reference-renderer checks passed37/37; the full suite passed267 tests across46 files. Checks cover all coordinate planes, slicing versus projected frame placement, original-slot selected/hidden filtering, empty/stale selection rejection, nonintersection errors, frozen reference persistence in both project paths, saved sketch identities/active selection validation, empty editable geometry, actual processing-worker response ownership, and release of actual/projected reference line geometry/materials. A65000-segment SVG reference test passes without argument-spread overflow or creating editable curves.
+
+Browser: the loaded1452-triangle demonstration scan produces128 actual section segments at Z10. Preview leaves model history at0. Selected-only extraction with no selection fails and disables Create; Cancel preserves history0. Creating a sketch projected onto the reference plane yields offset0, one reference path and zero editable lines. A second sketch retains slice placement at Z20; switching between sketches restores independent geometry and offsets. Four explicitly authored points and a closed four-line profile on the second sketch extrude to exact CAD with bounds20x10x5mm and volume1000mm3, adding exactly one modeling-history entry. Switching afterward confirms the first sketch still has zero editable points and the second retains four. Browser warning/error logs are empty; project download completion is visible, but downloaded-file readback was not completed. Both serializer/parser paths are covered automatically. Proof is retained privately at .resources/scan-section-sketch-proof.png.
+
+The finite native probe exited0 and PID66704 is absent. The prior preview server shut down at its scheduled expiry; the replacement runs in a bounded terminal session with PID42980, loopback port5173 and expiry2026-10-11T18:30:06.996Z. Original algorithm equivalence, interactive drawing, picked primitive planes, stacked/revolved/outline modes, full gigabyte scans and physical SpaceMouse are not validated by this slice.
 
 Sketch world placement - 2026-10-11
 

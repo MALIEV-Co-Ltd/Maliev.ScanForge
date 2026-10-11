@@ -2,8 +2,21 @@ import type { Positions } from "./types";
 import type { RegistrationResult } from "./registration";
 import type { RegionClassification } from "./mesh-processing";
 import type { MeshSheetDiagnostics } from "./mesh-processing";
+import type {
+  SketchSectionOptions,
+  SketchSectionResult,
+} from "./sketch-section";
 
 export type ProcessingRequest =
+  | {
+      kind: "sketchSection";
+      positions: Positions;
+      options: SketchSectionOptions;
+      sourceId: string;
+      hidden: number[];
+      selection?: Uint8Array;
+      sampled: boolean;
+    }
   | {
       kind: "connectedSelection";
       allConnected?: boolean;
@@ -68,6 +81,7 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  sketchSection?: SketchSectionResult;
   selection?: Uint8Array;
   kind: ProcessingRequest["kind"];
   positions?: Float32Array;

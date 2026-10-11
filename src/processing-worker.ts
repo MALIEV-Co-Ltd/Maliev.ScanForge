@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { extractSketchSection } from "./sketch-section";
 import {
   analyzeMesh,
   classifyRegion,
@@ -51,7 +52,17 @@ scope.onmessage = ({ data: request }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "connectedSelection") {
+    if (request.kind === "sketchSection") {
+      result.sketchSection = extractSketchSection(
+        request.positions,
+        request.options,
+        request.sourceId,
+        request.hidden,
+        request.selection,
+        request.sampled,
+        progress,
+      );
+    } else if (request.kind === "connectedSelection") {
       result.selection = growConnectedSelection(
         request.positions,
         request.seeds,

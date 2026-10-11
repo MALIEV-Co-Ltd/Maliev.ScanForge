@@ -1,4 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { SavedSketch } from "../types";
+import { CreateSketchDialog } from "./CreateSketchDialog";
+import {
+  referenceWorldSegments,
+  type SketchSectionOptions,
+  type SketchSectionResult,
+} from "../sketch-section";
 import * as THREE from "three";
 import {
   Box,
@@ -143,6 +150,18 @@ export function App() {
   const [name, setName] = useState("Untitled project");
   const [mode, setMode] = useState<Mode>("inspect");
   const [workspace, setWorkspace] = useState("measure");
+  const [savedSketches, setSavedSketches] = useState<SavedSketch[]>([]);
+  const [activeSketchId, setActiveSketchId] = useState<string | null>(null);
+  const [createSketch, setCreateSketch] = useState<{
+    source: Entity;
+    hidden: number[];
+    selection?: Uint8Array;
+    preview?: SketchSectionResult;
+  } | null>(null);
+  const createSketchRef = useRef(createSketch);
+  createSketchRef.current = createSketch;
+  const sketchSectionAbort = useRef<AbortController | null>(null);
+  const legacySketch = useRef<Sketch>(rectangleSketch());
   const [ribbonTab, setRibbonTab] = useState("main");
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
   const [nPoints, setNPoints] = useState<LandmarkAlignment | null>(null);
@@ -313,7 +332,7 @@ export function App() {
         viewportHost.current!,
         (point, id) => {
           if (busyRef.current) return;
-          if (surfaceFitRef.current) return;
+          if (surfaceFitRef.current || createSketchRef.current) return;
           if (nPointsRef.current) {
             if (nPointsRef.current.preview) {
               setMessage(
@@ -336,7 +355,12 @@ export function App() {
           else setAnchor(point);
         },
         (id) => {
-          if (!busyRef.current && !nPointsRef.current && !surfaceFitRef.current)
+          if (
+            !busyRef.current &&
+            !nPointsRef.current &&
+            !surfaceFitRef.current &&
+            !createSketchRef.current
+          )
             setSelectedId(id);
         },
         (id, mask, remove) => {
@@ -569,8 +593,33 @@ export function App() {
   }, [selected?.positions, triangleMask, nPoints]);
   useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
-    viewport.current?.setSectionLines(section.segments);
-  }, [axis, offset, mode, section]);
+    const preview = createSketch?.preview;
+    viewport.current?.setSectionLines(
+      preview
+        ? preview.actualSegments
+        : workspace === "sketch" && sketchDraft.reference && sketchDraft.frame
+          ? referenceWorldSegments(sketchDraft.frame, sketchDraft.reference)
+          : section.segments,
+      preview ? "#eeeeee" : workspace === "sketch" ? "#888888" : "#ed8a30",
+      preview && !preview.reference.onSlicingPlane
+        ? preview.placedSegments
+        : undefined,
+    );
+  }, [axis, offset, mode, section, createSketch, workspace, sketchDraft]);
+  useEffect(() => {
+    if (
+      createSketch &&
+      !entities.some(
+        (e) =>
+          e.id === createSketch.source.id &&
+          e.positions === createSketch.source.positions,
+      )
+    ) {
+      cancelSketchCreation();
+      setError("Source scan changed. Reopen Create Sketch.");
+    }
+  }, [entities, createSketch]);
+  useEffect(() => () => sketchSectionAbort.current?.abort(), []);
   useEffect(() => {
     viewport.current?.setMeasurement(measure);
   }, [measure]);
@@ -1080,6 +1129,10 @@ export function App() {
   }
   function newDocument() {
     if (busy) return;
+    cancelSketchCreation();
+    setSavedSketches([]);
+    setActiveSketchId(null);
+    legacySketch.current = rectangleSketch();
     setNewDocumentDialog(false);
     cad.current?.dispose();
     cad.current = new CadClient();
@@ -1145,9 +1198,22 @@ export function App() {
           knownKernelIds.current = new Set();
           pendingImportFit.current = null;
           setEntities(restored);
-          setSelectedId(restored[0]?.id ?? null);
+          setSelectedId(
+            project.authoring?.activeSketchId
+              ? null
+              : (restored[0]?.id ?? null),
+          );
           setName(project.name);
-          setSketchDraft(project.authoring?.sketch ?? rectangleSketch());
+          setSavedSketches(project.authoring?.sketches ?? []);
+          legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
+          setActiveSketchId(project.authoring?.activeSketchId ?? null);
+          setSketchDraft(
+            project.authoring?.sketches?.find(
+              (s) => s.id === project.authoring?.activeSketchId,
+            )?.sketch ??
+              project.authoring?.sketch ??
+              rectangleSketch(),
+          );
           setHistory([]);
           setFuture([]);
           setDirty(false);
@@ -1538,6 +1604,114 @@ export function App() {
       setMessage(`Created exact ${operation} result`);
     });
   }
+  function cancelSketchCreation() {
+    sketchSectionAbort.current?.abort();
+    sketchSectionAbort.current = null;
+    createSketchRef.current = null;
+    setCreateSketch(null);
+    setToolPanelOpen(false);
+  }
+  function openSketchCreation() {
+    if (!selected || selected.kind !== "mesh" || selected.surfacePatch) {
+      showTools("sketch");
+      setError(
+        "Select a scan mesh to create section references. Saved sketches remain editable.",
+      );
+      return;
+    }
+    setMode("inspect");
+    setToolPanelOpen(true);
+    setError("");
+    setCreateSketch({
+      source: selected,
+      hidden: [...(selected.meshSelection?.hidden ?? [])],
+      selection: triangleMask ? new Uint8Array(triangleMask) : undefined,
+    });
+  }
+  async function applySketchSection(options: SketchSectionOptions) {
+    const session = createSketchRef.current;
+    if (!session || busy) return;
+    setCreateSketch({ ...session, preview: undefined });
+    await action("Extracting sketch reference section…", async () => {
+      const controller = new AbortController();
+      sketchSectionAbort.current = controller;
+      try {
+        const result = await processMesh(
+          {
+            kind: "sketchSection",
+            positions: session.source.positions,
+            sourceId: session.source.id,
+            hidden: session.hidden,
+            selection: session.selection,
+            options,
+            sampled:
+              !!session.source.scanSource &&
+              session.source.scanSource.displayedTriangles <
+                session.source.scanSource.triangles,
+          },
+          {
+            signal: controller.signal,
+            onProgress: (_, stage) => setMessage(stage),
+          },
+        );
+        if (
+          controller.signal.aborted ||
+          createSketchRef.current?.source !== session.source
+        )
+          return;
+        if (!result.sketchSection)
+          throw new Error("Section extraction returned no reference data.");
+        setCreateSketch({ ...session, preview: result.sketchSection });
+      } finally {
+        if (sketchSectionAbort.current === controller)
+          sketchSectionAbort.current = null;
+      }
+    });
+  }
+  function acceptSketchSection() {
+    const session = createSketchRef.current;
+    if (
+      busy ||
+      !session?.preview ||
+      !entities.some(
+        (e) =>
+          e.id === session.source.id &&
+          e.positions === session.source.positions,
+      )
+    )
+      return;
+    const item: SavedSketch = {
+      id: crypto.randomUUID(),
+      name: `Sketch ${savedSketches.length + 1}`,
+      sketch: {
+        version: 1,
+        points: [],
+        segments: [],
+        constraints: [],
+        frame: session.preview.frame,
+        reference: session.preview.reference,
+      },
+    };
+    setSavedSketches((previous) => [...previous, item]);
+    setSketchDraft(item.sketch);
+    setSelectedId(null);
+    setActiveSketchId(item.id);
+    setDirty(true);
+    cancelSketchCreation();
+    showTools("sketch");
+    setMessage(
+      "Sketch reference section created · draw or fit editable curves",
+    );
+  }
+  function updateSketchDraft(sketch: Sketch) {
+    setSketchDraft(sketch);
+    if (!activeSketchId) legacySketch.current = sketch;
+    if (activeSketchId)
+      setSavedSketches((previous) =>
+        previous.map((s) => (s.id === activeSketchId ? { ...s, sketch } : s)),
+      );
+    setDirty(true);
+  }
   function extrude(
     points: [number, number][],
     height: number,
@@ -1760,7 +1934,11 @@ export function App() {
   function save() {
     void action("Saving project…", async () => {
       download(
-        await serializeProjectBlob(name, entities, { sketch: sketchDraft }),
+        await serializeProjectBlob(name, entities, {
+          sketch: activeSketchId ? legacySketch.current : sketchDraft,
+          sketches: savedSketches,
+          activeSketchId: activeSketchId ?? undefined,
+        }),
         `${name.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
         "application/json",
       );
@@ -1891,7 +2069,7 @@ export function App() {
         }
         activeTab={ribbonTab}
         onTabChange={setRibbonTab}
-        disabled={busy || !!nPoints || !!surfaceFit}
+        disabled={busy || !!nPoints || !!surfaceFit || !!createSketch}
         hasSelection={!!selected}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -1959,7 +2137,7 @@ export function App() {
           newFreeform: () => showTools("surface"),
           autoFreeform: () => showTools("surface"),
           quadObj: () => showTools("surface"),
-          sketch2d: () => showTools("sketch"),
+          sketch2d: openSketchCreation,
           reducePolygons: () => showTools("processing"),
           reduceNoise: () => showTools("processing"),
           fineAlign: () => showTools("processing"),
@@ -2196,7 +2374,10 @@ export function App() {
         />
       )}
       <main className="workspace">
-        <aside className="explorer" inert={busy || !!nPoints || !!surfaceFit}>
+        <aside
+          className="explorer"
+          inert={busy || !!nPoints || !!surfaceFit || !!createSketch}
+        >
           <div className="objects-panel">
             <h2>
               Objects <Layers size={15} />
@@ -2214,7 +2395,7 @@ export function App() {
               />
             </label>
             <div className="tree-heading">
-              Objects <span>{entities.length}</span>
+              Objects <span>{entities.length + savedSketches.length}</span>
             </div>
             <ul className="object-list">
               {entities.map((entity) => (
@@ -2328,6 +2509,44 @@ export function App() {
                 </li>
               ))}
             </ul>
+            {savedSketches.length > 0 && (
+              <ul className="object-list" aria-label="Sketch objects">
+                {savedSketches.map((item) => (
+                  <li
+                    key={item.id}
+                    className={activeSketchId === item.id ? "selected" : ""}
+                  >
+                    <button
+                      className="object-name"
+                      onClick={() => {
+                        setSelectedId(null);
+                        setActiveSketchId(item.id);
+                        setSketchDraft(item.sketch);
+                        showTools("sketch");
+                      }}
+                    >
+                      <ScanLine size={16} />
+                      <span>{item.name}</span>
+                    </button>
+                    <button
+                      aria-label={`Delete ${item.name}`}
+                      onClick={() => {
+                        setSavedSketches((previous) =>
+                          previous.filter((s) => s.id !== item.id),
+                        );
+                        if (activeSketchId === item.id) {
+                          setActiveSketchId(null);
+                          setSketchDraft(legacySketch.current);
+                        }
+                        setDirty(true);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <section
             className="history-panel"
@@ -2504,6 +2723,16 @@ export function App() {
             </div>
           )}
         </section>
+        {createSketch && (
+          <CreateSketchDialog
+            source={createSketch.source}
+            preview={createSketch.preview}
+            busy={busy}
+            onApply={(options) => void applySketchSection(options)}
+            onCreate={acceptSketchSection}
+            onCancel={cancelSketchCreation}
+          />
+        )}
         {surfaceFit && (
           <FitSurfaceDialog
             session={surfaceFit}
@@ -2547,7 +2776,11 @@ export function App() {
         )}
         <aside
           className="inspector"
-          style={nPoints || surfaceFit ? { display: "none" } : undefined}
+          style={
+            nPoints || surfaceFit || createSketch
+              ? { display: "none" }
+              : undefined
+          }
           inert={actionBusy}
           aria-label="Tool options"
         >
@@ -2941,6 +3174,21 @@ export function App() {
                     </div>
                   </div>
                 </>
+              ) : activeSketchId && workspace === "sketch" ? (
+                <div className="selected-title">
+                  <ScanLine size={25} />
+                  <div>
+                    <strong>
+                      {savedSketches.find((s) => s.id === activeSketchId)?.name}
+                    </strong>
+                    <small>
+                      Sketch ·{" "}
+                      {sketchDraft.reference
+                        ? `${sketchDraft.reference.segments.length / 4} scan reference segments`
+                        : "editable profile"}
+                    </small>
+                  </div>
+                </div>
               ) : (
                 <div className="empty-inspector">
                   Select an object to inspect its geometry, or create a new
@@ -2996,10 +3244,7 @@ export function App() {
               <div className="sketch-panels">
                 <SketchTools
                   value={sketchDraft}
-                  onChange={(sketch) => {
-                    setSketchDraft(sketch);
-                    setDirty(true);
-                  }}
+                  onChange={updateSketchDraft}
                   onExtrude={extrude}
                   disabled={busy}
                 />
