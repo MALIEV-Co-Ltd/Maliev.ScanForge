@@ -9,3 +9,18 @@ export function middleMouseAction(modifiers: {
 export function subtractSelection(explicit: boolean, altKey: boolean): boolean {
   return explicit || altKey;
 }
+import { MOUSE } from "three";
+
+/** OrbitControls swaps ROTATE to pan with Ctrl/Meta; DOLLY ignores modifiers. */
+export function cameraMouseButtons(
+  meshEdit: boolean,
+  modifiers: { shiftKey: boolean; ctrlKey: boolean; metaKey?: boolean },
+) {
+  const navigation =
+    middleMouseAction(modifiers) === "zoom" ? MOUSE.DOLLY : MOUSE.ROTATE;
+  return {
+    LEFT: meshEdit ? null : navigation,
+    MIDDLE: navigation,
+    RIGHT: null,
+  };
+}

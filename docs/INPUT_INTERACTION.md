@@ -4,17 +4,20 @@ ScanForge implements an independently authored CAD mouse scheme. REA inspection 
 
 ## Implemented scheme
 
-| Input                     | Behavior                                                          |
-| ------------------------- | ----------------------------------------------------------------- |
-| Left click in object mode | Pick an object or measurement point                               |
-| Middle drag               | Rotate the view                                                   |
-| Ctrl + middle drag        | Pan                                                               |
-| Shift + middle drag       | Zoom; takes precedence over Ctrl                                  |
-| Right click               | Open viewport actions                                             |
-| Left drag in mesh edit    | Add a screen brush, rectangle or ellipse region                   |
-| Alt + left drag           | Subtract the region                                               |
-| Wand click                | Grow a connected triangle region using the local crease threshold |
-| Ctrl + wheel              | Change brush pixel radius or wand angle                           |
+| Input                               | Behavior                                                          |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| Left click in object mode           | Pick an object or measurement point                               |
+| Left drag outside mesh edit         | Rotate the view (ScanForge convenience gesture)                   |
+| Ctrl + left drag outside mesh edit  | Pan                                                               |
+| Shift + left drag outside mesh edit | Zoom                                                              |
+| Middle drag                         | Rotate the view                                                   |
+| Ctrl + middle drag                  | Pan                                                               |
+| Shift + middle drag                 | Zoom; takes precedence over Ctrl                                  |
+| Right click                         | Open viewport actions                                             |
+| Left drag in mesh edit              | Add a screen brush, rectangle or ellipse region                   |
+| Alt + left drag                     | Subtract the region                                               |
+| Wand click                          | Grow a connected triangle region using the local crease threshold |
+| Ctrl + wheel                        | Change brush pixel radius or wand angle                           |
 
 Visible selection tests selected-mesh self-occlusion at triangle centroids using an indirect BVH. Select through skips that depth test. Indirect indexing preserves original triangle slots, including after acceleration construction. Connected growth follows welded manifold edges and treats ambiguous edges as barriers. Selection changes do not modify source positions. Screen acceleration is discarded when geometry changes or its object/viewport is disposed.
 
@@ -54,3 +57,9 @@ Each mesh has a separate session selection undo/redo stack (20 steps). A screen 
 Named selections persist under `Entity.meshSelection` as sorted original triangle slots with IDs/names. The mesh-child entry restores by double-click, an explicit Restore button or its context menu. Restoration reveals selected slots and keeps unrelated hidden slots; the reference's exact saved-visibility format is unknown. Saved-name deletion is available, but saved-name create/delete/rename undo is not implemented. Both save paths and project parsing validate sparse indices and remain compatible with older projects.
 
 Model history now records object creation/removal and geometry, kernel or parametric authoring changes. Opacity, color, names, object visibility, hidden triangles and named selections do not create steps or clear model redo. Model restoration retains current display settings for surviving objects. This display/history separation follows the user's instruction, not an inferred original implementation. Hidden triangles are display state: current mesh/STEP export retains source geometry. Export-visible triangle parity, region morphology, freehand/line tools, configurable navigation and native handler equivalence remain unresolved.
+
+## Camera drag correction � 2026-10-11
+
+Object-mode left dragging was disabled both when constructing the viewport and when switching selection modes. It now drives OrbitControls while a stationary click still picks an object/measurement point. Capture-phase routing applies Shift zoom precedence before OrbitControls starts the gesture; Ctrl/Meta pan uses OrbitControls' existing modifier handling. Mesh-edit left dragging remains reserved for selection, middle navigation remains enabled in every mode and right-click remains reserved for context menus. Navigate explicitly returns to object/camera mode without changing project geometry or model history.
+
+Left-drag camera navigation is a ScanForge convenience gesture, not a recovered original mouse handler. Documented middle-button behavior remains available. Numerical orbit behavior, pivot selection and navigation presets are still independent implementation choices.

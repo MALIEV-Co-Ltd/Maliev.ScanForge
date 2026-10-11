@@ -13,6 +13,7 @@ import {
   MousePointer2,
   Plus,
   Redo2,
+  Rotate3D,
   Ruler,
   Save,
   ScanLine,
@@ -2098,6 +2099,15 @@ export function App() {
             </div>
           )}
           <div className="view-controls">
+            <button
+              title="Navigate camera: drag to rotate, Ctrl+drag to pan, Shift+drag to zoom"
+              aria-label="Navigate camera"
+              aria-pressed={mode === "inspect"}
+              onClick={() => setMode("inspect")}
+            >
+              <Rotate3D size={15} />
+              Navigate
+            </button>
             <span>Perspective</span>
             {(["iso", "top", "front", "right"] as const).map((view) => (
               <button
@@ -2122,7 +2132,7 @@ export function App() {
                 ? "Click two points on a surface to measure distance"
                 : mode === "section"
                   ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                  : "Left-click selects · middle-drag rotates · Ctrl+middle pans · Shift+middle zooms"}
+                  : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
           </div>
           {mode === "measure" && (
             <div className="measurement">

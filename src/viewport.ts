@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
-import { middleMouseAction, subtractSelection } from "./mouse-input";
+import { cameraMouseButtons, subtractSelection } from "./mouse-input";
 import { ScreenSelectionIndex, type ScreenRegion } from "./screen-selection";
 import { navigateCamera } from "./camera-navigation";
 
@@ -117,9 +117,10 @@ export class Viewport {
     }
     container.appendChild(this.triad);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.mouseButtons.LEFT = null;
-    this.controls.mouseButtons.MIDDLE = THREE.MOUSE.ROTATE;
-    this.controls.mouseButtons.RIGHT = null;
+    Object.assign(
+      this.controls.mouseButtons,
+      cameraMouseButtons(false, { ctrlKey: false, shiftKey: false }),
+    );
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.12;
     this.controls.screenSpacePanning = true;
@@ -226,10 +227,10 @@ export class Viewport {
   };
 
   private pointerDown = (event: PointerEvent): void => {
-    this.controls.mouseButtons.MIDDLE =
-      middleMouseAction(event) === "zoom"
-        ? THREE.MOUSE.DOLLY
-        : THREE.MOUSE.ROTATE;
+    Object.assign(
+      this.controls.mouseButtons,
+      cameraMouseButtons(this.brushing, event),
+    );
     if (event.button !== 0 || !event.isPrimary) return;
     this.pointer = {
       x: event.clientX,
@@ -579,7 +580,10 @@ export class Viewport {
   }
   setBrush(enabled: boolean): void {
     this.brushing = enabled;
-    this.controls.mouseButtons.LEFT = null;
+    Object.assign(
+      this.controls.mouseButtons,
+      cameraMouseButtons(enabled, { ctrlKey: false, shiftKey: false }),
+    );
   }
   setSelectionOptions(
     tool: "brush" | "rectangle" | "circle" | "wand",
