@@ -30,6 +30,8 @@ export class Viewport {
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
+  private readonly landmarkOverlay = document.createElement("div");
+  private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
   private selectionTool: "brush" | "rectangle" | "circle" | "wand" = "brush";
   private brushPixels = 24;
@@ -49,6 +51,7 @@ export class Viewport {
     label: SVGTextElement;
   }[] = [];
   private selectedId: string | null = null;
+  private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
   private disposed = false;
   private frame: number | null = null;
@@ -84,6 +87,9 @@ export class Viewport {
     this.renderer.domElement.style.height = "100%";
     this.renderer.domElement.style.touchAction = "none";
     container.appendChild(this.renderer.domElement);
+    this.landmarkOverlay.style.cssText =
+      "position:absolute;inset:0;pointer-events:none;overflow:hidden";
+    container.appendChild(this.landmarkOverlay);
     this.triad.setAttribute("viewBox", "0 0 100 90");
     this.triad.setAttribute("role", "img");
     this.triad.setAttribute("aria-label", "World axes: X red, Y green, Z blue");
@@ -197,6 +203,12 @@ export class Viewport {
     if (this.disposed) return;
     const moving = this.controls.update();
     this.renderer.render(this.scene, this.camera);
+    for (const marker of this.landmarkLabels) {
+      const projected = new THREE.Vector3(...marker.point).project(this.camera);
+      marker.element.hidden = projected.z < -1 || projected.z > 1;
+      marker.element.style.left = `${((projected.x + 1) * this.container.clientWidth) / 2}px`;
+      marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
+    }
     const inverse = this.camera.quaternion.clone().invert();
     for (const axis of this.axes) {
       const projected = axis.vector.clone().applyQuaternion(inverse);
@@ -406,7 +418,12 @@ export class Viewport {
       this.camera,
     );
     const candidates = [...this.objects.values()]
-      .filter((item) => item.mesh.visible)
+      .filter(
+        (item) =>
+          item.mesh.visible &&
+          (!this.pickTargetId ||
+            item.mesh.userData.entityId === this.pickTargetId),
+      )
       .map((item) => item.mesh);
     const hit = this.raycaster
       .intersectObjects(candidates, false)
@@ -433,6 +450,10 @@ export class Viewport {
       );
     } else this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
   };
+
+  setPickTarget(entityId: string | null): void {
+    this.pickTargetId = entityId;
+  }
 
   setEntities(entities: Entity[], selectedId: string | null): void {
     if (selectedId !== this.selectedId) this.clearDeviations();
@@ -722,6 +743,19 @@ export class Viewport {
     }
     this.invalidate();
   }
+  setAlignmentMarkers(markers: { point: Vec3; label: string }[]): void {
+    this.landmarkOverlay.replaceChildren();
+    this.landmarkLabels = markers.map((marker) => {
+      const element = document.createElement("span");
+      element.textContent = marker.label;
+      element.setAttribute("role", "img");
+      element.setAttribute("aria-label", `Alignment landmark ${marker.label}`);
+      element.style.cssText = `position:absolute;transform:translate(-50%,-50%);padding:3px 5px;border-radius:3px;color:#111;background:${marker.label.startsWith("M") ? "#9dddac" : "#edc98f"};font-weight:700;font-size:12px`;
+      this.landmarkOverlay.appendChild(element);
+      return { point: marker.point, element };
+    });
+    this.invalidate();
+  }
 
   private clearDeviations(): void {
     for (const item of this.objects.values()) {
@@ -809,5 +843,7 @@ export class Viewport {
     canvas.remove();
     this.triad.remove();
     this.selectionOverlay.remove();
+    this.landmarkOverlay.remove();
+    this.landmarkLabels = [];
   }
 }

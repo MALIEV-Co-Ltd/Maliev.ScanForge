@@ -93,6 +93,16 @@ import { SolidTools } from "./SolidTools";
 import { SurfaceTools } from "./SurfaceTools";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
+import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
+import {
+  beginLandmarkAlignment,
+  pickLandmark,
+  landmarkRequest,
+  landmarkSceneUnchanged,
+  acceptLandmarkAlignment,
+  landmarkMarkers,
+  type LandmarkAlignment,
+} from "../landmark-alignment";
 import { EditScanDialog } from "./EditScanDialog";
 import { AdvancedCadTools } from "./AdvancedCadTools";
 import { ParametricTools } from "./ParametricTools";
@@ -125,6 +135,13 @@ export function App() {
   const [workspace, setWorkspace] = useState("measure");
   const [ribbonTab, setRibbonTab] = useState("main");
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
+  const [nPoints, setNPoints] = useState<LandmarkAlignment | null>(null);
+  const [landmarkPickSide, setLandmarkPickSide] = useState<"moving" | "fixed">(
+    "moving",
+  );
+  const nPointsRef = useRef(nPoints);
+  nPointsRef.current = nPoints;
+  const landmarkAbort = useRef<AbortController | null>(null);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [newDocumentDialog, setNewDocumentDialog] = useState(false);
@@ -282,6 +299,20 @@ export function App() {
         viewportHost.current!,
         (point, id) => {
           if (busyRef.current) return;
+          if (nPointsRef.current) {
+            if (nPointsRef.current.preview) {
+              setMessage(
+                "Choose a point-picking mode to return to the original pose before editing landmarks.",
+              );
+              return;
+            }
+            try {
+              setNPoints(pickLandmark(nPointsRef.current, id, point));
+            } catch (error) {
+              setError(errorText(error));
+            }
+            return;
+          }
           setSelectedId(id);
           if (modeRef.current === "measure")
             setMeasure((previous) =>
@@ -290,7 +321,7 @@ export function App() {
           else setAnchor(point);
         },
         (id) => {
-          if (!busyRef.current) setSelectedId(id);
+          if (!busyRef.current && !nPointsRef.current) setSelectedId(id);
         },
         (id, mask, remove) => {
           if (busyRef.current || brushRef.current.entity?.id !== id) return;
@@ -368,12 +399,36 @@ export function App() {
       spaceMouse.current.preferences = spaceMousePreferences;
   }, [spaceMousePreferences]);
   useEffect(() => {
-    viewport.current?.setEntities(entities, selectedId);
+    viewport.current?.setEntities(
+      nPoints?.preview?.positions && landmarkSceneUnchanged(nPoints, entities)
+        ? entities.map((e) =>
+            e.id === nPoints.moving.id
+              ? { ...e, positions: nPoints.preview!.positions! }
+              : e,
+          )
+        : entities,
+      selectedId,
+    );
+    viewport.current?.setAlignmentMarkers(
+      nPoints ? landmarkMarkers(nPoints) : [],
+    );
+    viewport.current?.setPickTarget(
+      nPoints
+        ? landmarkPickSide === "moving"
+          ? nPoints.moving.id
+          : nPoints.fixed.id
+        : null,
+    );
     if (pendingImportFit.current !== undefined) {
       viewport.current?.fitView(pendingImportFit.current ?? undefined);
       pendingImportFit.current = undefined;
     }
-  }, [entities, selectedId]);
+  }, [entities, selectedId, nPoints, landmarkPickSide]);
+  useEffect(() => {
+    if (nPoints && !landmarkSceneUnchanged(nPoints, entities))
+      cancelLandmarks();
+  }, [entities, nPoints]);
+  useEffect(() => () => landmarkAbort.current?.abort(), []);
   useEffect(() => {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
@@ -485,10 +540,10 @@ export function App() {
   ]);
   useEffect(() => {
     viewport.current?.setTriangleSelection(
-      selected?.positions,
+      nPoints ? undefined : selected?.positions,
       triangleMask ?? undefined,
     );
-  }, [selected?.positions, triangleMask]);
+  }, [selected?.positions, triangleMask, nPoints]);
   useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
     viewport.current?.setSectionLines(section.segments);
@@ -704,10 +759,12 @@ export function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
-  function commit(next: Entity[]) {
+  function commit(next: Entity[], preserveSelectionFor?: string) {
     next = next.map((entity) => {
       const old = entities.find((e) => e.id === entity.id);
-      return old && old.positions !== entity.positions
+      return old &&
+        old.positions !== entity.positions &&
+        entity.id !== preserveSelectionFor
         ? { ...entity, meshSelection: undefined }
         : entity;
     });
@@ -789,9 +846,73 @@ export function App() {
     setMessage(`Restored model before ${target.label}`);
   }
   function showTools(nextWorkspace: string) {
+    cancelLandmarks();
     setWorkspace(nextWorkspace);
     setToolPanelOpen(true);
     if (nextWorkspace === "properties") setMode("inspect");
+  }
+  function cancelLandmarks() {
+    landmarkAbort.current?.abort();
+    nPointsRef.current = null;
+    setNPoints(null);
+    setToolPanelOpen(false);
+  }
+  function openLandmarks() {
+    if (!selected) return;
+    const fixed = entities.find(
+      (e) => e.id !== selected.id && e.positions.length >= 9,
+    );
+    if (!fixed) {
+      setError("Import a second scan or CAD target before aligning by points.");
+      return;
+    }
+    try {
+      setNPoints(beginLandmarkAlignment(selected, fixed));
+      setLandmarkPickSide("moving");
+      setMode("inspect");
+      setToolPanelOpen(true);
+    } catch (error) {
+      setError(errorText(error));
+    }
+  }
+  function previewLandmarks() {
+    const session = nPointsRef.current;
+    if (!session || busy) return;
+    void action("Previewing landmark alignment…", async () => {
+      const controller = new AbortController();
+      landmarkAbort.current = controller;
+      try {
+        const result = await processMesh(landmarkRequest(session), {
+          signal: controller.signal,
+        });
+        if (!controller.signal.aborted && nPointsRef.current === session)
+          setNPoints({ ...session, preview: result });
+      } catch (error) {
+        if (!controller.signal.aborted) throw error;
+      } finally {
+        if (landmarkAbort.current === controller) landmarkAbort.current = null;
+      }
+    });
+  }
+  function acceptLandmarks() {
+    if (!nPoints || busy) return;
+    try {
+      const next = acceptLandmarkAlignment(nPoints, entities);
+      const source = next.find((e) => e.id === nPoints.moving.id)!;
+      const session = sessionFor(nPoints.moving);
+      selectionSessions.current.set(source.id, {
+        positions: source.positions,
+        session,
+      });
+      operationLabel.current = "Align by corresponding points";
+      commit(next, source.id);
+      operationLabel.current = null;
+      cancelLandmarks();
+      setMessage("Landmark alignment accepted · fixed target preserved");
+    } catch (error) {
+      operationLabel.current = null;
+      setError(errorText(error));
+    }
   }
   function autoAlign() {
     void action("Aligning principal axes…", () => {
@@ -1678,7 +1799,7 @@ export function App() {
         }
         activeTab={ribbonTab}
         onTabChange={setRibbonTab}
-        disabled={busy}
+        disabled={busy || !!nPoints}
         hasSelection={!!selected}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -1750,7 +1871,7 @@ export function App() {
           reducePolygons: () => showTools("processing"),
           reduceNoise: () => showTools("processing"),
           fineAlign: () => showTools("processing"),
-          alignNPoints: () => showTools("processing"),
+          alignNPoints: openLandmarks,
           repairMesh: () => showTools("processing"),
           segmentMesh: () => showTools("processing"),
           splitSolid: () => showTools("advancedCad"),
@@ -1983,7 +2104,7 @@ export function App() {
         />
       )}
       <main className="workspace">
-        <aside className="explorer" inert={busy}>
+        <aside className="explorer" inert={busy || !!nPoints}>
           <div className="objects-panel">
             <h2>
               Objects <Layers size={15} />
@@ -2291,8 +2412,41 @@ export function App() {
             </div>
           )}
         </section>
+        {nPoints && (
+          <LandmarkAlignmentDialog
+            session={nPoints}
+            targets={entities.filter(
+              (e) => e.id !== nPoints.moving.id && e.positions.length >= 9,
+            )}
+            busy={busy}
+            pickSide={landmarkPickSide}
+            onPickSide={(side) => {
+              setLandmarkPickSide(side);
+              setNPoints({ ...nPoints, preview: undefined });
+            }}
+            onTarget={(id) => {
+              const fixed = entities.find((e) => e.id === id);
+              if (fixed)
+                setNPoints(beginLandmarkAlignment(nPoints.moving, fixed));
+            }}
+            onRemoveLast={() =>
+              setNPoints({
+                ...nPoints,
+                picks: nPoints.picks.slice(0, -1),
+                preview: undefined,
+              })
+            }
+            onRemoveAll={() =>
+              setNPoints({ ...nPoints, picks: [], preview: undefined })
+            }
+            onPreview={previewLandmarks}
+            onAccept={acceptLandmarks}
+            onCancel={cancelLandmarks}
+          />
+        )}
         <aside
           className="inspector"
+          style={nPoints ? { display: "none" } : undefined}
           inert={actionBusy}
           aria-label="Tool options"
         >
@@ -2427,7 +2581,9 @@ export function App() {
                           step="0.05"
                           value={selected.opacity}
                           onChange={(e) =>
-                            updateSelected({ opacity: Number(e.target.value) })
+                            updateSelected({
+                              opacity: Number(e.target.value),
+                            })
                           }
                         />
                         <output>{selected.opacity.toFixed(2)}</output>
@@ -2801,7 +2957,11 @@ export function App() {
                       `${pattern.kind} pattern`,
                       () => cad.current!.pattern(selected!.kernelId!, pattern),
                       undefined,
-                      (refs) => ({ kind: "pattern", source: refs[0], pattern }),
+                      (refs) => ({
+                        kind: "pattern",
+                        source: refs[0],
+                        pattern,
+                      }),
                       [selected!.id],
                     )
                   }
@@ -2900,7 +3060,11 @@ export function App() {
                       "Offset",
                       () => cad.current!.offset(selected!.kernelId!, distance),
                       undefined,
-                      (refs) => ({ kind: "offset", source: refs[0], distance }),
+                      (refs) => ({
+                        kind: "offset",
+                        source: refs[0],
+                        distance,
+                      }),
                       [selected!.id],
                     )
                   }
