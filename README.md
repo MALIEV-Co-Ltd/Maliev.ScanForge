@@ -28,12 +28,16 @@ The build produces `dist/`, including local CAD glue and WASM. Serve this direct
 
 Before distributing bundled kernel binaries, resolve the dependency provenance limitations documented in [CAD distribution](docs/CAD_DISTRIBUTION.md). This repository publishes authored source and dependency references; CI validates but does not publish binary artifacts or deploy a website.
 
+## Appearance
+
+Settings offers Light, Dark and System. The selected theme covers editor panels, controls and the 3D viewport and persists on this device. A tabbed ribbon groups scan, construction, surfacing, CAD and analysis commands. Objects and session History share the left sidebar; contextual tool options float beside the viewport. Unsupported commands are disabled and identified in their tooltips.
+
 ## Workflow
 
 1. Open STL, OBJ, polygon PLY, STEP, IGES or BREP. Unitless scan coordinates are assumed to be millimetres. Point-cloud PLY is rejected.
 2. Orbit, pan, zoom, change viewpoints, inspect dimensions, measure between picked surface points, and create cross sections. Section segments export to CSV.
-3. Fit a plane, sphere or cylinder to the whole mesh or a picked spherical region. Review residuals and signed deviation colors. Large fits use a bounded vertex sample. Triangle-soup sampling weights repeated vertices; this is not certified metrology.
-4. Create reference planes or reconstruct fitted spheres/cylinders as exact CAD. Add box/sphere/cylinder solids, transform exact bodies, use union/subtract/intersect, or extrude a simple XY polygon.
+3. Brush triangle selections; copy, cut or delete selected triangles with undo. Fit a plane, sphere, cylinder or cone to the whole mesh, selected triangles or a picked spherical region. Review residuals and signed deviation colors. Large fits use a bounded vertex sample. Triangle-soup sampling weights repeated vertices; this is not certified metrology.
+4. Center and align scan principal axes. Create reference planes or reconstruct fitted spheres/cylinders/cones as exact CAD. Add box/sphere/cylinder/cone solids, transform exact bodies, use union/subtract/intersect, extrude a simple XY polygon, or revolve a radius/Z profile around the Z axis.
 5. Export visible exact bodies to STEP, or visible triangle geometry to STL. Scan meshes are excluded from STEP; there is no automatic mesh-to-solid conversion.
 6. Save a `.scanforge` project and reopen it. Projects retain tessellation, object properties, and exact BREP where available. Worker IDs, current measurement points, fit analysis, and undo history are transient.
 
@@ -41,7 +45,7 @@ The built-in bracket is independently generated demonstration geometry, not meas
 
 ## Limits and ownership
 
-- Import file limit: 64 MiB. Project limit: 100 objects and 666,666 total triangles.
+- No application-level file byte, triangle-count, or object-count cap. Available browser, GPU and WebAssembly memory determines capacity. Binary STL uses chunked reads into a transferable Float32Array; OBJ, PLY, ASCII STL and project loading still need whole-file parsing. A 200,000,084-byte binary STL with four million triangles was imported and rendered in browser validation.
 - CAD tessellation uses 0.15 mm linear and 0.35 rad angular deflection. Large or unusual models may fail import or exceed browser limits.
 - CAD operations execute serially, with a 90-second timeout. A timeout destroys the worker and invalidates live CAD handles; save/reopen a project to restore retained BREP.
 - Undo/redo retains at most 20 snapshots. Shapes unreachable from the current project and undo/redo stacks are released.

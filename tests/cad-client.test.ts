@@ -63,6 +63,43 @@ describe("CAD worker ownership and cancellation", () => {
     expect(worker.terminated).toBe(true);
     expect(vi.getTimerCount()).toBe(0);
   });
+  it("sends radius/Z revolve profiles and cone parameters through the worker contract", async () => {
+    const client = new CadClient();
+    const points: [number, number][] = [
+      [10, 0],
+      [20, 0],
+      [20, 15],
+      [10, 15],
+    ];
+    const revolve = client.revolve(points, 180);
+    await vi.advanceTimersByTimeAsync(0);
+    const worker = WorkerDouble.instances[0];
+    expect(worker.messages[0]).toMatchObject({
+      operation: "revolve",
+      payload: { points, angleDegrees: 180 },
+    });
+    worker.reply({ kernelId: "revolved", positions: [0, 0, 0], brep: "exact" });
+    await expect(revolve).resolves.toMatchObject({ kernelId: "revolved" });
+    const input = {
+      kind: "cone" as const,
+      center: [0, 0, 0] as [number, number, number],
+      axis: [0, 0, 1] as [number, number, number],
+      radius: 4,
+      topRadius: 2,
+      height: 9,
+    };
+    const cone = client.primitive(input);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(worker.messages[1]).toMatchObject({
+      operation: "primitive",
+      payload: input,
+    });
+    worker.reply({ kernelId: "cone", positions: [0, 0, 0], brep: "exact" });
+    await expect(cone).resolves.toMatchObject({ kernelId: "cone" });
+    client.dispose();
+    expect(worker.terminated).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("terminates a timed-out worker and rejects active and queued operations", async () => {
     const client = new CadClient();
     const first = client.primitive(box);

@@ -7,6 +7,7 @@ export function SolidTools({
   busy,
   onBoolean,
   onExtrude,
+  onRevolve,
 }: {
   entities: Entity[];
   selected?: Entity;
@@ -16,6 +17,7 @@ export function SolidTools({
     otherId: string,
   ) => void;
   onExtrude: (points: [number, number][], height: number) => void;
+  onRevolve: (points: [number, number][], angle: number) => void;
 }) {
   const [operation, setOperation] = useState<
     "union" | "subtract" | "intersect"
@@ -23,6 +25,8 @@ export function SolidTools({
   const [otherId, setOtherId] = useState("");
   const [sketch, setSketch] = useState("-20,-15\n20,-15\n20,15\n-20,15");
   const [height, setHeight] = useState(10);
+  const [profile, setProfile] = useState("10,0\n20,0\n20,15\n10,15");
+  const [angle, setAngle] = useState(360);
   const points = sketch
     .trim()
     .split("\n")
@@ -78,6 +82,50 @@ export function SolidTools({
         <p className="muted">
           Selected CAD object is the base. Input bodies are retained and hidden
           when a result is created.
+        </p>
+      </Panel>
+      <Panel title="Profile → revolution">
+        <label className="sketch-input">
+          Radius,Z vertices (mm), one pair per line
+          <textarea
+            aria-label="Revolve profile"
+            value={profile}
+            onChange={(event) => setProfile(event.target.value)}
+            rows={4}
+            spellCheck={false}
+          />
+        </label>
+        <Field
+          label="Revolution (°)"
+          value={angle}
+          min={0.001}
+          max={360}
+          step={15}
+          onChange={setAngle}
+        />
+        <button
+          className="wide"
+          disabled={busy}
+          onClick={() => {
+            const rows = profile
+              .trim()
+              .split("\n")
+              .map((row) => row.split(",").map(Number));
+            onRevolve(
+              rows.every(
+                (row) => row.length === 2 && row.every(Number.isFinite),
+              )
+                ? (rows as [number, number][])
+                : [],
+              angle,
+            );
+          }}
+        >
+          Revolve profile to CAD
+        </button>
+        <p className="muted">
+          Closed straight-edge profile around the Z axis. Radius must be
+          nonnegative. Full or partial revolution.
         </p>
       </Panel>
       <Panel title="Polygon sketch → extrusion">

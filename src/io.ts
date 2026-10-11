@@ -3,26 +3,23 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
-import type { Entity, Project } from "./types";
+import type { Entity, Project, Positions } from "./types";
 
-export const MAX_FILE_BYTES = 64 * 1024 * 1024;
-export const MAX_POSITION_VALUES = 6_000_000;
-export function validatePositions(value: unknown): asserts value is number[] {
+export function validatePositions(value: unknown): asserts value is Positions {
   if (
-    !Array.isArray(value) ||
+    (!Array.isArray(value) && !(value instanceof Float32Array)) ||
     !value.length ||
     value.length % 9 !== 0 ||
-    value.length > MAX_POSITION_VALUES ||
-    !value.every(
-      (x) => typeof x === "number" && Number.isFinite(x) && Math.abs(x) <= 1e9,
-    )
+    !value.every((x) => typeof x === "number" && Number.isFinite(x))
   ) {
     throw new Error(
-      "Invalid or oversized triangle geometry. Maximum 666,666 triangles per object.",
+      "Invalid triangle geometry: coordinates must be finite complete triangles.",
     );
   }
 }
-export function geometryPositions(geometry: THREE.BufferGeometry): number[] {
+export function geometryPositions(
+  geometry: THREE.BufferGeometry,
+): Float32Array {
   const flat = geometry.index ? geometry.toNonIndexed() : geometry;
   try {
     const attr = flat.getAttribute("position");
@@ -30,16 +27,17 @@ export function geometryPositions(geometry: THREE.BufferGeometry): number[] {
       throw new Error(
         "A triangle mesh is required; point clouds are not supported yet.",
       );
-    const positions = Array.from(attr.array);
+    const positions =
+      attr.array instanceof Float32Array
+        ? attr.array
+        : new Float32Array(attr.array);
     validatePositions(positions);
     return positions;
   } finally {
     if (flat !== geometry) flat.dispose();
   }
 }
-export function parseMesh(data: ArrayBuffer, extension: string): number[] {
-  if (data.byteLength > MAX_FILE_BYTES)
-    throw new Error("File exceeds the 64 MiB browser import limit.");
+export function parseMesh(data: ArrayBuffer, extension: string): Float32Array {
   if (extension === "stl" || extension === "ply") {
     const geometry =
       extension === "stl"
@@ -58,20 +56,26 @@ export function parseMesh(data: ArrayBuffer, extension: string): number[] {
   if (extension === "obj") {
     const object = new OBJLoader().parse(new TextDecoder().decode(data));
     object.updateMatrixWorld(true);
-    const positions: number[] = [];
+    const parts: Float32Array[] = [];
+    let size = 0;
     try {
       object.traverse((child) => {
         if (!(child instanceof THREE.Mesh)) return;
         const geometry = child.geometry.clone().applyMatrix4(child.matrixWorld);
         try {
           const part = geometryPositions(geometry);
-          if (positions.length + part.length > MAX_POSITION_VALUES)
-            throw new Error("OBJ exceeds the geometry import limit.");
-          for (const x of part) positions.push(x);
+          parts.push(part);
+          size += part.length;
         } finally {
           geometry.dispose();
         }
       });
+      const positions = new Float32Array(size);
+      let offset = 0;
+      for (const part of parts) {
+        positions.set(part, offset);
+        offset += part.length;
+      }
       validatePositions(positions);
       return positions;
     } finally {
@@ -89,8 +93,6 @@ export function parseMesh(data: ArrayBuffer, extension: string): number[] {
   throw new Error("Supported scan formats: STL, OBJ and polygon PLY.");
 }
 export function parseProject(text: string): Project {
-  if (text.length > MAX_FILE_BYTES)
-    throw new Error("Project exceeds the 64 MiB import limit.");
   const input = JSON.parse(text) as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
@@ -98,23 +100,19 @@ export function parseProject(text: string): Project {
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
-    !Array.isArray(input.entities) ||
-    input.entities.length > 100
+    !Array.isArray(input.entities)
   ) {
     throw new Error("Unsupported ScanForge project format.");
   }
   const ids = new Set<string>();
-  let total = 0;
   const entities: Entity[] = input.entities.map((entity) => {
     validatePositions(entity.positions);
-    total += entity.positions.length;
     if (
-      total > MAX_POSITION_VALUES ||
       typeof entity.id !== "string" ||
       ids.has(entity.id) ||
       typeof entity.name !== "string" ||
       entity.name.length > 200 ||
-      !["mesh", "cad", "plane", "sphere", "cylinder", "box"].includes(
+      !["mesh", "cad", "plane", "sphere", "cylinder", "cone", "box"].includes(
         entity.kind,
       ) ||
       typeof entity.color !== "string" ||
@@ -128,10 +126,7 @@ export function parseProject(text: string): Project {
       throw new Error("Invalid project object.");
     ids.add(entity.id);
     // Kernel handles are ephemeral; exact BRep is restored in a new worker.
-    if (
-      entity.brep !== undefined &&
-      (typeof entity.brep !== "string" || entity.brep.length > MAX_FILE_BYTES)
-    )
+    if (entity.brep !== undefined && typeof entity.brep !== "string")
       throw new Error("Invalid CAD data.");
     return {
       id: entity.id,
@@ -157,26 +152,48 @@ export function parseProject(text: string): Project {
   };
 }
 export function serializeProject(name: string, entities: Entity[]): string {
-  if (
-    entities.length > 100 ||
-    entities.reduce((sum, e) => sum + e.positions.length, 0) >
-      MAX_POSITION_VALUES
-  )
-    throw new Error("Project exceeds the browser geometry limit.");
-  const text = JSON.stringify({
+  return JSON.stringify({
     format: "maliev-scanforge",
     version: 1,
     name,
     units: "mm",
-    entities: entities.map(
-      ({ kernelId: _kernelId, fit: _fit, ...entity }) => entity,
-    ),
+    entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
+      ...entity,
+      positions: Array.from(entity.positions),
+    })),
   });
-  if (new TextEncoder().encode(text).byteLength > MAX_FILE_BYTES)
-    throw new Error(
-      "Project exceeds the 64 MiB save limit. Export smaller projects.",
-    );
-  return text;
+}
+/** Preserve the v1 JSON wire format without boxing an entire large scan. */
+export async function serializeProjectBlob(
+  name: string,
+  entities: Entity[],
+): Promise<Blob> {
+  const parts: BlobPart[] = [
+    `{"format":"maliev-scanforge","version":1,"name":${JSON.stringify(name)},"units":"mm","entities":[`,
+  ];
+  for (let index = 0; index < entities.length; index++) {
+    const {
+      kernelId: _kernelId,
+      fit: _fit,
+      positions,
+      ...metadata
+    } = entities[index];
+    validatePositions(positions);
+    if (index) parts.push(",");
+    parts.push(JSON.stringify(metadata).slice(0, -1), ',"positions":[');
+    for (let start = 0; start < positions.length; start += 65_536) {
+      const end = Math.min(start + 65_536, positions.length);
+      const values: string[] = [];
+      for (let coordinate = start; coordinate < end; coordinate++)
+        values.push(String(positions[coordinate]));
+      parts.push(start ? "," : "", new Blob([values.join(",")]));
+      // Yield between bounded batches so project saving remains cancellable by navigation.
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    }
+    parts.push("]}");
+  }
+  parts.push("]}");
+  return new Blob(parts, { type: "application/json" });
 }
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();

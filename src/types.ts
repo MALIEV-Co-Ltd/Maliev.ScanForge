@@ -1,11 +1,12 @@
 export type Vec3 = [number, number, number];
+export type Positions = number[] | Float32Array;
 export type EntityKind =
-  "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "box";
+  "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "cone" | "box";
 export interface Entity {
   id: string;
   name: string;
   kind: EntityKind;
-  positions: number[];
+  positions: Positions;
   color: string;
   visible: boolean;
   opacity: number;
@@ -16,10 +17,11 @@ export interface Entity {
   fit?: FitResult;
 }
 export interface FitResult {
-  kind: "plane" | "sphere" | "cylinder";
+  kind: "plane" | "sphere" | "cylinder" | "cone";
   center: Vec3;
   axis: Vec3;
   radius?: number;
+  topRadius?: number;
   height?: number;
   rms: number;
   maxError: number;
@@ -53,6 +55,14 @@ export type KernelPrimitive =
       center: Vec3;
       axis: Vec3;
       radius: number;
+      height: number;
+    }
+  | {
+      kind: "cone";
+      center: Vec3;
+      axis: Vec3;
+      radius: number;
+      topRadius: number;
       height: number;
     };
 export interface KernelMesh {

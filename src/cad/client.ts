@@ -67,6 +67,17 @@ export class CadClient {
     return this.request("extrude", { points, height }) as Promise<KernelMesh>;
   }
 
+  /** Revolve a closed radius/Z meridian polygon about the world Z axis. */
+  revolve(
+    points: [number, number][],
+    angleDegrees: number,
+  ): Promise<KernelMesh> {
+    return this.request("revolve", {
+      points,
+      angleDegrees,
+    }) as Promise<KernelMesh>;
+  }
+
   /** Release deleted entities' native CAD shapes while preserving other handles. */
   async release(kernelIds: string[]): Promise<void> {
     await this.request("release", [...kernelIds]);
@@ -143,7 +154,14 @@ export class CadClient {
         );
         this.pending.set(id, { resolve, reject, timer });
         try {
-          worker.postMessage({ id, operation, payload });
+          const data =
+            operation === "import"
+              ? (payload as { data: Uint8Array }).data
+              : undefined;
+          worker.postMessage(
+            { id, operation, payload },
+            data ? [data.buffer as ArrayBuffer] : [],
+          );
         } catch (error) {
           clearTimeout(timer);
           this.pending.delete(id);

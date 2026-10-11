@@ -3,6 +3,7 @@ import {
   parseMesh,
   parseProject,
   serializeProject,
+  serializeProjectBlob,
   validatePositions,
 } from "../src/io";
 import type { Entity } from "../src/types";
@@ -47,15 +48,15 @@ describe("file boundaries", () => {
   it("imports an ASCII STL triangle preserving millimetre coordinates", () => {
     const stl =
       "solid triangle\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 10 0 0\nvertex 0 5 0\nendloop\nendfacet\nendsolid triangle";
-    expect(parseMesh(new TextEncoder().encode(stl).buffer, "stl")).toEqual([
-      0, 0, 0, 10, 0, 0, 0, 5, 0,
-    ]);
+    expect(
+      Array.from(parseMesh(new TextEncoder().encode(stl).buffer, "stl")),
+    ).toEqual([0, 0, 0, 10, 0, 0, 0, 5, 0]);
   });
   it("imports OBJ triangles and rejects empty meshes and point-cloud PLY", () => {
     const obj = "v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3";
-    expect(parseMesh(new TextEncoder().encode(obj).buffer, "obj")).toEqual(
-      entity.positions,
-    );
+    expect(
+      Array.from(parseMesh(new TextEncoder().encode(obj).buffer, "obj")),
+    ).toEqual(entity.positions);
     expect(() =>
       parseMesh(new TextEncoder().encode("v 0 0 0").buffer, "obj"),
     ).toThrow();
@@ -64,5 +65,20 @@ describe("file boundaries", () => {
     expect(() =>
       parseMesh(new TextEncoder().encode(ply).buffer, "ply"),
     ).toThrow("Point clouds");
+  });
+  it("preserves typed geometry and more than 100 objects in v1 project JSON", async () => {
+    const entities = Array.from({ length: 101 }, (_, i) => ({
+      ...entity,
+      id: String(i),
+      positions: new Float32Array(entity.positions),
+      kernelId: "transient",
+    }));
+    const serialized = serializeProject("Many objects", entities);
+    expect(parseProject(serialized).entities).toHaveLength(101);
+    const blob = await serializeProjectBlob("Many objects", entities);
+    expect(parseProject(await blob.text()).entities[100].positions).toEqual(
+      entity.positions,
+    );
+    expect(await blob.text()).not.toContain("transient");
   });
 });

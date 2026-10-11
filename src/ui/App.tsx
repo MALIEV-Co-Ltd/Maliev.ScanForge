@@ -16,16 +16,27 @@ import {
   Ruler,
   Save,
   ScanLine,
+  Settings,
   Trash2,
   Triangle,
   Undo2,
   X,
 } from "lucide-react";
 import { CadClient } from "../cad/client";
+import { changeLabel, type Revision } from "../history";
+import { Ribbon } from "./Ribbon";
 import {
+  selectTriangles,
+  partitionTriangles,
+  selectionCount,
+} from "../selection";
+import { fittedPrimitive } from "../fitted-primitive";
+import {
+  alignPrincipalAxes,
   cleanupMesh,
   deviations,
   fitCylinder,
+  fitCone,
   fitPlane,
   fitSphere,
   meshStats,
@@ -36,12 +47,12 @@ import {
   download,
   exportStl,
   geometryPositions,
-  MAX_FILE_BYTES,
-  parseMesh,
   parseProject,
-  serializeProject,
+  serializeProjectBlob,
   validatePositions,
 } from "../io";
+import { importScan } from "../import-client";
+import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { demonstrationBracket } from "../sample";
 import type { Entity, FitResult, KernelPrimitive, Vec3 } from "../types";
 import { Viewport } from "../viewport";
@@ -50,15 +61,25 @@ import { SolidTools } from "./SolidTools";
 
 const number = (n: number) =>
   n.toLocaleString("en", { maximumFractionDigits: 3 });
-type Mode = "inspect" | "measure" | "section";
+type Mode = "inspect" | "measure" | "section" | "brush";
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>(() => [
     demonstrationBracket(),
   ]);
-  const [selectedId, setSelectedId] = useState<string | null>(entities[0].id);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => entities[0]?.id ?? null,
+  );
   const [name, setName] = useState("Untitled project");
   const [mode, setMode] = useState<Mode>("inspect");
+  const [workspace, setWorkspace] = useState("measure");
+  const [ribbonTab, setRibbonTab] = useState("main");
+  const [toolPanelOpen, setToolPanelOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>(readTheme);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [resolvedTheme, setResolvedTheme] = useState(() => resolveTheme(theme));
+  const [dragging, setDragging] = useState(false);
+  const importAbort = useRef<AbortController | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(
     "Ready · demonstration geometry loaded",
@@ -66,6 +87,14 @@ export function App() {
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
   const [wireframe, setWireframe] = useState(false);
+  const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
+  const [brushRadius, setBrushRadius] = useState(8);
+  const [subtractBrush, setSubtractBrush] = useState(false);
+  const brushRef = useRef<{
+    entity: Entity | undefined;
+    radius: number;
+    subtract: boolean;
+  }>({ entity: undefined, radius: 8, subtract: false });
   const [axis, setAxis] = useState<"x" | "y" | "z">("z");
   const [offset, setOffset] = useState(10);
   const [measure, setMeasure] = useState<Vec3[]>([]);
@@ -80,14 +109,16 @@ export function App() {
   const [scale, setScale] = useState(1);
   const [primitiveDialog, setPrimitiveDialog] = useState(false);
   const [primitiveKind, setPrimitiveKind] = useState<
-    "box" | "sphere" | "cylinder"
+    "box" | "sphere" | "cylinder" | "cone"
   >("box");
   const [size, setSize] = useState<Vec3>([30, 30, 30]);
   const [radius, setRadius] = useState(15);
+  const [topRadius, setTopRadius] = useState(0);
   const [height, setHeight] = useState(30);
   const [center, setCenter] = useState<Vec3>([0, 0, 15]);
-  const [history, setHistory] = useState<Entity[][]>([]);
-  const [future, setFuture] = useState<Entity[][]>([]);
+  const [history, setHistory] = useState<Revision[]>([]);
+  const [future, setFuture] = useState<Revision[]>([]);
+  const operationLabel = useRef<string | null>(null);
   const viewportHost = useRef<HTMLDivElement>(null);
   const viewport = useRef<Viewport | null>(null);
   const cad = useRef<CadClient | null>(null);
@@ -96,6 +127,15 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  brushRef.current = {
+    entity: selected,
+    radius: brushRadius,
+    subtract: subtractBrush,
+  };
+  const selectedTriangleCount = useMemo(
+    () => (triangleMask ? selectionCount(triangleMask) : 0),
+    [triangleMask],
+  );
   const stats = useMemo(
     () => (selected ? meshStats(selected.positions) : null),
     [selected?.positions],
@@ -109,13 +149,40 @@ export function App() {
   );
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      const resolved = resolveTheme(theme);
+      document.documentElement.dataset.theme = resolved;
+      document.documentElement.style.colorScheme = resolved;
+      setResolvedTheme(resolved);
+      viewport.current?.setTheme(resolved);
+    };
+    storeTheme(theme);
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [theme]);
+
+  useEffect(() => {
     cad.current = new CadClient();
     try {
       viewport.current = new Viewport(
         viewportHost.current!,
         (point, id) => {
           setSelectedId(id);
-          if (modeRef.current === "measure")
+          if (modeRef.current === "brush") {
+            const brush = brushRef.current;
+            if (brush.entity?.id === id)
+              setTriangleMask((previous) =>
+                selectTriangles(
+                  brush.entity!.positions,
+                  point,
+                  brush.radius,
+                  previous ?? undefined,
+                  brush.subtract ? "remove" : "add",
+                ),
+              );
+          } else if (modeRef.current === "measure")
             setMeasure((previous) =>
               previous.length === 1 ? [previous[0], point] : [point],
             );
@@ -123,11 +190,13 @@ export function App() {
         },
         setSelectedId,
       );
+      viewport.current.setTheme(resolveTheme(theme));
     } catch (e) {
       setError(`WebGL unavailable: ${errorText(e)}`);
     }
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
+        importAbort.current?.abort();
         cad.current?.dispose();
         viewport.current?.dispose();
       }
@@ -144,6 +213,18 @@ export function App() {
   useEffect(() => {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
+  useEffect(() => {
+    viewport.current?.setBrush(mode === "brush");
+  }, [mode]);
+  useEffect(() => {
+    setTriangleMask(null);
+  }, [selectedId, selected?.positions]);
+  useEffect(() => {
+    viewport.current?.setTriangleSelection(
+      selected?.positions,
+      triangleMask ?? undefined,
+    );
+  }, [selected?.positions, triangleMask]);
   useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
     viewport.current?.setSectionLines(section.segments);
@@ -185,9 +266,11 @@ export function App() {
   useEffect(() => {
     // Undo/redo snapshots own their CAD handles too. Release only unreachable shapes.
     const reachable = new Set(
-      [...entities, ...history.flat(), ...future.flat()].flatMap((e) =>
-        e.kernelId ? [e.kernelId] : [],
-      ),
+      [
+        ...entities,
+        ...history.flatMap((revision) => revision.entities),
+        ...future.flatMap((revision) => revision.entities),
+      ].flatMap((e) => (e.kernelId ? [e.kernelId] : [])),
     );
     const unused = [...knownKernelIds.current].filter(
       (id) => !reachable.has(id),
@@ -200,22 +283,9 @@ export function App() {
   }, [entities, history, future]);
 
   function commit(next: Entity[]) {
-    if (
-      next.length > 100 ||
-      next.reduce((sum, e) => sum + e.positions.length, 0) > 6_000_000
-    ) {
-      const newlyCreated = next.flatMap((e) =>
-        e.kernelId && !entities.some((old) => old.kernelId === e.kernelId)
-          ? [e.kernelId]
-          : [],
-      );
-      if (newlyCreated.length)
-        void cad.current?.release(newlyCreated).catch(() => undefined);
-      throw new Error(
-        "Project limit: 100 objects and 666,666 total triangles.",
-      );
-    }
-    setHistory((previous) => [...previous.slice(-19), entities]);
+    const label =
+      operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
+    setHistory((previous) => [...previous.slice(-19), { entities, label }]);
     setFuture([]);
     setEntities(next);
     setDirty(true);
@@ -229,49 +299,119 @@ export function App() {
   function undo() {
     if (history.length) {
       const next = history[history.length - 1];
-      setFuture((p) => [entities, ...p]);
-      setEntities(next);
+      setFuture((p) => [{ entities, label: next.label }, ...p]);
+      setEntities(next.entities);
       setSelectedId(
-        next.some((entity) => entity.id === selectedId)
+        next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
-          : (next[0]?.id ?? null),
+          : (next.entities[0]?.id ?? null),
       );
       setHistory((p) => p.slice(0, -1));
       setDirty(true);
+      setMessage(`Undid ${next.label}`);
     }
   }
   function redo() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p.slice(-19), entities]);
-      setEntities(next);
+      setHistory((p) => [...p.slice(-19), { entities, label: next.label }]);
+      setEntities(next.entities);
       setSelectedId(
-        next.some((entity) => entity.id === selectedId)
+        next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
-          : (next[0]?.id ?? null),
+          : (next.entities[0]?.id ?? null),
       );
       setFuture((p) => p.slice(1));
       setDirty(true);
+      setMessage(`Redid ${next.label}`);
     }
+  }
+  function restoreRevision(index: number) {
+    if (busy || index < 0 || index >= history.length) return;
+    const target = history[index];
+    const undone = history.slice(index);
+    const redoStates = undone.map((revision, i) => ({
+      entities: i + 1 < undone.length ? undone[i + 1].entities : entities,
+      label: revision.label,
+    }));
+    setEntities(target.entities);
+    setSelectedId(
+      target.entities.some((entity) => entity.id === selectedId)
+        ? selectedId
+        : (target.entities[0]?.id ?? null),
+    );
+    setFuture([...redoStates, ...future]);
+    setHistory(history.slice(0, index));
+    setDirty(true);
+    setMessage(`Restored model before ${target.label}`);
+  }
+  function showTools(nextWorkspace: string) {
+    setWorkspace(nextWorkspace);
+    setToolPanelOpen(true);
+  }
+  function autoAlign() {
+    void action("Aligning principal axes…", () => {
+      if (!selected || selected.kernelId)
+        throw new Error("Select a scan mesh for principal-axis alignment.");
+      updateSelected({
+        positions: alignPrincipalAxes(selected.positions).positions,
+      });
+      setMessage(
+        "Scan aligned to principal axes · review symmetric parts manually",
+      );
+      requestAnimationFrame(() => viewport.current?.fitView());
+    });
+  }
+  function removeDegenerate() {
+    void action("Removing degenerate triangles…", () => {
+      if (!selected) return;
+      const positions = cleanupMesh(selected.positions);
+      validatePositions(positions);
+      updateSelected({
+        positions,
+        kind: "mesh",
+        kernelId: undefined,
+        brep: undefined,
+      });
+      setMessage(
+        `Removed ${(selected.positions.length - positions.length) / 9} degenerate triangles`,
+      );
+    });
+  }
+  function deleteSelected() {
+    if (!selected) return;
+    commit(entities.filter((entity) => entity.id !== selected.id));
+    setSelectedId(null);
+    setMeasure([]);
+    setMessage("Object deleted");
+  }
+  function exportMesh() {
+    void action("Exporting mesh…", () => {
+      download(
+        exportStl(entities.filter((entity) => entity.visible)) as BlobPart,
+        "scanforge.stl",
+      );
+      setMessage("Visible objects exported to STL");
+    });
   }
   async function action(label: string, run: () => Promise<void> | void) {
     if (busy) return;
     setBusy(true);
     setError("");
     setMessage(label);
+    operationLabel.current = label;
     try {
       await run();
     } catch (e) {
       setError(errorText(e));
       setMessage("Operation failed");
     } finally {
+      operationLabel.current = null;
       setBusy(false);
     }
   }
   async function openFile(file: File) {
     await action(`Opening ${file.name}…`, async () => {
-      if (file.size > MAX_FILE_BYTES)
-        throw new Error("File exceeds the 64 MiB browser import limit.");
       const extension = file.name.split(".").pop()!.toLowerCase();
       if (extension === "scanforge" || extension === "json") {
         const project = parseProject(await file.text());
@@ -312,9 +452,9 @@ export function App() {
           throw e;
         }
       } else {
-        const data = await file.arrayBuffer();
         let entity: Entity;
         if (["step", "stp", "iges", "igs", "brep"].includes(extension)) {
+          const data = await file.arrayBuffer();
           const result = await cad.current!.importFile(
             new Uint8Array(data),
             extension as "step" | "stp" | "iges" | "igs" | "brep",
@@ -329,17 +469,32 @@ export function App() {
             opacity: 1,
             source: file.name,
           };
-        } else
+        } else {
+          const controller = new AbortController();
+          importAbort.current = controller;
+          let positions;
+          try {
+            positions = await importScan(file, {
+              signal: controller.signal,
+              onProgress: (progress) =>
+                setMessage(
+                  `Opening ${file.name} · ${Math.round(progress * 100)}%`,
+                ),
+            });
+          } finally {
+            importAbort.current = null;
+          }
           entity = {
             id: crypto.randomUUID(),
             name: file.name,
             kind: "mesh",
-            positions: parseMesh(data, extension),
-            color: "#31bfa8",
+            positions,
+            color: "#5b9ed9",
             visible: true,
             opacity: 1,
             source: file.name,
           };
+        }
         commit([...entities, entity]);
         setSelectedId(entity.id);
       }
@@ -351,39 +506,88 @@ export function App() {
       );
     });
   }
-  function runFit(kind: "plane" | "sphere" | "cylinder") {
+  function editSelection(operation: "copy" | "cut" | "delete") {
+    if (!selected || !triangleMask || !selectedTriangleCount) return;
+    const { selected: picked, remainder } = partitionTriangles(
+      selected.positions,
+      triangleMask,
+    );
+    let next = [...entities];
+    if (operation !== "copy")
+      next = next.flatMap((entity) =>
+        entity.id !== selected.id
+          ? [entity]
+          : remainder.length
+            ? [
+                {
+                  ...entity,
+                  positions: remainder,
+                  kind: "mesh" as const,
+                  kernelId: undefined,
+                  brep: undefined,
+                },
+              ]
+            : [],
+      );
+    if (operation !== "delete") {
+      const created: Entity = {
+        ...selected,
+        id: crypto.randomUUID(),
+        name: `${selected.name} selection`,
+        kind: "mesh",
+        positions: picked,
+        kernelId: undefined,
+        brep: undefined,
+      };
+      next.push(created);
+      setSelectedId(created.id);
+    } else if (!remainder.length) setSelectedId(next[0]?.id ?? null);
+    operationLabel.current = `${operation === "copy" ? "Copy" : operation === "cut" ? "Cut" : "Delete"} ${selectedTriangleCount} triangles`;
+    commit(next);
+    operationLabel.current = null;
+    setTriangleMask(null);
+    setMessage(
+      `${selectedTriangleCount} triangles ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
+    );
+  }
+  function runFit(kind: "plane" | "sphere" | "cylinder" | "cone") {
+    setWorkspace("reconstruct");
+    setToolPanelOpen(true);
     void action(`Fitting ${kind}…`, () => {
       if (!selected) throw new Error("Select an object first.");
-      let positions = selected.positions;
       if (localFit) {
         if (!anchor)
           throw new Error(
             "Click the scan in Inspect mode to place the fitting region.",
           );
         if (fitRadius <= 0) throw new Error("Region radius must be positive.");
-        positions = [];
-        for (let i = 0; i < selected.positions.length; i += 3) {
-          const p = selected.positions.slice(i, i + 3);
-          if (
-            Math.hypot(p[0] - anchor[0], p[1] - anchor[1], p[2] - anchor[2]) <=
-            fitRadius
-          )
-            positions.push(...p);
-        }
       }
-      if (positions.length > 60_000) {
-        const sampled: number[] = [];
-        const stride = Math.ceil(positions.length / 60_000);
-        for (let i = 0; i < positions.length; i += 3 * stride)
-          sampled.push(positions[i], positions[i + 1], positions[i + 2]);
-        positions = sampled;
-      }
+      const source = selected.positions;
+      const eligible = (i: number) =>
+        (!selectedTriangleCount || !!triangleMask?.[Math.floor(i / 9)]) &&
+        (!localFit ||
+          (anchor !== null &&
+            Math.hypot(
+              source[i] - anchor[0],
+              source[i + 1] - anchor[1],
+              source[i + 2] - anchor[2],
+            ) <= fitRadius));
+      let count = 0;
+      for (let i = 0; i < source.length; i += 3) if (eligible(i)) count++;
+      const stride = Math.max(1, Math.ceil(count / 20_000));
+      const positions: number[] = [];
+      let eligibleIndex = 0;
+      for (let i = 0; i < source.length; i += 3)
+        if (eligible(i) && eligibleIndex++ % stride === 0)
+          positions.push(source[i], source[i + 1], source[i + 2]);
       const fitted =
         kind === "plane"
           ? fitPlane(positions)
           : kind === "sphere"
             ? fitSphere(positions)
-            : fitCylinder(positions);
+            : kind === "cylinder"
+              ? fitCylinder(positions)
+              : fitCone(positions);
       setFit(fitted);
       setShowDeviation(true);
       setMessage(
@@ -439,22 +643,7 @@ export function App() {
         } finally {
           geometry.dispose();
         }
-      } else if (fit.kind === "sphere")
-        await addPrimitive(
-          { kind: "sphere", center: fit.center, radius: fit.radius! },
-          "Fitted sphere",
-        );
-      else
-        await addPrimitive(
-          {
-            kind: "cylinder",
-            center: fit.center,
-            axis: fit.axis,
-            radius: fit.radius!,
-            height: fit.height!,
-          },
-          "Fitted cylinder",
-        );
+      } else await addPrimitive(fittedPrimitive(fit), `Fitted ${fit.kind}`);
     });
   }
   function applyTransform() {
@@ -533,14 +722,32 @@ export function App() {
     });
   }
   function save() {
-    void action("Saving project…", () => {
+    void action("Saving project…", async () => {
       download(
-        serializeProject(name, entities),
+        await serializeProjectBlob(name, entities),
         `${name.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
         "application/json",
       );
       setDirty(false);
       setMessage("Project downloaded · exact CAD retained where available");
+    });
+  }
+  function revolve(points: [number, number][], angle: number) {
+    void action("Revolving profile…", async () => {
+      const result = await cad.current!.revolve(points, angle);
+      const entity: Entity = {
+        id: crypto.randomUUID(),
+        name: "Revolved solid",
+        kind: "cad",
+        ...result,
+        color: "#78a8db",
+        visible: true,
+        opacity: 1,
+      };
+      commit([...entities, entity]);
+      setSelectedId(entity.id);
+      setMessage("Profile revolved to exact CAD");
+      requestAnimationFrame(() => viewport.current?.fitView());
     });
   }
   function exportStep() {
@@ -564,13 +771,50 @@ export function App() {
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
   return (
-    <div className="workbench">
+    <div
+      className="workbench"
+      data-workspace={workspace}
+      data-panel-open={toolPanelOpen}
+      onDragOver={(event) => {
+        event.preventDefault();
+        if (!busy) setDragging(true);
+      }}
+      onDragLeave={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node))
+          setDragging(false);
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        setDragging(false);
+        const file = event.dataTransfer.files[0];
+        if (file && !busy) void openFile(file);
+      }}
+    >
       <header className="header">
         <div className="brand">
-          <span>ScanForge</span>
-          <small>0.1</small>
+          <div className="brand-mark">SF</div>
+          <div className="brand-copy">
+            <span>ScanForge</span>
+            <small>SCAN TO CAD · 0.1</small>
+          </div>
         </div>
         <div className="header-actions">
+          <button
+            title="Undo"
+            aria-label="Undo"
+            disabled={busy || !history.length}
+            onClick={undo}
+          >
+            <Undo2 size={16} />
+          </button>
+          <button
+            title="Redo"
+            aria-label="Redo"
+            disabled={busy || !future.length}
+            onClick={redo}
+          >
+            <Redo2 size={16} />
+          </button>
           <button disabled={busy} onClick={() => fileInput.current?.click()}>
             <FolderOpen size={17} />
             Open scan
@@ -583,8 +827,81 @@ export function App() {
             <Download size={17} />
             Export STEP
           </button>
+          <button
+            aria-label="Object properties"
+            title="Object properties"
+            onClick={() => setToolPanelOpen(!toolPanelOpen)}
+          >
+            <Crosshair size={17} />
+          </button>
+          <button
+            aria-label="Settings"
+            title="Settings"
+            onClick={() => setSettingsOpen(true)}
+          >
+            <Settings size={17} />
+          </button>
         </div>
       </header>
+      <Ribbon
+        activeTab={ribbonTab}
+        onTabChange={setRibbonTab}
+        disabled={busy}
+        hasSelection={!!selected}
+        canUndo={!!history.length}
+        canRedo={!!future.length}
+        actions={{
+          open: () => fileInput.current?.click(),
+          save,
+          undo,
+          redo,
+          fitView: () => viewport.current?.fitView(),
+          iso: () => viewport.current?.setView("iso"),
+          top: () => viewport.current?.setView("top"),
+          bottom: () => viewport.current?.setView("bottom"),
+          left: () => viewport.current?.setView("left"),
+          right: () => viewport.current?.setView("right"),
+          front: () => viewport.current?.setView("front"),
+          back: () => viewport.current?.setView("back"),
+          fitPlane: () => runFit("plane"),
+          fitSphere: () => runFit("sphere"),
+          fitCylinder: () => runFit("cylinder"),
+          fitCone: () => runFit("cone"),
+          primitive: () => setPrimitiveDialog(true),
+          align: autoAlign,
+          transform: () => showTools("mesh"),
+          section: () => {
+            setMode("section");
+            showTools("section");
+          },
+          extrude: () => showTools("reconstruct"),
+          revolve: () => showTools("reconstruct"),
+          boolean: () => showTools("reconstruct"),
+          measure: () => {
+            setMode("measure");
+            setMeasure([]);
+            showTools("measure");
+          },
+          deviation: () => showTools("deviation"),
+          area: () => showTools("measure"),
+          volume: () => showTools("measure"),
+          cleanup: removeDegenerate,
+          delete: deleteSelected,
+          exportStep,
+          exportStl: exportMesh,
+          settings: () => setSettingsOpen(true),
+          editScan: () => {
+            setMode("brush");
+            showTools("mesh");
+          },
+          select: () => {
+            setMode("brush");
+            showTools("mesh");
+          },
+          wireframe: () => setWireframe(!wireframe),
+          objectColor: () => showTools("mesh"),
+        }}
+      />
       <input
         ref={fileInput}
         type="file"
@@ -596,172 +913,142 @@ export function App() {
           if (file) void openFile(file);
         }}
       />
-      <nav className="toolbar" aria-label="Model tools">
-        <button
-          className={mode === "inspect" ? "active" : ""}
-          onClick={() => {
-            setMode("inspect");
-            setMeasure([]);
-          }}
-        >
-          <MousePointer2 size={17} />
-          Inspect
-        </button>
-        <button
-          className={mode === "measure" ? "active" : ""}
-          onClick={() => {
-            setMode("measure");
-            setMeasure([]);
-          }}
-        >
-          <Ruler size={17} />
-          Measure
-        </button>
-        <button
-          className={mode === "section" ? "active" : ""}
-          onClick={() => setMode(mode === "section" ? "inspect" : "section")}
-        >
-          <ScanLine size={17} />
-          Section
-        </button>
-        <span className="separator" />
-        <button disabled={busy || !selected} onClick={() => runFit("plane")}>
-          <Triangle size={17} />
-          Fit plane
-        </button>
-        <button disabled={busy || !selected} onClick={() => runFit("sphere")}>
-          <Circle size={17} />
-          Fit sphere
-        </button>
-        <button disabled={busy || !selected} onClick={() => runFit("cylinder")}>
-          <Box size={17} />
-          Fit cylinder
-        </button>
-        <div className="toolbar-end">
-          <button
-            title="Undo"
-            aria-label="Undo"
-            disabled={busy || !history.length}
-            onClick={undo}
-          >
-            <Undo2 size={17} />
-          </button>
-          <button
-            title="Redo"
-            aria-label="Redo"
-            disabled={busy || !future.length}
-            onClick={redo}
-          >
-            <Redo2 size={17} />
-          </button>
-        </div>
-      </nav>
       <main className="workspace">
         <aside className="explorer" inert={busy}>
-          <h2>
-            Model explorer <Layers size={15} />
-          </h2>
-          <label className="project-name">
-            <span>Project</span>
-            <input
-              aria-label="Project name"
-              value={name}
-              maxLength={200}
-              onChange={(e) => {
-                setName(e.target.value);
-                setDirty(true);
-              }}
-            />
-          </label>
-          <div className="tree-heading">
-            Objects <span>{entities.length}</span>
-          </div>
-          <ul className="object-list">
-            {entities.map((entity) => (
-              <li
-                key={entity.id}
-                className={entity.id === selectedId ? "selected" : ""}
-              >
-                <button
-                  className="visibility"
-                  title={entity.visible ? "Hide object" : "Show object"}
-                  aria-label={`${entity.visible ? "Hide" : "Show"} ${entity.name}`}
-                  disabled={busy}
-                  onClick={() =>
-                    commit(
-                      entities.map((e) =>
-                        e.id === entity.id ? { ...e, visible: !e.visible } : e,
-                      ),
-                    )
-                  }
+          <div className="objects-panel">
+            <h2>
+              Objects <Layers size={15} />
+            </h2>
+            <label className="project-name">
+              <span>Project</span>
+              <input
+                aria-label="Project name"
+                value={name}
+                maxLength={200}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setDirty(true);
+                }}
+              />
+            </label>
+            <div className="tree-heading">
+              Objects <span>{entities.length}</span>
+            </div>
+            <ul className="object-list">
+              {entities.map((entity) => (
+                <li
+                  key={entity.id}
+                  className={entity.id === selectedId ? "selected" : ""}
                 >
-                  {entity.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+                  <button
+                    className="visibility"
+                    title={entity.visible ? "Hide object" : "Show object"}
+                    aria-label={`${entity.visible ? "Hide" : "Show"} ${entity.name}`}
+                    disabled={busy}
+                    onClick={() =>
+                      commit(
+                        entities.map((e) =>
+                          e.id === entity.id
+                            ? { ...e, visible: !e.visible }
+                            : e,
+                        ),
+                      )
+                    }
+                  >
+                    {entity.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+                  </button>
+                  <button
+                    className="object-name"
+                    onClick={() => setSelectedId(entity.id)}
+                  >
+                    <span>
+                      {entity.kind === "mesh" ? (
+                        <Triangle size={16} />
+                      ) : (
+                        <Box size={16} />
+                      )}
+                    </span>
+                    <span>{entity.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <section className="history-panel" aria-label="Model history">
+            <div className="history-heading">
+              <h2>History</h2>
+              <div>
+                <button
+                  aria-label="Undo history"
+                  title="Undo"
+                  disabled={busy || !history.length}
+                  onClick={undo}
+                >
+                  <Undo2 size={14} />
                 </button>
                 <button
-                  className="object-name"
-                  onClick={() => setSelectedId(entity.id)}
+                  aria-label="Redo history"
+                  title="Redo"
+                  disabled={busy || !future.length}
+                  onClick={redo}
                 >
-                  <span>
-                    {entity.kind === "mesh" ? (
-                      <Triangle size={16} />
-                    ) : (
-                      <Box size={16} />
-                    )}
-                  </span>
-                  <span>{entity.name}</span>
+                  <Redo2 size={14} />
+                </button>
+              </div>
+            </div>
+            <ol className="history-list">
+              <li>
+                <button
+                  disabled={busy || !history.length}
+                  onClick={() => restoreRevision(0)}
+                >
+                  <Layers size={14} />
+                  <span>Initial state</span>
                 </button>
               </li>
-            ))}
-          </ul>
-          <button
-            className="wide"
-            disabled={busy}
-            onClick={() => setPrimitiveDialog(true)}
-          >
-            <Plus size={17} />
-            Add primitive
-          </button>
-          <div className="explorer-bottom">
-            <button
-              className="wide"
-              disabled={busy || !selected}
-              onClick={() => {
-                if (selected) {
-                  commit(entities.filter((e) => e.id !== selected.id));
-                  setSelectedId(null);
-                  setMeasure([]);
-                  setMessage("Object deleted");
-                }
-              }}
-            >
-              <Trash2 size={15} />
-              Delete selected
-            </button>
-            <button
-              className="wide"
-              disabled={busy || !entities.length}
-              onClick={() =>
-                void action("Exporting mesh…", () => {
-                  download(
-                    exportStl(entities.filter((e) => e.visible)) as BlobPart,
-                    "scanforge.stl",
-                  );
-                  setMessage("Visible objects exported to binary STL");
-                })
-              }
-            >
-              <Download size={15} />
-              Export STL
-            </button>
-            <p>
-              STL · OBJ · PLY · STEP · IGES
-              <br />
-              Your files stay on this device.
+              {history.map((revision, index) => (
+                <li key={index}>
+                  <button
+                    title={`Restore model after ${revision.label}`}
+                    aria-current={
+                      index === history.length - 1 ? "step" : undefined
+                    }
+                    disabled={busy}
+                    onClick={() => {
+                      if (index + 1 < history.length)
+                        restoreRevision(index + 1);
+                    }}
+                  >
+                    <Box size={14} />
+                    <span>{revision.label}</span>
+                  </button>
+                </li>
+              ))}
+              {future.map((revision, index) => (
+                <li key={`future-${index}`} className="future-revision">
+                  <span>{revision.label}</span>
+                </li>
+              ))}
+              <li className="end-of-model">End of model</li>
+            </ol>
+            <p className="history-note">
+              {history.length} undo steps · session history
             </p>
-          </div>
+          </section>
         </aside>
         <section className="canvas-area" aria-label="3D viewport">
           <div ref={viewportHost} className="viewport" />
+          {dragging && (
+            <div className="drop-overlay">Drop a scan or CAD file to open</div>
+          )}
+          {busy && importAbort.current && (
+            <div className="import-progress">
+              <span>{message}</span>
+              <button onClick={() => importAbort.current?.abort()}>
+                Cancel import
+              </button>
+            </div>
+          )}
           <div className="view-controls">
             <span>Perspective</span>
             {(["iso", "top", "front", "right"] as const).map((view) => (
@@ -781,11 +1068,13 @@ export function App() {
             </button>
           </div>
           <div className="canvas-hint">
-            {mode === "measure"
-              ? "Click two points on a surface to measure distance"
-              : mode === "section"
-                ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                : "Drag to orbit · right-drag to pan · scroll to zoom"}
+            {mode === "brush"
+              ? "Drag on the scan to brush triangles · right-drag to pan"
+              : mode === "measure"
+                ? "Click two points on a surface to measure distance"
+                : mode === "section"
+                  ? `${axis.toUpperCase()} section · ${number(offset)} mm`
+                  : "Drag to orbit · right-drag to pan · scroll to zoom"}
           </div>
           {mode === "measure" && (
             <div className="measurement">
@@ -809,9 +1098,15 @@ export function App() {
             </div>
           )}
         </section>
-        <aside className="inspector" inert={busy}>
+        <aside className="inspector" inert={busy} aria-label="Tool options">
           <h2>
-            Properties <Crosshair size={15} />
+            Tool options{" "}
+            <button
+              aria-label="Close tool options"
+              onClick={() => setToolPanelOpen(false)}
+            >
+              <X size={15} />
+            </button>
           </h2>
           {selected && stats ? (
             <>
@@ -834,7 +1129,79 @@ export function App() {
                   </small>
                 </div>
               </div>
-              <Panel title="Geometry">
+              <Panel title="Edit scan" className="scan-panel">
+                <div className="button-row">
+                  <button
+                    className={mode === "brush" ? "active" : ""}
+                    onClick={() => setMode("brush")}
+                  >
+                    Brush selection
+                  </button>
+                  <button onClick={() => setMode("inspect")}>Orbit</button>
+                </div>
+                <Field
+                  label="Brush radius (mm)"
+                  value={brushRadius}
+                  onChange={(value) => setBrushRadius(Math.max(0.01, value))}
+                />
+                <label className="check">
+                  <input
+                    type="checkbox"
+                    checked={subtractBrush}
+                    onChange={(event) => setSubtractBrush(event.target.checked)}
+                  />
+                  Subtract from selection
+                </label>
+                <p>{number(selectedTriangleCount)} selected triangles</p>
+                <div className="button-row">
+                  <button
+                    onClick={() =>
+                      setTriangleMask(
+                        new Uint8Array(selected.positions.length / 9).fill(1),
+                      )
+                    }
+                  >
+                    Select all
+                  </button>
+                  <button onClick={() => setTriangleMask(null)}>Clear</button>
+                  <button
+                    onClick={() =>
+                      setTriangleMask(
+                        Uint8Array.from(
+                          { length: selected.positions.length / 9 },
+                          (_, index) => (triangleMask?.[index] ? 0 : 1),
+                        ),
+                      )
+                    }
+                  >
+                    Invert
+                  </button>
+                </div>
+                <div className="button-row">
+                  <button
+                    disabled={!selectedTriangleCount}
+                    onClick={() => editSelection("copy")}
+                  >
+                    Copy &amp; Create
+                  </button>
+                  <button
+                    disabled={!selectedTriangleCount}
+                    onClick={() => editSelection("cut")}
+                  >
+                    Cut &amp; Create
+                  </button>
+                </div>
+                <button
+                  disabled={!selectedTriangleCount}
+                  onClick={() => editSelection("delete")}
+                >
+                  Delete selected triangles
+                </button>
+                {selected.kernelId && (
+                  <p className="muted">Triangle edits create a mesh result.</p>
+                )}
+              </Panel>
+              <Panel title="Geometry" className="geometry-panel">
                 <dl>
                   <dt>Vertices (triangle soup)</dt>
                   <dd>{number(stats.vertices)}</dd>
@@ -851,7 +1218,7 @@ export function App() {
                   Volume assumes a closed, consistently oriented mesh.
                 </p>
               </Panel>
-              <Panel title="Display">
+              <Panel title="Display" className="display-panel">
                 <label className="slider-row">
                   <span>Opacity</span>
                   <input
@@ -894,7 +1261,7 @@ export function App() {
                   />
                 </label>
               </Panel>
-              <Panel title="Transform">
+              <Panel title="Transform" className="transform-panel">
                 <VectorField
                   label="Move (mm)"
                   value={translation}
@@ -925,7 +1292,7 @@ export function App() {
                   </p>
                 )}
               </Panel>
-              <Panel title="Cross section">
+              <Panel title="Cross section" className="section-panel">
                 <label className="select-field">
                   Axis
                   <select
@@ -975,7 +1342,7 @@ export function App() {
                   </>
                 )}
               </Panel>
-              <Panel title="Surface fitting">
+              <Panel title="Surface fitting" className="fitting-panel">
                 <label className="check">
                   <input
                     type="checkbox"
@@ -1045,13 +1412,13 @@ export function App() {
                   </>
                 ) : (
                   <p className="muted">
-                    Select a scan and fit a plane, sphere or cylinder from the
-                    toolbar. Fits report residuals; review them before creating
-                    CAD.
+                    Select a scan and fit a plane, sphere, cylinder or cone from
+                    the tool rail. Fits report residuals; review them before
+                    creating CAD.
                   </p>
                 )}
                 <button
-                  className="wide"
+                  className="wide mesh-cleanup"
                   disabled={busy}
                   onClick={() =>
                     void action("Removing degenerate triangles…", () => {
@@ -1072,13 +1439,16 @@ export function App() {
                   Remove degenerate triangles
                 </button>
               </Panel>
-              <SolidTools
-                entities={entities}
-                selected={selected}
-                busy={busy}
-                onBoolean={boolean}
-                onExtrude={extrude}
-              />
+              <div className="solid-panels">
+                <SolidTools
+                  entities={entities}
+                  selected={selected}
+                  busy={busy}
+                  onBoolean={boolean}
+                  onExtrude={extrude}
+                  onRevolve={revolve}
+                />
+              </div>
             </>
           ) : (
             <div className="empty-inspector">
@@ -1087,6 +1457,50 @@ export function App() {
           )}
         </aside>
       </main>
+      {settingsOpen && (
+        <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
+          <section
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Settings"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="modal-title">
+              <h2>Settings</h2>
+              <button
+                aria-label="Close settings"
+                onClick={() => setSettingsOpen(false)}
+              >
+                <X size={17} />
+              </button>
+            </div>
+            <h3>Appearance</h3>
+            <p className="muted">
+              One theme across the interface and 3D viewport. Remembered on this
+              device.
+            </p>
+            <fieldset className="theme-options">
+              <legend>Interface</legend>
+              {(["light", "dark", "system"] as const).map((value) => (
+                <label key={value}>
+                  <input
+                    type="radio"
+                    name="theme"
+                    checked={theme === value}
+                    onChange={() => setTheme(value)}
+                  />
+                  {value[0].toUpperCase() + value.slice(1)}
+                </label>
+              ))}
+            </fieldset>
+            <p className="muted">
+              Current appearance: {resolvedTheme}. System follows your operating
+              system.
+            </p>
+          </section>
+        </div>
+      )}
       {error && (
         <div className="error-banner" role="alert">
           <span>{error}</span>
@@ -1135,6 +1549,7 @@ export function App() {
                 <option value="box">Box</option>
                 <option value="sphere">Sphere</option>
                 <option value="cylinder">Cylinder</option>
+                <option value="cone">Cone / frustum</option>
               </select>
             </label>
             <VectorField
@@ -1153,7 +1568,16 @@ export function App() {
                 onChange={setRadius}
               />
             )}{" "}
-            {primitiveKind === "cylinder" && (
+            {primitiveKind === "cone" && (
+              <Field
+                label="Top radius (mm)"
+                value={topRadius}
+                min={0}
+                step={1}
+                onChange={setTopRadius}
+              />
+            )}
+            {(primitiveKind === "cylinder" || primitiveKind === "cone") && (
               <Field
                 label="Height (mm)"
                 value={height}
@@ -1162,8 +1586,8 @@ export function App() {
               />
             )}
             <p className="muted">
-              Creates a solid in the local OpenCascade kernel. Cylinders are
-              aligned to the Z axis.
+              Creates a solid in the local OpenCascade kernel. Cylinders and
+              cones are aligned to the Z axis.
             </p>
             <button
               className="wide accent"
@@ -1175,13 +1599,22 @@ export function App() {
                       ? { kind: "box", center, size }
                       : primitiveKind === "sphere"
                         ? { kind: "sphere", center, radius }
-                        : {
-                            kind: "cylinder",
-                            center,
-                            axis: [0, 0, 1],
-                            radius,
-                            height,
-                          },
+                        : primitiveKind === "cone"
+                          ? {
+                              kind: "cone",
+                              center,
+                              axis: [0, 0, 1],
+                              radius,
+                              topRadius,
+                              height,
+                            }
+                          : {
+                              kind: "cylinder",
+                              center,
+                              axis: [0, 0, 1],
+                              radius,
+                              height,
+                            },
                     `${primitiveKind[0].toUpperCase() + primitiveKind.slice(1)} solid`,
                   ),
                 )

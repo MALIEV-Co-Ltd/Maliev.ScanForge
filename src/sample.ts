@@ -43,7 +43,7 @@ export function demonstrationBracket(): Entity {
       name: "Demonstration bracket",
       kind: "mesh",
       positions: [...geometryPositions(a), ...geometryPositions(b)],
-      color: "#31bfa8",
+      color: "#5b9ed9",
       visible: true,
       opacity: 1,
       source: "Synthetic example · millimetres",

@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import type { Entity, Vec3 } from "./types";
+import type { Entity, Positions, Vec3 } from "./types";
 
 type Item = {
-  positions: number[];
+  positions: Positions;
   color: string;
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
 };
@@ -22,6 +22,9 @@ export class Viewport {
   private readonly raycaster = new THREE.Raycaster();
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
+  private readonly triangleSelection = new THREE.Group();
+  private brushing = false;
+  private lastBrush = 0;
   private readonly clippingPlane = new THREE.Plane();
   private readonly triad = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -63,7 +66,7 @@ export class Viewport {
     this.triad.setAttribute("role", "img");
     this.triad.setAttribute("aria-label", "World axes: X red, Y green, Z blue");
     this.triad.style.cssText =
-      "position:absolute;left:12px;bottom:12px;width:100px;height:90px;pointer-events:none";
+      "position:absolute;right:12px;top:52px;width:100px;height:90px;pointer-events:none";
     for (const [name, color, vector] of [
       ["X", "#da6351", new THREE.Vector3(1, 0, 0)],
       ["Y", "#29976d", new THREE.Vector3(0, 1, 0)],
@@ -106,7 +109,12 @@ export class Viewport {
     this.scene.add(fill);
     this.grid = new THREE.GridHelper(400, 20, "#a7b6bd", "#d0dadf");
     this.grid.rotation.x = Math.PI / 2;
-    this.scene.add(this.grid, this.section, this.measurement);
+    this.scene.add(
+      this.grid,
+      this.section,
+      this.measurement,
+      this.triangleSelection,
+    );
     this.renderer.domElement.addEventListener("pointerdown", this.pointerDown);
     this.renderer.domElement.addEventListener("pointermove", this.pointerMove);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
@@ -123,6 +131,21 @@ export class Viewport {
     if (!this.disposed && this.frame === null)
       this.frame = requestAnimationFrame(this.render);
   };
+
+  setTheme(theme: "light" | "dark"): void {
+    this.scene.background = new THREE.Color(
+      theme === "dark" ? "#1c1e21" : "#f4f5f6",
+    );
+    const color = this.grid.geometry.getAttribute("color");
+    const major = new THREE.Color(theme === "dark" ? "#40464d" : "#c3c8ce");
+    const minor = new THREE.Color(theme === "dark" ? "#2c3035" : "#e0e3e6");
+    for (let i = 0; i < color.count; i++) {
+      const value = Math.floor(i / 4) === 10 ? major : minor;
+      color.setXYZ(i, value.r, value.g, value.b);
+    }
+    color.needsUpdate = true;
+    this.invalidate();
+  }
 
   private render = (): void => {
     this.frame = null;
@@ -171,6 +194,14 @@ export class Viewport {
 
   private pointerMove = (event: PointerEvent): void => {
     if (
+      this.brushing &&
+      this.pointer?.id === event.pointerId &&
+      performance.now() - this.lastBrush > 80
+    ) {
+      this.lastBrush = performance.now();
+      this.pickAt(event);
+    }
+    if (
       this.pointer?.id === event.pointerId &&
       Math.hypot(
         event.clientX - this.pointer.x,
@@ -191,10 +222,14 @@ export class Viewport {
     if (
       !pointer ||
       pointer.id !== event.pointerId ||
-      pointer.moved ||
-      Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 4
+      (!this.brushing &&
+        (pointer.moved ||
+          Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 4))
     )
       return;
+    this.pickAt(event);
+  };
+  private pickAt = (event: PointerEvent): void => {
     const rect = this.renderer.domElement.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     this.raycaster.setFromCamera(
@@ -253,7 +288,9 @@ export class Viewport {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
-          new THREE.Float32BufferAttribute(entity.positions, 3),
+          entity.positions instanceof Float32Array
+            ? new THREE.BufferAttribute(entity.positions, 3)
+            : new THREE.Float32BufferAttribute(entity.positions, 3),
         );
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
@@ -322,15 +359,23 @@ export class Viewport {
     this.invalidate();
   }
 
-  setView(view: "iso" | "top" | "front" | "right"): void {
+  setView(
+    view: "iso" | "top" | "bottom" | "front" | "back" | "left" | "right",
+  ): void {
     const direction =
       view === "top"
         ? new THREE.Vector3(0, -0.00001, 1)
-        : view === "front"
-          ? new THREE.Vector3(0, -1, 0)
-          : view === "right"
-            ? new THREE.Vector3(1, 0, 0)
-            : new THREE.Vector3(1, -1, 0.8);
+        : view === "bottom"
+          ? new THREE.Vector3(0, -0.00001, -1)
+          : view === "left"
+            ? new THREE.Vector3(-1, 0, 0)
+            : view === "back"
+              ? new THREE.Vector3(0, 1, 0)
+              : view === "front"
+                ? new THREE.Vector3(0, -1, 0)
+                : view === "right"
+                  ? new THREE.Vector3(1, 0, 0)
+                  : new THREE.Vector3(1, -1, 0.8);
     this.camera.position
       .copy(this.controls.target)
       .add(direction.normalize().multiplyScalar(this.extent * 2));
@@ -341,6 +386,42 @@ export class Viewport {
     this.wireframe = enabled;
     for (const item of this.objects.values())
       item.mesh.material.wireframe = enabled;
+    this.invalidate();
+  }
+  setBrush(enabled: boolean): void {
+    this.brushing = enabled;
+    this.controls.mouseButtons.LEFT = enabled ? null : THREE.MOUSE.ROTATE;
+  }
+  setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
+    this.clearGroup(this.triangleSelection);
+    if (positions && mask) {
+      let count = 0;
+      for (const value of mask) count += value;
+      if (count) {
+        const buffer = new Float32Array(count * 9);
+        let next = 0;
+        for (let i = 0; i < mask.length; i++)
+          if (mask[i])
+            for (let j = 0; j < 9; j++) buffer[next++] = positions[i * 9 + j];
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.BufferAttribute(buffer, 3));
+        this.triangleSelection.add(
+          new THREE.Mesh(
+            geometry,
+            new THREE.MeshBasicMaterial({
+              color: "#e44b5b",
+              side: THREE.DoubleSide,
+              transparent: true,
+              opacity: 0.7,
+              depthWrite: false,
+              polygonOffset: true,
+              polygonOffsetFactor: -1,
+              polygonOffsetUnits: -1,
+            }),
+          ),
+        );
+      }
+    }
     this.invalidate();
   }
 
@@ -426,7 +507,7 @@ export class Viewport {
 
   setDeviation(
     entityId: string,
-    values: number[] | null,
+    values: Positions | null,
     tolerance: number,
   ): void {
     this.clearDeviations();
@@ -486,6 +567,7 @@ export class Viewport {
     this.objects.clear();
     this.clearGroup(this.section);
     this.clearGroup(this.measurement);
+    this.clearGroup(this.triangleSelection);
     this.grid.geometry.dispose();
     if (Array.isArray(this.grid.material))
       this.grid.material.forEach((material) => material.dispose());

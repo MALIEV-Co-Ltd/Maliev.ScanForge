@@ -108,10 +108,6 @@ function mesh(oc, shape) {
           } finally {
             triangle.delete();
           }
-          if (positions.length > 6_000_000)
-            throw new Error(
-              "CAD tessellation exceeds the six-million-coordinate browser limit.",
-            );
         }
       } finally {
         cleanup(faceHandles);
@@ -127,10 +123,6 @@ function mesh(oc, shape) {
 
 function register(oc, shape) {
   try {
-    if (shapes.size >= 256)
-      throw new Error(
-        "CAD session has reached its 256-shape limit. Remove unused CAD history or start a new project.",
-      );
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
     const positions = mesh(oc, shape);
@@ -163,12 +155,8 @@ function importFile(oc, payload) {
   const { data, extension } = payload;
   if (!["step", "stp", "iges", "igs", "brep"].includes(extension))
     throw new Error("Unsupported CAD format.");
-  if (
-    !(data instanceof Uint8Array) ||
-    !data.length ||
-    data.length > 64 * 1024 * 1024
-  )
-    throw new Error("CAD files must contain between 1 byte and 64 MiB.");
+  if (!(data instanceof Uint8Array) || !data.length)
+    throw new Error("CAD files must contain data.");
   const path = `in.${extension}`;
   const handles = [];
   const keep = (handle) => {
@@ -239,14 +227,20 @@ function primitive(oc, input) {
         throw new Error("Sphere radius must be positive.");
       const center = keep(new oc.gp_Pnt_3(...input.center));
       maker = keep(new oc.BRepPrimAPI_MakeSphere_5(center, input.radius));
-    } else if (input.kind === "cylinder") {
+    } else if (input.kind === "cylinder" || input.kind === "cone") {
       if (
         !finiteVector(input.axis) ||
         !positive(Math.hypot(...input.axis)) ||
         !positive(input.radius) ||
-        !positive(input.height)
+        !positive(input.height) ||
+        (input.kind === "cone" &&
+          (!Number.isFinite(input.topRadius) ||
+            input.topRadius < 0 ||
+            input.topRadius > 1e9))
       )
-        throw new Error("Cylinder axis, radius, and height must be valid.");
+        throw new Error(
+          `${input.kind === "cone" ? "Cone" : "Cylinder"} axis, radii, and height must be valid.`,
+        );
       const length = Math.hypot(...input.axis);
       const direction = input.axis.map((value) => value / length);
       const origin = keep(
@@ -259,7 +253,14 @@ function primitive(oc, input) {
       const axisDirection = keep(new oc.gp_Dir_4(...direction));
       const axis = keep(new oc.gp_Ax2_3(origin, axisDirection));
       maker = keep(
-        new oc.BRepPrimAPI_MakeCylinder_3(axis, input.radius, input.height),
+        input.kind === "cone" && input.radius !== input.topRadius
+          ? new oc.BRepPrimAPI_MakeCone_3(
+              axis,
+              input.radius,
+              input.topRadius,
+              input.height,
+            )
+          : new oc.BRepPrimAPI_MakeCylinder_3(axis, input.radius, input.height),
       );
     } else throw new Error("Unsupported CAD primitive.");
     return register(oc, maker.Shape());
@@ -381,9 +382,8 @@ function transformShape(oc, input) {
   }
 }
 
-function extrudeShape(oc, input) {
-  const { height } = input;
-  let points = input.points;
+function polygonPoints(inputPoints) {
+  let points = inputPoints;
   if (
     !Array.isArray(points) ||
     points.length < 3 ||
@@ -398,11 +398,7 @@ function extrudeShape(oc, input) {
     )
   )
     throw new Error(
-      "Extrusion requires 3 to 256 finite XY polygon vertices with magnitudes at most one billion.",
-    );
-  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
-    throw new Error(
-      "Extrusion height must be positive and at most one billion.",
+      "Profile requires 3 to 256 finite polygon vertices with magnitudes at most one billion.",
     );
   points = points.map((point) => [...point]);
   if (
@@ -447,6 +443,16 @@ function extrudeShape(oc, input) {
   if (Math.abs(area) <= tolerance * tolerance)
     throw new Error("Polygon area is zero.");
   if (area < 0) points.reverse();
+  return points;
+}
+
+function extrudeShape(oc, input) {
+  const { height } = input;
+  const points = polygonPoints(input.points);
+  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
+    throw new Error(
+      "Extrusion height must be positive and at most one billion.",
+    );
   const handles = [];
   const keep = (handle) => {
     handles.push(handle);
@@ -480,6 +486,61 @@ function extrudeShape(oc, input) {
   }
 }
 
+function revolveShape(oc, input) {
+  const points = polygonPoints(input.points);
+  const { angleDegrees } = input;
+  if (!Number.isFinite(angleDegrees) || angleDegrees <= 0 || angleDegrees > 360)
+    throw new Error(
+      "Revolve angle must be greater than zero and at most 360 degrees.",
+    );
+  if (points.some(([radius]) => radius < 0))
+    throw new Error(
+      "Revolve profile radii cannot be negative or cross the Z axis.",
+    );
+  const handles = [];
+  const keep = (handle) => {
+    handles.push(handle);
+    return handle;
+  };
+  try {
+    const polygon = keep(new oc.BRepBuilderAPI_MakePolygon_1());
+    for (const [radius, z] of points) {
+      const point = new oc.gp_Pnt_3(radius, 0, z);
+      try {
+        polygon.Add_1(point);
+      } finally {
+        point.delete();
+      }
+    }
+    polygon.Close();
+    if (!polygon.IsDone())
+      throw new Error("Revolve profile construction failed.");
+    const wire = keep(polygon.Wire());
+    const faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
+    if (!faceMaker.IsDone())
+      throw new Error("Revolve profile face construction failed.");
+    const face = keep(faceMaker.Face());
+    const origin = keep(new oc.gp_Pnt_3(0, 0, 0));
+    const direction = keep(new oc.gp_Dir_4(0, 0, 1));
+    const axis = keep(new oc.gp_Ax1_2(origin, direction));
+    const maker = keep(
+      new oc.BRepPrimAPI_MakeRevol_1(
+        face,
+        axis,
+        (angleDegrees * Math.PI) / 180,
+        true,
+      ),
+    );
+    if (!maker.IsDone())
+      throw new Error(
+        "Revolve could not build a valid solid from this profile.",
+      );
+    return register(oc, maker.Shape());
+  } finally {
+    cleanup(handles);
+  }
+}
+
 self.onmessage = (event) => {
   const { id, operation, payload } = event.data;
   sequence = sequence.then(async () => {
@@ -492,6 +553,7 @@ self.onmessage = (event) => {
       else if (operation === "boolean") result = booleanShape(oc, payload);
       else if (operation === "transform") result = transformShape(oc, payload);
       else if (operation === "extrude") result = extrudeShape(oc, payload);
+      else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "release") {
         if (!Array.isArray(payload))
           throw new Error("CAD release requires handle IDs.");

@@ -1,0 +1,75 @@
+import type { ScanImportOptions } from "./import-parser";
+/** Dedicated, cancellable import worker; its final geometry is transferred. */
+export function importScan(
+  file: File,
+  options: ScanImportOptions = {},
+): Promise<Float32Array> {
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (options.signal?.aborted)
+    return Promise.reject(new DOMException("Import cancelled", "AbortError"));
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(new URL("./import-worker.ts", import.meta.url), {
+      type: "module",
+    });
+    let inactivity: ReturnType<typeof setTimeout>;
+    const renewLease = () => {
+      clearTimeout(inactivity);
+      inactivity = setTimeout(
+        () => {
+          cleanup();
+          reject(
+            new Error(
+              "Scan import stopped after ten minutes without progress. The worker was released; retry or cancel other memory-intensive work.",
+            ),
+          );
+        },
+        10 * 60 * 1000,
+      );
+    };
+    const cleanup = () => {
+      clearTimeout(inactivity);
+      worker.terminate();
+      options.signal?.removeEventListener("abort", abort);
+    };
+    const abort = () => {
+      cleanup();
+      reject(new DOMException("Import cancelled", "AbortError"));
+    };
+    options.signal?.addEventListener("abort", abort, { once: true });
+    worker.onmessage = (
+      event: MessageEvent<{
+        progress?: number;
+        positions?: Float32Array;
+        error?: string;
+      }>,
+    ) => {
+      if (event.data.progress !== undefined) {
+        renewLease();
+        options.onProgress?.(event.data.progress);
+        return;
+      }
+      cleanup();
+      if (event.data.positions) resolve(event.data.positions);
+      else reject(new Error(event.data.error ?? "Scan import failed."));
+    };
+    worker.onerror = (event) => {
+      cleanup();
+      reject(new Error(event.message || "Scan import worker failed."));
+    };
+    worker.onmessageerror = () => {
+      cleanup();
+      reject(new Error("The browser could not transfer the imported scan."));
+    };
+    renewLease();
+    if (options.signal?.aborted) {
+      abort();
+      return;
+    }
+    try {
+      worker.postMessage({ file, extension });
+    } catch (error) {
+      cleanup();
+      reject(error);
+    }
+  });
+}

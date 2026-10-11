@@ -70,12 +70,14 @@ export function VectorField({
 export function Panel({
   title,
   children,
+  className = "",
 }: {
   title: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="panel">
+    <section className={`panel ${className}`}>
       <h3>{title}</h3>
       {children}
     </section>

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  alignPrincipalAxes,
   cleanupMesh,
   deviations,
+  fitCone,
   fitCylinder,
   fitPlane,
   fitSphere,
@@ -140,5 +142,177 @@ describe("independent analytical geometry", () => {
     expect(() =>
       transformPositions([0, 0, 0], [0, 0, 0], [0, 0, 0], 0),
     ).toThrow();
+  });
+  it("keeps typed scan buffers compact across statistics, sectioning and transforms", () => {
+    const array = [0, 0, 0, 4, 0, 0, 0, 3, 0];
+    const typed = new Float32Array(array);
+    expect(meshStats(typed)).toEqual(meshStats(array));
+    expect(sectionMesh(typed, "x", 2)).toEqual(sectionMesh(array, "x", 2));
+    const fit = fitPlane(array);
+    const typedDeviation = deviations(typed, fit);
+    expect(typedDeviation).toBeInstanceOf(Float32Array);
+    typedDeviation.forEach((value, i) =>
+      expect(value).toBeCloseTo(deviations(array, fit)[i]!, 5),
+    );
+    const transformed = transformPositions(typed, [10, 20, 30], [0, 0, 90], 2);
+    expect(transformed).toBeInstanceOf(Float32Array);
+    const expected = transformPositions(array, [10, 20, 30], [0, 0, 90], 2);
+    transformed.forEach((value, i) =>
+      expect(value).toBeCloseTo(expected[i]!, 5),
+    );
+    expect(Array.from(typed)).toEqual(array);
+    const cleaned = cleanupMesh(
+      new Float32Array([...array, ...Array(9).fill(0)]),
+    );
+    expect(cleaned).toBeInstanceOf(Float32Array);
+    expect(Array.from(cleaned)).toEqual(array);
+  });
+
+  it("fits typed coordinate samples with equivalent analytical results", () => {
+    const sphere = [1, 0, 0, -1, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 1, 0, 0, -1];
+    expect(fitSphere(new Float32Array(sphere))).toEqual(fitSphere(sphere));
+    const cylinder: number[] = [];
+    for (const z of [-2, 2])
+      for (const [x, y] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ])
+        cylinder.push(x!, y!, z);
+    expect(fitCylinder(new Float32Array(cylinder))).toEqual(
+      fitCylinder(cylinder),
+    );
+  });
+
+  it("rejects non-finite typed scan buffers before computing geometry", () => {
+    const invalid = new Float32Array([0, 0, 0, 4, 0, 0, 0, Infinity, 0]);
+    expect(() => meshStats(invalid)).toThrow("finite triangle coordinates");
+    expect(() => cleanupMesh(invalid)).toThrow("finite triangle coordinates");
+    expect(() => sectionMesh(invalid, "x", 2)).toThrow(
+      "finite triangle coordinates",
+    );
+    expect(() => transformPositions(invalid, [0, 0, 0], [0, 0, 0], 1)).toThrow(
+      "finite XYZ coordinates",
+    );
+  });
+  it("aligns a rotated elongated scan into a centered right-handed principal frame", () => {
+    const corners: number[] = [];
+    for (const x of [-4, 4])
+      for (const y of [-2, 2]) for (const z of [-1, 1]) corners.push(x, y, z);
+    const rotated = transformPositions(corners, [17, -12, 5], [23, 31, 47], 1);
+    const aligned = alignPrincipalAxes(rotated);
+    aligned.center.forEach((value, i) =>
+      expect(value).toBeCloseTo([17, -12, 5][i]!, 10),
+    );
+    for (let i = 0; i < aligned.positions.length; i += 3) {
+      expect(Math.abs(aligned.positions[i]!)).toBeCloseTo(4, 9);
+      expect(Math.abs(aligned.positions[i + 1]!)).toBeCloseTo(2, 9);
+      expect(Math.abs(aligned.positions[i + 2]!)).toBeCloseTo(1, 9);
+    }
+    const [x, y, z] = aligned.axes;
+    const determinant =
+      x[0] * (y[1] * z[2] - y[2] * z[1]) -
+      x[1] * (y[0] * z[2] - y[2] * z[0]) +
+      x[2] * (y[0] * z[1] - y[1] * z[0]);
+    expect(determinant).toBeCloseTo(1, 10);
+    expect(
+      alignPrincipalAxes(new Float32Array(rotated)).positions,
+    ).toBeInstanceOf(Float32Array);
+    expect(rotated).toEqual(
+      transformPositions(corners, [17, -12, 5], [23, 31, 47], 1),
+    );
+    expect(() => alignPrincipalAxes([0, 0, 0, 1, 1, 1, 2, 2, 2])).toThrow(
+      "Collinear",
+    );
+  });
+  it.each([360, 220])(
+    "recovers a rotated cone from a %s degree sampled side",
+    (arc) => {
+      const points: number[] = [];
+      for (let layer = 0; layer <= 8; layer++) {
+        const z = layer * 1.5,
+          radius = 5 - z / 3;
+        for (let angle = 0; angle < 32; angle++) {
+          const theta = (angle * arc * Math.PI) / (32 * 180);
+          points.push(radius * Math.cos(theta), radius * Math.sin(theta), z);
+        }
+      }
+      const transformed = transformPositions(
+        points,
+        [20, -10, 7],
+        [17, 32, 11],
+        1,
+      );
+      const fit = fitCone(transformed);
+      expect(fit.kind).toBe("cone");
+      expect(fit.radius).toBeCloseTo(5, 4);
+      expect(fit.topRadius).toBeCloseTo(1, 4);
+      expect(fit.height).toBeCloseTo(12, 4);
+      expect(fit.rms).toBeLessThan(1e-5);
+      fit.center.forEach((value, i) =>
+        expect(value).toBeCloseTo([20, -10, 7][i]!, 4),
+      );
+      const typed = fitCone(new Float32Array(transformed));
+      expect(typed.radius).toBeCloseTo(5, 4);
+      expect(typed.rms).toBeLessThan(1e-5);
+    },
+  );
+
+  it("recovers a cone whose sampled top converges to an apex", () => {
+    const side: number[] = [];
+    for (let layer = 0; layer <= 6; layer++)
+      for (let angle = 0; angle < 24; angle++) {
+        const radius = 6 - layer,
+          theta = (angle * Math.PI) / 12;
+        side.push(
+          radius * Math.cos(theta),
+          radius * Math.sin(theta),
+          layer * 2,
+        );
+      }
+    const fit = fitCone(side);
+    expect(fit.radius).toBeCloseTo(6, 6);
+    expect(fit.topRadius).toBeCloseTo(0, 6);
+    expect(fit.height).toBeCloseTo(12, 6);
+    expect(fit.rms).toBeLessThan(1e-7);
+  });
+
+  it("reports cone signed orthogonal distance and rejects invalid cone dimensions", () => {
+    const cone = {
+      kind: "cone" as const,
+      center: [0, 0, 0] as [number, number, number],
+      axis: [0, 0, 1] as [number, number, number],
+      radius: 5,
+      topRadius: 1,
+      height: 12,
+      rms: 0,
+      maxError: 0,
+    };
+    expect(deviations([5, 0, 0, 4, 0, 6, 2, 0, 6], cone)).toEqual([
+      0,
+      expect.closeTo(3 / Math.sqrt(10)),
+      expect.closeTo(-3 / Math.sqrt(10)),
+    ]);
+    expect(() => deviations([0, 0, 0], { ...cone, height: 0 })).toThrow(
+      "cone dimensions",
+    );
+    expect(() => deviations([0, 0, 0], { ...cone, topRadius: -1 })).toThrow(
+      "cone dimensions",
+    );
+  });
+
+  it("rejects a cylinder, flat circle and collinear points as tapered cones", () => {
+    const cylinder: number[] = [],
+      circle: number[] = [];
+    for (let i = 0; i < 32; i++) {
+      const x = 3 * Math.cos((i * Math.PI) / 16),
+        y = 3 * Math.sin((i * Math.PI) / 16);
+      circle.push(x, y, 0);
+      for (const z of [0, 2, 4, 6]) cylinder.push(x, y, z);
+    }
+    expect(() => fitCone(cylinder)).toThrow();
+    expect(() => fitCone(circle)).toThrow();
+    expect(() => fitCone([0, 0, 0, 1, 1, 1, 2, 2, 2])).toThrow();
   });
 });
