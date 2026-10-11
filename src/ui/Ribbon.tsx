@@ -1,5 +1,13 @@
-import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { RibbonCommandIcon } from "./RibbonCommandIcon";
+import { ribbonOverflowEdges } from "./ribbon-overflow";
 import {
   RIBBON_TABS,
   ribbonToolAvailability,
@@ -23,8 +31,43 @@ export function Ribbon({
 }: RibbonProps) {
   const instance = useId();
   const tabButtons = useRef<(HTMLButtonElement | null)[]>([]);
+  const tools = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
   const active =
     RIBBON_TABS.find((tab) => tab.id === activeTab) ?? RIBBON_TABS[0];
+  function updateEdges() {
+    const panel = tools.current;
+    if (!panel) return;
+    const { left, right } = ribbonOverflowEdges(
+      panel.scrollLeft,
+      panel.clientWidth,
+      panel.scrollWidth,
+    );
+    setEdges((previous) =>
+      previous.left === left && previous.right === right
+        ? previous
+        : { left, right },
+    );
+  }
+  useEffect(() => {
+    const panel = tools.current;
+    if (!panel) return;
+    panel.scrollLeft = 0;
+    updateEdges();
+    const observer = new ResizeObserver(updateEdges);
+    observer.observe(panel);
+    for (const group of panel.children) observer.observe(group);
+    return () => observer.disconnect();
+  }, [active.id]);
+  function scrollTools(direction: number) {
+    const panel = tools.current;
+    panel?.scrollBy({
+      left: direction * Math.max(160, panel.clientWidth * 0.65),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  }
   function navigateTabs(
     event: KeyboardEvent<HTMLButtonElement>,
     index: number,
@@ -83,51 +126,90 @@ export function Ribbon({
           </div>
         )}
       </div>
-      <div
-        className="ribbon-tools"
-        role="tabpanel"
-        id={`${instance}-panel-${active.id}`}
-        aria-labelledby={`${instance}-tab-${active.id}`}
-        tabIndex={0}
-      >
-        {active.groups.map((group) => (
-          <div
-            className="ribbon-group"
-            role="group"
-            aria-label={group.label}
-            key={group.label}
-          >
-            <div className="ribbon-group-tools">
-              {group.tools.map((tool) => {
-                const availability = ribbonToolAvailability(
-                  tool,
-                  state,
-                  actions,
-                );
-                return (
-                  <button
-                    key={tool.id}
-                    type="button"
-                    className="ribbon-button"
-                    data-command={tool.id}
-                    disabled={!availability.available}
-                    title={availability.reason}
-                    aria-label={tool.label}
-                    onClick={
-                      availability.available && tool.action
-                        ? actions[tool.action]
-                        : undefined
-                    }
-                  >
-                    <RibbonCommandIcon command={tool.id} />
-                    <span className="ribbon-button-label">{tool.label}</span>
-                  </button>
-                );
-              })}
+      <div className="ribbon-tools-shell">
+        <div
+          ref={tools}
+          onScroll={updateEdges}
+          onKeyDown={(event) => {
+            if (event.target !== event.currentTarget) return;
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+              event.preventDefault();
+              scrollTools(event.key === "ArrowLeft" ? -1 : 1);
+            } else if (event.key === "Home" || event.key === "End") {
+              event.preventDefault();
+              event.currentTarget.scrollLeft =
+                event.key === "Home" ? 0 : event.currentTarget.scrollWidth;
+            }
+          }}
+          className="ribbon-tools"
+          role="tabpanel"
+          id={`${instance}-panel-${active.id}`}
+          aria-labelledby={`${instance}-tab-${active.id}`}
+          tabIndex={0}
+        >
+          {active.groups.map((group) => (
+            <div
+              className="ribbon-group"
+              role="group"
+              aria-label={group.label}
+              key={group.label}
+            >
+              <div className="ribbon-group-tools">
+                {group.tools.map((tool) => {
+                  const availability = ribbonToolAvailability(
+                    tool,
+                    state,
+                    actions,
+                  );
+                  return (
+                    <button
+                      key={tool.id}
+                      type="button"
+                      className="ribbon-button"
+                      data-command={tool.id}
+                      disabled={!availability.available}
+                      title={availability.reason}
+                      aria-label={tool.label}
+                      onClick={
+                        availability.available && tool.action
+                          ? actions[tool.action]
+                          : undefined
+                      }
+                    >
+                      <RibbonCommandIcon command={tool.id} />
+                      <span className="ribbon-button-label">{tool.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="ribbon-group-title">{group.label}</span>
             </div>
-            <span className="ribbon-group-title">{group.label}</span>
-          </div>
-        ))}
+          ))}
+        </div>
+        {edges.left && (
+          <button
+            type="button"
+            className="ribbon-scroll-hint ribbon-scroll-left"
+            aria-label="Show previous tools"
+            aria-controls={`${instance}-panel-${active.id}`}
+            title="More tools to the left"
+            onClick={() => scrollTools(-1)}
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+        )}
+        {edges.right && (
+          <button
+            type="button"
+            className="ribbon-scroll-hint ribbon-scroll-right"
+            aria-label="Show more tools"
+            aria-controls={`${instance}-panel-${active.id}`}
+            title="More tools to the right"
+            onClick={() => scrollTools(1)}
+          >
+            <span aria-hidden="true">›</span>
+          </button>
+        )}
       </div>
     </section>
   );

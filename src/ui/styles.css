@@ -1202,11 +1202,42 @@ dd {
   background: var(--surface);
   box-shadow: inset 0 -2px var(--accent);
 }
+.ribbon-tools-shell {
+  position: relative;
+  min-width: 0;
+}
 .ribbon-tools {
   display: flex;
   overflow-x: auto;
+  scrollbar-width: none;
   padding: 7px 10px 4px;
   min-height: 98px;
+}
+.ribbon-tools::-webkit-scrollbar {
+  display: none;
+}
+.ribbon-scroll-hint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--text);
+  font-size: 30px;
+}
+.ribbon-scroll-left {
+  left: 0;
+  background: linear-gradient(to right, var(--surface) 55%, transparent);
+}
+.ribbon-scroll-right {
+  right: 0;
+  background: linear-gradient(to left, var(--surface) 55%, transparent);
+}
+.ribbon-scroll-hint:hover {
+  color: var(--accent);
 }
 .ribbon-group {
   flex: 0 0 auto;
