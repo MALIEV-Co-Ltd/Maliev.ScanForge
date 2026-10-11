@@ -44,6 +44,7 @@ export type ProcessingRequest =
     }
   | {
       kind: "icp" | "global";
+      sourceTriangleMask?: Uint8Array;
       positions: Positions;
       target: Positions;
       maxDistance: number;
@@ -201,6 +202,13 @@ export function processMesh(
       if (copied.kind === "connectedSelection") {
         copied.seeds = new Uint8Array(copied.seeds);
         transfers.push(copied.seeds.buffer);
+      }
+      if (
+        (copied.kind === "icp" || copied.kind === "global") &&
+        copied.sourceTriangleMask
+      ) {
+        copied.sourceTriangleMask = new Uint8Array(copied.sourceTriangleMask);
+        transfers.push(copied.sourceTriangleMask.buffer);
       }
       worker.postMessage(copied, transfers);
     } catch (error) {

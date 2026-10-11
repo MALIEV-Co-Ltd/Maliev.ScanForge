@@ -107,9 +107,11 @@ describe("processing worker resource ownership", () => {
   });
   it("clones both ICP buffers and releases on cancellation", async () => {
     const controller = new AbortController();
+    const sourceTriangleMask = new Uint8Array([1]);
     const pending = processMesh(
       {
         kind: "icp",
+        sourceTriangleMask,
         positions,
         target: positions,
         maxDistance: 1,
@@ -123,7 +125,11 @@ describe("processing worker resource ownership", () => {
     );
     const check = expect(pending).rejects.toMatchObject({ name: "AbortError" });
     const worker = ProcessingWorkerDouble.latest;
-    expect(worker.transfers).toHaveLength(2);
+    expect(worker.transfers).toHaveLength(3);
+    expect(
+      (worker.sent as { sourceTriangleMask: Uint8Array }).sourceTriangleMask,
+    ).not.toBe(sourceTriangleMask);
+    expect([...sourceTriangleMask]).toEqual([1]);
     expect((worker.sent as { target: Float32Array }).target).not.toBe(
       positions,
     );

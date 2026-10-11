@@ -7,10 +7,12 @@ import {
 import type { Entity } from "../types";
 import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
+import { alignmentTriangleMask } from "../registration-selection";
 
 export interface MeshToolsProps {
   entities: Entity[];
   selected?: Entity;
+  triangleSelection?: Uint8Array | null;
   disabled?: boolean;
   onReplace: (positions: Float32Array, label: string) => void;
   onCreateSegments: (
@@ -46,6 +48,7 @@ function parseLandmarks(text: string): number[] {
 export function MeshTools({
   entities,
   selected,
+  triangleSelection,
   disabled = false,
   onReplace,
   onCreateSegments,
@@ -373,6 +376,11 @@ export function MeshTools({
                 {
                   kind: "icp",
                   positions: selected.positions,
+                  sourceTriangleMask: alignmentTriangleMask(
+                    selected.positions.length / 9,
+                    triangleSelection,
+                    selected.meshSelection?.hidden,
+                  ),
                   target: target.positions,
                   maxDistance: distance,
                   maxIterations: icpIterations,
@@ -388,6 +396,9 @@ export function MeshTools({
           Fine align with sampled ICP
         </button>
         <p className="muted">
+          {triangleSelection?.some((value) => value !== 0)
+            ? "Selected visible triangles drive fine alignment; the whole scan moves. "
+            : "Visible triangles drive fine alignment; the whole scan moves. "}
           ICP uses up to 4,000 source and 20,000 target samples. Start from
           approximate alignment; symmetric geometry can settle into an incorrect
           local match.

@@ -43,4 +43,8 @@ ScanForge's existing generic fitting panel does not reproduce this staged dialog
 
 ## Remaining application-wide work
 
+### Alignment input coverage - 2026-10-11
+
+Manual PDF pages 49 and 54 describe fine alignment of an approximately aligned scan, using selected regions as priority data when available. Fine alignment now passes the selected visible triangle mask to the worker, or uses visible triangles when selection is empty. Sampling is bounded within that region; the derived rigid pose is applied to the entire source scan. The fixed target geometry is not changed. This uses independently authored sampled point-to-point ICP, not recovered native CAD-surface registration. Dedicated Preview/OK/Cancel dialogs, coordinate-system and interactive alignment, ordered viewport landmarks, simultaneous multi-scan fine alignment and original convergence policies remain unfinished.
+
 Create Sketch's observed controls differ from the current polygon/constraint editor. Freeform, surfacing, CAD operations, scan preparation, registration and analysis still need separate field/default/state inventories, handler traces and original-versus-browser workflow checks. Current OpenCascade operations and authored geometry algorithms remain independent implementations. Full dialog parity and full original logic recovery are not complete.

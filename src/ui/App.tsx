@@ -2751,6 +2751,7 @@ export function App() {
                 <MeshTools
                   entities={entities}
                   selected={selected}
+                  triangleSelection={triangleMask}
                   disabled={busy}
                   onBusyChange={setProcessingBusy}
                   onReplace={(positions, label) => {

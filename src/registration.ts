@@ -1,4 +1,5 @@
 import type { Positions, Vec3 } from "./types";
+import { sampleAlignmentRegion } from "./registration-selection";
 
 /** Row-major rotation and world translation: transformed = rotation * point + translation. */
 export interface RigidTransform {
@@ -325,6 +326,7 @@ function sample(positions: Positions, requested: number): Float64Array {
   return output;
 }
 export interface IcpOptions extends RegistrationOptions {
+  sourceTriangleMask?: Uint8Array;
   initial?: RigidTransform;
   maxIterations?: number;
   sampleSize?: number;
@@ -366,7 +368,14 @@ export function registerIcp(
   let transform = options.initial ?? identityTransform();
   validateTransform(transform);
   checkpoint(options, 0, 0);
-  const sourcePoints = sample(source, sampleSize),
+  const sourcePoints = options.sourceTriangleMask
+      ? sampleAlignmentRegion(
+          source,
+          options.sourceTriangleMask,
+          sampleSize,
+          () => checkpoint(options, 0, 0),
+        )
+      : sample(source, sampleSize),
     targetPoints = sample(target, targetSampleSize);
   const tree = buildTree(
     targetPoints,
