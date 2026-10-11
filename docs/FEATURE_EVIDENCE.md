@@ -100,3 +100,11 @@ The new shell, feature DAG and sheet-repair implementations are independently au
 ## Mouse interaction continuation — 2026-10-11
 
 REA retained evidence and installed reference documentation establish configurable input schemes, default middle-button navigation, right-click context actions, selection tools and depth/modifier controls. See INPUT_INTERACTION.md for manual page references, source hashes, independent choices and remaining operations. No original mouse-handler function was recovered and native runtime equivalence remains unverified. Raw reference text, resources and private installation paths remain excluded from publication.
+
+## Original-logic recovery boundary — 2026-10-11
+
+REA 6.4.0 `inspect-evidence-bundle` revalidated the retained native bundle: three complete records, comprising one overview and two searches, with zero unknown revisions. None is a native function dossier or a UI-to-handler trace. The observed CAD utility symbols identify possible investigation seeds; they do not establish application command routing, numerical tolerances, selection rules or rebuild behavior.
+
+Further implementation intended to reproduce original logic requires a recovered handler/call path and its input, output, failure and state contracts. Reference documentation and screenshots can establish documented interactions, but cannot substitute for this recovery. Existing independently authored algorithms remain independent implementations; this investigation did not change or verify their equivalence.
+
+The selected REA provider reports native UI observation, UI scenario capture and native call observation unavailable on this Windows host because those operations require macOS. Static native analysis remains a separate supported lane, subject to the unchanged 3,072 MiB admission guard and the unresolved native-decompiler memory bound described above. No protection or activation mechanism was bypassed.
