@@ -1,0 +1,194 @@
+import { describe, expect, it, vi } from "vitest";
+import * as THREE from "three";
+import { Viewport } from "../src/viewport";
+import { coordinateSketchFrame } from "../src/sketch-frame";
+import type { Sketch } from "../src/sketch";
+type Hooks = {
+  pointerDown: (e: PointerEvent) => void;
+  pointerMove: (e: PointerEvent) => void;
+  pointerUp: (e: PointerEvent) => void;
+  pointerCancel: () => void;
+  sketchKeyDown: (e: KeyboardEvent) => void;
+};
+function fixture(plane: "OXY" | "OYZ" | "OXZ" = "OXY") {
+  const view = Object.create(Viewport.prototype) as Viewport;
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 10000);
+  const frame = coordinateSketchFrame(plane, 12);
+  camera.up.set(...frame.v);
+  camera.position
+    .set(...frame.origin)
+    .addScaledVector(new THREE.Vector3(...frame.normal), 100);
+  camera.lookAt(new THREE.Vector3(...frame.origin));
+  camera.updateMatrixWorld();
+  const capture = new Set<number>();
+  const canvas = {
+    getBoundingClientRect: () => ({
+      left: 0,
+      top: 0,
+      width: 1000,
+      height: 1000,
+    }),
+    setPointerCapture: (id: number) => capture.add(id),
+    hasPointerCapture: (id: number) => capture.has(id),
+    releasePointerCapture: (id: number) => capture.delete(id),
+  };
+  const geometry = new THREE.Group(),
+    preview = new THREE.Group();
+  Object.assign(view, {
+    camera,
+    raycaster: new THREE.Raycaster(),
+    selectionOverlay: { hidden: true },
+    renderer: { domElement: canvas },
+    controls: {
+      mouseButtons: {},
+      target: new THREE.Vector3(...frame.origin),
+      update: () => {
+        camera.lookAt(new THREE.Vector3(...frame.origin));
+        camera.updateMatrixWorld();
+      },
+    },
+    sketchGeometry: geometry,
+    sketchPreview: preview,
+    invalidate: vi.fn(),
+    extent: 100,
+  });
+  const change = vi.fn(),
+    error = vi.fn();
+  const sketch: Sketch = {
+    version: 1,
+    points: [],
+    segments: [],
+    constraints: [],
+    frame,
+  };
+  return {
+    view,
+    hooks: view as unknown as Hooks,
+    camera,
+    capture,
+    geometry,
+    preview,
+    change,
+    error,
+    sketch,
+  };
+}
+function event(x: number, y: number, extra = {}) {
+  return {
+    clientX: x,
+    clientY: y,
+    button: 0,
+    isPrimary: true,
+    pointerId: 1,
+    ctrlKey: false,
+    shiftKey: false,
+    preventDefault: vi.fn(),
+    stopImmediatePropagation: vi.fn(),
+    ...extra,
+  } as unknown as PointerEvent;
+}
+describe("sketch model-view pointer routing", () => {
+  it("rejects out-of-range authoring coordinates before GPU upload", () => {
+    const f = fixture();
+    f.sketch.points = [{ id: "bad", x: 1e20, y: 0 }];
+    f.view.setSketchEditor({
+      sketch: f.sketch,
+      tool: "line",
+      constraints: false,
+      onChange: f.change,
+      onError: f.error,
+    });
+    expect(f.error).toHaveBeenCalledOnce();
+    expect(f.geometry.children).toHaveLength(0);
+    const down = event(500, 500);
+    f.hooks.pointerDown(down);
+    expect(down.stopImmediatePropagation).not.toHaveBeenCalled();
+  });
+  it.each(["OXY", "OYZ", "OXZ"] as const)(
+    "draws a placed line on %s and commits once on release",
+    (plane) => {
+      const f = fixture(plane);
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool: "line",
+        constraints: true,
+        onChange: f.change,
+        onError: f.error,
+      });
+      const down = event(500, 500);
+      f.hooks.pointerDown(down);
+      expect(down.stopImmediatePropagation).toHaveBeenCalledOnce();
+      expect(f.capture.has(1)).toBe(true);
+      f.hooks.pointerMove(event(650, 500));
+      expect(f.change).not.toHaveBeenCalled();
+      expect(f.preview.children).toHaveLength(1);
+      f.hooks.pointerUp(event(650, 500));
+      expect(f.change).toHaveBeenCalledOnce();
+      expect(f.error).not.toHaveBeenCalled();
+      const sketch = f.change.mock.calls[0][0] as Sketch;
+      expect(sketch.frame).toEqual(f.sketch.frame);
+      expect(sketch.points[0].x).toBeCloseTo(0);
+      expect(sketch.points[1].x).toBeGreaterThan(10);
+      expect(sketch.points[1].y).toBeCloseTo(0);
+      expect(f.capture.size).toBe(0);
+      expect(f.preview.children).toHaveLength(0);
+    },
+  );
+  it("cancels capture and disposable preview on Escape, cancellation and editor exit", () => {
+    const f = fixture();
+    f.view.setSketchEditor({
+      sketch: f.sketch,
+      tool: "line",
+      constraints: false,
+      onChange: f.change,
+      onError: f.error,
+    });
+    for (const cancel of [
+      () =>
+        f.hooks.sketchKeyDown({
+          key: "Escape",
+          preventDefault: vi.fn(),
+        } as unknown as KeyboardEvent),
+      () => f.hooks.pointerCancel(),
+      () => f.view.setSketchEditor(),
+    ]) {
+      f.hooks.pointerDown(event(500, 500));
+      f.hooks.pointerMove(event(600, 600));
+      const line = f.preview.children[0] as THREE.LineSegments;
+      const disposed = vi.spyOn(line.geometry, "dispose");
+      cancel();
+      expect(f.capture.size).toBe(0);
+      expect(disposed).toHaveBeenCalledOnce();
+      expect(f.change).not.toHaveBeenCalled();
+    }
+  });
+  it("moves the picked endpoint while preserving camera modifiers and releases rendered resources", () => {
+    const f = fixture();
+    f.sketch.points = [
+      { id: "a", x: 0, y: 0 },
+      { id: "b", x: 10, y: 0 },
+    ];
+    f.sketch.segments = [{ id: "line", a: "a", b: "b" }];
+    f.view.setSketchEditor({
+      sketch: f.sketch,
+      tool: "move",
+      constraints: false,
+      onChange: f.change,
+      onError: f.error,
+    });
+    const ctrl = event(500, 500, { ctrlKey: true });
+    f.hooks.pointerDown(ctrl);
+    expect(ctrl.stopImmediatePropagation).not.toHaveBeenCalled();
+    f.hooks.pointerCancel();
+    f.hooks.pointerDown(event(500, 500));
+    f.hooks.pointerUp(event(550, 450));
+    expect(f.change).toHaveBeenCalledOnce();
+    expect(f.change.mock.calls[0][0].points[0].x).toBeGreaterThan(0);
+    expect(f.change.mock.calls[0][0].points[0].y).toBeGreaterThan(0);
+    const releases = f.geometry.children.map((child) =>
+      vi.spyOn((child as THREE.Mesh).geometry, "dispose"),
+    );
+    f.view.setSketchEditor();
+    for (const release of releases) expect(release).toHaveBeenCalledOnce();
+  });
+});

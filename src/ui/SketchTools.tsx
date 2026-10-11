@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
+import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
   sketchProfile,
@@ -20,6 +21,11 @@ export interface SketchToolsProps {
     profile?: { sketch: Sketch; chordTolerance: number },
   ) => void;
   disabled?: boolean;
+  drawingTool?: SketchDrawingTool;
+  onDrawingTool?: (tool: SketchDrawingTool) => void;
+  drawingConstraints?: boolean;
+  onDrawingConstraints?: (enabled: boolean) => void;
+  onNormalView?: () => void;
 }
 
 const constraintLabel = (kind: string) =>
@@ -34,6 +40,11 @@ export function SketchTools({
   onChange,
   onExtrude,
   disabled = false,
+  drawingTool = "navigate",
+  onDrawingTool,
+  drawingConstraints = true,
+  onDrawingConstraints,
+  onNormalView,
 }: SketchToolsProps) {
   const [local, setLocal] = useState<Sketch>(() => rectangleSketch());
   const sketch = value ?? local;
@@ -157,6 +168,40 @@ export function SketchTools({
   return (
     <section className="panel sketch-panel" aria-label="Parametric sketch">
       <h3>Parametric sketch</h3>
+      {onDrawingTool && (
+        <fieldset disabled={disabled}>
+          <legend>Model-view drawing</legend>
+          <div className="button-row">
+            {(["navigate", "line", "move"] as const).map((tool) => (
+              <button
+                key={tool}
+                aria-pressed={drawingTool === tool}
+                onClick={() => onDrawingTool(tool)}
+              >
+                {tool === "navigate"
+                  ? "Navigate"
+                  : tool === "line"
+                    ? "Line"
+                    : "Move endpoint"}
+              </button>
+            ))}
+            <button onClick={onNormalView}>Normal to sketch</button>
+          </div>
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={drawingConstraints}
+              onChange={(event) => onDrawingConstraints?.(event.target.checked)}
+            />
+            Constraints · snap endpoints and axes
+          </label>
+          <p className="muted">
+            Left-drag draws a line or moves an endpoint. Middle-drag navigates;
+            Escape cancels. Orange endpoints are free; blue endpoints have
+            relations.
+          </p>
+        </fieldset>
+      )}
       <p className="muted">
         Local UV dimensions in mm · signed angles in degrees
       </p>

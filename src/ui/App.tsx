@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
+import type { SketchDrawingTool } from "../sketch-drawing";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import {
   referenceWorldSegments,
@@ -152,6 +153,10 @@ export function App() {
   const [workspace, setWorkspace] = useState("measure");
   const [savedSketches, setSavedSketches] = useState<SavedSketch[]>([]);
   const [activeSketchId, setActiveSketchId] = useState<string | null>(null);
+  const [sketchDrawingTool, setSketchDrawingTool] =
+    useState<SketchDrawingTool>("navigate");
+  const [sketchDrawingConstraints, setSketchDrawingConstraints] =
+    useState(true);
   const [createSketch, setCreateSketch] = useState<{
     source: Entity;
     hidden: number[];
@@ -606,6 +611,28 @@ export function App() {
         : undefined,
     );
   }, [axis, offset, mode, section, createSketch, workspace, sketchDraft]);
+  useEffect(() => {
+    viewport.current?.setSketchEditor(
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? {
+            sketch: sketchDraft,
+            tool: busy ? "navigate" : sketchDrawingTool,
+            constraints: sketchDrawingConstraints,
+            onChange: updateSketchDraft,
+            onError: setError,
+          }
+        : undefined,
+    );
+  }, [
+    workspace,
+    toolPanelOpen,
+    createSketch,
+    sketchDraft,
+    sketchDrawingTool,
+    sketchDrawingConstraints,
+    busy,
+    activeSketchId,
+  ]);
   useEffect(() => {
     if (
       createSketch &&
@@ -3244,6 +3271,11 @@ export function App() {
               <div className="sketch-panels">
                 <SketchTools
                   value={sketchDraft}
+                  drawingTool={sketchDrawingTool}
+                  onDrawingTool={setSketchDrawingTool}
+                  drawingConstraints={sketchDrawingConstraints}
+                  onDrawingConstraints={setSketchDrawingConstraints}
+                  onNormalView={() => viewport.current?.viewSketchNormal()}
                   onChange={updateSketchDraft}
                   onExtrude={extrude}
                   disabled={busy}

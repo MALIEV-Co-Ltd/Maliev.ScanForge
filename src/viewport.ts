@@ -5,6 +5,14 @@ import type { Motion6D } from "./spacemouse";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
 import { ScreenSelectionIndex, type ScreenRegion } from "./screen-selection";
 import { navigateCamera } from "./camera-navigation";
+import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
+import { sampleSketchArc, type Sketch } from "./sketch";
+import {
+  drawSketchLine,
+  moveSketchEndpoint,
+  type SketchDrawingTool,
+  type SketchUV,
+} from "./sketch-drawing";
 
 type Item = {
   hidden?: number[];
@@ -30,6 +38,22 @@ export class Viewport {
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
+  private readonly sketchGeometry = new THREE.Group();
+  private readonly sketchPreview = new THREE.Group();
+  private sketchEditor?: {
+    sketch: Sketch;
+    tool: SketchDrawingTool;
+    constraints: boolean;
+    onChange: (sketch: Sketch) => void;
+    onError: (message: string) => void;
+  };
+  private sketchDrag?: {
+    id: number;
+    start: SketchUV;
+    end: SketchUV;
+    pointId?: string;
+    tolerance: number;
+  };
   private readonly landmarkOverlay = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
@@ -76,6 +100,11 @@ export class Viewport {
     private readonly onContext?: (x: number, y: number) => void,
     private readonly onSelectionGesture?: (phase: "begin" | "end") => void,
   ) {
+    this.pointerDown = this.pointerDown.bind(this);
+    this.pointerMove = this.pointerMove.bind(this);
+    this.pointerUp = this.pointerUp.bind(this);
+    this.pointerCancel = this.pointerCancel.bind(this);
+    this.sketchKeyDown = this.sketchKeyDown.bind(this);
     this.scene.background = new THREE.Color("#e9eef2");
     this.camera.up.set(0, 0, 1);
     this.camera.position.set(160, -200, 140);
@@ -146,6 +175,8 @@ export class Viewport {
       this.section,
       this.measurement,
       this.triangleSelection,
+      this.sketchGeometry,
+      this.sketchPreview,
     );
     this.selectionOverlay.className = "screen-selection-overlay";
     this.selectionOverlay.hidden = true;
@@ -161,6 +192,7 @@ export class Viewport {
     });
     this.renderer.domElement.addEventListener("contextmenu", this.contextMenu);
     this.renderer.domElement.addEventListener("pointermove", this.pointerMove);
+    window.addEventListener("keydown", this.sketchKeyDown);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
     this.renderer.domElement.addEventListener(
       "pointercancel",
@@ -239,11 +271,12 @@ export class Viewport {
     this.invalidate();
   };
 
-  private pointerDown = (event: PointerEvent): void => {
+  private pointerDown(event: PointerEvent): void {
     Object.assign(
       this.controls.mouseButtons,
       cameraMouseButtons(this.brushing, event),
     );
+    if (this.beginSketchDrag(event)) return;
     if (event.button !== 0 || !event.isPrimary) return;
     this.pointer = {
       x: event.clientX,
@@ -259,9 +292,17 @@ export class Viewport {
       this.renderer.domElement.setPointerCapture(event.pointerId);
       this.paintScreen(event);
     }
-  };
+  }
 
-  private pointerMove = (event: PointerEvent): void => {
+  private pointerMove(event: PointerEvent): void {
+    if (this.sketchDrag?.id === event.pointerId) {
+      const hit = this.sketchPlanePoint(event.clientX, event.clientY);
+      if (hit) {
+        this.sketchDrag.end = hit;
+        this.renderSketchDrag();
+      }
+      return;
+    }
     if (
       this.brushing &&
       this.pointer?.id === event.pointerId &&
@@ -290,16 +331,42 @@ export class Viewport {
     ) {
       this.pointer.moved = true;
     }
-  };
+  }
 
-  private pointerCancel = (): void => {
+  private pointerCancel(): void {
+    this.cancelSketchDrag();
     if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
     this.brushPath = [];
     this.selectionOverlay.hidden = true;
-  };
+  }
 
-  private pointerUp = (event: PointerEvent): void => {
+  private pointerUp(event: PointerEvent): void {
+    if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
+      const drag = this.sketchDrag,
+        editor = this.sketchEditor;
+      const end =
+        this.sketchPlanePoint(event.clientX, event.clientY) ?? drag.end;
+      this.cancelSketchDrag();
+      try {
+        editor.onChange(
+          drag.pointId
+            ? moveSketchEndpoint(editor.sketch, drag.pointId, end)
+            : drawSketchLine(
+                editor.sketch,
+                drag.start,
+                end,
+                drag.tolerance,
+                editor.constraints,
+              ),
+        );
+      } catch (error) {
+        editor.onError(
+          error instanceof Error ? error.message : "Sketch drawing failed.",
+        );
+      }
+      return;
+    }
     const pointer = this.pointer;
     this.pointer = null;
     if (
@@ -326,9 +393,13 @@ export class Viewport {
     this.brushPath = [];
     if (this.renderer.domElement.hasPointerCapture(event.pointerId))
       this.renderer.domElement.releasePointerCapture(event.pointerId);
-  };
+  }
   private contextMenu = (event: MouseEvent): void => {
     event.preventDefault();
+    if (this.sketchDrag) {
+      this.cancelSketchDrag();
+      return;
+    }
     const [x, y] = this.screenPoint(event.clientX, event.clientY);
     this.onContext?.(x, y);
   };
@@ -346,6 +417,268 @@ export class Viewport {
       { width: rect.width, height: rect.height, through: false },
     );
     return Uint8Array.from(mask, (value, i) => (value && visible[i] ? 1 : 0));
+  }
+  setSketchEditor(editor?: typeof this.sketchEditor): void {
+    this.cancelSketchDrag();
+    this.sketchEditor = editor;
+    this.clearGroup(this.sketchGeometry);
+    if (editor) {
+      const sketch = editor.sketch;
+      const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0);
+      const world = (uv: SketchUV) => sketchWorldPoint(frame, uv);
+      try {
+        for (const point of sketch.points) world([point.x, point.y]);
+      } catch (error) {
+        this.sketchEditor = { ...editor, tool: "navigate" };
+        editor.onError(
+          error instanceof Error
+            ? error.message
+            : "Invalid sketch coordinates.",
+        );
+        this.invalidate();
+        return;
+      }
+      const lines: number[] = [];
+      for (const segment of sketch.segments) {
+        const a = sketch.points.find((p) => p.id === segment.a),
+          b = sketch.points.find((p) => p.id === segment.b);
+        if (a && b) lines.push(...world([a.x, a.y]), ...world([b.x, b.y]));
+      }
+      for (const arc of sketch.arcs ?? []) {
+        let samples: SketchUV[];
+        try {
+          samples = sampleSketchArc(sketch, arc, false, 0.1);
+        } catch {
+          continue;
+        }
+        const end = sketch.points.find((p) => p.id === arc.b);
+        if (end) samples.push([end.x, end.y]);
+        for (let i = 1; i < samples.length; i++)
+          lines.push(...world(samples[i - 1]), ...world(samples[i]));
+      }
+      this.addSketchLines(this.sketchGeometry, lines, "#eeeeee");
+      const constrained = new Set<string>();
+      for (const c of sketch.constraints) {
+        if ("point" in c) constrained.add(c.point);
+        if ("a" in c) {
+          constrained.add(c.a);
+          constrained.add(c.b);
+        }
+        const ids =
+          "segment" in c
+            ? [c.segment]
+            : "first" in c
+              ? [c.first, c.second]
+              : "arc" in c
+                ? [c.arc]
+                : [];
+        for (const id of ids) {
+          const primitive =
+            sketch.segments.find((s) => s.id === id) ??
+            sketch.arcs?.find((s) => s.id === id);
+          if (primitive) {
+            constrained.add(primitive.a);
+            constrained.add(primitive.b);
+          }
+        }
+      }
+      // Shared endpoints join primitives even without a separate coincidence relation.
+      for (const p of sketch.points)
+        if (
+          sketch.segments.filter((s) => s.a === p.id || s.b === p.id).length > 1
+        )
+          constrained.add(p.id);
+      for (const [hasConstraint, color] of [
+        [false, "#ee933d"],
+        [true, "#398ce5"],
+      ] as const) {
+        const positions = sketch.points
+          .filter((p) => constrained.has(p.id) === hasConstraint)
+          .flatMap((p) => world([p.x, p.y]));
+        if (positions.length) {
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(positions, 3),
+          );
+          const points = new THREE.Points(
+            geometry,
+            new THREE.PointsMaterial({
+              color,
+              size: 8,
+              sizeAttenuation: false,
+              depthTest: false,
+            }),
+          );
+          points.renderOrder = 11;
+          this.sketchGeometry.add(points);
+        }
+      }
+    }
+    this.invalidate();
+  }
+  viewSketchNormal(): void {
+    if (!this.sketchEditor) return;
+    const frame =
+      this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+    const bounds = new THREE.Box3().setFromObject(this.sketchGeometry);
+    const center = bounds.isEmpty()
+      ? new THREE.Vector3(...frame.origin)
+      : bounds.getCenter(new THREE.Vector3());
+    const size = bounds.isEmpty()
+      ? 40
+      : Math.max(bounds.getBoundingSphere(new THREE.Sphere()).radius * 2, 10);
+    const halfAngle = Math.min(
+      THREE.MathUtils.degToRad(this.camera.fov) / 2,
+      Math.atan(
+        Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2) *
+          this.camera.aspect,
+      ),
+    );
+    const distance = (size / (2 * Math.sin(halfAngle))) * 1.18;
+    this.camera.up.set(...frame.v);
+    this.controls.target.copy(center);
+    this.camera.position
+      .copy(center)
+      .addScaledVector(new THREE.Vector3(...frame.normal), distance);
+    this.camera.near = Math.max(distance / 10000, 0.00001);
+    this.camera.far = Math.max(distance * 100, this.extent * 100);
+    this.camera.updateProjectionMatrix();
+    this.controls.update();
+    this.invalidate();
+  }
+  private addSketchLines(
+    group: THREE.Group,
+    positions: number[],
+    color: string,
+  ): void {
+    if (!positions.length) return;
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    const lines = new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({ color, depthTest: false }),
+    );
+    lines.renderOrder = 10;
+    group.add(lines);
+  }
+  private sketchPlanePoint(x: number, y: number): SketchUV | null {
+    if (!this.sketchEditor) return null;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const frame =
+      this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(
+        ((x - rect.left) / rect.width) * 2 - 1,
+        1 - ((y - rect.top) / rect.height) * 2,
+      ),
+      this.camera,
+    );
+    const normal = new THREE.Vector3(...frame.normal);
+    const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+      normal,
+      new THREE.Vector3(...frame.origin),
+    );
+    const hit = this.raycaster.ray.intersectPlane(plane, new THREE.Vector3());
+    if (!hit) return null;
+    hit.sub(new THREE.Vector3(...frame.origin));
+    return [
+      hit.dot(new THREE.Vector3(...frame.u)),
+      hit.dot(new THREE.Vector3(...frame.v)),
+    ];
+  }
+  private beginSketchDrag(event: PointerEvent): boolean {
+    const editor = this.sketchEditor;
+    if (
+      !editor ||
+      editor.tool === "navigate" ||
+      event.button !== 0 ||
+      !event.isPrimary ||
+      event.ctrlKey ||
+      event.shiftKey
+    )
+      return false;
+    const start = this.sketchPlanePoint(event.clientX, event.clientY);
+    if (!start) return false;
+    const adjacent = this.sketchPlanePoint(event.clientX + 8, event.clientY);
+    const tolerance = adjacent
+      ? Math.hypot(adjacent[0] - start[0], adjacent[1] - start[1])
+      : 0;
+    let pointId: string | undefined;
+    if (editor.tool === "move") {
+      const rect = this.renderer.domElement.getBoundingClientRect();
+      const frame = editor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+      let nearest = 10;
+      for (const p of editor.sketch.points) {
+        const screen = new THREE.Vector3(
+          ...sketchWorldPoint(frame, [p.x, p.y]),
+        ).project(this.camera);
+        const distance = Math.hypot(
+          rect.left + ((screen.x + 1) * rect.width) / 2 - event.clientX,
+          rect.top + ((1 - screen.y) * rect.height) / 2 - event.clientY,
+        );
+        if (distance < nearest && screen.z >= -1 && screen.z <= 1) {
+          nearest = distance;
+          pointId = p.id;
+        }
+      }
+      if (!pointId) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return true;
+      }
+    }
+    this.sketchDrag = {
+      id: event.pointerId,
+      start,
+      end: start,
+      pointId,
+      tolerance,
+    };
+    this.pointer = null;
+    this.renderer.domElement.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return true;
+  }
+  private renderSketchDrag(): void {
+    this.clearGroup(this.sketchPreview);
+    if (this.sketchDrag && this.sketchEditor) {
+      const frame =
+        this.sketchEditor.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+      const drag = this.sketchDrag;
+      const start = drag.pointId
+        ? this.sketchEditor.sketch.points.find((p) => p.id === drag.pointId)
+        : null;
+      this.addSketchLines(
+        this.sketchPreview,
+        [
+          ...sketchWorldPoint(frame, start ? [start.x, start.y] : drag.start),
+          ...sketchWorldPoint(frame, drag.end),
+        ],
+        "#ee933d",
+      );
+    }
+    this.invalidate();
+  }
+  private cancelSketchDrag(): void {
+    if (
+      this.sketchDrag &&
+      this.renderer.domElement.hasPointerCapture(this.sketchDrag.id)
+    )
+      this.renderer.domElement.releasePointerCapture(this.sketchDrag.id);
+    this.sketchDrag = undefined;
+    this.clearGroup(this.sketchPreview);
+    this.invalidate();
+  }
+  private sketchKeyDown(event: KeyboardEvent): void {
+    if (event.key === "Escape" && this.sketchDrag) {
+      this.cancelSketchDrag();
+      event.preventDefault();
+    }
   }
   private screenPoint(x: number, y: number): [number, number] {
     const rect = this.renderer.domElement.getBoundingClientRect();
@@ -835,6 +1168,7 @@ export class Viewport {
     canvas.removeEventListener("pointermove", this.pointerMove);
     canvas.removeEventListener("pointerup", this.pointerUp);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
+    window.removeEventListener("keydown", this.sketchKeyDown);
     for (const item of this.objects.values()) {
       item.selectionIndex?.dispose();
       item.mesh.geometry.dispose();
@@ -844,6 +1178,8 @@ export class Viewport {
     this.clearGroup(this.section);
     this.clearGroup(this.measurement);
     this.clearGroup(this.triangleSelection);
+    this.clearGroup(this.sketchGeometry);
+    this.clearGroup(this.sketchPreview);
     this.grid.geometry.dispose();
     if (Array.isArray(this.grid.material))
       this.grid.material.forEach((material) => material.dispose());
