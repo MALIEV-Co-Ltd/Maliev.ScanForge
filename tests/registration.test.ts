@@ -3,6 +3,7 @@ import {
   applyRigidTransform,
   identityTransform,
   registerIcp,
+  registerGlobal,
   registerPairedPoints,
   transformPoint,
   type RigidTransform,
@@ -127,5 +128,90 @@ describe("rigid scan registration", () => {
       registerIcp(source, source, { signal: controller.signal }),
     ).toThrow(/cancelled/);
     expect(identityTransform().translation).toEqual([0, 0, 0]);
+  });
+});
+
+describe("global principal-axis initialization", () => {
+  it("recovers a large arbitrary 3D rotation and translation without paired ordering", () => {
+    const axis = [1 / Math.sqrt(14), 2 / Math.sqrt(14), 3 / Math.sqrt(14)];
+    const angle = 2.13,
+      c = Math.cos(angle),
+      s = Math.sin(angle),
+      v = 1 - c;
+    const [x, y, z] = axis;
+    const rotated: RigidTransform = {
+      rotation: [
+        c + x * x * v,
+        x * y * v - z * s,
+        x * z * v + y * s,
+        y * x * v + z * s,
+        c + y * y * v,
+        y * z * v - x * s,
+        z * x * v - y * s,
+        z * y * v + x * s,
+        c + z * z * v,
+      ],
+      translation: [80, -40, 27],
+    };
+    const cloud = [...source, 5, 1, 2, -1, 4, -2, 2, -3, 1];
+    const raw = transformed(cloud, rotated);
+    const target: number[] = [];
+    for (let i = raw.length - 3; i >= 0; i -= 3)
+      target.push(...raw.slice(i, i + 3));
+    const result = registerGlobal(cloud, target, {
+      trimFraction: 1,
+      tolerance: 1e-8,
+      maxDistance: 10,
+    });
+    expect(result.globalCandidates).toBe(24);
+    expect(result.converged).toBe(true);
+    expect(result.rms).toBeLessThan(1e-8);
+    expect(result.coarseRms).toBeLessThan(1e-8);
+    result.transform.rotation.forEach((value, i) =>
+      expect(value).toBeCloseTo(rotated.rotation[i], 7),
+    );
+    result.transform.translation.forEach((value, i) =>
+      expect(value).toBeCloseTo(rotated.translation[i], 7),
+    );
+    expect(cloud.slice(0, 3)).toEqual([0, 0, 0]);
+  });
+  it("reports ambiguous principal axes on symmetric planar scans", () => {
+    const plane = [-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0];
+    const target = transformed(plane, pose);
+    const result = registerGlobal(plane, target, {
+      trimFraction: 1,
+      maxDistance: 10,
+    });
+    expect(result.principalAxesAmbiguous).toBe(true);
+    expect(result.rms).toBeLessThan(1e-8);
+  });
+  it("rejects degenerate clouds and invalid bounded-search options", () => {
+    expect(() => registerGlobal([0, 0, 0, 1, 0, 0, 2, 0, 0], source)).toThrow(
+      /Collinear/,
+    );
+    expect(() => registerGlobal([0, 0, 0, 0, 0, 0, 0, 0, 0], source)).toThrow(
+      /spread/,
+    );
+    expect(() =>
+      registerGlobal(source, source, { coarseSampleSize: 2 }),
+    ).toThrow(/coarse samples/);
+    expect(() =>
+      registerGlobal(source, source, { refinementCandidates: 25 }),
+    ).toThrow(/24/);
+    expect(() =>
+      registerGlobal(source, source, { targetSampleSize: 2 }),
+    ).toThrow(/sampling/);
+    expect(() => registerGlobal(source, [...source.slice(0, -1), NaN])).toThrow(
+      /finite/,
+    );
+  });
+  it("stops global candidate search when cancelled from progress", () => {
+    const controller = new AbortController();
+    expect(() =>
+      registerGlobal(source, transformed(source, pose), {
+        signal: controller.signal,
+        onProgress: () => controller.abort(),
+      }),
+    ).toThrow(/cancelled/);
   });
 });

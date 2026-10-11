@@ -14,6 +14,8 @@ export interface Entity {
   opacity: number;
   // Geometry is stored in world coordinates in millimetres.
   source?: string;
+  /** Source counts for sampled imports; project geometry contains only the display sample. */
+  scanSource?: { bytes: number; triangles: number; displayedTriangles: number };
   kernelId?: string;
   brep?: string;
   fit?: FitResult;

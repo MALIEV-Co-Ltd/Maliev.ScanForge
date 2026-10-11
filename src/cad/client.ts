@@ -1,7 +1,16 @@
 import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
 
-type Result = KernelMesh | Uint8Array | boolean;
+export type CadPattern =
+  | { kind: "linear"; count: number; step: Vec3 }
+  | {
+      kind: "circular";
+      count: number;
+      center: Vec3;
+      axis: Vec3;
+      angleDegrees: number;
+    };
+type Result = KernelMesh | KernelMesh[] | Uint8Array | boolean;
 type Reply = { id: number; result?: Result; error?: string };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -139,6 +148,33 @@ export class CadClient {
       kernelId,
       thickness,
     }) as Promise<KernelMesh>;
+  }
+
+  /** Count includes the original; patterns produce an unfused exact compound. */
+  pattern(kernelId: string, pattern: CadPattern): Promise<KernelMesh> {
+    return this.request("pattern", {
+      kernelId,
+      ...pattern,
+    }) as Promise<KernelMesh>;
+  }
+
+  mirror(
+    kernelId: string,
+    planeOrigin: Vec3,
+    normal: Vec3,
+  ): Promise<KernelMesh> {
+    return this.request("mirror", {
+      kernelId,
+      planeOrigin,
+      normal,
+    }) as Promise<KernelMesh>;
+  }
+
+  /** Returns cutter-inside and cutter-outside solids, with atomic native registration. */
+  split(kernelId: string, cutterId: string): Promise<[KernelMesh, KernelMesh]> {
+    return this.request("split", { kernelId, cutterId }) as Promise<
+      [KernelMesh, KernelMesh]
+    >;
   }
 
   /** Release deleted entities' native CAD shapes while preserving other handles. */

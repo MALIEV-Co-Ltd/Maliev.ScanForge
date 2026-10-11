@@ -22,6 +22,9 @@ export interface RegistrationResult {
   pairs: number;
   iterations: number;
   converged: boolean;
+  globalCandidates?: number;
+  coarseRms?: number;
+  principalAxesAmbiguous?: boolean;
 }
 export interface RegistrationOptions {
   signal?: AbortSignal;
@@ -459,4 +462,248 @@ export function applyRigidTransform(
       );
   checkpoint(options, 1, 0);
   return output;
+}
+
+export interface GlobalRegistrationOptions extends IcpOptions {
+  coarseSampleSize?: number;
+  refinementCandidates?: number;
+}
+interface PrincipalFrame {
+  center: Vec3;
+  axes: Vec3[];
+  ambiguous: boolean;
+}
+function principalFrame(points: Float64Array): PrincipalFrame {
+  const count = points.length / 3,
+    center: Vec3 = [0, 0, 0];
+  for (let i = 0; i < count; i++)
+    for (let axis = 0; axis < 3; axis++)
+      center[axis] += points[i * 3 + axis] / count;
+  const covariance = Array.from({ length: 3 }, () => [0, 0, 0]);
+  for (let i = 0; i < count; i++)
+    for (let a = 0; a < 3; a++)
+      for (let b = a; b < 3; b++)
+        covariance[a][b] +=
+          ((points[i * 3 + a] - center[a]) * (points[i * 3 + b] - center[b])) /
+          count;
+  for (let a = 0; a < 3; a++)
+    for (let b = a + 1; b < 3; b++) covariance[b][a] = covariance[a][b];
+  const scale = Math.max(...covariance.flat().map(Math.abs));
+  if (!Number.isFinite(scale) || scale <= 0)
+    throw new Error(
+      "Global registration needs a finite spread of distinct points.",
+    );
+  const vectors = Array.from({ length: 3 }, (_, row) =>
+    Array.from({ length: 3 }, (_, col) => Number(row === col)),
+  );
+  for (let iteration = 0; iteration < 64; iteration++) {
+    let p = 0,
+      q = 1;
+    for (let a = 0; a < 3; a++)
+      for (let b = a + 1; b < 3; b++)
+        if (Math.abs(covariance[a][b]) > Math.abs(covariance[p][q])) {
+          p = a;
+          q = b;
+        }
+    if (Math.abs(covariance[p][q]) <= scale * 1e-14) break;
+    const angle =
+        0.5 *
+        Math.atan2(2 * covariance[p][q], covariance[q][q] - covariance[p][p]),
+      c = Math.cos(angle),
+      s = Math.sin(angle);
+    const pp = covariance[p][p],
+      qq = covariance[q][q],
+      pq = covariance[p][q];
+    covariance[p][p] = c * c * pp - 2 * c * s * pq + s * s * qq;
+    covariance[q][q] = s * s * pp + 2 * c * s * pq + c * c * qq;
+    covariance[p][q] = covariance[q][p] = 0;
+    for (let k = 0; k < 3; k++) {
+      if (k !== p && k !== q) {
+        const kp = covariance[k][p],
+          kq = covariance[k][q];
+        covariance[k][p] = covariance[p][k] = c * kp - s * kq;
+        covariance[k][q] = covariance[q][k] = s * kp + c * kq;
+      }
+      const vp = vectors[k][p],
+        vq = vectors[k][q];
+      vectors[k][p] = c * vp - s * vq;
+      vectors[k][q] = s * vp + c * vq;
+    }
+  }
+  const order = [0, 1, 2].sort((a, b) => covariance[b][b] - covariance[a][a]);
+  const eigenvalues = order.map((id) => Math.max(0, covariance[id][id]));
+  if (eigenvalues[1] <= eigenvalues[0] * 1e-12)
+    throw new Error("Collinear scans cannot determine a global rotation.");
+  const axes = order.map((id) => vectors.map((row) => row[id]) as Vec3);
+  const determinant =
+    axes[0][0] * (axes[1][1] * axes[2][2] - axes[1][2] * axes[2][1]) -
+    axes[0][1] * (axes[1][0] * axes[2][2] - axes[1][2] * axes[2][0]) +
+    axes[0][2] * (axes[1][0] * axes[2][1] - axes[1][1] * axes[2][0]);
+  if (determinant < 0) axes[2] = axes[2].map((value) => -value) as Vec3;
+  return {
+    center,
+    axes,
+    ambiguous:
+      Math.abs(eigenvalues[0] - eigenvalues[1]) <= eigenvalues[0] * 1e-3 ||
+      Math.abs(eigenvalues[1] - eigenvalues[2]) <= eigenvalues[0] * 1e-3,
+  };
+}
+
+/** Principal-axis pose search followed by sampled trimmed ICP. This is a deterministic coarse heuristic, not a guaranteed global optimum. */
+export function registerGlobal(
+  source: Positions,
+  target: Positions,
+  options: GlobalRegistrationOptions = {},
+): RegistrationResult {
+  validatePositions(source);
+  validatePositions(target);
+  const coarseSize = options.coarseSampleSize ?? 1000,
+    refinements = options.refinementCandidates ?? 4;
+  if (
+    !Number.isSafeInteger(coarseSize) ||
+    coarseSize < 3 ||
+    !Number.isSafeInteger(refinements) ||
+    refinements < 1 ||
+    refinements > 24
+  )
+    throw new Error(
+      "Global registration needs at least three coarse samples and one to 24 refinement candidates.",
+    );
+  const trim = options.trimFraction ?? 0.85;
+  if (!Number.isFinite(trim) || trim <= 0 || trim > 1)
+    throw new Error("Global registration trim fraction must be in (0, 1].");
+  if (
+    ![options.sampleSize ?? 4000, options.targetSampleSize ?? 20000].every(
+      (value) => Number.isSafeInteger(value) && value >= 3,
+    ) ||
+    !Number.isSafeInteger(options.maxIterations ?? 40) ||
+    (options.maxIterations ?? 40) < 1 ||
+    !Number.isFinite(options.tolerance ?? 1e-5) ||
+    (options.tolerance ?? 1e-5) <= 0 ||
+    !((options.maxDistance ?? Infinity) > 0)
+  )
+    throw new Error(
+      "Invalid global registration sampling, iterations or distance options.",
+    );
+  checkpoint(options, 0, 0);
+  const coarseSource = sample(source, coarseSize),
+    coarseTarget = sample(target, coarseSize);
+  const sourceFrame = principalFrame(coarseSource),
+    targetFrame = principalFrame(coarseTarget);
+  const targetSamples = sample(target, options.targetSampleSize ?? 20000);
+  const tree = buildTree(
+    targetSamples,
+    Array.from({ length: targetSamples.length / 3 }, (_, i) => i),
+  )!;
+  function score(transform: RigidTransform) {
+    const errors = new Array<number>(coarseSource.length / 3);
+    for (let i = 0; i < errors.length; i++)
+      errors[i] = nearest(
+        tree,
+        targetSamples,
+        transformPoint(point(coarseSource, i), transform),
+        Infinity,
+      ).distance2;
+    errors.sort((a, b) => a - b);
+    const keep = Math.max(3, Math.floor(errors.length * trim));
+    let sum = 0;
+    for (let i = 0; i < keep; i++) sum += errors[i];
+    return Math.sqrt(sum / keep);
+  }
+  const candidates: { transform: RigidTransform; score: number }[] = [];
+  const permutations = [
+    [0, 1, 2],
+    [0, 2, 1],
+    [1, 0, 2],
+    [1, 2, 0],
+    [2, 0, 1],
+    [2, 1, 0],
+  ];
+  for (const permutation of permutations)
+    for (const sx of [-1, 1])
+      for (const sy of [-1, 1])
+        for (const sz of [-1, 1]) {
+          const signs = [sx, sy, sz];
+          const rotation = new Array<number>(9).fill(
+            0,
+          ) as RigidTransform["rotation"];
+          for (let row = 0; row < 3; row++)
+            for (let col = 0; col < 3; col++)
+              for (let axis = 0; axis < 3; axis++)
+                rotation[row * 3 + col] +=
+                  targetFrame.axes[permutation[axis]][row] *
+                  signs[axis] *
+                  sourceFrame.axes[axis][col];
+          const determinant =
+            rotation[0] *
+              (rotation[4] * rotation[8] - rotation[5] * rotation[7]) -
+            rotation[1] *
+              (rotation[3] * rotation[8] - rotation[5] * rotation[6]) +
+            rotation[2] *
+              (rotation[3] * rotation[7] - rotation[4] * rotation[6]);
+          if (determinant < 0) continue;
+          const rotatedCenter = transformPoint(sourceFrame.center, {
+            rotation,
+            translation: [0, 0, 0],
+          });
+          const transform: RigidTransform = {
+            rotation,
+            translation: targetFrame.center.map(
+              (value, axis) => value - rotatedCenter[axis],
+            ) as Vec3,
+          };
+          validateTransform(transform);
+          const rms = score(transform);
+          candidates.push({ transform, score: rms });
+          checkpoint(options, (0.35 * candidates.length) / 24, rms);
+        }
+  if (options.initial) {
+    validateTransform(options.initial);
+    candidates.push({
+      transform: options.initial,
+      score: score(options.initial),
+    });
+  }
+  candidates.sort((a, b) => a.score - b.score);
+  let best = candidates[0];
+  let successful = false;
+  for (let i = 0; i < Math.min(refinements, candidates.length); i++) {
+    checkpoint(options, 0.35 + (0.3 * i) / refinements, best.score);
+    try {
+      const fit = registerIcp(source, target, {
+        ...options,
+        initial: candidates[i].transform,
+        sampleSize: Math.min(options.sampleSize ?? 4000, coarseSize),
+        maxIterations: Math.min(options.maxIterations ?? 40, 20),
+        onProgress: (fraction, rms) =>
+          checkpoint(options, 0.35 + (0.3 * (i + fraction)) / refinements, rms),
+      });
+      const rms = score(fit.transform);
+      if (!successful || rms < best.score)
+        best = { transform: fit.transform, score: rms };
+      successful = true;
+    } catch (error) {
+      if (
+        options.signal?.aborted ||
+        (error instanceof DOMException && error.name === "AbortError")
+      )
+        throw error;
+    }
+  }
+  if (!successful)
+    throw new Error(
+      "Global pose candidates had insufficient ICP correspondences; increase search distance or use paired landmarks.",
+    );
+  const result = registerIcp(source, target, {
+    ...options,
+    initial: best.transform,
+    onProgress: (fraction, rms) =>
+      checkpoint(options, 0.65 + 0.35 * fraction, rms),
+  });
+  return {
+    ...result,
+    globalCandidates: candidates.length,
+    coarseRms: candidates[0].score,
+    principalAxesAmbiguous: sourceFrame.ambiguous || targetFrame.ambiguous,
+  };
 }

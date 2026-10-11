@@ -19,6 +19,30 @@ const entity: Entity = {
   opacity: 1,
 };
 describe("file boundaries", () => {
+  it("roundtrips sampled source counts and rejects malformed counts", async () => {
+    const scanSource = {
+      bytes: 1_100_000_084,
+      triangles: 22_000_000,
+      displayedTriangles: 250_000,
+    };
+    for (const saved of [
+      serializeProject("Preview", [{ ...entity, scanSource }]),
+      await (
+        await serializeProjectBlob("Preview", [{ ...entity, scanSource }])
+      ).text(),
+    ])
+      expect(parseProject(saved).entities[0].scanSource).toEqual(scanSource);
+    expect(() =>
+      parseProject(
+        serializeProject("Invalid", [
+          {
+            ...entity,
+            scanSource: { ...scanSource, displayedTriangles: 22_000_001 },
+          },
+        ]),
+      ),
+    ).toThrow("source counts");
+  });
   it("persists rational surface controls and constrained sketch drafts through both save paths", async () => {
     const surfacePatch = createGridPatch(4, 4, 20, 30, 3);
     const authoring = { sketch: rectangleSketch(20, 30) };

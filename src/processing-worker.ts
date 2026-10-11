@@ -1,5 +1,6 @@
 import {
   analyzeMesh,
+  classifyRegion,
   decimateMesh,
   repairMesh,
   segmentMesh,
@@ -9,6 +10,7 @@ import {
 import {
   applyRigidTransform,
   registerIcp,
+  registerGlobal,
   registerPairedPoints,
 } from "./registration";
 import type {
@@ -116,9 +118,31 @@ scope.onmessage = ({ data: request }) => {
         cursors[id] += 9;
       }
       result.segments = outputs;
+      result.segmentClassifications = outputs.map((positions, id) => {
+        progress(
+          id / Math.max(1, outputs.length),
+          "Classifying surface regions",
+        );
+        return classifyRegion(positions, {
+          tolerance: request.tolerance,
+          onProgress: (fraction, stage) => progress(fraction, stage),
+        });
+      });
+      const types = result.segmentClassifications.reduce<
+        Record<string, number>
+      >((counts, classification) => {
+        counts[classification.kind] = (counts[classification.kind] ?? 0) + 1;
+        return counts;
+      }, {});
       result.diagnostics = {
         segments: outputs.length,
         angleDegrees: request.angleDegrees,
+        surfaceTypes: Object.entries(types)
+          .map(
+            ([kind, count]) =>
+              `${count} ${kind === "freeform" ? "unclassified/freeform" : kind}`,
+          )
+          .join(", "),
       };
     } else {
       const registration =
@@ -134,11 +158,15 @@ scope.onmessage = ({ data: request }) => {
                   ),
               },
             )
-          : registerIcp(request.positions, request.target, {
-              ...request,
-              onProgress: (fraction, rms) =>
-                progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
-            });
+          : (request.kind === "global" ? registerGlobal : registerIcp)(
+              request.positions,
+              request.target,
+              {
+                ...request,
+                onProgress: (fraction, rms) =>
+                  progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
+              },
+            );
       result.positions = applyRigidTransform(
         request.positions,
         registration.transform,
@@ -155,6 +183,12 @@ scope.onmessage = ({ data: request }) => {
         iterations: registration.iterations,
         pairs: registration.pairs,
       };
+      if (registration.globalCandidates !== undefined) {
+        result.diagnostics.globalCandidates = registration.globalCandidates;
+        result.diagnostics.coarseRms = registration.coarseRms ?? 0;
+        result.diagnostics.principalAxesAmbiguous =
+          registration.principalAxesAmbiguous ?? false;
+      }
     }
     const transfers: Transferable[] = [];
     if (result.positions) transfers.push(result.positions.buffer);

@@ -95,6 +95,32 @@ describe("processing worker resource ownership", () => {
     ).rejects.toMatchObject({ name: "AbortError" });
     expect(ProcessingWorkerDouble.creates).toBe(0);
   });
+  it("clones and transfers both global-registration inputs", async () => {
+    const pending = processMesh({
+      kind: "global",
+      positions,
+      target: positions,
+      maxDistance: 10,
+      maxIterations: 40,
+      sampleSize: 100,
+      targetSampleSize: 100,
+      tolerance: 1e-5,
+      trimFraction: 1,
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.transfers).toHaveLength(2);
+    expect((worker.sent as { target: Float32Array }).target.buffer).not.toBe(
+      positions.buffer,
+    );
+    const result: ProcessingResult = {
+      kind: "global",
+      diagnostics: { globalCandidates: 24 },
+    };
+    worker.reply({ result });
+    expect(await pending).toBe(result);
+    expect(worker.terminated).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("renews inactivity on progress but always enforces the hard lease", async () => {
     const progress = vi.fn();
     const pending = processMesh(request, { onProgress: progress });
@@ -219,5 +245,24 @@ describe("processing worker resource ownership", () => {
     expect(aligned.positions?.[0]).toBeCloseTo(2);
     expect(aligned.registration?.rms).toBeLessThan(1e-10);
     expect(replies.at(-1)!.transfers).toHaveLength(1);
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "global",
+        positions,
+        target: new Float32Array([2, 0, 0, 3, 0, 0, 2, 1, 0]),
+        maxDistance: 10,
+        maxIterations: 10,
+        sampleSize: 10,
+        targetSampleSize: 10,
+        tolerance: 1e-5,
+        trimFraction: 1,
+      },
+    });
+    const global = (replies.at(-1)!.message as { result: ProcessingResult })
+      .result;
+    expect(global.registration?.globalCandidates).toBe(24);
+    expect(global.registration?.rms).toBeLessThan(1e-8);
+    expect(global.positions).toHaveLength(9);
   });
 });

@@ -9,3 +9,5 @@ Split and combined input layouts, invalid/truncated reports, button rising edges
 Motion expires after 150 milliseconds without fresh reports. Background pages ignore motion; animation stops when there is no input. Disconnect, page exit and component cleanup remove listeners and close only connections opened by this controller.
 
 Protocol decisions use the public [WebHID specification](https://hid.spec.whatwg.org/) and [3dmouse-hid device report inventory](https://github.com/hcrlab/3dmouse-hid). The implementation is independently authored. Browser/OS policies can restrict access to devices; unknown devices are rejected rather than decoded speculatively.
+
+The continuation validation adds a combined synthetic workflow from explicit HID selection/open through six-axis reports, camera movement, button callbacks, stale expiry and disposal. It verifies software routing and resource release, not physical hardware. The current Windows inventory only reported a KMJ emulator; no physical-device validation is claimed.

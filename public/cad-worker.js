@@ -382,6 +382,218 @@ function transformShape(oc, input) {
   }
 }
 
+function finiteVector(vector) {
+  return (
+    Array.isArray(vector) &&
+    vector.length === 3 &&
+    vector.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9)
+  );
+}
+
+function rigidCopy(oc, shape, matrix, translation) {
+  const transform = new oc.gp_Trsf_1();
+  let maker;
+  try {
+    transform.SetValues(
+      matrix[0][0],
+      matrix[0][1],
+      matrix[0][2],
+      translation[0],
+      matrix[1][0],
+      matrix[1][1],
+      matrix[1][2],
+      translation[1],
+      matrix[2][0],
+      matrix[2][1],
+      matrix[2][2],
+      translation[2],
+    );
+    maker = new oc.BRepBuilderAPI_Transform_2(shape, transform, true);
+    if (!maker.IsDone()) throw new Error("Exact CAD copy transform failed.");
+    return maker.Shape();
+  } finally {
+    maker?.delete();
+    transform.delete();
+  }
+}
+
+function patternShape(oc, input) {
+  const source = getShape(input.kernelId);
+  if (!Number.isInteger(input.count) || input.count < 2 || input.count > 256)
+    throw new Error(
+      "Pattern count must be an integer from 2 to 256, including the original.",
+    );
+  if (!["linear", "circular"].includes(input.kind))
+    throw new Error("Unsupported pattern kind.");
+  if (
+    input.kind === "linear" &&
+    (!finiteVector(input.step) || Math.hypot(...input.step) < 1e-8)
+  )
+    throw new Error("Linear pattern requires a finite nonzero spacing vector.");
+  let axis;
+  if (input.kind === "circular") {
+    if (
+      !finiteVector(input.center) ||
+      !finiteVector(input.axis) ||
+      Math.hypot(...input.axis) < 1e-8 ||
+      !Number.isFinite(input.angleDegrees) ||
+      Math.abs(input.angleDegrees) > 360 ||
+      Math.abs(input.angleDegrees % 360) < 1e-8
+    )
+      throw new Error(
+        "Circular pattern requires a finite center, nonzero axis and non-identity angle increment within 360 degrees.",
+      );
+    const length = Math.hypot(...input.axis);
+    axis = input.axis.map((value) => value / length);
+    for (let copy = 1; copy < input.count; copy++)
+      if (Math.abs((copy * input.angleDegrees) % 360) < 1e-8)
+        throw new Error(
+          "Circular pattern count repeats an angular position; reduce count or change the increment.",
+        );
+  }
+  const compound = new oc.TopoDS_Compound(),
+    builder = new oc.BRep_Builder();
+  let handedOff = false;
+  try {
+    builder.MakeCompound(compound);
+    builder.Add(compound, source);
+    for (let copy = 1; copy < input.count; copy++) {
+      let matrix, translation;
+      if (input.kind === "linear") {
+        matrix = [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1],
+        ];
+        translation = input.step.map((value) => value * copy);
+      } else {
+        const angle = (input.angleDegrees * copy * Math.PI) / 180,
+          c = Math.cos(angle),
+          s = Math.sin(angle),
+          n = axis;
+        const cross = [
+          [0, -n[2], n[1]],
+          [n[2], 0, -n[0]],
+          [-n[1], n[0], 0],
+        ];
+        matrix = Array.from({ length: 3 }, (_, row) =>
+          Array.from(
+            { length: 3 },
+            (_, column) =>
+              (row === column ? c : 0) +
+              (1 - c) * n[row] * n[column] +
+              s * cross[row][column],
+          ),
+        );
+        translation = input.center.map(
+          (value, row) =>
+            value -
+            matrix[row].reduce(
+              (sum, r, column) => sum + r * input.center[column],
+              0,
+            ),
+        );
+      }
+      const transformed = rigidCopy(oc, source, matrix, translation);
+      try {
+        builder.Add(compound, transformed);
+      } finally {
+        transformed.delete();
+      }
+    }
+    handedOff = true;
+    return register(oc, compound);
+  } finally {
+    builder.delete();
+    if (!handedOff) compound.delete();
+  }
+}
+
+function mirrorShape(oc, input) {
+  const source = getShape(input.kernelId);
+  if (
+    !finiteVector(input.planeOrigin) ||
+    !finiteVector(input.normal) ||
+    Math.hypot(...input.normal) < 1e-8
+  )
+    throw new Error(
+      "Mirror plane requires a finite origin and nonzero normal.",
+    );
+  const length = Math.hypot(...input.normal),
+    n = input.normal.map((value) => value / length),
+    distance = n.reduce(
+      (sum, value, i) => sum + value * input.planeOrigin[i],
+      0,
+    );
+  const matrix = Array.from({ length: 3 }, (_, row) =>
+    Array.from(
+      { length: 3 },
+      (_, column) => (row === column ? 1 : 0) - 2 * n[row] * n[column],
+    ),
+  );
+  return register(
+    oc,
+    rigidCopy(
+      oc,
+      source,
+      matrix,
+      n.map((value) => 2 * distance * value),
+    ),
+  );
+}
+
+function splitShape(oc, input) {
+  const source = getShape(input.kernelId),
+    cutter = getShape(input.cutterId);
+  if (input.kernelId === input.cutterId)
+    throw new Error("Split requires a separate intersecting cutting solid.");
+  const handles = [],
+    results = [];
+  const hasSolid = (shape) => {
+    const explorer = new oc.TopExp_Explorer_2(
+      shape,
+      oc.TopAbs_ShapeEnum.TopAbs_SOLID,
+      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+    );
+    try {
+      return explorer.More();
+    } finally {
+      explorer.delete();
+    }
+  };
+  if (!hasSolid(source) || !hasSolid(cutter))
+    throw new Error("Split requires source and cutter solids.");
+  try {
+    const common = new oc.BRepAlgoAPI_Common_3(source, cutter);
+    handles.push(common);
+    const cut = new oc.BRepAlgoAPI_Cut_3(source, cutter);
+    handles.push(cut);
+    if (!common.IsDone() || !cut.IsDone())
+      throw new Error("CAD split boolean construction failed.");
+    const inside = common.Shape();
+    handles.push(inside);
+    const outside = cut.Shape();
+    handles.push(outside);
+    if (!hasSolid(inside) || !hasSolid(outside))
+      throw new Error(
+        "Cutter must intersect the source and leave nonempty inside and outside solids.",
+      );
+    for (const shape of [inside, outside]) {
+      handles.splice(handles.indexOf(shape), 1);
+      results.push(register(oc, shape));
+    }
+    return results;
+  } catch (error) {
+    for (const result of results) {
+      shapes.get(result.kernelId)?.delete();
+      shapes.delete(result.kernelId);
+    }
+    throw error;
+  } finally {
+    cleanup(handles);
+  }
+}
+
 function polygonPoints(inputPoints) {
   let points = inputPoints;
   if (
@@ -1012,6 +1224,9 @@ self.onmessage = (event) => {
       else if (operation === "export") result = exportStep(oc, payload);
       else if (operation === "boolean") result = booleanShape(oc, payload);
       else if (operation === "transform") result = transformShape(oc, payload);
+      else if (operation === "pattern") result = patternShape(oc, payload);
+      else if (operation === "mirror") result = mirrorShape(oc, payload);
+      else if (operation === "split") result = splitShape(oc, payload);
       else if (operation === "extrude") result = extrudeShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "loft") result = loftShape(oc, payload);

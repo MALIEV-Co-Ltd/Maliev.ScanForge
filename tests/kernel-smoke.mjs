@@ -639,6 +639,148 @@ try {
     }),
     /zero-length/,
   );
+  const linearPattern = await request("pattern", {
+    kernelId: first.kernelId,
+    kind: "linear",
+    count: 3,
+    step: [30, 0, 0],
+  });
+  close(
+    exactVolume(linearPattern.kernelId),
+    3000,
+    "Exact linear compound summed volume",
+  );
+  bounds(linearPattern.positions).forEach((value, i) =>
+    close(value, [-5, -5, -5, 65, 5, 5][i], "Linear spacing bounds"),
+  );
+  const patternSeed = await request("primitive", {
+    kind: "box",
+    center: [10, 2, 3],
+    size: [2, 4, 6],
+  });
+  const circularPattern = await request("pattern", {
+    kernelId: patternSeed.kernelId,
+    kind: "circular",
+    count: 4,
+    center: [0, 0, 0],
+    axis: [0, 0, 2],
+    angleDegrees: 90,
+  });
+  close(
+    exactVolume(circularPattern.kernelId),
+    192,
+    "Exact circular pattern summed volume",
+  );
+  bounds(circularPattern.positions).forEach((value, i) =>
+    close(value, [-11, -11, 0, 11, 11, 6][i], "Circular rotation bounds"),
+  );
+  const mirrored = await request("mirror", {
+    kernelId: patternSeed.kernelId,
+    planeOrigin: [5, 0, 0],
+    normal: [2, 0, 0],
+  });
+  close(
+    exactVolume(mirrored.kernelId),
+    48,
+    "Mirror preserves native solid volume",
+  );
+  bounds(mirrored.positions).forEach((value, i) =>
+    close(value, [-1, 0, 0, 1, 4, 6][i], "Offset mirror plane bounds"),
+  );
+  const diagonalMirror = await request("mirror", {
+    kernelId: patternSeed.kernelId,
+    planeOrigin: [0, 0, 0],
+    normal: [1, 1, 0],
+  });
+  bounds(diagonalMirror.positions).forEach((value, i) =>
+    close(value, [-4, -11, 0, 0, -9, 6][i], "Diagonal mirror plane bounds"),
+  );
+  const splitParts = await request("split", {
+    kernelId: first.kernelId,
+    cutterId: second.kernelId,
+  });
+  assert.equal(splitParts.length, 2);
+  for (const part of splitParts)
+    close(exactVolume(part.kernelId), 500, "Split half native volume");
+  close(
+    splitParts.reduce((sum, part) => sum + exactVolume(part.kernelId), 0),
+    exactVolume(first.kernelId),
+    "Split conserves material volume",
+  );
+  const handleCount = vm.runInContext("shapes.size", context);
+  vm.runInContext(
+    "globalThis.savedRegistration=register;globalThis.registrationCount=0;register=(oc,shape)=>{if(++globalThis.registrationCount===2){shape.delete();throw new Error('Injected second-part registration failure');}return globalThis.savedRegistration(oc,shape);};",
+    context,
+  );
+  try {
+    await assert.rejects(
+      request("split", { kernelId: first.kernelId, cutterId: second.kernelId }),
+      /second-part/,
+    );
+  } finally {
+    vm.runInContext(
+      "register=globalThis.savedRegistration;delete globalThis.savedRegistration;delete globalThis.registrationCount;",
+      context,
+    );
+  }
+  assert.equal(
+    vm.runInContext("shapes.size", context),
+    handleCount,
+    "Failed split rolls back earlier part handles",
+  );
+  await assert.rejects(
+    request("split", { kernelId: first.kernelId, cutterId: first.kernelId }),
+    /separate/,
+  );
+  await assert.rejects(
+    request("pattern", {
+      kernelId: first.kernelId,
+      kind: "linear",
+      count: 3,
+      step: [0, 0, 0],
+    }),
+    /nonzero/,
+  );
+  await assert.rejects(
+    request("pattern", {
+      kernelId: first.kernelId,
+      kind: "circular",
+      count: 5,
+      center: [0, 0, 0],
+      axis: [0, 0, 1],
+      angleDegrees: 90,
+    }),
+    /repeats/,
+  );
+  await assert.rejects(
+    request("mirror", {
+      kernelId: first.kernelId,
+      planeOrigin: [0, 0, 0],
+      normal: [0, 0, 0],
+    }),
+    /nonzero/,
+  );
+  await request("release", [patternSeed.kernelId]);
+  close(
+    exactVolume(circularPattern.kernelId),
+    192,
+    "Pattern compound survives releasing source handle",
+  );
+  for (const shape of [
+    linearPattern,
+    circularPattern,
+    mirrored,
+    diagonalMirror,
+    ...splitParts,
+  ]) {
+    const data = await request("export", [shape.kernelId]),
+      restored = await request("import", { data, extension: "step" });
+    close(
+      exactVolume(restored.kernelId),
+      exactVolume(shape.kernelId),
+      "Pattern/mirror/split exact STEP roundtrip",
+    );
+  }
   const igesWriter = new oc.IGESControl_Writer_1();
   try {
     const shape = vm.runInContext(
@@ -682,7 +824,7 @@ try {
     "tmp",
   ]);
   console.log(
-    "CAD smoke passed: primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
+    "CAD smoke passed: primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
   );
 } finally {
   clearTimeout(expiry);

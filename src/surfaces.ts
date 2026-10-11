@@ -28,6 +28,249 @@ export interface SurfaceFitResult {
   projection: SurfaceFitOptions["projection"];
   solverBytes: number;
 }
+export type PatchEdge = "u0" | "u1" | "v0" | "v1";
+export type PatchAxis = "u" | "v";
+
+function insertionLocation(
+  patch: NurbsPatch,
+  axis: PatchAxis,
+  parameter: number,
+) {
+  if (axis !== "u" && axis !== "v")
+    throw new Error("Choose U or V refinement.");
+  if (!Number.isFinite(parameter) || parameter <= 0 || parameter >= 1)
+    throw new Error(
+      "Refinement parameter must be strictly inside normalized domain (0, 1).",
+    );
+  const degree = axis === "u" ? patch.degreeU : patch.degreeV;
+  const count = axis === "u" ? patch.countU : patch.countV;
+  const knots = axis === "u" ? patch.knotsU : patch.knotsV;
+  const start = knots[degree],
+    end = knots[count];
+  let knot = start + parameter * (end - start);
+  // Snap arithmetic roundoff to an existing interior knot before counting multiplicity.
+  const existing = knots.find(
+    (value) =>
+      value > start &&
+      value < end &&
+      Math.abs(value - knot) <= (end - start) * 1e-12,
+  );
+  if (existing !== undefined) knot = existing;
+  if (!(knot > start && knot < end))
+    throw new Error("Refinement parameter rounds to a domain endpoint.");
+  const multiplicity = knots.filter((value) => value === knot).length;
+  let span = degree;
+  while (span + 1 < count && knots[span + 1] <= knot) span++;
+  return { degree, count, knots, knot, multiplicity, span };
+}
+
+/** Exact homogeneous Boehm knot insertion. Parameter uses normalized active domain. */
+export function insertPatchKnot(
+  patch: NurbsPatch,
+  axis: PatchAxis,
+  parameter: number,
+  repetitions = 1,
+): NurbsPatch {
+  validatePatch(patch);
+  const location = insertionLocation(patch, axis, parameter);
+  integer(repetitions, 1, location.degree, "Knot insertion count");
+  if (location.count + repetitions > 16)
+    throw new Error("Refinement exceeds the 16-control limit on this axis.");
+  if (location.multiplicity + repetitions > location.degree)
+    throw new Error(
+      "Interior knot multiplicity cannot exceed degree during refinement.",
+    );
+  let next = patch;
+  for (let repeat = 0; repeat < repetitions; repeat++) {
+    const { degree, count, knots, knot, multiplicity, span } =
+      insertionLocation(next, axis, parameter);
+    const newCountU = next.countU + (axis === "u" ? 1 : 0),
+      newCountV = next.countV + (axis === "v" ? 1 : 0);
+    const points = new Array<Vec3>(newCountU * newCountV),
+      weights = new Array<number>(points.length);
+    const curves = axis === "u" ? next.countV : next.countU;
+    for (let curve = 0; curve < curves; curve++) {
+      const controls = Array.from({ length: count }, (_, i) => {
+        const index =
+          axis === "u" ? curve * next.countU + i : i * next.countU + curve;
+        const weight = next.weights[index],
+          point = next.points[index];
+        return [
+          point[0] * weight,
+          point[1] * weight,
+          point[2] * weight,
+          weight,
+        ];
+      });
+      const refined = new Array<number[]>(count + 1);
+      for (let i = 0; i <= span - degree; i++) refined[i] = controls[i];
+      for (let i = span - multiplicity; i < count; i++)
+        refined[i + 1] = controls[i];
+      for (let i = span - degree + 1; i <= span - multiplicity; i++) {
+        const denominator = knots[i + degree] - knots[i];
+        if (!(denominator > 0))
+          throw new Error(
+            "Refinement encountered an empty blending knot span.",
+          );
+        const alpha = (knot - knots[i]) / denominator;
+        refined[i] = controls[i].map(
+          (value, k) => alpha * value + (1 - alpha) * controls[i - 1][k],
+        );
+      }
+      for (let i = 0; i <= count; i++) {
+        const index =
+          axis === "u" ? curve * newCountU + i : i * newCountU + curve;
+        const control = refined[i],
+          weight = control[3];
+        weights[index] = weight;
+        points[index] = [
+          control[0] / weight,
+          control[1] / weight,
+          control[2] / weight,
+        ];
+      }
+    }
+    const newKnots = [
+      ...knots.slice(0, span + 1),
+      knot,
+      ...knots.slice(span + 1),
+    ];
+    next = {
+      ...next,
+      countU: newCountU,
+      countV: newCountV,
+      points,
+      weights,
+      ...(axis === "u" ? { knotsU: newKnots } : { knotsV: newKnots }),
+    };
+    validatePatch(next);
+  }
+  return next;
+}
+
+/** Raises an interior knot to degree multiplicity; shape is unchanged until controls move. */
+export function preparePatchCrease(
+  patch: NurbsPatch,
+  axis: PatchAxis,
+  parameter: number,
+): NurbsPatch {
+  validatePatch(patch);
+  const { degree, multiplicity } = insertionLocation(patch, axis, parameter);
+  if (multiplicity >= degree)
+    throw new Error("This interior knot is already at crease multiplicity.");
+  return insertPatchKnot(patch, axis, parameter, degree - multiplicity);
+}
+export interface PatchJoinOptions {
+  referenceEdge: PatchEdge;
+  targetEdge: PatchEdge;
+  continuity: "C0" | "C1";
+  reverse?: boolean;
+}
+
+function edgeDescription(patch: NurbsPatch, edge: PatchEdge) {
+  if (!["u0", "u1", "v0", "v1"].includes(edge))
+    throw new Error("Choose a valid patch boundary.");
+  const uEdge = edge.startsWith("u"),
+    atEnd = edge.endsWith("1");
+  const count = uEdge ? patch.countU : patch.countV;
+  const degree = uEdge ? patch.degreeU : patch.degreeV;
+  const knots = uEdge ? patch.knotsU : patch.knotsV;
+  const start = knots[degree],
+    end = knots[count];
+  const boundary = atEnd ? count - 1 : 0,
+    inner = atEnd ? count - 2 : 1;
+  const knotIndex = atEnd ? count : degree;
+  for (let i = 0; i <= degree; i++) {
+    const index = atEnd ? knotIndex + i : knotIndex - i;
+    if (knots[index] !== (atEnd ? end : start))
+      throw new Error("Joined boundaries must have clamped transverse knots.");
+  }
+  const span = atEnd ? end - knots[count - 1] : knots[degree + 1] - start;
+  if (!(span > 0)) throw new Error("Boundary derivative knot span is empty.");
+  const alongCount = uEdge ? patch.countV : patch.countU;
+  const alongDegree = uEdge ? patch.degreeV : patch.degreeU;
+  const alongKnots = uEdge ? patch.knotsV : patch.knotsU;
+  const alongStart = alongKnots[alongDegree],
+    alongEnd = alongKnots[alongCount];
+  return {
+    alongCount,
+    alongDegree,
+    normalizedKnots: alongKnots.map(
+      (knot) => (knot - alongStart) / (alongEnd - alongStart),
+    ),
+    derivativeFactor: (degree * (end - start)) / span,
+    boundary: Array.from({ length: alongCount }, (_, i) =>
+      uEdge ? i * patch.countU + boundary : boundary * patch.countU + i,
+    ),
+    inner: Array.from({ length: alongCount }, (_, i) =>
+      uEdge ? i * patch.countU + inner : inner * patch.countU + i,
+    ),
+  };
+}
+
+/** Moves only the target seam and, for C1, its adjacent row. Reference remains fixed.
+ * C1 matches homogeneous derivatives across normalized transverse parameters.
+ * Compatible seam degree/control count/normalized knots are required; no refitting occurs.
+ */
+export function joinPatchBoundary(
+  reference: NurbsPatch,
+  target: NurbsPatch,
+  options: PatchJoinOptions,
+): NurbsPatch {
+  validatePatch(reference);
+  validatePatch(target);
+  if (options.continuity !== "C0" && options.continuity !== "C1")
+    throw new Error("Choose C0 or C1 continuity.");
+  const a = edgeDescription(reference, options.referenceEdge),
+    b = edgeDescription(target, options.targetEdge);
+  const alongKnots = options.reverse
+    ? [...a.normalizedKnots].reverse().map((knot) => 1 - knot)
+    : a.normalizedKnots;
+  if (
+    a.alongCount !== b.alongCount ||
+    a.alongDegree !== b.alongDegree ||
+    alongKnots.length !== b.normalizedKnots.length ||
+    alongKnots.some((knot, i) => Math.abs(knot - b.normalizedKnots[i]) > 1e-12)
+  )
+    throw new Error(
+      "Patch seam control counts, degrees and normalized knots must be compatible.",
+    );
+  const next: NurbsPatch = {
+    ...target,
+    points: target.points.map((point) => [...point] as Vec3),
+    weights: [...target.weights],
+  };
+  for (let i = 0; i < b.alongCount; i++) {
+    const source = options.reverse ? a.alongCount - 1 - i : i;
+    const edgeA = a.boundary[source],
+      innerA = a.inner[source],
+      edgeB = b.boundary[i],
+      innerB = b.inner[i];
+    next.points[edgeB] = [...reference.points[edgeA]];
+    next.weights[edgeB] = reference.weights[edgeA];
+    if (options.continuity === "C1") {
+      const factor = a.derivativeFactor / b.derivativeFactor;
+      const seamWeight = reference.weights[edgeA],
+        innerWeight = reference.weights[innerA];
+      const weight = seamWeight - factor * (innerWeight - seamWeight);
+      if (!Number.isFinite(weight) || weight <= 0)
+        throw new Error(
+          "C1 join requires nonpositive or overflowing rational weights. Adjust reference weights or transverse spans first.",
+        );
+      next.weights[innerB] = weight;
+      next.points[innerB] = reference.points[edgeA].map(
+        (coordinate, k) =>
+          (coordinate * seamWeight -
+            factor *
+              (reference.points[innerA][k] * innerWeight -
+                coordinate * seamWeight)) /
+          weight,
+      ) as Vec3;
+    }
+  }
+  validatePatch(next);
+  return next;
+}
 
 function integer(value: number, min: number, max: number, label: string) {
   if (!Number.isInteger(value) || value < min || value > max)

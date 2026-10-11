@@ -1,4 +1,4 @@
-import type { ScanImportOptions } from "./import-parser";
+import type { ScanImportOptions, ScanSource } from "./import-parser";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
@@ -30,16 +30,21 @@ export function importScan(
       clearTimeout(inactivity);
       worker.terminate();
       options.signal?.removeEventListener("abort", abort);
+      if (typeof window !== "undefined")
+        window.removeEventListener("pagehide", abort);
     };
     const abort = () => {
       cleanup();
       reject(new DOMException("Import cancelled", "AbortError"));
     };
     options.signal?.addEventListener("abort", abort, { once: true });
+    if (typeof window !== "undefined")
+      window.addEventListener("pagehide", abort, { once: true });
     worker.onmessage = (
       event: MessageEvent<{
         progress?: number;
         positions?: Float32Array;
+        source?: ScanSource;
         error?: string;
       }>,
     ) => {
@@ -49,8 +54,16 @@ export function importScan(
         return;
       }
       cleanup();
-      if (event.data.positions) resolve(event.data.positions);
-      else reject(new Error(event.data.error ?? "Scan import failed."));
+      if (event.data.positions) {
+        options.onSource?.(
+          event.data.source ?? {
+            bytes: file.size,
+            triangles: event.data.positions.length / 9,
+            displayedTriangles: event.data.positions.length / 9,
+          },
+        );
+        resolve(event.data.positions);
+      } else reject(new Error(event.data.error ?? "Scan import failed."));
     };
     worker.onerror = (event) => {
       cleanup();
@@ -66,7 +79,11 @@ export function importScan(
       return;
     }
     try {
-      worker.postMessage({ file, extension });
+      worker.postMessage({
+        file,
+        extension,
+        previewTriangles: options.previewTriangles,
+      });
     } catch (error) {
       cleanup();
       reject(error);

@@ -5,6 +5,7 @@ import {
   type ProcessingResult,
 } from "../processing-client";
 import type { Entity } from "../types";
+import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 
 export interface MeshToolsProps {
@@ -12,7 +13,11 @@ export interface MeshToolsProps {
   selected?: Entity;
   disabled?: boolean;
   onReplace: (positions: Float32Array, label: string) => void;
-  onCreateSegments: (positions: Float32Array[], label: string) => void;
+  onCreateSegments: (
+    positions: Float32Array[],
+    label: string,
+    classifications?: RegionClassification[],
+  ) => void;
   onError: (message: string) => void;
   onStatus: (message: string) => void;
   onBusyChange?: (busy: boolean) => void;
@@ -102,7 +107,12 @@ export function MeshTools({
       });
       if (cancellation.signal.aborted) return;
       if (outcome.positions) onReplace(outcome.positions, label);
-      if (outcome.segments) onCreateSegments(outcome.segments, label);
+      if (outcome.segments)
+        onCreateSegments(
+          outcome.segments,
+          label,
+          outcome.segmentClassifications,
+        );
       setResult(outcome);
       onStatus(
         `${label} complete${outcome.registration ? ` · RMS ${outcome.registration.rms.toPrecision(4)} mm${outcome.registration.converged ? "" : " · iteration limit reached"}` : ""}`,
@@ -307,8 +317,10 @@ export function MeshTools({
           Create meshes from automatic segments
         </button>
         <p className="muted">
-          Regions grow through shared manifold edges by local normal angle. This
-          does not classify CAD surface types.
+          Regions grow through shared manifold edges by local normal angle, then
+          fit plane, sphere, cylinder and cone candidates. Small or unsupported
+          regions remain freeform. Classifications use bounded samples and
+          verify residuals on every vertex; they are estimates.
         </p>
         <label className="select-field">
           Registration target
@@ -368,6 +380,36 @@ export function MeshTools({
           approximate alignment; symmetric geometry can settle into an incorrect
           local match.
         </p>
+        <button
+          className="wide"
+          disabled={!targets.some((entity) => entity.id === targetId)}
+          onClick={() => {
+            const target = targets.find((entity) => entity.id === targetId);
+            if (selected && target)
+              void run(
+                {
+                  kind: "global",
+                  positions: selected.positions,
+                  target: target.positions,
+                  maxDistance: distance,
+                  maxIterations: icpIterations,
+                  sampleSize: 4000,
+                  targetSampleSize: 20000,
+                  tolerance: 0.00001,
+                  trimFraction: 0.85,
+                },
+                "Globally initialize and align scans",
+              );
+          }}
+        >
+          Global coarse alignment + ICP
+        </button>
+        <p className="muted">
+          Global initialization scores 24 proper principal-axis poses, refines
+          the best four, then runs sampled ICP. Symmetric shapes, repeated
+          patterns and partial overlap can produce a wrong pose; inspect the
+          result or use paired landmarks.
+        </p>
         <label className="sketch-input">
           Source landmarks (world XYZ mm)
           <textarea
@@ -410,6 +452,20 @@ export function MeshTools({
           {Object.entries(result.diagnostics).map(([key, value]) => (
             <p key={key}>
               {key.replace(/([A-Z])/g, " $1")}: {String(value)}
+            </p>
+          ))}
+          {result.segmentClassifications?.map((classification, index) => (
+            <p key={index}>
+              Region {index + 1}:{" "}
+              {classification.kind === "freeform"
+                ? "unclassified / freeform"
+                : classification.kind}{" "}
+              · {classification.samples} samples
+              {classification.rms !== undefined
+                ? ` · RMS ${classification.rms.toPrecision(4)} mm · max ${classification.maxError?.toPrecision(4)} mm`
+                : ""}{" "}
+              · tolerance {classification.tolerance.toPrecision(4)} mm ·{" "}
+              {classification.reason}
             </p>
           ))}
         </div>

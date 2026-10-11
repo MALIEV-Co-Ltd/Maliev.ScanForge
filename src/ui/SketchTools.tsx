@@ -3,6 +3,7 @@ import {
   rectangleSketch,
   sketchProfile,
   solveSketch,
+  sampleSketchArc,
   type Sketch,
   type SketchConstraint,
 } from "../sketch";
@@ -28,6 +29,8 @@ export function SketchTools({
   const [first, setFirst] = useState("p1"),
     [second, setSecond] = useState("p2"),
     [dimension, setDimension] = useState(40);
+  const [tangentPoint, setTangentPoint] = useState("p1");
+  const [chordTolerance, setChordTolerance] = useState(0.1);
   const update = (next: Sketch) => {
     setLocal(next);
     onChange?.(next);
@@ -48,15 +51,22 @@ export function SketchTools({
       setError(e instanceof Error ? e.message : "Invalid sketch.");
     }
   };
-  const segmentConstraint = [
-    "horizontal",
-    "vertical",
-    "parallel",
-    "perpendicular",
-    "equal",
-    "angle",
-  ].includes(kind);
-  const references = segmentConstraint ? sketch.segments : sketch.points;
+  const getReferences = (kind: SketchConstraint["kind"]) =>
+    kind === "radius"
+      ? (sketch.arcs ?? [])
+      : kind === "tangent"
+        ? [...sketch.segments, ...(sketch.arcs ?? [])]
+        : [
+              "horizontal",
+              "vertical",
+              "parallel",
+              "perpendicular",
+              "equal",
+              "angle",
+            ].includes(kind)
+          ? sketch.segments
+          : sketch.points;
+  const references = getReferences(kind);
   const addConstraint = () =>
     attempt(() => {
       const id = crypto.randomUUID();
@@ -73,6 +83,10 @@ export function SketchTools({
         constraint = { id, kind, a: first, b: second };
       else if (kind === "angle")
         constraint = { id, kind, first, second, value: dimension };
+      else if (kind === "radius")
+        constraint = { id, kind, arc: first, value: dimension };
+      else if (kind === "tangent")
+        constraint = { id, kind, first, second, point: tangentPoint };
       else constraint = { id, kind, first, second };
       const next = {
         ...sketch,
@@ -82,10 +96,24 @@ export function SketchTools({
       update(next);
     });
   const preview = sketch.points;
-  const minX = Math.min(0, ...preview.map((p) => p.x)) - 10,
-    minY = Math.min(0, ...preview.map((p) => p.y)) - 10;
-  const spanX = Math.max(10, ...preview.map((p) => p.x)) - minX + 10,
-    spanY = Math.max(10, ...preview.map((p) => p.y)) - minY + 10;
+  const arcPreview = (sketch.arcs ?? []).map((arc) => {
+    try {
+      const samples = sampleSketchArc(sketch, arc, false, chordTolerance);
+      const end = preview.find((p) => p.id === arc.b);
+      if (end) samples.push([end.x, end.y]);
+      return { id: arc.id, samples };
+    } catch {
+      return { id: arc.id, samples: [] as [number, number][] };
+    }
+  });
+  const bounds = [
+    ...preview.map((p) => [p.x, p.y]),
+    ...arcPreview.flatMap((arc) => arc.samples),
+  ];
+  const minX = Math.min(0, ...bounds.map((p) => p[0])) - 10,
+    minY = Math.min(0, ...bounds.map((p) => p[1])) - 10;
+  const spanX = Math.max(10, ...bounds.map((p) => p[0])) - minX + 10,
+    spanY = Math.max(10, ...bounds.map((p) => p[1])) - minY + 10;
   return (
     <section className="panel sketch-panel" aria-label="Parametric sketch">
       <h3>Parametric sketch</h3>
@@ -118,6 +146,15 @@ export function SketchTools({
             />
           ) : null;
         })}
+        {arcPreview.map((arc) => (
+          <polyline
+            key={arc.id}
+            points={arc.samples.map((p) => p.join(",")).join(" ")}
+            stroke="currentColor"
+            strokeWidth={spanX / 150}
+            fill="none"
+          />
+        ))}
         {preview.map((p) => (
           <circle
             key={p.id}
@@ -162,6 +199,9 @@ export function SketchTools({
                   segments: sketch.segments.filter(
                     (s) => s.a !== p.id && s.b !== p.id,
                   ),
+                  arcs: (sketch.arcs ?? []).filter(
+                    (arc) => ![arc.a, arc.b, arc.center].includes(p.id),
+                  ),
                   constraints: [],
                 })
               }
@@ -182,6 +222,132 @@ export function SketchTools({
           }
         >
           Add point
+        </button>
+      </fieldset>
+      <fieldset disabled={disabled}>
+        <legend>Circular arcs</legend>
+        {(sketch.arcs ?? []).map((arc) => (
+          <div className="field-row" key={arc.id}>
+            <span title={arc.id}>{arc.id.slice(0, 6)}</span>
+            {(["a", "b", "center"] as const).map((reference) => (
+              <label key={reference}>
+                {reference}
+                <select
+                  aria-label={`${arc.id} ${reference}`}
+                  value={arc[reference]}
+                  onChange={(event) =>
+                    update({
+                      ...sketch,
+                      arcs: (sketch.arcs ?? []).map((a) =>
+                        a.id === arc.id
+                          ? { ...a, [reference]: event.target.value }
+                          : a,
+                      ),
+                    })
+                  }
+                >
+                  {preview.map((point) => (
+                    <option key={point.id} value={point.id}>
+                      {point.id.slice(0, 6)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            <label>
+              <input
+                type="checkbox"
+                checked={arc.clockwise}
+                onChange={(event) =>
+                  update({
+                    ...sketch,
+                    arcs: (sketch.arcs ?? []).map((a) =>
+                      a.id === arc.id
+                        ? { ...a, clockwise: event.target.checked }
+                        : a,
+                    ),
+                  })
+                }
+              />
+              Clockwise
+            </label>
+            <button
+              aria-label={`Remove arc ${arc.id}`}
+              onClick={() =>
+                update({
+                  ...sketch,
+                  arcs: (sketch.arcs ?? []).filter((a) => a.id !== arc.id),
+                  constraints: sketch.constraints.filter(
+                    (c) =>
+                      !(c.kind === "radius" && c.arc === arc.id) &&
+                      !(
+                        c.kind === "tangent" &&
+                        (c.first === arc.id || c.second === arc.id)
+                      ),
+                  ),
+                })
+              }
+            >
+              ×
+            </button>
+          </div>
+        ))}
+        <button
+          disabled={preview.length < 3}
+          onClick={() =>
+            update({
+              ...sketch,
+              arcs: [
+                ...(sketch.arcs ?? []),
+                {
+                  id: crypto.randomUUID(),
+                  a: preview[0].id,
+                  b: preview[1].id,
+                  center: preview[2].id,
+                  clockwise: false,
+                },
+              ],
+            })
+          }
+        >
+          Add arc
+        </button>
+        <button
+          onClick={() =>
+            update({
+              version: 1,
+              points: [
+                { id: "center", x: 0, y: 0 },
+                { id: "east", x: 10, y: 0 },
+                { id: "west", x: -10, y: 0 },
+              ],
+              segments: [],
+              arcs: [
+                {
+                  id: "upper",
+                  a: "east",
+                  b: "west",
+                  center: "center",
+                  clockwise: false,
+                },
+                {
+                  id: "lower",
+                  a: "west",
+                  b: "east",
+                  center: "center",
+                  clockwise: false,
+                },
+              ],
+              constraints: [
+                { id: "origin", kind: "fixed", point: "center", x: 0, y: 0 },
+                { id: "anchor", kind: "fixed", point: "east", x: 10, y: 0 },
+                { id: "radius-upper", kind: "radius", arc: "upper", value: 10 },
+                { id: "radius-lower", kind: "radius", arc: "lower", value: 10 },
+              ],
+            })
+          }
+        >
+          New circular profile
         </button>
       </fieldset>
       <fieldset disabled={disabled}>
@@ -288,16 +454,7 @@ export function SketchTools({
             onChange={(e) => {
               const k = e.target.value as SketchConstraint["kind"];
               setKind(k);
-              const refs = [
-                "horizontal",
-                "vertical",
-                "parallel",
-                "perpendicular",
-                "equal",
-                "angle",
-              ].includes(k)
-                ? sketch.segments
-                : sketch.points;
+              const refs = getReferences(k);
               setFirst(refs[0]?.id ?? "");
               setSecond(refs[1]?.id ?? refs[0]?.id ?? "");
             }}
@@ -312,6 +469,8 @@ export function SketchTools({
               "perpendicular",
               "equal",
               "angle",
+              "radius",
+              "tangent",
             ].map((k) => (
               <option key={k}>{k}</option>
             ))}
@@ -327,7 +486,7 @@ export function SketchTools({
             ))}
           </select>
         </label>
-        {!["fixed", "horizontal", "vertical"].includes(kind) && (
+        {!["fixed", "horizontal", "vertical", "radius"].includes(kind) && (
           <label>
             Second reference
             <select value={second} onChange={(e) => setSecond(e.target.value)}>
@@ -339,7 +498,22 @@ export function SketchTools({
             </select>
           </label>
         )}
-        {(kind === "distance" || kind === "angle") && (
+        {kind === "tangent" && (
+          <label>
+            Shared endpoint
+            <select
+              value={tangentPoint}
+              onChange={(event) => setTangentPoint(event.target.value)}
+            >
+              {preview.map((point) => (
+                <option key={point.id} value={point.id}>
+                  {point.id.slice(0, 6)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {(kind === "distance" || kind === "angle" || kind === "radius") && (
           <label>
             Dimension
             <input
@@ -372,6 +546,20 @@ export function SketchTools({
         Solve constraints
       </button>
       <label>
+        Arc chord tolerance (mm)
+        <input
+          type="number"
+          min="0.000001"
+          step="0.01"
+          value={chordTolerance}
+          disabled={disabled}
+          onChange={(event) => setChordTolerance(Number(event.target.value))}
+        />
+      </label>
+      <p className="muted">
+        Circular arcs are sampled into polygon chords for extrusion.
+      </p>
+      <label>
         Extrusion height
         <input
           type="number"
@@ -392,7 +580,7 @@ export function SketchTools({
               );
             if (!(height > 0) || !Number.isFinite(height))
               throw new Error("Extrusion height must be positive.");
-            const profile = sketchProfile(result.sketch);
+            const profile = sketchProfile(result.sketch, chordTolerance);
             update(result.sketch);
             onExtrude(profile, height);
           })

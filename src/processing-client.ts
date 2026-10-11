@@ -1,5 +1,6 @@
 import type { Positions } from "./types";
 import type { RegistrationResult } from "./registration";
+import type { RegionClassification } from "./mesh-processing";
 
 export type ProcessingRequest =
   | { kind: "report"; positions: Positions; tolerance: number }
@@ -32,7 +33,7 @@ export type ProcessingRequest =
       targetLandmarks: number[];
     }
   | {
-      kind: "icp";
+      kind: "icp" | "global";
       positions: Positions;
       target: Positions;
       maxDistance: number;
@@ -58,6 +59,7 @@ export interface ProcessingResult {
   kind: ProcessingRequest["kind"];
   positions?: Float32Array;
   segments?: Float32Array[];
+  segmentClassifications?: RegionClassification[];
   topology?: TopologySummary;
   registration?: RegistrationResult;
   diagnostics: Record<string, number | string | boolean>;
@@ -176,7 +178,7 @@ export function processMesh(
         return copy;
       }
       const copied: ProcessingRequest =
-        request.kind === "icp"
+        request.kind === "icp" || request.kind === "global"
           ? {
               ...request,
               positions: clone(request.positions),

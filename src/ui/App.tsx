@@ -58,6 +58,8 @@ import {
   validatePositions,
 } from "../io";
 import { importScan } from "../import-client";
+import type { ScanSource } from "../import-parser";
+import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { demonstrationBracket } from "../sample";
 import type {
@@ -95,6 +97,7 @@ export function App() {
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [previewImport, setPreviewImport] = useState(false);
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
   );
@@ -529,8 +532,13 @@ export function App() {
           const controller = new AbortController();
           importAbort.current = controller;
           let positions;
+          let scanSource: ScanSource | undefined;
           try {
             positions = await importScan(file, {
+              previewTriangles: previewImport ? 250_000 : undefined,
+              onSource: (source) => {
+                scanSource = source;
+              },
               signal: controller.signal,
               onProgress: (progress) =>
                 setMessage(
@@ -542,13 +550,19 @@ export function App() {
           }
           entity = {
             id: crypto.randomUUID(),
-            name: file.name,
+            name:
+              file.name +
+              (scanSource &&
+              scanSource.displayedTriangles < scanSource.triangles
+                ? " [sampled preview]"
+                : ""),
             kind: "mesh",
             positions,
             color: "#5b9ed9",
             visible: true,
             opacity: 1,
             source: file.name,
+            scanSource,
           };
         }
         commit([...entities, entity]);
@@ -819,14 +833,19 @@ export function App() {
       setMessage("NURBS patch updated · control grid retained in project");
     });
   }
-  function createSegments(parts: Float32Array[], label: string) {
+  function createSegments(
+    parts: Float32Array[],
+    label: string,
+    classifications?: RegionClassification[],
+  ) {
     const created = parts
       .filter((positions) => positions.length)
       .map((positions, index): Entity => ({
         id: crypto.randomUUID(),
-        name: `${label} ${index + 1}`,
+        name: `${label} ${index + 1}${classifications?.[index] ? ` · ${classifications[index].kind === "freeform" ? "unclassified" : classifications[index].kind}` : ""}`,
         kind: "mesh",
         positions,
+        fit: classifications?.[index]?.fit,
         color: `#${new THREE.Color().setHSL((index * 0.618) % 1, 0.5, 0.58).getHexString()}`,
         opacity: 1,
         visible: true,
@@ -1064,6 +1083,10 @@ export function App() {
           alignNPoints: () => showTools("processing"),
           repairMesh: () => showTools("processing"),
           segmentMesh: () => showTools("processing"),
+          splitSolid: () => showTools("advancedCad"),
+          circularPattern: () => showTools("advancedCad"),
+          linearPattern: () => showTools("advancedCad"),
+          mirrorBody: () => showTools("advancedCad"),
         }}
       />
       <input
@@ -1375,6 +1398,25 @@ export function App() {
                   )}
                 </Panel>
                 <Panel title="Geometry" className="geometry-panel">
+                  {selected.fit && (
+                    <p className="muted">
+                      {selected.fit.kind} fit · RMS {number(selected.fit.rms)}{" "}
+                      mm · maximum residual {number(selected.fit.maxError)} mm.
+                      Review fit quality before reconstruction.
+                    </p>
+                  )}
+                  {selected.scanSource &&
+                    selected.scanSource.displayedTriangles <
+                      selected.scanSource.triangles && (
+                      <p role="note" className="muted">
+                        Sampled source: {number(selected.scanSource.bytes)}{" "}
+                        bytes · {number(selected.scanSource.triangles)} source
+                        triangles ·{" "}
+                        {number(selected.scanSource.displayedTriangles)}{" "}
+                        imported triangles. Operations and exports use sampled
+                        geometry, not the complete source.
+                      </p>
+                    )}
                   <dl>
                     <dt>Vertices (triangle soup)</dt>
                     <dd>{number(stats.vertices)}</dd>
@@ -1715,6 +1757,48 @@ export function App() {
               onLoft={(profiles, ruled) =>
                 cadOperation("Loft", () => cad.current!.loft(profiles, ruled))
               }
+              onPattern={(pattern) =>
+                cadOperation(`${pattern.kind} pattern`, () =>
+                  cad.current!.pattern(selected!.kernelId!, pattern),
+                )
+              }
+              onMirror={(origin, normal) =>
+                cadOperation("Mirror body", () =>
+                  cad.current!.mirror(selected!.kernelId!, origin, normal),
+                )
+              }
+              onSplit={(cutterId) => {
+                void action("Splitting solid…", async () => {
+                  const cutter = entities.find(
+                    (entity) => entity.id === cutterId,
+                  );
+                  if (!selected?.kernelId || !cutter?.kernelId)
+                    throw new Error("Choose two exact CAD bodies.");
+                  const results = await cad.current!.split(
+                    selected.kernelId,
+                    cutter.kernelId,
+                  );
+                  const created = results.map((result, index): Entity => ({
+                    ...result,
+                    id: crypto.randomUUID(),
+                    name: `Split ${index === 0 ? "inside" : "outside"}`,
+                    kind: "cad",
+                    color: index === 0 ? "#78a8db" : "#d8a36f",
+                    visible: true,
+                    opacity: 1,
+                  }));
+                  commit([
+                    ...entities.map((entity) =>
+                      entity.id === selected.id || entity.id === cutter.id
+                        ? { ...entity, visible: false }
+                        : entity,
+                    ),
+                    ...created,
+                  ]);
+                  setSelectedId(created[0].id);
+                  setMessage("Created exact inside and outside bodies");
+                });
+              }}
               onSweep={(points, path) =>
                 cadOperation("Sweep", () => cad.current!.sweep(points, path))
               }
@@ -1798,6 +1882,21 @@ export function App() {
             <p className="muted">
               Current appearance: {resolvedTheme}. System follows your operating
               system.
+            </p>
+            <h3>Scan import</h3>
+            <label>
+              <input
+                type="checkbox"
+                checked={previewImport}
+                onChange={(event) => setPreviewImport(event.target.checked)}
+              />{" "}
+              Memory efficient binary STL preview
+            </label>
+            <p className="muted">
+              Reads and validates every source triangle while displaying up to
+              250,000 uniformly sampled triangles. Editing, measurements and
+              exports use the sample. Turn this off to import full resolution.
+              No file-size limit is imposed.
             </p>
             <h3>SpaceMouse</h3>
             <p className="muted">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Entity, Vec3 } from "../types";
-import { Field } from "./controls";
+import { Field, VectorField } from "./controls";
+import type { CadPattern } from "../cad/client";
 export function AdvancedCadTools({
   entities,
   selected,
@@ -12,6 +13,9 @@ export function AdvancedCadTools({
   onSew,
   onShell,
   onThicken,
+  onPattern,
+  onMirror,
+  onSplit,
   onError,
 }: {
   entities: Entity[];
@@ -31,6 +35,9 @@ export function AdvancedCadTools({
   onSew: (ids: string[], tolerance: number) => void;
   onShell: (indices: number[], thickness: number) => void;
   onThicken: (thickness: number) => void;
+  onPattern?: (pattern: CadPattern) => void;
+  onMirror?: (origin: Vec3, normal: Vec3) => void;
+  onSplit?: (cutterEntityId: string) => void;
   onError: (error: string) => void;
 }) {
   const [profiles, setProfiles] = useState(
@@ -46,6 +53,17 @@ export function AdvancedCadTools({
   const [sewIds, setSewIds] = useState<string[]>([]);
   const [faces, setFaces] = useState("0");
   const [thickness, setThickness] = useState(-1);
+  const [patternKind, setPatternKind] = useState<"linear" | "circular">(
+      "linear",
+    ),
+    [patternCount, setPatternCount] = useState(3),
+    [patternStep, setPatternStep] = useState<Vec3>([30, 0, 0]),
+    [patternCenter, setPatternCenter] = useState<Vec3>([0, 0, 0]),
+    [patternAxis, setPatternAxis] = useState<Vec3>([0, 0, 1]),
+    [patternAngle, setPatternAngle] = useState(90);
+  const [mirrorOrigin, setMirrorOrigin] = useState<Vec3>([0, 0, 0]),
+    [mirrorNormal, setMirrorNormal] = useState<Vec3>([1, 0, 0]);
+  const [cutter, setCutter] = useState("");
   const attempt = (task: () => void) => {
     try {
       task();
@@ -55,6 +73,123 @@ export function AdvancedCadTools({
   };
   return (
     <section aria-label="Advanced CAD tools">
+      <h3>Body patterns</h3>
+      <label>
+        Pattern type
+        <select
+          aria-label="CAD pattern type"
+          value={patternKind}
+          onChange={(event) =>
+            setPatternKind(event.target.value as "linear" | "circular")
+          }
+        >
+          <option value="linear">Linear</option>
+          <option value="circular">Circular</option>
+        </select>
+      </label>
+      <Field
+        label="Pattern copies including original"
+        value={patternCount}
+        min={2}
+        max={256}
+        onChange={setPatternCount}
+      />
+      {patternKind === "linear" ? (
+        <VectorField
+          label="Pattern spacing (mm)"
+          value={patternStep}
+          onChange={setPatternStep}
+        />
+      ) : (
+        <>
+          <VectorField
+            label="Pattern center (mm)"
+            value={patternCenter}
+            onChange={setPatternCenter}
+          />
+          <VectorField
+            label="Pattern rotation axis"
+            value={patternAxis}
+            onChange={setPatternAxis}
+          />
+          <Field
+            label="Angular increment (degrees)"
+            value={patternAngle}
+            min={-360}
+            max={360}
+            onChange={setPatternAngle}
+          />
+        </>
+      )}
+      <p className="muted">
+        Creates an exact compound of body copies. Copies are not fused; overlaps
+        remain separate solids.
+      </p>
+      <button
+        disabled={disabled || !selected?.kernelId || !onPattern}
+        onClick={() =>
+          attempt(() =>
+            onPattern?.(
+              patternKind === "linear"
+                ? { kind: "linear", count: patternCount, step: patternStep }
+                : {
+                    kind: "circular",
+                    count: patternCount,
+                    center: patternCenter,
+                    axis: patternAxis,
+                    angleDegrees: patternAngle,
+                  },
+            ),
+          )
+        }
+      >
+        Create exact body pattern
+      </button>
+      <h3>Mirror body</h3>
+      <VectorField
+        label="Mirror plane origin (mm)"
+        value={mirrorOrigin}
+        onChange={setMirrorOrigin}
+      />
+      <VectorField
+        label="Mirror plane normal"
+        value={mirrorNormal}
+        onChange={setMirrorNormal}
+      />
+      <button
+        disabled={disabled || !selected?.kernelId || !onMirror}
+        onClick={() => attempt(() => onMirror?.(mirrorOrigin, mirrorNormal))}
+      >
+        Create mirrored body
+      </button>
+      <h3>Split solid</h3>
+      <label>
+        Cutting solid
+        <select
+          aria-label="Split cutting solid"
+          value={cutter}
+          onChange={(event) => setCutter(event.target.value)}
+        >
+          <option value="">Choose intersecting CAD solid</option>
+          {entities
+            .filter((entity) => entity.kernelId && entity.id !== selected?.id)
+            .map((entity) => (
+              <option key={entity.id} value={entity.id}>
+                {entity.name}
+              </option>
+            ))}
+        </select>
+      </label>
+      <p className="muted">
+        Produces two exact bodies: material inside the cutter and material
+        outside it. The original bodies remain available.
+      </p>
+      <button
+        disabled={disabled || !selected?.kernelId || !cutter || !onSplit}
+        onClick={() => attempt(() => onSplit?.(cutter))}
+      >
+        Split into inside / outside
+      </button>
       <h3>Loft profiles</h3>
       <label>
         Profiles: JSON arrays of XY points with Z height

@@ -55,6 +55,10 @@ export const RIBBON_ACTION_IDS = [
   "sewSurfaces",
   "shell",
   "surfaceThicken",
+  "splitSolid",
+  "circularPattern",
+  "linearPattern",
+  "mirrorBody",
 ] as const;
 export type RibbonActionId = (typeof RIBBON_ACTION_IDS)[number];
 export type RibbonActions = Partial<Record<string, () => void>>;
@@ -359,7 +363,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
           ...tool("transform", "Scale body", "transform", true),
           id: "scaleBody",
         },
-        planned("splitSolid", "Split solid", "section"),
+        tool("splitSolid", "Split solid", "section", true),
       ),
       group(
         "Edges",
@@ -368,9 +372,9 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Patterns",
-        planned("circularPattern", "Circular pattern", "pattern"),
-        planned("linearPattern", "Linear pattern", "pattern"),
-        planned("mirrorBody", "Mirror", "pattern"),
+        tool("circularPattern", "Circular pattern", "pattern", true),
+        tool("linearPattern", "Linear pattern", "pattern", true),
+        tool("mirrorBody", "Mirror", "pattern", true),
       ),
       group("Export", tool("exportStep", "Export STEP", "export")),
     ],

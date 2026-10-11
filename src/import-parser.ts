@@ -8,6 +8,14 @@ export interface ScanFile {
 export interface ScanImportOptions {
   onProgress?: (fraction: number) => void;
   signal?: AbortSignal;
+  /** Optional display budget, never a file-size acceptance limit. All records are validated. */
+  previewTriangles?: number;
+  onSource?: (source: ScanSource) => void;
+}
+export interface ScanSource {
+  bytes: number;
+  triangles: number;
+  displayedTriangles: number;
 }
 const TRIANGLES_PER_CHUNK = 16_384;
 
@@ -22,6 +30,12 @@ export async function readScan(
   options: ScanImportOptions = {},
 ): Promise<Float32Array> {
   checkAbort(options.signal);
+  if (
+    options.previewTriangles !== undefined &&
+    (!Number.isSafeInteger(options.previewTriangles) ||
+      options.previewTriangles < 1)
+  )
+    throw new Error("Preview triangle budget must be a positive integer.");
   if (extension === "stl" && file.size >= 84) {
     const header = await file.slice(0, 84).arrayBuffer();
     checkAbort(options.signal);
@@ -30,9 +44,14 @@ export async function readScan(
     const expectedBytes = 84 + triangles * 50;
     if (expectedBytes === file.size) {
       if (!triangles) throw new Error("STL has no triangles.");
+      const displayed = Math.min(
+        triangles,
+        options.previewTriangles ?? triangles,
+      );
+      let nextSample = 0;
       let positions: Float32Array;
       try {
-        positions = new Float32Array(triangles * 9);
+        positions = new Float32Array(displayed * 9);
       } catch {
         throw new Error(
           "The browser could not allocate this scan's geometry. Available device memory determines import capacity.",
@@ -49,6 +68,9 @@ export async function readScan(
           throw new Error("Truncated STL triangle data.");
         const view = new DataView(chunk);
         for (let triangle = 0; triangle < count; triangle++) {
+          const keep =
+            start + triangle ===
+            Math.floor((nextSample * triangles) / displayed);
           for (let coordinate = 0; coordinate < 9; coordinate++) {
             const value = view.getFloat32(
               triangle * 50 + 12 + coordinate * 4,
@@ -56,11 +78,17 @@ export async function readScan(
             );
             if (!Number.isFinite(value))
               throw new Error("Invalid STL coordinate: values must be finite.");
-            positions[(start + triangle) * 9 + coordinate] = value;
+            if (keep) positions[nextSample * 9 + coordinate] = value;
           }
+          if (keep) nextSample++;
         }
         options.onProgress?.((start + count) / triangles);
       }
+      options.onSource?.({
+        bytes: file.size,
+        triangles,
+        displayedTriangles: displayed,
+      });
       return positions;
     }
     // Binary headers can contain arbitrary text, including "solid". Only an
@@ -75,9 +103,18 @@ export async function readScan(
         "Invalid binary STL length: triangle count does not match the file.",
       );
   }
+  if (options.previewTriangles !== undefined)
+    throw new Error(
+      "Bounded preview currently supports binary STL only. Select full resolution for text STL, OBJ or PLY.",
+    );
   const buffer = await file.arrayBuffer();
   checkAbort(options.signal);
   const positions = parseMesh(buffer, extension);
+  options.onSource?.({
+    bytes: file.size,
+    triangles: positions.length / 9,
+    displayedTriangles: positions.length / 9,
+  });
   options.onProgress?.(1);
   return positions;
 }

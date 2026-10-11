@@ -1,0 +1,95 @@
+import { describe, it, expect } from "vitest";
+import * as THREE from "three";
+import {
+  SpaceMouseController,
+  type HidDevice,
+  type HidAccess,
+} from "../src/spacemouse";
+import { navigateCamera } from "../src/camera-navigation";
+
+describe("SpaceMouse to camera workflow", () => {
+  it("opens a chosen device, navigates six axes, expires stale motion and releases the connection", async () => {
+    class Device extends EventTarget implements HidDevice {
+      vendorId = 0x046d;
+      productId = 0xc626;
+      productName = "Synthetic navigation fixture";
+      opened = false;
+      closed = 0;
+      async open() {
+        this.opened = true;
+      }
+      async close() {
+        this.opened = false;
+        this.closed++;
+      }
+      send(reportId: number, values: number[]) {
+        const data = new DataView(new ArrayBuffer(values.length * 2));
+        values.forEach((v, i) => data.setInt16(i * 2, v, true));
+        this.dispatchEvent(
+          Object.assign(new Event("inputreport"), { reportId, data }),
+        );
+      }
+    }
+    const device = new Device();
+    class Access extends EventTarget implements HidAccess {
+      async requestDevice() {
+        return [device];
+      }
+    }
+    const access = new Access();
+    const camera = new THREE.PerspectiveCamera();
+    camera.position.set(0, 0, 100);
+    camera.lookAt(0, 0, 0);
+    const pivot = new THREE.Vector3();
+    let now = 1000;
+    let sequence = 0;
+    const frames = new Map<number, FrameRequestCallback>();
+    const buttons: string[] = [];
+    const controller = new SpaceMouseController(
+      access,
+      (motion, dt) => navigateCamera(camera, pivot, motion, dt),
+      (action) => buttons.push(action),
+      () => {},
+      () => now,
+      (callback) => {
+        frames.set(++sequence, callback);
+        return sequence;
+      },
+      (id) => {
+        frames.delete(id);
+      },
+    );
+    const tick = (ms: number) => {
+      now += ms;
+      const queued = [...frames.values()];
+      frames.clear();
+      queued.forEach((cb) => cb(now));
+    };
+    try {
+      await controller.connect();
+      expect(device.opened).toBe(true);
+      device.send(1, [350, 175, -70]);
+      device.send(2, [140, -105, 70]);
+      tick(16);
+      expect(pivot.length()).toBeGreaterThan(0);
+      expect(camera.position.distanceTo(pivot)).toBeCloseTo(100);
+      expect(camera.position.x).not.toBe(0);
+      expect(camera.up.length()).toBeCloseTo(1);
+      device.send(3, [3]);
+      expect(buttons).toEqual(["fit", "isometric"]);
+      tick(160);
+      const stopped = camera.position.clone();
+      tick(16);
+      expect(camera.position.equals(stopped)).toBe(true);
+    } finally {
+      await controller.dispose();
+    }
+    expect(device.closed).toBe(1);
+    expect(frames.size).toBe(0);
+    expect(controller.connected).toBe(false);
+    const stopped = camera.position.clone();
+    device.send(1, [350, 0, 0]);
+    tick(16);
+    expect(camera.position.equals(stopped)).toBe(true);
+  });
+});

@@ -1,4 +1,5 @@
-import type { Positions, Vec3 } from "./types";
+import type { FitResult, Positions, Vec3 } from "./types";
+import { fitPlane, fitSphere, fitCylinder, fitCone } from "./geometry";
 
 /** Operations allocate an indexed topology proportional to mesh size. Run in a worker for large scans. */
 export interface MeshProcessingOptions {
@@ -503,6 +504,219 @@ export function fillPlanarHoles(
 export interface SegmentationResult {
   labels: Uint32Array;
   segments: { id: number; triangles: number; area: number }[];
+}
+
+export interface RegionClassification {
+  kind: "plane" | "sphere" | "cylinder" | "cone" | "freeform";
+  samples: number;
+  extent: Vec3;
+  tolerance: number;
+  rms?: number;
+  maxError?: number;
+  fit?: FitResult;
+  reason: string;
+}
+export interface RegionClassificationOptions extends MeshProcessingOptions {
+  absoluteTolerance?: number;
+  relativeTolerance?: number;
+  minimumSamples?: number;
+  minimumTriangles?: number;
+  maxSamples?: number;
+  minimumExtent?: number;
+}
+/** Classify a connected region conservatively using bounded samples and verify residuals on every input vertex.
+ * Defaults require 24 distinct sampled points and 16 triangles; RMS <= max(0.01 mm, 0.1% diagonal), max error <= 3x tolerance.
+ * Curved fits require radius <= 4x diagonal; cylindrical/conical sides need >=60 degrees angular support and measurable axial span.
+ */
+export function classifyRegion(
+  positions: Positions,
+  options: RegionClassificationOptions = {},
+): RegionClassification {
+  const absolute = options.absoluteTolerance ?? 0.01,
+    relative = options.relativeTolerance ?? 0.001,
+    minimumSamples = options.minimumSamples ?? 24,
+    minimumTriangles = options.minimumTriangles ?? 16,
+    maximum = options.maxSamples ?? 512,
+    minimumExtent = options.minimumExtent ?? 0.001;
+  validate(positions, options.tolerance ?? 1e-6);
+  if (
+    !Number.isFinite(absolute) ||
+    absolute <= 0 ||
+    !Number.isFinite(relative) ||
+    relative < 0 ||
+    !Number.isFinite(minimumExtent) ||
+    minimumExtent <= 0 ||
+    ![minimumSamples, minimumTriangles, maximum].every(
+      (value) => Number.isSafeInteger(value) && value > 0,
+    ) ||
+    minimumSamples < 6 ||
+    minimumTriangles < 2 ||
+    maximum < minimumSamples
+  )
+    throw new Error(
+      "Invalid region classification sampling or tolerance options.",
+    );
+  checkpoint(options, 0, "Sampling surface classification");
+  const min: Vec3 = [Infinity, Infinity, Infinity],
+    max: Vec3 = [-Infinity, -Infinity, -Infinity];
+  for (let i = 0; i < positions.length; i += 3) {
+    if (i % 12288 === 0) checkpoint(options, 0, "Measuring surface extent");
+    for (let axis = 0; axis < 3; axis++) {
+      min[axis] = Math.min(min[axis], positions[i + axis]);
+      max[axis] = Math.max(max[axis], positions[i + axis]);
+    }
+  }
+  const extent = max.map((value, axis) => value - min[axis]) as Vec3,
+    diagonal = Math.hypot(...extent);
+  if (!Number.isFinite(diagonal))
+    throw new Error("Surface extent exceeds finite fitting precision.");
+  const threshold = Math.max(absolute, relative * diagonal);
+  const sample: number[] = [],
+    seen = new Set<string>(),
+    total = positions.length / 3,
+    picks = Math.min(total, maximum);
+  for (let i = 0; i < picks; i++) {
+    const index = Math.floor((i * total) / picks) * 3,
+      key = `${positions[index]},${positions[index + 1]},${positions[index + 2]}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      sample.push(positions[index], positions[index + 1], positions[index + 2]);
+    }
+  }
+  const base = { samples: sample.length / 3, extent, tolerance: threshold };
+  const unclassified = (
+    reason: string,
+    best?: FitResult,
+  ): RegionClassification => ({
+    ...base,
+    kind: "freeform",
+    reason,
+    ...(best ? { rms: best.rms, maxError: best.maxError } : {}),
+  });
+  if (
+    positions.length / 9 < minimumTriangles ||
+    sample.length / 3 < minimumSamples
+  )
+    return unclassified(
+      "Insufficient triangle or distinct sampled-point support",
+    );
+  const sortedExtent = [...extent].sort((a, b) => b - a);
+  if (
+    !Number.isFinite(diagonal) ||
+    sortedExtent[1] < Math.max(minimumExtent, 20 * threshold)
+  )
+    return unclassified(
+      "Region is too small or narrow relative to fit tolerance",
+    );
+  function verify(fit: FitResult): FitResult {
+    let sum = 0,
+      maximumError = 0;
+    const axis = fit.axis,
+      center = fit.center,
+      slope =
+        fit.kind === "cone" ? (fit.topRadius! - fit.radius!) / fit.height! : 0;
+    for (let i = 0; i < positions.length; i += 3) {
+      if (i % 12288 === 0)
+        checkpoint(options, 0.5, "Verifying full-region residuals");
+      const x = positions[i] - center[0],
+        y = positions[i + 1] - center[1],
+        z = positions[i + 2] - center[2],
+        axial = x * axis[0] + y * axis[1] + z * axis[2],
+        radial = Math.hypot(
+          x - axis[0] * axial,
+          y - axis[1] * axial,
+          z - axis[2] * axial,
+        );
+      const error =
+        fit.kind === "plane"
+          ? axial
+          : fit.kind === "sphere"
+            ? Math.hypot(x, y, z) - fit.radius!
+            : (radial - fit.radius! - slope * axial) /
+              Math.sqrt(1 + slope * slope);
+      sum += error * error;
+      maximumError = Math.max(maximumError, Math.abs(error));
+    }
+    return {
+      ...fit,
+      rms: Math.sqrt(sum / (positions.length / 3)),
+      maxError: maximumError,
+    };
+  }
+  function supported(fit: FitResult): boolean {
+    if (
+      ![fit.rms, fit.maxError, ...fit.center, ...fit.axis].every(
+        Number.isFinite,
+      ) ||
+      fit.rms > threshold ||
+      fit.maxError > 3 * threshold
+    )
+      return false;
+    if (fit.kind === "plane") return true;
+    if (!fit.radius || fit.radius < 10 * threshold || fit.radius > 4 * diagonal)
+      return false;
+    if (fit.kind === "sphere") return true;
+    if (!fit.height || fit.height < Math.max(20 * threshold, 0.15 * diagonal))
+      return false;
+    if (
+      fit.kind === "cone" &&
+      Math.abs(fit.radius - (fit.topRadius ?? 0)) <
+        Math.max(5 * threshold, 0.02 * fit.height)
+    )
+      return false;
+    const helper: Vec3 = Math.abs(fit.axis[0]) < 0.8 ? [1, 0, 0] : [0, 1, 0],
+      raw = cross(fit.axis, helper),
+      length = Math.hypot(...raw),
+      u = raw.map((value) => value / length) as Vec3,
+      v = cross(fit.axis, u),
+      angles: number[] = [];
+    for (let i = 0; i < sample.length; i += 3) {
+      const p: Vec3 = [
+        sample[i] - fit.center[0],
+        sample[i + 1] - fit.center[1],
+        sample[i + 2] - fit.center[2],
+      ];
+      angles.push(Math.atan2(dot(p, v), dot(p, u)));
+    }
+    angles.sort((a, b) => a - b);
+    let gap = angles[0] + Math.PI * 2 - angles.at(-1)!;
+    for (let i = 1; i < angles.length; i++)
+      gap = Math.max(gap, angles[i] - angles[i - 1]);
+    return Math.PI * 2 - gap >= Math.PI / 3;
+  }
+  const candidates: FitResult[] = [];
+  for (const fitter of [fitPlane, fitSphere, fitCylinder, fitCone]) {
+    checkpoint(options, 0.25, "Fitting analytic surface candidates");
+    try {
+      const fit = verify(fitter(sample));
+      if (Number.isFinite(fit.rms) && Number.isFinite(fit.maxError))
+        candidates.push(fit);
+      if (supported(fit)) {
+        checkpoint(options, 1, "Surface classified");
+        return {
+          ...base,
+          kind: fit.kind,
+          rms: fit.rms,
+          maxError: fit.maxError,
+          fit,
+          reason:
+            "Analytic candidate passed full-region residual and extent checks",
+        };
+      }
+    } catch (error) {
+      if (
+        options.signal?.aborted ||
+        (error instanceof DOMException && error.name === "AbortError")
+      )
+        throw error;
+    }
+  }
+  checkpoint(options, 1, "Surface remains unclassified");
+  const best = candidates.sort((a, b) => a.rms - b.rms)[0];
+  return unclassified(
+    "No supported analytic candidate passed full-region residual and coverage checks",
+    best,
+  );
 }
 /** Region growing across manifold shared edges using the local dihedral angle, not semantic CAD classification. */
 export function segmentMesh(

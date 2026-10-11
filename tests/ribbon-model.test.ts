@@ -110,18 +110,14 @@ describe("ribbon command inventory", () => {
       "segmentMesh",
       "fineAlign",
       "sketch2d",
+      "splitSolid",
+      "circularPattern",
+      "linearPattern",
+      "mirrorBody",
     ]) {
       expect(getRibbonToolMetadata(id)?.action, id).toBe(id);
     }
-    for (const id of [
-      "wrap",
-      "pipe",
-      "helix",
-      "trim",
-      "draft",
-      "circularPattern",
-      "linearPattern",
-    ]) {
+    for (const id of ["wrap", "pipe", "helix", "trim", "draft"]) {
       const metadata = getRibbonToolMetadata(id);
       expect(metadata, id).toBeDefined();
       expect(metadata?.action, id).toBeUndefined();

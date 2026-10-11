@@ -127,6 +127,17 @@ export function parseProject(text: string): Project {
     )
       throw new Error("Invalid project object.");
     ids.add(entity.id);
+    if (
+      entity.scanSource !== undefined &&
+      (!Number.isSafeInteger(entity.scanSource.bytes) ||
+        entity.scanSource.bytes < 0 ||
+        !Number.isSafeInteger(entity.scanSource.triangles) ||
+        entity.scanSource.triangles < 1 ||
+        !Number.isSafeInteger(entity.scanSource.displayedTriangles) ||
+        entity.scanSource.displayedTriangles < 1 ||
+        entity.scanSource.displayedTriangles > entity.scanSource.triangles)
+    )
+      throw new Error("Invalid scan source counts.");
     // Kernel handles are ephemeral; exact BRep is restored in a new worker.
     if (entity.brep !== undefined && typeof entity.brep !== "string")
       throw new Error("Invalid CAD data.");
@@ -151,6 +162,7 @@ export function parseProject(text: string): Project {
         typeof entity.source === "string"
           ? entity.source.slice(0, 200)
           : undefined,
+      scanSource: entity.scanSource,
     };
   });
   if (

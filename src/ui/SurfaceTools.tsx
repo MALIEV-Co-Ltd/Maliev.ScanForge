@@ -4,12 +4,17 @@ import {
   createGridPatch,
   editControlPoint,
   importQuadGridObj,
+  joinPatchBoundary,
+  insertPatchKnot,
+  preparePatchCrease,
   parsePatch,
   serializePatch,
   snapControlPoint,
   tessellatePatch,
   type NurbsPatch,
   type SurfaceFitOptions,
+  type PatchEdge,
+  type PatchAxis,
 } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 
@@ -56,6 +61,13 @@ export function SurfaceTools({
     useState<SurfaceFitOptions["projection"]>("xy");
   const [index, setIndex] = useState(0),
     [message, setMessage] = useState("");
+  const [referencePatch, setReferencePatch] = useState<NurbsPatch | null>(null);
+  const [refineAxis, setRefineAxis] = useState<PatchAxis>("u"),
+    [refineParameter, setRefineParameter] = useState(0.5);
+  const [referenceEdge, setReferenceEdge] = useState<PatchEdge>("u1"),
+    [targetEdge, setTargetEdge] = useState<PatchEdge>("u0");
+  const [continuity, setContinuity] = useState<"C0" | "C1">("C0"),
+    [reverseSeam, setReverseSeam] = useState(false);
   const controlIndex = Math.min(index, (patch?.points.length ?? 1) - 1);
   const run = (task: () => void) => {
     try {
@@ -276,6 +288,59 @@ export function SurfaceTools({
                 />
               </label>
             ))}
+            <h4>Exact grid refinement</h4>
+            <p className="muted">
+              Active grid: {patch.countU} × {patch.countV} controls; U degree{" "}
+              {patch.degreeU}, V degree {patch.degreeV}. Maximum 16 controls per
+              axis. Insertion preserves the rational surface. Crease preparation
+              raises interior knot multiplicity to degree; move the new controls
+              to create the crease.
+            </p>
+            <label className="field">
+              Refinement axis
+              <select
+                value={refineAxis}
+                onChange={(event) =>
+                  setRefineAxis(event.target.value as PatchAxis)
+                }
+              >
+                <option value="u">U</option>
+                <option value="v">V</option>
+              </select>
+            </label>
+            {number(
+              "Normalized interior parameter",
+              refineParameter,
+              setRefineParameter,
+              0.000001,
+              0.999999,
+            )}
+            <button
+              onClick={() =>
+                run(() => {
+                  onPatchChange(
+                    insertPatchKnot(patch, refineAxis, refineParameter),
+                  );
+                  setMessage("Knot inserted exactly; surface shape preserved.");
+                })
+              }
+            >
+              Insert knot
+            </button>
+            <button
+              onClick={() =>
+                run(() => {
+                  onPatchChange(
+                    preparePatchCrease(patch, refineAxis, refineParameter),
+                  );
+                  setMessage(
+                    "Interior knot raised to degree multiplicity. Shape is preserved until control points move.",
+                  );
+                })
+              }
+            >
+              Prepare editable crease
+            </button>
             {number(
               "Tessellation segments per axis",
               segments,
@@ -305,6 +370,125 @@ export function SurfaceTools({
             >
               Export editable patch JSON
             </button>
+            <h4>Join to a reference patch</h4>
+            <p className="muted">
+              The imported reference stays fixed. Joining moves this patch's
+              boundary; C1 also moves its adjacent control row. Seam degree,
+              count and normalized knots must match. C1 matches derivatives in
+              normalized transverse parameters.
+            </p>
+            <label className="field">
+              Import reference patch JSON
+              <input
+                type="file"
+                accept=".json,.nurbs"
+                onChange={async (event) => {
+                  const input = event.target,
+                    file = input.files?.[0];
+                  if (!file) return;
+                  try {
+                    setReferencePatch(parsePatch(await file.text()));
+                    setMessage("Reference patch loaded for seam joining.");
+                  } catch (error) {
+                    const text =
+                      error instanceof Error ? error.message : String(error);
+                    setMessage(text);
+                    onError?.(text);
+                  }
+                  input.value = "";
+                }}
+              />
+            </label>
+            {referencePatch && (
+              <>
+                <label className="field">
+                  Fixed reference boundary
+                  <select
+                    value={referenceEdge}
+                    onChange={(event) =>
+                      setReferenceEdge(event.target.value as PatchEdge)
+                    }
+                  >
+                    {(["u0", "u1", "v0", "v1"] as const).map((edge) => (
+                      <option key={edge} value={edge}>
+                        {edge.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field">
+                  Active patch boundary
+                  <select
+                    value={targetEdge}
+                    onChange={(event) =>
+                      setTargetEdge(event.target.value as PatchEdge)
+                    }
+                  >
+                    {(["u0", "u1", "v0", "v1"] as const).map((edge) => (
+                      <option key={edge} value={edge}>
+                        {edge.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field">
+                  Continuity
+                  <select
+                    value={continuity}
+                    onChange={(event) =>
+                      setContinuity(event.target.value as "C0" | "C1")
+                    }
+                  >
+                    <option value="C0">C0 · shared boundary</option>
+                    <option value="C1">
+                      C1 · shared boundary and derivative
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={reverseSeam}
+                    onChange={(event) => setReverseSeam(event.target.checked)}
+                  />
+                  Reverse reference seam direction
+                </label>
+                <button
+                  onClick={() =>
+                    run(() => {
+                      onPatchChange(
+                        joinPatchBoundary(referencePatch, patch, {
+                          referenceEdge,
+                          targetEdge,
+                          continuity,
+                          reverse: reverseSeam,
+                        }),
+                      );
+                      setMessage(
+                        `${continuity} boundary applied to active patch. Reference remains fixed.`,
+                      );
+                    })
+                  }
+                >
+                  Apply boundary join
+                </button>
+                <button
+                  onClick={() =>
+                    run(() =>
+                      onCreateMesh(
+                        tessellatePatch(referencePatch, segments, segments),
+                        "Reference patch mesh",
+                      ),
+                    )
+                  }
+                >
+                  Create reference surface mesh
+                </button>
+                <button onClick={() => setReferencePatch(null)}>
+                  Clear reference patch
+                </button>
+              </>
+            )}
           </>
         )}
         <label className="field">

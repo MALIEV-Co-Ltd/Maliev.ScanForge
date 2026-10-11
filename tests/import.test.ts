@@ -31,6 +31,48 @@ function generatedBinaryStl(triangles: number) {
 }
 
 describe("chunked scan imports", () => {
+  it("validates an over-1GB binary source using bounded sampled geometry", async () => {
+    const { file, reads } = generatedBinaryStl(22_000_000);
+    let source: unknown;
+    const positions = await readScan(file, "stl", {
+      previewTriangles: 250_000,
+      onSource: (value) => {
+        source = value;
+      },
+    });
+    expect(file.size).toBeGreaterThan(1024 ** 3);
+    expect(positions.byteLength).toBe(9_000_000);
+    expect(source).toEqual({
+      bytes: 1_100_000_084,
+      triangles: 22_000_000,
+      displayedTriangles: 250_000,
+    });
+    expect(Math.max(...reads)).toBeLessThan(1024 * 1024);
+    expect(reads.reduce((a, b) => a + b, 0)).toBe(file.size);
+  }, 30_000);
+  it("rejects invalid coordinates in triangles omitted from the preview", async () => {
+    const { file } = generatedBinaryStl(10);
+    const invalid: ScanFile = {
+      ...file,
+      slice(start, end) {
+        const part = file.slice(start, end);
+        return {
+          async arrayBuffer() {
+            const chunk = await part.arrayBuffer();
+            if (start !== 0)
+              new DataView(chunk).setFloat32(50 + 12, Infinity, true);
+            return chunk;
+          },
+        };
+      },
+    };
+    await expect(
+      readScan(invalid, "stl", { previewTriangles: 1 }),
+    ).rejects.toThrow("finite");
+    await expect(
+      readScan(file, "stl", { previewTriangles: 0 }),
+    ).rejects.toThrow("positive integer");
+  });
   it("imports a 200 MB STL above former byte and triangle limits without whole-file buffering", async () => {
     const { file, reads } = generatedBinaryStl(4_000_000);
     const progress: number[] = [];
