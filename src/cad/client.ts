@@ -1,4 +1,5 @@
 import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
+import type { NurbsPatch } from "../surfaces";
 
 type Result = KernelMesh | Uint8Array | boolean;
 type Reply = { id: number; result?: Result; error?: string };
@@ -75,6 +76,68 @@ export class CadClient {
     return this.request("revolve", {
       points,
       angleDegrees,
+    }) as Promise<KernelMesh>;
+  }
+
+  loft(
+    profiles: { points: [number, number][]; z: number }[],
+    ruled = false,
+  ): Promise<KernelMesh> {
+    return this.request("loft", { profiles, ruled }) as Promise<KernelMesh>;
+  }
+
+  /** Profile coordinates lie in the normal plane of the first spine segment. */
+  sweep(points: [number, number][], path: Vec3[]): Promise<KernelMesh> {
+    return this.request("sweep", { points, path }) as Promise<KernelMesh>;
+  }
+
+  /** Indices identify unique edges in kernel traversal order, starting at zero. */
+  edgeTreatment(
+    kernelId: string,
+    edgeIndices: number[],
+    amount: number,
+    operation: "fillet" | "chamfer",
+  ): Promise<KernelMesh> {
+    return this.request("edges", {
+      kernelId,
+      edgeIndices,
+      amount,
+      operation,
+    }) as Promise<KernelMesh>;
+  }
+
+  offset(kernelId: string, distance: number): Promise<KernelMesh> {
+    return this.request("offset", {
+      kernelId,
+      distance,
+    }) as Promise<KernelMesh>;
+  }
+
+  sew(kernelIds: string[], tolerance = 1e-6): Promise<KernelMesh> {
+    return this.request("sew", { kernelIds, tolerance }) as Promise<KernelMesh>;
+  }
+
+  /** Construct an exact rational tensor B-spline CAD face from its control net. */
+  surface(patch: NurbsPatch): Promise<KernelMesh> {
+    return this.request("surface", patch) as Promise<KernelMesh>;
+  }
+
+  shell(
+    kernelId: string,
+    faceIndices: number[],
+    thickness: number,
+  ): Promise<KernelMesh> {
+    return this.request("shell", {
+      kernelId,
+      faceIndices,
+      thickness,
+    }) as Promise<KernelMesh>;
+  }
+
+  thicken(kernelId: string, thickness: number): Promise<KernelMesh> {
+    return this.request("thicken", {
+      kernelId,
+      thickness,
     }) as Promise<KernelMesh>;
   }
 

@@ -38,6 +38,80 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("CAD worker ownership and cancellation", () => {
+  it("sends advanced CAD operation contracts without substituting display meshes", async () => {
+    const client = new CadClient();
+    const points: [number, number][] = [
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [0, 2],
+    ];
+    const cases: [() => Promise<unknown>, string, unknown][] = [
+      [
+        () =>
+          client.loft(
+            [
+              { points, z: 0 },
+              { points, z: 10 },
+            ],
+            true,
+          ),
+        "loft",
+        {
+          profiles: [
+            { points, z: 0 },
+            { points, z: 10 },
+          ],
+          ruled: true,
+        },
+      ],
+      [
+        () =>
+          client.sweep(points, [
+            [0, 0, 0],
+            [0, 0, 10],
+          ]),
+        "sweep",
+        {
+          points,
+          path: [
+            [0, 0, 0],
+            [0, 0, 10],
+          ],
+        },
+      ],
+      [
+        () => client.edgeTreatment("shape", [0, 2], 1, "fillet"),
+        "edges",
+        {
+          kernelId: "shape",
+          edgeIndices: [0, 2],
+          amount: 1,
+          operation: "fillet",
+        },
+      ],
+      [
+        () => client.offset("shape", 2),
+        "offset",
+        { kernelId: "shape", distance: 2 },
+      ],
+      [
+        () => client.sew(["shape"], 0.01),
+        "sew",
+        { kernelIds: ["shape"], tolerance: 0.01 },
+      ],
+    ];
+    for (const [run, operation, payload] of cases) {
+      const pending = run();
+      await vi.advanceTimersByTimeAsync(0);
+      const worker = WorkerDouble.instances[0];
+      expect(worker.messages.at(-1)).toMatchObject({ operation, payload });
+      worker.reply({ kernelId: "result", positions: [0, 0, 0], brep: "exact" });
+      await pending;
+    }
+    client.dispose();
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("serializes native requests and releases native handles through the protocol", async () => {
     const client = new CadClient();
     const first = client.primitive(box);

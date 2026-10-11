@@ -1,0 +1,168 @@
+import {
+  analyzeMesh,
+  decimateMesh,
+  repairMesh,
+  segmentMesh,
+  smoothMesh,
+  type MeshTopology,
+} from "./mesh-processing";
+import {
+  applyRigidTransform,
+  registerIcp,
+  registerPairedPoints,
+} from "./registration";
+import type {
+  ProcessingRequest,
+  ProcessingResult,
+  ProcessingResponse,
+  TopologySummary,
+} from "./processing-client";
+
+const scope = self as unknown as {
+  onmessage: ((event: MessageEvent<ProcessingRequest>) => void) | null;
+  postMessage(message: ProcessingResponse, transfers?: Transferable[]): void;
+};
+function summarize(topology: MeshTopology): TopologySummary {
+  return {
+    vertices: topology.vertices.length / 3,
+    triangles: topology.triangles.length / 3,
+    components: topology.components.length,
+    boundaryLoops: topology.boundaryLoops.length,
+    boundaryChains: topology.boundaryChains.length,
+    boundaryEdges: topology.boundaryEdges,
+    nonManifoldEdges: topology.nonManifoldEdges,
+    inconsistentEdges: topology.inconsistentEdges,
+    degenerateTriangles: topology.degenerateTriangles,
+    duplicateTriangles: topology.duplicateTriangles,
+  };
+}
+scope.onmessage = ({ data: request }) => {
+  let lastProgress = -Infinity;
+  function progress(fraction: number, stage: string) {
+    const now = performance.now();
+    if (now - lastProgress > 100 || fraction === 1) {
+      lastProgress = now;
+      scope.postMessage({ progress: fraction, stage });
+    }
+  }
+  try {
+    let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
+    if (request.kind === "report")
+      result.topology = summarize(
+        analyzeMesh(request.positions, {
+          tolerance: request.tolerance,
+          onProgress: progress,
+        }),
+      );
+    else if (request.kind === "repair") {
+      const repaired = repairMesh(request.positions, {
+        ...request,
+        onProgress: progress,
+      });
+      result.positions = repaired.positions;
+      result.topology = summarize(repaired.topology);
+      result.diagnostics = {
+        removedDegenerate: repaired.removedDegenerate,
+        removedDuplicates: repaired.removedDuplicates,
+        flippedTriangles: repaired.flippedTriangles,
+        orientationConflicts: repaired.orientationConflicts,
+        filledLoops: repaired.filledLoops,
+        skippedHoles: repaired.skippedHoles
+          .map((item) => item.reason)
+          .join("; "),
+      };
+    } else if (request.kind === "smooth") {
+      result.positions = smoothMesh(request.positions, {
+        ...request,
+        onProgress: progress,
+      });
+      result.diagnostics = {
+        iterations: request.iterations,
+        boundaryPreserved: true,
+      };
+    } else if (request.kind === "decimate") {
+      const reduced = decimateMesh(request.positions, {
+        cellSize: request.cellSize,
+        onProgress: progress,
+      });
+      if (!reduced.triangles)
+        throw new Error(
+          "Grid clustering removed every triangle; choose a smaller cell size.",
+        );
+      result.positions = reduced.positions;
+      result.diagnostics = {
+        triangles: reduced.triangles,
+        removedTriangles: reduced.removedTriangles,
+        maxVertexDisplacement: reduced.maxVertexDisplacement,
+      };
+    } else if (request.kind === "segment") {
+      const segmented = segmentMesh(request.positions, {
+        tolerance: request.tolerance,
+        angleDegrees: request.angleDegrees,
+        onProgress: progress,
+      });
+      const outputs = segmented.segments.map(
+        (segment) => new Float32Array(segment.triangles * 9),
+      );
+      const cursors = new Uint32Array(outputs.length);
+      for (let face = 0; face < segmented.labels.length; face++) {
+        if (face % 4096 === 0)
+          progress(face / segmented.labels.length, "Creating segment meshes");
+        const id = segmented.labels[face],
+          out = outputs[id],
+          offset = cursors[id];
+        for (let j = 0; j < 9; j++)
+          out[offset + j] = request.positions[face * 9 + j];
+        cursors[id] += 9;
+      }
+      result.segments = outputs;
+      result.diagnostics = {
+        segments: outputs.length,
+        angleDegrees: request.angleDegrees,
+      };
+    } else {
+      const registration =
+        request.kind === "paired"
+          ? registerPairedPoints(
+              request.sourceLandmarks,
+              request.targetLandmarks,
+              {
+                onProgress: (fraction, rms) =>
+                  progress(
+                    fraction,
+                    `Landmark residual ${rms.toPrecision(4)} mm`,
+                  ),
+              },
+            )
+          : registerIcp(request.positions, request.target, {
+              ...request,
+              onProgress: (fraction, rms) =>
+                progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
+            });
+      result.positions = applyRigidTransform(
+        request.positions,
+        registration.transform,
+        {
+          onProgress: (fraction) =>
+            progress(fraction, "Applying rigid alignment"),
+        },
+      );
+      result.registration = registration;
+      result.diagnostics = {
+        rms: registration.rms,
+        maxError: registration.maxError,
+        converged: registration.converged,
+        iterations: registration.iterations,
+        pairs: registration.pairs,
+      };
+    }
+    const transfers: Transferable[] = [];
+    if (result.positions) transfers.push(result.positions.buffer);
+    for (const segment of result.segments ?? []) transfers.push(segment.buffer);
+    scope.postMessage({ result }, transfers);
+  } catch (error) {
+    scope.postMessage({
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};

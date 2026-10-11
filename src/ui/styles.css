@@ -1407,3 +1407,103 @@ dd {
     padding: 4px 6px;
   }
 }
+.surface-panels,
+.sketch-panels,
+.processing-panels {
+  display: none;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+[data-workspace="surface"] .surface-panels,
+[data-workspace="sketch"] .sketch-panels,
+[data-workspace="processing"] .processing-panels {
+  display: block;
+}
+[data-workspace="surface"] .fitting-panel,
+[data-workspace="surface"] .transform-panel,
+[data-workspace="surface"] .section-panel,
+[data-workspace="surface"] .solid-panels,
+[data-workspace="sketch"] .fitting-panel,
+[data-workspace="sketch"] .transform-panel,
+[data-workspace="sketch"] .section-panel,
+[data-workspace="sketch"] .solid-panels,
+[data-workspace="processing"] .fitting-panel,
+[data-workspace="processing"] .transform-panel,
+[data-workspace="processing"] .section-panel,
+[data-workspace="processing"] .solid-panels {
+  display: none;
+}
+.surface-panels h3,
+.sketch-panels h3,
+.processing-panels h3 {
+  margin: 12px 0;
+}
+.surface-panels label,
+.sketch-panels label,
+.processing-panels label {
+  display: block;
+  margin: 10px 0;
+}
+.surface-panels input,
+.surface-panels select,
+.surface-panels textarea,
+.sketch-panels input,
+.sketch-panels select,
+.sketch-panels textarea,
+.processing-panels input,
+.processing-panels select,
+.processing-panels textarea {
+  max-width: 100%;
+  width: 100%;
+}
+.surface-panels button,
+.sketch-panels button,
+.processing-panels button {
+  margin: 4px 3px 4px 0;
+  font-size: 11px;
+  padding: 6px;
+}
+.surface-panels table,
+.sketch-panels table,
+.processing-panels table {
+  width: 100%;
+  font-size: 10px;
+}
+.surface-panels input[type="checkbox"],
+.sketch-panels input[type="checkbox"],
+.processing-panels input[type="checkbox"] {
+  width: auto;
+}
+.advanced-cad-panels {
+  display: none;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+[data-workspace="advancedCad"] .advanced-cad-panels {
+  display: block;
+}
+[data-workspace="advancedCad"] .fitting-panel,
+[data-workspace="advancedCad"] .transform-panel,
+[data-workspace="advancedCad"] .section-panel,
+[data-workspace="advancedCad"] .solid-panels {
+  display: none;
+}
+.advanced-cad-panels label {
+  display: block;
+  margin: 10px 0;
+}
+.advanced-cad-panels textarea,
+.advanced-cad-panels input:not([type="checkbox"]) {
+  width: 100%;
+  max-width: 100%;
+}
+.advanced-cad-panels button {
+  font-size: 11px;
+  margin: 4px 3px 4px 0;
+}
+.modal .check {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  margin: 10px 0;
+}

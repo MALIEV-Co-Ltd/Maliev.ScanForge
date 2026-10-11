@@ -26,6 +26,12 @@ import { CadClient } from "../cad/client";
 import { changeLabel, type Revision } from "../history";
 import { Ribbon } from "./Ribbon";
 import {
+  SpaceMouseController,
+  DEFAULT_SPACE_MOUSE,
+  type HidAccess,
+  type SpaceMousePreferences,
+} from "../spacemouse";
+import {
   selectTriangles,
   partitionTriangles,
   selectionCount,
@@ -54,10 +60,22 @@ import {
 import { importScan } from "../import-client";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { demonstrationBracket } from "../sample";
-import type { Entity, FitResult, KernelPrimitive, Vec3 } from "../types";
+import type {
+  Entity,
+  FitResult,
+  KernelPrimitive,
+  KernelMesh,
+  Vec3,
+} from "../types";
 import { Viewport } from "../viewport";
 import { Field, Panel, VectorField } from "./controls";
 import { SolidTools } from "./SolidTools";
+import { SurfaceTools } from "./SurfaceTools";
+import { SketchTools } from "./SketchTools";
+import { MeshTools } from "./MeshTools";
+import { AdvancedCadTools } from "./AdvancedCadTools";
+import { tessellatePatch, type NurbsPatch } from "../surfaces";
+import { rectangleSketch, type Sketch } from "../sketch";
 
 const number = (n: number) =>
   n.toLocaleString("en", { maximumFractionDigits: 3 });
@@ -77,10 +95,21 @@ export function App() {
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
+    rectangleSketch(),
+  );
+  const [spaceMouseStatus, setSpaceMouseStatus] = useState("Disconnected");
+  const [spaceMousePreferences, setSpaceMousePreferences] =
+    useState<SpaceMousePreferences>({ ...DEFAULT_SPACE_MOUSE });
+  const spaceMouse = useRef<SpaceMouseController | null>(null);
   const [resolvedTheme, setResolvedTheme] = useState(() => resolveTheme(theme));
   const [dragging, setDragging] = useState(false);
   const importAbort = useRef<AbortController | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [actionBusy, setBusy] = useState(false);
+  const [processingBusy, setProcessingBusy] = useState(false);
+  const busy = actionBusy || processingBusy;
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
   const [message, setMessage] = useState(
     "Ready · demonstration geometry loaded",
   );
@@ -169,6 +198,7 @@ export function App() {
       viewport.current = new Viewport(
         viewportHost.current!,
         (point, id) => {
+          if (busyRef.current) return;
           setSelectedId(id);
           if (modeRef.current === "brush") {
             const brush = brushRef.current;
@@ -188,9 +218,20 @@ export function App() {
             );
           else setAnchor(point);
         },
-        setSelectedId,
+        (id) => {
+          if (!busyRef.current) setSelectedId(id);
+        },
       );
       viewport.current.setTheme(resolveTheme(theme));
+      spaceMouse.current = new SpaceMouseController(
+        (navigator as Navigator & { hid?: HidAccess }).hid,
+        (motion, seconds) => viewport.current?.navigate(motion, seconds),
+        (action) =>
+          action === "fit"
+            ? viewport.current?.fitView()
+            : viewport.current?.setView("iso"),
+        setSpaceMouseStatus,
+      );
     } catch (e) {
       setError(`WebGL unavailable: ${errorText(e)}`);
     }
@@ -199,6 +240,11 @@ export function App() {
         importAbort.current?.abort();
         cad.current?.dispose();
         viewport.current?.dispose();
+        void spaceMouse.current
+          ?.dispose()
+          .catch((error) =>
+            setError(`SpaceMouse cleanup: ${errorText(error)}`),
+          );
       }
     };
     window.addEventListener("pagehide", unload);
@@ -207,6 +253,10 @@ export function App() {
       unload();
     };
   }, []);
+  useEffect(() => {
+    if (spaceMouse.current)
+      spaceMouse.current.preferences = spaceMousePreferences;
+  }, [spaceMousePreferences]);
   useEffect(() => {
     viewport.current?.setEntities(entities, selectedId);
   }, [entities, selectedId]);
@@ -291,6 +341,11 @@ export function App() {
     setDirty(true);
   }
   function updateSelected(patch: Partial<Entity>) {
+    // Geometry edits invalidate authoring data unless they explicitly rebuild it.
+    if (patch.positions && !("surfacePatch" in patch))
+      patch = { ...patch, surfacePatch: undefined, surfaceScanId: undefined };
+    if (patch.positions && !("fit" in patch))
+      patch = { ...patch, fit: undefined };
     if (selected)
       commit(
         entities.map((e) => (e.id === selected.id ? { ...e, ...patch } : e)),
@@ -443,6 +498,7 @@ export function App() {
           setEntities(restored);
           setSelectedId(restored[0]?.id ?? null);
           setName(project.name);
+          setSketchDraft(project.authoring?.sketch ?? rectangleSketch());
           setHistory([]);
           setFuture([]);
           setDirty(false);
@@ -525,6 +581,9 @@ export function App() {
                   kind: "mesh" as const,
                   kernelId: undefined,
                   brep: undefined,
+                  surfacePatch: undefined,
+                  surfaceScanId: undefined,
+                  fit: undefined,
                 },
               ]
             : [],
@@ -538,6 +597,9 @@ export function App() {
         positions: picked,
         kernelId: undefined,
         brep: undefined,
+        surfacePatch: undefined,
+        surfaceScanId: undefined,
+        fit: undefined,
       };
       next.push(created);
       setSelectedId(created.id);
@@ -721,10 +783,92 @@ export function App() {
       setMessage("Polygon extruded to exact CAD");
     });
   }
+  function createMesh(
+    positions: Float32Array,
+    label: string,
+    surfacePatch?: NurbsPatch,
+  ) {
+    validatePositions(positions);
+    const entity: Entity = {
+      id: crypto.randomUUID(),
+      name: label,
+      kind: "mesh",
+      positions,
+      color: "#78a8db",
+      opacity: 1,
+      visible: true,
+      surfacePatch,
+      surfaceScanId: surfacePatch ? selected?.id : undefined,
+    };
+    commit([...entities, entity]);
+    setSelectedId(entity.id);
+    setMessage(`${label} created`);
+  }
+  function editSurface(patch: NurbsPatch) {
+    void action("Editing NURBS control grid…", () => {
+      const positions = tessellatePatch(patch, 32, 32);
+      if (selected?.surfacePatch)
+        updateSelected({
+          positions,
+          surfacePatch: patch,
+          kind: "mesh",
+          kernelId: undefined,
+          brep: undefined,
+        });
+      else createMesh(positions, "NURBS surface", patch);
+      setMessage("NURBS patch updated · control grid retained in project");
+    });
+  }
+  function createSegments(parts: Float32Array[], label: string) {
+    const created = parts
+      .filter((positions) => positions.length)
+      .map((positions, index): Entity => ({
+        id: crypto.randomUUID(),
+        name: `${label} ${index + 1}`,
+        kind: "mesh",
+        positions,
+        color: `#${new THREE.Color().setHSL((index * 0.618) % 1, 0.5, 0.58).getHexString()}`,
+        opacity: 1,
+        visible: true,
+      }));
+    if (!created.length) throw new Error("Segmentation produced no meshes.");
+    operationLabel.current = `${label} (${created.length} meshes)`;
+    commit([
+      ...entities.map((entity) =>
+        entity.id === selected?.id ? { ...entity, visible: false } : entity,
+      ),
+      ...created,
+    ]);
+    operationLabel.current = null;
+    setSelectedId(created[0].id);
+    setMessage(`Created ${created.length} segmented meshes`);
+  }
+  function cadOperation(
+    label: string,
+    run: () => Promise<KernelMesh>,
+    patch?: NurbsPatch,
+  ) {
+    void action(label, async () => {
+      const result = await run();
+      const entity: Entity = {
+        ...result,
+        id: crypto.randomUUID(),
+        name: label.replace(/…$/, ""),
+        kind: "cad",
+        color: "#78a8db",
+        opacity: 1,
+        visible: true,
+        surfacePatch: patch,
+      };
+      commit([...entities, entity]);
+      setSelectedId(entity.id);
+      setMessage(`${entity.name} created as exact CAD`);
+    });
+  }
   function save() {
     void action("Saving project…", async () => {
       download(
-        await serializeProjectBlob(name, entities),
+        await serializeProjectBlob(name, entities, { sketch: sketchDraft }),
         `${name.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
         "application/json",
       );
@@ -900,6 +1044,26 @@ export function App() {
           },
           wireframe: () => setWireframe(!wireframe),
           objectColor: () => showTools("mesh"),
+          loft: () => showTools("advancedCad"),
+          sweep: () => showTools("advancedCad"),
+          fillet: () => showTools("advancedCad"),
+          chamfer: () => showTools("advancedCad"),
+          surfaceOffset: () => showTools("advancedCad"),
+          sewSurfaces: () => showTools("advancedCad"),
+          shell: () => showTools("advancedCad"),
+          surfaceThicken: () => showTools("advancedCad"),
+          fitSurface: () => showTools("surface"),
+          nurbsSurface: () => showTools("surface"),
+          newFreeform: () => showTools("surface"),
+          autoFreeform: () => showTools("surface"),
+          quadObj: () => showTools("surface"),
+          sketch2d: () => showTools("sketch"),
+          reducePolygons: () => showTools("processing"),
+          reduceNoise: () => showTools("processing"),
+          fineAlign: () => showTools("processing"),
+          alignNPoints: () => showTools("processing"),
+          repairMesh: () => showTools("processing"),
+          segmentMesh: () => showTools("processing"),
         }}
       />
       <input
@@ -1098,7 +1262,11 @@ export function App() {
             </div>
           )}
         </section>
-        <aside className="inspector" inert={busy} aria-label="Tool options">
+        <aside
+          className="inspector"
+          inert={actionBusy}
+          aria-label="Tool options"
+        >
           <h2>
             Tool options{" "}
             <button
@@ -1110,351 +1278,484 @@ export function App() {
           </h2>
           {selected && stats ? (
             <>
-              <div className="selected-title">
-                <Triangle size={25} />
-                <div>
-                  <input
-                    aria-label="Object name"
-                    value={selected.name}
-                    maxLength={200}
-                    onChange={(e) => updateSelected({ name: e.target.value })}
-                  />
-                  <small>
-                    {selected.kernelId
-                      ? "Exact CAD + display mesh"
-                      : selected.kind === "plane"
-                        ? "Reference surface"
-                        : "Triangle mesh"}{" "}
-                    · mm
-                  </small>
-                </div>
-              </div>
-              <Panel title="Edit scan" className="scan-panel">
-                <div className="button-row">
-                  <button
-                    className={mode === "brush" ? "active" : ""}
-                    onClick={() => setMode("brush")}
-                  >
-                    Brush selection
-                  </button>
-                  <button onClick={() => setMode("inspect")}>Orbit</button>
-                </div>
-                <Field
-                  label="Brush radius (mm)"
-                  value={brushRadius}
-                  onChange={(value) => setBrushRadius(Math.max(0.01, value))}
-                />
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={subtractBrush}
-                    onChange={(event) => setSubtractBrush(event.target.checked)}
-                  />
-                  Subtract from selection
-                </label>
-                <p>{number(selectedTriangleCount)} selected triangles</p>
-                <div className="button-row">
-                  <button
-                    onClick={() =>
-                      setTriangleMask(
-                        new Uint8Array(selected.positions.length / 9).fill(1),
-                      )
-                    }
-                  >
-                    Select all
-                  </button>
-                  <button onClick={() => setTriangleMask(null)}>Clear</button>
-                  <button
-                    onClick={() =>
-                      setTriangleMask(
-                        Uint8Array.from(
-                          { length: selected.positions.length / 9 },
-                          (_, index) => (triangleMask?.[index] ? 0 : 1),
-                        ),
-                      )
-                    }
-                  >
-                    Invert
-                  </button>
-                </div>
-                <div className="button-row">
-                  <button
-                    disabled={!selectedTriangleCount}
-                    onClick={() => editSelection("copy")}
-                  >
-                    Copy &amp; Create
-                  </button>
-                  <button
-                    disabled={!selectedTriangleCount}
-                    onClick={() => editSelection("cut")}
-                  >
-                    Cut &amp; Create
-                  </button>
-                </div>
-                <button
-                  disabled={!selectedTriangleCount}
-                  onClick={() => editSelection("delete")}
-                >
-                  Delete selected triangles
-                </button>
-                {selected.kernelId && (
-                  <p className="muted">Triangle edits create a mesh result.</p>
-                )}
-              </Panel>
-              <Panel title="Geometry" className="geometry-panel">
-                <dl>
-                  <dt>Vertices (triangle soup)</dt>
-                  <dd>{number(stats.vertices)}</dd>
-                  <dt>Triangles</dt>
-                  <dd>{number(stats.triangles)}</dd>
-                  <dt>Bounds (mm)</dt>
-                  <dd>{stats.size.map(number).join(" × ")}</dd>
-                  <dt>Surface area (mm²)</dt>
-                  <dd>{number(stats.area)}</dd>
-                  <dt>Volume estimate (mm³)</dt>
-                  <dd>{number(stats.volume)}</dd>
-                </dl>
-                <p className="muted">
-                  Volume assumes a closed, consistently oriented mesh.
-                </p>
-              </Panel>
-              <Panel title="Display" className="display-panel">
-                <label className="slider-row">
-                  <span>Opacity</span>
-                  <input
-                    aria-label="Opacity"
-                    type="range"
-                    min="0.1"
-                    max="1"
-                    step="0.05"
-                    value={selected.opacity}
-                    onChange={(e) =>
-                      updateSelected({ opacity: Number(e.target.value) })
-                    }
-                  />
-                  <output>{selected.opacity.toFixed(2)}</output>
-                </label>
-                <div className="display-row">
-                  <span>Shading</span>
-                  <div className="segmented">
-                    <button
-                      className={!wireframe ? "active" : ""}
-                      onClick={() => setWireframe(false)}
-                    >
-                      Shaded
-                    </button>
-                    <button
-                      className={wireframe ? "active" : ""}
-                      onClick={() => setWireframe(true)}
-                    >
-                      Wireframe
-                    </button>
+              <div inert={processingBusy}>
+                <div className="selected-title">
+                  <Triangle size={25} />
+                  <div>
+                    <input
+                      aria-label="Object name"
+                      value={selected.name}
+                      maxLength={200}
+                      onChange={(e) => updateSelected({ name: e.target.value })}
+                    />
+                    <small>
+                      {selected.kernelId
+                        ? "Exact CAD + display mesh"
+                        : selected.kind === "plane"
+                          ? "Reference surface"
+                          : "Triangle mesh"}{" "}
+                      · mm
+                    </small>
                   </div>
                 </div>
-                <label className="color-field">
-                  Object color
-                  <input
-                    aria-label="Object color"
-                    type="color"
-                    value={selected.color}
-                    onChange={(e) => updateSelected({ color: e.target.value })}
+                <Panel title="Edit scan" className="scan-panel">
+                  <div className="button-row">
+                    <button
+                      className={mode === "brush" ? "active" : ""}
+                      onClick={() => setMode("brush")}
+                    >
+                      Brush selection
+                    </button>
+                    <button onClick={() => setMode("inspect")}>Orbit</button>
+                  </div>
+                  <Field
+                    label="Brush radius (mm)"
+                    value={brushRadius}
+                    onChange={(value) => setBrushRadius(Math.max(0.01, value))}
                   />
-                </label>
-              </Panel>
-              <Panel title="Transform" className="transform-panel">
-                <VectorField
-                  label="Move (mm)"
-                  value={translation}
-                  onChange={setTranslation}
-                />
-                <VectorField
-                  label="Rotate (°)"
-                  value={rotation}
-                  onChange={setRotation}
-                />
-                <Field
-                  label="Uniform scale"
-                  value={scale}
-                  min={0.001}
-                  step={0.1}
-                  onChange={setScale}
-                />
-                <button
-                  className="wide"
-                  disabled={busy}
-                  onClick={applyTransform}
-                >
-                  Apply transform
-                </button>
-                {selected.kernelId && (
-                  <p className="muted">
-                    Exact CAD transforms preserve STEP export.
-                  </p>
-                )}
-              </Panel>
-              <Panel title="Cross section" className="section-panel">
-                <label className="select-field">
-                  Axis
-                  <select
-                    aria-label="Section axis"
-                    value={axis}
-                    onChange={(e) => setAxis(e.target.value as "x" | "y" | "z")}
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={subtractBrush}
+                      onChange={(event) =>
+                        setSubtractBrush(event.target.checked)
+                      }
+                    />
+                    Subtract from selection
+                  </label>
+                  <p>{number(selectedTriangleCount)} selected triangles</p>
+                  <div className="button-row">
+                    <button
+                      onClick={() =>
+                        setTriangleMask(
+                          new Uint8Array(selected.positions.length / 9).fill(1),
+                        )
+                      }
+                    >
+                      Select all
+                    </button>
+                    <button onClick={() => setTriangleMask(null)}>Clear</button>
+                    <button
+                      onClick={() =>
+                        setTriangleMask(
+                          Uint8Array.from(
+                            { length: selected.positions.length / 9 },
+                            (_, index) => (triangleMask?.[index] ? 0 : 1),
+                          ),
+                        )
+                      }
+                    >
+                      Invert
+                    </button>
+                  </div>
+                  <div className="button-row">
+                    <button
+                      disabled={!selectedTriangleCount}
+                      onClick={() => editSelection("copy")}
+                    >
+                      Copy &amp; Create
+                    </button>
+                    <button
+                      disabled={!selectedTriangleCount}
+                      onClick={() => editSelection("cut")}
+                    >
+                      Cut &amp; Create
+                    </button>
+                  </div>
+                  <button
+                    disabled={!selectedTriangleCount}
+                    onClick={() => editSelection("delete")}
                   >
-                    <option value="x">X (YZ plane)</option>
-                    <option value="y">Y (XZ plane)</option>
-                    <option value="z">Z (XY plane)</option>
-                  </select>
-                </label>
-                <Field
-                  label="Offset (mm)"
-                  value={offset}
-                  step={0.5}
-                  onChange={setOffset}
-                />
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={mode === "section"}
-                    onChange={(e) =>
-                      setMode(e.target.checked ? "section" : "inspect")
-                    }
-                  />
-                  Show cross section
-                </label>
-                {mode === "section" && (
-                  <>
+                    Delete selected triangles
+                  </button>
+                  {selected.kernelId && (
                     <p className="muted">
-                      {section.segments.length / 6} segments · total{" "}
-                      {number(section.length)} mm
+                      Triangle edits create a mesh result.
                     </p>
-                    <button
-                      className="wide"
-                      disabled={!section.segments.length}
-                      onClick={() => {
-                        const rows = ["x1,y1,z1,x2,y2,z2"];
-                        for (let i = 0; i < section.segments.length; i += 6)
-                          rows.push(section.segments.slice(i, i + 6).join(","));
-                        download(rows.join("\n"), "section.csv", "text/csv");
-                      }}
-                    >
-                      Export section CSV
-                    </button>
-                  </>
-                )}
-              </Panel>
-              <Panel title="Surface fitting" className="fitting-panel">
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={localFit}
-                    onChange={(e) => setLocalFit(e.target.checked)}
-                  />
-                  Fit a local region
-                </label>
-                {localFit && (
-                  <>
-                    <Field
-                      label="Region radius (mm)"
-                      value={fitRadius}
-                      min={0.01}
-                      step={1}
-                      onChange={setFitRadius}
-                    />
-                    <p className="muted">
-                      {anchor
-                        ? `Anchor: ${anchor.map(number).join(", ")}`
-                        : "Click a surface in Inspect mode to anchor the region."}
-                    </p>
-                  </>
-                )}
-                {fit ? (
-                  <>
-                    <dl>
-                      <dt>Surface</dt>
-                      <dd>{fit.kind}</dd>
-                      <dt>RMS residual</dt>
-                      <dd>{number(fit.rms)} mm</dd>
-                      <dt>Maximum residual</dt>
-                      <dd>{number(fit.maxError)} mm</dd>
-                      {fit.radius && (
-                        <>
-                          <dt>Radius</dt>
-                          <dd>{number(fit.radius)} mm</dd>
-                        </>
-                      )}
-                    </dl>
-                    <Field
-                      label="Color tolerance (mm)"
-                      value={tolerance}
-                      min={0.001}
-                      step={0.1}
-                      onChange={(n) => setTolerance(Math.max(0.001, n))}
-                    />
-                    <label className="check">
-                      <input
-                        type="checkbox"
-                        checked={showDeviation}
-                        onChange={(e) => setShowDeviation(e.target.checked)}
-                      />
-                      Show signed deviation
-                    </label>
-                    <button
-                      className="wide accent"
-                      disabled={busy}
-                      onClick={materializeFit}
-                    >
-                      Create fitted {fit.kind}
-                    </button>
-                    <p className="muted">
-                      Analytical surface distances; cylinder fitting requires a
-                      sampled side surface. Color map covers the entire object.
-                    </p>
-                  </>
-                ) : (
+                  )}
+                </Panel>
+                <Panel title="Geometry" className="geometry-panel">
+                  <dl>
+                    <dt>Vertices (triangle soup)</dt>
+                    <dd>{number(stats.vertices)}</dd>
+                    <dt>Triangles</dt>
+                    <dd>{number(stats.triangles)}</dd>
+                    <dt>Bounds (mm)</dt>
+                    <dd>{stats.size.map(number).join(" × ")}</dd>
+                    <dt>Surface area (mm²)</dt>
+                    <dd>{number(stats.area)}</dd>
+                    <dt>Volume estimate (mm³)</dt>
+                    <dd>{number(stats.volume)}</dd>
+                  </dl>
                   <p className="muted">
-                    Select a scan and fit a plane, sphere, cylinder or cone from
-                    the tool rail. Fits report residuals; review them before
-                    creating CAD.
+                    Volume assumes a closed, consistently oriented mesh.
                   </p>
-                )}
-                <button
-                  className="wide mesh-cleanup"
-                  disabled={busy}
-                  onClick={() =>
-                    void action("Removing degenerate triangles…", () => {
-                      const positions = cleanupMesh(selected.positions);
-                      validatePositions(positions);
-                      updateSelected({
-                        positions,
-                        kind: "mesh",
-                        kernelId: undefined,
-                        brep: undefined,
-                      });
-                      setMessage(
-                        `Removed ${(selected.positions.length - positions.length) / 9} degenerate triangles · mesh result`,
-                      );
-                    })
-                  }
-                >
-                  Remove degenerate triangles
-                </button>
-              </Panel>
-              <div className="solid-panels">
-                <SolidTools
-                  entities={entities}
-                  selected={selected}
-                  busy={busy}
-                  onBoolean={boolean}
-                  onExtrude={extrude}
-                  onRevolve={revolve}
-                />
+                </Panel>
+                <Panel title="Display" className="display-panel">
+                  <label className="slider-row">
+                    <span>Opacity</span>
+                    <input
+                      aria-label="Opacity"
+                      type="range"
+                      min="0.1"
+                      max="1"
+                      step="0.05"
+                      value={selected.opacity}
+                      onChange={(e) =>
+                        updateSelected({ opacity: Number(e.target.value) })
+                      }
+                    />
+                    <output>{selected.opacity.toFixed(2)}</output>
+                  </label>
+                  <div className="display-row">
+                    <span>Shading</span>
+                    <div className="segmented">
+                      <button
+                        className={!wireframe ? "active" : ""}
+                        onClick={() => setWireframe(false)}
+                      >
+                        Shaded
+                      </button>
+                      <button
+                        className={wireframe ? "active" : ""}
+                        onClick={() => setWireframe(true)}
+                      >
+                        Wireframe
+                      </button>
+                    </div>
+                  </div>
+                  <label className="color-field">
+                    Object color
+                    <input
+                      aria-label="Object color"
+                      type="color"
+                      value={selected.color}
+                      onChange={(e) =>
+                        updateSelected({ color: e.target.value })
+                      }
+                    />
+                  </label>
+                </Panel>
+                <Panel title="Transform" className="transform-panel">
+                  <VectorField
+                    label="Move (mm)"
+                    value={translation}
+                    onChange={setTranslation}
+                  />
+                  <VectorField
+                    label="Rotate (°)"
+                    value={rotation}
+                    onChange={setRotation}
+                  />
+                  <Field
+                    label="Uniform scale"
+                    value={scale}
+                    min={0.001}
+                    step={0.1}
+                    onChange={setScale}
+                  />
+                  <button
+                    className="wide"
+                    disabled={busy}
+                    onClick={applyTransform}
+                  >
+                    Apply transform
+                  </button>
+                  {selected.kernelId && (
+                    <p className="muted">
+                      Exact CAD transforms preserve STEP export.
+                    </p>
+                  )}
+                </Panel>
+                <Panel title="Cross section" className="section-panel">
+                  <label className="select-field">
+                    Axis
+                    <select
+                      aria-label="Section axis"
+                      value={axis}
+                      onChange={(e) =>
+                        setAxis(e.target.value as "x" | "y" | "z")
+                      }
+                    >
+                      <option value="x">X (YZ plane)</option>
+                      <option value="y">Y (XZ plane)</option>
+                      <option value="z">Z (XY plane)</option>
+                    </select>
+                  </label>
+                  <Field
+                    label="Offset (mm)"
+                    value={offset}
+                    step={0.5}
+                    onChange={setOffset}
+                  />
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={mode === "section"}
+                      onChange={(e) =>
+                        setMode(e.target.checked ? "section" : "inspect")
+                      }
+                    />
+                    Show cross section
+                  </label>
+                  {mode === "section" && (
+                    <>
+                      <p className="muted">
+                        {section.segments.length / 6} segments · total{" "}
+                        {number(section.length)} mm
+                      </p>
+                      <button
+                        className="wide"
+                        disabled={!section.segments.length}
+                        onClick={() => {
+                          const rows = ["x1,y1,z1,x2,y2,z2"];
+                          for (let i = 0; i < section.segments.length; i += 6)
+                            rows.push(
+                              section.segments.slice(i, i + 6).join(","),
+                            );
+                          download(rows.join("\n"), "section.csv", "text/csv");
+                        }}
+                      >
+                        Export section CSV
+                      </button>
+                    </>
+                  )}
+                </Panel>
+                <Panel title="Surface fitting" className="fitting-panel">
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={localFit}
+                      onChange={(e) => setLocalFit(e.target.checked)}
+                    />
+                    Fit a local region
+                  </label>
+                  {localFit && (
+                    <>
+                      <Field
+                        label="Region radius (mm)"
+                        value={fitRadius}
+                        min={0.01}
+                        step={1}
+                        onChange={setFitRadius}
+                      />
+                      <p className="muted">
+                        {anchor
+                          ? `Anchor: ${anchor.map(number).join(", ")}`
+                          : "Click a surface in Inspect mode to anchor the region."}
+                      </p>
+                    </>
+                  )}
+                  {fit ? (
+                    <>
+                      <dl>
+                        <dt>Surface</dt>
+                        <dd>{fit.kind}</dd>
+                        <dt>RMS residual</dt>
+                        <dd>{number(fit.rms)} mm</dd>
+                        <dt>Maximum residual</dt>
+                        <dd>{number(fit.maxError)} mm</dd>
+                        {fit.radius && (
+                          <>
+                            <dt>Radius</dt>
+                            <dd>{number(fit.radius)} mm</dd>
+                          </>
+                        )}
+                      </dl>
+                      <Field
+                        label="Color tolerance (mm)"
+                        value={tolerance}
+                        min={0.001}
+                        step={0.1}
+                        onChange={(n) => setTolerance(Math.max(0.001, n))}
+                      />
+                      <label className="check">
+                        <input
+                          type="checkbox"
+                          checked={showDeviation}
+                          onChange={(e) => setShowDeviation(e.target.checked)}
+                        />
+                        Show signed deviation
+                      </label>
+                      <button
+                        className="wide accent"
+                        disabled={busy}
+                        onClick={materializeFit}
+                      >
+                        Create fitted {fit.kind}
+                      </button>
+                      <p className="muted">
+                        Analytical surface distances; cylinder fitting requires
+                        a sampled side surface. Color map covers the entire
+                        object.
+                      </p>
+                    </>
+                  ) : (
+                    <p className="muted">
+                      Select a scan and fit a plane, sphere, cylinder or cone
+                      from the tool rail. Fits report residuals; review them
+                      before creating CAD.
+                    </p>
+                  )}
+                  <button
+                    className="wide mesh-cleanup"
+                    disabled={busy}
+                    onClick={() =>
+                      void action("Removing degenerate triangles…", () => {
+                        const positions = cleanupMesh(selected.positions);
+                        validatePositions(positions);
+                        updateSelected({
+                          positions,
+                          kind: "mesh",
+                          kernelId: undefined,
+                          brep: undefined,
+                        });
+                        setMessage(
+                          `Removed ${(selected.positions.length - positions.length) / 9} degenerate triangles · mesh result`,
+                        );
+                      })
+                    }
+                  >
+                    Remove degenerate triangles
+                  </button>
+                </Panel>
+                <div className="solid-panels">
+                  <SolidTools
+                    entities={entities}
+                    selected={selected}
+                    busy={busy}
+                    onBoolean={boolean}
+                    onExtrude={extrude}
+                    onRevolve={revolve}
+                  />
+                </div>
               </div>
             </>
           ) : (
             <div className="empty-inspector">
-              Select an object to inspect its geometry.
+              Select an object to inspect its geometry, or create a new surface
+              or sketch.
             </div>
           )}
+          <div className="surface-panels">
+            <SurfaceTools
+              key={selected?.id ?? "empty"}
+              scan={
+                entities.find((entity) => entity.id === selected?.surfaceScanId)
+                  ?.positions ?? selected?.positions
+              }
+              patch={selected?.surfacePatch}
+              onPatchChange={editSurface}
+              onCreateMesh={(positions, label) => createMesh(positions, label)}
+              onExportPatch={(json) =>
+                download(
+                  json,
+                  "surface.scanforge-nurbs.json",
+                  "application/json",
+                )
+              }
+              onError={setError}
+              disabled={busy}
+              onBusyChange={setProcessingBusy}
+            />
+            <button
+              disabled={busy || !selected?.surfacePatch}
+              onClick={() =>
+                cadOperation(
+                  "NURBS CAD face",
+                  () => cad.current!.surface(selected!.surfacePatch!),
+                  selected?.surfacePatch,
+                )
+              }
+            >
+              Create exact NURBS CAD face
+            </button>
+          </div>
+          <div className="sketch-panels">
+            <SketchTools
+              value={sketchDraft}
+              onChange={(sketch) => {
+                setSketchDraft(sketch);
+                setDirty(true);
+              }}
+              onExtrude={extrude}
+              disabled={busy}
+            />
+          </div>
+          <div className="processing-panels">
+            <MeshTools
+              entities={entities}
+              selected={selected}
+              disabled={busy}
+              onBusyChange={setProcessingBusy}
+              onReplace={(positions, label) => {
+                operationLabel.current = label;
+                updateSelected({
+                  positions,
+                  kind: "mesh",
+                  kernelId: undefined,
+                  brep: undefined,
+                  surfacePatch: undefined,
+                  surfaceScanId: undefined,
+                });
+                operationLabel.current = null;
+                setMessage(label);
+              }}
+              onCreateSegments={createSegments}
+              onError={setError}
+              onStatus={setMessage}
+            />
+          </div>
+          <div className="advanced-cad-panels">
+            <AdvancedCadTools
+              entities={entities}
+              selected={selected}
+              disabled={busy}
+              onError={setError}
+              onLoft={(profiles, ruled) =>
+                cadOperation("Loft", () => cad.current!.loft(profiles, ruled))
+              }
+              onSweep={(points, path) =>
+                cadOperation("Sweep", () => cad.current!.sweep(points, path))
+              }
+              onEdges={(indices, amount, operation) =>
+                cadOperation(operation, () =>
+                  cad.current!.edgeTreatment(
+                    selected!.kernelId!,
+                    indices,
+                    amount,
+                    operation,
+                  ),
+                )
+              }
+              onOffset={(distance) =>
+                cadOperation("Offset", () =>
+                  cad.current!.offset(selected!.kernelId!, distance),
+                )
+              }
+              onSew={(ids, tolerance) =>
+                cadOperation("Sew surfaces", () =>
+                  cad.current!.sew(
+                    ids.map(
+                      (id) =>
+                        entities.find((entity) => entity.id === id)!.kernelId!,
+                    ),
+                    tolerance,
+                  ),
+                )
+              }
+              onShell={(indices, thickness) =>
+                cadOperation("Shell", () =>
+                  cad.current!.shell(selected!.kernelId!, indices, thickness),
+                )
+              }
+              onThicken={(thickness) =>
+                cadOperation("Thicken", () =>
+                  cad.current!.thicken(selected!.kernelId!, thickness),
+                )
+              }
+            />
+          </div>
         </aside>
       </main>
       {settingsOpen && (
@@ -1498,6 +1799,97 @@ export function App() {
               Current appearance: {resolvedTheme}. System follows your operating
               system.
             </p>
+            <h3>SpaceMouse</h3>
+            <p className="muted">
+              {spaceMouseStatus}. Direct WebHID connection requires Chrome or
+              Edge over HTTPS or localhost. Choose the device when the browser
+              asks.
+            </p>
+            <div className="button-row">
+              <button
+                onClick={() =>
+                  void spaceMouse.current
+                    ?.connect()
+                    .catch((error) => setError(errorText(error)))
+                }
+              >
+                Connect SpaceMouse
+              </button>
+              <button
+                onClick={() =>
+                  void spaceMouse.current
+                    ?.disconnect()
+                    .catch((error) => setError(errorText(error)))
+                }
+              >
+                Disconnect SpaceMouse
+              </button>
+            </div>
+            <Field
+              label="Translation sensitivity"
+              value={spaceMousePreferences.translationSpeed}
+              min={0}
+              max={5}
+              step={0.1}
+              onChange={(translationSpeed) =>
+                setSpaceMousePreferences({
+                  ...spaceMousePreferences,
+                  translationSpeed: Math.max(0, translationSpeed),
+                })
+              }
+            />
+            <Field
+              label="Rotation sensitivity"
+              value={spaceMousePreferences.rotationSpeed}
+              min={0}
+              max={5}
+              step={0.1}
+              onChange={(rotationSpeed) =>
+                setSpaceMousePreferences({
+                  ...spaceMousePreferences,
+                  rotationSpeed: Math.max(0, rotationSpeed),
+                })
+              }
+            />
+            <Field
+              label="SpaceMouse deadzone"
+              value={spaceMousePreferences.deadzone}
+              min={0}
+              max={0.9}
+              step={0.01}
+              onChange={(deadzone) =>
+                setSpaceMousePreferences({
+                  ...spaceMousePreferences,
+                  deadzone: Math.max(0, Math.min(0.9, deadzone)),
+                })
+              }
+            />
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={spaceMousePreferences.dominantAxis}
+                onChange={(event) =>
+                  setSpaceMousePreferences({
+                    ...spaceMousePreferences,
+                    dominantAxis: event.target.checked,
+                  })
+                }
+              />
+              Dominant axis only
+            </label>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={spaceMousePreferences.rotationEnabled}
+                onChange={(event) =>
+                  setSpaceMousePreferences({
+                    ...spaceMousePreferences,
+                    rotationEnabled: event.target.checked,
+                  })
+                }
+              />
+              Enable SpaceMouse rotation
+            </label>
           </section>
         </div>
       )}

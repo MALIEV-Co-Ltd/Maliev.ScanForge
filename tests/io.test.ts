@@ -7,6 +7,8 @@ import {
   validatePositions,
 } from "../src/io";
 import type { Entity } from "../src/types";
+import { createGridPatch } from "../src/surfaces";
+import { rectangleSketch } from "../src/sketch";
 const entity: Entity = {
   id: "test",
   name: "Triangle",
@@ -17,6 +19,53 @@ const entity: Entity = {
   opacity: 1,
 };
 describe("file boundaries", () => {
+  it("persists rational surface controls and constrained sketch drafts through both save paths", async () => {
+    const surfacePatch = createGridPatch(4, 4, 20, 30, 3);
+    const authoring = { sketch: rectangleSketch(20, 30) };
+    const entities = [{ ...entity, surfacePatch, surfaceScanId: "source" }];
+    const saves = [
+      serializeProject("Authoring", entities, authoring),
+      await (
+        await serializeProjectBlob("Authoring", entities, authoring)
+      ).text(),
+    ];
+    for (const saved of saves) {
+      const restored = parseProject(saved);
+      expect(restored.authoring).toEqual(authoring);
+      expect(restored.entities[0].surfacePatch).toEqual(surfacePatch);
+      expect(restored.entities[0].surfaceScanId).toBe("source");
+    }
+  });
+  it("rejects malformed surface and constraint authoring at the project boundary", () => {
+    const valid = JSON.parse(serializeProject("Authoring", [entity]));
+    expect(() =>
+      parseProject(
+        JSON.stringify({
+          ...valid,
+          entities: [
+            {
+              ...entity,
+              surfacePatch: { format: "scanforge-nurbs", version: 1 },
+            },
+          ],
+        }),
+      ),
+    ).toThrow();
+    expect(() =>
+      parseProject(
+        JSON.stringify({
+          ...valid,
+          authoring: {
+            sketch: {
+              ...rectangleSketch(),
+              constraints: [{ id: "bad", kind: "execute", point: "p0" }],
+            },
+          },
+        }),
+      ),
+    ).toThrow();
+    expect(parseProject(JSON.stringify(valid)).authoring).toBeUndefined();
+  });
   it("roundtrips independent project geometry and strips ephemeral handles", () => {
     const saved = serializeProject("Project", [
       { ...entity, kernelId: "ephemeral", brep: "DBRep_DrawableShape\n" },

@@ -2,7 +2,7 @@
 
 An independently authored, open-source scan-to-CAD workbench that runs in a modern browser. TypeScript and React provide the interface, Three.js renders geometry, and OpenCascade.js processes exact CAD inside an isolated WebAssembly worker.
 
-**Status: experimental 0.1 foundation. This is not a complete professional reverse-engineering suite.** Advanced freeform reconstruction, NURBS patch editing, constrained parametric sketches, automatic surface segmentation, scan registration, and topology-aware mesh repair remain unimplemented. See [capabilities](docs/CAPABILITIES.md).
+**Status: experimental workbench.** Editable rational NURBS patches, projected scan fitting, line-sketch constraints, normal-based segmentation, landmark/ICP registration and topology diagnostics/repair are implemented. Their limits are explicit: this is not a complete professional reconstruction suite or a verified reproduction of another application's algorithms. See [capabilities](docs/CAPABILITIES.md).
 
 ## Run locally
 
@@ -38,8 +38,12 @@ Settings offers Light, Dark and System. The selected theme covers editor panels,
 2. Orbit, pan, zoom, change viewpoints, inspect dimensions, measure between picked surface points, and create cross sections. Section segments export to CSV.
 3. Brush triangle selections; copy, cut or delete selected triangles with undo. Fit a plane, sphere, cylinder or cone to the whole mesh, selected triangles or a picked spherical region. Review residuals and signed deviation colors. Large fits use a bounded vertex sample. Triangle-soup sampling weights repeated vertices; this is not certified metrology.
 4. Center and align scan principal axes. Create reference planes or reconstruct fitted spheres/cylinders/cones as exact CAD. Add box/sphere/cylinder/cone solids, transform exact bodies, use union/subtract/intersect, extrude a simple XY polygon, or revolve a radius/Z profile around the Z axis.
-5. Export visible exact bodies to STEP, or visible triangle geometry to STL. Scan meshes are excluded from STEP; there is no automatic mesh-to-solid conversion.
-6. Save a `.scanforge` project and reopen it. Projects retain tessellation, object properties, and exact BREP where available. Worker IDs, current measurement points, fit analysis, and undo history are transient.
+5. Use Scan Data tools to inspect topology, repair winding/duplicates/degenerates, fill eligible planar holes, smooth, reduce or segment meshes. Align paired XYZ landmarks or refine a nearby alignment with sampled ICP. Outputs enter undo history; Cancel preserves the original geometry.
+6. Create a freeform control grid, fit a scan projection, edit control coordinates/weights/knots, snap controls and import ordered quad grids. Convert a NURBS patch to an exact CAD face. Create constrained line sketches with dimensions, conflict diagnostics and degrees of freedom; solve before extrusion.
+7. Use CAD tools for lofts, path sweeps, selected-edge fillets/chamfers, offsets, sewing, shells and thickening. Edge and face references currently use zero-based kernel indices. Export visible exact bodies to STEP, or visible triangle geometry to STL. General automatic mesh-to-solid conversion is absent.
+8. Save a `.scanforge` project and reopen it. Projects retain tessellation, object properties, exact BREP, NURBS authoring grids and the sketch draft. Worker IDs, measurement points, fit analysis, and undo history are transient. Editing mesh coordinates or transforming a body invalidates its old surface authoring grid; this prevents stale controls from rebuilding unrelated geometry.
+
+SpaceMouse navigation is available in Settings through browser-local WebHID, with explicit device selection, translation/rotation sensitivity, deadzone, dominant-axis and rotation-lock controls. See [input devices](docs/INPUT_DEVICES.md) for tested protocol coverage and hardware limitations.
 
 The built-in bracket is independently generated demonstration geometry, not measured scan data. Its two intersecting components are not welded; its volume is illustrative only.
 
@@ -51,6 +55,8 @@ The built-in bracket is independently generated demonstration geometry, not meas
 - Undo/redo retains at most 20 snapshots. Shapes unreachable from the current project and undo/redo stacks are released.
 - Imported data is not uploaded. No telemetry, analytics, cloud geometry processing, CDN assets, or network APIs are used at runtime.
 - GPU resources, listeners, and workers are disposed when the page closes. Rendering pauses when idle.
+- Mesh topology uses memory proportional to mesh complexity. Importing a large file does not prove that all repair operations fit available memory. Mesh processing has cancellation, a two-minute inactivity lease and a fifteen-minute hard expiry.
+- Scan surface fitting is a projected height-field least-squares fit, not general closed-body surfacing. Normal-based segmentation is not semantic recognition of CAD surfaces. ICP is a local, sampled point-to-point refinement, not global scan registration. Planar hole repair cannot resolve arbitrary nonmanifold topology. Sketches support straight segments, not arcs or tangency; authoring is not a dependency-driven feature tree.
 
 ## Architecture
 

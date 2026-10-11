@@ -77,4 +77,8 @@ These are **engineering design proposals**, not recovered algorithms. Each must 
 
 ## Completion criteria
 
+The subsequent reconstruction slice implements independently chosen rational tensor surfaces/projected least squares, line-sketch numerical constraints, mesh graph diagnostics/repair/normal segmentation, landmark registration and trimmed sampled point-to-point ICP. Exact kernel operations now include loft/sweep, edge treatments, offset/sewing and shell/thickening. These do not fulfill the broader design proposals above (notably patch networks, curved sketches, global registration and feature DAG rebuild). Current contracts and executed checks are in CAPABILITIES.md and VALIDATION.md.
+
+REA 6.4.0 portable PE-resource inspection was repeated during this slice and returned the same resource evidence ID. Current provider capability discovery and native prerequisites were inspected without launching a duplicate native analysis session. Available memory remained below the prior approximately 7.7 GiB decompiler working set, so the failed budget was not lowered and native algorithm recovery remains unresolved. No application runtime or original handler was recovered by the new modeling implementation.
+
 Full functional reconstruction remains incomplete. Before claiming broad equivalence, each documented workflow needs its input/output contract, numerical tolerances, invalid-input behavior, state/persistence effects and relevant automated/browser evidence. Complete function recovery and Windows runtime observation remain separate unresolved evidence lanes. No activation circumvention, proprietary assets, extracted text, recovered original source or undocumented private formats are included in the public implementation.

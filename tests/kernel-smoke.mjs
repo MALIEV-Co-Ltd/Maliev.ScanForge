@@ -429,6 +429,216 @@ try {
       }),
       /valid/,
     );
+  const square = [
+    [-2, -2],
+    [2, -2],
+    [2, 2],
+    [-2, 2],
+  ];
+  const patch = {
+    format: "scanforge-nurbs",
+    version: 1,
+    countU: 2,
+    countV: 2,
+    degreeU: 1,
+    degreeV: 1,
+    knotsU: [0, 0, 1, 1],
+    knotsV: [0, 0, 1, 1],
+    points: [
+      [0, 0, 0],
+      [10, 0, 0],
+      [0, 20, 0],
+      [10, 20, 0],
+    ],
+    weights: [1, 1, 1, 1],
+  };
+  const nurbs = await request("surface", patch);
+  assert.deepEqual(
+    bounds(nurbs.positions),
+    [0, 0, 0, 10, 20, 0],
+    "Exact NURBS planar face bounds",
+  );
+  const patchStep = await request("export", [nurbs.kernelId]);
+  const thickened = await request("thicken", {
+    kernelId: nurbs.kernelId,
+    thickness: 2,
+  });
+  close(
+    exactVolume(thickened.kernelId),
+    400,
+    "Planar NURBS thickening exact volume",
+  );
+  const patchImported = await request("import", {
+    data: patchStep,
+    extension: "step",
+  });
+  assert.deepEqual(
+    bounds(patchImported.positions),
+    bounds(nurbs.positions),
+    "NURBS STEP face roundtrip",
+  );
+  await assert.rejects(
+    request("surface", { ...patch, weights: [1, 0, 1, 1] }),
+    /weights/,
+  );
+  const rationalPatch = {
+    ...patch,
+    points: [
+      [0, 0, 0],
+      [10, 0, 0],
+      [0, 20, 0],
+      [10, 20, 8],
+    ],
+    weights: [1, 2, 3, 4],
+  };
+  const rational = await request("surface", rationalPatch);
+  function midpoint(kernelId) {
+    const shape = vm.runInContext(
+      `shapes.get(${JSON.stringify(kernelId)})`,
+      context,
+    );
+    const explorer = new oc.TopExp_Explorer_2(
+      shape,
+      oc.TopAbs_ShapeEnum.TopAbs_FACE,
+      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+    );
+    let current, face, surface, point;
+    try {
+      current = explorer.Current();
+      face = oc.TopoDS.Face_1(current);
+      surface = oc.BRep_Tool.Surface_2(face);
+      point = surface.get().Value(0.5, 0.5);
+      return [point.X(), point.Y(), point.Z()];
+    } finally {
+      point?.delete();
+      surface?.delete();
+      face?.delete();
+      current?.delete();
+      explorer.delete();
+    }
+  }
+  midpoint(rational.kernelId).forEach((value, i) =>
+    close(value, [6, 14, 3.2][i], "Exact rational curved face midpoint"),
+  );
+  const rationalStep = await request("export", [rational.kernelId]);
+  const rationalImported = await request("import", {
+    data: rationalStep,
+    extension: "step",
+  });
+  midpoint(rationalImported.kernelId).forEach((value, i) =>
+    close(value, [6, 14, 3.2][i], "Rational weights survive STEP roundtrip"),
+  );
+  const lofted = await request("loft", {
+    profiles: [
+      { points: square, z: 0 },
+      { points: square, z: 10 },
+    ],
+    ruled: true,
+  });
+  close(exactVolume(lofted.kernelId), 160, "Ruled loft exact volume");
+  const shelled = await request("shell", {
+    kernelId: lofted.kernelId,
+    faceIndices: [0],
+    thickness: -0.5,
+  });
+  assert.ok(
+    exactVolume(shelled.kernelId) > 0 && exactVolume(shelled.kernelId) < 160,
+    "Removing a face creates hollow walls",
+  );
+  const swept = await request("sweep", {
+    points: square,
+    path: [
+      [0, 0, 0],
+      [0, 0, 10],
+    ],
+  });
+  close(exactVolume(swept.kernelId), 160, "Straight sweep exact volume");
+  const bentSweep = await request("sweep", {
+    points: square,
+    path: [
+      [0, 0, 0],
+      [0, 0, 10],
+      [10, 0, 10],
+    ],
+  });
+  close(
+    exactVolume(bentSweep.kernelId),
+    320,
+    "Right-corner sweep exact volume",
+  );
+  const treated = [];
+  for (const operation of ["fillet", "chamfer"]) {
+    const shape = await request("edges", {
+      kernelId: lofted.kernelId,
+      edgeIndices: [0],
+      amount: 0.5,
+      operation,
+    });
+    assert.ok(
+      exactVolume(shape.kernelId) > 0 && exactVolume(shape.kernelId) < 160,
+      `${operation} reduces box volume`,
+    );
+    treated.push(shape);
+  }
+  const offset = await request("offset", {
+    kernelId: lofted.kernelId,
+    distance: 1,
+  });
+  assert.ok(
+    exactVolume(offset.kernelId) > 160,
+    "Positive offset grows solid volume",
+  );
+  const sewn = await request("sew", {
+    kernelIds: [lofted.kernelId],
+    tolerance: 1e-6,
+  });
+  assert.ok(sewn.positions.length > 0, "Sew retains connected CAD faces");
+  for (const shape of [
+    lofted,
+    swept,
+    bentSweep,
+    ...treated,
+    offset,
+    sewn,
+    thickened,
+    shelled,
+  ]) {
+    const data = await request("export", [shape.kernelId]);
+    const imported = await request("import", { data, extension: "step" });
+    close(
+      exactVolume(imported.kernelId),
+      exactVolume(shape.kernelId),
+      "Advanced CAD STEP roundtrip volume",
+    );
+  }
+  await assert.rejects(
+    request("edges", {
+      kernelId: lofted.kernelId,
+      edgeIndices: [999],
+      amount: 0.5,
+      operation: "fillet",
+    }),
+    /outside/,
+  );
+  await assert.rejects(
+    request("loft", {
+      profiles: [
+        { points: square, z: 0 },
+        { points: square, z: 0 },
+      ],
+    }),
+    /increase/,
+  );
+  await assert.rejects(
+    request("sweep", {
+      points: square,
+      path: [
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+    }),
+    /zero-length/,
+  );
   const igesWriter = new oc.IGESControl_Writer_1();
   try {
     const shape = vm.runInContext(
@@ -472,7 +682,7 @@ try {
     "tmp",
   ]);
   console.log(
-    "CAD smoke passed: primitives, STEP/IGES/BREP, boolean volumes and STEP roundtrips, exact transforms, polygon extrusion, exact revolved solids and cones with STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
+    "CAD smoke passed: primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
   );
 } finally {
   clearTimeout(expiry);

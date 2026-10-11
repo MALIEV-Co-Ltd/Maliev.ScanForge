@@ -541,6 +541,466 @@ function revolveShape(oc, input) {
   }
 }
 
+function thicknessShape(oc, input, hollow) {
+  const shape = shapes.get(input.kernelId);
+  if (!shape) throw new Error("CAD shape handle is unavailable.");
+  if (!Number.isFinite(input.thickness) || Math.abs(input.thickness) < 1e-8)
+    throw new Error("Thickness must be finite and nonzero.");
+  const handles = [],
+    maker = new oc.BRepOffsetAPI_MakeThickSolid_1();
+  handles.push(maker);
+  try {
+    if (hollow) {
+      if (
+        !Array.isArray(input.faceIndices) ||
+        !input.faceIndices.length ||
+        input.faceIndices.some((i) => !Number.isInteger(i) || i < 0)
+      )
+        throw new Error("Shell requires zero-based faces to remove.");
+      const faces = [],
+        explorer = new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum.TopAbs_FACE,
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        );
+      handles.push(explorer);
+      for (; explorer.More(); explorer.Next()) {
+        const face = explorer.Current();
+        faces.push(face);
+        handles.push(face);
+      }
+      if (input.faceIndices.some((i) => i >= faces.length))
+        throw new Error(`Face index is outside 0 to ${faces.length - 1}.`);
+      const closing = new oc.TopTools_ListOfShape_1();
+      handles.push(closing);
+      for (const index of new Set(input.faceIndices))
+        closing.Append_1(faces[index]);
+      maker.MakeThickSolidByJoin(
+        shape,
+        closing,
+        input.thickness,
+        1e-6,
+        oc.BRepOffset_Mode.BRepOffset_Skin,
+        false,
+        false,
+        oc.GeomAbs_JoinType.GeomAbs_Arc,
+        false,
+      );
+    } else maker.MakeThickSolidBySimple(shape, input.thickness);
+    if (!maker.IsDone())
+      throw new Error(
+        "CAD wall construction failed. Reduce thickness or choose other faces.",
+      );
+    return register(oc, maker.Shape());
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function surfaceStep(patch) {
+  const rows = [],
+    add = (body) => {
+      rows.push(`#${rows.length + 1}=${body};`);
+      return `#${rows.length}`;
+    };
+  const real = (value) => value.toExponential(16).replace("e", "E");
+  const list = (values) => `(${values.join(",")})`;
+  const knots = (vector) => {
+    const unique = [],
+      multiplicities = [];
+    for (const value of vector) {
+      if (unique.at(-1) === value) multiplicities[multiplicities.length - 1]++;
+      else {
+        unique.push(value);
+        multiplicities.push(1);
+      }
+    }
+    return { unique, multiplicities };
+  };
+  const u = knots(patch.knotsU),
+    v = knots(patch.knotsV);
+  for (const [axis, k] of [
+    ["U", u],
+    ["V", v],
+  ])
+    if (
+      k.multiplicities[0] !== patch[`degree${axis}`] + 1 ||
+      k.multiplicities.at(-1) !== patch[`degree${axis}`] + 1
+    )
+      throw new Error("Exact CAD conversion requires clamped boundary knots.");
+  const app = add("APPLICATION_CONTEXT('automotive_design')");
+  add(
+    `APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,${app})`,
+  );
+  const productContext = add(`PRODUCT_CONTEXT('',${app},'mechanical')`),
+    product = add(`PRODUCT('ScanForge surface','','',(${productContext}))`),
+    formation = add(`PRODUCT_DEFINITION_FORMATION('','',${product})`),
+    definitionContext = add(
+      `PRODUCT_DEFINITION_CONTEXT('part definition',${app},'design')`,
+    ),
+    definition = add(
+      `PRODUCT_DEFINITION('design','',${formation},${definitionContext})`,
+    ),
+    definitionShape = add(`PRODUCT_DEFINITION_SHAPE('','',${definition})`);
+  const mm = add("(LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT(.MILLI.,.METRE.))"),
+    radian = add("(NAMED_UNIT(*) PLANE_ANGLE_UNIT() SI_UNIT($,.RADIAN.))"),
+    steradian = add(
+      "(NAMED_UNIT(*) SI_UNIT($,.STERADIAN.) SOLID_ANGLE_UNIT())",
+    ),
+    uncertainty = add(
+      `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-7),${mm},'distance_accuracy_value','confusion accuracy')`,
+    ),
+    context = add(
+      `(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((${uncertainty})) GLOBAL_UNIT_ASSIGNED_CONTEXT((${mm},${radian},${steradian})) REPRESENTATION_CONTEXT('','3D'))`,
+    );
+  const points = patch.points.map((p) =>
+    add(`CARTESIAN_POINT('',${list(p.map(real))})`),
+  );
+  const poles = Array.from({ length: patch.countU }, (_, i) =>
+    list(
+      Array.from(
+        { length: patch.countV },
+        (_, j) => points[j * patch.countU + i],
+      ),
+    ),
+  );
+  const weights = Array.from({ length: patch.countU }, (_, i) =>
+    list(
+      Array.from({ length: patch.countV }, (_, j) =>
+        real(patch.weights[j * patch.countU + i]),
+      ),
+    ),
+  );
+  const surface = add(
+    `(BOUNDED_SURFACE() B_SPLINE_SURFACE(${patch.degreeU},${patch.degreeV},${list(poles)},.UNSPECIFIED.,.F.,.F.,.F.) B_SPLINE_SURFACE_WITH_KNOTS(${list(u.multiplicities)},${list(v.multiplicities)},${list(u.unique.map(real))},${list(v.unique.map(real))},.UNSPECIFIED.) GEOMETRIC_REPRESENTATION_ITEM() RATIONAL_B_SPLINE_SURFACE(${list(weights)}) REPRESENTATION_ITEM('') SURFACE())`,
+  );
+  const index = (i, j) => j * patch.countU + i;
+  const cornerIndices = [
+    index(0, 0),
+    index(patch.countU - 1, 0),
+    index(patch.countU - 1, patch.countV - 1),
+    index(0, patch.countV - 1),
+  ];
+  const vertices = cornerIndices.map((i) =>
+    add(`VERTEX_POINT('',${points[i]})`),
+  );
+  const boundaryIndices = [
+    Array.from({ length: patch.countU }, (_, i) => index(i, 0)),
+    Array.from({ length: patch.countV }, (_, j) => index(patch.countU - 1, j)),
+    Array.from({ length: patch.countU }, (_, i) => index(i, patch.countV - 1)),
+    Array.from({ length: patch.countV }, (_, j) => index(0, j)),
+  ];
+  const oriented = boundaryIndices.map((indices, i) => {
+    const axis = i % 2 === 0 ? "U" : "V",
+      k = axis === "U" ? u : v;
+    const curve = add(
+      `(BOUNDED_CURVE() B_SPLINE_CURVE(${patch[`degree${axis}`]},${list(indices.map((i) => points[i]))},.UNSPECIFIED.,.F.,.F.) B_SPLINE_CURVE_WITH_KNOTS(${list(k.multiplicities)},${list(k.unique.map(real))},.UNSPECIFIED.) CURVE() GEOMETRIC_REPRESENTATION_ITEM() RATIONAL_B_SPLINE_CURVE(${list(indices.map((i) => real(patch.weights[i])))}) REPRESENTATION_ITEM(''))`,
+    );
+    const edge = add(
+      `EDGE_CURVE('',${vertices[i < 2 ? i : (i + 1) % 4]},${vertices[i < 2 ? (i + 1) % 4 : i]},${curve},.T.)`,
+    );
+    return add(`ORIENTED_EDGE('',*,*,${edge},${i < 2 ? ".T." : ".F."})`);
+  });
+  const loop = add(`EDGE_LOOP('',${list(oriented)})`),
+    bound = add(`FACE_OUTER_BOUND('',${loop},.T.)`),
+    face = add(`ADVANCED_FACE('',(${bound}),${surface},.T.)`),
+    shell = add(`OPEN_SHELL('',(${face}))`),
+    model = add(`SHELL_BASED_SURFACE_MODEL('',(${shell}))`),
+    representation = add(`SHAPE_REPRESENTATION('',(${model}),${context})`);
+  add(`SHAPE_DEFINITION_REPRESENTATION(${definitionShape},${representation})`);
+  return new TextEncoder().encode(
+    `ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION(('ScanForge exact NURBS face'),'2;1');\nFILE_NAME('surface.step','',(''),(''),'ScanForge','ScanForge','');\nFILE_SCHEMA(('AUTOMOTIVE_DESIGN'));\nENDSEC;\nDATA;\n${rows.join("\n")}\nENDSEC;\nEND-ISO-10303-21;`,
+  );
+}
+
+function surfaceShape(oc, patch) {
+  if (!patch || patch.format !== "scanforge-nurbs" || patch.version !== 1)
+    throw new Error("Unsupported NURBS patch format.");
+  for (const axis of ["U", "V"]) {
+    const count = patch[`count${axis}`],
+      degree = patch[`degree${axis}`],
+      knots = patch[`knots${axis}`];
+    if (
+      !Number.isInteger(count) ||
+      count < 2 ||
+      count > 16 ||
+      !Number.isInteger(degree) ||
+      degree < 1 ||
+      degree > Math.min(5, count - 1)
+    )
+      throw new Error("NURBS control counts or degrees are invalid.");
+    if (
+      !Array.isArray(knots) ||
+      knots.length !== count + degree + 1 ||
+      knots.some((v) => !Number.isFinite(v)) ||
+      !(knots[count] > knots[degree])
+    )
+      throw new Error("NURBS knot vector is invalid.");
+    let run = 1;
+    for (let i = 1; i < knots.length; i++) {
+      if (knots[i] < knots[i - 1])
+        throw new Error("NURBS knots must be nondecreasing.");
+      run = knots[i] === knots[i - 1] ? run + 1 : 1;
+      if (run > degree + 1)
+        throw new Error("NURBS knot multiplicity is invalid.");
+    }
+  }
+  const count = patch.countU * patch.countV;
+  if (
+    !Array.isArray(patch.points) ||
+    patch.points.length !== count ||
+    patch.points.some(
+      (p) =>
+        !Array.isArray(p) ||
+        p.length !== 3 ||
+        p.some((v) => !Number.isFinite(v)),
+    )
+  )
+    throw new Error("NURBS control points are invalid.");
+  if (
+    !Array.isArray(patch.weights) ||
+    patch.weights.length !== count ||
+    patch.weights.some((w) => !Number.isFinite(w) || w <= 0)
+  )
+    throw new Error("NURBS weights must be finite and positive.");
+  // The pinned kernel omits Array2 bindings. Preserve the exact control net
+  // through a standards-based rational STEP face, then import its CAD topology.
+  return importFile(oc, { data: surfaceStep(patch), extension: "step" });
+}
+
+function polygonWire(oc, points, handles, closed = true) {
+  const maker = new oc.BRepBuilderAPI_MakePolygon_1();
+  handles.push(maker);
+  for (const coordinates of points) {
+    const point = new oc.gp_Pnt_3(...coordinates);
+    try {
+      maker.Add_1(point);
+    } finally {
+      point.delete();
+    }
+  }
+  if (closed) maker.Close();
+  if (!maker.IsDone()) throw new Error("CAD wire construction failed.");
+  const wire = maker.Wire();
+  handles.push(wire);
+  return wire;
+}
+
+function loftShape(oc, input) {
+  if (!Array.isArray(input.profiles) || input.profiles.length < 2)
+    throw new Error("Loft requires at least two closed polygon sections.");
+  const profiles = input.profiles.map((profile) => {
+    if (!Number.isFinite(profile.z))
+      throw new Error("Section height must be finite.");
+    return { points: polygonPoints(profile.points), z: profile.z };
+  });
+  if (profiles.some((p, i) => i > 0 && p.z <= profiles[i - 1].z))
+    throw new Error("Loft section heights must increase strictly.");
+  const handles = [];
+  try {
+    const maker = new oc.BRepOffsetAPI_ThruSections(
+      true,
+      input.ruled === true,
+      1e-6,
+    );
+    handles.push(maker);
+    for (const profile of profiles)
+      maker.AddWire(
+        polygonWire(
+          oc,
+          profile.points.map(([x, y]) => [x, y, profile.z]),
+          handles,
+        ),
+      );
+    maker.CheckCompatibility(true);
+    maker.Build();
+    if (!maker.IsDone()) throw new Error("Loft could not build a valid solid.");
+    return register(oc, maker.Shape());
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function sweepShape(oc, input) {
+  const points = polygonPoints(input.points),
+    path = input.path;
+  if (
+    !Array.isArray(path) ||
+    path.length < 2 ||
+    !path.every(
+      (p) => Array.isArray(p) && p.length === 3 && p.every(Number.isFinite),
+    )
+  )
+    throw new Error("Sweep requires a finite 3D polyline spine.");
+  for (let i = 1; i < path.length; i++)
+    if (Math.hypot(...path[i].map((v, k) => v - path[i - 1][k])) < 1e-8)
+      throw new Error("Sweep spine contains a zero-length segment.");
+  const tangent = path[1].map((v, i) => v - path[0][i]),
+    length = Math.hypot(...tangent);
+  const w = tangent.map((v) => v / length);
+  const reference = Math.abs(w[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0];
+  const u = [
+    reference[1] * w[2] - reference[2] * w[1],
+    reference[2] * w[0] - reference[0] * w[2],
+    reference[0] * w[1] - reference[1] * w[0],
+  ];
+  const ul = Math.hypot(...u);
+  for (let i = 0; i < 3; i++) u[i] /= ul;
+  const v = [
+    w[1] * u[2] - w[2] * u[1],
+    w[2] * u[0] - w[0] * u[2],
+    w[0] * u[1] - w[1] * u[0],
+  ];
+  const handles = [];
+  try {
+    const spine = polygonWire(oc, path, handles, false);
+    const profile = polygonWire(
+      oc,
+      points.map(([x, y]) => path[0].map((p, i) => p + x * u[i] + y * v[i])),
+      handles,
+    );
+    const maker = new oc.BRepOffsetAPI_MakePipeShell(spine);
+    handles.push(maker);
+    maker.SetTransitionMode(
+      oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RightCorner,
+    );
+    maker.Add_1(profile, false, true);
+    maker.Build();
+    if (!maker.IsDone() || !maker.MakeSolid())
+      throw new Error(
+        "Sweep could not build a solid. Reduce profile size or simplify the spine.",
+      );
+    return register(oc, maker.Shape());
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function edgeShape(oc, input) {
+  const shape = shapes.get(input.kernelId);
+  if (!shape) throw new Error("CAD shape handle is unavailable.");
+  if (
+    !["fillet", "chamfer"].includes(input.operation) ||
+    !(input.amount > 0) ||
+    !Number.isFinite(input.amount)
+  )
+    throw new Error(
+      "Edge treatment requires a positive finite radius or distance.",
+    );
+  if (
+    !Array.isArray(input.edgeIndices) ||
+    !input.edgeIndices.length ||
+    input.edgeIndices.some((i) => !Number.isInteger(i) || i < 0)
+  )
+    throw new Error("Select at least one valid zero-based edge index.");
+  const handles = [],
+    edges = [];
+  try {
+    const explorer = new oc.TopExp_Explorer_2(
+      shape,
+      oc.TopAbs_ShapeEnum.TopAbs_EDGE,
+      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+    );
+    handles.push(explorer);
+    for (; explorer.More(); explorer.Next()) {
+      const current = explorer.Current();
+      try {
+        const edge = oc.TopoDS.Edge_1(current);
+        if (edges.some((e) => e.IsSame(edge))) edge.delete();
+        else {
+          edges.push(edge);
+          handles.push(edge);
+        }
+      } finally {
+        current.delete();
+      }
+    }
+    if (input.edgeIndices.some((i) => i >= edges.length))
+      throw new Error(`Edge index is outside 0 to ${edges.length - 1}.`);
+    const maker =
+      input.operation === "fillet"
+        ? new oc.BRepFilletAPI_MakeFillet(
+            shape,
+            oc.ChFi3d_FilletShape.ChFi3d_Rational,
+          )
+        : new oc.BRepFilletAPI_MakeChamfer(shape);
+    handles.push(maker);
+    for (const index of new Set(input.edgeIndices))
+      maker.Add_2(input.amount, edges[index]);
+    maker.Build();
+    if (!maker.IsDone())
+      throw new Error(
+        "Edge treatment failed. Reduce the radius or distance or choose other edges.",
+      );
+    return register(oc, maker.Shape());
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function offsetShape(oc, input) {
+  const shape = shapes.get(input.kernelId);
+  if (!shape) throw new Error("CAD shape handle is unavailable.");
+  if (!Number.isFinite(input.distance) || Math.abs(input.distance) < 1e-8)
+    throw new Error("Offset distance must be finite and nonzero.");
+  const maker = new oc.BRepOffsetAPI_MakeOffsetShape_1();
+  try {
+    maker.PerformByJoin(
+      shape,
+      input.distance,
+      1e-6,
+      oc.BRepOffset_Mode.BRepOffset_Skin,
+      false,
+      false,
+      oc.GeomAbs_JoinType.GeomAbs_Arc,
+      false,
+    );
+    if (!maker.IsDone())
+      throw new Error("CAD offset failed on this topology or distance.");
+    return register(oc, maker.Shape());
+  } finally {
+    maker.delete();
+  }
+}
+
+function sewShape(oc, input) {
+  if (
+    !Array.isArray(input.kernelIds) ||
+    !input.kernelIds.length ||
+    !Number.isFinite(input.tolerance) ||
+    input.tolerance <= 0
+  )
+    throw new Error(
+      "Sew requires CAD handles and a positive finite tolerance.",
+    );
+  const selected = input.kernelIds.map((id) => {
+    const shape = shapes.get(id);
+    if (!shape) throw new Error("CAD shape handle is unavailable.");
+    return shape;
+  });
+  const maker = new oc.BRepBuilderAPI_Sewing(
+      input.tolerance,
+      true,
+      true,
+      true,
+      false,
+    ),
+    progress = new oc.Handle_Message_ProgressIndicator_1();
+  try {
+    for (const shape of selected) maker.Add(shape);
+    maker.Perform(progress);
+    const sewn = maker.SewedShape();
+    if (sewn.IsNull()) {
+      sewn.delete();
+      throw new Error("Sew produced no connected faces.");
+    }
+    return register(oc, sewn);
+  } finally {
+    progress.delete();
+    maker.delete();
+  }
+}
+
 self.onmessage = (event) => {
   const { id, operation, payload } = event.data;
   sequence = sequence.then(async () => {
@@ -554,6 +1014,16 @@ self.onmessage = (event) => {
       else if (operation === "transform") result = transformShape(oc, payload);
       else if (operation === "extrude") result = extrudeShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
+      else if (operation === "loft") result = loftShape(oc, payload);
+      else if (operation === "sweep") result = sweepShape(oc, payload);
+      else if (operation === "edges") result = edgeShape(oc, payload);
+      else if (operation === "offset") result = offsetShape(oc, payload);
+      else if (operation === "sew") result = sewShape(oc, payload);
+      else if (operation === "surface") result = surfaceShape(oc, payload);
+      else if (operation === "shell")
+        result = thicknessShape(oc, payload, true);
+      else if (operation === "thicken")
+        result = thicknessShape(oc, payload, false);
       else if (operation === "release") {
         if (!Array.isArray(payload))
           throw new Error("CAD release requires handle IDs.");

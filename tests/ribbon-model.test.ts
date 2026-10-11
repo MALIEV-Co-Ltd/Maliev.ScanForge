@@ -42,7 +42,7 @@ describe("ribbon command inventory", () => {
       allTools.map((tool) => [tool.id, vi.fn()]),
     );
     const unsupported = allTools.filter((tool) => !tool.action);
-    expect(unsupported.length).toBeGreaterThan(40);
+    expect(unsupported.map((tool) => tool.id)).toContain("wrap");
     for (const tool of unsupported) {
       expect(ribbonToolAvailability(tool, ready, supplied)).toEqual({
         available: false,
@@ -87,27 +87,40 @@ describe("ribbon command inventory", () => {
       ).reason,
     ).toBe("Nothing to redo");
   });
-  it("contains freeform, surfacing and solid modelling feature inventory without inventing implementations", () => {
+  it("enables implemented reconstruction tools and leaves remaining inventory unavailable", () => {
+    for (const [id, action] of Object.entries({
+      freeformThicken: "surfaceThicken",
+      freeformOffset: "surfaceOffset",
+      freeformConvert: "nurbsSurface",
+      combine: "boolean",
+      cut: "boolean",
+      intersect: "boolean",
+      scaleBody: "transform",
+    }))
+      expect(getRibbonToolMetadata(id)?.action, id).toBe(action);
     for (const id of [
-      "wrap",
       "quadObj",
-      "freeformThicken",
-      "freeformOffset",
       "nurbsSurface",
       "loft",
       "sweep",
+      "shell",
+      "fillet",
+      "chamfer",
+      "repairMesh",
+      "segmentMesh",
+      "fineAlign",
+      "sketch2d",
+    ]) {
+      expect(getRibbonToolMetadata(id)?.action, id).toBe(id);
+    }
+    for (const id of [
+      "wrap",
       "pipe",
       "helix",
       "trim",
-      "combine",
-      "cut",
-      "intersect",
-      "shell",
       "draft",
       "circularPattern",
       "linearPattern",
-      "fillet",
-      "chamfer",
     ]) {
       const metadata = getRibbonToolMetadata(id);
       expect(metadata, id).toBeDefined();

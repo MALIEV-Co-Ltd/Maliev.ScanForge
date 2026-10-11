@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Entity, Positions, Vec3 } from "./types";
+import type { Motion6D } from "./spacemouse";
+import { navigateCamera } from "./camera-navigation";
 
 type Item = {
   positions: Positions;
@@ -144,6 +146,13 @@ export class Viewport {
       color.setXYZ(i, value.r, value.g, value.b);
     }
     color.needsUpdate = true;
+    this.invalidate();
+  }
+
+  navigate(motion: Motion6D, seconds: number): void {
+    if (this.disposed) return;
+    navigateCamera(this.camera, this.controls.target, motion, seconds);
+    this.controls.update();
     this.invalidate();
   }
 

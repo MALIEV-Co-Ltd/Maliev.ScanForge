@@ -4,6 +4,8 @@ import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import type { Entity, Project, Positions } from "./types";
+import { validatePatch } from "./surfaces";
+import { validateSketch } from "./sketch";
 
 export function validatePositions(value: unknown): asserts value is Positions {
   if (
@@ -128,6 +130,12 @@ export function parseProject(text: string): Project {
     // Kernel handles are ephemeral; exact BRep is restored in a new worker.
     if (entity.brep !== undefined && typeof entity.brep !== "string")
       throw new Error("Invalid CAD data.");
+    if (entity.surfacePatch !== undefined) validatePatch(entity.surfacePatch);
+    if (
+      entity.surfaceScanId !== undefined &&
+      typeof entity.surfaceScanId !== "string"
+    )
+      throw new Error("Invalid surface scan reference.");
     return {
       id: entity.id,
       name: entity.name,
@@ -137,26 +145,43 @@ export function parseProject(text: string): Project {
       visible: entity.visible,
       opacity: entity.opacity,
       brep: entity.brep,
+      surfacePatch: entity.surfacePatch,
+      surfaceScanId: entity.surfaceScanId,
       source:
         typeof entity.source === "string"
           ? entity.source.slice(0, 200)
           : undefined,
     };
   });
+  if (
+    input.authoring !== undefined &&
+    (!input.authoring || typeof input.authoring !== "object")
+  )
+    throw new Error("Invalid authoring metadata.");
+  if (input.authoring?.sketch !== undefined)
+    validateSketch(input.authoring.sketch);
   return {
     format: "maliev-scanforge",
     version: 1,
     name: input.name,
     units: "mm",
     entities,
+    authoring: input.authoring?.sketch
+      ? { sketch: input.authoring.sketch }
+      : undefined,
   };
 }
-export function serializeProject(name: string, entities: Entity[]): string {
+export function serializeProject(
+  name: string,
+  entities: Entity[],
+  authoring?: Project["authoring"],
+): string {
   return JSON.stringify({
     format: "maliev-scanforge",
     version: 1,
     name,
     units: "mm",
+    authoring,
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
       positions: Array.from(entity.positions),
@@ -167,9 +192,10 @@ export function serializeProject(name: string, entities: Entity[]): string {
 export async function serializeProjectBlob(
   name: string,
   entities: Entity[],
+  authoring?: Project["authoring"],
 ): Promise<Blob> {
   const parts: BlobPart[] = [
-    `{"format":"maliev-scanforge","version":1,"name":${JSON.stringify(name)},"units":"mm","entities":[`,
+    `{"format":"maliev-scanforge","version":1,"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
   for (let index = 0; index < entities.length; index++) {
     const {

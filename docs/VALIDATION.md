@@ -84,4 +84,28 @@ Screenshots are retained in ignored `.resources/screenshots/scanforge-ribbon-dar
 
 See FEATURE_EVIDENCE.md for actual REA evidence IDs, native overview/procedure/string inventories and unverified feature handlers. A focused native decompilation exceeded its memory budget and was stopped. All owned analysis processes exited and the original binary hash remained unchanged. One private analysis folder was retained after automatic approval review rejected its cleanup with a generic policy block; this is recorded in the local resource ledger.
 
-No proprietary screenshots, extracted assets, recovered source or private analysis tools are committed. Complex NURBS/freeform reconstruction, constrained sketches, robust registration, topology repair and most advanced CAD commands remain unimplemented. Large text formats/project loads still require whole-file parsing. Brush selection currently scans triangle centroids on the main thread and may be slow on very large meshes. History stores twenty session snapshots and is not a parametric feature DAG.
+No proprietary screenshots, extracted assets, recovered source or private analysis tools are committed. The implementation status at this earlier revision is superseded by the reconstruction slice below. Large text formats/project loads still require whole-file parsing. Brush selection scans triangle centroids on the main thread and may be slow on very large meshes. History stores twenty session snapshots and is not a parametric feature DAG.
+
+## Reconstruction and input slice — 2026-10-11
+
+Executed sequentially with the unchanged resource admission guard:
+
+- `npm run build`: passed strict TypeScript and production Vite build, zero warnings/errors; offline manifest contains 25 local assets including both new workers.
+- `npm test`: 105 tests passed across 17 files. New coverage includes rational manufactured surfaces and fitting, sketch constraint convergence/conflicts/DOF, topology repair and segmentation, rigid/ICP synthetic transforms, actual processing-worker messages, worker cancellation/leases/allocation failures, authoring project roundtrips, HID reports/races/disconnect and camera navigation.
+- `npm run test:cad`: passed actual OpenCascade WASM checks for exact rational NURBS faces, lofts, straight/bent sweeps, fillet/chamfer, offset, sewing, shell/thickening, analytic volumes, STEP roundtrips, invalid inputs and handle/virtual-file cleanup. The pinned kernel lacks Array2 bindings; authored rational STEP face encoding/import preserves the control grid and requires clamped boundary knots. A nonplanar weighted patch evaluates at `(0.5,0.5)` to `[6,14,3.2]` before and after STEP exchange.
+- `npm run format:check`: passed for all matched files. The committed source was searched for private installation paths and the reference product name; none were found in authored source, tests or documentation.
+
+Browser checks in an isolated Chrome tab:
+
+- Created a 4 by 4 NURBS control grid, changed Z to 15 mm and weight to 2, created an exact CAD face, then fitted its projected heights asynchronously. Reported 564 samples, RMS 0.02694 mm and maximum 0.2117 mm. The edited authoring grid remained available.
+- Analyzed the synthetic bracket (718 welded vertices, 1,452 triangles, one nonmanifold edge); repair preserved the diagnostic. Automatic normal segmentation created 17 individually selectable meshes and Undo restored the original object set.
+- Changed the rectangle dimension from 40 to 50 mm, solved to zero local DOF and extruded a 50 by 30 by 20 mm exact body with displayed volume 30,000 cubic mm.
+- Applied a known 2 mm landmark translation and refined against a matching body using ICP. Landmark RMS was approximately 3.6e-16 mm; ICP converged with 30 pairs and approximately 9.8e-9 mm RMS. This is a manufactured local-alignment test, not evidence of global scan registration.
+- Created a 20 by 20 by 30 mm loft (displayed volume 12,000 cubic mm), applied a fillet (volume reduced), and swept a 6 by 6 mm profile through 40 mm (volume 1,440 cubic mm).
+- Inspected SpaceMouse settings; adjusted sensitivity/dominant-axis controls and switched to Light. No new warning/error console entries were captured. Synthetic HID tests pass; no physical SpaceMouse was connected or verified.
+- Worker operations lock scene mutation and expose an accessible Cancel button. The final source also guards viewport selection while processing and avoids long per-object segmentation history labels.
+- Rechecked the final build after deleting its sole object: a NURBS grid can be created in an empty project. Its worker fit used 4,000 samples, reported zero projected RMS/max error, committed an undoable result and restored enabled controls without console errors.
+
+Screenshot: ignored `.resources/screenshots/scanforge-reconstruction-light.png`. Project save reached the application's download status, but the browser automation transport timed out waiting for the download event; new authoring save/reopen is verified by both serialization-path unit roundtrips, not claimed as a completed browser download/reopen check. No new gigabyte browser render or full-topology stress run was admitted in this slice.
+
+Full professional functionality remains incomplete: general closed-body automatic surfacing, continuity-constrained patch networks, curved/tangent sketch constraints, global multi-scan alignment, arbitrary nonmanifold repair and dependency-driven parametric rebuild remain absent. REA evidence does not recover original application handlers or algorithms. See CAPABILITIES.md and FEATURE_EVIDENCE.md for the precise boundaries.

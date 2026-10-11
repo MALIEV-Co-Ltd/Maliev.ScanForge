@@ -1,4 +1,6 @@
 export type Vec3 = [number, number, number];
+import type { NurbsPatch } from "./surfaces";
+import type { Sketch } from "./sketch";
 export type Positions = number[] | Float32Array;
 export type EntityKind =
   "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "cone" | "box";
@@ -15,6 +17,8 @@ export interface Entity {
   kernelId?: string;
   brep?: string;
   fit?: FitResult;
+  surfacePatch?: NurbsPatch;
+  surfaceScanId?: string;
 }
 export interface FitResult {
   kind: "plane" | "sphere" | "cylinder" | "cone";
@@ -46,6 +50,7 @@ export interface Project {
   name: string;
   units: "mm";
   entities: Entity[];
+  authoring?: { sketch?: Sketch };
 }
 export type KernelPrimitive =
   | { kind: "box"; center: Vec3; size: Vec3 }
