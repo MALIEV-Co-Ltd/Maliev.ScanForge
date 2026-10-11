@@ -6,6 +6,7 @@ import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import type { Entity, Project, Positions } from "./types";
 import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
+import { entityFeatureModel } from "./parametric-entities";
 
 export function validatePositions(value: unknown): asserts value is Positions {
   if (
@@ -163,8 +164,10 @@ export function parseProject(text: string): Project {
           ? entity.source.slice(0, 200)
           : undefined,
       scanSource: entity.scanSource,
+      parametric: entity.parametric,
     };
   });
+  entityFeatureModel(entities);
   if (
     input.authoring !== undefined &&
     (!input.authoring || typeof input.authoring !== "object")

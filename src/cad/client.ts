@@ -131,6 +131,14 @@ export class CadClient {
     return this.request("surface", patch) as Promise<KernelMesh>;
   }
 
+  /** Sew compatible patches into one finite, validated closed CAD solid. */
+  closedShell(patches: NurbsPatch[], tolerance = 1e-6): Promise<KernelMesh> {
+    return this.request("closedShell", {
+      patches,
+      tolerance,
+    }) as Promise<KernelMesh>;
+  }
+
   shell(
     kernelId: string,
     faceIndices: number[],

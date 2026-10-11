@@ -21,6 +21,7 @@ export interface MeshTopology {
   boundaryLoops: number[][];
   boundaryChains: number[][];
   nonManifoldEdges: number;
+  nonManifoldVertices: number;
   inconsistentEdges: number;
   degenerateTriangles: number;
   duplicateTriangles: number;
@@ -241,6 +242,55 @@ export function analyzeMesh(
         boundaryLoops.push(chain);
       } else boundaryChains.push(chain);
     }
+  const incident = Array.from(
+    { length: vertices.length / 3 },
+    () => [] as number[],
+  );
+  for (let face = 0; face < triangles.length / 3; face++)
+    for (let corner = 0; corner < 3; corner++)
+      incident[triangles[face * 3 + corner]].push(face);
+  let nonManifoldVertices = 0;
+  for (let vertex = 0; vertex < incident.length; vertex++) {
+    if (vertex % 4096 === 0)
+      checkpoint(options, 0.95, "Checking vertex surface fans");
+    const link = new Map<number, Set<number>>();
+    for (const face of incident[vertex]) {
+      const ids = [
+        triangles[face * 3],
+        triangles[face * 3 + 1],
+        triangles[face * 3 + 2],
+      ].filter((id) => id !== vertex);
+      if (ids.length !== 2 || ids[0] === ids[1]) continue;
+      for (const [a, b] of [
+        [ids[0], ids[1]],
+        [ids[1], ids[0]],
+      ]) {
+        let neighbors = link.get(a);
+        if (!neighbors) {
+          neighbors = new Set();
+          link.set(a, neighbors);
+        }
+        neighbors.add(b);
+      }
+    }
+    if (!link.size) continue;
+    const queue = [link.keys().next().value!],
+      seen = new Set(queue);
+    for (let q = 0; q < queue.length; q++)
+      for (const next of link.get(queue[q]) ?? [])
+        if (!seen.has(next)) {
+          seen.add(next);
+          queue.push(next);
+        }
+    const degrees = [...link.values()].map((neighbors) => neighbors.size),
+      endpoints = degrees.filter((degree) => degree === 1).length;
+    if (
+      seen.size !== link.size ||
+      degrees.some((degree) => degree > 2) ||
+      (endpoints !== 0 && endpoints !== 2)
+    )
+      nonManifoldVertices++;
+  }
   checkpoint(options, 1, "Topology complete");
   return {
     vertices: new Float64Array(vertices),
@@ -251,6 +301,7 @@ export function analyzeMesh(
     boundaryLoops,
     boundaryChains,
     nonManifoldEdges,
+    nonManifoldVertices,
     inconsistentEdges,
     degenerateTriangles,
     duplicateTriangles,
@@ -263,6 +314,7 @@ export interface OrientationResult {
   flippedTriangles: number;
   conflicts: number;
   topology: MeshTopology;
+  outwardComponents: number;
 }
 /** Consistent winding per manifold component; global outward direction is not inferred for open shells. */
 export function repairOrientation(
@@ -283,10 +335,12 @@ export function repairOrientation(
       adjacency[uses[1].face].push({ face: uses[0].face, flip });
     }
   let conflicts = 0,
-    flippedTriangles = 0;
+    flippedTriangles = 0,
+    outwardComponents = 0;
   for (let start = 0; start < parity.length; start++)
     if (parity[start] < 0) {
       const queue = [start];
+      const previousConflicts = conflicts;
       parity[start] = 0;
       for (let q = 0; q < queue.length; q++) {
         if (q % 4096 === 0)
@@ -299,6 +353,46 @@ export function repairOrientation(
             queue.push(next.face);
           } else if (parity[next.face] !== expected && face < next.face)
             conflicts++;
+        }
+      }
+      const closed =
+        previousConflicts === conflicts &&
+        queue.every((face) => {
+          const ids = [
+            topology.triangles[face * 3],
+            topology.triangles[face * 3 + 1],
+            topology.triangles[face * 3 + 2],
+          ];
+          return ids.every(
+            (from, corner) =>
+              topology.edges.get(edgeKey(from, ids[(corner + 1) % 3]))
+                ?.length === 2,
+          );
+        });
+      if (closed) {
+        const origin = point(
+          topology.vertices,
+          topology.triangles[queue[0] * 3],
+        );
+        let volume = 0;
+        for (const face of queue) {
+          const a = sub(
+              point(topology.vertices, topology.triangles[face * 3]),
+              origin,
+            ),
+            b = sub(
+              point(topology.vertices, topology.triangles[face * 3 + 1]),
+              origin,
+            ),
+            c = sub(
+              point(topology.vertices, topology.triangles[face * 3 + 2]),
+              origin,
+            );
+          volume += ((parity[face] ? -1 : 1) * dot(a, cross(b, c))) / 6;
+        }
+        if (volume < -((options.tolerance ?? 1e-6) ** 3)) {
+          for (const face of queue) parity[face] ^= 1;
+          outwardComponents++;
         }
       }
     }
@@ -315,7 +409,13 @@ export function repairOrientation(
     }
   ensureFloat32(result);
   checkpoint(options, 1, "Winding repaired");
-  return { positions: result, flippedTriangles, conflicts, topology };
+  return {
+    positions: result,
+    flippedTriangles,
+    conflicts,
+    topology,
+    outwardComponents,
+  };
 }
 function ensureFloat32(positions: Float32Array) {
   for (const value of positions)
@@ -474,6 +574,34 @@ export function fillPlanarHoles(
       sign * orient(remaining[0], remaining[1], remaining[2]) <= eps
     ) {
       skipped.push({ loop, reason: "Boundary cannot be safely triangulated" });
+      continue;
+    }
+    const adjacentFaces = new Set<number>();
+    for (let i = 0; i < ids.length; i++)
+      for (const use of topology.edges.get(
+        edgeKey(ids[i], ids[(i + 1) % ids.length]),
+      ) ?? [])
+        adjacentFaces.add(use.face);
+    const flatNeighbors = [...adjacentFaces].every((face) =>
+      [0, 1, 2].every(
+        (corner) =>
+          Math.abs(
+            dot(
+              sub(
+                point(topology.vertices, topology.triangles[face * 3 + corner]),
+                pts[0],
+              ),
+              unit,
+            ),
+          ) <= planarity,
+      ),
+    );
+    if (flatNeighbors) {
+      skipped.push({
+        loop,
+        reason:
+          "Capping would overlap a planar surface rather than close a supported volume",
+      });
       continue;
     }
     faces.push(...remaining.map((i) => ids[i]));
@@ -941,6 +1069,135 @@ export interface MeshRepairResult {
   filledLoops: number;
   skippedHoles: HoleFillResult["skipped"];
   topology: MeshTopology;
+  sheets?: Float32Array[];
+  sheetDiagnostics: MeshSheetDiagnostics[];
+  nonManifoldEdgesBefore: number;
+  nonManifoldEdgesAfter: number;
+  nonManifoldVerticesBefore: number;
+  nonManifoldVerticesAfter: number;
+  splitEdges: number;
+  splitVertices: number;
+  outwardComponents: number;
+}
+export interface MeshSheetDiagnostics {
+  vertices: number;
+  triangles: number;
+  components: number;
+  boundaryLoops: number;
+  boundaryChains: number;
+  boundaryEdges: number;
+  nonManifoldEdges: number;
+  nonManifoldVertices: number;
+  inconsistentEdges: number;
+  degenerateTriangles: number;
+  duplicateTriangles: number;
+  watertight: boolean;
+}
+function sheetSummary(topology: MeshTopology): MeshSheetDiagnostics {
+  return {
+    vertices: topology.vertices.length / 3,
+    triangles: topology.triangles.length / 3,
+    components: topology.components.length,
+    boundaryLoops: topology.boundaryLoops.length,
+    boundaryChains: topology.boundaryChains.length,
+    boundaryEdges: topology.boundaryEdges,
+    nonManifoldEdges: topology.nonManifoldEdges,
+    nonManifoldVertices: topology.nonManifoldVertices,
+    inconsistentEdges: topology.inconsistentEdges,
+    degenerateTriangles: topology.degenerateTriangles,
+    duplicateTriangles: topology.duplicateTriangles,
+    watertight:
+      topology.boundaryEdges === 0 &&
+      topology.nonManifoldEdges === 0 &&
+      topology.nonManifoldVertices === 0 &&
+      topology.inconsistentEdges === 0 &&
+      topology.degenerateTriangles === 0 &&
+      topology.duplicateTriangles === 0,
+  };
+}
+/** Cut ambiguous edge junctions rather than choosing an arbitrary pair; separate vertex fans into independently stored sheet objects. */
+export function splitNonManifoldSheets(
+  positions: Positions,
+  options: MeshProcessingOptions = {},
+): { sheets: Float32Array[]; splitEdges: number; splitVertices: number } {
+  const topology = analyzeMesh(positions, options),
+    count = topology.triangles.length / 3;
+  if (topology.degenerateTriangles || topology.duplicateTriangles)
+    throw new Error(
+      "Clean degenerate and duplicate faces before splitting surface sheets.",
+    );
+  const adjacency = Array.from({ length: count }, () => [] as number[]);
+  for (const uses of topology.edges.values())
+    if (uses.length === 2) {
+      adjacency[uses[0].face].push(uses[1].face);
+      adjacency[uses[1].face].push(uses[0].face);
+    }
+  const assigned = new Uint8Array(count),
+    sheets: Float32Array[] = [];
+  for (let seed = 0; seed < count; seed++)
+    if (!assigned[seed]) {
+      checkpoint(options, seed / count, "Separating manifold surface sheets");
+      const faces = [seed],
+        edgeCounts = new Map<string, number>(),
+        vertices = new Set<number>();
+      function ids(face: number) {
+        return [
+          topology.triangles[face * 3],
+          topology.triangles[face * 3 + 1],
+          topology.triangles[face * 3 + 2],
+        ];
+      }
+      function canAdd(face: number) {
+        const v = ids(face);
+        if (
+          v.some(
+            (from, corner) =>
+              (edgeCounts.get(edgeKey(from, v[(corner + 1) % 3])) ?? 0) >= 2,
+          )
+        )
+          return false;
+        return v.every(
+          (vertex, corner) =>
+            !vertices.has(vertex) ||
+            edgeCounts.has(edgeKey(vertex, v[(corner + 1) % 3])) ||
+            edgeCounts.has(edgeKey(vertex, v[(corner + 2) % 3])),
+        );
+      }
+      function add(face: number) {
+        assigned[face] = 1;
+        const v = ids(face);
+        for (let corner = 0; corner < 3; corner++) {
+          vertices.add(v[corner]);
+          const key = edgeKey(v[corner], v[(corner + 1) % 3]);
+          edgeCounts.set(key, (edgeCounts.get(key) ?? 0) + 1);
+        }
+      }
+      add(seed);
+      for (let q = 0; q < faces.length; q++) {
+        if (q % 4096 === 0)
+          checkpoint(options, seed / count, "Separating vertex fans");
+        for (const next of adjacency[faces[q]])
+          if (!assigned[next] && canAdd(next)) {
+            add(next);
+            faces.push(next);
+          }
+      }
+      const output = new Float32Array(faces.length * 9);
+      for (let i = 0; i < faces.length; i++)
+        for (let corner = 0; corner < 3; corner++)
+          output.set(
+            point(topology.vertices, topology.triangles[faces[i] * 3 + corner]),
+            i * 9 + corner * 3,
+          );
+      ensureFloat32(output);
+      sheets.push(output);
+    }
+  checkpoint(options, 1, "Surface sheets separated");
+  return {
+    sheets,
+    splitEdges: topology.nonManifoldEdges,
+    splitVertices: topology.nonManifoldVertices,
+  };
 }
 /** Snap welded representatives, remove degenerate/duplicate faces, repair winding and optionally cap planar loops. */
 export function repairMesh(
@@ -949,6 +1206,7 @@ export function repairMesh(
     fillHoles?: boolean;
     planarityTolerance?: number;
     maxPerimeter?: number;
+    splitNonManifold?: boolean;
   } = {},
 ): MeshRepairResult {
   const topology = analyzeMesh(positions, options);
@@ -993,24 +1251,93 @@ export function repairMesh(
   for (let i = 0; i < keep.length; i++)
     welded.set(point(topology.vertices, keep[i]), i * 3);
   ensureFloat32(welded);
-  const oriented = repairOrientation(welded, options);
-  const holes =
-    options.fillHoles && !oriented.conflicts
-      ? fillPlanarHoles(oriented.positions, options)
-      : {
-          positions: oriented.positions,
-          filledLoops: 0,
-          addedTriangles: 0,
-          skipped: [],
-        };
+  const split = options.splitNonManifold
+    ? splitNonManifoldSheets(welded, options)
+    : { sheets: [welded], splitEdges: 0, splitVertices: 0 };
+  const repairedSheets: Float32Array[] = [],
+    sheetDiagnostics: MeshSheetDiagnostics[] = [],
+    skippedHoles: HoleFillResult["skipped"] = [];
+  let flippedTriangles = 0,
+    orientationConflicts = 0,
+    filledLoops = 0,
+    outwardComponents = 0;
+  for (let sheet = 0; sheet < split.sheets.length; sheet++) {
+    checkpoint(
+      options,
+      sheet / split.sheets.length,
+      "Repairing separated sheets",
+    );
+    const oriented = repairOrientation(split.sheets[sheet], options);
+    flippedTriangles += oriented.flippedTriangles;
+    orientationConflicts += oriented.conflicts;
+    outwardComponents += oriented.outwardComponents;
+    const holes =
+      options.fillHoles && !oriented.conflicts
+        ? fillPlanarHoles(oriented.positions, options)
+        : {
+            positions: oriented.positions,
+            filledLoops: 0,
+            addedTriangles: 0,
+            skipped: [],
+          };
+    filledLoops += holes.filledLoops;
+    skippedHoles.push(
+      ...holes.skipped.map((diagnostic) => ({
+        ...diagnostic,
+        reason: `Sheet ${sheet + 1}: ${diagnostic.reason}`,
+      })),
+    );
+    const finalOrientation = holes.filledLoops
+      ? repairOrientation(holes.positions, options)
+      : oriented;
+    if (holes.filledLoops) {
+      flippedTriangles += finalOrientation.flippedTriangles;
+      orientationConflicts += finalOrientation.conflicts;
+      outwardComponents += finalOrientation.outwardComponents;
+    }
+    const finalTopology = analyzeMesh(finalOrientation.positions, options),
+      summary = sheetSummary(finalTopology);
+    if (
+      options.splitNonManifold &&
+      (summary.nonManifoldEdges || summary.nonManifoldVertices)
+    )
+      throw new Error(
+        "Surface sheet separation could not resolve a nonmanifold junction safely.",
+      );
+    repairedSheets.push(finalOrientation.positions);
+    sheetDiagnostics.push(summary);
+  }
+  const output = new Float32Array(
+    repairedSheets.reduce((sum, sheet) => sum + sheet.length, 0),
+  );
+  let offset = 0;
+  for (const sheet of repairedSheets) {
+    output.set(sheet, offset);
+    offset += sheet.length;
+  }
   return {
-    positions: holes.positions,
+    positions: output,
     removedDegenerate,
     removedDuplicates,
-    flippedTriangles: oriented.flippedTriangles,
-    orientationConflicts: oriented.conflicts,
-    filledLoops: holes.filledLoops,
-    skippedHoles: holes.skipped,
-    topology: analyzeMesh(holes.positions, options),
+    flippedTriangles,
+    orientationConflicts,
+    filledLoops,
+    skippedHoles,
+    topology: analyzeMesh(output, options),
+    sheets: repairedSheets.length > 1 ? repairedSheets : undefined,
+    sheetDiagnostics,
+    nonManifoldEdgesBefore: topology.nonManifoldEdges,
+    nonManifoldEdgesAfter: sheetDiagnostics.reduce(
+      (sum, sheet) => sum + sheet.nonManifoldEdges,
+      0,
+    ),
+    nonManifoldVerticesBefore: topology.nonManifoldVertices,
+    nonManifoldVerticesAfter: sheetDiagnostics.reduce(
+      (sum, sheet) => sum + sheet.nonManifoldVertices,
+      0,
+    ),
+    splitEdges: split.splitEdges,
+    splitVertices: split.splitVertices,
+    outwardComponents,
   };
 }

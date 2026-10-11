@@ -7,6 +7,7 @@ import {
   repairMesh,
   repairOrientation,
   segmentMesh,
+  splitNonManifoldSheets,
   smoothMesh,
 } from "../src/mesh-processing";
 
@@ -159,6 +160,130 @@ describe("indexed mesh topology and repair", () => {
     expect(() =>
       fillPlanarHoles(openCube, { signal: controller.signal }),
     ).toThrow(/cancelled/);
+  });
+});
+
+describe("nonmanifold sheet and vertex repair", () => {
+  const junction = [
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1,
+  ];
+  const bowtie = [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0];
+  function trianglesAsKeys(positions: ArrayLike<number>) {
+    const keys: string[] = [];
+    for (let i = 0; i < positions.length; i += 9) {
+      const vertices = [0, 1, 2]
+        .map(
+          (corner) =>
+            `${positions[i + corner * 3]},${positions[i + corner * 3 + 1]},${positions[i + corner * 3 + 2]}`,
+        )
+        .sort();
+      keys.push(vertices.join("|"));
+    }
+    return keys.sort();
+  }
+  it("separates a three-face edge junction without moving or dropping its geometry", () => {
+    const before = analyzeMesh(junction);
+    expect(before.nonManifoldEdges).toBe(1);
+    expect(before.nonManifoldVertices).toBe(2);
+    const result = repairMesh(junction, { splitNonManifold: true });
+    expect(result.sheets).toHaveLength(3);
+    expect(result.splitEdges).toBe(1);
+    expect(result.nonManifoldEdgesAfter).toBe(0);
+    expect(result.nonManifoldVerticesAfter).toBe(0);
+    expect(result.removedDegenerate).toBe(0);
+    expect(result.removedDuplicates).toBe(0);
+    expect(trianglesAsKeys(result.positions)).toEqual(
+      trianglesAsKeys(junction),
+    );
+    for (const sheet of result.sheets!) {
+      const topology = analyzeMesh(sheet);
+      expect(topology.nonManifoldEdges).toBe(0);
+      expect(topology.nonManifoldVertices).toBe(0);
+    }
+    expect(result.topology.nonManifoldEdges).toBe(1);
+  });
+  it("detects and splits disconnected vertex fans even when every edge is manifold", () => {
+    const report = analyzeMesh(bowtie);
+    expect(report.nonManifoldEdges).toBe(0);
+    expect(report.nonManifoldVertices).toBe(1);
+    const split = splitNonManifoldSheets(bowtie);
+    expect(split.sheets).toHaveLength(2);
+    expect(split.splitVertices).toBe(1);
+    expect(
+      split.sheets.every(
+        (sheet) => analyzeMesh(sheet).nonManifoldVertices === 0,
+      ),
+    ).toBe(true);
+    const conservative = repairMesh(bowtie);
+    expect(conservative.nonManifoldVerticesAfter).toBe(1);
+  });
+  it("closes supported planar openings independently after splitting touching sheets", () => {
+    const translated = openCube.map((value, i) => value + [1, 1, 1][i % 3]);
+    const source = [...openCube, ...translated];
+    expect(analyzeMesh(source).nonManifoldVertices).toBe(1);
+    const result = repairMesh(source, {
+      splitNonManifold: true,
+      fillHoles: true,
+    });
+    expect(result.sheets).toHaveLength(2);
+    expect(result.filledLoops).toBe(2);
+    expect(result.nonManifoldVerticesAfter).toBe(0);
+    expect(result.sheetDiagnostics.every((sheet) => sheet.watertight)).toBe(
+      true,
+    );
+    expect(result.positions.length / 9).toBe(24);
+  });
+  it("refuses planar overlapping caps instead of inventing a zero-volume closure", () => {
+    const result = fillPlanarHoles(square);
+    expect(result.filledLoops).toBe(0);
+    expect(result.addedTriangles).toBe(0);
+    expect(result.skipped[0].reason).toMatch(/overlap/);
+  });
+  it("rejects crossing boundary loops rather than arbitrarily triangulating them", () => {
+    const corners = [
+      [-2, -1],
+      [2, 1],
+      [-2, 1],
+      [2, -1],
+      [0, -2],
+    ];
+    const wall = gridSurface(5, 1, (x, y) => [...corners[x % 5], y]);
+    const result = fillPlanarHoles(wall);
+    expect(result.filledLoops).toBe(0);
+    expect(result.addedTriangles).toBe(0);
+    expect(
+      result.skipped.some((loop) => loop.reason.includes("self-intersects")),
+    ).toBe(true);
+  });
+  it("orients a closed inward shell outward using translation-stable volume", () => {
+    const closed = fillPlanarHoles(openCube).positions,
+      reversed: number[] = [];
+    for (let i = 0; i < closed.length; i += 9)
+      reversed.push(
+        ...Array.from(closed.slice(i, i + 3)),
+        ...Array.from(closed.slice(i + 6, i + 9)),
+        ...Array.from(closed.slice(i + 3, i + 6)),
+      );
+    const result = repairOrientation(reversed);
+    expect(result.outwardComponents).toBe(1);
+    expect(result.flippedTriangles).toBe(12);
+    expect(analyzeMesh(result.positions).inconsistentEdges).toBe(0);
+  });
+  it("cancels sheet repair at stage checkpoints and leaves inputs untouched", () => {
+    const original = [...junction],
+      controller = new AbortController();
+    expect(() =>
+      repairMesh(junction, {
+        splitNonManifold: true,
+        signal: controller.signal,
+        onProgress: (_fraction, stage) => {
+          if (stage === "Separating manifold surface sheets")
+            controller.abort();
+        },
+      }),
+    ).toThrow(/cancelled/);
+    expect(junction).toEqual(original);
   });
 });
 

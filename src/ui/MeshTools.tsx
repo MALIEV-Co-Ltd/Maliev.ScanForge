@@ -57,6 +57,7 @@ export function MeshTools({
     [planarity, setPlanarity] = useState(0.05),
     [perimeter, setPerimeter] = useState(100);
   const [fillHoles, setFillHoles] = useState(false),
+    [splitNonManifold, setSplitNonManifold] = useState(true),
     [iterations, setIterations] = useState(3),
     [strength, setStrength] = useState(0.3),
     [cellSize, setCellSize] = useState(0.5),
@@ -185,6 +186,14 @@ export function MeshTools({
         <label className="checkbox">
           <input
             type="checkbox"
+            checked={splitNonManifold}
+            onChange={(event) => setSplitNonManifold(event.target.checked)}
+          />{" "}
+          Split nonmanifold sheets and vertex fans
+        </label>
+        <label className="checkbox">
+          <input
+            type="checkbox"
             checked={fillHoles}
             onChange={(event) => setFillHoles(event.target.checked)}
           />{" "}
@@ -218,6 +227,7 @@ export function MeshTools({
                 positions: selected.positions,
                 tolerance,
                 fillHoles,
+                splitNonManifold,
                 planarityTolerance: planarity,
                 maxPerimeter: perimeter,
               },
@@ -225,12 +235,14 @@ export function MeshTools({
             )
           }
         >
-          Weld, clean and repair winding
+          Repair mesh topology
         </button>
         <p className="muted">
-          Branching and nonmanifold edges are reported. Hole capping handles
-          simple planar loops and can cap an exterior opening; inspect the
-          result and use Undo when needed.
+          Ambiguous junctions split into separate objects with unchanged
+          coordinates; the source is retained. Planar capping is optional and
+          rejects branching, crossing or overlapping flat boundaries. Watertight
+          reports describe topology, not a global self-intersection certificate.
+          Inspect the result and use Undo when needed.
         </p>
         <Field
           label="Smoothing iterations"
@@ -466,6 +478,16 @@ export function MeshTools({
                 : ""}{" "}
               · tolerance {classification.tolerance.toPrecision(4)} mm ·{" "}
               {classification.reason}
+            </p>
+          ))}
+          {result.repairSheets?.map((sheet, index) => (
+            <p key={`sheet-${index}`}>
+              Sheet {index + 1}: {sheet.triangles.toLocaleString()} triangles ·{" "}
+              {sheet.watertight
+                ? "watertight topology"
+                : `${sheet.boundaryEdges} boundary edges`}{" "}
+              · {sheet.nonManifoldEdges} nonmanifold edges ·{" "}
+              {sheet.nonManifoldVertices} nonmanifold vertices
             </p>
           ))}
         </div>

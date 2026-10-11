@@ -1213,6 +1213,84 @@ function sewShape(oc, input) {
   }
 }
 
+function closedShellShape(oc, input) {
+  if (
+    !Array.isArray(input.patches) ||
+    input.patches.length < 2 ||
+    !Number.isFinite(input.tolerance) ||
+    input.tolerance <= 0
+  )
+    throw new Error(
+      "Closed reconstruction requires surface patches and a positive sewing tolerance.",
+    );
+  const temporary = [],
+    handles = [];
+  const keep = (handle) => {
+    handles.push(handle);
+    return handle;
+  };
+  let solid;
+  try {
+    const sewing = keep(
+      new oc.BRepBuilderAPI_Sewing(input.tolerance, true, true, true, false),
+    );
+    for (const patch of input.patches) {
+      const face = surfaceShape(oc, patch);
+      temporary.push(face.kernelId);
+      sewing.Add(getShape(face.kernelId));
+    }
+    const progress = keep(new oc.Handle_Message_ProgressIndicator_1());
+    sewing.Perform(progress);
+    if (
+      sewing.NbFreeEdges() ||
+      sewing.NbMultipleEdges() ||
+      sewing.NbDeletedFaces()
+    )
+      throw new Error(
+        "Patches do not form a closed manifold shell: free, multiple or deleted face boundaries remain.",
+      );
+    const sewn = keep(sewing.SewedShape());
+    const explorer = keep(
+      new oc.TopExp_Explorer_2(
+        sewn,
+        oc.TopAbs_ShapeEnum.TopAbs_SHELL,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    if (!explorer.More())
+      throw new Error("Reconstruction contains no closed shell.");
+    const current = keep(explorer.Current());
+    const shell = keep(oc.TopoDS.Shell_1(current));
+    explorer.Next();
+    if (explorer.More())
+      throw new Error(
+        "Choose patches forming exactly one connected shell; disjoint shells and cavities are not supported.",
+      );
+    const maker = keep(new oc.BRepBuilderAPI_MakeSolid_1());
+    maker.Add(shell);
+    if (!maker.IsDone())
+      throw new Error("Closed shell solid construction failed.");
+    solid = maker.Solid();
+    if (!oc.BRepLib.OrientClosedSolid(solid))
+      throw new Error("Shell does not enclose a finite orientable volume.");
+    const checker = keep(new oc.BRepCheck_Analyzer(solid, true));
+    if (!checker.IsValid_2())
+      throw new Error(
+        "Reconstructed CAD solid failed topology and geometry validation.",
+      );
+    const owned = solid;
+    solid = undefined;
+    return register(oc, owned);
+  } finally {
+    solid?.delete();
+    cleanup(handles);
+    for (const id of temporary) {
+      shapes.get(id)?.delete();
+      shapes.delete(id);
+    }
+  }
+}
+
 self.onmessage = (event) => {
   const { id, operation, payload } = event.data;
   sequence = sequence.then(async () => {
@@ -1234,6 +1312,8 @@ self.onmessage = (event) => {
       else if (operation === "edges") result = edgeShape(oc, payload);
       else if (operation === "offset") result = offsetShape(oc, payload);
       else if (operation === "sew") result = sewShape(oc, payload);
+      else if (operation === "closedShell")
+        result = closedShellShape(oc, payload);
       else if (operation === "surface") result = surfaceShape(oc, payload);
       else if (operation === "shell")
         result = thicknessShape(oc, payload, true);

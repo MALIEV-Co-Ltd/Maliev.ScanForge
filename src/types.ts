@@ -1,6 +1,7 @@
 export type Vec3 = [number, number, number];
 import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
+import type { ParametricFeature } from "./parametric";
 export type Positions = number[] | Float32Array;
 export type EntityKind =
   "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "cone" | "box";
@@ -21,6 +22,8 @@ export interface Entity {
   fit?: FitResult;
   surfacePatch?: NurbsPatch;
   surfaceScanId?: string;
+  /** Authoring recipe and output slot travel with entity history and project files. */
+  parametric?: { feature: ParametricFeature; output: number };
 }
 export interface FitResult {
   kind: "plane" | "sphere" | "cylinder" | "cone";

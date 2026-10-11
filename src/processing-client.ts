@@ -1,6 +1,7 @@
 import type { Positions } from "./types";
 import type { RegistrationResult } from "./registration";
 import type { RegionClassification } from "./mesh-processing";
+import type { MeshSheetDiagnostics } from "./mesh-processing";
 
 export type ProcessingRequest =
   | { kind: "report"; positions: Positions; tolerance: number }
@@ -9,6 +10,7 @@ export type ProcessingRequest =
       positions: Positions;
       tolerance: number;
       fillHoles: boolean;
+      splitNonManifold?: boolean;
       planarityTolerance: number;
       maxPerimeter: number;
     }
@@ -51,6 +53,7 @@ export interface TopologySummary {
   boundaryChains: number;
   boundaryEdges: number;
   nonManifoldEdges: number;
+  nonManifoldVertices: number;
   inconsistentEdges: number;
   degenerateTriangles: number;
   duplicateTriangles: number;
@@ -60,6 +63,7 @@ export interface ProcessingResult {
   positions?: Float32Array;
   segments?: Float32Array[];
   segmentClassifications?: RegionClassification[];
+  repairSheets?: MeshSheetDiagnostics[];
   topology?: TopologySummary;
   registration?: RegistrationResult;
   diagnostics: Record<string, number | string | boolean>;

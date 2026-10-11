@@ -713,3 +713,319 @@ export function importQuadGridObj(
   validatePatch(patch);
   return patch;
 }
+
+export interface PatchShellOptions {
+  segments: number;
+  weldTolerance: number;
+  /** Explicit operation budget, not an input-file-size limit. */
+  triangleBudget: number;
+  orient?: boolean;
+}
+export interface PatchShellDiagnostics {
+  vertices: number;
+  triangles: number;
+  components: number;
+  boundaryEdges: number;
+  nonManifoldEdges: number;
+  nonManifoldVertices: number;
+  inconsistentEdges: number;
+  degenerateTriangles: number;
+  duplicateTriangles: number;
+  flippedTriangles: number;
+  closed: boolean;
+  signedVolume: number | null;
+}
+export interface PatchShellResult {
+  positions: Float32Array;
+  diagnostics: PatchShellDiagnostics;
+}
+
+/** Six outward-oriented bilinear patches, useful as an editable closed shell seed. */
+export function createBoxPatchShell(
+  width: number,
+  height: number,
+  depth: number,
+): NurbsPatch[] {
+  if (
+    [width, height, depth].some(
+      (value) => !Number.isFinite(value) || value <= 0,
+    )
+  )
+    throw new Error("Shell dimensions must be finite and positive.");
+  const faces: Vec3[][] = [
+    [
+      [0, height, 0],
+      [width, height, 0],
+      [0, 0, 0],
+      [width, 0, 0],
+    ],
+    [
+      [0, 0, depth],
+      [width, 0, depth],
+      [0, height, depth],
+      [width, height, depth],
+    ],
+    [
+      [0, 0, 0],
+      [0, 0, depth],
+      [0, height, 0],
+      [0, height, depth],
+    ],
+    [
+      [width, 0, 0],
+      [width, height, 0],
+      [width, 0, depth],
+      [width, height, depth],
+    ],
+    [
+      [0, 0, 0],
+      [width, 0, 0],
+      [0, 0, depth],
+      [width, 0, depth],
+    ],
+    [
+      [0, height, 0],
+      [0, height, depth],
+      [width, height, 0],
+      [width, height, depth],
+    ],
+  ];
+  return faces.map((points) => ({ ...createGridPatch(2, 2, 1, 1, 1), points }));
+}
+
+/** Welds supplied patch tessellations and proves edge/vertex manifold incidence.
+ * Geometric self-intersection and nested cavity orientation are NOT checked.
+ * Each connected closed component is oriented outward independently.
+ */
+export function assemblePatchShell(
+  patches: NurbsPatch[],
+  options: PatchShellOptions,
+): PatchShellResult {
+  if (!patches.length) throw new Error("Provide at least one surface patch.");
+  patches.forEach(validatePatch);
+  integer(options.segments, 1, 128, "Shell tessellation segments");
+  integer(options.triangleBudget, 1, 2000000, "Shell triangle budget");
+  const tolerance = options.weldTolerance;
+  if (!Number.isFinite(tolerance) || tolerance <= 0)
+    throw new Error("Weld tolerance must be finite and positive.");
+  if (patches.length * options.segments ** 2 * 2 > options.triangleBudget)
+    throw new Error(
+      "Shell tessellation exceeds the configured triangle budget. Lower segments or increase the operation budget.",
+    );
+  const vertices: Vec3[] = [],
+    cells = new Map<string, number[]>(),
+    triangles: [number, number, number][] = [];
+  let degenerateTriangles = 0,
+    duplicateTriangles = 0;
+  const faceKeys = new Set<string>();
+  const weld = (point: Vec3) => {
+    const cell = point.map((value) => Math.floor(value / tolerance));
+    if (cell.some((value) => !Number.isSafeInteger(value)))
+      throw new Error(
+        "Weld tolerance is too small for the coordinate magnitude.",
+      );
+    for (let x = -1; x <= 1; x++)
+      for (let y = -1; y <= 1; y++)
+        for (let z = -1; z <= 1; z++) {
+          const candidates = cells.get(
+            `${cell[0] + x},${cell[1] + y},${cell[2] + z}`,
+          );
+          if (!candidates) continue;
+          for (const index of candidates) {
+            const other = vertices[index];
+            if (
+              Math.hypot(
+                point[0] - other[0],
+                point[1] - other[1],
+                point[2] - other[2],
+              ) <= tolerance
+            )
+              return index;
+          }
+        }
+    const index = vertices.length;
+    vertices.push(point);
+    const key = cell.join(","),
+      bucket = cells.get(key);
+    if (bucket) bucket.push(index);
+    else cells.set(key, [index]);
+    return index;
+  };
+  for (const patch of patches) {
+    const mesh = tessellatePatch(patch, options.segments, options.segments);
+    for (let i = 0; i < mesh.length; i += 9) {
+      const face = [
+        weld([mesh[i], mesh[i + 1], mesh[i + 2]]),
+        weld([mesh[i + 3], mesh[i + 4], mesh[i + 5]]),
+        weld([mesh[i + 6], mesh[i + 7], mesh[i + 8]]),
+      ] as [number, number, number];
+      const a = vertices[face[0]],
+        b = vertices[face[1]],
+        c = vertices[face[2]];
+      const ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]],
+        ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+      const area = Math.hypot(
+        ab[1] * ac[2] - ab[2] * ac[1],
+        ab[2] * ac[0] - ab[0] * ac[2],
+        ab[0] * ac[1] - ab[1] * ac[0],
+      );
+      if (new Set(face).size < 3 || !(area > 0)) {
+        degenerateTriangles++;
+        continue;
+      }
+      const key = [...face].sort((x, y) => x - y).join(",");
+      if (faceKeys.has(key)) duplicateTriangles++;
+      else faceKeys.add(key);
+      triangles.push(face);
+    }
+  }
+  type EdgeUse = { triangle: number; direction: number };
+  const edges = new Map<string, EdgeUse[]>(),
+    incidence: number[][] = Array.from({ length: vertices.length }, () => []);
+  triangles.forEach((face, triangle) => {
+    for (const vertex of face) incidence[vertex].push(triangle);
+    for (let k = 0; k < 3; k++) {
+      const a = face[k],
+        b = face[(k + 1) % 3],
+        key = `${Math.min(a, b)},${Math.max(a, b)}`;
+      const use = { triangle, direction: a < b ? 1 : -1 },
+        list = edges.get(key);
+      if (list) list.push(use);
+      else edges.set(key, [use]);
+    }
+  });
+  let boundaryEdges = 0,
+    nonManifoldEdges = 0,
+    nonManifoldVertices = 0;
+  const adjacency: { triangle: number; same: boolean }[][] = Array.from(
+    { length: triangles.length },
+    () => [],
+  );
+  for (const uses of edges.values()) {
+    if (uses.length === 1) boundaryEdges++;
+    if (uses.length > 2) nonManifoldEdges++;
+    for (let i = 1; i < uses.length; i++) {
+      const a = uses[0],
+        b = uses[i],
+        same = a.direction === b.direction;
+      adjacency[a.triangle].push({ triangle: b.triangle, same });
+      adjacency[b.triangle].push({ triangle: a.triangle, same });
+    }
+  }
+  // A closed manifold vertex link must be one cycle, not two sheets touching at one point.
+  incidence.forEach((faces, vertex) => {
+    if (!faces.length) return;
+    const link = new Map<number, Set<number>>();
+    for (const triangle of faces) {
+      const others = triangles[triangle].filter((index) => index !== vertex);
+      for (let i = 0; i < 2; i++) {
+        const list = link.get(others[i]);
+        if (list) list.add(others[1 - i]);
+        else link.set(others[i], new Set([others[1 - i]]));
+      }
+    }
+    const seen = new Set<number>(),
+      queue = [link.keys().next().value!];
+    for (let i = 0; i < queue.length; i++) {
+      const node = queue[i];
+      if (seen.has(node)) continue;
+      seen.add(node);
+      for (const other of link.get(node) ?? [])
+        if (!seen.has(other)) queue.push(other);
+    }
+    // Boundary links may form a path: edge diagnostics already mark those shells open.
+    if (
+      seen.size !== link.size ||
+      [...link.values()].some((neighbors) => neighbors.size > 2)
+    )
+      nonManifoldVertices++;
+  });
+  const flips = new Int8Array(triangles.length);
+  flips.fill(-1);
+  const components: number[][] = [];
+  for (let seed = 0; seed < triangles.length; seed++) {
+    if (flips[seed] !== -1) continue;
+    const component = [seed];
+    flips[seed] = 0;
+    for (let i = 0; i < component.length; i++)
+      for (const neighbor of adjacency[component[i]]) {
+        if (flips[neighbor.triangle] !== -1) continue;
+        flips[neighbor.triangle] = flips[component[i]] ^ Number(neighbor.same);
+        component.push(neighbor.triangle);
+      }
+    components.push(component);
+  }
+  if (options.orient !== false)
+    triangles.forEach((face, i) => {
+      if (flips[i]) [face[1], face[2]] = [face[2], face[1]];
+    });
+  let inconsistentEdges = 0;
+  for (const uses of edges.values())
+    if (uses.length === 2) {
+      const [a, b] = uses;
+      const signA =
+          a.direction *
+          (options.orient !== false && flips[a.triangle] ? -1 : 1),
+        signB =
+          b.direction *
+          (options.orient !== false && flips[b.triangle] ? -1 : 1);
+      if (signA === signB) inconsistentEdges++;
+    }
+  const closed =
+    triangles.length > 0 &&
+    boundaryEdges === 0 &&
+    nonManifoldEdges === 0 &&
+    nonManifoldVertices === 0 &&
+    inconsistentEdges === 0 &&
+    duplicateTriangles === 0;
+  let signedVolume: number | null = null;
+  if (closed) {
+    signedVolume = 0;
+    for (const component of components) {
+      const origin = vertices[triangles[component[0]][0]];
+      let volume = 0;
+      for (const index of component) {
+        const [a, b, c] = triangles[index].map((vertex) =>
+          vertices[vertex].map((value, k) => value - origin[k]),
+        );
+        volume +=
+          (a[0] * (b[1] * c[2] - b[2] * c[1]) +
+            a[1] * (b[2] * c[0] - b[0] * c[2]) +
+            a[2] * (b[0] * c[1] - b[1] * c[0])) /
+          6;
+      }
+      if (volume < 0 && options.orient !== false) {
+        for (const index of component) {
+          const face = triangles[index];
+          [face[1], face[2]] = [face[2], face[1]];
+          flips[index] ^= 1;
+        }
+        volume = -volume;
+      }
+      signedVolume += volume;
+    }
+  }
+  const positions = new Float32Array(triangles.length * 9);
+  let offset = 0;
+  for (const face of triangles)
+    for (const vertex of face)
+      for (const value of vertices[vertex]) positions[offset++] = value;
+  return {
+    positions,
+    diagnostics: {
+      vertices: incidence.filter((faces) => faces.length).length,
+      triangles: triangles.length,
+      components: components.length,
+      boundaryEdges,
+      nonManifoldEdges,
+      nonManifoldVertices,
+      inconsistentEdges,
+      degenerateTriangles,
+      duplicateTriangles,
+      flippedTriangles:
+        options.orient === false ? 0 : Array.from(flips).filter(Boolean).length,
+      closed,
+      signedVolume,
+    },
+  };
+}

@@ -264,5 +264,29 @@ describe("processing worker resource ownership", () => {
     expect(global.registration?.globalCandidates).toBe(24);
     expect(global.registration?.rms).toBeLessThan(1e-8);
     expect(global.positions).toHaveLength(9);
+    replies.length = 0;
+    const junction = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0,
+      0, 0, 1,
+    ]);
+    scope.onmessage?.({
+      data: {
+        kind: "repair",
+        positions: junction,
+        tolerance: 0.000001,
+        splitNonManifold: true,
+        fillHoles: false,
+        planarityTolerance: 0.01,
+        maxPerimeter: 100,
+      },
+    });
+    const repaired = (replies.at(-1)!.message as { result: ProcessingResult })
+      .result;
+    expect(repaired.segments).toHaveLength(3);
+    expect(repaired.positions).toBeUndefined();
+    expect(repaired.diagnostics.nonManifoldEdgesAfter).toBe(0);
+    expect(repaired.diagnostics.nonManifoldVerticesAfter).toBe(0);
+    expect(repaired.repairSheets).toHaveLength(3);
+    expect(replies.at(-1)!.transfers).toHaveLength(3);
   });
 });

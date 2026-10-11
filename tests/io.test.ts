@@ -19,6 +19,59 @@ const entity: Entity = {
   opacity: 1,
 };
 describe("file boundaries", () => {
+  it("retains parametric recipes through both project paths and rejects dangling dependencies", async () => {
+    const body: Entity = {
+      ...entity,
+      kind: "cad",
+      brep: "seed",
+      parametric: {
+        feature: {
+          id: "seed",
+          name: "Box",
+          recipe: {
+            kind: "primitive",
+            input: { kind: "box", center: [0, 0, 0], size: [10, 20, 30] },
+          },
+        },
+        output: 0,
+      },
+    };
+    const dependent: Entity = {
+      ...body,
+      id: "pattern",
+      parametric: {
+        feature: {
+          id: "pattern",
+          name: "Pattern",
+          recipe: {
+            kind: "pattern",
+            source: { featureId: "seed" },
+            pattern: { kind: "linear", count: 3, step: [30, 0, 0] },
+          },
+        },
+        output: 0,
+      },
+    };
+    for (const text of [
+      serializeProject("Graph", [body, dependent]),
+      await (await serializeProjectBlob("Graph", [body, dependent])).text(),
+    ]) {
+      const loaded = parseProject(text);
+      expect(loaded.entities.map((e) => e.parametric)).toEqual([
+        body.parametric,
+        dependent.parametric,
+      ]);
+      expect(loaded.entities[0].kernelId).toBeUndefined();
+    }
+    expect(() => parseProject(serializeProject("Bad", [dependent]))).toThrow(
+      /missing/i,
+    );
+    expect(() =>
+      parseProject(
+        serializeProject("Bad", [{ ...body, parametric: null as never }]),
+      ),
+    ).toThrow(/binding/);
+  });
   it("roundtrips sampled source counts and rejects malformed counts", async () => {
     const scanSource = {
       bytes: 1_100_000_084,

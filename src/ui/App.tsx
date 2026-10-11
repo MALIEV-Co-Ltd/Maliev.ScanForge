@@ -76,6 +76,18 @@ import { SurfaceTools } from "./SurfaceTools";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { AdvancedCadTools } from "./AdvancedCadTools";
+import { ParametricTools } from "./ParametricTools";
+import {
+  bindFeatureInputs,
+  entityFeatureModel,
+  entityFeatureState,
+} from "../parametric-entities";
+import {
+  createCadEvaluator,
+  rebuildParametric,
+  type FeatureRef,
+  type ParametricRecipe,
+} from "../parametric";
 import { tessellatePatch, type NurbsPatch } from "../surfaces";
 import { rectangleSketch, type Sketch } from "../sketch";
 
@@ -336,6 +348,7 @@ export function App() {
   }, [entities, history, future]);
 
   function commit(next: Entity[]) {
+    entityFeatureModel(next);
     const label =
       operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
     setHistory((previous) => [...previous.slice(-19), { entities, label }]);
@@ -344,6 +357,10 @@ export function App() {
     setDirty(true);
   }
   function updateSelected(patch: Partial<Entity>) {
+    if (patch.positions && selected?.parametric && !("parametric" in patch))
+      throw new Error(
+        "Edit the parametric recipe and rebuild this body before changing its geometry.",
+      );
     // Geometry edits invalidate authoring data unless they explicitly rebuild it.
     if (patch.positions && !("surfacePatch" in patch))
       patch = { ...patch, surfacePatch: undefined, surfaceScanId: undefined };
@@ -438,6 +455,16 @@ export function App() {
   }
   function deleteSelected() {
     if (!selected) return;
+    try {
+      entityFeatureModel(
+        entities.filter((entity) => entity.id !== selected.id),
+      );
+    } catch {
+      setError(
+        "This body is used by a parametric feature. Remove its dependent features first.",
+      );
+      return;
+    }
     commit(entities.filter((entity) => entity.id !== selected.id));
     setSelectedId(null);
     setMeasure([]);
@@ -577,6 +604,12 @@ export function App() {
     });
   }
   function editSelection(operation: "copy" | "cut" | "delete") {
+    if (selected?.parametric && operation !== "copy") {
+      setError(
+        "Parametric bodies retain exact CAD dependencies. Use a separate mesh copy for triangle edits.",
+      );
+      return;
+    }
     if (!selected || !triangleMask || !selectedTriangleCount) return;
     const { selected: picked, remainder } = partitionTriangles(
       selected.positions,
@@ -614,6 +647,7 @@ export function App() {
         surfacePatch: undefined,
         surfaceScanId: undefined,
         fit: undefined,
+        parametric: undefined,
       };
       next.push(created);
       setSelectedId(created.id);
@@ -681,6 +715,7 @@ export function App() {
       color: "#78a8db",
       visible: true,
       opacity: 0.85,
+      parametric: featureBinding(label, { kind: "primitive", input }),
     };
     commit([...entities, entity]);
     setSelectedId(entity.id);
@@ -723,6 +758,29 @@ export function App() {
     });
   }
   function applyTransform() {
+    if (selected?.kernelId) {
+      cadOperation(
+        "Transform body",
+        () =>
+          cad.current!.transform(
+            selected.kernelId!,
+            translation,
+            rotation,
+            scale,
+          ),
+        undefined,
+        (refs) => ({
+          kind: "transform",
+          source: refs[0],
+          translation,
+          rotation,
+          scale,
+        }),
+        [selected.id],
+        true,
+      );
+      return;
+    }
     void action("Transforming object…", async () => {
       if (!selected) return;
       if (selected.kernelId) {
@@ -759,6 +817,7 @@ export function App() {
         selected.kernelId,
         other.kernelId,
       );
+      const bound = bindFeatureInputs(entities, [selected.id, other.id]);
       const entity: Entity = {
         id: crypto.randomUUID(),
         name: `${operation} result`,
@@ -767,9 +826,15 @@ export function App() {
         color: "#78a8db",
         visible: true,
         opacity: 1,
+        parametric: featureBinding(`${operation} result`, {
+          kind: "boolean",
+          operation,
+          first: bound.refs[0],
+          second: bound.refs[1],
+        }),
       };
       commit([
-        ...entities.map((e) =>
+        ...bound.entities.map((e) =>
           e.id === selected.id || e.id === other.id
             ? { ...e, visible: false }
             : e,
@@ -780,7 +845,11 @@ export function App() {
       setMessage(`Created exact ${operation} result`);
     });
   }
-  function extrude(points: [number, number][], height: number) {
+  function extrude(
+    points: [number, number][],
+    height: number,
+    sketchProfile?: { sketch: Sketch; chordTolerance: number },
+  ) {
     void action("Extruding polygon sketch…", async () => {
       const result = await cad.current!.extrude(points, height);
       const entity: Entity = {
@@ -791,6 +860,13 @@ export function App() {
         color: "#78a8db",
         visible: true,
         opacity: 1,
+        parametric: featureBinding("Polygon extrusion", {
+          kind: "extrude",
+          profile: sketchProfile
+            ? { kind: "sketch", ...sketchProfile }
+            : { kind: "polygon", points },
+          height,
+        }),
       };
       commit([...entities, entity]);
       setSelectedId(entity.id);
@@ -819,6 +895,10 @@ export function App() {
     setMessage(`${label} created`);
   }
   function editSurface(patch: NurbsPatch) {
+    if (selected?.parametric?.feature.recipe.kind === "surface") {
+      rebuildFeature({ kind: "surface", patch });
+      return;
+    }
     void action("Editing NURBS control grid…", () => {
       const positions = tessellatePatch(patch, 32, 32);
       if (selected?.surfacePatch)
@@ -866,8 +946,23 @@ export function App() {
     label: string,
     run: () => Promise<KernelMesh>,
     patch?: NurbsPatch,
+    recipe?: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
+    inputIds: string[] = [],
+    hideInputs = false,
   ) {
     void action(label, async () => {
+      const bound = bindFeatureInputs(entities, inputIds);
+      const authoring = recipe
+        ? featureBinding(
+            label,
+            typeof recipe === "function" ? recipe(bound.refs) : recipe,
+          )
+        : undefined;
+      if (authoring)
+        entityFeatureModel([
+          ...bound.entities,
+          { parametric: authoring } as Entity,
+        ]);
       const result = await run();
       const entity: Entity = {
         ...result,
@@ -878,10 +973,91 @@ export function App() {
         opacity: 1,
         visible: true,
         surfacePatch: patch,
+        parametric: authoring,
       };
-      commit([...entities, entity]);
+      commit([
+        ...bound.entities.map((input) =>
+          hideInputs && inputIds.includes(input.id)
+            ? { ...input, visible: false }
+            : input,
+        ),
+        entity,
+      ]);
       setSelectedId(entity.id);
       setMessage(`${entity.name} created as exact CAD`);
+    });
+  }
+  function featureBinding(
+    label: string,
+    recipe: ParametricRecipe,
+  ): NonNullable<Entity["parametric"]> {
+    return {
+      feature: {
+        id: crypto.randomUUID(),
+        name: label,
+        recipe: structuredClone(recipe),
+      },
+      output: 0,
+    };
+  }
+  function rebuildFeature(recipe: ParametricRecipe) {
+    void action("Rebuilding parametric features…", async () => {
+      if (!selected?.parametric) throw new Error("Select a parametric body.");
+      const previous = entityFeatureState(entities);
+      const featureId = selected.parametric.feature.id;
+      if (
+        (recipe.kind === "split") !==
+        (selected.parametric.feature.recipe.kind === "split")
+      )
+        throw new Error(
+          "A recipe edit must preserve its number of outputs. Create a separate split feature instead.",
+        );
+      const model = {
+        ...previous.model,
+        features: previous.model.features.map((feature) =>
+          feature.id === featureId ? { ...feature, recipe } : feature,
+        ),
+      };
+      const preserveKernelIds = new Set(
+        [
+          ...entities,
+          ...history.flatMap((revision) => revision.entities),
+          ...future.flatMap((revision) => revision.entities),
+        ].flatMap((entity) => (entity.kernelId ? [entity.kernelId] : [])),
+      );
+      const rebuilt = await rebuildParametric(
+        previous,
+        model,
+        createCadEvaluator(cad.current!),
+        { preserveKernelIds },
+      );
+      const recipes = new Map(
+        rebuilt.model.features.map((feature) => [feature.id, feature]),
+      );
+      commit(
+        entities.map((entity) => {
+          const binding = entity.parametric;
+          if (!binding) return entity;
+          const feature = recipes.get(binding.feature.id)!;
+          const result = rebuilt.results[feature.id][binding.output];
+          return {
+            ...entity,
+            ...result,
+            parametric: { feature, output: binding.output },
+            surfacePatch:
+              feature.recipe.kind === "surface"
+                ? feature.recipe.patch
+                : undefined,
+          };
+        }),
+      );
+      if (rebuilt.cleanupFailures.length)
+        setError(
+          rebuilt.cleanupFailures.map((failure) => failure.message).join("; "),
+        );
+      setMessage(
+        `Rebuilt ${rebuilt.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
+      );
     });
   }
   function save() {
@@ -906,6 +1082,11 @@ export function App() {
         color: "#78a8db",
         visible: true,
         opacity: 1,
+        parametric: featureBinding("Revolved solid", {
+          kind: "revolve",
+          points,
+          angleDegrees: angle,
+        }),
       };
       commit([...entities, entity]);
       setSelectedId(entity.id);
@@ -1681,7 +1862,7 @@ export function App() {
           )}
           <div className="surface-panels">
             <SurfaceTools
-              key={selected?.id ?? "empty"}
+              selectionId={selected?.id}
               scan={
                 entities.find((entity) => entity.id === selected?.surfaceScanId)
                   ?.positions ?? selected?.positions
@@ -1689,6 +1870,14 @@ export function App() {
               patch={selected?.surfacePatch}
               onPatchChange={editSurface}
               onCreateMesh={(positions, label) => createMesh(positions, label)}
+              onCreateClosedCad={(patches, tolerance) =>
+                cadOperation(
+                  "Closed patch solid",
+                  () => cad.current!.closedShell(patches, tolerance),
+                  undefined,
+                  { kind: "closedShell", patches, tolerance },
+                )
+              }
               onExportPatch={(json) =>
                 download(
                   json,
@@ -1707,6 +1896,7 @@ export function App() {
                   "NURBS CAD face",
                   () => cad.current!.surface(selected!.surfacePatch!),
                   selected?.surfacePatch,
+                  { kind: "surface", patch: selected!.surfacePatch! },
                 )
               }
             >
@@ -1731,6 +1921,10 @@ export function App() {
               disabled={busy}
               onBusyChange={setProcessingBusy}
               onReplace={(positions, label) => {
+                if (selected?.parametric) {
+                  createSegments([positions], label);
+                  return;
+                }
                 operationLabel.current = label;
                 updateSelected({
                   positions,
@@ -1749,22 +1943,47 @@ export function App() {
             />
           </div>
           <div className="advanced-cad-panels">
+            <ParametricTools
+              selected={selected ?? undefined}
+              disabled={busy}
+              onRebuild={rebuildFeature}
+              onError={setError}
+            />
             <AdvancedCadTools
               entities={entities}
               selected={selected}
               disabled={busy}
               onError={setError}
               onLoft={(profiles, ruled) =>
-                cadOperation("Loft", () => cad.current!.loft(profiles, ruled))
+                cadOperation(
+                  "Loft",
+                  () => cad.current!.loft(profiles, ruled),
+                  undefined,
+                  { kind: "loft", profiles, ruled },
+                )
               }
               onPattern={(pattern) =>
-                cadOperation(`${pattern.kind} pattern`, () =>
-                  cad.current!.pattern(selected!.kernelId!, pattern),
+                cadOperation(
+                  `${pattern.kind} pattern`,
+                  () => cad.current!.pattern(selected!.kernelId!, pattern),
+                  undefined,
+                  (refs) => ({ kind: "pattern", source: refs[0], pattern }),
+                  [selected!.id],
                 )
               }
               onMirror={(origin, normal) =>
-                cadOperation("Mirror body", () =>
-                  cad.current!.mirror(selected!.kernelId!, origin, normal),
+                cadOperation(
+                  "Mirror body",
+                  () =>
+                    cad.current!.mirror(selected!.kernelId!, origin, normal),
+                  undefined,
+                  (refs) => ({
+                    kind: "mirror",
+                    source: refs[0],
+                    planeOrigin: origin,
+                    normal,
+                  }),
+                  [selected!.id],
                 )
               }
               onSplit={(cutterId) => {
@@ -1774,6 +1993,15 @@ export function App() {
                   );
                   if (!selected?.kernelId || !cutter?.kernelId)
                     throw new Error("Choose two exact CAD bodies.");
+                  const bound = bindFeatureInputs(entities, [
+                    selected.id,
+                    cutter.id,
+                  ]);
+                  const binding = featureBinding("Split solid", {
+                    kind: "split",
+                    source: bound.refs[0],
+                    cutter: bound.refs[1],
+                  });
                   const results = await cad.current!.split(
                     selected.kernelId,
                     cutter.kernelId,
@@ -1786,9 +2014,10 @@ export function App() {
                     color: index === 0 ? "#78a8db" : "#d8a36f",
                     visible: true,
                     opacity: 1,
+                    parametric: { ...binding, output: index },
                   }));
                   commit([
-                    ...entities.map((entity) =>
+                    ...bound.entities.map((entity) =>
                       entity.id === selected.id || entity.id === cutter.id
                         ? { ...entity, visible: false }
                         : entity,
@@ -1800,42 +2029,82 @@ export function App() {
                 });
               }}
               onSweep={(points, path) =>
-                cadOperation("Sweep", () => cad.current!.sweep(points, path))
+                cadOperation(
+                  "Sweep",
+                  () => cad.current!.sweep(points, path),
+                  undefined,
+                  { kind: "sweep", points, path },
+                )
               }
               onEdges={(indices, amount, operation) =>
-                cadOperation(operation, () =>
-                  cad.current!.edgeTreatment(
-                    selected!.kernelId!,
-                    indices,
+                cadOperation(
+                  operation,
+                  () =>
+                    cad.current!.edgeTreatment(
+                      selected!.kernelId!,
+                      indices,
+                      amount,
+                      operation,
+                    ),
+                  undefined,
+                  (refs) => ({
+                    kind: "edges",
+                    source: refs[0],
+                    edgeIndices: indices,
                     amount,
                     operation,
-                  ),
+                  }),
+                  [selected!.id],
                 )
               }
               onOffset={(distance) =>
-                cadOperation("Offset", () =>
-                  cad.current!.offset(selected!.kernelId!, distance),
+                cadOperation(
+                  "Offset",
+                  () => cad.current!.offset(selected!.kernelId!, distance),
+                  undefined,
+                  (refs) => ({ kind: "offset", source: refs[0], distance }),
+                  [selected!.id],
                 )
               }
               onSew={(ids, tolerance) =>
-                cadOperation("Sew surfaces", () =>
-                  cad.current!.sew(
-                    ids.map(
-                      (id) =>
-                        entities.find((entity) => entity.id === id)!.kernelId!,
+                cadOperation(
+                  "Sew surfaces",
+                  () =>
+                    cad.current!.sew(
+                      ids.map(
+                        (id) =>
+                          entities.find((entity) => entity.id === id)!
+                            .kernelId!,
+                      ),
+                      tolerance,
                     ),
-                    tolerance,
-                  ),
+                  undefined,
+                  (refs) => ({ kind: "sew", sources: refs, tolerance }),
+                  ids,
                 )
               }
               onShell={(indices, thickness) =>
-                cadOperation("Shell", () =>
-                  cad.current!.shell(selected!.kernelId!, indices, thickness),
+                cadOperation(
+                  "Shell",
+                  () =>
+                    cad.current!.shell(selected!.kernelId!, indices, thickness),
+                  undefined,
+                  (refs) => ({
+                    kind: "shell",
+                    source: refs[0],
+                    faceIndices: indices,
+                    thickness,
+                  }),
+                  [selected!.id],
                 )
               }
               onThicken={(thickness) =>
-                cadOperation("Thicken", () =>
-                  cad.current!.thicken(selected!.kernelId!, thickness),
+                cadOperation(
+                  "Thicken",
+                  () => cad.current!.thicken(selected!.kernelId!, thickness),
+                  undefined,
+                  (refs) => ({ kind: "thicken", source: refs[0], thickness }),
+                  [selected!.id],
                 )
               }
             />

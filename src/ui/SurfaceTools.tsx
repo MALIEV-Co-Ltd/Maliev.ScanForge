@@ -15,10 +15,14 @@ import {
   type SurfaceFitOptions,
   type PatchEdge,
   type PatchAxis,
+  createBoxPatchShell,
+  assemblePatchShell,
+  type PatchShellResult,
 } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 
 export interface SurfaceToolsProps {
+  selectionId?: string;
   scan?: Positions;
   patch?: NurbsPatch;
   onPatchChange: (patch: NurbsPatch) => void;
@@ -27,10 +31,12 @@ export interface SurfaceToolsProps {
   onError?: (message: string) => void;
   disabled?: boolean;
   onBusyChange?: (busy: boolean) => void;
+  onCreateClosedCad?: (patches: NurbsPatch[], tolerance: number) => void;
 }
 
 /** The caller owns patch persistence and scene insertion; this panel keeps no hidden geometry. */
 export function SurfaceTools({
+  selectionId,
   scan,
   patch,
   onPatchChange,
@@ -39,6 +45,7 @@ export function SurfaceTools({
   onError,
   disabled,
   onBusyChange,
+  onCreateClosedCad,
 }: SurfaceToolsProps) {
   const fitting = useRef<AbortController | null>(null);
   const busyCallback = useRef(onBusyChange);
@@ -68,6 +75,38 @@ export function SurfaceTools({
     [targetEdge, setTargetEdge] = useState<PatchEdge>("u0");
   const [continuity, setContinuity] = useState<"C0" | "C1">("C0"),
     [reverseSeam, setReverseSeam] = useState(false);
+  const [shellPatches, setShellPatches] = useState<NurbsPatch[]>([]),
+    [shellIndex, setShellIndex] = useState<number | null>(null);
+  const [shellDepth, setShellDepth] = useState(50),
+    [shellSegments, setShellSegments] = useState(16),
+    [shellTolerance, setShellTolerance] = useState(0.01),
+    [shellBudget, setShellBudget] = useState(200000);
+  const [shellAssembly, setShellAssembly] = useState<{
+    result: PatchShellResult;
+    patches: NurbsPatch[];
+    tolerance: number;
+    segments: number;
+  } | null>(null);
+  const shellSelection = useRef(selectionId);
+  useEffect(() => {
+    if (shellSelection.current !== selectionId) {
+      shellSelection.current = selectionId;
+      setShellIndex(null);
+      return;
+    }
+    if (!patch || shellIndex === null) return;
+    setShellPatches((previous) =>
+      previous[shellIndex] === patch
+        ? previous
+        : previous.map((value, i) => (i === shellIndex ? patch : value)),
+    );
+  }, [patch, shellIndex, selectionId]);
+  const currentAssembly =
+    shellAssembly?.patches === shellPatches &&
+    shellAssembly.tolerance === shellTolerance &&
+    shellAssembly.segments === shellSegments
+      ? shellAssembly.result
+      : null;
   const controlIndex = Math.min(index, (patch?.points.length ?? 1) - 1);
   const run = (task: () => void) => {
     try {
@@ -517,6 +556,206 @@ export function SurfaceTools({
             }}
           />
         </label>
+        <h4>Closed patch shell</h4>
+        <p className="muted">
+          Assemble authored patches with matching seams into a welded manifold
+          mesh. Edge and vertex diagnostics verify topology; geometric
+          self-intersections and nested cavities require separate validation.
+          This does not automatically recover closed scans.
+        </p>
+        {number("Seed depth (mm)", shellDepth, setShellDepth, 0.001)}
+        <button
+          onClick={() =>
+            run(() => {
+              const faces = createBoxPatchShell(width, height, shellDepth);
+              setShellPatches(faces);
+              setShellIndex(0);
+              onPatchChange(faces[0]);
+              setMessage(
+                "Six editable box-shell patches created. Select a shell patch to edit its grid.",
+              );
+            })
+          }
+        >
+          Create six-patch box shell
+        </button>
+        <label className="field">
+          Import shell patches (individual JSON files)
+          <input
+            type="file"
+            accept=".json,.nurbs"
+            multiple
+            onChange={async (event) => {
+              const input = event.target,
+                files = Array.from(input.files ?? []);
+              if (!files.length) return;
+              try {
+                const imported: NurbsPatch[] = [];
+                for (const file of files)
+                  imported.push(parsePatch(await file.text()));
+                setShellPatches(imported);
+                setShellIndex(0);
+                onPatchChange(imported[0]);
+                setMessage(`${imported.length} shell patches imported.`);
+              } catch (error) {
+                const text =
+                  error instanceof Error ? error.message : String(error);
+                setMessage(text);
+                onError?.(text);
+              }
+              input.value = "";
+            }}
+          />
+        </label>
+        <button
+          disabled={!patch}
+          onClick={() => {
+            if (!patch) return;
+            setShellPatches((previous) => [...previous, patch]);
+            setShellIndex(null);
+          }}
+        >
+          Add active patch to shell
+        </button>
+        {shellPatches.length > 0 && (
+          <>
+            <label className="field">
+              Edit shell patch
+              <select
+                value={shellIndex ?? ""}
+                onChange={(event) => {
+                  const index = Number(event.target.value);
+                  setShellIndex(index);
+                  onPatchChange(shellPatches[index]);
+                }}
+              >
+                <option value="" disabled>
+                  Select patch
+                </option>
+                {shellPatches.map((face, index) => (
+                  <option key={index} value={index}>
+                    Patch {index + 1} · {face.countU} × {face.countV}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              disabled={shellIndex === null}
+              onClick={() => {
+                setShellPatches((previous) =>
+                  previous.filter((_, i) => i !== shellIndex),
+                );
+                setShellIndex(null);
+              }}
+            >
+              Remove selected shell patch
+            </button>
+            {number(
+              "Shell tessellation segments per axis",
+              shellSegments,
+              setShellSegments,
+              1,
+              128,
+            )}
+            {number(
+              "Seam weld tolerance (mm)",
+              shellTolerance,
+              setShellTolerance,
+              0.000001,
+            )}
+            {number(
+              "Shell triangle operation budget",
+              shellBudget,
+              setShellBudget,
+              1,
+              2000000,
+            )}
+            <p className="muted">
+              {shellPatches.length} patches ·{" "}
+              {shellPatches.length * shellSegments * shellSegments * 2} planned
+              triangles. Matching patch seams must have matching sample
+              locations within tolerance.
+            </p>
+            <button
+              onClick={() =>
+                run(() => {
+                  const result = assemblePatchShell(shellPatches, {
+                    segments: shellSegments,
+                    weldTolerance: shellTolerance,
+                    triangleBudget: shellBudget,
+                  });
+                  setShellAssembly({
+                    result,
+                    patches: shellPatches,
+                    tolerance: shellTolerance,
+                    segments: shellSegments,
+                  });
+                  setMessage(
+                    result.diagnostics.closed
+                      ? "Shell is topologically closed and consistently oriented."
+                      : "Shell remains open or nonmanifold. Inspect diagnostics and repair the patch seams.",
+                  );
+                })
+              }
+            >
+              Validate and assemble shell
+            </button>
+            {currentAssembly && (
+              <>
+                <p role="status">
+                  {currentAssembly.diagnostics.closed
+                    ? "Closed manifold"
+                    : "Open / invalid shell"}{" "}
+                  · {currentAssembly.diagnostics.components} components ·{" "}
+                  {currentAssembly.diagnostics.triangles} triangles ·{" "}
+                  {currentAssembly.diagnostics.boundaryEdges} boundary edges ·{" "}
+                  {currentAssembly.diagnostics.nonManifoldEdges} nonmanifold
+                  edges · {currentAssembly.diagnostics.nonManifoldVertices}{" "}
+                  nonmanifold vertices ·{" "}
+                  {currentAssembly.diagnostics.inconsistentEdges} orientation
+                  conflicts · {currentAssembly.diagnostics.duplicateTriangles}{" "}
+                  duplicate faces ·{" "}
+                  {currentAssembly.diagnostics.degenerateTriangles} degenerate
+                  faces removed
+                  {currentAssembly.diagnostics.signedVolume === null
+                    ? ""
+                    : ` · volume ${currentAssembly.diagnostics.signedVolume.toPrecision(6)} mm³`}
+                </p>
+                <button
+                  onClick={() =>
+                    onCreateMesh(
+                      currentAssembly.positions,
+                      currentAssembly.diagnostics.closed
+                        ? "Closed patch shell mesh"
+                        : "Open patch shell mesh",
+                    )
+                  }
+                >
+                  Create assembled mesh
+                </button>
+                {onCreateClosedCad && (
+                  <button
+                    disabled={
+                      !currentAssembly.diagnostics.closed ||
+                      currentAssembly.diagnostics.components !== 1 ||
+                      !(currentAssembly.diagnostics.signedVolume! > 0)
+                    }
+                    onClick={() =>
+                      run(() => onCreateClosedCad(shellPatches, shellTolerance))
+                    }
+                  >
+                    Create closed CAD solid
+                  </button>
+                )}
+                <p className="muted">
+                  Exact CAD conversion independently sews and validates the
+                  original patches. A closed display mesh alone does not prove a
+                  valid CAD solid.
+                </p>
+              </>
+            )}
+          </>
+        )}
       </fieldset>
       <p role="status">{message}</p>
     </section>

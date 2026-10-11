@@ -93,6 +93,67 @@ try {
     size: [10, 20, 30],
   });
   assert.equal(box.positions.length, 108);
+  const planarPatch = (origin, u, v) => ({
+    format: "scanforge-nurbs",
+    version: 1,
+    degreeU: 1,
+    degreeV: 1,
+    countU: 2,
+    countV: 2,
+    knotsU: [0, 0, 1, 1],
+    knotsV: [0, 0, 1, 1],
+    points: [
+      origin,
+      origin.map((x, i) => x + u[i]),
+      origin.map((x, i) => x + v[i]),
+      origin.map((x, i) => x + u[i] + v[i]),
+    ],
+    weights: [1, 1, 1, 1],
+  });
+  const shellPatches = [
+    planarPatch([0, 0, 0], [0, 0, 30], [0, 20, 0]),
+    planarPatch([10, 0, 0], [0, 20, 0], [0, 0, 30]),
+    planarPatch([0, 0, 0], [10, 0, 0], [0, 0, 30]),
+    planarPatch([0, 20, 0], [0, 0, 30], [10, 0, 0]),
+    planarPatch([0, 0, 0], [0, 20, 0], [10, 0, 0]),
+    planarPatch([0, 0, 30], [10, 0, 0], [0, 20, 0]),
+  ];
+  const beforeShell = vm.runInContext("shapes.size", context);
+  const reconstructed = await request("closedShell", {
+    patches: shellPatches,
+    tolerance: 1e-6,
+  });
+  close(
+    volume(reconstructed.positions),
+    6000,
+    "Closed patch reconstruction volume",
+  );
+  assert.deepEqual(bounds(reconstructed.positions), [0, 0, 0, 10, 20, 30]);
+  assert.equal(
+    vm.runInContext("shapes.size", context),
+    beforeShell + 1,
+    "temporary CAD faces released",
+  );
+  const reconstructedStep = await request("export", [reconstructed.kernelId]);
+  const reconstructedRoundtrip = await request("import", {
+    data: reconstructedStep,
+    extension: "step",
+  });
+  close(
+    volume(reconstructedRoundtrip.positions),
+    6000,
+    "Reconstructed STEP solid volume",
+  );
+  const beforeInvalidShell = vm.runInContext("shapes.size", context);
+  await assert.rejects(
+    request("closedShell", { patches: shellPatches.slice(1), tolerance: 1e-6 }),
+    /closed|boundaries/,
+  );
+  assert.equal(
+    vm.runInContext("shapes.size", context),
+    beforeInvalidShell,
+    "failed reconstruction released faces",
+  );
   assert.ok(box.positions.every(Number.isFinite));
   assert.ok(box.brep.length > 100);
   const brep = await request("import", {

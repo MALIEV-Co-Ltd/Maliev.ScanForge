@@ -33,6 +33,7 @@ function summarize(topology: MeshTopology): TopologySummary {
     boundaryChains: topology.boundaryChains.length,
     boundaryEdges: topology.boundaryEdges,
     nonManifoldEdges: topology.nonManifoldEdges,
+    nonManifoldVertices: topology.nonManifoldVertices,
     inconsistentEdges: topology.inconsistentEdges,
     degenerateTriangles: topology.degenerateTriangles,
     duplicateTriangles: topology.duplicateTriangles,
@@ -61,14 +62,46 @@ scope.onmessage = ({ data: request }) => {
         ...request,
         onProgress: progress,
       });
-      result.positions = repaired.positions;
-      result.topology = summarize(repaired.topology);
+      if (repaired.sheets) result.segments = repaired.sheets;
+      else result.positions = repaired.positions;
+      result.repairSheets = repaired.sheetDiagnostics;
+      const total: TopologySummary = {
+        vertices: 0,
+        triangles: 0,
+        components: 0,
+        boundaryLoops: 0,
+        boundaryChains: 0,
+        boundaryEdges: 0,
+        nonManifoldEdges: 0,
+        nonManifoldVertices: 0,
+        inconsistentEdges: 0,
+        degenerateTriangles: 0,
+        duplicateTriangles: 0,
+      };
+      for (const sheet of repaired.sheetDiagnostics)
+        for (const key of Object.keys(total) as (keyof TopologySummary)[])
+          total[key] += sheet[key];
+      result.topology = total;
       result.diagnostics = {
         removedDegenerate: repaired.removedDegenerate,
         removedDuplicates: repaired.removedDuplicates,
         flippedTriangles: repaired.flippedTriangles,
         orientationConflicts: repaired.orientationConflicts,
         filledLoops: repaired.filledLoops,
+        nonManifoldEdgesBefore: repaired.nonManifoldEdgesBefore,
+        nonManifoldEdgesAfter: repaired.nonManifoldEdgesAfter,
+        nonManifoldVerticesBefore: repaired.nonManifoldVerticesBefore,
+        nonManifoldVerticesAfter: repaired.nonManifoldVerticesAfter,
+        splitEdges: repaired.splitEdges,
+        splitVertices: repaired.splitVertices,
+        sheets: repaired.sheetDiagnostics.length,
+        watertightSheets: repaired.sheetDiagnostics.filter(
+          (sheet) => sheet.watertight,
+        ).length,
+        outwardComponents: repaired.outwardComponents,
+        topologyScope:
+          "Separate stored sheet objects; coincident coordinates remain distinct across objects",
+        globalSelfIntersectionsChecked: false,
         skippedHoles: repaired.skippedHoles
           .map((item) => item.reason)
           .join("; "),

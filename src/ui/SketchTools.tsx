@@ -11,7 +11,11 @@ import {
 export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
-  onExtrude: (points: [number, number][], height: number) => void;
+  onExtrude: (
+    points: [number, number][],
+    height: number,
+    profile?: { sketch: Sketch; chordTolerance: number },
+  ) => void;
   disabled?: boolean;
 }
 
@@ -582,7 +586,10 @@ export function SketchTools({
               throw new Error("Extrusion height must be positive.");
             const profile = sketchProfile(result.sketch, chordTolerance);
             update(result.sketch);
-            onExtrude(profile, height);
+            onExtrude(profile, height, {
+              sketch: result.sketch,
+              chordTolerance,
+            });
           })
         }
       >

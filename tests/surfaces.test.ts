@@ -8,6 +8,8 @@ import {
   joinPatchBoundary,
   insertPatchKnot,
   preparePatchCrease,
+  createBoxPatchShell,
+  assemblePatchShell,
   parsePatch,
   serializePatch,
   snapControlPoint,
@@ -154,6 +156,93 @@ describe("tensor rational B-spline patches", () => {
       importQuadGridObj(obj.replace("1 2 4 3", "1 2 3"), 2, 2, 1),
     ).toThrow(/quads/);
     expect(() => importQuadGridObj(obj, 3, 2, 1)).toThrow(/dimensions/);
+  });
+});
+
+describe("closed patch shell reconstruction", () => {
+  const options = { segments: 2, weldTolerance: 0.0001, triangleBudget: 1000 };
+  it("assembles six matching patches into a welded outward closed manifold with exact box volume", () => {
+    const faces = createBoxPatchShell(2, 3, 4),
+      original = JSON.stringify(faces);
+    const shell = assemblePatchShell(faces, options);
+    expect(shell.diagnostics).toMatchObject({
+      closed: true,
+      components: 1,
+      triangles: 48,
+      vertices: 26,
+      boundaryEdges: 0,
+      nonManifoldEdges: 0,
+      nonManifoldVertices: 0,
+      inconsistentEdges: 0,
+      duplicateTriangles: 0,
+      degenerateTriangles: 0,
+    });
+    expect(shell.diagnostics.signedVolume).toBeCloseTo(24, 10);
+    expect(shell.positions.length).toBe(48 * 9);
+    expect(JSON.stringify(faces)).toBe(original);
+  });
+  it("propagates orientation across a reversed face without silently accepting the initial conflicts", () => {
+    const faces = createBoxPatchShell(2, 3, 4);
+    const [a, b, c, d] = faces[0].points;
+    faces[0].points = [b, a, d, c];
+    const raw = assemblePatchShell(faces, { ...options, orient: false });
+    expect(raw.diagnostics.closed).toBe(false);
+    expect(raw.diagnostics.inconsistentEdges).toBeGreaterThan(0);
+    const fixed = assemblePatchShell(faces, options);
+    expect(fixed.diagnostics.closed).toBe(true);
+    expect(fixed.diagnostics.flippedTriangles).toBeGreaterThan(0);
+    expect(fixed.diagnostics.signedVolume).toBeCloseTo(24, 10);
+  });
+  it("reports open boundaries, duplicate faces and nonmanifold edge incidence", () => {
+    const faces = createBoxPatchShell(2, 3, 4);
+    const open = assemblePatchShell(faces.slice(1), options);
+    expect(open.diagnostics.closed).toBe(false);
+    expect(open.diagnostics.boundaryEdges).toBe(8);
+    expect(open.diagnostics.signedVolume).toBeNull();
+    const duplicated = assemblePatchShell([...faces, faces[0]], options);
+    expect(duplicated.diagnostics.closed).toBe(false);
+    expect(duplicated.diagnostics.duplicateTriangles).toBeGreaterThan(0);
+    expect(duplicated.diagnostics.nonManifoldEdges).toBeGreaterThan(0);
+  });
+  it("detects two otherwise closed bodies touching at a nonmanifold vertex", () => {
+    const a = createBoxPatchShell(2, 3, 4);
+    const b = createBoxPatchShell(2, 3, 4).map((patch) => ({
+      ...patch,
+      points: patch.points.map(
+        (p) => [p[0] + 2, p[1] + 3, p[2] + 4] as [number, number, number],
+      ),
+    }));
+    const shell = assemblePatchShell([...a, ...b], options);
+    expect(shell.diagnostics.boundaryEdges).toBe(0);
+    expect(shell.diagnostics.components).toBe(2);
+    expect(shell.diagnostics.nonManifoldVertices).toBe(1);
+    expect(shell.diagnostics.closed).toBe(false);
+    const separated = b.map((patch) => ({
+      ...patch,
+      points: patch.points.map(
+        (p) => [p[0] + 10, p[1], p[2]] as [number, number, number],
+      ),
+    }));
+    const two = assemblePatchShell([...a, ...separated], options);
+    expect(two.diagnostics.closed).toBe(true);
+    expect(two.diagnostics.components).toBe(2);
+    expect(two.diagnostics.signedVolume).toBeCloseTo(48, 10);
+  });
+  it("does not bridge gaps larger than tolerance and rejects invalid resource settings", () => {
+    const faces = createBoxPatchShell(2, 3, 4);
+    faces[1].points = faces[1].points.map((p) => [p[0], p[1], p[2] + 0.1]);
+    expect(assemblePatchShell(faces, options).diagnostics.closed).toBe(false);
+    expect(() =>
+      assemblePatchShell(faces, { ...options, triangleBudget: 40 }),
+    ).toThrow(/budget/);
+    expect(() =>
+      assemblePatchShell(faces, { ...options, weldTolerance: 0 }),
+    ).toThrow(/positive/);
+    expect(() =>
+      assemblePatchShell(faces, { ...options, segments: 129 }),
+    ).toThrow(/integer/);
+    expect(() => assemblePatchShell([], options)).toThrow(/at least/);
+    expect(() => createBoxPatchShell(1, 1, 0)).toThrow(/positive/);
   });
 });
 
