@@ -1,6 +1,6 @@
 # Toolbar image assets
 
-The active ribbon uses the complete independently authored vector collection in `src/ui/RibbonCommandIcon.tsx`: 122 explicit command entries across ten tabs. Golden CAD geometry, green additions and movement, coral removals, and lavender construction guides describe each operation. The SVGs render locally at 34px and remain sharp on high-density screens. Unsupported tools retain their disabled appearance and behavior. Coverage tests fail if a ribbon command lacks artwork.
+The active ribbon uses the complete independently authored vector collection in `src/ui/RibbonCommandIcon.tsx`: 122 explicit command entries across ten tabs. Purple freeform geometry, teal reference primitives, grey exact CAD geometry, and yellow scan geometry distinguish command families. Green additions and movement, coral removals, and lavender construction guides describe each operation. Exact CAD primitives use grey; primitive fitting commands use teal. The SVGs render locally at 34px and remain sharp on high-density screens. Unsupported tools retain their disabled appearance and behavior. Coverage tests fail if a ribbon command lacks artwork.
 
 The earlier transparent PNG experiments below were generated with the built-in imagegen tool on 2026-10-11 and retained as local source assets. They are superseded in the ribbon by the consistent vector set.
 

@@ -1,3 +1,9 @@
+import {
+  DEFAULT_FREEFORM_COLOR,
+  DEFAULT_PART_COLOR,
+  DEFAULT_REFERENCE_COLOR,
+} from "../appearance";
+import { RIBBON_TABS } from "./ribbon-model";
 /** Independently drawn, local SVG artwork. Each command has an explicit entry. */
 const path = (d: string, fill = "none", extra = "") =>
   `<path d="${d}" fill="${fill}" ${extra}/>`;
@@ -369,21 +375,98 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     path("M16 13v11m-3 0h6", "none", 'stroke="#705817" stroke-width="3"'),
 };
 
+const freeformCommands = new Set(
+  RIBBON_TABS.find((tab) => tab.id === "freeform")!
+    .groups.flatMap((group) => group.tools.map((tool) => tool.id))
+    .concat(["fitSurface", "wrap", "sketch3d"]),
+);
+const primitiveCommands = new Set([
+  "fitPlane",
+  "fitCylinder",
+  "fitCone",
+  "fitSphere",
+  "extractPrimitives",
+  "middlePlane",
+  "planePath",
+  "planeSketchLine",
+  "symmetryPlane",
+  "referenceLine",
+  "referencePoint",
+  "cadPlane",
+  "cadCylinder",
+  "cadCone",
+]);
+const cadCommands = new Set(
+  RIBBON_TABS.find((tab) => tab.id === "cad")!
+    .groups.flatMap((group) => group.tools.map((tool) => tool.id))
+    .concat([
+      "nurbsSurface",
+      "loft",
+      "fillSurface",
+      "sweep",
+      "pipe",
+      "surfaceOffset",
+      "surfaceThicken",
+      "extendSurface",
+      "sewSurfaces",
+      "duplicateFace",
+      "flatten",
+    ]),
+);
+export function ribbonCommandPalette(command: string) {
+  if (freeformCommands.has(command))
+    return {
+      family: "freeform",
+      base: DEFAULT_FREEFORM_COLOR,
+      light: "#dbc5ef",
+      shade: "#775493",
+      edge: "#4c365f",
+    };
+  if (primitiveCommands.has(command))
+    return {
+      family: "reference",
+      base: DEFAULT_REFERENCE_COLOR,
+      light: "#bce4df",
+      shade: "#3e8f86",
+      edge: "#285c57",
+    };
+  if (cadCommands.has(command))
+    return {
+      family: "cad",
+      base: DEFAULT_PART_COLOR,
+      light: "#dedede",
+      shade: "#777777",
+      edge: "#494949",
+    };
+  return { family: "scan", base: gold, light, shade, edge: "#705817" };
+}
 export function RibbonCommandIcon({ command }: { command: string }) {
   const artwork = RIBBON_ICON_ARTWORK[command];
   if (!artwork) throw new Error(`Missing ribbon artwork: ${command}`);
+  const palette = ribbonCommandPalette(command);
+  const colors: Record<string, string> = {
+    [gold]: palette.base,
+    [light]: palette.light,
+    [shade]: palette.shade,
+    "#705817": palette.edge,
+  };
+  const coloredArtwork = artwork.replace(
+    /#(?:edbe48|ffe294|b98628|705817)/g,
+    (color) => colors[color],
+  );
   return (
     <svg
       className="ribbon-cad-icon"
       data-artwork={command}
+      data-palette={palette.family}
       viewBox="0 0 32 32"
       aria-hidden="true"
       focusable="false"
-      stroke="#705817"
+      stroke={palette.edge}
       strokeWidth="1.1"
       strokeLinejoin="round"
       strokeLinecap="round"
-      dangerouslySetInnerHTML={{ __html: artwork }}
+      dangerouslySetInnerHTML={{ __html: coloredArtwork }}
     />
   );
 }

@@ -23,7 +23,11 @@ import {
   Undo2,
   X,
 } from "lucide-react";
-import { DEFAULT_PART_COLOR } from "../appearance";
+import {
+  DEFAULT_PART_COLOR,
+  DEFAULT_FREEFORM_COLOR,
+  DEFAULT_REFERENCE_COLOR,
+} from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
 import { processMesh } from "../processing-client";
 import { CadClient } from "../cad/client";
@@ -1091,7 +1095,7 @@ export function App() {
             name: "Fitted plane reference",
             kind: "plane",
             positions: geometryPositions(geometry),
-            color: DEFAULT_PART_COLOR,
+            color: DEFAULT_REFERENCE_COLOR,
             visible: true,
             opacity: 0.5,
           };
@@ -1233,7 +1237,7 @@ export function App() {
       name: label,
       kind: "mesh",
       positions,
-      color: DEFAULT_PART_COLOR,
+      color: DEFAULT_FREEFORM_COLOR,
       opacity: 1,
       visible: true,
       surfacePatch,

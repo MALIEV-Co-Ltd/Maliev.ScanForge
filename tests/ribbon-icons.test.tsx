@@ -5,6 +5,11 @@ import {
   RibbonCommandIcon,
   RIBBON_ICON_ARTWORK,
 } from "../src/ui/RibbonCommandIcon";
+import {
+  DEFAULT_FREEFORM_COLOR,
+  DEFAULT_PART_COLOR,
+  DEFAULT_REFERENCE_COLOR,
+} from "../src/appearance";
 
 describe("complete ribbon artwork", () => {
   const commands = [
@@ -53,5 +58,33 @@ describe("complete ribbon artwork", () => {
     expect(() =>
       renderToStaticMarkup(<RibbonCommandIcon command="unregistered" />),
     ).toThrow("Missing ribbon artwork");
+  });
+  it("uses purple authoring geometry and grey CAD geometry throughout their tabs", () => {
+    for (const [tabId, family, color] of [
+      ["freeform", "freeform", DEFAULT_FREEFORM_COLOR],
+      ["cad", "cad", DEFAULT_PART_COLOR],
+    ]) {
+      const tab = RIBBON_TABS.find((tab) => tab.id === tabId)!;
+      for (const tool of tab.groups.flatMap((group) => group.tools)) {
+        const markup = renderToStaticMarkup(
+          <RibbonCommandIcon command={tool.id} />,
+        );
+        expect(markup).toContain(`data-palette="${family}"`);
+        expect(markup).toContain(color);
+        expect(markup).not.toContain("#edbe48");
+      }
+    }
+  });
+  it("distinguishes reference primitives from STEP-exportable primitive solids", () => {
+    for (const command of ["fitPlane", "fitCylinder", "fitCone", "fitSphere"]) {
+      const markup = renderToStaticMarkup(
+        <RibbonCommandIcon command={command} />,
+      );
+      expect(markup).toContain('data-palette="reference"');
+      expect(markup).toContain(DEFAULT_REFERENCE_COLOR);
+    }
+    expect(
+      renderToStaticMarkup(<RibbonCommandIcon command="primitive" />),
+    ).toContain(DEFAULT_PART_COLOR);
   });
 });
