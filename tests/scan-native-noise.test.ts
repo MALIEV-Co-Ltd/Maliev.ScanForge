@@ -11,6 +11,7 @@ import selected2 from "./fixtures/noise-annular-selected-2.json";
 import selected4 from "./fixtures/noise-annular-selected-4.json";
 import selected5 from "./fixtures/noise-annular-selected-5.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
+import selectedBoundaryOff from "./fixtures/noise-annular-selected-boundary-off.json";
 import {
   reduceScanNoise,
   reduceScanNoiseAsync,
@@ -33,6 +34,11 @@ it.each([
   selected4,
   selected5,
   boundaryOff,
+  ...selectedBoundaryOff.cases.map((capture) => ({
+    ...capture,
+    positions: selectedBoundaryOff.positions,
+    selection: selectedBoundaryOff.selection,
+  })),
 ])(
   "production async noise path matches native $iterations-iteration capture, selection-only $selectionOnly",
   async (capture) => {
@@ -92,7 +98,18 @@ it.each([fixture, whole2, whole3, boundaryOff])(
   },
 );
 
-it.each([selected1, selected2, selected3, selected4, selected5])(
+it.each([
+  selected1,
+  selected2,
+  selected3,
+  selected4,
+  selected5,
+  ...selectedBoundaryOff.cases.map((capture) => ({
+    ...capture,
+    positions: selectedBoundaryOff.positions,
+    selection: selectedBoundaryOff.selection,
+  })),
+])(
   "matches native $iterations-iteration selection-only smoothing including shared seam vertices",
   (capture) => {
     const source = new Float32Array(capture.positions);
@@ -101,10 +118,20 @@ it.each([selected1, selected2, selected3, selected4, selected5])(
       iterations: capture.iterations,
       selection,
       selectionOnly: true,
-      applyBoundaryEdges: true,
+      applyBoundaryEdges: capture.applyBoundaryEdges,
     });
     expect(Array.from(result.positions)).toEqual(capture.nativeOutput);
     const marked = new Set<string>();
+    const locked = new Set<string>();
+    if (!capture.applyBoundaryEdges) {
+      const topology = analyzeMesh(source, { tolerance: 1e-6 });
+      for (const uses of topology.edges.values())
+        if (uses.length === 1)
+          for (const id of [uses[0].from, uses[0].to])
+            locked.add(
+              Array.from(topology.vertices.slice(id * 3, id * 3 + 3)).join(","),
+            );
+    }
     for (let i = 0; i < source.length; i += 3)
       if (selection[Math.floor(i / 9)])
         marked.add(Array.from(source.slice(i, i + 3)).join(","));
@@ -112,7 +139,10 @@ it.each([selected1, selected2, selected3, selected4, selected5])(
     for (let i = 0; i < source.length; i += 3) {
       const before = Array.from(source.slice(i, i + 3));
       const after = Array.from(result.positions.slice(i, i + 3));
-      if (!marked.has(before.join(","))) expect(after).toEqual(before);
+      if (!marked.has(before.join(",")) || locked.has(before.join(",")))
+        expect(new Uint8Array(result.positions.slice(i, i + 3).buffer)).toEqual(
+          new Uint8Array(source.slice(i, i + 3).buffer),
+        );
       else if (
         !selection[Math.floor(i / 9)] &&
         before.some((v, axis) => v !== after[axis])

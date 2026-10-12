@@ -176,6 +176,48 @@ export function nativeNoiseVertices(
     }
   }
   let vertices = Float64Array.from(topology.vertices, f32);
+  // Corrections need their own mean and complete means of adjacent vertices.
+  // Preserve facet order, including repeated boundary contributions, while
+  // omitting work that cannot influence the selected result.
+  const corrected = new Uint8Array(count);
+  const neededMeans = new Uint8Array(count);
+  for (let id = 0; id < count; id++) {
+    check(options, id);
+    if (
+      movable[id] &&
+      counts[id] &&
+      (applyBoundaryEdges || !boundaryVertices[id])
+    )
+      corrected[id] = neededMeans[id] = 1;
+  }
+  for (let i = 0; i < triangles.length; i += 3) {
+    check(options, i / 3);
+    for (let corner = 0; corner < 3; corner++) {
+      const u = triangles[i + corner];
+      const v = triangles[i + ((corner + 1) % 3)];
+      if (corrected[u]) neededMeans[v] = 1;
+      if (corrected[v]) neededMeans[u] = 1;
+    }
+  }
+  const meanFaces =
+    selection || !applyBoundaryEdges ? ([] as number[]) : undefined;
+  const correctionFaces = meanFaces ? ([] as number[]) : undefined;
+  if (meanFaces && correctionFaces)
+    for (let i = 0; i < triangles.length; i += 3) {
+      check(options, i / 3);
+      if (
+        neededMeans[triangles[i]] ||
+        neededMeans[triangles[i + 1]] ||
+        neededMeans[triangles[i + 2]]
+      )
+        meanFaces.push(i / 3);
+      if (
+        corrected[triangles[i]] ||
+        corrected[triangles[i + 1]] ||
+        corrected[triangles[i + 2]]
+      )
+        correctionFaces.push(i / 3);
+    }
   const means = new Float64Array(vertices.length);
   const residuals = new Float64Array(vertices.length);
   for (let iteration = 0; iteration < iterations; iteration++) {
@@ -183,38 +225,56 @@ export function nativeNoiseVertices(
     options.onProgress?.(iteration / iterations, "Reducing mesh noise");
     means.fill(0);
     residuals.fill(0);
-    for (let i = 0; i < triangles.length; i += 3) {
-      check(options, i / 3);
+    for (
+      let face = 0;
+      face < (meanFaces?.length ?? triangles.length / 3);
+      face++
+    ) {
+      check(options, face);
+      const i = (meanFaces?.[face] ?? face) * 3;
       for (let corner = 0; corner < 3; corner++) {
         const u = triangles[i + corner];
         const v = triangles[i + ((corner + 1) % 3)];
+        if (!neededMeans[u] && !neededMeans[v]) continue;
         for (let axis = 0; axis < 3; axis++) {
-          means[u * 3 + axis] += vertices[v * 3 + axis];
-          means[v * 3 + axis] += vertices[u * 3 + axis];
-          if (boundaryEdges[i + corner]) {
+          if (neededMeans[u]) {
             means[u * 3 + axis] += vertices[v * 3 + axis];
+            if (boundaryEdges[i + corner])
+              means[u * 3 + axis] += vertices[v * 3 + axis];
+          }
+          if (neededMeans[v]) {
             means[v * 3 + axis] += vertices[u * 3 + axis];
+            if (boundaryEdges[i + corner])
+              means[v * 3 + axis] += vertices[u * 3 + axis];
           }
         }
       }
     }
     for (let id = 0; id < count; id++)
-      if (counts[id])
+      if (neededMeans[id] && counts[id])
         for (let axis = 0; axis < 3; axis++)
           means[id * 3 + axis] *= 1 / counts[id];
-    for (let i = 0; i < triangles.length; i += 3) {
-      check(options, i / 3);
+    for (
+      let face = 0;
+      face < (correctionFaces?.length ?? triangles.length / 3);
+      face++
+    ) {
+      check(options, face);
+      const i = (correctionFaces?.[face] ?? face) * 3;
       for (let corner = 0; corner < 3; corner++) {
         const u = triangles[i + corner];
         const v = triangles[i + ((corner + 1) % 3)];
+        if (!corrected[u] && !corrected[v]) continue;
         for (let axis = 0; axis < 3; axis++) {
-          const du = means[u * 3 + axis] - vertices[u * 3 + axis];
-          const dv = means[v * 3 + axis] - vertices[v * 3 + axis];
-          residuals[u * 3 + axis] += dv;
-          residuals[v * 3 + axis] += du;
-          if (boundaryEdges[i + corner]) {
+          if (corrected[u]) {
+            const dv = means[v * 3 + axis] - vertices[v * 3 + axis];
             residuals[u * 3 + axis] += dv;
+            if (boundaryEdges[i + corner]) residuals[u * 3 + axis] += dv;
+          }
+          if (corrected[v]) {
+            const du = means[u * 3 + axis] - vertices[u * 3 + axis];
             residuals[v * 3 + axis] += du;
+            if (boundaryEdges[i + corner]) residuals[v * 3 + axis] += du;
           }
         }
       }
@@ -222,12 +282,7 @@ export function nativeNoiseVertices(
     const next = vertices.slice();
     for (let id = 0; id < count; id++) {
       check(options, id);
-      if (
-        !movable[id] ||
-        !counts[id] ||
-        (!applyBoundaryEdges && boundaryVertices[id])
-      )
-        continue;
+      if (!corrected[id]) continue;
       for (let axis = 0; axis < 3; axis++) {
         const index = id * 3 + axis;
         next[index] = f32(

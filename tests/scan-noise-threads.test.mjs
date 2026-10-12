@@ -13,6 +13,7 @@ import whole2 from "./fixtures/noise-annular-whole-2.json";
 import whole3 from "./fixtures/noise-annular-whole-3.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
 import whole1 from "./fixtures/noise-annular-default.json";
+import selectedBoundaryOff from "./fixtures/noise-annular-selected-boundary-off.json";
 // Execute the production child entry point, including structured cloning and
 // transferred result buffers, rather than simulating its message transport.
 const workerSource = ts.transpileModule(
@@ -73,6 +74,11 @@ it.each([
   whole2,
   whole3,
   boundaryOff,
+  ...selectedBoundaryOff.cases.map((capture) => ({
+    ...capture,
+    positions: selectedBoundaryOff.positions,
+    selection: selectedBoundaryOff.selection,
+  })),
 ])(
   "connected neighborhoods crossing CPU shards preserve native $iterations-iteration output, selection=$selectionOnly, boundary=$applyBoundaryEdges",
   async (capture) => {

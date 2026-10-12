@@ -5,10 +5,25 @@ import type {
 } from "../src/processing-client";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
+import selected2 from "./fixtures/noise-annular-selected-2.json";
+import selected4 from "./fixtures/noise-annular-selected-4.json";
+import selected5 from "./fixtures/noise-annular-selected-5.json";
+import selectedBoundaryOff from "./fixtures/noise-annular-selected-boundary-off.json";
 
 afterEach(() => vi.unstubAllGlobals());
 
-it.each([selected1, selected3])(
+it.each([
+  selected1,
+  selected2,
+  selected3,
+  selected4,
+  selected5,
+  ...selectedBoundaryOff.cases.map((capture) => ({
+    ...capture,
+    positions: selectedBoundaryOff.positions,
+    selection: selectedBoundaryOff.selection,
+  })),
+])(
   "dispatches selected $iterations-iteration noise through the production async worker without detaching source",
   async (capture) => {
     const replies: {
@@ -35,6 +50,7 @@ it.each([selected1, selected3])(
           selection,
           selectionOnly: true,
           iterations: capture.iterations,
+          applyBoundaryEdges: capture.applyBoundaryEdges,
           measureDeviation: true,
         },
       },
