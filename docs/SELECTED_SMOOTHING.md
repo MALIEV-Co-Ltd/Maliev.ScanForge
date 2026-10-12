@@ -1,5 +1,24 @@
 # Selected-area smoothing
 
+## Actual CPU-thread verification
+
+The selected-area pool is integrated into the processing worker. A real-thread
+regression gate now executes the production child entry point and target kernel,
+including structured cloning and transferred output buffers. Connected fixture
+vertices cross the two worker partitions; isolated zero-area padding admits the
+existing 300,000-selected-vertex threshold without changing fixture neighborhoods.
+Both workers initialize connectivity once and are reused for iteration counts
+2, 1, 3, 5 and 2. Every operation must finish on both threads, with exactly one
+joined target phase per iteration; serial fallback cannot satisfy this gate.
+
+All threaded outputs are byte-identical to the serial kernel. Two-iteration
+outputs also match the retained native annular export within 0.000001 mm and the
+disconnected-fan export exactly. The other iteration counts verify serial/thread
+equivalence, not additional native exports. Input coordinates remain unchanged,
+and the gate awaits both thread exits. This is correctness coverage of the
+already integrated multicore path, not a new measured speedup or arbitrary-mesh
+parity claim.
+
 Selected-area Smooth now marks every vertex referenced by selected facets, including vertices shared with unselected facets and open boundary loops. Interior targets use the neighboring vertex mean. Concave boundary corners use the distance-weighted endpoint target with a half step; convex and straight boundary corners remain unchanged. Each iteration computes all targets from the old coordinates before publishing Float32 coordinates. The edit command applies two iterations immediately, without the earlier invented strength and iteration controls.
 
 Connectivity does not change. The successor retains indexed adjacency and refreshes geometric diagnostics without vertex welding. Cancellation preserves the input. The ordered neighborhood follows only the fan attached to the first incident facet, including native traversal limits. Disconnected fans sharing a vertex are not averaged together. Pairing at edges with more than two incident facets or inconsistent orientation remains unverified; these edges are treated as open in the port.

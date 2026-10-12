@@ -2,6 +2,20 @@
 
 ## Selected Reduce Noise correction verification
 
+The latest continuation reran both original-instruction selected correction
+probes and compared all ten outputs against the committed fixtures: 8,640
+Float32 coordinates match byte-for-byte. Both mapped allocations were released
+and both probe processes exited. The rebuilt application's accepted five-iteration
+selection-only export with boundary edges locked matches all 864 coordinates
+and digest `7840280ccf8515e6126ce19a018221455fa89025644e6d10be97bd36b952772f`.
+The loaded script is `index-CtPQ7Ql7.js`; browser warnings/errors were empty.
+
+The separate selected-area Smooth pool now also has actual CPU-thread gates;
+see [Selected-area smoothing](SELECTED_SMOOTHING.md). Production build passed
+without warnings/errors, the 85 focused tests passed, and the full suite passed
+9,245 tests across 193 files. These checks preserve existing multicore integration
+and admission limits; they do not establish a new speedup or full native UI parity.
+
 Selection-only correction was freshly re-executed from the original x64 instructions at `0x140a83270` for iterations one through five with boundary smoothing both enabled and disabled. All ten cases use the same 96-facet source and 16 selected facets. All 8,640 Float32 coordinates match the retained references byte-for-byte. The probe verifies mapped-image SHA-256 `e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1`, retains its allocation/object-access/mask/normal-refresh adapters, and releases the mapped allocation. These are numerical captures with supplied weights, anchored by the earlier native UI one/three-iteration exports; they are not ten new native UI exports. REA correction Evidence remains `ev_75efdec4ee313b8fa77832a3b6cb04acb9ff7fa21d5605dd43f542aa9f37ebcc`.
 
 The real-thread reuse gate now covers selected iterations one through five under both boundary policies, interleaved with whole-mesh edits and followed by another selected one-iteration edit. Each worker initializes cached connectivity exactly once, receives fresh weights and masks once per operation, and completes exactly two joined phases per iteration. Every expanded output matches the native coordinate bytes; unselected vertices and source coordinates remain unchanged. The test requires two actual CPU threads, rules out serial fallback, and awaits both exits. This strengthens verification of the already integrated multicore path without changing its arithmetic or admission thresholds.
