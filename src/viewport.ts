@@ -158,6 +158,7 @@ export class Viewport {
   private brushPath: [number, number][] = [];
   private readonly clippingPlane = new THREE.Plane();
   private selectedId: string | null = null;
+  private navigationCursor?: { clientX: number; clientY: number };
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
   private gridSpacing = 10;
@@ -369,19 +370,74 @@ export class Viewport {
   navigate(motion: Motion6D, seconds: number): void {
     if (this.disposed) return;
     this.cancelViewTransition();
-    const selected = this.selectedId
-      ? this.objects.get(this.selectedId)
-      : undefined;
-    const pivot = this.navigationPivot.update(
-      performance.now(),
-      this.bounds,
-      selected?.mesh.visible
-        ? new THREE.Box3().setFromObject(selected.mesh)
-        : undefined,
-    );
+    const now = performance.now();
+    // Resolve once per gesture: moving the cursor or panning must not move the pivot.
+    if (!this.navigationPivot.active(now)) {
+      const visible = [...this.objects.values()].filter(
+        (item) => item.mesh.visible,
+      );
+      const scene = new THREE.Box3();
+      for (const item of visible)
+        scene.union(new THREE.Box3().setFromObject(item.mesh));
+      const selected = this.selectedId
+        ? this.objects.get(this.selectedId)
+        : undefined;
+      let selection: THREE.Box3 | undefined;
+      if (selected?.mesh.visible) {
+        selection = this.triangleSelection?.children.length
+          ? new THREE.Box3().setFromObject(this.triangleSelection)
+          : new THREE.Box3().setFromObject(selected.mesh);
+      }
+      this.navigationPivot.update(
+        now,
+        scene,
+        selection,
+        this.navigationSurfacePoint(),
+      );
+    } else this.navigationPivot.update(now, this.bounds);
+    const pivot = this.navigationPivot.point;
     navigateCamera(this.camera, this.controls.target, motion, seconds, pivot);
     this.controls.update();
     this.invalidate();
+  }
+
+  private navigationSurfacePoint(): THREE.Vector3 | undefined {
+    if (!this.navigationCursor) return;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const { clientX, clientY } = this.navigationCursor;
+    if (
+      !rect.width ||
+      !rect.height ||
+      clientX < rect.left ||
+      clientX > rect.right ||
+      clientY < rect.top ||
+      clientY > rect.bottom
+    )
+      return;
+    this.camera.updateMatrixWorld();
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        -((clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      this.camera,
+    );
+    const meshes = [...this.objects.values()]
+      .filter((item) => item.mesh.visible)
+      .map((item) => item.mesh);
+    for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
+    return this.raycaster
+      .intersectObjects(meshes, false)
+      .find((hit) =>
+        (
+          (
+            hit.object as THREE.Mesh<
+              THREE.BufferGeometry,
+              THREE.MeshStandardMaterial
+            >
+          ).material.clippingPlanes ?? []
+        ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
+      )?.point;
   }
 
   private render = (): void => {
@@ -433,6 +489,11 @@ export class Viewport {
   };
 
   private pointerDown(event: PointerEvent): void {
+    if (event.pointerType !== "touch")
+      this.navigationCursor = {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      };
     Object.assign(
       this.controls.mouseButtons,
       cameraMouseButtons(this.brushing, event),
@@ -483,6 +544,11 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (event.pointerType !== "touch")
+      this.navigationCursor = {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      };
     this.holdMenu?.move(event.clientX, event.clientY);
     if (this.originPicking) {
       this.highlightOrigin(
@@ -561,6 +627,7 @@ export class Viewport {
   }
 
   private pointerLeave = (): void => {
+    this.navigationCursor = undefined;
     this.holdMenu?.cancelHold();
     if (this.originPicking) this.highlightOrigin();
     if (!this.pointer) this.paintOverlay.style.display = "none";

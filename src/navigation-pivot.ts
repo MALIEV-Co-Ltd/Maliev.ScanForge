@@ -9,10 +9,17 @@ export class NavigationPivot {
     return now < this.activeUntil;
   }
 
-  update(now: number, scene: THREE.Box3, selected?: THREE.Box3): THREE.Vector3 {
+  update(
+    now: number,
+    scene: THREE.Box3,
+    selected?: THREE.Box3,
+    surface?: THREE.Vector3,
+  ): THREE.Vector3 {
     if (!this.active(now)) {
       const bounds = selected && !selected.isEmpty() ? selected : scene;
-      if (bounds.isEmpty()) this.point.set(0, 0, 0);
+      if (surface && surface.toArray().every(Number.isFinite))
+        this.point.copy(surface);
+      else if (bounds.isEmpty()) this.point.set(0, 0, 0);
       else bounds.getCenter(this.point);
     }
     this.activeUntil = now + 350;
