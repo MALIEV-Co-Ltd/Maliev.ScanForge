@@ -97,33 +97,49 @@ export function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
       if (dot < angles[v]) angles[v] = dot;
     }
   }
-  let minimum = FLOAT_MAX,
-    maximum = -FLOAT_MAX;
   const threshold = 10 * (Math.PI / 180);
   for (let i = 0; i < angles.length; i++) {
     if (angles[i] !== FLOAT_MAX) {
       angles[i] = Math.acos(Math.max(-1, Math.min(1, angles[i])));
       if (angles[i] > threshold) angles[i] = FLOAT_MAX;
-      else {
-        minimum = Math.min(minimum, angles[i]);
-        maximum = Math.max(maximum, angles[i]);
-      }
     }
   }
+  normalizeNoiseAngles(angles);
+  return averageNoiseAngles(t.triangles, angles, options);
+}
+
+/** Normalize nonnegative noise angles and replace sharp-angle sentinels. */
+export function normalizeNoiseAngles(angles: Float64Array): Float64Array {
+  let minimum = FLOAT_MAX,
+    maximum = -FLOAT_MAX;
+  for (let i = 0; i < angles.length; i++)
+    if (angles[i] !== FLOAT_MAX) {
+      minimum = Math.min(minimum, angles[i]);
+      maximum = Math.max(maximum, angles[i]);
+    }
   for (let i = 0; i < angles.length; i++) {
     if (angles[i] > maximum) angles[i] = maximum;
     if (angles[i] < minimum) angles[i] = minimum;
     if (maximum >= 1.1920928955078125e-7 && angles[i] !== FLOAT_MAX)
       angles[i] *= 1 / maximum;
   }
+  return angles;
+}
+
+/** Ordered neighbor averaging mutates only weights with incident contributors. */
+export function averageNoiseAngles(
+  triangles: Uint32Array,
+  angles: Float64Array,
+  options: MeshProcessingOptions = {},
+): Float64Array {
   const sums = new Float64Array(angles.length);
   const counts = new Uint32Array(angles.length);
-  for (let i = 0; i < t.triangles.length; i += 3) {
+  for (let i = 0; i < triangles.length; i += 3) {
     check(options, i / 3);
     for (let corner = 0; corner < 3; corner++) {
-      const u = t.triangles[i + corner];
+      const u = triangles[i + corner];
       for (let offset = 1; offset <= 2; offset++) {
-        const value = angles[t.triangles[i + ((corner + offset) % 3)]];
+        const value = angles[triangles[i + ((corner + offset) % 3)]];
         if (Math.abs(value) !== FLOAT_MAX) {
           sums[u] += value;
           counts[u]++;
