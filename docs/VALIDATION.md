@@ -571,3 +571,12 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - All 1,680 original bounds-gate/diagonal captures match exactly. Both native routines execute unchanged, without substituted dependencies. The three additional regressions cover interval expansion, inclusive negative-radius contraction and browser input guards. This does not validate bounds acquisition, tree building, triangle projection or whole guide search.
 - The finite native probe released owned executable memory and its exact PID was verified absent. Public fixtures contain only owned input/output facts. No original binary or extracted asset is included.
 - Targeted Prettier and `git diff --check` passed. The loopback preview returned HTTP 200 under its recorded lease. UI bundle content remains unchanged because the recovered query components are not yet bound to reconstruction. Full application parity, physical SpaceMouse and full browser STL workflows over 1GB remain unverified or incomplete.
+
+### Recovered complete triangle query projection - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-triangle-projection.test.ts tests/field-query-bounds.test.ts tests/field-guide-mapping.test.ts --maxWorkers=1`: 3,005 passed in 3 files.
+- `npm test`: 5,706 passed in 99 files.
+- All 832 complete original triangle captures match projected coordinates and distances exactly. Original plane/segment dependencies and security-cookie checking run unchanged. Four additional regressions cover output preservation, interior/exterior projection, one-face projection-to-mapping integration and browser guards. The comparison does not establish spatial-tree construction, whole-query traversal, UI behavior or general application parity.
+- Two finite REA sessions recovered projection dependencies and closed successfully; recorded provider children were verified absent. The finite native probe released owned executable memory and its exact PID was verified absent. The unchanged native/build admission guards were respected; no duplicate analysis worker was launched.
+- Targeted Prettier and `git diff --check` passed. The preview returned HTTP 200 under its recorded lease. Its browser bundle is unchanged because these numerical components remain unbound to reconstruction. Full browser STL workflows over 1GB and physical SpaceMouse remain unverified.
