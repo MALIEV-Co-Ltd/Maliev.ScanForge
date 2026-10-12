@@ -28,7 +28,8 @@ Raw image data, decompilation and probes remain outside this repository.
   source mesh, output mesh, target count and progress owner. The other creates
   a polygon-reduction object inline. Evidence
   `ev_813e0f72a52c536994f34d3b230e5e595ad8c29d0fc944362c4ffafa7b1d0fb6`.
-  The second branch's complete execution remains unresolved.
+  The second branch's static body is now resolved below; its nonzero-state
+  runtime execution has not been captured.
 - Wrapper `0x14038d2a0` reaches `0x140396050`. The latter prepares source
   connectivity and uses 120-byte vertex and 72-byte facet records. It calls
   preparation `0x140394c30`, then collapse `0x140395aa0`, then reconstructs the
@@ -305,7 +306,7 @@ collapse constraints. Raw probe data, allocation cleanup and browser evidence
 remain outside the repository. All 276 native probe allocations were freed.
 Whole-kernel and adapter parity on these fixtures does not establish complete
 Scan Data or application equivalence. Imported-scan ordering/performance,
-global large-mesh parity, complete native deviation-dialog parity and the alternate branch remain open.
+global large-mesh parity, complete native deviation-dialog parity and nonzero Preview switch runtime behavior remain open.
 
 ## Deviation callback extraction and execution
 
@@ -316,8 +317,8 @@ preview. It reports the within-tolerance count divided by all original
 vertices, including unmatched samples in the denominator. This route does not
 pass the deviation threshold into the collapse kernel or change its target.
 It therefore does not establish a displacement-constrained collapse mode.
-The alternative Preview branch and complete dialog event map remain separate
-verification requirements.
+The Preview switch initialization, nonzero-state runtime behavior and complete
+dialog event map remain separate verification requirements.
 
 REA extraction of `0x1405980c0` shows it only enables three comparison controls
 according to the dialog's comparison checkbox; it does not alter the target.
@@ -357,4 +358,14 @@ Count and percentage reduction can now measure deviation after computing the rec
 
 The comparison constructor reads the published reduced triangles in order without another welding or topology pass. Original samples reuse the reduction's cached source index. Native Float32 thresholds remain unchanged in computation; labels use six significant digits to avoid binary precision tails. Comparison is unavailable in the separate conservative displacement-constrained mode.
 
-All 18 retained native adapter captures remain byte-identical through the measured production dispatch. Tests also check source immutability, monotonic progress, cancellation, original-facet color length, worker transfer buffers and absence of repeated topology preparation after actual reductions. The current browser reduced the retained 96-facet annular source at 50 percent with report tolerance 0.1 mm and color threshold 0.05 mm; its exported 432 coordinates exactly matched the native 48-facet capture. The original overlay, reduced-result toggle and close cleanup were checked in the browser. These integration checks do not establish complete native dialog/color output parity; the callback, constructor and query retain their separate captured numerical gates. Global large-mesh reduction, native import ordering and the alternate Preview branch remain unverified.
+All 18 retained native adapter captures remain byte-identical through the measured production dispatch. Tests also check source immutability, monotonic progress, cancellation, original-facet color length, worker transfer buffers and absence of repeated topology preparation after actual reductions. The current browser reduced the retained 96-facet annular source at 50 percent with report tolerance 0.1 mm and color threshold 0.05 mm; its exported 432 coordinates exactly matched the native 48-facet capture. The original overlay, reduced-result toggle and close cleanup were checked in the browser. These integration checks do not establish complete native dialog/color output parity; the callback, constructor and query retain their separate captured numerical gates. Global large-mesh reduction, native import ordering, Preview switch initialization and nonzero-state runtime behavior remain unverified.
+
+## Alternate Preview branch resolved statically
+
+Fresh focused REA assembly of `0x140597d10` covers the entry through its final return at `0x1405980b1`. Evidence is `ev_1f5402c201902e2795f2cb51307d28b7a6469d128a0f66dc01c21616df18709d`. The instruction at `0x140597dee` compares byte `0x14764d899` with zero; the following zero branch jumps to `0x140597ed8`. That block reads the dialog target at `0x280`, passes the source mesh and result mesh, and calls the recovered wrapper `0x14038d2a0` at `0x140597ef2`. An ordinary read of the retained mapped image, independently checked against its SHA-256, finds the switch byte is zero. This is captured-state evidence, not a guarantee about every native session.
+
+The nonzero block from `0x140597dfb` through `0x140597ed6` initializes stack fields and then calls only `0x140163950`, `0x140163210` and `0x140d5b0f0`. It neither loads the source mesh nor the target count within that block. The first helper allocates a 48-byte self-linked sentinel with header `0x101`; the second clears that container; the last frees the sentinel. Their decompilation Evidence IDs are `ev_37c37d1fa7a3d6917e1242bbb50c32a5d6d57ec16d82ecd19d764f5e3c4cf700` and `ev_e1edd5693cf79ed172a791ff07babc6ca5c752b9bb2c2ffcb88353e76fccdf3a`.
+
+Reading vtable `0x140ec3210` supplies the callback addresses. Fresh REA extraction shows `0x140166540` and `0x140166550` return without work, `0x140166530` returns true, and `0x140166570` returns false. The deleting destructor `0x140166580` restores the base vtable and conditionally frees its object. Evidence for the empty computation callback is `ev_83ad00519cc24cfba0ef125fe608bf7d2eaf9eac9c3557dccb96713b90ad0746`. No second reduction invocation is present in the nonzero block's complete assembly. The earlier suggestion of an inline alternate reduction algorithm was an inference from its object setup and is superseded by these bodies and instructions.
+
+The external verifier checks the image digest, switch byte, branch destinations, exact three-call list, source/target loads in the zero block and complete assembly endpoints. It retains all eight REA Evidence IDs and distinguishes byte inspection from REA extraction. The focused profile uses caller-declared function entry seeds and PE exception-table extents; it does not claim whole-image auto-analysis. No new numerical algorithm or production change follows from this trace. Switch initialization and actual nonzero-state runtime behavior still require separate evidence.
