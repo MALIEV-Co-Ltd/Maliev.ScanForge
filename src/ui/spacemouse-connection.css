@@ -1,0 +1,21 @@
+.spacemouse-connected-dot {
+  animation: spacemouse-connected-pulse 2s ease-in-out infinite;
+}
+
+@keyframes spacemouse-connected-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spacemouse-connected-dot {
+    animation: none;
+  }
+}

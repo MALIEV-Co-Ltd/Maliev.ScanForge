@@ -1,4 +1,5 @@
 import { SpaceMouseIcon } from "./SpaceMouseIcon";
+import "./spacemouse-connection.css";
 
 export function SpaceMouseConnection({
   status,

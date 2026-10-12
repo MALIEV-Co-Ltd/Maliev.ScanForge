@@ -206,6 +206,7 @@ export class SpaceMouseController {
   private buttons = 0;
   private lastFrame = 0;
   private receivedMotion = false;
+  private autoReconnect = true;
   preferences = { ...DEFAULT_SPACE_MOUSE };
   constructor(
     private access: HidAccess | undefined,
@@ -218,6 +219,9 @@ export class SpaceMouseController {
     private cancel = (id: number) => cancelAnimationFrame(id),
   ) {
     access?.addEventListener("disconnect", this.unplug);
+    access?.addEventListener("connect", this.plug);
+    if (typeof document !== "undefined")
+      document.addEventListener("visibilitychange", this.resumeMonitor);
   }
   get connected(): boolean {
     return !!this.device;
@@ -230,6 +234,7 @@ export class SpaceMouseController {
   async connect(authorizedOnly = false): Promise<void> {
     if (this.disposed) throw new Error("SpaceMouse controller is closed.");
     if (this.connecting || this.device) return;
+    if (!authorizedOnly) this.autoReconnect = true;
     if (!this.access)
       throw new Error(
         "WebHID is unavailable. Use a supporting browser over HTTPS or localhost.",
@@ -343,12 +348,28 @@ export class SpaceMouseController {
   };
   private unplug = (event: Event): void => {
     if ((event as Event & { device?: HidDevice }).device === this.device)
-      void this.disconnect().catch((error) =>
+      void this.disconnect(false).catch((error) =>
         this.onStatus(`Disconnected: ${String(error)}`),
       );
   };
-  async disconnect(): Promise<void> {
-    this.generation++;
+  /** Monitor already-granted HID permission; never opens a permission chooser. */
+  private monitor = (): void => {
+    if (this.disposed || !this.autoReconnect || !this.access?.getDevices)
+      return;
+    void this.connect(true).catch((error) =>
+      this.onStatus(`SpaceMouse reconnect: ${String(error)}`),
+    );
+  };
+  private plug = (event: Event): void => {
+    const device = (event as Event & { device?: HidDevice }).device;
+    if (device && spaceMouseSpec(device)) this.monitor();
+  };
+  private resumeMonitor = (): void => {
+    if (!document.hidden) this.monitor();
+  };
+  async disconnect(manual = true): Promise<void> {
+    if (manual) this.autoReconnect = false;
+    const generation = ++this.generation;
     if (this.frame !== null) this.cancel(this.frame);
     this.frame = null;
     const device = this.device,
@@ -359,12 +380,16 @@ export class SpaceMouseController {
     this.buttons = 0;
     device?.removeEventListener("inputreport", this.report);
     if (device && openedHere) await device.close();
-    this.onStatus("Disconnected");
+    if (generation === this.generation && !this.device)
+      this.onStatus("Disconnected");
   }
   async dispose(): Promise<void> {
     if (this.disposed) return;
     this.disposed = true;
     this.access?.removeEventListener("disconnect", this.unplug);
+    this.access?.removeEventListener("connect", this.plug);
+    if (typeof document !== "undefined")
+      document.removeEventListener("visibilitychange", this.resumeMonitor);
     await this.disconnect();
   }
 }

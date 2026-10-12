@@ -81,6 +81,102 @@ function fixture() {
   };
 }
 describe("SpaceMouse HID input", () => {
+  it("does not replace reconnected status when an unplugged device closes late", async () => {
+    const f = fixture();
+    await f.controller.connect();
+    let finishClose!: () => void;
+    f.device.close.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          finishClose = resolve;
+        }),
+    );
+    const replacement = new Device();
+    f.access.getDevices = vi.fn(async () => [replacement]);
+    f.access.dispatchEvent(
+      Object.assign(new Event("disconnect"), { device: f.device }),
+    );
+    f.access.dispatchEvent(
+      Object.assign(new Event("connect"), { device: replacement }),
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(f.controller.connected).toBe(true);
+    finishClose();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(f.onStatus.mock.lastCall?.[0]).toContain("Connected:");
+    await f.controller.dispose();
+    expect(replacement.close).toHaveBeenCalledOnce();
+    expect(f.frames.size).toBe(0);
+  });
+  it("monitors attachment and reconnects an authorized device without a chooser", async () => {
+    const f = fixture();
+    f.access.getDevices = vi.fn(async () => [f.device]);
+    f.access.dispatchEvent(
+      Object.assign(new Event("connect"), { device: f.device }),
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(f.controller.connected).toBe(true);
+    expect(f.access.requestDevice).not.toHaveBeenCalled();
+    f.access.dispatchEvent(
+      Object.assign(new Event("disconnect"), { device: f.device }),
+    );
+    await Promise.resolve();
+    expect(f.controller.connected).toBe(false);
+    f.access.dispatchEvent(
+      Object.assign(new Event("connect"), { device: f.device }),
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(f.controller.connected).toBe(true);
+    expect(f.device.open).toHaveBeenCalledTimes(2);
+    await f.controller.dispose();
+    const queries = vi.mocked(f.access.getDevices).mock.calls.length;
+    f.access.dispatchEvent(
+      Object.assign(new Event("connect"), { device: f.device }),
+    );
+    expect(f.access.getDevices).toHaveBeenCalledTimes(queries);
+    expect(f.frames.size).toBe(0);
+  });
+  it("respects a manual disconnect until the user connects again", async () => {
+    const f = fixture();
+    f.access.getDevices = vi.fn(async () => [f.device]);
+    await f.controller.restoreAuthorized();
+    await f.controller.disconnect();
+    f.access.dispatchEvent(
+      Object.assign(new Event("connect"), { device: f.device }),
+    );
+    await Promise.resolve();
+    expect(f.controller.connected).toBe(false);
+    expect(f.access.getDevices).toHaveBeenCalledOnce();
+    await f.controller.connect();
+    expect(f.controller.connected).toBe(true);
+    await f.controller.dispose();
+  });
+  it("checks permission on return to the application and releases monitor listeners", async () => {
+    const page = Object.assign(new EventTarget(), { hidden: false });
+    vi.stubGlobal("document", page);
+    const f = fixture();
+    try {
+      f.access.getDevices = vi.fn(async () => [f.device]);
+      page.hidden = true;
+      page.dispatchEvent(new Event("visibilitychange"));
+      expect(f.access.getDevices).not.toHaveBeenCalled();
+      page.hidden = false;
+      page.dispatchEvent(new Event("visibilitychange"));
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(f.controller.connected).toBe(true);
+      await f.controller.dispose();
+      page.dispatchEvent(new Event("visibilitychange"));
+      expect(f.access.getDevices).toHaveBeenCalledOnce();
+    } finally {
+      await f.controller.dispose();
+      vi.unstubAllGlobals();
+    }
+  });
   it("chooses a motion-report interface instead of a button-only interface", () => {
     const buttons = new Device(),
       motion = new Device();
