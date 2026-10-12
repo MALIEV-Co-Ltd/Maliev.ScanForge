@@ -3,6 +3,11 @@ import { fitPlane, fitSphere, fitCylinder, fitCone } from "./geometry";
 
 /** Operations allocate an indexed topology proportional to mesh size. Run in a worker for large scans. */
 export interface MeshProcessingOptions {
+  topologyCache?: {
+    positions?: Positions;
+    tolerance?: number;
+    topology?: MeshTopology;
+  };
   tolerance?: number;
   signal?: AbortSignal;
   onProgress?: (fraction: number, stage: string) => void;
@@ -75,6 +80,15 @@ export function analyzeMesh(
   options: MeshProcessingOptions = {},
 ): MeshTopology {
   const tolerance = options.tolerance ?? 1e-6;
+  const cache = options.topologyCache;
+  if (
+    cache?.positions === positions &&
+    cache.tolerance === tolerance &&
+    cache.topology
+  ) {
+    checkpoint(options, 0, "Reusing mesh topology");
+    return cache.topology;
+  }
   validate(positions, tolerance);
   checkpoint(options, 0, "Welding vertices");
   const vertices: number[] = [];
@@ -292,7 +306,7 @@ export function analyzeMesh(
       nonManifoldVertices++;
   }
   checkpoint(options, 1, "Topology complete");
-  return {
+  const topology = {
     vertices: new Float64Array(vertices),
     triangles,
     edges,
@@ -307,6 +321,13 @@ export function analyzeMesh(
     duplicateTriangles,
     boundaryEdges,
   };
+  // Cache only the original source, not temporary meshes made during an edit.
+  if (cache && (!cache.positions || cache.positions === positions)) {
+    cache.positions = positions;
+    cache.tolerance = tolerance;
+    cache.topology = topology;
+  }
+  return topology;
 }
 
 export interface OrientationResult {

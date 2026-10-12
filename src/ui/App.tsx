@@ -1,4 +1,6 @@
 import { ViewportTools } from "./ViewportTools";
+import "./ErrorBanner.css";
+import { releaseProcessingSession } from "../processing-session";
 import { ImportProgress } from "./ImportProgress";
 import {
   ScanToolsPanel,
@@ -533,6 +535,8 @@ export function App() {
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
         scanToolAbort.current?.abort();
+        scanEditAbort.current?.abort();
+        releaseProcessingSession();
         importAbort.current?.abort();
         selectionAbort.current?.abort();
         cad.current?.dispose();
@@ -687,7 +691,7 @@ export function App() {
           angleDegrees: selectionAngle,
           allConnected,
         },
-        { signal: controller.signal },
+        { signal: controller.signal, reuseTopology: true },
       )
         .then(async (result) => {
           if (controller.signal.aborted || wandRegion.current !== origin)
@@ -1021,7 +1025,7 @@ export function App() {
                 hidden: selected.meshSelection?.hidden,
               }),
         },
-        { signal: controller.signal },
+        { signal: controller.signal, reuseTopology: true },
       );
       if (!controller.signal.aborted) {
         if (operation === "boundary")
@@ -1093,6 +1097,7 @@ export function App() {
           signal: controller.signal,
           onProgress: (fraction, stage) =>
             setMessage(`${stage} · ${Math.round(fraction * 100)}%`),
+          reuseTopology: true,
         },
       );
       if (controller.signal.aborted) return;
@@ -1101,7 +1106,10 @@ export function App() {
       if (result.scanEdit?.segments)
         createSegments(result.scanEdit.segments, label);
     } catch (error) {
-      if (!controller.signal.aborted) setError(errorText(error));
+      if (!controller.signal.aborted) {
+        setError(errorText(error));
+        setMessage(`${label} failed · original mesh retained`);
+      }
     } finally {
       if (scanEditAbort.current === controller) {
         scanEditAbort.current = null;
@@ -1909,6 +1917,7 @@ export function App() {
             signal: controller.signal,
             onProgress: (fraction, stage) =>
               setMessage(stage + " · " + Math.round(fraction * 100) + "%"),
+            reuseTopology: true,
           },
         );
         if (

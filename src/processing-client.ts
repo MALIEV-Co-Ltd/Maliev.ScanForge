@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { acquireProcessingSession } from "./processing-session";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
@@ -109,6 +110,8 @@ export type ProcessingResponse =
   | { result: ProcessingResult }
   | { error: string };
 export interface ProcessingOptions {
+  /** Geometry arrays must be immutable; replace the array after any edit. */
+  reuseTopology?: boolean;
   signal?: AbortSignal;
   onProgress?: (fraction: number, stage: string) => void;
 }
@@ -123,27 +126,32 @@ export function processMesh(
       new DOMException("Processing cancelled.", "AbortError"),
     );
   return new Promise((resolve, reject) => {
-    const worker = new Worker(
-      new URL("./processing-worker.ts", import.meta.url),
-      { type: "module" },
-    );
+    const createWorker = () =>
+      new Worker(new URL("./processing-worker.ts", import.meta.url), {
+        type: "module",
+      });
+    const session = options.reuseTopology
+      ? acquireProcessingSession(request.positions, createWorker)
+      : undefined;
+    const worker = session?.worker ?? createWorker();
     let settled = false,
       inactivity: ReturnType<typeof setTimeout>;
     const scope = globalThis as typeof globalThis & {
       addEventListener?: (type: string, listener: () => void) => void;
       removeEventListener?: (type: string, listener: () => void) => void;
     };
-    const cleanup = () => {
+    const cleanup = (usable = false) => {
       clearTimeout(inactivity);
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
       scope.removeEventListener?.("pagehide", abort);
-      worker.terminate();
+      if (session) session.release(usable);
+      else worker.terminate();
     };
-    const fail = (error: unknown) => {
+    const fail = (error: unknown, usable = false) => {
       if (settled) return;
       settled = true;
-      cleanup();
+      cleanup(usable);
       reject(error);
     };
     const abort = () =>
@@ -187,7 +195,7 @@ export function processMesh(
         return;
       }
       if ("error" in event.data) {
-        fail(new Error(event.data.error));
+        fail(new Error(event.data.error), true);
         return;
       }
       if (!event.data.result || event.data.result.kind !== request.kind) {
@@ -195,7 +203,7 @@ export function processMesh(
         return;
       }
       settled = true;
-      cleanup();
+      cleanup(true);
       resolve(event.data.result);
     };
     worker.onerror = (event) =>
@@ -259,7 +267,10 @@ export function processMesh(
         copied.sourceTriangleMask = new Uint8Array(copied.sourceTriangleMask);
         transfers.push(copied.sourceTriangleMask.buffer);
       }
-      worker.postMessage(copied, transfers);
+      worker.postMessage(
+        session ? { ...copied, geometryKey: session.key } : copied,
+        transfers,
+      );
     } catch (error) {
       fail(error);
     }

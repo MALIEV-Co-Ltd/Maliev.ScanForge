@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { releaseProcessingSession } from "../src/processing-session";
 import {
   processMesh,
   type ProcessingRequest,
@@ -41,10 +42,92 @@ beforeEach(() => {
   ProcessingWorkerDouble.creates = 0;
 });
 afterEach(() => {
+  releaseProcessingSession();
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("terminates a cached worker on cancellation and isolates concurrent requests", async () => {
+    const controller = new AbortController();
+    const first = processMesh(request, {
+      reuseTopology: true,
+      signal: controller.signal,
+    });
+    const owned = ProcessingWorkerDouble.latest;
+    const second = processMesh(request, { reuseTopology: true });
+    const concurrent = ProcessingWorkerDouble.latest;
+    expect(concurrent).not.toBe(owned);
+    concurrent.reply({ result: { kind: "report", diagnostics: {} } });
+    await second;
+    expect(concurrent.terminated).toBe(true);
+    controller.abort();
+    await expect(first).rejects.toThrow("cancelled");
+    expect(owned.terminated).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("reuses a geometry worker through domain errors, expires idle ownership and invalidates changed geometry", async () => {
+    const first = processMesh(request, { reuseTopology: true });
+    const worker = ProcessingWorkerDouble.latest;
+    worker.reply({ result: { kind: "report", diagnostics: {} } });
+    await first;
+    expect(worker.terminated).toBe(false);
+    const retry = processMesh(request, { reuseTopology: true });
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+    worker.reply({ error: "Patch rejected" });
+    await expect(retry).rejects.toThrow("Patch rejected");
+    expect(worker.terminated).toBe(false);
+    const changed = processMesh(
+      { ...request, positions: positions.slice() },
+      { reuseTopology: true },
+    );
+    expect(worker.terminated).toBe(true);
+    const replacement = ProcessingWorkerDouble.latest;
+    replacement.reply({ result: { kind: "report", diagnostics: {} } });
+    await changed;
+    vi.advanceTimersByTime(60_000);
+    expect(replacement.terminated).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("reuses actual welded topology between inventory and selection, rebuilding changed geometry", async () => {
+    const replies: any[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: any }) => void) | null,
+      postMessage: (message: any) => replies.push(message),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "report",
+        positions: positions.slice(),
+        tolerance: 0.001,
+        geometryKey: 1,
+      },
+    });
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "selectionMorphology",
+        positions: positions.slice(),
+        selection: new Uint8Array([1]),
+        operation: "grow",
+        geometryKey: 1,
+      },
+    });
+    expect(replies.some((r) => r.stage === "Reusing mesh topology")).toBe(true);
+    expect(replies.some((r) => r.stage === "Welding vertices")).toBe(false);
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: positions.slice(),
+        geometryKey: 2,
+      },
+    });
+    expect(replies.some((r) => r.stage === "Welding vertices")).toBe(true);
+  });
   it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
     const selection = new Uint8Array([1]);
     for (const operation of [

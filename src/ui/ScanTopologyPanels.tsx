@@ -92,6 +92,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
         ...operation,
       } satisfies ScanEditRequest;
       const result = await processMesh(request, {
+        reuseTopology: true,
         signal: controller.signal,
         onProgress: (fraction, stage) => {
           if (owner.current === controller)

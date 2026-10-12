@@ -34,6 +34,7 @@ export function observeScanDiagnostics(
     { kind: "report", positions, tolerance: SCAN_TOPOLOGY_TOLERANCE },
     {
       signal: controller.signal,
+      reuseTopology: true,
       onProgress: (fraction, stage) => {
         if (!controller.signal.aborted)
           update({

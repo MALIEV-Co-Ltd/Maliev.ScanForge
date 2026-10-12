@@ -12,6 +12,7 @@ import {
   segmentMesh,
   smoothMesh,
   type MeshTopology,
+  type MeshProcessingOptions,
 } from "./mesh-processing";
 import {
   applyRigidTransform,
@@ -45,7 +46,16 @@ function summarize(topology: MeshTopology): TopologySummary {
     duplicateTriangles: topology.duplicateTriangles,
   };
 }
-scope.onmessage = ({ data: request }) => {
+let geometryKey: number | undefined;
+let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+scope.onmessage = ({ data: incoming }) => {
+  let request = incoming;
+  const key = (incoming as ProcessingRequest & { geometryKey?: number })
+    .geometryKey;
+  if (key === undefined || key !== geometryKey) topologyCache = {};
+  else if (topologyCache.positions)
+    request = { ...incoming, positions: topologyCache.positions };
+  geometryKey = key;
   let lastProgress = -Infinity;
   function progress(fraction: number, stage: string) {
     const now = performance.now();
@@ -61,7 +71,10 @@ scope.onmessage = ({ data: request }) => {
       result.positions = outcome.positions;
       result.diagnostics.summary = outcome.summary;
     } else if (request.kind === "scanEdit") {
-      result.scanEdit = runScanEdit(request, { onProgress: progress });
+      result.scanEdit = runScanEdit(request, {
+        onProgress: progress,
+        topologyCache,
+      });
       result.diagnostics = result.scanEdit.diagnostics;
     } else if (request.kind === "selectionMorphology") {
       result.selection = morphTriangleSelection(
@@ -69,7 +82,11 @@ scope.onmessage = ({ data: request }) => {
         request.selection,
         request.operation,
         request.hidden,
-        { onProgress: progress, tolerance: SCAN_TOPOLOGY_TOLERANCE },
+        {
+          onProgress: progress,
+          tolerance: SCAN_TOPOLOGY_TOLERANCE,
+          topologyCache,
+        },
       );
     } else if (request.kind === "sketchSection") {
       result.sketchSection = extractSketchSection(
@@ -90,6 +107,7 @@ scope.onmessage = ({ data: request }) => {
           angleDegrees: request.angleDegrees,
           allConnected: request.allConnected,
           onProgress: progress,
+          topologyCache,
         },
       );
       result.diagnostics.selectedTriangles = result.selection.reduce(
@@ -101,6 +119,7 @@ scope.onmessage = ({ data: request }) => {
         analyzeMesh(request.positions, {
           tolerance: request.tolerance,
           onProgress: progress,
+          topologyCache,
         }),
       );
     else if (request.kind === "repair") {

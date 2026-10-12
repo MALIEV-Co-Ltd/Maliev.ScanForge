@@ -239,7 +239,26 @@ export function runScanEdit(
     ].includes(r.action)
   )
     throw new Error("Unknown scan edit action.");
-  const o = { ...options, tolerance: r.tolerance ?? options.tolerance };
+  let phaseStart = 0,
+    phaseSpan = 0.35,
+    lastFraction = 0;
+  const o = {
+    ...options,
+    tolerance: r.tolerance ?? options.tolerance,
+    onProgress:
+      r.action === "defeature"
+        ? (fraction: number, stage: string) => {
+            lastFraction = Math.max(
+              lastFraction,
+              phaseStart + Math.min(fraction, 1) * phaseSpan,
+            );
+            options.onProgress?.(
+              lastFraction,
+              `Defeature: ${stage.replace(/Hole filling complete/i, "Seam triangulation ready").replace(/complete/gi, "ready")}`,
+            );
+          }
+        : options.onProgress,
+  };
   const t = analyzeMesh(r.positions, o),
     inventory = inventoryOf(t),
     count = r.positions.length / 9;
@@ -298,8 +317,10 @@ export function runScanEdit(
     for (let f = 0; f < count; f++)
       if (!r.selection[f])
         retained.push(...Array.from(r.positions.slice(f * 9, f * 9 + 9)));
-    const remainder = finiteOutput(retained),
-      rt = analyzeMesh(remainder, o);
+    const remainder = finiteOutput(retained);
+    phaseStart = 0.35;
+    phaseSpan = 0.25;
+    const rt = analyzeMesh(remainder, o);
     const oldEdges = new Set(
       [...t.edges]
         .filter(([, uses]) => uses.length === 1)
@@ -333,6 +354,8 @@ export function runScanEdit(
       throw new Error(
         "Selected patch must have a closed seam separate from existing boundaries.",
       );
+    phaseStart = 0.6;
+    phaseSpan = 0.35;
     const filled = runHoleFill(
       {
         ...r,
@@ -340,13 +363,16 @@ export function runScanEdit(
         action: "fillHoles",
         indices: newLoops,
         mode: "entire",
-        algorithm: r.algorithm ?? "flat",
+        algorithm: r.algorithm ?? "automatic",
       },
       rt,
       o,
     );
     if (filled.diagnostics.filledHoles !== newLoops.length)
-      throw new Error("The selected patch could not be safely repatched.");
+      throw new Error(
+        "The selected patch could not be safely repatched. Its seam may be folded, self-intersecting or overlap existing faces. Try a smaller contiguous selection; the original mesh is retained.",
+      );
+    checkProgress(options, 1, "Defeature complete");
     return {
       ...filled,
       diagnostics: {

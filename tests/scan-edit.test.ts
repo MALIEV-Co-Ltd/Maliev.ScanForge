@@ -36,6 +36,64 @@ const area = (p: Positions) =>
   }).inventory!.components.reduce((sum, c) => sum + c.area, 0);
 const shifted = (p: number[], offset: number, scale = 1) =>
   p.map((v, i) => v * scale + (i % 3 === 0 ? offset : 0));
+it("defeatures a noisy annular selection around an existing hole without claiming success on rejection", () => {
+  const positions: number[] = [],
+    selected: number[] = [];
+  const p = (x: number, y: number) => [
+    x,
+    y,
+    0.02 * Math.sin(x * 1.3 + y * 0.8),
+  ];
+  for (let y = 0; y < 7; y++)
+    for (let x = 0; x < 7; x++) {
+      if (x === 3 && y === 3) continue;
+      positions.push(
+        ...p(x, y),
+        ...p(x + 1, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y + 1),
+      );
+      const inRing = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+      selected.push(Number(inRing), Number(inRing));
+    }
+  const selection = new Uint8Array(selected),
+    progress: [number, string][] = [];
+  expect(() =>
+    runScanEdit(
+      {
+        kind: "scanEdit",
+        action: "defeature",
+        positions,
+        selection,
+        algorithm: "flat",
+      },
+      { onProgress: (f, s) => progress.push([f, s]) },
+    ),
+  ).toThrow("safely repatched");
+  expect(progress.every(([f]) => f < 1)).toBe(true);
+  expect(progress.every(([f], i) => i === 0 || f >= progress[i - 1][0])).toBe(
+    true,
+  );
+  expect(progress.some(([, s]) => s.includes("Hole filling complete"))).toBe(
+    false,
+  );
+  const outcome = runScanEdit({
+    kind: "scanEdit",
+    action: "defeature",
+    positions,
+    selection,
+  });
+  const topology = analyzeMesh(outcome.positions!);
+  expect(topology.boundaryLoops).toHaveLength(1); // Outside perimeter remains, selected hole removed.
+  expect(topology.nonManifoldEdges).toBe(0);
+  expect(topology.inconsistentEdges).toBe(0);
+  const retained = positions.filter((_, i) => !selection[Math.floor(i / 9)]);
+  expect(Array.from(outcome.positions!.slice(0, retained.length))).toEqual(
+    Array.from(new Float32Array(retained)),
+  );
+});
 it("uses consistent adjacency tolerance while projection fit tolerance never rewelds a small hole", () => {
   const positions = [
     0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0005, 0, 0, 1, 1, 0, 0.0005, 1, 0,

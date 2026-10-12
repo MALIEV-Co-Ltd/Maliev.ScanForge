@@ -1,0 +1,18 @@
+/* Keep actionable failures above floating canvas tools without consuming canvas layout. */
+.workbench .error-banner {
+  z-index: 90;
+  bottom: 86px;
+  width: max-content;
+  max-width: min(720px, calc(100vw - 32px));
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+.workbench .error-banner > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  line-height: 1.5;
+}
+.workbench .error-banner > button {
+  flex-shrink: 0;
+}
