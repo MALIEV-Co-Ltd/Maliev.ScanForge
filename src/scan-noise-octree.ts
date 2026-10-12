@@ -179,7 +179,12 @@ function splitNoiseNode(
   prepared: PackedNoiseTree,
   minimumExtent: number,
   maximumDepth: number,
-  budget: { nodes: number },
+  budget: {
+    nodes: number;
+    limit?: number;
+    entries?: number;
+    entryLimit?: number;
+  },
   options: MeshProcessingOptions,
   eager: boolean,
   recursive: boolean,
@@ -221,12 +226,17 @@ function splitNoiseNode(
           d[axis] =
             (points[id * 9 + 6 + axis] - box.center[axis]) * box.inverse[axis];
         }
-        if (noiseTriangleCubeOverlap(a, c, d)) memberships[child].push(id);
+        if (noiseTriangleCubeOverlap(a, c, d)) {
+          budget.entries = (budget.entries ?? 0) + 1;
+          if (budget.entries > (budget.entryLimit ?? Infinity))
+            throw new RangeError("Noise task exceeds its membership budget");
+          memberships[child].push(id);
+        }
       }
     }
     for (let child = 0; child < 8; child++) {
       if (!eager && !memberships[child].length) continue;
-      if (++budget.nodes > 100000)
+      if (++budget.nodes > (budget.limit ?? 100000))
         throw new RangeError("Noise tree exceeds its node budget");
       node.children[child] = {
         ...boxes[child],
@@ -275,7 +285,20 @@ export function refineNoiseOctant(
   minimumExtent = 0.5,
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
+  maximumNodes = 100000,
+  maximumEntries = Infinity,
 ) {
+  if (
+    maximumEntries !== Infinity &&
+    (!Number.isSafeInteger(maximumEntries) || maximumEntries < 1)
+  )
+    throw new RangeError("Noise task membership budget is invalid");
+  if (
+    !Number.isSafeInteger(maximumNodes) ||
+    maximumNodes < 1 ||
+    maximumNodes > 100000
+  )
+    throw new RangeError("Noise task node budget is invalid");
   if (!Number.isInteger(octant) || octant < 0 || octant > 7)
     throw new RangeError("Noise octant must be between zero and seven");
   if (
@@ -291,7 +314,12 @@ export function refineNoiseOctant(
   const node = prepared.root.children[octant];
   if (!node)
     throw new RangeError("Noise root must be partitioned before refinement");
-  const budget = { nodes: 0 };
+  const budget = {
+    nodes: 0,
+    limit: maximumNodes,
+    entries: 0,
+    entryLimit: maximumEntries,
+  };
   if (
     node.triangles.length >= 25 &&
     node.bounds[3] - node.bounds[0] > Math.fround(minimumExtent) &&
@@ -307,5 +335,5 @@ export function refineNoiseOctant(
       false,
       true,
     );
-  return { node, descendants: budget.nodes };
+  return { node, descendants: budget.nodes, memberships: budget.entries };
 }

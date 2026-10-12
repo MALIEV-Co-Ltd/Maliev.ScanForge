@@ -1,4 +1,5 @@
-import { prepareNoiseOctree } from "./scan-noise-octree";
+import { prepareNoiseOctree, type PackedNoiseTree } from "./scan-noise-octree";
+import { prepareNoiseOctreeAsync } from "./scan-noise-tree-parallel";
 import { queryNoiseOctree } from "./scan-noise-octree-query";
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
 
@@ -136,6 +137,38 @@ export function compareNoiseSurface(
     10,
     options,
   );
+  return comparePreparedNoiseSurface(original, prepared, threshold, options);
+}
+
+export async function compareNoiseSurfaceAsync(
+  original: MeshTopology,
+  preview: Float64Array,
+  threshold: number,
+  options: MeshProcessingOptions = {},
+): Promise<NoiseDeviation> {
+  if (!Number.isFinite(threshold) || threshold <= 0)
+    throw new Error("Comparison threshold must be positive and finite.");
+  if (preview.length !== original.vertices.length)
+    throw new Error("Preview coordinates must match indexed vertices.");
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  if (preview.some((value) => !Number.isFinite(value)))
+    throw new Error("Preview coordinates must be finite.");
+  const prepared = await prepareNoiseOctreeAsync(
+    { coordinates: preview, indices: original.triangles },
+    0.5,
+    10,
+    options,
+  );
+  return comparePreparedNoiseSurface(original, prepared, threshold, options);
+}
+
+function comparePreparedNoiseSurface(
+  original: MeshTopology,
+  prepared: PackedNoiseTree,
+  threshold: number,
+  options: MeshProcessingOptions,
+): NoiseDeviation {
   const total = original.vertices.length / 3,
     distances = new Float64Array(total).fill(NaN);
   let matched = 0,

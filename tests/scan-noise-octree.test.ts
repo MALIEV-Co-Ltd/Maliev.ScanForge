@@ -22,6 +22,9 @@ it("independent octant tasks reject invalid input and respect cancellation", () 
     expect(() => refineNoiseOctant(prepared, octant)).toThrow("octant");
   expect(() => refineNoiseOctant(prepared, 0, -1)).toThrow("limits");
   expect(() => refineNoiseOctant(prepared, 0, 0.5, 11)).toThrow("limits");
+  expect(() => refineNoiseOctant(prepared, 0, 0.5, 10, {}, 100000, 0)).toThrow(
+    "membership budget",
+  );
   const controller = new AbortController();
   controller.abort();
   const before = structuredClone(prepared.root);
@@ -32,6 +35,40 @@ it("independent octant tasks reject invalid input and respect cancellation", () 
     partitionNoiseRoot(prepared, { signal: controller.signal }),
   ).toThrow("cancelled");
   expect(prepared.root).toEqual(before);
+});
+
+it("task membership limits stop overlapping expansion before publication", () => {
+  let checked = false;
+  for (const capture of native.cases) {
+    const prepared = packNoiseOctree(
+      capture.points,
+      capture.minextent,
+      capture.maxdepth,
+    );
+    partitionNoiseRoot(prepared);
+    const octant = Object.values(prepared.root.children).findIndex(
+      (node) =>
+        node &&
+        node.triangles.length >= 25 &&
+        node.depth < capture.maxdepth &&
+        node.bounds[3] - node.bounds[0] > Math.fround(capture.minextent),
+    );
+    if (octant < 0) continue;
+    expect(() =>
+      refineNoiseOctant(
+        prepared,
+        octant,
+        capture.minextent,
+        capture.maxdepth,
+        {},
+        100000,
+        1,
+      ),
+    ).toThrow("membership budget");
+    checked = true;
+    break;
+  }
+  expect(checked).toBe(true);
 });
 
 it.each(native.cases)(

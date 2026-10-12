@@ -6,7 +6,11 @@ import {
 } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
 import { nativeNoiseVertices } from "./scan-native-noise";
-import { compareNoiseSurface } from "./scan-noise-deviation";
+import {
+  compareNoiseSurface,
+  compareNoiseSurfaceAsync,
+  type NoiseDeviation,
+} from "./scan-noise-deviation";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
 import { reductionPercentageTarget } from "./scan-reduction-target";
@@ -395,6 +399,7 @@ function finishNoise(
   t: MeshTopology,
   vertices: Float64Array,
   options: NoiseOptions,
+  measuredPreview?: NoiseDeviation,
 ): ScanToolResult {
   const iterations = options.iterations ?? 1;
   const deviation = options.deviation ?? 0.05;
@@ -410,11 +415,13 @@ function finishNoise(
   let comparison = "";
   let noiseComparison: ScanToolResult["noiseComparison"];
   if (options.measureDeviation) {
-    const measured = compareNoiseSurface(t, vertices, deviation, {
-      ...options,
-      onProgress: (fraction, stage) =>
-        options.onProgress?.(0.9 + fraction * 0.1, stage),
-    });
+    const measured =
+      measuredPreview ??
+      compareNoiseSurface(t, vertices, deviation, {
+        ...options,
+        onProgress: (fraction, stage) =>
+          options.onProgress?.(0.9 + fraction * 0.1, stage),
+      });
     const indexedRgb = new Uint8Array(t.vertices.length);
     for (let id = 0; id < measured.distances.length; id++)
       indexedRgb.set(
@@ -502,5 +509,12 @@ export async function reduceScanNoiseAsync(
     options.applyBoundaryEdges ?? true,
     kernelOptions,
   );
-  return finishNoise(t, vertices, options);
+  const measured = options.measureDeviation
+    ? await compareNoiseSurfaceAsync(t, vertices, options.deviation ?? 0.05, {
+        ...options,
+        onProgress: (fraction, stage) =>
+          options.onProgress?.(0.9 + fraction * 0.1, stage),
+      })
+    : undefined;
+  return finishNoise(t, vertices, options, measured);
 }
