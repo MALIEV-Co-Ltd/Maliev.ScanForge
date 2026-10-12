@@ -1,0 +1,4983 @@
+{
+  "origin": "Owned inputs/output facts from original complete first guide association stage with supplied refreshed triangle caches, vertex count and owned vector allocation dependencies; no native refresh/cache/allocation semantics or application workflow",
+  "cases": [
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, -1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, -1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, -1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, -1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 3.4028234663852886e38, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, -1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 3.4028234663852886e38, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, -1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 3.4028234663852886e38, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, -1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 3.4028234663852886e38, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, -1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0, 0.0,
+          3.4028234663852886e38, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, -1, -1, 1, 4, -1, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0, 0.0,
+          3.4028234663852886e38, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, -1, -1, 1, 4, -1, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0, 0.0,
+          3.4028234663852886e38, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, -1, -1, 1, 4, -1, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 0.5,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0, 0.0,
+          3.4028234663852886e38, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, -1, -1, 1, 4, -1, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          1.4142135381698608, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, 1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          1.4142135381698608, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, 1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          1.4142135381698608, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, 1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 3.4028234663852886e38, 0.0,
+          1.4142135381698608, 3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [0, 1, -1, -1, 2, 1, -1, -1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 0.9428090453147888, 0.9428090453147888,
+          0.4714045226573944, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 1.4142135381698608, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 0.9428090453147888, 0.9428090453147888,
+          0.4714045226573944, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 3.4028234663852886e38, 0.0, 0.0, 1.4142135381698608, 0.0,
+          0.0
+        ],
+        "vertexSeeds": [0, 1, -1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.4714045226573944, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.3333333432674408, 0.6666666865348816, 1.1380711793899536,
+          0.8047378659248352, 0.4714045226573944, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 3.4028234663852886e38, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, -1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.3333333432674408, 0.6666666865348816, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 1,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.3333333432674408, 0.6666666865348816, 1.1380711793899536,
+          0.8047378659248352, 0.4714045226573944, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 1,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 3.4028234663852886e38, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, -1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.3333333432674408, 0.6666666865348816, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.9417135715484619,
+          1.2060112953186035, 1.3997243642807007
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.9417135715484619,
+          1.2060112953186035, 1.3997243642807007
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.9417135715484619,
+          1.2060112953186035, 1.3997243642807007
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.9417135715484619,
+          1.2060112953186035, 1.3997243642807007
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.4714045226573944, 0.4714045226573944,
+          0.2357022613286972, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.5690355896949768,
+          0.3333333432674408, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.4714045226573944, 0.4714045226573944,
+          0.2357022613286972, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.2357022613286972, 0.5690355896949768, 0.5690355896949768,
+          0.3333333432674408, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.1666666716337204, 0.3333333432674408, 0.5690355896949768,
+          0.4023689329624176, 0.2357022613286972, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [0.0, 1.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.1666666716337204, 0.3333333432674408, 0.6666666865348816, 0.5,
+          0.3333333432674408, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 2,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.1666666716337204, 0.3333333432674408, 0.5690355896949768,
+          0.4023689329624176, 0.2357022613286972, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 2,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [0.0, 1.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.1666666716337204, 0.3333333432674408, 0.6666666865348816, 0.5,
+          0.3333333432674408, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38
+        ],
+        "vertexSeeds": [-1, -1, -1, -1, -1, -1, -1, -1],
+        "seedPaths": [],
+        "seedPoints": [],
+        "faceDistances": [
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38,
+          3.4028234663852886e38, 3.4028234663852886e38, 3.4028234663852886e38
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.18834273517131805,
+          0.24120227992534637, 0.27994486689567566
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.18834273517131805,
+          0.24120227992534637, 0.27994486689567566
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.18834273517131805,
+          0.24120227992534637, 0.27994486689567566
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": false,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": false,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 3.0, 0.0, 1.4142135381698608, 2.2360680103302,
+          3.1622776985168457
+        ],
+        "vertexSeeds": [0, 1, 1, 1, 2, 1, 1, 1],
+        "seedPaths": [0, 0, 0],
+        "seedPoints": [0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.18834273517131805,
+          0.24120227992534637, 0.27994486689567566
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.0942808985710144, 0.0942808985710144,
+          0.0471404492855072, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.11380711942911148,
+          0.06666667014360428, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 1.4142135381698608, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 3, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.0942808985710144, 0.0942808985710144,
+          0.0471404492855072, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 0.0, 2.0, 0.0, 0.0, 1.4142135381698608, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 1, 1, 3, 2, 1, 5, 4],
+        "seedPaths": [0, 0, 0, 1, 1, 1],
+        "seedPoints": [0, 0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.0, 0.0471404492855072, 0.11380711942911148, 0.11380711942911148,
+          0.06666667014360428, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.03333333507180214, 0.06666667014360428, 0.11380711197853088,
+          0.08047378063201904, 0.0471404492855072, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          0, 1, 0, 2, 3, 4, 2, 5, 6, 7, 5, 8, 9, 1, 3, 10, 4, 6, 10, 11, 7, 8,
+          11, 12, 9, 12
+        ]
+      },
+      "output": {
+        "vertexDistances": [0.0, 1.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.03333333507180214, 0.06666667014360428, 0.13333334028720856,
+          0.10000000149011612, 0.06666667014360428, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 10,
+          "points": [0, 0, 0, 1, 0, 0],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [3, 1, 0],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [0, 1, 0, 2, 1, 0],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [
+          0.0, 1.0, 1.4142135381698608, 0.0, 0.0, 1.0, 0.0, 0.0
+        ],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.03333333507180214, 0.06666667014360428, 0.11380711197853088,
+          0.08047378063201904, 0.0471404492855072, 0.0
+        ]
+      }
+    },
+    {
+      "paths": [
+        {
+          "enabled": true,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [0, -1],
+          "mappedKinds": [1, 0],
+          "mappedVertices": [0, 2]
+        },
+        {
+          "enabled": true,
+          "mode": 0,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [5],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 2,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [1, 1],
+          "mappedVertices": [4, 6]
+        },
+        {
+          "enabled": false,
+          "mode": 1,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        {
+          "enabled": true,
+          "mode": 3,
+          "radius": 10,
+          "points": [],
+          "surfaceFaces": [],
+          "mappedKinds": [],
+          "mappedVertices": []
+        },
+        null
+      ],
+      "positions": [
+        0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0
+      ],
+      "triangles": [0, 1, 4, 1, 5, 4, 1, 2, 5, 2, 6, 5, 2, 3, 6, 3, 7, 6],
+      "adjacency": {
+        "edgeVertices": [
+          0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 5, 2, 6, 3, 6, 3, 7, 4, 5, 5,
+          6, 6, 7
+        ],
+        "vertexEdgeOffsets": [0, 2, 6, 10, 13, 16, 20, 24, 26],
+        "vertexEdges": [
+          1, 0, 4, 3, 2, 0, 7, 6, 5, 2, 9, 8, 5, 10, 3, 1, 11, 10, 6, 4, 12, 11,
+          8, 7, 12, 9
+        ]
+      },
+      "output": {
+        "vertexDistances": [0.0, 1.0, 2.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+        "vertexSeeds": [0, 0, 1, 1, 4, 4, 3, 2],
+        "seedPaths": [0, 1, 1, 1, 2],
+        "seedPoints": [0, 0, 0, 0, 0],
+        "faceDistances": [
+          0.03333333507180214, 0.06666667014360428, 0.13333334028720856,
+          0.10000000149011612, 0.06666667014360428, 0.0
+        ]
+      }
+    }
+  ]
+}
