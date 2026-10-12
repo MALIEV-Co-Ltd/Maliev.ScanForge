@@ -125,6 +125,9 @@ export function decodeSpaceMouseReport(
   buttons?: number;
 } | null {
   const { reportId, data } = report;
+  // Packet layout must not change the device's rotation coordinate system.
+  const rotationSigns: [number, number, number] =
+    spec.productId === 0xc62b ? [1, -1, -1] : [-1, -1, 1];
   const read = (
     offset: number,
     signs: [number, number, number],
@@ -139,12 +142,12 @@ export function decodeSpaceMouseReport(
   if (reportId === 1 && data.byteLength >= 6) {
     return {
       translation: read(0, [1, -1, -1]),
-      ...(data.byteLength >= 12 ? { rotation: read(6, [-1, -1, 1]) } : {}),
+      ...(data.byteLength >= 12 ? { rotation: read(6, rotationSigns) } : {}),
     };
   }
   if (reportId === 2 && data.byteLength >= 6)
     return {
-      rotation: read(0, spec.productId === 0xc62b ? [1, -1, -1] : [-1, -1, 1]),
+      rotation: read(0, rotationSigns),
     };
   if (reportId === 3 && data.byteLength) {
     // Compact reports may include a leading reserved byte.

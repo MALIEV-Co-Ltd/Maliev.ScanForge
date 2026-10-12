@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import * as THREE from "three";
 import {
   SpaceMouseController,
+  decodeSpaceMouseReport,
+  SPACE_MOUSE_DEVICES,
   filteredMotion,
   DEFAULT_SPACE_MOUSE,
   type HidDevice,
@@ -10,6 +12,49 @@ import {
 import { navigateCamera } from "../src/camera-navigation";
 
 describe("SpaceMouse to camera workflow", () => {
+  it.each([-1, 1])(
+    "keeps Pro pitch continuous across packet layouts, with mixed motion (%s)",
+    (direction) => {
+      const spec = SPACE_MOUSE_DEVICES.find(
+        (device) => device.productId === 0xc62b,
+      )!;
+      for (const depth of [0, 175]) {
+        const camera = new THREE.OrthographicCamera(-50, 50, 50, -50);
+        camera.position.set(0, 0, 100);
+        camera.lookAt(0, 0, 0);
+        const target = new THREE.Vector3();
+        let translation: [number, number, number] = [0, 0, 0];
+        for (let frame = 0; frame < 30; frame++) {
+          const combined = frame % 2 === 0;
+          const data = new DataView(new ArrayBuffer(combined ? 12 : 6));
+          if (combined) data.setInt16(2, depth, true);
+          data.setInt16(combined ? 6 : 0, direction * 175, true);
+          const decoded = decodeSpaceMouseReport(spec, {
+            reportId: combined ? 1 : 2,
+            data,
+          })!;
+          translation = decoded.translation ?? translation;
+          const motion = filteredMotion(
+            { translation, rotation: decoded.rotation! },
+            DEFAULT_SPACE_MOUSE,
+          );
+          const previousY = camera.position.y;
+          navigateCamera(camera, target, motion, 0.016, new THREE.Vector3());
+          expect((camera.position.y - previousY) * direction).toBeGreaterThan(
+            0,
+          );
+          expect(camera.position.distanceTo(target)).toBeCloseTo(100);
+        }
+        const depthSpeed = filteredMotion(
+          { translation: [0, -depth / 350, 0], rotation: [0, 0, 0] },
+          DEFAULT_SPACE_MOUSE,
+        ).translation[1];
+        expect(camera.zoom).toBeCloseTo(
+          Math.exp(-depthSpeed * 0.8 * 0.016 * 30),
+        );
+      }
+    },
+  );
   it.each([false, true])(
     "scales actual camera pan, zoom and orbit independently (%s orthographic)",
     (orthographic) => {

@@ -81,6 +81,22 @@ function fixture() {
   };
 }
 describe("SpaceMouse HID input", () => {
+  it.each(SPACE_MOUSE_DEVICES)(
+    "keeps split and combined rotation consistent for $name ($productId)",
+    (spec) => {
+      const combined = new DataView(new ArrayBuffer(12));
+      const split = new DataView(new ArrayBuffer(6));
+      [140, -105, 70].forEach((value, axis) => {
+        combined.setInt16(6 + axis * 2, value, true);
+        split.setInt16(axis * 2, value, true);
+      });
+      expect(
+        decodeSpaceMouseReport(spec, { reportId: 1, data: combined })?.rotation,
+      ).toEqual(
+        decodeSpaceMouseReport(spec, { reportId: 2, data: split })?.rotation,
+      );
+    },
+  );
   it("applies speed changes on the next frame of an already-held cap", async () => {
     const f = fixture();
     try {
