@@ -10,6 +10,8 @@ import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import { ApplicationVersion } from "./ApplicationVersion";
+import { HeaderIconButton } from "./HeaderIconButton";
+import { SaveProjectButton } from "./SaveProjectButton";
 import "./workspace-chrome.css";
 import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
@@ -28,7 +30,6 @@ import * as THREE from "three";
 import {
   Box,
   Circle,
-  Crosshair,
   Download,
   Eye,
   EyeOff,
@@ -38,7 +39,6 @@ import {
   Plus,
   Redo2,
   Ruler,
-  Save,
   ScanLine,
   Settings,
   Trash2,
@@ -2331,53 +2331,38 @@ export function App() {
       <Ribbon
         utilityHeader={
           <header className="header">
-            <ApplicationVersion />
             <div className="header-actions">
-              <button
-                title="Undo"
-                aria-label="Undo"
-                disabled={busy || !history.length}
-                onClick={undo}
-              >
-                <Undo2 size={16} />
-              </button>
-              <button
-                title="Redo"
-                aria-label="Redo"
-                disabled={busy || !future.length}
-                onClick={redo}
-              >
-                <Redo2 size={16} />
-              </button>
-              <button
+              <SpaceMouseConnection
+                compact
+                status={spaceMouseStatus}
+                connected={spaceMouse.current?.connected ?? false}
+                connecting={spaceMouseConnecting}
+                available={!!(navigator as Navigator & { hid?: HidAccess }).hid}
+                onConnect={() => void connectSpaceMouse()}
+                onSettings={() => setSettingsOpen(true)}
+              />
+              <HeaderIconButton
+                label="Open scan"
                 disabled={busy}
                 onClick={() => fileInput.current?.click()}
               >
-                <FolderOpen size={17} />
-                Open scan
-              </button>
-              <button disabled={busy} onClick={save}>
-                <Save size={17} />
-                Save project
-              </button>
-              <button disabled={busy} onClick={exportStep}>
-                <Download size={17} />
-                Export STEP
-              </button>
-              <button
-                aria-label="Object properties"
-                title="Object properties"
-                onClick={() => showTools("properties")}
+                <FolderOpen size={17} aria-hidden="true" />
+              </HeaderIconButton>
+              <SaveProjectButton dirty={dirty} disabled={busy} onSave={save} />
+              <HeaderIconButton
+                label="Export STEP"
+                disabled={busy}
+                onClick={exportStep}
               >
-                <Crosshair size={17} />
-              </button>
-              <button
-                aria-label="Settings"
-                title="Settings"
+                <Download size={17} aria-hidden="true" />
+              </HeaderIconButton>
+              <HeaderIconButton
+                label="Settings"
                 onClick={() => setSettingsOpen(true)}
               >
-                <Settings size={17} />
-              </button>
+                <Settings size={17} aria-hidden="true" />
+              </HeaderIconButton>
+              <ApplicationVersion />
             </div>
           </header>
         }
@@ -3064,16 +3049,6 @@ export function App() {
               </button>
             </div>
           )}
-          <div className="view-controls">
-            <SpaceMouseConnection
-              status={spaceMouseStatus}
-              connected={spaceMouse.current?.connected ?? false}
-              connecting={spaceMouseConnecting}
-              available={!!(navigator as Navigator & { hid?: HidAccess }).hid}
-              onConnect={() => void connectSpaceMouse()}
-              onSettings={() => setSettingsOpen(true)}
-            />
-          </div>
           <div className="canvas-hint">
             {planePicking
               ? "Hover a plane · click to create sketch · hold to select through · Escape cancels"

@@ -141,14 +141,7 @@ export function Ribbon({
           ))}
         </div>
         {utilityHeader && (
-          <div className="header-reveal">
-            <button
-              className="header-reveal-trigger"
-              aria-label="Show project actions"
-              type="button"
-            />
-            {utilityHeader}
-          </div>
+          <div className="header-utilities">{utilityHeader}</div>
         )}
       </div>
       <div className="ribbon-tools-shell">

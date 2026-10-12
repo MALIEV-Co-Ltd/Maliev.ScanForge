@@ -1,4 +1,4 @@
-import { Joystick } from "lucide-react";
+import { SpaceMouseIcon } from "./SpaceMouseIcon";
 
 export function SpaceMouseConnection({
   status,
@@ -7,6 +7,7 @@ export function SpaceMouseConnection({
   available,
   onConnect,
   onSettings,
+  compact = false,
 }: {
   status: string;
   connected: boolean;
@@ -14,6 +15,7 @@ export function SpaceMouseConnection({
   available: boolean;
   onConnect: () => void;
   onSettings: () => void;
+  compact?: boolean;
 }) {
   const label = connecting
     ? "Connecting SpaceMouse…"
@@ -23,9 +25,10 @@ export function SpaceMouseConnection({
         ? "SpaceMouse settings"
         : "Connect SpaceMouse";
   return (
-    <div className="spacemouse-connection">
+    <div className={`spacemouse-connection${compact ? " compact" : ""}`}>
       <button
         type="button"
+        aria-label={label}
         disabled={connecting || !available}
         onClick={connected ? onSettings : onConnect}
         title={
@@ -36,10 +39,23 @@ export function SpaceMouseConnection({
               : "SpaceMouse requires Chrome or Edge over HTTPS or localhost."
         }
       >
-        <Joystick size={15} aria-hidden="true" />
-        {label}
+        <SpaceMouseIcon />
+        {compact && (
+          <span className="header-tooltip" role="tooltip">
+            {label}
+          </span>
+        )}
+        {!compact && label}
+        {compact && connected && (
+          <i className="spacemouse-connected-dot" aria-hidden="true" />
+        )}
       </button>
-      <small role="status" aria-live="polite" title={status}>
+      <small
+        className={compact ? "visually-hidden" : undefined}
+        role="status"
+        aria-live="polite"
+        title={status}
+      >
         {connecting
           ? "Choose your device in the browser dialog"
           : !available

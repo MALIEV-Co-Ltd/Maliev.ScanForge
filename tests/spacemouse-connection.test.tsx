@@ -11,6 +11,20 @@ const defaults = {
   onSettings: () => {},
 };
 describe("viewport SpaceMouse connection", () => {
+  it("provides a compact action with an accessible name and live status", () => {
+    const html = renderToStaticMarkup(
+      <SpaceMouseConnection
+        {...defaults}
+        compact
+        connected
+        status="Receiving motion: device"
+      />,
+    );
+    expect(html).toContain('aria-label="SpaceMouse settings"');
+    expect(html).toContain('class="spacemouse-connection compact"');
+    expect(html).toContain('class="visually-hidden"');
+    expect(html).toContain("spacemouse-connected-dot");
+  });
   it("offers permission directly before a device is authorized", () => {
     const html = renderToStaticMarkup(<SpaceMouseConnection {...defaults} />);
     expect(html).toContain("Connect SpaceMouse");

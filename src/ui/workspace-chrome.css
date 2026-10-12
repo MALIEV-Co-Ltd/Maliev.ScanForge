@@ -55,6 +55,124 @@
 .application-version svg {
   color: #72bd89;
 }
+.ribbon .ribbon-tab-row {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ribbon .header-utilities {
+  flex: 1 0 260px;
+  min-width: 0;
+}
+.ribbon .header-utilities .header {
+  position: static;
+  width: 100%;
+  height: auto;
+  gap: 0;
+  border: 0;
+  box-shadow: none;
+  justify-content: flex-end;
+}
+.ribbon .header-utilities .header-actions {
+  display: flex;
+  margin-left: auto;
+  width: auto;
+  gap: 5px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.ribbon .header-actions button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 4px;
+}
+.ribbon .header-actions .application-version {
+  margin-left: 6px;
+  min-height: 30px;
+}
+.header-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 45;
+  right: 0;
+  top: calc(100% + 6px);
+  padding: 5px 8px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 3px 10px #0003;
+}
+.header-actions button:hover .header-tooltip,
+.header-actions button:focus-visible .header-tooltip {
+  display: block;
+}
+.header-actions .spacemouse-connected-dot {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #72bd89;
+}
+.header-actions .spacemouse-connection.compact small {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.save-project-action {
+  position: relative;
+}
+.ribbon .needs-save button {
+  color: var(--text);
+  border-color: #b18b42;
+  animation: save-reminder-pulse 3s ease-in-out infinite;
+}
+.save-reminder {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+  padding: 3px 7px;
+  border: 1px solid #b18b42;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  white-space: nowrap;
+  font-size: 10px;
+  pointer-events: none;
+}
+.save-project-action:hover .save-reminder,
+.save-project-action:focus-within .save-reminder,
+.header-actions:has(button:hover) .save-reminder,
+.header-actions:has(button:focus-visible) .save-reminder {
+  visibility: hidden;
+}
+@keyframes save-reminder-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 #e2b65f00;
+  }
+  50% {
+    box-shadow: 0 0 0 3px #e2b65f44;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon .needs-save button {
+    animation: none;
+  }
+}
 .status-project-name {
   display: flex;
   align-items: center;
