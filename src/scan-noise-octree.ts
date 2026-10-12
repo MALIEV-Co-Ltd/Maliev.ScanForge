@@ -53,13 +53,31 @@ export function buildNoiseOctree(
       b[a + 3] = Math.max(b[a + 3], t[a + 3]);
     }
   const padding = 0.009999999776482582;
-  const bounds: NoiseBounds = [
+  const padded: NoiseBounds = [
     Math.fround(b[0] - padding),
     Math.fround(b[1] - padding),
     Math.fround(b[2] - padding),
     Math.fround(b[3] + padding),
     Math.fround(b[4] + padding),
     Math.fround(b[5] + padding),
+  ];
+  const half = Math.fround(
+    Math.max(
+      Math.fround(padded[3] - padded[0]),
+      Math.fround(padded[4] - padded[1]),
+      Math.fround(padded[5] - padded[2]),
+    ) * 0.5,
+  );
+  const midpoint = [0, 1, 2].map((axis) =>
+    Math.fround(Math.fround(padded[axis] + padded[axis + 3]) * 0.5),
+  );
+  const bounds: NoiseBounds = [
+    Math.fround(midpoint[0] - half),
+    Math.fround(midpoint[1] - half),
+    Math.fround(midpoint[2] - half),
+    Math.fround(midpoint[0] + half),
+    Math.fround(midpoint[1] + half),
+    Math.fround(midpoint[2] + half),
   ];
   const root: NoiseTreeNode = {
     bounds,
@@ -79,6 +97,9 @@ export function buildNoiseOctree(
     children: {},
   };
   let nodes = 0;
+  const a = [0, 0, 0],
+    c = [0, 0, 0],
+    d = [0, 0, 0];
   const split = (node: NoiseTreeNode, eager: boolean) => {
     const boxes = Array.from({ length: 8 }, (_, child) =>
       noiseOctantBox(node.bounds, child),
@@ -98,13 +119,15 @@ export function buildNoiseOctree(
           t[2] > b[5]
         )
           continue;
-        const normalized = points[id].map((p) =>
-          p.map((v, a) => (v - box.center[a]) * box.inverse[a]),
-        );
-        if (
-          noiseTriangleCubeOverlap(normalized[0], normalized[1], normalized[2])
-        )
-          memberships[child].push(id);
+        for (let axis = 0; axis < 3; axis++) {
+          a[axis] =
+            (points[id][0][axis] - box.center[axis]) * box.inverse[axis];
+          c[axis] =
+            (points[id][1][axis] - box.center[axis]) * box.inverse[axis];
+          d[axis] =
+            (points[id][2][axis] - box.center[axis]) * box.inverse[axis];
+        }
+        if (noiseTriangleCubeOverlap(a, c, d)) memberships[child].push(id);
       }
     }
     for (let child = 0; child < 8; child++) {
