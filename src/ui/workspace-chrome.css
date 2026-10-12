@@ -3,6 +3,11 @@
   align-items: center;
   gap: 6px;
 }
+.objects-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 400;
+}
 .origin-tree {
   padding: 8px 12px;
   border-bottom: 1px solid var(--border);

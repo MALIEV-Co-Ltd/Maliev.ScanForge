@@ -2771,10 +2771,10 @@ export function App() {
           <div className="objects-panel">
             <h2>
               Objects <Layers size={15} />
+              <span className="objects-count">
+                {entities.length + savedSketches.length}
+              </span>
             </h2>
-            <div className="tree-heading">
-              Objects <span>{entities.length + savedSketches.length}</span>
-            </div>
             <CoordinateSystem
               visible={originVisible}
               onVisible={setOriginVisible}
