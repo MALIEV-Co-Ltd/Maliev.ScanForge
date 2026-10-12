@@ -15,9 +15,15 @@ export interface ReductionWorkingVertex extends ReductionVertex {
 export function prepareReductionMesh(
   coordinates: ArrayLike<number>,
   triangles: ArrayLike<number>,
+  checkpoint?: () => void,
 ) {
+  let work = 0;
+  const check = () => {
+    if (work++ % 4096 === 0) checkpoint?.();
+  };
   const vertices: ReductionWorkingVertex[] = [];
-  for (let id = 0; id < coordinates.length / 3; id++)
+  for (let id = 0; id < coordinates.length / 3; id++) {
+    check();
     vertices.push({
       point: [
         coordinates[id * 3],
@@ -29,8 +35,10 @@ export function prepareReductionMesh(
       offset: 0,
       count: 0,
     });
+  }
   const faces: ReductionWorkingFace[] = [];
   for (let corner = 0; corner < triangles.length; corner += 3) {
+    check();
     const ids: [number, number, number] = [
       triangles[corner],
       triangles[corner + 1],
@@ -84,6 +92,7 @@ export function prepareReductionMesh(
   }
   let minimum = 3.4028234663852886e38;
   for (const face of faces) {
+    check();
     const [a, b, c] = face.vertices;
     const e0 = reductionCandidate(vertices[a], vertices[b]).cost;
     const e1 = reductionCandidate(vertices[b], vertices[c]).cost;
@@ -96,28 +105,34 @@ export function prepareReductionMesh(
   }
   let offset = 0;
   for (const vertex of vertices) {
+    check();
     vertex.offset = offset;
     offset += vertex.count;
     vertex.count = 0;
   }
   const references: ReductionReference[] = new Array(triangles.length);
   for (let face = 0; face < faces.length; face++) {
+    check();
     for (let corner = 0; corner < 3; corner++) {
       const vertex = vertices[faces[face].vertices[corner]];
       references[vertex.offset + vertex.count++] = { face, corner };
     }
   }
   for (const vertex of vertices) {
+    check();
     const occurrences = new Map<number, number>();
     for (
       let entry = vertex.offset;
       entry < vertex.offset + vertex.count;
       entry++
-    )
+    ) {
+      check();
       for (const id of faces[references[entry].face].vertices)
         occurrences.set(id, (occurrences.get(id) ?? 0) + 1);
+    }
     for (const [id, count] of occurrences)
       if (count === 1) vertices[id].boundary = true;
   }
+  checkpoint?.();
   return { vertices, faces, references, minimum };
 }

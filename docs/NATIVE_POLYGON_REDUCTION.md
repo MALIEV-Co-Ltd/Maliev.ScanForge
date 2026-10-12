@@ -213,7 +213,64 @@ incidence counts and boundary flags as the recovered caller does. Inputs are
 caller-built numerical meshes, not new native UI captures.
 
 Candidate calculation, validity, ordered updates, final compaction and complete
-preparation are now verified components. The remaining numerical integration
-gate is the original pass/collapse loop and whole-mesh output on identical
-sources. Production reduction remains on its previous implementation until
-that gate passes.
+preparation are verified components. The complete-loop comparison below now
+passes on identical indexed sources. Production reduction remains on its
+previous implementation pending the source/output adapter and runtime gates.
+
+## Complete collapse-loop kernel comparisons
+
+`src/scan-native-reduction.ts` assembles the recovered preparation, candidate,
+validity, update and compaction components in the original sequential loop.
+The original preparation and loop were executed on 18 identical indexed input
+meshes: flat/noisy 7-by-7 vertex grids, a closed octahedron and the retained
+annular source. Targets include unchanged counts, odd counts, half counts and
+targets below what the protected mesh can reach. All exported double coordinate
+bits and indexed triangle ordering match. These are kernel executions, not
+new native UI exports or proof of the alternate dialog branch.
+
+Loop evidence is
+`ev_224de1bb6364c28248d2e331a3afd3cdc1e05b8e03b79cad625645b3707e0abb`.
+Periodic compaction/reference rebuilding `0x140394890` was separately extracted,
+evidence `ev_e15307d82a711e67b6c779ad36fc0e2fb225db38e01848e98abf3dd627e9b4d0`.
+Bit-mask resize and reference growth were also extracted. The original loop
+ran with isolated CRT bindings and a no-op progress sink; no geometric call
+was replaced. All 276 temporary allocations were freed, and storage guards
+stayed intact.
+
+The loop caps at 1,000 passes, rebuilds surviving face incidence every 20 passes,
+and uses `pow(pass + 3, 4) * 1e-9`. Candidate edge ordering follows its explicit
+branches rather than a generic sort. Face admission uses `<=`, while an edge
+attempt uses strict `<`. Both endpoints must have clear boundary flags: the
+candidate routine's boundary fallback is not permission to collapse boundary
+edges in this loop. Both endpoint validity checks run before publication; then
+the retained point/quadric and ordered incident references are updated. Removing
+two faces can overshoot odd targets. The annular source stops at 38 faces for
+smaller targets; the grids stop at 24.
+
+The kernel port now checks cancellation during input validation, preparation,
+collapse scans, periodic incidence rebuilding and final compaction. Progress
+is monotonic across preparation, collapse and final publication. Cancellation
+at each stage throws without modifying the caller's coordinates or indices;
+no partial result is published. Shape, finite-coordinate, index and target
+contracts are checked before preparation. The retained coordinate buffer is
+updated only after both endpoint validity checks pass; it avoids copying all
+vertices for every candidate. All 18 native coordinate-bit and index-order
+comparisons remain the numerical gate for these controls.
+
+A bounded Node benchmark reduced connected sinusoidal grids to half their
+input face count. Three warm runs measured medians of 20.9 ms for 2,048 faces,
+80.6 ms for 8,192 faces and 184.3 ms for 20,000 faces. Every cold/warm run
+produced identical output bytes and left its indexed input unchanged. These
+larger synthetic inputs have not been compared with native output. The process
+high-water RSS was 240.1 MiB, including Node and bundling overhead; this is not
+the incremental mesh allocation. Timings exclude import, welding, worker
+transfer, diagnostics and rendering. The object-based working records still
+need a memory gate and larger imported-scan measurements before production
+admission. The benchmark used a 256 MiB heap limit and a 120-second supervisor
+timeout; the bundler service was stopped and the owned process exited.
+
+The kernel port remains separate from production reduction. Integration still
+requires resource and imported-scan performance gates,
+and verification of the source/output adapter, deviation mode and alternate
+branch. Whole-kernel parity on these fixtures does not establish complete
+Scan Data or application equivalence.
