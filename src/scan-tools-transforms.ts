@@ -88,19 +88,29 @@ function validateTransformedTriangles(
       );
   }
 }
+/** Scale dialog values narrow to Float32 before the geometry dispatch. */
+export function nativeScaleFactor(value: number, percentage = false): number {
+  if (!Number.isFinite(value) || value <= 0)
+    throw new Error("Scale factor must be positive and finite.");
+  const factor = Math.fround(percentage ? value / 100 : value);
+  if (!Number.isFinite(factor) || factor <= 0)
+    throw new Error(
+      "Scale factor must remain positive and finite at Float32 precision.",
+    );
+  return factor;
+}
 export function scaleScanMesh(
   p: Positions,
   o: MeshProcessingOptions & { factor: number; center?: Vec3 },
 ): ScanTransformResult {
   validate(p, o);
-  if (!Number.isFinite(o.factor) || o.factor <= 0)
-    throw new Error("Scale factor must be positive and finite.");
+  const factor = nativeScaleFactor(o.factor);
   const center = vector(o.center ?? [0, 0, 0], "Scale center");
   const out = mapPoints(p, o, (v) =>
-    v.sub(center).multiplyScalar(o.factor).add(center),
+    v.sub(center).multiplyScalar(factor).add(center),
   );
   validateTransformedTriangles(p, out, o);
-  return finish(out, `Scaled mesh by ${o.factor}.`, o);
+  return finish(out, `Scaled mesh by ${Number(factor.toPrecision(8))}.`, o);
 }
 export function flipScanNormals(
   p: Positions,

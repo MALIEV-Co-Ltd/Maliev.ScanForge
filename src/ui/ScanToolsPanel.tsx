@@ -174,6 +174,7 @@ export function ScanToolsPanel({
   }
   const [paletteThreshold, setPaletteThreshold] = useState(0.05);
   const [factor, setFactor] = useState(1);
+  const [scaleMode, setScaleMode] = useState<"factor" | "percentage">("factor");
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
   const [resolution, setResolution] = useState(0.5);
   const [tolerance, setTolerance] = useState(10);
@@ -309,7 +310,11 @@ export function ScanToolsPanel({
         });
         break;
       case "scaleMesh":
-        onApply({ kind: tool, factor, center });
+        onApply({
+          kind: tool,
+          factor: scaleMode === "percentage" ? factor / 100 : factor,
+          center,
+        });
         break;
       case "flipNormals":
         onApply({ kind: tool });
@@ -482,8 +487,25 @@ export function ScanToolsPanel({
         )}
         {tool === "scaleMesh" && (
           <>
+            <label>
+              Scale by
+              <select
+                value={scaleMode}
+                onChange={(event) => {
+                  const next = event.target.value as typeof scaleMode;
+                  if (next !== scaleMode)
+                    setFactor((value) =>
+                      next === "percentage" ? value * 100 : value / 100,
+                    );
+                  setScaleMode(next);
+                }}
+              >
+                <option value="factor">Factor</option>
+                <option value="percentage">Percentage</option>
+              </select>
+            </label>
             <Field
-              label="Scale factor"
+              label={scaleMode === "percentage" ? "Scale (%)" : "Scale factor"}
               value={factor}
               min={0.001}
               step={0.1}

@@ -1,6 +1,6 @@
 # Native Scan Data verification
 
-The early inventory below is historical. Subsequent mapped-image extraction recovered defeature and selected smoothing, documented in [DEFEATURE_FIX.md](DEFEATURE_FIX.md) and [SELECTED_SMOOTHING.md](SELECTED_SMOOTHING.md). Reduce Noise numerical, octree and default-palette verification is in [MESH_PARALLELISM.md](MESH_PARALLELISM.md). Current polygon reduction tracing and percentage verification is in [NATIVE_POLYGON_REDUCTION.md](NATIVE_POLYGON_REDUCTION.md). Full tool equivalence remains incomplete.
+The early inventory below is historical. Subsequent mapped-image extraction recovered defeature and selected smoothing, documented in [DEFEATURE_FIX.md](DEFEATURE_FIX.md) and [SELECTED_SMOOTHING.md](SELECTED_SMOOTHING.md). Reduce Noise numerical, octree and default-palette verification is in [MESH_PARALLELISM.md](MESH_PARALLELISM.md). Current polygon reduction tracing and percentage verification is in [NATIVE_POLYGON_REDUCTION.md](NATIVE_POLYGON_REDUCTION.md). Scale factor/percentage input verification is in [NATIVE_SCALE_INPUT.md](NATIVE_SCALE_INPUT.md). Full tool equivalence remains incomplete.
 
 ## Evidence obtained on 2026-10-12
 

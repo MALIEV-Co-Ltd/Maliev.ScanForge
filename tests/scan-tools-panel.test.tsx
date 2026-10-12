@@ -67,6 +67,14 @@ it("uses the requested millimetre defaults", () => {
   expect(render("averageMesh")).toContain('value="10"');
   expect(render("unroll")).toContain('value="0"');
 });
+it("offers factor and percentage Scale input while retaining the origin default", () => {
+  const html = render("scaleMesh");
+  expect(html).toContain("Scale by");
+  expect(html).toContain('value="factor" selected=""');
+  expect(html).toContain('value="percentage">Percentage');
+  expect(html).toContain("Scale factor");
+  expect(html).toContain("Scale center (mm)");
+});
 it("defaults noise reduction to one whole-mesh iteration with boundaries enabled and comparison off", () => {
   const html = render("reduceNoise");
   expect(html).toContain('max="5" step="1" value="1"');

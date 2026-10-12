@@ -1,0 +1,181 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "entry": "0x140808859",
+    "lastInstruction": "0x140808876",
+    "execution": "Original x64 dialog normalization block; RBP adapter and return boundary only",
+    "nativeUiCapture": false,
+    "originalStopByte": "b8",
+    "replacementStopByte": "c3"
+  },
+  "cases": [
+    {
+      "value": 1e-6,
+      "percentage": false,
+      "nativeFactor": 9.999999974752427e-7,
+      "nativeBits": "bd378635"
+    },
+    {
+      "value": 0.0001,
+      "percentage": false,
+      "nativeFactor": 9.999999747378752e-5,
+      "nativeBits": "17b7d138"
+    },
+    {
+      "value": 0.05,
+      "percentage": false,
+      "nativeFactor": 0.05000000074505806,
+      "nativeBits": "cdcc4c3d"
+    },
+    {
+      "value": 0.1,
+      "percentage": false,
+      "nativeFactor": 0.10000000149011612,
+      "nativeBits": "cdcccc3d"
+    },
+    {
+      "value": 0.3333333333333333,
+      "percentage": false,
+      "nativeFactor": 0.3333333432674408,
+      "nativeBits": "abaaaa3e"
+    },
+    {
+      "value": 0.99999997,
+      "percentage": false,
+      "nativeFactor": 0.9999999403953552,
+      "nativeBits": "ffff7f3f"
+    },
+    {
+      "value": 1,
+      "percentage": false,
+      "nativeFactor": 1.0,
+      "nativeBits": "0000803f"
+    },
+    {
+      "value": 1.00000006,
+      "percentage": false,
+      "nativeFactor": 1.0000001192092896,
+      "nativeBits": "0100803f"
+    },
+    {
+      "value": 1.1,
+      "percentage": false,
+      "nativeFactor": 1.100000023841858,
+      "nativeBits": "cdcc8c3f"
+    },
+    {
+      "value": 1.23456789,
+      "percentage": false,
+      "nativeFactor": 1.2345678806304932,
+      "nativeBits": "52069e3f"
+    },
+    {
+      "value": 2,
+      "percentage": false,
+      "nativeFactor": 2.0,
+      "nativeBits": "00000040"
+    },
+    {
+      "value": 3.141592653589793,
+      "percentage": false,
+      "nativeFactor": 3.1415927410125732,
+      "nativeBits": "db0f4940"
+    },
+    {
+      "value": 123.456789,
+      "percentage": false,
+      "nativeFactor": 123.456787109375,
+      "nativeBits": "e0e9f642"
+    },
+    {
+      "value": 1000000,
+      "percentage": false,
+      "nativeFactor": 1000000.0,
+      "nativeBits": "00247449"
+    },
+    {
+      "value": 9.999999999999999e-5,
+      "percentage": true,
+      "nativeFactor": 9.999999974752427e-7,
+      "nativeBits": "bd378635"
+    },
+    {
+      "value": 0.01,
+      "percentage": true,
+      "nativeFactor": 9.999999747378752e-5,
+      "nativeBits": "17b7d138"
+    },
+    {
+      "value": 5.0,
+      "percentage": true,
+      "nativeFactor": 0.05000000074505806,
+      "nativeBits": "cdcc4c3d"
+    },
+    {
+      "value": 10.0,
+      "percentage": true,
+      "nativeFactor": 0.10000000149011612,
+      "nativeBits": "cdcccc3d"
+    },
+    {
+      "value": 33.33333333333333,
+      "percentage": true,
+      "nativeFactor": 0.3333333432674408,
+      "nativeBits": "abaaaa3e"
+    },
+    {
+      "value": 99.999997,
+      "percentage": true,
+      "nativeFactor": 0.9999999403953552,
+      "nativeBits": "ffff7f3f"
+    },
+    {
+      "value": 100,
+      "percentage": true,
+      "nativeFactor": 1.0,
+      "nativeBits": "0000803f"
+    },
+    {
+      "value": 100.00000600000001,
+      "percentage": true,
+      "nativeFactor": 1.0000001192092896,
+      "nativeBits": "0100803f"
+    },
+    {
+      "value": 110.00000000000001,
+      "percentage": true,
+      "nativeFactor": 1.100000023841858,
+      "nativeBits": "cdcc8c3f"
+    },
+    {
+      "value": 123.45678899999999,
+      "percentage": true,
+      "nativeFactor": 1.2345678806304932,
+      "nativeBits": "52069e3f"
+    },
+    {
+      "value": 200,
+      "percentage": true,
+      "nativeFactor": 2.0,
+      "nativeBits": "00000040"
+    },
+    {
+      "value": 314.1592653589793,
+      "percentage": true,
+      "nativeFactor": 3.1415927410125732,
+      "nativeBits": "db0f4940"
+    },
+    {
+      "value": 12345.6789,
+      "percentage": true,
+      "nativeFactor": 123.456787109375,
+      "nativeBits": "e0e9f642"
+    },
+    {
+      "value": 100000000,
+      "percentage": true,
+      "nativeFactor": 1000000.0,
+      "nativeBits": "00247449"
+    }
+  ]
+}
