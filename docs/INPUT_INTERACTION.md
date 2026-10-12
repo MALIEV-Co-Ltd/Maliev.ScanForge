@@ -7,6 +7,7 @@ ScanForge implements an independently authored CAD mouse scheme. REA inspection 
 | Input                               | Behavior                                                          |
 | ----------------------------------- | ----------------------------------------------------------------- |
 | Left click in object mode           | Pick an object or measurement point                               |
+| Double click in object mode         | Pick the object and open Edit Scan                                |
 | Left drag outside mesh edit         | Rotate the view (ScanForge convenience gesture)                   |
 | Ctrl + left drag outside mesh edit  | Pan                                                               |
 | Shift + left drag outside mesh edit | Zoom                                                              |
@@ -18,6 +19,12 @@ ScanForge implements an independently authored CAD mouse scheme. REA inspection 
 | Alt + left drag                     | Subtract the region                                               |
 | Wand click                          | Grow a connected triangle region using the local crease threshold |
 | Ctrl + wheel                        | Change brush pixel radius or wand angle                           |
+
+## Recorded brush workflow - 2026-10-12
+
+The user-supplied 52-second recording shows a red screen-space stroke extending onto empty background, selected facets after release, and quick tools beside the completed selection. The brush now retains coalesced samples and event endpoints, displays that stroke without modifying facets during dragging, commits once on release, and discards cancelled strokes. Alt at release subtracts the complete stroke. Ctrl-wheel adjusts the pixel radius. Double-clicking the model opens Edit Scan outside sketch/alignment/edit mode. The Show quick tools dialog checkbox controls the floating selection toolbar.
+
+Delete, hide, isolate, invert and clear reuse the existing selection operations. Delete changes geometry and model history; the display and selection actions do not add model-history entries. Smooth and Defeature are visibly unavailable because their original algorithms have not been recovered. The recording establishes observable workflow, not the original pixel coverage, occlusion rules, brush scaling function, toolbar ordering, or numerical algorithms. Current coverage remains the independent implementation described below; complete selection parity is not established.
 
 Rectangle/ellipse selection tests selected-mesh self-occlusion at triangle centroids using an indirect BVH. The screen brush tests a continuous pointer path expanded by its pixel radius against projected triangle footprints, then checks visibility at a touched point. Select through skips that depth test. Indirect indexing preserves original triangle slots, including after acceleration construction. Connected growth follows welded manifold edges and treats ambiguous edges as barriers. Selection changes do not modify source positions. Screen acceleration is discarded when geometry changes or its object/viewport is disposed.
 

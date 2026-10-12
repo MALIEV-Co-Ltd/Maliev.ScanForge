@@ -68,7 +68,18 @@ export class Viewport {
   private selectThrough = false;
   private subtract = false;
   private readonly selectionOverlay = document.createElement("div");
-  private lastBrush = 0;
+  private readonly paintOverlay = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg",
+  );
+  private readonly paintTrail = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path",
+  );
+  private readonly paintCursor = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "circle",
+  );
   private brushPath: [number, number][] = [];
   private readonly clippingPlane = new THREE.Plane();
   private readonly triad = document.createElementNS(
@@ -104,7 +115,12 @@ export class Viewport {
     private readonly onBrushScale?: (factor: number) => void,
     private readonly onSelectionError?: (message: string) => void,
     private readonly onContext?: (x: number, y: number) => void,
-    private readonly onSelectionGesture?: (phase: "begin" | "end") => void,
+    private readonly onSelectionGesture?: (
+      phase: "begin" | "end",
+      x?: number,
+      y?: number,
+    ) => void,
+    private readonly onEditScan?: (id: string) => void,
   ) {
     this.pointerDown = this.pointerDown.bind(this);
     this.pointerMove = this.pointerMove.bind(this);
@@ -187,6 +203,20 @@ export class Viewport {
     this.selectionOverlay.className = "screen-selection-overlay";
     this.selectionOverlay.hidden = true;
     container.appendChild(this.selectionOverlay);
+    this.paintOverlay.style.cssText =
+      "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden;display:none";
+    this.paintOverlay.setAttribute("aria-hidden", "true");
+    this.paintTrail.setAttribute("fill", "none");
+    this.paintTrail.setAttribute("stroke", "#c83244");
+    this.paintTrail.setAttribute("stroke-opacity", "0.65");
+    this.paintTrail.setAttribute("stroke-linecap", "round");
+    this.paintTrail.setAttribute("stroke-linejoin", "round");
+    this.paintCursor.setAttribute("fill", "none");
+    this.paintCursor.setAttribute("stroke", "white");
+    this.paintCursor.setAttribute("stroke-width", "1.5");
+    this.paintOverlay.append(this.paintTrail, this.paintCursor);
+    container.appendChild(this.paintOverlay);
+    this.renderer.domElement.addEventListener("dblclick", this.doubleClick);
     this.renderer.domElement.addEventListener(
       "pointerdown",
       this.pointerDown,
@@ -294,13 +324,14 @@ export class Viewport {
       this.onSelectionGesture?.("begin");
     if (this.brushing && this.selectionTool === "brush") {
       this.brushPath = [];
-      this.lastBrush = performance.now();
       this.renderer.domElement.setPointerCapture(event.pointerId);
       this.paintScreen(event);
     }
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (this.brushing && this.selectionTool === "brush")
+      this.drawPaintStroke(event);
     if (this.sketchDrag?.id === event.pointerId) {
       const hit = this.sketchPlanePoint(event.clientX, event.clientY);
       if (hit) {
@@ -322,10 +353,11 @@ export class Viewport {
       const samples = event.getCoalescedEvents?.() ?? [];
       for (const sample of samples.length ? samples : [event])
         this.brushPath.push(this.screenPoint(sample.clientX, sample.clientY));
-      if (performance.now() - this.lastBrush > 80) {
-        this.lastBrush = performance.now();
-        this.paintScreen(event);
-      }
+      const endpoint = this.screenPoint(event.clientX, event.clientY);
+      const last = this.brushPath[this.brushPath.length - 1];
+      if (!last || last[0] !== endpoint[0] || last[1] !== endpoint[1])
+        this.brushPath.push(endpoint);
+      this.drawPaintStroke(event);
     }
     if (
       this.brushing &&
@@ -349,6 +381,7 @@ export class Viewport {
     if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
     this.brushPath = [];
+    this.paintTrail.setAttribute("d", "");
     this.selectionOverlay.hidden = true;
   }
 
@@ -415,7 +448,7 @@ export class Viewport {
       return;
     this.selectionOverlay.hidden = true;
     if (this.brushing) {
-      if (this.selectionTool === "brush") this.paintScreen(event);
+      if (this.selectionTool === "brush") this.paintScreen(event, true);
       else if (this.selectionTool === "wand") this.pickAt(event);
       else
         this.applyScreenRegion(event, {
@@ -424,9 +457,10 @@ export class Viewport {
           end: this.screenPoint(event.clientX, event.clientY),
         });
     } else this.pickAt(event);
-    if (this.brushing && this.selectionTool !== "wand")
-      this.onSelectionGesture?.("end");
+    if (this.brushing)
+      this.onSelectionGesture?.("end", event.clientX, event.clientY);
     this.brushPath = [];
+    this.paintTrail.setAttribute("d", "");
     if (this.renderer.domElement.hasPointerCapture(event.pointerId))
       this.renderer.domElement.releasePointerCapture(event.pointerId);
   }
@@ -789,16 +823,38 @@ export class Viewport {
     const rect = this.renderer.domElement.getBoundingClientRect();
     return [x - rect.left, y - rect.top];
   }
-  private paintScreen(event: PointerEvent): void {
+  private drawPaintStroke(event: PointerEvent): void {
+    const [x, y] = this.screenPoint(event.clientX, event.clientY);
+    this.paintOverlay.style.display = "block";
+    this.paintCursor.setAttribute("cx", String(x));
+    this.paintCursor.setAttribute("cy", String(y));
+    this.paintCursor.setAttribute("r", String(this.brushPixels));
+    this.paintTrail.setAttribute("stroke-width", String(this.brushPixels * 2));
+    this.paintTrail.setAttribute(
+      "d",
+      this.brushPath.length
+        ? this.brushPath
+            .map(([px, py], i) => `${i ? "L" : "M"}${px},${py}`)
+            .join(" ") + ` L${x},${y}`
+        : "",
+    );
+  }
+  private paintScreen(event: PointerEvent, commit = false): void {
     const endpoint = this.screenPoint(event.clientX, event.clientY);
     this.brushPath.push(endpoint);
-    this.applyScreenRegion(event, {
-      kind: "brush",
-      points: this.brushPath,
-      radius: this.brushPixels,
-    });
-    this.brushPath = [endpoint];
+    this.drawPaintStroke(event);
+    if (commit)
+      this.applyScreenRegion(event, {
+        kind: "brush",
+        points: this.brushPath,
+        radius: this.brushPixels,
+      });
   }
+  private doubleClick = (event: MouseEvent): void => {
+    if (this.brushing || this.sketchEditor || this.pickTargetId) return;
+    const id = this.pickAt(event as PointerEvent);
+    if (id) this.onEditScan?.(id);
+  };
   private applyScreenRegion(event: PointerEvent, region: ScreenRegion): void {
     const id = this.selectedId,
       item = id ? this.objects.get(id) : undefined;
@@ -845,7 +901,7 @@ export class Viewport {
       Math.exp(-Math.max(-100, Math.min(100, event.deltaY)) * 0.005),
     );
   };
-  private pickAt = (event: PointerEvent): void => {
+  private pickAt = (event: PointerEvent): string | undefined => {
     const rect = this.renderer.domElement.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     this.raycaster.setFromCamera(
@@ -887,6 +943,7 @@ export class Viewport {
         subtractSelection(this.subtract, event.altKey),
       );
     } else this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
+    return id;
   };
 
   setPickTarget(entityId: string | null): void {
@@ -1063,6 +1120,7 @@ export class Viewport {
     this.invalidate();
   }
   setBrush(enabled: boolean): void {
+    if (!enabled) this.paintOverlay.style.display = "none";
     this.brushing = enabled;
     Object.assign(
       this.controls.mouseButtons,
@@ -1077,6 +1135,8 @@ export class Viewport {
   ): void {
     this.selectionTool = tool;
     this.brushPixels = radiusPixels;
+    this.paintCursor.setAttribute("r", String(radiusPixels));
+    if (tool !== "brush") this.paintOverlay.style.display = "none";
     this.selectThrough = through;
     this.subtract = subtract;
   }
@@ -1291,6 +1351,7 @@ export class Viewport {
     canvas.removeEventListener("pointermove", this.pointerMove);
     canvas.removeEventListener("pointerup", this.pointerUp);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
+    canvas.removeEventListener("dblclick", this.doubleClick);
     window.removeEventListener("keydown", this.sketchKeyDown);
     for (const item of this.objects.values()) {
       item.selectionIndex?.dispose();
@@ -1313,6 +1374,7 @@ export class Viewport {
     canvas.remove();
     this.triad.remove();
     this.selectionOverlay.remove();
+    this.paintOverlay.remove();
     this.landmarkOverlay.remove();
     this.landmarkLabels = [];
   }

@@ -1734,3 +1734,21 @@ dd {
   gap: 8px;
   margin-top: 18px;
 }
+:root .scan-quick-tools {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 2px 8px #0003;
+}
+.scan-quick-tools button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+}

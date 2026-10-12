@@ -38,6 +38,7 @@ function fixture(plane: "OXY" | "OYZ" | "OXZ" = "OXY") {
     camera,
     raycaster: new THREE.Raycaster(),
     selectionOverlay: { hidden: true },
+    paintTrail: { setAttribute: vi.fn() },
     renderer: { domElement: canvas },
     controls: {
       mouseButtons: {},

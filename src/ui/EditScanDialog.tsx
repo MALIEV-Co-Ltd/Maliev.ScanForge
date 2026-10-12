@@ -44,6 +44,8 @@ export interface EditScanDialogProps {
   onDelete: () => void;
   onSave: (name: string) => void;
   onClose: () => void;
+  quickTools?: boolean;
+  onQuickTools?: (enabled: boolean) => void;
 }
 const pending = "Behavior not yet reconstructed; unavailable.";
 /** Groups follow the installed reference manual, pages 26–27 and 219–220.
@@ -258,12 +260,15 @@ export function EditScanDialog(props: EditScanDialogProps) {
       <label className="check">
         <input
           type="checkbox"
-          checked={quickTools}
-          onChange={(event) => setQuickTools(event.target.checked)}
+          checked={props.quickTools ?? quickTools}
+          onChange={(event) => {
+            setQuickTools(event.target.checked);
+            props.onQuickTools?.(event.target.checked);
+          }}
         />
         Show quick tools dialog
       </label>
-      {quickTools && (
+      {!props.onQuickTools && quickTools && (
         <div
           className="button-row"
           role="group"

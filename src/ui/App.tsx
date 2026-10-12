@@ -123,6 +123,7 @@ import {
   type LandmarkAlignment,
 } from "../landmark-alignment";
 import { EditScanDialog } from "./EditScanDialog";
+import { ScanQuickTools } from "./ScanQuickTools";
 import { AdvancedCadTools } from "./AdvancedCadTools";
 import { ParametricTools } from "./ParametricTools";
 import {
@@ -214,6 +215,11 @@ export function App() {
   const [selectionVersion, setSelectionVersion] = useState(0);
   const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
   const [brushRadius, setBrushRadius] = useState(24);
+  const [quickToolsEnabled, setQuickToolsEnabled] = useState(true);
+  const [quickToolsPoint, setQuickToolsPoint] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [selectionTool, setSelectionTool] = useState<
     "brush" | "rectangle" | "circle" | "wand"
   >("brush");
@@ -401,7 +407,10 @@ export function App() {
             setContextMenu({ x: x + rect.left, y: y + rect.top });
           }
         },
-        (phase) => {
+        (phase, x, y) => {
+          if (phase === "begin") setQuickToolsPoint(null);
+          else if (x !== undefined && y !== undefined)
+            setQuickToolsPoint({ x, y });
           const entity = brushRef.current.entity;
           if (entity) {
             const session = sessionFor(entity);
@@ -409,6 +418,19 @@ export function App() {
             else session.end();
             setSelectionVersion((v) => v + 1);
           }
+        },
+        (id) => {
+          if (
+            busyRef.current ||
+            nPointsRef.current ||
+            surfaceFitRef.current ||
+            createSketchRef.current
+          )
+            return;
+          setSelectedId(id);
+          setMode("brush");
+          setWorkspace("mesh");
+          setToolPanelOpen(true);
         },
       );
       viewport.current.setTheme(resolveTheme(theme));
@@ -2488,6 +2510,41 @@ export function App() {
         />
       )}
       <main className="workspace">
+        {workspace === "mesh" &&
+          mode === "brush" &&
+          quickToolsEnabled &&
+          quickToolsPoint &&
+          selectedTriangleCount > 0 &&
+          !busy && (
+            <ScanQuickTools
+              x={quickToolsPoint.x}
+              y={quickToolsPoint.y}
+              onDelete={() => {
+                setQuickToolsPoint(null);
+                editSelection("delete");
+              }}
+              onHide={() => {
+                setQuickToolsPoint(null);
+                selectionVisibility("hide");
+              }}
+              onIsolate={() => {
+                setQuickToolsPoint(null);
+                selectionVisibility("isolate");
+              }}
+              onInvert={() =>
+                changeSelection(
+                  Uint8Array.from(
+                    { length: selected!.positions.length / 9 },
+                    (_, i) => (triangleMask?.[i] ? 0 : 1),
+                  ),
+                )
+              }
+              onClear={() => {
+                setQuickToolsPoint(null);
+                changeSelection(null);
+              }}
+            />
+          )}
         <aside
           className="explorer"
           inert={busy || !!nPoints || !!surfaceFit || !!createSketch}
@@ -2925,6 +2982,8 @@ export function App() {
               allConnected={allConnected}
               onAllConnected={setAllConnected}
               brushRadius={brushRadius}
+              quickTools={quickToolsEnabled}
+              onQuickTools={setQuickToolsEnabled}
               through={selectThrough}
               onThrough={setSelectThrough}
               selectedCount={selectedTriangleCount}
