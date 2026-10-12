@@ -1,5 +1,9 @@
 import { analyzeMesh, type MeshProcessingOptions } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
+import {
+  REDUCTION_PATCH_TRIANGLES,
+  reduceSpatialMesh,
+} from "./scan-reduction-partitions";
 export { repolygonizeScanMesh } from "./scan-tools-remesh";
 
 export interface ScanToolResult {
@@ -87,6 +91,8 @@ export function reduceScanMesh(
     targetTriangles?: number;
     percentage?: number;
     deviation?: number;
+    /** Internal exact-indexed spatial patch; never supplied by the UI. */
+    patchTopology?: import("./mesh-processing").MeshTopology;
   },
 ): ScanToolResult {
   const original = positions.length / 9;
@@ -108,7 +114,37 @@ export function reduceScanMesh(
   const bound =
     options.mode === "deviation" ? (options.deviation ?? 0.05) : Infinity;
   if (options.mode === "deviation") positive(bound, "Deviation");
-  const t = topology(positions, options, Math.min(1e-6, bound / 100)),
+  if (!options.patchTopology && original > REDUCTION_PATCH_TRIANGLES) {
+    try {
+      const result = reduceSpatialMesh(
+        positions,
+        target,
+        options,
+        (patch, localTarget, patchTopology, onProgress) =>
+          reduceScanMesh(patch, {
+            ...options,
+            patchTopology,
+            targetTriangles: localTarget,
+            percentage: options.percentage,
+            onProgress: (fraction) => onProgress(fraction),
+          }).positions,
+      );
+      const count = result.positions.length / 9;
+      return {
+        positions: result.positions,
+        summary: `${original} → ${count} triangles. Spatial patch borders and sharp creases preserved.${bound !== Infinity ? ` Deviation constrained to ${bound} mm within each patch.` : ""}${count > target ? " Reduction stopped at protected topology or patch borders." : ""}${result.protectedPatches ? ` ${result.protectedPatches} unsafe patches retained unchanged.` : ""}`,
+      };
+    } catch (error) {
+      if (error instanceof RangeError)
+        throw new Error(
+          "Insufficient memory for polygon reduction; original mesh retained. Close unused projects or use a device with more available memory.",
+        );
+      throw error;
+    }
+  }
+  const t =
+      options.patchTopology ??
+      topology(positions, options, Math.min(1e-6, bound / 100)),
     v = t.vertices.slice(),
     faces = Array.from({ length: original }, (_, i) =>
       Array.from(t.triangles.slice(i * 3, i * 3 + 3)),
@@ -182,7 +218,8 @@ export function reduceScanMesh(
         continue;
       const pa = point(v, a),
         pb = point(v, b),
-        mid: Vec3 = pa.map((x, i) => (x + pb[i]) / 2) as Vec3;
+        // Check the actual stored coordinates, including Float32 rounding.
+        mid: Vec3 = pa.map((x, i) => Math.fround((x + pb[i]) / 2)) as Vec3;
       const affected = new Set([...incident[a], ...incident[b]]);
       const planeNormal = faceNormal(v, faces[shared[0]]);
       const planeLength = Math.hypot(...planeNormal);
