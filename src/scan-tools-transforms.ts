@@ -2,6 +2,7 @@ import { BufferAttribute, BufferGeometry, Vector3 } from "three";
 import { MeshBVH } from "three-mesh-bvh";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
+import { flippedTopology } from "./scan-flip-topology";
 
 export interface ScanTransformResult {
   positions: Float32Array;
@@ -124,7 +125,17 @@ export function flipScanNormals(
   validate(p, o);
   const out = new Float32Array(p);
   reverseWinding(out);
-  return finish(out, "Flipped all triangle normals.", o);
+  const cache = o.topologyCache;
+  const topology =
+    cache?.positions === p && cache.topology
+      ? flippedTopology(cache.topology, o)
+      : undefined;
+  const result = finish(out, "Flipped all triangle normals.", o);
+  if (topology && cache) {
+    cache.positions = out;
+    cache.topology = topology;
+  }
+  return result;
 }
 export function mirrorScanMesh(
   p: Positions,

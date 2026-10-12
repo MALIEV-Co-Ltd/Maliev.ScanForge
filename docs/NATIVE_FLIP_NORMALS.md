@@ -36,10 +36,25 @@ two flips. The command uses the existing processing-worker request and CAD-sourc
 guard. Browser verification checks direct execution, exports, two flips and Undo
 on the same annular source.
 
+The application now retains welded vertex identity and undirected connectivity
+when a warm topology cache is flipped. It reverses indexed triangle corners and
+directed edge uses, and adopts the successor geometry only after success. The
+ribbon keeps the processing session alive. Subsequent reports reuse the topology
+without welding or reconstruction, including after result buffers are transferred
+to the scene. Noise and selected-smoothing neighborhoods regenerate for the new
+winding. Cancellation and failed callbacks retain the original cache.
+
+A regression with near-coincident corners proves why retaining vertex identity
+matters: rebuilding after reversal chooses a different first-seen welded
+representative. The retained cache preserves the original representative. Five
+native coordinate captures also pass through the production worker followed by
+cached reports, with unchanged diagnostic counts and no rebuilding progress.
+
 These captures use synthetic native object structures. They do not execute native
 UI, notification/history internals or final vertex-normal refresh. The application
-regenerates render normals and invalidates its geometry topology cache after
-winding changes; matching native in-place cache updates remains a separate task.
+regenerates render normals. Its cache is copied on success rather than mutated in
+place; matching native render-normal refresh and directional boundary-cache
+internals remains unverified. Its boundary paths represent undirected loops.
 
 Validation: production build completed with no warnings/errors; 37 focused
 transform, reference, panel and native tests passed, followed by 16 native/ribbon
@@ -48,3 +63,14 @@ passed on the final sources. Scoped formatting and diff checks passed. Browser
 asset `index-C3iKMmHF.js` and manifest `scanforge-9258b8a5743f2ec9` were verified;
 the final 864-coordinate export matches the native annular bytes. Browser
 warnings/errors were empty and temporary cache bypass settings were restored.
+
+Cache-preservation validation: the final production build completed with no
+warnings/errors. The combined native noise, real CPU-thread smoothing, transform,
+worker-client and cache gates passed 97 tests; the expanded cache gate passed all
+nine tests. The full suite passed 9,260 tests across 195 files. Scoped formatting,
+diff and prohibited-name searches passed. Browser asset `index-ktSHhdLm.js` and
+manifest `scanforge-c35591a5b16d896a` were current. Editing diagnostics before and
+after Flip Normals showed one component and two boundary loops; the exported 864
+coordinates match native bytes. Browser warnings/errors were empty. Worker tests
+provide the explicit no-rebuilding assertion; the browser check verifies UI and
+export integration. Temporary browser cache bypass settings were restored.

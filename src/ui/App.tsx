@@ -1507,8 +1507,11 @@ export function App() {
     if (nextWorkspace === "properties") setMode("inspect");
   }
   function closeScanTool() {
-    setScanPreview(null);
     releaseProcessingSession();
+    dismissScanTool();
+  }
+  function dismissScanTool() {
+    setScanPreview(null);
     setNoiseComparison(null);
     scanToolAbort.current?.abort();
     scanReferencePick.current = null;
@@ -3073,7 +3076,7 @@ export function App() {
           scaleMesh: () => openScanTool("scaleMesh"),
           flipNormals: () => {
             if (busy || scanToolAbort.current) return;
-            closeScanTool();
+            dismissScanTool();
             void applyScanTool({ kind: "flipNormals" });
           },
           repolygonize: () => openScanTool("repolygonize"),
