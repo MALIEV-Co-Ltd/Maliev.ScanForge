@@ -66,3 +66,35 @@ Complete native reduction requires identical input mesh/output comparisons,
 candidate and tie ordering, boundaries, nonmanifold behavior, cancellation,
 deviation mode and the alternate branch. The sequential collapse loop must be
 verified before introducing multicore changes that could reorder candidates.
+
+## Collapse candidate numerical verification
+
+Original routine `0x140393e90` was executed on 424 guarded pairs of caller-owned
+120-byte vertex records. It has no calls or imports; no instructions or numerical
+dependencies were replaced. The source image digest is the mapped-image digest
+above. Evidence is
+`ev_2f28b3f32aadc97d910b521b9dcd0299a4f94bf3eb3c453d599d9e8c4bea060b`.
+Input records and context remained unchanged; all output guards remained intact.
+
+The candidate combines the endpoints' symmetric quadrics. It solves the
+three-coordinate system when the determinant magnitude exceeds `2^-23` and the
+two endpoints are not both boundary vertices. Otherwise it evaluates the first
+endpoint, second endpoint and midpoint. Independent equality writes mean the
+midpoint wins when all three costs tie. A single boundary endpoint does not
+force that fallback. These rules differ from freezing all boundary edges.
+
+`src/scan-reduction-candidate.ts` reproduces every captured cost and coordinate
+bit, including signed zero. Cases cover all four boundary combinations, zero
+and singular quadrics, determinant values at/below/above the threshold, and
+seeded sums of plane quadrics with coordinate scales from `0.001` to `1,000,000`.
+Arithmetic grouping follows the original scalar instructions: equivalent
+algebraic reassociation produced different doubles in the first port. The
+fixture stores raw output bytes because JSON module loaders may normalize
+negative zero.
+
+This module is a verified component for the native reduction port. It is not
+yet used by the independently implemented production reducer. Installing it
+alone would leave the native preparation, validity, update and collapse-order
+rules unimplemented. The remaining integration gate is a complete native
+collapse path compared on identical meshes, rather than substituting one
+verified component into a different algorithm and claiming equivalence.
