@@ -106,8 +106,13 @@ export function scaleScanMesh(
   validate(p, o);
   const factor = nativeScaleFactor(o.factor);
   const center = vector(o.center ?? [0, 0, 0], "Scale center");
+  // Native origin scaling multiplies coordinates directly. Adding zero after
+  // the multiply would erase negative-zero bits in the captured output.
+  const atOrigin = center.x === 0 && center.y === 0 && center.z === 0;
   const out = mapPoints(p, o, (v) =>
-    v.sub(center).multiplyScalar(factor).add(center),
+    atOrigin
+      ? v.multiplyScalar(factor)
+      : v.sub(center).multiplyScalar(factor).add(center),
   );
   validateTransformedTriangles(p, out, o);
   return finish(out, `Scaled mesh by ${Number(factor.toPrecision(8))}.`, o);
