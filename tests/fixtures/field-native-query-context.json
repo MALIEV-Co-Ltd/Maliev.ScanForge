@@ -1,0 +1,497 @@
+{
+  "origin": "Owned input/output facts from original complete context accessor with supplied validity/initialization callbacks; actual cache initialization unverified",
+  "cases": [
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": []
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 2,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [true, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 0,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 2,
+      "owners": [false, true, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        },
+        {
+          "kind": "initialize",
+          "context": 1,
+          "owner": true
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "result": 0,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "result": 1,
+      "owners": [false, false, false],
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0,
+          "owner": false
+        }
+      ]
+    }
+  ]
+}
