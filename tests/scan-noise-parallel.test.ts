@@ -5,6 +5,7 @@ import {
   NoiseSmoothingPool,
   noiseRings,
   noiseWorkerCount,
+  selectedNoiseMeans,
 } from "../src/scan-noise-parallel";
 import {
   noiseRange,
@@ -56,13 +57,41 @@ it.each(captures)(
         ? new Uint8Array(capture.selection as number[])
         : undefined;
     const movable = marked(topology, selection);
+    const neededMeans = selection
+      ? selectedNoiseMeans(rings, movable, capture.applyBoundaryEdges)
+      : undefined;
     let vertices = Float64Array.from(topology.vertices, Math.fround);
     const count = vertices.length / 3;
     const split = Math.floor(count / 2);
     for (let step = 0; step < capture.iterations; step++) {
       const means = new Float64Array(vertices.length);
-      means.set(noiseRange(rings, 0, split, vertices));
-      means.set(noiseRange(rings, split, count, vertices), split * 3);
+      means.set(
+        noiseRange(
+          rings,
+          0,
+          split,
+          vertices,
+          undefined,
+          undefined,
+          undefined,
+          true,
+          neededMeans,
+        ),
+      );
+      means.set(
+        noiseRange(
+          rings,
+          split,
+          count,
+          vertices,
+          undefined,
+          undefined,
+          undefined,
+          true,
+          neededMeans,
+        ),
+        split * 3,
+      );
       const next = new Float64Array(vertices.length);
       next.set(
         noiseRange(
@@ -108,6 +137,63 @@ it.each(captures)(
   },
 );
 
+it.each([true, false])(
+  "selected means retain seam dependencies with boundary smoothing %s",
+  (boundary) => {
+    const topology = analyzeMesh(new Float32Array(selected3.positions));
+    const rings = noiseRings(topology);
+    const movable = marked(topology, new Uint8Array(selected3.selection));
+    const needed = selectedNoiseMeans(rings, movable, boundary);
+    expect(needed.some((value) => !value)).toBe(true);
+    let unselectedDependencies = 0;
+    for (let id = 0; id < movable.length; id++) {
+      if (!movable[id] || (!boundary && rings.boundary[id])) continue;
+      expect(needed[id]).toBe(1);
+      for (
+        let entry = rings.offsets[id];
+        entry < rings.offsets[id + 1];
+        entry++
+      ) {
+        const neighbor = rings.neighbors[entry];
+        expect(needed[neighbor]).toBe(1);
+        if (!movable[neighbor]) unselectedDependencies++;
+      }
+    }
+    expect(unselectedDependencies).toBeGreaterThan(0);
+    const vertices = Float64Array.from(topology.vertices, Math.fround);
+    const complete = noiseRange(rings, 0, movable.length, vertices);
+    const selected = noiseRange(
+      rings,
+      0,
+      movable.length,
+      vertices,
+      undefined,
+      undefined,
+      undefined,
+      boundary,
+      needed,
+    );
+    for (let id = 0; id < movable.length; id++)
+      expect(selected.subarray(id * 3, id * 3 + 3)).toEqual(
+        needed[id]
+          ? complete.subarray(id * 3, id * 3 + 3)
+          : new Float64Array(3),
+      );
+  },
+);
+
+it("selected dependency preparation respects cancellation and empty selections", () => {
+  const topology = analyzeMesh(new Float32Array(selected3.positions));
+  const rings = noiseRings(topology);
+  const movable = new Uint8Array(topology.vertices.length / 3);
+  expect(selectedNoiseMeans(rings, movable, true)).toEqual(movable);
+  const controller = new AbortController();
+  controller.abort();
+  expect(() =>
+    selectedNoiseMeans(rings, movable, true, { signal: controller.signal }),
+  ).toThrow("cancelled");
+});
+
 class FakeWorker {
   static workers: FakeWorker[] = [];
   static fail = false;
@@ -152,6 +238,7 @@ class FakeWorker {
           operation.weights,
           operation.movable,
           operation.applyBoundaryEdges,
+          operation.neededMeans,
         );
         this.onmessage?.({
           data: { id: job.id, values },

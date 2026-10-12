@@ -9,6 +9,7 @@ export interface NoiseWorkerRequest {
     weights: Float64Array;
     movable: Uint8Array;
     applyBoundaryEdges: boolean;
+    neededMeans?: Uint8Array;
   };
   job?: {
     id: number;
@@ -29,9 +30,11 @@ export function noiseRange(
   weights?: Float64Array,
   movable?: Uint8Array,
   applyBoundaryEdges = true,
+  neededMeans?: Uint8Array,
 ): Float64Array<ArrayBuffer> {
   const out = new Float64Array((end - begin) * 3);
   for (let id = begin; id < end; id++) {
+    if (!means && neededMeans && !neededMeans[id]) continue;
     const count = rings.offsets[id + 1] - rings.offsets[id];
     for (let axis = 0; axis < 3; axis++) {
       const index = id * 3 + axis;
@@ -117,6 +120,7 @@ if (typeof scope.postMessage === "function" && scope.close && !scope.document) {
         operation.weights,
         operation.movable,
         operation.applyBoundaryEdges,
+        operation.neededMeans,
       );
       scope.postMessage?.({ id: job.id, values }, [values.buffer]);
     } catch (error) {

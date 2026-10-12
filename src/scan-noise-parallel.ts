@@ -55,7 +55,7 @@ export function noiseWorkerCount(
   )?.deviceMemory;
   // Include both workers' coordinates/means/weights, transferred shard results,
   // parent combination scratch, and cached ring copies at the phase barrier.
-  const bytes = vertices * 300 + ringEntries * 12;
+  const bytes = vertices * 303 + ringEntries * 12;
   return typeof Worker !== "undefined" &&
     vertices >= 300_000 &&
     hardware >= 4 &&
@@ -66,6 +66,26 @@ export function noiseWorkerCount(
 }
 const aborted = () =>
   new DOMException("Mesh operation cancelled.", "AbortError");
+
+/** Corrections read only their own mean and the means of their ring neighbors.
+ * Include unselected neighbors: shared seams must retain whole-mesh sums.
+ */
+export function selectedNoiseMeans(
+  rings: NoiseRings,
+  movable: Uint8Array,
+  applyBoundaryEdges: boolean,
+  options: MeshProcessingOptions = {},
+): Uint8Array {
+  const needed = new Uint8Array(movable.length);
+  for (let id = 0; id < movable.length; id++) {
+    if (id % 4096 === 0 && options.signal?.aborted) throw aborted();
+    if (!movable[id] || (!applyBoundaryEdges && rings.boundary[id])) continue;
+    needed[id] = 1;
+    for (let entry = rings.offsets[id]; entry < rings.offsets[id + 1]; entry++)
+      needed[rings.neighbors[entry]] = 1;
+  }
+  return needed;
+}
 
 /** Two barriers per iteration; workers never publish or observe partially updated coordinates. */
 export class NoiseSmoothingPool {
@@ -132,12 +152,15 @@ export class NoiseSmoothingPool {
       for (let corner = 0; corner < topology.triangles.length; corner++)
         if (!selection || selection[Math.floor(corner / 3)])
           movable[topology.triangles[corner]] = 1;
+      const neededMeans = selection
+        ? selectedNoiseMeans(rings, movable, applyBoundaryEdges, options)
+        : undefined;
       this.prepare(rings, count);
       // FIFO message delivery binds fresh selection/weights before any phase.
       // These buffers are immutable across iterations, so clone them only once.
       for (const worker of this.workers)
         worker.postMessage({
-          operation: { weights, movable, applyBoundaryEdges },
+          operation: { weights, movable, applyBoundaryEdges, neededMeans },
         });
       this.expiry = setTimeout(() => this.cancel(), 120_000);
       let vertices = Float64Array.from(topology.vertices, Math.fround);
