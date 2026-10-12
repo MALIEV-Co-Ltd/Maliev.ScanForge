@@ -54,12 +54,12 @@ it("draws a continuous screen stroke, including empty space, and selects only on
   expect(apply).not.toHaveBeenCalled();
   expect(trail.setAttribute).toHaveBeenCalledWith(
     "d",
-    "M0,0 L30,30 L70,70 L100,100 L100,100",
+    "M0,0 L30,30 L70,70 L100,100 L100,100 Z",
   );
   view.pointerUp(pointer(150, 170));
   expect(apply).toHaveBeenCalledTimes(1);
   expect(apply.mock.calls[0][1]).toEqual({
-    kind: "brush",
+    kind: "lasso",
     points: [
       [0, 0],
       [30, 30],

@@ -1,3 +1,15 @@
+### Closed lasso and input continuation - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed without warnings/errors; bundle `scanforge-7d3f6d7a82970299`.
+- Focused selection/camera/HID/shortcut tests: 113 passed in 10 files. `npm test`: 6,234 passed in 108 files. Targeted Prettier and `git diff --check` passed.
+- Browser checks confirmed default Orthographic projection, switching to Perspective and back, cube-face orientation, horizontal wheel scrolling (Main ribbon scrollLeft 0 to 350), and Ctrl-wheel radius 24.0 to 25.2 pixels. Real keyboard events cleared selection with Ctrl+Q and restored 1,451 facets with Ctrl+Z while model history remained at zero steps.
+- The supplied 125,647,784-byte scan was imported with memory-efficient preview disabled. A lasso completed with 73,435 selected facets; clicking the Scan Data tab while selection was pending remained responsive. This is a regression check for this scan, not a browser benchmark or a full-resolution over-1GB validation.
+- A fresh viewer confirmed one SVG-level opacity of 0.65 with opaque fill, stroke and cursor. Visual inspection showed the closed lasso without overlap seams. An older live viewer retained constructor-created overlay attributes until reinitialization; screenshots from that viewer do not establish the final color fix.
+- Selection computation and reusable BVH construction run in an owned worker with cancellation, stale-worker rejection, a 120-second operation timeout and 60-second idle lease. Tests cover copied geometry ownership, reuse, supersession, timeout and disposal.
+- Windows enumerates a healthy physical SpaceMouse Pro. The inspected preview browser exposes WebHID in a secure context, but its authorized-device inventory was empty. Physical motion/navigation remains unverified pending device chooser authorization. HID report/reconnect tests establish software routing only.
+- The shipped localization shortcut catalog was inspected. Unsupported geometry commands and configured-angle rotation remain unavailable; full shortcut parity is not claimed. Exact native brush coverage, Smooth, Defeature, other disabled Edit Scan controls and complete reconstruction remain incomplete.
+- The expired native query-builder analysis returned no requested function bodies; its recorded parent and provider children were verified absent. The loopback development preview was restarted with a recorded two-hour lease for continued user testing.
+
 Final continuation recheck: build passed with zero warnings/errors (offline manifest scanforge-988ed468f9cfd043); focused checks passed 37/37 and full suite passed 267/267 after the document-reset guard correction. Targeted Prettier and diff whitespace checks passed. The retained browser screenshot predates the final inspector-header wording change; fresh browser inventory attempts timed out, so no fresh render claim is made. Codex preview opening returned queued. The existing loopback preview returned HTTP 200 and retains its finite lease.
 
 # Initial workbench validation — 2026-10-11

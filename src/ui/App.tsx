@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
+import {
+  keyboardTargetContext,
+  resolveKeyboardShortcut,
+  type ShortcutActionId,
+} from "../keyboard-shortcuts";
 import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import {
@@ -18,7 +23,6 @@ import {
   EyeOff,
   FolderOpen,
   Layers,
-  Maximize,
   MousePointer2,
   Plus,
   Redo2,
@@ -434,6 +438,10 @@ export function App() {
         },
       );
       viewport.current.setTheme(resolveTheme(theme));
+      viewport.current.onSelectionStatus = (status) =>
+        setMessage(
+          status === "pending" ? "Selecting facets…" : "Selection ready",
+        );
       spaceMouse.current = new SpaceMouseController(
         (navigator as Navigator & { hid?: HidAccess }).hid,
         (motion, seconds) => viewport.current?.navigate(motion, seconds),
@@ -443,6 +451,11 @@ export function App() {
             : viewport.current?.setView("iso"),
         setSpaceMouseStatus,
       );
+      void spaceMouse.current
+        .restoreAuthorized()
+        .catch((error) =>
+          setSpaceMouseStatus(`SpaceMouse reconnect: ${errorText(error)}`),
+        );
     } catch (e) {
       setError(`WebGL unavailable: ${errorText(e)}`);
     }
@@ -565,15 +578,20 @@ export function App() {
         },
         { signal: controller.signal },
       )
-        .then((result) => {
+        .then(async (result) => {
           if (controller.signal.aborted || wandRegion.current !== origin)
             return;
           if (!result.selection)
             throw new Error("Missing wand selection result.");
           const region =
             !allConnected && !selectThrough
-              ? viewport.current!.visibleSelection(source.id, result.selection)
+              ? await viewport.current!.visibleSelection(
+                  source.id,
+                  result.selection,
+                )
               : result.selection;
+          if (controller.signal.aborted || wandRegion.current !== origin)
+            return;
           const session = sessionFor(source);
           session.set({
             mask: applyWandRegion(
@@ -877,33 +895,127 @@ export function App() {
   }, [entities]);
   const inputCommands = useRef<(event: KeyboardEvent) => void>(() => {});
   inputCommands.current = (event) => {
-    const target = event.target as HTMLElement;
+    const actions: Partial<Record<ShortcutActionId, () => void>> = {
+      new: requestNewDocument,
+      open: () => fileInput.current?.click(),
+      save,
+      "fit-view": () => viewport.current?.fitView(),
+      "view-top": () => viewport.current?.setView("top"),
+      "view-bottom": () => viewport.current?.setView("bottom"),
+      "view-left": () => viewport.current?.setView("left"),
+      "view-right": () => viewport.current?.setView("right"),
+      "view-front": () => viewport.current?.setView("front"),
+      "view-back": () => viewport.current?.setView("back"),
+      "view-isometric": () => viewport.current?.setView("iso"),
+      "rotate-view": () => {},
+      "undo-model": undo,
+      "redo-model": redo,
+      "undo-selection": () => selectionUndo(),
+      "redo-selection": () => selectionUndo(true),
+      "undo-sketch": () => sketchUndo(),
+      "redo-sketch": () => sketchUndo(true),
+      "hide-meshes": () => {
+        setEntities(
+          entities.map((e) =>
+            e.kind === "mesh" && !e.surfacePatch ? { ...e, visible: false } : e,
+          ),
+        );
+        setDirty(true);
+      },
+      "toggle-visibility": () => {},
+    };
+    if (selected) {
+      actions["hide-selected"] = () =>
+        mode === "brush" && selectedTriangleCount
+          ? selectionVisibility("hide")
+          : updateSelected({ visible: false });
+      actions["new-sketch"] = openSketchCreation;
+      actions.compare = () => showTools("deviation");
+      actions["selection-wand"] = () => {
+        setMode("brush");
+        setSelectionTool("wand");
+        showTools("mesh");
+      };
+      actions["fit-plane"] = () => runFit("plane");
+      actions["fit-cylinder"] = () => runFit("cylinder");
+      actions["fit-cone"] = () => runFit("cone");
+      actions["fit-sphere"] = () => runFit("sphere");
+      if (selected.kernelId) actions.fillet = () => showTools("advancedCad");
+    }
+    if (mode === "brush") {
+      actions["selection-brush"] = () => setSelectionTool("brush");
+      actions["selection-through"] = () => setSelectThrough((v) => !v);
+      actions["clear-selection"] = () => changeSelection(null);
+    }
+    if (workspace === "sketch" && toolPanelOpen && !createSketch) {
+      actions["sketch-line"] = () => setSketchDrawingTool("line");
+      actions["sketch-circle"] = () => setSketchDrawingTool("circle");
+      actions["sketch-arc"] = () => setSketchDrawingTool("arc3");
+      actions["sketch-dimensions"] = () =>
+        setSketchDrawingConstraints((v) => !v);
+    }
+    const resolved = resolveKeyboardShortcut(event, {
+      mode:
+        workspace === "sketch" && toolPanelOpen && !createSketch
+          ? "sketch"
+          : workspace === "fit" && toolPanelOpen
+            ? "primitive-fit"
+            : workspace === "surface" && toolPanelOpen
+              ? "freeform"
+              : mode === "brush"
+                ? "selection"
+                : "main",
+      ...keyboardTargetContext(event.target),
+      busy,
+      modalOpen: !!(
+        nPoints ||
+        surfaceFit ||
+        createSketch ||
+        primitiveDialog ||
+        settingsOpen ||
+        newDocumentDialog ||
+        contextMenu
+      ),
+      availableActions: new Set(Object.keys(actions) as ShortcutActionId[]),
+      allowExtensions: true,
+    });
     if (
-      busy ||
-      target.closest('input,textarea,select,[contenteditable="true"]')
+      !resolved ||
+      (resolved.id === "rotate-view" && resolved.configuredAngle) ||
+      (resolved.id === "toggle-visibility" &&
+        ["point-clouds", "sketches", "references"].includes(resolved.category!))
     )
       return;
-    const command = event.ctrlKey || event.metaKey,
-      key = event.key.toLowerCase();
-    if (command && (key === "z" || key === "y")) {
-      event.preventDefault();
-      const repeat = key === "y" || event.shiftKey;
-      if (workspace === "sketch" && toolPanelOpen && !createSketch)
-        sketchUndo(repeat);
-      else if (mode === "brush") selectionUndo(repeat);
-      else if (repeat) redo();
-      else undo();
-    }
-    if (mode !== "brush") return;
-    if (command && key === "q") {
-      event.preventDefault();
-      changeSelection(null);
-    }
-    if (!command && !event.altKey) {
-      if (key === "u") setSelectThrough((v) => !v);
-      if (key === "w") setSelectionTool("wand");
-      if (key === "b") setSelectionTool("brush");
-    }
+    event.preventDefault();
+    if (resolved.id === "rotate-view")
+      viewport.current?.rotateView(resolved.direction!, 90);
+    else if (resolved.id === "toggle-visibility") {
+      const category = resolved.category;
+      const matches = (e: Entity) =>
+        category === "meshes"
+          ? e.kind === "mesh" && !e.surfacePatch
+          : category === "surfaces"
+            ? !!e.surfacePatch
+            : category === "solids"
+              ? e.kind === "cad" || e.kind === "box"
+              : category === "primitives"
+                ? !!e.fit ||
+                  ["plane", "cylinder", "cone", "sphere"].includes(e.kind)
+                : category === "planes"
+                  ? e.kind === "plane"
+                  : category === "cylinders"
+                    ? e.kind === "cylinder"
+                    : category === "cones"
+                      ? e.kind === "cone"
+                      : category === "spheres"
+                        ? e.kind === "sphere"
+                        : false;
+      const show = !entities.some((e) => matches(e) && e.visible);
+      setEntities(
+        entities.map((e) => (matches(e) ? { ...e, visible: show } : e)),
+      );
+      setDirty(true);
+    } else actions[resolved.id]?.();
   };
   useEffect(() => {
     const handler = (e: KeyboardEvent) => inputCommands.current(e);
@@ -1404,8 +1516,12 @@ export function App() {
           throw new Error("Invalid connected selection result.");
         const region =
           clickedSeeds && !allConnected && !through
-            ? viewport.current!.visibleSelection(source.id, result.selection)
+            ? await viewport.current!.visibleSelection(
+                source.id,
+                result.selection,
+              )
             : result.selection;
+        if (controller.signal.aborted) return;
         changeSelection((previous) =>
           clickedSeeds
             ? Uint8Array.from(region, (value, index) =>
@@ -2842,22 +2958,6 @@ export function App() {
             >
               <Rotate3D size={15} />
               Navigate
-            </button>
-            <span>Perspective</span>
-            {(["iso", "top", "front", "right"] as const).map((view) => (
-              <button
-                key={view}
-                onClick={() => viewport.current?.setView(view)}
-              >
-                {view === "iso" ? "3D" : view}
-              </button>
-            ))}
-            <button
-              title="Fit all objects"
-              aria-label="Fit all objects"
-              onClick={() => viewport.current?.fitView()}
-            >
-              <Maximize size={15} />
             </button>
           </div>
           <div className="canvas-hint">

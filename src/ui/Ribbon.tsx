@@ -59,6 +59,29 @@ export function Ribbon({
     for (const group of panel.children) observer.observe(group);
     return () => observer.disconnect();
   }, [active.id]);
+  useEffect(() => {
+    const panel = tools.current;
+    if (!panel) return;
+    const wheel = (event: WheelEvent) => {
+      if (event.ctrlKey || panel.scrollWidth <= panel.clientWidth) return;
+      const unit =
+        event.deltaMode === 1
+          ? 16
+          : event.deltaMode === 2
+            ? panel.clientWidth
+            : 1;
+      const delta =
+        (Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY) * unit;
+      if (!delta) return;
+      event.preventDefault();
+      panel.scrollLeft += delta;
+      updateEdges();
+    };
+    panel.addEventListener("wheel", wheel, { passive: false });
+    return () => panel.removeEventListener("wheel", wheel);
+  }, [active.id]);
   function scrollTools(direction: number) {
     const panel = tools.current;
     panel?.scrollBy({

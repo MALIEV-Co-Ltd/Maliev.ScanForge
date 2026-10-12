@@ -77,15 +77,37 @@ export interface HidDevice extends EventTarget {
   productId: number;
   productName: string;
   opened: boolean;
+  collections?: HidCollection[];
   open(): Promise<void>;
   close(): Promise<void>;
 }
+export interface HidCollection {
+  usagePage: number;
+  usage: number;
+  inputReports: { reportId: number }[];
+  children: HidCollection[];
+}
 export interface HidAccess extends EventTarget {
+  getDevices?(): Promise<HidDevice[]>;
   requestDevice(options: {
     filters: { vendorId: number; productId: number }[];
   }): Promise<HidDevice[]>;
 }
 type DeviceSpec = (typeof SPACE_MOUSE_DEVICES)[number];
+/** A chooser can return several interfaces for the same physical device. */
+export function spaceMouseMotionDevice(
+  devices: HidDevice[],
+): HidDevice | undefined {
+  const supported = devices.filter((device) => spaceMouseSpec(device));
+  const reportsMotion = (collection: HidCollection): boolean =>
+    collection.inputReports.some(
+      (report) => report.reportId === 1 || report.reportId === 2,
+    ) || collection.children.some(reportsMotion);
+  return (
+    supported.find((device) => device.collections?.some(reportsMotion)) ??
+    supported.find((device) => device.collections === undefined)
+  );
+}
 export function spaceMouseSpec(
   device: Pick<HidDevice, "vendorId" | "productId">,
 ): DeviceSpec | undefined {
@@ -114,13 +136,13 @@ export function decodeSpaceMouseReport(
           Math.min(1, data.getInt16(offset + index * 2, true) / 350),
         ) * sign,
     ) as [number, number, number];
-  if (reportId === 1 && data.byteLength >= (spec.combined ? 12 : 6)) {
+  if (reportId === 1 && data.byteLength >= 6) {
     return {
       translation: read(0, [1, -1, -1]),
-      ...(spec.combined ? { rotation: read(6, [-1, -1, 1]) } : {}),
+      ...(data.byteLength >= 12 ? { rotation: read(6, [-1, -1, 1]) } : {}),
     };
   }
-  if (reportId === 2 && !spec.combined && data.byteLength >= 6)
+  if (reportId === 2 && data.byteLength >= 6)
     return {
       rotation: read(0, spec.productId === 0xc62b ? [1, -1, -1] : [-1, -1, 1]),
     };
@@ -183,6 +205,7 @@ export class SpaceMouseController {
   private rotationAt = 0;
   private buttons = 0;
   private lastFrame = 0;
+  private receivedMotion = false;
   preferences = { ...DEFAULT_SPACE_MOUSE };
   constructor(
     private access: HidAccess | undefined,
@@ -199,7 +222,12 @@ export class SpaceMouseController {
   get connected(): boolean {
     return !!this.device;
   }
-  async connect(): Promise<void> {
+  /** Reopen only devices already permitted by this origin, without a chooser. */
+  async restoreAuthorized(): Promise<void> {
+    if (!this.access?.getDevices) return;
+    await this.connect(true);
+  }
+  async connect(authorizedOnly = false): Promise<void> {
     if (this.disposed) throw new Error("SpaceMouse controller is closed.");
     if (this.connecting || this.device) return;
     if (!this.access)
@@ -211,15 +239,21 @@ export class SpaceMouseController {
     let chosen: HidDevice | undefined,
       opened = false;
     try {
-      const devices = await this.access.requestDevice({
-        filters: SPACE_MOUSE_DEVICES.map(({ vendorId, productId }) => ({
-          vendorId,
-          productId,
-        })),
-      });
-      chosen = devices.find((device) => spaceMouseSpec(device));
+      const devices = authorizedOnly
+        ? await this.access.getDevices!()
+        : await this.access.requestDevice({
+            filters: SPACE_MOUSE_DEVICES.map(({ vendorId, productId }) => ({
+              vendorId,
+              productId,
+            })),
+          });
+      chosen = spaceMouseMotionDevice(devices);
       if (!chosen) {
-        this.onStatus("No SpaceMouse selected");
+        this.onStatus(
+          authorizedOnly
+            ? "Disconnected — connect SpaceMouse to grant browser access"
+            : "No SpaceMouse motion interface selected",
+        );
         return;
       }
       if (this.disposed || generation !== this.generation) return;
@@ -233,9 +267,10 @@ export class SpaceMouseController {
       }
       this.device = chosen;
       this.openedHere = opened;
+      this.receivedMotion = false;
       chosen.addEventListener("inputreport", this.report);
       this.onStatus(
-        `Connected: ${chosen.productName || spaceMouseSpec(chosen)!.name}`,
+        `Connected: ${chosen.productName || spaceMouseSpec(chosen)!.name} — waiting for motion reports`,
       );
       this.lastFrame = this.clock();
       this.frame = this.raf(this.tick);
@@ -254,6 +289,12 @@ export class SpaceMouseController {
       event as unknown as HidReport,
     );
     if (!value) return;
+    if ((value.translation || value.rotation) && !this.receivedMotion) {
+      this.receivedMotion = true;
+      this.onStatus(
+        `Receiving motion: ${this.device.productName || spaceMouseSpec(this.device)!.name}`,
+      );
+    }
     const now = this.clock();
     if (value.translation) {
       this.motion.translation = value.translation;

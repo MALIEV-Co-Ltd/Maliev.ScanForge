@@ -142,7 +142,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
         </div>
       ) : (
         <p className="muted">
-          Ctrl + wheel adjusts brush size · {props.brushRadius} px
+          Ctrl + wheel adjusts brush size · {props.brushRadius.toFixed(1)} px
         </p>
       )}
       <label className="check">

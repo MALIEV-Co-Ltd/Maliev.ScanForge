@@ -3,7 +3,17 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
-import { ScreenSelectionIndex, type ScreenRegion } from "./screen-selection";
+import type { ScreenRegion } from "./screen-selection";
+import { AsyncScreenSelectionIndex } from "./screen-selection-client";
+import {
+  CameraGizmo,
+  convertProjection,
+  frameCamera,
+  resizeCamera,
+  rotateCamera,
+  type NavigationCamera,
+  type Projection,
+} from "./camera-gizmo";
 import { navigateCamera } from "./camera-navigation";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
@@ -20,7 +30,7 @@ import {
 type Item = {
   hidden?: number[];
   triangleSlots?: number[];
-  selectionIndex?: ScreenSelectionIndex;
+  selectionIndex?: AsyncScreenSelectionIndex;
   positions: Positions;
   color: string;
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
@@ -28,8 +38,18 @@ type Item = {
 
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
+  onSelectionStatus?: (status: "pending" | "complete") => void;
   private readonly scene = new THREE.Scene();
-  private readonly camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100000);
+  private camera: NavigationCamera = new THREE.OrthographicCamera(
+    -100,
+    100,
+    100,
+    -100,
+    0.01,
+    100000,
+  );
+  private readonly gizmo: CameraGizmo;
+  private selectionGeneration = 0;
   private readonly renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: false,
@@ -82,15 +102,6 @@ export class Viewport {
   );
   private brushPath: [number, number][] = [];
   private readonly clippingPlane = new THREE.Plane();
-  private readonly triad = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg",
-  );
-  private readonly axes: {
-    vector: THREE.Vector3;
-    line: SVGLineElement;
-    label: SVGTextElement;
-  }[] = [];
   private selectedId: string | null = null;
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
@@ -141,39 +152,6 @@ export class Viewport {
     this.landmarkOverlay.style.cssText =
       "position:absolute;inset:0;pointer-events:none;overflow:hidden";
     container.appendChild(this.landmarkOverlay);
-    this.triad.setAttribute("viewBox", "0 0 100 90");
-    this.triad.setAttribute("role", "img");
-    this.triad.setAttribute("aria-label", "World axes: X red, Y green, Z blue");
-    this.triad.style.cssText =
-      "position:absolute;right:12px;top:52px;width:100px;height:90px;pointer-events:none";
-    for (const [name, color, vector] of [
-      ["X", "#da6351", new THREE.Vector3(1, 0, 0)],
-      ["Y", "#29976d", new THREE.Vector3(0, 1, 0)],
-      ["Z", "#327ccc", new THREE.Vector3(0, 0, 1)],
-    ] as const) {
-      const line = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line",
-      );
-      line.setAttribute("x1", "45");
-      line.setAttribute("y1", "45");
-      line.setAttribute("stroke", color);
-      line.setAttribute("stroke-width", "2.5");
-      line.setAttribute("stroke-linecap", "round");
-      const label = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "text",
-      );
-      label.textContent = name;
-      label.setAttribute("fill", color);
-      label.setAttribute("font-size", "12");
-      label.setAttribute("font-family", "system-ui, sans-serif");
-      label.setAttribute("font-weight", "700");
-      label.setAttribute("text-anchor", "middle");
-      this.axes.push({ vector, line, label });
-      this.triad.append(line, label);
-    }
-    container.appendChild(this.triad);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     Object.assign(
       this.controls.mouseButtons,
@@ -183,6 +161,17 @@ export class Viewport {
     this.controls.dampingFactor = 0.12;
     this.controls.screenSpacePanning = true;
     this.controls.addEventListener("change", this.invalidate);
+    this.gizmo = new CameraGizmo(
+      (view) => this.setView(view),
+      (dx, dy) => {
+        rotateCamera(this.camera, this.controls.target, dx, dy);
+        this.controls.update();
+        this.invalidate();
+      },
+      (projection) => this.setProjection(projection),
+      () => this.fitView(),
+    );
+    container.append(this.gizmo.element);
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.1));
     const key = new THREE.DirectionalLight(0xffffff, 3);
     key.position.set(120, -140, 220);
@@ -206,13 +195,15 @@ export class Viewport {
     this.paintOverlay.style.cssText =
       "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden;display:none";
     this.paintOverlay.setAttribute("aria-hidden", "true");
-    this.paintTrail.setAttribute("fill", "none");
+    // Composite the opaque fill, stroke and cursor before applying transparency.
+    // Per-shape opacity would darken their overlaps during a closed-loop stroke.
+    this.paintOverlay.setAttribute("opacity", "0.65");
+    this.paintTrail.setAttribute("fill", "#c83244");
+    this.paintTrail.setAttribute("fill-rule", "evenodd");
     this.paintTrail.setAttribute("stroke", "#c83244");
-    this.paintTrail.setAttribute("stroke-opacity", "0.65");
     this.paintTrail.setAttribute("stroke-linecap", "round");
     this.paintTrail.setAttribute("stroke-linejoin", "round");
     this.paintCursor.setAttribute("fill", "#c83244");
-    this.paintCursor.setAttribute("fill-opacity", "0.65");
     this.paintOverlay.append(this.paintTrail, this.paintCursor);
     container.appendChild(this.paintOverlay);
     this.renderer.domElement.addEventListener("dblclick", this.doubleClick);
@@ -280,23 +271,7 @@ export class Viewport {
       marker.element.style.left = `${((projected.x + 1) * this.container.clientWidth) / 2}px`;
       marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
     }
-    const inverse = this.camera.quaternion.clone().invert();
-    for (const axis of this.axes) {
-      const projected = axis.vector.clone().applyQuaternion(inverse);
-      const x = 45 + projected.x * 29;
-      const y = 45 - projected.y * 29;
-      axis.line.setAttribute("x2", String(x));
-      axis.line.setAttribute("y2", String(y));
-      axis.label.setAttribute(
-        "x",
-        String(
-          45 +
-            projected.x * 40 +
-            (Math.hypot(projected.x, projected.y) < 0.1 ? 9 : 0),
-        ),
-      );
-      axis.label.setAttribute("y", String(49 - projected.y * 40));
-    }
+    this.gizmo?.update(this.camera);
     if (moving) this.invalidate();
   };
 
@@ -305,8 +280,7 @@ export class Viewport {
     const width = Math.max(1, this.container.clientWidth);
     const height = Math.max(1, this.container.clientHeight);
     this.renderer.setSize(width, height, false);
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
+    resizeCamera(this.camera, width / height);
     this.invalidate();
   };
 
@@ -323,6 +297,12 @@ export class Viewport {
       id: event.pointerId,
       moved: false,
     };
+    if (this.brushing) {
+      this.selectionGeneration++;
+      for (const item of this.objects?.values() ?? [])
+        item.selectionIndex?.cancel();
+      this.onSelectionStatus?.("complete");
+    }
     if (this.brushing && this.selectionTool !== "wand")
       this.onSelectionGesture?.("begin");
     if (this.brushing && this.selectionTool === "brush") {
@@ -480,15 +460,15 @@ export class Viewport {
     const [x, y] = this.screenPoint(event.clientX, event.clientY);
     this.onContext?.(x, y);
   };
-  visibleSelection(id: string, mask: Uint8Array): Uint8Array {
+  async visibleSelection(id: string, mask: Uint8Array): Promise<Uint8Array> {
     const item = this.objects.get(id);
     if (!item) return new Uint8Array(mask.length);
-    item.selectionIndex ??= new ScreenSelectionIndex(
+    item.selectionIndex ??= new AsyncScreenSelectionIndex(
       item.positions,
       item.hidden,
     );
     const rect = this.renderer.domElement.getBoundingClientRect();
-    const visible = item.selectionIndex.select(
+    const visible = await item.selectionIndex.select(
       this.camera,
       { kind: "rectangle", start: [0, 0], end: [rect.width, rect.height] },
       { width: rect.width, height: rect.height, through: false },
@@ -609,14 +589,7 @@ export class Viewport {
     const size = bounds.isEmpty()
       ? 40
       : Math.max(bounds.getBoundingSphere(new THREE.Sphere()).radius * 2, 10);
-    const halfAngle = Math.min(
-      THREE.MathUtils.degToRad(this.camera.fov) / 2,
-      Math.atan(
-        Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2) *
-          this.camera.aspect,
-      ),
-    );
-    const distance = (size / (2 * Math.sin(halfAngle))) * 1.18;
+    const distance = frameCamera(this.camera, size / 2);
     this.camera.up.set(...frame.v);
     this.controls.target.copy(center);
     this.camera.position
@@ -842,7 +815,7 @@ export class Viewport {
       this.brushPath.length
         ? this.brushPath
             .map(([px, py], i) => `${i ? "L" : "M"}${px},${py}`)
-            .join(" ") + ` L${x},${y}`
+            .join(" ") + ` L${x},${y} Z`
         : "",
     );
   }
@@ -852,8 +825,8 @@ export class Viewport {
     this.drawPaintStroke(event);
     if (commit)
       this.applyScreenRegion(event, {
-        kind: "brush",
-        points: this.brushPath,
+        kind: "lasso",
+        points: this.brushPath.slice(),
         radius: this.brushPixels,
       });
   }
@@ -867,20 +840,41 @@ export class Viewport {
       item = id ? this.objects.get(id) : undefined;
     if (!id || !item?.mesh.visible || !this.onSelection) return;
     try {
-      item.selectionIndex ??= new ScreenSelectionIndex(
+      item.selectionIndex ??= new AsyncScreenSelectionIndex(
         item.positions,
         item.hidden,
       );
       const rect = this.renderer.domElement.getBoundingClientRect();
-      this.onSelection(
-        id,
-        item.selectionIndex.select(this.camera, region, {
+      const index = item.selectionIndex;
+      const generation = this.selectionGeneration;
+      const remove = subtractSelection(this.subtract, event.altKey);
+      this.onSelectionStatus?.("pending");
+      void index
+        .select(this.camera, region, {
           width: rect.width,
           height: rect.height,
           through: this.selectThrough,
-        }),
-        subtractSelection(this.subtract, event.altKey),
-      );
+        })
+        .then((mask) => {
+          if (
+            !this.disposed &&
+            this.selectionGeneration === generation &&
+            this.objects.get(id) === item &&
+            item.selectionIndex === index &&
+            this.selectedId === id
+          )
+            this.onSelection?.(id, mask, remove);
+        })
+        .catch((error: unknown) => {
+          if (error instanceof Error && error.name === "AbortError") return;
+          this.onSelectionError?.(
+            error instanceof Error ? error.message : String(error),
+          );
+        })
+        .finally(() => {
+          if (this.selectionGeneration === generation)
+            this.onSelectionStatus?.("complete");
+        });
     } catch (error) {
       this.onSelectionError?.(
         error instanceof Error ? error.message : String(error),
@@ -905,7 +899,20 @@ export class Viewport {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.onBrushScale(
-      Math.exp(-Math.max(-100, Math.min(100, event.deltaY)) * 0.005),
+      Math.exp(
+        -Math.max(
+          -100,
+          Math.min(
+            100,
+            event.deltaY *
+              (event.deltaMode === 1
+                ? 16
+                : event.deltaMode === 2
+                  ? this.container.clientHeight
+                  : 1),
+          ),
+        ) * 0.0005,
+      ),
     );
   };
   private pickAt = (event: PointerEvent): string | undefined => {
@@ -1082,9 +1089,7 @@ export class Viewport {
     const radius = bounds.isEmpty()
       ? extent / 2
       : Math.max(bounds.getBoundingSphere(new THREE.Sphere()).radius, 0.00001);
-    const vertical = THREE.MathUtils.degToRad(this.camera.fov) / 2;
-    const horizontal = Math.atan(Math.tan(vertical) * this.camera.aspect);
-    const distance = (radius / Math.sin(Math.min(vertical, horizontal))) * 1.18;
+    const distance = frameCamera(this.camera, radius);
     this.controls.target.copy(center);
     this.camera.position.copy(center).addScaledVector(direction, distance);
     this.camera.near = Math.max(distance / 10000, 0.00001);
@@ -1092,6 +1097,39 @@ export class Viewport {
     this.camera.updateProjectionMatrix();
     this.controls.minDistance = extent * 0.0001;
     this.controls.maxDistance = distance * 20;
+    this.controls.update();
+    this.invalidate();
+  }
+
+  getProjection(): Projection {
+    return this.camera instanceof THREE.OrthographicCamera
+      ? "orthographic"
+      : "perspective";
+  }
+  setProjection(projection: Projection): void {
+    if (projection === this.getProjection()) return;
+    this.camera = convertProjection(
+      this.camera,
+      this.controls.target,
+      projection,
+    );
+    this.controls.object = this.camera;
+    this.controls.update();
+    this.invalidate();
+  }
+
+  rotateView(
+    direction: "left" | "right" | "up" | "down",
+    degrees: number,
+  ): void {
+    if (!Number.isFinite(degrees)) return;
+    const pixels = THREE.MathUtils.degToRad(degrees) / 0.008;
+    rotateCamera(
+      this.camera,
+      this.controls.target,
+      direction === "left" ? pixels : direction === "right" ? -pixels : 0,
+      direction === "up" ? pixels : direction === "down" ? -pixels : 0,
+    );
     this.controls.update();
     this.invalidate();
   }
@@ -1380,7 +1418,7 @@ export class Viewport {
     this.renderer.dispose();
     this.renderer.forceContextLoss();
     canvas.remove();
-    this.triad.remove();
+    this.gizmo.dispose();
     this.selectionOverlay.remove();
     this.paintOverlay.remove();
     this.landmarkOverlay.remove();

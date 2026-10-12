@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { MeshBVH } from "three-mesh-bvh";
 import type { Positions } from "./types";
 import { brushTrianglePoint, type ScreenPoint } from "./brush-coverage";
+import { lassoTrianglePoint } from "./lasso-coverage";
 
 export type ScreenRegion =
   | {
@@ -9,7 +10,7 @@ export type ScreenRegion =
       start: [number, number];
       end: [number, number];
     }
-  | { kind: "brush"; points: ScreenPoint[]; radius: number };
+  | { kind: "brush" | "lasso"; points: ScreenPoint[]; radius: number };
 export interface SelectionView {
   width: number;
   height: number;
@@ -63,13 +64,13 @@ export class ScreenSelectionIndex {
       ![
         view.width,
         view.height,
-        ...(region.kind === "brush"
+        ...("points" in region
           ? [region.radius, ...region.points.flat()]
           : [...region.start, ...region.end]),
       ].every(Number.isFinite) ||
       view.width <= 0 ||
       view.height <= 0 ||
-      (region.kind === "brush"
+      ("points" in region
         ? !region.points.length || region.radius <= 0
         : !["rectangle", "circle"].includes(region.kind))
     )
@@ -80,9 +81,9 @@ export class ScreenSelectionIndex {
       projected = new THREE.Vector3();
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
-    const start = region.kind === "brush" ? [0, 0] : region.start;
-    const end =
-      region.kind === "brush" ? [view.width, view.height] : region.end;
+    const stroke = "points" in region;
+    const start = stroke ? [0, 0] : region.start;
+    const end = stroke ? [view.width, view.height] : region.end;
     const minX = Math.min(start[0], end[0]),
       maxX = Math.max(start[0], end[0]);
     const minY = Math.min(start[1], end[1]),
@@ -92,6 +93,18 @@ export class ScreenSelectionIndex {
       rx = (maxX - minX) / 2,
       ry = (maxY - minY) / 2;
     const hiddenSet = new Set(this.hidden);
+    const strokeBounds =
+      "points" in region
+        ? region.points.reduce(
+            (b, p) => [
+              Math.min(b[0], p[0] - region.radius),
+              Math.min(b[1], p[1] - region.radius),
+              Math.max(b[2], p[0] + region.radius),
+              Math.max(b[3], p[1] + region.radius),
+            ],
+            [Infinity, Infinity, -Infinity, -Infinity],
+          )
+        : undefined;
     const vertices = [
       new THREE.Vector3(),
       new THREE.Vector3(),
@@ -114,7 +127,7 @@ export class ScreenSelectionIndex {
       if (projected.z < -1 || projected.z > 1) continue;
       let x = ((projected.x + 1) * view.width) / 2,
         y = ((1 - projected.y) * view.height) / 2;
-      if (region.kind === "brush") {
+      if ("points" in region) {
         const triangle = vertices.map((vertex, corner) => {
           vertex.fromArray(this.positions, i + corner * 3);
           projected.copy(vertex).project(camera);
@@ -123,11 +136,17 @@ export class ScreenSelectionIndex {
             ((1 - projected.y) * view.height) / 2,
           ] as ScreenPoint;
         });
-        const touch = brushTrianglePoint(
-          triangle,
-          region.points,
-          region.radius,
-        );
+        if (
+          strokeBounds &&
+          (Math.max(...triangle.map((p) => p[0])) < strokeBounds[0] ||
+            Math.min(...triangle.map((p) => p[0])) > strokeBounds[2] ||
+            Math.max(...triangle.map((p) => p[1])) < strokeBounds[1] ||
+            Math.min(...triangle.map((p) => p[1])) > strokeBounds[3])
+        )
+          continue;
+        const touch = (
+          region.kind === "lasso" ? lassoTrianglePoint : brushTrianglePoint
+        )(triangle, region.points, region.radius);
         if (!touch) continue;
         // Move an edge contact fractionally inward so ray/triangle roundoff
         // does not discard a triangle that the brush actually touched.

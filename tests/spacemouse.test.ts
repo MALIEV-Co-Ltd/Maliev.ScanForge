@@ -5,14 +5,17 @@ import {
   filteredMotion,
   DEFAULT_SPACE_MOUSE,
   SpaceMouseController,
+  spaceMouseMotionDevice,
   type HidDevice,
   type HidAccess,
+  type HidCollection,
 } from "../src/spacemouse";
 class Device extends EventTarget implements HidDevice {
   vendorId = 0x046d;
   productId = 0xc626;
   productName = "Test navigator";
   opened = false;
+  collections?: HidCollection[];
   open = vi.fn(async () => {
     this.opened = true;
   });
@@ -28,6 +31,7 @@ class Device extends EventTarget implements HidDevice {
   }
 }
 class Access extends EventTarget implements HidAccess {
+  getDevices?: () => Promise<HidDevice[]>;
   constructor(public device: Device) {
     super();
   }
@@ -77,6 +81,60 @@ function fixture() {
   };
 }
 describe("SpaceMouse HID input", () => {
+  it("chooses a motion-report interface instead of a button-only interface", () => {
+    const buttons = new Device(),
+      motion = new Device();
+    buttons.collections = [
+      { usagePage: 1, usage: 8, inputReports: [{ reportId: 3 }], children: [] },
+    ];
+    motion.collections = [
+      {
+        usagePage: 1,
+        usage: 8,
+        inputReports: [{ reportId: 1 }, { reportId: 2 }],
+        children: [],
+      },
+    ];
+    expect(spaceMouseMotionDevice([buttons, motion])).toBe(motion);
+    expect(spaceMouseMotionDevice([buttons])).toBeUndefined();
+  });
+  it("restores an authorized device without asking for permission again", async () => {
+    const f = fixture();
+    f.access.getDevices = vi.fn(async () => [f.device]);
+    await f.controller.restoreAuthorized();
+    expect(f.access.requestDevice).not.toHaveBeenCalled();
+    expect(f.device.open).toHaveBeenCalledOnce();
+    expect(f.onStatus.mock.lastCall?.[0]).toContain("waiting for motion");
+    f.device.send(1, [175, 0, 0]);
+    f.advance(20);
+    expect(f.onMotion).toHaveBeenCalledOnce();
+    expect(f.onStatus.mock.lastCall?.[0]).toContain("Receiving motion");
+    const count = f.onStatus.mock.calls.length;
+    f.device.send(1, [175, 0, 0]);
+    expect(f.onStatus).toHaveBeenCalledTimes(count);
+    await f.controller.dispose();
+    expect(f.frames.size).toBe(0);
+  });
+  it("does not ask for a chooser when no previously authorized device exists", async () => {
+    const f = fixture();
+    f.access.getDevices = vi.fn(async () => []);
+    await f.controller.restoreAuthorized();
+    expect(f.controller.connected).toBe(false);
+    expect(f.access.requestDevice).not.toHaveBeenCalled();
+    await f.controller.dispose();
+  });
+  it("accepts split axis reports from a receiver as well as combined packets", () => {
+    const data = new DataView(new ArrayBuffer(6));
+    data.setInt16(0, 350, true);
+    expect(
+      decodeSpaceMouseReport(SPACE_MOUSE_DEVICES[3], { reportId: 1, data })
+        ?.translation?.[0],
+    ).toBe(1);
+    expect(
+      decodeSpaceMouseReport(SPACE_MOUSE_DEVICES[3], { reportId: 2, data })
+        ?.rotation?.[0],
+    ).toBe(-1);
+  });
   it("decodes signed split reports and rejects truncated/unknown reports", () => {
     const data = new DataView(new ArrayBuffer(6));
     data.setInt16(0, 350, true);
