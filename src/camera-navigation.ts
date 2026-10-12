@@ -23,7 +23,7 @@ export function configureNavigationSensitivity(
         camera.zoom;
 }
 import type { Motion6D } from "./spacemouse";
-/** Camera-relative six-axis navigation, with the orbit target as rotation pivot. */
+/** SpaceMouse object navigation: move the camera opposite the cap so the model follows the hand. */
 export function navigateCamera(
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
   target: THREE.Vector3,
@@ -51,7 +51,7 @@ export function navigateCamera(
   if (camera instanceof THREE.OrthographicCamera) {
     camera.zoom = Math.max(
       1e-6,
-      Math.min(1e6, camera.zoom * Math.exp(motion.translation[1] * 0.8 * dt)),
+      Math.min(1e6, camera.zoom * Math.exp(-motion.translation[1] * 0.8 * dt)),
     );
     camera.updateProjectionMatrix();
   }
@@ -63,7 +63,7 @@ export function navigateCamera(
       camera instanceof THREE.OrthographicCamera ? 0 : motion.translation[1],
     )
     .addScaledVector(up, motion.translation[2])
-    .multiplyScalar(distance * 0.8 * dt);
+    .multiplyScalar(-distance * 0.8 * dt);
   camera.position.add(delta);
   target.add(delta);
   const rotation = right
@@ -73,7 +73,7 @@ export function navigateCamera(
   if (rotation.lengthSq() > 0) {
     const quaternion = new THREE.Quaternion().setFromAxisAngle(
       rotation.clone().normalize(),
-      rotation.length() * 1.4 * dt,
+      -rotation.length() * 1.4 * dt,
     );
     camera.position.sub(target).applyQuaternion(quaternion).add(target);
     camera.up.applyQuaternion(quaternion).normalize();
