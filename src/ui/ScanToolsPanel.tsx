@@ -3,6 +3,7 @@ import type { Entity, Vec3 } from "../types";
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { Field, VectorField } from "./controls";
 import "./ScanToolsPanel.css";
+import { NoiseComparisonLegend } from "./NoiseComparisonLegend";
 
 export type ScanToolId =
   | "reducePolygons"
@@ -120,6 +121,8 @@ export interface ScanToolsPanelProps {
   busy?: boolean;
   progress?: string;
   result?: string;
+  comparison?: { threshold: number; visible: boolean };
+  onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   onClose: () => void;
   onCancel: () => void;
@@ -136,6 +139,8 @@ export function ScanToolsPanel({
   busy = false,
   progress,
   result,
+  comparison,
+  onToggleComparison,
   onApply,
   onClose,
   onCancel,
@@ -564,6 +569,9 @@ export function ScanToolsPanel({
       )}
       {progress && <p role="status">{progress}</p>}
       {result && <p role="status">{result}</p>}
+      {tool === "reduceNoise" && comparison && onToggleComparison && (
+        <NoiseComparisonLegend {...comparison} onToggle={onToggleComparison} />
+      )}
       <footer>
         {busy ? (
           <button onClick={onCancel}>Cancel operation</button>

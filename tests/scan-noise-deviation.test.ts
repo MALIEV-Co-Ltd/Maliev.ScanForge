@@ -12,6 +12,8 @@ import {
   compareNoiseSurface,
 } from "../src/scan-noise-deviation";
 import { analyzeMesh } from "../src/mesh-processing";
+import { reduceScanNoise } from "../src/scan-tools-reduction";
+import { nativeNoiseColor } from "../src/scan-noise-color";
 
 it("matches native leaf surface comparisons on all six noise captures and two thresholds", () => {
   const captures = {
@@ -44,6 +46,23 @@ it("matches native leaf surface comparisons on all six noise captures and two th
       ).toEqual(
         expected.distances.map((v) => (v === null ? null : Math.abs(v))),
       );
+      const edit = reduceScanNoise(new Float32Array(capture.positions), {
+        iterations: capture.iterations,
+        applyBoundaryEdges: capture.applyBoundaryEdges,
+        selectionOnly: capture.selectionOnly,
+        selection:
+          "selection" in capture
+            ? new Uint8Array(capture.selection as number[])
+            : undefined,
+        measureDeviation: true,
+        deviation: expected.threshold,
+      });
+      expect(edit.noiseComparison?.threshold).toBe(expected.threshold);
+      const expectedRgb = Array.from(topology.triangles).flatMap((id) =>
+        nativeNoiseColor(expected.distances[id] ?? NaN, expected.threshold),
+      );
+      expect(Array.from(edit.noiseComparison!.rgb)).toEqual(expectedRgb);
+      expect(Array.from(edit.positions)).toEqual(capture.nativeOutput);
     }
   }
 });

@@ -7,6 +7,7 @@ import {
 import type { Positions, Vec3 } from "./types";
 import { nativeNoiseVertices } from "./scan-native-noise";
 import { compareNoiseSurface } from "./scan-noise-deviation";
+import { nativeNoiseColor } from "./scan-noise-color";
 import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
 import {
   REDUCTION_PATCH_TRIANGLES,
@@ -17,6 +18,8 @@ export { repolygonizeScanMesh } from "./scan-tools-remesh";
 export interface ScanToolResult {
   positions: Float32Array;
   summary: string;
+  /** RGB bytes at original facet corners; render on the pre-edit surface. */
+  noiseComparison?: { rgb: Uint8Array; threshold: number };
 }
 type Options = MeshProcessingOptions;
 const point = (v: ArrayLike<number>, i: number): Vec3 => [
@@ -361,12 +364,25 @@ function finishNoise(
       "Noise reduction produced non-finite coordinates; original mesh retained.",
     );
   let comparison = "";
+  let noiseComparison: ScanToolResult["noiseComparison"];
   if (options.measureDeviation) {
     const measured = compareNoiseSurface(t, vertices, deviation, {
       ...options,
       onProgress: (fraction, stage) =>
         options.onProgress?.(0.9 + fraction * 0.1, stage),
     });
+    const indexedRgb = new Uint8Array(t.vertices.length);
+    for (let id = 0; id < measured.distances.length; id++)
+      indexedRgb.set(
+        nativeNoiseColor(measured.distances[id], deviation),
+        id * 3,
+      );
+    const rgb = new Uint8Array(output.length);
+    for (let corner = 0; corner < t.triangles.length; corner++)
+      for (let channel = 0; channel < 3; channel++)
+        rgb[corner * 3 + channel] =
+          indexedRgb[t.triangles[corner] * 3 + channel];
+    noiseComparison = { rgb, threshold: deviation };
     comparison =
       " Original-to-surface comparison: " +
       measured.percentage.toFixed(2) +
@@ -395,6 +411,7 @@ function finishNoise(
   progress(options, 1, "Noise reduction complete");
   return {
     positions: output,
+    ...(noiseComparison ? { noiseComparison } : {}),
     summary:
       "Noise reduced with " +
       iterations +

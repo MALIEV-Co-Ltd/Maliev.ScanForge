@@ -1,4 +1,5 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
+import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
 import { NavigationPivot } from "./navigation-pivot";
 import {
   createScanBoundaryEdges,
@@ -114,6 +115,12 @@ export class Viewport {
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
   private readonly boundaryEdges = new THREE.Group();
+  private noiseComparisonGroup?: THREE.Group;
+  private noiseComparison?: {
+    item: Item;
+    visible: boolean;
+    selectionVisible?: boolean;
+  };
   private readonly sketchGeometry = new THREE.Group();
   private readonly sketchPreview = new THREE.Group();
   private sketchEditor?: {
@@ -1456,6 +1463,7 @@ export class Viewport {
   }
 
   setEntities(entities: Entity[], selectedId: string | null): void {
+    this.setNoiseComparison();
     this.holdMenu?.close();
     if (selectedId !== this.selectedId) this.clearDeviations();
     this.selectedId = selectedId;
@@ -1844,6 +1852,12 @@ export class Viewport {
           [])
         : [];
     }
+    if (this.noiseComparisonGroup && this.noiseComparison)
+      for (const child of this.noiseComparisonGroup.children)
+        (
+          child as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>
+        ).material.clippingPlanes =
+          this.noiseComparison.item.mesh.material.clippingPlanes;
   }
   setBrush(enabled: boolean): void {
     if (!enabled && this.brushing) {
@@ -1890,6 +1904,48 @@ export class Viewport {
     const overlay = createScanBoundaryEdges(paths);
     for (const child of [...overlay.children]) this.boundaryEdges.add(child);
     this.applyClipPlanes();
+    this.invalidate();
+  }
+
+  /** Display native deviation colors on original coordinates, never preview geometry. */
+  setNoiseComparison(
+    entityId?: string,
+    positions?: Positions,
+    rgb?: Uint8Array,
+  ): void {
+    if (this.noiseComparison) {
+      this.noiseComparison.item.mesh.visible = this.noiseComparison.visible;
+      if (
+        this.triangleSelection &&
+        this.noiseComparison.selectionVisible !== undefined
+      )
+        this.triangleSelection.visible = this.noiseComparison.selectionVisible;
+      this.noiseComparison = undefined;
+    }
+    if (this.noiseComparisonGroup) this.clearGroup(this.noiseComparisonGroup);
+    const item = entityId ? this.objects.get(entityId) : undefined;
+    if (!item || !positions || !rgb || this.disposed) {
+      this.invalidate();
+      return;
+    }
+    const overlay = createNoiseComparisonOverlay(
+      positions,
+      rgb,
+      positions.length === item.positions.length ? item.hidden : undefined,
+    );
+    overlay.material.clippingPlanes = item.mesh.material.clippingPlanes;
+    overlay.visible = item.mesh.visible;
+    this.noiseComparisonGroup ??= new THREE.Group();
+    this.noiseComparisonGroup.name = "Noise comparison";
+    this.scene.add(this.noiseComparisonGroup);
+    this.noiseComparisonGroup.add(overlay);
+    this.noiseComparison = {
+      item,
+      visible: item.mesh.visible,
+      selectionVisible: this.triangleSelection?.visible,
+    };
+    item.mesh.visible = false;
+    if (this.triangleSelection) this.triangleSelection.visible = false;
     this.invalidate();
   }
 
@@ -2089,6 +2145,7 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.setNoiseComparison();
     this.clipBox?.dispose();
     this.holdMenu?.dispose();
     if (this.disposed) return;

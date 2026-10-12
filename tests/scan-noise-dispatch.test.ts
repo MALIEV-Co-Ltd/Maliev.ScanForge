@@ -30,6 +30,7 @@ it("dispatches selected multi-iteration noise through the production async worke
         selection,
         selectionOnly: true,
         iterations: 3,
+        measureDeviation: true,
       },
     },
   });
@@ -39,7 +40,14 @@ it("dispatches selected multi-iteration noise through the production async worke
   expect(Array.from(final.message.result.positions!)).toEqual(
     capture.nativeOutput,
   );
-  expect(final.transfers).toEqual([final.message.result.positions!.buffer]);
+  expect(final.message.result.noiseComparison?.rgb.length).toBe(
+    positions.length,
+  );
+  expect(final.message.result.noiseComparison?.threshold).toBe(0.05);
+  expect(final.transfers).toEqual([
+    final.message.result.positions!.buffer,
+    final.message.result.noiseComparison!.rgb.buffer,
+  ]);
   expect(Array.from(positions)).toEqual(capture.positions);
   expect(Array.from(selection)).toEqual(capture.selection);
   expect(final.message.result.diagnostics.summary).toContain("3 iteration(s)");

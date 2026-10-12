@@ -1,6 +1,9 @@
 import { growConnectedSelection } from "./connected-selection";
 import { runScanTool } from "./scan-tools";
-import { reduceScanNoiseAsync } from "./scan-tools-reduction";
+import {
+  reduceScanNoiseAsync,
+  type ScanToolResult,
+} from "./scan-tools-reduction";
 import { runScanEdit } from "./scan-edit";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { morphTriangleSelection } from "./selection-morphology";
@@ -75,7 +78,7 @@ scope.onmessage = async ({ data: incoming }) => {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
     if (request.kind === "scanTools") {
       const options = { onProgress: progress, topologyCache };
-      const outcome =
+      const outcome: ScanToolResult =
         request.operation.kind === "reduceNoise"
           ? await reduceScanNoiseAsync(request.positions, {
               ...request.operation,
@@ -83,6 +86,8 @@ scope.onmessage = async ({ data: incoming }) => {
             })
           : runScanTool(request, options);
       result.positions = outcome.positions;
+      if ("noiseComparison" in outcome)
+        result.noiseComparison = outcome.noiseComparison;
       result.diagnostics.summary = outcome.summary;
     } else if (request.kind === "scanEdit") {
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
@@ -344,6 +349,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
     if (result.positions) transfers.push(result.positions.buffer);
+    if (result.noiseComparison)
+      transfers.push(result.noiseComparison.rgb.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     scope.postMessage({ result }, transfers);
   } catch (error) {

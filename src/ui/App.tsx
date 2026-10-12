@@ -271,6 +271,14 @@ export function App() {
   const [scanToolProgress, setScanToolProgress] = useState("");
   const [scanToolResult, setScanToolResult] = useState("");
   const scanToolOutput = useRef<Entity["positions"] | null>(null);
+  const [noiseComparison, setNoiseComparison] = useState<{
+    entityId: string;
+    source: Entity["positions"];
+    output: Entity["positions"];
+    rgb: Uint8Array;
+    threshold: number;
+    visible: boolean;
+  } | null>(null);
   const [pickedScanReference, setPickedScanReference] = useState<string>();
   const scanToolAbort = useRef<AbortController | null>(null);
   const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
@@ -388,6 +396,15 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  const activeNoiseComparison =
+    noiseComparison &&
+    workspace === "scanTools" &&
+    toolPanelOpen &&
+    scanTool === "reduceNoise" &&
+    selected?.id === noiseComparison.entityId &&
+    selected.positions === noiseComparison.output
+      ? noiseComparison
+      : null;
   useEffect(() => {
     retainProcessingGeometry(selected?.positions);
   }, [selected?.positions]);
@@ -599,6 +616,17 @@ export function App() {
     }
   }, [entities, selectedId, nPoints, landmarkPickSide, surfaceFit]);
   useEffect(() => {
+    const comparison = activeNoiseComparison?.visible
+      ? activeNoiseComparison
+      : null;
+    viewport.current?.setNoiseComparison(
+      comparison?.entityId,
+      comparison?.source,
+      comparison?.rgb,
+    );
+    if (noiseComparison && !activeNoiseComparison) setNoiseComparison(null);
+  }, [entities, activeNoiseComparison, noiseComparison]);
+  useEffect(() => {
     if (surfaceFit && !surfaceFitSourceUnchanged(surfaceFit, entities))
       cancelSurfaceFit();
   }, [entities, surfaceFit]);
@@ -764,7 +792,8 @@ export function App() {
   useEffect(() => {
     viewport.current?.setTriangleSelection(
       nPoints ? undefined : selected?.positions,
-      scanBoundaryPaths.length ||
+      activeNoiseComparison?.visible ||
+        scanBoundaryPaths.length ||
         scanPanel === "boundaries" ||
         scanPanel === "holes"
         ? undefined
@@ -776,6 +805,7 @@ export function App() {
     nPoints,
     scanBoundaryPaths,
     scanPanel,
+    activeNoiseComparison?.visible,
   ]);
   useEffect(() => {
     viewport.current?.setBoundaryEdges(
@@ -1437,12 +1467,14 @@ export function App() {
     if (nextWorkspace === "properties") setMode("inspect");
   }
   function closeScanTool() {
+    setNoiseComparison(null);
     scanToolAbort.current?.abort();
     scanReferencePick.current = null;
     setToolPanelOpen(false);
     setMode("inspect");
   }
   function openScanTool(tool: ScanToolId) {
+    setNoiseComparison(null);
     scanToolAbort.current?.abort();
     scanReferencePick.current = null;
     setPickedScanReference(undefined);
@@ -1504,6 +1536,7 @@ export function App() {
         triangleMask,
       );
       scanToolAbort.current = controller;
+      setNoiseComparison(null);
       setProcessingBusy(true);
       setError("");
       setScanToolResult("");
@@ -1523,6 +1556,14 @@ export function App() {
         parameters.kind === "reduceNoise",
       );
       scanToolOutput.current = result.positions;
+      if (parameters.kind === "reduceNoise" && result.noiseComparison)
+        setNoiseComparison({
+          entityId: source.id,
+          source: source.positions,
+          output: result.positions,
+          ...result.noiseComparison,
+          visible: true,
+        });
       setScanToolResult(summary);
       setMessage(summary);
     } catch (error) {
@@ -3607,6 +3648,19 @@ export function App() {
                   : undefined
               }
               onApply={applyScanTool}
+              comparison={
+                activeNoiseComparison
+                  ? {
+                      threshold: activeNoiseComparison.threshold,
+                      visible: activeNoiseComparison.visible,
+                    }
+                  : undefined
+              }
+              onToggleComparison={() =>
+                setNoiseComparison((previous) =>
+                  previous ? { ...previous, visible: !previous.visible } : null,
+                )
+              }
               onClose={closeScanTool}
               onCancel={() => scanToolAbort.current?.abort()}
               pickedReferenceId={pickedScanReference}

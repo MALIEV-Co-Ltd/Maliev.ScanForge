@@ -1,0 +1,42 @@
+.noise-comparison-legend {
+  padding: 10px;
+  border: 1px solid var(--border, #454545);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+.noise-comparison-legend p {
+  font-size: 11px;
+  margin: 8px 0;
+}
+.noise-comparison-ramp {
+  height: 10px;
+  background: linear-gradient(
+    to right,
+    #000099,
+    #009999 40%,
+    #009900 40%,
+    #009900 60%,
+    #999900 60%,
+    #990000
+  );
+}
+.noise-comparison-endpoints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.noise-comparison-green,
+.noise-comparison-gray {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border: 1px solid #777;
+}
+.noise-comparison-green {
+  background: #009900;
+}
+.noise-comparison-gray {
+  background: #323232;
+}
