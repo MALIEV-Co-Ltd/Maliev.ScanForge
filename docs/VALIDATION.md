@@ -473,3 +473,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Eight additional cases cover edge-incidence boundaries, last-write order, exact flag assignment, independent outputs, invalid dimensions/references and folded-mesh boundary-to-constrained-direction integration with fixed strength preservation.
 - The bounded probe released executable memory and its exact PID was absent. Existing loopback preview remained HTTP 200 under its finite recorded lease; no UI-bound bundle change occurred in this component slice.
 - Cache/constraint initialization, alternate direction mode, partition/thread lifecycle, downstream field/quad/NURBS reconstruction and full UI/feature parity remain incomplete.
+
+### Recovered curvature numerical defaults - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-curvature-defaults.test.ts tests/field-curvature-schedule.test.ts tests/field-curvature-owner-bounds.test.ts --maxWorkers=1`: 212 passed in 3 files.
+- `npm test`: 1,989 passed in 89 files.
+- Four complete original reset captures match mapped numerical settings, including the tangent-derived threshold scale. The original reset uses an owned buffer and the corresponding Windows CRT tanf import; constructor/cache initialization and application workflows are outside comparison scope.
+- Eight new tests cover captured defaults, independent returned state, reset sentinels and a folded-mesh integration through triangle area, owner bounds, radius schedule, normal thresholds, edge data, neighborhoods, eigenpairs, direction selection and propagation. Caller base length remains explicit.
+- Targeted Prettier checks and `git diff --check` passed. The original reset probe released executable memory. Retained REA analyses for scratch reset and alternate direction calculation completed and recorded provider processes were absent; alternate calculation is not implemented by this slice.
+- Existing preview remained HTTP 200 under its finite lease. The UI bundle is unchanged because these components are not yet bound to reconstruction UI. Full feature parity, downstream quad/NURBS reconstruction and native lifecycle remain incomplete.

@@ -1,0 +1,109 @@
+{
+  "origin": "Mapped numerical setting output facts from original owner default setter over owned zero/sentinel/seeded buffers; verified original tanf import bound to Windows CRT, no native constructor/cache initialization or application workflow",
+  "cases": [
+    {
+      "initialPattern": 0,
+      "defaults": {
+        "minimumControl": 50.0,
+        "maximumControl": 50.0,
+        "targetCount": -1,
+        "previousBounds": {
+          "minimum": -1.0,
+          "maximum": -1.0,
+          "ratio": -1.0,
+          "referenceMinimum": -1.0,
+          "count": 5
+        },
+        "scheduleMode": 2,
+        "thresholdScale": 3.7978768348693848,
+        "qualificationAngle": 0.5235987901687622,
+        "lowerPenaltyAngle": 0.4363323152065277,
+        "upperPenaltyAngle": 1.0471975803375244,
+        "ratioMinimum": 0.699999988079071,
+        "backwardSpan": 1,
+        "forwardSpan": 1,
+        "propagateRadii": true,
+        "symmetryMode": 1,
+        "requireCompleteSymmetry": true
+      }
+    },
+    {
+      "initialPattern": 1,
+      "defaults": {
+        "minimumControl": 50.0,
+        "maximumControl": 50.0,
+        "targetCount": -1,
+        "previousBounds": {
+          "minimum": -1.0,
+          "maximum": -1.0,
+          "ratio": -1.0,
+          "referenceMinimum": -1.0,
+          "count": 5
+        },
+        "scheduleMode": 2,
+        "thresholdScale": 3.7978768348693848,
+        "qualificationAngle": 0.5235987901687622,
+        "lowerPenaltyAngle": 0.4363323152065277,
+        "upperPenaltyAngle": 1.0471975803375244,
+        "ratioMinimum": 0.699999988079071,
+        "backwardSpan": 1,
+        "forwardSpan": 1,
+        "propagateRadii": true,
+        "symmetryMode": 1,
+        "requireCompleteSymmetry": true
+      }
+    },
+    {
+      "initialPattern": 2,
+      "defaults": {
+        "minimumControl": 50.0,
+        "maximumControl": 50.0,
+        "targetCount": -1,
+        "previousBounds": {
+          "minimum": -1.0,
+          "maximum": -1.0,
+          "ratio": -1.0,
+          "referenceMinimum": -1.0,
+          "count": 5
+        },
+        "scheduleMode": 2,
+        "thresholdScale": 3.7978768348693848,
+        "qualificationAngle": 0.5235987901687622,
+        "lowerPenaltyAngle": 0.4363323152065277,
+        "upperPenaltyAngle": 1.0471975803375244,
+        "ratioMinimum": 0.699999988079071,
+        "backwardSpan": 1,
+        "forwardSpan": 1,
+        "propagateRadii": true,
+        "symmetryMode": 1,
+        "requireCompleteSymmetry": true
+      }
+    },
+    {
+      "initialPattern": 3,
+      "defaults": {
+        "minimumControl": 50.0,
+        "maximumControl": 50.0,
+        "targetCount": -1,
+        "previousBounds": {
+          "minimum": -1.0,
+          "maximum": -1.0,
+          "ratio": -1.0,
+          "referenceMinimum": -1.0,
+          "count": 5
+        },
+        "scheduleMode": 2,
+        "thresholdScale": 3.7978768348693848,
+        "qualificationAngle": 0.5235987901687622,
+        "lowerPenaltyAngle": 0.4363323152065277,
+        "upperPenaltyAngle": 1.0471975803375244,
+        "ratioMinimum": 0.699999988079071,
+        "backwardSpan": 1,
+        "forwardSpan": 1,
+        "propagateRadii": true,
+        "symmetryMode": 1,
+        "requireCompleteSymmetry": true
+      }
+    }
+  ]
+}

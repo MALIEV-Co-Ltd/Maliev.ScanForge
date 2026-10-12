@@ -10,6 +10,7 @@ import {
 import { produceCurvatureDirections } from "../src/field-curvature-directions";
 import { propagateCurvatureRadii } from "../src/field-curvature-propagation";
 import { prepareCurvatureNormalThresholds } from "../src/field-curvature-normal-thresholds";
+import { createCurvatureOwnerDefaults } from "../src/field-curvature-defaults";
 
 describe("curvature owner radius preparation", () => {
   it("feeds scheduled radii and reciprocal thresholds through folded-mesh direction production", () => {
@@ -17,11 +18,18 @@ describe("curvature owner radius preparation", () => {
     const triangles = new Uint32Array([0, 1, 2, 1, 0, 3]);
     const normals = new Float32Array([0, 0, 1, 0, 1, 0]);
     const edges = buildCurvatureEdgeData(positions, triangles, normals);
-    const schedule = prepareCurvatureRadii(3, 10, 30, 1, 3.8);
+    const defaults = createCurvatureOwnerDefaults();
+    const schedule = prepareCurvatureRadii(
+      3,
+      10,
+      30,
+      1,
+      defaults.thresholdScale,
+    );
     const normalThresholds = prepareCurvatureNormalThresholds(
-      0.5235987901687622,
-      0.4363323152065277,
-      1.0471975803375244,
+      defaults.qualificationAngle,
+      defaults.lowerPenaltyAngle,
+      defaults.upperPenaltyAngle,
     );
     const stages = Array.from(schedule.radii, (radius, index) => {
       const neighborhood = aggregateCurvatureNeighborhoods(
