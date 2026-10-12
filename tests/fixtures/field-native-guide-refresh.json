@@ -1,0 +1,212 @@
+{
+  "origin": "Owned inputs/output facts from original complete guide refresh gate; observer replaces dispatched mapping dependency and does not establish mapping behavior",
+  "cases": [
+    {
+      "mode": -2147483648,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": -2147483648,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": -2147483648,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": -2147483648,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": -1,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": -1,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": -1,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": -1,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": 0,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": [
+        {
+          "targetMatches": true,
+          "primary": [123, 456],
+          "secondary": [789, 987],
+          "contextMatches": true,
+          "optionWord": 1,
+          "scalar": 0.0,
+          "optionByte": 1,
+          "latchDuringCall": 1
+        }
+      ]
+    },
+    {
+      "mode": 0,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 0,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": 0,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": 1,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 1,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 1,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": 1,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": 2,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 2,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 2,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": 2,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": 3,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 3,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 3,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": 3,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    },
+    {
+      "mode": 2147483647,
+      "latch": 0,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 2147483647,
+      "latch": 1,
+      "firstLatch": 1,
+      "finalLatch": 1,
+      "calls": []
+    },
+    {
+      "mode": 2147483647,
+      "latch": 2,
+      "firstLatch": 2,
+      "finalLatch": 2,
+      "calls": []
+    },
+    {
+      "mode": 2147483647,
+      "latch": 255,
+      "firstLatch": 255,
+      "finalLatch": 255,
+      "calls": []
+    }
+  ]
+}
