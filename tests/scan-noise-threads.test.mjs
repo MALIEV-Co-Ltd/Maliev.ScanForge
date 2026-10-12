@@ -9,6 +9,7 @@ import selected3 from "./fixtures/noise-annular-selected-3.json";
 import whole2 from "./fixtures/noise-annular-whole-2.json";
 import whole3 from "./fixtures/noise-annular-whole-3.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
+import whole1 from "./fixtures/noise-annular-default.json";
 // Execute the production child entry point, including structured cloning and
 // transferred result buffers, rather than simulating its message transport.
 const workerSource = ts.transpileModule(
@@ -59,6 +60,105 @@ afterEach(async () => {
   expect(owned.every((worker) => worker.thread.threadId === -1)).toBe(true);
   vi.unstubAllGlobals();
 });
+it.each([selected1, selected3, whole1, whole2, whole3, boundaryOff])(
+  "connected neighborhoods crossing CPU shards preserve native $iterations-iteration output, selection=$selectionOnly, boundary=$applyBoundaryEdges",
+  async (capture) => {
+    vi.stubGlobal("Worker", ThreadWorker);
+    vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 16 });
+    const source = analyzeMesh(new Float32Array(capture.positions));
+    const count = 300_000;
+    const midpoint = count / 2;
+    // Alternate connected vertices between the actual production worker ranges.
+    // Preserve facet/corner order; only the vertex storage addresses change.
+    const remap = (id) => Math.floor(id / 2) + (id % 2 ? midpoint : 0);
+    const vertices = new Float64Array(count * 3);
+    for (let id = 0; id < source.vertices.length / 3; id++)
+      vertices.set(source.vertices.subarray(id * 3, id * 3 + 3), remap(id) * 3);
+    const triangles = source.triangles.map(remap);
+    const edges = new Map();
+    let crossingEdges = 0;
+    for (const [key, uses] of source.edges) {
+      const [a, b] = key.split(":").map((id) => remap(Number(id)));
+      if (a < midpoint !== b < midpoint) crossingEdges++;
+      edges.set(
+        a < b ? `${a}:${b}` : `${b}:${a}`,
+        uses.map((use) => ({
+          ...use,
+          from: remap(use.from),
+          to: remap(use.to),
+        })),
+      );
+    }
+    expect(crossingEdges).toBeGreaterThan(0);
+    const selection =
+      "selection" in capture ? new Uint8Array(capture.selection) : undefined;
+    const movable = new Set();
+    source.triangles.forEach((id, corner) => {
+      if (!selection || selection[Math.floor(corner / 3)]) movable.add(id);
+    });
+    expect([...movable].some((id) => remap(id) < midpoint)).toBe(true);
+    expect([...movable].some((id) => remap(id) >= midpoint)).toBe(true);
+    const topology = { ...source, vertices, triangles, edges };
+    const before = vertices.slice();
+    const originalTriangles = triangles.slice();
+    const stages = [];
+    const pool = new NoiseSmoothingPool();
+    try {
+      const result = await pool.smooth(
+        topology,
+        capture.iterations,
+        selection,
+        capture.applyBoundaryEdges,
+        { onProgress: (_, stage) => stages.push(stage) },
+      );
+      expect(ThreadWorker.owned).toHaveLength(2);
+      expect(
+        stages.filter((stage) => stage === "Preparing noise weights"),
+      ).toHaveLength(1);
+      expect(
+        stages.filter(
+          (stage) => stage === "Reducing mesh noise on two CPU workers",
+        ),
+      ).toHaveLength(capture.iterations);
+      const actual = new Float32Array(capture.nativeOutput.length);
+      triangles.forEach((id, corner) => {
+        actual.set(result.subarray(id * 3, id * 3 + 3), corner * 3);
+      });
+      expect(new Uint8Array(actual.buffer)).toEqual(
+        new Uint8Array(new Float32Array(capture.nativeOutput).buffer),
+      );
+      if (selection) {
+        let movedSharedSeams = 0;
+        source.triangles.forEach((id, corner) => {
+          const index = remap(id) * 3;
+          if (!movable.has(id))
+            expect(result.subarray(index, index + 3)).toEqual(
+              before.subarray(index, index + 3),
+            );
+          else if (
+            !selection[Math.floor(corner / 3)] &&
+            result
+              .subarray(index, index + 3)
+              .some((value, axis) => value !== before[index + axis])
+          )
+            movedSharedSeams++;
+        });
+        expect(movedSharedSeams).toBeGreaterThan(0);
+      }
+      expect(triangles).toEqual(originalTriangles);
+      // Compare bytes without materializing millions of assertion objects.
+      const originalBytes = new Uint8Array(before.buffer);
+      expect(
+        new Uint8Array(vertices.buffer).every(
+          (value, i) => value === originalBytes[i],
+        ),
+      ).toBe(true);
+    } finally {
+      pool.dispose();
+    }
+  },
+  30_000,
+);
 it.each([selected1, selected3, whole2, whole3, boundaryOff])(
   "real CPU threads preserve native $iterations-iteration output, selection=$selectionOnly, boundary=$applyBoundaryEdges",
   async (capture) => {
