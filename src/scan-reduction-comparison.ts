@@ -1,5 +1,61 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { nativeNoiseColor } from "./scan-noise-color";
+import {
+  prepareNoiseOctree,
+  type NoiseIndexedSurface,
+} from "./scan-noise-octree";
+import { queryNoiseOctree } from "./scan-noise-octree-query";
+import { noiseTriangleDistance } from "./scan-noise-deviation";
+
+/** Original samples and reduced connectivity are independent after edge collapse. */
+export function compareReductionSurface(
+  originalCoordinates: ArrayLike<number>,
+  reduced: NoiseIndexedSurface,
+  tolerance: number,
+  paletteThreshold: number,
+  options: MeshProcessingOptions = {},
+) {
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  if (originalCoordinates.length % 3)
+    throw new Error(
+      "Reduction comparison requires complete vertex coordinates.",
+    );
+  if (
+    !Number.isFinite(Math.fround(tolerance)) ||
+    Math.fround(tolerance) <= 0 ||
+    !Number.isFinite(Math.fround(paletteThreshold)) ||
+    Math.fround(paletteThreshold) <= 0
+  )
+    throw new Error(
+      "Reduction comparison thresholds must be positive finite Float32 values.",
+    );
+  const prepared = prepareNoiseOctree(reduced, 0.5, 10, options);
+  const a = [0, 0, 0],
+    b = [0, 0, 0],
+    c = [0, 0, 0];
+  return compareReductionSamples(
+    originalCoordinates,
+    tolerance,
+    paletteThreshold,
+    (point, radius) =>
+      queryNoiseOctree(
+        prepared.root,
+        point,
+        radius,
+        prepared.triangleBounds,
+        (triangle, limit) => {
+          for (let axis = 0; axis < 3; axis++) {
+            a[axis] = prepared.points[triangle * 9 + axis];
+            b[axis] = prepared.points[triangle * 9 + 3 + axis];
+            c[axis] = prepared.points[triangle * 9 + 6 + axis];
+          }
+          return noiseTriangleDistance(point, a, b, c, limit);
+        },
+      ),
+    options,
+  );
+}
 
 /** Recovered reduction callback: palette/search range and report tolerance are distinct. */
 export function compareReductionSamples(
