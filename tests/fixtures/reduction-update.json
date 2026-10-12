@@ -5,7 +5,10 @@
     "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
     "execution": "Original x64 adjacency update and candidate routines; no shims; caller-reserved reference capacity avoids allocation",
     "allocationBranchVerified": false,
-    "fullMeshParity": false
+    "fullMeshParity": false,
+    "composition": "Original ordered adjacency update followed by original final compaction; no shims",
+    "finalProcedure": "0x1403957c0",
+    "finalEvidenceId": "ev_9d9fcf8a49c308c6fc4c44f6a48db6f4e019a0f88d0ae60510158beb4c91d070"
   },
   "cases": [
     {
@@ -45,6 +48,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -115,6 +120,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "347f31b7291ae73f98457d868a6fe8bf6adef2f9207cf03f8cd9e1f9bad0e6bf08f2ef633a3fee3f929b8c88c122fb3f848b866bd71eeebf90c374f7960ac33f603f1244deadddbf",
+      "finalTriangles": [2, 0, 1],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -233,6 +240,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "a8b808877bd2f5bf9c4309808a87e63f20fa47501f4fc9bf088941f5abdbdcbf10ebf9caac73ffbf98990e3d78b2f8bfd8d7ebe63218fcbfd88bc8abd9abedbfa8ba290a0a22f2bf",
+      "finalTriangles": [2, 0, 1, 1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -1019,6 +1028,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "c061e4ccb9a3f6bfb832ecf62e84d33fecf8cca71d0efdbf5679968dab93f83ffc09c45e407aefbff6658272a0f7fe3f2a80642667b8fb3fd081d37a389dc0bfba9b54e23686f6bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -1831,6 +1847,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "60e23a9a12aecbbf204db56d9796cf3f10175a2bf546c1bfd0e2bcaebe4ad3bfb409b7653125fb3f54eaa10074a8e43fb8f81b98cc5bffbfbcb27cac1ebafd3f484b9be5075bd7bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -2601,6 +2624,11 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "90a9915e9decd6bf204a933abcf7ecbf806c67d56ab4d73fee9b0d7c3b2df2bf10fbc6faef46d9bfca2a74c3e505fd3f7455c3a62818e6bf8032f76327d09d3f78d55dfeadd7d73f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -4205,6 +4233,18 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "9014ae65839bf1bfcc14c0af4a9aef3fc24575b59f9af13fbca4e3591b2af23f2ab90124e59bf3bf300cf6675e30edbf18d9c47be6ecd73f2c960d267087f2bf001ed76c00869b3f",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -4243,6 +4283,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -4306,6 +4348,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -4411,6 +4455,8 @@
       ],
       "appended": [],
       "deletedCount": 8,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -5076,6 +5122,8 @@
       ],
       "appended": [],
       "deletedCount": 20,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -5761,6 +5809,8 @@
       ],
       "appended": [],
       "deletedCount": 37,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -6466,6 +6516,8 @@
       ],
       "appended": [],
       "deletedCount": 38,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -7807,6 +7859,8 @@
       ],
       "appended": [],
       "deletedCount": 70,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -7849,6 +7903,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -7910,6 +7966,8 @@
       ],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -8020,6 +8078,8 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "98472f0a07e6e43ff83a3f5589fdf9bf60112d75c2f1d53fa49a0f3cbee7eabfbab066dc1b47fe3f14715edd2091e93fe0498bd079dcb9bf90178860f840fdbf0075112978dec5bf",
+      "finalTriangles": [1, 2, 0],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -8750,6 +8810,11 @@
         }
       ],
       "deletedCount": 20,
+      "finalHex": "3c7ab2503c95fcbfa0b331df3546f03f648432284248f3bfa2344fc634ddf33f54bf8b21fa6dfebf1018deac9bffd73ff80d1112bcb2f6bfe4444982aa72ebbf60468682e7d7ec3f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -9498,6 +9563,11 @@
         }
       ],
       "deletedCount": 21,
+      "finalHex": "f297b5d9c62bf1bf9872b2cf1bbcf4bf26fc699df6b1f63f247871c34571ea3f200ad5bc6e4cbe3f5833ee0ee4d6d5bf960457ea1a7df93fb4041e50a849f03f80dfa9fce831f4bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -10266,6 +10336,11 @@
         }
       ],
       "deletedCount": 22,
+      "finalHex": "56b815d92884febf44ed8ca123aff83fa0b903cbcf63c23fe046824e1a1fc9bf846d50159b15e1bf4e68741e7664f1bfe61bfd6dd1f9f1bf0072b9401f11c63feee3b6455e8dfabf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -11672,6 +11747,11 @@
         }
       ],
       "deletedCount": 21,
+      "finalHex": "b6eff442a71af03f625fdfeccaabfe3fc4a871ce9fbcf73fe0572b813b2add3f9e447f7a54f6f03fb0e5284684c3df3fd6109b8a49c6f6bf80d0cd9e9048debf8087415e128bb5bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1,
+        2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -11708,6 +11788,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -11771,6 +11853,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -11883,6 +11967,8 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "dc8c81a98051eebf00009d12a199ad3f080bb75b76c2da3f00a3fd7b8894e53f48886784679dd7bf905878dfa75debbfa85bee4ce931dbbfe4ac17403933ea3f465990895e55fd3f",
+      "finalTriangles": [1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -12669,6 +12755,13 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "0078a792fc21b93f9cc3028c5ef9e7bf80edd55bae75933f9816d9dad05be23f129f485fa24bf8bf3a245ba9af32fbbf3206ce21595df3bf34558772cfb8e8bf9cf105169b73e53f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -13415,6 +13508,11 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "80b295070af5cd3f00ef559cd554f5bfc07c4f54c4ced43f72827a0ba7f3f83f60aaf5b49f75d13fcc644b93bce6f5bfe688be468aacf83f3c594b531ed0ec3f70c0d6c2ebcbcc3f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -14241,6 +14339,13 @@
         }
       ],
       "deletedCount": 8,
+      "finalHex": "805a8d7b1999f3bfc0203e24abc4b83fe2a837b163d4f7bf24cbf5884df1ee3fa02f72cc7788fd3f52808a705f1afbbf00aa86fce0b07ebff8e83cb93cccde3fbe71cde2bdc3fa3f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -15827,6 +15932,17 @@
         }
       ],
       "deletedCount": 10,
+      "finalHex": "7c65916e73d3e6bfb09e89276f13ffbf36703246934cf4bffa9c7d56d654febf883bb836e09ed2bf60d3b4c73b9fcf3fc0b579abc685b3bf786eba8569e2dfbfbcc51d0336e5efbf",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -15883,6 +15999,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -15971,6 +16089,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "58bfffd934ddd3bf5c5732c9ad6fe1bf0066e0f28215a03ff0326abbc0d4eb3f706bbdc14eb0d6bfce49ad973487fbbf30626aa9cf22cabfe04e8474881dce3ff6c4e1954b3dfbbf",
+      "finalTriangles": [2, 0, 1],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -16101,6 +16221,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "829710f0a694f3bf80af6f38307695bfc215ee3d6fe4fbbf4a0c03795375f5bfa0c6dd150acbdcbf10830f479ccaeb3f74bc5d0784bff3bf16e031609098f33f3c82e01f3630e2bf",
+      "finalTriangles": [1, 2, 0],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -16911,6 +17033,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "809dc557b33dc83fea55c24610e9f1bfa46fd41ba63eeabff0a096b1f2f3d2bf9802290c0fc1d0bf60357d6c330ebd3f549a85af6387e43f98766c9efffae1bf30d9038ab166c7bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -17745,6 +17874,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "701f1bafc558e9bff0f99d59424fcd3f4088541cab51fa3f08a068ea98f1f93f703238df180ef93fa8b769769a05dcbf20d8c27a1ce7f9bfa8435ac087b9e03f6cfb8afc32e4ec3f",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -18603,6 +18739,14 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "b055d7d5182fd93f08c1e5eb0637f9bf6087c2bc9192cb3fdab6c1623822f0bf88561e82064bf03f20d1855dfa2df8bf0cf4866bed61fd3f9c3385633de8f4bfb477613d96ceff3f",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -20229,6 +20373,18 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "16c935170c1efdbfd0cb75473b86c7bf6c5c222e06b8e3bfd43ebe1624faed3f3cdb26d67b84fabfda644892688efd3ff8eaa9b60ff6d7bf80abd1c48d2d9dbf30680ad3562cdebf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -20287,6 +20443,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -20370,6 +20528,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -20495,6 +20655,8 @@
       ],
       "appended": [],
       "deletedCount": 8,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -21180,6 +21342,8 @@
       ],
       "appended": [],
       "deletedCount": 36,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -21883,6 +22047,8 @@
       ],
       "appended": [],
       "deletedCount": 37,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -22608,6 +22774,8 @@
       ],
       "appended": [],
       "deletedCount": 21,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -23973,6 +24141,8 @@
       ],
       "appended": [],
       "deletedCount": 70,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -24035,6 +24205,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -24118,6 +24290,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -24246,6 +24420,8 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "4030812af2feb53f8e8dff402ab4fdbff8c0a48aaea7d43fa059aa6d398af5bf50773878c51ff83f003770e0260a8fbf603fb024cdecd53f00c1604946f8c83fe8b5122fc169fd3f",
+      "finalTriangles": [1, 2, 0],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -24962,6 +25138,10 @@
         }
       ],
       "deletedCount": 12,
+      "finalHex": "eaf8ee91b320fb3fd4b478e1a152e1bf3c659bd82ca4ef3fd6a6904d760bf43fb2ad81fdd0b7f0bfc0b4ac29450db03f20a4cde0f773ff3fcccc9c124caeedbfe453df5e375aefbf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -25732,6 +25912,11 @@
         }
       ],
       "deletedCount": 21,
+      "finalHex": "80ab91552751ff3f58103fbb7c6de0bffaaf3795c9d1fdbfa2cd0820b18df43fb2917005967af93f5663b2fd9d51f5bf7827be7873c2dd3f6018210121add3bf98a0c0103e81df3f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -26516,6 +26701,11 @@
         }
       ],
       "deletedCount": 22,
+      "finalHex": "b475656d9d73e23f6490f83ac763fe3f103f3d2fdab6d8bf3cf7fe1074ebec3f2a78b951b4a2fa3f762ec0e8002bfcbf9075a10b686efe3f78f9b3cda6aef73ff6441a16824ff2bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -28006,6 +28196,13 @@
         }
       ],
       "deletedCount": 38,
+      "finalHex": "101e9da62d8bf23f508310161f74ea3fb025b82264bff5bfd0fbdf972fbce4bfe8fcba2e64c9d4bfd0cce2193ad6c83fb683d28c6bf8f63f907ba7fbdcebdabfc4534160dd9de33f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1,
+        2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0,
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -28066,6 +28263,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -28151,6 +28350,8 @@
       ],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -28283,6 +28484,8 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "88e27c65c790d3bf945b99840f3cf8bf820df1f0db91fc3f4072830837f2c5bfa80654042383dfbf808c7f2f886df13fa4ac3cbd1694e53f6805c3db98e7d53fc68bfb2027fbfb3f",
+      "finalTriangles": [1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -29087,6 +29290,13 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "e4a36a031b8de2bf24d237ff241febbf94a2bd278eb9ff3f40de1e45dfe4d03f44b20b02f61df6bff8d6daca7364e6bf460d36d034dcfebf005f6a7f42fbb4bf84366368be41e9bf",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -29909,6 +30119,13 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "b8d42da4b7fdd73fc4668f7d2796e33f428e1d09686cfdbf28530de46268d73ff87b9f1c32f9f6bf986881f6f95fd73f8872f3264cd4eabfbced6f72157afbbf527565f8afb2f23f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -30753,6 +30970,13 @@
         }
       ],
       "deletedCount": 8,
+      "finalHex": "4462970920daf53f043d5db27b55f1bffca3aeeacb70fabf52e7831f3427fc3fdea9027d193ef8bf60c17f6a812ffb3fe607c446c02cffbf284e8fc4fea5f93f4815326fd213e43f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -32235,6 +32459,13 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "e060e4a45e13f53fe6a48476dd61fd3f8a112a8ac4b7f13fd4ccc0a7b119ea3fc02ff5b9f9b3d43fdccea7409e34f8bf9edd9f7b4d74f33f9c2fdf3c1b41ecbf30e27db87b87f9bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0,
+        2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -32295,6 +32526,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -32383,6 +32616,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "729f05470116fd3fa08f0cdad048dfbf2c8f215ca7ace0bfc00638397bb4b1bfd6db8bb4144bfdbf68ca9a876c2ed23fa226c6f7b76dfa3fba44ad55037bfa3f86bbf752858ef93f",
+      "finalTriangles": [2, 0, 1],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -32521,6 +32756,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "5c8dd5f3cab6e73ff0ab3ce7ab1ff2bf3ae2d3451439f1bfcc073290b7fef1bf2829760af59ff0bf2a2faf6afa32f93f908b85019148d43f42dad0943531fabf00a3cd2fba12f5bf",
+      "finalTriangles": [2, 0, 1, 1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -33331,6 +33568,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "80cce0810bbab23facae1ca0f322ffbf0a947c3b28bdf3bf00f39d56f594e4bfc0db4825d839aebf8087f458eb6ff83f1a0d7c866b61fabff215156da8c8f03fbece56962d5af63f",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -34099,6 +34343,11 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "50855334b65ddc3f9632dee7eb6cf7bf40441fbc5210b33f90a940be94baffbfdad481f1131af1bfd0c963f90c94dbbf004b85e312cfcbbf105e61922700e23f9c221b8aa90be3bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -34957,6 +35206,14 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "2eb60290dd33f9bf6eae4a323cd7f7bf34eb48d71c0bf8bf8881f345809fd93fb8f5c37f800cf9bfb8dd65eafaedf53f3e4ae0f30441f23f98744403b640d5bf9a9ea0efa2d1fcbf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -36583,6 +36840,18 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "809fba18eeeac53f7c239d8ab950e2bf408474d32904f8bfb8d5730185e0e0bf82e513f8570ff4bfd016bff667efc03f10e16df03bcbeb3f44caa8c498b1e93f68b959971f1ff2bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -36643,6 +36912,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -36726,6 +36997,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -36851,6 +37124,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -37536,6 +37811,8 @@
       ],
       "appended": [],
       "deletedCount": 36,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -38241,6 +38518,8 @@
       ],
       "appended": [],
       "deletedCount": 37,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -38964,6 +39243,8 @@
       ],
       "appended": [],
       "deletedCount": 38,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -40327,6 +40608,8 @@
       ],
       "appended": [],
       "deletedCount": 70,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -40389,6 +40672,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -40472,6 +40757,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -40600,6 +40887,8 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "d8192956284afb3f50666c7c28d2cfbf26cf971e1f16febfa286ee5ce467f33fb871fa2eed01edbfc07305ebd823f0bf0072cfe9ebc2eebff47c38cc22cce8bf24f294fff083e0bf",
+      "finalTriangles": [1, 2, 0],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -41348,6 +41637,11 @@
         }
       ],
       "deletedCount": 20,
+      "finalHex": "98dd2f23d0f7df3fa465da4f2d1ffb3fdcb1f522d3e1e1bfd01dc74952a9c0bf16bbd13b5347fc3facc2380892ace1bf085211d8a592ddbf108e1456ba81e2bf1cad6b39a8a1f4bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -42118,6 +42412,11 @@
         }
       ],
       "deletedCount": 21,
+      "finalHex": "3832f4ac3588f4bf366c817120faf9bf0048abfaa49c7d3fd03f087dffece3bf5eb8c4a21aacf23ff2cfa4e6880efa3fd2b41d2cae3ff43fa419c3ccd344f63f24bd185bfcbfeebf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -42872,6 +43171,10 @@
         }
       ],
       "deletedCount": 13,
+      "finalHex": "b85d04462585e1bf70a9e7007f6adf3fe8852eda23bbda3f4450c116c0e2eabf6cf0ba06baede9bf408f3399bfc6c3bf305161981e65f13fb894155c8968fe3f803f460dfa2cd23f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -44364,6 +44667,13 @@
         }
       ],
       "deletedCount": 38,
+      "finalHex": "0057e6751ccfe8bf38437de8b293f6bf92a8bb9555a9f93f4a600f488f22f2bf1a9dc2e2afc7f4bfc0ba3218d0eceabfd06aae2abbb6d13f403a8869d065d43fe2a5ced7f93bf33f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1,
+        2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0,
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -44422,6 +44732,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -44507,6 +44819,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -44637,6 +44951,8 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "1c9101c65110fa3f5cb37e93eff1f23f626293e02dd6ffbf9c895e741071f3bf28c7586a8ac7f13f64596978ee68e2bf903a0fb251f1debfe4e5b8756395eb3f58df97fc12d1d53f",
+      "finalTriangles": [1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -45381,6 +45697,11 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "28d03f934b37e0bf140103854a23f13f685031d1c537e4bf44d7b534030bf8bf6cf53cd6f031ef3fd63cce97c927fbbfe425c5bbc959e6bf186ca80496f0d73f6058e460cb1ec53f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -46203,6 +46524,13 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "ac0b991478a8fc3f30b3e562bdb4e03f6ea62f2635f5f1bf5a6543e02a57f13fa8d9331666a8db3f4ad6c3731615f1bf9e638993afc9febf5e6f7ac94631ffbf32bda58b0583fdbf",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -47047,6 +47375,13 @@
         }
       ],
       "deletedCount": 8,
+      "finalHex": "e0d2b13b0a40b6bf8210ce152cb5f33f988ba47cb93ddf3f386946014492f93fc06d8be970ccf83fb29e4717591afbbfe826365c4266dfbf78871e5f656ad2bfd4e09fabab14fcbf",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -48653,6 +48988,17 @@
         }
       ],
       "deletedCount": 10,
+      "finalHex": "9002d69647e6ff3f6e01a43084bcf5bf3a0c4247984ff5bffced3658171cee3f8881d41c04fbdcbfc0d34bbffb89bfbf7400e044fceceb3f40ddffd6c639a03f5a033bc19981ff3f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -48711,6 +49057,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -48796,6 +49144,8 @@
       ],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -48932,6 +49282,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "401b2f2dfc46eabf587c0630fd3de7bfd8b8f292f326f8bf9403a135ec9ef9bf0e5b41217b2cfcbf004f002e1035fdbfc859b9443bf4de3f9cfa842af09ae1bfd866fc7a9878d13f",
+      "finalTriangles": [2, 0, 1, 1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -49740,6 +50092,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "f87fd30f3063e13f1cfc7d958fcdfc3f5c5ca4b12c05fc3f56ada2ef5699f33f1ab5bb5c881ef1bf205cd66915e0fc3f18b62c777789dfbf347b464cf18bf43f10e15d077b21e1bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -50574,6 +50933,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "7881e9008faef9bfe0fddca216ddbdbf14818b88901ce6bf0eddc3d39cbcf03f00e0f7e222005f3f16de5948fcf5fd3fc025fb406b5fe83f00760857d749d23f40a8db421426dd3f",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -51430,6 +51796,14 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "f2d46d8a323cf03f4e1a19c7b16af3bf005fcee8c610dbbf1c65b1dada72e1bfc84761a9e720dabfb20d819db5fafb3f24c888c7cfa9e1bff0f42d992a7af43fa0fcf23630e5b0bf",
+      "finalTriangles": [
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -52924,6 +53298,13 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "e804de159e96d73f64e86e778592f6bfc0b45d8505e9b33fe0f396a0ac18d2bfd6fc8365bb58f1bf1885ff01310decbf68d0b01687c4e43f6c1e948a8dd8e2bf5808666c6a2ddabf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0,
+        2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2,
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -52986,6 +53367,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -53067,6 +53450,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -53188,6 +53573,8 @@
       ],
       "appended": [],
       "deletedCount": 8,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -53873,6 +54260,8 @@
       ],
       "appended": [],
       "deletedCount": 36,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -54578,6 +54967,8 @@
       ],
       "appended": [],
       "deletedCount": 21,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -55301,6 +55692,8 @@
       ],
       "appended": [],
       "deletedCount": 38,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -56666,6 +57059,8 @@
       ],
       "appended": [],
       "deletedCount": 70,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -56726,6 +57121,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -56809,6 +57206,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -56937,6 +57336,8 @@
         }
       ],
       "deletedCount": 5,
+      "finalHex": "94b237f8a095f23f14f46536177cf5bfd21c59002876fc3f4cf8c636be01fb3fd0038aed969ff1bf005caaab6ab5a2bf00654b150bc1d53fd08bb3b3e55ee5bff649927ed7c2fabf",
+      "finalTriangles": [1, 2, 0],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -57685,6 +58086,11 @@
         }
       ],
       "deletedCount": 20,
+      "finalHex": "0064e2029a9bdfbf8efe76a97d4cf93ffceb9e024b03fbbf3c4928af3538e4bf582ff8db0c67ea3f24cdfc4ce8cfeb3f2a6f5bf11a19fe3f00b08272d578b83fe26cde24d7d5f3bf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -58451,6 +58857,11 @@
         }
       ],
       "deletedCount": 21,
+      "finalHex": "a4a7e85b957df13f6eb411dc41a8ff3fc6cddc831f92f33f4a61e05cd913f9bf784b5843b413e63fe625c8d4e15bf13f6417bdcc767fec3f288b0725680cf2bfc800d46f7cbafbbf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -59237,6 +59648,11 @@
         }
       ],
       "deletedCount": 22,
+      "finalHex": "3aff89f4ced0f3bf0c0dd190212cfc3fd0e75d95ad4ac8bfe0f5840628d2eebfc2e3f57543b0f73fe087a33021d4f83f6ceac1be7125fe3f10966280be65fc3f060e56f0b1eaf63f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -60729,6 +61145,13 @@
         }
       ],
       "deletedCount": 38,
+      "finalHex": "c4ff16787c6ee5bfa46a520a9ebbebbf72a0f1b03be1fd3f00c6c9e0b5bd8abfe02015c5e7c0fcbf00989277307e763f7cc9a2e9d6d1ea3ff818a1f928d4fb3f688e129dbf6df13f",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2,
+        0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0, 1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1,
+        2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0, 0, 1, 2, 1, 2, 0,
+        1, 2, 0, 2, 0, 1, 1, 2, 0, 2, 0, 1, 2, 0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -60791,6 +61214,8 @@
       "output": [],
       "appended": [],
       "deletedCount": 5,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -60872,6 +61297,8 @@
       ],
       "appended": [],
       "deletedCount": 6,
+      "finalHex": "",
+      "finalTriangles": [],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -61002,6 +61429,8 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "5a3c06a6be09fd3f7c80f9945cf7f13f98bb435150e6e53f5acfa72d9050ffbf0e459d027225f5bf28ddbc278edbe6bfa0fd369dff70e4bfb8f29ece0dd3f9bffc1e597b1addf3bf",
+      "finalTriangles": [1, 2, 0, 0, 1, 2],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -61806,6 +62235,13 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "60f422994238b93f40b394a93693cf3f9e08f56ebe50f2bfac6106c0925df5bf80e71a2da074e2bf80bcf39ee115fabf80c1da353725cc3fd02c571c44bcf4bff8b607d96103ec3f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -62628,6 +63064,13 @@
         }
       ],
       "deletedCount": 7,
+      "finalHex": "7a901832b58af8bf66eeea40c301f8bf009883dc8818ef3f9826257acd37e1bf5e8234ddca32f8bfc0ed20e9950be9bfe4e37022bdb1f13f88676a6b0899d23f18d767b0d0c5f03f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -63412,6 +63855,11 @@
         }
       ],
       "deletedCount": 6,
+      "finalHex": "dc4d23f4acc1e13fea4e8959a3aaf93f3866c137c4f6e0bfe013dca678d0e5bfe4495e2f5a8cfdbf2884cdab2186fb3f5ccca27b7686f4bf64a23d5399f7f93f24bfc6e3ea19fbbf",
+      "finalTriangles": [
+        1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1,
+        0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 2, 0, 1, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     },
@@ -65016,6 +65464,17 @@
         }
       ],
       "deletedCount": 10,
+      "finalHex": "f28ee17443c4f1bfda9fb48b1b7ffdbf68f352fd253ae4bfee29ce5a8763fabf80629a4b0c90f03fc09a058aac7dbd3f306e4139ddc1c0bfcc0405478870f03f4a582c5589d1fc3f",
+      "finalTriangles": [
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1,
+        1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2,
+        2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 1, 1, 2, 0,
+        0, 1, 2, 2, 0, 1, 1, 2, 0, 0, 1, 2
+      ],
       "guardsIntact": true,
       "verticesAndMaskUnchanged": true
     }

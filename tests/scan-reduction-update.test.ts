@@ -7,6 +7,7 @@ import type { ReductionVertex } from "../src/scan-reduction-candidate";
 import type { ReductionReference } from "../src/scan-reduction-validity";
 import type { Vec3 } from "../src/types";
 import fixture from "./fixtures/reduction-update.json";
+import { compactReductionMesh } from "../src/scan-reduction-final";
 
 it.each(fixture.cases)(
   "matches original ordered adjacency update %#",
@@ -55,6 +56,17 @@ it.each(fixture.cases)(
     expect(Array.from(mask)).toEqual(capture.mask);
     expect(JSON.stringify([capture.vertices, capture.references])).toBe(before);
     expect(capture.guardsIntact && capture.verticesAndMaskUnchanged).toBe(true);
+    const compacted = compactReductionMesh(
+      capture.vertices.flatMap((vertex) => vertex.point),
+      faces,
+    );
+    const compactedBytes = new Uint8Array(compacted.vertices.buffer);
+    expect(
+      Array.from(compactedBytes, (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join(""),
+    ).toBe(capture.finalHex);
+    expect(Array.from(compacted.triangles)).toEqual(capture.finalTriangles);
   },
 );
 

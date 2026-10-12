@@ -155,3 +155,31 @@ mask patterns and 31/32/33/65-reference ranges. A separate regression checks
 source/successor vector aliasing. These are record-level comparisons, not
 whole-mesh native reduction. Preparation, pass ordering and compaction remain
 necessary before the native path replaces production reduction.
+
+## Final compaction and composed execution
+
+`src/scan-reduction-final.ts` reproduces the final indexed coordinates and
+triangles from `0x1403957c0`. Its facet-vector resize dependency `0x140396c30`
+was separately extracted with REA, evidence
+`ev_f9ee6e1a4795124d290d63f02e7123c13863cf2ac83d452b786bcffd5234010a`.
+Final-compaction evidence is
+`ev_9d9fcf8a49c308c6fc4c44f6a48db6f4e019a0f88d0ae60510158beb4c91d070`.
+
+Original compaction and shrink instructions ran on 140 guarded caller-owned
+meshes without shims. Surviving faces retain their original order. Referenced
+vertices are packed in ascending original vertex-index order, then every face
+index is remapped. Cases include unused vertices, empty inputs/results, kept,
+alternately deleted and entirely deleted face sets, signed-zero coordinates,
+and up to 81 vertices and 97 faces. Every exported coordinate bit and triangle
+index matches. Context writes change only the two vector end pointers; input
+and output storage guards remain intact. Capacity is already sufficient, so
+allocation/growth paths are not exercised. The port returns fresh indexed
+buffers; it does not emulate the native working-record metadata mutations.
+
+The 112 adjacency-update captures were also re-executed with original final
+compaction immediately afterward on the same working records. Tests compose
+the candidate-backed update port with final compaction and match those original
+sequences' coordinate bytes and triangle indices. This verifies a connection
+between recovered components rather than only isolated routines. It still
+does not execute preparation or the complete pass/collapse loop. The production
+reducer remains unchanged pending complete same-mesh comparisons.
