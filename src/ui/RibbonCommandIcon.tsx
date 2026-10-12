@@ -205,6 +205,13 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     path("M2 9 5 4l4 10 4-10 4 9 4-8 4 8 5-9", "none", 'stroke="#e37766"') +
     path("M2 24Q16 13 30 24", "none", 'stroke="#edbe48" stroke-width="3"'),
   transform: solid + axes,
+  scaleMesh:
+    mesh +
+    path(
+      "M2 10V2h8m12 20h8v8h-8M3 3l8 8m18 18-8-8",
+      "none",
+      'stroke="#8bbb80" stroke-width="2"',
+    ),
   flipNormals:
     plane +
     path(

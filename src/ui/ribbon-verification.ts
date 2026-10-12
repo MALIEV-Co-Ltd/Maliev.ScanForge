@@ -6,6 +6,16 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  reducePolygons:
+    "docs/SCAN_DATA_TOOLS.md: reduction targets and geometry validation",
+  reduceNoise:
+    "docs/SCAN_DATA_TOOLS.md: bounded smoothing and selection isolation",
+  scaleMesh: "docs/SCAN_DATA_TOOLS.md: scale and undo workflow",
+  flipNormals: "docs/SCAN_DATA_TOOLS.md: normal winding and undo workflow",
+  repolygonize: "docs/SCAN_DATA_TOOLS.md: voxel reconstruction and limits",
+  averageMesh: "docs/SCAN_DATA_TOOLS.md: nearest surface averaging workflow",
+  mirrorMesh: "docs/SCAN_DATA_TOOLS.md: origin and object reference planes",
+  unroll: "docs/SCAN_DATA_TOOLS.md: cylinder reference and seam handling",
   editScan: "docs/SCAN_DATA_MVP.md; docs/VALIDATION.md: Scan Data edit MVP",
   newDocument: "docs/VALIDATION.md: New document and colored command icons",
   open: "docs/VALIDATION.md: browser scan import and file validation",

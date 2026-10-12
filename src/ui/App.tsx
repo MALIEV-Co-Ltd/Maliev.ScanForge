@@ -1,5 +1,13 @@
 import { ViewportTools } from "./ViewportTools";
 import { ImportProgress } from "./ImportProgress";
+import {
+  ScanToolsPanel,
+  scanToolTitles,
+  type ScanToolId,
+  type ScanToolParameters,
+} from "./ScanToolsPanel";
+import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -245,6 +253,14 @@ export function App() {
   } | null>(null);
   const [actionBusy, setBusy] = useState(false);
   const [processingBusy, setProcessingBusy] = useState(false);
+  const [scanTool, setScanTool] = useState<ScanToolId>("reducePolygons");
+  const [scanToolProgress, setScanToolProgress] = useState("");
+  const [scanToolResult, setScanToolResult] = useState("");
+  const scanToolOutput = useRef<Entity["positions"] | null>(null);
+  const [pickedScanReference, setPickedScanReference] = useState<string>();
+  const scanToolAbort = useRef<AbortController | null>(null);
+  const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
+  const pickScanReference = useRef<(id: string) => boolean>(() => false);
   const busy = actionBusy || processingBusy;
   const busyRef = useRef(busy);
   busyRef.current = busy;
@@ -417,6 +433,7 @@ export function App() {
             }
             return;
           }
+          if (pickScanReference.current(id)) return;
           setSelectedId(id);
           if (modeRef.current === "measure")
             setMeasure((previous) =>
@@ -425,6 +442,9 @@ export function App() {
           else setAnchor(point);
         },
         (id) => {
+          // Viewport invokes onSelect before onPick for one click. Keep the scan
+          // selected until onPick binds the reference and completes the gesture.
+          if (scanReferencePick.current) return;
           if (
             !busyRef.current &&
             !nPointsRef.current &&
@@ -512,6 +532,7 @@ export function App() {
     }
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
+        scanToolAbort.current?.abort();
         importAbort.current?.abort();
         selectionAbort.current?.abort();
         cad.current?.dispose();
@@ -1040,6 +1061,9 @@ export function App() {
       surfaceScanId: undefined,
       fit: undefined,
       parametric: undefined,
+      normals: undefined,
+      meshSelection: undefined,
+      scanSource: undefined,
     });
     operationLabel.current = null;
     setMessage(label);
@@ -1370,11 +1394,108 @@ export function App() {
     setMessage(`Restored model before ${target.label}`);
   }
   function showTools(nextWorkspace: string) {
+    if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
     cancelLandmarks();
     cancelSurfaceFit();
     setWorkspace(nextWorkspace);
     setToolPanelOpen(true);
     if (nextWorkspace === "properties") setMode("inspect");
+  }
+  function closeScanTool() {
+    scanToolAbort.current?.abort();
+    scanReferencePick.current = null;
+    setToolPanelOpen(false);
+    setMode("inspect");
+  }
+  function openScanTool(tool: ScanToolId) {
+    scanToolAbort.current?.abort();
+    scanReferencePick.current = null;
+    setPickedScanReference(undefined);
+    setScanToolResult("");
+    setScanToolProgress("");
+    setScanTool(tool);
+    setMode("inspect");
+    showTools("scanTools");
+  }
+  pickScanReference.current = (id) => {
+    const kind = scanReferencePick.current;
+    if (!kind) return false;
+    const reference = entities.find(
+      (e) => e.id === id && e.id !== selected?.id,
+    );
+    if (
+      !reference ||
+      !(kind === "plane"
+        ? mirrorReference(reference)
+        : cylinderReference(reference))
+    ) {
+      setMessage(
+        `Pick a ${kind === "plane" ? "planar CAD or construction object" : "cylinder reference"}.`,
+      );
+      return true;
+    }
+    scanReferencePick.current = null;
+    setPickedScanReference(id);
+    setMessage(`Reference selected: ${reference.name}`);
+    return true;
+  };
+  useEffect(() => {
+    scanToolAbort.current?.abort();
+    scanReferencePick.current = null;
+  }, [selected?.id, selected?.positions]);
+  useEffect(() => {
+    const cancel = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && scanReferencePick.current) {
+        scanReferencePick.current = null;
+        setMessage("Reference picking cancelled.");
+      }
+    };
+    window.addEventListener("keydown", cancel);
+    return () => window.removeEventListener("keydown", cancel);
+  }, []);
+  useEffect(() => {
+    setPickedScanReference(undefined);
+    setScanToolResult("");
+  }, [selected?.id]);
+  async function applyScanTool(parameters: ScanToolParameters) {
+    if (!selected || busy || scanToolAbort.current) return;
+    const source = selected;
+    const controller = new AbortController();
+    try {
+      const request = scanToolRequest(
+        source,
+        parameters,
+        entities,
+        triangleMask,
+      );
+      scanToolAbort.current = controller;
+      setProcessingBusy(true);
+      setError("");
+      setScanToolResult("");
+      const result = await processMesh(request, {
+        signal: controller.signal,
+        onProgress: (fraction, stage) =>
+          setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+      });
+      if (controller.signal.aborted || !result.positions) return;
+      const summary = String(
+        result.diagnostics.summary ?? "Mesh tool complete",
+      );
+      replaceScanPositions(result.positions, scanToolTitles[parameters.kind]);
+      scanToolOutput.current = result.positions;
+      setScanToolResult(summary);
+      setMessage(summary);
+    } catch (error) {
+      if (controller.signal.aborted)
+        setMessage("Mesh operation cancelled; original geometry retained.");
+      else setError(errorText(error));
+    } finally {
+      if (scanToolAbort.current === controller) {
+        scanToolAbort.current = null;
+        setProcessingBusy(false);
+        setScanToolProgress("");
+      }
+    }
   }
   function cancelSurfaceFit() {
     surfaceFitAbort.current?.abort();
@@ -2662,8 +2783,14 @@ export function App() {
           autoFreeform: () => showTools("surface"),
           quadObj: () => showTools("surface"),
           sketch2d: openSketchCreation,
-          reducePolygons: () => showTools("processing"),
-          reduceNoise: () => showTools("processing"),
+          reducePolygons: () => openScanTool("reducePolygons"),
+          reduceNoise: () => openScanTool("reduceNoise"),
+          scaleMesh: () => openScanTool("scaleMesh"),
+          flipNormals: () => openScanTool("flipNormals"),
+          repolygonize: () => openScanTool("repolygonize"),
+          averageMesh: () => openScanTool("averageMesh"),
+          mirrorMesh: () => openScanTool("mirrorMesh"),
+          unroll: () => openScanTool("unroll"),
           fineAlign: () => showTools("processing"),
           alignNPoints: openLandmarks,
           repairMesh: () => showTools("processing"),
@@ -3389,6 +3516,8 @@ export function App() {
             <button
               aria-label="Close tool options"
               onClick={() => {
+                scanToolAbort.current?.abort();
+                scanReferencePick.current = null;
                 setToolPanelOpen(false);
                 if (workspace === "mesh") setMode("inspect");
               }}
@@ -3396,7 +3525,8 @@ export function App() {
               <X size={15} />
             </button>
           </h2>
-          {workspace === "mesh" && selected?.kernelId ? (
+          {(workspace === "mesh" || workspace === "scanTools") &&
+          (selected?.kernelId || selected?.parametric) ? (
             <section aria-label="Exact CAD body">
               <p>
                 Original CAD surfaces and solid topology are retained in
@@ -3418,6 +3548,33 @@ export function App() {
                 Create mesh copy
               </button>
             </section>
+          ) : workspace === "scanTools" ? (
+            <ScanToolsPanel
+              key={`${scanTool}:${selected?.id}`}
+              entities={entities}
+              selected={selected}
+              triangleSelection={triangleMask}
+              tool={scanTool}
+              disabled={actionBusy}
+              busy={processingBusy}
+              progress={scanToolProgress}
+              result={
+                selected?.positions === scanToolOutput.current
+                  ? scanToolResult
+                  : undefined
+              }
+              onApply={applyScanTool}
+              onClose={closeScanTool}
+              onCancel={() => scanToolAbort.current?.abort()}
+              pickedReferenceId={pickedScanReference}
+              onPickReference={(kind) => {
+                scanReferencePick.current = kind;
+                setMode("inspect");
+                setMessage(
+                  `Pick a ${kind === "plane" ? "planar reference" : "cylinder"} on the canvas.`,
+                );
+              }}
+            />
           ) : workspace === "mesh" && selected && scanPanel ? (
             <ScanTopologyPanels
               key={`${selected.id}-${scanPanel}`}

@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { runScanTool } from "./scan-tools";
 import { runScanEdit } from "./scan-edit";
 import { morphTriangleSelection } from "./selection-morphology";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
@@ -55,7 +56,11 @@ scope.onmessage = ({ data: request }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "scanEdit") {
+    if (request.kind === "scanTools") {
+      const outcome = runScanTool(request, { onProgress: progress });
+      result.positions = outcome.positions;
+      result.diagnostics.summary = outcome.summary;
+    } else if (request.kind === "scanEdit") {
       result.scanEdit = runScanEdit(request, { onProgress: progress });
       result.diagnostics = result.scanEdit.diagnostics;
     } else if (request.kind === "selectionMorphology") {

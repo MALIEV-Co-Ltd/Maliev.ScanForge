@@ -45,6 +45,60 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
+    const selection = new Uint8Array([1]);
+    for (const operation of [
+      { kind: "averageMesh" as const, targets: [positions], tolerance: 10 },
+      { kind: "reduceNoise" as const, selection, selectionOnly: true },
+    ]) {
+      const pending = processMesh({ kind: "scanTools", positions, operation });
+      const worker = ProcessingWorkerDouble.latest;
+      expect(worker.sent?.kind).toBe("scanTools");
+      if (worker.sent?.kind !== "scanTools")
+        throw new Error("Expected scan tool request");
+      expect(worker.sent.positions).not.toBe(positions);
+      if (worker.sent.operation.kind === "averageMesh") {
+        expect(worker.sent.operation.targets[0]).not.toBe(positions);
+        expect(worker.transfers).toHaveLength(2);
+      } else if (worker.sent.operation.kind === "reduceNoise") {
+        expect(worker.sent.operation.selection).not.toBe(selection);
+        expect(worker.transfers).toHaveLength(2);
+      }
+      worker.reply({
+        result: {
+          kind: "scanTools",
+          positions: positions.slice(),
+          diagnostics: { summary: "Done" },
+        },
+      });
+      await pending;
+      expect(worker.terminated).toBe(true);
+      expect(vi.getTimerCount()).toBe(0);
+      expect(selection[0]).toBe(1);
+    }
+  });
+  it("dispatches Scan Data geometry through the real worker and transfers its result", async () => {
+    const replies: { message: any; transfers?: Transferable[] }[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: ProcessingRequest }) => void) | null,
+      postMessage: (message: any, transfers?: Transferable[]) =>
+        replies.push({ message, transfers }),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "scanTools",
+        positions,
+        operation: { kind: "scaleMesh", factor: 2 },
+      },
+    });
+    const reply = replies.find((r) => r.message.result);
+    expect(reply?.message.result.kind).toBe("scanTools");
+    expect(reply?.message.result.positions[3]).toBe(2);
+    expect(reply?.transfers).toEqual([reply?.message.result.positions.buffer]);
+  });
   it("owns cloned scan inputs, selection and cutters without detaching geometry/history", async () => {
     const target = positions.slice(),
       selection = new Uint8Array([1]);

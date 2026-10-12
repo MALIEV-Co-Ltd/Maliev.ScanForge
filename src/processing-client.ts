@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
 import type { RegionClassification } from "./mesh-processing";
@@ -9,6 +10,7 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | ScanToolsRequest
   | ScanEditRequest
   | {
       kind: "selectionMorphology";
@@ -225,6 +227,20 @@ export function processMesh(
           : { ...request, positions: clone(request.positions) };
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
+      if (copied.kind === "scanTools") {
+        copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "averageMesh")
+          copied.operation.targets = copied.operation.targets.map(clone);
+        if (
+          copied.operation.kind === "reduceNoise" &&
+          copied.operation.selection
+        ) {
+          copied.operation.selection = new Uint8Array(
+            copied.operation.selection,
+          );
+          transfers.push(copied.operation.selection.buffer);
+        }
+      }
       if (
         (copied.kind === "scanEdit" || copied.kind === "selectionMorphology") &&
         copied.selection
