@@ -234,6 +234,14 @@ export function App() {
   const [spaceMousePreferences, setSpaceMousePreferences] =
     useState<SpaceMousePreferences>({ ...DEFAULT_SPACE_MOUSE });
   const spaceMouse = useRef<SpaceMouseController | null>(null);
+  const updateSpaceMousePreferences = (
+    patch: Partial<SpaceMousePreferences>,
+  ) => {
+    const preferences = { ...spaceMousePreferences, ...patch };
+    // Apply in the input event, before the next HID animation frame.
+    if (spaceMouse.current) spaceMouse.current.preferences = preferences;
+    setSpaceMousePreferences(preferences);
+  };
   const connectSpaceMouse = async () => {
     setSpaceMouseConnecting(true);
     try {
@@ -524,6 +532,7 @@ export function App() {
             : viewport.current?.setView("iso"),
         setSpaceMouseStatus,
       );
+      spaceMouse.current.preferences = spaceMousePreferences;
       void spaceMouse.current
         .restoreAuthorized()
         .catch((error) =>
@@ -554,10 +563,6 @@ export function App() {
       unload();
     };
   }, []);
-  useEffect(() => {
-    if (spaceMouse.current)
-      spaceMouse.current.preferences = spaceMousePreferences;
-  }, [spaceMousePreferences]);
   useEffect(() => {
     viewport.current?.setEntities(
       nPoints?.preview?.positions && landmarkSceneUnchanged(nPoints, entities)
@@ -4495,8 +4500,7 @@ export function App() {
               max={5}
               step={0.1}
               onChange={(translationSpeed) =>
-                setSpaceMousePreferences({
-                  ...spaceMousePreferences,
+                updateSpaceMousePreferences({
                   translationSpeed: Math.max(0, translationSpeed),
                 })
               }
@@ -4508,8 +4512,7 @@ export function App() {
               max={5}
               step={0.1}
               onChange={(rotationSpeed) =>
-                setSpaceMousePreferences({
-                  ...spaceMousePreferences,
+                updateSpaceMousePreferences({
                   rotationSpeed: Math.max(0, rotationSpeed),
                 })
               }
@@ -4521,8 +4524,7 @@ export function App() {
               max={0.9}
               step={0.01}
               onChange={(deadzone) =>
-                setSpaceMousePreferences({
-                  ...spaceMousePreferences,
+                updateSpaceMousePreferences({
                   deadzone: Math.max(0, Math.min(0.9, deadzone)),
                 })
               }
@@ -4532,8 +4534,7 @@ export function App() {
                 type="checkbox"
                 checked={spaceMousePreferences.dominantAxis}
                 onChange={(event) =>
-                  setSpaceMousePreferences({
-                    ...spaceMousePreferences,
+                  updateSpaceMousePreferences({
                     dominantAxis: event.target.checked,
                   })
                 }
@@ -4545,8 +4546,7 @@ export function App() {
                 type="checkbox"
                 checked={spaceMousePreferences.rotationEnabled}
                 onChange={(event) =>
-                  setSpaceMousePreferences({
-                    ...spaceMousePreferences,
+                  updateSpaceMousePreferences({
                     rotationEnabled: event.target.checked,
                   })
                 }

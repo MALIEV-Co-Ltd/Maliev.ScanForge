@@ -81,6 +81,46 @@ function fixture() {
   };
 }
 describe("SpaceMouse HID input", () => {
+  it("applies speed changes on the next frame of an already-held cap", async () => {
+    const f = fixture();
+    try {
+      await f.controller.connect();
+      f.device.send(1, [175, 0, 0]);
+      f.device.send(2, [175, 0, 0]);
+      f.controller.preferences = {
+        ...DEFAULT_SPACE_MOUSE,
+        translationSpeed: 0.1,
+        rotationSpeed: 5,
+      };
+      f.advance(16);
+      const slowPanFastOrbit = f.onMotion.mock.lastCall![0];
+      // No new HID packet and no reconnect: change only the live settings.
+      f.controller.preferences = {
+        ...DEFAULT_SPACE_MOUSE,
+        translationSpeed: 5,
+        rotationSpeed: 0.1,
+      };
+      f.advance(16);
+      const fastPanSlowOrbit = f.onMotion.mock.lastCall![0];
+      expect(
+        fastPanSlowOrbit.translation[0] / slowPanFastOrbit.translation[0],
+      ).toBeCloseTo(50);
+      expect(
+        slowPanFastOrbit.rotation[0] / fastPanSlowOrbit.rotation[0],
+      ).toBeCloseTo(50);
+      f.controller.preferences = {
+        ...DEFAULT_SPACE_MOUSE,
+        translationSpeed: 0,
+        rotationSpeed: 0,
+      };
+      const count = f.onMotion.mock.calls.length;
+      f.advance(16);
+      expect(f.onMotion).toHaveBeenCalledTimes(count);
+    } finally {
+      await f.controller.dispose();
+    }
+    expect(f.frames.size).toBe(0);
+  });
   it("does not replace reconnected status when an unplugged device closes late", async () => {
     const f = fixture();
     await f.controller.connect();

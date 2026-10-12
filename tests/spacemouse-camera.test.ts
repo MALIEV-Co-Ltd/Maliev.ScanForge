@@ -2,12 +2,54 @@ import { describe, it, expect } from "vitest";
 import * as THREE from "three";
 import {
   SpaceMouseController,
+  filteredMotion,
+  DEFAULT_SPACE_MOUSE,
   type HidDevice,
   type HidAccess,
 } from "../src/spacemouse";
 import { navigateCamera } from "../src/camera-navigation";
 
 describe("SpaceMouse to camera workflow", () => {
+  it.each([false, true])(
+    "scales actual camera pan, zoom and orbit independently (%s orthographic)",
+    (orthographic) => {
+      const step = (axis: "pan" | "zoom" | "orbit", speed: number) => {
+        const camera = orthographic
+          ? new THREE.OrthographicCamera(-50, 50, 50, -50)
+          : new THREE.PerspectiveCamera();
+        camera.position.set(0, 0, 100);
+        camera.lookAt(0, 0, 0);
+        const target = new THREE.Vector3();
+        const before = camera.position.clone();
+        const motion = filteredMotion(
+          {
+            translation:
+              axis === "pan"
+                ? [0.5, 0, 0]
+                : axis === "zoom"
+                  ? [0, 0.5, 0]
+                  : [0, 0, 0],
+            rotation: axis === "orbit" ? [0.5, 0, 0] : [0, 0, 0],
+          },
+          {
+            ...DEFAULT_SPACE_MOUSE,
+            translationSpeed: speed,
+            rotationSpeed: speed,
+          },
+        );
+        navigateCamera(camera, target, motion, 0.016, new THREE.Vector3());
+        return axis === "orbit"
+          ? before.angleTo(camera.position)
+          : axis === "zoom" && orthographic
+            ? Math.abs(Math.log(camera.zoom))
+            : before.distanceTo(camera.position);
+      };
+      for (const axis of ["pan", "zoom", "orbit"] as const) {
+        expect(step(axis, 0)).toBeCloseTo(0);
+        expect(step(axis, 5) / step(axis, 0.1)).toBeCloseTo(50);
+      }
+    },
+  );
   it("opens a chosen device, navigates six axes, expires stale motion and releases the connection", async () => {
     class Device extends EventTarget implements HidDevice {
       vendorId = 0x046d;
