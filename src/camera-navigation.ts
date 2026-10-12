@@ -2,6 +2,33 @@ import * as THREE from "three";
 import type { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import type { NavigationCamera } from "./camera-gizmo";
 
+/** Retarget a trackball rotation around a picked surface without changing the
+ * camera's initial framing. Translate camera and look-at target together by
+ * (I - rotation) * (pivot - target); an off-centre pivot stays under the cursor. */
+export function updateSurfaceOrbit(
+  camera: NavigationCamera,
+  target: THREE.Vector3,
+  pivot: THREE.Vector3 | undefined,
+  update: () => void,
+): void {
+  if (!pivot) {
+    update();
+    return;
+  }
+  const before = camera.quaternion.clone();
+  const previousTarget = target.clone();
+  update();
+  const rotation = camera.quaternion
+    .clone()
+    .multiply(before.invert())
+    .normalize();
+  const offset = pivot.clone().sub(previousTarget);
+  const correction = offset.clone().sub(offset.applyQuaternion(rotation));
+  camera.position.add(correction);
+  target.add(correction);
+  camera.updateMatrixWorld();
+}
+
 /** Keep the former viewport-height orbit sensitivity with unrestricted rotation. */
 export function configureNavigationSensitivity(
   camera: NavigationCamera,

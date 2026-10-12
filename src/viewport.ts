@@ -34,6 +34,7 @@ import {
 import {
   navigateCamera,
   configureNavigationSensitivity,
+  updateSurfaceOrbit,
 } from "./camera-navigation";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import {
@@ -134,6 +135,8 @@ export class Viewport {
   private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
   private readonly navigationPivot = new NavigationPivot();
+  private mouseOrbitPivot?: THREE.Vector3;
+  private mouseOrbitPointer?: number;
   private readonly pivotMarker = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
@@ -448,7 +451,7 @@ export class Viewport {
     this.frame = null;
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
-    this.controls.update();
+    this.updateControls();
     renderSceneWithGrid(
       this.renderer,
       this.scene,
@@ -492,6 +495,23 @@ export class Viewport {
     this.invalidate();
   };
 
+  private updateControls(): void {
+    updateSurfaceOrbit(
+      this.camera,
+      this.controls.target,
+      this.mouseOrbitPointer !== undefined ? this.mouseOrbitPivot : undefined,
+      () => this.controls.update(),
+    );
+  }
+
+  private endMouseOrbit(): void {
+    if (this.mouseOrbitPointer === undefined) return;
+    // Consume the last queued trackball movement before releasing its pivot.
+    this.updateControls();
+    this.mouseOrbitPointer = undefined;
+    this.invalidate();
+  }
+
   private pointerDown(event: PointerEvent): void {
     if (event.pointerType !== "touch")
       this.navigationCursor = {
@@ -503,6 +523,19 @@ export class Viewport {
       cameraMouseButtons(this.brushing, event),
     );
     if (this.beginSketchDrag(event)) return;
+    if (
+      event.button === 1 &&
+      this.controls.mouseButtons.MIDDLE === THREE.MOUSE.ROTATE &&
+      this.controls.enabled &&
+      !this.controls.noRotate
+    ) {
+      this.cancelViewTransition();
+      // Pick once at button-down, then preserve the world-space pivot until
+      // release. Empty space retains the last surface pivot (or old target).
+      const surface = this.navigationSurfacePoint();
+      if (surface) this.mouseOrbitPivot = surface.clone();
+      this.mouseOrbitPointer = event.pointerId;
+    }
     if (!this.brushing || event.button === 1) {
       const bounds = this.renderer.domElement.getBoundingClientRect();
       configureNavigationSensitivity(
@@ -616,6 +649,7 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.endMouseOrbit();
     this.holdMenu?.close();
     this.cancelSketchDrag();
     if (
@@ -638,6 +672,7 @@ export class Viewport {
   };
 
   private pointerUp(event: PointerEvent): void {
+    if (this.mouseOrbitPointer === event.pointerId) this.endMouseOrbit();
     this.holdMenu?.cancelHold();
     if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
       const drag = this.sketchDrag,
