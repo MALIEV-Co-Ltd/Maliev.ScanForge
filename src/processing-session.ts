@@ -8,6 +8,7 @@ let retained:
       positions: Positions;
       key: number;
       active: boolean;
+      initialized: boolean;
       retire?: boolean;
     }
   | undefined;
@@ -31,19 +32,29 @@ export function acquireProcessingSession(
 ) {
   if (retained?.active) return undefined; // Concurrent diagnostics stay isolated.
   if (retained && retained.positions !== positions) releaseProcessingSession();
-  retained ??= { worker: create(), positions, key: ++nextKey, active: false };
+  retained ??= {
+    worker: create(),
+    positions,
+    key: ++nextKey,
+    active: false,
+    initialized: false,
+  };
   const entry = retained;
   entry.active = true;
   return {
     worker: entry.worker,
     key: entry.key,
+    initialized: entry.initialized,
     release(usable: boolean, successor?: Positions) {
       entry.active = false;
       entry.worker.onmessage = null;
       entry.worker.onerror = null;
       entry.worker.onmessageerror = null;
       if (!usable || entry.retire) releaseProcessingSession();
-      else if (successor) entry.positions = successor;
+      else {
+        entry.initialized = true;
+        if (successor) entry.positions = successor;
+      }
     },
   };
 }

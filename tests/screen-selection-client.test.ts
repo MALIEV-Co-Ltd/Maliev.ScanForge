@@ -1,14 +1,19 @@
 import { afterEach, expect, it, vi } from "vitest";
 import * as THREE from "three";
-import { AsyncScreenSelectionIndex } from "../src/screen-selection-client";
+import {
+  AsyncScreenSelectionIndex,
+  selectionWorkerCount,
+} from "../src/screen-selection-client";
 class WorkerDouble {
   static latest: WorkerDouble;
+  static instances: WorkerDouble[] = [];
   sent: any[] = [];
   terminated = false;
   onmessage?: (event: any) => void;
   onerror?: (event: any) => void;
   constructor() {
     WorkerDouble.latest = this;
+    WorkerDouble.instances.push(this);
   }
   postMessage(message: any) {
     this.sent.push(message);
@@ -20,6 +25,44 @@ class WorkerDouble {
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
+});
+
+it("bounds parallelism by geometry size, CPU availability and memory", () => {
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });
+  expect(selectionWorkerCount(99_999)).toBe(1);
+  expect(selectionWorkerCount(100_000)).toBe(2);
+  expect(selectionWorkerCount(1_000_000)).toBe(1);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 2, deviceMemory: 8 });
+  expect(selectionWorkerCount(100_000)).toBe(1);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 4 });
+  expect(selectionWorkerCount(100_000)).toBe(1);
+});
+
+it("merges out-of-order shards only after both finish and releases both", async () => {
+  vi.stubGlobal("Worker", WorkerDouble);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });
+  vi.useFakeTimers();
+  WorkerDouble.instances = [];
+  const index = new AsyncScreenSelectionIndex(new Float32Array(100_000 * 9));
+  const pending = index.select(new THREE.OrthographicCamera(), region, view);
+  const [a, b] = WorkerDouble.instances;
+  expect(a.sent[1].range).toEqual({ start: 0, end: 50_000 });
+  expect(b.sent[1].range).toEqual({ start: 50_000, end: 100_000 });
+  let settled = false;
+  void pending.then(() => {
+    settled = true;
+  });
+  b.onmessage?.({
+    data: { mask: new Uint8Array(50_000).fill(1), start: 50_000 },
+  });
+  await Promise.resolve();
+  expect(settled).toBe(false);
+  a.onmessage?.({ data: { mask: new Uint8Array(50_000), start: 0 } });
+  const mask = await pending;
+  expect(mask.slice(0, 50_000).some(Boolean)).toBe(false);
+  expect(mask.slice(50_000).every(Boolean)).toBe(true);
+  index.dispose();
+  expect(a.terminated && b.terminated).toBe(true);
 });
 const region = {
   kind: "lasso" as const,

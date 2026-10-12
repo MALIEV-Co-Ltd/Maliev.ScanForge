@@ -71,6 +71,8 @@ describe("processing worker resource ownership", () => {
   it("keeps active geometry topology through idle time and domain errors, disposing changed geometry", async () => {
     const first = processMesh(request, { reuseTopology: true });
     const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent!.positions).toEqual(positions);
+    expect(worker.transfers).toHaveLength(1);
     worker.reply({ result: { kind: "report", diagnostics: {} } });
     await first;
     expect(worker.terminated).toBe(false);
@@ -79,6 +81,8 @@ describe("processing worker resource ownership", () => {
     expect(vi.getTimerCount()).toBe(0);
     const retry = processMesh(request, { reuseTopology: true });
     expect(ProcessingWorkerDouble.creates).toBe(1);
+    expect(worker.sent!.positions).toHaveLength(0);
+    expect(worker.transfers).toHaveLength(0);
     worker.reply({ error: "Patch rejected" });
     await expect(retry).rejects.toThrow("Patch rejected");
     expect(worker.terminated).toBe(false);
@@ -160,7 +164,7 @@ describe("processing worker resource ownership", () => {
     scope.onmessage?.({
       data: {
         kind: "selectionMorphology",
-        positions: positions.slice(),
+        positions: new Float32Array(0),
         selection: new Uint8Array([1]),
         operation: "grow",
         geometryKey: 1,

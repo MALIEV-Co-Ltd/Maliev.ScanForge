@@ -61,6 +61,7 @@ export class ScreenSelectionIndex {
     camera: THREE.Camera,
     region: ScreenRegion,
     view: SelectionView,
+    range = { start: 0, end: this.positions.length / 9 },
   ): Uint8Array {
     if (
       ![
@@ -93,7 +94,15 @@ export class ScreenSelectionIndex {
     );
     const insideClip = (point: THREE.Vector3) =>
       clippingPlanes.every((plane) => plane.distanceToPoint(point) >= 0);
-    const mask = new Uint8Array(this.positions.length / 9);
+    if (
+      !Number.isInteger(range.start) ||
+      !Number.isInteger(range.end) ||
+      range.start < 0 ||
+      range.end < range.start ||
+      range.end > this.positions.length / 9
+    )
+      throw new Error("Invalid selection partition.");
+    const mask = new Uint8Array(range.end - range.start);
     const point = new THREE.Vector3(),
       projected = new THREE.Vector3();
     const raycaster = new THREE.Raycaster();
@@ -137,7 +146,8 @@ export class ScreenSelectionIndex {
         ? [...region.points, region.points[0]]
         : undefined;
     const visitTriangle = (i: number): void => {
-      if (hiddenSet.has(i / 9)) return;
+      if (i / 9 < range.start || i / 9 >= range.end || hiddenSet.has(i / 9))
+        return;
       point.set(
         (this.positions[i] + this.positions[i + 3] + this.positions[i + 6]) / 3,
         (this.positions[i + 1] +
@@ -235,7 +245,7 @@ export class ScreenSelectionIndex {
         )
           return;
       }
-      mask[i / 9] = 1;
+      mask[i / 9 - range.start] = 1;
     };
     // Reject whole spatial branches before projecting individual triangles.
     // This is only a conservative broad phase; coverage and visibility stay exact.

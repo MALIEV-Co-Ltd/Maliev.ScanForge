@@ -228,14 +228,19 @@ export function processMesh(
         if (copy instanceof Float32Array) transfers.push(copy.buffer);
         return copy;
       }
+      // A retained worker owns the canonical source and adopts edit successors.
+      // Send it only on the first request; targets and masks still change per job.
+      const source = session?.initialized
+        ? new Float32Array(0)
+        : clone(request.positions);
       const copied: ProcessingRequest =
         request.kind === "icp" || request.kind === "global"
           ? {
               ...request,
-              positions: clone(request.positions),
+              positions: source,
               target: clone(request.target),
             }
-          : { ...request, positions: clone(request.positions) };
+          : { ...request, positions: source };
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
       if (copied.kind === "scanTools") {

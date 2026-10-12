@@ -14,6 +14,24 @@ const full = {
   end: [200, 200] as [number, number],
 };
 describe("screen-space mesh selection", () => {
+  it("partitioned visibility retains occlusion from triangles in other partitions", () => {
+    const index = new ScreenSelectionIndex(
+      new Float32Array([...front, ...back]),
+    );
+    try {
+      for (const through of [true, false]) {
+        const view = { width: 200, height: 200, through };
+        const whole = index.select(camera, full, view);
+        const merged = new Uint8Array(2);
+        merged.set(index.select(camera, full, view, { start: 0, end: 1 }), 0);
+        merged.set(index.select(camera, full, view, { start: 1, end: 2 }), 1);
+        expect(merged).toEqual(whole);
+        expect(Array.from(merged)).toEqual(through ? [1, 1] : [1, 0]);
+      }
+    } finally {
+      index.dispose();
+    }
+  });
   it("selects the revealed rear surface after front clipping and respects all box planes", () => {
     const index = new ScreenSelectionIndex(
       new Float32Array([...front, ...back]),

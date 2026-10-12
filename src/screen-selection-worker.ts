@@ -23,8 +23,11 @@ self.onmessage = ({ data }) => {
     camera.projectionMatrix.fromArray(data.frame.projection);
     camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
     camera.updateMatrixWorld(true);
-    const mask = index.select(camera, data.region, data.view);
-    self.postMessage({ mask }, { transfer: [mask.buffer] });
+    const mask = index.select(camera, data.region, data.view, data.range);
+    self.postMessage(
+      { mask, start: data.range?.start ?? 0 },
+      { transfer: [mask.buffer] },
+    );
   } catch (error) {
     self.postMessage({
       error: error instanceof Error ? error.message : String(error),
