@@ -718,3 +718,52 @@ This is independently authored integration of existing sketch and coordinate com
 - Browser: Chrome canvas YZ hover/click, OYZ frame, camera RIGHT; XZ choice and camera BACK; Escape cancels without changing sketch count. IAB XY canvas click also created OXY sketch. No Chrome warnings/errors. Proof: .resources/plane-hover-final.png.
 - IAB test tab 12 closed and absence verified; user tab 13 preserved. Chrome test tab 196954518 could not be explicitly closed after its debugger detached; reattachment also failed. It remains task-owned, unmarked and subject to the browser tool's automatic turn-end cleanup. No process was terminated.
 - Preview PID 43304 retained with recorded expiry 2026-10-12T07:39:15.329Z.
+
+## Scan Data edit MVP - 2026-10-12
+
+Implemented the [documented edit MVP](SCAN_DATA_MVP.md): live topology navigation,
+filled/unfilled/straight strokes, boundary and morphological selection, a
+selected-mesh clipping box with canvas handles, component editing, hole fill
+policies/modes, selected-area smoothing and defeaturing, boundary smoothing and
+projection, and actual triangle subdivision by solid/surface/mesh cutters.
+The Edit ribbon gate now points to this bounded, validated scope.
+
+- Inspected App selection/model undo, mesh topology, viewport picking/occlusion,
+  worker input/result ownership, project sketch/frame contracts and ribbon gates.
+  Topology inventory and diagnostics share 0.001 mm weld tolerance; projection
+  fit tolerance is independent. Closed projected sketches reuse their first point
+  ID, preserving a closed editable graph.
+- `npm run build`: zero warnings/errors, 29 offline assets,
+  `scanforge-1759b3953a001be3`. Full `npm test`: **7,222 tests in 137 files**.
+  Focused worker/geometry/selection/panel tests passed, including stale clipping
+  results, input/output buffer ownership, planar inner holes, closed concave
+  cutters, finite open surfaces and bounded polyline approximation.
+- `npm run test:cad`, `npm run format:check` and `git diff --check` passed.
+- IAB manufactured STL contained two open boxes: 20 triangles, component areas
+  2,000 and 8,000 mm², two holes and two boundaries. Ribbon Edit opened after
+  import. A 30-degree wand selected two face triangles; connected mode selected
+  all ten triangles of that box. All/hide/show restored 20 selected triangles;
+  boundary selection selected eight and one-ring growth selected sixteen.
+- Canvas clip-handle drag changed X maximum from 89.82 to 78.3 mm and synchronized
+  its slider. Measuring the smaller hole returned 28.284271 mm; diameter-filtered
+  filling reduced holes from two to one. Semi fill reduced its remaining rim
+  perimeter from 80 to 68.28 mm; model undo restored 80 mm. Bridge fill closed
+  the four-vertex opening, with undo restoring it. The hole panel stays open
+  while geometry/inventory refreshes. Retaining the larger component yielded
+  one 8,000 mm² mesh, then undo restored both. Project All added two sketches.
+  Browser warning/error logs were empty.
+- Proof images: `C:/Users/natth/AppData/Local/Temp/scanforge-scan-clipping.png`,
+  `scanforge-scan-holes.png` and `scanforge-scan-boundaries.png` in that directory.
+  Disposable validation tabs 27 and 29 were closed and absent. Fresh empty
+  preview tab 30 was marked as a user-facing deliverable.
+- Old preview PID 43304 stopped under its lease. Replacement PID 38440,
+  actual start `2026-10-12T14:40:49.7182971+07:00`, listens only on 127.0.0.1:5173,
+  returned HTTP 200, and has expiry `2026-10-12T09:40:49.971Z`. No binary-analysis
+  workers or containers were created. Test workers/native smoke processes exited.
+
+Native numerical equivalence, C1/C2 continuity of interpolated hole patches,
+self-intersecting/nested-shell robustness and full-resolution gigabyte editing
+remain unverified. Split outputs are uncapped; finite open cutters use signed
+nearest-surface grouping and can add continuation edges within an intersected
+source triangle. This is an independently implemented MVP slice, not completion
+of the wider reverse-engineering goal. Nothing was pushed or deployed.

@@ -45,6 +45,71 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("owns cloned scan inputs, selection and cutters without detaching geometry/history", async () => {
+    const target = positions.slice(),
+      selection = new Uint8Array([1]);
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "split",
+      positions,
+      target,
+      selection,
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent?.kind).toBe("scanEdit");
+    if (worker.sent?.kind !== "scanEdit")
+      throw new Error("Expected scan edit request");
+    expect(worker.sent.positions).not.toBe(positions);
+    expect(worker.sent.target).not.toBe(target);
+    expect(worker.sent.selection).not.toBe(selection);
+    expect(worker.transfers).toHaveLength(3);
+    const result: ProcessingResult = {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { segments: [positions.slice()], diagnostics: {} },
+    };
+    worker.reply({ result });
+    expect(await pending).toBe(result);
+    expect(worker.terminated).toBe(true);
+    expect(positions.length).toBe(9);
+    expect(selection[0]).toBe(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("transfers nested scan edit outputs and supports real morphology worker dispatch", async () => {
+    const replies: { message: unknown; transfers?: Transferable[] }[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: ProcessingRequest }) => void) | null,
+      postMessage: (message: unknown, transfers?: Transferable[]) =>
+        replies.push({ message, transfers }),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions,
+        indices: [0],
+      },
+    });
+    const final = replies.at(-1)!;
+    const result = (final.message as { result: ProcessingResult }).result;
+    expect(result.scanEdit?.segments?.[0]).toEqual(positions);
+    expect(final.transfers).toEqual([result.scanEdit!.segments![0].buffer]);
+    scope.onmessage?.({
+      data: {
+        kind: "selectionMorphology",
+        positions,
+        selection: new Uint8Array([0]),
+        operation: "boundary",
+      },
+    });
+    expect(
+      (replies.at(-1)!.message as { result: ProcessingResult }).result
+        .selection,
+    ).toEqual(new Uint8Array([1]));
+  });
   it("clones selection seeds and transfers the actual worker result mask", async () => {
     const seeds = new Uint8Array([1]);
     const pending = processMesh({

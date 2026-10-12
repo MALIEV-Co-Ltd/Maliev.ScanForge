@@ -60,17 +60,17 @@ describe("dedicated scan edit dialog", () => {
       )?.[0],
     ).not.toContain("disabled");
   });
-  it("keeps unrecovered tools unavailable rather than substituting another operation", () => {
+  it("exposes stroke tools while selection actions require working callbacks", () => {
     const html = render();
     for (const label of [
-      "Free hand",
-      "Select by drawing a line",
       "Enlarge selection",
       "Shrink selection",
       "Edit holes",
       "Edit boundaries",
     ])
       expect(button(html, label)).toContain("disabled");
+    expect(button(html, "Free hand")).not.toContain("disabled");
+    expect(button(html, "Select by drawing a line")).not.toContain("disabled");
     expect(button(html, "Free hand (filled)")?.includes("disabled")).toBe(
       false,
     );

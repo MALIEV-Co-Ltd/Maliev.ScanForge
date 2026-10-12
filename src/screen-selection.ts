@@ -15,6 +15,8 @@ export interface SelectionView {
   width: number;
   height: number;
   through: boolean;
+  /** World-space plane coefficients; keep the positive half spaces. */
+  clippingPlanes?: [number, number, number, number][];
 }
 
 /** Screen centroid selection with exact accelerated ray tests for self-occlusion of the selected mesh. */
@@ -76,6 +78,21 @@ export class ScreenSelectionIndex {
     )
       throw new Error("Invalid screen selection region.");
     camera.updateMatrixWorld();
+    if (
+      view.clippingPlanes?.some(
+        (plane) =>
+          plane.length !== 4 ||
+          !plane.every(Number.isFinite) ||
+          !Math.hypot(...plane.slice(0, 3)),
+      )
+    )
+      throw new Error("Invalid selection clipping plane.");
+    const clippingPlanes = (view.clippingPlanes ?? []).map(
+      ([x, y, z, constant]) =>
+        new THREE.Plane(new THREE.Vector3(x, y, z), constant),
+    );
+    const insideClip = (point: THREE.Vector3) =>
+      clippingPlanes.every((plane) => plane.distanceToPoint(point) >= 0);
     const mask = new Uint8Array(this.positions.length / 9);
     const point = new THREE.Vector3(),
       projected = new THREE.Vector3();
@@ -192,6 +209,7 @@ export class ScreenSelectionIndex {
         if (projected.z < -1 || projected.z > 1) return;
       }
       if (x < minX || x > maxX || y < minY || y > maxY) return;
+      if (!insideClip(point)) return;
       if (
         region.kind === "circle" &&
         (!rx || !ry || ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1)
@@ -200,12 +218,17 @@ export class ScreenSelectionIndex {
       if (!view.through) {
         ndc.set(projected.x, projected.y);
         raycaster.setFromCamera(ndc, camera);
-        const hit = this.tree?.raycastFirst(
-          raycaster.ray,
-          THREE.DoubleSide,
-          camera instanceof THREE.PerspectiveCamera ? camera.near : 0,
-          camera instanceof THREE.PerspectiveCamera ? camera.far : Infinity,
-        );
+        const hit = clippingPlanes.length
+          ? this.tree
+              ?.raycast(raycaster.ray, THREE.DoubleSide)
+              .filter((candidate) => insideClip(candidate.point))
+              .sort((a, b) => a.distance - b.distance)[0]
+          : this.tree?.raycastFirst(
+              raycaster.ray,
+              THREE.DoubleSide,
+              camera instanceof THREE.PerspectiveCamera ? camera.near : 0,
+              camera instanceof THREE.PerspectiveCamera ? camera.far : Infinity,
+            );
         if (
           !hit ||
           hit.point.distanceTo(point) > Math.max(1e-5, hit.distance * 1e-6)

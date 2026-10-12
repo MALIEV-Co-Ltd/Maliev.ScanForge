@@ -6,6 +6,7 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  editScan: "docs/SCAN_DATA_MVP.md; docs/VALIDATION.md: Scan Data edit MVP",
   newDocument: "docs/VALIDATION.md: New document and colored command icons",
   open: "docs/VALIDATION.md: browser scan import and file validation",
   save: "docs/VALIDATION.md: browser project save/reopen",

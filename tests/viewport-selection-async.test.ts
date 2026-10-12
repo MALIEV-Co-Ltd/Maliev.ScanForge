@@ -15,7 +15,10 @@ function fixture() {
     ),
     cancel: vi.fn(),
   };
-  const item = { mesh: { visible: true }, selectionIndex: index };
+  const item = {
+    mesh: { visible: true, material: { clippingPlanes: [] } },
+    selectionIndex: index,
+  };
   const view = Object.create(Viewport.prototype) as any;
   Object.assign(view, {
     selectedId: "scan",
@@ -58,6 +61,16 @@ const flush = async () => {
   await Promise.resolve();
   await Promise.resolve();
 };
+it("rejects a pending selection when clipping limits change", async () => {
+  const f = fixture();
+  f.view.invalidate = vi.fn();
+  f.start();
+  f.view.setMeshClipBox("scan", { min: [0, 0, 0], max: [1, 1, 1] });
+  f.resolve(new Uint8Array([1]));
+  await flush();
+  expect(f.view.onSelection).not.toHaveBeenCalled();
+  expect(f.index.cancel).toHaveBeenCalled();
+});
 
 it("commits the worker result asynchronously and preserves Alt subtraction", async () => {
   const f = fixture();

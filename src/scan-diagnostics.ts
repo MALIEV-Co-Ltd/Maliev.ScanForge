@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import {
   processMesh,
   type ProcessingOptions,
@@ -30,7 +31,7 @@ export function observeScanDiagnostics(
   const controller = new AbortController();
   update({ phase: "pending", progress: "Calculating mesh topology…" });
   void run(
-    { kind: "report", positions, tolerance: 0.001 },
+    { kind: "report", positions, tolerance: SCAN_TOPOLOGY_TOLERANCE },
     {
       signal: controller.signal,
       onProgress: (fraction, stage) => {

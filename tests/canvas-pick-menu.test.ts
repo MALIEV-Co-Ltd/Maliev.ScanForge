@@ -65,10 +65,10 @@ it("lists intersected objects through occluders once, in depth order, excluding 
   expect(onSelect).toHaveBeenCalledWith("1");
   expect(onPick.mock.calls[0][1]).toBe("1");
   expect(view.selectionChoicesAt({ clientX: 0, clientY: 0 })).toEqual([]);
-  Object.assign(view, {
-    clipping: true,
-    clippingPlane: new THREE.Plane(new THREE.Vector3(0, 0, 1), -25),
-  });
+  for (const mesh of meshes)
+    mesh.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 0, 1), -25),
+    ];
   expect(
     uniquePickChoices(
       view.selectionChoicesAt({ clientX: 200, clientY: 200 }),

@@ -14,6 +14,35 @@ const full = {
   end: [200, 200] as [number, number],
 };
 describe("screen-space mesh selection", () => {
+  it("selects the revealed rear surface after front clipping and respects all box planes", () => {
+    const index = new ScreenSelectionIndex(
+      new Float32Array([...front, ...back]),
+    );
+    try {
+      const view = {
+        width: 200,
+        height: 200,
+        through: false,
+        clippingPlanes: [
+          [0, 0, -1, -0.5],
+          [1, 0, 0, 2],
+          [-1, 0, 0, 2],
+        ] as [number, number, number, number][],
+      };
+      expect([...index.select(camera, full, view)]).toEqual([0, 1]);
+      expect([
+        ...index.select(camera, full, {
+          ...view,
+          clippingPlanes: [...view.clippingPlanes, [0, 0, 1, 0.5]],
+        }),
+      ]).toEqual([0, 0]);
+      expect([
+        ...index.select(camera, full, { ...view, through: true }),
+      ]).toEqual([0, 1]);
+    } finally {
+      index.dispose();
+    }
+  });
   it("returns an empty selection when every triangle is hidden", () => {
     const index = new ScreenSelectionIndex([...front, ...back], [0, 1]);
     try {

@@ -1,4 +1,7 @@
 import { growConnectedSelection } from "./connected-selection";
+import { runScanEdit } from "./scan-edit";
+import { morphTriangleSelection } from "./selection-morphology";
+import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { extractSketchSection } from "./sketch-section";
 import {
   analyzeMesh,
@@ -52,7 +55,18 @@ scope.onmessage = ({ data: request }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "sketchSection") {
+    if (request.kind === "scanEdit") {
+      result.scanEdit = runScanEdit(request, { onProgress: progress });
+      result.diagnostics = result.scanEdit.diagnostics;
+    } else if (request.kind === "selectionMorphology") {
+      result.selection = morphTriangleSelection(
+        request.positions,
+        request.selection,
+        request.operation,
+        request.hidden,
+        { onProgress: progress, tolerance: SCAN_TOPOLOGY_TOLERANCE },
+      );
+    } else if (request.kind === "sketchSection") {
       result.sketchSection = extractSketchSection(
         request.positions,
         request.options,
@@ -251,6 +265,12 @@ scope.onmessage = ({ data: request }) => {
       }
     }
     const transfers: Transferable[] = [];
+    if (result.scanEdit?.positions)
+      transfers.push(result.scanEdit.positions.buffer);
+    if (result.scanEdit?.selection)
+      transfers.push(result.scanEdit.selection.buffer);
+    for (const segment of result.scanEdit?.segments ?? [])
+      transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
     if (result.positions) transfers.push(result.positions.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);

@@ -7,6 +7,8 @@ export function ScanQuickTools(props: {
   onHide: () => void;
   onIsolate: () => void;
   onInvert: () => void;
+  onDefeature?: () => void;
+  onSmooth?: () => void;
 }) {
   return (
     <div
@@ -32,16 +34,18 @@ export function ScanQuickTools(props: {
         <X size={17} />
       </button>
       <button
-        title="Defeature: original operation is not yet reconstructed"
+        title="Defeature selected area"
         aria-label="Defeature"
-        disabled
+        disabled={!props.onDefeature}
+        onClick={props.onDefeature}
       >
         <Circle size={17} />
       </button>
       <button
-        title="Smooth: original operation is not yet reconstructed"
+        title="Smooth selected area"
         aria-label="Smooth selected"
-        disabled
+        disabled={!props.onSmooth}
+        onClick={props.onSmooth}
       >
         <Waves size={17} />
       </button>

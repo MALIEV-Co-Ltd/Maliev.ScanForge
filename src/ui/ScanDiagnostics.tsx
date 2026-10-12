@@ -5,7 +5,13 @@ import {
   type ScanDiagnostics as DiagnosticState,
 } from "../scan-diagnostics";
 
-export function ScanDiagnostics({ positions }: { positions: Positions }) {
+export function ScanDiagnostics({
+  positions,
+  onEdit,
+}: {
+  positions: Positions;
+  onEdit?: (section: "components" | "holes" | "boundaries") => void;
+}) {
   const [result, setResult] = useState<{
     positions: Positions;
     state: DiagnosticState;
@@ -29,22 +35,25 @@ export function ScanDiagnostics({ positions }: { positions: Positions }) {
       {[
         {
           label: "Individual meshes",
+          section: "components" as const,
           value: topology?.components,
           help: "Connected components of the current mesh.",
         },
         {
           label: "Holes",
+          section: "holes" as const,
           value: topology?.boundaryLoops,
           help: "Closed boundary loops; this includes existing open borders, not just accidental defects.",
         },
         {
           label: "Boundaries",
+          section: "boundaries" as const,
           value: topology
             ? topology.boundaryLoops + topology.boundaryChains
             : undefined,
           help: "Closed loops and open chains of boundary edges.",
         },
-      ].map(({ label, value, help }) => (
+      ].map(({ label, value, help, section }) => (
         <div key={label}>
           <span title={help}>{label}</span>
           <output aria-label={`${label} count`} title={help}>
@@ -52,8 +61,9 @@ export function ScanDiagnostics({ positions }: { positions: Positions }) {
               (state?.phase === "error" ? "Unavailable" : "Calculating…")}
           </output>
           <button
-            disabled
-            title="Behavior not yet reconstructed; unavailable."
+            disabled={!topology || !onEdit}
+            title={`Edit ${label.toLowerCase()}`}
+            onClick={() => onEdit?.(section)}
             aria-label={`Edit ${label.toLowerCase()}`}
           >
             Edit…

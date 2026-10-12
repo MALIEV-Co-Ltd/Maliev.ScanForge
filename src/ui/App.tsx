@@ -16,6 +16,11 @@ import "./workspace-chrome.css";
 import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
+import type { ScanClipBounds } from "../scan-clip-box";
+import type { ScanEditRequest } from "../scan-edit";
+import { boundarySketches } from "../scan-boundary-sketch";
+import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
+import { ScanTopologyPanels } from "./ScanTopologyPanels";
 import {
   coordinateSketchFrame,
   validateSketchFrame,
@@ -250,8 +255,14 @@ export function App() {
     y: number;
   } | null>(null);
   const [selectionTool, setSelectionTool] = useState<
-    "brush" | "rectangle" | "circle" | "wand"
+    "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand"
   >("brush");
+  const [scanPanel, setScanPanel] = useState<
+    "components" | "holes" | "boundaries" | null
+  >(null);
+  const [meshClip, setMeshClip] = useState<ScanClipBounds | null>(null);
+  const scanEditAbort = useRef<AbortController | null>(null);
+  const lastHiddenSelection = useRef<number[]>([]);
   const [selectThrough, setSelectThrough] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -285,7 +296,7 @@ export function App() {
     entity: Entity | undefined;
     radius: number;
     subtract: boolean;
-    tool: "brush" | "rectangle" | "circle" | "wand";
+    tool: "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand";
     through: boolean;
   }>({
     entity: undefined,
@@ -549,8 +560,8 @@ export function App() {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
   useEffect(() => {
-    viewport.current?.setBrush(mode === "brush");
-  }, [mode]);
+    viewport.current?.setBrush(mode === "brush" && !busy);
+  }, [mode, busy]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
       selectionTool,
@@ -559,6 +570,31 @@ export function App() {
       subtractBrush,
     );
   }, [selectionTool, brushRadius, selectThrough, subtractBrush]);
+  useEffect(() => {
+    setMeshClip(null);
+    setScanPanel(null);
+    lastHiddenSelection.current = [];
+    scanEditAbort.current?.abort();
+  }, [selectedId]);
+  useEffect(() => {
+    setMeshClip(null);
+    lastHiddenSelection.current = [];
+    scanEditAbort.current?.abort();
+  }, [selected?.positions]);
+  useEffect(() => () => scanEditAbort.current?.abort(), []);
+  useEffect(() => {
+    const view = viewport.current;
+    if (!view) return;
+    view.onMeshClipChange = setMeshClip;
+    view.setMeshClipBox(
+      selected?.id ?? null,
+      workspace === "mesh" && toolPanelOpen && !busy ? meshClip : null,
+      stats ? { min: stats.min, max: stats.max } : undefined,
+    );
+    return () => {
+      view.onMeshClipChange = undefined;
+    };
+  }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
   useEffect(() => {
     if (!selected) {
       setTriangleMask(null);
@@ -871,6 +907,8 @@ export function App() {
     wandRefreshAbort.current?.abort();
     if (!selected || busy) return;
     const session = sessionFor(selected);
+    if (operation === "hide")
+      lastHiddenSelection.current = maskIndices(session.state.mask);
     session.set(
       operation === "reveal"
         ? { mask: session.state.mask, hidden: [] }
@@ -878,6 +916,125 @@ export function App() {
     );
     applySelectionState(selected, session.state);
     setDirty(true);
+  }
+  function revealSelectedTriangles() {
+    if (!selected || busy) return;
+    const session = sessionFor(selected),
+      revealed = new Set(lastHiddenSelection.current);
+    session.set({
+      mask: indicesMask(
+        selected.positions.length / 9,
+        lastHiddenSelection.current,
+      ),
+      hidden: session.state.hidden.filter((index) => !revealed.has(index)),
+    });
+    applySelectionState(selected, session.state);
+    setDirty(true);
+  }
+  async function morphSelection(operation: "grow" | "shrink" | "boundary") {
+    if (!selected || busy || scanEditAbort.current) return;
+    const controller = new AbortController();
+    scanEditAbort.current = controller;
+    setProcessingBusy(true);
+    try {
+      const result = await processMesh(
+        {
+          kind: "selectionMorphology",
+          positions: selected.positions,
+          selection:
+            triangleMask ?? new Uint8Array(selected.positions.length / 9),
+          operation,
+          hidden: selected.meshSelection?.hidden,
+        },
+        { signal: controller.signal },
+      );
+      if (!controller.signal.aborted && result.selection)
+        changeSelection(result.selection);
+    } catch (error) {
+      if (!controller.signal.aborted) setError(errorText(error));
+    } finally {
+      if (scanEditAbort.current === controller) {
+        scanEditAbort.current = null;
+        setProcessingBusy(false);
+      }
+    }
+  }
+  function replaceScanPositions(positions: Float32Array, label: string) {
+    if (!selected) return;
+    if (!positions.length) {
+      operationLabel.current = label;
+      commit(entities.filter((entity) => entity.id !== selected.id));
+      operationLabel.current = null;
+      setSelectedId(null);
+      setMessage(label);
+      return;
+    }
+    validatePositions(positions);
+    operationLabel.current = label;
+    updateSelected({
+      positions,
+      kind: "mesh",
+      kernelId: undefined,
+      brep: undefined,
+      surfacePatch: undefined,
+      surfaceScanId: undefined,
+      fit: undefined,
+      parametric: undefined,
+    });
+    operationLabel.current = null;
+    setMessage(label);
+  }
+  async function runScanEdit(
+    operation: Omit<ScanEditRequest, "kind" | "positions">,
+    label: string,
+  ) {
+    if (!selected || busy || scanEditAbort.current) return;
+    if (selected.parametric) {
+      setError("Create a separate mesh copy before editing a parametric body.");
+      return;
+    }
+    const controller = new AbortController();
+    scanEditAbort.current = controller;
+    setProcessingBusy(true);
+    setError("");
+    try {
+      const result = await processMesh(
+        {
+          kind: "scanEdit",
+          positions: selected.positions,
+          tolerance: SCAN_TOPOLOGY_TOLERANCE,
+          ...operation,
+        },
+        {
+          signal: controller.signal,
+          onProgress: (fraction, stage) =>
+            setMessage(`${stage} · ${Math.round(fraction * 100)}%`),
+        },
+      );
+      if (controller.signal.aborted) return;
+      if (result.scanEdit?.positions)
+        replaceScanPositions(result.scanEdit.positions, label);
+      if (result.scanEdit?.segments)
+        createSegments(result.scanEdit.segments, label);
+    } catch (error) {
+      if (!controller.signal.aborted) setError(errorText(error));
+    } finally {
+      if (scanEditAbort.current === controller) {
+        scanEditAbort.current = null;
+        setProcessingBusy(false);
+      }
+    }
+  }
+  function projectScanBoundaries(
+    curves: number[][],
+    plane: { origin: Vec3; normal: Vec3 },
+    label: string,
+  ) {
+    const created = boundarySketches(curves, plane, label);
+    if (!created.length) throw new Error("No boundary curves were produced.");
+    setSavedSketches((previous) => [...previous, ...created]);
+    setDirty(true);
+    setMessage(`${created.length} projected boundary sketch(es) created`);
   }
   function selectionUndo(redo = false) {
     wandRegion.current = null;
@@ -2742,6 +2899,25 @@ export function App() {
             <ScanQuickTools
               x={quickToolsPoint.x}
               y={quickToolsPoint.y}
+              onSmooth={() => {
+                setQuickToolsPoint(null);
+                void runScanEdit(
+                  {
+                    action: "smoothSelected",
+                    selection: triangleMask ?? undefined,
+                    strength: 0.3,
+                    iterations: 3,
+                  },
+                  "Smooth selected area",
+                );
+              }}
+              onDefeature={() => {
+                setQuickToolsPoint(null);
+                void runScanEdit(
+                  { action: "defeature", selection: triangleMask ?? undefined },
+                  "Defeature selected area",
+                );
+              }}
               onDelete={() => {
                 setQuickToolsPoint(null);
                 editSelection("delete");
@@ -3155,7 +3331,27 @@ export function App() {
               <X size={15} />
             </button>
           </h2>
-          {workspace === "mesh" && selected ? (
+          {workspace === "mesh" && selected && scanPanel ? (
+            <ScanTopologyPanels
+              key={`${selected.id}-${scanPanel}`}
+              section={scanPanel}
+              positions={selected.positions}
+              entities={entities}
+              selectedId={selected.id}
+              selection={triangleMask}
+              onReplace={replaceScanPositions}
+              onCreate={createSegments}
+              onSelection={changeSelection}
+              onProject={projectScanBoundaries}
+              onStatus={setMessage}
+              onError={setError}
+              onBusyChange={setProcessingBusy}
+              onBack={() => setScanPanel(null)}
+              wireframe={wireframe}
+              onWireframe={setWireframe}
+              onOpacity={(opacity) => updateSelected({ opacity })}
+            />
+          ) : workspace === "mesh" && selected ? (
             <EditScanDialog
               key={selected.id}
               name={selected.name}
@@ -3174,6 +3370,56 @@ export function App() {
               onQuickTools={setQuickToolsEnabled}
               through={selectThrough}
               onThrough={setSelectThrough}
+              busy={busy}
+              onTopology={setScanPanel}
+              onMorph={morphSelection}
+              onSelectAll={() =>
+                changeSelection(
+                  new Uint8Array(selected.positions.length / 9).fill(1),
+                )
+              }
+              onRevealSelected={revealSelectedTriangles}
+              clip={meshClip}
+              clipFull={stats ? { min: stats.min, max: stats.max } : undefined}
+              onClip={setMeshClip}
+              onSmooth={(strength, iterations) =>
+                runScanEdit(
+                  {
+                    action: "smoothSelected",
+                    selection: triangleMask ?? undefined,
+                    strength,
+                    iterations,
+                  },
+                  "Smooth selected area",
+                )
+              }
+              onDefeature={() =>
+                runScanEdit(
+                  { action: "defeature", selection: triangleMask ?? undefined },
+                  "Defeature selected area",
+                )
+              }
+              cutters={entities.filter((entity) => entity.id !== selected.id)}
+              onSplit={(targetId) => {
+                const target = entities.find(
+                  (entity) => entity.id === targetId,
+                );
+                if (target)
+                  void runScanEdit(
+                    {
+                      action: "split",
+                      target: target.positions,
+                      plane:
+                        target.kind === "plane" && target.fit
+                          ? {
+                              origin: target.fit.center,
+                              normal: target.fit.axis,
+                            }
+                          : undefined,
+                    },
+                    "Split mesh",
+                  );
+              }}
               selectedCount={selectedTriangleCount}
               hiddenCount={selected.meshSelection?.hidden.length ?? 0}
               wireframe={wireframe}
@@ -3199,6 +3445,7 @@ export function App() {
               onDelete={() => editSelection("delete")}
               onSave={saveSelection}
               onClose={() => {
+                scanEditAbort.current?.abort();
                 setToolPanelOpen(false);
                 setMode("inspect");
               }}

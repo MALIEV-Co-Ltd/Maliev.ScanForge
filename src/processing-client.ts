@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
 import type { RegionClassification } from "./mesh-processing";
 import type { MeshSheetDiagnostics } from "./mesh-processing";
@@ -8,6 +9,14 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | ScanEditRequest
+  | {
+      kind: "selectionMorphology";
+      positions: Positions;
+      selection: Uint8Array;
+      operation: "grow" | "shrink" | "boundary";
+      hidden?: number[];
+    }
   | {
       kind: "sketchSection";
       positions: Positions;
@@ -81,6 +90,7 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  scanEdit?: ScanEditResult;
   sketchSection?: SketchSectionResult;
   selection?: Uint8Array;
   kind: ProcessingRequest["kind"];
@@ -213,6 +223,15 @@ export function processMesh(
               target: clone(request.target),
             }
           : { ...request, positions: clone(request.positions) };
+      if (copied.kind === "scanEdit" && copied.target)
+        copied.target = clone(copied.target);
+      if (
+        (copied.kind === "scanEdit" || copied.kind === "selectionMorphology") &&
+        copied.selection
+      ) {
+        copied.selection = new Uint8Array(copied.selection);
+        transfers.push(copied.selection.buffer);
+      }
       if (copied.kind === "connectedSelection") {
         copied.seeds = new Uint8Array(copied.seeds);
         transfers.push(copied.seeds.buffer);

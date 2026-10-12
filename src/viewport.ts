@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import {
+  ScanClipBox,
+  scanClipPlanes,
+  type ScanClipBounds,
+} from "./scan-clip-box";
 import { CanvasPickMenu, type CanvasPickChoice } from "./canvas-pick-menu";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import { updateCameraClipping } from "./camera-clipping";
@@ -54,6 +59,13 @@ type Item = {
 
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
+  private clipBox?: ScanClipBox;
+  private clipBoxState?: {
+    id: string;
+    bounds: ScanClipBounds;
+    full: ScanClipBounds;
+  };
+  onMeshClipChange?: (bounds: ScanClipBounds) => void;
   private holdMenu?: CanvasPickMenu;
   private holdNavigation?: { rotate: boolean; pan: boolean; zoom: boolean };
   private viewTransition?: {
@@ -114,7 +126,8 @@ export class Viewport {
   private readonly landmarkOverlay = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
-  private selectionTool: "brush" | "rectangle" | "circle" | "wand" = "brush";
+  private selectionTool:
+    "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand" = "brush";
   private brushPixels = 24;
   private selectThrough = false;
   private subtract = false;
@@ -194,6 +207,13 @@ export class Viewport {
       cameraMouseButtons(false, { ctrlKey: false, shiftKey: false }),
     );
     this.controls.staticMoving = true;
+    this.clipBox = new ScanClipBox(
+      this.renderer.domElement,
+      () => this.camera,
+      this.controls,
+      (bounds) => this.onMeshClipChange?.(bounds),
+    );
+    this.scene.add(this.clipBox.group);
     this.controls.keys = ["", "", ""];
     this.controls.minZoom = 0.000001;
     this.controls.maxZoom = 1000000;
@@ -400,7 +420,10 @@ export class Viewport {
     }
     if (this.brushing && this.selectionTool !== "wand")
       this.onSelectionGesture?.("begin");
-    if (this.brushing && this.selectionTool === "brush") {
+    if (
+      this.brushing &&
+      ["brush", "freehand", "line"].includes(this.selectionTool)
+    ) {
       this.brushPath = [];
       this.renderer.domElement.setPointerCapture(event.pointerId);
       this.paintScreen(event);
@@ -421,7 +444,10 @@ export class Viewport {
       event.pointerType === "touch"
     )
       this.invalidate();
-    if (this.brushing && this.selectionTool === "brush")
+    if (
+      this.brushing &&
+      ["brush", "freehand", "line"].includes(this.selectionTool)
+    )
       this.drawPaintStroke(event);
     if (this.sketchDrag?.id === event.pointerId) {
       const hit = this.sketchPlanePoint(event.clientX, event.clientY);
@@ -439,7 +465,7 @@ export class Viewport {
     if (
       this.brushing &&
       this.pointer?.id === event.pointerId &&
-      this.selectionTool === "brush"
+      ["brush", "freehand", "line"].includes(this.selectionTool)
     ) {
       const samples = event.getCoalescedEvents?.() ?? [];
       for (const sample of samples.length ? samples : [event])
@@ -470,6 +496,11 @@ export class Viewport {
   private pointerCancel(): void {
     this.holdMenu?.close();
     this.cancelSketchDrag();
+    if (
+      this.pointer &&
+      this.renderer.domElement.hasPointerCapture?.(this.pointer.id)
+    )
+      this.renderer.domElement.releasePointerCapture(this.pointer.id);
     if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
     this.brushPath = [];
@@ -547,9 +578,13 @@ export class Viewport {
       return;
     this.selectionOverlay.hidden = true;
     if (this.brushing) {
-      if (this.selectionTool === "brush") this.paintScreen(event, true);
+      if (["brush", "freehand", "line"].includes(this.selectionTool))
+        this.paintScreen(event, true);
       else if (this.selectionTool === "wand") this.pickAt(event);
-      else
+      else if (
+        this.selectionTool === "rectangle" ||
+        this.selectionTool === "circle"
+      )
         this.applyScreenRegion(event, {
           kind: this.selectionTool,
           start: this.screenPoint(pointer.x, pointer.y),
@@ -982,11 +1017,16 @@ export class Viewport {
     this.paintCursor.setAttribute("r", String(this.brushPixels));
     this.paintTrail.setAttribute("stroke-width", String(this.brushPixels * 2));
     this.paintTrail.setAttribute(
+      "fill",
+      this.selectionTool === "brush" ? "#c83244" : "none",
+    );
+    this.paintTrail.setAttribute(
       "d",
       this.brushPath.length
-        ? this.brushPath
+        ? (this.selectionTool === "line" ? [this.brushPath[0]] : this.brushPath)
             .map(([px, py], i) => `${i ? "L" : "M"}${px},${py}`)
-            .join(" ") + ` L${x},${y} Z`
+            .join(" ") +
+            ` L${x},${y}${this.selectionTool === "brush" ? " Z" : ""}`
         : "",
     );
   }
@@ -996,8 +1036,11 @@ export class Viewport {
     this.drawPaintStroke(event);
     if (commit)
       this.applyScreenRegion(event, {
-        kind: "lasso",
-        points: this.brushPath.slice(),
+        kind: this.selectionTool === "brush" ? "lasso" : "brush",
+        points:
+          this.selectionTool === "line"
+            ? [this.brushPath[0], endpoint]
+            : this.brushPath.slice(),
         radius: this.brushPixels,
       });
   }
@@ -1025,6 +1068,12 @@ export class Viewport {
           width: rect.width,
           height: rect.height,
           through: this.selectThrough,
+          clippingPlanes: item.mesh.material.clippingPlanes?.map((plane) => [
+            plane.normal.x,
+            plane.normal.y,
+            plane.normal.z,
+            plane.constant,
+          ]),
         })
         .then((mask) => {
           if (
@@ -1112,10 +1161,15 @@ export class Viewport {
       .map((item) => item.mesh);
     const hit = this.raycaster
       .intersectObjects(candidates, false)
-      .find(
-        (candidate) =>
-          !this.clipping ||
-          this.clippingPlane.distanceToPoint(candidate.point) >= 0,
+      .find((candidate) =>
+        (
+          (
+            candidate.object as THREE.Mesh<
+              THREE.BufferGeometry,
+              THREE.MeshStandardMaterial
+            >
+          ).material.clippingPlanes ?? []
+        ).every((plane) => plane.distanceToPoint(candidate.point) >= 0),
       );
     if (!hit) return;
     const id = hit.object.userData.entityId as string;
@@ -1173,9 +1227,15 @@ export class Viewport {
       .map((item) => item.mesh);
     return this.raycaster
       .intersectObjects(meshes, false)
-      .filter(
-        (hit) =>
-          !this.clipping || this.clippingPlane.distanceToPoint(hit.point) >= 0,
+      .filter((hit) =>
+        (
+          (
+            hit.object as THREE.Mesh<
+              THREE.BufferGeometry,
+              THREE.MeshStandardMaterial
+            >
+          ).material.clippingPlanes ?? []
+        ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
       )
       .map((hit) => {
         const id = hit.object.userData.entityId as string;
@@ -1196,7 +1256,7 @@ export class Viewport {
     if (selectedId !== this.selectedId) this.clearDeviations();
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
-    for (const [id, item] of this.objects) {
+    for (const [id, item] of this.objects?.entries() ?? []) {
       if (!ids.has(id)) {
         this.scene.remove(item.mesh);
         item.selectionIndex?.dispose();
@@ -1295,6 +1355,7 @@ export class Viewport {
       );
       this.grid.scale.setScalar(this.extent / 100);
     }
+    this.applyClipPlanes();
     this.invalidate();
   }
 
@@ -1441,7 +1502,56 @@ export class Viewport {
       item.mesh.material.wireframe = enabled;
     this.invalidate();
   }
+  setMeshClipBox(
+    id: string | null,
+    bounds: ScanClipBounds | null,
+    full?: ScanClipBounds,
+  ): void {
+    const previous = this.clipBoxState;
+    const changed =
+      previous?.id !== (id && bounds ? id : undefined) ||
+      (!!bounds &&
+        [0, 1, 2].some(
+          (axis) =>
+            previous?.bounds.min[axis] !== bounds.min[axis] ||
+            previous?.bounds.max[axis] !== bounds.max[axis],
+        ));
+    if (changed) {
+      this.selectionGeneration++;
+      this.objects.get(this.selectedId ?? "")?.selectionIndex?.cancel();
+    }
+    this.clipBoxState =
+      id && bounds ? { id, bounds, full: full ?? bounds } : undefined;
+    this.clipBox?.set(bounds, full);
+    this.applyClipPlanes();
+    this.invalidate();
+  }
+  private applyClipPlanes(): void {
+    for (const [id, item] of this.objects?.entries() ?? []) {
+      item.mesh.material.clippingPlanes = [
+        ...(this.clipping ? [this.clippingPlane] : []),
+        ...(this.clipBoxState?.id === id
+          ? scanClipPlanes(this.clipBoxState.bounds)
+          : []),
+      ];
+      item.mesh.material.needsUpdate = true;
+    }
+    for (const child of this.triangleSelection?.children ?? []) {
+      const material = (child as THREE.Mesh).material as THREE.Material & {
+        clippingPlanes?: THREE.Plane[];
+      };
+      material.clippingPlanes = this.selectedId
+        ? (this.objects.get(this.selectedId)?.mesh.material.clippingPlanes ??
+          [])
+        : [];
+    }
+  }
   setBrush(enabled: boolean): void {
+    if (!enabled && this.brushing) {
+      this.pointerCancel();
+      this.selectionGeneration++;
+      this.objects.get(this.selectedId ?? "")?.selectionIndex?.cancel();
+    }
     if (!enabled) this.paintOverlay.style.display = "none";
     this.brushing = enabled;
     if (enabled) {
@@ -1462,7 +1572,7 @@ export class Viewport {
     );
   }
   setSelectionOptions(
-    tool: "brush" | "rectangle" | "circle" | "wand",
+    tool: "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand",
     radiusPixels: number,
     through: boolean,
     subtract: boolean,
@@ -1470,7 +1580,8 @@ export class Viewport {
     this.selectionTool = tool;
     this.brushPixels = radiusPixels;
     this.paintCursor.setAttribute("r", String(radiusPixels));
-    if (tool !== "brush") this.paintOverlay.style.display = "none";
+    if (!["brush", "freehand", "line"].includes(tool))
+      this.paintOverlay.style.display = "none";
     this.selectThrough = through;
     this.subtract = subtract;
   }
@@ -1506,6 +1617,7 @@ export class Viewport {
         );
       }
     }
+    this.applyClipPlanes();
     this.invalidate();
   }
 
@@ -1517,10 +1629,7 @@ export class Viewport {
       axis === "z" ? -1 : 0,
     );
     this.clippingPlane.constant = offset;
-    for (const item of this.objects.values()) {
-      item.mesh.material.clippingPlanes = enabled ? [this.clippingPlane] : [];
-      item.mesh.material.needsUpdate = true;
-    }
+    this.applyClipPlanes();
     this.section.visible = enabled;
     this.invalidate();
   }
@@ -1672,6 +1781,7 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.clipBox?.dispose();
     this.holdMenu?.dispose();
     if (this.disposed) return;
     this.disposed = true;

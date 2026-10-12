@@ -1,0 +1,69 @@
+.scan-topology-panel {
+  background: var(--surface);
+  color: var(--text);
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.scan-topology-panel h3 {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 8px;
+}
+.scan-topology-panel fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.scan-topology-panel label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+}
+.scan-topology-summary {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 4px 0 8px;
+}
+.scan-topology-cycle {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.scan-topology-list {
+  display: grid;
+  gap: 4px;
+  max-height: 160px;
+  overflow: auto;
+}
+.scan-topology-list button {
+  text-align: left;
+  font-size: 11px;
+}
+.scan-topology-list button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--selected);
+}
+.scan-topology-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.scan-topology-panel .scan-topology-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.scan-topology-panel input[type="checkbox"] {
+  width: auto;
+}
+.scan-topology-back {
+  display: block;
+  margin: 12px 0 0 auto;
+  min-width: 80px;
+}
