@@ -7,6 +7,9 @@ import whole2 from "./fixtures/noise-annular-whole-2.json";
 import whole3 from "./fixtures/noise-annular-whole-3.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
+import selected2 from "./fixtures/noise-annular-selected-2.json";
+import selected4 from "./fixtures/noise-annular-selected-4.json";
+import selected5 from "./fixtures/noise-annular-selected-5.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
 import {
   reduceScanNoise,
@@ -20,7 +23,17 @@ const unpack = (vertices: ArrayLike<number>, triangles: Uint32Array) =>
     vertices[id * 3 + 2],
   ]);
 
-it.each([fixture, whole2, whole3, selected1, selected3, boundaryOff])(
+it.each([
+  fixture,
+  whole2,
+  whole3,
+  selected1,
+  selected2,
+  selected3,
+  selected4,
+  selected5,
+  boundaryOff,
+])(
   "production async noise path matches native $iterations-iteration capture, selection-only $selectionOnly",
   async (capture) => {
     const result = await reduceScanNoiseAsync(
@@ -79,7 +92,7 @@ it.each([fixture, whole2, whole3, boundaryOff])(
   },
 );
 
-it.each([selected1, selected3])(
+it.each([selected1, selected2, selected3, selected4, selected5])(
   "matches native $iterations-iteration selection-only smoothing including shared seam vertices",
   (capture) => {
     const source = new Float32Array(capture.positions);

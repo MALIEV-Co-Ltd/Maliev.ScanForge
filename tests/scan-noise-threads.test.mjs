@@ -6,6 +6,9 @@ import { analyzeMesh } from "../src/mesh-processing";
 import { NoiseSmoothingPool } from "../src/scan-noise-parallel";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
+import selected2 from "./fixtures/noise-annular-selected-2.json";
+import selected4 from "./fixtures/noise-annular-selected-4.json";
+import selected5 from "./fixtures/noise-annular-selected-5.json";
 import whole2 from "./fixtures/noise-annular-whole-2.json";
 import whole3 from "./fixtures/noise-annular-whole-3.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
@@ -60,7 +63,17 @@ afterEach(async () => {
   expect(owned.every((worker) => worker.thread.threadId === -1)).toBe(true);
   vi.unstubAllGlobals();
 });
-it.each([selected1, selected3, whole1, whole2, whole3, boundaryOff])(
+it.each([
+  selected1,
+  selected2,
+  selected3,
+  selected4,
+  selected5,
+  whole1,
+  whole2,
+  whole3,
+  boundaryOff,
+])(
   "connected neighborhoods crossing CPU shards preserve native $iterations-iteration output, selection=$selectionOnly, boundary=$applyBoundaryEdges",
   async (capture) => {
     vi.stubGlobal("Worker", ThreadWorker);
@@ -159,7 +172,16 @@ it.each([selected1, selected3, whole1, whole2, whole3, boundaryOff])(
   },
   30_000,
 );
-it.each([selected1, selected3, whole2, whole3, boundaryOff])(
+it.each([
+  selected1,
+  selected2,
+  selected3,
+  selected4,
+  selected5,
+  whole2,
+  whole3,
+  boundaryOff,
+])(
   "real CPU threads preserve native $iterations-iteration output, selection=$selectionOnly, boundary=$applyBoundaryEdges",
   async (capture) => {
     vi.stubGlobal("Worker", ThreadWorker);
