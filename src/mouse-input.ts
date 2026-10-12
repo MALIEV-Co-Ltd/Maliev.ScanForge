@@ -11,13 +11,18 @@ export function subtractSelection(explicit: boolean, altKey: boolean): boolean {
 }
 import { MOUSE } from "three";
 
-/** OrbitControls swaps ROTATE to pan with Ctrl/Meta; DOLLY ignores modifiers. */
+/** Explicit mappings also preserve modifiers with unrestricted trackball orbit. */
 export function cameraMouseButtons(
   meshEdit: boolean,
   modifiers: { shiftKey: boolean; ctrlKey: boolean; metaKey?: boolean },
 ) {
+  const action = middleMouseAction(modifiers);
   const navigation =
-    middleMouseAction(modifiers) === "zoom" ? MOUSE.DOLLY : MOUSE.ROTATE;
+    action === "zoom"
+      ? MOUSE.DOLLY
+      : action === "pan"
+        ? MOUSE.PAN
+        : MOUSE.ROTATE;
   return {
     LEFT: meshEdit ? null : navigation,
     MIDDLE: navigation,

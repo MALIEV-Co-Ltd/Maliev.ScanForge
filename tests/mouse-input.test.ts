@@ -11,7 +11,9 @@ it("enables object-mode camera drag but reserves mesh-edit left drag for selecti
       const modifiers = { shiftKey, ctrlKey };
       const inspection = cameraMouseButtons(false, modifiers);
       const editing = cameraMouseButtons(true, modifiers);
-      expect(inspection.LEFT).toBe(shiftKey ? MOUSE.DOLLY : MOUSE.ROTATE);
+      expect(inspection.LEFT).toBe(
+        shiftKey ? MOUSE.DOLLY : ctrlKey ? MOUSE.PAN : MOUSE.ROTATE,
+      );
       expect(editing.LEFT).toBeNull();
       expect(editing.MIDDLE).toBe(inspection.LEFT);
       expect(inspection.RIGHT).toBeNull();

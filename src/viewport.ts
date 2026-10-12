@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { TrackballControls } from "three/addons/controls/TrackballControls.js";
+import { updateCameraClipping } from "./camera-clipping";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
@@ -54,7 +55,7 @@ export class Viewport {
     antialias: true,
     alpha: false,
   });
-  private readonly controls: OrbitControls;
+  private readonly controls: TrackballControls;
   private readonly observer: ResizeObserver;
   private readonly objects = new Map<string, Item>();
   private readonly raycaster = new THREE.Raycaster();
@@ -152,15 +153,20 @@ export class Viewport {
     this.landmarkOverlay.style.cssText =
       "position:absolute;inset:0;pointer-events:none;overflow:hidden";
     container.appendChild(this.landmarkOverlay);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls = new TrackballControls(
+      this.camera,
+      this.renderer.domElement,
+    );
     Object.assign(
       this.controls.mouseButtons,
       cameraMouseButtons(false, { ctrlKey: false, shiftKey: false }),
     );
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.12;
-    this.controls.screenSpacePanning = true;
+    this.controls.staticMoving = true;
+    this.controls.keys = ["", "", ""];
+    this.controls.minZoom = 0.000001;
+    this.controls.maxZoom = 1000000;
     this.controls.addEventListener("change", this.invalidate);
+    this.controls.addEventListener("start", this.invalidate);
     this.gizmo = new CameraGizmo(
       (view) => this.setView(view),
       (dx, dy) => {
@@ -263,7 +269,8 @@ export class Viewport {
   private render = (): void => {
     this.frame = null;
     if (this.disposed) return;
-    const moving = this.controls.update();
+    this.controls.update();
+    updateCameraClipping(this.camera, this.bounds);
     this.renderer.render(this.scene, this.camera);
     for (const marker of this.landmarkLabels) {
       const projected = new THREE.Vector3(...marker.point).project(this.camera);
@@ -272,7 +279,6 @@ export class Viewport {
       marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
     }
     this.gizmo?.update(this.camera);
-    if (moving) this.invalidate();
   };
 
   private resize = (): void => {
@@ -281,6 +287,7 @@ export class Viewport {
     const height = Math.max(1, this.container.clientHeight);
     this.renderer.setSize(width, height, false);
     resizeCamera(this.camera, width / height);
+    this.controls.handleResize();
     this.invalidate();
   };
 
@@ -313,6 +320,12 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (
+      !this.brushing ||
+      (event.buttons & 4) !== 0 ||
+      event.pointerType === "touch"
+    )
+      this.invalidate();
     if (this.brushing && this.selectionTool === "brush")
       this.drawPaintStroke(event);
     if (this.sketchDrag?.id === event.pointerId) {
@@ -595,9 +608,8 @@ export class Viewport {
     this.camera.position
       .copy(center)
       .addScaledVector(new THREE.Vector3(...frame.normal), distance);
-    this.camera.near = Math.max(distance / 10000, 0.00001);
-    this.camera.far = Math.max(distance * 100, this.extent * 100);
-    this.camera.updateProjectionMatrix();
+    this.camera.lookAt(center);
+    updateCameraClipping(this.camera, bounds);
     this.controls.update();
     this.invalidate();
   }
@@ -1092,9 +1104,8 @@ export class Viewport {
     const distance = frameCamera(this.camera, radius);
     this.controls.target.copy(center);
     this.camera.position.copy(center).addScaledVector(direction, distance);
-    this.camera.near = Math.max(distance / 10000, 0.00001);
-    this.camera.far = Math.max(distance * 100, this.extent * 100);
-    this.camera.updateProjectionMatrix();
+    this.camera.lookAt(center);
+    updateCameraClipping(this.camera, bounds);
     this.controls.minDistance = extent * 0.0001;
     this.controls.maxDistance = distance * 20;
     this.controls.update();
@@ -1400,6 +1411,7 @@ export class Viewport {
     if (this.frame !== null) cancelAnimationFrame(this.frame);
     this.observer.disconnect();
     this.controls.removeEventListener("change", this.invalidate);
+    this.controls.removeEventListener("start", this.invalidate);
     this.controls.dispose();
     const canvas = this.renderer.domElement;
     canvas.removeEventListener("pointerdown", this.pointerDown, true);
