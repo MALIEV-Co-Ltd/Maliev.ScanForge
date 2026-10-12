@@ -30,6 +30,25 @@ function fixture(aspect = 1) {
 }
 
 describe("import camera fit", () => {
+  it("fits the empty origin using a default scale instead of the previous mesh", () => {
+    const { view, camera, target } = fixture();
+    Object.assign(view, { bounds: new THREE.Box3(), extent: 1000000 });
+    camera.near = 10000;
+    camera.far = 10001;
+    view.fitView();
+    expect(target.toArray()).toEqual([0, 0, 0]);
+    expect(camera.position.length()).toBeGreaterThan(100);
+    expect(camera.position.length()).toBeLessThan(300);
+    expect(camera.near).toBe(0.01);
+    expect(camera.far).toBe(10000);
+    for (const point of [
+      new THREE.Vector3(),
+      new THREE.Vector3(50, 0, 0),
+      new THREE.Vector3(0, 50, 0),
+      new THREE.Vector3(0, 0, 50),
+    ])
+      expect(Math.abs(point.project(camera).z)).toBeLessThan(1);
+  });
   it("restores the world up axis when leaving a sketch-normal camera view", () => {
     const { view, camera } = fixture();
     camera.up.set(0, 1, 0);

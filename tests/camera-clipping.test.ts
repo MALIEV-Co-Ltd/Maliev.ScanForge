@@ -3,6 +3,29 @@ import { Box3, OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
 import { updateCameraClipping } from "../src/camera-clipping";
 
 describe("camera depth range", () => {
+  it.each([false, true])(
+    "restores empty-scene limits after geometry fitting (orthographic: %s)",
+    (orthographic) => {
+      const camera = orthographic
+        ? new OrthographicCamera(-100, 100, 100, -100)
+        : new PerspectiveCamera();
+      camera.position.set(0, 0, 200);
+      camera.lookAt(0, 0, 0);
+      updateCameraClipping(
+        camera,
+        new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1)),
+      );
+      camera.position.set(0, 0, 150);
+      updateCameraClipping(camera, new Box3());
+      expect(camera.near).toBe(orthographic ? -10000 : 0.01);
+      expect(camera.far).toBe(10000);
+      for (const point of [new Vector3(), new Vector3(0, 0, 80)])
+        expect(Math.abs(point.project(camera).z)).toBeLessThan(1);
+      camera.position.z = 100000;
+      updateCameraClipping(camera, new Box3());
+      expect(Math.abs(new Vector3().project(camera).z)).toBeLessThan(1);
+    },
+  );
   for (const scale of [0.000001, 1, 1000000]) {
     for (const orthographic of [false, true]) {
       it(`fits ${orthographic ? "parallel" : "perspective"} geometry at scale ${scale}`, () => {

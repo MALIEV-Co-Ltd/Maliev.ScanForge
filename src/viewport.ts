@@ -12,7 +12,7 @@ import {
 } from "./scan-clip-box";
 import { CanvasPickMenu, type CanvasPickChoice } from "./canvas-pick-menu";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
-import { updateCameraClipping } from "./camera-clipping";
+import { EMPTY_SCENE_EXTENT, updateCameraClipping } from "./camera-clipping";
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
@@ -177,7 +177,7 @@ export class Viewport {
   private pointer: { x: number; y: number; id: number; moved: boolean } | null =
     null;
   private bounds = new THREE.Box3();
-  private extent = 100;
+  private extent = EMPTY_SCENE_EXTENT;
 
   constructor(
     private readonly container: HTMLElement,
@@ -1602,6 +1602,8 @@ export class Viewport {
         this.bounds.getSize(new THREE.Vector3()).length(),
         0.01,
       );
+    } else {
+      this.extent = EMPTY_SCENE_EXTENT;
     }
     this.applyClipPlanes();
     this.invalidate();
@@ -1656,7 +1658,7 @@ export class Viewport {
             );
     }
     const extent = bounds.isEmpty()
-      ? this.extent
+      ? EMPTY_SCENE_EXTENT
       : Math.max(...bounds.getSize(new THREE.Vector3()).toArray(), 0.00001);
     const center = bounds.isEmpty()
       ? new THREE.Vector3()

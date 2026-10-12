@@ -4,6 +4,48 @@ import { createViewportGrid, renderSceneWithGrid } from "../src/viewport-grid";
 import { updateCameraClipping } from "../src/camera-clipping";
 
 for (const perspective of [false, true]) {
+  it(`keeps empty-scene axes visible through both render passes (${perspective ? "perspective" : "orthographic"})`, () => {
+    const scene = new THREE.Scene();
+    const gridScene = new THREE.Scene();
+    const grid = createViewportGrid();
+    gridScene.add(grid);
+    const camera = perspective
+      ? new THREE.PerspectiveCamera()
+      : new THREE.OrthographicCamera();
+    camera.position.set(100, -100, 80);
+    camera.up.set(0, 0, 1);
+    camera.lookAt(0, 0, 0);
+    camera.near = 200;
+    camera.far = 201;
+    const renderer = {
+      autoClear: true,
+      clearDepth: vi.fn(),
+      render: (current: THREE.Scene) => {
+        if (current === scene)
+          for (const point of [
+            new THREE.Vector3(),
+            new THREE.Vector3(50, 0, 0),
+            new THREE.Vector3(0, 50, 0),
+            new THREE.Vector3(0, 0, 50),
+          ])
+            expect(Math.abs(point.project(camera).z)).toBeLessThan(1);
+      },
+    };
+    try {
+      renderSceneWithGrid(
+        renderer as unknown as THREE.WebGLRenderer,
+        scene,
+        gridScene,
+        camera,
+        new THREE.Box3(),
+      );
+      expect(camera.near).toBe(perspective ? 0.01 : -10000);
+      expect(camera.far).toBe(10000);
+    } finally {
+      grid.geometry.dispose();
+      (grid.material as THREE.Material).dispose();
+    }
+  });
   it(`renders the fading grid beyond the model without widening ${perspective ? "perspective" : "orthographic"} model clipping`, () => {
     const scene = new THREE.Scene(),
       gridScene = new THREE.Scene();

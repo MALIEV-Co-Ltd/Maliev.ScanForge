@@ -1,13 +1,32 @@
 import { Box3, OrthographicCamera, Vector3 } from "three";
 import type { NavigationCamera } from "./camera-gizmo";
 
+export const EMPTY_SCENE_EXTENT = 100;
+export const DEFAULT_CAMERA_NEAR = 0.01;
+export const DEFAULT_CAMERA_FAR = 10000;
+
 /** Fit depth precision to visible geometry after every camera movement. */
 export function updateCameraClipping(
   camera: NavigationCamera,
   bounds: Box3,
 ): void {
-  if (bounds.isEmpty()) return;
   camera.updateMatrixWorld();
+  if (bounds.isEmpty()) {
+    // Reference axes remain visible after the last object is hidden or removed.
+    // Expand the default range when navigating far from the world origin.
+    const far = Math.max(
+      DEFAULT_CAMERA_FAR,
+      camera.position.length() + EMPTY_SCENE_EXTENT * 10,
+    );
+    const near =
+      camera instanceof OrthographicCamera ? -far : DEFAULT_CAMERA_NEAR;
+    if (camera.near !== near || camera.far !== far) {
+      camera.near = near;
+      camera.far = far;
+      camera.updateProjectionMatrix();
+    }
+    return;
+  }
   let closest = Infinity;
   let furthest = -Infinity;
   const corner = new Vector3();
