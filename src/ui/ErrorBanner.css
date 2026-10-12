@@ -1,9 +1,13 @@
 /* Keep actionable failures above floating canvas tools without consuming canvas layout. */
 .workbench .error-banner {
+  position: absolute;
+  left: auto;
+  right: 16px;
+  transform: none;
   z-index: 90;
-  bottom: 86px;
+  bottom: 64px;
   width: max-content;
-  max-width: min(720px, calc(100vw - 32px));
+  max-width: min(540px, calc(100% - 32px));
   box-sizing: border-box;
   align-items: flex-start;
 }

@@ -142,6 +142,7 @@ export class Viewport {
   private brushPixels = 24;
   private selectThrough = false;
   private subtract = false;
+  private paintAltHeld = false;
   private readonly selectionOverlay = document.createElement("div");
   private readonly paintOverlay = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -332,6 +333,9 @@ export class Viewport {
       this.pointerLeave,
     );
     window.addEventListener("keydown", this.sketchKeyDown);
+    window.addEventListener("keydown", this.paintModifierKey);
+    window.addEventListener("keyup", this.paintModifierKey);
+    window.addEventListener("blur", this.paintModifierBlur);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
     this.renderer.domElement.addEventListener(
       "pointercancel",
@@ -1159,6 +1163,24 @@ export class Viewport {
     const rect = this.renderer.domElement.getBoundingClientRect();
     return [x - rect.left, y - rect.top];
   }
+  private updatePaintModifier(altHeld: boolean): void {
+    this.paintAltHeld = altHeld;
+    const color = subtractSelection(this.subtract, altHeld)
+      ? "#a7adb5"
+      : "#c83244";
+    this.paintCursor.setAttribute("fill", color);
+    this.paintTrail.setAttribute("stroke", color);
+    this.paintTrail.setAttribute(
+      "fill",
+      this.selectionTool === "brush" ? color : "none",
+    );
+  }
+  private paintModifierKey = (event: KeyboardEvent): void => {
+    this.updatePaintModifier(event.altKey);
+  };
+  private paintModifierBlur = (): void => {
+    this.updatePaintModifier(false);
+  };
   private drawPaintStroke(event: PointerEvent): void {
     const [x, y] = this.screenPoint(event.clientX, event.clientY);
     this.paintOverlay.style.display = "block";
@@ -1166,10 +1188,7 @@ export class Viewport {
     this.paintCursor.setAttribute("cy", String(y));
     this.paintCursor.setAttribute("r", String(this.brushPixels));
     this.paintTrail.setAttribute("stroke-width", String(this.brushPixels * 2));
-    this.paintTrail.setAttribute(
-      "fill",
-      this.selectionTool === "brush" ? "#c83244" : "none",
-    );
+    this.updatePaintModifier(Boolean(event.altKey));
     this.paintTrail.setAttribute(
       "d",
       this.brushPath.length
@@ -1827,6 +1846,7 @@ export class Viewport {
       this.paintOverlay.style.display = "none";
     this.selectThrough = through;
     this.subtract = subtract;
+    this.updatePaintModifier(this.paintAltHeld);
   }
   setBoundaryEdges(paths: readonly ScanBoundaryPath[]): void {
     this.clearGroup(this.boundaryEdges);
@@ -2051,6 +2071,9 @@ export class Viewport {
     canvas.removeEventListener("pointercancel", this.pointerCancel);
     canvas.removeEventListener("dblclick", this.doubleClick);
     window.removeEventListener("keydown", this.sketchKeyDown);
+    window.removeEventListener("keydown", this.paintModifierKey);
+    window.removeEventListener("keyup", this.paintModifierKey);
+    window.removeEventListener("blur", this.paintModifierBlur);
     for (const item of this.objects.values()) {
       item.selectionIndex?.dispose();
       item.mesh.geometry.dispose();

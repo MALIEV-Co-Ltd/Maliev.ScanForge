@@ -1,0 +1,24 @@
+.status-metrics {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.statusbar:has(.status-metrics) .status-end {
+  margin-left: 0;
+}
+.statusbar:has(.status-metrics) .status-navigation-hint {
+  flex-shrink: 1;
+}
+@media (max-width: 800px) {
+  .statusbar:has(.status-metrics) .status-navigation-hint {
+    display: none;
+  }
+  .status-metrics {
+    gap: 6px;
+    font-size: 9px;
+  }
+}

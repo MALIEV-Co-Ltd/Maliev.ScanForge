@@ -1,5 +1,6 @@
 import { ViewportTools } from "./ViewportTools";
-import "./ErrorBanner.css";
+import { CanvasError } from "./CanvasError";
+import { StatusMetrics } from "./StatusMetrics";
 import {
   releaseProcessingSession,
   retainProcessingGeometry,
@@ -3485,6 +3486,7 @@ export function App() {
               <span>+{number(tolerance)} mm</span>
             </div>
           )}
+          <CanvasError message={error} onDismiss={() => setError("")} />
         </section>
         {createSketch && (
           <CreateSketchDialog
@@ -4573,14 +4575,6 @@ export function App() {
           </section>
         </div>
       )}
-      {error && (
-        <div className="error-banner" role="alert">
-          <span>{error}</span>
-          <button aria-label="Dismiss error" onClick={() => setError("")}>
-            <X size={16} />
-          </button>
-        </div>
-      )}
       <footer className="statusbar">
         <span className={busy ? "status-dot busy" : "status-dot"} />
         {importProgress ? (
@@ -4623,6 +4617,9 @@ export function App() {
                   ? `${axis.toUpperCase()} section · ${number(offset)} mm`
                   : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
         </span>
+        <StatusMetrics
+          facets={selected ? selected.positions.length / 9 : undefined}
+        />
         <span className="status-end">Units: mm</span>
       </footer>
       {primitiveDialog && (
