@@ -98,3 +98,33 @@ alone would leave the native preparation, validity, update and collapse-order
 rules unimplemented. The remaining integration gate is a complete native
 collapse path compared on identical meshes, rather than substituting one
 verified component into a different algorithm and claiming equivalence.
+
+## Face-validity and deletion-mask verification
+
+The port in `src/scan-reduction-validity.ts` matches 275 executions of original
+routine `0x1403945b0`, including its Boolean result and all three output mask
+words. Evidence is
+`ev_97115feb5c2b3e657e8787f134f0ad27256def4c20725f5b991193683f96c034`.
+Its double-vector normalization dependency `0x140154070` was separately
+extracted with REA; evidence is
+`ev_56a9b9eb30ef0b25b0d67ffee8893d1311ad93c99ffac5fdd9596e511ce70921`.
+The isolated execution resolves only the original square-root import to the
+helper process's CRT. No geometric code is replaced. The return contract is a
+Boolean in `AL`; upper register bits are unspecified. The committed captures
+use that contract, correcting the first probe's oversized return type.
+
+The routine walks ordered incident-face references. Deleted faces leave their
+mask bits untouched. A face containing the other collapse endpoint sets its
+deletion bit. Otherwise the routine normalizes both replacement edge vectors
+using double arithmetic and a `Number.EPSILON` length cutoff. An absolute edge
+dot product greater than `0.999` rejects immediately. It then normalizes their
+cross product, clears the face's deletion bit, and rejects if the dot product
+with the stored face normal is below `0.2`. Early returns preserve unvisited
+mask bits; clearing the entire mask before the check would differ.
+
+The captures cover threshold neighborhoods, tiny and large coordinates,
+collinear edges, empty incidence, deleted faces, endpoint removal, corner
+rotations, and incidence counts of 31, 32, 33 and 65. All input records and
+guard bytes remain unchanged. Candidate and validity components are now
+numerically verified; preparation, adjacency updates, ordered collapse and
+final compaction still require integration and full native mesh comparisons.
