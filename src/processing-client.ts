@@ -116,7 +116,7 @@ export interface ProcessingOptions {
   onProgress?: (fraction: number, stage: string) => void;
 }
 
-/** Each operation owns one worker, a two-minute inactivity lease, and a fifteen-minute hard lease. */
+/** Operations have bounded execution leases; reusable topology belongs to the selected geometry. */
 export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
@@ -140,12 +140,12 @@ export function processMesh(
       addEventListener?: (type: string, listener: () => void) => void;
       removeEventListener?: (type: string, listener: () => void) => void;
     };
-    const cleanup = (usable = false) => {
+    const cleanup = (usable = false, successor?: Positions) => {
       clearTimeout(inactivity);
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
       scope.removeEventListener?.("pagehide", abort);
-      if (session) session.release(usable);
+      if (session) session.release(usable, successor);
       else worker.terminate();
     };
     const fail = (error: unknown, usable = false) => {
@@ -203,7 +203,10 @@ export function processMesh(
         return;
       }
       settled = true;
-      cleanup(true);
+      cleanup(
+        true,
+        event.data.result.scanEdit?.positions ?? event.data.result.positions,
+      );
       resolve(event.data.result);
     };
     worker.onerror = (event) =>

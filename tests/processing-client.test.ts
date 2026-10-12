@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { releaseProcessingSession } from "../src/processing-session";
+import {
+  releaseProcessingSession,
+  retainProcessingGeometry,
+} from "../src/processing-session";
 import {
   processMesh,
   type ProcessingRequest,
@@ -65,12 +68,15 @@ describe("processing worker resource ownership", () => {
     expect(owned.terminated).toBe(true);
     expect(vi.getTimerCount()).toBe(0);
   });
-  it("reuses a geometry worker through domain errors, expires idle ownership and invalidates changed geometry", async () => {
+  it("keeps active geometry topology through idle time and domain errors, disposing changed geometry", async () => {
     const first = processMesh(request, { reuseTopology: true });
     const worker = ProcessingWorkerDouble.latest;
     worker.reply({ result: { kind: "report", diagnostics: {} } });
     await first;
     expect(worker.terminated).toBe(false);
+    vi.advanceTimersByTime(60_000);
+    expect(worker.terminated).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
     const retry = processMesh(request, { reuseTopology: true });
     expect(ProcessingWorkerDouble.creates).toBe(1);
     worker.reply({ error: "Patch rejected" });
@@ -84,8 +90,53 @@ describe("processing worker resource ownership", () => {
     const replacement = ProcessingWorkerDouble.latest;
     replacement.reply({ result: { kind: "report", diagnostics: {} } });
     await changed;
-    vi.advanceTimersByTime(60_000);
+    retainProcessingGeometry(undefined);
     expect(replacement.terminated).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("adopts edited geometry without discarding its worker, but releases unrelated replacements", async () => {
+    const edited = positions.slice();
+    const first = processMesh(request, { reuseTopology: true });
+    const worker = ProcessingWorkerDouble.latest;
+    worker.reply({ result: { kind: "report", diagnostics: {} } });
+    await first;
+    const edit = processMesh(
+      { kind: "scanEdit", action: "smoothSelected", positions },
+      { reuseTopology: true },
+    );
+    const key = (worker.sent as ProcessingRequest & { geometryKey: number })
+      .geometryKey;
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { positions: edited, diagnostics: {} },
+      },
+    });
+    await edit;
+    retainProcessingGeometry(edited);
+    expect(worker.terminated).toBe(false);
+    const next = processMesh(
+      { ...request, positions: edited },
+      { reuseTopology: true },
+    );
+    expect(ProcessingWorkerDouble.latest).toBe(worker);
+    expect(
+      (worker.sent as ProcessingRequest & { geometryKey: number }).geometryKey,
+    ).toBe(key);
+    worker.reply({ result: { kind: "report", diagnostics: {} } });
+    await next;
+    retainProcessingGeometry(positions);
+    expect(worker.terminated).toBe(true);
+  });
+  it("disposes a geometry removed during processing when its active operation finishes", async () => {
+    const pending = processMesh(request, { reuseTopology: true });
+    const worker = ProcessingWorkerDouble.latest;
+    retainProcessingGeometry(undefined);
+    expect(worker.terminated).toBe(false);
+    worker.reply({ result: { kind: "report", diagnostics: {} } });
+    await pending;
+    expect(worker.terminated).toBe(true);
     expect(vi.getTimerCount()).toBe(0);
   });
   it("reuses actual welded topology between inventory and selection, rebuilding changed geometry", async () => {
@@ -127,6 +178,60 @@ describe("processing worker resource ownership", () => {
       },
     });
     expect(replies.some((r) => r.stage === "Welding vertices")).toBe(true);
+  });
+  it("retains successor buffers after transfer and isolates failed edits from cached input geometry", async () => {
+    const replies: any[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: any }) => void) | null,
+      postMessage: (message: any, transfers: Transferable[] = []) =>
+        replies.push(structuredClone(message, { transfer: transfers })),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "scanTools",
+        positions: positions.slice(),
+        operation: { kind: "scaleMesh", factor: 2 },
+        geometryKey: 7,
+      },
+    });
+    expect(replies.at(-1).result.positions[3]).toBe(2);
+    replies.length = 0;
+    // Incoming geometry bytes deliberately differ: the adopted worker copy is
+    // authoritative for this same geometry key and must survive real transfer.
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: positions.slice(),
+        geometryKey: 7,
+      },
+    });
+    expect(replies.at(-1).result.scanEdit.inventory.components[0].area).toBe(2);
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "defeature",
+        positions: positions.slice(),
+        selection: new Uint8Array([1]),
+        geometryKey: 7,
+      },
+    });
+    expect(replies.at(-1).error).toBeTruthy();
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: positions.slice(),
+        geometryKey: 7,
+      },
+    });
+    expect(replies.at(-1).result.scanEdit.inventory.components[0].area).toBe(2);
+    expect(replies.some((r) => r.stage === "Welding vertices")).toBe(false);
   });
   it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
     const selection = new Uint8Array([1]);

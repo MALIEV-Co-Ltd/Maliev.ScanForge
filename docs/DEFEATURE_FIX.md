@@ -1,51 +1,29 @@
-# Defeature and repeated topology setup
+# Defeature and persistent topology
 
-## Cause and change
+Defeature now uses the recovered spatial advancing-corner fill path rather than the general projected hole filler. The port preserves pre-edit angle-weighted vertex normals, chooses the smallest valid oriented corner, uses the recovered 75-degree/chord branches and cubic midpoint step, and bounds each fill loop at 10,000 iterations. It retains the largest marked component by triangle area, preserves unrelated components, and makes at most two boundary-fill attempts.
 
-Defeature previously forced a flat fill. A noisy scanned rim is generally not
-planar within the weld tolerance, so the filler skipped it and the parent
-operation rejected the patch. The nested filler nevertheless emitted “Hole
-filling complete · 100%” before the parent checked that all seams were filled.
-Defeature now chooses flat/tangent filling automatically. It reports monotonic
-operation-specific progress below 100% until repatching passes its checks.
-Failures retain the source and replace the status with an explicit failure.
-Folded, self-intersecting or overlapping seams still fail safely, with guidance
-to use a smaller contiguous selection.
+Facet deletion and insertion reuse indexed vertices and update existing edge uses. Derived component and boundary summaries refresh after edits; vertices are compacted without spatial welding. Normals refresh between fill attempts. The published successor includes valid indexed topology, so diagnostics and selection actions reuse it immediately.
 
-Each action previously created and terminated its own worker, discarding its
-welded topology. Diagnostics, connected selection, selection morphology and
-Scan Edit now share one geometry-scoped worker. Its read-only source topology
-is reused at the same weld tolerance. Geometry array replacement or a changed
-tolerance rebuilds topology. Defeature must still build topology for the changed
-remainder before checking its new seams; that work is necessary.
+One selected-geometry worker owns the cache until the geometry is disposed, replaced externally, cancelled or the page closes. Successful edits adopt the successor geometry and transfer a separate output copy; transfer cannot detach cached buffers. A failed edit cannot replace the canonical input with temporary geometry. Requests retain the two-minute inactivity and fifteen-minute hard execution leases; there is no arbitrary 60-second idle cache expiry or background worker pool.
 
-The reusable worker expires after 60 seconds idle. Cancellation, decode/crash
-errors and page exit release it. Valid operation rejections retain the cache
-for another selection attempt. Concurrent work uses a separate disposable
-worker; no unbounded worker pool was introduced. Active requests retain the
-existing two-minute inactivity and fifteen-minute hard leases.
+## Observed native comparison
 
-The error banner now wraps long text, limits its width and appears above
-floating viewport tools. Existing unrelated stylesheet edits were preserved.
+The native application and browser implementation used the same deterministic noisy annular STL (96 triangles) and the same 16 selected facets. A native selection export was checked against the exact Float32 triangle coordinate sets before defeature. The observed native output is stored as a neutral regression fixture in `tests/fixtures/defeature-annular.json`.
 
-## Validation
+- Both outputs contain 100 triangles, including 20 new patch triangles and five inserted vertices.
+- Both retain one outside boundary, with zero nonmanifold edges and zero winding conflicts.
+- All 80 retained triangles remain unchanged.
+- Triangle coordinate sets match at 0.00001 mm precision. Maximum symmetric nearest-vertex distance is 0.000000238419 mm.
+- Cached output contains 65 referenced vertices, without orphaned deleted-patch vertices.
+- Warmed defeature and successor analysis emit no welding or adjacency-building stages.
 
-- Build passed with zero warnings/errors. Focused scan-edit, client, diagnostics
-  and panel tests passed; full suite passed 7,301 tests in 150 files.
-- Regression recreates a non-planar annular selection around an existing hole.
-  Explicit flat filling reproduces the old failure. Automatic defeature removes
-  the hole, preserves unselected coordinates and produces consistent manifold
-  edges. Rejected patch progress stays monotonic and below 100%.
-- Real worker dispatch confirms warmed selection reuses topology without welding,
-  and changed geometry rebuilds it. Client tests cover reuse through rejection,
-  changed geometry, idle expiry, concurrent isolation and cancellation cleanup.
-- Browser fixture: 16 selected triangles around a noisy rim; defeature reduced
-  holes/boundaries from two to one. Selecting the entire mesh then correctly
-  failed without changing geometry. Its banner was fully readable above the
-  viewport toolbar at 1280 × 720; console warnings/errors were empty.
-- Local proof: `.resources/defeature-error-verified.png`. QA tab 41 was closed;
-  server PID 37760 exited gracefully and its lease ledger records cleanup.
+Input STL SHA-256: `58fc9e3ebc25559a3963580529fe6645cb26afb963287803c0c1d48cf96cedd6`.
+Native output STL SHA-256: `8f1a32ddfec66e7a8b4e061a0e0ec37a0f431e67c739e44630ae2c57b1423561`.
 
-The user's original STL and its 18,425-triangle selection were not available as
-a reproducible fixture. Its exact timing and repatching result remain unverified;
-the screenshot's failure path is reproduced with manufactured noisy geometry.
+Raw native evidence, exports, analysis tools and runtime ownership records remain outside the application repository. This confirms the named fixture; it does not establish universal numerical parity or the exact result of the earlier screenshot's 18,425-triangle selection. That selection was not supplied as reproducible data.
+
+## Validation and deliberate safety boundary
+
+The build/type check passes without warnings or errors. Focused coverage checks native geometry, exact selected facets, two boundary attempts, marked-island pruning, untouched unrelated components, indexed compaction, cancellation, successor buffer transfer, reuse after failure and geometry disposal. The full application suite and formatting checks are run before committing this slice.
+
+The native core may return true before a loop is fully closed. The application explicitly checks completion and retains the original mesh on an incomplete patch instead of publishing false success. Progress stays operation-specific and reaches 100% only after successful publication. Existing error-banner styling is retained.

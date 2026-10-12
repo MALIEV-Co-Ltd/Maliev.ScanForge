@@ -1,20 +1,27 @@
 import type { Positions } from "./types";
 
-// One geometry-scoped worker, never a background pool. Its topology expires
-// after one minute idle, on geometry replacement, cancellation or page exit.
+// One geometry-scoped worker, never a background pool. The selected geometry
+// owns its adjacency until disposal, replacement, cancellation or page exit.
 let retained:
   | {
       worker: Worker;
       positions: Positions;
       key: number;
       active: boolean;
-      timer?: ReturnType<typeof setTimeout>;
+      retire?: boolean;
     }
   | undefined;
 let nextKey = 0;
+/** Release the cache when its geometry is no longer the active mesh. */
+export function retainProcessingGeometry(positions?: Positions) {
+  if (retained && retained.positions !== positions) releaseProcessingSession();
+}
 export function releaseProcessingSession() {
-  if (!retained || retained.active) return;
-  clearTimeout(retained.timer);
+  if (!retained) return;
+  if (retained.active) {
+    retained.retire = true;
+    return;
+  }
   retained.worker.terminate();
   retained = undefined;
 }
@@ -26,18 +33,17 @@ export function acquireProcessingSession(
   if (retained && retained.positions !== positions) releaseProcessingSession();
   retained ??= { worker: create(), positions, key: ++nextKey, active: false };
   const entry = retained;
-  clearTimeout(entry.timer);
   entry.active = true;
   return {
     worker: entry.worker,
     key: entry.key,
-    release(usable: boolean) {
+    release(usable: boolean, successor?: Positions) {
       entry.active = false;
       entry.worker.onmessage = null;
       entry.worker.onerror = null;
       entry.worker.onmessageerror = null;
-      if (!usable) releaseProcessingSession();
-      else entry.timer = setTimeout(releaseProcessingSession, 60_000);
+      if (!usable || entry.retire) releaseProcessingSession();
+      else if (successor) entry.positions = successor;
     },
   };
 }

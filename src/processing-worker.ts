@@ -47,15 +47,19 @@ function summarize(topology: MeshTopology): TopologySummary {
   };
 }
 let geometryKey: number | undefined;
+let canonicalPositions: ProcessingRequest["positions"] | undefined;
 let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
 scope.onmessage = ({ data: incoming }) => {
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
-  if (key === undefined || key !== geometryKey) topologyCache = {};
-  else if (topologyCache.positions)
-    request = { ...incoming, positions: topologyCache.positions };
+  if (key === undefined || key !== geometryKey) {
+    topologyCache = {};
+    canonicalPositions = incoming.positions;
+  } else if (canonicalPositions)
+    request = { ...incoming, positions: canonicalPositions };
   geometryKey = key;
+  const previousCache = { ...topologyCache };
   let lastProgress = -Infinity;
   function progress(fraction: number, stage: string) {
     const now = performance.now();
@@ -67,7 +71,10 @@ scope.onmessage = ({ data: incoming }) => {
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
     if (request.kind === "scanTools") {
-      const outcome = runScanTool(request, { onProgress: progress });
+      const outcome = runScanTool(request, {
+        onProgress: progress,
+        topologyCache,
+      });
       result.positions = outcome.positions;
       result.diagnostics.summary = outcome.summary;
     } else if (request.kind === "scanEdit") {
@@ -126,6 +133,7 @@ scope.onmessage = ({ data: incoming }) => {
       const repaired = repairMesh(request.positions, {
         ...request,
         onProgress: progress,
+        topologyCache,
       });
       if (repaired.sheets) result.segments = repaired.sheets;
       else result.positions = repaired.positions;
@@ -175,6 +183,7 @@ scope.onmessage = ({ data: incoming }) => {
       result.positions = smoothMesh(request.positions, {
         ...request,
         onProgress: progress,
+        topologyCache,
       });
       result.diagnostics = {
         iterations: request.iterations,
@@ -200,6 +209,7 @@ scope.onmessage = ({ data: incoming }) => {
         tolerance: request.tolerance,
         angleDegrees: request.angleDegrees,
         onProgress: progress,
+        topologyCache,
       });
       const outputs = segmented.segments.map(
         (segment) => new Float32Array(segment.triangles * 9),
@@ -289,6 +299,18 @@ scope.onmessage = ({ data: incoming }) => {
       }
     }
     const transfers: Transferable[] = [];
+    const successor = result.scanEdit?.positions ?? result.positions;
+    if (geometryKey !== undefined && successor) {
+      // Keep the worker's canonical geometry and any already-built adjacency.
+      // Transferring that buffer would detach the successor cache; only the
+      // dedicated scene/history copy crosses back to the main thread.
+      if (topologyCache.positions !== successor) topologyCache = {};
+      topologyCache.positions = successor;
+      canonicalPositions = successor;
+      if (result.scanEdit?.positions)
+        result.scanEdit.positions = successor.slice();
+      else result.positions = successor.slice();
+    }
     if (result.scanEdit?.positions)
       transfers.push(result.scanEdit.positions.buffer);
     if (result.scanEdit?.selection)
@@ -300,6 +322,10 @@ scope.onmessage = ({ data: incoming }) => {
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     scope.postMessage({ result }, transfers);
   } catch (error) {
+    // A rejected edit may have analyzed temporary geometry. Never reinterpret
+    // that temporary mesh as the next request's original input.
+    if (topologyCache.positions !== canonicalPositions)
+      topologyCache = previousCache;
     scope.postMessage({
       error: error instanceof Error ? error.message : String(error),
     });

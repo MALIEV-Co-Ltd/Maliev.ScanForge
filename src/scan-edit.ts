@@ -5,6 +5,7 @@ import {
   type MeshTopology,
 } from "./mesh-processing";
 import { runHoleFill } from "./scan-edit-holes";
+import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 
@@ -311,76 +312,11 @@ export function runScanEdit(
     return { curves, diagnostics: { projectedBoundaries: curves.length } };
   }
   if (r.action === "defeature") {
-    if (!r.selection?.some(Boolean) || r.selection.every(Boolean))
-      throw new Error("Select a bounded patch, leaving surrounding triangles.");
-    const retained: number[] = [];
-    for (let f = 0; f < count; f++)
-      if (!r.selection[f])
-        retained.push(...Array.from(r.positions.slice(f * 9, f * 9 + 9)));
-    const remainder = finiteOutput(retained);
     phaseStart = 0.35;
-    phaseSpan = 0.25;
-    const rt = analyzeMesh(remainder, o);
-    const oldEdges = new Set(
-      [...t.edges]
-        .filter(([, uses]) => uses.length === 1)
-        .map(([key]) => {
-          const [a, b] = key.split(":").map(Number);
-          return [
-            pointAt(t.vertices, a).map(Math.fround).join(","),
-            pointAt(t.vertices, b).map(Math.fround).join(","),
-          ]
-            .sort()
-            .join("|");
-        }),
-    );
-    const newLoops = rt.boundaryLoops
-      .map((ids, i) => ({ ids, i }))
-      .filter(({ ids }) =>
-        ids.every(
-          (id, j) =>
-            !oldEdges.has(
-              [
-                pointAt(rt.vertices, id).join(","),
-                pointAt(rt.vertices, ids[(j + 1) % ids.length]).join(","),
-              ]
-                .sort()
-                .join("|"),
-            ),
-        ),
-      )
-      .map((v) => v.i);
-    if (!newLoops.length)
-      throw new Error(
-        "Selected patch must have a closed seam separate from existing boundaries.",
-      );
-    phaseStart = 0.6;
-    phaseSpan = 0.35;
-    const filled = runHoleFill(
-      {
-        ...r,
-        positions: remainder,
-        action: "fillHoles",
-        indices: newLoops,
-        mode: "entire",
-        algorithm: r.algorithm ?? "automatic",
-      },
-      rt,
-      o,
-    );
-    if (filled.diagnostics.filledHoles !== newLoops.length)
-      throw new Error(
-        "The selected patch could not be safely repatched. Its seam may be folded, self-intersecting or overlap existing faces. Try a smaller contiguous selection; the original mesh is retained.",
-      );
+    phaseSpan = 0.6;
+    const result = runDefeature(r, t, o);
     checkProgress(options, 1, "Defeature complete");
-    return {
-      ...filled,
-      diagnostics: {
-        ...filled.diagnostics,
-        removedTriangles: r.selection.reduce((n, v) => n + v, 0),
-        method: "Remove patch and retriangulate closed seam",
-      },
-    };
+    return result;
   }
   const selected = new Set(
     selectedIndices(r.indices, t.components.length).flatMap(

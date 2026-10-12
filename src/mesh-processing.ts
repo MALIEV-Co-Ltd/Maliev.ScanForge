@@ -12,7 +12,7 @@ export interface MeshProcessingOptions {
   signal?: AbortSignal;
   onProgress?: (fraction: number, stage: string) => void;
 }
-interface EdgeUse {
+export interface EdgeUse {
   face: number;
   from: number;
   to: number;
@@ -137,7 +137,28 @@ export function analyzeMesh(
     }
     triangles[i / 3] = id;
   }
-  const edges = new Map<string, EdgeUse[]>();
+  const topology = analyzeIndexedMesh(
+    new Float64Array(vertices),
+    triangles,
+    options,
+  );
+  if (cache && (!cache.positions || cache.positions === positions)) {
+    cache.positions = positions;
+    cache.tolerance = tolerance;
+    cache.topology = topology;
+  }
+  return topology;
+}
+
+/** Preserve vertex identity across edits. Existing edge uses can be reused without welding or rebuilding adjacency. */
+export function analyzeIndexedMesh(
+  vertices: Float64Array,
+  triangles: Uint32Array,
+  options: MeshProcessingOptions = {},
+  existingEdges?: Map<string, EdgeUse[]>,
+): MeshTopology {
+  const tolerance = options.tolerance ?? 1e-6;
+  const edges = existingEdges ?? new Map<string, EdgeUse[]>();
   const neighbors = Array.from(
     { length: triangles.length / 3 },
     () => [] as number[],
@@ -150,7 +171,7 @@ export function analyzeMesh(
       checkpoint(
         options,
         0.45 + (0.3 * face) / neighbors.length,
-        "Building topology",
+        existingEdges ? "Refreshing mesh diagnostics" : "Building topology",
       );
     const ids = [
       triangles[face * 3],
@@ -170,7 +191,7 @@ export function analyzeMesh(
       degenerateTriangles++;
       continue;
     }
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; !existingEdges && k < 3; k++) {
       const from = ids[k],
         to = ids[(k + 1) % 3],
         key = edgeKey(from, to);
@@ -307,7 +328,7 @@ export function analyzeMesh(
   }
   checkpoint(options, 1, "Topology complete");
   const topology = {
-    vertices: new Float64Array(vertices),
+    vertices,
     triangles,
     edges,
     neighbors,
@@ -321,12 +342,6 @@ export function analyzeMesh(
     duplicateTriangles,
     boundaryEdges,
   };
-  // Cache only the original source, not temporary meshes made during an edit.
-  if (cache && (!cache.positions || cache.positions === positions)) {
-    cache.positions = positions;
-    cache.tolerance = tolerance;
-    cache.topology = topology;
-  }
   return topology;
 }
 

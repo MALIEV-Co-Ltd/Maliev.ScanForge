@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { analyzeMesh } from "../src/mesh-processing";
+import {
+  analyzeMesh,
+  type MeshProcessingOptions,
+} from "../src/mesh-processing";
 import { runScanEdit } from "../src/scan-edit";
 import type { Positions } from "../src/types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../src/scan-topology-tolerance";
@@ -36,7 +39,7 @@ const area = (p: Positions) =>
   }).inventory!.components.reduce((sum, c) => sum + c.area, 0);
 const shifted = (p: number[], offset: number, scale = 1) =>
   p.map((v, i) => v * scale + (i % 3 === 0 ? offset : 0));
-it("defeatures a noisy annular selection around an existing hole without claiming success on rejection", () => {
+it("defeatures a noisy annular selection spatially and retains its successor topology", () => {
   const positions: number[] = [],
     selected: number[] = [];
   const p = (x: number, y: number) => [
@@ -60,32 +63,39 @@ it("defeatures a noisy annular selection around an existing hole without claimin
     }
   const selection = new Uint8Array(selected),
     progress: [number, string][] = [];
-  expect(() =>
-    runScanEdit(
-      {
-        kind: "scanEdit",
-        action: "defeature",
-        positions,
-        selection,
-        algorithm: "flat",
-      },
-      { onProgress: (f, s) => progress.push([f, s]) },
-    ),
-  ).toThrow("safely repatched");
-  expect(progress.every(([f]) => f < 1)).toBe(true);
+  const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  analyzeMesh(positions, { topologyCache });
+  const outcome = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "defeature",
+      positions,
+      selection,
+      algorithm: "flat",
+    },
+    { topologyCache, onProgress: (f, s) => progress.push([f, s]) },
+  );
+  expect(progress.at(-1)).toEqual([1, "Defeature complete"]);
   expect(progress.every(([f], i) => i === 0 || f >= progress[i - 1][0])).toBe(
     true,
   );
   expect(progress.some(([, s]) => s.includes("Hole filling complete"))).toBe(
     false,
   );
-  const outcome = runScanEdit({
-    kind: "scanEdit",
-    action: "defeature",
-    positions,
-    selection,
+  expect(
+    progress.some(([, s]) => /Welding vertices|Building topology/.test(s)),
+  ).toBe(false);
+  expect(topologyCache.positions).toBe(outcome.positions);
+  const successorProgress: string[] = [];
+  const topology = analyzeMesh(outcome.positions!, {
+    topologyCache,
+    onProgress: (_, stage) => successorProgress.push(stage),
   });
-  const topology = analyzeMesh(outcome.positions!);
+  expect(successorProgress).toEqual(["Reusing mesh topology"]);
+  const independent = analyzeMesh(outcome.positions!);
+  expect(topology.boundaryLoops.length).toBe(independent.boundaryLoops.length);
+  expect(topology.components.length).toBe(independent.components.length);
+  expect(topology.nonManifoldEdges).toBe(independent.nonManifoldEdges);
   expect(topology.boundaryLoops).toHaveLength(1); // Outside perimeter remains, selected hole removed.
   expect(topology.nonManifoldEdges).toBe(0);
   expect(topology.inconsistentEdges).toBe(0);
@@ -93,6 +103,81 @@ it("defeatures a noisy annular selection around an existing hole without claimin
   expect(Array.from(outcome.positions!.slice(0, retained.length))).toEqual(
     Array.from(new Float32Array(retained)),
   );
+});
+it("removes the smaller marked island before repatching, preserving unrelated components", () => {
+  const positions: number[] = [],
+    selected: number[] = [];
+  for (let y = 0; y < 7; y++)
+    for (let x = 0; x < 7; x++) {
+      const p = (a: number, b: number) => [a, b, 0];
+      positions.push(
+        ...p(x, y),
+        ...p(x + 1, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y + 1),
+      );
+      const ring =
+        x >= 2 && x <= 4 && y >= 2 && y <= 4 && !(x === 3 && y === 3);
+      selected.push(Number(ring), Number(ring));
+    }
+  // A disconnected object must not be deleted by marked-component pruning.
+  positions.push(20, 0, 0, 21, 0, 0, 20, 1, 0);
+  selected.push(0);
+  const source = [...positions];
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "defeature",
+    positions,
+    selection: new Uint8Array(selected),
+  });
+  expect(result.diagnostics.prunedTriangles).toBe(2);
+  const topology = analyzeMesh(result.positions!);
+  expect(topology.components).toHaveLength(2);
+  expect(topology.boundaryLoops).toHaveLength(2);
+  expect(topology.nonManifoldEdges).toBe(0);
+  expect(positions).toEqual(source);
+});
+it("repatches two separated selected seams and compacts the cached vertex slots", () => {
+  const positions: number[] = [],
+    selection: number[] = [];
+  const p = (x: number, y: number) => [
+    x,
+    y,
+    0.02 * Math.sin(x * 1.3 + y * 0.8),
+  ];
+  for (let y = 0; y < 7; y++)
+    for (let x = 0; x < 13; x++) {
+      if (y === 3 && (x === 3 || x === 9)) continue;
+      positions.push(
+        ...p(x, y),
+        ...p(x + 1, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y),
+        ...p(x + 1, y + 1),
+        ...p(x, y + 1),
+      );
+      const selected =
+        y >= 2 && y <= 4 && ((x >= 2 && x <= 4) || (x >= 8 && x <= 10));
+      selection.push(Number(selected), Number(selected));
+    }
+  const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const result = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "defeature",
+      positions,
+      selection: new Uint8Array(selection),
+    },
+    { topologyCache },
+  );
+  expect(result.diagnostics.fillAttempts).toBe(2);
+  const topology = analyzeMesh(result.positions!, { topologyCache });
+  expect(topology.boundaryLoops).toHaveLength(1);
+  expect(topology.nonManifoldEdges).toBe(0);
+  expect(topology.inconsistentEdges).toBe(0);
+  expect(new Set(topology.triangles).size).toBe(topology.vertices.length / 3);
 });
 it("uses consistent adjacency tolerance while projection fit tolerance never rewelds a small hole", () => {
   const positions = [

@@ -1,6 +1,9 @@
 import { ViewportTools } from "./ViewportTools";
 import "./ErrorBanner.css";
-import { releaseProcessingSession } from "../processing-session";
+import {
+  releaseProcessingSession,
+  retainProcessingGeometry,
+} from "../processing-session";
 import { ImportProgress } from "./ImportProgress";
 import {
   ScanToolsPanel,
@@ -384,6 +387,9 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  useEffect(() => {
+    retainProcessingGeometry(selected?.positions);
+  }, [selected?.positions]);
   brushRef.current = {
     entity: selected,
     radius: brushRadius,
