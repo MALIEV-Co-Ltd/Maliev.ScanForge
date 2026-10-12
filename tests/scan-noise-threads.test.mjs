@@ -39,6 +39,9 @@ class ThreadWorker {
   onmessage;
   onerror;
   onmessageerror;
+  initialized = 0;
+  operations = 0;
+  phases = 0;
   constructor() {
     this.thread = new CpuWorker(
       new URL(`data:text/javascript,${encodeURIComponent(bridge)}`),
@@ -51,6 +54,9 @@ class ThreadWorker {
     this.thread.on("messageerror", () => this.onmessageerror?.());
   }
   postMessage(data) {
+    if (data.initialize) this.initialized++;
+    if (data.operation) this.operations++;
+    if (data.job) this.phases++;
     this.thread.postMessage(data);
   }
   terminate() {
@@ -278,7 +284,7 @@ it.each([
   30_000,
 );
 
-it("real reused CPU threads reset operation state across selected, whole and boundary-locked edits", async () => {
+it("reused CPU threads preserve native selected iterations one through five across boundary-policy changes", async () => {
   vi.stubGlobal("Worker", ThreadWorker);
   vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 16 });
   const source = analyzeMesh(new Float32Array(selected3.positions));
@@ -288,7 +294,23 @@ it("real reused CPU threads reset operation state across selected, whole and bou
   const before = vertices.slice();
   const pool = new NoiseSmoothingPool();
   try {
-    for (const capture of [selected3, whole2, selected1, boundaryOff]) {
+    const captures = [
+      selected1,
+      whole2,
+      selected2,
+      selected3,
+      boundaryOff,
+      selected4,
+      selected5,
+      ...selectedBoundaryOff.cases.map((capture) => ({
+        ...capture,
+        positions: selectedBoundaryOff.positions,
+        selection: selectedBoundaryOff.selection,
+      })),
+      selected1,
+    ];
+    let phases = 0;
+    for (const [operation, capture] of captures.entries()) {
       const stages = [];
       const selection =
         "selection" in capture ? new Uint8Array(capture.selection) : undefined;
@@ -300,6 +322,19 @@ it("real reused CPU threads reset operation state across selected, whole and bou
         { onProgress: (_, stage) => stages.push(stage) },
       );
       expect(ThreadWorker.owned).toHaveLength(2);
+      phases += capture.iterations * 2;
+      for (const worker of ThreadWorker.owned) {
+        // Cached connectivity is initialized once; every preview gets fresh
+        // masks and weights, with exactly two joined phases per iteration.
+        expect(worker.initialized).toBe(1);
+        expect(worker.operations).toBe(operation + 1);
+        expect(worker.phases).toBe(phases);
+      }
+      expect(
+        stages.filter(
+          (stage) => stage === "Reducing mesh noise on two CPU workers",
+        ),
+      ).toHaveLength(capture.iterations);
       expect(
         stages.filter((stage) => stage === "Preparing noise weights"),
       ).toHaveLength(1);
