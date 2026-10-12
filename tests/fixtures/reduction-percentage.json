@@ -1,0 +1,1012 @@
+{
+  "provenance": {
+    "procedure": "0x140598290",
+    "evidenceId": "ev_4a0a42abfb8c5f2a125e4b432219f72170c8f8e51e223e8f4cc56eedb6f51192",
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "execution": "Original isolated x64 instructions; only MFC dialog data binding import replaced",
+    "meshCollapseParity": false
+  },
+  "cases": [
+    {
+      "count": 0,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 0,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 1,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 3,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 3,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 3,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 4,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 6,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 7,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 7,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 7,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 5,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 8,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 11,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 16,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 17,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 17,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 17,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 16,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 31,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 47,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 63,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 94,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 95,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 95,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 95,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 0,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 2,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 16,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 31,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 48,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 64,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 95,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 96,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 96,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 96,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 1,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 3,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 17,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 33,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 50,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 67,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 99,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 101,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 101,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 101,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 1000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 1000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 1000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 3000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 17000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 33000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 50000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 67000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 99000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 100001,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 100001,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 100001,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 5000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 5000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 5000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 15000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 85000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 165000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 250001,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 335002,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 495002,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 500003,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 500003,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 500003,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 30000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 30000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 30000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 90000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 510000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 990000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 1500000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 2010000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 2970000,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 3000001,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 3000001,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 3000001,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 21474836,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 21474836,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 21474836,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 64424509,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 365072219,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 708669603,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 1073741823,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 1438814043,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 2126008810,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 2147483647,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 2147483647,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 2147483647,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": -50,
+      "clampedPercentage": 1,
+      "target": 42949672,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 0,
+      "clampedPercentage": 1,
+      "target": 42949672,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 1,
+      "clampedPercentage": 1,
+      "target": 42949672,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 3,
+      "clampedPercentage": 3,
+      "target": 128849018,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 17,
+      "clampedPercentage": 17,
+      "target": 730144440,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 33,
+      "clampedPercentage": 33,
+      "target": 1417339207,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 50,
+      "clampedPercentage": 50,
+      "target": 2147483647,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 67,
+      "clampedPercentage": 67,
+      "target": 2877628087,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 99,
+      "clampedPercentage": 99,
+      "target": 4252017622,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 100,
+      "clampedPercentage": 100,
+      "target": 4294967295,
+      "onlyExpectedFieldsChanged": true
+    },
+    {
+      "count": 4294967295,
+      "percentage": 150,
+      "clampedPercentage": 100,
+      "target": 4294967295,
+      "onlyExpectedFieldsChanged": true
+    }
+  ]
+}

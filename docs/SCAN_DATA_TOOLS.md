@@ -5,27 +5,27 @@ localization as workflow evidence, not as evidence of recovered native algorithm
 The reference manual page 24 describes reduction targets; pages
 243–244 describe reconstruction of overlapping scans and closing holes/gaps.
 The reference localization describes averaging overlapping meshes and cylindrical unroll.
-Native numerical equivalence has not been established. See
+Reduce Noise now uses the extracted native kernel with retained fixture comparisons; see [MESH_PARALLELISM.md](MESH_PARALLELISM.md). Other tool algorithms remain independently chosen. Reduce polygons percentage targets are verified separately in [NATIVE_POLYGON_REDUCTION.md](NATIVE_POLYGON_REDUCTION.md). See
 [the native verification record](NATIVE_VERIFICATION.md) for recovered functions,
 trace evidence and the remaining verification requirements.
 
 ## Available operations
 
-| Tool            | Parameters and behavior                                                                                                                                                                                                                    |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Reduce polygons | Target triangle count, retained percentage, or deviation (0.05 mm default). Interior edge collapse protects boundaries, sharp creases and manifold topology. A protected mesh may stop above the requested count; the result reports this. |
-| Reduce noise    | Iterations (3 default), maximum displacement from original vertices (0.05 mm default), and selection only. Unselected faces and vertices shared with unselected faces are preserved.                                                       |
-| Scale mesh      | Positive uniform factor about a configurable XYZ center, default world origin.                                                                                                                                                             |
-| Flip normals    | Reverses every triangle's winding.                                                                                                                                                                                                         |
-| Re-polygonize   | Voxel reconstruction, point resolution 0.5 mm default. Fuses nearby/overlapping regions and creates a closed surface, rather than simply subdividing triangles.                                                                            |
-| Average mesh    | Equally averages source vertices with nearby reference mesh surfaces, search tolerance 10 mm default. Unmatched vertices remain unchanged. Meshes must already be aligned.                                                                 |
-| Mirror mesh     | XY, YZ, XZ origin plane or planar CAD/construction object, selected from the list or canvas. Reverses winding after reflection.                                                                                                            |
-| Unroll          | Cylinder reference from the list or canvas; angular offset 0 degrees default. Maps circumference and axis into local XY, retaining radial error in Z and splitting at the angular seam.                                                    |
+| Tool            | Parameters and behavior                                                                                                                                                                                                                                         |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reduce polygons | Target triangle count, retained percentage, or deviation (0.05 mm default). Interior edge collapse protects boundaries, sharp creases and manifold topology. A protected mesh may stop above the requested count; the result reports this.                      |
+| Reduce noise    | Iterations (1 default), selection only, boundary smoothing (enabled by default), and optional original-surface deviation comparison (0.05 mm default). Vertices incident to selected facets move, including shared seam vertices; unmarked vertices stay fixed. |
+| Scale mesh      | Positive uniform factor about a configurable XYZ center, default world origin.                                                                                                                                                                                  |
+| Flip normals    | Reverses every triangle's winding.                                                                                                                                                                                                                              |
+| Re-polygonize   | Voxel reconstruction, point resolution 0.5 mm default. Fuses nearby/overlapping regions and creates a closed surface, rather than simply subdividing triangles.                                                                                                 |
+| Average mesh    | Equally averages source vertices with nearby reference mesh surfaces, search tolerance 10 mm default. Unmatched vertices remain unchanged. Meshes must already be aligned.                                                                                      |
+| Mirror mesh     | XY, YZ, XZ origin plane or planar CAD/construction object, selected from the list or canvas. Reverses winding after reflection.                                                                                                                                 |
+| Unroll          | Cylinder reference from the list or canvas; angular offset 0 degrees default. Maps circumference and axis into local XY, retaining radial error in Z and splitting at the angular seam.                                                                         |
 
 The deviation reduction mode conservatively bounds non-planar vertex movement
 from original provenance; it is not a certified Hausdorff distance measurement.
 Exactly planar patches can collapse without changing their surface perimeter.
-Noise reduction limits vertex displacement, not a global surface error metric.
+Noise deviation is a comparison threshold, not a displacement limit. Original vertices are compared against the smoothed surface; samples beyond five times the threshold are unmatched.
 
 Reconstruction can move the surface by approximately 0.75 times the point
 resolution, fills enclosed cavities, and gives open scans a closed thick shell.
@@ -43,7 +43,7 @@ removes stale result text. Geometry changes invalidate old normals, selection
 indices and scan-source metadata. Exact CAD bodies require an explicit separate
 mesh copy and retain their kernel body.
 
-Reduction and smoothing accept up to 500,000 faces; reduction also has a finite
+Smoothing accepts up to 500,000 faces. Reduction uses bounded spatial patches above that size instead of an input-count cap; reduction also has a finite
 collapse work budget. Reconstruction accepts up to 1,000,000 voxel samples and
 3,000,000 output faces. Transforms accept up to 3,000,000 faces; averaging bounds
 both reference count and aggregate input. Oversized work fails with a message,

@@ -9,6 +9,7 @@ import { nativeNoiseVertices } from "./scan-native-noise";
 import { compareNoiseSurface } from "./scan-noise-deviation";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
+import { reductionPercentageTarget } from "./scan-reduction-target";
 import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
@@ -119,7 +120,7 @@ export function reduceScanMesh(
     positive(percentage, "Retained percentage");
     if (percentage > 100)
       throw new Error("Retained percentage must not exceed 100.");
-    target = Math.max(1, Math.ceil((original * percentage) / 100));
+    target = reductionPercentageTarget(original, percentage);
   } else if (options.mode === "deviation") target = 1;
   else throw new Error("Unknown reduction mode.");
   const bound =
