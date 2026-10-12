@@ -555,9 +555,9 @@ export class CameraGizmo {
     }
     const inverse = q.clone().invert();
     for (const [name, axis, color] of [
-      ["X", new THREE.Vector3(1, 0, 0), "#ed3038"],
-      ["Y", new THREE.Vector3(0, 1, 0), "#28bd72"],
-      ["Z", new THREE.Vector3(0, 0, 1), "#406bff"],
+      ["X", new THREE.Vector3(1, 0, 0), "var(--cube-axis-x)"],
+      ["Y", new THREE.Vector3(0, 1, 0), "var(--cube-axis-y)"],
+      ["Z", new THREE.Vector3(0, 0, 1), "var(--cube-axis-z)"],
     ] as const) {
       const start = new THREE.Vector3(-1, -1, -1).applyQuaternion(inverse),
         end = new THREE.Vector3(-1, -1, -1)

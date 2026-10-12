@@ -1,9 +1,33 @@
 .viewport-tools-container {
+  --icon-gold-edge: #856222;
+  --icon-gold-light: #ffe8a8;
+  --icon-gold-mid: #cda94f;
+  --icon-gold-dark: #8b7136;
+  --icon-gold-line: #73541b;
+  --icon-grid-fill: #d5e9ef;
+  --icon-grid-edge: #28677e;
+  --icon-grid-line: #3f7f93;
+  --icon-snap-fill: #b67d18;
+  --icon-highlight: #fff7dc;
+  --icon-detail: #304f57;
   position: absolute;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
+}
+:root[data-theme="dark"] .viewport-tools-container {
+  --icon-gold-edge: #e7cd86;
+  --icon-gold-light: #fff1bb;
+  --icon-gold-mid: #d2b46b;
+  --icon-gold-dark: #665534;
+  --icon-gold-line: #f4dfa5;
+  --icon-grid-fill: #354953;
+  --icon-grid-edge: #90d2e4;
+  --icon-grid-line: #79adbd;
+  --icon-snap-fill: #f1cf78;
+  --icon-highlight: #fff7dc;
+  --icon-detail: #cbe0df;
 }
 .viewport-tools {
   display: flex;
@@ -33,13 +57,17 @@
   border-radius: 3px;
   background: var(--surface);
 }
+.viewport-tools button:disabled {
+  opacity: 0.55;
+}
 .viewport-tools button:disabled svg {
-  opacity: 0.4;
+  opacity: 1;
+  filter: grayscale(0.5);
 }
 .viewport-tools button[aria-pressed="true"] {
-  color: #8bd8e8;
-  background: #304652;
-  border-color: #80cddd;
+  color: var(--selected-text);
+  background: var(--selected);
+  border-color: var(--icon-grid-edge);
 }
 .viewport-grid-settings {
   position: absolute;

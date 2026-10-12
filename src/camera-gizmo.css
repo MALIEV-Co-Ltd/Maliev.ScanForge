@@ -1,5 +1,9 @@
 .camera-gizmo {
   --cube-size: 132px;
+  --cube-highlight: #1671b8;
+  --cube-axis-x: #c52832;
+  --cube-axis-y: #168048;
+  --cube-axis-z: #2956d7;
   position: absolute;
   right: 8px;
   top: 8px;
@@ -7,6 +11,12 @@
   height: var(--cube-size);
   z-index: 3;
   user-select: none;
+}
+:root[data-theme="dark"] .camera-gizmo {
+  --cube-highlight: #59bfff;
+  --cube-axis-x: #ed3038;
+  --cube-axis-y: #28bd72;
+  --cube-axis-z: #406bff;
 }
 .camera-gizmo > svg {
   width: 100%;
@@ -16,13 +26,17 @@
   overflow: visible;
 }
 .cube-face {
-  fill: color-mix(in srgb, #aaa calc(var(--shade) * 100%), #777);
-  stroke: #94999e;
+  fill: color-mix(
+    in srgb,
+    var(--cube-face) calc(var(--shade) * 100%),
+    var(--cube-shade)
+  );
+  stroke: var(--cube-edge);
   stroke-width: 0.8;
 }
 .camera-gizmo:hover .cube-face,
 .camera-gizmo:focus-within .cube-face {
-  fill: color-mix(in srgb, #fff calc(var(--shade) * 100%), #a5a9ad);
+  fill: color-mix(in srgb, var(--cube-face) 90%, var(--surface));
 }
 .cube-target {
   fill: transparent;
@@ -32,12 +46,12 @@
 .cube-target.cube-highlight,
 .cube-target.cube-selected,
 .cube-target:focus {
-  fill: #59bfff33;
-  stroke: #29a9ff;
+  fill: color-mix(in srgb, var(--cube-highlight) 20%, transparent);
+  stroke: var(--cube-highlight);
   outline: none;
 }
 .cube-label {
-  fill: #303942;
+  fill: var(--cube-label);
   font-family: system-ui;
   pointer-events: none;
 }
@@ -97,7 +111,7 @@
 }
 .camera-gizmo .cube-adjacent:hover,
 .camera-gizmo .cube-adjacent:focus-visible {
-  color: #29a9ff;
+  color: var(--cube-highlight);
   background: transparent;
 }
 .cube-home {
