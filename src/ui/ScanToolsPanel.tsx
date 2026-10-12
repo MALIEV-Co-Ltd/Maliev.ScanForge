@@ -407,7 +407,8 @@ export function ScanToolsPanel({
                   onChange={setDeviation}
                 />
                 <p className="scan-tools-note">
-                  Reports vertex displacement without limiting smoothing.
+                  Measures original vertices against the smoothed surface
+                  without limiting smoothing.
                 </p>
               </>
             )}

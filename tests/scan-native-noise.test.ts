@@ -80,12 +80,18 @@ it("retains indexed adjacency between consecutive noise operations", () => {
 });
 
 it("uses the comparison threshold for reporting without clamping the native edit", () => {
+  const progress: number[] = [];
   const result = reduceScanNoise(new Float32Array(fixture.positions), {
     deviation: 0.00001,
     measureDeviation: true,
+    onProgress: (fraction) => progress.push(fraction),
   });
   expect(Array.from(result.positions)).toEqual(fixture.nativeOutput);
-  expect(result.summary).toContain("Maximum vertex displacement");
+  expect(result.summary).toContain("Original-to-surface comparison");
+  expect(progress.at(-1)).toBe(1);
+  expect(
+    progress.every((fraction, i) => !i || fraction >= progress[i - 1]),
+  ).toBe(true);
 });
 
 it("matches every captured default noise-reduction coordinate exactly", () => {

@@ -79,7 +79,8 @@ it("reports deviation without limiting the native smoothing result", () => {
   expect(measured.positions).toEqual(
     reduceScanNoise(source, { iterations: 3 }).positions,
   );
-  expect(measured.summary).toContain("comparison threshold");
+  expect(measured.summary).toContain("Original-to-surface comparison");
+  expect(measured.summary).toContain("unmatched beyond");
   expect(measured.positions).not.toEqual(source);
   expect(source).toEqual(copy);
 });

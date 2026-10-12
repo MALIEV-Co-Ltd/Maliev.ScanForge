@@ -5,6 +5,7 @@ import {
 } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
 import { nativeNoiseVertices } from "./scan-native-noise";
+import { compareNoiseSurface } from "./scan-noise-deviation";
 import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
@@ -321,13 +322,28 @@ export function reduceScanNoise(
   if (options.selectionOnly && !options.selection?.some(Boolean))
     throw new Error("Select triangles before smoothing the selection.");
   const tolerance = 1e-6;
-  const t = topology(positions, options, tolerance);
+  const t = topology(
+    positions,
+    {
+      ...options,
+      onProgress: (fraction, stage) =>
+        options.onProgress?.(fraction * 0.2, stage),
+    },
+    tolerance,
+  );
   const vertices = nativeNoiseVertices(
     t,
     iterations,
     options.selectionOnly ? options.selection : undefined,
     options.applyBoundaryEdges ?? true,
-    options,
+    {
+      ...options,
+      onProgress: (fraction, stage) =>
+        options.onProgress?.(
+          0.2 + fraction * (options.measureDeviation ? 0.7 : 0.8),
+          stage,
+        ),
+    },
   );
   const output = new Float32Array(t.triangles.length * 3);
   for (let corner = 0; corner < t.triangles.length; corner++)
@@ -339,25 +355,25 @@ export function reduceScanNoise(
     );
   let comparison = "";
   if (options.measureDeviation) {
-    let maximum = 0,
-      beyond = 0;
-    for (let id = 0; id < vertices.length / 3; id++) {
-      const displacement = Math.hypot(
-        vertices[id * 3] - t.vertices[id * 3],
-        vertices[id * 3 + 1] - t.vertices[id * 3 + 1],
-        vertices[id * 3 + 2] - t.vertices[id * 3 + 2],
-      );
-      maximum = Math.max(maximum, displacement);
-      if (displacement > deviation) beyond++;
-    }
+    const measured = compareNoiseSurface(t, vertices, deviation, {
+      ...options,
+      onProgress: (fraction, stage) =>
+        options.onProgress?.(0.9 + fraction * 0.1, stage),
+    });
     comparison =
-      " Maximum vertex displacement " +
-      maximum.toPrecision(5) +
-      " mm; " +
-      beyond +
-      " vertices exceed the " +
+      " Original-to-surface comparison: " +
+      measured.percentage.toFixed(2) +
+      "% (" +
+      measured.within +
+      "/" +
+      measured.total +
+      ") within " +
       deviation +
-      " mm comparison threshold.";
+      " mm; " +
+      (measured.total - measured.matched) +
+      " unmatched beyond the " +
+      5 * deviation +
+      " mm search radius.";
   }
   if (options.topologyCache) {
     options.topologyCache.topology = analyzeIndexedMesh(
