@@ -354,6 +354,25 @@ h3 {
 .view-controls > button:hover {
   background: var(--hover) !important;
 }
+.spacemouse-connection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  pointer-events: auto;
+}
+.spacemouse-connection button {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border);
+  min-height: 29px;
+  padding: 4px 9px;
+  font-size: 11px;
+}
+.spacemouse-connection small {
+  color: var(--muted);
+  font-size: 11px;
+}
 .canvas-hint {
   position: absolute;
   bottom: 15px;

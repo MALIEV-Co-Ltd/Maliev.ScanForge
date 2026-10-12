@@ -8,6 +8,7 @@ import {
 } from "../keyboard-shortcuts";
 import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
+import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import {
   referenceWorldSegments,
   type SketchSectionOptions,
@@ -193,9 +194,22 @@ export function App() {
     rectangleSketch(),
   );
   const [spaceMouseStatus, setSpaceMouseStatus] = useState("Disconnected");
+  const [spaceMouseConnecting, setSpaceMouseConnecting] = useState(false);
   const [spaceMousePreferences, setSpaceMousePreferences] =
     useState<SpaceMousePreferences>({ ...DEFAULT_SPACE_MOUSE });
   const spaceMouse = useRef<SpaceMouseController | null>(null);
+  const connectSpaceMouse = async () => {
+    setSpaceMouseConnecting(true);
+    try {
+      // Keep requestDevice in the button's trusted user activation.
+      await spaceMouse.current?.connect();
+    } catch (error) {
+      setSpaceMouseStatus(`SpaceMouse connection: ${errorText(error)}`);
+      setError(errorText(error));
+    } finally {
+      setSpaceMouseConnecting(false);
+    }
+  };
   const [resolvedTheme, setResolvedTheme] = useState(() => resolveTheme(theme));
   const [dragging, setDragging] = useState(false);
   const importAbort = useRef<AbortController | null>(null);
@@ -2959,6 +2973,14 @@ export function App() {
               <Rotate3D size={15} />
               Navigate
             </button>
+            <SpaceMouseConnection
+              status={spaceMouseStatus}
+              connected={spaceMouse.current?.connected ?? false}
+              connecting={spaceMouseConnecting}
+              available={!!(navigator as Navigator & { hid?: HidAccess }).hid}
+              onConnect={() => void connectSpaceMouse()}
+              onSettings={() => setSettingsOpen(true)}
+            />
           </div>
           <div className="canvas-hint">
             {mode === "brush"
@@ -3876,11 +3898,8 @@ export function App() {
             </p>
             <div className="button-row">
               <button
-                onClick={() =>
-                  void spaceMouse.current
-                    ?.connect()
-                    .catch((error) => setError(errorText(error)))
-                }
+                disabled={spaceMouseConnecting}
+                onClick={() => void connectSpaceMouse()}
               >
                 Connect SpaceMouse
               </button>
