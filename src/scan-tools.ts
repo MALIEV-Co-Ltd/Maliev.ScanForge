@@ -26,6 +26,8 @@ export type ScanToolOperation =
       iterations?: number;
       deviation?: number;
       selectionOnly?: boolean;
+      applyBoundaryEdges?: boolean;
+      measureDeviation?: boolean;
       selection?: Uint8Array;
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }

@@ -1509,6 +1509,7 @@ export function App() {
       setScanToolResult("");
       const result = await processMesh(request, {
         signal: controller.signal,
+        reuseTopology: true,
         onProgress: (fraction, stage) =>
           setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
       });
@@ -1516,7 +1517,11 @@ export function App() {
       const summary = String(
         result.diagnostics.summary ?? "Mesh tool complete",
       );
-      replaceScanPositions(result.positions, scanToolTitles[parameters.kind]);
+      replaceScanPositions(
+        result.positions,
+        scanToolTitles[parameters.kind],
+        parameters.kind === "reduceNoise",
+      );
       scanToolOutput.current = result.positions;
       setScanToolResult(summary);
       setMessage(summary);

@@ -4,6 +4,7 @@ import {
   type MeshProcessingOptions,
 } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
+import { nativeNoiseVertices } from "./scan-native-noise";
 import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
@@ -294,119 +295,93 @@ export function reduceScanMesh(
   };
 }
 
-/** Conservative Laplacian noise reduction. A vertex shared with an unselected face is pinned. */
+/** Native correction-based smoothing; deviation is comparison-only. */
 export function reduceScanNoise(
   positions: Positions,
   options: Options & {
     iterations?: number;
     deviation?: number;
+    measureDeviation?: boolean;
     selection?: Uint8Array;
     selectionOnly?: boolean;
+    applyBoundaryEdges?: boolean;
   } = {},
 ): ScanToolResult {
-  const iterations = options.iterations ?? 3,
-    deviation = options.deviation ?? 0.05;
+  const iterations = options.iterations ?? 1;
+  const deviation = options.deviation ?? 0.05;
   if (!Number.isSafeInteger(iterations) || iterations < 1 || iterations > 100)
     throw new Error("Smooth iterations must be an integer between 1 and 100.");
-  positive(deviation, "Deviation");
-  const t = topology(positions, options, Math.min(1e-6, deviation / 100)),
-    n = t.vertices.length / 3;
-  if (options.selection && options.selection.length !== positions.length / 9)
-    throw new Error("Selection mask does not match the mesh triangle count.");
+  positive(deviation, "Comparison threshold");
   if (
-    options.selectionOnly &&
-    (!options.selection ||
-      options.selection.length !== positions.length / 9 ||
-      !options.selection.some(Boolean))
+    options.selection &&
+    (options.selection.length !== positions.length / 9 ||
+      options.selection.some((value) => value !== 0 && value !== 1))
   )
+    throw new Error("Selection mask must contain one 0 or 1 per triangle.");
+  if (options.selectionOnly && !options.selection?.some(Boolean))
     throw new Error("Select triangles before smoothing the selection.");
-  const adjacent = Array.from({ length: n }, () => new Set<number>()),
-    pinned = new Uint8Array(n);
-  for (const uses of t.edges.values()) {
-    const { from, to } = uses[0];
-    adjacent[from].add(to);
-    adjacent[to].add(from);
-    if (uses.length !== 2) pinned[from] = pinned[to] = 1;
-  }
-  if (options.selectionOnly)
-    for (let f = 0; f < t.triangles.length / 3; f++)
-      if (!options.selection![f])
-        for (let c = 0; c < 3; c++) pinned[t.triangles[f * 3 + c]] = 1;
-  const faces = Array.from({ length: t.triangles.length / 3 }, (_, f) =>
-    Array.from(t.triangles.slice(f * 3, f * 3 + 3)),
+  const tolerance = 1e-6;
+  const t = topology(positions, options, tolerance);
+  const vertices = nativeNoiseVertices(
+    t,
+    iterations,
+    options.selectionOnly ? options.selection : undefined,
+    options.applyBoundaryEdges ?? true,
+    options,
   );
-  let vertices = t.vertices.slice();
-  for (let iteration = 0; iteration < iterations; iteration++) {
-    progress(options, iteration / iterations, "Reducing mesh noise");
-    const next = vertices.slice();
-    for (let id = 0; id < n; id++)
-      if (!pinned[id] && adjacent[id].size) {
-        if (id % 4096 === 0)
-          progress(options, iteration / iterations, "Reducing mesh noise");
-        const average: Vec3 = [0, 0, 0];
-        for (const j of adjacent[id])
-          for (let c = 0; c < 3; c++)
-            average[c] += vertices[j * 3 + c] / adjacent[id].size;
-        const origin = point(t.vertices, id),
-          candidate = point(vertices, id).map(
-            (x, c) => x + 0.3 * (average[c] - x),
-          ) as Vec3;
-        const delta = sub(candidate, origin),
-          length = Math.hypot(...delta),
-          scale = Math.min(1, deviation / length);
-        next.set(
-          origin.map((x, c) => x + delta[c] * scale),
-          id * 3,
-        );
-      }
-    // Reject a simultaneous step if it folds any original triangle. Preserve all previous valid coordinates.
-    if (
-      faces.some((f) => {
-        const a = faceNormal(vertices, f),
-          b = faceNormal(next, f);
-        return Math.hypot(...b) < 1e-12 || dot(a, b) <= 0;
-      })
-    )
-      break;
-    vertices = next;
+  const output = new Float32Array(t.triangles.length * 3);
+  for (let corner = 0; corner < t.triangles.length; corner++)
+    for (let axis = 0; axis < 3; axis++)
+      output[corner * 3 + axis] = vertices[t.triangles[corner] * 3 + axis];
+  if (output.some((value) => !Number.isFinite(value)))
+    throw new Error(
+      "Noise reduction produced non-finite coordinates; original mesh retained.",
+    );
+  let comparison = "";
+  if (options.measureDeviation) {
+    let maximum = 0,
+      beyond = 0;
+    for (let id = 0; id < vertices.length / 3; id++) {
+      const displacement = Math.hypot(
+        vertices[id * 3] - t.vertices[id * 3],
+        vertices[id * 3 + 1] - t.vertices[id * 3 + 1],
+        vertices[id * 3 + 2] - t.vertices[id * 3 + 2],
+      );
+      maximum = Math.max(maximum, displacement);
+      if (displacement > deviation) beyond++;
+    }
+    comparison =
+      " Maximum vertex displacement " +
+      maximum.toPrecision(5) +
+      " mm; " +
+      beyond +
+      " vertices exceed the " +
+      deviation +
+      " mm comparison threshold.";
+  }
+  if (options.topologyCache) {
+    options.topologyCache.topology = analyzeIndexedMesh(
+      vertices,
+      t.triangles,
+      { ...options, tolerance, onProgress: undefined },
+      t.edges,
+    );
+    options.topologyCache.positions = output;
+    options.topologyCache.tolerance = tolerance;
   }
   progress(options, 1, "Noise reduction complete");
-  const output = unpack(vertices, faces);
-  if (options.selectionOnly)
-    for (let face = 0; face < faces.length; face++)
-      if (!options.selection![face])
-        for (let axis = 0; axis < 9; axis++)
-          output[face * 9 + axis] = positions[face * 9 + axis];
-  if (options.topologyCache) {
-    // Preserve indexed identity only when all corners sharing an index still
-    // have identical coordinates. Restored unselected facets can retain tiny
-    // pre-weld differences; such outputs require a fresh weld on the next edit.
-    const indexed = new Float64Array(t.vertices.length);
-    const seen = new Uint8Array(n);
-    let consistent = true;
-    for (let corner = 0; corner < t.triangles.length; corner++) {
-      const id = t.triangles[corner];
-      for (let axis = 0; axis < 3; axis++) {
-        const value = output[corner * 3 + axis];
-        if (seen[id] && indexed[id * 3 + axis] !== value) consistent = false;
-        indexed[id * 3 + axis] = value;
-      }
-      seen[id] = 1;
-    }
-    if (consistent) {
-      const tolerance = Math.min(1e-6, deviation / 100);
-      options.topologyCache.topology = analyzeIndexedMesh(
-        indexed,
-        t.triangles,
-        { ...options, tolerance, onProgress: undefined },
-        t.edges,
-      );
-      options.topologyCache.positions = output;
-      options.topologyCache.tolerance = tolerance;
-    }
-  }
   return {
     positions: output,
-    summary: `Noise reduced with up to ${iterations} iterations; maximum displacement ${deviation} mm. ${options.selectionOnly ? "Unselected faces and selection borders" : "Mesh boundaries"} preserved.`,
+    summary:
+      "Noise reduced with " +
+      iterations +
+      " iteration(s). " +
+      (options.selectionOnly
+        ? "Selected vertices and shared seams smoothed."
+        : "Entire mesh smoothed.") +
+      ((options.applyBoundaryEdges ?? true)
+        ? " Boundary smoothing enabled."
+        : " Boundary vertices retained.") +
+      comparison,
   };
 }

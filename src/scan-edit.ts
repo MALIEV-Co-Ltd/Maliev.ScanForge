@@ -11,6 +11,11 @@ import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 import { smoothSelectedVertices } from "./scan-selected-smooth";
 
+export interface ScanEditOptions extends MeshProcessingOptions {
+  /** Internal worker hook; never part of a serialized edit request. */
+  selectedSmoothing?: typeof smoothSelectedVertices;
+}
+
 export interface ScanEditRequest {
   kind: "scanEdit";
   positions: Positions;
@@ -149,7 +154,7 @@ function selectedIndices(
 function smoothing(
   r: ScanEditRequest,
   t: MeshTopology,
-  o: MeshProcessingOptions,
+  o: ScanEditOptions,
 ): Float32Array {
   const strength = r.strength ?? (r.action === "smoothSelected" ? 0.5 : 0.3),
     iterations = r.iterations ?? (r.action === "smoothSelected" ? 2 : 3);
@@ -186,7 +191,13 @@ function smoothing(
   } else {
     if (!r.selection?.some(Boolean))
       throw new Error("Select triangles to smooth.");
-    vertices = smoothSelectedVertices(t, r.selection, iterations, strength, o);
+    vertices = (o.selectedSmoothing ?? smoothSelectedVertices)(
+      t,
+      r.selection,
+      iterations,
+      strength,
+      o,
+    );
   }
   for (
     let step = 0;
@@ -231,7 +242,7 @@ function smoothing(
 }
 export function runScanEdit(
   r: ScanEditRequest,
-  options: MeshProcessingOptions = {},
+  options: ScanEditOptions = {},
 ): ScanEditResult {
   if (
     ![

@@ -38,11 +38,18 @@ it("shows only the current tool and a colored geometry diagram", () => {
   expect(html).not.toContain("Smooth iterations");
 });
 it("uses the requested millimetre defaults", () => {
-  expect(render("reduceNoise")).toContain('value="0.05"');
-  expect(render("reduceNoise")).toContain("Apply to selection only");
   expect(render("repolygonize")).toContain('value="0.5"');
   expect(render("averageMesh")).toContain('value="10"');
   expect(render("unroll")).toContain('value="0"');
+});
+it("defaults noise reduction to one whole-mesh iteration with boundaries enabled and comparison off", () => {
+  const html = render("reduceNoise");
+  expect(html).toContain('max="5" step="1" value="1"');
+  expect(html).toContain('type="checkbox"/>Apply to selection only');
+  expect(html).toContain('type="checkbox" checked=""/>Smooth boundary edges');
+  expect(html).toContain('type="checkbox"/>Measure deviation from original');
+  expect(html).not.toContain("Maximum deviation");
+  expect(html).not.toContain("Comparison threshold");
 });
 it("offers the three origin planes for mirroring", () => {
   const html = render("mirrorMesh");

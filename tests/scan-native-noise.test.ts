@@ -1,0 +1,156 @@
+import { expect, it } from "vitest";
+import { analyzeMesh } from "../src/mesh-processing";
+import type { MeshProcessingOptions } from "../src/mesh-processing";
+import { nativeNoiseVertices } from "../src/scan-native-noise";
+import fixture from "./fixtures/noise-annular-default.json";
+import whole2 from "./fixtures/noise-annular-whole-2.json";
+import whole3 from "./fixtures/noise-annular-whole-3.json";
+import selected3 from "./fixtures/noise-annular-selected-3.json";
+import selected1 from "./fixtures/noise-annular-selected-1.json";
+import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
+import { reduceScanNoise } from "../src/scan-tools-reduction";
+
+const unpack = (vertices: ArrayLike<number>, triangles: Uint32Array) =>
+  Array.from(triangles).flatMap((id) => [
+    vertices[id * 3],
+    vertices[id * 3 + 1],
+    vertices[id * 3 + 2],
+  ]);
+
+it.each([fixture, whole2, whole3, boundaryOff])(
+  "matches native whole-mesh $iterations-iteration capture, boundary smoothing $applyBoundaryEdges",
+  (capture) => {
+    const result = reduceScanNoise(new Float32Array(capture.positions), {
+      iterations: capture.iterations,
+      applyBoundaryEdges: capture.applyBoundaryEdges,
+    });
+    expect(Array.from(result.positions)).toEqual(capture.nativeOutput);
+  },
+);
+
+it.each([selected1, selected3])(
+  "matches native $iterations-iteration selection-only smoothing including shared seam vertices",
+  (capture) => {
+    const source = new Float32Array(capture.positions);
+    const selection = new Uint8Array(capture.selection);
+    const result = reduceScanNoise(source, {
+      iterations: capture.iterations,
+      selection,
+      selectionOnly: true,
+      applyBoundaryEdges: true,
+    });
+    expect(Array.from(result.positions)).toEqual(capture.nativeOutput);
+    const marked = new Set<string>();
+    for (let i = 0; i < source.length; i += 3)
+      if (selection[Math.floor(i / 9)])
+        marked.add(Array.from(source.slice(i, i + 3)).join(","));
+    let sharedSeamsMoved = 0;
+    for (let i = 0; i < source.length; i += 3) {
+      const before = Array.from(source.slice(i, i + 3));
+      const after = Array.from(result.positions.slice(i, i + 3));
+      if (!marked.has(before.join(","))) expect(after).toEqual(before);
+      else if (
+        !selection[Math.floor(i / 9)] &&
+        before.some((v, axis) => v !== after[axis])
+      )
+        sharedSeamsMoved++;
+    }
+    expect(sharedSeamsMoved).toBeGreaterThan(0);
+  },
+);
+
+it("retains indexed adjacency between consecutive noise operations", () => {
+  const source = new Float32Array(fixture.positions);
+  const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const before = analyzeMesh(source, { tolerance: 1e-6, topologyCache });
+  const stages: string[] = [];
+  const first = reduceScanNoise(source, {
+    topologyCache,
+    onProgress: (_, stage) => stages.push(stage),
+  });
+  reduceScanNoise(first.positions, {
+    topologyCache,
+    onProgress: (_, stage) => stages.push(stage),
+  });
+  expect(topologyCache.topology?.edges).toBe(before.edges);
+  expect(topologyCache.topology?.triangles).toEqual(before.triangles);
+  expect(stages.some((stage) => /Welding|Building topology/.test(stage))).toBe(
+    false,
+  );
+});
+
+it("uses the comparison threshold for reporting without clamping the native edit", () => {
+  const result = reduceScanNoise(new Float32Array(fixture.positions), {
+    deviation: 0.00001,
+    measureDeviation: true,
+  });
+  expect(Array.from(result.positions)).toEqual(fixture.nativeOutput);
+  expect(result.summary).toContain("Maximum vertex displacement");
+});
+
+it("matches every captured default noise-reduction coordinate exactly", () => {
+  const source = new Float32Array(fixture.positions);
+  const topology = analyzeMesh(source, { tolerance: 0.001 });
+  const edges = topology.edges;
+  const triangles = topology.triangles.slice();
+  const originalVertices = topology.vertices.slice();
+  const stages: string[] = [];
+  const result = nativeNoiseVertices(topology, 1, undefined, true, {
+    onProgress: (_, stage) => stages.push(stage),
+  });
+  expect(unpack(result, topology.triangles)).toEqual(fixture.nativeOutput);
+  expect(source).toEqual(new Float32Array(fixture.positions));
+  expect(topology.vertices).toEqual(originalVertices);
+  expect(topology.triangles).toEqual(triangles);
+  expect(topology.edges).toBe(edges);
+  expect(stages.some((stage) => /Welding|Building topology/.test(stage))).toBe(
+    false,
+  );
+});
+
+it("keeps unmarked vertices and open boundaries fixed when requested", () => {
+  const topology = analyzeMesh(new Float32Array(fixture.positions), {
+    tolerance: 0.001,
+  });
+  const selection = new Uint8Array(topology.triangles.length / 3);
+  selection[0] = 1;
+  const marked = new Set(Array.from(topology.triangles.slice(0, 3)));
+  const result = nativeNoiseVertices(topology, 2, selection, false);
+  const boundary = new Set<number>();
+  for (const uses of topology.edges.values())
+    if (uses.length === 1) {
+      boundary.add(uses[0].from);
+      boundary.add(uses[0].to);
+    }
+  for (let id = 0; id < result.length / 3; id++)
+    if (!marked.has(id) || boundary.has(id))
+      expect(Array.from(result.slice(id * 3, id * 3 + 3))).toEqual(
+        Array.from(topology.vertices.slice(id * 3, id * 3 + 3)),
+      );
+});
+
+it("checks cancellation and selection/iteration contracts", () => {
+  const topology = analyzeMesh(new Float32Array(fixture.positions), {
+    tolerance: 0.001,
+  });
+  const controller = new AbortController();
+  controller.abort();
+  expect(() =>
+    nativeNoiseVertices(topology, 1, undefined, true, {
+      signal: controller.signal,
+    }),
+  ).toThrow("cancelled");
+  expect(() => nativeNoiseVertices(topology, 0)).toThrow("positive integer");
+  expect(() => nativeNoiseVertices(topology, 1, new Uint8Array(1))).toThrow(
+    "Selection does not match",
+  );
+  const during = new AbortController();
+  expect(() =>
+    nativeNoiseVertices(topology, 2, undefined, true, {
+      signal: during.signal,
+      onProgress: (_, stage) => {
+        if (stage === "Reducing mesh noise") during.abort();
+      },
+    }),
+  ).toThrow("cancelled");
+});

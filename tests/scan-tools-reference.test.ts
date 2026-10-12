@@ -16,6 +16,33 @@ const source: Entity = {
   visible: true,
   opacity: 1,
 };
+it("binds noise selection and comparison controls without sharing the selection buffer", () => {
+  const selection = new Uint8Array([1]);
+  const request = scanToolRequest(
+    source,
+    {
+      kind: "reduceNoise",
+      iterations: 3,
+      deviation: 0.05,
+      selectionOnly: true,
+      applyBoundaryEdges: false,
+      measureDeviation: true,
+    },
+    [source],
+    selection,
+  );
+  expect(request.operation).toEqual({
+    kind: "reduceNoise",
+    iterations: 3,
+    deviation: 0.05,
+    selectionOnly: true,
+    applyBoundaryEdges: false,
+    measureDeviation: true,
+    selection: new Uint8Array([1]),
+  });
+  if (request.operation.kind === "reduceNoise")
+    expect(request.operation.selection).not.toBe(selection);
+});
 it("binds origin planes with the correct world normal", () => {
   for (const [plane, normal] of [
     ["OXY", [0, 0, 1]],

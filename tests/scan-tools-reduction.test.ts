@@ -68,25 +68,20 @@ it("respects the conservative deviation bound and reports protected topology rat
       .positions,
   ).toEqual(triangle);
 });
-it("reduces local mesh noise while bounding displacement from original coordinates", () => {
+it("reports deviation without limiting the native smoothing result", () => {
   const source = grid(6, 0.2),
     copy = source.slice();
-  const result = reduceScanNoise(source, { iterations: 20, deviation: 0.05 });
-  let changed = false;
-  for (let i = 0; i < source.length; i += 3) {
-    const d = Math.hypot(
-      result.positions[i] - source[i],
-      result.positions[i + 1] - source[i + 1],
-      result.positions[i + 2] - source[i + 2],
-    );
-    expect(d).toBeLessThanOrEqual(0.050001);
-    changed ||= d > 1e-6;
-  }
-  expect(changed).toBe(true);
-  expect(source).toEqual(copy);
-  expect(analyzeMesh(result.positions).boundaryEdges).toBe(
-    analyzeMesh(source).boundaryEdges,
+  const measured = reduceScanNoise(source, {
+    iterations: 3,
+    deviation: 0.00001,
+    measureDeviation: true,
+  });
+  expect(measured.positions).toEqual(
+    reduceScanNoise(source, { iterations: 3 }).positions,
   );
+  expect(measured.summary).toContain("comparison threshold");
+  expect(measured.positions).not.toEqual(source);
+  expect(source).toEqual(copy);
 });
 it("reuses topology across repeated noise edits without changing the uncached result", () => {
   const source = grid(6, 0.2);
@@ -117,53 +112,32 @@ it("reuses topology across repeated noise edits without changing the uncached re
     false,
   );
 });
-it("does not adopt indexed identity when restored selection seams differ before welding", () => {
-  const source = grid(6, 0.2);
-  source[9] += 0.0000005;
+it("smooths shared selection vertices while retaining unmarked vertices", () => {
+  const source = grid(6, 0.2),
+    before = analyzeMesh(source);
+  const selection = new Uint8Array(source.length / 9);
+  selection[28] = 1;
+  const marked = new Set(Array.from(before.triangles.slice(28 * 3, 29 * 3)));
   const topologyCache: NonNullable<
     import("../src/mesh-processing").MeshProcessingOptions["topologyCache"]
   > = {};
-  const selection = new Uint8Array(source.length / 9);
-  selection[0] = 1;
-  const output = reduceScanNoise(source, {
-    iterations: 1,
-    deviation: 0.05,
-    selectionOnly: true,
-    selection,
-    topologyCache,
-  }).positions;
-  expect(output.slice(9)).toEqual(source.slice(9));
-  expect(topologyCache.positions).toBe(source);
-  const stages: string[] = [];
-  analyzeMesh(output, {
-    tolerance: 1e-6,
-    topologyCache,
-    onProgress: (_, stage) => stages.push(stage),
-  });
-  expect(stages).toContain("Welding vertices");
-});
-it("pins every vertex shared with unselected triangles", () => {
-  const source = grid(6, 0.2),
-    selection = new Uint8Array(source.length / 9);
-  for (let face = 0; face < selection.length; face++) {
-    const coords = Array.from(source.slice(face * 9, face * 9 + 9));
-    if (
-      coords.filter((_, i) => i % 3 === 0).every((x) => x >= 2 && x <= 4) &&
-      coords.filter((_, i) => i % 3 === 1).every((y) => y >= 2 && y <= 4)
-    )
-      selection[face] = 1;
-  }
   const result = reduceScanNoise(source, {
     iterations: 3,
     selectionOnly: true,
     selection,
+    topologyCache,
   });
-  for (let face = 0; face < selection.length; face++)
-    if (!selection[face])
-      expect(result.positions.slice(face * 9, face * 9 + 9)).toEqual(
-        source.slice(face * 9, face * 9 + 9),
-      );
-  expect(result.positions).not.toEqual(source);
+  let changed = false;
+  for (let corner = 0; corner < before.triangles.length; corner++)
+    for (let axis = 0; axis < 3; axis++) {
+      const index = corner * 3 + axis;
+      if (!marked.has(before.triangles[corner]))
+        expect(result.positions[index]).toBe(source[index]);
+      else changed ||= result.positions[index] !== source[index];
+    }
+  expect(changed).toBe(true);
+  expect(topologyCache.positions).toBe(result.positions);
+  expect(topologyCache.topology!.edges).toBeDefined();
 });
 it("validates finite positive parameters, selections, topology and cancellation", () => {
   const source = grid();

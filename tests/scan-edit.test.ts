@@ -4,6 +4,7 @@ import {
   type MeshProcessingOptions,
 } from "../src/mesh-processing";
 import { runScanEdit } from "../src/scan-edit";
+import { smoothSelectedVertices } from "../src/scan-selected-smooth";
 import type { Positions } from "../src/types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../src/scan-topology-tolerance";
 
@@ -31,6 +32,38 @@ const faces = [
 ];
 const openCube = faces.flatMap((f) => f.flatMap((i) => vertices[i]));
 const cube = [...openCube, ...[4, 5, 6, 4, 6, 7].flatMap((i) => vertices[i])];
+it("publishes precomputed worker smoothing with the same geometry and successor topology", () => {
+  const positions = new Float32Array(cube);
+  const selection = new Uint8Array(positions.length / 9).fill(1);
+  const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const topology = analyzeMesh(positions, { topologyCache });
+  const computed = smoothSelectedVertices(topology, selection, 2, 0.5, {});
+  let used = false;
+  const result = runScanEdit(
+    { kind: "scanEdit", action: "smoothSelected", positions, selection },
+    {
+      topologyCache,
+      selectedSmoothing: (current, mask, iterations, strength) => {
+        expect(current).toBe(topology);
+        expect(mask).toBe(selection);
+        expect([iterations, strength]).toEqual([2, 0.5]);
+        used = true;
+        return computed;
+      },
+    },
+  );
+  expect(used).toBe(true);
+  expect(result.positions).toEqual(
+    runScanEdit({
+      kind: "scanEdit",
+      action: "smoothSelected",
+      positions,
+      selection,
+    }).positions,
+  );
+  expect(topologyCache.positions).toBe(result.positions);
+  expect(topologyCache.topology!.edges).toBe(topology.edges);
+});
 const area = (p: Positions) =>
   runScanEdit({
     kind: "scanEdit",

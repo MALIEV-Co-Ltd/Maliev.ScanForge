@@ -1,6 +1,7 @@
 import { growConnectedSelection } from "./connected-selection";
 import { runScanTool } from "./scan-tools";
 import { runScanEdit } from "./scan-edit";
+import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { morphTriangleSelection } from "./selection-morphology";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { extractSketchSection } from "./sketch-section";
@@ -49,7 +50,8 @@ function summarize(topology: MeshTopology): TopologySummary {
 let geometryKey: number | undefined;
 let canonicalPositions: ProcessingRequest["positions"] | undefined;
 let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
-scope.onmessage = ({ data: incoming }) => {
+const selectedSmoothing = new SelectedSmoothingPool();
+scope.onmessage = async ({ data: incoming }) => {
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
@@ -78,9 +80,27 @@ scope.onmessage = ({ data: incoming }) => {
       result.positions = outcome.positions;
       result.diagnostics.summary = outcome.summary;
     } else if (request.kind === "scanEdit") {
+      let selectedVertices: Float64Array<ArrayBuffer> | undefined;
+      if (request.action === "smoothSelected") {
+        const topology = analyzeMesh(request.positions, {
+          tolerance: request.tolerance ?? 1e-6,
+          onProgress: progress,
+          topologyCache,
+        });
+        selectedVertices = await selectedSmoothing.smooth(
+          topology,
+          request.selection ?? new Uint8Array(),
+          request.iterations ?? 2,
+          request.strength ?? 0.5,
+          { onProgress: progress },
+        );
+      }
       result.scanEdit = runScanEdit(request, {
         onProgress: progress,
         topologyCache,
+        selectedSmoothing: selectedVertices
+          ? () => selectedVertices!
+          : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
     } else if (request.kind === "selectionMorphology") {

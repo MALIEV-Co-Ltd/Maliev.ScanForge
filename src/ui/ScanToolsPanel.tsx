@@ -26,6 +26,8 @@ export type ScanToolParameters =
       iterations: number;
       deviation: number;
       selectionOnly: boolean;
+      applyBoundaryEdges?: boolean;
+      measureDeviation?: boolean;
     }
   | { kind: "scaleMesh"; factor: number; center: Vec3 }
   | { kind: "flipNormals" }
@@ -148,8 +150,10 @@ export function ScanToolsPanel({
   );
   const [percentage, setPercentage] = useState(50);
   const [deviation, setDeviation] = useState(0.05);
-  const [iterations, setIterations] = useState(3);
+  const [iterations, setIterations] = useState(1);
   const [selectionOnly, setSelectionOnly] = useState(false);
+  const [applyBoundaryEdges, setApplyBoundaryEdges] = useState(true);
+  const [measureDeviation, setMeasureDeviation] = useState(false);
   const [factor, setFactor] = useState(1);
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
   const [resolution, setResolution] = useState(0.5);
@@ -218,10 +222,10 @@ export function ScanToolsPanel({
       tool === "reduceNoise" &&
       (!Number.isInteger(iterations) ||
         iterations < 1 ||
-        iterations > 100 ||
-        !positive(deviation))
+        iterations > 5 ||
+        (measureDeviation && !positive(deviation)))
     )
-      problem = "Use 1–100 iterations and a positive deviation.";
+      problem = "Use 1–5 iterations and a positive comparison threshold.";
     if (
       tool === "reduceNoise" &&
       selectionOnly &&
@@ -265,7 +269,14 @@ export function ScanToolsPanel({
         onApply({ kind: tool, mode, targetTriangles, percentage, deviation });
         break;
       case "reduceNoise":
-        onApply({ kind: tool, iterations, deviation, selectionOnly });
+        onApply({
+          kind: tool,
+          iterations,
+          deviation,
+          selectionOnly,
+          applyBoundaryEdges,
+          measureDeviation,
+        });
         break;
       case "scaleMesh":
         onApply({ kind: tool, factor, center });
@@ -359,15 +370,8 @@ export function ScanToolsPanel({
               label="Smooth iterations"
               value={iterations}
               min={1}
-              max={100}
+              max={5}
               onChange={setIterations}
-            />
-            <Field
-              label="Maximum deviation (mm)"
-              value={deviation}
-              min={0.001}
-              step={0.01}
-              onChange={setDeviation}
             />
             <label className="scan-tools-check">
               <input
@@ -377,6 +381,36 @@ export function ScanToolsPanel({
               />
               Apply to selection only
             </label>
+            <label className="scan-tools-check">
+              <input
+                type="checkbox"
+                checked={applyBoundaryEdges}
+                onChange={(e) => setApplyBoundaryEdges(e.target.checked)}
+              />
+              Smooth boundary edges
+            </label>
+            <label className="scan-tools-check">
+              <input
+                type="checkbox"
+                checked={measureDeviation}
+                onChange={(e) => setMeasureDeviation(e.target.checked)}
+              />
+              Measure deviation from original
+            </label>
+            {measureDeviation && (
+              <>
+                <Field
+                  label="Comparison threshold (mm)"
+                  value={deviation}
+                  min={0.001}
+                  step={0.01}
+                  onChange={setDeviation}
+                />
+                <p className="scan-tools-note">
+                  Reports vertex displacement without limiting smoothing.
+                </p>
+              </>
+            )}
           </>
         )}
         {tool === "scaleMesh" && (
