@@ -9,6 +9,7 @@ import { runHoleFill } from "./scan-edit-holes";
 import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
+import { smoothSelectedVertices } from "./scan-selected-smooth";
 
 export interface ScanEditRequest {
   kind: "scanEdit";
@@ -150,8 +151,8 @@ function smoothing(
   t: MeshTopology,
   o: MeshProcessingOptions,
 ): Float32Array {
-  const strength = r.strength ?? 0.3,
-    iterations = r.iterations ?? 3;
+  const strength = r.strength ?? (r.action === "smoothSelected" ? 0.5 : 0.3),
+    iterations = r.iterations ?? (r.action === "smoothSelected" ? 2 : 3);
   if (
     !Number.isFinite(strength) ||
     strength <= 0 ||
@@ -185,24 +186,13 @@ function smoothing(
   } else {
     if (!r.selection?.some(Boolean))
       throw new Error("Select triangles to smooth.");
-    const outside = new Set<number>();
-    for (let f = 0; f < t.triangles.length / 3; f++)
-      for (let c = 0; c < 3; c++)
-        (r.selection[f] ? movable : outside).add(t.triangles[f * 3 + c]);
-    for (const id of outside) movable.delete(id);
-    for (const uses of t.edges.values()) {
-      const { from, to } = uses[0];
-      if (uses.length !== 2) {
-        movable.delete(from);
-        movable.delete(to);
-      }
-      if (!neighbors.has(from)) neighbors.set(from, new Set());
-      if (!neighbors.has(to)) neighbors.set(to, new Set());
-      neighbors.get(from)!.add(to);
-      neighbors.get(to)!.add(from);
-    }
+    vertices = smoothSelectedVertices(t, r.selection, iterations, strength, o);
   }
-  for (let step = 0; step < iterations; step++) {
+  for (
+    let step = 0;
+    r.action === "boundarySmooth" && step < iterations;
+    step++
+  ) {
     checkProgress(o, step / iterations, "Smoothing selected vertices");
     const next = vertices.slice();
     for (const id of movable) {
@@ -301,7 +291,12 @@ export function runScanEdit(
   if (r.action === "smoothSelected" || r.action === "boundarySmooth")
     return {
       positions: smoothing(r, t, o),
-      diagnostics: { method: "Boundary-preserving Laplacian smoothing" },
+      diagnostics: {
+        method:
+          r.action === "smoothSelected"
+            ? "Selected vertex averaging with concave boundary relaxation"
+            : "Boundary-preserving Laplacian smoothing",
+      },
     };
   if (r.action === "boundaryProject") {
     if (!r.plane) throw new Error("Choose a projection plane.");

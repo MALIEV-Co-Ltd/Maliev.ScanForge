@@ -1055,7 +1055,11 @@ export function App() {
       }
     }
   }
-  function replaceScanPositions(positions: Float32Array, label: string) {
+  function replaceScanPositions(
+    positions: Float32Array,
+    label: string,
+    retainFacetSelection = false,
+  ) {
     if (!selected) return;
     if (!positions.length) {
       operationLabel.current = label;
@@ -1066,6 +1070,13 @@ export function App() {
       return;
     }
     validatePositions(positions);
+    const retainSelection =
+      retainFacetSelection && positions.length === selected.positions.length;
+    if (retainSelection)
+      selectionSessions.current.set(selected.id, {
+        positions,
+        session: sessionFor(selected),
+      });
     operationLabel.current = label;
     updateSelected({
       positions,
@@ -1077,7 +1088,7 @@ export function App() {
       fit: undefined,
       parametric: undefined,
       normals: undefined,
-      meshSelection: undefined,
+      meshSelection: retainSelection ? selected.meshSelection : undefined,
       scanSource: undefined,
     });
     operationLabel.current = null;
@@ -1113,7 +1124,11 @@ export function App() {
       );
       if (controller.signal.aborted) return;
       if (result.scanEdit?.positions)
-        replaceScanPositions(result.scanEdit.positions, label);
+        replaceScanPositions(
+          result.scanEdit.positions,
+          label,
+          operation.action === "smoothSelected",
+        );
       if (result.scanEdit?.segments)
         createSegments(result.scanEdit.segments, label);
     } catch (error) {
@@ -3123,8 +3138,6 @@ export function App() {
                   {
                     action: "smoothSelected",
                     selection: triangleMask ?? undefined,
-                    strength: 0.3,
-                    iterations: 3,
                   },
                   "Smooth selected area",
                 );
@@ -3651,13 +3664,11 @@ export function App() {
               clip={meshClip}
               clipFull={stats ? { min: stats.min, max: stats.max } : undefined}
               onClip={setMeshClip}
-              onSmooth={(strength, iterations) =>
+              onSmooth={() =>
                 runScanEdit(
                   {
                     action: "smoothSelected",
                     selection: triangleMask ?? undefined,
-                    strength,
-                    iterations,
                   },
                   "Smooth selected area",
                 )

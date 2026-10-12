@@ -46,7 +46,7 @@ export interface EditScanDialogProps {
   clip?: ScanClipBounds | null;
   clipFull?: ScanClipBounds;
   onClip?: (bounds: ScanClipBounds | null) => void;
-  onSmooth?: (strength: number, iterations: number) => void;
+  onSmooth?: () => void;
   onDefeature?: () => void;
   onSplit?: (targetId: string) => void;
   cutters?: Entity[];
@@ -60,9 +60,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
   const [quickTools, setQuickTools] = useState(true);
   const [saving, setSaving] = useState(false);
   const [selectionName, setSelectionName] = useState("Selection 1");
-  const [smoothStrength, setSmoothStrength] = useState(0.3),
-    [smoothIterations, setSmoothIterations] = useState(3),
-    [cutter, setCutter] = useState("");
+  const [cutter, setCutter] = useState("");
   const tools = [
     { id: "wand", label: "Magic wand" },
     { id: "brush", label: "Free hand (filled)" },
@@ -392,39 +390,10 @@ export function EditScanDialog(props: EditScanDialogProps) {
         </p>
         <fieldset>
           <legend>Selected area</legend>
-          <label>
-            Smooth strength
-            <input
-              aria-label="Selected smooth strength"
-              type="range"
-              min="0.05"
-              max="1"
-              step="0.05"
-              value={smoothStrength}
-              onChange={(event) =>
-                setSmoothStrength(Number(event.target.value))
-              }
-            />
-          </label>
-          <label>
-            Iterations
-            <input
-              aria-label="Selected smooth iterations"
-              type="number"
-              min="1"
-              max="100"
-              value={smoothIterations}
-              onChange={(event) =>
-                setSmoothIterations(
-                  Math.min(100, Math.max(1, Number(event.target.value) || 1)),
-                )
-              }
-            />
-          </label>
           <div className="button-row">
             <button
               disabled={!props.selectedCount || !props.onSmooth}
-              onClick={() => props.onSmooth?.(smoothStrength, smoothIterations)}
+              onClick={() => props.onSmooth?.()}
             >
               <ScanToolIcon name="smooth" size={18} /> Smooth selected area
             </button>

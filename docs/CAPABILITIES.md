@@ -32,7 +32,7 @@ Binary STL reads bounded chunks into a transferable Float32Array. GPU normals, w
 
 ## Reconstruction evidence
 
-See [FEATURE_EVIDENCE.md](FEATURE_EVIDENCE.md) for REA resource, procedure and string evidence. The observed native inventory does not recover UI handlers or establish the original modeling algorithms. Functional equivalence remains unverified. The implementations here use independently chosen NURBS least squares, numerical sketch constraints, spatial registration and mesh graph algorithms.
+See [FEATURE_EVIDENCE.md](FEATURE_EVIDENCE.md) for REA resource, procedure and string evidence. Native handlers and algorithms have now been extracted for [defeature](DEFEATURE_FIX.md) and [selected-area smoothing](SELECTED_SMOOTHING.md), with numerical comparisons against observed native exports on the same fixture and selection. These checks establish the documented fixture results, not universal equivalence. Other modeling implementations still use independently chosen NURBS least squares, numerical sketch constraints, spatial registration and mesh graph algorithms; their native equivalence remains unverified.
 
 Bounded preview is an explicit Settings option for binary STL, independent of source size. Text formats are rejected in this mode before whole-file buffering. Full-resolution import remains the default. Source counts persist in project metadata and remain visible beside sampled geometry.
 

@@ -396,7 +396,7 @@ describe("boundary filling", () => {
   });
 });
 describe("patch and boundary edits", () => {
-  it("smooths selected interior only, retaining every unselected triangle and shared seam", () => {
+  it("averages selected interior vertices and preserves disconnected unselected geometry", () => {
     const fan = [
       0, 0, 0, 1, 0, 0, 0.5, 0.5, 1, 1, 0, 0, 1, 1, 0, 0.5, 0.5, 1, 1, 1, 0, 0,
       1, 0, 0.5, 0.5, 1, 0, 1, 0, 0, 0, 0, 0.5, 0.5, 1,
@@ -419,7 +419,7 @@ describe("patch and boundary edits", () => {
       },
       { topologyCache, onProgress: (_, stage) => stages.push(stage) },
     ).positions!;
-    expect(result[8]).toBeCloseTo(0.5);
+    expect(result[8]).toBeCloseTo(0);
     expect(result.slice(0, 6)).toEqual(new Float32Array(fan.slice(0, 6)));
     expect(result.slice(fan.length)).toEqual(
       new Float32Array(shifted(openCube, 3)),
