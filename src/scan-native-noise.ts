@@ -87,12 +87,22 @@ export function noiseNormals(
 
 export function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
   const normals = noiseNormals(t, options);
-  const angles = new Float64Array(t.vertices.length / 3).fill(FLOAT_MAX);
-  for (let i = 0; i < t.triangles.length; i += 3) {
+  return noiseWeightsFromNormals(t.triangles, normals, 10, options);
+}
+
+/** Original edge-normal minima, strict degree cutoff and ordered averaging. */
+export function noiseWeightsFromNormals(
+  triangles: Uint32Array,
+  normals: Float32Array,
+  degrees = 10,
+  options: MeshProcessingOptions = {},
+) {
+  const angles = new Float64Array(normals.length / 3).fill(FLOAT_MAX);
+  for (let i = 0; i < triangles.length; i += 3) {
     check(options, i / 3);
     for (let corner = 0; corner < 3; corner++) {
-      const u = t.triangles[i + corner];
-      const v = t.triangles[i + ((corner + 1) % 3)];
+      const u = triangles[i + corner];
+      const v = triangles[i + ((corner + 1) % 3)];
       let dot = 0;
       for (let axis = 0; axis < 3; axis++)
         dot += normals[u * 3 + axis] * normals[v * 3 + axis];
@@ -100,7 +110,7 @@ export function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
       if (dot < angles[v]) angles[v] = dot;
     }
   }
-  const threshold = 10 * (Math.PI / 180);
+  const threshold = degrees * (Math.PI / 180);
   for (let i = 0; i < angles.length; i++) {
     if (angles[i] !== FLOAT_MAX) {
       angles[i] = Math.acos(Math.max(-1, Math.min(1, angles[i])));
@@ -108,7 +118,7 @@ export function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
     }
   }
   normalizeNoiseAngles(angles);
-  return averageNoiseAngles(t.triangles, angles, options);
+  return averageNoiseAngles(triangles, angles, options);
 }
 
 /** Normalize nonnegative noise angles and replace sharp-angle sentinels. */
