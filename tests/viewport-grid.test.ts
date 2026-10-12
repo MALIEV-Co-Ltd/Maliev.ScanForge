@@ -1,0 +1,109 @@
+import { expect, it, vi } from "vitest";
+import * as THREE from "three";
+import { createViewportGrid, renderSceneWithGrid } from "../src/viewport-grid";
+import { updateCameraClipping } from "../src/camera-clipping";
+
+for (const perspective of [false, true]) {
+  it(`renders the fading grid beyond the model without widening ${perspective ? "perspective" : "orthographic"} model clipping`, () => {
+    const scene = new THREE.Scene(),
+      gridScene = new THREE.Scene();
+    scene.background = new THREE.Color("#1c1c1c");
+    const grid = createViewportGrid();
+    gridScene.add(grid);
+    const camera = perspective
+      ? new THREE.PerspectiveCamera()
+      : new THREE.OrthographicCamera();
+    camera.position.set(160, -200, 140);
+    camera.up.set(0, 0, 1);
+    camera.lookAt(0, 0, 0);
+    const bounds = new THREE.Box3(
+      new THREE.Vector3(-20, -20, 0),
+      new THREE.Vector3(20, 20, 40),
+    );
+    updateCameraClipping(camera, bounds);
+    const modelNear = camera.near,
+      modelFar = camera.far;
+    const passes: {
+      scene: THREE.Scene;
+      near: number;
+      far: number;
+      background: unknown;
+    }[] = [];
+    const renderer = {
+      autoClear: true,
+      clearDepth: vi.fn(),
+      render: (current: THREE.Scene) => {
+        passes.push({
+          scene: current,
+          near: camera.near,
+          far: camera.far,
+          background: current.background,
+        });
+      },
+    };
+    try {
+      renderSceneWithGrid(
+        renderer as unknown as THREE.WebGLRenderer,
+        scene,
+        gridScene,
+        camera,
+        bounds,
+      );
+      expect(passes[0].scene).toBe(gridScene);
+      expect(passes[0].far).toBeGreaterThan(modelFar);
+      expect(passes[0].near).toBeLessThan(modelNear);
+      expect(passes[1]).toMatchObject({
+        scene,
+        near: modelNear,
+        far: modelFar,
+        background: null,
+      });
+      expect(renderer.clearDepth).toHaveBeenCalledOnce();
+      expect(scene.background).toEqual(new THREE.Color("#1c1c1c"));
+      expect(renderer.autoClear).toBe(true);
+      expect(camera.near).toBe(modelNear);
+      expect(camera.far).toBe(modelFar);
+    } finally {
+      grid.geometry.dispose();
+      (grid.material as THREE.Material).dispose();
+    }
+  });
+}
+
+it("restores the background and camera if a render fails", () => {
+  const scene = new THREE.Scene(),
+    gridScene = new THREE.Scene();
+  const background = new THREE.Color("#fff");
+  scene.background = background;
+  const camera = new THREE.OrthographicCamera();
+  const bounds = new THREE.Box3(
+    new THREE.Vector3(-1, -1, -1),
+    new THREE.Vector3(1, 1, 1),
+  );
+  updateCameraClipping(camera, bounds);
+  const near = camera.near,
+    far = camera.far;
+  const renderer = {
+    autoClear: false,
+    clearDepth: vi.fn(),
+    render: vi
+      .fn()
+      .mockImplementationOnce(() => {})
+      .mockImplementationOnce(() => {
+        throw new Error("render failed");
+      }),
+  };
+  expect(() =>
+    renderSceneWithGrid(
+      renderer as unknown as THREE.WebGLRenderer,
+      scene,
+      gridScene,
+      camera,
+      bounds,
+    ),
+  ).toThrow("render failed");
+  expect(scene.background).toBe(background);
+  expect(renderer.autoClear).toBe(false);
+  expect(camera.near).toBe(near);
+  expect(camera.far).toBe(far);
+});

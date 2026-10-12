@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import { updateCameraClipping } from "./camera-clipping";
+import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
@@ -106,6 +107,7 @@ export class Viewport {
   private selectedId: string | null = null;
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
+  private readonly gridScene = new THREE.Scene();
   private disposed = false;
   private frame: number | null = null;
   private wireframe = false;
@@ -185,10 +187,9 @@ export class Viewport {
     const fill = new THREE.DirectionalLight(0xffffff, 1.4);
     fill.position.set(-120, 80, 50);
     this.scene.add(fill);
-    this.grid = new THREE.GridHelper(400, 20, "#a7b6bd", "#d0dadf");
-    this.grid.rotation.x = Math.PI / 2;
+    this.grid = createViewportGrid();
+    this.gridScene.add(this.grid);
     this.scene.add(
-      this.grid,
       this.section,
       this.measurement,
       this.triangleSelection,
@@ -270,8 +271,13 @@ export class Viewport {
     this.frame = null;
     if (this.disposed) return;
     this.controls.update();
-    updateCameraClipping(this.camera, this.bounds);
-    this.renderer.render(this.scene, this.camera);
+    renderSceneWithGrid(
+      this.renderer,
+      this.scene,
+      this.gridScene,
+      this.camera,
+      this.bounds,
+    );
     for (const marker of this.landmarkLabels) {
       const projected = new THREE.Vector3(...marker.point).project(this.camera);
       marker.element.hidden = projected.z < -1 || projected.z > 1;
@@ -1435,6 +1441,7 @@ export class Viewport {
     this.clearGroup(this.sketchGeometry);
     this.clearGroup(this.sketchPreview);
     this.grid.geometry.dispose();
+    this.gridScene.clear();
     if (Array.isArray(this.grid.material))
       this.grid.material.forEach((material) => material.dispose());
     else this.grid.material.dispose();
