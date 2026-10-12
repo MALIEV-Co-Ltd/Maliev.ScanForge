@@ -29,6 +29,7 @@ export function lassoTrianglePoint(
   triangle: ScreenPoint[],
   path: ScreenPoint[],
   radius: number,
+  closedPath = path.length > 1 ? [...path, path[0]] : path,
 ): ScreenPoint | null {
   const center: ScreenPoint = [
     (triangle[0][0] + triangle[1][0] + triangle[2][0]) / 3,
@@ -37,9 +38,5 @@ export function lassoTrianglePoint(
   if (path.length >= 3 && pointInLasso(center, path)) return center;
   for (const vertex of triangle)
     if (path.length >= 3 && pointInLasso(vertex, path)) return vertex;
-  return brushTrianglePoint(
-    triangle,
-    path.length > 1 ? [...path, path[0]] : path,
-    radius,
-  );
+  return brushTrianglePoint(triangle, closedPath, radius);
 }

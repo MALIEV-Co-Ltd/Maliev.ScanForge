@@ -1167,6 +1167,18 @@ export class Viewport {
   setBrush(enabled: boolean): void {
     if (!enabled) this.paintOverlay.style.display = "none";
     this.brushing = enabled;
+    if (enabled) {
+      const item = this.selectedId
+        ? this.objects.get(this.selectedId)
+        : undefined;
+      if (item?.mesh.visible) {
+        item.selectionIndex ??= new AsyncScreenSelectionIndex(
+          item.positions,
+          item.hidden,
+        );
+        item.selectionIndex.prepare();
+      }
+    }
     Object.assign(
       this.controls.mouseButtons,
       cameraMouseButtons(enabled, { ctrlKey: false, shiftKey: false }),

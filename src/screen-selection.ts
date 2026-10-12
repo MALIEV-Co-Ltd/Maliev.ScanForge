@@ -110,8 +110,17 @@ export class ScreenSelectionIndex {
       new THREE.Vector3(),
       new THREE.Vector3(),
     ];
-    for (let i = 0; i < this.positions.length; i += 9) {
-      if (hiddenSet.has(i / 9)) continue;
+    const triangle: ScreenPoint[] = [
+      [0, 0],
+      [0, 0],
+      [0, 0],
+    ];
+    const closedPath =
+      "points" in region && region.points.length > 1
+        ? [...region.points, region.points[0]]
+        : undefined;
+    const visitTriangle = (i: number): void => {
+      if (hiddenSet.has(i / 9)) return;
       point.set(
         (this.positions[i] + this.positions[i + 3] + this.positions[i + 6]) / 3,
         (this.positions[i + 1] +
@@ -124,30 +133,39 @@ export class ScreenSelectionIndex {
           3,
       );
       projected.copy(point).project(camera);
-      if (projected.z < -1 || projected.z > 1) continue;
+      if (projected.z < -1 || projected.z > 1) return;
       let x = ((projected.x + 1) * view.width) / 2,
         y = ((1 - projected.y) * view.height) / 2;
       if ("points" in region) {
-        const triangle = vertices.map((vertex, corner) => {
+        for (let corner = 0; corner < 3; corner++) {
+          const vertex = vertices[corner];
           vertex.fromArray(this.positions, i + corner * 3);
           projected.copy(vertex).project(camera);
-          return [
-            ((projected.x + 1) * view.width) / 2,
-            ((1 - projected.y) * view.height) / 2,
-          ] as ScreenPoint;
-        });
+          triangle[corner][0] = ((projected.x + 1) * view.width) / 2;
+          triangle[corner][1] = ((1 - projected.y) * view.height) / 2;
+        }
         if (
           strokeBounds &&
-          (Math.max(...triangle.map((p) => p[0])) < strokeBounds[0] ||
-            Math.min(...triangle.map((p) => p[0])) > strokeBounds[2] ||
-            Math.max(...triangle.map((p) => p[1])) < strokeBounds[1] ||
-            Math.min(...triangle.map((p) => p[1])) > strokeBounds[3])
+          (Math.max(triangle[0][0], triangle[1][0], triangle[2][0]) <
+            strokeBounds[0] ||
+            Math.min(triangle[0][0], triangle[1][0], triangle[2][0]) >
+              strokeBounds[2] ||
+            Math.max(triangle[0][1], triangle[1][1], triangle[2][1]) <
+              strokeBounds[1] ||
+            Math.min(triangle[0][1], triangle[1][1], triangle[2][1]) >
+              strokeBounds[3])
         )
-          continue;
-        const touch = (
-          region.kind === "lasso" ? lassoTrianglePoint : brushTrianglePoint
-        )(triangle, region.points, region.radius);
-        if (!touch) continue;
+          return;
+        const touch =
+          region.kind === "lasso"
+            ? lassoTrianglePoint(
+                triangle,
+                region.points,
+                region.radius,
+                closedPath,
+              )
+            : brushTrianglePoint(triangle, region.points, region.radius);
+        if (!touch) return;
         // Move an edge contact fractionally inward so ray/triangle roundoff
         // does not discard a triangle that the brush actually touched.
         x =
@@ -169,16 +187,16 @@ export class ScreenSelectionIndex {
             point,
           )
         )
-          continue;
+          return;
         projected.copy(point).project(camera);
-        if (projected.z < -1 || projected.z > 1) continue;
+        if (projected.z < -1 || projected.z > 1) return;
       }
-      if (x < minX || x > maxX || y < minY || y > maxY) continue;
+      if (x < minX || x > maxX || y < minY || y > maxY) return;
       if (
         region.kind === "circle" &&
         (!rx || !ry || ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1)
       )
-        continue;
+        return;
       if (!view.through) {
         ndc.set(projected.x, projected.y);
         raycaster.setFromCamera(ndc, camera);
@@ -192,10 +210,70 @@ export class ScreenSelectionIndex {
           !hit ||
           hit.point.distanceTo(point) > Math.max(1e-5, hit.distance * 1e-6)
         )
-          continue;
+          return;
       }
       mask[i / 9] = 1;
-    }
+    };
+    // Reject whole spatial branches before projecting individual triangles.
+    // This is only a conservative broad phase; coverage and visibility stay exact.
+    const selectionBounds = strokeBounds ?? [minX, minY, maxX, maxY];
+    const projection = new THREE.Matrix4().multiplyMatrices(
+      camera.projectionMatrix,
+      camera.matrixWorldInverse,
+    );
+    const corner = new THREE.Vector4();
+    const intersectsBounds = (box: THREE.Box3): boolean => {
+      let left = Infinity,
+        right = -Infinity,
+        top = Infinity,
+        bottom = -Infinity;
+      let near = Infinity,
+        far = -Infinity;
+      for (let c = 0; c < 8; c++) {
+        corner
+          .set(
+            c & 1 ? box.max.x : box.min.x,
+            c & 2 ? box.max.y : box.min.y,
+            c & 4 ? box.max.z : box.min.z,
+            1,
+          )
+          .applyMatrix4(projection);
+        // A box crossing the perspective eye plane cannot be rejected by its
+        // projected corners; descend and let the existing triangle checks decide.
+        if (corner.w <= 0) return true;
+        const x = ((corner.x / corner.w + 1) * view.width) / 2;
+        const y = ((1 - corner.y / corner.w) * view.height) / 2;
+        const z = corner.z / corner.w;
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+        top = Math.min(top, y);
+        bottom = Math.max(bottom, y);
+        near = Math.min(near, z);
+        far = Math.max(far, z);
+      }
+      const epsilon = 1e-6;
+      return !(
+        right < selectionBounds[0] - epsilon ||
+        left > selectionBounds[2] + epsilon ||
+        bottom < selectionBounds[1] - epsilon ||
+        top > selectionBounds[3] + epsilon ||
+        near > 1 + epsilon ||
+        far < -1 - epsilon
+      );
+    };
+    this.tree?.shapecast({
+      intersectsBounds,
+      intersectsRange: (offset, count) => {
+        for (let j = offset; j < offset + count; j++) {
+          const triangle = this.tree!.resolveTriangleIndex(j);
+          const slot = this.geometry.index
+            ? this.geometry.index.getX(triangle * 3) / 3
+            : triangle;
+          visitTriangle(slot * 9);
+        }
+        return false;
+      },
+    });
     return mask;
   }
   dispose(): void {

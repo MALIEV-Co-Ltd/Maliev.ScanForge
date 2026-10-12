@@ -23,9 +23,24 @@ export function brushTrianglePoint(
   points: ScreenPoint[],
   radius: number,
 ): ScreenPoint | null {
+  const minX =
+    Math.min(triangle[0][0], triangle[1][0], triangle[2][0]) - radius;
+  const maxX =
+    Math.max(triangle[0][0], triangle[1][0], triangle[2][0]) + radius;
+  const minY =
+    Math.min(triangle[0][1], triangle[1][1], triangle[2][1]) - radius;
+  const maxY =
+    Math.max(triangle[0][1], triangle[1][1], triangle[2][1]) + radius;
   for (let n = 0; n < points.length; n++) {
     const a = points[Math.max(0, n - 1)],
       b = points[n];
+    if (
+      Math.max(a[0], b[0]) < minX ||
+      Math.min(a[0], b[0]) > maxX ||
+      Math.max(a[1], b[1]) < minY ||
+      Math.min(a[1], b[1]) > maxY
+    )
+      continue;
     if (inside(a, triangle)) return a;
     if (inside(b, triangle)) return b;
     for (let i = 0; i < 3; i++) {

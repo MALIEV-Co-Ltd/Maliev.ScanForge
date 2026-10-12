@@ -41,6 +41,22 @@ function fixture() {
     camera: new THREE.OrthographicCamera(),
   };
 }
+it("prepares once before drawing, reuses the idle index and disposes its lease", async () => {
+  const { index, camera } = fixture();
+  index.prepare();
+  const worker = WorkerDouble.latest;
+  expect(worker.sent.length).toBe(1);
+  index.prepare();
+  index.cancel();
+  expect(worker.terminated).toBe(false);
+  const selection = index.select(camera, region, view);
+  expect(WorkerDouble.latest).toBe(worker);
+  expect(worker.sent.length).toBe(2);
+  worker.onmessage?.({ data: { mask: new Uint8Array([1]) } });
+  await selection;
+  index.dispose();
+  expect(worker.terminated).toBe(true);
+});
 it("copies geometry once, reuses worker and releases it after idle lease", async () => {
   const { positions, index, camera } = fixture();
   const pending = index.select(camera, region, view),
@@ -50,6 +66,8 @@ it("copies geometry once, reuses worker and releases it after idle lease", async
   expect(worker.sent[1].frame.orthographic).toBe(true);
   worker.onmessage?.({ data: { mask: new Uint8Array([1]) } });
   expect([...(await pending)]).toEqual([1]);
+  index.cancel();
+  expect(worker.terminated).toBe(false);
   const next = index.select(camera, region, view);
   expect(worker.sent.length).toBe(3);
   worker.onmessage?.({ data: { mask: new Uint8Array([0]) } });

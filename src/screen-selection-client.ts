@@ -15,15 +15,14 @@ export class AsyncScreenSelectionIndex {
     private positions: Positions,
     private hidden: number[] = [],
   ) {}
-  select(
-    camera: THREE.Camera,
-    region: ScreenRegion,
-    view: SelectionView,
-  ): Promise<Uint8Array> {
-    if (this.disposed)
-      return Promise.reject(new Error("Selection index is closed."));
-    if (this.pending) this.cancel();
+  /** Start the owned BVH while the user chooses a tool or draws the first loop. */
+  prepare(): void {
+    if (this.disposed || this.pending) return;
+    this.ensureWorker();
     clearTimeout(this.lease);
+    this.lease = setTimeout(() => this.stop(), 60_000);
+  }
+  private ensureWorker(): Worker {
     if (!this.worker) {
       this.worker = new Worker(
         new URL("./screen-selection-worker.ts", import.meta.url),
@@ -57,6 +56,18 @@ export class AsyncScreenSelectionIndex {
         [positions.buffer],
       );
     }
+    return this.worker;
+  }
+  select(
+    camera: THREE.Camera,
+    region: ScreenRegion,
+    view: SelectionView,
+  ): Promise<Uint8Array> {
+    if (this.disposed)
+      return Promise.reject(new Error("Selection index is closed."));
+    if (this.pending) this.cancel();
+    clearTimeout(this.lease);
+    const worker = this.ensureWorker();
     camera.updateMatrixWorld();
     const frame = {
       orthographic: camera instanceof THREE.OrthographicCamera,
@@ -74,10 +85,12 @@ export class AsyncScreenSelectionIndex {
         this.pending = undefined;
         this.stop();
       }, 120_000);
-      this.worker!.postMessage({ frame, region, view });
+      worker.postMessage({ frame, region, view });
     });
   }
   cancel(): void {
+    // A new gesture cancels an in-flight query, not the reusable idle BVH.
+    if (!this.pending) return;
     this.pending?.reject(
       new DOMException("Selection superseded", "AbortError"),
     );
@@ -92,5 +105,6 @@ export class AsyncScreenSelectionIndex {
   dispose(): void {
     this.disposed = true;
     this.cancel();
+    this.stop();
   }
 }
