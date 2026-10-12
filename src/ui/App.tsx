@@ -1715,6 +1715,7 @@ export function App() {
           try {
             positions = await importScan(file, {
               unit,
+              placeAtOrigin: true,
               previewTriangles: previewImport ? 250_000 : undefined,
               onSource: (source) => {
                 scanSource = source;

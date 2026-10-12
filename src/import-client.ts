@@ -3,7 +3,10 @@ import type { ScanUnit } from "./import-units";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
-  options: ScanImportOptions & { unit?: ScanUnit } = {},
+  options: ScanImportOptions & {
+    unit?: ScanUnit;
+    placeAtOrigin?: boolean;
+  } = {},
 ): Promise<Float32Array> {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (options.signal?.aborted)
@@ -85,6 +88,7 @@ export function importScan(
         extension,
         previewTriangles: options.previewTriangles,
         unit: options.unit,
+        placeAtOrigin: options.placeAtOrigin,
       });
     } catch (error) {
       cleanup();

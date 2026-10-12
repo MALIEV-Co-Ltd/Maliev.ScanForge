@@ -1,5 +1,6 @@
 import { readScan, type ScanSource } from "./import-parser";
 import { convertScanUnits, type ScanUnit } from "./import-units";
+import { placeScanOnOrigin } from "./import-origin";
 
 const scope = self as unknown as {
   onmessage: (
@@ -8,6 +9,7 @@ const scope = self as unknown as {
       extension: string;
       previewTriangles?: number;
       unit?: ScanUnit;
+      placeAtOrigin?: boolean;
     }>,
   ) => void;
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -23,6 +25,7 @@ scope.onmessage = async ({ data }) => {
       onProgress: (progress) => scope.postMessage({ progress }),
     });
     convertScanUnits(positions, data.unit);
+    if (data.placeAtOrigin) placeScanOnOrigin(positions);
     scope.postMessage({ positions, source }, [positions.buffer as ArrayBuffer]);
   } catch (error) {
     scope.postMessage({
