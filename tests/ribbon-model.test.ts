@@ -62,30 +62,30 @@ describe("ribbon command inventory", () => {
     for (const tool of unsupported) {
       expect(ribbonToolAvailability(tool, ready, supplied)).toEqual({
         available: false,
-        reason: "Not implemented yet",
+        reason: "Planned — not implemented yet",
       });
     }
   });
   it("requires a real registered action and honors selection, busy, and history state", () => {
-    const fit = getRibbonToolMetadata("fitPlane")!;
+    const fit = getRibbonToolMetadata("objectColor")!;
     expect(ribbonToolAvailability(fit, ready, {})).toMatchObject({
       available: false,
     });
     expect(
-      ribbonToolAvailability(fit, ready, { fitPlane: vi.fn() }).available,
+      ribbonToolAvailability(fit, ready, { objectColor: vi.fn() }).available,
     ).toBe(true);
     expect(
       ribbonToolAvailability(
         fit,
         { ...ready, hasSelection: false },
-        { fitPlane: vi.fn() },
+        { objectColor: vi.fn() },
       ).reason,
     ).toBe("Select an object first");
     expect(
       ribbonToolAvailability(
         fit,
         { ...ready, disabled: true },
-        { fitPlane: vi.fn() },
+        { objectColor: vi.fn() },
       ).available,
     ).toBe(false);
     expect(
@@ -103,7 +103,7 @@ describe("ribbon command inventory", () => {
       ).reason,
     ).toBe("Nothing to redo");
   });
-  it("enables implemented reconstruction tools and leaves remaining inventory unavailable", () => {
+  it("retains implementation routes without enabling unverified reconstruction", () => {
     for (const [id, action] of Object.entries({
       freeformThicken: "surfaceThicken",
       freeformOffset: "surfaceOffset",
@@ -132,6 +132,12 @@ describe("ribbon command inventory", () => {
       "mirrorBody",
     ]) {
       expect(getRibbonToolMetadata(id)?.action, id).toBe(id);
+      expect(
+        ribbonToolAvailability(getRibbonToolMetadata(id)!, ready, {
+          [id]: vi.fn(),
+        }).available,
+        id,
+      ).toBe(false);
     }
     for (const id of ["wrap", "pipe", "helix", "trim", "draft"]) {
       const metadata = getRibbonToolMetadata(id);

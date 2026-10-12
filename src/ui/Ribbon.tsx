@@ -7,6 +7,8 @@ import {
   type ReactNode,
 } from "react";
 import { RibbonCommandIcon } from "./RibbonCommandIcon";
+import { ribbonVerification } from "./ribbon-verification";
+import "./ribbon-verification.css";
 import { ribbonOverflowEdges } from "./ribbon-overflow";
 import {
   RIBBON_TABS,
@@ -149,6 +151,9 @@ export function Ribbon({
           </div>
         )}
       </div>
+      <div className="ribbon-verification-legend">
+        Verified commands enabled · In progress and planned commands disabled
+      </div>
       <div className="ribbon-tools-shell">
         <div
           ref={tools}
@@ -179,6 +184,10 @@ export function Ribbon({
             >
               <div className="ribbon-group-tools">
                 {group.tools.map((tool) => {
+                  const verification = ribbonVerification(
+                    tool.id,
+                    !!tool.action,
+                  );
                   const availability = ribbonToolAvailability(
                     tool,
                     state,
@@ -190,9 +199,11 @@ export function Ribbon({
                       type="button"
                       className="ribbon-button"
                       data-command={tool.id}
+                      data-verification={verification.status}
                       disabled={!availability.available}
                       title={availability.reason}
                       aria-label={tool.label}
+                      aria-description={availability.reason}
                       onClick={
                         availability.available && tool.action
                           ? actions[tool.action]
@@ -201,6 +212,16 @@ export function Ribbon({
                     >
                       <RibbonCommandIcon command={tool.id} />
                       <span className="ribbon-button-label">{tool.label}</span>
+                      {verification.status !== "verified" && (
+                        <span
+                          className="ribbon-verification-badge"
+                          aria-hidden="true"
+                        >
+                          {verification.status === "planned"
+                            ? "Planned"
+                            : "In progress"}
+                        </span>
+                      )}
                     </button>
                   );
                 })}

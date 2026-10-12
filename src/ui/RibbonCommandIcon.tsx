@@ -86,6 +86,39 @@ const view = (face: string) =>
   path("M6 6h20v20H6Z", "#c4c4c4") + path(face, gold) + path("M6 6h20v20H6Z");
 
 export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
+  prepareScan: mesh + gear,
+  constructTools: solid + plane,
+  alignTools: axes + dots,
+  surfacingTools: surface + pencil,
+  patternTools: solid + path("M2 2h8v8H2Zm20 20h8v8h-8Z", green),
+  edgeTools: solid + curve,
+  plane2dSketch: plane + pencil,
+  surface2dSketch: surface + pencil,
+  millimetres: ruler + path("M5 4v3m4-3v3m4-3v3m4-3v3m4-3v3"),
+  inches: ruler + path("M5 4v3m11-3v3m11-3v3"),
+  metres: ruler + path("M5 4h22m-11-3v6"),
+  language:
+    circle(16, 16, 12, light) +
+    path("M4 16h24M16 4c-8 7-8 17 0 24 8-7 8-17 0-24Z"),
+  options: gear + pencil,
+  videoTutorials:
+    path("M2 4h28v21H2ZM11 29h10", light) + path("m12 9 10 6-10 6Z", red),
+  helpPdf:
+    file +
+    path(
+      "M9 22c12-24 8 5 16-2M9 22h16",
+      "none",
+      'stroke="#d65e50" stroke-width="2"',
+    ),
+  examples: file + solid,
+  checkUpdates: gear + arrow,
+  systemLog: file + path("M10 13h13m-13 5h13m-13 5h8"),
+  resetLayout: path("M2 4h28v24H2ZM2 11h28M10 11v17", light) + arrow,
+  changeLog: file + plus,
+  credits:
+    circle(11, 10, 5, light) +
+    circle(23, 12, 4, green) +
+    path("M2 28v-7c0-8 18-8 18 0v7m0-10c5-3 10 0 10 5v5", gold),
   newDocument: file + plus,
   open:
     path("M2 9h11l3 4h14l-4 15H3Z", gold) + path("M3 9V5h10l3 4h12v4", light),

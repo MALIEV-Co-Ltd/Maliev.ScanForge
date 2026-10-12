@@ -1,3 +1,5 @@
+import { ribbonVerification } from "./ribbon-verification";
+
 export const RIBBON_ACTION_IDS = [
   "newDocument",
   "open",
@@ -142,7 +144,9 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Scan Data",
+        planned("prepareScan", "Prepare scan", "cleanup"),
         tool("editScan", "Edit scan", "editScan", true),
+        planned("deselectAll", "Deselect all", "select"),
         tool("cleanup", "Clean mesh", "cleanup", true),
         tool("repairMesh", "Repair topology", "cleanup", true),
         tool("segmentMesh", "Segment surfaces", "surface", true),
@@ -150,23 +154,46 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Primitives",
+        planned("extractPrimitives", "Extract primitives", "surface"),
+        planned("constructTools", "Construct", "box"),
         tool("fitPlane", "Plane", "plane", true),
         tool("fitCylinder", "Cylinder", "cylinder", true),
         tool("fitCone", "Cone", "cone", true),
         tool("fitSphere", "Sphere", "sphere", true),
       ),
-      group("Align", tool("align", "Principal axes", "align", true)),
+      group(
+        "Align",
+        planned("alignTools", "Align", "align"),
+        tool("align", "Principal axes", "align", true),
+      ),
       group(
         "Cross sections",
+        tool("sketch2d", "2D sketch", "curve"),
+        planned("multipleSections", "Multiple sections", "section"),
         tool("section", "Cross section", "section", true),
       ),
-      group("Surfacing", tool("fitSurface", "Fit surface", "surface")),
-      group("Freeform", tool("newFreeform", "New freeform", "surface")),
+      group(
+        "Surfacing",
+        tool("fitSurface", "Fit surface", "surface"),
+        planned("surfacingTools", "Surfacing", "surface"),
+      ),
+      group(
+        "Freeform",
+        tool("newFreeform", "New freeform", "surface"),
+        tool("autoFreeform", "Auto freeform", "surface"),
+      ),
       group(
         "Part Design",
         tool("primitive", "Primitive", "box"),
         tool("extrude", "Extrude", "extrude"),
         tool("revolve", "Revolve", "revolve"),
+        planned("moveFace", "Move face", "transform"),
+        planned("trim", "Trim", "section"),
+        { ...tool("boolean", "Combine", "boolean", true), id: "combine" },
+        { ...tool("boolean", "Cut", "section", true), id: "cut" },
+        { ...tool("boolean", "Intersect", "boolean", true), id: "intersect" },
+        planned("patternTools", "Pattern", "pattern"),
+        planned("edgeTools", "Fillet / Chamfer", "curve"),
       ),
       group(
         "Analysis",
@@ -269,6 +296,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         planned("middlePlane", "Middle plane", "plane"),
         planned("planePath", "Plane along path", "plane"),
         planned("planeSketchLine", "Plane through sketch line", "plane"),
+        planned("plane2dSketch", "Plane from 2D sketch", "plane"),
         tool("fitCylinder", "Cylinder", "cylinder", true),
         tool("fitCone", "Cone", "cone", true),
         tool("fitSphere", "Sphere", "sphere", true),
@@ -291,7 +319,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       group(
         "Create New",
         tool("newFreeform", "New freeform", "surface"),
-        tool("autoFreeform", "Fit projected grid", "surface"),
+        tool("autoFreeform", "Auto freeform", "surface"),
         planned("freeformSketch", "From 3D sketch", "curve"),
         tool("quadObj", "From quad OBJ", "wireframe"),
       ),
@@ -323,6 +351,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("nurbsSurface", "NURBS surface", "surface"),
         tool("loft", "Loft", "surface"),
         planned("fillSurface", "Fill surface", "surface"),
+        planned("surface2dSketch", "From 2D sketch", "surface"),
         tool("sweep", "Sweep", "surface"),
         planned("pipe", "Pipe", "cylinder"),
         planned("sketch3d", "3D sketch", "curve"),
@@ -409,6 +438,17 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
     label: "Settings",
     groups: [
       group(
+        "Display units",
+        planned("millimetres", "Millimetres", "measure"),
+        planned("inches", "Inches", "measure"),
+        planned("metres", "Metres", "measure"),
+      ),
+      group(
+        "Software options",
+        planned("language", "Language", "help"),
+        planned("options", "Options", "settings"),
+      ),
+      group(
         "Preferences",
         tool("settings", "Appearance", "settings"),
         planned("units", "Units", "measure"),
@@ -422,8 +462,22 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
     groups: [
       group(
         "Documentation",
+        planned("videoTutorials", "Video tutorials", "help"),
         planned("helpGuide", "User guide", "help"),
+        planned("helpPdf", "Help (PDF)", "help"),
         planned("shortcuts", "Shortcuts", "help"),
+        planned("examples", "Examples", "folder"),
+        planned("checkUpdates", "Check for update", "cleanup"),
+      ),
+      group(
+        "System",
+        planned("systemLog", "System log", "help"),
+        planned("resetLayout", "Reset layout", "view"),
+        planned("changeLog", "Change log", "help"),
+      ),
+      group(
+        "About",
+        planned("credits", "Credits", "help"),
         planned("about", "About", "help"),
       ),
     ],
@@ -446,6 +500,9 @@ export function ribbonToolAvailability(
   state: RibbonState,
   actions: RibbonActions,
 ): { available: boolean; reason: string } {
+  const verification = ribbonVerification(tool.id, !!tool.action);
+  if (verification.status !== "verified")
+    return { available: false, reason: verification.reason };
   if (
     !tool.action ||
     !(RIBBON_ACTION_IDS as readonly string[]).includes(tool.action) ||
