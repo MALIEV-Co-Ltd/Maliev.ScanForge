@@ -2,10 +2,12 @@ import {
   analyzeMesh,
   analyzeIndexedMesh,
   type MeshProcessingOptions,
+  type MeshTopology,
 } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
 import { nativeNoiseVertices } from "./scan-native-noise";
 import { compareNoiseSurface } from "./scan-noise-deviation";
+import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
 import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
@@ -296,18 +298,15 @@ export function reduceScanMesh(
   };
 }
 
-/** Native correction-based smoothing; deviation is comparison-only. */
-export function reduceScanNoise(
-  positions: Positions,
-  options: Options & {
-    iterations?: number;
-    deviation?: number;
-    measureDeviation?: boolean;
-    selection?: Uint8Array;
-    selectionOnly?: boolean;
-    applyBoundaryEdges?: boolean;
-  } = {},
-): ScanToolResult {
+export type NoiseOptions = Options & {
+  iterations?: number;
+  deviation?: number;
+  measureDeviation?: boolean;
+  selection?: Uint8Array;
+  selectionOnly?: boolean;
+  applyBoundaryEdges?: boolean;
+};
+function prepareNoise(positions: Positions, options: NoiseOptions) {
   const iterations = options.iterations ?? 1;
   const deviation = options.deviation ?? 0.05;
   if (!Number.isSafeInteger(iterations) || iterations < 1 || iterations > 100)
@@ -326,25 +325,33 @@ export function reduceScanNoise(
     positions,
     {
       ...options,
-      onProgress: (fraction, stage) =>
+      onProgress: (fraction: number, stage: string) =>
         options.onProgress?.(fraction * 0.2, stage),
     },
     tolerance,
   );
-  const vertices = nativeNoiseVertices(
+  return {
     t,
     iterations,
-    options.selectionOnly ? options.selection : undefined,
-    options.applyBoundaryEdges ?? true,
-    {
+    deviation,
+    kernelOptions: {
       ...options,
-      onProgress: (fraction, stage) =>
+      onProgress: (fraction: number, stage: string) =>
         options.onProgress?.(
           0.2 + fraction * (options.measureDeviation ? 0.7 : 0.8),
           stage,
         ),
     },
-  );
+  };
+}
+function finishNoise(
+  t: MeshTopology,
+  vertices: Float64Array,
+  options: NoiseOptions,
+): ScanToolResult {
+  const iterations = options.iterations ?? 1;
+  const deviation = options.deviation ?? 0.05;
+  const tolerance = 1e-6;
   const output = new Float32Array(t.triangles.length * 3);
   for (let corner = 0; corner < t.triangles.length; corner++)
     for (let axis = 0; axis < 3; axis++)
@@ -400,4 +407,39 @@ export function reduceScanNoise(
         : " Boundary vertices retained.") +
       comparison,
   };
+}
+
+/** Native correction-based smoothing; deviation is comparison-only. */
+export function reduceScanNoise(
+  positions: Positions,
+  options: NoiseOptions = {},
+): ScanToolResult {
+  const { t, iterations, kernelOptions } = prepareNoise(positions, options);
+  return finishNoise(
+    t,
+    nativeNoiseVertices(
+      t,
+      iterations,
+      options.selectionOnly ? options.selection : undefined,
+      options.applyBoundaryEdges ?? true,
+      kernelOptions,
+    ),
+    options,
+  );
+}
+
+/** Production worker path; coordinates publish only after all partitions finish. */
+export async function reduceScanNoiseAsync(
+  positions: Positions,
+  options: NoiseOptions = {},
+): Promise<ScanToolResult> {
+  const { t, iterations, kernelOptions } = prepareNoise(positions, options);
+  const vertices = await nativeNoiseVerticesAsync(
+    t,
+    iterations,
+    options.selectionOnly ? options.selection : undefined,
+    options.applyBoundaryEdges ?? true,
+    kernelOptions,
+  );
+  return finishNoise(t, vertices, options);
 }

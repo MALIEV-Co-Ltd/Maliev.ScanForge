@@ -8,7 +8,10 @@ import whole3 from "./fixtures/noise-annular-whole-3.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
-import { reduceScanNoise } from "../src/scan-tools-reduction";
+import {
+  reduceScanNoise,
+  reduceScanNoiseAsync,
+} from "../src/scan-tools-reduction";
 
 const unpack = (vertices: ArrayLike<number>, triangles: Uint32Array) =>
   Array.from(triangles).flatMap((id) => [
@@ -16,6 +19,54 @@ const unpack = (vertices: ArrayLike<number>, triangles: Uint32Array) =>
     vertices[id * 3 + 1],
     vertices[id * 3 + 2],
   ]);
+
+it.each([fixture, whole2, whole3, selected1, selected3, boundaryOff])(
+  "production async noise path matches native $iterations-iteration capture, selection-only $selectionOnly",
+  async (capture) => {
+    const result = await reduceScanNoiseAsync(
+      new Float32Array(capture.positions),
+      {
+        iterations: capture.iterations,
+        selection:
+          "selection" in capture
+            ? new Uint8Array(capture.selection as number[])
+            : undefined,
+        selectionOnly: capture.selectionOnly,
+        applyBoundaryEdges: capture.applyBoundaryEdges,
+      },
+    );
+    expect(Array.from(result.positions)).toEqual(capture.nativeOutput);
+  },
+);
+
+it("async noise keeps topology reusable and never publishes an aborted successor", async () => {
+  const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const source = new Float32Array(selected3.positions);
+  const first = await reduceScanNoiseAsync(source, {
+    selectionOnly: true,
+    selection: new Uint8Array(selected3.selection),
+    iterations: 3,
+    topologyCache,
+  });
+  const edges = topologyCache.topology?.edges;
+  const stages: string[] = [];
+  await reduceScanNoiseAsync(first.positions, {
+    iterations: 2,
+    topologyCache,
+    onProgress: (_, stage) => stages.push(stage),
+  });
+  expect(topologyCache.topology?.edges).toBe(edges);
+  expect(stages.some((stage) => /Welding|Building topology/.test(stage))).toBe(
+    false,
+  );
+  const before = topologyCache.positions;
+  const controller = new AbortController();
+  controller.abort();
+  await expect(
+    reduceScanNoiseAsync(before!, { topologyCache, signal: controller.signal }),
+  ).rejects.toThrow("cancelled");
+  expect(topologyCache.positions).toBe(before);
+});
 
 it.each([fixture, whole2, whole3, boundaryOff])(
   "matches native whole-mesh $iterations-iteration capture, boundary smoothing $applyBoundaryEdges",

@@ -1,5 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
 import { runScanTool } from "./scan-tools";
+import { reduceScanNoiseAsync } from "./scan-tools-reduction";
 import { runScanEdit } from "./scan-edit";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { morphTriangleSelection } from "./selection-morphology";
@@ -73,10 +74,14 @@ scope.onmessage = async ({ data: incoming }) => {
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
     if (request.kind === "scanTools") {
-      const outcome = runScanTool(request, {
-        onProgress: progress,
-        topologyCache,
-      });
+      const options = { onProgress: progress, topologyCache };
+      const outcome =
+        request.operation.kind === "reduceNoise"
+          ? await reduceScanNoiseAsync(request.positions, {
+              ...request.operation,
+              ...options,
+            })
+          : runScanTool(request, options);
       result.positions = outcome.positions;
       result.diagnostics.summary = outcome.summary;
     } else if (request.kind === "scanEdit") {

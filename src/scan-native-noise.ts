@@ -82,7 +82,7 @@ function noiseNormals(t: MeshTopology, options: MeshProcessingOptions) {
   return out;
 }
 
-function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
+export function noiseWeights(t: MeshTopology, options: MeshProcessingOptions) {
   const normals = noiseNormals(t, options);
   const angles = new Float64Array(t.vertices.length / 3).fill(FLOAT_MAX);
   for (let i = 0; i < t.triangles.length; i += 3) {
