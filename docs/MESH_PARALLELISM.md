@@ -1,5 +1,13 @@
 # Mesh processing parallelism
 
+## Selected Reduce Noise correction verification
+
+The two-worker correction pass now copies unchanged coordinates with a typed-array operation and skips arithmetic for unmarked, isolated and boundary-locked vertices. Movable vertices retain the original neighbor order, double accumulation, Float32 publication and two barriers per iteration. The retained selection-only one/three-iteration native exports still match byte-for-byte in real CPU threads, including connected neighborhoods crossing shards and reused workers switching selection/boundary settings. A regression also checks that inactive coordinates preserve signed-zero bytes without reading invalid scratch means.
+
+A bounded correction-phase benchmark on 300,000 vertices with 1,000 movable vertices measured medians of 4.91 ms before and 2.30 ms after, with identical bytes in all 12 comparisons. This excludes topology, means, worker transfer and rendering and establishes no end-to-end browser speedup.
+
+The refreshed application was checked with the retained 96-facet source and exact 16 selected facet IDs. A three-iteration selection-only edit with boundary smoothing and deviation measurement enabled exported 864 coordinates matching the native export exactly. This small browser case uses the serial fallback; large admitted jobs use the separately tested two-worker path. The source and six native export hashes were rechecked. No fresh native capture for additional iteration counts was taken. Selection-only two/four/five iterations and arbitrary imported meshes remain outside the native-output gate.
+
 Screen selection uses two reusable workers for meshes with at least 100,000 triangles on devices reporting at least four logical CPUs. Devices reporting less than 8 GB memory use one worker. The pool is capped at two and a conservative 128 MiB geometry/BVH budget; very large meshes fall back to one. Preparation starts while choosing the selection tool. Workers expire after 60 seconds idle, are cancelled together on supersession or disposal, and queries have a 120-second timeout.
 
 Each worker retains the whole visible mesh for cross-partition occlusion, but projects and tests only its assigned facet range. Masks are merged in original facet order after all workers finish. Partitioning changes neither visibility nor selection semantics. Small meshes retain one worker to avoid parallel startup overhead.

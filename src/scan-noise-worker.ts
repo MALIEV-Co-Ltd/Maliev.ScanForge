@@ -33,9 +33,17 @@ export function noiseRange(
   neededMeans?: Uint8Array,
 ): Float64Array<ArrayBuffer> {
   const out = new Float64Array((end - begin) * 3);
+  // Preserve unchanged coordinates in one typed-array copy. Selection-only
+  // corrections need no arithmetic for unmarked or boundary-locked vertices.
+  if (means) out.set(vertices.subarray(begin * 3, end * 3));
   for (let id = begin; id < end; id++) {
     if (!means && neededMeans && !neededMeans[id]) continue;
     const count = rings.offsets[id + 1] - rings.offsets[id];
+    if (
+      means &&
+      (!count || !movable?.[id] || (!applyBoundaryEdges && rings.boundary[id]))
+    )
+      continue;
     for (let axis = 0; axis < 3; axis++) {
       const index = id * 3 + axis;
       let value = 0;

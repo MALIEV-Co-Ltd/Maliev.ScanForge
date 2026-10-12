@@ -20,6 +20,28 @@ import selected3 from "./fixtures/noise-annular-selected-3.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
 
 const captures = [base, whole2, whole3, selected1, selected3, boundaryOff];
+it("correction copies inactive coordinates exactly without reading their means", () => {
+  const rings = {
+    offsets: new Uint32Array([0, 1, 2, 3]),
+    neighbors: new Uint32Array([1, 0, 0]),
+    boundary: new Uint8Array([0, 1, 0]),
+  };
+  const vertices = new Float64Array([1, -0, 3, -0, 5, 6, 7, 8, -0]);
+  const means = new Float64Array(9).fill(NaN);
+  const result = noiseRange(
+    rings,
+    1,
+    3,
+    vertices,
+    means,
+    new Float64Array(3).fill(NaN),
+    new Uint8Array([0, 1, 0]),
+    false,
+  );
+  expect(new Uint8Array(result.buffer)).toEqual(
+    new Uint8Array(vertices.slice(3).buffer),
+  );
+});
 function identical(a: Float64Array, b: Float64Array) {
   const left = new Uint8Array(a.buffer, a.byteOffset, a.byteLength);
   const right = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
