@@ -1,4 +1,4 @@
-import { Circle, Eye, EyeOff, MousePointer2, Waves, X } from "lucide-react";
+import { ScanToolIcon } from "./ScanToolIcon";
 
 export function ScanQuickTools(props: {
   x: number;
@@ -31,7 +31,7 @@ export function ScanQuickTools(props: {
         aria-label="Delete selected"
         onClick={props.onDelete}
       >
-        <X size={17} />
+        <ScanToolIcon name="delete" />
       </button>
       <button
         title="Defeature selected area"
@@ -39,7 +39,7 @@ export function ScanQuickTools(props: {
         disabled={!props.onDefeature}
         onClick={props.onDefeature}
       >
-        <Circle size={17} />
+        <ScanToolIcon name="defeature" />
       </button>
       <button
         title="Smooth selected area"
@@ -47,28 +47,28 @@ export function ScanQuickTools(props: {
         disabled={!props.onSmooth}
         onClick={props.onSmooth}
       >
-        <Waves size={17} />
+        <ScanToolIcon name="smooth" />
       </button>
       <button
         title="Hide selected"
         aria-label="Hide selected"
         onClick={props.onHide}
       >
-        <EyeOff size={17} />
+        <ScanToolIcon name="hide" />
       </button>
       <button
         title="Invert selection"
         aria-label="Invert selection"
         onClick={props.onInvert}
       >
-        <MousePointer2 size={17} />
+        <ScanToolIcon name="invert" />
       </button>
       <button
         title="Isolate selected"
         aria-label="Isolate selected"
         onClick={props.onIsolate}
       >
-        <Eye size={17} />
+        <ScanToolIcon name="isolate" />
       </button>
     </div>
   );

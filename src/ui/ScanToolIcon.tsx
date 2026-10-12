@@ -1,0 +1,374 @@
+import type { ReactNode } from "react";
+import "./ScanToolIcon.css";
+
+export type ScanIconName =
+  | "wand"
+  | "brush"
+  | "freehand"
+  | "line"
+  | "rectangle"
+  | "circle"
+  | "through"
+  | "grow"
+  | "shrink"
+  | "boundary"
+  | "all"
+  | "isolate"
+  | "hide"
+  | "reveal"
+  | "revealSelected"
+  | "invert"
+  | "clear"
+  | "clip"
+  | "save"
+  | "cut"
+  | "copy"
+  | "delete"
+  | "smooth"
+  | "defeature"
+  | "split"
+  | "components"
+  | "holes"
+  | "boundaries";
+
+/** Small mesh diagrams: gold denotes the selected triangles, cyan the operation. */
+export function ScanToolIcon({
+  name,
+  size = 22,
+}: {
+  name: ScanIconName;
+  size?: number;
+}) {
+  const mesh = (
+    <g stroke="#8babbc" fill="#344653">
+      <path d="M3 5h18v14H3z" />
+      <path d="m3 5 9 7 9-7M3 19l9-7 9 7M12 12V5" />
+    </g>
+  );
+  const selected = <path d="m3 19 9-7 9 7Z" fill="#f5c65d" stroke="#ffe09a" />;
+  const eye = (
+    <g stroke="#86c8ff" fill="none">
+      <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" fill="#f5c65d" stroke="#ffe09a" />
+    </g>
+  );
+  let drawing: ReactNode;
+  switch (name) {
+    case "wand":
+      drawing = (
+        <>
+          {mesh}
+          <path d="m3 19 9-7 9 7Z" fill="#f5c65d" />
+          <path d="m6 19 11-13" stroke="#eaf7ff" strokeWidth="3" />
+          <path
+            d="m17 2 1 3 3 1-3 1-1 3-1-3-3-1 3-1Z"
+            fill="#ffd56d"
+            stroke="#ffd56d"
+          />
+        </>
+      );
+      break;
+    case "brush":
+    case "freehand":
+      drawing = (
+        <>
+          <path
+            d="M4 9c-4 4 0 11 7 11 9 0 11-8 4-11-5-3-8 4-11 0Z"
+            fill={name === "brush" ? "#f5c65d" : "none"}
+            stroke="#f5c65d"
+            strokeDasharray={name === "freehand" ? "2 2" : undefined}
+          />
+          <path d="m10 12 8-9 3 3-8 9" fill="#7bd7e8" stroke="#d4f8ff" />
+          <path d="m10 12-3 5 6-2" fill="#eef7fa" />
+        </>
+      );
+      break;
+    case "line":
+      drawing = (
+        <>
+          <path d="m4 18 15-12" stroke="#f5c65d" strokeWidth="5" />
+          <circle cx="4" cy="18" r="2" fill="#f3f9fc" />
+          <path d="m15 6 4-4 3 3-4 4Z" fill="#7bd7e8" stroke="#d4f8ff" />
+        </>
+      );
+      break;
+    case "rectangle":
+    case "circle":
+      drawing = (
+        <>
+          {mesh}
+          {name === "rectangle" ? (
+            <rect
+              x="5"
+              y="7"
+              width="14"
+              height="10"
+              fill="#f5c65d"
+              fillOpacity=".6"
+              stroke="#8de7fa"
+              strokeDasharray="2 2"
+            />
+          ) : (
+            <circle
+              cx="12"
+              cy="12"
+              r="7"
+              fill="#f5c65d"
+              fillOpacity=".6"
+              stroke="#8de7fa"
+              strokeDasharray="2 2"
+            />
+          )}
+        </>
+      );
+      break;
+    case "through":
+      drawing = (
+        <>
+          <path d="M2 5h13v13H2Z" fill="#344653" stroke="#8babbc" />
+          <path
+            d="M8 9h13v13H8Z"
+            fill="#f5c65d"
+            fillOpacity=".45"
+            stroke="#f5c65d"
+            strokeDasharray="2 2"
+          />
+          <path d="m4 3 16 17m-5 0h5v-5" stroke="#8de7fa" />
+        </>
+      );
+      break;
+    case "grow":
+    case "shrink":
+      drawing = (
+        <>
+          {mesh}
+          {selected}
+          <path
+            d={
+              name === "grow"
+                ? "M8 10 3 3m0 5V3h5m8 7 5-7m-5 0h5v5"
+                : "m3 3 5 7m-5 0h5V5m13-2-5 7m0-5v5h5"
+            }
+            stroke="#8de7fa"
+            strokeWidth="2"
+            fill="none"
+          />
+        </>
+      );
+      break;
+    case "boundary":
+    case "boundaries":
+      drawing = (
+        <>
+          {mesh}
+          <path
+            d="M3 5h18v14H3Z"
+            stroke="#f5c65d"
+            strokeWidth="2.5"
+            fill="none"
+          />
+          <g fill="#8de7fa">
+            {[
+              [3, 5],
+              [21, 5],
+              [21, 19],
+              [3, 19],
+            ].map(([cx, cy]) => (
+              <circle key={`${cx},${cy}`} cx={cx} cy={cy} r="1.8" />
+            ))}
+          </g>
+        </>
+      );
+      break;
+    case "all":
+      drawing = (
+        <g fill="#f5c65d" stroke="#ffe09a">
+          <path d="M3 5h18v14H3z" />
+          <path d="m3 5 9 7 9-7M3 19l9-7 9 7M12 12V5" />
+        </g>
+      );
+      break;
+    case "isolate":
+      drawing = (
+        <>
+          {selected}
+          <path
+            d="M7 3H2v5m15-5h5v5M2 16v5h5m15-5v5h-5"
+            fill="none"
+            stroke="#8de7fa"
+          />
+          <path
+            d="m6 6 6 6 6-6Z"
+            stroke="#8babbc"
+            strokeDasharray="2 2"
+            fill="none"
+          />
+        </>
+      );
+      break;
+    case "hide":
+    case "reveal":
+    case "revealSelected":
+      drawing = (
+        <>
+          {eye}
+          {name === "hide" && (
+            <path d="m3 3 18 18" stroke="#f48d81" strokeWidth="2.5" />
+          )}
+          {name === "reveal" && (
+            <path d="M18 2v6m-3-3h6" stroke="#9adeb0" strokeWidth="2" />
+          )}
+          {name === "revealSelected" && (
+            <path d="m15 20 3-5 4 5Z" fill="#f5c65d" stroke="#ffe09a" />
+          )}
+        </>
+      );
+      break;
+    case "invert":
+      drawing = (
+        <>
+          <path d="M3 5h18v14H3Z" fill="#f5c65d" stroke="#ffe09a" />
+          <path d="m3 19 9-14 9 14Z" fill="#344653" stroke="#8babbc" />
+          <path
+            d="M5 2h14m-3-2 3 2-3 2M19 22H5m3-2-3 2 3 2"
+            stroke="#8de7fa"
+            fill="none"
+          />
+        </>
+      );
+      break;
+    case "clear":
+    case "delete":
+      drawing = (
+        <>
+          {mesh}
+          {selected}
+          <path
+            d="m8 7 9 9m0-9-9 9"
+            stroke={name === "delete" ? "#ff837b" : "#e8f0f5"}
+            strokeWidth="2.7"
+          />
+        </>
+      );
+      break;
+    case "clip":
+      drawing = (
+        <>
+          <path
+            d="m3 7 9-5 9 5v11l-9 4-9-4Z M3 7l9 5 9-5M12 12v10"
+            stroke="#f5c65d"
+            fill="#344653"
+          />
+          <path
+            d="m2 15 14-7 6 4-14 7Z"
+            fill="#7bd7e8"
+            fillOpacity=".65"
+            stroke="#8de7fa"
+          />
+        </>
+      );
+      break;
+    case "save":
+      drawing = (
+        <>
+          <path d="M4 3h14l3 3v15H4Z" fill="#344653" stroke="#8de7fa" />
+          <path d="M8 3v6h9V3M8 21v-8h9v8" stroke="#8de7fa" fill="none" />
+          <path d="m9 19 3-5 4 5Z" fill="#f5c65d" />
+        </>
+      );
+      break;
+    case "cut":
+    case "copy":
+      drawing = (
+        <>
+          {mesh}
+          {selected}
+          <path d="m14 6 5 3 4-6" stroke="#8de7fa" fill="none" />
+          <path d="m15 2 6 2-1 6Z" fill="#f5c65d" stroke="#ffe09a" />
+          {name === "cut" && (
+            <path d="M2 13h20" stroke="#ff9e86" strokeDasharray="2 2" />
+          )}
+        </>
+      );
+      break;
+    case "smooth":
+      drawing = (
+        <>
+          <path d="m2 9 5-5 5 8 5-8 5 5" stroke="#8babbc" fill="none" />
+          <path
+            d="M2 18c5-12 15-12 20 0"
+            stroke="#8de7fa"
+            strokeWidth="2.5"
+            fill="none"
+          />
+          <path d="m10 3 2 4 2-4" stroke="#f5c65d" fill="none" />
+        </>
+      );
+      break;
+    case "defeature":
+      drawing = (
+        <>
+          <path d="M2 19h20M2 9h6l4-6 4 6h6" stroke="#8babbc" fill="none" />
+          <path d="M3 14h18" stroke="#8de7fa" strokeWidth="2.5" />
+          <path d="m9 3 6 6m0-6-6 6" stroke="#ff9e86" />
+        </>
+      );
+      break;
+    case "split":
+      drawing = (
+        <>
+          {mesh}
+          <path
+            d="m11 2-3 20 5-1 3-18Z"
+            fill="#7bd7e8"
+            fillOpacity=".7"
+            stroke="#8de7fa"
+          />
+          <path d="m3 12 3-2m-3 2 3 2m15-2-3-2m3 2-3 2" stroke="#f5c65d" />
+        </>
+      );
+      break;
+    case "components":
+      drawing = (
+        <>
+          <path d="m2 10 5-7 5 7-5 5Z" fill="#f5c65d" stroke="#ffe09a" />
+          <path d="m13 17 5-7 5 7-5 5Z" fill="#7bd7e8" stroke="#d4f8ff" />
+          <path d="m2 10 5-2 5 2M7 8V3m6 14 5-2 5 2m-5-2v-5" stroke="#344653" />
+        </>
+      );
+      break;
+    case "holes":
+      drawing = (
+        <>
+          {mesh}
+          <circle
+            cx="12"
+            cy="12"
+            r="5"
+            fill="#202326"
+            stroke="#f5c65d"
+            strokeWidth="2"
+          />
+          <path d="M12 8v8m-4-4h8" stroke="#8de7fa" />
+        </>
+      );
+      break;
+  }
+  return (
+    <svg
+      className="scan-feature-icon"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      data-scan-icon={name}
+    >
+      {drawing}
+    </svg>
+  );
+}

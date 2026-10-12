@@ -3,20 +3,7 @@ import { useState } from "react";
 import { ScanDiagnostics } from "./ScanDiagnostics";
 import type { Entity } from "../types";
 import type { ScanClipBounds } from "../scan-clip-box";
-import {
-  Circle,
-  MousePointer2,
-  Paintbrush,
-  RectangleHorizontal,
-  WandSparkles,
-  PenLine,
-  Minus,
-  Eye,
-  EyeOff,
-  Copy,
-  Scissors,
-  Trash2,
-} from "lucide-react";
+import { ScanToolIcon } from "./ScanToolIcon";
 
 export type ScanSelectionTool =
   "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand";
@@ -77,16 +64,15 @@ export function EditScanDialog(props: EditScanDialogProps) {
     [smoothIterations, setSmoothIterations] = useState(3),
     [cutter, setCutter] = useState("");
   const tools = [
-    { id: "wand", label: "Magic wand", Icon: WandSparkles },
-    { id: "brush", label: "Free hand (filled)", Icon: Paintbrush },
-    { id: "freehand", label: "Free hand", Icon: PenLine },
-    { id: "line", label: "Select by drawing a line", Icon: Minus },
+    { id: "wand", label: "Magic wand" },
+    { id: "brush", label: "Free hand (filled)" },
+    { id: "freehand", label: "Free hand" },
+    { id: "line", label: "Select by drawing a line" },
     {
       id: "rectangle",
       label: "Select by drawing a rectangle",
-      Icon: RectangleHorizontal,
     },
-    { id: "circle", label: "Select by drawing a circle", Icon: Circle },
+    { id: "circle", label: "Select by drawing a circle" },
   ] as const;
   return (
     <section className="edit-scan-dialog" aria-label={`Edit ${props.name}`}>
@@ -100,7 +86,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
           role="group"
           aria-label="Selection tools"
         >
-          {tools.map(({ id, label, Icon }) => {
+          {tools.map(({ id, label }) => {
             const implemented = true;
             return (
               <button
@@ -113,7 +99,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
                   implemented && props.onTool(id as ScanSelectionTool)
                 }
               >
-                <Icon size={21} />
+                <ScanToolIcon name={id} />
               </button>
             );
           })}
@@ -123,7 +109,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             aria-pressed={props.through}
             onClick={() => props.onThrough(!props.through)}
           >
-            <Copy size={21} />
+            <ScanToolIcon name="through" />
           </button>
         </div>
         {props.tool === "wand" ? (
@@ -181,7 +167,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             aria-label="Enlarge selection"
             onClick={() => props.onMorph?.("grow")}
           >
-            <Circle size={20} />
+            <ScanToolIcon name="grow" />
           </button>
           <button
             disabled={!props.selectedCount || !props.onMorph}
@@ -189,7 +175,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             aria-label="Shrink selection"
             onClick={() => props.onMorph?.("shrink")}
           >
-            <Circle size={14} />
+            <ScanToolIcon name="shrink" />
           </button>
           <button
             aria-label="Select boundaries"
@@ -197,7 +183,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.onMorph}
             onClick={() => props.onMorph?.("boundary")}
           >
-            <PenLine size={20} />
+            <ScanToolIcon name="boundary" />
           </button>
           <button
             aria-label="Select all triangles"
@@ -205,7 +191,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.onSelectAll}
             onClick={props.onSelectAll}
           >
-            <Copy size={20} />
+            <ScanToolIcon name="all" />
           </button>
           <button
             aria-label="Isolate selected"
@@ -213,7 +199,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.selectedCount}
             onClick={props.onIsolate}
           >
-            <MousePointer2 size={20} />
+            <ScanToolIcon name="isolate" />
           </button>
           <button
             aria-label="Hide selected"
@@ -221,7 +207,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.selectedCount}
             onClick={props.onHide}
           >
-            <EyeOff size={20} />
+            <ScanToolIcon name="hide" />
           </button>
           <button
             aria-label="Show hidden"
@@ -229,7 +215,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.hiddenCount}
             onClick={props.onReveal}
           >
-            <Eye size={20} />
+            <ScanToolIcon name="reveal" />
           </button>
           <button
             aria-label="Show selected triangles"
@@ -237,14 +223,14 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.hiddenCount || !props.onRevealSelected}
             onClick={props.onRevealSelected}
           >
-            <Eye size={20} />
+            <ScanToolIcon name="revealSelected" />
           </button>
           <button
             aria-label="Invert selection"
             title="Invert selection"
             onClick={props.onInvert}
           >
-            <Circle size={20} />
+            <ScanToolIcon name="invert" />
           </button>
           <button
             aria-label="Deselect all"
@@ -252,7 +238,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!props.selectedCount}
             onClick={props.onClear}
           >
-            <Minus size={20} />
+            <ScanToolIcon name="clear" />
           </button>
         </div>
         <div className="button-row">
@@ -261,13 +247,13 @@ export function EditScanDialog(props: EditScanDialogProps) {
             aria-pressed={!!props.clip}
             onClick={() => props.onClip?.(props.clip ? null : props.clipFull!)}
           >
-            Clipping Box…
+            <ScanToolIcon name="clip" size={18} /> Clipping Box…
           </button>
           <button
             disabled={!props.selectedCount}
             onClick={() => setSaving(true)}
           >
-            Save selection status…
+            <ScanToolIcon name="save" size={18} /> Save selection status…
           </button>
         </div>
         {props.clip && props.clipFull && (
@@ -357,10 +343,10 @@ export function EditScanDialog(props: EditScanDialogProps) {
           <legend>New mesh from selection</legend>
           <div className="button-row">
             <button disabled={!props.selectedCount} onClick={props.onCut}>
-              <Scissors size={14} /> Cut &amp; Create
+              <ScanToolIcon name="cut" size={18} /> Cut &amp; Create
             </button>
             <button disabled={!props.selectedCount} onClick={props.onCopy}>
-              <Copy size={14} /> Copy &amp; Create
+              <ScanToolIcon name="copy" size={18} /> Copy &amp; Create
             </button>
           </div>
         </fieldset>
@@ -382,7 +368,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             aria-label="Quick selection tools"
           >
             <button disabled={!props.selectedCount} onClick={props.onDelete}>
-              <Trash2 size={14} /> Delete selected triangles
+              <ScanToolIcon name="delete" size={18} /> Delete selected triangles
             </button>
             <button disabled={!props.canUndo} onClick={props.onUndo}>
               Undo selection
@@ -440,13 +426,14 @@ export function EditScanDialog(props: EditScanDialogProps) {
               disabled={!props.selectedCount || !props.onSmooth}
               onClick={() => props.onSmooth?.(smoothStrength, smoothIterations)}
             >
-              Smooth selected area
+              <ScanToolIcon name="smooth" size={18} /> Smooth selected area
             </button>
             <button
               disabled={!props.selectedCount || !props.onDefeature}
               onClick={props.onDefeature}
             >
-              Defeature selected area
+              <ScanToolIcon name="defeature" size={18} /> Defeature selected
+              area
             </button>
           </div>
         </fieldset>
@@ -471,7 +458,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
             disabled={!cutter || !props.onSplit}
             onClick={() => props.onSplit?.(cutter)}
           >
-            Split with selected object
+            <ScanToolIcon name="split" size={18} /> Split with selected object
           </button>
         </fieldset>
         <p className="muted">Alt + left-drag removes selection.</p>

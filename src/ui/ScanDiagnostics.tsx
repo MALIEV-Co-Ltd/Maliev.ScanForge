@@ -1,3 +1,4 @@
+import { ScanToolIcon } from "./ScanToolIcon";
 import type { Positions } from "../types";
 import { useEffect, useState } from "react";
 import {
@@ -55,7 +56,10 @@ export function ScanDiagnostics({
         },
       ].map(({ label, value, help, section }) => (
         <div key={label}>
-          <span title={help}>{label}</span>
+          <span title={help}>
+            <ScanToolIcon name={section} size={20} />
+            {label}
+          </span>
           <output aria-label={`${label} count`} title={help}>
             {value?.toLocaleString() ??
               (state?.phase === "error" ? "Unavailable" : "Calculating…")}
