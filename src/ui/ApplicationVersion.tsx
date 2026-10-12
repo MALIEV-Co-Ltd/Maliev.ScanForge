@@ -11,8 +11,8 @@ export function ApplicationVersion() {
       title="View changelog on GitHub"
       aria-label={`Version ${version}, view changelog on GitHub`}
     >
+      <span className="application-version-badge">v{version}</span>
       <Github size={14} aria-hidden="true" />
-      <span>v{version}</span>
     </a>
   );
 }

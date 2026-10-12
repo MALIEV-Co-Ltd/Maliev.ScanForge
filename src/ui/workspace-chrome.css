@@ -43,6 +43,15 @@
   text-decoration: none;
   white-space: nowrap;
 }
+.application-version-badge {
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--hover);
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1;
+}
 .application-version svg {
   color: #72bd89;
 }

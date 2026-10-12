@@ -14,6 +14,39 @@ const ready: RibbonState = {
   canRedo: true,
 };
 describe("ribbon command inventory", () => {
+  it("keeps Main to common workflows and advanced tools on dedicated tabs", () => {
+    expect(
+      RIBBON_TABS[0].groups.flatMap((group) =>
+        group.tools.map((tool) => tool.id),
+      ),
+    ).toEqual([
+      "newDocument",
+      "open",
+      "save",
+      "editScan",
+      "cleanup",
+      "align",
+      "sketch2d",
+      "fitSurface",
+      "fitView",
+      "measure",
+      "exportStep",
+    ]);
+    const otherCommands = RIBBON_TABS.slice(1).flatMap((tab) =>
+      tab.groups.flatMap((group) => group.tools.map((tool) => tool.id)),
+    );
+    for (const id of [
+      "repairMesh",
+      "segmentMesh",
+      "fitCylinder",
+      "extrude",
+      "loft",
+      "deviation",
+      "section",
+      "prepareScan",
+    ])
+      expect(otherCommands).toContain(id);
+  });
   it("offers a new document without requiring an object and disables it during an operation", () => {
     const metadata = getRibbonToolMetadata("newDocument")!;
     const actions = { newDocument: vi.fn() };

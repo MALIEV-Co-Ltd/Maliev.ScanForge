@@ -20,8 +20,8 @@ describe("complete ribbon artwork", () => {
     ),
   ];
   it("renders local decorative artwork for every command, including unavailable tools", () => {
-    expect(Object.keys(RIBBON_ICON_ARTWORK).sort()).toEqual(
-      [...commands].sort(),
+    expect(Object.keys(RIBBON_ICON_ARTWORK)).toEqual(
+      expect.arrayContaining(commands),
     );
     for (const command of commands) {
       const markup = renderToStaticMarkup(

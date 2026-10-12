@@ -151,9 +151,6 @@ export function Ribbon({
           </div>
         )}
       </div>
-      <div className="ribbon-verification-legend">
-        Verified commands enabled · In progress and planned commands disabled
-      </div>
       <div className="ribbon-tools-shell">
         <div
           ref={tools}

@@ -35,24 +35,17 @@ describe("ribbon verification gate", () => {
   });
   it("covers additional screenshot commands in their matching tabs", () => {
     const expected: Record<string, string[]> = {
-      main: [
-        "prepareScan",
-        "deselectAll",
-        "extractPrimitives",
-        "constructTools",
-        "alignTools",
+      scan: ["editScan", "repairMesh", "segmentMesh", "align"],
+      cad: [
         "sketch2d",
         "multipleSections",
-        "surfacingTools",
-        "autoFreeform",
         "moveFace",
         "trim",
         "combine",
         "cut",
         "intersect",
-        "patternTools",
-        "edgeTools",
       ],
+      freeform: ["autoFreeform"],
       construct: ["plane2dSketch"],
       surfacing: ["surface2dSketch"],
       settings: ["millimetres", "inches", "metres", "language", "options"],
@@ -89,7 +82,7 @@ describe("ribbon verification gate", () => {
           actions={actions}
         />,
       );
-      expect(markup).toContain("In progress and planned commands disabled");
+      expect(markup).not.toContain("ribbon-verification-legend");
       for (const tool of commands) {
         const button = markup.match(
           new RegExp(`<button[^>]*data-command="${tool.id}"[^>]*>`),
