@@ -12,18 +12,25 @@ function check(options: MeshProcessingOptions, index = 0) {
 function noiseNormals(t: MeshTopology, options: MeshProcessingOptions) {
   const out = new Float32Array(t.vertices.length);
   const v = t.vertices;
-  const point = (id: number) => [v[id * 3], v[id * 3 + 1], v[id * 3 + 2]];
+  const ids = new Uint32Array(3);
+  const p = new Float64Array(9);
+  const face = new Float64Array(3);
   for (let i = 0; i < t.triangles.length; i += 3) {
     check(options, i / 3);
-    const ids = [t.triangles[i], t.triangles[i + 1], t.triangles[i + 2]];
-    const p = ids.map(point);
-    const a = p[1].map((x, k) => x - p[0][k]);
-    const b = p[2].map((x, k) => x - p[0][k]);
-    const face = [
-      a[1] * b[2] - a[2] * b[1],
-      a[2] * b[0] - a[0] * b[2],
-      a[0] * b[1] - a[1] * b[0],
-    ];
+    for (let corner = 0; corner < 3; corner++) {
+      ids[corner] = t.triangles[i + corner];
+      for (let axis = 0; axis < 3; axis++)
+        p[corner * 3 + axis] = v[ids[corner] * 3 + axis];
+    }
+    const ax = p[3] - p[0],
+      ay = p[4] - p[1],
+      az = p[5] - p[2];
+    const bx = p[6] - p[0],
+      by = p[7] - p[1],
+      bz = p[8] - p[2];
+    face[0] = ay * bz - az * by;
+    face[1] = az * bx - ax * bz;
+    face[2] = ax * by - ay * bx;
     const length = Math.sqrt(
       face[0] * face[0] + face[1] * face[1] + face[2] * face[2],
     );
@@ -33,11 +40,18 @@ function noiseNormals(t: MeshTopology, options: MeshProcessingOptions) {
         face[axis] = f32(face[axis] / denominator);
     }
     for (let corner = 0; corner < 3; corner++) {
-      const a = p[(corner + 1) % 3].map((x, k) => f32(x - p[corner][k]));
-      const b = p[(corner + 2) % 3].map((x, k) => f32(x - p[corner][k]));
-      const dot = a[1] * b[1] + a[0] * b[0] + a[2] * b[2];
-      const aa = a[1] * a[1] + a[0] * a[0] + a[2] * a[2];
-      const bb = b[1] * b[1] + b[0] * b[0] + b[2] * b[2];
+      const origin = corner * 3;
+      const next = ((corner + 1) % 3) * 3;
+      const last = ((corner + 2) % 3) * 3;
+      const ax = f32(p[next] - p[origin]);
+      const ay = f32(p[next + 1] - p[origin + 1]);
+      const az = f32(p[next + 2] - p[origin + 2]);
+      const bx = f32(p[last] - p[origin]);
+      const by = f32(p[last + 1] - p[origin + 1]);
+      const bz = f32(p[last + 2] - p[origin + 2]);
+      const dot = ay * by + ax * bx + az * bz;
+      const aa = ay * ay + ax * ax + az * az;
+      const bb = by * by + bx * bx + bz * bz;
       const angle =
         aa < Number.EPSILON || bb < Number.EPSILON
           ? 0
