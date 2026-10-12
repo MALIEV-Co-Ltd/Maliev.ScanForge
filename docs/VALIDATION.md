@@ -543,3 +543,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Native analysis initially failed its unchanged 3072 MiB guard; no worker launched. After capacity recovered, one finite REA session recovered the mapping routine and identified query-context and spatial-query dependencies. It closed successfully; its recorded provider descendants were verified absent. The finite native gate probe released its executable image and its exact PID absence was recorded.
 - The loopback preview remains under its recorded two-hour lease. UI bundle content is unchanged; gate and numerical components are not yet bound to reconstruction UI. Full guide mapping, native cache lifecycle, quad/NURBS generation and complete application/workflow parity remain incomplete.
 - `npm test`: 2,668 passed in 95 files. Targeted Prettier and `git diff --check` passed; preview returned HTTP 200.
+
+### Recovered triangle guide mapping storage - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-guide-mapping.test.ts tests/field-guide-refresh.test.ts tests/field-curvature-associations.test.ts tests/field-curvature-paths.test.ts --maxWorkers=1`: 668 passed in 4 files.
+- `npm test`: 3,154 passed in 96 files.
+- All 480 complete original mapping-storage captures match stored/projected points, surface faces, mapping kinds/targets, metadata and query input coordinates exactly. Original storage/snapping/closure instructions run with supplied query context/results and owned preallocated output capacity. This excludes original spatial search, capacity growth and installed application workflows.
+- Six additional tests cover failed-query filtering, matching metadata, inclusive snapping and first-corner ties, original-coordinate storage, prior-output/single-point closure, independent storage/input guards and refresh-to-mapping-to-surface-association integration.
+- One bounded REA session recovered the query-context accessor and point-query traversal. It closed successfully; its recorded provider descendants were verified absent. The unchanged 3072 MiB guard admitted the finite mapping probe; executable memory was released and exact PID absence was recorded.
+- Targeted Prettier and `git diff --check` passed. The loopback preview remained HTTP 200 under its recorded two-hour lease. UI bundle content remains unchanged because numerical components are not yet bound to reconstruction UI. Native spatial tree/bounds/triangle-query helpers, cache lifecycle, quad/NURBS generation, full feature parity, physical SpaceMouse and full browser STL workflows over 1GB remain unverified or incomplete.
