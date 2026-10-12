@@ -207,9 +207,13 @@ function smoothing(
     }
     vertices = next;
   }
-  const positions = finiteOutput(
-    Array.from(t.triangles).flatMap((id) => pointAt(vertices, id)),
-  );
+  const expanded = new Float32Array(t.triangles.length * 3);
+  for (let corner = 0; corner < t.triangles.length; corner++) {
+    const vertex = t.triangles[corner] * 3;
+    for (let axis = 0; axis < 3; axis++)
+      expanded[corner * 3 + axis] = vertices[vertex + axis];
+  }
+  const positions = finiteOutput(expanded);
   // Moving vertices preserves their indexed connectivity. Refresh geometric
   // diagnostics at output precision without rewelding the successor mesh.
   if (o.topologyCache) {
@@ -266,7 +270,6 @@ export function runScanEdit(
         : options.onProgress,
   };
   const t = analyzeMesh(r.positions, o),
-    inventory = inventoryOf(t),
     count = r.positions.length / 9;
   if (
     r.selection &&
@@ -277,7 +280,8 @@ export function runScanEdit(
       "Triangle selection mask must contain one 0 or 1 per triangle.",
     );
   checkProgress(o, 0, "Preparing scan edit");
-  if (r.action === "inventory")
+  if (r.action === "inventory") {
+    const inventory = inventoryOf(t);
     return {
       inventory,
       diagnostics: {
@@ -286,6 +290,7 @@ export function runScanEdit(
         holes: t.boundaryLoops.length,
       },
     };
+  }
   if (r.action === "fillHoles") return runHoleFill(r, t, o);
   if (r.action === "split") return splitByPlane(r, o);
   if (r.action === "smoothSelected" || r.action === "boundarySmooth")
@@ -299,6 +304,7 @@ export function runScanEdit(
       },
     };
   if (r.action === "boundaryProject") {
+    const inventory = inventoryOf(t);
     if (!r.plane) throw new Error("Choose a projection plane.");
     const { origin, normal } = r.plane,
       n2 = dotProduct(normal, normal);

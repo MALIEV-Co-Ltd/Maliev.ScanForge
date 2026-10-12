@@ -88,6 +88,60 @@ it("reduces local mesh noise while bounding displacement from original coordinat
     analyzeMesh(source).boundaryEdges,
   );
 });
+it("reuses topology across repeated noise edits without changing the uncached result", () => {
+  const source = grid(6, 0.2);
+  const topologyCache: NonNullable<
+    import("../src/mesh-processing").MeshProcessingOptions["topologyCache"]
+  > = {};
+  const stages: string[] = [];
+  const before = analyzeMesh(source, { tolerance: 1e-6, topologyCache });
+  const options = {
+    iterations: 3,
+    deviation: 0.05,
+    topologyCache,
+    onProgress: (_: number, stage: string) => stages.push(stage),
+  };
+  const first = reduceScanNoise(source, options).positions;
+  expect(first).toEqual(
+    reduceScanNoise(source, { iterations: 3, deviation: 0.05 }).positions,
+  );
+  expect(topologyCache.topology!.edges).toBe(before.edges);
+  expect(topologyCache.positions).toBe(first);
+  const second = reduceScanNoise(first, options).positions;
+  expect(second).toEqual(
+    reduceScanNoise(first, { iterations: 3, deviation: 0.05 }).positions,
+  );
+  expect(topologyCache.positions).toBe(second);
+  expect(stages.filter((s) => s === "Reusing mesh topology")).toHaveLength(2);
+  expect(stages.some((s) => /Welding vertices|Building topology/.test(s))).toBe(
+    false,
+  );
+});
+it("does not adopt indexed identity when restored selection seams differ before welding", () => {
+  const source = grid(6, 0.2);
+  source[9] += 0.0000005;
+  const topologyCache: NonNullable<
+    import("../src/mesh-processing").MeshProcessingOptions["topologyCache"]
+  > = {};
+  const selection = new Uint8Array(source.length / 9);
+  selection[0] = 1;
+  const output = reduceScanNoise(source, {
+    iterations: 1,
+    deviation: 0.05,
+    selectionOnly: true,
+    selection,
+    topologyCache,
+  }).positions;
+  expect(output.slice(9)).toEqual(source.slice(9));
+  expect(topologyCache.positions).toBe(source);
+  const stages: string[] = [];
+  analyzeMesh(output, {
+    tolerance: 1e-6,
+    topologyCache,
+    onProgress: (_, stage) => stages.push(stage),
+  });
+  expect(stages).toContain("Welding vertices");
+});
 it("pins every vertex shared with unselected triangles", () => {
   const source = grid(6, 0.2),
     selection = new Uint8Array(source.length / 9);

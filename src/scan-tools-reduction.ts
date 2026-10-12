@@ -1,4 +1,8 @@
-import { analyzeMesh, type MeshProcessingOptions } from "./mesh-processing";
+import {
+  analyzeMesh,
+  analyzeIndexedMesh,
+  type MeshProcessingOptions,
+} from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
 import {
   REDUCTION_PATCH_TRIANGLES,
@@ -10,7 +14,7 @@ export interface ScanToolResult {
   positions: Float32Array;
   summary: string;
 }
-type Options = Pick<MeshProcessingOptions, "signal" | "onProgress">;
+type Options = MeshProcessingOptions;
 const point = (v: ArrayLike<number>, i: number): Vec3 => [
   v[i * 3],
   v[i * 3 + 1],
@@ -39,7 +43,7 @@ function topology(p: Positions, o: Options, tolerance = 1e-6) {
     throw new Error(
       "This operation supports at most 500,000 input triangles; split the mesh first.",
     );
-  const t = analyzeMesh(p, { signal: o.signal, tolerance });
+  const t = analyzeMesh(p, { ...o, tolerance });
   if (
     t.degenerateTriangles ||
     t.duplicateTriangles ||
@@ -373,6 +377,34 @@ export function reduceScanNoise(
       if (!options.selection![face])
         for (let axis = 0; axis < 9; axis++)
           output[face * 9 + axis] = positions[face * 9 + axis];
+  if (options.topologyCache) {
+    // Preserve indexed identity only when all corners sharing an index still
+    // have identical coordinates. Restored unselected facets can retain tiny
+    // pre-weld differences; such outputs require a fresh weld on the next edit.
+    const indexed = new Float64Array(t.vertices.length);
+    const seen = new Uint8Array(n);
+    let consistent = true;
+    for (let corner = 0; corner < t.triangles.length; corner++) {
+      const id = t.triangles[corner];
+      for (let axis = 0; axis < 3; axis++) {
+        const value = output[corner * 3 + axis];
+        if (seen[id] && indexed[id * 3 + axis] !== value) consistent = false;
+        indexed[id * 3 + axis] = value;
+      }
+      seen[id] = 1;
+    }
+    if (consistent) {
+      const tolerance = Math.min(1e-6, deviation / 100);
+      options.topologyCache.topology = analyzeIndexedMesh(
+        indexed,
+        t.triangles,
+        { ...options, tolerance, onProgress: undefined },
+        t.edges,
+      );
+      options.topologyCache.positions = output;
+      options.topologyCache.tolerance = tolerance;
+    }
+  }
   return {
     positions: output,
     summary: `Noise reduced with up to ${iterations} iterations; maximum displacement ${deviation} mm. ${options.selectionOnly ? "Unselected faces and selection borders" : "Mesh boundaries"} preserved.`,
