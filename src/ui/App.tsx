@@ -4078,9 +4078,7 @@ export function App() {
             }}
           />
         </label>
-        <span className="status-end">
-          Units: mm <span>Browser-local</span>
-        </span>
+        <span className="status-end">Units: mm</span>
       </footer>
       {primitiveDialog && (
         <div className="modal-backdrop">
