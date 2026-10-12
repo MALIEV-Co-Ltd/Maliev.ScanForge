@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import captured from "./fixtures/noise-color-ramp.json";
+import initialized from "./fixtures/noise-palette-default.json";
 import {
   nativeNoiseColor,
   DEFAULT_NOISE_PALETTE,
@@ -19,7 +20,7 @@ it("matches original color instructions with captured and alternate mutable pale
   }
 });
 
-it("uses the captured palette without claiming it is the original default", () => {
+it("retains the mutable capture and its historical provenance", () => {
   expect(DEFAULT_NOISE_PALETTE).toEqual(captured.palettes[0]);
   expect(captured.provenance.capturedPaletteIsVerifiedNativeDefault).toBe(
     false,
@@ -33,6 +34,32 @@ it("uses the captured palette without claiming it is the original default", () =
   expect(nativeNoiseColor(Infinity, 1)).toEqual([79, 0, 0]);
   expect(nativeNoiseColor(-Infinity, 1)).toEqual([0, 0, 79]);
 });
+
+it.each(initialized.cases)(
+  "matches original default initialization and ramp from buffer seed $seed",
+  (capture) => {
+    expect(initialized.provenance.resetProcedure).toBe("0x140abcff0");
+    expect(initialized.provenance.globalInitializationCaller).toBe(
+      "0x1407b9ad0",
+    );
+    expect(initialized.provenance.imageSha256).toBe(
+      captured.provenance.imageSha256,
+    );
+    expect(initialized.provenance.applicationUiParity).toBe(false);
+    expect(capture.headerUnchanged).toBe(true);
+    expect(capture.guardsUnchanged).toBe(true);
+    expect(capture.storedPalette).toEqual(capture.palette);
+    expect(capture.palette.every((rgba) => rgba[3] === 1)).toBe(true);
+    expect(DEFAULT_NOISE_PALETTE).toEqual(
+      capture.palette.map((rgba) => rgba.slice(0, 3)),
+    );
+    expect(capture.samples).toHaveLength(932);
+    for (const sample of capture.samples)
+      expect(nativeNoiseColor(sample.distance, sample.threshold)).toEqual(
+        sample.rgb,
+      );
+  },
+);
 
 it("preserves strict threshold ties after Float32 distance rounding", () => {
   expect(nativeNoiseColor(1 - 1e-9, 1)).toEqual([153, 153, 0]);

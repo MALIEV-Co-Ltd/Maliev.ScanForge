@@ -11,7 +11,7 @@ export type NoisePalette = readonly [
   NoisePaletteColor,
 ];
 
-/** Captured mutable palette; the original application's default is unverified. */
+/** Defaults verified by executing the original palette reset (0x140abcff0). */
 export const DEFAULT_NOISE_PALETTE: NoisePalette = [
   [0.3105882704257965, 0, 0],
   [0.6000000238418579, 0, 0],
