@@ -1,4 +1,6 @@
 import type { CurvaturePathConstraint } from "./field-curvature-paths";
+import { buildTriangleAdjacency } from "./field-triangle-adjacency";
+import { buildVertexEdgeIncidence } from "./field-vertex-edge-incidence";
 
 export interface CurvatureAssociationSource extends CurvaturePathConstraint {
   radius: number;
@@ -11,7 +13,7 @@ export function deriveCurvaturePathAssociations(
   paths: readonly (CurvatureAssociationSource | null)[],
   positions: Float32Array,
   triangles: Uint32Array,
-  adjacency: {
+  adjacency?: {
     edgeVertices: Int32Array;
     vertexEdgeOffsets: Uint32Array;
     vertexEdges: Uint32Array;
@@ -20,7 +22,16 @@ export function deriveCurvaturePathAssociations(
   const f = Math.fround;
   const maximum = f(3.4028235e38);
   const vertices = positions.length / 3;
-  const { edgeVertices, vertexEdgeOffsets, vertexEdges } = adjacency;
+  const cache =
+    adjacency ??
+    (() => {
+      const trianglesCache = buildTriangleAdjacency(vertices, triangles);
+      return {
+        edgeVertices: new Int32Array(trianglesCache.edgeVertices),
+        ...buildVertexEdgeIncidence(vertices, trianglesCache.edgeVertices),
+      };
+    })();
+  const { edgeVertices, vertexEdgeOffsets, vertexEdges } = cache;
   const edges = edgeVertices.length / 2;
   if (
     positions.length % 3 ||
