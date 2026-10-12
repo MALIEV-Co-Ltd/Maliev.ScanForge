@@ -22,6 +22,8 @@ A previous local 20,000-triangle sinusoidal grid benchmark measured 273 ms cold 
 
 ## Acceleration acceptance gates
 
+The extracted native octree query has a separate signed-result gate. The query port reproduces 33 executions of the original x64 query and triangle-distance instructions on caller-built nodes: ordered opposite-winding leaf entries, all midpoint-side combinations, forced upper-Z mode, missing preferred children, and strict search-radius exclusion. These captures validate traversal and signed winners, not native tree construction. The viewport comparison continues using its existing BVH until subdivision, child bounds and triangle overlap are independently executed and verified; matching absolute distances alone does not establish signed tie parity.
+
 Measure cold preparation, warm kernel, diagnostics/output assembly, transfers and browser highlight latency independently. Record mesh size, selection size, hardware, worker count, repeated timings and correctness alongside every claimed gain. A warm synthetic result is not an imported-scan latency guarantee.
 
 Selected smoothing partitions vertices, preserves ordered one-ring sums within each vertex, and synchronizes every iteration before publishing coordinates. Tests compare serial and partitioned output byte-for-byte on native boundary/disconnected-fan fixtures and irregular high-valence/sparse selections. Retain cancellation, bounded memory, size thresholds and a single-worker fallback. Do not duplicate object-rich topology in every worker.
