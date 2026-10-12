@@ -1,6 +1,16 @@
 import { ShapeUtils, Vector2 } from "three";
 import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
+import { analyzeIndexedMesh } from "./mesh-processing";
+import {
+  computeAngleWeightedNormals,
+  repatchSpatialBoundary,
+} from "./scan-defeature-repatch";
+import {
+  holeSurface,
+  refineHolePatch,
+  validHolePatch,
+} from "./scan-hole-refine";
 import {
   pointAt,
   subtract,
@@ -14,7 +24,7 @@ import {
   type ScanEditResult,
 } from "./scan-edit";
 
-/** Triangulation uses a projected simple polygon; boundary coordinates are never moved. */
+/** Fill a constrained disk with shared rim vertices and density-matched interior facets. */
 export function runHoleFill(
   r: ScanEditRequest,
   t: MeshTopology,
@@ -36,20 +46,13 @@ export function runHoleFill(
     );
   const output: number[] = [],
     inventory = inventoryOf(t);
+  const cachedVertices = o.topologyCache ? Array.from(t.vertices) : undefined;
+  const cachedTriangles = o.topologyCache ? Array.from(t.triangles) : undefined;
   let filledHoles = 0,
     skippedHoles = 0;
   const methods = new Set<string>();
-  const vertexNormals = new Float64Array(t.vertices.length);
-  for (let f = 0; f < t.triangles.length / 3; f++) {
-    if (f % 4096 === 0) checkProgress(o, 0, "Estimating boundary tangents");
-    const [a, b, c] = [0, 1, 2].map((k) =>
-      pointAt(t.vertices, t.triangles[f * 3 + k]),
-    );
-    const nn = crossProduct(subtract(b, a), subtract(c, a));
-    for (let k = 0; k < 3; k++)
-      for (let axis = 0; axis < 3; axis++)
-        vertexNormals[t.triangles[f * 3 + k] * 3 + axis] += nn[axis];
-  }
+  checkProgress(o, 0, "Estimating boundary tangents");
+  const vertexNormals = computeAngleWeightedNormals(t);
   for (const index of [...new Set(ids)]) {
     checkProgress(
       o,
@@ -163,9 +166,15 @@ export function runHoleFill(
         Math.abs(dotProduct(subtract(p, points[0]), unit)) <=
         Math.max(o.tolerance ?? 1e-6, 1e-5),
     );
+    // A planar rim may surround a curved surface (for example a circular hole
+    // in a dome). Coplanar rim coordinates alone must not force a flat cap.
+    const curvedTangents = loop.some((id) => {
+      const alignment = dotProduct(pointAt(vertexNormals, id), unit);
+      return alignment > 0.2 && alignment < Math.cos((5 * Math.PI) / 180);
+    });
     const method =
       r.algorithm === "automatic" || !r.algorithm
-        ? planar
+        ? planar && !curvedTangents
           ? "flat"
           : "tangent"
         : r.algorithm;
@@ -173,7 +182,7 @@ export function runHoleFill(
       skippedHoles++;
       continue;
     }
-    const triangles = ShapeUtils.triangulateShape(projected, []);
+    let triangles = ShapeUtils.triangulateShape(projected, []);
     if (triangles.length !== points.length - 2) {
       skippedHoles++;
       continue;
@@ -222,52 +231,118 @@ export function runHoleFill(
         continue;
       }
     }
+    const rimCount = points.length;
     const boundaryNormals = loop.map((id) => pointAt(vertexNormals, id));
+    const surface = holeSurface(
+      points,
+      projected,
+      boundaryNormals,
+      points[0],
+      u,
+      v,
+      unit,
+      method,
+    );
+    // The native spatial routine expects the retained rim direction, unlike
+    // the positive projected orientation used by our constrained refinement.
+    if (method !== "flat" && (r.mode ?? "entire") === "entire") {
+      const patch = repatchSpatialBoundary(t, original, {
+        vertexNormals,
+        maxIterations: Math.min(10000, Math.max(64, original.length * 8)),
+        signal: o.signal,
+        onProgress: () => checkProgress(o, 0.25, "Interpolating hole surface"),
+      });
+      if (patch.completed) {
+        const mapping = new Map(loop.map((id, i) => [id, i]));
+        const candidatePoints = [...points],
+          candidateProjection = [...projected];
+        for (let i = 0; i < patch.insertedVertices.length / 3; i++) {
+          const p = pointAt(patch.insertedVertices, i),
+            delta = subtract(p, points[0]);
+          const xy = new Vector2(dotProduct(delta, u), dotProduct(delta, v));
+          mapping.set(t.vertices.length / 3 + i, candidatePoints.length);
+          candidatePoints.push(surface(xy));
+          candidateProjection.push(xy);
+        }
+        const candidate: number[][] = [];
+        for (let i = 0; i < patch.triangles.length; i += 3)
+          candidate.push(
+            [0, 1, 2].map((k) => mapping.get(patch.triangles[i + k])!),
+          );
+        if (validHolePatch(candidateProjection, candidate, rimCount)) {
+          points.push(...candidatePoints.slice(rimCount));
+          projected.push(...candidateProjection.slice(rimCount));
+          triangles = candidate;
+        }
+      }
+    }
+    triangles = triangles.map((tri) =>
+      orient(projected[tri[0]], projected[tri[1]], projected[tri[2]]) < 0
+        ? [tri[0], tri[2], tri[1]]
+        : tri,
+    );
+    if (!validHolePatch(projected, triangles, rimCount)) {
+      skippedHoles++;
+      continue;
+    }
+    // Partial arcs and bridges keep their explicit chord/strip contract.
+    if ((r.mode ?? "entire") === "entire") {
+      const refined = refineHolePatch(
+        points,
+        projected,
+        triangles,
+        rimCount,
+        surface,
+        o,
+      );
+      triangles = refined.triangles;
+    }
+    if (!validHolePatch(projected, triangles, rimCount)) {
+      skippedHoles++;
+      continue;
+    }
+    if (
+      triangles.some((tri) => {
+        const [a, b, c] = tri.map((id) => points[id].map(Math.fround) as Vec3);
+        return !(
+          dotProduct(crossProduct(subtract(b, a), subtract(c, a)), unit) > eps
+        );
+      })
+    ) {
+      skippedHoles++;
+      continue;
+    }
     for (let tri of triangles) {
       if (orient(projected[tri[0]], projected[tri[1]], projected[tri[2]]) < 0)
         tri = [tri[0], tri[2], tri[1]];
       const [a, b, c] = tri.map((i) => points[i]);
-      if (method === "flat") {
-        output.push(...a, ...b, ...c);
-        continue;
-      }
-      const center = a.map(
-        (value, axis) => (value + b[axis] + c[axis]) / 3,
-      ) as Vec3;
-      let height = 0,
-        weights = 0;
-      for (let i = 0; i < points.length; i++) {
-        const bn = boundaryNormals[i],
-          denom = dotProduct(bn, unit);
-        if (Math.abs(denom) < Math.hypot(...bn) * 0.2) continue;
-        const distance = Math.hypot(...subtract(center, points[i]));
-        const weight =
-          method === "curvature" ? 1 / Math.max(distance * distance, 1e-12) : 1;
-        height +=
-          (-dotProduct(bn, subtract(center, points[i])) / denom) * weight;
-        weights += weight;
-      }
-      if (weights) {
-        const limit = inventory.boundaries[index].diameter / 4;
-        const h = Math.max(-limit, Math.min(limit, height / weights));
-        for (let axis = 0; axis < 3; axis++) center[axis] += unit[axis] * h;
-      }
-      output.push(
-        ...a,
-        ...b,
-        ...center,
-        ...b,
-        ...c,
-        ...center,
-        ...c,
-        ...a,
-        ...center,
-      );
+      output.push(...a, ...b, ...c);
+    }
+    if (cachedVertices && cachedTriangles) {
+      const mapping = new Map(loop.map((id, i) => [i, id]));
+      for (const tri of triangles)
+        for (const id of tri) {
+          if (!mapping.has(id)) {
+            mapping.set(id, cachedVertices.length / 3);
+            cachedVertices.push(...points[id]);
+          }
+          cachedTriangles.push(mapping.get(id)!);
+        }
     }
     methods.add(method);
     filledHoles++;
   }
   const positions = finiteOutput([...r.positions, ...output]);
+  if (o.topologyCache && cachedVertices && cachedTriangles) {
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(cachedVertices, Math.fround),
+      new Uint32Array(cachedTriangles),
+      { ...o, onProgress: undefined },
+    );
+    o.topologyCache.positions = positions;
+    o.topologyCache.tolerance = o.tolerance ?? 1e-6;
+    o.topologyCache.topology = topology;
+  }
   checkProgress(o, 1, "Hole filling complete");
   return {
     positions,
