@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import input from "./fixtures/defeature-annular.json";
 import fixture from "./fixtures/smooth-annular.json";
+import fans from "./fixtures/smooth-disconnected-fans.json";
 import { runScanEdit } from "../src/scan-edit";
 import {
   analyzeMesh,
@@ -94,4 +95,43 @@ it("keeps convex outside corners fixed and respects cancellation", () => {
       { signal: controller.signal },
     ),
   ).toThrow(/cancelled/i);
+});
+
+it("matches the native first-facet fan at a shared disconnected vertex exactly", () => {
+  const positions = new Float32Array(fans.positions);
+  const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const before = analyzeMesh(positions, {
+    tolerance: 0.001,
+    topologyCache: cache,
+  });
+  const stages: string[] = [];
+  const result = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "smoothSelected",
+      positions,
+      selection: new Uint8Array(fans.selection),
+      tolerance: 0.001,
+    },
+    { topologyCache: cache, onProgress: (_, s) => stages.push(s) },
+  ).positions!;
+  expect(Array.from(result)).toEqual(fans.nativeOutput);
+  const origin = fans.positions.findIndex(
+    (_, i) =>
+      i % 3 === 0 &&
+      fans.positions[i] === 0 &&
+      fans.positions[i + 1] === 0 &&
+      fans.positions[i + 2] === 0,
+  );
+  expect(Array.from(result.slice(origin, origin + 3))).toEqual([
+    0.8888888955116272, 1.3333333730697632, 1.7777777910232544,
+  ]);
+  const after = analyzeMesh(result, { tolerance: 0.001, topologyCache: cache });
+  expect(after.edges).toBe(before.edges);
+  expect(after.triangles).toEqual(before.triangles);
+  expect(after.boundaryLoops).toHaveLength(0);
+  expect(stages.some((s) => /Welding vertices|Building topology/.test(s))).toBe(
+    false,
+  );
+  expect(Array.from(positions)).toEqual(fans.positions);
 });
