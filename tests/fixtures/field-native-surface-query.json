@@ -1,0 +1,4115 @@
+{
+  "origin": "Owned input/output facts from complete original triangle-storage query with supplied tree/normal/bounds caches and owned worklist allocation",
+  "cases": [
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "none",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [],
+      "root": null,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 2.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 2.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-leaf",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 2.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 0.5,
+      "projected": [0.5, 0.5, 0.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 0.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": 1,
+      "secondaryFace": 1,
+      "distance": 2.0,
+      "projected": [0.5, 0.5, 1.0]
+    },
+    {
+      "layout": "reverse-children",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [1, 0],
+      "nodes": [
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "children": [1, 2]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [0, 1]
+        },
+        {
+          "bounds": [0, 0, 0, 2, 2, 1],
+          "range": [1, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": 0,
+      "secondaryFace": 0,
+      "distance": 1.4142135381698608,
+      "projected": [0.0, 0.0, 0.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": -1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.07500000298023224,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 0.5,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 0.5,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 1,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 1.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 2,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 2.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 0.5],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 1.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [0.5, 0.5, 3.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    },
+    {
+      "layout": "pruned",
+      "positions": [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 2, 1],
+      "triangles": [0, 1, 2, 3, 4, 5],
+      "normals": [0, 0, 1, 0, 0, 1],
+      "bounds": [0, 0, 0, 2, 2, 1],
+      "faces": [0, 1],
+      "nodes": [
+        {
+          "bounds": [100, 100, 100, 102, 102, 101],
+          "range": [0, 2]
+        }
+      ],
+      "root": 0,
+      "point": [-1.0, -1.0, 0.0],
+      "threshold": 10,
+      "face": -1,
+      "secondaryFace": -1,
+      "distance": 10.0,
+      "projected": [11.0, 22.0, 33.0]
+    }
+  ]
+}
