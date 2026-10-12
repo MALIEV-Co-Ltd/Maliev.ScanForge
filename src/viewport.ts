@@ -1,3 +1,4 @@
+import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import {
   createScanBoundaryEdges,
   type ScanBoundaryPath,
@@ -154,6 +155,10 @@ export class Viewport {
   private selectedId: string | null = null;
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
+  private gridSpacing = 10;
+  private snapGrid = false;
+  private flatShading = false;
+  private theme: "light" | "dark" = "dark";
   private readonly gridScene = new THREE.Scene();
   private disposed = false;
   private frame: number | null = null;
@@ -271,7 +276,7 @@ export class Viewport {
     const fill = new THREE.DirectionalLight(0xffffff, 1.4);
     fill.position.set(-120, 80, 50);
     this.scene.add(fill);
-    this.grid = createViewportGrid();
+    this.grid = createViewportGrid(this.gridSpacing);
     this.gridScene.add(this.grid);
     this.scene.add(
       this.section,
@@ -331,6 +336,7 @@ export class Viewport {
   };
 
   setTheme(theme: "light" | "dark"): void {
+    this.theme = theme;
     this.scene.background = new THREE.Color(
       theme === "dark" ? "#1c1c1c" : "#f4f5f6",
     );
@@ -631,6 +637,24 @@ export class Viewport {
   setSketchEditor(editor?: typeof this.sketchEditor): void {
     this.cancelSketchDrag();
     this.sketchEditor = editor;
+    if (this.grid) {
+      const frame = editor?.sketch.frame ?? coordinateSketchFrame("OXY", 0);
+      this.grid.position.set(...frame.origin);
+      this.grid.quaternion
+        .setFromRotationMatrix(
+          new THREE.Matrix4().makeBasis(
+            new THREE.Vector3(...frame.u),
+            new THREE.Vector3(...frame.v),
+            new THREE.Vector3(...frame.normal),
+          ),
+        )
+        .multiply(
+          new THREE.Quaternion().setFromAxisAngle(
+            new THREE.Vector3(1, 0, 0),
+            Math.PI / 2,
+          ),
+        );
+    }
     this.clearGroup(this.sketchGeometry);
     if (editor) {
       const sketch = editor.sketch;
@@ -831,7 +855,7 @@ export class Viewport {
     lines.renderOrder = 10;
     group.add(lines);
   }
-  private sketchPlanePoint(x: number, y: number): SketchUV | null {
+  private sketchPlanePoint(x: number, y: number, snap = true): SketchUV | null {
     if (!this.sketchEditor) return null;
     const rect = this.renderer.domElement.getBoundingClientRect();
     const frame =
@@ -855,10 +879,14 @@ export class Viewport {
     )
       return null;
     hit.sub(new THREE.Vector3(...frame.origin));
-    return [
-      hit.dot(new THREE.Vector3(...frame.u)),
-      hit.dot(new THREE.Vector3(...frame.v)),
-    ];
+    return snapSketchGrid(
+      [
+        hit.dot(new THREE.Vector3(...frame.u)),
+        hit.dot(new THREE.Vector3(...frame.v)),
+      ],
+      this.snapGrid && snap,
+      this.gridSpacing,
+    );
   }
   private beginSketchDrag(event: PointerEvent): boolean {
     const editor = this.sketchEditor;
@@ -873,9 +901,18 @@ export class Viewport {
       return false;
     const start = this.sketchPlanePoint(event.clientX, event.clientY);
     if (!start) return false;
-    const adjacent = this.sketchPlanePoint(event.clientX + 8, event.clientY);
+    const rawStart = this.sketchPlanePoint(
+      event.clientX,
+      event.clientY,
+      false,
+    )!;
+    const adjacent = this.sketchPlanePoint(
+      event.clientX + 8,
+      event.clientY,
+      false,
+    );
     const tolerance = adjacent
-      ? Math.hypot(adjacent[0] - start[0], adjacent[1] - start[1])
+      ? Math.hypot(adjacent[0] - rawStart[0], adjacent[1] - rawStart[1])
       : 0;
     let pointId: string | undefined;
     if (editor.tool === "move") {
@@ -1330,7 +1367,14 @@ export class Viewport {
             "normal",
             new THREE.Float32BufferAttribute(entity.normals, 3),
           );
-        else geometry.computeVertexNormals();
+        else
+          geometry.setAttribute(
+            "normal",
+            new THREE.BufferAttribute(
+              smoothDisplayNormals(entity.positions),
+              3,
+            ),
+          );
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();
         item.mesh.geometry = geometry;
@@ -1343,6 +1387,7 @@ export class Viewport {
       material.color.set(material.vertexColors ? "#ffffff" : entity.color);
       material.emissive.set(entity.id === selectedId ? "#17677b" : "#000000");
       material.emissiveIntensity = entity.id === selectedId ? 0.28 : 0;
+      material.flatShading = this.flatShading;
       material.opacity = Math.max(0, Math.min(1, entity.opacity));
       material.transparent = material.opacity < 1;
       material.depthWrite = material.opacity >= 1;
@@ -1362,25 +1407,59 @@ export class Viewport {
         this.bounds.getSize(new THREE.Vector3()).length(),
         0.01,
       );
-      const center = this.bounds.getCenter(new THREE.Vector3());
-      this.grid.position.set(
-        center.x,
-        center.y,
-        this.bounds.min.z - this.extent * 0.002,
-      );
-      this.grid.scale.setScalar(this.extent / 100);
     }
     this.applyClipPlanes();
     this.invalidate();
   }
 
-  fitView(entityId?: string): void {
+  setFlatShading(enabled: boolean): void {
+    this.flatShading = enabled;
+    for (const item of this.objects.values()) {
+      item.mesh.material.flatShading = enabled;
+      item.mesh.material.needsUpdate = true;
+    }
+    this.invalidate();
+  }
+  setGridOptions(visible: boolean, spacing: number, snap: boolean): void {
+    if (!Number.isFinite(spacing) || spacing < 0.001 || spacing > 1000000)
+      return;
+    if (spacing !== this.gridSpacing) {
+      const fresh = createViewportGrid(spacing);
+      this.grid.geometry.dispose();
+      this.grid.geometry = fresh.geometry;
+      (this.grid.material as THREE.Material).dispose();
+      this.grid.material = fresh.material;
+      this.gridSpacing = spacing;
+      this.setTheme(this.theme);
+    }
+    this.grid.visible = visible;
+    this.snapGrid = snap;
+    this.invalidate();
+  }
+  fitView(entityId?: string, selection?: Uint8Array): void {
     this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
     if (entityId && !item) return;
-    const bounds = item
-      ? new THREE.Box3().setFromObject(item.mesh)
-      : this.bounds;
+    let bounds = item ? new THREE.Box3().setFromObject(item.mesh) : this.bounds;
+    if (
+      item &&
+      selection &&
+      item.positions &&
+      selection.length === item.positions.length / 9 &&
+      selection.some(Boolean)
+    ) {
+      bounds = new THREE.Box3();
+      for (let i = 0; i < selection.length; i++)
+        if (selection[i])
+          for (let j = 0; j < 9; j += 3)
+            bounds.expandByPoint(
+              new THREE.Vector3(
+                item.positions[i * 9 + j],
+                item.positions[i * 9 + j + 1],
+                item.positions[i * 9 + j + 2],
+              ),
+            );
+    }
     const extent = bounds.isEmpty()
       ? this.extent
       : Math.max(...bounds.getSize(new THREE.Vector3()).toArray(), 0.00001);

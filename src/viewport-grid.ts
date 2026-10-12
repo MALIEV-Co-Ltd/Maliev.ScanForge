@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { updateCameraClipping } from "./camera-clipping";
 import type { NavigationCamera } from "./camera-gizmo";
 
-export function createViewportGrid(): THREE.GridHelper {
-  const grid = new THREE.GridHelper(400, 20, "#a7b6bd", "#d0dadf");
+export function createViewportGrid(spacing = 20): THREE.GridHelper {
+  const grid = new THREE.GridHelper(spacing * 20, 20, "#a7b6bd", "#d0dadf");
   grid.rotation.x = Math.PI / 2;
   const material = grid.material as THREE.LineBasicMaterial;
   material.transparent = true;
@@ -25,10 +25,10 @@ export function createViewportGrid(): THREE.GridHelper {
       )
       .replace(
         "#include <color_fragment>",
-        "#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(80.0, 190.0, length(gridPosition));",
+        `#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(80.0, 190.0, length(gridPosition) * ${(20 / spacing).toExponential(8)});`,
       );
   };
-  material.customProgramCacheKey = () => "radial-workspace-grid-v1";
+  material.customProgramCacheKey = () => `radial-workspace-grid-${spacing}`;
   return grid;
 }
 

@@ -1,3 +1,4 @@
+import { ViewportTools } from "./ViewportTools";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -176,6 +177,10 @@ export function App() {
     () => entities[0]?.id ?? null,
   );
   const [name, setName] = useState("Untitled project");
+  const [flatShading, setFlatShading] = useState(false);
+  const [floorGrid, setFloorGrid] = useState(true);
+  const [gridSpacing, setGridSpacing] = useState(10);
+  const [snapGrid, setSnapGrid] = useState(false);
   const [mode, setMode] = useState<Mode>("inspect");
   const [workspace, setWorkspace] = useState("measure");
   const [savedSketches, setSavedSketches] = useState<SavedSketch[]>([]);
@@ -561,6 +566,12 @@ export function App() {
       cancelLandmarks();
   }, [entities, nPoints]);
   useEffect(() => () => landmarkAbort.current?.abort(), []);
+  useEffect(() => {
+    viewport.current?.setFlatShading(flatShading);
+  }, [flatShading]);
+  useEffect(() => {
+    viewport.current?.setGridOptions(floorGrid, gridSpacing, snapGrid);
+  }, [floorGrid, gridSpacing, snapGrid]);
   useEffect(() => {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
@@ -3269,17 +3280,22 @@ export function App() {
               </button>
             </div>
           )}
-          <div className="canvas-hint">
-            {planePicking
-              ? "Hover a plane · click to create sketch · hold to select through · Escape cancels"
-              : mode === "brush"
-                ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
-                : mode === "measure"
-                  ? "Click two points on a surface to measure distance"
-                  : mode === "section"
-                    ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                    : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
-          </div>
+          <ViewportTools
+            flat={flatShading}
+            grid={floorGrid}
+            spacing={gridSpacing}
+            snap={snapGrid}
+            hasSelection={!!selected}
+            onFlat={setFlatShading}
+            onGrid={setFloorGrid}
+            onSpacing={setGridSpacing}
+            onSnap={setSnapGrid}
+            onFitSelection={() =>
+              viewport.current?.fitView(selected?.id, triangleMask ?? undefined)
+            }
+            onFitAll={() => viewport.current?.fitView()}
+          />
+
           {mode === "measure" && (
             <div className="measurement">
               <Ruler size={17} />
@@ -4393,6 +4409,17 @@ export function App() {
             }}
           />
         </label>
+        <span className="status-navigation-hint">
+          {planePicking
+            ? "Hover a plane · click to create sketch · hold to select through · Escape cancels"
+            : mode === "brush"
+              ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
+              : mode === "measure"
+                ? "Click two points on a surface to measure distance"
+                : mode === "section"
+                  ? `${axis.toUpperCase()} section · ${number(offset)} mm`
+                  : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
+        </span>
         <span className="status-end">Units: mm</span>
       </footer>
       {primitiveDialog && (

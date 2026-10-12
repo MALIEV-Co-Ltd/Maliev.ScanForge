@@ -67,3 +67,15 @@ describe("import camera fit", () => {
     expect(target.equals(bounds.getCenter(new THREE.Vector3()))).toBe(true);
   });
 });
+
+it("fits only the selected triangles and falls back to the object for an empty mask", () => {
+  const { view, target, imported } = fixture();
+  const item = (view as any).objects.get("imported");
+  item.positions = [
+    0, 0, 0, 2, 0, 0, 0, 2, 0, 100, 100, 0, 102, 100, 0, 100, 102, 0,
+  ];
+  view.fitView("imported", new Uint8Array([1, 0]));
+  expect(target.toArray()).toEqual([1, 1, 0]);
+  view.fitView("imported", new Uint8Array(2));
+  expect(target.toArray()).toEqual(imported.position.toArray());
+});

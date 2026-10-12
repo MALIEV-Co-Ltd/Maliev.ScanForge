@@ -285,3 +285,20 @@ describe("sketch model-view pointer routing", () => {
     for (const release of releases) expect(release).toHaveBeenCalledOnce();
   });
 });
+
+it("snaps points in each sketch plane's local coordinates", () => {
+  for (const plane of ["OXY", "OYZ", "OXZ"] as const) {
+    const f = fixture(plane);
+    Object.assign(f.view, { snapGrid: true, gridSpacing: 5 });
+    f.view.setSketchEditor({
+      sketch: f.sketch,
+      tool: "line",
+      constraints: false,
+      onChange: f.change,
+      onError: f.error,
+    });
+    const point = (f.view as any).sketchPlanePoint(613, 537);
+    expect(point[0] / 5).toBeCloseTo(Math.round(point[0] / 5));
+    expect(point[1] / 5).toBeCloseTo(Math.round(point[1] / 5));
+  }
+});
