@@ -177,7 +177,7 @@ export function App() {
     () => entities[0]?.id ?? null,
   );
   const [name, setName] = useState("Untitled project");
-  const [flatShading, setFlatShading] = useState(false);
+  const [flatShading, setFlatShading] = useState(true);
   const [floorGrid, setFloorGrid] = useState(true);
   const [gridSpacing, setGridSpacing] = useState(10);
   const [snapGrid, setSnapGrid] = useState(false);

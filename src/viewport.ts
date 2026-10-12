@@ -157,7 +157,7 @@ export class Viewport {
   private grid: THREE.GridHelper;
   private gridSpacing = 10;
   private snapGrid = false;
-  private flatShading = false;
+  private flatShading = true;
   private theme: "light" | "dark" = "dark";
   private readonly gridScene = new THREE.Scene();
   private disposed = false;

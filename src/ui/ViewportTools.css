@@ -7,20 +7,34 @@
 }
 .viewport-tools {
   display: flex;
-  gap: 2px;
-  padding: 4px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--surface);
-  box-shadow: 0 2px 8px #0003;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.viewport-tool-group {
+  display: flex;
+  gap: 3px;
+}
+.viewport-tool-separator {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
 }
 .viewport-tools button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+}
+.viewport-tools button:disabled svg {
+  opacity: 0.4;
 }
 .viewport-tools button[aria-pressed="true"] {
   color: #8bd8e8;
