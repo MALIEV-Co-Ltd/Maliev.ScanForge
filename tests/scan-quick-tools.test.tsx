@@ -29,6 +29,7 @@ it("exposes selection actions and enables geometry tools only with working callb
     (match) => match[1],
   );
   expect(labels).toEqual([
+    "Move quick selection tools",
     "Delete selected",
     "Defeature",
     "Smooth selected",

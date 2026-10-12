@@ -1,0 +1,9 @@
+.scan-quick-tools .scan-quick-drag-handle {
+  cursor: grab;
+  touch-action: none;
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+}
+.scan-quick-tools .scan-quick-drag-handle:active {
+  cursor: grabbing;
+}
