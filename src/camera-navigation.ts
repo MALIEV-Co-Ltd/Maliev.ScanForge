@@ -29,6 +29,7 @@ export function navigateCamera(
   target: THREE.Vector3,
   motion: Motion6D,
   seconds: number,
+  pivot?: THREE.Vector3,
 ): void {
   if (
     !Number.isFinite(seconds) ||
@@ -75,7 +76,10 @@ export function navigateCamera(
       rotation.clone().normalize(),
       -rotation.length() * 1.4 * dt,
     );
-    camera.position.sub(target).applyQuaternion(quaternion).add(target);
+    // A scene pivot stays fixed even when simultaneous translation pans the view.
+    const center = pivot ?? target;
+    camera.position.sub(center).applyQuaternion(quaternion).add(center);
+    if (pivot) target.sub(center).applyQuaternion(quaternion).add(center);
     camera.up.applyQuaternion(quaternion).normalize();
   }
   camera.lookAt(target);

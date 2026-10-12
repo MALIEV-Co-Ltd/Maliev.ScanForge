@@ -1,4 +1,5 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
+import { NavigationPivot } from "./navigation-pivot";
 import {
   createScanBoundaryEdges,
   type ScanBoundaryPath,
@@ -130,6 +131,8 @@ export class Viewport {
   private sketchCurvePoints: SketchUV[] = [];
   private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
+  private readonly navigationPivot = new NavigationPivot();
+  private readonly pivotMarker = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
   private selectionTool:
@@ -208,6 +211,12 @@ export class Viewport {
     this.landmarkOverlay.style.cssText =
       "position:absolute;inset:0;pointer-events:none;overflow:hidden";
     container.appendChild(this.landmarkOverlay);
+    this.pivotMarker.setAttribute("aria-label", "SpaceMouse rotation center");
+    this.pivotMarker.setAttribute("role", "img");
+    this.pivotMarker.hidden = true;
+    this.pivotMarker.style.cssText =
+      "position:absolute;width:22px;height:22px;border:2px solid #58d5e5;border-radius:50%;box-shadow:0 0 0 1px #15262b,inset 0 0 0 1px #15262b;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:radial-gradient(circle,#58d5e5 0 2px,transparent 3px)";
+    container.appendChild(this.pivotMarker);
     this.controls = new TrackballControls(
       this.camera,
       this.renderer.domElement,
@@ -354,7 +363,17 @@ export class Viewport {
   navigate(motion: Motion6D, seconds: number): void {
     if (this.disposed) return;
     this.cancelViewTransition();
-    navigateCamera(this.camera, this.controls.target, motion, seconds);
+    const selected = this.selectedId
+      ? this.objects.get(this.selectedId)
+      : undefined;
+    const pivot = this.navigationPivot.update(
+      performance.now(),
+      this.bounds,
+      selected?.mesh.visible
+        ? new THREE.Box3().setFromObject(selected.mesh)
+        : undefined,
+    );
+    navigateCamera(this.camera, this.controls.target, motion, seconds, pivot);
     this.controls.update();
     this.invalidate();
   }
@@ -377,9 +396,24 @@ export class Viewport {
       marker.element.style.left = `${((projected.x + 1) * this.container.clientWidth) / 2}px`;
       marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
     }
+    const navigating = this.updateNavigationPivotMarker(performance.now());
     this.gizmo?.update(this.camera);
-    if (this.viewTransition) this.invalidate();
+    if (this.viewTransition || navigating) this.invalidate();
   };
+
+  private updateNavigationPivotMarker(now: number): boolean {
+    const navigating = this.navigationPivot.active(now);
+    const pivot = this.navigationPivot.point.clone().project(this.camera);
+    this.pivotMarker.hidden =
+      !navigating ||
+      pivot.z < -1 ||
+      pivot.z > 1 ||
+      Math.abs(pivot.x) > 1 ||
+      Math.abs(pivot.y) > 1;
+    this.pivotMarker.style.left = `${((pivot.x + 1) * this.container.clientWidth) / 2}px`;
+    this.pivotMarker.style.top = `${((1 - pivot.y) * this.container.clientHeight) / 2}px`;
+    return navigating;
+  }
 
   private resize = (): void => {
     if (this.disposed) return;
@@ -1931,6 +1965,7 @@ export class Viewport {
     this.selectionOverlay.remove();
     this.paintOverlay.remove();
     this.landmarkOverlay.remove();
+    this.pivotMarker.remove();
     this.landmarkLabels = [];
   }
 }
