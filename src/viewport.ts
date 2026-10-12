@@ -1321,7 +1321,16 @@ export class Viewport {
           item.triangleSlots = slots;
         }
         item.hidden = entity.meshSelection?.hidden;
-        geometry.computeVertexNormals();
+        if (
+          entity.kernelId &&
+          entity.normals?.length === entity.positions.length &&
+          entity.normals.every(Number.isFinite)
+        )
+          geometry.setAttribute(
+            "normal",
+            new THREE.Float32BufferAttribute(entity.normals, 3),
+          );
+        else geometry.computeVertexNormals();
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();
         item.mesh.geometry = geometry;

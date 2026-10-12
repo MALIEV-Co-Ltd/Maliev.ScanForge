@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
 import { webcrypto } from "node:crypto";
 
@@ -166,7 +166,35 @@ try {
     center: [20, 5, 2],
     radius: 3,
   });
-  assert.ok(sphere.positions.length > 108);
+  assert.ok(
+    sphere.positions.length / 9 > 2000,
+    "Fine curved-body display tessellation",
+  );
+  assert.equal(sphere.normals.length, sphere.positions.length);
+  for (let i = 0; i < sphere.normals.length; i += 3)
+    assert.ok(
+      Math.abs(Math.hypot(...sphere.normals.slice(i, i + 3)) - 1) < 1e-6,
+      "Unit CAD surface normal",
+    );
+  const sphereStep = await request("export", [sphere.kernelId]);
+  const sphereRestored = await request("import", {
+    data: sphereStep,
+    extension: "step",
+  });
+  assert.ok(sphereRestored.brep.length > 100);
+  assert.equal(sphereRestored.normals.length, sphereRestored.positions.length);
+  const probePoint = sphereRestored.positions.slice(0, 3),
+    probeNormal = sphereRestored.normals.slice(0, 3);
+  const outward = probePoint.map((value, i) => value - [20, 5, 2][i]);
+  assert.ok(
+    probeNormal.reduce((sum, value, i) => sum + value * outward[i], 0) /
+      Math.hypot(...outward) >
+      0.99,
+    "STEP normals follow the exact outward surface direction",
+  );
+  if (process.env.SCANFORGE_QA_STEP)
+    writeFileSync(process.env.SCANFORGE_QA_STEP, sphereStep);
+
   const cylinder = await request("primitive", {
     kind: "cylinder",
     center: [1, 2, 3],
@@ -656,6 +684,10 @@ try {
     data: rationalStep,
     extension: "step",
   });
+  assert.equal(
+    rationalImported.normals.length,
+    rationalImported.positions.length,
+  );
   midpoint(rationalImported.kernelId).forEach((value, i) =>
     close(value, [6, 14, 3.2][i], "Rational weights survive STEP roundtrip"),
   );

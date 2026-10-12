@@ -15,6 +15,8 @@ export interface Entity {
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Display normals evaluated from exact CAD surfaces, aligned to triangle vertices. */
+  normals?: number[];
   color: string;
   visible: boolean;
   opacity: number;
@@ -93,5 +95,6 @@ export type KernelPrimitive =
 export interface KernelMesh {
   kernelId: string;
   positions: number[];
+  normals?: number[];
   brep?: string;
 }

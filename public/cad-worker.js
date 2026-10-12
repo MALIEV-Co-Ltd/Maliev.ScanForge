@@ -45,7 +45,21 @@ function mesh(oc, shape) {
     return handle;
   };
   try {
-    keep(new oc.BRepMesh_IncrementalMesh_2(shape, 0.15, false, 0.35, false));
+    // Display tessellation is disposable; exact curves/surfaces remain in the BRep.
+    const bounds = keep(new oc.Bnd_Box_1());
+    oc.BRepBndLib.Add(shape, bounds, false);
+    const minimum = keep(bounds.CornerMin()),
+      maximum = keep(bounds.CornerMax());
+    const diagonal = Math.hypot(
+      maximum.X() - minimum.X(),
+      maximum.Y() - minimum.Y(),
+      maximum.Z() - minimum.Z(),
+    );
+    const deflection = Math.max(0.0001, Math.min(0.025, diagonal * 0.00025));
+    oc.BRepTools.Clean(shape);
+    keep(
+      new oc.BRepMesh_IncrementalMesh_2(shape, deflection, false, 0.1, false),
+    );
     const explorer = keep(
       new oc.TopExp_Explorer_2(
         shape,
@@ -53,7 +67,8 @@ function mesh(oc, shape) {
         oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
       ),
     );
-    const positions = [];
+    const positions = [],
+      normals = [];
     for (; explorer.More(); explorer.Next()) {
       const faceHandles = [];
       const local = (handle) => {
@@ -75,6 +90,36 @@ function mesh(oc, shape) {
         const reverse =
           statusValue(face.Orientation_1()) ===
           statusValue(oc.TopAbs_Orientation.TopAbs_REVERSED);
+        const surfaceHandle = local(oc.BRep_Tool.Surface_2(face));
+        const properties = local(
+          new oc.GeomLProp_SLProps_1(surfaceHandle, 0, 0, 2, 1e-9),
+        );
+        const nodeNormals = new Map();
+        function normalAt(index) {
+          if (nodeNormals.has(index)) return nodeNormals.get(index);
+          let normal = [0, 0, 0];
+          if (triangulation.HasUVNodes()) {
+            const uv = triangulation.UVNode(index);
+            try {
+              // Exact surface properties handle singular UV points using higher derivatives.
+              properties.SetParameters(uv.X(), uv.Y());
+              if (properties.IsNormalDefined()) {
+                const direction = properties.Normal();
+                try {
+                  normal = [direction.X(), direction.Y(), direction.Z()].map(
+                    (value) => (reverse ? -value : value),
+                  );
+                } finally {
+                  direction.delete();
+                }
+              }
+            } finally {
+              uv.delete();
+            }
+          }
+          nodeNormals.set(index, normal);
+          return normal;
+        }
         const triangles = local(triangulation.Triangles());
         for (let i = 1; i <= triangulation.NbTriangles(); i++) {
           const triangle = triangles.Value(i);
@@ -98,6 +143,7 @@ function mesh(oc, shape) {
                       "CAD coordinates must be finite and within one billion millimetres of the origin.",
                     );
                   positions.push(...coordinates);
+                  normals.push(...normalAt(index));
                 } finally {
                   world.delete();
                 }
@@ -115,7 +161,28 @@ function mesh(oc, shape) {
     }
     if (!positions.length)
       throw new Error("CAD file contains no renderable faces.");
-    return positions;
+    // Singular UV nodes (e.g. sphere poles) fall back to their incident facet normal.
+    for (let i = 0; i < positions.length; i += 9) {
+      const a = positions.slice(i, i + 3),
+        b = positions.slice(i + 3, i + 6),
+        c = positions.slice(i + 6, i + 9);
+      const u = b.map((v, j) => v - a[j]),
+        v = c.map((n, j) => n - a[j]);
+      const n = [
+        u[1] * v[2] - u[2] * v[1],
+        u[2] * v[0] - u[0] * v[2],
+        u[0] * v[1] - u[1] * v[0],
+      ];
+      const length = Math.hypot(...n);
+      for (let j = 0; j < 9; j += 3)
+        if (Math.hypot(...normals.slice(i + j, i + j + 3)) < 0.5)
+          normals.splice(
+            i + j,
+            3,
+            ...n.map((value) => (length ? value / length : 0)),
+          );
+    }
+    return { positions, normals };
   } finally {
     cleanup(handles);
   }
@@ -125,11 +192,11 @@ function register(oc, shape) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
-    const positions = mesh(oc, shape);
+    const { positions, normals } = mesh(oc, shape);
     const kernelId = `cad-${sessionId}-${++nextShape}`;
     const brep = serializeBrep(oc, shape);
     shapes.set(kernelId, shape);
-    return { kernelId, positions, brep };
+    return { kernelId, positions, normals, brep };
   } catch (error) {
     shape.delete();
     throw error;

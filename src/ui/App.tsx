@@ -1,3 +1,4 @@
+import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
@@ -565,9 +566,13 @@ export function App() {
   }, [wireframe]);
   useEffect(() => {
     viewport.current?.setBrush(
-      mode === "brush" && !busy && !scanPanel && !scanBoundaryPaths.length,
+      mode === "brush" &&
+        !busy &&
+        !selected?.kernelId &&
+        !scanPanel &&
+        !scanBoundaryPaths.length,
     );
-  }, [mode, busy, scanPanel, scanBoundaryPaths]);
+  }, [mode, busy, selected?.kernelId, scanPanel, scanBoundaryPaths]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
       selectionTool,
@@ -1028,8 +1033,8 @@ export function App() {
     label: string,
   ) {
     if (!selected || busy || scanEditAbort.current) return;
-    if (selected.parametric) {
-      setError("Create a separate mesh copy before editing a parametric body.");
+    if (selected.parametric || selected.kernelId) {
+      setError("Create a separate mesh copy before editing an exact CAD body.");
       return;
     }
     const controller = new AbortController();
@@ -1808,7 +1813,7 @@ export function App() {
     });
   }
   function editSelection(operation: "copy" | "cut" | "delete") {
-    if (selected?.parametric && operation !== "copy") {
+    if ((selected?.parametric || selected?.kernelId) && operation !== "copy") {
       setError(
         "Parametric bodies retain exact CAD dependencies. Use a separate mesh copy for triangle edits.",
       );
@@ -3370,7 +3375,29 @@ export function App() {
               <X size={15} />
             </button>
           </h2>
-          {workspace === "mesh" && selected && scanPanel ? (
+          {workspace === "mesh" && selected?.kernelId ? (
+            <section aria-label="Exact CAD body">
+              <p>
+                Original CAD surfaces and solid topology are retained in
+                OpenCascade.
+              </p>
+              <p>
+                Scan Data tools edit triangles. Create a separate mesh copy to
+                use them.
+              </p>
+              <button
+                onClick={() => {
+                  const copy = scanMeshCopy(selected, crypto.randomUUID());
+                  operationLabel.current = "Create mesh copy";
+                  commit([...entities, copy]);
+                  operationLabel.current = null;
+                  setSelectedId(copy.id);
+                }}
+              >
+                Create mesh copy
+              </button>
+            </section>
+          ) : workspace === "mesh" && selected && scanPanel ? (
             <ScanTopologyPanels
               key={`${selected.id}-${scanPanel}`}
               section={scanPanel}
