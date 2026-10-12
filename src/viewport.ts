@@ -21,7 +21,11 @@ import {
   configureNavigationSensitivity,
 } from "./camera-navigation";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
-import { createOriginGeometry, type OriginPlane } from "./origin";
+import {
+  createOriginGeometry,
+  highlightOriginPlane,
+  type OriginPlane,
+} from "./origin";
 import type { SketchFrame } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
 import {
@@ -46,6 +50,7 @@ type Item = {
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
   onOriginPlane?: (plane: OriginPlane) => void;
+  private originPicking = false;
   private readonly originGeometry = new THREE.Group();
   onSelectionStatus?: (status: "pending" | "complete") => void;
   private readonly scene = new THREE.Scene();
@@ -347,6 +352,12 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (this.originPicking) {
+      this.highlightOrigin(
+        this.originHit(event)?.object.userData.originPlane as
+          OriginPlane | undefined,
+      );
+    }
     if (
       !this.brushing ||
       (event.buttons & 4) !== 0 ||
@@ -409,6 +420,7 @@ export class Viewport {
   }
 
   private pointerLeave = (): void => {
+    if (this.originPicking) this.highlightOrigin();
     if (!this.pointer) this.paintOverlay.style.display = "none";
   };
 
@@ -640,12 +652,42 @@ export class Viewport {
     this.controls.update();
     this.invalidate();
   }
-  setOrigin(visible: boolean, selected?: OriginPlane): void {
+  setOrigin(visible: boolean, picking = false): void {
+    const entering = picking && !this.originPicking;
+    this.originPicking = picking;
     this.clearGroup(this.originGeometry);
-    const geometry = createOriginGeometry(selected);
+    const geometry = createOriginGeometry(undefined, picking);
     this.originGeometry.add(...[...geometry.children]);
     this.originGeometry.visible = visible;
+    if (entering) {
+      this.viewReferencePlane(coordinateSketchFrame("OXY", 0));
+      this.orientCamera(
+        new THREE.Vector3(1, -1, 0.8),
+        new THREE.Vector3(0, 0, 1),
+      );
+    }
     this.invalidate();
+  }
+  highlightOrigin(plane?: OriginPlane): void {
+    highlightOriginPlane(this.originGeometry, plane);
+    this.invalidate();
+  }
+  private originHit(event: PointerEvent) {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      this.camera,
+    );
+    return this.raycaster.intersectObjects(
+      this.originGeometry.children.filter(
+        (c) => c.visible && c.userData.originPlane,
+      ),
+      false,
+    )[0];
   }
   viewReferencePlane(frame: SketchFrame): void {
     const center = new THREE.Vector3(...frame.origin);
@@ -661,7 +703,7 @@ export class Viewport {
       new THREE.Box3(
         center.clone().addScalar(-40),
         center.clone().addScalar(40),
-      ),
+      ).union(this.bounds),
     );
     this.controls.update();
     this.invalidate();
@@ -980,7 +1022,13 @@ export class Viewport {
       ),
     );
   };
-  private pickAt = (event: PointerEvent): string | undefined => {
+  private pickAt(event: PointerEvent): string | undefined {
+    if (this.originPicking) {
+      const hit = this.originHit(event);
+      if (hit)
+        this.onOriginPlane?.(hit.object.userData.originPlane as OriginPlane);
+      return;
+    }
     const rect = this.renderer.domElement.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     this.raycaster.setFromCamera(
@@ -1005,19 +1053,7 @@ export class Viewport {
           !this.clipping ||
           this.clippingPlane.distanceToPoint(candidate.point) >= 0,
       );
-    if (!hit) {
-      if (this.originGeometry.visible && !this.brushing && !this.pickTargetId) {
-        const planeHit = this.raycaster.intersectObjects(
-          this.originGeometry.children.filter((c) => c.userData.originPlane),
-          false,
-        )[0];
-        if (planeHit)
-          this.onOriginPlane?.(
-            planeHit.object.userData.originPlane as OriginPlane,
-          );
-      }
-      return;
-    }
+    if (!hit) return;
     const id = hit.object.userData.entityId as string;
     this.onSelect(id);
     if (
@@ -1035,7 +1071,7 @@ export class Viewport {
       );
     } else this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
     return id;
-  };
+  }
 
   setPickTarget(entityId: string | null): void {
     this.pickTargetId = entityId;

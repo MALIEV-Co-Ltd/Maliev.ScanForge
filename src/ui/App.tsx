@@ -11,8 +11,9 @@ import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import { ApplicationVersion } from "./ApplicationVersion";
 import "./workspace-chrome.css";
+import { CoordinateSystem, SketchPlanePicker } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
-import { ORIGIN_PLANES, PLANE_LABELS, type OriginPlane } from "../origin";
+import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import {
   coordinateSketchFrame,
   validateSketchFrame,
@@ -162,6 +163,7 @@ export function App() {
   const [pendingScanImport, setPendingScanImport] = useState<File | null>(null);
   const [originVisible, setOriginVisible] = useState(true);
   const [originPlane, setOriginPlane] = useState<OriginPlane>("OXY");
+  const [planePicking, setPlanePicking] = useState(false);
   const [sketchPlaneDialog, setSketchPlaneDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(
     () => entities[0]?.id ?? null,
@@ -725,23 +727,24 @@ export function App() {
     activeSketchId,
   ]);
   useEffect(() => {
-    viewport.current?.setOrigin(originVisible, originPlane);
+    viewport.current?.setOrigin(originVisible || planePicking, planePicking);
     if (viewport.current)
       viewport.current.onOriginPlane = (plane) => {
-        if (
-          busyRef.current ||
-          createSketchRef.current ||
-          surfaceFitRef.current ||
-          nPointsRef.current
-        )
-          return;
-        setOriginPlane(plane);
-        setSelectedId(null);
-        setMessage(
-          `${PLANE_LABELS[plane]} selected · create a sketch on this plane`,
-        );
+        if (!planePicking || busyRef.current) return;
+        createPlaneSketch(coordinateSketchFrame(plane, 0));
       };
-  }, [originVisible, originPlane]);
+  }, [originVisible, planePicking, savedSketches.length]);
+  useEffect(() => {
+    if (!planePicking) return;
+    const cancel = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setPlanePicking(false);
+      }
+    };
+    window.addEventListener("keydown", cancel);
+    return () => window.removeEventListener("keydown", cancel);
+  }, [planePicking]);
   useEffect(() => {
     if (
       createSketch &&
@@ -1362,6 +1365,7 @@ export function App() {
   function newDocument() {
     if (busy) return;
     setSketchPlaneDialog(false);
+    setPlanePicking(false);
     setOriginVisible(true);
     setOriginPlane("OXY");
     sketchUndoSessions.current.clear();
@@ -1858,7 +1862,11 @@ export function App() {
     setToolPanelOpen(false);
   }
   function openSketchCreation() {
-    setSketchPlaneDialog(true);
+    if (busy) return;
+    setMode("inspect");
+    setToolPanelOpen(false);
+    setPlanePicking(true);
+    setMessage("Select the plane for your sketch");
   }
   function createPlaneSketch(frame: SketchFrame) {
     try {
@@ -1888,6 +1896,7 @@ export function App() {
       setActiveSketchId(item.id);
       setSketchDrawingTool("line");
       setSketchPlaneDialog(false);
+      setPlanePicking(false);
       setMode("inspect");
       setDirty(true);
       showTools("sketch");
@@ -2781,44 +2790,11 @@ export function App() {
             <div className="tree-heading">
               Objects <span>{entities.length + savedSketches.length}</span>
             </div>
-            <div className="origin-tree" aria-label="World coordinate system">
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={originVisible}
-                  onChange={(e) => setOriginVisible(e.target.checked)}
-                />
-                World origin · mm
-              </label>
-              <p>O (0, 0, 0) · X, Y, Z</p>
-              <div className="origin-plane-buttons">
-                {ORIGIN_PLANES.map((plane) => (
-                  <button
-                    key={plane}
-                    aria-pressed={originPlane === plane}
-                    onClick={() => {
-                      setOriginPlane(plane);
-                      setOriginVisible(true);
-                      setSelectedId(null);
-                      setToolPanelOpen(false);
-                      setMode("inspect");
-                      viewport.current?.viewReferencePlane(
-                        coordinateSketchFrame(plane, 0),
-                      );
-                    }}
-                  >
-                    {PLANE_LABELS[plane]}
-                  </button>
-                ))}
-              </div>
-              <button
-                className="wide"
-                disabled={busy}
-                onClick={openSketchCreation}
-              >
-                Create sketch on plane
-              </button>
-            </div>
+            <CoordinateSystem
+              visible={originVisible}
+              onVisible={setOriginVisible}
+              onSketch={openSketchCreation}
+            />
             <ul className="object-list">
               {entities.map((entity) => (
                 <li
@@ -3069,6 +3045,19 @@ export function App() {
         </aside>
         <section className="canvas-area" aria-label="3D viewport">
           <div ref={viewportHost} className="viewport" />
+          {planePicking && (
+            <SketchPlanePicker
+              onPick={(plane) =>
+                createPlaneSketch(coordinateSketchFrame(plane, 0))
+              }
+              onHover={(plane) => viewport.current?.highlightOrigin(plane)}
+              onCustom={() => {
+                setPlanePicking(false);
+                setSketchPlaneDialog(true);
+              }}
+              onCancel={() => setPlanePicking(false)}
+            />
+          )}
           {dragging && (
             <div className="drop-overlay">Drop a scan or CAD file to open</div>
           )}
@@ -3099,13 +3088,15 @@ export function App() {
             />
           </div>
           <div className="canvas-hint">
-            {mode === "brush"
-              ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
-              : mode === "measure"
-                ? "Click two points on a surface to measure distance"
-                : mode === "section"
-                  ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                  : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
+            {planePicking
+              ? "Hover a plane to highlight · click to create sketch · Escape cancels"
+              : mode === "brush"
+                ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
+                : mode === "measure"
+                  ? "Click two points on a surface to measure distance"
+                  : mode === "section"
+                    ? `${axis.toUpperCase()} section · ${number(offset)} mm`
+                    : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
           </div>
           {mode === "measure" && (
             <div className="measurement">

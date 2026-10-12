@@ -34,7 +34,23 @@ export function datumFrame(origin: Vec3, normal: Vec3): SketchFrame {
   validateSketchFrame(frame);
   return frame;
 }
-export function createOriginGeometry(selected?: OriginPlane): THREE.Group {
+export function highlightOriginPlane(
+  group: THREE.Group,
+  hovered?: OriginPlane,
+): void {
+  for (const child of group.children) {
+    if (!child.userData.originPlane) continue;
+    const item = child as THREE.Mesh<
+      THREE.BufferGeometry,
+      THREE.MeshBasicMaterial
+    >;
+    item.material.opacity = child.userData.originPlane === hovered ? 0.3 : 0.08;
+  }
+}
+export function createOriginGeometry(
+  hovered?: OriginPlane,
+  showPlanes = true,
+): THREE.Group {
   const group = new THREE.Group();
   group.name = "World origin";
   group.add(new THREE.AxesHelper(35));
@@ -46,9 +62,10 @@ export function createOriginGeometry(selected?: OriginPlane): THREE.Group {
       new THREE.MeshBasicMaterial({
         color: colors[plane],
         transparent: true,
-        opacity: selected === plane ? 0.3 : 0.08,
+        opacity: hovered === plane ? 0.3 : 0.08,
         side: THREE.DoubleSide,
         depthWrite: false,
+        depthTest: false,
       }),
     );
     mesh.quaternion.setFromRotationMatrix(
@@ -59,15 +76,20 @@ export function createOriginGeometry(selected?: OriginPlane): THREE.Group {
       ),
     );
     mesh.userData.originPlane = plane;
+    mesh.visible = showPlanes;
+    mesh.renderOrder = 5;
     const edge = new THREE.LineSegments(
       new THREE.EdgesGeometry(mesh.geometry),
       new THREE.LineBasicMaterial({
         color: colors[plane],
         transparent: true,
         opacity: 0.7,
+        depthTest: false,
       }),
     );
     edge.quaternion.copy(mesh.quaternion);
+    edge.visible = showPlanes;
+    edge.renderOrder = 6;
     group.add(mesh, edge);
   }
   const marker = new THREE.Mesh(

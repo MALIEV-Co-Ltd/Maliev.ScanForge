@@ -1,7 +1,14 @@
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createOriginGeometry, datumFrame, ORIGIN_PLANES } from "../src/origin";
+import {
+  createOriginGeometry,
+  highlightOriginPlane,
+  datumFrame,
+  ORIGIN_PLANES,
+} from "../src/origin";
+import { Viewport } from "../src/viewport";
+import { CoordinateSystem, SketchPlanePicker } from "../src/ui/OriginControls";
 import {
   coordinateSketchFrame,
   validateSketchFrame,
@@ -31,6 +38,127 @@ it("draws three world planes at the world origin with matching right-handed norm
     else m.material?.dispose();
   });
 });
+it("shows only axes outside plane picking and restores faint opacity after hover", () => {
+  const idle = createOriginGeometry(undefined, false);
+  expect(
+    idle.children
+      .filter((child) => child.userData.originPlane)
+      .every((child) => !child.visible),
+  ).toBe(true);
+  const group = createOriginGeometry();
+  const planes = group.children.filter(
+    (child) => child.userData.originPlane,
+  ) as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>[];
+  expect(planes.every((plane) => plane.material.opacity === 0.08)).toBe(true);
+  highlightOriginPlane(group, "OXZ");
+  planes.forEach((plane) =>
+    expect(plane.material.opacity).toBe(
+      plane.userData.originPlane === "OXZ" ? 0.3 : 0.08,
+    ),
+  );
+  highlightOriginPlane(group);
+  expect(planes.every((plane) => plane.material.opacity === 0.08)).toBe(true);
+  for (const root of [idle, group])
+    root.traverse((child) => {
+      const object = child as THREE.Mesh;
+      object.geometry?.dispose();
+      if (Array.isArray(object.material))
+        object.material.forEach((material) => material.dispose());
+      else object.material?.dispose();
+    });
+});
+it("prioritizes a datum plane over scan meshes while choosing a sketch plane", () => {
+  const camera = new THREE.OrthographicCamera(-20, 20, 20, -20, 0.1, 1000);
+  camera.position.set(5, 5, 100);
+  camera.lookAt(5, 5, 0);
+  camera.updateMatrixWorld();
+  const origin = createOriginGeometry();
+  origin.updateMatrixWorld(true);
+  const onPlane = vi.fn(),
+    onSelect = vi.fn();
+  const view = Object.create(Viewport.prototype);
+  Object.assign(view, {
+    camera,
+    originGeometry: origin,
+    originPicking: true,
+    raycaster: new THREE.Raycaster(),
+    onOriginPlane: onPlane,
+    onSelect,
+    renderer: {
+      domElement: {
+        getBoundingClientRect: () => ({
+          left: 0,
+          top: 0,
+          width: 400,
+          height: 400,
+        }),
+      },
+    },
+    objects: {
+      values: () => {
+        throw new Error(
+          "Scan geometry must not be traversed in plane-picking mode",
+        );
+      },
+    },
+  });
+  view.pickAt({ clientX: 200, clientY: 200 });
+  expect(onPlane).toHaveBeenCalledWith("OXY");
+  expect(onSelect).not.toHaveBeenCalled();
+});
+it("keeps the coordinate row compact and exposes accessible plane choices", () => {
+  const row = renderToStaticMarkup(
+    <CoordinateSystem visible onVisible={() => {}} onSketch={() => {}} />,
+  );
+  expect(row).toContain("Coordinate System");
+  expect(row).not.toContain("XY plane");
+  expect(row).not.toContain("O (0, 0, 0)");
+  const picker = renderToStaticMarkup(
+    <SketchPlanePicker
+      onPick={() => {}}
+      onHover={() => {}}
+      onCustom={() => {}}
+      onCancel={() => {}}
+    />,
+  );
+  for (const label of [
+    "XY plane",
+    "YZ plane",
+    "XZ plane",
+    "Cancel plane selection",
+  ])
+    expect(picker).toContain(label);
+});
+it.each(ORIGIN_PLANES)(
+  "faces a new %s sketch with its local V axis upright",
+  (plane) => {
+    const camera = new THREE.OrthographicCamera(-50, 50, 50, -50, 0.1, 10000);
+    const target = new THREE.Vector3(10, 20, 30);
+    const view = Object.create(Viewport.prototype);
+    Object.assign(view, {
+      camera,
+      bounds: new THREE.Box3(),
+      controls: { target, update: () => camera.updateMatrixWorld() },
+      invalidate: vi.fn(),
+    });
+    const frame = coordinateSketchFrame(plane, 0);
+    view.viewReferencePlane(frame);
+    expect(target.toArray()).toEqual(frame.origin);
+    expect(camera.up.toArray()).toEqual(frame.v);
+    expect(
+      camera.position
+        .clone()
+        .sub(target)
+        .normalize()
+        .distanceTo(new THREE.Vector3(...frame.normal)),
+    ).toBeLessThan(1e-12);
+    const localV = new THREE.Vector3(
+      ...sketchWorldPoint(frame, [0, 10]),
+    ).project(camera);
+    expect(localV.x).toBeCloseTo(0, 10);
+    expect(localV.y).toBeGreaterThan(0);
+  },
+);
 it.each([
   [1, 2, 3],
   [0, 0, -1],

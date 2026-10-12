@@ -705,3 +705,16 @@ This is independently authored integration of existing sketch and coordinate com
 - Live browser: face/corner orientation, shared edge/corner hover, cube drag, projection state and final four-item themed menu verified. No warning/error console entries. Final screenshot .resources/cube-menu-final.png. Temporary test tab 11 closed and absence verified; user tab 7 preserved.
 - Preview HTTP 200 on loopback port 5173; existing server PID 43304 retained under its recorded expiry 2026-10-12T07:39:15.329Z. No new helper servers launched.
 - Final full suite: npm test, 7,148 tests passed across 125 files (45.17 seconds).
+
+### 2026-10-12 — Canvas sketch-plane picking
+
+- Replaced the expanded origin block with a compact Coordinate System checkbox/icon row and sketch action. Normal viewing renders origin axes/marker only.
+- Sketch creation enters an origin-centered isometric plane picker. All origin planes start at opacity 0.08; pointer/keyboard hover raises only the chosen plane to 0.3. No geometry is rebuilt on hover.
+- Plane clicks take priority over scan meshes and create an empty placed sketch immediately. Camera faces its normal with local V upright. Planes disappear on accept/cancel; Escape creates no sketch. Accessible plane buttons and custom placement remain available.
+- Inspected origin geometry, viewport ray picking, camera framing, App sketch state and saved sketch-frame contracts. Scan meshes are excluded from the picking raycast; scene bounds remain in camera clipping calculations.
+- npm run build passed with no warnings/errors, manifest scanforge-e7d05cd8e13edc8a.
+- Focused origin/frame/drawing tests: 24 passed in 3 files. Full npm test: 7,154 passed in 125 files.
+- Prettier targeted checks and git diff --check passed.
+- Browser: Chrome canvas YZ hover/click, OYZ frame, camera RIGHT; XZ choice and camera BACK; Escape cancels without changing sketch count. IAB XY canvas click also created OXY sketch. No Chrome warnings/errors. Proof: .resources/plane-hover-final.png.
+- IAB test tab 12 closed and absence verified; user tab 13 preserved. Chrome test tab 196954518 could not be explicitly closed after its debugger detached; reattachment also failed. It remains task-owned, unmarked and subject to the browser tool's automatic turn-end cleanup. No process was terminated.
+- Preview PID 43304 retained with recorded expiry 2026-10-12T07:39:15.329Z.

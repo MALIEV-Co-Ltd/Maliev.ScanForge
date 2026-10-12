@@ -1,0 +1,45 @@
+.coordinate-system-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  gap: 6px;
+}
+.coordinate-system-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.coordinate-system-row button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  min-height: 24px;
+  width: 24px;
+}
+.sketch-plane-picker {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  max-width: calc(100% - 170px);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  z-index: 4;
+  box-shadow: 0 3px 12px #0003;
+}
+.sketch-plane-picker > div {
+  display: flex;
+  gap: 4px;
+}
+.sketch-plane-picker button {
+  min-height: 26px;
+  padding: 4px 8px;
+}
