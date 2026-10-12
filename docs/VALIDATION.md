@@ -493,3 +493,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Seven additional cases cover recovered mode-one dispatch, unchanged primary modes, cross-byte masks, additional constraint flags, weighted fallback, independent storage and invalid-input rejection. Completion and constrained scores remain independent diagnostics.
 - Targeted Prettier checks and `git diff --check` passed. The bounded native probe released executable memory and its exact PID was verified absent in the resource ledger.
 - Existing loopback preview remained HTTP 200 under its recorded finite lease. The UI bundle remains unchanged because these recovered numerical components are not yet bound to the reconstruction UI. Full native lifecycle, downstream quad/NURBS reconstruction and feature/workflow parity remain incomplete.
+
+### Recovered symmetry-edge curvature constraints - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-curvature-symmetry.test.ts tests/field-curvature-boundary.test.ts tests/field-curvature-alternate.test.ts --maxWorkers=1`: 502 passed in 3 files.
+- `npm test`: 2,411 passed in 91 files.
+- All 120 complete original symmetry-writer captures match face directions, exact flag replacement and low-byte enabled status. The writer uses owned populated adjacency/symmetry buffers, a cache-valid stub and a supplied populated symmetry accessor; native cache/mapping construction and application workflows remain outside comparison scope.
+- Seven additional cases verify both-endpoint eligibility, empty-map preservation, nonempty zero-edge status, repeated/nonmanifold last-write order, independent storage, malformed references and folded-mesh boundary-to-symmetry-to-direction integration in primary/alternate modes.
+- Targeted Prettier checks and `git diff --check` passed. The bounded native probe released executable memory and its exact PID was verified absent in the resource ledger. Low memory initially prevented admission of another analysis provider; retained evidence was reused and the native probe ran only after the unchanged 3072 MiB guard admitted it.
+- Existing loopback preview remained HTTP 200 under its finite lease. The UI bundle is unchanged because these numerical components are not yet bound to reconstruction UI. Native owner/cache/partition lifecycle, downstream quad/NURBS generation and complete feature/workflow parity remain incomplete.
