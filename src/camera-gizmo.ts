@@ -205,7 +205,7 @@ export class CameraGizmo {
   ) {
     this.element.className = "camera-gizmo";
     this.element.style.cssText =
-      "position:absolute;right:12px;top:10px;width:132px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:3;color:var(--text);user-select:none";
+      "position:absolute;right:10px;top:6px;width:108px;display:flex;flex-direction:column;align-items:center;gap:0;z-index:3;color:var(--text);user-select:none";
     this.svg.setAttribute("viewBox", "0 0 132 112");
     this.svg.setAttribute(
       "aria-label",
@@ -213,7 +213,7 @@ export class CameraGizmo {
     );
     this.svg.setAttribute("role", "group");
     this.svg.style.cssText =
-      "width:132px;height:112px;touch-action:none;cursor:grab";
+      "width:108px;height:92px;touch-action:none;cursor:grab";
     this.svg.addEventListener("pointerdown", this.down);
     this.svg.addEventListener("pointermove", this.move);
     this.svg.addEventListener("pointerup", this.up);
@@ -221,36 +221,45 @@ export class CameraGizmo {
     this.svg.addEventListener("keydown", this.key);
     this.select.setAttribute("aria-label", "Camera projection");
     this.select.style.cssText =
-      "font:inherit;font-size:11px;color:inherit;background:var(--panel, #272727);border:1px solid var(--border, #555);border-radius:4px;padding:4px;width:132px";
+      "font:inherit;font-size:10px;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px;width:56px;height:24px";
     for (const projection of ["orthographic", "perspective"] as const) {
       const option = document.createElement("option");
       option.value = projection;
-      option.textContent = projection[0].toUpperCase() + projection.slice(1);
+      option.textContent = projection === "orthographic" ? "Ortho" : "Persp";
+      option.setAttribute(
+        "aria-label",
+        projection === "orthographic" ? "Orthographic" : "Perspective",
+      );
       this.select.append(option);
     }
     this.select.addEventListener("change", () =>
       onProjection(this.select.value as Projection),
     );
     const actions = document.createElement("div");
-    actions.style.cssText = "display:flex;gap:4px";
+    actions.style.cssText = "display:flex;gap:2px;align-items:center";
+    actions.append(this.select);
     for (const [label, action] of [
       ["Isometric", () => onView("iso")],
       ["Fit", onFit],
     ] as const) {
       const button = document.createElement("button");
-      button.textContent = label;
+      button.textContent = label === "Isometric" ? "⌂" : "⛶";
+      button.setAttribute("aria-label", label);
+      button.title =
+        label === "Isometric" ? "Isometric view" : "Fit model in view";
       button.style.cssText =
-        "font:inherit;font-size:10px;color:inherit;background:var(--panel, #272727);border:1px solid var(--border, #555);border-radius:4px;padding:3px 6px";
+        "font:inherit;font-size:16px;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0;min-height:24px;height:24px;width:24px";
       button.addEventListener("click", action);
       actions.append(button);
     }
-    this.element.append(this.svg, this.select, actions);
+    this.element.append(this.svg, actions);
   }
   update(camera: NavigationCamera): void {
     this.select.value =
       camera instanceof THREE.OrthographicCamera
         ? "orthographic"
         : "perspective";
+    this.select.title = `Camera projection: ${this.select.value === "orthographic" ? "Orthographic" : "Perspective"}`;
     this.svg.replaceChildren();
     for (const face of projectCube(camera.quaternion)) {
       const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -266,9 +275,11 @@ export class CameraGizmo {
         "points",
         face.points.map((p) => `${66 + p.x * 28},${56 - p.y * 28}`).join(" "),
       );
-      const shade = Math.round(95 + face.depth * 95);
-      polygon.setAttribute("fill", `rgb(${shade},${shade},${shade})`);
-      polygon.setAttribute("stroke", "#dedede");
+      polygon.setAttribute(
+        "fill",
+        `color-mix(in srgb, var(--cube-face) ${Math.round(face.depth * 100)}%, var(--cube-shade))`,
+      );
+      polygon.setAttribute("stroke", "var(--cube-edge)");
       polygon.setAttribute("stroke-width", "1");
       const text = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -277,16 +288,31 @@ export class CameraGizmo {
       const center = face.points
         .reduce((v, p) => v.add(p), new THREE.Vector3())
         .multiplyScalar(0.25);
-      text.setAttribute("x", String(66 + center.x * 28));
-      text.setAttribute("y", String(60 - center.y * 28));
+      // Map labels into their own face plane, so adjacent faces cannot cover
+      // the beginning of a word on a narrow, oblique face.
+      const horizontal = face.points[1]
+        .clone()
+        .sub(face.points[0])
+        .multiplyScalar(14);
+      const vertical = face.points[0]
+        .clone()
+        .sub(face.points[3])
+        .multiplyScalar(14);
+      text.setAttribute(
+        "transform",
+        `matrix(${horizontal.x},${-horizontal.y},${vertical.x},${-vertical.y},${66 + center.x * 28},${56 - center.y * 28})`,
+      );
+      text.setAttribute("x", "0");
+      text.setAttribute("y", "0.12");
       text.setAttribute("text-anchor", "middle");
-      text.setAttribute("fill", "#171717");
-      text.setAttribute("font-size", "9");
+      text.setAttribute("fill", "var(--cube-label)");
+      text.setAttribute("font-size", "0.36");
       text.setAttribute("font-family", "system-ui");
       text.setAttribute("font-weight", "700");
       text.setAttribute("pointer-events", "none");
       text.textContent = face.view.toUpperCase();
-      group.append(polygon, text);
+      group.append(polygon);
+      if (face.depth >= 0.18) group.append(text);
       this.svg.append(group);
     }
   }

@@ -15,6 +15,10 @@
   --selected: #dcebf7;
   --selected-text: #16517f;
   --hover: #e3e8ed;
+  --cube-face: #e5e5e5;
+  --cube-shade: #aaaaaa;
+  --cube-edge: #737373;
+  --cube-label: #202020;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -29,6 +33,10 @@
   --selected: #3c3c3c;
   --selected-text: #f2f2f2;
   --hover: #353535;
+  --cube-face: #4b4b4b;
+  --cube-shade: #292929;
+  --cube-edge: #929292;
+  --cube-label: #f5f5f5;
 }
 
 * {
@@ -1412,6 +1420,19 @@ dd {
 }
 .scan-diagnostics {
   margin-bottom: 22px;
+}
+.scan-diagnostics > div {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+}
+.scan-diagnostics output {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.scan-diagnostics > small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
 }
 .scan-tool-row,
 .edit-scan-dialog .button-row {

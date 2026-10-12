@@ -1,4 +1,6 @@
+import type { Positions } from "../types";
 import { useState } from "react";
+import { ScanDiagnostics } from "./ScanDiagnostics";
 import {
   Circle,
   MousePointer2,
@@ -17,6 +19,7 @@ import {
 export type ScanSelectionTool = "brush" | "rectangle" | "circle" | "wand";
 export interface EditScanDialogProps {
   name: string;
+  positions: Positions;
   tool: ScanSelectionTool;
   onTool: (tool: ScanSelectionTool) => void;
   angle: number;
@@ -69,20 +72,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
   ] as const;
   return (
     <section className="edit-scan-dialog" aria-label={`Edit ${props.name}`}>
-      <div className="scan-diagnostics" role="group" aria-label="Mesh editing">
-        {["Individual meshes", "Holes", "Boundaries"].map((label) => (
-          <div key={label}>
-            <span>{label}</span>
-            <button
-              disabled
-              title={pending}
-              aria-label={`Edit ${label.toLowerCase()}`}
-            >
-              Edit…
-            </button>
-          </div>
-        ))}
-      </div>
+      <ScanDiagnostics positions={props.positions} />
       <div className="scan-tool-row" role="group" aria-label="Selection tools">
         {tools.map(({ id, label, Icon }) => {
           const implemented = id !== "freehand" && id !== "line";

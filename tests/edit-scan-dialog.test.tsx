@@ -7,6 +7,7 @@ import {
 const noop = () => {};
 const defaults: EditScanDialogProps = {
   name: "Fixture scan",
+  positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
   tool: "brush",
   onTool: noop,
   angle: 30,

@@ -27,7 +27,6 @@ import {
   MousePointer2,
   Plus,
   Redo2,
-  Rotate3D,
   Ruler,
   Save,
   ScanLine,
@@ -2964,15 +2963,6 @@ export function App() {
             </div>
           )}
           <div className="view-controls">
-            <button
-              title="Navigate camera: drag to rotate, Ctrl+drag to pan, Shift+drag to zoom"
-              aria-label="Navigate camera"
-              aria-pressed={mode === "inspect"}
-              onClick={() => setMode("inspect")}
-            >
-              <Rotate3D size={15} />
-              Navigate
-            </button>
             <SpaceMouseConnection
               status={spaceMouseStatus}
               connected={spaceMouse.current?.connected ?? false}
@@ -3090,6 +3080,7 @@ export function App() {
             <EditScanDialog
               key={selected.id}
               name={selected.name}
+              positions={selected.positions}
               tool={selectionTool}
               onTool={(tool) => {
                 setSelectionTool(tool);
