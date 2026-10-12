@@ -354,6 +354,8 @@ The reduction caller's assembly now independently confirms the construction defa
 
 ## Production comparison integration
 
+The native deviation Apply handler and retained-preview comparison lifecycle are now traced separately in [NATIVE_DEVIATION_APPLY.md](NATIVE_DEVIATION_APPLY.md). The current combined Apply action still requires a Preview / comparison update / final acceptance workflow; comparison formula integration alone does not establish native dialog parity.
+
 Count and percentage reduction can now measure deviation after computing the recovered collapse result. The request carries `measureDeviation`, the independent report tolerance in `deviation`, and `paletteThreshold`. Coordinates publish only after comparison completes successfully. The existing worker response transfers reduced coordinates and original-facet RGB bytes separately. The viewport renders the colors on a read-only copy of the original surface and toggles to the reduced geometry; closing or changing tools clears that overlay. Geometry history retains the reduced result.
 
 The comparison constructor reads the published reduced triangles in order without another welding or topology pass. Original samples reuse the reduction's cached source index. Native Float32 thresholds remain unchanged in computation; labels use six significant digits to avoid binary precision tails. Comparison is unavailable in the separate conservative displacement-constrained mode.
