@@ -1,9 +1,12 @@
 import type { Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
+import { analyzeMesh } from "./mesh-processing";
+import { compareReductionSurface } from "./scan-reduction-comparison";
 import {
   reduceScanMesh,
   reduceScanNoise,
   repolygonizeScanMesh,
+  type ScanToolResult,
 } from "./scan-tools-reduction";
 import {
   scaleScanMesh,
@@ -20,6 +23,8 @@ export type ScanToolOperation =
       targetTriangles?: number;
       percentage?: number;
       deviation?: number;
+      measureDeviation?: boolean;
+      paletteThreshold?: number;
     }
   | {
       kind: "reduceNoise";
@@ -50,11 +55,11 @@ export interface ScanToolsRequest {
 export function runScanTool(
   request: ScanToolsRequest,
   options: MeshProcessingOptions = {},
-) {
+): ScanToolResult {
   const { positions, operation } = request;
   switch (operation.kind) {
     case "reducePolygons":
-      return reduceScanMesh(positions, { ...operation, ...options });
+      return reducePolygonsWithComparison(positions, operation, options);
     case "reduceNoise":
       return reduceScanNoise(positions, { ...operation, ...options });
     case "repolygonize":
@@ -72,4 +77,77 @@ export function runScanTool(
     default:
       throw new Error("Unsupported Scan Data tool.");
   }
+}
+
+function reducePolygonsWithComparison(
+  positions: Positions,
+  operation: Extract<ScanToolOperation, { kind: "reducePolygons" }>,
+  options: MeshProcessingOptions,
+) {
+  const measure = operation.measureDeviation ?? false;
+  const tolerance = operation.deviation ?? 0.05;
+  const paletteThreshold = operation.paletteThreshold ?? 0.05;
+  if (measure && operation.mode === "deviation")
+    throw new Error(
+      "Surface comparison requires count or percentage reduction.",
+    );
+  if (
+    measure &&
+    [tolerance, paletteThreshold].some(
+      (value) =>
+        !Number.isFinite(Math.fround(value)) || Math.fround(value) <= 0,
+    )
+  )
+    throw new Error(
+      "Comparison thresholds must be positive finite Float32 values.",
+    );
+  const result = reduceScanMesh(positions, {
+    ...operation,
+    ...options,
+    onProgress: (fraction, stage) =>
+      options.onProgress?.(fraction * (measure ? 0.85 : 1), stage),
+  });
+  if (!measure) return result;
+  const original = analyzeMesh(positions, {
+    ...options,
+    tolerance: 1e-6,
+    onProgress: (fraction, stage) =>
+      options.onProgress?.(0.85 + fraction * 0.05, stage),
+  });
+  // The comparison constructor needs facet coordinates, not another welded
+  // topology. Preserve every published triangle and its order directly.
+  const reducedIndices = new Uint32Array(result.positions.length / 3);
+  for (let corner = 0; corner < reducedIndices.length; corner++) {
+    if (corner % 4096 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    reducedIndices[corner] = corner;
+  }
+  const comparison = compareReductionSurface(
+    original.vertices,
+    { coordinates: result.positions, indices: reducedIndices },
+    tolerance,
+    paletteThreshold,
+    {
+      ...options,
+      onProgress: (fraction, stage) =>
+        options.onProgress?.(0.9 + fraction * 0.1, stage),
+    },
+  );
+  const rgb = new Uint8Array(positions.length);
+  for (let corner = 0; corner < original.triangles.length; corner++) {
+    if (corner % 4096 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const vertex = original.triangles[corner];
+    rgb.set(comparison.rgb.subarray(vertex * 3, vertex * 3 + 3), corner * 3);
+  }
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  const rangeLabel = Number((Math.fround(paletteThreshold) * 5).toPrecision(6));
+  return {
+    ...result,
+    noiseComparison: { rgb, threshold: Math.fround(paletteThreshold) },
+    summary:
+      result.summary +
+      ` Original-to-surface comparison: ${comparison.percentage.toFixed(2)}% (${comparison.within}/${comparison.total}) within ${tolerance} mm; ${comparison.total - comparison.matched} unmatched beyond the ${rangeLabel} mm search radius.`,
+  };
 }

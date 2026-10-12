@@ -272,6 +272,7 @@ export function App() {
   const [scanToolResult, setScanToolResult] = useState("");
   const scanToolOutput = useRef<Entity["positions"] | null>(null);
   const [noiseComparison, setNoiseComparison] = useState<{
+    kind: "reduceNoise" | "reducePolygons";
     entityId: string;
     source: Entity["positions"];
     output: Entity["positions"];
@@ -400,7 +401,7 @@ export function App() {
     noiseComparison &&
     workspace === "scanTools" &&
     toolPanelOpen &&
-    scanTool === "reduceNoise" &&
+    scanTool === noiseComparison.kind &&
     selected?.id === noiseComparison.entityId &&
     selected.positions === noiseComparison.output
       ? noiseComparison
@@ -1556,8 +1557,13 @@ export function App() {
         parameters.kind === "reduceNoise",
       );
       scanToolOutput.current = result.positions;
-      if (parameters.kind === "reduceNoise" && result.noiseComparison)
+      if (
+        (parameters.kind === "reduceNoise" ||
+          parameters.kind === "reducePolygons") &&
+        result.noiseComparison
+      )
         setNoiseComparison({
+          kind: parameters.kind,
           entityId: source.id,
           source: source.positions,
           output: result.positions,

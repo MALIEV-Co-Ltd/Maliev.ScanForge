@@ -21,6 +21,8 @@ export type ScanToolParameters =
       targetTriangles: number;
       percentage: number;
       deviation: number;
+      measureDeviation?: boolean;
+      paletteThreshold?: number;
     }
   | {
       kind: "reduceNoise";
@@ -159,6 +161,7 @@ export function ScanToolsPanel({
   const [selectionOnly, setSelectionOnly] = useState(false);
   const [applyBoundaryEdges, setApplyBoundaryEdges] = useState(true);
   const [measureDeviation, setMeasureDeviation] = useState(false);
+  const [paletteThreshold, setPaletteThreshold] = useState(0.05);
   const [factor, setFactor] = useState(1);
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
   const [resolution, setResolution] = useState(0.5);
@@ -219,7 +222,10 @@ export function ScanToolsPanel({
           targetTriangles >= count)) ||
         (mode === "percentage" &&
           (!positive(percentage) || percentage >= 100)) ||
-        (mode === "deviation" && !positive(deviation)))
+        (mode === "deviation" && !positive(deviation)) ||
+        (mode !== "deviation" &&
+          measureDeviation &&
+          (!positive(deviation) || !positive(paletteThreshold))))
     )
       problem =
         "Choose a smaller triangle count, a percentage between 0 and 100, or a positive deviation.";
@@ -271,7 +277,15 @@ export function ScanToolsPanel({
     if (blocked) return;
     switch (tool) {
       case "reducePolygons":
-        onApply({ kind: tool, mode, targetTriangles, percentage, deviation });
+        onApply({
+          kind: tool,
+          mode,
+          targetTriangles,
+          percentage,
+          deviation,
+          measureDeviation: mode !== "deviation" && measureDeviation,
+          paletteThreshold,
+        });
         break;
       case "reduceNoise":
         onApply({
@@ -366,6 +380,42 @@ export function ScanToolsPanel({
                 step={0.01}
                 onChange={setDeviation}
               />
+            )}
+            {mode !== "deviation" && (
+              <>
+                <label className="scan-tools-check">
+                  <input
+                    type="checkbox"
+                    checked={measureDeviation}
+                    onChange={(event) =>
+                      setMeasureDeviation(event.target.checked)
+                    }
+                  />
+                  Measure deviation from original
+                </label>
+                {measureDeviation && (
+                  <>
+                    <Field
+                      label="Comparison tolerance (mm)"
+                      value={deviation}
+                      min={0.001}
+                      step={0.01}
+                      onChange={setDeviation}
+                    />
+                    <Field
+                      label="Color threshold (mm)"
+                      value={paletteThreshold}
+                      min={0.001}
+                      step={0.01}
+                      onChange={setPaletteThreshold}
+                    />
+                    <p className="scan-tools-note">
+                      Measures the original surface against the reduced result.
+                      The color threshold sets the search range.
+                    </p>
+                  </>
+                )}
+              </>
             )}
           </>
         )}
@@ -569,9 +619,15 @@ export function ScanToolsPanel({
       )}
       {progress && <p role="status">{progress}</p>}
       {result && <p role="status">{result}</p>}
-      {tool === "reduceNoise" && comparison && onToggleComparison && (
-        <NoiseComparisonLegend {...comparison} onToggle={onToggleComparison} />
-      )}
+      {(tool === "reduceNoise" || tool === "reducePolygons") &&
+        comparison &&
+        onToggleComparison && (
+          <NoiseComparisonLegend
+            {...comparison}
+            resultKind={tool === "reducePolygons" ? "reduced" : "smoothed"}
+            onToggle={onToggleComparison}
+          />
+        )}
       <footer>
         {busy ? (
           <button onClick={onCancel}>Cancel operation</button>

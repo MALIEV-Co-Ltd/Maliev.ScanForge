@@ -305,7 +305,7 @@ collapse constraints. Raw probe data, allocation cleanup and browser evidence
 remain outside the repository. All 276 native probe allocations were freed.
 Whole-kernel and adapter parity on these fixtures does not establish complete
 Scan Data or application equivalence. Imported-scan ordering/performance,
-global large-mesh parity, deviation UI integration and the alternate branch remain open.
+global large-mesh parity, complete native deviation-dialog parity and the alternate branch remain open.
 
 ## Deviation callback extraction and execution
 
@@ -343,10 +343,18 @@ while the within-tolerance count compares against the separate Float32 dialog
 threshold. Missing queries yield RGB `(50, 50, 50)` and do not increment the
 count. Signed ties retain the query's winner; the ramp receives the narrowed
 Float32 distance. Source points are unchanged, cancellation discards incomplete
-results, and progress is checked before publication. The callback port remains
-separate from production until preview/UI integration is verified. The existing conservative deviation mode is not claimed to
+results, and progress is checked before publication. The callback port is now
+integrated into the count/percentage tool, with the limits below. The existing conservative deviation mode is not claimed to
 reproduce this traced comparison behavior.
 
 The reduction caller's assembly now independently confirms the construction defaults: at `0x14059850c` it clears `R9D` (include all triangles), and at `0x14059850f` it loads `XMM2` from `0x14126ae68` before calling builder `0x140a7f470`. Reading that mapped-image constant yields bytes `00 00 00 3F`, Float32 0.5. The builder sets depth ten and uses the same verified root initialization, insertion and subdivision routines as Reduce Noise. Assembly Evidence is `ev_5547acd4920afe6fe090d7bda3ed709e8fea23578b064b2e1df0560ebdd48a5a`. This is static caller evidence, not a fresh native dialog capture.
 
 `compareReductionSurface` composes that constructor, ordered signed query, triangle leaf and reduction callback. Original sample coordinates and reduced connectivity are separate inputs. It preserves the independently rounded report/palette thresholds, strict query exclusion, denominator and per-original-vertex RGB bytes. Tests reproduce all 326 retained successful signed matches on six native-built preview surfaces, and independently check differing vertex counts, grey unmatched samples and cancellation. Those constructor fixtures query at exact radius 0.25; successful winners remain unchanged at the slightly larger caller radius `5 * Float32(0.05)`. Their missing results are deliberately excluded from that comparison because increasing the radius can admit threshold-edge samples. The original callback's separate 200-sample fixture remains the gate for its radius and missing-result semantics. No native end-to-end reduction dialog or source-import vertex ordering is established by this composition check.
+
+## Production comparison integration
+
+Count and percentage reduction can now measure deviation after computing the recovered collapse result. The request carries `measureDeviation`, the independent report tolerance in `deviation`, and `paletteThreshold`. Coordinates publish only after comparison completes successfully. The existing worker response transfers reduced coordinates and original-facet RGB bytes separately. The viewport renders the colors on a read-only copy of the original surface and toggles to the reduced geometry; closing or changing tools clears that overlay. Geometry history retains the reduced result.
+
+The comparison constructor reads the published reduced triangles in order without another welding or topology pass. Original samples reuse the reduction's cached source index. Native Float32 thresholds remain unchanged in computation; labels use six significant digits to avoid binary precision tails. Comparison is unavailable in the separate conservative displacement-constrained mode.
+
+All 18 retained native adapter captures remain byte-identical through the measured production dispatch. Tests also check source immutability, monotonic progress, cancellation, original-facet color length, worker transfer buffers and absence of repeated topology preparation after actual reductions. The current browser reduced the retained 96-facet annular source at 50 percent with report tolerance 0.1 mm and color threshold 0.05 mm; its exported 432 coordinates exactly matched the native 48-facet capture. The original overlay, reduced-result toggle and close cleanup were checked in the browser. These integration checks do not establish complete native dialog/color output parity; the callback, constructor and query retain their separate captured numerical gates. Global large-mesh reduction, native import ordering and the alternate Preview branch remain unverified.

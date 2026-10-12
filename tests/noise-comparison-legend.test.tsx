@@ -3,6 +3,19 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NoiseComparisonLegend } from "../src/ui/NoiseComparisonLegend";
 import { ScanToolsPanel } from "../src/ui/ScanToolsPanel";
 
+it("shows readable labels for the widened native Float32 threshold", () => {
+  const markup = renderToStaticMarkup(
+    <NoiseComparisonLegend
+      threshold={Math.fround(0.05)}
+      visible
+      onToggle={() => {}}
+    />,
+  );
+  expect(markup).toContain("−0.25 mm");
+  expect(markup).toContain("±0.05");
+  expect(markup).not.toContain("0.250000003");
+});
+
 it("labels original-surface distances and exposes both comparison states", () => {
   const shown = renderToStaticMarkup(
     <NoiseComparisonLegend threshold={0.05} visible onToggle={() => {}} />,
@@ -43,4 +56,22 @@ it("shows the legend only for measured Reduce Noise results", () => {
       <ScanToolsPanel {...props} tool="reduceNoise" comparison={undefined} />,
     ),
   ).not.toContain("Original surface comparison");
+});
+
+it("labels reduced geometry separately from smoothing", () => {
+  const props = {
+    entities: [],
+    onApply: () => {},
+    onClose: () => {},
+    onCancel: () => {},
+    onToggleComparison: () => {},
+    comparison: { threshold: 0.05, visible: true },
+  };
+  const markup = renderToStaticMarkup(
+    <ScanToolsPanel {...props} tool="reducePolygons" />,
+  );
+  expect(markup).toContain("Measure deviation from original");
+  expect(markup).toContain("to the reduced result");
+  expect(markup).toContain("Show reduced result");
+  expect(markup).not.toContain("Show smoothed result");
 });
