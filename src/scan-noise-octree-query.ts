@@ -22,16 +22,17 @@ export interface NoiseQueryHit {
 }
 
 const intersects = (
-  bounds: NoiseBounds,
+  bounds: ArrayLike<number>,
   p: readonly number[],
   radius: number,
+  offset = 0,
 ) =>
-  p[0] >= bounds[0] - radius &&
-  p[1] >= bounds[1] - radius &&
-  p[2] >= bounds[2] - radius &&
-  p[0] <= bounds[3] + radius &&
-  p[1] <= bounds[4] + radius &&
-  p[2] <= bounds[5] + radius;
+  p[0] >= bounds[offset] - radius &&
+  p[1] >= bounds[offset + 1] - radius &&
+  p[2] >= bounds[offset + 2] - radius &&
+  p[0] <= bounds[offset + 3] + radius &&
+  p[1] <= bounds[offset + 4] + radius &&
+  p[2] <= bounds[offset + 5] + radius;
 
 /** Native query order on an already constructed octree. Equal distances retain
  * the first leaf entry, including its sign. Construction parity is a separate gate.
@@ -40,7 +41,7 @@ export function queryNoiseOctree(
   root: NoiseQueryNode,
   point: readonly number[],
   radius: number,
-  triangles: readonly NoiseQueryTriangle[],
+  triangles: readonly NoiseQueryTriangle[] | Float32Array,
   evaluate: (triangle: number, radius: number) => number,
 ): NoiseQueryHit | undefined {
   let best = Math.abs(radius);
@@ -49,7 +50,12 @@ export function queryNoiseOctree(
     if (!intersects(node.bounds, point, best)) return;
     if (node.triangles.length) {
       for (const triangle of node.triangles) {
-        if (!intersects(triangles[triangle].bounds, point, best)) continue;
+        if (
+          !(triangles instanceof Float32Array
+            ? intersects(triangles, point, best, triangle * 6)
+            : intersects(triangles[triangle].bounds, point, best))
+        )
+          continue;
         const distance = evaluate(triangle, best);
         if (Math.abs(distance) < best) {
           best = Math.abs(distance);

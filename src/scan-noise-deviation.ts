@@ -1,5 +1,5 @@
-import { BufferAttribute, BufferGeometry, Vector3 } from "three";
-import { MeshBVH } from "three-mesh-bvh";
+import { prepareNoiseOctree } from "./scan-noise-octree";
+import { queryNoiseOctree } from "./scan-noise-octree-query";
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
 
 const f = Math.fround;
@@ -130,78 +130,62 @@ export function compareNoiseSurface(
     throw new DOMException("Mesh operation cancelled.", "AbortError");
   if (preview.some((value) => !Number.isFinite(value)))
     throw new Error("Preview coordinates must be finite.");
-  const geometry = new BufferGeometry();
-  try {
-    geometry.setAttribute(
-      "position",
-      new BufferAttribute(Float32Array.from(preview), 3),
-    );
-    geometry.setIndex(new BufferAttribute(original.triangles, 1));
-    const tree = new MeshBVH(geometry, { indirect: true });
-    const total = original.vertices.length / 3,
-      distances = new Float64Array(total).fill(NaN);
-    let matched = 0,
-      within = 0,
-      maximum = 0;
-    const point = new Vector3();
-    for (let id = 0; id < total; id++) {
-      if (id % 1024 === 0) {
-        if (options.signal?.aborted)
-          throw new DOMException("Mesh operation cancelled.", "AbortError");
-        options.onProgress?.(
-          id / total,
-          "Comparing original vertices with smoothed surface",
-        );
-        if (options.signal?.aborted)
-          throw new DOMException("Mesh operation cancelled.", "AbortError");
-      }
-      point.fromArray(original.vertices, id * 3);
-      const p = [point.x, point.y, point.z];
-      let best = 5 * threshold,
-        value = NaN;
-      tree.shapecast({
-        // Padding covers Float32 projection rounding near a triangle bound.
-        intersectsBounds: (box) =>
-          box.distanceToPoint(point) <=
-          best +
-            Math.max(
-              1,
-              Math.abs(point.x),
-              Math.abs(point.y),
-              Math.abs(point.z),
-            ) *
-              1e-6,
-        intersectsTriangle: (triangle) => {
-          const distance = noiseTriangleDistance(
-            p,
-            triangle.a.toArray(),
-            triangle.b.toArray(),
-            triangle.c.toArray(),
-            best,
-          );
-          if (Math.abs(distance) < best) {
-            best = Math.abs(distance);
-            value = distance;
-          }
-          return false;
-        },
-      });
-      distances[id] = value;
-      if (Number.isFinite(value)) {
-        matched++;
-        maximum = Math.max(maximum, Math.abs(value));
-        if (Math.abs(value) <= threshold) within++;
-      }
+  const prepared = prepareNoiseOctree(
+    { coordinates: preview, indices: original.triangles },
+    0.5,
+    10,
+    options,
+  );
+  const total = original.vertices.length / 3,
+    distances = new Float64Array(total).fill(NaN);
+  let matched = 0,
+    within = 0,
+    maximum = 0;
+  const p = [0, 0, 0],
+    a = [0, 0, 0],
+    b = [0, 0, 0],
+    c = [0, 0, 0];
+  for (let id = 0; id < total; id++) {
+    if (id % 1024 === 0) {
+      if (options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      options.onProgress?.(
+        id / total,
+        "Comparing original vertices with smoothed surface",
+      );
+      if (options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
     }
-    return {
-      distances,
-      matched,
-      within,
-      total,
-      percentage: (100 * within) / total,
-      maximum,
-    };
-  } finally {
-    geometry.dispose();
+    for (let axis = 0; axis < 3; axis++)
+      p[axis] = Math.fround(original.vertices[id * 3 + axis]);
+    const hit = queryNoiseOctree(
+      prepared.root,
+      p,
+      5 * threshold,
+      prepared.triangleBounds,
+      (triangle, radius) => {
+        for (let axis = 0; axis < 3; axis++) {
+          a[axis] = prepared.points[triangle * 9 + axis];
+          b[axis] = prepared.points[triangle * 9 + 3 + axis];
+          c[axis] = prepared.points[triangle * 9 + 6 + axis];
+        }
+        return noiseTriangleDistance(p, a, b, c, radius);
+      },
+    );
+    const value = hit?.distance ?? NaN;
+    distances[id] = value;
+    if (Number.isFinite(value)) {
+      matched++;
+      maximum = Math.max(maximum, Math.abs(value));
+      if (Math.abs(value) <= threshold) within++;
+    }
   }
+  return {
+    distances,
+    matched,
+    within,
+    total,
+    percentage: (100 * within) / total,
+    maximum,
+  };
 }

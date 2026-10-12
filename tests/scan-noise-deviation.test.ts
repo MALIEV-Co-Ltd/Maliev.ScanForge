@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import native from "./fixtures/noise-triangle-distance.json";
+import nativeTrees from "./fixtures/noise-octree-trees.json";
 import surfaces from "./fixtures/noise-surface-comparison.json";
 import base from "./fixtures/noise-annular-default.json";
 import whole2 from "./fixtures/noise-annular-whole-2.json";
@@ -37,8 +38,8 @@ it("matches native leaf surface comparisons on all six noise captures and two th
       expect(result.matched).toBe(expected.matched);
       expect(result.within).toBe(expected.within);
       expect(result.percentage).toBe(expected.percentage);
-      // Equal-distance adjacent faces can disagree on sign; the native octree's
-      // tie order is not reproduced by this BVH. Magnitudes and counts are exact.
+      // This older fixture executes only the native leaf on exhaustive candidates.
+      // Full-tree signed results are checked separately below.
       expect(
         Array.from(result.distances, (v) =>
           Number.isNaN(v) ? null : Math.abs(v),
@@ -65,6 +66,61 @@ it("matches native leaf surface comparisons on all six noise captures and two th
       expect(Array.from(edit.positions)).toEqual(capture.nativeOutput);
     }
   }
+});
+
+it("production noise comparison and RGB reproduce native initialized trees on all six previews", () => {
+  const captures = [base, whole2, whole3, selected1, selected3, boundaryOff];
+  const names = [
+    "noise-annular-default",
+    "noise-annular-whole-2",
+    "noise-annular-whole-3",
+    "noise-annular-selected-1",
+    "noise-annular-selected-3",
+    "noise-annular-boundary-off",
+  ];
+  captures.forEach((capture, index) => {
+    const tree = nativeTrees.cases.find((c) => c.name === names[index])!;
+    const expected = new Map(
+      tree.samples.map((s) => [s.point.join(","), s.distance]),
+    );
+    const topology = analyzeMesh(new Float32Array(capture.positions));
+    const preview = new Float64Array(topology.vertices.length);
+    for (let corner = 0; corner < topology.triangles.length; corner++)
+      for (let axis = 0; axis < 3; axis++)
+        preview[topology.triangles[corner] * 3 + axis] =
+          capture.nativeOutput[corner * 3 + axis];
+    const result = compareNoiseSurface(topology, preview, 0.05);
+    for (let id = 0; id < result.total; id++) {
+      const key = Array.from(
+        topology.vertices.slice(id * 3, id * 3 + 3),
+        Math.fround,
+      ).join(",");
+      expect(expected.has(key)).toBe(true);
+      expect(
+        Number.isNaN(result.distances[id]) ? null : result.distances[id],
+      ).toBe(expected.get(key));
+    }
+    const edit = reduceScanNoise(new Float32Array(capture.positions), {
+      iterations: capture.iterations,
+      applyBoundaryEdges: capture.applyBoundaryEdges,
+      selectionOnly: capture.selectionOnly,
+      selection:
+        "selection" in capture
+          ? new Uint8Array(capture.selection as number[])
+          : undefined,
+      measureDeviation: true,
+      deviation: 0.05,
+    });
+    const rgb = Array.from(topology.triangles).flatMap((id) => {
+      const key = Array.from(
+        topology.vertices.slice(id * 3, id * 3 + 3),
+        Math.fround,
+      ).join(",");
+      return nativeNoiseColor(expected.get(key) ?? NaN, 0.05);
+    });
+    expect(Array.from(edit.noiseComparison!.rgb)).toEqual(rgb);
+    expect(Array.from(edit.positions)).toEqual(capture.nativeOutput);
+  });
 });
 
 it("matches original native triangle-distance instructions across all projection regions", () => {
