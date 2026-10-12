@@ -11,7 +11,8 @@ const verifiedWorkflows: Record<string, string> = {
   reduceNoise:
     "docs/SCAN_DATA_TOOLS.md: bounded smoothing and selection isolation",
   scaleMesh: "docs/SCAN_DATA_TOOLS.md: scale and undo workflow",
-  flipNormals: "docs/SCAN_DATA_TOOLS.md: normal winding and undo workflow",
+  flipNormals:
+    "docs/NATIVE_FLIP_NORMALS.md: original facet loop and direct execution",
   repolygonize: "docs/SCAN_DATA_TOOLS.md: voxel reconstruction and limits",
   averageMesh: "docs/SCAN_DATA_TOOLS.md: nearest surface averaging workflow",
   mirrorMesh: "docs/SCAN_DATA_TOOLS.md: origin and object reference planes",

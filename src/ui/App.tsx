@@ -3071,7 +3071,11 @@ export function App() {
           reducePolygons: () => openScanTool("reducePolygons"),
           reduceNoise: () => openScanTool("reduceNoise"),
           scaleMesh: () => openScanTool("scaleMesh"),
-          flipNormals: () => openScanTool("flipNormals"),
+          flipNormals: () => {
+            if (busy || scanToolAbort.current) return;
+            closeScanTool();
+            void applyScanTool({ kind: "flipNormals" });
+          },
           repolygonize: () => openScanTool("repolygonize"),
           averageMesh: () => openScanTool("averageMesh"),
           mirrorMesh: () => openScanTool("mirrorMesh"),
