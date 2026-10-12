@@ -13,6 +13,9 @@ import {
   frameCamera,
   resizeCamera,
   rotateCamera,
+  standardViewUp,
+  cameraOrientation,
+  applyViewTransition,
   type NavigationCamera,
   type Projection,
 } from "./camera-gizmo";
@@ -49,6 +52,16 @@ type Item = {
 
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
+  private viewTransition?: {
+    from: THREE.Quaternion;
+    to: THREE.Quaternion;
+    target: THREE.Vector3;
+    distance: number;
+    start: number;
+  };
+  private cancelViewTransition = () => {
+    this.viewTransition = undefined;
+  };
   onOriginPlane?: (plane: OriginPlane) => void;
   private originPicking = false;
   private readonly originGeometry = new THREE.Group();
@@ -181,10 +194,12 @@ export class Viewport {
     this.controls.minZoom = 0.000001;
     this.controls.maxZoom = 1000000;
     this.controls.addEventListener("change", this.invalidate);
+    this.controls.addEventListener("start", this.cancelViewTransition);
     this.controls.addEventListener("start", this.invalidate);
     this.gizmo = new CameraGizmo(
       (view) => this.setView(view),
       (dx, dy) => {
+        this.cancelViewTransition();
         rotateCamera(this.camera, this.controls.target, dx, dy);
         this.controls.update();
         this.invalidate();
@@ -192,7 +207,7 @@ export class Viewport {
       (projection) => this.setProjection(projection),
       () => this.fitView(),
       {
-        orient: (direction, up) => this.orientCamera(direction, up),
+        orient: (direction, up) => this.orientCamera(direction, up, true),
       },
     );
     container.append(this.gizmo.element);
@@ -278,6 +293,7 @@ export class Viewport {
 
   navigate(motion: Motion6D, seconds: number): void {
     if (this.disposed) return;
+    this.cancelViewTransition();
     navigateCamera(this.camera, this.controls.target, motion, seconds);
     this.controls.update();
     this.invalidate();
@@ -286,6 +302,7 @@ export class Viewport {
   private render = (): void => {
     this.frame = null;
     if (this.disposed) return;
+    this.advanceViewTransition(performance.now());
     this.controls.update();
     renderSceneWithGrid(
       this.renderer,
@@ -301,6 +318,7 @@ export class Viewport {
       marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
     }
     this.gizmo?.update(this.camera);
+    if (this.viewTransition) this.invalidate();
   };
 
   private resize = (): void => {
@@ -1183,6 +1201,7 @@ export class Viewport {
   }
 
   fitView(entityId?: string): void {
+    this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
     if (entityId && !item) return;
     const bounds = item
@@ -1218,14 +1237,47 @@ export class Viewport {
       ? "orthographic"
       : "perspective";
   }
-  orientCamera(direction: THREE.Vector3, up: THREE.Vector3): void {
+  advanceViewTransition(now: number): void {
+    const transition = this.viewTransition;
+    if (!transition) return;
+    const progress = (now - transition.start) / 320;
+    applyViewTransition(
+      this.camera,
+      transition.target,
+      transition.from,
+      transition.to,
+      transition.distance,
+      progress,
+    );
+    this.controls.target.copy(transition.target);
+    if (progress >= 1) this.viewTransition = undefined;
+  }
+  orientCamera(
+    direction: THREE.Vector3,
+    up: THREE.Vector3,
+    animate = false,
+  ): void {
     const distance = this.camera.position.distanceTo(this.controls.target);
     direction = direction.clone().normalize();
     up = up.clone().normalize();
     if (Math.abs(direction.dot(up)) > 0.999) {
-      up = new THREE.Vector3(0, 1, 0).applyQuaternion(this.camera.quaternion);
-      up.addScaledVector(direction, -up.dot(direction));
-      if (up.lengthSq() < 1e-8) up.set(0, 1, 0);
+      up = standardViewUp(direction);
+    }
+    this.viewTransition = undefined;
+    if (
+      animate &&
+      typeof window !== "undefined" &&
+      !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      this.viewTransition = {
+        from: this.camera.quaternion.clone(),
+        to: cameraOrientation(direction, up),
+        target: this.controls.target.clone(),
+        distance,
+        start: performance.now(),
+      };
+      this.invalidate();
+      return;
     }
     this.camera.up.copy(up.normalize());
     this.camera.position
@@ -1236,6 +1288,7 @@ export class Viewport {
     this.invalidate();
   }
   setProjection(projection: Projection): void {
+    this.viewTransition = undefined;
     if (projection === this.getProjection()) return;
     this.camera = convertProjection(
       this.camera,
@@ -1252,6 +1305,7 @@ export class Viewport {
     degrees: number,
   ): void {
     if (!Number.isFinite(degrees)) return;
+    this.viewTransition = undefined;
     const pixels = THREE.MathUtils.degToRad(degrees) / 0.008;
     rotateCamera(
       this.camera,
@@ -1266,12 +1320,11 @@ export class Viewport {
   setView(
     view: "iso" | "top" | "bottom" | "front" | "back" | "left" | "right",
   ): void {
-    this.camera.up.set(0, 0, 1);
     const direction =
       view === "top"
-        ? new THREE.Vector3(0, -0.00001, 1)
+        ? new THREE.Vector3(0, 0, 1)
         : view === "bottom"
-          ? new THREE.Vector3(0, -0.00001, -1)
+          ? new THREE.Vector3(0, 0, -1)
           : view === "left"
             ? new THREE.Vector3(-1, 0, 0)
             : view === "back"
@@ -1281,10 +1334,7 @@ export class Viewport {
                 : view === "right"
                   ? new THREE.Vector3(1, 0, 0)
                   : new THREE.Vector3(1, -1, 0.8);
-    this.camera.position
-      .copy(this.controls.target)
-      .add(direction.normalize().multiplyScalar(this.extent * 2));
-    this.fitView();
+    this.orientCamera(direction, standardViewUp(direction), true);
   }
 
   setWireframe(enabled: boolean): void {

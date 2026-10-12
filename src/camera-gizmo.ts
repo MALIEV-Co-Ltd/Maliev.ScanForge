@@ -218,12 +218,59 @@ export function cubeRegions(quaternion: THREE.Quaternion) {
 export interface CubeActions {
   orient: (direction: THREE.Vector3, up: THREE.Vector3) => void;
 }
+/** CAD standard views use Z up on side faces, Y up on Top and -Y on Bottom. */
+export function standardViewUp(direction: THREE.Vector3): THREE.Vector3 {
+  return Math.abs(direction.clone().normalize().z) > 0.999
+    ? new THREE.Vector3(0, direction.z > 0 ? 1 : -1, 0)
+    : new THREE.Vector3(0, 0, 1);
+}
+export function adjacentViewPose(q: THREE.Quaternion, side: string) {
+  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(q);
+  const up = new THREE.Vector3(0, 1, 0).applyQuaternion(q);
+  const back = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+  return {
+    direction:
+      side === "left"
+        ? right.negate()
+        : side === "right"
+          ? right
+          : side === "up"
+            ? up
+            : up.clone().negate(),
+    up: side === "up" ? back.negate() : side === "down" ? back : up,
+  };
+}
+export function cameraOrientation(direction: THREE.Vector3, up: THREE.Vector3) {
+  const pose = new THREE.PerspectiveCamera();
+  pose.position.copy(direction.clone().normalize());
+  pose.up.copy(up);
+  pose.lookAt(0, 0, 0);
+  return pose.quaternion.clone();
+}
+export function applyViewTransition(
+  camera: NavigationCamera,
+  target: THREE.Vector3,
+  from: THREE.Quaternion,
+  to: THREE.Quaternion,
+  distance: number,
+  progress: number,
+) {
+  const t = THREE.MathUtils.clamp(progress, 0, 1);
+  camera.quaternion.slerpQuaternions(from, to, t * t * (3 - 2 * t));
+  camera.position
+    .copy(target)
+    .add(new THREE.Vector3(0, 0, distance).applyQuaternion(camera.quaternion));
+  camera.up.set(0, 1, 0).applyQuaternion(camera.quaternion);
+  camera.updateMatrixWorld();
+}
 export class CameraGizmo {
   readonly element = document.createElement("div");
   private svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   private menu = document.createElement("div");
   private mode: Projection = "orthographic";
   private hovered?: string;
+  private orientation = new THREE.Quaternion();
+  private faceControls: HTMLButtonElement[] = [];
   private drag?: {
     id: number;
     x: number;
@@ -308,7 +355,68 @@ export class CameraGizmo {
       item.setAttribute("role", "menuitemradio");
     }
     button("Fit model in view", onFit);
-    this.element.append(this.svg, home, toggle, this.menu);
+    for (const [side, glyph] of [
+      ["up", "▴"],
+      ["down", "▾"],
+      ["left", "◂"],
+      ["right", "▸"],
+      ["ccw", "↶"],
+      ["cw", "↷"],
+    ]) {
+      const control = document.createElement("button");
+      control.className = `cube-control cube-adjacent cube-${side}`;
+      control.hidden = true;
+      control.textContent = glyph;
+      if (side === "cw" || side === "ccw") {
+        const icon = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg",
+        );
+        icon.setAttribute("viewBox", "0 0 32 32");
+        icon.setAttribute("aria-hidden", "true");
+        const arrow = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        arrow.setAttribute(
+          "d",
+          side === "ccw"
+            ? "M29 23C25 12 16 6 8 8L8 3L1 11L10 16L9 11C16 9 23 15 26 24Z"
+            : "M4 3C16 5 24 13 23 23L28 22L23 31L16 23L21 24C22 16 15 8 3 6Z",
+        );
+        arrow.setAttribute("fill", "currentColor");
+        icon.append(arrow);
+        control.replaceChildren(icon);
+      }
+      control.setAttribute(
+        "aria-label",
+        side === "cw" || side === "ccw"
+          ? `Rotate view 90 degrees ${side === "cw" ? "clockwise" : "counterclockwise"}`
+          : `View adjacent ${side}`,
+      );
+      control.onclick = () => {
+        if (side === "cw" || side === "ccw") {
+          const back = new THREE.Vector3(0, 0, 1).applyQuaternion(
+            this.orientation,
+          );
+          const up = new THREE.Vector3(0, 1, 0)
+            .applyQuaternion(this.orientation)
+            .applyAxisAngle(back, side === "cw" ? Math.PI / 2 : -Math.PI / 2);
+          this.actions?.orient(back, up);
+        } else {
+          const pose = adjacentViewPose(this.orientation, side);
+          this.actions?.orient(pose.direction, pose.up);
+        }
+      };
+      this.faceControls.push(control);
+    }
+    this.element.append(
+      this.svg,
+      home,
+      toggle,
+      ...this.faceControls,
+      this.menu,
+    );
     document.addEventListener("pointerdown", this.outside);
     this.element.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -364,6 +472,16 @@ export class CameraGizmo {
     this.checks();
     const q = camera.quaternion,
       ns = "http://www.w3.org/2000/svg";
+    this.orientation.copy(q);
+    const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+    const faceAligned =
+      Math.max(
+        Math.abs(direction.x),
+        Math.abs(direction.y),
+        Math.abs(direction.z),
+      ) >
+      1 - 1e-7;
+    for (const control of this.faceControls) control.hidden = !faceAligned;
     const coords = (points: THREE.Vector3[]) =>
       points.map((p) => [66 + p.x * 27, 66 - p.y * 27].join(",")).join(" ");
     this.svg.replaceChildren();
@@ -402,6 +520,13 @@ export class CameraGizmo {
         )
         .join(" ");
       polygon.setAttribute("aria-label", label + " view");
+      const selected =
+        faceAligned &&
+        new THREE.Vector3(
+          ...(region.id.split(",").map(Number) as [number, number, number]),
+        ).distanceTo(direction) < 1e-5;
+      polygon.classList.toggle("cube-selected", selected);
+      polygon.setAttribute("aria-pressed", String(selected));
       this.svg.append(polygon);
     }
     for (const face of projectCube(q)) {
@@ -475,7 +600,7 @@ export class CameraGizmo {
     const vector = new THREE.Vector3(
       ...(id.split(",").map(Number) as [number, number, number]),
     );
-    this.actions?.orient(vector, new THREE.Vector3(0, 0, 1));
+    this.actions?.orient(vector, standardViewUp(vector));
   }
 
   private down = (event: PointerEvent) => {
