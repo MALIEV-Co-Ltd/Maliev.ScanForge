@@ -3,6 +3,7 @@ import { collectGuideTriangles } from "../src/field-triangle-collector";
 import { buildGuideQueryTree } from "../src/field-query-tree";
 import { buildTriangleNormalCache } from "../src/field-triangle-normals";
 import { queryGuideSurface } from "../src/field-surface-query";
+import { buildGuidePointBounds } from "../src/field-point-bounds";
 import native from "./fixtures/field-native-triangle-collector.json";
 
 describe("recovered triangle-storage geometry collector", () => {
@@ -28,8 +29,8 @@ describe("recovered triangle-storage geometry collector", () => {
       0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5,
     ]);
     const collected = collectGuideTriangles(positions, triangles);
-    // Root bounds are explicit; native whole-geometry cache acquisition is separate.
-    const bounds = new Float32Array([0, 0, 0, 2, 2, 4]);
+    // Native whole-geometry cache acquisition remains separate from point bounds.
+    const bounds = buildGuidePointBounds(positions);
     const tree = buildGuideQueryTree(
       collected.faceBounds,
       collected.faces,

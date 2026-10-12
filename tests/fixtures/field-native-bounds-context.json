@@ -1,0 +1,311 @@
+{
+  "procedure": "0x1802341c0",
+  "sha256": "84840e6423a7f57c1a2269ad281993dd814b7a03aa59085dc9f146a45b508949",
+  "coverage": "Complete unchanged bounds-cache accessor with owned virtual callbacks; excludes actual cache validity and initialization implementations",
+  "cases": [
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 0,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [],
+      "result": 0
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 0
+        }
+      ],
+      "result": 2
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 1
+        }
+      ],
+      "result": 1
+    },
+    {
+      "update": 1,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 1
+        }
+      ],
+      "result": 2
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 1
+    },
+    {
+      "update": 1,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 1
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 0
+        }
+      ],
+      "result": 2
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 1
+        }
+      ],
+      "result": 1
+    },
+    {
+      "update": 255,
+      "ready": false,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        },
+        {
+          "kind": "initialize",
+          "context": 1
+        }
+      ],
+      "result": 2
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": false,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 0
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": false,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 1
+    },
+    {
+      "update": 255,
+      "ready": true,
+      "replaceDuringValid": true,
+      "replaceDuringInitialize": true,
+      "steps": [
+        {
+          "kind": "valid",
+          "context": 0
+        }
+      ],
+      "result": 1
+    }
+  ]
+}
