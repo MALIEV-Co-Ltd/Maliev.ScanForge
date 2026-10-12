@@ -39,6 +39,34 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("CAD worker ownership and cancellation", () => {
+  it("routes import progress without completing the request or clearing its timeout", async () => {
+    const client = new CadClient();
+    const progress = vi.fn();
+    const pending = client.importFile(new Uint8Array([1, 2]), "step", progress);
+    await vi.advanceTimersByTimeAsync(0);
+    const worker = WorkerDouble.instances[0];
+    const id = worker.messages[0].id;
+    for (const value of [0, 0.35, 0.85, 1])
+      worker.onmessage?.({ data: { id, progress: value } });
+    worker.onmessage?.({ data: { id: id + 100, progress: 0.5 } });
+    worker.onmessage?.({ data: { id, progress: NaN } });
+    expect(progress.mock.calls.map(([value]) => value)).toEqual([
+      0, 0.35, 0.85, 1,
+    ]);
+    expect(vi.getTimerCount()).toBe(1);
+    const result = {
+      kernelId: "exact",
+      positions: [0, 0, 0],
+      edgePositions: [0, 0, 0, 1, 0, 0],
+      brep: "BRep",
+    };
+    worker.reply(result);
+    expect(await pending).toEqual(result);
+    expect(vi.getTimerCount()).toBe(0);
+    worker.onmessage?.({ data: { id, progress: 0.9 } });
+    expect(progress).toHaveBeenCalledTimes(4);
+    client.dispose();
+  });
   it("sends advanced CAD operation contracts without substituting display meshes", async () => {
     const client = new CadClient();
     const points: [number, number][] = [

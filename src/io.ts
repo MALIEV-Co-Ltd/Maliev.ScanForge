@@ -191,6 +191,15 @@ export function parseProject(text: string): Project {
     // Kernel handles are ephemeral; exact BRep is restored in a new worker.
     if (entity.brep !== undefined && typeof entity.brep !== "string")
       throw new Error("Invalid CAD data.");
+    if (
+      entity.edgePositions !== undefined &&
+      (!Array.isArray(entity.edgePositions) ||
+        entity.edgePositions.length % 6 !== 0 ||
+        entity.edgePositions.some(
+          (v) => !Number.isFinite(v) || Math.abs(v) > 1e9,
+        ))
+    )
+      throw new Error("Invalid CAD edge geometry.");
     if (entity.surfacePatch !== undefined) validatePatch(entity.surfacePatch);
     if (
       entity.surfaceScanId !== undefined &&
@@ -202,6 +211,7 @@ export function parseProject(text: string): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      edgePositions: entity.edgePositions,
       color: entity.color,
       visible: entity.visible,
       opacity: entity.opacity,

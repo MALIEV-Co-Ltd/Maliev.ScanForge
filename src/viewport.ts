@@ -55,6 +55,8 @@ import {
 } from "./sketch-drawing";
 
 type Item = {
+  edgePositions?: number[];
+  cadEdges?: THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
   hidden?: number[];
   triangleSlots?: number[];
   selectionIndex?: AsyncScreenSelectionIndex;
@@ -357,6 +359,10 @@ export class Viewport {
       color.setXYZ(i, value.r, value.g, value.b);
     }
     color.needsUpdate = true;
+    for (const item of this.objects.values())
+      item.cadEdges?.material.color.set(
+        theme === "dark" ? "#20282c" : "#3b454d",
+      );
     this.invalidate();
   }
 
@@ -1339,6 +1345,8 @@ export class Viewport {
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
         item.mesh.material.dispose();
+        item.cadEdges?.geometry.dispose();
+        item.cadEdges?.material.dispose();
         this.objects.delete(id);
       }
     }
@@ -1416,18 +1424,50 @@ export class Viewport {
         item.mesh.material.vertexColors = false;
       }
       item.mesh.visible = entity.visible;
+      const edgePositions = entity.kernelId ? entity.edgePositions : undefined;
+      if (item.edgePositions !== edgePositions) {
+        if (item.cadEdges) {
+          item.mesh.remove(item.cadEdges);
+          item.cadEdges.geometry.dispose();
+          item.cadEdges.material.dispose();
+          item.cadEdges = undefined;
+        }
+        if (edgePositions?.length) {
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(edgePositions, 3),
+          );
+          const material = new THREE.LineBasicMaterial({
+            color: this.theme === "dark" ? "#20282c" : "#3b454d",
+            depthWrite: false,
+          });
+          item.cadEdges = new THREE.LineSegments(geometry, material);
+          item.cadEdges.name = "CAD topology edges";
+          item.mesh.add(item.cadEdges);
+        }
+        item.edgePositions = edgePositions;
+      }
       item.color = entity.color;
       const material = item.mesh.material;
       material.color.set(material.vertexColors ? "#ffffff" : entity.color);
       material.emissive.set(entity.id === selectedId ? "#17677b" : "#000000");
       material.emissiveIntensity = entity.id === selectedId ? 0.28 : 0;
       material.flatShading = this.flatShading;
+      material.polygonOffset = !!item.cadEdges;
+      material.polygonOffsetFactor = 1;
+      material.polygonOffsetUnits = 1;
       material.opacity = Math.max(0, Math.min(1, entity.opacity));
       material.transparent = material.opacity < 1;
       material.depthWrite = material.opacity >= 1;
       material.wireframe = this.wireframe;
       material.clippingPlanes = this.clipping ? [this.clippingPlane] : [];
       material.needsUpdate = true;
+      if (item.cadEdges) {
+        item.cadEdges.material.opacity = material.opacity;
+        item.cadEdges.material.transparent = material.transparent;
+        item.cadEdges.material.clippingPlanes = material.clippingPlanes;
+      }
       if (
         entity.visible &&
         item.mesh.geometry.boundingBox &&
@@ -1663,6 +1703,11 @@ export class Viewport {
           : []),
       ];
       item.mesh.material.needsUpdate = true;
+      if (item.cadEdges) {
+        item.cadEdges.material.clippingPlanes =
+          item.mesh.material.clippingPlanes;
+        item.cadEdges.material.needsUpdate = true;
+      }
     }
     for (const child of [
       ...(this.triangleSelection?.children ?? []),
@@ -1943,6 +1988,8 @@ export class Viewport {
       item.selectionIndex?.dispose();
       item.mesh.geometry.dispose();
       item.mesh.material.dispose();
+      item.cadEdges?.geometry.dispose();
+      item.cadEdges?.material.dispose();
     }
     this.objects.clear();
     this.clearGroup(this.section);

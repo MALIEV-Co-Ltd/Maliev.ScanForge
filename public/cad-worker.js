@@ -38,7 +38,7 @@ function ensureDone(oc, status, action) {
   }
 }
 
-function mesh(oc, shape) {
+function mesh(oc, shape, onProgress = () => {}) {
   const handles = [];
   const keep = (handle) => {
     handles.push(handle);
@@ -69,6 +69,10 @@ function mesh(oc, shape) {
     );
     const positions = [],
       normals = [];
+    let faceCount = 0,
+      completedFaces = 0;
+    for (; explorer.More(); explorer.Next()) faceCount++;
+    explorer.ReInit();
     for (; explorer.More(); explorer.Next()) {
       const faceHandles = [];
       const local = (handle) => {
@@ -158,6 +162,7 @@ function mesh(oc, shape) {
       } finally {
         cleanup(faceHandles);
       }
+      onProgress(0.55 + 0.3 * (++completedFaces / faceCount));
     }
     if (!positions.length)
       throw new Error("CAD file contains no renderable faces.");
@@ -182,21 +187,100 @@ function mesh(oc, shape) {
             ...n.map((value) => (length ? value / length : 0)),
           );
     }
-    return { positions, normals };
+    const edgePositions = cadEdgePositions(oc, shape, deflection);
+    onProgress(0.9);
+    return { positions, normals, edgePositions };
   } finally {
     cleanup(handles);
   }
 }
 
-function register(oc, shape) {
+/** Sample each unique BRep edge, including curved and smooth face boundaries. */
+function cadEdgePositions(oc, shape, deflection) {
+  const handles = [],
+    edges = new Map(),
+    positions = [];
+  const keep = (handle) => {
+    handles.push(handle);
+    return handle;
+  };
+  try {
+    const explorer = keep(
+      new oc.TopExp_Explorer_2(
+        shape,
+        oc.TopAbs_ShapeEnum.TopAbs_EDGE,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    for (; explorer.More(); explorer.Next()) {
+      const current = explorer.Current();
+      let edge;
+      try {
+        edge = oc.TopoDS.Edge_1(current);
+      } finally {
+        current.delete();
+      }
+      const key = edge.HashCode(2147483647);
+      const bucket = edges.get(key) ?? [];
+      if (bucket.some((previous) => previous.IsSame(edge))) {
+        edge.delete();
+        continue;
+      }
+      bucket.push(keep(edge));
+      edges.set(key, bucket);
+      if (oc.BRep_Tool.Degenerated(edge)) continue;
+      const local = [];
+      try {
+        const curve = new oc.BRepAdaptor_Curve_2(edge);
+        local.push(curve);
+        const samples = new oc.GCPnts_QuasiUniformDeflection_2(
+          curve,
+          deflection,
+          oc.GeomAbs_Shape.GeomAbs_C0,
+        );
+        local.push(samples);
+        if (!samples.IsDone() || samples.NbPoints() < 2)
+          throw new Error("A CAD edge could not be sampled.");
+        let previous;
+        for (let i = 1; i <= samples.NbPoints(); i++) {
+          const point = samples.Value(i);
+          let coordinates;
+          try {
+            coordinates = [point.X(), point.Y(), point.Z()];
+          } finally {
+            point.delete();
+          }
+          if (
+            !coordinates.every(
+              (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
+            )
+          )
+            throw new Error(
+              "CAD edge coordinates are outside the supported range.",
+            );
+          if (previous) positions.push(...previous, ...coordinates);
+          previous = coordinates;
+        }
+      } finally {
+        cleanup(local);
+      }
+    }
+    return positions;
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function register(oc, shape, onProgress = () => {}) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
-    const { positions, normals } = mesh(oc, shape);
+    const { positions, normals, edgePositions } = mesh(oc, shape, onProgress);
     const kernelId = `cad-${sessionId}-${++nextShape}`;
     const brep = serializeBrep(oc, shape);
+    onProgress(0.98);
     shapes.set(kernelId, shape);
-    return { kernelId, positions, normals, brep };
+    return { kernelId, positions, normals, edgePositions, brep };
   } catch (error) {
     shape.delete();
     throw error;
@@ -218,7 +302,7 @@ function serializeBrep(oc, shape) {
   }
 }
 
-function importFile(oc, payload) {
+function importFile(oc, payload, onProgress = () => {}) {
   const { data, extension } = payload;
   if (!["step", "stp", "iges", "igs", "brep"].includes(extension))
     throw new Error("Unsupported CAD format.");
@@ -232,6 +316,7 @@ function importFile(oc, payload) {
   };
   try {
     oc.FS.writeFile(path, data);
+    onProgress(0.15);
     let shape;
     if (extension === "brep") {
       shape = new oc.TopoDS_Shape();
@@ -251,11 +336,13 @@ function importFile(oc, payload) {
           : new oc.IGESControl_Reader_1(),
       );
       ensureDone(oc, reader.ReadFile(path), "CAD import");
+      onProgress(0.35);
       if (!reader.TransferRoots())
         throw new Error("CAD import contains no transferable roots.");
       shape = reader.OneShape();
     }
-    return register(oc, shape);
+    onProgress(0.55);
+    return register(oc, shape, onProgress);
   } finally {
     cleanup(handles);
     if (oc.FS.analyzePath(path).exists) oc.FS.unlink(path);
@@ -1413,9 +1500,15 @@ self.onmessage = (event) => {
   const { id, operation, payload } = event.data;
   sequence = sequence.then(async () => {
     try {
+      const onProgress =
+        operation === "import"
+          ? (progress) => self.postMessage({ id, progress })
+          : () => {};
+      onProgress(0);
       const oc = await kernel();
+      onProgress(0.1);
       let result;
-      if (operation === "import") result = importFile(oc, payload);
+      if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
       else if (operation === "export") result = exportStep(oc, payload);
       else if (operation === "boolean") result = booleanShape(oc, payload);
@@ -1446,6 +1539,7 @@ self.onmessage = (event) => {
         }
         result = true;
       } else throw new Error("Unknown CAD operation.");
+      onProgress(1);
       self.postMessage(
         { id, result },
         result instanceof Uint8Array ? [result.buffer] : [],

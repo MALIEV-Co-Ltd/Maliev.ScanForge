@@ -12,7 +12,7 @@ export type CadPattern =
       angleDegrees: number;
     };
 type Result = KernelMesh | KernelMesh[] | Uint8Array | boolean;
-type Reply = { id: number; result?: Result; error?: string };
+type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
 export class CadClient {
@@ -25,6 +25,7 @@ export class CadClient {
       resolve: (result: Result) => void;
       reject: (error: Error) => void;
       timer: ReturnType<typeof setTimeout>;
+      onProgress?: (fraction: number) => void;
     }
   >();
   private queue: Promise<unknown> = Promise.resolve();
@@ -33,11 +34,16 @@ export class CadClient {
   importFile(
     data: Uint8Array,
     extension: "step" | "stp" | "iges" | "igs" | "brep",
+    onProgress?: (fraction: number) => void,
   ): Promise<KernelMesh> {
-    return this.request("import", {
-      data: data.slice(),
-      extension,
-    }) as Promise<KernelMesh>;
+    return this.request(
+      "import",
+      {
+        data: data.slice(),
+        extension,
+      },
+      onProgress,
+    ) as Promise<KernelMesh>;
   }
 
   primitive(input: KernelPrimitive): Promise<KernelMesh> {
@@ -235,6 +241,15 @@ export class CadClient {
       this.worker.onmessage = (event: MessageEvent<Reply>) => {
         const request = this.pending.get(event.data.id);
         if (!request) return;
+        if (event.data.progress !== undefined) {
+          if (
+            Number.isFinite(event.data.progress) &&
+            event.data.progress >= 0 &&
+            event.data.progress <= 1
+          )
+            request.onProgress?.(event.data.progress);
+          return;
+        }
         clearTimeout(request.timer);
         this.pending.delete(event.data.id);
         if (event.data.error) request.reject(new Error(event.data.error));
@@ -254,7 +269,11 @@ export class CadClient {
     return this.worker;
   }
 
-  private request(operation: string, payload: unknown): Promise<Result> {
+  private request(
+    operation: string,
+    payload: unknown,
+    onProgress?: (fraction: number) => void,
+  ): Promise<Result> {
     const generation = this.generation;
     const task = this.queue.then(() => {
       if (generation !== this.generation)
@@ -269,7 +288,7 @@ export class CadClient {
             ),
           90_000,
         );
-        this.pending.set(id, { resolve, reject, timer });
+        this.pending.set(id, { resolve, reject, timer, onProgress });
         try {
           const data =
             operation === "import"

@@ -1753,7 +1753,9 @@ export function App() {
     await action(`Opening ${file.name}…`, async () => {
       setImportProgress({
         name: file.name,
-        fraction: /\.(stl|obj|ply)$/i.test(file.name) ? 0 : null,
+        fraction: /\.(stl|obj|ply|step|stp|iges|igs|brep)$/i.test(file.name)
+          ? 0
+          : null,
       });
       const extension = file.name.split(".").pop()!.toLowerCase();
       if (extension === "scanforge" || extension === "json") {
@@ -1817,6 +1819,7 @@ export function App() {
           const result = await cad.current!.importFile(
             new Uint8Array(data),
             extension as "step" | "stp" | "iges" | "igs" | "brep",
+            (fraction) => setImportProgress({ name: file.name, fraction }),
           );
           entity = {
             id: crypto.randomUUID(),

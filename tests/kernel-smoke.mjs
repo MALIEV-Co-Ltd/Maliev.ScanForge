@@ -25,6 +25,10 @@ const context = vm.createContext({
   self: {
     location: { href: new URL("public/cad-worker.js", root).href },
     postMessage(reply) {
+      if (reply.progress !== undefined) {
+        requests.get(reply.id)?.onProgress?.(reply.progress);
+        return;
+      }
       const pending = requests.get(reply.id);
       requests.delete(reply.id);
       if (reply.error) pending.reject(new Error(reply.error));
@@ -48,10 +52,10 @@ vm.runInContext(
   context,
   { filename: "cad-worker.js" },
 );
-function request(operation, payload) {
+function request(operation, payload, onProgress) {
   return new Promise((resolve, reject) => {
     const requestId = ++id;
-    requests.set(requestId, { resolve, reject });
+    requests.set(requestId, { resolve, reject, onProgress });
     context.self.onmessage({ data: { id: requestId, operation, payload } });
   });
 }
@@ -93,6 +97,11 @@ try {
     size: [10, 20, 30],
   });
   assert.equal(box.positions.length, 108);
+  assert.equal(
+    box.edgePositions.length,
+    72,
+    "Box has 12 unique topology edges, without face diagonals",
+  );
   const planarPatch = (origin, u, v) => ({
     format: "scanforge-nurbs",
     version: 1,
@@ -177,10 +186,26 @@ try {
       "Unit CAD surface normal",
     );
   const sphereStep = await request("export", [sphere.kernelId]);
-  const sphereRestored = await request("import", {
-    data: sphereStep,
-    extension: "step",
-  });
+  const progress = [];
+  const sphereRestored = await request(
+    "import",
+    {
+      data: sphereStep,
+      extension: "step",
+    },
+    (value) => progress.push(value),
+  );
+  assert.equal(progress[0], 0);
+  assert.equal(progress.at(-1), 1);
+  assert.ok(
+    progress.length >= 8 &&
+      progress.every((v, i) => !i || v >= progress[i - 1]),
+    "Actual CAD import reports ordered stages and tessellation progress",
+  );
+  assert.ok(
+    sphereRestored.edgePositions.length > 72,
+    "Curved STEP topology has sampled edge segments",
+  );
   assert.ok(sphereRestored.brep.length > 100);
   assert.equal(sphereRestored.normals.length, sphereRestored.positions.length);
   const probePoint = sphereRestored.positions.slice(0, 3),

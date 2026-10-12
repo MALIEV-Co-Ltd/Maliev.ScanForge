@@ -19,6 +19,37 @@ const entity: Entity = {
   opacity: 1,
 };
 describe("file boundaries", () => {
+  it("retains CAD edge segments through both project writers and validates them", async () => {
+    const cad = {
+      ...entity,
+      kind: "cad" as const,
+      brep: "exact",
+      edgePositions: [0, 0, 0, 1, 0, 0],
+    };
+    for (const text of [
+      serializeProject("CAD", [cad]),
+      await (await serializeProjectBlob("CAD", [cad])).text(),
+    ])
+      expect(parseProject(text).entities[0].edgePositions).toEqual(
+        cad.edgePositions,
+      );
+    for (const edgePositions of [
+      [0, 0, 0],
+      [0, 0, 0, 1e10, 0, 0],
+      [0, 0, 0, "x", 0, 0],
+    ])
+      expect(() =>
+        parseProject(
+          JSON.stringify({
+            format: "maliev-scanforge",
+            version: 1,
+            name: "CAD",
+            units: "mm",
+            entities: [{ ...cad, edgePositions }],
+          }),
+        ),
+      ).toThrow("Invalid CAD edge geometry");
+  });
   it("retains parametric recipes through both project paths and rejects dangling dependencies", async () => {
     const body: Entity = {
       ...entity,

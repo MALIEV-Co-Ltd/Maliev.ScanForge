@@ -17,6 +17,8 @@ export interface Entity {
   positions: Positions;
   /** Display normals evaluated from exact CAD surfaces, aligned to triangle vertices. */
   normals?: number[];
+  /** Paired world-space points sampled from exact CAD topological edges. */
+  edgePositions?: number[];
   color: string;
   visible: boolean;
   opacity: number;
@@ -96,5 +98,6 @@ export interface KernelMesh {
   kernelId: string;
   positions: number[];
   normals?: number[];
+  edgePositions?: number[];
   brep?: string;
 }
