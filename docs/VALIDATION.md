@@ -562,3 +562,12 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - All 32 original accessor captures match returned identity, owner fields and ordered validity/initialization callbacks. Supplied callbacks exercise context replacement; original cache initialization and spatial search are outside this comparison. An additional regression covers repeated invalidation.
 - The finite native probe released its owned executable image and its exact PID was verified absent. The preceding finite REA session retained bounds, bounds length, geometry bounds and triangle projection evidence; its recorded provider children are absent. Projection dependencies still require recovery and native validation.
 - The browser bundle remains unchanged because this numerical component is not yet bound to the reconstruction UI. Complete application parity, full browser STL workflows over 1GB and physical SpaceMouse remain unverified or incomplete.
+
+### Recovered scan query bounds - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-query-bounds.test.ts tests/field-query-context.test.ts tests/field-guide-mapping.test.ts --maxWorkers=1`: 2,202 passed in 3 files.
+- `npm test`: 4,870 passed in 98 files.
+- All 1,680 original bounds-gate/diagonal captures match exactly. Both native routines execute unchanged, without substituted dependencies. The three additional regressions cover interval expansion, inclusive negative-radius contraction and browser input guards. This does not validate bounds acquisition, tree building, triangle projection or whole guide search.
+- The finite native probe released owned executable memory and its exact PID was verified absent. Public fixtures contain only owned input/output facts. No original binary or extracted asset is included.
+- Targeted Prettier and `git diff --check` passed. The loopback preview returned HTTP 200 under its recorded lease. UI bundle content remains unchanged because the recovered query components are not yet bound to reconstruction. Full application parity, physical SpaceMouse and full browser STL workflows over 1GB remain unverified or incomplete.
