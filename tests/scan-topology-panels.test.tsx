@@ -144,3 +144,20 @@ it("blocks geometry operations for empty input and during processing while prese
   click(tree, "Cancel and back");
   expect(props.onBack).toHaveBeenCalledOnce();
 });
+
+it("highlights boundary and hole edges without selecting their incident faces", () => {
+  for (const section of ["holes", "boundaries"] as const) {
+    const onBoundaryHighlight = vi.fn();
+    const props = { ...defaults(), section, onBoundaryHighlight };
+    const tree = ScanTopologyControls(props);
+    const item = elements(tree).find(
+      (element) =>
+        element.type === "button" && element.props["aria-pressed"] === true,
+    );
+    (item!.props.onClick as () => void)();
+    expect(onBoundaryHighlight).toHaveBeenCalledWith([
+      props.inventory.boundaries[0],
+    ]);
+    expect(props.onSelection).not.toHaveBeenCalled();
+  }
+});

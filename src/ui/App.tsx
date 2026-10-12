@@ -1,3 +1,4 @@
+import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
@@ -257,6 +258,9 @@ export function App() {
   const [selectionTool, setSelectionTool] = useState<
     "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand"
   >("brush");
+  const [scanBoundaryPaths, setScanBoundaryPaths] = useState<
+    readonly ScanBoundaryPath[]
+  >([]);
   const [scanPanel, setScanPanel] = useState<
     "components" | "holes" | "boundaries" | null
   >(null);
@@ -560,8 +564,10 @@ export function App() {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
   useEffect(() => {
-    viewport.current?.setBrush(mode === "brush" && !busy);
-  }, [mode, busy]);
+    viewport.current?.setBrush(
+      mode === "brush" && !busy && !scanPanel && !scanBoundaryPaths.length,
+    );
+  }, [mode, busy, scanPanel, scanBoundaryPaths]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
       selectionTool,
@@ -571,12 +577,14 @@ export function App() {
     );
   }, [selectionTool, brushRadius, selectThrough, subtractBrush]);
   useEffect(() => {
+    setScanBoundaryPaths([]);
     setMeshClip(null);
     setScanPanel(null);
     lastHiddenSelection.current = [];
     scanEditAbort.current?.abort();
   }, [selectedId]);
   useEffect(() => {
+    setScanBoundaryPaths([]);
     setMeshClip(null);
     lastHiddenSelection.current = [];
     scanEditAbort.current?.abort();
@@ -698,9 +706,24 @@ export function App() {
   useEffect(() => {
     viewport.current?.setTriangleSelection(
       nPoints ? undefined : selected?.positions,
-      triangleMask ?? undefined,
+      scanBoundaryPaths.length ||
+        scanPanel === "boundaries" ||
+        scanPanel === "holes"
+        ? undefined
+        : (triangleMask ?? undefined),
     );
-  }, [selected?.positions, triangleMask, nPoints]);
+  }, [
+    selected?.positions,
+    triangleMask,
+    nPoints,
+    scanBoundaryPaths,
+    scanPanel,
+  ]);
+  useEffect(() => {
+    viewport.current?.setBoundaryEdges(
+      workspace === "mesh" && toolPanelOpen ? scanBoundaryPaths : [],
+    );
+  }, [scanBoundaryPaths, workspace, toolPanelOpen]);
   useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
     const preview = createSketch?.preview;
@@ -887,6 +910,7 @@ export function App() {
     next:
       Uint8Array | null | ((previous: Uint8Array | null) => Uint8Array | null),
   ) {
+    setScanBoundaryPaths([]);
     wandRegion.current = null;
     wandRefreshAbort.current?.abort();
     const entity = brushRef.current.entity;
@@ -939,17 +963,32 @@ export function App() {
     try {
       const result = await processMesh(
         {
-          kind: "selectionMorphology",
-          positions: selected.positions,
-          selection:
-            triangleMask ?? new Uint8Array(selected.positions.length / 9),
-          operation,
-          hidden: selected.meshSelection?.hidden,
+          ...(operation === "boundary"
+            ? {
+                kind: "scanEdit" as const,
+                positions: selected.positions,
+                action: "inventory" as const,
+                tolerance: selectionTolerance,
+              }
+            : {
+                kind: "selectionMorphology" as const,
+                positions: selected.positions,
+                selection:
+                  triangleMask ?? new Uint8Array(selected.positions.length / 9),
+                operation,
+                hidden: selected.meshSelection?.hidden,
+              }),
         },
         { signal: controller.signal },
       );
-      if (!controller.signal.aborted && result.selection)
-        changeSelection(result.selection);
+      if (!controller.signal.aborted) {
+        if (operation === "boundary")
+          setScanBoundaryPaths(result.scanEdit?.inventory?.boundaries ?? []);
+        else if (result.selection) {
+          setScanBoundaryPaths([]);
+          changeSelection(result.selection);
+        }
+      }
     } catch (error) {
       if (!controller.signal.aborted) setError(errorText(error));
     } finally {
@@ -3342,6 +3381,7 @@ export function App() {
               onReplace={replaceScanPositions}
               onCreate={createSegments}
               onSelection={changeSelection}
+              onBoundaryHighlight={setScanBoundaryPaths}
               onProject={projectScanBoundaries}
               onStatus={setMessage}
               onError={setError}
@@ -3358,6 +3398,7 @@ export function App() {
               positions={selected.positions}
               tool={selectionTool}
               onTool={(tool) => {
+                setScanBoundaryPaths([]);
                 setSelectionTool(tool);
                 setMode("brush");
               }}

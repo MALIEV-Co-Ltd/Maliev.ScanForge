@@ -1,3 +1,4 @@
+import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useEffect, useRef, useState } from "react";
 import { processMesh } from "../processing-client";
 import type { ScanEditRequest } from "../scan-edit";
@@ -24,6 +25,7 @@ export interface ScanTopologyPanelsProps {
   onReplace: (positions: Float32Array, label: string) => void;
   onCreate: (segments: Float32Array[], label: string) => void;
   onSelection: (mask: Uint8Array) => void;
+  onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
   onProject: (
     curves: number[][],
     plane: { origin: Vec3; normal: Vec3 },
@@ -208,13 +210,20 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     highlight(index);
   }
   function highlight(index: number) {
+    if (section !== "components") {
+      const rim = inventory.boundaries[items[index]?.index];
+      props.onBoundaryHighlight?.(rim ? [rim] : []);
+      return;
+    }
+    props.onBoundaryHighlight?.([]);
     const mask = new Uint8Array(Math.floor(props.positions.length / 9));
     for (const triangle of items[index]?.triangles ?? []) mask[triangle] = 1;
     props.onSelection(mask);
   }
   useEffect(() => {
-    if (!props.busy && current) highlight(Math.min(selected, items.length - 1));
+    if (!props.busy) highlight(Math.min(selected, items.length - 1));
   }, [inventory, section, selected, props.positions, props.busy]);
+  useEffect(() => () => props.onBoundaryHighlight?.([]), []);
   const plane =
     planeId === "XY"
       ? { origin: [0, 0, 0] as Vec3, normal: [0, 0, 1] as Vec3 }

@@ -1,3 +1,7 @@
+import {
+  createScanBoundaryEdges,
+  type ScanBoundaryPath,
+} from "./scan-boundary-edges";
 import * as THREE from "three";
 import {
   ScanClipBox,
@@ -104,6 +108,7 @@ export class Viewport {
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
+  private readonly boundaryEdges = new THREE.Group();
   private readonly sketchGeometry = new THREE.Group();
   private readonly sketchPreview = new THREE.Group();
   private sketchEditor?: {
@@ -272,6 +277,7 @@ export class Viewport {
       this.section,
       this.measurement,
       this.triangleSelection,
+      this.boundaryEdges,
       this.sketchGeometry,
       this.sketchPreview,
     );
@@ -1536,7 +1542,10 @@ export class Viewport {
       ];
       item.mesh.material.needsUpdate = true;
     }
-    for (const child of this.triangleSelection?.children ?? []) {
+    for (const child of [
+      ...(this.triangleSelection?.children ?? []),
+      ...(this.boundaryEdges?.children ?? []),
+    ]) {
       const material = (child as THREE.Mesh).material as THREE.Material & {
         clippingPlanes?: THREE.Plane[];
       };
@@ -1585,6 +1594,14 @@ export class Viewport {
     this.selectThrough = through;
     this.subtract = subtract;
   }
+  setBoundaryEdges(paths: readonly ScanBoundaryPath[]): void {
+    this.clearGroup(this.boundaryEdges);
+    const overlay = createScanBoundaryEdges(paths);
+    for (const child of [...overlay.children]) this.boundaryEdges.add(child);
+    this.applyClipPlanes();
+    this.invalidate();
+  }
+
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
     // A selection reset can render one effect after the newly selected geometry.
@@ -1809,6 +1826,7 @@ export class Viewport {
     this.clearGroup(this.section);
     this.clearGroup(this.measurement);
     this.clearGroup(this.triangleSelection);
+    this.clearGroup(this.boundaryEdges);
     this.clearGroup(this.sketchGeometry);
     this.clearGroup(this.sketchPreview);
     this.grid.geometry.dispose();
