@@ -282,7 +282,7 @@ export function App() {
   } | null>(null);
   const [scanPreview, setScanPreview] = useState<{
     id: string;
-    kind: "reduceNoise" | "reducePolygons";
+    kind: "reduceNoise" | "reducePolygons" | "scaleMesh";
     entityId: string;
     source: Entity["positions"];
     output: Float32Array;
@@ -1580,7 +1580,8 @@ export function App() {
       );
       const isPreview =
         parameters.kind === "reduceNoise" ||
-        parameters.kind === "reducePolygons";
+        parameters.kind === "reducePolygons" ||
+        parameters.kind === "scaleMesh";
       const previewId = crypto.randomUUID();
       setScanPreview(null);
       scanToolAbort.current = controller;
@@ -1612,7 +1613,8 @@ export function App() {
       if (isPreview) {
         setScanPreview({
           id: previewId,
-          kind: parameters.kind as "reduceNoise" | "reducePolygons",
+          kind: parameters.kind as
+            "reduceNoise" | "reducePolygons" | "scaleMesh",
           entityId: source.id,
           source: source.positions,
           output: result.positions,
@@ -1705,8 +1707,14 @@ export function App() {
     deviation: number,
     paletteThreshold: number,
   ) {
-    if (!activeScanPreview || busy || scanToolAbort.current) return;
     const preview = activeScanPreview;
+    if (
+      !preview ||
+      preview.kind === "scaleMesh" ||
+      busy ||
+      scanToolAbort.current
+    )
+      return;
     const controller = new AbortController();
     scanToolAbort.current = controller;
     setProcessingBusy(true);
@@ -3823,7 +3831,9 @@ export function App() {
               onApply={applyScanTool}
               previewReady={!!activeScanPreview}
               onAccept={
-                scanTool === "reduceNoise" || scanTool === "reducePolygons"
+                scanTool === "reduceNoise" ||
+                scanTool === "reducePolygons" ||
+                scanTool === "scaleMesh"
                   ? acceptScanPreview
                   : undefined
               }

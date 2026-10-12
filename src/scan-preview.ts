@@ -25,8 +25,8 @@ export class ScanPreviewSession {
   private prepared?: PackedNoiseTree;
   private constructor(
     readonly id: string,
-    readonly kind: "reduceNoise" | "reducePolygons",
-    readonly original: MeshTopology,
+    readonly kind: "reduceNoise" | "reducePolygons" | "scaleMesh",
+    readonly original: MeshTopology | undefined,
     readonly output: Float32Array,
     readonly summary: string,
   ) {}
@@ -35,12 +35,21 @@ export class ScanPreviewSession {
     options: MeshProcessingOptions = {},
   ) {
     const operation = request.operation;
-    if (operation.kind !== "reduceNoise" && operation.kind !== "reducePolygons")
+    if (
+      operation.kind !== "reduceNoise" &&
+      operation.kind !== "reducePolygons" &&
+      operation.kind !== "scaleMesh"
+    )
       throw new Error("This tool does not support mesh preview.");
-    const original = analyzeMesh(request.positions, {
-      ...options,
-      tolerance: 1e-6,
-    });
+    // Scaling reads the original coordinates directly and needs no welding or
+    // adjacency. Only the two comparison tools retain indexed source topology.
+    const original =
+      operation.kind === "scaleMesh"
+        ? undefined
+        : analyzeMesh(request.positions, {
+            ...options,
+            tolerance: 1e-6,
+          });
     // Edit successor adoption must not replace the original's retained topology.
     const editOptions = {
       ...options,
@@ -57,7 +66,10 @@ export class ScanPreviewSession {
             {
               kind: "scanTools",
               positions: request.positions,
-              operation: { ...operation, measureDeviation: false },
+              operation:
+                operation.kind === "scaleMesh"
+                  ? operation
+                  : { ...operation, measureDeviation: false },
             },
             editOptions,
           );
@@ -74,6 +86,8 @@ export class ScanPreviewSession {
     paletteThreshold = deviation,
     options: MeshProcessingOptions = {},
   ) {
+    if (!this.original)
+      throw new Error("Scale preview does not support surface comparison.");
     if (
       ![deviation, paletteThreshold].every(
         (value) =>
