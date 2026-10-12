@@ -26,7 +26,7 @@ npm run preview
 
 The build produces `dist/`, including local CAD glue and WASM. Serve this directory through any HTTP static server. Relative asset URLs support hosting below a path. Production builds include an offline service worker that caches the complete static application on first successful installation over HTTPS or localhost. Offline availability depends on browser storage quota and eviction; cache installation is not guaranteed on every device.
 
-Before distributing bundled kernel binaries, resolve the dependency provenance limitations documented in [CAD distribution](docs/CAD_DISTRIBUTION.md). This repository publishes authored source and dependency references; CI validates but does not publish binary artifacts or deploy a website.
+Before distributing bundled kernel binaries, resolve the dependency provenance limitations documented in [CAD distribution](docs/CAD_DISTRIBUTION.md). CI validates without publishing binary artifacts or deploying a website. The [release workflow](docs/RELEASING.md) tags validated source changes and publishes cumulative major/minor source releases; patch increments use tags without separate release notes. Future hosting belongs to the Legacy.Maliev.* frontend services.
 
 ## Appearance
 

@@ -13,7 +13,7 @@ it("shows the package version and links to repository change history", () => {
     html.indexOf("lucide-github"),
   );
   expect(html).toContain(
-    'href="https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/commits/main/"',
+    'href="https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/releases"',
   );
   expect(html).toContain('rel="noopener noreferrer"');
   expect(html).not.toContain("SCAN TO CAD");

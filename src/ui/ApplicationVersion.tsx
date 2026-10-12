@@ -5,7 +5,7 @@ export function ApplicationVersion() {
   return (
     <a
       className="application-version"
-      href="https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/commits/main/"
+      href="https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/releases"
       target="_blank"
       rel="noopener noreferrer"
       title="View changelog on GitHub"
