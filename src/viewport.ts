@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { CanvasPickMenu, type CanvasPickChoice } from "./canvas-pick-menu";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import { updateCameraClipping } from "./camera-clipping";
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
@@ -27,6 +28,7 @@ import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import {
   createOriginGeometry,
   highlightOriginPlane,
+  PLANE_LABELS,
   type OriginPlane,
 } from "./origin";
 import type { SketchFrame } from "./sketch-frame";
@@ -52,6 +54,8 @@ type Item = {
 
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
+  private holdMenu?: CanvasPickMenu;
+  private holdNavigation?: { rotate: boolean; pan: boolean; zoom: boolean };
   private viewTransition?: {
     from: THREE.Quaternion;
     to: THREE.Quaternion;
@@ -211,6 +215,30 @@ export class Viewport {
       },
     );
     container.append(this.gizmo.element);
+    this.holdMenu = new CanvasPickMenu(
+      container,
+      () => {
+        if (this.pointer) this.pointer.moved = true;
+        this.holdNavigation = {
+          rotate: this.controls.noRotate,
+          pan: this.controls.noPan,
+          zoom: this.controls.noZoom,
+        };
+        this.controls.noRotate =
+          this.controls.noPan =
+          this.controls.noZoom =
+            true;
+      },
+      () => {
+        if (this.holdNavigation) {
+          this.controls.noRotate = this.holdNavigation.rotate;
+          this.controls.noPan = this.holdNavigation.pan;
+          this.controls.noZoom = this.holdNavigation.zoom;
+          this.holdNavigation = undefined;
+        }
+        this.highlightOrigin();
+      },
+    );
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.1));
     const key = new THREE.DirectionalLight(0xffffff, 3);
     key.position.set(120, -140, 220);
@@ -354,6 +382,16 @@ export class Viewport {
       id: event.pointerId,
       moved: false,
     };
+    if (
+      !this.brushing &&
+      !this.sketchEditor &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    )
+      this.holdMenu?.begin(event.clientX, event.clientY, () =>
+        this.selectionChoicesAt(event),
+      );
     if (this.brushing) {
       this.selectionGeneration++;
       for (const item of this.objects?.values() ?? [])
@@ -370,6 +408,7 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    this.holdMenu?.move(event.clientX, event.clientY);
     if (this.originPicking) {
       this.highlightOrigin(
         this.originHit(event)?.object.userData.originPlane as
@@ -429,6 +468,7 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.holdMenu?.close();
     this.cancelSketchDrag();
     if (this.pointer && this.brushing) this.onSelectionGesture?.("end");
     this.pointer = null;
@@ -438,11 +478,13 @@ export class Viewport {
   }
 
   private pointerLeave = (): void => {
+    this.holdMenu?.cancelHold();
     if (this.originPicking) this.highlightOrigin();
     if (!this.pointer) this.paintOverlay.style.display = "none";
   };
 
   private pointerUp(event: PointerEvent): void {
+    this.holdMenu?.cancelHold();
     if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
       const drag = this.sketchDrag,
         editor = this.sketchEditor;
@@ -671,6 +713,7 @@ export class Viewport {
     this.invalidate();
   }
   setOrigin(visible: boolean, picking = false): void {
+    this.holdMenu?.close();
     const entering = picking && !this.originPicking;
     this.originPicking = picking;
     this.clearGroup(this.originGeometry);
@@ -691,8 +734,11 @@ export class Viewport {
     this.invalidate();
   }
   private originHit(event: PointerEvent) {
+    return this.originHits(event)[0];
+  }
+  private originHits(event: Pick<PointerEvent, "clientX" | "clientY">) {
     const rect = this.renderer.domElement.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    if (!rect.width || !rect.height) return [];
     this.raycaster.setFromCamera(
       new THREE.Vector2(
         ((event.clientX - rect.left) / rect.width) * 2 - 1,
@@ -705,7 +751,7 @@ export class Viewport {
         (c) => c.visible && c.userData.originPlane,
       ),
       false,
-    )[0];
+    );
   }
   viewReferencePlane(frame: SketchFrame): void {
     const center = new THREE.Vector3(...frame.origin);
@@ -1095,7 +1141,58 @@ export class Viewport {
     this.pickTargetId = entityId;
   }
 
+  selectionChoicesAt(
+    event: Pick<PointerEvent, "clientX" | "clientY">,
+  ): CanvasPickChoice[] {
+    if (this.originPicking)
+      return this.originHits(event).map((hit) => {
+        const plane = hit.object.userData.originPlane as OriginPlane;
+        return {
+          id: plane,
+          label: PLANE_LABELS[plane],
+          hover: () => this.highlightOrigin(plane),
+          choose: () => this.onOriginPlane?.(plane),
+        };
+      });
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return [];
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      this.camera,
+    );
+    const meshes = [...this.objects.values()]
+      .filter(
+        (item) =>
+          item.mesh.visible &&
+          (!this.pickTargetId ||
+            item.mesh.userData.entityId === this.pickTargetId),
+      )
+      .map((item) => item.mesh);
+    return this.raycaster
+      .intersectObjects(meshes, false)
+      .filter(
+        (hit) =>
+          !this.clipping || this.clippingPlane.distanceToPoint(hit.point) >= 0,
+      )
+      .map((hit) => {
+        const id = hit.object.userData.entityId as string;
+        return {
+          id,
+          label: hit.object.name || id,
+          choose: () => {
+            if (!this.objects.get(id)?.mesh.visible) return;
+            this.onSelect(id);
+            this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
+          },
+        };
+      });
+  }
+
   setEntities(entities: Entity[], selectedId: string | null): void {
+    this.holdMenu?.close();
     if (selectedId !== this.selectedId) this.clearDeviations();
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
@@ -1124,6 +1221,7 @@ export class Viewport {
         this.objects.set(entity.id, item);
         this.scene.add(mesh);
       }
+      item.mesh.name = entity.name;
       if (
         item.positions !== entity.positions ||
         item.hidden !== entity.meshSelection?.hidden
@@ -1574,6 +1672,7 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.holdMenu?.dispose();
     if (this.disposed) return;
     this.disposed = true;
     if (this.frame !== null) cancelAnimationFrame(this.frame);

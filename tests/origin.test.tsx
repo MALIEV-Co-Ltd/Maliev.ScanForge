@@ -8,7 +8,7 @@ import {
   ORIGIN_PLANES,
 } from "../src/origin";
 import { Viewport } from "../src/viewport";
-import { CoordinateSystem, SketchPlanePicker } from "../src/ui/OriginControls";
+import { CoordinateSystem } from "../src/ui/OriginControls";
 import {
   coordinateSketchFrame,
   validateSketchFrame,
@@ -106,28 +106,13 @@ it("prioritizes a datum plane over scan meshes while choosing a sketch plane", (
   expect(onPlane).toHaveBeenCalledWith("OXY");
   expect(onSelect).not.toHaveBeenCalled();
 });
-it("keeps the coordinate row compact and exposes accessible plane choices", () => {
+it("keeps the coordinate row compact without a plane-choice toolbar", () => {
   const row = renderToStaticMarkup(
     <CoordinateSystem visible onVisible={() => {}} onSketch={() => {}} />,
   );
   expect(row).toContain("Coordinate System");
   expect(row).not.toContain("XY plane");
   expect(row).not.toContain("O (0, 0, 0)");
-  const picker = renderToStaticMarkup(
-    <SketchPlanePicker
-      onPick={() => {}}
-      onHover={() => {}}
-      onCustom={() => {}}
-      onCancel={() => {}}
-    />,
-  );
-  for (const label of [
-    "XY plane",
-    "YZ plane",
-    "XZ plane",
-    "Cancel plane selection",
-  ])
-    expect(picker).toContain(label);
 });
 it.each(ORIGIN_PLANES)(
   "faces a new %s sketch with its local V axis upright",

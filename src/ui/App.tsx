@@ -11,7 +11,7 @@ import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import { ApplicationVersion } from "./ApplicationVersion";
 import "./workspace-chrome.css";
-import { CoordinateSystem, SketchPlanePicker } from "./OriginControls";
+import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import {
@@ -3045,19 +3045,6 @@ export function App() {
         </aside>
         <section className="canvas-area" aria-label="3D viewport">
           <div ref={viewportHost} className="viewport" />
-          {planePicking && (
-            <SketchPlanePicker
-              onPick={(plane) =>
-                createPlaneSketch(coordinateSketchFrame(plane, 0))
-              }
-              onHover={(plane) => viewport.current?.highlightOrigin(plane)}
-              onCustom={() => {
-                setPlanePicking(false);
-                setSketchPlaneDialog(true);
-              }}
-              onCancel={() => setPlanePicking(false)}
-            />
-          )}
           {dragging && (
             <div className="drop-overlay">Drop a scan or CAD file to open</div>
           )}
@@ -3089,7 +3076,7 @@ export function App() {
           </div>
           <div className="canvas-hint">
             {planePicking
-              ? "Hover a plane to highlight · click to create sketch · Escape cancels"
+              ? "Hover a plane · click to create sketch · hold to select through · Escape cancels"
               : mode === "brush"
                 ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
                 : mode === "measure"
