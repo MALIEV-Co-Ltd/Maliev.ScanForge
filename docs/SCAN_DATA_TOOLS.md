@@ -5,7 +5,9 @@ localization as workflow evidence, not as evidence of recovered native algorithm
 The reference manual page 24 describes reduction targets; pages
 243–244 describe reconstruction of overlapping scans and closing holes/gaps.
 The reference localization describes averaging overlapping meshes and cylindrical unroll.
-Native numerical equivalence remains unverified.
+Native numerical equivalence has not been established. See
+[the native verification record](NATIVE_VERIFICATION.md) for recovered functions,
+trace evidence and the remaining verification requirements.
 
 ## Available operations
 
