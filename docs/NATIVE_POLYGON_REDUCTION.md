@@ -128,3 +128,30 @@ rotations, and incidence counts of 31, 32, 33 and 65. All input records and
 guard bytes remain unchanged. Candidate and validity components are now
 numerically verified; preparation, adjacency updates, ordered collapse and
 final compaction still require integration and full native mesh comparisons.
+
+## Ordered adjacency-update verification
+
+`src/scan-reduction-update.ts` now composes the verified candidate calculator
+with the ordered update rules from `0x140395640`. Evidence is
+`ev_87f0b62f3506bfccd0044d7c2014fbe898fcdfe3b4878c074916fc617bb0d253`.
+The original update and candidate routines were executed without shims on 112
+caller-owned record sets. Reference capacity was reserved in advance; the
+native allocation/growth branch was not exercised. Source vertex records,
+deletion masks, existing references and guards remained unchanged.
+
+Already deleted faces are skipped. A set incidence-mask bit marks a live face
+deleted and increments the deletion counter. Other live faces replace the
+referenced corner with the retained vertex, become dirty, recalculate all
+three edge errors and append the original face/corner reference. Their stored
+normals remain unchanged. The lowest-error edge is selected with ordered
+`<=` comparisons; edge two wins a three-way tie. The source incidence range
+is fixed even when new references are appended to the same vector.
+
+Every output error matches the native double bytes. Face indices, dirty and
+deleted flags, stored normals, best-edge indices, deletion totals and ordered
+successor references also match. Cases cover empty ranges, all four boundary
+combinations, zero-cost ties, nonzero plane quadrics, predeleted faces, mixed
+mask patterns and 31/32/33/65-reference ranges. A separate regression checks
+source/successor vector aliasing. These are record-level comparisons, not
+whole-mesh native reduction. Preparation, pass ordering and compaction remain
+necessary before the native path replaces production reduction.
