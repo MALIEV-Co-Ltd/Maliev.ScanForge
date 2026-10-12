@@ -149,3 +149,54 @@ it.each([selected1, selected3, whole2, whole3, boundaryOff])(
   },
   30_000,
 );
+
+it("real reused CPU threads reset operation state across selected, whole and boundary-locked edits", async () => {
+  vi.stubGlobal("Worker", ThreadWorker);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 16 });
+  const source = analyzeMesh(new Float32Array(selected3.positions));
+  const vertices = new Float64Array(300_000 * 3);
+  vertices.set(source.vertices);
+  const topology = { ...source, vertices };
+  const before = vertices.slice();
+  const pool = new NoiseSmoothingPool();
+  try {
+    for (const capture of [selected3, whole2, selected1, boundaryOff]) {
+      const stages = [];
+      const selection =
+        "selection" in capture ? new Uint8Array(capture.selection) : undefined;
+      const result = await pool.smooth(
+        topology,
+        capture.iterations,
+        selection,
+        capture.applyBoundaryEdges,
+        { onProgress: (_, stage) => stages.push(stage) },
+      );
+      expect(ThreadWorker.owned).toHaveLength(2);
+      expect(
+        stages.filter((stage) => stage === "Preparing noise weights"),
+      ).toHaveLength(1);
+      const actual = new Float32Array(capture.nativeOutput.length);
+      source.triangles.forEach((id, corner) => {
+        actual.set(result.subarray(id * 3, id * 3 + 3), corner * 3);
+      });
+      expect(new Uint8Array(actual.buffer)).toEqual(
+        new Uint8Array(new Float32Array(capture.nativeOutput).buffer),
+      );
+      if (selection) {
+        const movable = new Set();
+        source.triangles.forEach((id, corner) => {
+          if (selection[Math.floor(corner / 3)]) movable.add(id);
+        });
+        for (let id = 0; id < source.vertices.length / 3; id++) {
+          if (!movable.has(id))
+            expect(result.subarray(id * 3, id * 3 + 3)).toEqual(
+              before.subarray(id * 3, id * 3 + 3),
+            );
+        }
+      }
+    }
+    expect(vertices).toEqual(before);
+  } finally {
+    pool.dispose();
+  }
+}, 30_000);

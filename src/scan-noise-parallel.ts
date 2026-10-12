@@ -133,6 +133,12 @@ export class NoiseSmoothingPool {
         if (!selection || selection[Math.floor(corner / 3)])
           movable[topology.triangles[corner]] = 1;
       this.prepare(rings, count);
+      // FIFO message delivery binds fresh selection/weights before any phase.
+      // These buffers are immutable across iterations, so clone them only once.
+      for (const worker of this.workers)
+        worker.postMessage({
+          operation: { weights, movable, applyBoundaryEdges },
+        });
       this.expiry = setTimeout(() => this.cancel(), 120_000);
       let vertices = Float64Array.from(topology.vertices, Math.fround);
       for (let step = 0; step < iterations; step++) {
@@ -148,9 +154,6 @@ export class NoiseSmoothingPool {
         const next = await this.calculate({
           vertices,
           means,
-          weights,
-          movable,
-          applyBoundaryEdges,
         });
         check();
         vertices = next;

@@ -117,6 +117,9 @@ class FakeWorker {
   onmessageerror?: () => void;
   terminated = false;
   state?: NonNullable<NoiseWorkerRequest["initialize"]>;
+  operation?: NoiseWorkerRequest["operation"];
+  operationMessages = 0;
+  jobs: NonNullable<NoiseWorkerRequest["job"]>[] = [];
   constructor() {
     FakeWorker.workers.push(this);
   }
@@ -126,9 +129,16 @@ class FakeWorker {
       this.state = structuredClone(data.initialize);
       return;
     }
+    if (data.operation) {
+      this.operation = structuredClone(data.operation);
+      this.operationMessages++;
+      return;
+    }
     if (!data.job || FakeWorker.hang) return;
+    this.jobs.push(data.job);
     const job = structuredClone(data.job),
-      state = this.state!;
+      state = this.state!,
+      operation = this.operation!;
     // The second partition deliberately completes first.
     setTimeout(
       () => {
@@ -139,9 +149,9 @@ class FakeWorker {
           state.end,
           job.vertices,
           job.means,
-          job.weights,
-          job.movable,
-          job.applyBoundaryEdges,
+          operation.weights,
+          operation.movable,
+          operation.applyBoundaryEdges,
         );
         this.onmessage?.({
           data: { id: job.id, values },
@@ -179,6 +189,13 @@ it("pool retains rings, preserves immutable input and exact output across repeat
   expect(identical(second, nativeNoiseVertices(t, 2))).toBe(true);
   expect(identical(t.vertices, before)).toBe(true);
   expect(FakeWorker.workers.length).toBe(2);
+  for (const worker of FakeWorker.workers) {
+    expect(worker.operationMessages).toBe(2);
+    expect(worker.jobs).toHaveLength(10);
+    expect(
+      worker.jobs.every((job) => !("weights" in job) && !("movable" in job)),
+    ).toBe(true);
+  }
   expect(noiseRings(t)).toBe(noiseRings(t));
   p.dispose();
   expect(FakeWorker.workers.every((w) => w.terminated)).toBe(true);

@@ -5,13 +5,15 @@ export interface NoiseRings {
 }
 export interface NoiseWorkerRequest {
   initialize?: { rings: NoiseRings; begin: number; end: number };
+  operation?: {
+    weights: Float64Array;
+    movable: Uint8Array;
+    applyBoundaryEdges: boolean;
+  };
   job?: {
     id: number;
     vertices: Float64Array;
     means?: Float64Array;
-    weights?: Float64Array;
-    movable?: Uint8Array;
-    applyBoundaryEdges?: boolean;
   };
 }
 export type NoiseWorkerResponse =
@@ -85,6 +87,7 @@ const scope = globalThis as unknown as {
 // Importing the kernel in the parent worker must not replace its message handler.
 if (typeof scope.postMessage === "function" && scope.close && !scope.document) {
   let rings: NoiseRings | undefined;
+  let operation: NoiseWorkerRequest["operation"];
   let begin = 0,
     end = 0;
   let lease: ReturnType<typeof setTimeout>;
@@ -93,11 +96,17 @@ if (typeof scope.postMessage === "function" && scope.close && !scope.document) {
     lease = setTimeout(() => scope.close?.(), 120_000);
     if (data.initialize) {
       ({ rings, begin, end } = data.initialize);
+      operation = undefined;
+      return;
+    }
+    if (data.operation) {
+      operation = data.operation;
       return;
     }
     if (!data.job) return;
     try {
       if (!rings) throw new Error("Noise worker is not initialized.");
+      if (!operation) throw new Error("Noise operation is not initialized.");
       const job = data.job;
       const values = noiseRange(
         rings,
@@ -105,9 +114,9 @@ if (typeof scope.postMessage === "function" && scope.close && !scope.document) {
         end,
         job.vertices,
         job.means,
-        job.weights,
-        job.movable,
-        job.applyBoundaryEdges,
+        operation.weights,
+        operation.movable,
+        operation.applyBoundaryEdges,
       );
       scope.postMessage?.({ id: job.id, values }, [values.buffer]);
     } catch (error) {
