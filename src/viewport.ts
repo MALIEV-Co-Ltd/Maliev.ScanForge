@@ -211,9 +211,8 @@ export class Viewport {
     this.paintTrail.setAttribute("stroke-opacity", "0.65");
     this.paintTrail.setAttribute("stroke-linecap", "round");
     this.paintTrail.setAttribute("stroke-linejoin", "round");
-    this.paintCursor.setAttribute("fill", "none");
-    this.paintCursor.setAttribute("stroke", "white");
-    this.paintCursor.setAttribute("stroke-width", "1.5");
+    this.paintCursor.setAttribute("fill", "#c83244");
+    this.paintCursor.setAttribute("fill-opacity", "0.65");
     this.paintOverlay.append(this.paintTrail, this.paintCursor);
     container.appendChild(this.paintOverlay);
     this.renderer.domElement.addEventListener("dblclick", this.doubleClick);
@@ -228,6 +227,10 @@ export class Viewport {
     });
     this.renderer.domElement.addEventListener("contextmenu", this.contextMenu);
     this.renderer.domElement.addEventListener("pointermove", this.pointerMove);
+    this.renderer.domElement.addEventListener(
+      "pointerleave",
+      this.pointerLeave,
+    );
     window.addEventListener("keydown", this.sketchKeyDown);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
     this.renderer.domElement.addEventListener(
@@ -384,6 +387,10 @@ export class Viewport {
     this.paintTrail.setAttribute("d", "");
     this.selectionOverlay.hidden = true;
   }
+
+  private pointerLeave = (): void => {
+    if (!this.pointer) this.paintOverlay.style.display = "none";
+  };
 
   private pointerUp(event: PointerEvent): void {
     if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
@@ -1349,6 +1356,7 @@ export class Viewport {
     canvas.removeEventListener("wheel", this.selectionWheel, true);
     canvas.removeEventListener("contextmenu", this.contextMenu);
     canvas.removeEventListener("pointermove", this.pointerMove);
+    canvas.removeEventListener("pointerleave", this.pointerLeave);
     canvas.removeEventListener("pointerup", this.pointerUp);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
     canvas.removeEventListener("dblclick", this.doubleClick);

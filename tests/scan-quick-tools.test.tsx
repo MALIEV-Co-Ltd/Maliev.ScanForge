@@ -12,7 +12,6 @@ it("exposes selection actions while keeping unrecovered geometry tools unavailab
       onHide={noop}
       onIsolate={noop}
       onInvert={noop}
-      onClear={noop}
     />,
   );
   expect(html).toContain('role="toolbar"');
@@ -21,9 +20,20 @@ it("exposes selection actions while keeping unrecovered geometry tools unavailab
     "Hide selected",
     "Isolate selected",
     "Invert selection",
-    "Deselect all",
   ])
     expect(html).toContain(`aria-label="${label}"`);
   expect(html).toMatch(/aria-label="Defeature" disabled/);
-  expect(html).toMatch(/aria-label="Smooth" disabled/);
+  expect(html).toMatch(/aria-label="Smooth selected" disabled/);
+  const labels = Array.from(
+    html.matchAll(/<button[^>]*aria-label="([^"]+)"/g),
+    (match) => match[1],
+  );
+  expect(labels).toEqual([
+    "Delete selected",
+    "Defeature",
+    "Smooth selected",
+    "Hide selected",
+    "Invert selection",
+    "Isolate selected",
+  ]);
 });

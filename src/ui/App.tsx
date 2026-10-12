@@ -2539,10 +2539,6 @@ export function App() {
                   ),
                 )
               }
-              onClear={() => {
-                setQuickToolsPoint(null);
-                changeSelection(null);
-              }}
             />
           )}
         <aside

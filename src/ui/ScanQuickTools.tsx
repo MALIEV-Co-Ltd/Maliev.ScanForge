@@ -7,7 +7,6 @@ export function ScanQuickTools(props: {
   onHide: () => void;
   onIsolate: () => void;
   onInvert: () => void;
-  onClear: () => void;
 }) {
   return (
     <div
@@ -41,7 +40,7 @@ export function ScanQuickTools(props: {
       </button>
       <button
         title="Smooth: original operation is not yet reconstructed"
-        aria-label="Smooth"
+        aria-label="Smooth selected"
         disabled
       >
         <Waves size={17} />
@@ -54,13 +53,6 @@ export function ScanQuickTools(props: {
         <EyeOff size={17} />
       </button>
       <button
-        title="Isolate selected"
-        aria-label="Isolate selected"
-        onClick={props.onIsolate}
-      >
-        <Eye size={17} />
-      </button>
-      <button
         title="Invert selection"
         aria-label="Invert selection"
         onClick={props.onInvert}
@@ -68,11 +60,11 @@ export function ScanQuickTools(props: {
         <MousePointer2 size={17} />
       </button>
       <button
-        title="Deselect all"
-        aria-label="Deselect all"
-        onClick={props.onClear}
+        title="Isolate selected"
+        aria-label="Isolate selected"
+        onClick={props.onIsolate}
       >
-        <Circle size={17} />
+        <Eye size={17} />
       </button>
     </div>
   );
