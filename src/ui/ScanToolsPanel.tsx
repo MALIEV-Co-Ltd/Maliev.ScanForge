@@ -127,7 +127,7 @@ export interface ScanToolsPanelProps {
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
-  onAccept?: () => void;
+  onAccept?: (options?: { createNewObject?: boolean }) => void;
   onCompare?: (deviation: number, paletteThreshold: number) => void;
   onClose: () => void;
   onCancel: () => void;
@@ -176,6 +176,7 @@ export function ScanToolsPanel({
   const [factor, setFactor] = useState(1);
   const [scaleMode, setScaleMode] = useState<"factor" | "percentage">("factor");
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
+  const [createNewObject, setCreateNewObject] = useState(false);
   const [resolution, setResolution] = useState(0.5);
   const [tolerance, setTolerance] = useState(10);
   const [targetIds, setTargetIds] = useState<string[]>([]);
@@ -516,6 +517,14 @@ export function ScanToolsPanel({
               value={center}
               onChange={setCenter}
             />
+            <label>
+              <input
+                type="checkbox"
+                checked={createNewObject}
+                onChange={(event) => setCreateNewObject(event.target.checked)}
+              />
+              Create new object
+            </label>
           </>
         )}
         {tool === "flipNormals" && (
@@ -684,7 +693,12 @@ export function ScanToolsPanel({
           {onAccept ? "Preview" : "Apply"}
         </button>
         {onAccept && (
-          <button disabled={busy || !previewReady} onClick={onAccept}>
+          <button
+            disabled={busy || !previewReady}
+            onClick={() =>
+              onAccept(tool === "scaleMesh" ? { createNewObject } : undefined)
+            }
+          >
             Accept
           </button>
         )}

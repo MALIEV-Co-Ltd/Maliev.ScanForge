@@ -30,6 +30,7 @@ it("Scale separates preview from acceptance and offers cancellation without comp
   expect(panel(true)).not.toContain('disabled="">Accept');
   expect(panel(true)).toContain(">Preview</button>");
   expect(panel(true)).toContain(">Cancel</button>");
+  expect(panel(true)).toContain('type="checkbox"/>Create new object');
   expect(panel(true)).not.toContain("Update comparison");
 });
 it.each(["reduceNoise", "reducePolygons"] as const)(

@@ -15,6 +15,7 @@ import {
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
+import { scaledMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
@@ -1690,13 +1691,32 @@ export function App() {
       }
     }
   }
-  function acceptScanPreview() {
+  function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
-    replaceScanPositions(
-      activeScanPreview.output,
-      scanToolTitles[activeScanPreview.kind],
-      activeScanPreview.kind === "reduceNoise",
-    );
+    if (
+      activeScanPreview.kind === "scaleMesh" &&
+      options?.createNewObject &&
+      selected
+    ) {
+      const copy = scaledMeshCopy(
+        selected,
+        activeScanPreview.output,
+        crypto.randomUUID(),
+      );
+      operationLabel.current = "Scale mesh · create new object";
+      try {
+        commit([...entities, copy]);
+        setSelectedId(copy.id);
+      } finally {
+        operationLabel.current = null;
+      }
+    } else {
+      replaceScanPositions(
+        activeScanPreview.output,
+        scanToolTitles[activeScanPreview.kind],
+        activeScanPreview.kind === "reduceNoise",
+      );
+    }
     scanToolOutput.current = activeScanPreview.output;
     setScanPreview(null);
     setNoiseComparison(null);
