@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 import {
   cameraAspect,
+  cubeRegions,
   convertProjection,
   frameCamera,
   projectCube,
@@ -12,6 +13,60 @@ import { Viewport } from "../src/viewport";
 import { navigateCamera } from "../src/camera-navigation";
 
 describe("camera projection and view cube", () => {
+  it("exposes all 26 face, edge and corner directions across cube orientations", () => {
+    const ids = new Set<string>();
+    for (const x of [-1, 1])
+      for (const y of [-1, 1])
+        for (const z of [-1, 1]) {
+          const camera = new THREE.OrthographicCamera();
+          camera.up.set(0, 0, 1);
+          camera.position.set(x, y, z);
+          camera.lookAt(0, 0, 0);
+          const regions = cubeRegions(camera.quaternion);
+          expect(regions).toHaveLength(27);
+          regions.forEach((region) => {
+            ids.add(region.id);
+            expect(region.points).toHaveLength(4);
+            expect(region.points.every((p) => Number.isFinite(p.x + p.y))).toBe(
+              true,
+            );
+          });
+        }
+    expect(ids.size).toBe(26);
+    expect(ids.has("0,0,0")).toBe(false);
+  });
+  it("orients to edges and corners without changing the target, distance or zoom", () => {
+    const camera = new THREE.OrthographicCamera();
+    camera.position.set(10, -80, 40);
+    camera.zoom = 2;
+    const target = new THREE.Vector3(10, 20, 30);
+    const distance = camera.position.distanceTo(target);
+    const view = Object.create(Viewport.prototype) as Viewport;
+    Object.assign(view, {
+      camera,
+      controls: { target, update: () => camera.updateMatrixWorld() },
+      invalidate: vi.fn(),
+    });
+    for (const direction of [
+      new THREE.Vector3(1, -1, 0),
+      new THREE.Vector3(1, -1, 1),
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, -1),
+    ]) {
+      view.orientCamera(direction, new THREE.Vector3(0, 0, 1));
+      expect(camera.position.distanceTo(target)).toBeCloseTo(distance, 12);
+      expect(
+        camera.position
+          .clone()
+          .sub(target)
+          .normalize()
+          .distanceTo(direction.clone().normalize()),
+      ).toBeLessThan(1e-12);
+      expect(camera.zoom).toBe(2);
+      expect(camera.quaternion.toArray().every(Number.isFinite)).toBe(true);
+      expect(target.toArray()).toEqual([10, 20, 30]);
+    }
+  });
   it("six-axis depth navigation changes orthographic zoom instead of translating invisibly along depth", () => {
     const camera = new THREE.OrthographicCamera(
       -100,

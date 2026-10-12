@@ -693,3 +693,15 @@ The initial browser dimension workflow exposed legacy p1/p2 references after dra
 The first build found a test parameter type error, corrected before tests. Focused tests initially exposed changed origin anchoring expectations; the anchored-profile regression now expects a fixed relation, and free endpoint movement is tested away from the origin. Final focused origin/frame/drawing/constraint/section tests: 34 passed across five files. Final build passed with zero warnings/errors, manifest scanforge-73178a433770b136. One intervening build was correctly blocked at 1406 MiB available against the unchanged 1536 MiB guard; it passed after capacity recovered. Full suite: 7,146 passed across 125 files. Targeted Prettier and staged whitespace checks passed. Concurrent SpaceMouse/header migration files and hunks remain outside this commit.
 
 This is independently authored integration of existing sketch and coordinate components, not new native-handler recovery or full CAD parity. Separate named datum objects, world-origin relocation, datum dependency rebuilds, arbitrary CAD-face selection and full sketch-to-body equivalence remain incomplete. Advanced ribbon status remains disabled. The isolated browser tab was closed and its absence verified; generated downloads are retained privately before disposal. The preview's finite lease is renewed for continued user testing after its prior owned process exits.
+
+### 2026-10-12 — View cube targets and compact menu
+
+- Implemented projected face, edge and corner regions for all 26 cube directions. Shared edges/corners highlight across the adjoining faces. Hover brightens the cube and reveals Home/settings; labels remain inside their face planes.
+- Cube clicks preserve orbit center, distance and orthographic zoom. Pointer-captured drag rotates instead of activating the initially pressed target. Keyboard Enter/Space activates targets; menu arrows, Escape and outside-click dismissal work.
+- Following owner feedback, the final menu contains only Go Home (default isometric fit), Orthographic, Perspective and Fit model in view. Custom Home/Front, hybrid projection and size submenus were removed. Menu styling uses application theme variables.
+- Build: npm run build passed with no warnings/errors; offline manifest scanforge-329812b58eec13d8.
+- Focused: npm test -- tests/camera-gizmo.test.ts, 10 passed.
+- Formatting: npx prettier --check src/camera-gizmo.ts src/camera-gizmo.css src/viewport.ts tests/camera-gizmo.test.ts passed. git diff --check passed.
+- Live browser: face/corner orientation, shared edge/corner hover, cube drag, projection state and final four-item themed menu verified. No warning/error console entries. Final screenshot .resources/cube-menu-final.png. Temporary test tab 11 closed and absence verified; user tab 7 preserved.
+- Preview HTTP 200 on loopback port 5173; existing server PID 43304 retained under its recorded expiry 2026-10-12T07:39:15.329Z. No new helper servers launched.
+- Final full suite: npm test, 7,148 tests passed across 125 files (45.17 seconds).

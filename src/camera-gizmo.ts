@@ -1,3 +1,4 @@
+import "./camera-gizmo.css";
 import * as THREE from "three";
 
 export type Projection = "orthographic" | "perspective";
@@ -180,142 +181,303 @@ export function projectCube(quaternion: THREE.Quaternion) {
     .sort((a, b) => a.depth - b.depth);
 }
 
-/** SVG cube uses the same camera pose as the scene; no second WebGL context. */
+export function cubeRegions(quaternion: THREE.Quaternion) {
+  const inverse = quaternion.clone().invert();
+  return faces
+    .filter((f) => f.normal.clone().applyQuaternion(inverse).z > 1e-5)
+    .flatMap((face) => {
+      const a = face.vertices[0],
+        u = face.vertices[1].clone().sub(a),
+        v = face.vertices[3].clone().sub(a),
+        cuts = [0, 0.18, 0.82, 1];
+      return [0, 1, 2].flatMap((row) =>
+        [0, 1, 2].map((col) => ({
+          id: a
+            .clone()
+            .addScaledVector(u, col === 0 ? 0 : col === 2 ? 1 : 0.5)
+            .addScaledVector(v, row === 0 ? 0 : row === 2 ? 1 : 0.5)
+            .toArray()
+            .map(Math.round)
+            .join(","),
+          points: [
+            [cuts[col], cuts[row]],
+            [cuts[col + 1], cuts[row]],
+            [cuts[col + 1], cuts[row + 1]],
+            [cuts[col], cuts[row + 1]],
+          ].map(([x, y]) =>
+            a
+              .clone()
+              .addScaledVector(u, x)
+              .addScaledVector(v, y)
+              .applyQuaternion(inverse),
+          ),
+        })),
+      );
+    });
+}
+export interface CubeActions {
+  orient: (direction: THREE.Vector3, up: THREE.Vector3) => void;
+}
 export class CameraGizmo {
   readonly element = document.createElement("div");
-  private readonly svg = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg",
-  );
-  private readonly select = document.createElement("select");
+  private svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  private menu = document.createElement("div");
+  private mode: Projection = "orthographic";
+  private hovered?: string;
   private drag?: {
     id: number;
     x: number;
     y: number;
     startX: number;
     startY: number;
-    view?: ViewFace;
+    direction?: string;
     moved: boolean;
   };
   constructor(
-    private readonly onView: (view: ViewFace) => void,
-    private readonly onRotate: (dx: number, dy: number) => void,
-    onProjection: (projection: Projection) => void,
+    private onView: (view: ViewFace) => void,
+    private onRotate: (dx: number, dy: number) => void,
+    private onProjection: (projection: Projection) => void,
     onFit: () => void,
+    private actions?: CubeActions,
   ) {
     this.element.className = "camera-gizmo";
-    this.element.style.cssText =
-      "position:absolute;right:10px;top:6px;width:108px;display:flex;flex-direction:column;align-items:center;gap:0;z-index:3;color:var(--text);user-select:none";
-    this.svg.setAttribute("viewBox", "0 0 132 112");
+    this.svg.setAttribute("viewBox", "0 0 132 132");
     this.svg.setAttribute(
       "aria-label",
-      "View cube: click a face to orient, drag to orbit",
+      "View cube: click faces, edges or corners; drag to orbit",
     );
     this.svg.setAttribute("role", "group");
-    this.svg.style.cssText =
-      "width:108px;height:92px;touch-action:none;cursor:grab";
     this.svg.addEventListener("pointerdown", this.down);
     this.svg.addEventListener("pointermove", this.move);
     this.svg.addEventListener("pointerup", this.up);
-    this.svg.addEventListener("pointercancel", this.cancel);
-    this.svg.addEventListener("keydown", this.key);
-    this.select.setAttribute("aria-label", "Camera projection");
-    this.select.style.cssText =
-      "font:inherit;font-size:10px;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px;width:56px;height:24px";
-    for (const projection of ["orthographic", "perspective"] as const) {
-      const option = document.createElement("option");
-      option.value = projection;
-      option.textContent = projection === "orthographic" ? "Ortho" : "Persp";
-      option.setAttribute(
-        "aria-label",
-        projection === "orthographic" ? "Orthographic" : "Perspective",
-      );
-      this.select.append(option);
-    }
-    this.select.addEventListener("change", () =>
-      onProjection(this.select.value as Projection),
-    );
-    const actions = document.createElement("div");
-    actions.style.cssText = "display:flex;gap:2px;align-items:center";
-    actions.append(this.select);
-    for (const [label, action] of [
-      ["Isometric", () => onView("iso")],
-      ["Fit", onFit],
+    this.svg.addEventListener("pointercancel", () => (this.drag = undefined));
+    this.svg.addEventListener("pointerleave", () => this.highlight());
+    this.svg.addEventListener("keydown", (event) => {
+      const id = (event.target as Element).closest<SVGElement>(
+        "[data-direction]",
+      )?.dataset.direction;
+      if (id && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        this.orient(id);
+      }
+    });
+    const home = document.createElement("button");
+    home.className = "cube-home cube-control";
+    home.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 11 12 2l10 9h-4v11h-5v-7h-2v7H6V11Z"/></svg>';
+    home.setAttribute("aria-label", "Go Home");
+    home.title = "Go Home";
+    home.onclick = () => this.goHome();
+    const toggle = document.createElement("button");
+    toggle.className = "cube-menu-toggle cube-control";
+    toggle.textContent = "▾";
+    toggle.setAttribute("aria-label", "ViewCube settings");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.onclick = () => {
+      this.menu.hidden = !this.menu.hidden;
+      toggle.setAttribute("aria-expanded", String(!this.menu.hidden));
+    };
+    this.menu.className = "cube-menu";
+    this.menu.hidden = true;
+    const button = (
+      label: string,
+      action: () => void,
+      parent: HTMLElement = this.menu,
+    ) => {
+      const item = document.createElement("button");
+      item.textContent = label;
+      item.onclick = () => {
+        action();
+        this.menu.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+      };
+      parent.append(item);
+      return item;
+    };
+    button("Go Home", () => this.goHome());
+    for (const [label, mode] of [
+      ["Orthographic", "orthographic"],
+      ["Perspective", "perspective"],
     ] as const) {
-      const button = document.createElement("button");
-      button.textContent = label === "Isometric" ? "⌂" : "⛶";
-      button.setAttribute("aria-label", label);
-      button.title =
-        label === "Isometric" ? "Isometric view" : "Fit model in view";
-      button.style.cssText =
-        "font:inherit;font-size:16px;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0;min-height:24px;height:24px;width:24px";
-      button.addEventListener("click", action);
-      actions.append(button);
+      const item = button(label, () => {
+        this.mode = mode;
+        onProjection(mode === "orthographic" ? "orthographic" : "perspective");
+        this.checks();
+      });
+      item.dataset.projection = mode;
+      item.setAttribute("role", "menuitemradio");
     }
-    this.element.append(this.svg, actions);
+    button("Fit model in view", onFit);
+    this.element.append(this.svg, home, toggle, this.menu);
+    document.addEventListener("pointerdown", this.outside);
+    this.element.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      this.menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    });
+    this.element.addEventListener("keydown", (event) => {
+      event.stopPropagation();
+      if (!this.menu.hidden && ["ArrowDown", "ArrowUp"].includes(event.key)) {
+        event.preventDefault();
+        const items = Array.from(
+          this.menu.querySelectorAll<HTMLElement>("button"),
+        ).filter((item) => item.getClientRects().length);
+        const index = items.indexOf(document.activeElement as HTMLElement);
+        items[
+          (index + (event.key === "ArrowDown" ? 1 : -1) + items.length) %
+            items.length
+        ]?.focus();
+      }
+      if (event.key === "Escape") {
+        this.menu.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.focus();
+      }
+    });
+    this.checks();
+  }
+  private outside = (event: PointerEvent) => {
+    if (!this.element.contains(event.target as Node)) {
+      this.menu.hidden = true;
+      this.element
+        .querySelector(".cube-menu-toggle")
+        ?.setAttribute("aria-expanded", "false");
+    }
+  };
+  private checks() {
+    for (const item of this.menu.querySelectorAll<HTMLElement>(
+      "[data-projection]",
+    ))
+      item.setAttribute(
+        "aria-checked",
+        String(item.dataset.projection === this.mode),
+      );
+  }
+  private goHome() {
+    this.onView("iso");
   }
   update(camera: NavigationCamera): void {
-    this.select.value =
+    this.mode =
       camera instanceof THREE.OrthographicCamera
         ? "orthographic"
         : "perspective";
-    this.select.title = `Camera projection: ${this.select.value === "orthographic" ? "Orthographic" : "Perspective"}`;
+    this.checks();
+    const q = camera.quaternion,
+      ns = "http://www.w3.org/2000/svg";
+    const coords = (points: THREE.Vector3[]) =>
+      points.map((p) => [66 + p.x * 27, 66 - p.y * 27].join(",")).join(" ");
     this.svg.replaceChildren();
-    for (const face of projectCube(camera.quaternion)) {
-      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      group.dataset.view = face.view;
-      group.setAttribute("tabindex", "0");
-      group.setAttribute("role", "button");
-      group.setAttribute("aria-label", `${face.view} view`);
-      const polygon = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "polygon",
-      );
-      polygon.setAttribute(
-        "points",
-        face.points.map((p) => `${66 + p.x * 28},${56 - p.y * 28}`).join(" "),
-      );
-      polygon.setAttribute(
-        "fill",
-        `color-mix(in srgb, var(--cube-face) ${Math.round(face.depth * 100)}%, var(--cube-shade))`,
-      );
-      polygon.setAttribute("stroke", "var(--cube-edge)");
-      polygon.setAttribute("stroke-width", "1");
-      const text = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "text",
-      );
-      const center = face.points
-        .reduce((v, p) => v.add(p), new THREE.Vector3())
-        .multiplyScalar(0.25);
-      // Map labels into their own face plane, so adjacent faces cannot cover
-      // the beginning of a word on a narrow, oblique face.
-      const horizontal = face.points[1]
-        .clone()
-        .sub(face.points[0])
-        .multiplyScalar(14);
-      const vertical = face.points[0]
-        .clone()
-        .sub(face.points[3])
-        .multiplyScalar(14);
+    for (const face of projectCube(q)) {
+      const polygon = document.createElementNS(ns, "polygon");
+      polygon.setAttribute("points", coords(face.points));
+      polygon.classList.add("cube-face");
+      polygon.style.setProperty("--shade", String(0.55 + face.depth * 0.35));
+      this.svg.append(polygon);
+    }
+    for (const region of cubeRegions(q)) {
+      const polygon = document.createElementNS(ns, "polygon");
+      polygon.setAttribute("points", coords(region.points));
+      polygon.dataset.direction = region.id;
+      polygon.classList.add("cube-target");
+      polygon.setAttribute("tabindex", "0");
+      polygon.setAttribute("role", "button");
+      const label = region.id
+        .split(",")
+        .flatMap((n, i) =>
+          Number(n)
+            ? [
+                i === 0
+                  ? Number(n) > 0
+                    ? "right"
+                    : "left"
+                  : i === 1
+                    ? Number(n) > 0
+                      ? "back"
+                      : "front"
+                    : Number(n) > 0
+                      ? "top"
+                      : "bottom",
+              ]
+            : [],
+        )
+        .join(" ");
+      polygon.setAttribute("aria-label", label + " view");
+      this.svg.append(polygon);
+    }
+    for (const face of projectCube(q)) {
+      const text = document.createElementNS(ns, "text"),
+        center = face.points
+          .reduce((v, p) => v.add(p), new THREE.Vector3())
+          .multiplyScalar(0.25);
+      const u = face.points[1].clone().sub(face.points[0]).multiplyScalar(13.5),
+        v = face.points[0].clone().sub(face.points[3]).multiplyScalar(13.5);
       text.setAttribute(
         "transform",
-        `matrix(${horizontal.x},${-horizontal.y},${vertical.x},${-vertical.y},${66 + center.x * 28},${56 - center.y * 28})`,
+        [
+          "matrix(",
+          [u.x, -u.y, v.x, -v.y, 66 + center.x * 27, 66 - center.y * 27].join(
+            ",",
+          ),
+          ")",
+        ].join(""),
       );
-      text.setAttribute("x", "0");
-      text.setAttribute("y", "0.12");
       text.setAttribute("text-anchor", "middle");
-      text.setAttribute("fill", "var(--cube-label)");
-      text.setAttribute("font-size", "0.36");
-      text.setAttribute("font-family", "system-ui");
-      text.setAttribute("font-weight", "700");
-      text.setAttribute("pointer-events", "none");
+      text.setAttribute("y", ".12");
+      text.setAttribute("font-size", ".36");
+      text.classList.add("cube-label");
       text.textContent = face.view.toUpperCase();
-      group.append(polygon);
-      if (face.depth >= 0.18) group.append(text);
-      this.svg.append(group);
+      this.svg.append(text);
     }
+    const inverse = q.clone().invert();
+    for (const [name, axis, color] of [
+      ["X", new THREE.Vector3(1, 0, 0), "#ed3038"],
+      ["Y", new THREE.Vector3(0, 1, 0), "#28bd72"],
+      ["Z", new THREE.Vector3(0, 0, 1), "#406bff"],
+    ] as const) {
+      const start = new THREE.Vector3(-1, -1, -1).applyQuaternion(inverse),
+        end = new THREE.Vector3(-1, -1, -1)
+          .addScaledVector(axis, 2.4)
+          .applyQuaternion(inverse);
+      if (end.z < start.z - 0.1) continue;
+      const line = document.createElementNS(ns, "line");
+      for (const [attr, value] of [
+        ["x1", 66 + start.x * 27],
+        ["y1", 66 - start.y * 27],
+        ["x2", 66 + end.x * 27],
+        ["y2", 66 - end.y * 27],
+      ] as const)
+        line.setAttribute(attr, String(value));
+      line.setAttribute("stroke", color);
+      line.setAttribute("stroke-width", "2");
+      line.setAttribute("pointer-events", "none");
+      const text = document.createElementNS(ns, "text");
+      text.setAttribute("x", String(66 + end.x * 27));
+      text.setAttribute("y", String(70 - end.y * 27));
+      text.setAttribute("fill", color);
+      text.setAttribute("font-size", "13");
+      text.setAttribute("pointer-events", "none");
+      text.textContent = name;
+      this.svg.append(line, text);
+    }
+    this.highlight(this.hovered);
   }
+  private highlight(id?: string) {
+    this.hovered = id;
+    for (const target of this.svg.querySelectorAll<SVGElement>(
+      "[data-direction]",
+    ))
+      target.classList.toggle(
+        "cube-highlight",
+        target.dataset.direction === id,
+      );
+  }
+  private orient(id: string) {
+    const vector = new THREE.Vector3(
+      ...(id.split(",").map(Number) as [number, number, number]),
+    );
+    this.actions?.orient(vector, new THREE.Vector3(0, 0, 1));
+  }
+
   private down = (event: PointerEvent) => {
     if (event.button !== 0) return;
     event.preventDefault();
@@ -326,21 +488,30 @@ export class CameraGizmo {
       y: event.clientY,
       startX: event.clientX,
       startY: event.clientY,
-      view: (event.target as Element).closest<SVGGElement>("[data-view]")
-        ?.dataset.view as ViewFace | undefined,
+      direction: (event.target as Element).closest<SVGElement>(
+        "[data-direction]",
+      )?.dataset.direction,
       moved: false,
     };
     this.svg.setPointerCapture(event.pointerId);
   };
   private move = (event: PointerEvent) => {
     const drag = this.drag;
-    if (!drag || drag.id !== event.pointerId) return;
+    if (!drag) {
+      this.highlight(
+        (event.target as Element).closest<SVGElement>("[data-direction]")
+          ?.dataset.direction,
+      );
+      return;
+    }
+    if (drag.id !== event.pointerId) return;
     if (
       !drag.moved &&
       Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 3
     )
       return;
     drag.moved = true;
+    this.highlight();
     this.onRotate(event.clientX - drag.x, event.clientY - drag.y);
     drag.x = event.clientX;
     drag.y = event.clientY;
@@ -352,26 +523,10 @@ export class CameraGizmo {
     this.drag = undefined;
     if (this.svg.hasPointerCapture(event.pointerId))
       this.svg.releasePointerCapture(event.pointerId);
-    if (!drag.moved && drag.view) this.onView(drag.view);
-  };
-  private cancel = () => {
-    this.drag = undefined;
-  };
-  private key = (event: KeyboardEvent) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    const view = (event.target as Element).closest<SVGGElement>("[data-view]")
-      ?.dataset.view as ViewFace | undefined;
-    if (view) {
-      event.preventDefault();
-      this.onView(view);
-    }
+    if (!drag.moved && drag.direction) this.orient(drag.direction);
   };
   dispose(): void {
-    this.svg.removeEventListener("pointerdown", this.down);
-    this.svg.removeEventListener("pointermove", this.move);
-    this.svg.removeEventListener("pointerup", this.up);
-    this.svg.removeEventListener("pointercancel", this.cancel);
-    this.svg.removeEventListener("keydown", this.key);
+    document.removeEventListener("pointerdown", this.outside);
     this.element.remove();
   }
 }

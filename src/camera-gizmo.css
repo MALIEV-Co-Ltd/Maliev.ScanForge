@@ -1,0 +1,112 @@
+.camera-gizmo {
+  --cube-size: 132px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: var(--cube-size);
+  height: var(--cube-size);
+  z-index: 3;
+  user-select: none;
+}
+.camera-gizmo > svg {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  overflow: visible;
+}
+.cube-face {
+  fill: color-mix(in srgb, #aaa calc(var(--shade) * 100%), #777);
+  stroke: #94999e;
+  stroke-width: 0.8;
+}
+.camera-gizmo:hover .cube-face,
+.camera-gizmo:focus-within .cube-face {
+  fill: color-mix(in srgb, #fff calc(var(--shade) * 100%), #a5a9ad);
+}
+.cube-target {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 1;
+}
+.cube-target.cube-highlight,
+.cube-target:focus {
+  fill: #59bfff33;
+  stroke: #29a9ff;
+  outline: none;
+}
+.cube-label {
+  fill: #303942;
+  font-family: system-ui;
+  pointer-events: none;
+}
+.cube-control {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  padding: 1px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  opacity: 0;
+  cursor: pointer;
+}
+.cube-control svg {
+  width: 100%;
+  height: 100%;
+}
+.cube-home {
+  left: 0;
+  top: 0;
+}
+.cube-menu-toggle {
+  right: 0;
+  bottom: 0;
+  font-size: 23px;
+  line-height: 18px;
+}
+.camera-gizmo:hover .cube-control,
+.camera-gizmo:focus-within .cube-control {
+  opacity: 1;
+}
+.cube-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% - 4px);
+  width: 158px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px #0006;
+  font-size: 12px;
+}
+.cube-menu[hidden] {
+  display: none;
+}
+.cube-menu button {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 0;
+  padding: 5px 8px 5px 24px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.cube-menu button:hover,
+.cube-menu button:focus-visible:hover {
+  background: var(--hover);
+}
+.cube-menu [aria-checked="true"]::before {
+  content: "✓";
+  position: absolute;
+  left: 7px;
+}
+
+.cube-menu button {
+  min-height: 0;
+  line-height: 16px;
+}

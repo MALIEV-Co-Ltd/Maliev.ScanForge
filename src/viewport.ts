@@ -186,6 +186,9 @@ export class Viewport {
       },
       (projection) => this.setProjection(projection),
       () => this.fitView(),
+      {
+        orient: (direction, up) => this.orientCamera(direction, up),
+      },
     );
     container.append(this.gizmo.element);
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x777777, 2.1));
@@ -1178,6 +1181,23 @@ export class Viewport {
     return this.camera instanceof THREE.OrthographicCamera
       ? "orthographic"
       : "perspective";
+  }
+  orientCamera(direction: THREE.Vector3, up: THREE.Vector3): void {
+    const distance = this.camera.position.distanceTo(this.controls.target);
+    direction = direction.clone().normalize();
+    up = up.clone().normalize();
+    if (Math.abs(direction.dot(up)) > 0.999) {
+      up = new THREE.Vector3(0, 1, 0).applyQuaternion(this.camera.quaternion);
+      up.addScaledVector(direction, -up.dot(direction));
+      if (up.lengthSq() < 1e-8) up.set(0, 1, 0);
+    }
+    this.camera.up.copy(up.normalize());
+    this.camera.position
+      .copy(this.controls.target)
+      .addScaledVector(direction, distance);
+    this.camera.lookAt(this.controls.target);
+    this.controls.update();
+    this.invalidate();
   }
   setProjection(projection: Projection): void {
     if (projection === this.getProjection()) return;
