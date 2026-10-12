@@ -1,4 +1,5 @@
 import { ViewportTools } from "./ViewportTools";
+import { ImportProgress } from "./ImportProgress";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -238,6 +239,10 @@ export function App() {
   const [resolvedTheme, setResolvedTheme] = useState(() => resolveTheme(theme));
   const [dragging, setDragging] = useState(false);
   const importAbort = useRef<AbortController | null>(null);
+  const [importProgress, setImportProgress] = useState<{
+    name: string;
+    fraction: number | null;
+  } | null>(null);
   const [actionBusy, setBusy] = useState(false);
   const [processingBusy, setProcessingBusy] = useState(false);
   const busy = actionBusy || processingBusy;
@@ -1566,6 +1571,7 @@ export function App() {
       setMessage("Operation failed");
     } finally {
       operationLabel.current = null;
+      setImportProgress(null);
       setBusy(false);
     }
   }
@@ -1624,6 +1630,10 @@ export function App() {
       return;
     }
     await action(`Opening ${file.name}…`, async () => {
+      setImportProgress({
+        name: file.name,
+        fraction: /\.(stl|obj|ply)$/i.test(file.name) ? 0 : null,
+      });
       const extension = file.name.split(".").pop()!.toLowerCase();
       if (extension === "scanforge" || extension === "json") {
         const project = parseProject(await file.text());
@@ -1710,10 +1720,12 @@ export function App() {
                 scanSource = source;
               },
               signal: controller.signal,
-              onProgress: (progress) =>
+              onProgress: (progress) => {
+                setImportProgress({ name: file.name, fraction: progress });
                 setMessage(
                   `Opening ${file.name} · ${Math.round(progress * 100)}%`,
-                ),
+                );
+              },
             });
           } finally {
             importAbort.current = null;
@@ -3264,14 +3276,6 @@ export function App() {
           {dragging && (
             <div className="drop-overlay">Drop a scan or CAD file to open</div>
           )}
-          {busy && importAbort.current && (
-            <div className="import-progress">
-              <span>{message}</span>
-              <button onClick={() => importAbort.current?.abort()}>
-                Cancel import
-              </button>
-            </div>
-          )}
           {busy && selectionAbort.current && (
             <div className="import-progress">
               <span>{message}</span>
@@ -4392,7 +4396,19 @@ export function App() {
       )}
       <footer className="statusbar">
         <span className={busy ? "status-dot busy" : "status-dot"} />
-        <span aria-live="polite">{message}</span>
+        {importProgress ? (
+          <ImportProgress
+            name={importProgress.name}
+            fraction={importProgress.fraction}
+            onCancel={
+              importAbort.current
+                ? () => importAbort.current?.abort()
+                : undefined
+            }
+          />
+        ) : (
+          <span aria-live="polite">{message}</span>
+        )}
         <span className="save-state">
           {dirty ? "Unsaved changes" : "Project unchanged"}
         </span>

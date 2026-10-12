@@ -1,0 +1,52 @@
+.status-import-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex-shrink: 1;
+  height: 22px;
+}
+.status-import-filename {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.status-import-track {
+  width: 105px;
+  min-width: 60px;
+  height: 5px;
+  overflow: hidden;
+  background: #385043;
+  border-radius: 2px;
+}
+.status-import-track > span {
+  display: block;
+  height: 100%;
+  background: #58bd86;
+}
+.status-import-track.indeterminate > span {
+  animation: import-status-progress 1.2s ease-in-out infinite alternate;
+}
+.status-import-percent {
+  min-width: 27px;
+  color: #58bd86;
+  font-variant-numeric: tabular-nums;
+}
+.status-import-cancel {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  line-height: 1;
+  font-size: 15px;
+}
+@keyframes import-status-progress {
+  to {
+    transform: translateX(185%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status-import-track.indeterminate > span {
+    animation: none;
+  }
+}
