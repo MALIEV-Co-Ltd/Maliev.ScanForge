@@ -9,6 +9,8 @@ import {
 import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
+import { ApplicationVersion } from "./ApplicationVersion";
+import "./workspace-chrome.css";
 import {
   referenceWorldSegments,
   type SketchSectionOptions,
@@ -91,7 +93,8 @@ import { importScan } from "../import-client";
 import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
-import { demonstrationBracket } from "../sample";
+import { ImportUnitsDialog } from "./ImportUnitsDialog";
+import { SCAN_UNITS, type ScanUnit } from "../import-units";
 import type {
   Entity,
   FitResult,
@@ -148,9 +151,8 @@ const number = (n: number) =>
 type Mode = "inspect" | "measure" | "section" | "brush";
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
-  const [entities, setEntities] = useState<Entity[]>(() => [
-    demonstrationBracket(),
-  ]);
+  const [entities, setEntities] = useState<Entity[]>([]);
+  const [pendingScanImport, setPendingScanImport] = useState<File | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
     () => entities[0]?.id ?? null,
   );
@@ -217,9 +219,7 @@ export function App() {
   const busy = actionBusy || processingBusy;
   const busyRef = useRef(busy);
   busyRef.current = busy;
-  const [message, setMessage] = useState(
-    "Ready · demonstration geometry loaded",
-  );
+  const [message, setMessage] = useState("Ready · open a scan to begin");
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
   const [wireframe, setWireframe] = useState(false);
@@ -1371,7 +1371,11 @@ export function App() {
     if (fileInput.current) fileInput.current.value = "";
     viewport.current?.setView("iso");
   }
-  async function openFile(file: File) {
+  async function openFile(file: File, unit?: ScanUnit) {
+    if (!unit && /\.(stl|obj|ply)$/i.test(file.name)) {
+      setPendingScanImport(file);
+      return;
+    }
     await action(`Opening ${file.name}…`, async () => {
       const extension = file.name.split(".").pop()!.toLowerCase();
       if (extension === "scanforge" || extension === "json") {
@@ -1453,6 +1457,7 @@ export function App() {
           let scanSource: ScanSource | undefined;
           try {
             positions = await importScan(file, {
+              unit,
               previewTriangles: previewImport ? 250_000 : undefined,
               onSource: (source) => {
                 scanSource = source;
@@ -1488,7 +1493,7 @@ export function App() {
         setSelectedId(entity.id);
       }
       setMessage(
-        `Opened ${file.name} · assumed millimetres for unitless scans`,
+        `Opened ${file.name}${unit ? ` · ${SCAN_UNITS[unit].label} converted to mm` : ""}`,
       );
     });
   }
@@ -2244,12 +2249,7 @@ export function App() {
       <Ribbon
         utilityHeader={
           <header className="header">
-            <div className="brand">
-              <div className="brand-copy">
-                <span>ScanForge</span>
-                <small>SCAN TO CAD · 0.1</small>
-              </div>
-            </div>
+            <ApplicationVersion />
             <div className="header-actions">
               <button
                 title="Undo"
@@ -2393,6 +2393,17 @@ export function App() {
           if (file) void openFile(file);
         }}
       />
+      {pendingScanImport && (
+        <ImportUnitsDialog
+          filename={pendingScanImport.name}
+          onCancel={() => setPendingScanImport(null)}
+          onImport={(unit) => {
+            const file = pendingScanImport;
+            setPendingScanImport(null);
+            void openFile(file, unit);
+          }}
+        />
+      )}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -2678,18 +2689,6 @@ export function App() {
             <h2>
               Objects <Layers size={15} />
             </h2>
-            <label className="project-name">
-              <span>Project</span>
-              <input
-                aria-label="Project name"
-                value={name}
-                maxLength={200}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setDirty(true);
-                }}
-              />
-            </label>
             <div className="tree-heading">
               Objects <span>{entities.length + savedSketches.length}</span>
             </div>
@@ -3986,6 +3985,19 @@ export function App() {
         <span className="save-state">
           {dirty ? "Unsaved changes" : "Project unchanged"}
         </span>
+        <label className="status-project-name">
+          <span>Project</span>
+          <input
+            aria-label="Project name"
+            value={name}
+            maxLength={200}
+            disabled={busy}
+            onChange={(e) => {
+              setName(e.target.value);
+              setDirty(true);
+            }}
+          />
+        </label>
         <span className="status-end">
           Units: mm <span>Browser-local</span>
         </span>

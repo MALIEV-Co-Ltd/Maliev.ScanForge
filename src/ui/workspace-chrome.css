@@ -1,0 +1,59 @@
+.objects-panel > h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.objects-panel > h2 svg {
+  flex-shrink: 0;
+}
+.ribbon .header-utilities .header,
+.ribbon .header-reveal .header {
+  padding: 6px 10px;
+  min-height: 40px;
+}
+.header-utilities .application-version,
+.header-reveal .application-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text);
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.application-version svg {
+  color: #72bd89;
+}
+.status-project-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+}
+.status-project-name input {
+  width: 180px;
+  min-width: 60px;
+  max-width: 24vw;
+  height: 23px;
+  padding: 2px 6px;
+  font-size: inherit;
+}
+.import-unit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+@media (max-width: 800px) {
+  .status-project-name > span,
+  .statusbar .save-state {
+    display: none;
+  }
+  .status-project-name input {
+    width: 100px;
+  }
+  .statusbar > span[aria-live] {
+    min-width: 0;
+  }
+}

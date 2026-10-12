@@ -1,8 +1,9 @@
 import type { ScanImportOptions, ScanSource } from "./import-parser";
+import type { ScanUnit } from "./import-units";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
-  options: ScanImportOptions = {},
+  options: ScanImportOptions & { unit?: ScanUnit } = {},
 ): Promise<Float32Array> {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (options.signal?.aborted)
@@ -83,6 +84,7 @@ export function importScan(
         file,
         extension,
         previewTriangles: options.previewTriangles,
+        unit: options.unit,
       });
     } catch (error) {
       cleanup();

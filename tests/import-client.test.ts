@@ -4,12 +4,15 @@ import { importScan } from "../src/import-client";
 class ImportWorkerDouble {
   static latest: ImportWorkerDouble;
   terminated = false;
+  request: unknown;
   onmessage: ((event: { data: unknown }) => void) | null = null;
   onerror: ((event: { message: string }) => void) | null = null;
   constructor() {
     ImportWorkerDouble.latest = this;
   }
-  postMessage() {}
+  postMessage(request: unknown) {
+    this.request = request;
+  }
   terminate() {
     this.terminated = true;
   }
@@ -28,6 +31,15 @@ afterEach(() => {
 const file = { name: "scan.stl" } as File;
 
 describe("scan worker ownership", () => {
+  it("passes the selected file unit into the import worker", async () => {
+    const pending = importScan(file, { unit: "in" });
+    expect(ImportWorkerDouble.latest.request).toMatchObject({
+      unit: "in",
+      file,
+    });
+    ImportWorkerDouble.latest.reply({ positions: new Float32Array(9) });
+    await pending;
+  });
   it("transfers the result without copying it and releases worker and lease", async () => {
     const pending = importScan(file);
     const positions = new Float32Array(9);
