@@ -183,3 +183,37 @@ sequences' coordinate bytes and triangle indices. This verifies a connection
 between recovered components rather than only isolated routines. It still
 does not execute preparation or the complete pass/collapse loop. The production
 reducer remains unchanged pending complete same-mesh comparisons.
+
+## Complete preparation verification
+
+`src/scan-reduction-preparation.ts` matches 112 executions of the complete
+original preparation routine `0x140394c30`, evidence
+`ev_458fb8d7e6c2075191c5e6d3eef83c8a8db50467e20ce308f3dae73533bb2a2c`.
+The original normal, candidate, incidence and boundary instructions all run.
+Only runtime import bindings are supplied by the isolated process: allocation,
+free, memory move/set and square root. The original allocation wrapper and
+vector growth/destruction code remain intact. Every one of the 746 temporary
+allocations was freed before the probe finished. Native storage guards remain
+intact. This covers successful allocations, not allocator failure behavior.
+
+The routine first computes double face normals, normalizes with the epsilon
+length cutoff, then adds each face's plane quadric to all three corner vertices
+in original face/corner order. It calculates face errors and the minimum error
+while boundary flags are still clear. It then constructs grouped incident
+references in original face/corner order and marks boundary vertices from
+single occurrences of neighbor indices across incident faces. These later
+flags do not trigger recalculation of initial errors. Substituting an ordinary
+edge-count rule can differ on degenerate incidence.
+
+The port matches every normal, quadric, edge error and minimum-error double bit,
+plus best-edge indices, reference offsets/counts/order and boundary flags.
+Cases cover empty meshes, repeated corner indices, unused vertices, varied
+incidence and coordinate scales from `1e-18` to `1e6`. They initialize quadrics,
+incidence counts and boundary flags as the recovered caller does. Inputs are
+caller-built numerical meshes, not new native UI captures.
+
+Candidate calculation, validity, ordered updates, final compaction and complete
+preparation are now verified components. The remaining numerical integration
+gate is the original pass/collapse loop and whole-mesh output on identical
+sources. Production reduction remains on its previous implementation until
+that gate passes.
