@@ -3,6 +3,11 @@ import { MeshBVH } from "three-mesh-bvh";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import type { Positions, Vec3 } from "./types";
 import { flippedTopology } from "./scan-flip-topology";
+import {
+  inverseMirrorFrame,
+  mirrorFramePoint,
+  mirrorPlaneFrame,
+} from "./scan-mirror-frame";
 
 export interface ScanTransformResult {
   positions: Float32Array;
@@ -144,8 +149,13 @@ export function mirrorScanMesh(
   validate(p, o);
   const center = vector(o.center, "Mirror plane origin"),
     normal = unit(o.normal, "Mirror plane normal");
+  const frame = mirrorPlaneFrame(
+      center.toArray() as Vec3,
+      normal.toArray() as Vec3,
+    ),
+    inverse = inverseMirrorFrame(frame);
   const out = mapPoints(p, o, (v) =>
-    v.addScaledVector(normal, -2 * v.clone().sub(center).dot(normal)),
+    v.fromArray(mirrorFramePoint(v.x, v.y, v.z, frame, inverse)),
   );
   reverseWinding(out);
   validateTransformedTriangles(p, out, o);

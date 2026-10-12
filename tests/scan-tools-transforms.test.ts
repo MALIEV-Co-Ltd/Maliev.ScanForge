@@ -39,7 +39,9 @@ describe("Scan Data geometric transforms", () => {
       center: [1, 0, 0],
       normal: [1, 1, 0],
     }).positions;
-    expect(Array.from(out)).toEqual([1, 1, 0, -1, 1, 0, 1, -1, 0]);
+    [1, 1, 0, -1, 1, 0, 1, -1, 0].forEach((expected, index) =>
+      expect(out[index]).toBeCloseTo(expected, 6),
+    );
     expect(normal(out).z).toBe(1);
   });
   it("averages closest surface interiors rather than target vertices", () => {
