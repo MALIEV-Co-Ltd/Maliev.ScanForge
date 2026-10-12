@@ -11,6 +11,13 @@ import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import { ApplicationVersion } from "./ApplicationVersion";
 import "./workspace-chrome.css";
+import { SketchPlaneDialog } from "./SketchPlaneDialog";
+import { ORIGIN_PLANES, PLANE_LABELS, type OriginPlane } from "../origin";
+import {
+  coordinateSketchFrame,
+  validateSketchFrame,
+  type SketchFrame,
+} from "../sketch-frame";
 import {
   referenceWorldSegments,
   type SketchSectionOptions,
@@ -153,6 +160,9 @@ const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const [pendingScanImport, setPendingScanImport] = useState<File | null>(null);
+  const [originVisible, setOriginVisible] = useState(true);
+  const [originPlane, setOriginPlane] = useState<OriginPlane>("OXY");
+  const [sketchPlaneDialog, setSketchPlaneDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(
     () => entities[0]?.id ?? null,
   );
@@ -714,6 +724,24 @@ export function App() {
     busy,
     activeSketchId,
   ]);
+  useEffect(() => {
+    viewport.current?.setOrigin(originVisible, originPlane);
+    if (viewport.current)
+      viewport.current.onOriginPlane = (plane) => {
+        if (
+          busyRef.current ||
+          createSketchRef.current ||
+          surfaceFitRef.current ||
+          nPointsRef.current
+        )
+          return;
+        setOriginPlane(plane);
+        setSelectedId(null);
+        setMessage(
+          `${PLANE_LABELS[plane]} selected · create a sketch on this plane`,
+        );
+      };
+  }, [originVisible, originPlane]);
   useEffect(() => {
     if (
       createSketch &&
@@ -1333,6 +1361,9 @@ export function App() {
   }
   function newDocument() {
     if (busy) return;
+    setSketchPlaneDialog(false);
+    setOriginVisible(true);
+    setOriginPlane("OXY");
     sketchUndoSessions.current.clear();
     cancelSketchCreation();
     setSavedSketches([]);
@@ -1827,6 +1858,48 @@ export function App() {
     setToolPanelOpen(false);
   }
   function openSketchCreation() {
+    setSketchPlaneDialog(true);
+  }
+  function createPlaneSketch(frame: SketchFrame) {
+    try {
+      validateSketchFrame(frame);
+      const worldPlane = ORIGIN_PLANES.find((plane) => {
+        const base = coordinateSketchFrame(plane, 0);
+        return (
+          base.u.every((n, i) => n === frame.u[i]) &&
+          base.v.every((n, i) => n === frame.v[i])
+        );
+      });
+      if (worldPlane) setOriginPlane(worldPlane);
+      const item: SavedSketch = {
+        id: crypto.randomUUID(),
+        name: `Sketch ${savedSketches.length + 1}`,
+        sketch: {
+          version: 1,
+          points: [],
+          segments: [],
+          constraints: [],
+          frame,
+        },
+      };
+      setSavedSketches((previous) => [...previous, item]);
+      setSketchDraft(item.sketch);
+      setSelectedId(null);
+      setActiveSketchId(item.id);
+      setSketchDrawingTool("line");
+      setSketchPlaneDialog(false);
+      setMode("inspect");
+      setDirty(true);
+      showTools("sketch");
+      viewport.current?.viewReferencePlane(frame);
+      setMessage(
+        "Sketch created · coordinates and dimensions are in the selected plane",
+      );
+    } catch (e) {
+      setError(errorText(e));
+    }
+  }
+  function openScanSketchCreation() {
     if (!selected || selected.kind !== "mesh" || selected.surfacePatch) {
       showTools("sketch");
       setError(
@@ -2404,6 +2477,22 @@ export function App() {
           }}
         />
       )}
+      {sketchPlaneDialog && (
+        <SketchPlaneDialog
+          initialPlane={originPlane}
+          entities={entities}
+          onCreate={createPlaneSketch}
+          onCancel={() => setSketchPlaneDialog(false)}
+          onScanSection={
+            selected?.kind === "mesh" && !selected.surfacePatch
+              ? () => {
+                  setSketchPlaneDialog(false);
+                  openScanSketchCreation();
+                }
+              : undefined
+          }
+        />
+      )}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -2691,6 +2780,44 @@ export function App() {
             </h2>
             <div className="tree-heading">
               Objects <span>{entities.length + savedSketches.length}</span>
+            </div>
+            <div className="origin-tree" aria-label="World coordinate system">
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={originVisible}
+                  onChange={(e) => setOriginVisible(e.target.checked)}
+                />
+                World origin · mm
+              </label>
+              <p>O (0, 0, 0) · X, Y, Z</p>
+              <div className="origin-plane-buttons">
+                {ORIGIN_PLANES.map((plane) => (
+                  <button
+                    key={plane}
+                    aria-pressed={originPlane === plane}
+                    onClick={() => {
+                      setOriginPlane(plane);
+                      setOriginVisible(true);
+                      setSelectedId(null);
+                      setToolPanelOpen(false);
+                      setMode("inspect");
+                      viewport.current?.viewReferencePlane(
+                        coordinateSketchFrame(plane, 0),
+                      );
+                    }}
+                  >
+                    {PLANE_LABELS[plane]}
+                  </button>
+                ))}
+              </div>
+              <button
+                className="wide"
+                disabled={busy}
+                onClick={openSketchCreation}
+              >
+                Create sketch on plane
+              </button>
             </div>
             <ul className="object-list">
               {entities.map((entity) => (

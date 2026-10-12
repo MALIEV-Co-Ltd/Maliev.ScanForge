@@ -21,6 +21,8 @@ import {
   configureNavigationSensitivity,
 } from "./camera-navigation";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
+import { createOriginGeometry, type OriginPlane } from "./origin";
+import type { SketchFrame } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
 import {
   drawSketchLine,
@@ -43,6 +45,8 @@ type Item = {
 
 /** A Z-up, millimetre scene. Rendering runs only while the scene or camera changes. */
 export class Viewport {
+  onOriginPlane?: (plane: OriginPlane) => void;
+  private readonly originGeometry = new THREE.Group();
   onSelectionStatus?: (status: "pending" | "complete") => void;
   private readonly scene = new THREE.Scene();
   private camera: NavigationCamera = new THREE.OrthographicCamera(
@@ -145,6 +149,7 @@ export class Viewport {
     this.pointerCancel = this.pointerCancel.bind(this);
     this.sketchKeyDown = this.sketchKeyDown.bind(this);
     this.scene.background = new THREE.Color("#e9eef2");
+    this.scene.add(this.originGeometry);
     this.camera.up.set(0, 0, 1);
     this.camera.position.set(160, -200, 140);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -632,6 +637,32 @@ export class Viewport {
     this.controls.update();
     this.invalidate();
   }
+  setOrigin(visible: boolean, selected?: OriginPlane): void {
+    this.clearGroup(this.originGeometry);
+    const geometry = createOriginGeometry(selected);
+    this.originGeometry.add(...[...geometry.children]);
+    this.originGeometry.visible = visible;
+    this.invalidate();
+  }
+  viewReferencePlane(frame: SketchFrame): void {
+    const center = new THREE.Vector3(...frame.origin);
+    const distance = frameCamera(this.camera, 35);
+    this.camera.up.set(...frame.v);
+    this.controls.target.copy(center);
+    this.camera.position
+      .copy(center)
+      .addScaledVector(new THREE.Vector3(...frame.normal), distance);
+    this.camera.lookAt(center);
+    updateCameraClipping(
+      this.camera,
+      new THREE.Box3(
+        center.clone().addScalar(-40),
+        center.clone().addScalar(40),
+      ),
+    );
+    this.controls.update();
+    this.invalidate();
+  }
   private addSketchLines(
     group: THREE.Group,
     positions: number[],
@@ -971,7 +1002,19 @@ export class Viewport {
           !this.clipping ||
           this.clippingPlane.distanceToPoint(candidate.point) >= 0,
       );
-    if (!hit) return;
+    if (!hit) {
+      if (this.originGeometry.visible && !this.brushing && !this.pickTargetId) {
+        const planeHit = this.raycaster.intersectObjects(
+          this.originGeometry.children.filter((c) => c.userData.originPlane),
+          false,
+        )[0];
+        if (planeHit)
+          this.onOriginPlane?.(
+            planeHit.object.userData.originPlane as OriginPlane,
+          );
+      }
+      return;
+    }
     const id = hit.object.userData.entityId as string;
     this.onSelect(id);
     if (
@@ -1454,6 +1497,7 @@ export class Viewport {
     this.clearGroup(this.sketchGeometry);
     this.clearGroup(this.sketchPreview);
     this.grid.geometry.dispose();
+    this.clearGroup(this.originGeometry);
     this.gridScene.clear();
     if (Array.isArray(this.grid.material))
       this.grid.material.forEach((material) => material.dispose());

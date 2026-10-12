@@ -163,6 +163,7 @@ export function drawSketchLine(
   if (!Number.isFinite(tolerance) || tolerance < 0)
     throw new Error("Invalid drawing tolerance.");
   const points = sketch.points.map((p) => ({ ...p }));
+  const fixedOriginIds: string[] = [];
   const endpoint = ([x, y]: SketchUV) => {
     if (![x, y].every(Number.isFinite))
       throw new Error("Drawing coordinates must be finite.");
@@ -176,7 +177,9 @@ export function drawSketchLine(
         }, undefined)
       : undefined;
     if (near) return near;
-    const p = { id: id(), x, y };
+    const atOrigin = constraints && Math.hypot(x, y) <= tolerance;
+    const p = { id: id(), x: atOrigin ? 0 : x, y: atOrigin ? 0 : y };
+    if (atOrigin) fixedOriginIds.push(p.id);
     points.push(p);
     return p;
   };
@@ -205,9 +208,25 @@ export function drawSketchLine(
     constraints: relation
       ? [
           ...sketch.constraints,
+          ...fixedOriginIds.map((point) => ({
+            id: id(),
+            kind: "fixed" as const,
+            point,
+            x: 0,
+            y: 0,
+          })),
           { id: id(), kind: relation, segment: segment.id },
         ]
-      : [...sketch.constraints],
+      : [
+          ...sketch.constraints,
+          ...fixedOriginIds.map((point) => ({
+            id: id(),
+            kind: "fixed" as const,
+            point,
+            x: 0,
+            y: 0,
+          })),
+        ],
   };
   const solved = solveSketch(next);
   if (!solved.converged)

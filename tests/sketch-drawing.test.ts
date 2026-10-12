@@ -36,6 +36,7 @@ describe("model-view sketch drawing", () => {
     expect(sketch.points).toHaveLength(4);
     expect(sketch.segments).toHaveLength(4);
     expect(sketch.constraints.map((c) => c.kind)).toEqual([
+      "fixed",
       "horizontal",
       "vertical",
       "horizontal",
@@ -58,7 +59,7 @@ describe("model-view sketch drawing", () => {
   });
   it("moves connected constrained geometry together without saving a drag constraint", () => {
     let sketch = empty();
-    sketch = drawSketchLine(sketch, [0, 0], [20, 0], 0.1, true);
+    sketch = drawSketchLine(sketch, [5, 0], [20, 0], 0.1, true);
     const moved = moveSketchEndpoint(sketch, sketch.points[1].id, [30, 7]);
     expect(moved.points[0].y).toBeCloseTo(7, 5);
     expect(moved.points[1].x).toBeCloseTo(30, 5);

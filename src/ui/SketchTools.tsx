@@ -80,10 +80,10 @@ export function SketchTools({
   const [height, setHeight] = useState(20);
   const [error, setError] = useState("");
   const [kind, setKind] = useState<SketchConstraint["kind"]>("distance");
-  const [first, setFirst] = useState("p1"),
-    [second, setSecond] = useState("p2"),
+  const [requestedFirst, setFirst] = useState("p1"),
+    [requestedSecond, setSecond] = useState("p2"),
     [dimension, setDimension] = useState(40);
-  const [tangentPoint, setTangentPoint] = useState("p1");
+  const [requestedTangentPoint, setTangentPoint] = useState("p1");
   const [chordTolerance, setChordTolerance] = useState(0.1);
   const update = (next: Sketch) => {
     setLocal(next);
@@ -121,6 +121,15 @@ export function SketchTools({
           ? sketch.segments
           : sketch.points;
   const references = getReferences(kind);
+  const first = references.some((r) => r.id === requestedFirst)
+    ? requestedFirst
+    : (references[0]?.id ?? "");
+  const second = references.some((r) => r.id === requestedSecond)
+    ? requestedSecond
+    : (references[1]?.id ?? references[0]?.id ?? "");
+  const tangentPoint = sketch.points.some((p) => p.id === requestedTangentPoint)
+    ? requestedTangentPoint
+    : (sketch.points[0]?.id ?? "");
   const addConstraint = () =>
     attempt(() => {
       const id = crypto.randomUUID();
@@ -239,7 +248,7 @@ export function SketchTools({
               checked={drawingConstraints}
               onChange={(event) => onDrawingConstraints?.(event.target.checked)}
             />
-            Constraints · snap endpoints and axes
+            Constraints · snap origin, endpoints and axes
           </label>
           <p className="muted">
             Left-drag draws a line or moves an endpoint. Middle-drag navigates;
