@@ -1,4 +1,27 @@
 import * as THREE from "three";
+import type { TrackballControls } from "three/addons/controls/TrackballControls.js";
+import type { NavigationCamera } from "./camera-gizmo";
+
+/** Keep the former viewport-height orbit sensitivity with unrestricted rotation. */
+export function configureNavigationSensitivity(
+  camera: NavigationCamera,
+  controls: TrackballControls,
+  width: number,
+  height: number,
+): void {
+  controls.rotateSpeed = (Math.PI * Math.max(1, width)) / Math.max(1, height);
+  // A 100-pixel wheel notch changes zoom by about 5%, as before trackball orbit.
+  controls.zoomSpeed = 2.1;
+  controls.panSpeed =
+    camera instanceof THREE.OrthographicCamera
+      ? Math.max(1, width) /
+        Math.max(camera.position.distanceTo(controls.target), 1e-12)
+      : (2 *
+          Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) *
+          Math.max(1, width)) /
+        Math.max(1, height) /
+        camera.zoom;
+}
 import type { Motion6D } from "./spacemouse";
 /** Camera-relative six-axis navigation, with the orbit target as rotation pivot. */
 export function navigateCamera(

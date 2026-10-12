@@ -16,7 +16,10 @@ import {
   type NavigationCamera,
   type Projection,
 } from "./camera-gizmo";
-import { navigateCamera } from "./camera-navigation";
+import {
+  navigateCamera,
+  configureNavigationSensitivity,
+} from "./camera-navigation";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
 import {
@@ -294,6 +297,7 @@ export class Viewport {
     this.renderer.setSize(width, height, false);
     resizeCamera(this.camera, width / height);
     this.controls.handleResize();
+    configureNavigationSensitivity(this.camera, this.controls, width, height);
     this.invalidate();
   };
 
@@ -303,6 +307,15 @@ export class Viewport {
       cameraMouseButtons(this.brushing, event),
     );
     if (this.beginSketchDrag(event)) return;
+    if (!this.brushing || event.button === 1) {
+      const bounds = this.renderer.domElement.getBoundingClientRect();
+      configureNavigationSensitivity(
+        this.camera,
+        this.controls,
+        bounds.width,
+        bounds.height,
+      );
+    }
     if (event.button !== 0 || !event.isPrimary) return;
     this.pointer = {
       x: event.clientX,
