@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { ScanPreviewSession } from "./scan-preview";
 import { runScanTool } from "./scan-tools";
 import {
   reduceScanNoiseAsync,
@@ -55,11 +56,15 @@ let geometryKey: number | undefined;
 let canonicalPositions: ProcessingRequest["positions"] | undefined;
 let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
 const selectedSmoothing = new SelectedSmoothingPool();
+let scanPreview: ScanPreviewSession | undefined;
+let previewExpiry: ReturnType<typeof setTimeout> | undefined;
 scope.onmessage = async ({ data: incoming }) => {
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
   if (key === undefined || key !== geometryKey) {
+    scanPreview = undefined;
+    clearTimeout(previewExpiry);
     topologyCache = {};
     canonicalPositions = incoming.positions;
   } else if (canonicalPositions)
@@ -76,7 +81,33 @@ scope.onmessage = async ({ data: incoming }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "scanTools") {
+    if (request.kind === "scanPreview") {
+      if (request.phase === "create") {
+        scanPreview = undefined;
+        scanPreview = await ScanPreviewSession.create(request, {
+          onProgress: progress,
+          topologyCache,
+        });
+        result.positions = scanPreview.output.slice();
+        result.diagnostics.summary = scanPreview.summary;
+      } else {
+        if (!scanPreview || scanPreview.id !== request.previewId)
+          throw new Error(
+            "This mesh preview has expired. Create a new preview.",
+          );
+        const comparison = scanPreview.compare(
+          request.deviation,
+          request.paletteThreshold,
+          { onProgress: progress },
+        );
+        result.noiseComparison = comparison.noiseComparison;
+        result.diagnostics.summary = comparison.summary;
+      }
+      clearTimeout(previewExpiry);
+      previewExpiry = setTimeout(() => {
+        scanPreview = undefined;
+      }, 60_000);
+    } else if (request.kind === "scanTools") {
       const options = { onProgress: progress, topologyCache };
       const outcome: ScanToolResult =
         request.operation.kind === "reduceNoise"
@@ -330,7 +361,11 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     const transfers: Transferable[] = [];
     const successor = result.scanEdit?.positions ?? result.positions;
-    if (geometryKey !== undefined && successor) {
+    if (
+      geometryKey !== undefined &&
+      successor &&
+      request.kind !== "scanPreview"
+    ) {
       // Keep the worker's canonical geometry and any already-built adjacency.
       // Transferring that buffer would detach the successor cache; only the
       // dedicated scene/history copy crosses back to the main thread.

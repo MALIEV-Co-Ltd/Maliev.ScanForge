@@ -280,6 +280,13 @@ export function App() {
     threshold: number;
     visible: boolean;
   } | null>(null);
+  const [scanPreview, setScanPreview] = useState<{
+    id: string;
+    kind: "reduceNoise" | "reducePolygons";
+    entityId: string;
+    source: Entity["positions"];
+    output: Float32Array;
+  } | null>(null);
   const [pickedScanReference, setPickedScanReference] = useState<string>();
   const scanToolAbort = useRef<AbortController | null>(null);
   const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
@@ -397,13 +404,23 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  const activeScanPreview =
+    scanPreview &&
+    workspace === "scanTools" &&
+    toolPanelOpen &&
+    scanTool === scanPreview.kind &&
+    selected?.id === scanPreview.entityId &&
+    selected.positions === scanPreview.source
+      ? scanPreview
+      : null;
   const activeNoiseComparison =
     noiseComparison &&
     workspace === "scanTools" &&
     toolPanelOpen &&
     scanTool === noiseComparison.kind &&
     selected?.id === noiseComparison.entityId &&
-    selected.positions === noiseComparison.output
+    (selected.positions === noiseComparison.output ||
+      (activeScanPreview && selected.positions === noiseComparison.source))
       ? noiseComparison
       : null;
   useEffect(() => {
@@ -590,15 +607,23 @@ export function App() {
   }, []);
   useEffect(() => {
     viewport.current?.setEntities(
-      nPoints?.preview?.positions && landmarkSceneUnchanged(nPoints, entities)
+      activeScanPreview
         ? entities.map((e) =>
-            e.id === nPoints.moving.id
-              ? { ...e, positions: nPoints.preview!.positions! }
+            e.id === activeScanPreview.entityId
+              ? { ...e, positions: activeScanPreview.output }
               : e,
           )
-        : surfaceFit?.preview && surfaceFitSourceUnchanged(surfaceFit, entities)
-          ? [...entities, surfaceFitEntity(surfaceFit, "surface-fit-preview")]
-          : entities,
+        : nPoints?.preview?.positions &&
+            landmarkSceneUnchanged(nPoints, entities)
+          ? entities.map((e) =>
+              e.id === nPoints.moving.id
+                ? { ...e, positions: nPoints.preview!.positions! }
+                : e,
+            )
+          : surfaceFit?.preview &&
+              surfaceFitSourceUnchanged(surfaceFit, entities)
+            ? [...entities, surfaceFitEntity(surfaceFit, "surface-fit-preview")]
+            : entities,
       selectedId,
     );
     viewport.current?.setAlignmentMarkers(
@@ -615,7 +640,20 @@ export function App() {
       viewport.current?.fitView(pendingImportFit.current ?? undefined);
       pendingImportFit.current = undefined;
     }
-  }, [entities, selectedId, nPoints, landmarkPickSide, surfaceFit]);
+  }, [
+    entities,
+    selectedId,
+    nPoints,
+    landmarkPickSide,
+    surfaceFit,
+    activeScanPreview,
+  ]);
+  useEffect(() => {
+    if (scanPreview && !activeScanPreview) {
+      setScanPreview(null);
+      releaseProcessingSession();
+    }
+  }, [scanPreview, activeScanPreview]);
   useEffect(() => {
     const comparison = activeNoiseComparison?.visible
       ? activeNoiseComparison
@@ -1468,6 +1506,8 @@ export function App() {
     if (nextWorkspace === "properties") setMode("inspect");
   }
   function closeScanTool() {
+    setScanPreview(null);
+    releaseProcessingSession();
     setNoiseComparison(null);
     scanToolAbort.current?.abort();
     scanReferencePick.current = null;
@@ -1475,6 +1515,8 @@ export function App() {
     setMode("inspect");
   }
   function openScanTool(tool: ScanToolId) {
+    setScanPreview(null);
+    releaseProcessingSession();
     setNoiseComparison(null);
     scanToolAbort.current?.abort();
     scanReferencePick.current = null;
@@ -1536,27 +1578,89 @@ export function App() {
         entities,
         triangleMask,
       );
+      const isPreview =
+        parameters.kind === "reduceNoise" ||
+        parameters.kind === "reducePolygons";
+      const previewId = crypto.randomUUID();
+      setScanPreview(null);
       scanToolAbort.current = controller;
       setNoiseComparison(null);
       setProcessingBusy(true);
       setError("");
       setScanToolResult("");
-      const result = await processMesh(request, {
-        signal: controller.signal,
-        reuseTopology: true,
-        onProgress: (fraction, stage) =>
-          setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
-      });
+      const result = await processMesh(
+        isPreview
+          ? {
+              kind: "scanPreview",
+              phase: "create",
+              previewId,
+              positions: source.positions,
+              operation: request.operation,
+            }
+          : request,
+        {
+          signal: controller.signal,
+          reuseTopology: true,
+          onProgress: (fraction, stage) =>
+            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+        },
+      );
       if (controller.signal.aborted || !result.positions) return;
       const summary = String(
         result.diagnostics.summary ?? "Mesh tool complete",
       );
-      replaceScanPositions(
-        result.positions,
-        scanToolTitles[parameters.kind],
-        parameters.kind === "reduceNoise",
-      );
-      scanToolOutput.current = result.positions;
+      if (isPreview) {
+        setScanPreview({
+          id: previewId,
+          kind: parameters.kind as "reduceNoise" | "reducePolygons",
+          entityId: source.id,
+          source: source.positions,
+          output: result.positions,
+        });
+        if (
+          (parameters.kind === "reduceNoise" ||
+            parameters.kind === "reducePolygons") &&
+          parameters.measureDeviation
+        ) {
+          const compared = await processMesh(
+            {
+              kind: "scanPreview",
+              phase: "compare",
+              positions: source.positions,
+              previewId,
+              deviation: parameters.deviation,
+              paletteThreshold:
+                parameters.kind === "reducePolygons"
+                  ? parameters.paletteThreshold
+                  : parameters.deviation,
+            },
+            {
+              signal: controller.signal,
+              reuseTopology: true,
+              onProgress: (fraction, stage) =>
+                setScanToolProgress(
+                  `${stage} · ${Math.round(fraction * 100)}%`,
+                ),
+            },
+          );
+          if (compared.noiseComparison)
+            setNoiseComparison({
+              kind: parameters.kind,
+              entityId: source.id,
+              source: source.positions,
+              output: result.positions,
+              ...compared.noiseComparison,
+              visible: true,
+            });
+        }
+      } else {
+        replaceScanPositions(
+          result.positions,
+          scanToolTitles[parameters.kind],
+          false,
+        );
+        scanToolOutput.current = result.positions;
+      }
       if (
         (parameters.kind === "reduceNoise" ||
           parameters.kind === "reducePolygons") &&
@@ -1576,6 +1680,68 @@ export function App() {
       if (controller.signal.aborted)
         setMessage("Mesh operation cancelled; original geometry retained.");
       else setError(errorText(error));
+    } finally {
+      if (scanToolAbort.current === controller) {
+        scanToolAbort.current = null;
+        setProcessingBusy(false);
+        setScanToolProgress("");
+      }
+    }
+  }
+  function acceptScanPreview() {
+    if (!activeScanPreview || busy) return;
+    replaceScanPositions(
+      activeScanPreview.output,
+      scanToolTitles[activeScanPreview.kind],
+      activeScanPreview.kind === "reduceNoise",
+    );
+    scanToolOutput.current = activeScanPreview.output;
+    setScanPreview(null);
+    setNoiseComparison(null);
+    closeScanTool();
+    setMessage("Mesh preview accepted.");
+  }
+  async function updateScanComparison(
+    deviation: number,
+    paletteThreshold: number,
+  ) {
+    if (!activeScanPreview || busy || scanToolAbort.current) return;
+    const preview = activeScanPreview;
+    const controller = new AbortController();
+    scanToolAbort.current = controller;
+    setProcessingBusy(true);
+    setError("");
+    try {
+      const result = await processMesh(
+        {
+          kind: "scanPreview",
+          phase: "compare",
+          positions: preview.source,
+          previewId: preview.id,
+          deviation,
+          paletteThreshold:
+            preview.kind === "reduceNoise" ? deviation : paletteThreshold,
+        },
+        {
+          signal: controller.signal,
+          reuseTopology: true,
+          onProgress: (fraction, stage) =>
+            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+        },
+      );
+      if (!controller.signal.aborted && result.noiseComparison) {
+        setNoiseComparison({
+          kind: preview.kind,
+          entityId: preview.entityId,
+          source: preview.source,
+          output: preview.output,
+          ...result.noiseComparison,
+          visible: true,
+        });
+        setScanToolResult(String(result.diagnostics.summary));
+      }
+    } catch (error) {
+      if (!controller.signal.aborted) setError(errorText(error));
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
@@ -3649,11 +3815,23 @@ export function App() {
               busy={processingBusy}
               progress={scanToolProgress}
               result={
+                activeScanPreview ||
                 selected?.positions === scanToolOutput.current
                   ? scanToolResult
                   : undefined
               }
               onApply={applyScanTool}
+              previewReady={!!activeScanPreview}
+              onAccept={
+                scanTool === "reduceNoise" || scanTool === "reducePolygons"
+                  ? acceptScanPreview
+                  : undefined
+              }
+              onCompare={
+                scanTool === "reduceNoise" || scanTool === "reducePolygons"
+                  ? updateScanComparison
+                  : undefined
+              }
               comparison={
                 activeNoiseComparison
                   ? {

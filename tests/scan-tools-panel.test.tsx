@@ -12,6 +12,31 @@ const mesh: Entity = {
   visible: true,
   opacity: 1,
 };
+it.each(["reduceNoise", "reducePolygons"] as const)(
+  "%s gates comparison and acceptance on an available preview",
+  (tool) => {
+    const panel = (previewReady: boolean) =>
+      renderToStaticMarkup(
+        <ScanToolsPanel
+          tool={tool}
+          selected={mesh}
+          entities={[mesh]}
+          previewReady={previewReady}
+          onApply={() => {}}
+          onAccept={() => {}}
+          onCompare={() => {}}
+          onCancel={() => {}}
+          onClose={() => {}}
+        />,
+      );
+    expect(panel(false)).toContain('disabled="">Accept');
+    expect(panel(false)).toContain('type="checkbox" disabled=""/>Measure');
+    expect(panel(false)).toContain(">Preview</button>");
+    expect(panel(true)).not.toContain('disabled="">Accept');
+    expect(panel(true)).not.toContain('type="checkbox" disabled=""/>Measure');
+    expect(panel(true)).toContain(">Cancel</button>");
+  },
+);
 function render(
   tool: ScanToolId,
   selected: Entity | undefined = mesh,

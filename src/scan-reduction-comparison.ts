@@ -3,6 +3,7 @@ import { nativeNoiseColor } from "./scan-noise-color";
 import {
   prepareNoiseOctree,
   type NoiseIndexedSurface,
+  type PackedNoiseTree,
 } from "./scan-noise-octree";
 import { queryNoiseOctree } from "./scan-noise-octree-query";
 import { noiseTriangleDistance } from "./scan-noise-deviation";
@@ -31,6 +32,22 @@ export function compareReductionSurface(
       "Reduction comparison thresholds must be positive finite Float32 values.",
     );
   const prepared = prepareNoiseOctree(reduced, 0.5, 10, options);
+  return comparePreparedReductionSurface(
+    originalCoordinates,
+    prepared,
+    tolerance,
+    paletteThreshold,
+    options,
+  );
+}
+
+export function comparePreparedReductionSurface(
+  originalCoordinates: ArrayLike<number>,
+  prepared: PackedNoiseTree,
+  tolerance: number,
+  paletteThreshold: number,
+  options: MeshProcessingOptions = {},
+) {
   const a = [0, 0, 0],
     b = [0, 0, 0],
     c = [0, 0, 0];

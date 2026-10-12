@@ -163,7 +163,7 @@ export async function compareNoiseSurfaceAsync(
   return comparePreparedNoiseSurface(original, prepared, threshold, options);
 }
 
-function comparePreparedNoiseSurface(
+export function comparePreparedNoiseSurface(
   original: MeshTopology,
   prepared: PackedNoiseTree,
   threshold: number,

@@ -126,6 +126,9 @@ export interface ScanToolsPanelProps {
   comparison?: { threshold: number; visible: boolean };
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
+  previewReady?: boolean;
+  onAccept?: () => void;
+  onCompare?: (deviation: number, paletteThreshold: number) => void;
   onClose: () => void;
   onCancel: () => void;
   onPickReference?: (kind: "plane" | "cylinder") => void;
@@ -144,6 +147,9 @@ export function ScanToolsPanel({
   comparison,
   onToggleComparison,
   onApply,
+  previewReady = false,
+  onAccept,
+  onCompare,
   onClose,
   onCancel,
   onPickReference,
@@ -161,6 +167,11 @@ export function ScanToolsPanel({
   const [selectionOnly, setSelectionOnly] = useState(false);
   const [applyBoundaryEdges, setApplyBoundaryEdges] = useState(true);
   const [measureDeviation, setMeasureDeviation] = useState(false);
+  function changeComparison(enabled: boolean) {
+    setMeasureDeviation(enabled);
+    if (enabled && onCompare) onCompare(deviation, paletteThreshold);
+    else if (comparison?.visible && onToggleComparison) onToggleComparison();
+  }
   const [paletteThreshold, setPaletteThreshold] = useState(0.05);
   const [factor, setFactor] = useState(1);
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
@@ -387,9 +398,8 @@ export function ScanToolsPanel({
                   <input
                     type="checkbox"
                     checked={measureDeviation}
-                    onChange={(event) =>
-                      setMeasureDeviation(event.target.checked)
-                    }
+                    disabled={!!onAccept && !previewReady}
+                    onChange={(event) => changeComparison(event.target.checked)}
                   />
                   Measure deviation from original
                 </label>
@@ -448,7 +458,8 @@ export function ScanToolsPanel({
               <input
                 type="checkbox"
                 checked={measureDeviation}
-                onChange={(e) => setMeasureDeviation(e.target.checked)}
+                disabled={!!onAccept && !previewReady}
+                onChange={(e) => changeComparison(e.target.checked)}
               />
               Measure deviation from original
             </label>
@@ -619,6 +630,19 @@ export function ScanToolsPanel({
       )}
       {progress && <p role="status">{progress}</p>}
       {result && <p role="status">{result}</p>}
+      {onCompare && measureDeviation && (
+        <button
+          disabled={
+            busy ||
+            !previewReady ||
+            !positive(deviation) ||
+            !positive(paletteThreshold)
+          }
+          onClick={() => onCompare(deviation, paletteThreshold)}
+        >
+          Update comparison
+        </button>
+      )}
       {(tool === "reduceNoise" || tool === "reducePolygons") &&
         comparison &&
         onToggleComparison && (
@@ -632,11 +656,16 @@ export function ScanToolsPanel({
         {busy ? (
           <button onClick={onCancel}>Cancel operation</button>
         ) : (
-          <button onClick={onClose}>Close</button>
+          <button onClick={onClose}>{onAccept ? "Cancel" : "Close"}</button>
         )}
         <button disabled={blocked} onClick={apply}>
-          Apply
+          {onAccept ? "Preview" : "Apply"}
         </button>
+        {onAccept && (
+          <button disabled={busy || !previewReady} onClick={onAccept}>
+            Accept
+          </button>
+        )}
       </footer>
     </section>
   );

@@ -50,6 +50,44 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("retains the original source after a disposable preview result", async () => {
+    const preview = processMesh(
+      {
+        kind: "scanPreview",
+        phase: "create",
+        previewId: "preview",
+        positions,
+        operation: { kind: "reduceNoise", iterations: 3 },
+      },
+      { reuseTopology: true },
+    );
+    const worker = ProcessingWorkerDouble.latest;
+    worker.reply({
+      result: {
+        kind: "scanPreview",
+        positions: positions.slice(),
+        diagnostics: {},
+      },
+    });
+    await preview;
+    const comparison = processMesh(
+      {
+        kind: "scanPreview",
+        phase: "compare",
+        previewId: "preview",
+        positions,
+        deviation: 0.05,
+      },
+      { reuseTopology: true },
+    );
+    expect(ProcessingWorkerDouble.latest).toBe(worker);
+    expect(worker.sent!.positions).toHaveLength(0);
+    expect(worker.transfers).toHaveLength(0);
+    worker.reply({ result: { kind: "scanPreview", diagnostics: {} } });
+    await comparison;
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+    expect(positions).toHaveLength(9);
+  });
   it("terminates a cached worker on cancellation and isolates concurrent requests", async () => {
     const controller = new AbortController();
     const first = processMesh(request, {

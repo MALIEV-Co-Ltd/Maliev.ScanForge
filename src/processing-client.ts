@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
@@ -11,6 +12,7 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | ScanPreviewRequest
   | ScanToolsRequest
   | ScanEditRequest
   | {
@@ -206,7 +208,10 @@ export function processMesh(
       settled = true;
       cleanup(
         true,
-        event.data.result.scanEdit?.positions ?? event.data.result.positions,
+        request.kind === "scanPreview"
+          ? undefined
+          : (event.data.result.scanEdit?.positions ??
+              event.data.result.positions),
       );
       resolve(event.data.result);
     };
