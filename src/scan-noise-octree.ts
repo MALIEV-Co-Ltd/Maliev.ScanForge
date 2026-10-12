@@ -31,6 +31,39 @@ export function prepareNoiseOctree(
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
 ) {
+  const prepared = packNoiseOctree(
+    triangles,
+    minimumExtent,
+    maximumDepth,
+    options,
+  );
+  const budget = { nodes: 0 };
+  splitNoiseNode(
+    prepared.root,
+    prepared,
+    minimumExtent,
+    maximumDepth,
+    budget,
+    options,
+    true,
+    true,
+  );
+  return prepared;
+}
+
+export interface PackedNoiseTree {
+  root: NoiseTreeNode;
+  points: Float32Array;
+  triangleBounds: Float32Array;
+}
+
+/** Pack once before transferring immutable triangle data to construction workers. */
+export function packNoiseOctree(
+  triangles: readonly NoiseTreeTriangle[] | NoiseIndexedSurface,
+  minimumExtent = 0.5,
+  maximumDepth = 10,
+  options: MeshProcessingOptions = {},
+): PackedNoiseTree {
   const indexed = Array.isArray(triangles)
     ? undefined
     : (triangles as NoiseIndexedSurface);
@@ -138,7 +171,24 @@ export function prepareNoiseOctree(
     triangles: Array.from({ length: count }, (_, id) => id),
     children: {},
   };
-  let nodes = 0;
+  return { root, points, triangleBounds };
+}
+
+function splitNoiseNode(
+  start: NoiseTreeNode,
+  prepared: PackedNoiseTree,
+  minimumExtent: number,
+  maximumDepth: number,
+  budget: { nodes: number },
+  options: MeshProcessingOptions,
+  eager: boolean,
+  recursive: boolean,
+) {
+  const { points, triangleBounds } = prepared;
+  const check = () => {
+    if (options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+  };
   const a = [0, 0, 0],
     c = [0, 0, 0],
     d = [0, 0, 0];
@@ -176,7 +226,7 @@ export function prepareNoiseOctree(
     }
     for (let child = 0; child < 8; child++) {
       if (!eager && !memberships[child].length) continue;
-      if (++nodes > 100000)
+      if (++budget.nodes > 100000)
         throw new RangeError("Noise tree exceeds its node budget");
       node.children[child] = {
         ...boxes[child],
@@ -187,6 +237,7 @@ export function prepareNoiseOctree(
       };
     }
     node.triangles = [];
+    if (!recursive) return;
     for (const child of Object.values(node.children))
       if (
         child &&
@@ -196,7 +247,65 @@ export function prepareNoiseOctree(
       )
         split(child, false);
   };
-  split(root, true);
+  split(start, eager);
   check();
-  return { root, points, triangleBounds };
+}
+
+/** Partition in source order before dispatch; every root octant exists, even empty. */
+export function partitionNoiseRoot(
+  prepared: PackedNoiseTree,
+  options: MeshProcessingOptions = {},
+) {
+  splitNoiseNode(
+    prepared.root,
+    prepared,
+    0.5,
+    10,
+    { nodes: 0 },
+    options,
+    true,
+    false,
+  );
+}
+
+/** One independent root task. The caller must enforce the merged node budget. */
+export function refineNoiseOctant(
+  prepared: PackedNoiseTree,
+  octant: number,
+  minimumExtent = 0.5,
+  maximumDepth = 10,
+  options: MeshProcessingOptions = {},
+) {
+  if (!Number.isInteger(octant) || octant < 0 || octant > 7)
+    throw new RangeError("Noise octant must be between zero and seven");
+  if (
+    !Number.isFinite(minimumExtent) ||
+    minimumExtent < 0 ||
+    !Number.isInteger(maximumDepth) ||
+    maximumDepth < 1 ||
+    maximumDepth > 10
+  )
+    throw new RangeError("Noise subdivision limits are invalid");
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  const node = prepared.root.children[octant];
+  if (!node)
+    throw new RangeError("Noise root must be partitioned before refinement");
+  const budget = { nodes: 0 };
+  if (
+    node.triangles.length >= 25 &&
+    node.bounds[3] - node.bounds[0] > Math.fround(minimumExtent) &&
+    node.depth < maximumDepth
+  )
+    splitNoiseNode(
+      node,
+      prepared,
+      minimumExtent,
+      maximumDepth,
+      budget,
+      options,
+      false,
+      true,
+    );
+  return { node, descendants: budget.nodes };
 }

@@ -1,11 +1,38 @@
 import { expect, it } from "vitest";
 import native from "./fixtures/noise-octree-trees.json";
-import { buildNoiseOctree, prepareNoiseOctree } from "../src/scan-noise-octree";
+import {
+  buildNoiseOctree,
+  prepareNoiseOctree,
+  packNoiseOctree,
+  partitionNoiseRoot,
+  refineNoiseOctant,
+} from "../src/scan-noise-octree";
 import {
   queryNoiseOctree,
   type NoiseBounds,
 } from "../src/scan-noise-octree-query";
 import { noiseTriangleDistance } from "../src/scan-noise-deviation";
+
+it("independent octant tasks reject invalid input and respect cancellation", () => {
+  const capture = native.cases[0];
+  const prepared = packNoiseOctree(capture.points);
+  expect(() => refineNoiseOctant(prepared, 0)).toThrow("partitioned");
+  partitionNoiseRoot(prepared);
+  for (const octant of [-1, 8, 0.5, NaN])
+    expect(() => refineNoiseOctant(prepared, octant)).toThrow("octant");
+  expect(() => refineNoiseOctant(prepared, 0, -1)).toThrow("limits");
+  expect(() => refineNoiseOctant(prepared, 0, 0.5, 11)).toThrow("limits");
+  const controller = new AbortController();
+  controller.abort();
+  const before = structuredClone(prepared.root);
+  expect(() =>
+    refineNoiseOctant(prepared, 0, 0.5, 10, { signal: controller.signal }),
+  ).toThrow("cancelled");
+  expect(() =>
+    partitionNoiseRoot(prepared, { signal: controller.signal }),
+  ).toThrow("cancelled");
+  expect(prepared.root).toEqual(before);
+});
 
 it.each(native.cases)(
   "matches native subdivision and signed queries: $name",
@@ -30,6 +57,26 @@ it.each(native.cases)(
       capture.maxdepth,
     );
     expect(packed.root).toEqual(root);
+    const independent = packNoiseOctree(
+      capture.points,
+      capture.minextent,
+      capture.maxdepth,
+    );
+    partitionNoiseRoot(independent);
+    expect(Object.keys(independent.root.children)).toHaveLength(8);
+    let nodes = 8;
+    // Complete in reverse task order; octant addresses and triangle order stay fixed.
+    for (let octant = 7; octant >= 0; octant--)
+      nodes += refineNoiseOctant(
+        independent,
+        octant,
+        capture.minextent,
+        capture.maxdepth,
+      ).descendants;
+    expect(nodes).toBeLessThanOrEqual(100000);
+    expect(independent.root).toEqual(root);
+    expect(independent.points).toEqual(packed.points);
+    expect(independent.triangleBounds).toEqual(packed.triangleBounds);
     const triangles = capture.points.map((t) => ({
       bounds: [
         Math.min(...t.map((p) => p[0])),
@@ -67,6 +114,18 @@ it.each(native.cases)(
       );
       expect(packedHit?.triangle ?? null).toBe(sample.winner);
       expect(packedHit?.distance ?? null).toBe(sample.distance);
+      const independentHit = queryNoiseOctree(
+        independent.root,
+        sample.point,
+        sample.radius,
+        independent.triangleBounds,
+        (id, radius) => {
+          const [a, b, c] = capture.points[id];
+          return noiseTriangleDistance(sample.point, a, b, c, radius);
+        },
+      );
+      expect(independentHit?.triangle ?? null).toBe(sample.winner);
+      expect(independentHit?.distance ?? null).toBe(sample.distance);
     }
   },
 );
