@@ -404,19 +404,39 @@ describe("patch and boundary edits", () => {
     const positions = [...fan, ...shifted(openCube, 3)];
     const selection = new Uint8Array(positions.length / 9);
     selection.fill(1, 0, 4);
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "smoothSelected",
-      positions,
-      selection,
-      iterations: 1,
-      strength: 0.5,
-    }).positions!;
+    const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> =
+      {};
+    analyzeMesh(positions, { topologyCache });
+    const stages: string[] = [];
+    const result = runScanEdit(
+      {
+        kind: "scanEdit",
+        action: "smoothSelected",
+        positions,
+        selection,
+        iterations: 1,
+        strength: 0.5,
+      },
+      { topologyCache, onProgress: (_, stage) => stages.push(stage) },
+    ).positions!;
     expect(result[8]).toBeCloseTo(0.5);
     expect(result.slice(0, 6)).toEqual(new Float32Array(fan.slice(0, 6)));
     expect(result.slice(fan.length)).toEqual(
       new Float32Array(shifted(openCube, 3)),
     );
+    const successorStages: string[] = [];
+    const cached = analyzeMesh(result, {
+      topologyCache,
+      onProgress: (_, stage) => successorStages.push(stage),
+    });
+    expect(successorStages).toEqual(["Reusing mesh topology"]);
+    expect(
+      stages.some((stage) => /Welding vertices|Building topology/.test(stage)),
+    ).toBe(false);
+    const fresh = analyzeMesh(result);
+    expect(cached.boundaryEdges).toBe(fresh.boundaryEdges);
+    expect(cached.components.length).toBe(fresh.components.length);
+    expect(Array.from(cached.vertices)).toEqual(Array.from(fresh.vertices));
   });
   it("projects a closed boundary onto the chosen plane without changing mesh", () => {
     const result = runScanEdit({

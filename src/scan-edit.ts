@@ -1,6 +1,7 @@
 import type { Positions, Vec3 } from "./types";
 import {
   analyzeMesh,
+  analyzeIndexedMesh,
   type MeshProcessingOptions,
   type MeshTopology,
 } from "./mesh-processing";
@@ -216,9 +217,23 @@ function smoothing(
     }
     vertices = next;
   }
-  return finiteOutput(
+  const positions = finiteOutput(
     Array.from(t.triangles).flatMap((id) => pointAt(vertices, id)),
   );
+  // Moving vertices preserves their indexed connectivity. Refresh geometric
+  // diagnostics at output precision without rewelding the successor mesh.
+  if (o.topologyCache) {
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(vertices, Math.fround),
+      t.triangles,
+      { ...o, onProgress: undefined },
+      t.edges,
+    );
+    o.topologyCache.positions = positions;
+    o.topologyCache.tolerance = o.tolerance ?? 1e-6;
+    o.topologyCache.topology = topology;
+  }
+  return positions;
 }
 export function runScanEdit(
   r: ScanEditRequest,
