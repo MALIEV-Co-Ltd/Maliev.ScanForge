@@ -296,8 +296,8 @@ patch uses the recovered kernel. Both half-million-facet regression tests still
 require actual reduction and valid stored triangles. This preserves large-mesh
 support while memory-efficient global reduction is unfinished. Independent
 patch collapse is not claimed to reproduce the native global sequence. Deviation
-mode retains its previous conservative implementation and remains unverified
-against the native deviation branch.
+mode retains its previous conservative implementation. It has not been shown
+to reproduce the native count-preview/comparison route extracted below.
 
 The refreshed Codex browser completed 33-percent retained reduction on the
 loaded 96-facet annular object, producing 38 facets and reporting the recovered
@@ -305,4 +305,45 @@ collapse constraints. Raw probe data, allocation cleanup and browser evidence
 remain outside the repository. All 276 native probe allocations were freed.
 Whole-kernel and adapter parity on these fixtures does not establish complete
 Scan Data or application equivalence. Imported-scan ordering/performance,
-global large-mesh parity, deviation mode and the alternate branch remain open.
+global large-mesh parity, deviation UI integration and the alternate branch remain open.
+
+## Deviation callback extraction and execution
+
+The traced Preview branch passes the target at dialog offset `0x280` to the
+reduction wrapper. Its comparison is a subsequent operation: `0x140598310`
+queries original vertices against a search structure built from the reduced
+preview. It reports the within-tolerance count divided by all original
+vertices, including unmatched samples in the denominator. This route does not
+pass the deviation threshold into the collapse kernel or change its target.
+It therefore does not establish a displacement-constrained collapse mode.
+The alternative Preview branch and complete dialog event map remain separate
+verification requirements.
+
+REA extraction of `0x1405980c0` shows it only enables three comparison controls
+according to the dialog's comparison checkbox; it does not alter the target.
+Evidence: `ev_ce599b93d72a866bdaa124c57ad1b2926a9e0ed07cf463c294903f43351191e4`.
+`0x1405975b0` formats comparison results for a separate context and chooses
+status colors at percentages 99.5 and 99.99. Evidence:
+`ev_a34a1611747b42e0c4e4e58d8e5e5ba2345268dcf04430b590951fdbc961059c`.
+
+The original callback `0x1405989b0` was executed on 25 cases / 200 point samples,
+together with the original query, triangle-distance leaf, palette reset and
+color ramp. Only the CRT square-root import is bound; no numerical routine is
+replaced. Caller-built nodes cover empty results, positive/negative winding,
+both orders of equal-distance opposing facets, exact threshold/radius samples
+and independently varied report/palette thresholds. Point storage guards stay
+intact and the mapped image was released after the owned helper finished.
+Evidence: `ev_305362a4e99db81685e41fb3577eb471da25394687ab10bbca79ff82949c6a25`.
+These executions verify the callback on supplied nodes, not native UI settings
+or construction of its search structure.
+
+`src/scan-reduction-comparison.ts` reproduces every captured count and RGB byte.
+It uses a search radius of five times the widened Float32 palette threshold,
+while the within-tolerance count compares against the separate Float32 dialog
+threshold. Missing queries yield RGB `(50, 50, 50)` and do not increment the
+count. Signed ties retain the query's winner; the ramp receives the narrowed
+Float32 distance. Source points are unchanged, cancellation discards incomplete
+results, and progress is checked before publication. The callback port remains
+separate from production until search-construction and preview/UI integration
+are verified. The existing conservative deviation mode is not claimed to
+reproduce this traced comparison behavior.
