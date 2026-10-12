@@ -1,8 +1,10 @@
 # Native polygon reduction evidence
 
 The production percentage target now truncates instead of rounding up. For
-95 facets at 50%, the target is 47. This corrects one verified parameter rule;
-the production protected edge-collapse algorithm is still independently chosen.
+95 facets at 50%, the target is 47. The admitted triangle-count and percentage
+paths now use the recovered complete collapse kernel and Float32 output adapter.
+Global large-mesh and deviation-mode parity remain incomplete; see the
+production adapter section below.
 
 ## Recovered route
 
@@ -37,7 +39,7 @@ Raw image data, decompilation and probes remain outside this repository.
   candidate threshold using a power expression scaled by `1e-9`. It calls
   candidate calculation `0x140393e90`, validity checking `0x1403945b0`, adjacency
   updates `0x140395640`, and final compaction `0x1403957c0`. These helper bodies
-  are retained, but no full collapse numerical comparison has been performed.
+  are retained and validated by the complete-loop and adapter captures below.
   Evidence `ev_224de1bb6364c28248d2e331a3afd3cdc1e05b8e03b79cad625645b3707e0abb`.
 - Deviation comparison `0x140598310` caches a preview search object, distributes
   original vertices among CPU partitions, joins them, and computes the reported
@@ -269,8 +271,38 @@ need a memory gate and larger imported-scan measurements before production
 admission. The benchmark used a 256 MiB heap limit and a 120-second supervisor
 timeout; the bundler service was stopped and the owned process exited.
 
-The kernel port remains separate from production reduction. Integration still
-requires resource and imported-scan performance gates,
-and verification of the source/output adapter, deviation mode and alternate
-branch. Whole-kernel parity on these fixtures does not establish complete
-Scan Data or application equivalence.
+## Production source/output adapter
+
+The count and percentage paths now call the recovered kernel through
+`src/scan-reduction-adapter.ts`. Source points are widened from Float32 as in
+caller `0x140396050`, and compacted points are narrowed to Float32 before facet
+expansion. Facet/corner order is preserved. The original preparation/collapse
+loop was executed again on 18 inputs indexed in the same first-encounter order
+as the application's importer. The production triangle-count path matches every
+expanded output Float32 byte; the matching half-count cases also pass through
+the percentage path. These captures establish identical indexed-input
+comparisons, not native UI import/weld-order parity for arbitrary scans.
+
+The recovered caller only invokes the kernel for targets greater than three.
+Targets below four retain the source and report this limitation. Unchanged
+targets also retain source coordinates. Source validation and cancellation run
+before either shortcut. Progress includes topology preparation, collapse and
+facet export; cancelled exports do not publish a result.
+
+The object-based whole-mesh kernel has a conservative 256 MiB record budget,
+estimated from vertices, facets and growing incidence scratch. Inputs beyond
+that admission continue through the existing spatial-patch path; each admitted
+patch uses the recovered kernel. Both half-million-facet regression tests still
+require actual reduction and valid stored triangles. This preserves large-mesh
+support while memory-efficient global reduction is unfinished. Independent
+patch collapse is not claimed to reproduce the native global sequence. Deviation
+mode retains its previous conservative implementation and remains unverified
+against the native deviation branch.
+
+The refreshed Codex browser completed 33-percent retained reduction on the
+loaded 96-facet annular object, producing 38 facets and reporting the recovered
+collapse constraints. Raw probe data, allocation cleanup and browser evidence
+remain outside the repository. All 276 native probe allocations were freed.
+Whole-kernel and adapter parity on these fixtures does not establish complete
+Scan Data or application equivalence. Imported-scan ordering/performance,
+global large-mesh parity, deviation mode and the alternate branch remain open.

@@ -11,6 +11,10 @@ import { nativeNoiseColor } from "./scan-noise-color";
 import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
 import { reductionPercentageTarget } from "./scan-reduction-target";
 import {
+  reduceIndexedScanMesh,
+  canAdmitReductionRecords,
+} from "./scan-reduction-adapter";
+import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
 } from "./scan-reduction-partitions";
@@ -95,7 +99,7 @@ function faceNormal(
   return cross(sub(p[1], p[0]), sub(p[2], p[0]));
 }
 
-/** Interior edge collapse with the manifold link condition. Boundaries and creases are fixed. */
+/** Recovered count reduction; conservative deviation reduction retains its separate gate. */
 export function reduceScanMesh(
   positions: Positions,
   options: Options & {
@@ -107,6 +111,14 @@ export function reduceScanMesh(
     patchTopology?: import("./mesh-processing").MeshTopology;
   },
 ): ScanToolResult {
+  if (!positions.length || positions.length % 9)
+    throw new Error("Expected complete triangle coordinates.");
+  for (let index = 0; index < positions.length; index++) {
+    if (index % 12288 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    if (!Number.isFinite(positions[index]))
+      throw new Error("Mesh coordinates must be finite.");
+  }
   const original = positions.length / 9;
   let target: number;
   if (options.mode === "triangles") {
@@ -126,6 +138,37 @@ export function reduceScanMesh(
   const bound =
     options.mode === "deviation" ? (options.deviation ?? 0.05) : Infinity;
   if (options.mode === "deviation") positive(bound, "Deviation");
+  // The recovered caller does not enter the reduction kernel below four faces.
+  if (options.mode !== "deviation" && (target <= 3 || target === original)) {
+    progress(options, 1, "Polygon reduction complete");
+    return {
+      positions: Float32Array.from(positions),
+      summary: `${original} → ${original} triangles. ${target <= 3 ? "Reduction requires a target of at least four triangles." : "Mesh retained at the requested count."}`,
+    };
+  }
+  if (
+    options.mode !== "deviation" &&
+    canAdmitReductionRecords(positions.length / 3, original)
+  ) {
+    // Bound working records before constructing the object-rich topology.
+    const t =
+      options.patchTopology ??
+      topology(positions, {
+        ...options,
+        onProgress: (fraction, stage) =>
+          options.onProgress?.(fraction * 0.2, stage),
+      });
+    const output = reduceIndexedScanMesh(t, target, {
+      ...options,
+      onProgress: (fraction, stage) =>
+        options.onProgress?.(0.2 + fraction * 0.8, stage),
+    });
+    const count = output.length / 9;
+    return {
+      positions: output,
+      summary: `${original} → ${count} triangles. Boundary vertices preserved.${count > target ? " Reduction stopped at the native collapse constraints." : ""}`,
+    };
+  }
   if (!options.patchTopology && original > REDUCTION_PATCH_TRIANGLES) {
     try {
       const result = reduceSpatialMesh(
@@ -144,7 +187,7 @@ export function reduceScanMesh(
       const count = result.positions.length / 9;
       return {
         positions: result.positions,
-        summary: `${original} → ${count} triangles. Spatial patch borders and sharp creases preserved.${bound !== Infinity ? ` Deviation constrained to ${bound} mm within each patch.` : ""}${count > target ? " Reduction stopped at protected topology or patch borders." : ""}${result.protectedPatches ? ` ${result.protectedPatches} unsafe patches retained unchanged.` : ""}`,
+        summary: `${original} → ${count} triangles. Spatial patch borders preserved.${bound !== Infinity ? ` Deviation constrained to ${bound} mm within each patch.` : ""}${count > target ? " Reduction stopped at protected topology or patch borders." : ""}${result.protectedPatches ? ` ${result.protectedPatches} unsafe patches retained unchanged.` : ""}`,
       };
     } catch (error) {
       if (error instanceof RangeError)
