@@ -1,10 +1,10 @@
 # Scan Data Tools
 
-This independently implemented MVP uses the installed QUICKSurface help and
+This independently implemented MVP uses installed reference help and
 localization as workflow evidence, not as evidence of recovered native algorithms.
-`B:/QUICKSURFACE2026/QSHelp.pdf` page 24 describes reduction targets; pages
+The reference manual page 24 describes reduction targets; pages
 243–244 describe reconstruction of overlapping scans and closing holes/gaps.
-`language.txt` describes averaging overlapping meshes and cylindrical unroll.
+The reference localization describes averaging overlapping meshes and cylindrical unroll.
 Native numerical equivalence remains unverified.
 
 ## Available operations
