@@ -483,3 +483,13 @@ Targeted Prettier and `git diff --check` passed. The finite-lease development pr
 - Eight new tests cover captured defaults, independent returned state, reset sentinels and a folded-mesh integration through triangle area, owner bounds, radius schedule, normal thresholds, edge data, neighborhoods, eigenpairs, direction selection and propagation. Caller base length remains explicit.
 - Targeted Prettier checks and `git diff --check` passed. The original reset probe released executable memory. Retained REA analyses for scratch reset and alternate direction calculation completed and recorded provider processes were absent; alternate calculation is not implemented by this slice.
 - Existing preview remained HTTP 200 under its finite lease. The UI bundle is unchanged because these components are not yet bound to reconstruction UI. Full feature parity, downstream quad/NURBS reconstruction and native lifecycle remain incomplete.
+
+### Recovered alternate curvature direction worker - 2026-10-12
+
+- `npm run build`: TypeScript, Vite and offline manifest passed with zero warnings/errors.
+- `npx vitest run tests/field-curvature-alternate.test.ts tests/field-curvature-constrained.test.ts tests/field-curvature-radius.test.ts tests/field-curvature-defaults.test.ts --maxWorkers=1`: 364 passed in 4 files after correcting misordered normal thresholds in the new dispatch fixture.
+- `npm test`: 2,284 passed in 90 files on the corrected source.
+- All 288 complete original alternate worker captures match directions, signed/averaged eigenvalues, unchanged strengths, flags, stored indices, counters, candidate masks and stored costs exactly. The original numerical function executes with owned populated buffers and its verified CRT acos import; native initialization/cache construction and installed application workflows remain outside comparison scope.
+- Seven additional cases cover recovered mode-one dispatch, unchanged primary modes, cross-byte masks, additional constraint flags, weighted fallback, independent storage and invalid-input rejection. Completion and constrained scores remain independent diagnostics.
+- Targeted Prettier checks and `git diff --check` passed. The bounded native probe released executable memory and its exact PID was verified absent in the resource ledger.
+- Existing loopback preview remained HTTP 200 under its recorded finite lease. The UI bundle remains unchanged because these recovered numerical components are not yet bound to the reconstruction UI. Full native lifecycle, downstream quad/NURBS reconstruction and feature/workflow parity remain incomplete.
