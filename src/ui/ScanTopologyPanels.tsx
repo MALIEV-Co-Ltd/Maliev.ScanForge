@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useEffect, useRef, useState } from "react";
@@ -349,7 +350,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
               </div>
               <label>
                 Remove small meshes by
-                <select
+                <AppSelect
                   value={cleanup}
                   onChange={(event) => {
                     setCleanup(event.target.value);
@@ -358,7 +359,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                 >
                   <option value="triangles">Maximum triangle count</option>
                   <option value="area">Area smaller than (mm²)</option>
-                </select>
+                </AppSelect>
               </label>
               <label>
                 Threshold
@@ -400,7 +401,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
             <>
               <label>
                 Fill mode
-                <select
+                <AppSelect
                   value={mode}
                   onChange={(event) =>
                     setMode(event.target.value as typeof mode)
@@ -409,11 +410,11 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   <option value="entire">Entire hole</option>
                   <option value="partial">Semi hole</option>
                   <option value="bridge">Bridge</option>
-                </select>
+                </AppSelect>
               </label>
               <label>
                 Fill algorithm
-                <select
+                <AppSelect
                   value={algorithm}
                   onChange={(event) =>
                     setAlgorithm(event.target.value as typeof algorithm)
@@ -423,7 +424,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   <option value="flat">Flat</option>
                   <option value="tangent">Tangent</option>
                   <option value="curvature">Curvature</option>
-                </select>
+                </AppSelect>
               </label>
               {mode !== "entire" && (
                 <div className="scan-topology-actions">
@@ -543,7 +544,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
               </div>
               <label>
                 Projection plane
-                <select
+                <AppSelect
                   value={planeId}
                   onChange={(event) => setPlaneId(event.target.value)}
                 >
@@ -557,7 +558,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                         {entity.name}
                       </option>
                     ))}
-                </select>
+                </AppSelect>
               </label>
               <label>
                 Fit tolerance (mm)

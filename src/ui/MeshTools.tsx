@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useEffect, useRef, useState } from "react";
 import {
   processMesh,
@@ -339,7 +340,7 @@ export function MeshTools({
         </p>
         <label className="select-field">
           Registration target
-          <select
+          <AppSelect
             aria-label="Registration target"
             value={targetId}
             onChange={(event) => setTargetId(event.target.value)}
@@ -350,7 +351,7 @@ export function MeshTools({
                 {entity.name}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         <Field
           label="ICP search distance (mm)"

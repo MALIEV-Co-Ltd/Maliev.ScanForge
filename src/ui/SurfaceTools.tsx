@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useEffect, useRef, useState } from "react";
 import type { Positions, Vec3 } from "../types";
 import {
@@ -209,7 +210,7 @@ export function SurfaceTools({
         </button>
         <label className="field">
           Fit projection
-          <select
+          <AppSelect
             value={projection}
             onChange={(event) =>
               setProjection(
@@ -220,7 +221,7 @@ export function SurfaceTools({
             <option value="xy">XY → Z</option>
             <option value="xz">XZ → Y</option>
             <option value="yz">YZ → X</option>
-          </select>
+          </AppSelect>
         </label>
         {number("Fit sample limit", samples, setSamples, 16, 100000)}
         <button disabled={!scan?.length} onClick={() => void fitScan()}>
@@ -230,7 +231,7 @@ export function SurfaceTools({
           <>
             <label className="field">
               Control point
-              <select
+              <AppSelect
                 value={controlIndex}
                 onChange={(event) => setIndex(Number(event.target.value))}
               >
@@ -240,7 +241,7 @@ export function SurfaceTools({
                     {Math.floor(i / patch.countU) + 1}
                   </option>
                 ))}
-              </select>
+              </AppSelect>
             </label>
             {(["X", "Y", "Z"] as const).map((axis, k) => (
               <label className="field" key={axis}>
@@ -337,7 +338,7 @@ export function SurfaceTools({
             </p>
             <label className="field">
               Refinement axis
-              <select
+              <AppSelect
                 value={refineAxis}
                 onChange={(event) =>
                   setRefineAxis(event.target.value as PatchAxis)
@@ -345,7 +346,7 @@ export function SurfaceTools({
               >
                 <option value="u">U</option>
                 <option value="v">V</option>
-              </select>
+              </AppSelect>
             </label>
             {number(
               "Normalized interior parameter",
@@ -442,7 +443,7 @@ export function SurfaceTools({
               <>
                 <label className="field">
                   Fixed reference boundary
-                  <select
+                  <AppSelect
                     value={referenceEdge}
                     onChange={(event) =>
                       setReferenceEdge(event.target.value as PatchEdge)
@@ -453,11 +454,11 @@ export function SurfaceTools({
                         {edge.toUpperCase()}
                       </option>
                     ))}
-                  </select>
+                  </AppSelect>
                 </label>
                 <label className="field">
                   Active patch boundary
-                  <select
+                  <AppSelect
                     value={targetEdge}
                     onChange={(event) =>
                       setTargetEdge(event.target.value as PatchEdge)
@@ -468,11 +469,11 @@ export function SurfaceTools({
                         {edge.toUpperCase()}
                       </option>
                     ))}
-                  </select>
+                  </AppSelect>
                 </label>
                 <label className="field">
                   Continuity
-                  <select
+                  <AppSelect
                     value={continuity}
                     onChange={(event) =>
                       setContinuity(event.target.value as "C0" | "C1")
@@ -482,7 +483,7 @@ export function SurfaceTools({
                     <option value="C1">
                       C1 · shared boundary and derivative
                     </option>
-                  </select>
+                  </AppSelect>
                 </label>
                 <label>
                   <input
@@ -621,7 +622,7 @@ export function SurfaceTools({
           <>
             <label className="field">
               Edit shell patch
-              <select
+              <AppSelect
                 value={shellIndex ?? ""}
                 onChange={(event) => {
                   const index = Number(event.target.value);
@@ -637,7 +638,7 @@ export function SurfaceTools({
                     Patch {index + 1} · {face.countU} × {face.countV}
                   </option>
                 ))}
-              </select>
+              </AppSelect>
             </label>
             <button
               disabled={shellIndex === null}

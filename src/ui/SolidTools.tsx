@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useState } from "react";
 import type { Entity } from "../types";
 import { Field, Panel } from "./controls";
@@ -43,7 +44,7 @@ export function SolidTools({
       <Panel title="Solid modeling">
         <label className="select-field">
           Operation
-          <select
+          <AppSelect
             aria-label="Boolean operation"
             value={operation}
             onChange={(e) => setOperation(e.target.value as typeof operation)}
@@ -51,11 +52,11 @@ export function SolidTools({
             <option value="union">Union</option>
             <option value="subtract">Subtract</option>
             <option value="intersect">Intersect</option>
-          </select>
+          </AppSelect>
         </label>
         <label className="select-field">
           Tool body
-          <select
+          <AppSelect
             aria-label="Boolean tool body"
             value={otherId}
             onChange={(e) => setOtherId(e.target.value)}
@@ -66,7 +67,7 @@ export function SolidTools({
                 {e.name}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         <button
           className="wide"

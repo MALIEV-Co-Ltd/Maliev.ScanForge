@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import "./ObjectList.css";
 import { objectContextActions } from "./object-context-actions";
@@ -4531,7 +4532,7 @@ export function App() {
                     <Panel title="Cross section" className="section-panel">
                       <label className="select-field">
                         Axis
-                        <select
+                        <AppSelect
                           aria-label="Section axis"
                           value={axis}
                           onChange={(e) =>
@@ -4541,7 +4542,7 @@ export function App() {
                           <option value="x">X (YZ plane)</option>
                           <option value="y">Y (XZ plane)</option>
                           <option value="z">Z (XY plane)</option>
-                        </select>
+                        </AppSelect>
                       </label>
                       <Field
                         label="Offset (mm)"
@@ -5357,7 +5358,7 @@ export function App() {
             </div>
             <label className="select-field">
               Shape
-              <select
+              <AppSelect
                 aria-label="Primitive shape"
                 value={primitiveKind}
                 onChange={(e) =>
@@ -5368,7 +5369,7 @@ export function App() {
                 <option value="sphere">Sphere</option>
                 <option value="cylinder">Cylinder</option>
                 <option value="cone">Cone / frustum</option>
-              </select>
+              </AppSelect>
             </label>
             <VectorField
               label="Center (mm)"

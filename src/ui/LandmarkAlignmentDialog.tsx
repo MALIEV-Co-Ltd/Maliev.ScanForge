@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { PreviewButton } from "./PreviewButton";
 import type { Entity } from "../types";
 import { landmarkPairs, type LandmarkAlignment } from "../landmark-alignment";
@@ -40,7 +41,7 @@ export function LandmarkAlignmentDialog({
         </p>
         <label className="select-field">
           Fixed target
-          <select
+          <AppSelect
             aria-label="Fixed alignment target"
             value={session.fixed.id}
             disabled={busy}
@@ -51,7 +52,7 @@ export function LandmarkAlignmentDialog({
                 {e.name}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         <p>
           Click matching points on each object in the same order. Pick at least

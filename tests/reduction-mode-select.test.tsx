@@ -19,7 +19,7 @@ it.each(reductionModes)(
     expect(html).toContain('aria-haspopup="listbox"');
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain(label);
-    expect(html).not.toContain("<select");
+    expect(html).toContain('aria-hidden="true"');
     expect(html).not.toContain('disabled=""');
   },
 );

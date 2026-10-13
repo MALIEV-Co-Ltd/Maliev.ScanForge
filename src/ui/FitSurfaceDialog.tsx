@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import { useState } from "react";
 import type { SurfaceFitOptions } from "../surfaces";
@@ -54,7 +55,7 @@ export function FitSurfaceDialog({
           ))}
           <label className="field">
             Orientation
-            <select
+            <AppSelect
               value={projection}
               onChange={(e) => {
                 setProjection(
@@ -66,7 +67,7 @@ export function FitSurfaceDialog({
               <option value="xy">OXY</option>
               <option value="xz">OXZ</option>
               <option value="yz">OYZ</option>
-            </select>
+            </AppSelect>
           </label>
 
           <label className="check">

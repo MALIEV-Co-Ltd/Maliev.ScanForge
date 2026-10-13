@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ImportUnitsDialog.css";
 import { useState } from "react";
 import { SCAN_UNITS, type ScanUnit } from "../import-units";
@@ -21,7 +22,7 @@ export function ImportUnitsDialog({
         <h2 id="import-units-title">Import scan</h2>
         <label className="select-field">
           Units
-          <select
+          <AppSelect
             autoFocus
             value={unit}
             onChange={(e) => setUnit(e.target.value as ScanUnit)}
@@ -31,7 +32,7 @@ export function ImportUnitsDialog({
                 {value.label}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         <div className="import-unit-actions">
           <button onClick={onCancel}>Cancel</button>

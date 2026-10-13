@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import type { Positions } from "../types";
 import { useState } from "react";
@@ -480,7 +481,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
               <legend>Split mesh</legend>
               <label>
                 Cutting solid, surface or mesh
-                <select
+                <AppSelect
                   aria-label="Mesh splitter"
                   value={cutter}
                   onChange={(event) => setCutter(event.target.value)}
@@ -491,7 +492,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
                       {entity.name}
                     </option>
                   ))}
-                </select>
+                </AppSelect>
               </label>
               <button
                 disabled={!cutter || !props.onSplit}

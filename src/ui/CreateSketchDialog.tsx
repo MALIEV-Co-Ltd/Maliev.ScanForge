@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import { useState } from "react";
 import type { Entity } from "../types";
@@ -45,7 +46,7 @@ export function CreateSketchDialog({
         <fieldset disabled={busy}>
           <label className="field">
             Reference plane
-            <select
+            <AppSelect
               value={options.plane}
               onChange={(e) =>
                 change({
@@ -56,7 +57,7 @@ export function CreateSketchDialog({
               <option value="OXY">OXY · U=X, V=Y</option>
               <option value="OYZ">OYZ · U=Y, V=Z</option>
               <option value="OXZ">OXZ · U=Z, V=X</option>
-            </select>
+            </AppSelect>
           </label>
           <label className="field">
             Slice offset (mm)

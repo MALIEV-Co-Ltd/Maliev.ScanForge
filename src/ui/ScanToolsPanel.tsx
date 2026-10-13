@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { PreviewButton } from "./PreviewButton";
 import { ReductionModeSelect } from "./ReductionModeSelect";
 import { useEffect, useMemo, useState } from "react";
@@ -476,7 +477,7 @@ export function ScanToolsPanel({
             <>
               <label>
                 Scale by
-                <select
+                <AppSelect
                   value={scaleMode}
                   onChange={(event) => {
                     const next = event.target.value as typeof scaleMode;
@@ -489,7 +490,7 @@ export function ScanToolsPanel({
                 >
                   <option value="factor">Factor</option>
                   <option value="percentage">Percentage</option>
-                </select>
+                </AppSelect>
               </label>
               <Field
                 label={
@@ -584,7 +585,7 @@ export function ScanToolsPanel({
               </label>
               <label>
                 Mirror plane
-                <select
+                <AppSelect
                   value={plane}
                   onChange={(e) => {
                     setPlane(e.target.value as typeof plane);
@@ -595,13 +596,13 @@ export function ScanToolsPanel({
                   <option value="OYZ">YZ origin plane</option>
                   <option value="OXZ">XZ origin plane</option>
                   <option value="object">CAD / construction plane</option>
-                </select>
+                </AppSelect>
               </label>
               {plane === "object" && (
                 <>
                   <label>
                     Reference plane
-                    <select
+                    <AppSelect
                       value={referenceId}
                       onChange={(e) => {
                         setReferenceId(e.target.value);
@@ -614,7 +615,7 @@ export function ScanToolsPanel({
                           {e.name}
                         </option>
                       ))}
-                    </select>
+                    </AppSelect>
                   </label>
                   {onPickReference && (
                     <button
@@ -639,7 +640,7 @@ export function ScanToolsPanel({
               </p>
               <label>
                 Cylinder
-                <select
+                <AppSelect
                   value={cylinderId}
                   onChange={(e) => setCylinderId(e.target.value)}
                 >
@@ -649,7 +650,7 @@ export function ScanToolsPanel({
                       {e.name}
                     </option>
                   ))}
-                </select>
+                </AppSelect>
               </label>
               {onPickReference && (
                 <button

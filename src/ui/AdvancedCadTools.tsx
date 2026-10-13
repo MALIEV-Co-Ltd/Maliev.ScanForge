@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useState } from "react";
 import type { Entity, Vec3 } from "../types";
 import { Field, VectorField } from "./controls";
@@ -76,7 +77,7 @@ export function AdvancedCadTools({
       <h3>Body patterns</h3>
       <label>
         Pattern type
-        <select
+        <AppSelect
           aria-label="CAD pattern type"
           value={patternKind}
           onChange={(event) =>
@@ -85,7 +86,7 @@ export function AdvancedCadTools({
         >
           <option value="linear">Linear</option>
           <option value="circular">Circular</option>
-        </select>
+        </AppSelect>
       </label>
       <Field
         label="Pattern copies including original"
@@ -165,7 +166,7 @@ export function AdvancedCadTools({
       <h3>Split solid</h3>
       <label>
         Cutting solid
-        <select
+        <AppSelect
           aria-label="Split cutting solid"
           value={cutter}
           onChange={(event) => setCutter(event.target.value)}
@@ -178,7 +179,7 @@ export function AdvancedCadTools({
                 {entity.name}
               </option>
             ))}
-        </select>
+        </AppSelect>
       </label>
       <p className="muted">
         Produces two exact bodies: material inside the cutter and material

@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useState } from "react";
 import { coordinateSketchFrame, type SketchFrame } from "../sketch-frame";
 import {
@@ -40,7 +41,7 @@ export function SketchPlaneDialog({
         <h2 id="sketch-plane-title">Create sketch on a plane</h2>
         <label className="select-field">
           Sketch plane
-          <select
+          <AppSelect
             autoFocus
             value={plane}
             onChange={(e) => setPlane(e.target.value)}
@@ -56,7 +57,7 @@ export function SketchPlaneDialog({
               </option>
             ))}
             <option value="custom">Custom plane</option>
-          </select>
+          </AppSelect>
         </label>
         {plane === "custom" &&
           ["origin", "normal"].map((kind) => (

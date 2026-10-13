@@ -1,3 +1,4 @@
+import { AppSelect } from "./AppSelect";
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
 import type { SketchDrawingTool } from "../sketch-drawing";
@@ -267,7 +268,7 @@ export function SketchTools({
       </p>
       <label>
         Sketch plane
-        <select
+        <AppSelect
           value={plane}
           disabled={disabled}
           onChange={(event) =>
@@ -288,7 +289,7 @@ export function SketchTools({
               Custom plane
             </option>
           )}
-        </select>
+        </AppSelect>
       </label>
       <label>
         Plane offset (mm)
@@ -428,7 +429,7 @@ export function SketchTools({
             {(["a", "b", "center"] as const).map((reference) => (
               <label key={reference}>
                 {reference}
-                <select
+                <AppSelect
                   aria-label={`${arc.id} ${reference}`}
                   value={arc[reference]}
                   onChange={(event) =>
@@ -447,7 +448,7 @@ export function SketchTools({
                       {point.id.slice(0, 6)}
                     </option>
                   ))}
-                </select>
+                </AppSelect>
               </label>
             ))}
             <label>
@@ -560,7 +561,7 @@ export function SketchTools({
           <div key={s.id} className="field-row">
             <span title={s.id}>{s.id.slice(0, 6)}</span>
             {(["a", "b"] as const).map((end) => (
-              <select
+              <AppSelect
                 key={end}
                 aria-label={`${s.id} endpoint ${end}`}
                 value={s[end]}
@@ -578,7 +579,7 @@ export function SketchTools({
                     {p.id.slice(0, 6)}
                   </option>
                 ))}
-              </select>
+              </AppSelect>
             ))}
             <button
               aria-label={`Remove segment ${s.id}`}
@@ -667,7 +668,7 @@ export function SketchTools({
         ))}
         <label>
           Constraint
-          <select
+          <AppSelect
             value={kind}
             onChange={(e) => {
               const k = e.target.value as SketchConstraint["kind"];
@@ -696,34 +697,37 @@ export function SketchTools({
                 {constraintLabel(k)}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         <label>
           First reference
-          <select value={first} onChange={(e) => setFirst(e.target.value)}>
+          <AppSelect value={first} onChange={(e) => setFirst(e.target.value)}>
             {references.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.id.slice(0, 6)}
               </option>
             ))}
-          </select>
+          </AppSelect>
         </label>
         {!["fixed", "horizontal", "vertical", "radius"].includes(kind) && (
           <label>
             Second reference
-            <select value={second} onChange={(e) => setSecond(e.target.value)}>
+            <AppSelect
+              value={second}
+              onChange={(e) => setSecond(e.target.value)}
+            >
               {references.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.id.slice(0, 6)}
                 </option>
               ))}
-            </select>
+            </AppSelect>
           </label>
         )}
         {kind === "tangent" && (
           <label>
             Shared endpoint
-            <select
+            <AppSelect
               value={tangentPoint}
               onChange={(event) => setTangentPoint(event.target.value)}
             >
@@ -732,7 +736,7 @@ export function SketchTools({
                   {point.id.slice(0, 6)}
                 </option>
               ))}
-            </select>
+            </AppSelect>
           </label>
         )}
         {[
