@@ -15,3 +15,16 @@ export class SpaceMouseInputGate {
     return true;
   }
 }
+
+/** Capture driver-emulated scroll before any hovered panel can handle it.
+ * Return teardown so closing the viewport restores ordinary input listeners. */
+export function captureSpaceMouseWheel(
+  target: EventTarget,
+  gate: SpaceMouseInputGate,
+): () => void {
+  const wheel = (event: Event) => {
+    gate.consumeWheel(event as WheelEvent);
+  };
+  target.addEventListener("wheel", wheel, { capture: true, passive: false });
+  return () => target.removeEventListener("wheel", wheel, { capture: true });
+}

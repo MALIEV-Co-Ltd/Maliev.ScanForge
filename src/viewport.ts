@@ -29,7 +29,10 @@ import {
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
-import { SpaceMouseInputGate } from "./spacemouse-input";
+import {
+  SpaceMouseInputGate,
+  captureSpaceMouseWheel,
+} from "./spacemouse-input";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
 import type { ScreenRegion } from "./screen-selection";
 import { AsyncScreenSelectionIndex } from "./screen-selection-client";
@@ -164,6 +167,7 @@ export class Viewport {
   private readonly landmarkOverlay = document.createElement("div");
   private readonly navigationPivot = new NavigationPivot();
   private readonly spaceMouseInput = new SpaceMouseInputGate();
+  private releaseSpaceMouseWheel?: () => void;
   private mouseOrbitPivot?: THREE.Vector3;
   private mouseOrbitPointer?: number;
   private readonly pivotMarker = document.createElement("div");
@@ -376,6 +380,10 @@ export class Viewport {
     this.observer = new ResizeObserver(this.resize);
     this.observer.observe(container);
     this.resize();
+    this.releaseSpaceMouseWheel = captureSpaceMouseWheel(
+      window,
+      this.spaceMouseInput,
+    );
   }
 
   private invalidate = (): void => {
@@ -2248,6 +2256,8 @@ export class Viewport {
     const canvas = this.renderer.domElement;
     canvas.removeEventListener("pointerdown", this.pointerDown, true);
     canvas.removeEventListener("wheel", this.selectionWheel, true);
+    this.releaseSpaceMouseWheel?.();
+    this.releaseSpaceMouseWheel = undefined;
     canvas.removeEventListener("contextmenu", this.contextMenu);
     canvas.removeEventListener("pointermove", this.pointerMove);
     canvas.removeEventListener("pointerleave", this.pointerLeave);
