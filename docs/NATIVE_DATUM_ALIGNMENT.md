@@ -131,6 +131,31 @@ Closest-line projection Evidence:
 These static records are separate from the retained original-code executions.
 They do not establish primitive picking, UI acceptance, or geometry publication.
 
+## Verified plane conversion and Apply inversion
+
+`src/scan-native-datum-apply.ts` ports the fitted-plane numerical path at
+`0x140541250` and rigid frame inversion at `0x1401dd230`. Plane normals are
+copied unchanged. Without centering, the plane's stored center is used; with
+centering, the reference point is projected using the stored plane equation
+offset and the original arithmetic order. Apply transposes the rotation and
+computes its inverse translation with the native expression order.
+
+`alignment-datum-apply-native.json` retains 80 original-code plane conversions
+and 338 inversions of the captured native plane/point/direction frame results.
+The tests compare every returned double byte and input ownership. Plane captures
+use a caller-owned feature-interface adapter returning the supplied plane
+payload; classification, interactive picking and CAD kernel conversion are not
+captured. The numerical helper itself executes unchanged. Inversion captures
+execute the original routine directly. This does not verify geometry publication,
+normal transformation, Apply history or complete dialog acceptance.
+
+Plane conversion static Evidence:
+`ev_db0f4003751d9f0c100becf4934a17b92f37fb84e15be0d7060f27272bd952c9`.
+Rigid inversion static Evidence:
+`ev_6d45d815a7a8d907c22ce9514c5a56a1a061c2ba99e71daab18613d5ad3a00e9`.
+Direction and point feature converters are recovered but their payload paths
+and CAD adapters still require runtime verification before public integration.
+
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing primitive reference conversion,
 preview/reset/acceptance and shared GUI/MCP

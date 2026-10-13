@@ -233,7 +233,8 @@ still require exact native parameters, objective values, matrices and lane flags
 Origin/reference alignment is still disabled. `NATIVE_DATUM_ALIGNMENT.md`
 records its recovered dialog routing, verified primary orientation and complete
 plane-reference numerical sequences, point projection and direction construction,
-including mixed-reference replay. Primitive picking and the complete shared
+including mixed-reference replay, picked-plane conversion math and Apply frame
+inversion. Primitive picking and the complete shared
 workflow are not yet available.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
