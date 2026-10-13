@@ -1,0 +1,172 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "controller": "0x140aa91c0",
+    "originalControllerAndWorkersExecuted": true,
+    "schedulerShim": "Sequential lane invocation replaces native task runtime only",
+    "realParallelSchedulingVerified": false,
+    "patchedImports": [
+      "CRT sqrt",
+      "CRT cos",
+      "progress callback",
+      "distance dispatcher",
+      "orientation dispatcher"
+    ]
+  },
+  "samples": [
+    {
+      "name": "nearest-first",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[0.5]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.25,
+      "workers": [
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "name": "nearest-later",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[1.75]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.0625,
+      "workers": [
+        {
+          "error": 0.0625,
+          "maximum": 0.25,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "name": "tie-positive-first",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[1]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 1.0,
+      "workers": [
+        {
+          "error": 1.0,
+          "maximum": 1.0,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "name": "tie-negative-first",
+      "targetPlanes": [
+        [2, -1],
+        [0, 1]
+      ],
+      "lanes": [[1]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 1.0,
+      "workers": [
+        {
+          "error": 1.0,
+          "maximum": 1.0,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "name": "different-nearest-per-vertex",
+      "targetPlanes": [
+        [0, 1],
+        [10, -1]
+      ],
+      "lanes": [[0.5, 9.5]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.25,
+      "workers": [
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "name": "different-nearest-per-lane",
+      "targetPlanes": [
+        [0, 1],
+        [10, -1]
+      ],
+      "lanes": [[0.5], [9.5]],
+      "normals": [1, 1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 3.4028234663852886e38,
+      "workers": [
+        {
+          "error": 0.0,
+          "maximum": -3.4028234663852886e38,
+          "sign": -1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": [0, 1, 0, 1]
+    },
+    {
+      "name": "three-targets",
+      "targetPlanes": [
+        [0, 1],
+        [2, 1],
+        [4, -1]
+      ],
+      "lanes": [[3.75]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.0625,
+      "workers": [
+        {
+          "error": 0.0625,
+          "maximum": 0.25,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    }
+  ]
+}
