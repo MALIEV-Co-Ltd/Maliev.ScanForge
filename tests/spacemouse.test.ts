@@ -326,7 +326,9 @@ describe("SpaceMouse HID input", () => {
       dominantAxis: true,
     });
     expect(filtered.translation[0]).toBe(0);
-    expect(filtered.translation[1]).toBeCloseTo(0.46 / 0.96);
+    expect(filtered.translation[1]).toBeCloseTo(
+      (0.46 / 0.96) * DEFAULT_SPACE_MOUSE.translationSpeed,
+    );
     expect(filtered.translation[2]).toBe(0);
     expect(filtered.rotation).toEqual([0, 0, 0]);
     expect(motion.rotation[0]).toBe(1);

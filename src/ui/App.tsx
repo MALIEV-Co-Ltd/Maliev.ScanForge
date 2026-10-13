@@ -4885,7 +4885,7 @@ export function App() {
               label="Translation sensitivity"
               value={spaceMousePreferences.translationSpeed}
               min={0}
-              max={5}
+              max={20}
               step={0.1}
               onChange={(translationSpeed) =>
                 updateSpaceMousePreferences({
@@ -4897,7 +4897,7 @@ export function App() {
               label="Rotation sensitivity"
               value={spaceMousePreferences.rotationSpeed}
               min={0}
-              max={5}
+              max={20}
               step={0.1}
               onChange={(rotationSpeed) =>
                 updateSpaceMousePreferences({

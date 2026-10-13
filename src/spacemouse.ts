@@ -10,8 +10,8 @@ export interface SpaceMousePreferences {
   rotationEnabled: boolean;
 }
 export const DEFAULT_SPACE_MOUSE: SpaceMousePreferences = {
-  translationSpeed: 1,
-  rotationSpeed: 1,
+  translationSpeed: 3,
+  rotationSpeed: 3,
   deadzone: 0.04,
   dominantAxis: false,
   rotationEnabled: true,

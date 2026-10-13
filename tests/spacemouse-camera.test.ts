@@ -91,7 +91,10 @@ describe("SpaceMouse to camera workflow", () => {
       };
       for (const axis of ["pan", "zoom", "orbit"] as const) {
         expect(step(axis, 0)).toBeCloseTo(0);
-        expect(step(axis, 5) / step(axis, 0.1)).toBeCloseTo(50);
+        expect(step(axis, 20) / step(axis, 0.1)).toBeCloseTo(200);
+        expect(
+          step(axis, DEFAULT_SPACE_MOUSE.translationSpeed) / step(axis, 1),
+        ).toBeCloseTo(3);
       }
     },
   );
