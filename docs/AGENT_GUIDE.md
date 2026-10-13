@@ -223,6 +223,10 @@ and radius are millimetres; sampling accepts 1 to 100,000 vertices. Optional
 `selectionOnly:true` marks vertices incident to selected moving triangles and
 skips sampling, matching the recovered selection-only preparation path.
 The GUI's **Refine indexed mesh surfaces** action uses the same request builder.
+Full-resolution owner STL captures additionally verify source normals/sampling
+and refinement results with two logical lanes; the shared operation is validated
+with two actual browser CPU workers. See `NATIVE_ALIGNMENT_STL.md` for coverage,
+limits and measured latency.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;

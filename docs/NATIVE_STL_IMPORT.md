@@ -188,6 +188,7 @@ through the existing import callback and preserves input versus accepted facet
 counts. Preview imports remain bounded triangle samples without full topology.
 Progress covers reading and mapping; cancellation rejects before publishing data.
 
-Complete import-entry/finalizer execution and native alignment outputs for these
-STL sources remain required. Reader captures certify mapped geometry, not
-finalization or alignment on the owner's STL scans.
+Complete import-entry/finalizer execution remains required. Reader captures certify
+mapped geometry, rather than the full native application lifecycle. Native source
+preparation and two-lane refinement on these STL sources are now captured and
+verified separately in `NATIVE_ALIGNMENT_STL.md`.
