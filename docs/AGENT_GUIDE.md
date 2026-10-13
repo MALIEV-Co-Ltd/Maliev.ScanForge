@@ -189,8 +189,10 @@ PLY mesh imports retain original vertex order and triangle indices. `project_get
 and `object_get` report `indexedTopology:{vertices,triangles}` when that data is
 available. `object_get` with `includeGeometry:true` includes `indexedMesh` arrays
 in its geometry artifact. JSON and binary project exports preserve this topology,
-including undo/redo snapshots. Geometry changes invalidate it; metadata edits
-retain it. A malformed or stale indexed topology in an imported project is
+including undo/redo snapshots. Whole-object transforms through the GUI or
+`mesh_transform` retain vertex IDs and triangle connectivity while transforming
+all indexed coordinates, including unused vertices. Other geometry edits
+invalidate it; metadata edits retain it. A malformed or stale indexed topology in an imported project is
 rejected. Older projects and other mesh formats can lack this optional metadata.
 
 After the import job succeeds, obtain its `entityId` and call `mesh_analyze`. To reduce a copy:

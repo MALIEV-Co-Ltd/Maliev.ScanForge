@@ -1,6 +1,10 @@
 import { expect, it, vi, afterEach } from "vitest";
 import type { Entity, Project } from "../src/types";
-import { indexedMeshMatches, retainIndexedMesh } from "../src/indexed-mesh";
+import {
+  indexedMeshMatches,
+  retainIndexedMesh,
+  transformIndexedMesh,
+} from "../src/indexed-mesh";
 import { expandPlyTopology } from "../src/ply-topology";
 import {
   parseProject,
@@ -39,6 +43,27 @@ function project(entities: Entity[]): Project {
     entities,
   };
 }
+it("preserves original vertex IDs, unused vertices and undo coordinates through transforms", () => {
+  const before = mesh();
+  const original = Array.from(before.indexedMesh!.vertices);
+  const transformed = transformIndexedMesh(
+    before,
+    [12, -8, 3],
+    [17, 32, -81],
+    1.5,
+  );
+  expect(
+    indexedMeshMatches(transformed.indexedMesh, transformed.positions),
+  ).toBe(true);
+  expect(transformed.indexedMesh!.triangles).toBe(
+    before.indexedMesh!.triangles,
+  );
+  expect(transformed.indexedMesh!.vertices.length).toBe(original.length);
+  expect(Array.from(before.indexedMesh!.vertices)).toEqual(original);
+  expect(Array.from(transformed.indexedMesh!.vertices).slice(0, 3)).not.toEqual(
+    original.slice(0, 3),
+  );
+});
 it("retains metadata edits and invalidates geometry changes without changing undo snapshots", () => {
   const before = mesh();
   const renamed = { ...before, name: "Renamed" };
@@ -147,6 +172,21 @@ it("retains indexed import topology and exposes counts through the MCP boundary"
     ((await operations.project_get({}, context)) as { objects: unknown[] })
       .objects[0],
   ).toMatchObject({ indexedTopology: { vertices: 5, triangles: 2 } });
+  await operations.mesh_transform(
+    {
+      entityId: entities[0].id,
+      translation: [1, 2, 3],
+      rotation: [7, 13, 21],
+      scale: 2,
+    },
+    context,
+  );
+  expect(
+    indexedMeshMatches(entities[0].indexedMesh, entities[0].positions),
+  ).toBe(true);
+  expect(entities[0].indexedMesh!.triangles).toBe(
+    source.indexedMesh!.triangles,
+  );
 });
 it("applies import units and origin placement to render and indexed coordinates in the real worker", async () => {
   const messages: {

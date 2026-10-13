@@ -155,7 +155,6 @@ import {
   fitSphere,
   meshStats,
   sectionMesh,
-  transformPositions,
 } from "../geometry";
 import {
   download,
@@ -164,7 +163,7 @@ import {
   validatePositions,
 } from "../io";
 import { importScan } from "../import-client";
-import { retainIndexedMesh } from "../indexed-mesh";
+import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
 import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
@@ -2882,14 +2881,14 @@ export function App() {
         updateSelected(result);
         setMessage("Transform applied · exact CAD retained");
       } else {
-        const positions = transformPositions(
-          selected.positions,
+        const transformed = transformIndexedMesh(
+          selected,
           translation,
           rotation,
           scale,
         );
         updateSelected({
-          positions,
+          ...transformed,
           planeFrame: selected.planeFrame
             ? transformPlaneFrame(
                 selected.planeFrame,

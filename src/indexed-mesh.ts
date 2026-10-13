@@ -1,4 +1,34 @@
-import type { Entity, IndexedMesh, Positions } from "./types";
+import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
+import { transformPositions } from "./geometry";
+
+/** Transform coordinates without changing source vertex IDs or face connectivity. */
+export function transformIndexedMesh(
+  entity: Entity,
+  translation: Vec3,
+  rotation: Vec3,
+  scale: number,
+): Pick<Entity, "positions" | "indexedMesh"> {
+  const positions = transformPositions(
+    entity.positions,
+    translation,
+    rotation,
+    scale,
+  );
+  const indexed = retainIndexedMesh(entity).indexedMesh;
+  if (!indexed) return { positions, indexedMesh: undefined };
+  // Match render rounding even when project JSON supplied a different buffer type.
+  const source =
+    positions instanceof Float32Array
+      ? new Float32Array(indexed.vertices)
+      : Array.from(indexed.vertices);
+  return {
+    positions,
+    indexedMesh: {
+      vertices: transformPositions(source, translation, rotation, scale),
+      triangles: indexed.triangles,
+    },
+  };
+}
 
 export function indexedMeshMatches(
   value: unknown,

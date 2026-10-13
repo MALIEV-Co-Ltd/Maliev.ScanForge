@@ -221,11 +221,12 @@ try {
     rotation: [0, 0, 0],
     scale: 1,
   });
-  assert.equal(
+  assert.deepEqual(
     (await call("object_get", { entityId: imported.id })).result
       .indexedTopology,
-    undefined,
+    { vertices: 4, triangles: 1 },
   );
+  assertTopology(await geometry(imported.id));
   await mutate("history_undo", {});
   assertTopology(await geometry(imported.id));
   const saved = (await job(await call("project_export", { format: "project" })))
@@ -255,7 +256,7 @@ try {
     unitConversion: true,
     originPlacement: true,
     binaryPersistence: true,
-    editInvalidation: true,
+    transformTopologyRetention: true,
     undoRestoration: true,
     errors,
   };

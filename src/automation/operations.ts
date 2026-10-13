@@ -21,7 +21,6 @@ import { scanMeshCopy } from "../scan-mesh-copy";
 import { partitionTriangles, selectionCount } from "../selection";
 import {
   meshStats,
-  transformPositions,
   fitPlane,
   fitSphere,
   fitCylinder,
@@ -35,7 +34,7 @@ import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 import { importScan } from "../import-client";
-import { retainIndexedMesh } from "../indexed-mesh";
+import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
@@ -802,15 +801,22 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const s = host.snapshot(),
         e = object(s, a.entityId);
       editable(e, true);
-      const positions = transformPositions(
-        e.positions,
+      const transformed = transformIndexedMesh(
+        e,
         a.translation,
         a.rotation,
         a.scale,
       );
       commit(
         c,
-        s.entities.map((x) => (x.id === e.id ? meshEdited(e, positions) : x)),
+        s.entities.map((x) =>
+          x.id === e.id
+            ? {
+                ...meshEdited(e, transformed.positions),
+                indexedMesh: transformed.indexedMesh,
+              }
+            : x,
+        ),
         "Transform mesh",
       );
       return { entityId: e.id };

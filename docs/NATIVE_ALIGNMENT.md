@@ -600,6 +600,14 @@ and JSON Blob saving uses bounded batches. Project loading rejects inconsistent
 indices or coordinates. MCP object inspection exposes counts and optional
 geometry artifacts with the original indices.
 
+Whole-object transforms now use the same indexed-coordinate helper in the GUI
+and MCP. The helper retains face indices and original vertex ordering (including
+unused vertices), applies the existing transform arithmetic to both coordinate
+buffers, and preserves pre-transform undo snapshots. Focused and browser/MCP
+checks cover coordinate consistency, transformed topology inspection, undo and
+binary project persistence. This verifies topology preservation, not native
+surface-refinement parity after a transform.
+
 The shared alignment worker must next consume these retained buffers before this
 controller can replace the application's surface refinement. Full Align parity
 and multicore execution remain unproven.
