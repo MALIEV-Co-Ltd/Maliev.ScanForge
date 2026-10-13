@@ -3,6 +3,7 @@ import http from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import applicationCatalog from "../src/automation/catalog.json";
 // The Node executable is intentionally JavaScript, independent of the browser bundle.
 // @ts-expect-error Node script has no browser TypeScript declaration.
 import { createBridge, createMcpServer } from "../scripts/mcp-server.mjs";
@@ -15,6 +16,29 @@ type Bridge = {
   close: () => Promise<void>;
 };
 const resources: Array<{ close: () => Promise<void> }> = [];
+it("advertises every application tool through the official MCP SDK", async () => {
+  const server = createMcpServer(
+    { dispatch: async () => ({ ok: true }), close: async () => {} },
+    applicationCatalog,
+    "# Agent guide",
+  );
+  const client = new Client({ name: "catalog-contract-test", version: "1" });
+  resources.push(server, client);
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await server.connect(b);
+  await client.connect(a);
+  const { tools } = await client.listTools();
+  expect(tools.map((tool) => tool.name)).toEqual(
+    applicationCatalog.map((tool) => tool.name),
+  );
+  expect(tools.every((tool) => tool.inputSchema.type === "object")).toBe(true);
+  expect(
+    tools.find((tool) => tool.name === "selection_set")?.inputSchema,
+  ).toEqual(
+    applicationCatalog.find((tool) => tool.name === "selection_set")
+      ?.inputSchema,
+  );
+});
 afterEach(async () => {
   for (const resource of resources.splice(0).reverse()) await resource.close();
 });

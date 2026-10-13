@@ -15,7 +15,7 @@
     "build": "tsc --noEmit && vite build",
     "postbuild": "node scripts/offline-manifest.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --maxWorkers=1",
+    "test": "vitest run --maxWorkers=1 --exclude **/.resources/**",
     "test:cad": "node --max-old-space-size=768 tests/kernel-smoke.mjs",
     "format:check": "prettier --check .",
     "preview": "vite preview --host 127.0.0.1",
