@@ -13,8 +13,8 @@ describe("six-axis navigation", () => {
       { translation: [1, 0, 0], rotation: [0, 0, 0] },
       0.05,
     );
-    expect(camera.position.x).toBeCloseTo(-0.4);
-    expect(target.x).toBeCloseTo(-0.4);
+    expect(camera.position.x).toBeCloseTo(-0.8);
+    expect(target.x).toBeCloseTo(-0.8);
     expect(camera.position.distanceTo(target)).toBeCloseTo(10);
   });
   it("rotates around the target while preserving radius and normalizing up", () => {
@@ -42,7 +42,7 @@ describe("six-axis navigation", () => {
       { translation: [0, 1, 0], rotation: [0, 0, 0] },
       4,
     );
-    expect(target.length()).toBeCloseTo(0.4);
+    expect(target.length()).toBeCloseTo(0.8);
     expect(() =>
       navigateCamera(
         camera,
@@ -68,9 +68,9 @@ describe("six-axis navigation", () => {
         0.05,
       );
       const expected = [
-        new THREE.Vector3(-0.4, 0, 0),
-        new THREE.Vector3(0, 0, 0.4),
-        new THREE.Vector3(0, -0.4, 0),
+        new THREE.Vector3(-0.8, 0, 0),
+        new THREE.Vector3(0, 0, 0.8),
+        new THREE.Vector3(0, -0.8, 0),
       ][axis];
       expect(target.distanceTo(expected)).toBeLessThan(1e-10);
       expect(
@@ -95,7 +95,7 @@ describe("six-axis navigation", () => {
         new THREE.Vector3(0, 0, -1),
         new THREE.Vector3(0, 1, 0),
       ][axis];
-      const expected = new THREE.Quaternion().setFromAxisAngle(basis, -0.07);
+      const expected = new THREE.Quaternion().setFromAxisAngle(basis, -0.21);
       navigateCamera(
         camera,
         target,

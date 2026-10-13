@@ -86,7 +86,7 @@ describe("camera projection and view cube", () => {
       { translation: [0, 1, 0], rotation: [0, 0, 0] },
       0.05,
     );
-    expect(camera.zoom).toBeCloseTo(Math.exp(-0.04), 12);
+    expect(camera.zoom).toBeCloseTo(Math.exp(-0.08), 12);
     expect(camera.position.equals(before)).toBe(true);
     expect(target.length()).toBe(0);
     navigateCamera(
@@ -95,7 +95,7 @@ describe("camera projection and view cube", () => {
       { translation: [1, 0, 0], rotation: [0, 0, 0] },
       0.05,
     );
-    expect(target.x).toBeCloseTo(-4 / Math.exp(-0.04), 12);
+    expect(target.x).toBeCloseTo(-8 / Math.exp(-0.08), 12);
     expect(camera.position.x).toBeCloseTo(target.x, 12);
   });
   it.each([0.4, 1, 2.5])(

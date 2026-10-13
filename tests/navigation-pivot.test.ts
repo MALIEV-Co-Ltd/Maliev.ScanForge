@@ -96,7 +96,7 @@ it.each([false, true])(
     const targetBefore = target.clone();
     const orbit = new THREE.Quaternion().setFromAxisAngle(
       new THREE.Vector3(0, 1, 0),
-      -0.07,
+      -0.21,
     );
     navigateCamera(
       camera,
@@ -124,7 +124,7 @@ it("simultaneously pans and orbits about a nonzero object pivot without moving i
   camera.lookAt(target);
   const orbit = new THREE.Quaternion().setFromAxisAngle(
     new THREE.Vector3(1, 0, 0),
-    -0.07,
+    -0.21,
   );
   navigateCamera(
     camera,
@@ -135,12 +135,12 @@ it("simultaneously pans and orbits about a nonzero object pivot without moving i
   );
   expect(
     camera.position.distanceTo(
-      new THREE.Vector3(-0.4, 0, 10).applyQuaternion(orbit).add(pivot),
+      new THREE.Vector3(-0.8, 0, 10).applyQuaternion(orbit).add(pivot),
     ),
   ).toBeLessThan(1e-10);
   expect(
     target.distanceTo(
-      new THREE.Vector3(-0.4, 0, 0).applyQuaternion(orbit).add(pivot),
+      new THREE.Vector3(-0.8, 0, 0).applyQuaternion(orbit).add(pivot),
     ),
   ).toBeLessThan(1e-10);
   expect(pivot.toArray()).toEqual([20, 30, 40]);

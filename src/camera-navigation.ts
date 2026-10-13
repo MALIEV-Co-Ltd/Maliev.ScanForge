@@ -50,6 +50,9 @@ export function configureNavigationSensitivity(
         camera.zoom;
 }
 import type { Motion6D } from "./spacemouse";
+// Rates are per second at sensitivity 1; persisted sensitivity multiplies them.
+const SPACE_MOUSE_TRANSLATION_RATE = 1.6;
+const SPACE_MOUSE_ROTATION_RATE = 4.2;
 /** SpaceMouse object navigation: move the camera opposite the cap so the model follows the hand. */
 export function navigateCamera(
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
@@ -79,7 +82,11 @@ export function navigateCamera(
   if (camera instanceof THREE.OrthographicCamera) {
     camera.zoom = Math.max(
       1e-6,
-      Math.min(1e6, camera.zoom * Math.exp(-motion.translation[1] * 0.8 * dt)),
+      Math.min(
+        1e6,
+        camera.zoom *
+          Math.exp(-motion.translation[1] * SPACE_MOUSE_TRANSLATION_RATE * dt),
+      ),
     );
     camera.updateProjectionMatrix();
   }
@@ -91,7 +98,7 @@ export function navigateCamera(
       camera instanceof THREE.OrthographicCamera ? 0 : motion.translation[1],
     )
     .addScaledVector(up, motion.translation[2])
-    .multiplyScalar(-distance * 0.8 * dt);
+    .multiplyScalar(-distance * SPACE_MOUSE_TRANSLATION_RATE * dt);
   camera.position.add(delta);
   target.add(delta);
   const rotation = right
@@ -101,7 +108,7 @@ export function navigateCamera(
   if (rotation.lengthSq() > 0) {
     const quaternion = new THREE.Quaternion().setFromAxisAngle(
       rotation.clone().normalize(),
-      -rotation.length() * 1.4 * dt,
+      -rotation.length() * SPACE_MOUSE_ROTATION_RATE * dt,
     );
     // A scene pivot stays fixed even when simultaneous translation pans the view.
     const center = pivot ?? target;

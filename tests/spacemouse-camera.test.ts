@@ -12,6 +12,61 @@ import {
 import { navigateCamera } from "../src/camera-navigation";
 
 describe("SpaceMouse to camera workflow", () => {
+  it.each([false, true])(
+    "gives sensitivity 4 faster orbit and pan from Pro HID reports (%s orthographic)",
+    (orthographic) => {
+      const spec = SPACE_MOUSE_DEVICES.find(
+        (device) => device.productId === 0xc62b,
+      )!;
+      const data = new DataView(new ArrayBuffer(6));
+      data.setInt16(0, 70, true);
+      const preferences = {
+        ...DEFAULT_SPACE_MOUSE,
+        translationSpeed: 4,
+        rotationSpeed: 4,
+      };
+      const rotation = decodeSpaceMouseReport(spec, {
+        reportId: 2,
+        data,
+      })!.rotation!;
+      for (const frames of [15, 30]) {
+        const camera = orthographic
+          ? new THREE.OrthographicCamera(-50, 50, 50, -50)
+          : new THREE.PerspectiveCamera();
+        camera.position.set(0, 0, 100);
+        camera.lookAt(0, 0, 0);
+        const target = new THREE.Vector3();
+        const before = camera.quaternion.clone();
+        const motion = filteredMotion(
+          { translation: [0, 0, 0], rotation },
+          preferences,
+        );
+        for (let frame = 0; frame < frames; frame++)
+          navigateCamera(camera, target, motion, 0.25 / frames);
+        // A modest 20% cap deflection now rotates 40 degrees in a quarter second.
+        expect(before.angleTo(camera.quaternion)).toBeCloseTo(0.7);
+        expect(camera.position.distanceTo(target)).toBeCloseTo(100);
+      }
+      const camera = orthographic
+        ? new THREE.OrthographicCamera(-50, 50, 50, -50)
+        : new THREE.PerspectiveCamera();
+      camera.position.set(0, 0, 100);
+      camera.lookAt(0, 0, 0);
+      const target = new THREE.Vector3();
+      const translation = decodeSpaceMouseReport(spec, {
+        reportId: 1,
+        data,
+      })!.translation!;
+      const motion = filteredMotion(
+        { translation, rotation: [0, 0, 0] },
+        preferences,
+      );
+      navigateCamera(camera, target, motion, 0.05);
+      expect(target.x).toBeCloseTo(
+        -(orthographic ? 50 : 100) * (2 / 3) * 1.6 * 0.05,
+      );
+    },
+  );
   it.each([-1, 1])(
     "keeps Pro pitch continuous across packet layouts, with mixed motion (%s)",
     (direction) => {
@@ -24,7 +79,7 @@ describe("SpaceMouse to camera workflow", () => {
         camera.lookAt(0, 0, 0);
         const target = new THREE.Vector3();
         let translation: [number, number, number] = [0, 0, 0];
-        for (let frame = 0; frame < 30; frame++) {
+        for (let frame = 0; frame < 10; frame++) {
           const combined = frame % 2 === 0;
           const data = new DataView(new ArrayBuffer(combined ? 12 : 6));
           if (combined) data.setInt16(2, depth, true);
@@ -50,7 +105,7 @@ describe("SpaceMouse to camera workflow", () => {
           DEFAULT_SPACE_MOUSE,
         ).translation[1];
         expect(camera.zoom).toBeCloseTo(
-          Math.exp(-depthSpeed * 0.8 * 0.016 * 30),
+          Math.exp(-depthSpeed * 1.6 * 0.016 * 10),
         );
       }
     },
