@@ -10,11 +10,22 @@ const sub = (a: number, b: number) => f(a - b);
 const dot = (a: number[], b: number[]) =>
   a[1] * b[1] + a[0] * b[0] + a[2] * b[2];
 
+/** Caller-owned scratch for synchronous leaf queries; never retain it in a hit. */
+export function createNoiseTriangleScratch() {
+  return {
+    u: [0, 0, 0],
+    v: [0, 0, 0],
+    q: [0, 0, 0],
+    closest: [0, 0, 0],
+    delta: [0, 0, 0],
+  };
+}
+
 /** Float32 edge differences, double barycentric arithmetic and staged Float32
  * closest-point storage match the native numerical leaf.
  */
 export function noiseTriangleDistance(
-  p: number[],
+  p: readonly number[],
   a: number[],
   b: number[],
   c: number[],
@@ -22,11 +33,15 @@ export function noiseTriangleDistance(
   closestOut?: number[],
   regionOut?: number[],
   cachedNormal?: readonly number[],
+  scratch = createNoiseTriangleScratch(),
 ): number {
   if (regionOut) regionOut[0] = 0;
-  const u = b.map((x, i) => sub(x, a[i]));
-  const v = c.map((x, i) => sub(x, a[i]));
-  const q = p.map((x, i) => sub(x, a[i]));
+  const { u, v, q, closest, delta } = scratch;
+  for (let i = 0; i < 3; i++) {
+    u[i] = sub(b[i], a[i]);
+    v[i] = sub(c[i], a[i]);
+    q[i] = sub(p[i], a[i]);
+  }
   // Face normals use double cross products, a Float32 length denominator and storage.
   let n = cachedNormal;
   if (!n) {
@@ -126,9 +141,9 @@ export function noiseTriangleDistance(
     else alongV();
   }
   if (regionOut) regionOut[0] = region;
-  const closest = a.map((x, i) => f(f(u[i] * s + x) + v[i] * t));
+  for (let i = 0; i < 3; i++) closest[i] = f(f(u[i] * s + a[i]) + v[i] * t);
   if (closestOut) for (let i = 0; i < 3; i++) closestOut[i] = closest[i];
-  const delta = p.map((x, i) => x - closest[i]);
+  for (let i = 0; i < 3; i++) delta[i] = p[i] - closest[i];
   const distance = Math.sqrt(
     delta[1] * delta[1] + delta[0] * delta[0] + delta[2] * delta[2],
   );

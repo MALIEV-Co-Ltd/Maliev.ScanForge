@@ -1,5 +1,8 @@
 import type { AlignmentQueryHit } from "./scan-native-alignment-query";
-import { noiseTriangleDistance } from "./scan-noise-deviation";
+import {
+  createNoiseTriangleScratch,
+  noiseTriangleDistance,
+} from "./scan-noise-deviation";
 import {
   queryNoiseOctree,
   type NoiseQueryNode,
@@ -37,6 +40,7 @@ export function createNativeAlignmentSurfaceQuery(
   const closest: number[] = [],
     region = [0];
   const normal = [0, 0, 0];
+  const scratch = createNoiseTriangleScratch();
   return (
     point: readonly number[],
     radius: number,
@@ -61,7 +65,7 @@ export function createNativeAlignmentSurfaceQuery(
           normal[axis] = surface.normals[triangle * 3 + axis];
         }
         const distance = noiseTriangleDistance(
-          [...point],
+          point,
           a,
           b,
           c,
@@ -69,6 +73,7 @@ export function createNativeAlignmentSurfaceQuery(
           closest,
           region,
           normal,
+          scratch,
         );
         if (Math.abs(distance) < searchRadius) {
           bestRegion = region[0];

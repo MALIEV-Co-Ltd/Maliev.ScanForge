@@ -75,3 +75,14 @@ it("uses the cached triangle normal for signed distance and orientation", () => 
   expect(hit?.normal).toEqual([0, 0, -1]);
   expect(hit?.closest).toEqual([0.5, 0.5, 0]);
 });
+
+it("keeps returned hits independent when subsequent queries reuse leaf scratch", () => {
+  const query = createNativeAlignmentSurfaceQuery(target());
+  const point = Object.freeze([0.5, 0.5, 0.125]);
+  const first = query(point, 10);
+  const saved = structuredClone(first);
+  expect(query([1, 0.25, -0.5], 10)?.closest).toEqual([1, 0.25, 0]);
+  expect(query([100, 100, 100], 0.01)).toBeUndefined();
+  expect(first).toEqual(saved);
+  expect(point).toEqual([0.5, 0.5, 0.125]);
+});

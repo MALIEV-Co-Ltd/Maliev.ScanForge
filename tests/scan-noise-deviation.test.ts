@@ -9,6 +9,7 @@ import selected1 from "./fixtures/noise-annular-selected-1.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import boundaryOff from "./fixtures/noise-annular-boundary-off.json";
 import {
+  createNoiseTriangleScratch,
   noiseTriangleDistance,
   compareNoiseSurface,
 } from "../src/scan-noise-deviation";
@@ -138,6 +139,31 @@ it("matches original native triangle-distance instructions across all projection
     ).toBe(sample.distance);
   }
   expect(regions.size).toBe(7);
+});
+
+it("reuses leaf scratch across native projection regions without changing outputs or inputs", () => {
+  const scratch = createNoiseTriangleScratch();
+  const closest: number[] = [],
+    region = [0];
+  for (const sample of [...native.samples, ...[...native.samples].reverse()]) {
+    const input = [...sample.p];
+    expect(
+      noiseTriangleDistance(
+        input,
+        sample.a,
+        sample.b,
+        sample.c,
+        sample.radius,
+        closest,
+        region,
+        undefined,
+        scratch,
+      ),
+    ).toBe(sample.distance);
+    expect(closest).toEqual(sample.closest);
+    expect(region[0]).toBe(sample.region);
+    expect(input).toEqual(sample.p);
+  }
 });
 
 it("measures original points against the preview surface rather than corresponding vertices", () => {

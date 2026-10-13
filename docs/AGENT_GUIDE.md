@@ -227,6 +227,9 @@ Full-resolution owner STL captures additionally verify source normals/sampling
 and refinement results with two logical lanes; the shared operation is validated
 with two actual browser CPU workers. See `NATIVE_ALIGNMENT_STL.md` for coverage,
 limits and measured latency.
+Refinement reuses worker-local triangle-query scratch without changing native
+arithmetic or the GUI/MCP operation contract; full-resolution STL comparisons
+still require exact native parameters, objective values, matrices and lane flags.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;

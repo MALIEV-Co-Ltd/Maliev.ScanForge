@@ -43,3 +43,26 @@ scan 3, excluding browser import. The serial scan-3 test took about 173 seconds
 including its import. These are different execution contexts and are not a
 controlled speedup benchmark. The remaining performance work includes target-query
 acceleration and source-preparation costs. No GPU execution is claimed.
+
+The target-query leaf now reuses five caller-owned scratch vectors per surface
+query adapter instead of allocating those vectors and copying the source point
+for every tested triangle. Float32 staging, double arithmetic, region masks,
+search order and strict radius improvement are unchanged. Returned hits own
+their closest-point arrays; scratch never escapes into a retained result.
+The shared GUI/MCP refinement and both CPU workers use this same query adapter;
+no operation parameters or admission limits change.
+
+After this change, all five full-resolution STL source/refinement comparisons
+pass together with exact native output. The serial scan-2 and scan-3 checks,
+including import, took approximately 41 and 78 seconds. A warmed one-million-call
+leaf benchmark on the retained projection samples measured 393–402 ms before
+and 60–81 ms with reused scratch, with identical accumulated output. This is a
+leaf benchmark, not a whole-alignment speedup guarantee.
+
+The same shared-operation browser validation after scratch reuse measured about
+16 seconds for scan 2 and 38 seconds for scan 3, excluding import. Both still
+execute two physical workers with two logical lanes, exactly match the native
+parameters/matrices/objective values, preserve indexed/render topology and fixed
+geometry, commit once and release all processing/alignment workers. These host
+observations improve on the earlier 44/119-second run but are not a controlled
+hardware benchmark or an instant-interaction claim.
