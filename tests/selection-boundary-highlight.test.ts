@@ -11,7 +11,8 @@ it("glows around the selection outline without glowing on the shared diagonal", 
       3,
     ),
   );
-  installSelectionBoundaryAttributes(geometry);
+  const segments = installSelectionBoundaryAttributes(geometry);
+  expect(segments).toHaveLength(24);
   const flags = geometry.getAttribute("processingBoundary");
   expect(Array.from(flags.array)).toEqual([
     1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0,

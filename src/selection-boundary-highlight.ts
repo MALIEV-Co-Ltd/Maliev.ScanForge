@@ -30,12 +30,22 @@ export function installSelectionBoundaryAttributes(
     }
   const barycentric = new Float32Array(positions.count * 3);
   const boundary = new Float32Array(positions.count * 3);
+  const segments: number[] = [];
   for (let i = 0; i < positions.count; i += 3) {
     const exposed = [
       edges.get(edgeKey(i + 1, i + 2)) === 1 ? 1 : 0,
       edges.get(edgeKey(i + 2, i)) === 1 ? 1 : 0,
       edges.get(edgeKey(i, i + 1)) === 1 ? 1 : 0,
     ];
+    for (let edge = 0; edge < 3; edge++) {
+      if (!exposed[edge]) continue;
+      for (const vertex of [i + ((edge + 1) % 3), i + ((edge + 2) % 3)])
+        segments.push(
+          positions.getX(vertex),
+          positions.getY(vertex),
+          positions.getZ(vertex),
+        );
+    }
     for (let vertex = 0; vertex < 3; vertex++) {
       barycentric[(i + vertex) * 3 + vertex] = 1;
       boundary.set(exposed, (i + vertex) * 3);
@@ -49,4 +59,5 @@ export function installSelectionBoundaryAttributes(
     "processingBoundary",
     new THREE.BufferAttribute(boundary, 3),
   );
+  return segments;
 }

@@ -2290,8 +2290,10 @@ export class Viewport {
                 polygonOffsetUnits: -1,
               }),
             );
-        this.selectionProcessing?.install(overlay.material, geometry);
+        const processingOutline =
+          this.selectionProcessing?.install(overlay.material, geometry) ?? [];
         this.triangleSelection.add(overlay);
+        this.triangleSelection.add(...processingOutline);
       }
     }
     this.applyClipPlanes();

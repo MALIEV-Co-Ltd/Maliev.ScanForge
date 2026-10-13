@@ -1,21 +1,39 @@
 import * as THREE from "three";
+import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
+import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { installSelectionBoundaryAttributes } from "./selection-boundary-highlight";
 
-/** A flowing highlight confined to the existing selected geometry. */
+/** A uniformly pulsing boundary with a steady translucent selection interior. */
 export class SelectionProcessingHighlight {
   private readonly active = { value: false };
   private readonly time = { value: 0 };
   private reducedMotion = false;
+  private readonly outlines = new Set<LineSegments2>();
+
+  private updateOutlines() {
+    const pulse = this.reducedMotion
+      ? 0.5
+      : 0.5 + 0.5 * Math.cos(this.time.value * 3.0);
+    for (const line of this.outlines) {
+      line.visible = this.active.value;
+      const { width, opacity } = line.userData;
+      line.material.linewidth = width;
+      line.material.opacity = opacity * (0.5 + 0.5 * pulse);
+    }
+  }
 
   setActive(active: boolean, reducedMotion = false) {
     this.active.value = active;
     this.reducedMotion = reducedMotion;
     if (!active || reducedMotion) this.time.value = 0;
+    this.updateOutlines();
   }
 
   update(seconds: number): boolean {
     if (!this.active.value || this.reducedMotion) return false;
     this.time.value = seconds;
+    this.updateOutlines();
     return true;
   }
 
@@ -29,7 +47,40 @@ export class SelectionProcessingHighlight {
     const size = bounds.getSize(new THREE.Vector3());
     const scale = Math.max(size.x, size.y, size.z, 0.000001);
     const hasBoundary = material instanceof THREE.MeshBasicMaterial;
-    if (hasBoundary) installSelectionBoundaryAttributes(geometry);
+    const segments = hasBoundary
+      ? installSelectionBoundaryAttributes(geometry)
+      : [];
+    const lines: LineSegments2[] = [];
+    if (segments.length) {
+      for (const [width, opacity, color] of [
+        [20, 0.12, "#ff263f"],
+        [10, 0.32, "#ff263f"],
+        [3.5, 0.95, "#ffb3b9"],
+      ] as const) {
+        const lineGeometry = new LineSegmentsGeometry().setPositions(segments);
+        const lineMaterial = new LineMaterial({
+          color,
+          linewidth: width,
+          opacity,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: -2,
+          polygonOffsetUnits: -2,
+          toneMapped: false,
+        });
+        const line = new LineSegments2(lineGeometry, lineMaterial);
+        line.userData = { width, opacity };
+        line.renderOrder = 10 + lines.length;
+        this.outlines.add(line);
+        lineMaterial.addEventListener("dispose", () =>
+          this.outlines.delete(line),
+        );
+        lines.push(line);
+      }
+      this.updateOutlines();
+    }
     const boundaryVaryings = hasBoundary
       ? "\nvarying vec3 selectionBarycentric;\nvarying vec3 selectionBoundary;"
       : "";
@@ -64,11 +115,11 @@ export class SelectionProcessingHighlight {
           "#include <color_fragment>",
           `#include <color_fragment>
           if (selectionProcessing) {
-            float phase = dot(selectionPosition, vec3(6.0, 4.0, 3.0));
-            float flow = 0.5 + 0.5 * sin(phase - selectionProcessingTime * 1.8 + 0.6 * sin(selectionPosition.y * 7.0 + selectionProcessingTime));
+
+
             float pulse = 0.5 + 0.5 * sin(selectionProcessingTime * 2.4);
             vec3 brightRed = vec3(1.0, 0.055, 0.075);
-            float brightness = 0.25 + 0.55 * pulse + 0.20 * flow;
+            float brightness = 0.20;
             float rim = 0.0;
             ${
               hasBoundary
@@ -78,12 +129,13 @@ export class SelectionProcessingHighlight {
                 : ""
             }
             diffuseColor.rgb = mix(mix(diffuseColor.rgb, brightRed, brightness), vec3(1.0, 0.20, 0.23), rim * (0.65 + 0.35 * pulse));
-            diffuseColor.a *= mix(0.60 + 0.12 * flow + 0.12 * pulse, 1.0, rim);
+            diffuseColor.a *= mix(0.32, 0.70, rim);
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v3:${hasBoundary}`;
+      `selection-processing-red-v4:${hasBoundary}`;
+    return lines;
   }
 }

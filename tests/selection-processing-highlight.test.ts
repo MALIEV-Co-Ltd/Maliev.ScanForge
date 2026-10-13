@@ -8,7 +8,7 @@ it("animates only while processing and restores the unmodified selection shader 
     color: "#e44b5b",
     opacity: 0.7,
   });
-  const geometry = new THREE.BoxGeometry(20, 10, 5);
+  const geometry = new THREE.BoxGeometry(20, 10, 5).toNonIndexed();
   effect.install(material, geometry);
   const shader = {
     uniforms: {} as Record<string, { value: unknown }>,
@@ -38,6 +38,39 @@ it("animates only while processing and restores the unmodified selection shader 
   expect(shader.uniforms.selectionProcessing.value).toBe(true);
   expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
   expect(effect.update(4)).toBe(false);
+  geometry.dispose();
+  material.dispose();
+});
+
+it("pulses a wide outline independently of triangle size, hides it after processing, and releases disposed outlines", () => {
+  const effect = new SelectionProcessingHighlight();
+  const geometry = new THREE.PlaneGeometry(1, 1, 20, 20).toNonIndexed();
+  const material = new THREE.MeshBasicMaterial({ color: "#e44b5b" });
+  const lines = effect.install(material, geometry);
+  expect(lines).toHaveLength(3);
+  expect(lines.every((line) => !line.visible)).toBe(true);
+  // Only the perimeter is emitted, regardless of the dense interior triangles.
+  expect(lines[0].geometry.getAttribute("instanceStart").count).toBe(80);
+  effect.setActive(true);
+  expect(lines.every((line) => line.visible)).toBe(true);
+  const peakWidth = lines[0].material.linewidth;
+  const peakOpacity = lines[2].material.opacity;
+  effect.update(Math.PI / 3);
+  expect(lines[0].material.linewidth).toBe(peakWidth);
+  expect(peakOpacity).toBeGreaterThan(lines[2].material.opacity * 1.5);
+  effect.setActive(false);
+  expect(lines.every((line) => !line.visible)).toBe(true);
+  effect.setActive(true, true);
+  const staticWidth = lines[0].material.linewidth;
+  expect(effect.update(20)).toBe(false);
+  expect(lines[0].material.linewidth).toBe(staticWidth);
+  for (const line of lines) {
+    line.geometry.dispose();
+    line.material.dispose();
+  }
+  effect.setActive(false);
+  // Disposed outlines are no longer updated by later state changes.
+  expect(lines.every((line) => line.visible)).toBe(true);
   geometry.dispose();
   material.dispose();
 });
