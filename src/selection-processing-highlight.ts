@@ -157,28 +157,32 @@ export class SelectionProcessingHighlight {
           `#include <color_fragment>
           if (selectionProcessing) {
             diffuseColor.a *= 0.38;
+            float wireVisibility = 0.55 + 0.45 * cos(selectionProcessingTime * 3.0);
+            if (!selectionMotionEnabled) wireVisibility = 0.55;
             if (selectionSmoothing) {
               float radius = length(selectionPosition) / selectionRadius;
               float travel = fract(selectionProcessingTime / 1.8) * 1.4 - 0.2;
               float wave = exp(-pow((radius - travel) / 0.18, 2.0));
               wave *= smoothstep(-0.2, 0.05, travel) * (1.0 - smoothstep(0.95, 1.2, travel));
               if (!selectionMotionEnabled) wave = 0.4;
-              float wire = 0.0;
+              wireVisibility = wave;
+              diffuseColor.a = opacity * (0.14 + 0.48 * wave);
+            }
+            float wire = 0.0;
               ${
                 hasBoundary
                   ? `vec3 edgeDistance = selectionBarycentric / max(fwidth(selectionBarycentric), vec3(0.0001));
-              wire = 1.0 - smoothstep(0.5, 1.2, min(edgeDistance.x, min(edgeDistance.y, edgeDistance.z)));`
+              wire = 1.0 - smoothstep(0.15, 0.65, min(edgeDistance.x, min(edgeDistance.y, edgeDistance.z)));`
                   : ""
               }
-              diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.055, 0.060, 0.070), wire);
-              diffuseColor.a = opacity * mix(0.14 + 0.48 * wave, 0.85 * wave, wire);
-            }
+            diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.018, 0.023, 0.030), wire);
+            diffuseColor.a = mix(diffuseColor.a, opacity * 0.95 * wireVisibility, wire);
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v7:${hasBoundary}`;
+      `selection-processing-red-v8:${hasBoundary}`;
     return lines;
   }
 }

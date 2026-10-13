@@ -2,6 +2,44 @@ import { expect, it } from "vitest";
 import * as THREE from "three";
 import { SelectionProcessingHighlight } from "../src/selection-processing-highlight";
 
+it("keeps dark fine wireframe available for every processing mode, independently of the smoothing wave", () => {
+  const effect = new SelectionProcessingHighlight();
+  const geometry = new THREE.PlaneGeometry(4, 4, 2, 2).toNonIndexed();
+  const material = new THREE.MeshBasicMaterial({ color: "#e44b5b" });
+  const lines = effect.install(material, geometry);
+  const shader = {
+    uniforms: {} as Record<string, { value: unknown }>,
+    vertexShader: THREE.ShaderLib.basic.vertexShader,
+    fragmentShader: THREE.ShaderLib.basic.fragmentShader,
+  };
+  material.onBeforeCompile(
+    shader as THREE.WebGLProgramParametersWithUniforms,
+    {} as THREE.WebGLRenderer,
+  );
+  // The common wire pass follows the closed smoothing branch. A mode switch
+  // changes its visibility timing without removing the triangle edges.
+  expect(shader.fragmentShader).toMatch(
+    /diffuseColor\.a = opacity \* \(0\.14 \+ 0\.48 \* wave\);\s*}\s*float wire = 0\.0;/,
+  );
+  expect(shader.fragmentShader).toContain("smoothstep(0.15, 0.65,");
+  expect(shader.fragmentShader).toContain("vec3(0.018, 0.023, 0.030)");
+  for (const mode of ["boundary", "smoothing"] as const) {
+    effect.setActive(true, false, mode);
+    expect(shader.uniforms.selectionProcessing.value).toBe(true);
+    expect(shader.uniforms.selectionSmoothing.value).toBe(mode === "smoothing");
+    expect(effect.update(100)).toBe(true);
+    effect.setActive(false);
+    expect(shader.uniforms.selectionProcessing.value).toBe(false);
+    expect(lines.every((line) => !line.visible)).toBe(true);
+  }
+  lines.forEach((line) => {
+    line.geometry.dispose();
+    line.material.dispose();
+  });
+  material.dispose();
+  geometry.dispose();
+});
+
 it("animates only while processing and restores the unmodified selection shader path afterwards", () => {
   const effect = new SelectionProcessingHighlight();
   const material = new THREE.MeshBasicMaterial({
