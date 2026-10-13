@@ -8,12 +8,12 @@ for (let value = 0; value < 256; value++) {
   linearChannels[value] = channelColor.r;
 }
 
-/** Unlit colors on the original surface, independently owned by this overlay. */
+/** Lit deviation colors on the original surface, independently owned by this overlay. */
 export function createNoiseComparisonOverlay(
   positions: Positions,
   rgb: Uint8Array,
   hidden: readonly number[] = [],
-): THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial> {
+): THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial> {
   if (
     !positions.length ||
     positions.length % 9 ||
@@ -53,9 +53,16 @@ export function createNoiseComparisonOverlay(
   }
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
-  const material = new THREE.MeshBasicMaterial({
+  geometry.computeVertexNormals();
+  const material = new THREE.MeshStandardMaterial({
+    // Leave headroom for the viewport's key/fill lights so saturated colors
+    // retain face-to-face shading instead of clipping to a flat bright patch.
+    color: new THREE.Color().setScalar(0.5),
     vertexColors: true,
     side: THREE.DoubleSide,
+    roughness: 0.85,
+    metalness: 0,
+    flatShading: true,
     toneMapped: false,
   });
   const mesh = new THREE.Mesh(geometry, material);

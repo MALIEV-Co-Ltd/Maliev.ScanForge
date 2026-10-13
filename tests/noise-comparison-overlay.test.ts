@@ -10,13 +10,20 @@ const rgb = new Uint8Array([
   0, 153, 0, 153, 76, 0, 0, 76, 153, 50, 50, 50, 79, 0, 0, 0, 0, 79,
 ]);
 afterEach(() => vi.unstubAllGlobals());
-it("owns original coordinates and exact sRGB bytes as linear unlit vertex colors", () => {
+it("owns original coordinates and exact sRGB bytes with lit, matte surface shading", () => {
   const overlay = createNoiseComparisonOverlay(positions, rgb);
   try {
-    expect(overlay.material).toBeInstanceOf(THREE.MeshBasicMaterial);
+    expect(overlay.material).toBeInstanceOf(THREE.MeshStandardMaterial);
     expect(overlay.material.toneMapped).toBe(false);
     expect(overlay.material.side).toBe(THREE.DoubleSide);
     expect(overlay.material.vertexColors).toBe(true);
+    expect(overlay.material.color.r).toBe(0.5);
+    expect(overlay.material.roughness).toBe(0.85);
+    expect(overlay.material.metalness).toBe(0);
+    const normals = overlay.geometry.getAttribute("normal");
+    expect(normals.count).toBe(positions.length / 3);
+    expect(Array.from(normals.array).every(Number.isFinite)).toBe(true);
+    expect(normals.getZ(0)).toBeCloseTo(1);
     const p = overlay.geometry.getAttribute("position"),
       c = overlay.geometry.getAttribute("color");
     expect(p.array).not.toBe(positions);
