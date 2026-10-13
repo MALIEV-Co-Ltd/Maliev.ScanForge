@@ -290,3 +290,47 @@ are released and processes exit. These are numerical caller captures, not native
 UI, scheduler, allocation-failure or complete registration parity. The outer
 identity-seed versus initialized-seed comparison and final transform inversion,
 followed by mesh/CAD refinement, remain pending before application integration.
+
+## Executed outer registration rejection gate
+
+Twenty executions of original `0x140aacbc0` now capture the complete outer
+registration outputs, including identity versus initialized seed comparison,
+final transform inversion, and rejection. Inputs reference the existing N-point
+fixture by name and Float32 SHA-256. The native boolean return is read from AL.
+An initial probe incorrectly interpreted the full RAX register and marked three
+rejected cases as accepted; that adapter was corrected and all cases recaptured
+before creating this committed reference.
+
+The line-fit gate uses enabled source points. If the fit succeeds, original
+`0x140b33900` computes RMS distance to that fitted line. The outer caller rejects
+only when this RMS is strictly below 1 mm. Rejection leaves the matrix identity
+and the supplied RMS output unwritten. Failed fits proceed, including zero and
+one point. Original two-point, collinear and coincident captures reject; accepted
+captures proceed through the original optimizer paths. This is a dimensional
+native rule, not a generic rank or collinearity check.
+
+`src/scan-native-alignment-line.ts` ports the ordered line-distance calculation:
+Y-then-X-then-Z projection, residual distance square root followed by resquaring,
+and sequential accumulation. All twenty original metric double bytes and gate
+outcomes are compared in `tests/scan-native-alignment-line.test.ts`. Supplied
+centers and directions remain original line-fit outputs; the PCA/eigen solver is
+not replaced by a different fit. Empty enabled sets return native Float32-max
+represented as a double. Independent finite-input and mask-length checks guard
+the port; mixed-mask behavior is not a new native capture.
+
+Forwarding observers copy position-independent original prologues and call the
+original line fit and metric. All twenty observed and unobserved complete wrapper
+outputs match in accepted flag, matrix bytes and RMS bytes. The mesh getter,
+allocation/CRT bindings, source auxiliary-state reset and cleanup adapters remain;
+these are original numerical instruction captures, not native UI exports.
+
+Line-fit Evidence is
+`ev_642eed72a562ec242b0847d78aef19a690dd1fc2367746a37dd36472a88da97f`;
+line-distance Evidence is
+`ev_2f6c2a7798a63f5116b58438f7ee7955600d1c7d97e26e7e2cea659150ebdce9`.
+REA recovered the native eigen solver at `0x140b31a10` (Evidence
+`ev_aece2c37738f9da53043ac5e16317ae5283b75f3cbeff39aec2b83575eccc245`)
+and line-center adjustment at `0x140b33b20` (Evidence
+`ev_5d56c135b260ef1fe9d367fb66350a2d1d92701de7ea46014367cbf905b77a31`).
+Their port and complete outer solver comparison remain pending before UI
+integration. This gate component does not claim complete registration parity.
