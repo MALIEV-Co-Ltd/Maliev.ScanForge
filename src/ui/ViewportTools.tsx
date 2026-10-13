@@ -130,6 +130,8 @@ export function ViewportTools(props: {
   spacing: number;
   snap: boolean;
   hasSelection: boolean;
+  normals?: boolean;
+  onNormals?: (value: boolean) => void;
   onFlat: (value: boolean) => void;
   onGrid: (value: boolean) => void;
   onSpacing: (value: number) => void;
@@ -140,12 +142,34 @@ export function ViewportTools(props: {
   const [settings, setSettings] = useState(false);
   return (
     <div className="viewport-tools-container">
+      {props.normals && (
+        <div
+          className="normals-legend"
+          role="status"
+          aria-label="Normals orientation legend"
+        >
+          <span style={{ color: "#b8b8b8" }}>● Front</span>
+          <span style={{ color: "#e85a78" }}>● Back</span>
+        </div>
+      )}
       <div
         className="viewport-tools"
         role="toolbar"
         aria-label="Viewport tools"
       >
         <div className="viewport-tool-group" role="group" aria-label="Shading">
+          <button
+            aria-label="Normals"
+            title="Normals: grey front faces, red back faces"
+            aria-pressed={!!props.normals}
+            onClick={() => props.onNormals?.(!props.normals)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 19 9 8l4 11z" fill="#b8b8b8" stroke="#64727a" />
+              <path d="m11 19 6-11 5 11z" fill="#e85a78" stroke="#933b50" />
+              <path d="M9 10V2m-3 3 3-3 3 3" fill="none" stroke="#b8b8b8" />
+            </svg>
+          </button>
           <button
             aria-label="Flat shading"
             title="Flat shading"

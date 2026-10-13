@@ -1,4 +1,5 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
+import { installNormalsDisplay } from "./normals-display";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
 import { applyMeshFocus } from "./mesh-focus-material";
@@ -206,6 +207,11 @@ export class Viewport {
   private disposed = false;
   private frame: number | null = null;
   private wireframe = false;
+  private normalsDisplay = false;
+  private normalsMaterials = new WeakMap<
+    THREE.MeshStandardMaterial,
+    ReturnType<typeof installNormalsDisplay>
+  >();
   private clipping = false;
   private pointer: { x: number; y: number; id: number; moved: boolean } | null =
     null;
@@ -1639,6 +1645,19 @@ export class Viewport {
       }
       item.color = entity.color;
       const material = item.mesh.material;
+      this.normalsMaterials ??= new WeakMap();
+      let updateNormals = this.normalsMaterials.get(material);
+      if (!updateNormals) {
+        updateNormals = installNormalsDisplay(material);
+        this.normalsMaterials.set(material, updateNormals);
+      }
+      material.userData.normalsMesh = entity.kind === "mesh";
+      material.userData.normalsInactive =
+        !!selectedId && entity.id !== selectedId;
+      updateNormals(
+        this.normalsDisplay && entity.kind === "mesh",
+        material.userData.normalsInactive,
+      );
       applyMeshFocus(
         material,
         entity.color,
@@ -1685,6 +1704,21 @@ export class Viewport {
       item.mesh.material.flatShading = enabled;
       item.mesh.material.needsUpdate = true;
     }
+    this.invalidate();
+  }
+
+  setNormalsDisplay(enabled: boolean): void {
+    this.normalsDisplay = enabled;
+    if (this.triangleSelection)
+      this.triangleSelection.visible = !enabled && !this.noiseComparison;
+    for (const child of this.noiseComparisonGroup?.children ?? [])
+      if (child instanceof THREE.Mesh)
+        this.normalsMaterials?.get(child.material)?.(enabled);
+    for (const { mesh } of this.objects.values())
+      this.normalsMaterials?.get(mesh.material)?.(
+        enabled && mesh.material.userData.normalsMesh,
+        mesh.material.userData.normalsInactive,
+      );
     this.invalidate();
   }
   setGridOptions(visible: boolean, spacing: number, snap: boolean): void {
@@ -1997,7 +2031,8 @@ export class Viewport {
         this.triangleSelection &&
         this.noiseComparison.selectionVisible !== undefined
       )
-        this.triangleSelection.visible = this.noiseComparison.selectionVisible;
+        this.triangleSelection.visible =
+          !this.normalsDisplay && this.noiseComparison.selectionVisible;
       this.noiseComparison = undefined;
     }
     if (this.noiseComparisonGroup) this.clearGroup(this.noiseComparisonGroup);
@@ -2015,6 +2050,10 @@ export class Viewport {
     const setBounds = display
       ? installDeviationHeatmap(overlay, display)
       : undefined;
+    this.normalsMaterials ??= new WeakMap();
+    const updateNormals = installNormalsDisplay(overlay.material);
+    this.normalsMaterials.set(overlay.material, updateNormals);
+    updateNormals(this.normalsDisplay);
     if (display && this.container)
       this.deviationCallouts = new DeviationCallouts(
         this.container,
@@ -2042,6 +2081,8 @@ export class Viewport {
 
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
+    this.triangleSelection.visible =
+      !this.normalsDisplay && !this.noiseComparison;
     // A selection reset can render one effect after the newly selected geometry.
     // Never upload stale triangle slots from the previous object.
     if (positions && mask && mask.length * 9 === positions.length) {
