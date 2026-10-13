@@ -164,6 +164,7 @@ import {
   validatePositions,
 } from "../io";
 import { importScan } from "../import-client";
+import { retainIndexedMesh } from "../indexed-mesh";
 import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
@@ -1699,6 +1700,7 @@ export function App() {
     });
   }
   function commit(next: Entity[], preserveSelectionFor?: string) {
+    next = next.map(retainIndexedMesh);
     const protectedObject = lockedObjectEdit(entities, next);
     if (protectedObject) {
       setError(`Unlock ${protectedObject.name} before editing or deleting it.`);
@@ -2484,8 +2486,12 @@ export function App() {
           let positions;
           let pointNormals: number[] | undefined;
           let scanSource: ScanSource | undefined;
+          let indexedMesh: Entity["indexedMesh"];
           try {
             positions = await importScan(file, {
+              onIndexedMesh: (mesh) => {
+                indexedMesh = mesh;
+              },
               unit,
               placeAtOrigin: true,
               previewTriangles: previewImport ? 250_000 : undefined,
@@ -2524,6 +2530,7 @@ export function App() {
             opacity: 1,
             source: file.name,
             scanSource,
+            indexedMesh,
           };
         }
         pendingImportFit.current = entity.id;

@@ -1,4 +1,5 @@
 import { parseMesh } from "./io";
+import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 
 export interface ScanFile {
   readonly size: number;
@@ -6,6 +7,7 @@ export interface ScanFile {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 export interface ScanImportOptions {
+  onIndexedMesh?: (mesh: ReturnType<typeof parsePlyTopology>) => void;
   onPointCloud?: (cloud: { normals?: Float32Array }) => void;
   onProgress?: (fraction: number) => void;
   signal?: AbortSignal;
@@ -110,7 +112,11 @@ export async function readScan(
     );
   const buffer = await file.arrayBuffer();
   checkAbort(options.signal);
-  const positions = parseMesh(buffer, extension);
+  const topology = extension === "ply" ? parsePlyTopology(buffer) : undefined;
+  const positions = topology
+    ? expandPlyTopology(topology)
+    : parseMesh(buffer, extension);
+  if (topology) options.onIndexedMesh?.(topology);
   options.onSource?.({
     bytes: file.size,
     triangles: positions.length / 9,

@@ -1,6 +1,7 @@
 import { parseProject, validateProject } from "./io";
 import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
+import { retainIndexedMesh } from "./indexed-mesh";
 
 export interface ProjectSession {
   projectId?: string;
@@ -18,12 +19,18 @@ type Chunk = {
 type Ref = { chunk: number; type: "f32" | "f64" | "u32" | "text" };
 type RecordData = Omit<
   Entity,
-  "positions" | "edgePositions" | "brep" | "normals" | "meshSelection"
+  | "positions"
+  | "edgePositions"
+  | "brep"
+  | "normals"
+  | "meshSelection"
+  | "indexedMesh"
 > & {
   positions: Ref;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
+  indexedMesh?: { vertices: Ref; triangles: Ref };
   meshSelection?: {
     hidden: Ref;
     saved: { id: string; name: string; triangles: Ref }[];
@@ -58,7 +65,7 @@ export async function encodeProjectFile(
   const valueCache = new WeakMap<object, Ref>();
   let offset = 0;
   async function store(
-    value: Entity["positions"] | string,
+    value: Entity["positions"] | Uint32Array | string,
     integer = false,
   ): Promise<Ref> {
     const type =
@@ -108,6 +115,7 @@ export async function encodeProjectFile(
     return ref;
   }
   async function state(entities: Entity[]): Promise<number[]> {
+    entities = entities.map(retainIndexedMesh);
     validateProject({ ...session.project, entities });
     const ids: number[] = [];
     for (const entity of entities) {
@@ -121,6 +129,7 @@ export async function encodeProjectFile(
           brep,
           normals,
           meshSelection,
+          indexedMesh,
           ...metadata
         } = entity;
         const selection: RecordData["meshSelection"] = meshSelection
@@ -146,6 +155,14 @@ export async function encodeProjectFile(
           ...(brep !== undefined ? { brep: await store(brep) } : {}),
           ...(normals ? { normals: await store(normals) } : {}),
           ...(selection ? { meshSelection: selection } : {}),
+          ...(indexedMesh
+            ? {
+                indexedMesh: {
+                  vertices: await store(indexedMesh.vertices),
+                  triangles: await store(indexedMesh.triangles, true),
+                },
+              }
+            : {}),
         };
         const key = JSON.stringify(record);
         id = recordIds.get(key);
@@ -320,6 +337,12 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
     return {
       ...record,
       positions: read(record.positions),
+      indexedMesh: record.indexedMesh
+        ? {
+            vertices: read(record.indexedMesh.vertices),
+            triangles: read(record.indexedMesh.triangles),
+          }
+        : undefined,
       edgePositions: record.edgePositions
         ? read(record.edgePositions)
         : undefined,

@@ -4,6 +4,7 @@
 export function placeScanOnOrigin(
   positions: Float32Array,
   pointCloud = false,
+  companionVertices: Float32Array[] = [],
 ): Float32Array {
   if (!positions.length || positions.length % (pointCloud ? 3 : 9))
     throw new Error("Expected complete scan triangles for origin placement.");
@@ -27,5 +28,13 @@ export function placeScanOnOrigin(
   )
     throw new Error("Scan extent exceeds the supported coordinate range.");
   for (let i = 0; i < positions.length; i++) positions[i] -= center[i % 3];
+  for (const vertices of companionVertices)
+    for (let i = 0; i < vertices.length; i++) {
+      vertices[i] -= center[i % 3];
+      if (!Number.isFinite(vertices[i]))
+        throw new Error(
+          "Indexed scan coordinates exceed the supported coordinate range.",
+        );
+    }
   return positions;
 }

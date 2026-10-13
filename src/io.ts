@@ -8,6 +8,7 @@ import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
 import { validatePlaneFrame } from "./plane-frame";
+import { indexedMeshMatches, retainIndexedMesh } from "./indexed-mesh";
 
 /** Validate sparse triangle slots without allocating a mask proportional to mesh size. */
 export function validateMeshSelection(
@@ -164,6 +165,12 @@ export function validateProject(value: unknown): Project {
   const entities: Entity[] = input.entities.map((entity) => {
     validatePositions(entity.positions, entity.kind === "pointcloud");
     if (
+      entity.indexedMesh !== undefined &&
+      (entity.kind !== "mesh" ||
+        !indexedMeshMatches(entity.indexedMesh, entity.positions))
+    )
+      throw new Error("Invalid or stale indexed mesh topology.");
+    if (
       typeof entity.id !== "string" ||
       ids.has(entity.id) ||
       typeof entity.name !== "string" ||
@@ -239,6 +246,7 @@ export function validateProject(value: unknown): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      indexedMesh: entity.indexedMesh,
       normals: entity.normals,
       edgePositions: entity.edgePositions,
       planeFrame:
@@ -331,6 +339,7 @@ export function serializeProject(
   entities: Entity[],
   authoring?: Project["authoring"],
 ): string {
+  entities = entities.map(retainIndexedMesh);
   for (const entity of entities)
     if (entity.planeFrame !== undefined)
       validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
@@ -349,6 +358,12 @@ export function serializeProject(
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
       positions: Array.from(entity.positions),
+      indexedMesh: entity.indexedMesh
+        ? {
+            vertices: Array.from(entity.indexedMesh.vertices),
+            triangles: Array.from(entity.indexedMesh.triangles),
+          }
+        : undefined,
     })),
   });
 }
@@ -358,6 +373,7 @@ export async function serializeProjectBlob(
   entities: Entity[],
   authoring?: Project["authoring"],
 ): Promise<Blob> {
+  entities = entities.map(retainIndexedMesh);
   const parts: BlobPart[] = [
     `{"format":"maliev-scanforge","version":1,"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
@@ -366,6 +382,7 @@ export async function serializeProjectBlob(
       kernelId: _kernelId,
       fit: _fit,
       positions,
+      indexedMesh,
       ...metadata
     } = entities[index];
     validatePositions(positions, metadata.kind === "pointcloud");
@@ -387,7 +404,30 @@ export async function serializeProjectBlob(
       // Yield between bounded batches so project saving remains cancellable by navigation.
       await new Promise<void>((resolve) => setTimeout(resolve, 0));
     }
-    parts.push("]}");
+    parts.push("]");
+    if (indexedMesh) {
+      parts.push(',"indexedMesh":{');
+      for (const [field, values] of [
+        ["vertices", indexedMesh.vertices],
+        ["triangles", indexedMesh.triangles],
+      ] as const) {
+        parts.push(field === "triangles" ? "," : "", `"${field}":[`);
+        for (let start = 0; start < values.length; start += 65_536) {
+          const batch: string[] = [];
+          for (
+            let id = start;
+            id < Math.min(start + 65_536, values.length);
+            id++
+          )
+            batch.push(String(values[id]));
+          parts.push(start ? "," : "", new Blob([batch.join(",")]));
+          await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        }
+        parts.push("]");
+      }
+      parts.push("}");
+    }
+    parts.push("}");
   }
   parts.push("]}");
   return new Blob(parts, { type: "application/json" });

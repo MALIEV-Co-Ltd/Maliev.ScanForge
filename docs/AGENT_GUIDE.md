@@ -185,6 +185,14 @@ Upload bytes through `artifact_put` with the original filename, base64 content a
 
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
+PLY mesh imports retain original vertex order and triangle indices. `project_get`
+and `object_get` report `indexedTopology:{vertices,triangles}` when that data is
+available. `object_get` with `includeGeometry:true` includes `indexedMesh` arrays
+in its geometry artifact. JSON and binary project exports preserve this topology,
+including undo/redo snapshots. Geometry changes invalidate it; metadata edits
+retain it. A malformed or stale indexed topology in an imported project is
+rejected. Older projects and other mesh formats can lack this optional metadata.
+
 After the import job succeeds, obtain its `entityId` and call `mesh_analyze`. To reduce a copy:
 
 ```json

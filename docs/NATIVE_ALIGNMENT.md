@@ -591,8 +591,15 @@ procedures with retained source sampling, serial scheduling and CRT adapters;
 it does not execute the full application constructor or capture the original UI.
 This is direct native execution evidence, not a new REA Evidence ID.
 
-This closes the production-parser verification gap. Imported entities still
-store rendered triangle soup; indexed topology must next be carried through
-entity lifecycle, project persistence and the shared alignment worker before
-this controller can replace the application's surface refinement. Full Align
-parity and multicore execution remain unproven.
+Imported PLY entities now retain optional `indexedMesh` buffers alongside render
+triangle soup. Unit conversion and origin placement transform both consistently.
+The GUI and MCP commit paths invalidate metadata that no longer matches edited
+render coordinates, preserving earlier immutable undo snapshots. JSON and binary
+project containers preserve it; binary containers use deduplicated numeric chunks
+and JSON Blob saving uses bounded batches. Project loading rejects inconsistent
+indices or coordinates. MCP object inspection exposes counts and optional
+geometry artifacts with the original indices.
+
+The shared alignment worker must next consume these retained buffers before this
+controller can replace the application's surface refinement. Full Align parity
+and multicore execution remain unproven.

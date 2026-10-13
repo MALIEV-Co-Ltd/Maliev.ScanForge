@@ -2,6 +2,7 @@ import { readScan, type ScanSource } from "./import-parser";
 import { convertScanUnits, type ScanUnit } from "./import-units";
 import { placeScanOnOrigin } from "./import-origin";
 import { readAscPointCloud } from "./asc-import";
+import type { parsePlyTopology } from "./ply-topology";
 
 const scope = self as unknown as {
   onmessage: (
@@ -18,6 +19,7 @@ const scope = self as unknown as {
 scope.onmessage = async ({ data }) => {
   try {
     let source: ScanSource | undefined;
+    let indexedMesh: ReturnType<typeof parsePlyTopology> | undefined;
     if (data.extension === "asc") {
       const cloud = await readAscPointCloud(data.file, {
         onProgress: (progress) => scope.postMessage({ progress }),
@@ -33,6 +35,9 @@ scope.onmessage = async ({ data }) => {
       return;
     }
     const positions = await readScan(data.file, data.extension, {
+      onIndexedMesh: (mesh) => {
+        indexedMesh = mesh;
+      },
       previewTriangles: data.previewTriangles,
       onSource: (value) => {
         source = value;
@@ -40,8 +45,20 @@ scope.onmessage = async ({ data }) => {
       onProgress: (progress) => scope.postMessage({ progress }),
     });
     convertScanUnits(positions, data.unit);
-    if (data.placeAtOrigin) placeScanOnOrigin(positions);
-    scope.postMessage({ positions, source }, [positions.buffer as ArrayBuffer]);
+    if (indexedMesh) convertScanUnits(indexedMesh.vertices, data.unit);
+    if (data.placeAtOrigin)
+      placeScanOnOrigin(
+        positions,
+        false,
+        indexedMesh ? [indexedMesh.vertices] : [],
+      );
+    const transfers = [positions.buffer as ArrayBuffer];
+    if (indexedMesh)
+      transfers.push(
+        indexedMesh.vertices.buffer as ArrayBuffer,
+        indexedMesh.triangles.buffer as ArrayBuffer,
+      );
+    scope.postMessage({ positions, source, indexedMesh }, transfers);
   } catch (error) {
     scope.postMessage({
       error: error instanceof Error ? error.message : String(error),

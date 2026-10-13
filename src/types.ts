@@ -3,6 +3,10 @@ import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
 import type { ParametricFeature } from "./parametric";
 export type Positions = number[] | Float32Array;
+export interface IndexedMesh {
+  vertices: Positions;
+  triangles: number[] | Uint32Array;
+}
 /** Triangle slots refer to the current triangulation and must be sorted and unique. */
 export interface MeshSelectionState {
   hidden: number[];
@@ -22,6 +26,8 @@ export interface Entity {
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Original indexed import topology, valid only while it matches render positions. */
+  indexedMesh?: IndexedMesh;
   /** CAD display normals or imported scanner normals, aligned to XYZ positions. */
   normals?: number[];
   /** Paired world-space points sampled from exact CAD topological edges. */

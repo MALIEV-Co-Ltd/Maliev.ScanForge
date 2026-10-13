@@ -35,6 +35,7 @@ import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 import { importScan } from "../import-client";
+import { retainIndexedMesh } from "../indexed-mesh";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
@@ -225,10 +226,19 @@ function summary(e: Entity) {
     brep: _brep,
     kernelId: _kernel,
     meshSelection: _selection,
+    indexedMesh: _indexedMesh,
     ...metadata
   } = e;
   return {
     ...metadata,
+    ...(e.indexedMesh
+      ? {
+          indexedTopology: {
+            vertices: e.indexedMesh.vertices.length / 3,
+            triangles: e.indexedMesh.triangles.length / 3,
+          },
+        }
+      : {}),
     ...(e.kind === "pointcloud"
       ? { points: positions.length / 3 }
       : { triangles: positions.length / 9 }),
@@ -293,7 +303,7 @@ function meshEdited(e: Entity, positions: Positions): Entity {
 export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
     c.check();
-    host.commit(entities, label);
+    host.commit(entities.map(retainIndexedMesh), label);
   };
   const operations: Record<string, Handler> = {
     project_get: () => {
@@ -374,6 +384,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 c,
                 {
                   positions: Array.from(e.positions),
+                  indexedMesh: e.indexedMesh
+                    ? {
+                        vertices: Array.from(e.indexedMesh.vertices),
+                        triangles: Array.from(e.indexedMesh.triangles),
+                      }
+                    : undefined,
                   normals: e.normals,
                   edgePositions: e.edgePositions,
                 },
@@ -777,7 +793,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
       c.check();
-      if (positions || segments?.length) host.commit(next, `Mesh ${kind}`);
+      if (positions || segments?.length)
+        host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
       if (selected) host.setSelection(e.id, selected);
       return response;
     },
@@ -1118,7 +1135,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         }
       } else {
         let pointNormals: number[] | undefined;
+        let indexedMesh: Entity["indexedMesh"];
         const positions = await importScan(new File([blob], name), {
+          onIndexedMesh: (mesh) => {
+            indexedMesh = mesh;
+          },
           unit: a.unit ?? "mm",
           signal: c.signal,
           onProgress: (f) => c.progress(f, "Importing scan"),
@@ -1134,6 +1155,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           kind: extension === "asc" ? "pointcloud" : "mesh",
           positions,
           normals: pointNormals,
+          indexedMesh,
           visible: true,
           color: DEFAULT_PART_COLOR,
           opacity: 1,
