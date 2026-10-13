@@ -53,16 +53,13 @@ export function ProjectRecovery({
       <button
         type="button"
         className="ribbon-button"
-        aria-label="Backup and recovery"
+        aria-label="Backup"
         disabled={disabled}
         onClick={() => setOpen(true)}
       >
         <History size={28} aria-hidden="true" />
-        <span className="ribbon-button-label">Backup and recovery</span>
+        <span className="ribbon-button-label">Backup</span>
       </button>
-      <span className="backup-status" role="status" title={status}>
-        {status}
-      </span>
       <dialog
         ref={dialog}
         className="project-recovery-dialog"
@@ -187,8 +184,7 @@ export function ProjectRecovery({
         </div>
         <footer className="recovery-footer">
           <p>
-            Open this list from{" "}
-            <strong>Main → File → Backup and recovery</strong>.
+            Open this list from <strong>Main → File → Backup</strong>.
           </p>
           <div className="recovery-actions">
             <button type="button" autoFocus onClick={close}>

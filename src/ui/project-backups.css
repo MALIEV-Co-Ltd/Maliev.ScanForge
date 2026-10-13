@@ -1,20 +1,6 @@
 .project-recovery-command {
   position: relative;
 }
-.project-recovery-command .ribbon-button {
-  width: 104px;
-}
-.backup-status {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 65px;
-  font-size: 10px;
-  width: 104px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .project-recovery-dialog {
   width: min(680px, calc(100vw - 32px));
   max-height: calc(100dvh - 48px);

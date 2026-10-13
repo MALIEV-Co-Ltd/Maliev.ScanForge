@@ -15,7 +15,7 @@ it("places backup and recovery in Main ribbon and excludes it from other tabs an
     projectRecovery: (
       <ProjectRecovery
         backups={[]}
-        status="Backup ready"
+        status="Backed up at 14:00"
         disabled={false}
         offerRecovery={false}
         onRestore={() => {}}
@@ -23,8 +23,11 @@ it("places backup and recovery in Main ribbon and excludes it from other tabs an
     ),
   };
   const main = renderToStaticMarkup(<Ribbon {...props} />);
-  expect(main).toContain('aria-label="Backup and recovery"');
-  expect(main.indexOf('aria-label="Backup and recovery"')).toBeGreaterThan(
+  expect(main).toContain('aria-label="Backup"');
+  expect(main).not.toContain("Backed up at");
+  expect(main).not.toContain("backup-status");
+  expect(main).not.toContain("Backup and recovery");
+  expect(main.indexOf('aria-label="Backup"')).toBeGreaterThan(
     main.indexOf('aria-label="File"'),
   );
   expect(
@@ -32,10 +35,10 @@ it("places backup and recovery in Main ribbon and excludes it from other tabs an
       main.indexOf('class="header-utilities"'),
       main.indexOf('class="ribbon-tools-shell"'),
     ),
-  ).not.toContain("Backup and recovery");
+  ).not.toContain('aria-label="Backup"');
   expect(
     renderToStaticMarkup(<Ribbon {...props} activeTab="cad" />),
-  ).not.toContain('aria-label="Backup and recovery"');
+  ).not.toContain('aria-label="Backup"');
 });
 it("separates project, saved date and snapshot from the selected restore action", () => {
   const html = renderToStaticMarkup(
@@ -54,7 +57,7 @@ it("separates project, saved date and snapshot from the selected restore action"
           file: new Blob(),
         },
       ]}
-      status="Backup ready"
+      status="Backed up at 14:00"
       disabled={false}
       offerRecovery={false}
       onRestore={() => {}}
