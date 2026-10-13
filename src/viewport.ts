@@ -251,7 +251,7 @@ export class Viewport {
     this.pivotMarker.setAttribute("role", "img");
     this.pivotMarker.hidden = true;
     this.pivotMarker.style.cssText =
-      "position:absolute;width:22px;height:22px;border:2px solid #58d5e5;border-radius:50%;box-shadow:0 0 0 1px #15262b,inset 0 0 0 1px #15262b;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:radial-gradient(circle,#58d5e5 0 2px,transparent 3px)";
+      "position:absolute;width:6px;height:6px;border:1px solid rgba(136,220,157,0.4);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:rgba(80,190,110,0.55)";
     container.appendChild(this.pivotMarker);
     this.controls = new TrackballControls(
       this.camera,
