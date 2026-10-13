@@ -101,11 +101,17 @@ it("keeps preparation, reduction and comparison progress monotonic and publishes
   );
   expect(progress.every((f, i) => !i || f >= progress[i - 1])).toBe(true);
   progress.length = 0;
-  const result = session.compare(0.05, 0.05, {
-    onProgress: (f) => progress.push(f),
-  });
+  const result = session.compare(
+    0.05,
+    0.05,
+    { onProgress: (f) => progress.push(f) },
+    0.05,
+  );
   expect(progress.every((f, i) => !i || f >= progress[i - 1])).toBe(true);
   expect(progress.at(-1)).toBe(1);
+  expect(result.noiseComparison.renderDistances).toEqual(
+    new Float32Array([0, 0, 0]),
+  );
   expect(result.noiseComparison.statistics).toMatchObject({
     minimum: 0,
     maximum: 0,

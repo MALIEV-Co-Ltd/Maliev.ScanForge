@@ -197,6 +197,12 @@ export class ScanPreviewSession {
     return {
       noiseComparison: {
         rgb,
+        renderDistances: sampleDistances
+          ? Float32Array.from(
+              this.original!.triangles,
+              (id) => sampleDistances![id],
+            )
+          : undefined,
         statistics,
         sampleDistances,
         displayRange,

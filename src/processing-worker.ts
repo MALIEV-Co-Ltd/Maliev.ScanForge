@@ -391,6 +391,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.noiseComparison.rgb.buffer);
     if (result.noiseComparison?.sampleDistances)
       transfers.push(result.noiseComparison.sampleDistances.buffer);
+    if (result.noiseComparison?.renderDistances)
+      transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     scope.postMessage({ result }, transfers);
   } catch (error) {

@@ -105,6 +105,7 @@ export interface ProcessingResult {
     threshold: number;
     statistics?: import("./reduction-report").ReductionStatistics;
     sampleDistances?: Float64Array;
+    renderDistances?: Float32Array;
     displayRange?: number;
   };
   segments?: Float32Array[];

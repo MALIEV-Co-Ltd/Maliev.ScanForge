@@ -32,8 +32,8 @@ export function ReductionColorScale({
     const next = [...draft.current];
     next[index] =
       index === 0
-        ? Math.max(-range, Math.min(next[1], value))
-        : Math.min(range, Math.max(next[0], value));
+        ? Math.max(-range, Math.min(0, value))
+        : Math.min(range, Math.max(0, value));
     draft.current = next;
     setBounds(next);
     if (commit) onToleranceChange?.(next[0], next[1]);
@@ -41,7 +41,11 @@ export function ReductionColorScale({
   const drag = (index: number, y: number) => {
     const rect = body.current?.getBoundingClientRect();
     if (rect)
-      setBound(index, toleranceAtPointer(y, rect.top, rect.height, range));
+      setBound(
+        index,
+        toleranceAtPointer(y, rect.top, rect.height, range),
+        true,
+      );
   };
   return (
     <aside
@@ -51,7 +55,12 @@ export function ReductionColorScale({
     >
       <strong>Deviation (mm)</strong>
       <div className="reduction-color-scale-body" ref={body}>
-        <div className="reduction-color-scale-ramp" />
+        <div
+          className="reduction-color-scale-ramp"
+          style={{
+            background: `linear-gradient(to bottom, #ff0000 0%, #ff0000 ${50 * (1 - bounds[1] / range)}%, #ffff00 ${50 * (1 - bounds[1] / (2 * range))}%, #00ff00 50%, #00ffff ${50 * (1 - bounds[0] / (2 * range))}%, #0000ff ${50 * (1 - bounds[0] / range)}%, #0000ff 100%)`,
+          }}
+        />
         <div className="reduction-color-scale-ticks">
           {[1, 0.5, 0, -0.5, -1].map((f) => (
             <span
@@ -80,8 +89,8 @@ export function ReductionColorScale({
               aria-orientation="vertical"
               tabIndex={disabled ? -1 : 0}
               aria-label={index ? "Upper tolerance" : "Lower tolerance"}
-              aria-valuemin={index ? bounds[0] : -range}
-              aria-valuemax={index ? range : bounds[1]}
+              aria-valuemin={index ? 0 : -range}
+              aria-valuemax={index ? range : 0}
               aria-valuenow={bounds[index]}
               aria-valuetext={`${bounds[index].toFixed(3)} mm`}
               aria-disabled={disabled}
@@ -134,8 +143,8 @@ export function ReductionColorScale({
                 }
                 type="number"
                 step={range / 100}
-                min={index ? bounds[0] : -range}
-                max={index ? range : bounds[1]}
+                min={index ? 0 : -range}
+                max={index ? range : 0}
                 value={Number(bounds[index].toPrecision(6))}
                 disabled={disabled}
                 onChange={(event) =>

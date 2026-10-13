@@ -2,6 +2,12 @@ import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
 import { applyMeshFocus } from "./mesh-focus-material";
+import {
+  installDeviationHeatmap,
+  deviationExtrema,
+  DeviationCallouts,
+  type DeviationDisplay,
+} from "./deviation-heatmap";
 import { NavigationPivot } from "./navigation-pivot";
 import {
   createScanBoundaryEdges,
@@ -127,10 +133,15 @@ export class Viewport {
   private readonly boundaryEdges = new THREE.Group();
   private noiseComparisonGroup?: THREE.Group;
   private noiseComparison?: {
+    positions: Positions;
+    rgb: Uint8Array;
+    distances?: Float32Array;
+    setBounds?: ReturnType<typeof installDeviationHeatmap>;
     item: Item;
     visible: boolean;
     selectionVisible?: boolean;
   };
+  private deviationCallouts?: DeviationCallouts;
   private readonly sketchGeometry = new THREE.Group();
   private readonly sketchPreview = new THREE.Group();
   private sketchEditor?: {
@@ -498,6 +509,12 @@ export class Viewport {
       marker.element.style.left = `${((projected.x + 1) * this.container.clientWidth) / 2}px`;
       marker.element.style.top = `${((1 - projected.y) * this.container.clientHeight) / 2}px`;
     }
+    this.deviationCallouts?.update(
+      this.camera,
+      this.container.clientWidth,
+      this.container.clientHeight,
+      this.noiseComparison?.item.mesh.material.clippingPlanes ?? [],
+    );
     const navigating = this.updateNavigationPivotMarker(performance.now());
     this.gizmo?.update(this.camera);
     if (this.viewTransition || navigating) this.invalidate();
@@ -1941,7 +1958,23 @@ export class Viewport {
     entityId?: string,
     positions?: Positions,
     rgb?: Uint8Array,
+    display?: DeviationDisplay,
   ): void {
+    if (
+      display &&
+      !this.disposed &&
+      this.noiseComparison &&
+      this.noiseComparison.positions === positions &&
+      this.noiseComparison.rgb === rgb &&
+      this.noiseComparison.distances === display.distances &&
+      this.noiseComparison.item === this.objects.get(entityId ?? "")
+    ) {
+      this.noiseComparison.setBounds?.(display);
+      this.invalidate();
+      return;
+    }
+    this.deviationCallouts?.dispose();
+    this.deviationCallouts = undefined;
     if (this.noiseComparison) {
       this.noiseComparison.item.mesh.visible = this.noiseComparison.visible;
       if (
@@ -1963,12 +1996,24 @@ export class Viewport {
       positions.length === item.positions.length ? item.hidden : undefined,
     );
     overlay.material.clippingPlanes = item.mesh.material.clippingPlanes;
+    const setBounds = display
+      ? installDeviationHeatmap(overlay, display)
+      : undefined;
+    if (display && this.container)
+      this.deviationCallouts = new DeviationCallouts(
+        this.container,
+        deviationExtrema(positions, display.distances, item.hidden),
+      );
     overlay.visible = item.mesh.visible;
     this.noiseComparisonGroup ??= new THREE.Group();
     this.noiseComparisonGroup.name = "Noise comparison";
     this.scene.add(this.noiseComparisonGroup);
     this.noiseComparisonGroup.add(overlay);
     this.noiseComparison = {
+      positions,
+      rgb,
+      distances: display?.distances,
+      setBounds,
       item,
       visible: item.mesh.visible,
       selectionVisible: this.triangleSelection?.visible,

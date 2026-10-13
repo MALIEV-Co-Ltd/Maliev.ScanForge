@@ -295,6 +295,7 @@ export function App() {
     threshold: number;
     statistics?: ReductionStatistics;
     sampleDistances?: Float64Array;
+    renderDistances?: Float32Array;
     displayRange?: number;
     lowerTolerance?: number;
     upperTolerance?: number;
@@ -684,6 +685,15 @@ export function App() {
       comparison?.entityId,
       comparison?.source,
       comparison?.rgb,
+      comparison?.renderDistances
+        ? {
+            distances: comparison.renderDistances,
+            lower:
+              comparison.lowerTolerance ?? -comparison.statistics!.tolerance,
+            upper:
+              comparison.upperTolerance ?? comparison.statistics!.tolerance,
+          }
+        : undefined,
     );
     if (noiseComparison && !activeNoiseComparison) setNoiseComparison(null);
   }, [entities, activeNoiseComparison, noiseComparison]);
