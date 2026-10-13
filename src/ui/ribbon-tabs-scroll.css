@@ -5,6 +5,8 @@
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
+  align-self: center;
+  height: fit-content;
 }
 .ribbon .ribbon-tabs-scroll .ribbon-tabs {
   display: flex;
