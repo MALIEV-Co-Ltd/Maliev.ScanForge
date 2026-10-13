@@ -30,7 +30,7 @@ it.each(["scaleMesh", "mirrorMesh"] as const)(
       );
     expect(panel(false)).toContain('disabled="">Accept');
     expect(panel(true)).not.toContain('disabled="">Accept');
-    expect(panel(true)).toContain(">Preview</button>");
+    expect(panel(true)).toContain('aria-label="Preview"');
     expect(panel(true)).toContain(">Cancel</button>");
     expect(panel(true)).toContain('type="checkbox"/>Create new object');
     expect(panel(true)).not.toContain("Update comparison");
@@ -55,7 +55,7 @@ it.each(["reduceNoise"] as const)(
       );
     expect(panel(false)).toContain('disabled="">Accept');
     expect(panel(false)).toContain('type="checkbox" disabled=""/>Measure');
-    expect(panel(false)).toContain(">Preview</button>");
+    expect(panel(false)).toContain('aria-label="Preview"');
     expect(panel(true)).not.toContain('disabled="">Accept');
     expect(panel(true)).not.toContain('type="checkbox" disabled=""/>Measure');
     expect(panel(true)).toContain(">Cancel</button>");
@@ -175,4 +175,49 @@ it("keeps cancellation available while an operation is running", () => {
   expect(html).toContain("Cancel operation");
   expect(html).toContain('disabled="">Apply');
   expect(html).toContain("Smoothing");
+});
+
+it.each([
+  "reducePolygons",
+  "reduceNoise",
+  "scaleMesh",
+  "mirrorMesh",
+  "flipNormals",
+  "repolygonize",
+  "averageMesh",
+  "unroll",
+] as const)("%s keeps actions outside the scrolling content", (tool) => {
+  const html = renderToStaticMarkup(
+    <ScanToolsPanel
+      tool={tool}
+      selected={mesh}
+      entities={[mesh]}
+      onApply={() => {}}
+      onClose={() => {}}
+      onCancel={() => {}}
+      onAccept={
+        ["reducePolygons", "reduceNoise", "scaleMesh", "mirrorMesh"].includes(
+          tool,
+        )
+          ? () => {}
+          : undefined
+      }
+    />,
+  );
+  const footer = html.slice(html.indexOf("<footer"));
+  const body = html.slice(
+    html.indexOf('class="tool-panel-content"'),
+    html.indexOf("<footer"),
+  );
+  expect(html).not.toContain("Tool options");
+  expect(body).not.toContain('aria-label="Preview"');
+  expect(footer).toContain('class="tool-panel-actions"');
+  if (
+    ["reducePolygons", "reduceNoise", "scaleMesh", "mirrorMesh"].includes(tool)
+  ) {
+    expect(footer.indexOf('aria-label="Preview"')).toBeLessThan(
+      footer.indexOf(">Cancel</button>"),
+    );
+    expect(footer).toContain("lucide-binoculars");
+  } else expect(footer).toContain(">Apply</button>");
 });

@@ -1,3 +1,4 @@
+import { PreviewButton } from "./PreviewButton";
 import { useEffect, useMemo, useState } from "react";
 import { ReductionProgress, ReductionResults } from "./ReductionResults";
 import type { ReductionStatistics } from "../reduction-report";
@@ -352,7 +353,10 @@ export function ScanToolsPanel({
     }
   }
   return (
-    <section className="scan-tools-panel" aria-label={scanToolTitles[tool]}>
+    <section
+      className="scan-tools-panel tool-panel"
+      aria-label={scanToolTitles[tool]}
+    >
       <header>
         <ToolDiagram tool={tool} />
         <h3>{scanToolTitles[tool]}</h3>
@@ -360,351 +364,364 @@ export function ScanToolsPanel({
           ×
         </button>
       </header>
-      <p className="scan-tools-summary">
-        {selected
-          ? `${selected.name} · ${count.toLocaleString()} triangles`
-          : "No mesh selected"}
-      </p>
-      <fieldset disabled={busy || disabled}>
-        {tool === "reducePolygons" && (
-          <>
-            <label>
-              Reduce by
-              <select
-                value={mode}
-                onChange={(e) => setMode(e.target.value as typeof mode)}
-              >
-                <option value="triangles">Number of triangles</option>
-                <option value="percentage">Percentage remaining</option>
-                <option value="deviation">Deviation from original</option>
-              </select>
-            </label>
-            {mode === "triangles" && (
-              <Field
-                label="Target triangles"
-                value={targetTriangles}
-                min={1}
-                max={count - 1}
-                onChange={setTargetTriangles}
-              />
-            )}
-            {mode === "percentage" && (
-              <Field
-                label="Triangles remaining (%)"
-                value={percentage}
-                min={0.001}
-                max={99.999}
-                step={1}
-                onChange={setPercentage}
-              />
-            )}
-            {mode === "deviation" && (
-              <Field
-                label="Maximum deviation (mm)"
-                value={deviation}
-                min={0.001}
-                step={0.01}
-                onChange={setDeviation}
-              />
-            )}
-            {mode !== "deviation" && (
-              <Field
-                label="Comparison tolerance (mm)"
-                value={deviation}
-                min={0.001}
-                step={0.01}
-                onChange={setDeviation}
-              />
-            )}
-          </>
-        )}
-        {tool === "reduceNoise" && (
-          <>
-            <Field
-              label="Smooth iterations"
-              value={iterations}
-              min={1}
-              max={5}
-              onChange={setIterations}
-            />
-            <label className="scan-tools-check">
-              <input
-                type="checkbox"
-                checked={selectionOnly}
-                onChange={(e) => setSelectionOnly(e.target.checked)}
-              />
-              Apply to selection only
-            </label>
-            <label className="scan-tools-check">
-              <input
-                type="checkbox"
-                checked={applyBoundaryEdges}
-                onChange={(e) => setApplyBoundaryEdges(e.target.checked)}
-              />
-              Smooth boundary edges
-            </label>
-            <label className="scan-tools-check">
-              <input
-                type="checkbox"
-                checked={measureDeviation}
-                disabled={!!onAccept && !previewReady}
-                onChange={(e) => changeComparison(e.target.checked)}
-              />
-              Measure deviation from original
-            </label>
-            {measureDeviation && (
-              <>
+      <div className="tool-panel-content">
+        <p className="scan-tools-summary">
+          {selected
+            ? `${selected.name} · ${count.toLocaleString()} triangles`
+            : "No mesh selected"}
+        </p>
+        <fieldset disabled={busy || disabled}>
+          {tool === "reducePolygons" && (
+            <>
+              <label>
+                Reduce by
+                <select
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as typeof mode)}
+                >
+                  <option value="triangles">Number of triangles</option>
+                  <option value="percentage">Percentage remaining</option>
+                  <option value="deviation">Deviation from original</option>
+                </select>
+              </label>
+              {mode === "triangles" && (
                 <Field
-                  label="Comparison threshold (mm)"
+                  label="Target triangles"
+                  value={targetTriangles}
+                  min={1}
+                  max={count - 1}
+                  onChange={setTargetTriangles}
+                />
+              )}
+              {mode === "percentage" && (
+                <Field
+                  label="Triangles remaining (%)"
+                  value={percentage}
+                  min={0.001}
+                  max={99.999}
+                  step={1}
+                  onChange={setPercentage}
+                />
+              )}
+              {mode === "deviation" && (
+                <Field
+                  label="Maximum deviation (mm)"
                   value={deviation}
                   min={0.001}
                   step={0.01}
                   onChange={setDeviation}
                 />
-                <p className="scan-tools-note">
-                  Measures original vertices against the smoothed surface
-                  without limiting smoothing.
-                </p>
-              </>
-            )}
-          </>
-        )}
-        {tool === "scaleMesh" && (
-          <>
-            <label>
-              Scale by
-              <select
-                value={scaleMode}
-                onChange={(event) => {
-                  const next = event.target.value as typeof scaleMode;
-                  if (next !== scaleMode)
-                    setFactor((value) =>
-                      next === "percentage" ? value * 100 : value / 100,
-                    );
-                  setScaleMode(next);
-                }}
-              >
-                <option value="factor">Factor</option>
-                <option value="percentage">Percentage</option>
-              </select>
-            </label>
-            <Field
-              label={scaleMode === "percentage" ? "Scale (%)" : "Scale factor"}
-              value={factor}
-              min={0.001}
-              step={0.1}
-              onChange={setFactor}
-            />
-            <VectorField
-              label="Scale center (mm)"
-              value={center}
-              onChange={setCenter}
-            />
-            <label>
-              <input
-                type="checkbox"
-                checked={createNewObject}
-                onChange={(event) => setCreateNewObject(event.target.checked)}
+              )}
+              {mode !== "deviation" && (
+                <Field
+                  label="Comparison tolerance (mm)"
+                  value={deviation}
+                  min={0.001}
+                  step={0.01}
+                  onChange={setDeviation}
+                />
+              )}
+            </>
+          )}
+          {tool === "reduceNoise" && (
+            <>
+              <Field
+                label="Smooth iterations"
+                value={iterations}
+                min={1}
+                max={5}
+                onChange={setIterations}
               />
-              Create new object
-            </label>
-          </>
-        )}
-        {tool === "flipNormals" && (
-          <p>Reverse the winding and normal direction of every triangle.</p>
-        )}
-        {tool === "repolygonize" && (
-          <>
-            <Field
-              label="Point resolution (mm)"
-              value={resolution}
-              min={0.001}
-              step={0.1}
-              onChange={setResolution}
-            />
-            <p className="muted">
-              Voxel reconstruction closes small gaps and fills enclosed
-              cavities. Open scans become thick shells; the surface can move by
-              about 0.75 × point resolution. Undo restores the original.
-            </p>
-          </>
-        )}
-        {tool === "averageMesh" && (
-          <>
-            <Field
-              label="Search tolerance (mm)"
-              value={tolerance}
-              min={0.001}
-              step={0.1}
-              onChange={setTolerance}
-            />
-            <div
-              className="scan-tools-references"
-              aria-label="Reference meshes"
-            >
-              {targets.map((e) => (
-                <label className="scan-tools-check" key={e.id}>
-                  <input
-                    type="checkbox"
-                    checked={targetIds.includes(e.id)}
-                    onChange={(event) =>
-                      setTargetIds((current) =>
-                        event.target.checked
-                          ? [...current, e.id]
-                          : current.filter((id) => id !== e.id),
-                      )
-                    }
+              <label className="scan-tools-check">
+                <input
+                  type="checkbox"
+                  checked={selectionOnly}
+                  onChange={(e) => setSelectionOnly(e.target.checked)}
+                />
+                Apply to selection only
+              </label>
+              <label className="scan-tools-check">
+                <input
+                  type="checkbox"
+                  checked={applyBoundaryEdges}
+                  onChange={(e) => setApplyBoundaryEdges(e.target.checked)}
+                />
+                Smooth boundary edges
+              </label>
+              <label className="scan-tools-check">
+                <input
+                  type="checkbox"
+                  checked={measureDeviation}
+                  disabled={!!onAccept && !previewReady}
+                  onChange={(e) => changeComparison(e.target.checked)}
+                />
+                Measure deviation from original
+              </label>
+              {measureDeviation && (
+                <>
+                  <Field
+                    label="Comparison threshold (mm)"
+                    value={deviation}
+                    min={0.001}
+                    step={0.01}
+                    onChange={setDeviation}
                   />
-                  {e.name}
-                </label>
-              ))}
-            </div>
-          </>
-        )}
-        {tool === "mirrorMesh" && (
-          <>
-            <label>
-              <input
-                type="checkbox"
-                checked={createNewObject}
-                onChange={(event) => setCreateNewObject(event.target.checked)}
+                  <p className="scan-tools-note">
+                    Measures original vertices against the smoothed surface
+                    without limiting smoothing.
+                  </p>
+                </>
+              )}
+            </>
+          )}
+          {tool === "scaleMesh" && (
+            <>
+              <label>
+                Scale by
+                <select
+                  value={scaleMode}
+                  onChange={(event) => {
+                    const next = event.target.value as typeof scaleMode;
+                    if (next !== scaleMode)
+                      setFactor((value) =>
+                        next === "percentage" ? value * 100 : value / 100,
+                      );
+                    setScaleMode(next);
+                  }}
+                >
+                  <option value="factor">Factor</option>
+                  <option value="percentage">Percentage</option>
+                </select>
+              </label>
+              <Field
+                label={
+                  scaleMode === "percentage" ? "Scale (%)" : "Scale factor"
+                }
+                value={factor}
+                min={0.001}
+                step={0.1}
+                onChange={setFactor}
               />
-              Create new object
-            </label>
-            <label>
-              Mirror plane
-              <select
-                value={plane}
-                onChange={(e) => {
-                  setPlane(e.target.value as typeof plane);
-                  onInvalidatePreview?.();
-                }}
+              <VectorField
+                label="Scale center (mm)"
+                value={center}
+                onChange={setCenter}
+              />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={createNewObject}
+                  onChange={(event) => setCreateNewObject(event.target.checked)}
+                />
+                Create new object
+              </label>
+            </>
+          )}
+          {tool === "flipNormals" && (
+            <p>Reverse the winding and normal direction of every triangle.</p>
+          )}
+          {tool === "repolygonize" && (
+            <>
+              <Field
+                label="Point resolution (mm)"
+                value={resolution}
+                min={0.001}
+                step={0.1}
+                onChange={setResolution}
+              />
+              <p className="muted">
+                Voxel reconstruction closes small gaps and fills enclosed
+                cavities. Open scans become thick shells; the surface can move
+                by about 0.75 × point resolution. Undo restores the original.
+              </p>
+            </>
+          )}
+          {tool === "averageMesh" && (
+            <>
+              <Field
+                label="Search tolerance (mm)"
+                value={tolerance}
+                min={0.001}
+                step={0.1}
+                onChange={setTolerance}
+              />
+              <div
+                className="scan-tools-references"
+                aria-label="Reference meshes"
               >
-                <option value="OXY">XY origin plane</option>
-                <option value="OYZ">YZ origin plane</option>
-                <option value="OXZ">XZ origin plane</option>
-                <option value="object">CAD / construction plane</option>
-              </select>
-            </label>
-            {plane === "object" && (
-              <>
-                <label>
-                  Reference plane
-                  <select
-                    value={referenceId}
-                    onChange={(e) => {
-                      setReferenceId(e.target.value);
-                      onInvalidatePreview?.();
-                    }}
-                  >
-                    <option value="">Choose plane…</option>
-                    {planes.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {onPickReference && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onInvalidatePreview?.();
-                      onPickReference("plane");
-                    }}
-                  >
-                    Pick plane on canvas
-                  </button>
-                )}
-              </>
-            )}
-          </>
-        )}
-        {tool === "unroll" && (
-          <>
-            <p className="muted">
-              Unroll cylindrical side surfaces into local XY. Remove end caps
-              first; cap faces cannot be flattened without collapsing.
-            </p>
-            <label>
-              Cylinder
-              <select
-                value={cylinderId}
-                onChange={(e) => setCylinderId(e.target.value)}
-              >
-                <option value="">Choose cylinder…</option>
-                {cylinders.map((e) => (
-                  <option key={e.id} value={e.id}>
+                {targets.map((e) => (
+                  <label className="scan-tools-check" key={e.id}>
+                    <input
+                      type="checkbox"
+                      checked={targetIds.includes(e.id)}
+                      onChange={(event) =>
+                        setTargetIds((current) =>
+                          event.target.checked
+                            ? [...current, e.id]
+                            : current.filter((id) => id !== e.id),
+                        )
+                      }
+                    />
                     {e.name}
-                  </option>
+                  </label>
                 ))}
-              </select>
-            </label>
-            {onPickReference && (
-              <button type="button" onClick={() => onPickReference("cylinder")}>
-                Pick cylinder on canvas
-              </button>
-            )}
-            <Field
-              label="Angular offset (degrees)"
-              value={offsetDegrees}
-              step={1}
-              onChange={setOffsetDegrees}
-            />
-          </>
+              </div>
+            </>
+          )}
+          {tool === "mirrorMesh" && (
+            <>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={createNewObject}
+                  onChange={(event) => setCreateNewObject(event.target.checked)}
+                />
+                Create new object
+              </label>
+              <label>
+                Mirror plane
+                <select
+                  value={plane}
+                  onChange={(e) => {
+                    setPlane(e.target.value as typeof plane);
+                    onInvalidatePreview?.();
+                  }}
+                >
+                  <option value="OXY">XY origin plane</option>
+                  <option value="OYZ">YZ origin plane</option>
+                  <option value="OXZ">XZ origin plane</option>
+                  <option value="object">CAD / construction plane</option>
+                </select>
+              </label>
+              {plane === "object" && (
+                <>
+                  <label>
+                    Reference plane
+                    <select
+                      value={referenceId}
+                      onChange={(e) => {
+                        setReferenceId(e.target.value);
+                        onInvalidatePreview?.();
+                      }}
+                    >
+                      <option value="">Choose plane…</option>
+                      {planes.map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {onPickReference && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onInvalidatePreview?.();
+                        onPickReference("plane");
+                      }}
+                    >
+                      Pick plane on canvas
+                    </button>
+                  )}
+                </>
+              )}
+            </>
+          )}
+          {tool === "unroll" && (
+            <>
+              <p className="muted">
+                Unroll cylindrical side surfaces into local XY. Remove end caps
+                first; cap faces cannot be flattened without collapsing.
+              </p>
+              <label>
+                Cylinder
+                <select
+                  value={cylinderId}
+                  onChange={(e) => setCylinderId(e.target.value)}
+                >
+                  <option value="">Choose cylinder…</option>
+                  {cylinders.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {onPickReference && (
+                <button
+                  type="button"
+                  onClick={() => onPickReference("cylinder")}
+                >
+                  Pick cylinder on canvas
+                </button>
+              )}
+              <Field
+                label="Angular offset (degrees)"
+                value={offsetDegrees}
+                step={1}
+                onChange={setOffsetDegrees}
+              />
+            </>
+          )}
+        </fieldset>
+        {problem && (
+          <p className="scan-tools-message" role="status">
+            {problem}
+          </p>
         )}
-      </fieldset>
-      {problem && (
-        <p className="scan-tools-message" role="status">
-          {problem}
-        </p>
-      )}
-      {tool === "reducePolygons" && progressFraction !== undefined ? (
-        <ReductionProgress
-          fraction={progressFraction}
-          stage={progress || "Preparing polygon reduction"}
-        />
-      ) : (
-        progress && <p role="status">{progress}</p>
-      )}
-      {result && tool !== "reducePolygons" && <p role="status">{result}</p>}
-      {tool === "reducePolygons" && comparison?.statistics && (
-        <ReductionResults statistics={comparison.statistics} />
-      )}
-      {onCompare && tool !== "reducePolygons" && measureDeviation && (
-        <button
-          disabled={
-            busy ||
-            !previewReady ||
-            !positive(deviation) ||
-            !positive(paletteThreshold)
-          }
-          onClick={() => onCompare(deviation, paletteThreshold)}
-        >
-          Update comparison
-        </button>
-      )}
-      {tool === "reduceNoise" && comparison && onToggleComparison && (
-        <NoiseComparisonLegend
-          {...comparison}
-          resultKind="smoothed"
-          onToggle={onToggleComparison}
-        />
-      )}
-      {tool === "reducePolygons" && comparison && onToggleComparison && (
-        <button aria-pressed={comparison.visible} onClick={onToggleComparison}>
-          {comparison.visible ? "Show reduced mesh" : "Show deviation"}
-        </button>
-      )}
-      <footer>
+        {tool === "reducePolygons" && progressFraction !== undefined ? (
+          <ReductionProgress
+            fraction={progressFraction}
+            stage={progress || "Preparing polygon reduction"}
+          />
+        ) : (
+          progress && <p role="status">{progress}</p>
+        )}
+        {result && tool !== "reducePolygons" && <p role="status">{result}</p>}
+        {tool === "reducePolygons" && comparison?.statistics && (
+          <ReductionResults statistics={comparison.statistics} />
+        )}
+        {onCompare && tool !== "reducePolygons" && measureDeviation && (
+          <button
+            disabled={
+              busy ||
+              !previewReady ||
+              !positive(deviation) ||
+              !positive(paletteThreshold)
+            }
+            onClick={() => onCompare(deviation, paletteThreshold)}
+          >
+            Update comparison
+          </button>
+        )}
+        {tool === "reduceNoise" && comparison && onToggleComparison && (
+          <NoiseComparisonLegend
+            {...comparison}
+            resultKind="smoothed"
+            onToggle={onToggleComparison}
+          />
+        )}
+        {tool === "reducePolygons" && comparison && onToggleComparison && (
+          <button
+            aria-pressed={comparison.visible}
+            onClick={onToggleComparison}
+          >
+            {comparison.visible ? "Show reduced mesh" : "Show deviation"}
+          </button>
+        )}
+      </div>
+      <footer className="tool-panel-actions">
+        {onAccept && <PreviewButton disabled={blocked} onClick={apply} />}
         {busy ? (
           <button onClick={onCancel}>Cancel operation</button>
         ) : (
           <button onClick={onClose}>{onAccept ? "Cancel" : "Close"}</button>
         )}
-        <button disabled={blocked} onClick={apply}>
-          {onAccept ? "Preview" : "Apply"}
-        </button>
+        {!onAccept && (
+          <button disabled={blocked} onClick={apply}>
+            Apply
+          </button>
+        )}
         {onAccept && (
           <button
             disabled={

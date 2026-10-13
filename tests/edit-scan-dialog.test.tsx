@@ -82,7 +82,7 @@ describe("dedicated scan edit dialog", () => {
         new RegExp(`<details[^>]*><summary>${title}</summary>`),
       );
     expect(html).not.toMatch(/<details[^>]*\sopen(?:=|>)/);
-    expect(html).toContain('title="Fixture scan"');
+    expect(html).toContain('aria-label="Edit Fixture scan"');
     expect(html).toContain("12 selected");
   });
   it("keeps connected-component settings contextual to the wand tool", () => {
@@ -147,4 +147,10 @@ describe("dedicated scan edit dialog", () => {
     expect(button(render(), "Hide selected")).toContain("disabled");
     expect(button(render(), "Show hidden")).toContain("disabled");
   });
+});
+
+it("keeps the mesh identity in the object list instead of repeating it in the editing content", () => {
+  const html = render();
+  expect(html).not.toContain('class="edit-scan-name"');
+  expect(html).toContain('aria-label="Edit Fixture scan"');
 });

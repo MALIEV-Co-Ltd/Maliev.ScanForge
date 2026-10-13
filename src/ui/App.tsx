@@ -1,3 +1,4 @@
+import "./ToolPanel.css";
 import { SaveProjectDialog } from "./SaveProjectDialog";
 import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
@@ -3810,7 +3811,7 @@ export function App() {
           />
         )}
         <aside
-          className="inspector"
+          className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
           style={
             nPoints || surfaceFit || createSketch
               ? { display: "none" }
@@ -3819,20 +3820,43 @@ export function App() {
           inert={actionBusy}
           aria-label="Tool options"
         >
-          <h2>
-            {workspace === "mesh" ? "Edit scan" : "Tool options"}{" "}
-            <button
-              aria-label="Close tool options"
-              onClick={() => {
-                scanToolAbort.current?.abort();
-                scanReferencePick.current = null;
-                setToolPanelOpen(false);
-                if (workspace === "mesh") setMode("inspect");
-              }}
-            >
-              <X size={15} />
-            </button>
-          </h2>
+          {!(
+            workspace === "scanTools" &&
+            !selected?.kernelId &&
+            !selected?.parametric
+          ) &&
+            !(workspace === "mesh" && selected && scanPanel) && (
+              <h2>
+                {(
+                  {
+                    mesh: "Edit scan",
+                    scanTools: "Exact CAD body",
+                    sketch: "Sketch tools",
+                    surface: "Surface tools",
+                    fit: "Fit primitives",
+                    transform: "Transform",
+                    section: "Cross section",
+                    reconstruct: "Reconstruction tools",
+                    advancedCad: "CAD tools",
+                    processing: "Mesh processing",
+                    measure: "Measure",
+                    deviation: "Deviation analysis",
+                    properties: "Object properties",
+                  } as Record<string, string>
+                )[workspace] ?? "Object properties"}{" "}
+                <button
+                  aria-label="Close tool options"
+                  onClick={() => {
+                    scanToolAbort.current?.abort();
+                    scanReferencePick.current = null;
+                    setToolPanelOpen(false);
+                    if (workspace === "mesh") setMode("inspect");
+                  }}
+                >
+                  <X size={15} />
+                </button>
+              </h2>
+            )}
           {(workspace === "mesh" || workspace === "scanTools") &&
           (selected?.kernelId || selected?.parametric) ? (
             <section aria-label="Exact CAD body">

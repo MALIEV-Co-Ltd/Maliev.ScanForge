@@ -74,15 +74,15 @@ export function ScanDiagnostics({
           </button>
         </div>
       ))}
-      <small role="status">
-        {state?.phase === "error"
-          ? state.message
-          : state?.phase === "pending"
-            ? state.progress
-            : topology
-              ? "Current geometry · 0.001 mm vertex weld tolerance"
+      {state?.phase !== "ready" && (
+        <small role="status">
+          {state?.phase === "error"
+            ? state.message
+            : state?.phase === "pending"
+              ? state.progress
               : "Calculating mesh topology…"}
-      </small>
+        </small>
+      )}
     </div>
   );
 }

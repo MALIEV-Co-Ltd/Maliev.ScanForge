@@ -1,3 +1,4 @@
+import "./ToolPanel.css";
 import { useState } from "react";
 import type { Entity } from "../types";
 import type {
@@ -32,9 +33,9 @@ export function CreateSketchDialog({
     setChanged(true);
   };
   return (
-    <aside className="inspector" aria-label="Create Sketch">
+    <aside className="inspector tool-panel" aria-label="Create Sketch">
       <h2>Create Sketch</h2>
-      <section className="tool-section">
+      <section className="tool-section tool-panel-content">
         <p>{source.name} · For extruded surface</p>
         {source.scanSource &&
           source.scanSource.displayedTriangles <
@@ -81,15 +82,6 @@ export function CreateSketchDialog({
             />
             Through selection only
           </label>
-          <button
-            disabled={!Number.isFinite(options.offset)}
-            onClick={() => {
-              setChanged(false);
-              onApply(options);
-            }}
-          >
-            Apply section
-          </button>
         </fieldset>
         {preview && !changed && (
           <p role="status">
@@ -101,13 +93,22 @@ export function CreateSketchDialog({
           Section samples are references. Draw or fit editable curves before
           creating a CAD body.
         </p>
-        <div className="button-row">
-          <button disabled={busy || changed || !preview} onClick={onCreate}>
-            Create
-          </button>
-          <button onClick={onCancel}>Cancel</button>
-        </div>
       </section>
+      <footer className="tool-panel-actions">
+        <button
+          disabled={busy || !Number.isFinite(options.offset)}
+          onClick={() => {
+            setChanged(false);
+            onApply(options);
+          }}
+        >
+          Apply section
+        </button>
+        <button disabled={busy || changed || !preview} onClick={onCreate}>
+          Create
+        </button>
+        <button onClick={onCancel}>Cancel</button>
+      </footer>
     </aside>
   );
 }

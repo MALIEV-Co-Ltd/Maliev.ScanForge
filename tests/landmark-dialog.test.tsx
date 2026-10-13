@@ -30,7 +30,9 @@ it("keeps preview and accept unavailable until their prerequisites and permits c
       onCancel={noop}
     />,
   );
-  expect(markup).toMatch(/<button disabled="">Preview<\/button>/);
+  expect(markup).toContain(
+    'disabled="" class="tool-preview-button" aria-label="Preview"',
+  );
   expect(markup).toMatch(/<button disabled="">OK<\/button>/);
   expect(markup).toContain("<button>Cancel</button>");
   expect(markup).toContain('aria-label="Moving landmarks"');

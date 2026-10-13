@@ -1,0 +1,125 @@
+/* Only the content scrolls; titles and command actions stay in view. */
+.inspector.tool-panel,
+.inspector.command-host,
+.tool-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+[data-panel-open="true"] .inspector.tool-panel,
+[data-panel-open="true"] .inspector.command-host {
+  display: flex;
+}
+.tool-panel > header,
+.tool-panel > h2,
+.tool-panel > h3,
+.command-host > h2 {
+  flex: 0 0 auto;
+  margin: 0;
+  background: var(--surface);
+}
+.tool-panel-content {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  flex: 1 1 auto;
+}
+.command-host > .tool-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.tool-panel > .tool-panel-actions,
+.scan-tools-panel > .tool-panel-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.tool-panel-actions > .tool-preview-button {
+  margin-right: auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.inspector.tool-panel > .tool-panel-actions {
+  margin: 0;
+  padding: 10px 14px;
+}
+.inspector.tool-panel > .tool-panel-content:not(.tool-section) {
+  padding: 12px 14px;
+}
+
+.inspector > h2 {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+}
+
+[data-panel-open="false"] .inspector.tool-panel,
+[data-panel-open="false"] .inspector.command-host {
+  display: none;
+}
+
+/* Compact title strips apply at every supported viewport width. */
+.workspace > .inspector > h2,
+.tool-panel > header,
+.tool-panel > h3 {
+  padding: 0 12px;
+  min-height: 28px;
+  flex-shrink: 0;
+}
+.inspector > h2 > button,
+.tool-panel > header > button {
+  border: 0;
+  padding: 4px 6px;
+  min-height: 26px;
+  background: transparent;
+}
+.command-host > .tool-panel {
+  border: 0;
+  border-radius: 0;
+}
+.command-host > .scan-tools-panel,
+.command-host > .scan-topology-panel {
+  padding: 0;
+}
+.command-host > .scan-tools-panel > .tool-panel-content,
+.command-host > .scan-topology-panel > .tool-panel-content {
+  padding: 10px 12px;
+}
+.command-host > .scan-tools-panel > footer,
+.command-host > .scan-topology-panel > footer {
+  padding: 8px 12px;
+  margin: 0;
+}
+.tool-panel-content {
+  scrollbar-color: var(--border) var(--surface);
+}
+.tool-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+.edit-scan-dialog > .tool-panel-content {
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+.edit-scan-dialog .edit-scan-additional {
+  border-bottom: 0;
+}
+.workspace .object-list > li.selected {
+  background: #b9e3f2;
+  color: #123947;
+}
+
+.object-list > li.selected .object-name svg {
+  color: inherit;
+}

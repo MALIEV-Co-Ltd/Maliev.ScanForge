@@ -1,0 +1,16 @@
+import { Binoculars } from "lucide-react";
+import type { ButtonHTMLAttributes } from "react";
+import "./ToolPanel.css";
+
+export function PreviewButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...props}
+      className="tool-preview-button"
+      aria-label="Preview"
+      title="Preview"
+    >
+      <Binoculars size={18} aria-hidden="true" />
+    </button>
+  );
+}

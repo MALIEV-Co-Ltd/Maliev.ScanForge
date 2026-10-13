@@ -1602,8 +1602,8 @@ export class Viewport {
       item.color = entity.color;
       const material = item.mesh.material;
       material.color.set(material.vertexColors ? "#ffffff" : entity.color);
-      material.emissive.set(entity.id === selectedId ? "#17677b" : "#000000");
-      material.emissiveIntensity = entity.id === selectedId ? 0.28 : 0;
+      material.emissive.set(entity.id === selectedId ? "#68c6e3" : "#000000");
+      material.emissiveIntensity = entity.id === selectedId ? 0.35 : 0;
       material.flatShading = this.flatShading;
       material.polygonOffset = !!item.cadEdges;
       material.polygonOffsetFactor = 1;

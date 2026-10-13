@@ -1,3 +1,4 @@
+import "./ToolPanel.css";
 import { useState } from "react";
 import type { SurfaceFitOptions } from "../surfaces";
 import type { SurfaceFitSession } from "../surface-fit-session";
@@ -23,9 +24,9 @@ export function FitSurfaceDialog({
   const [changed, setChanged] = useState(false);
   const valid = [u, v].every((n) => Number.isInteger(n) && n >= 4 && n <= 16);
   return (
-    <aside className="inspector" aria-label="Fit Surface">
+    <aside className="inspector tool-panel" aria-label="Fit Surface">
       <h2>Fit Surface</h2>
-      <section className="tool-section">
+      <section className="tool-section tool-panel-content">
         <p>
           {session.source.name} · {session.triangles.toLocaleString()} selected
           triangles
@@ -67,21 +68,7 @@ export function FitSurfaceDialog({
               <option value="yz">OYZ</option>
             </select>
           </label>
-          <button
-            disabled={!valid}
-            onClick={() => {
-              setChanged(false);
-              onApply({
-                countU: u,
-                countV: v,
-                degree: 3,
-                projection,
-                sampleLimit: 10000,
-              });
-            }}
-          >
-            Apply
-          </button>
+
           <label className="check">
             <input
               type="checkbox"
@@ -104,16 +91,31 @@ export function FitSurfaceDialog({
           axis-oriented height fields. Selection-bounds orientation, smoothness
           and automatic tolerance fitting remain unavailable.
         </p>
-        <div className="button-row">
-          <button
-            disabled={busy || changed || !session.preview}
-            onClick={onAccept}
-          >
-            OK
-          </button>
-          <button onClick={onCancel}>Cancel</button>
-        </div>
       </section>
+      <footer className="tool-panel-actions">
+        <button
+          disabled={busy || !valid}
+          onClick={() => {
+            setChanged(false);
+            onApply({
+              countU: u,
+              countV: v,
+              degree: 3,
+              projection,
+              sampleLimit: 10000,
+            });
+          }}
+        >
+          Apply
+        </button>
+        <button
+          disabled={busy || changed || !session.preview}
+          onClick={onAccept}
+        >
+          OK
+        </button>
+        <button onClick={onCancel}>Cancel</button>
+      </footer>
     </aside>
   );
 }
