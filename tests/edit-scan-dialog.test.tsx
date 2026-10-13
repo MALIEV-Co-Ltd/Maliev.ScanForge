@@ -14,7 +14,7 @@ const defaults: EditScanDialogProps = {
   onAngle: noop,
   allConnected: false,
   onAllConnected: noop,
-  brushRadius: 24,
+  brushRadius: 8,
   through: false,
   onThrough: noop,
   selectedCount: 0,

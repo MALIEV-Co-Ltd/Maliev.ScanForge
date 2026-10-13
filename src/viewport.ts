@@ -179,7 +179,7 @@ export class Viewport {
   private brushing = false;
   private selectionTool:
     "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand" = "brush";
-  private brushPixels = 24;
+  private brushPixels = 8;
   private selectThrough = false;
   private subtract = false;
   private paintAltHeld = false;

@@ -361,7 +361,7 @@ export function App() {
   );
   const [selectionVersion, setSelectionVersion] = useState(0);
   const [triangleMask, setTriangleMask] = useState<Uint8Array | null>(null);
-  const [brushRadius, setBrushRadius] = useState(24);
+  const [brushRadius, setBrushRadius] = useState(8);
   const [quickToolsEnabled, setQuickToolsEnabled] = useState(true);
   const [quickToolsPoint, setQuickToolsPoint] = useState<{
     x: number;
@@ -421,7 +421,7 @@ export function App() {
     through: boolean;
   }>({
     entity: undefined,
-    radius: 24,
+    radius: 8,
     subtract: false,
     tool: "brush",
     through: false,
