@@ -2,6 +2,7 @@ import type { Vec3 } from "./types";
 import {
   nativeAlignmentObjective,
   nativeAlignmentRotation,
+  nativeAlignmentRms,
 } from "./scan-native-alignment";
 import { nativeAlignmentSimplex } from "./scan-native-simplex";
 
@@ -9,6 +10,8 @@ export interface NativeAlignmentRefinementOptions {
   tolerance?: number;
   budget?: number;
   signal?: AbortSignal;
+  /** Native wrapper's optional Float32 RMS output. */
+  measureRms?: boolean;
   /** Optional numerical trace receives a copy so observers cannot mutate the search. */
   onEvaluation?: (parameters: readonly number[], error: number) => void;
 }
@@ -127,5 +130,12 @@ export function nativeRefineAlignmentParameters(
     Math.fround(0.005),
     options.signal,
   );
-  return { ...result, matrix: nativeAlignmentMatrix(result.parameters) };
+  const matrix = nativeAlignmentMatrix(result.parameters);
+  return {
+    ...result,
+    matrix,
+    rms: options.measureRms
+      ? Math.fround(nativeAlignmentRms(matrix, moving, fixed))
+      : undefined,
+  };
 }

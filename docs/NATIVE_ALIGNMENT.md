@@ -240,3 +240,53 @@ when replacing the current best, preserving the first candidate on ties. It
 refines each accepted candidate only below 100 pairs with tolerance 0.001 and
 budget 100, then refines the final chosen matrix with tolerance 0.0001 and budget 1000. These policies remain static observations pending complete original caller
 captures and are not integrated into the UI by the schedule helper.
+
+## Executed complete N-point initializer
+
+`src/scan-native-alignment-npoints.ts` now connects the original candidate schedule,
+triplet construction, refinement and Float32 RMS ranking. Accepted candidates
+with fewer than 100 pairs refine with tolerance 0.001 and budget 100. At 100 or
+more pairs they are ranked directly. Strict less-than preserves the first equal
+Float32 score. The final best matrix refines with tolerance 0.0001 and budget
+1000, including the identity fallback when all triplets are rejected. Fewer than
+three pairs return identity. Input points round to Float32 before initialization.
+The port avoids the caller's redundant pre-refinement RMS calculation because its
+result is overwritten before ranking; source and candidate coordinates stay
+immutable. Cancellation and finite-coordinate guards are independently authored.
+
+Twenty executions of the complete original `0x140aadde0` cover 0/1/2/3/4/5/8/16
+pairs, the 99/100 refinement boundary, 101 pairs, the 1999/2000 sampling boundary,
+five noisy pair sets, collinear points and coincident points. Every final matrix
+double byte matches the port. The original point conversion, candidate loop,
+triplet construction, optimizer, RMS ranking and final refinement execute without
+numerical substitution. References are in `tests/fixtures/alignment-npoints-native.json`.
+This upgrades the preceding static schedule observations to a complete caller
+output comparison; it does not capture every candidate's internal evaluation trace.
+
+The point storage now supplies the cyclic container/proxy layout observed in
+constructor `0x140aae8b0`: the container references a proxy, and the proxy points
+back to the container. This supports the different iterator-copy paths in the
+refinement and RMS helpers. The original conversion widens Float32 XYZ values
+to doubles. Constructor Evidence is
+`ev_85ae7a6ac189005797e7f6ee2c768f8790dd940ac021ec499fd76275af3f144e`;
+conversion-loop Evidence is
+`ev_f5c44ca16b4a38a9e86e881a8bdb82fe544b213a32cfda42e6fb08e3137a1e7d`.
+
+The refinement port also supports the original optional Float32 RMS output.
+Fifteen complete original matrix-wrapper captures with RMS enabled match every
+matrix double and RMS float byte. These references are in
+`tests/fixtures/alignment-refinement-rms-native.json`; earlier captures with RMS
+disabled remain unchanged.
+
+The native probes bind raw allocation/copy/free and CRT imports and retain
+allocations until each case returns. The original allocation helper `0x14013d800`
+is preserved, including its alignment/header path for buffers of at least 4096
+bytes; only its raw allocation import is bound. Evidence is
+`ev_e30c0fc14f398656638b2042150d63e015bf28b73e11f2e45b827dd0dc287f4b`.
+An earlier replacement allocator omitted that header and failed on the large
+map cases; it was removed before producing the committed references. Earlier
+missing CRT bindings also terminated before captures. Successful probe mappings
+are released and processes exit. These are numerical caller captures, not native
+UI, scheduler, allocation-failure or complete registration parity. The outer
+identity-seed versus initialized-seed comparison and final transform inversion,
+followed by mesh/CAD refinement, remain pending before application integration.
