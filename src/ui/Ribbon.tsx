@@ -8,6 +8,7 @@ import {
 } from "react";
 import { RibbonToolButton } from "./RibbonToolButton";
 import "./ribbon-verification.css";
+import "./ribbon-tabs-scroll.css";
 import { ribbonOverflowEdges } from "./ribbon-overflow";
 import {
   RIBBON_TABS,
@@ -34,6 +35,51 @@ export function Ribbon({
   const instance = useId();
   const tabButtons = useRef<(HTMLButtonElement | null)[]>([]);
   const tools = useRef<HTMLDivElement>(null);
+  const tabs = useRef<HTMLDivElement>(null);
+  const [tabEdges, setTabEdges] = useState({ left: false, right: false });
+  useEffect(() => {
+    const panel = tabs.current;
+    if (!panel) return;
+    const update = () =>
+      setTabEdges(
+        ribbonOverflowEdges(
+          panel.scrollLeft,
+          panel.clientWidth,
+          panel.scrollWidth,
+        ),
+      );
+    const wheel = (event: WheelEvent) => {
+      if (event.ctrlKey || panel.scrollWidth <= panel.clientWidth) return;
+      const delta =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY;
+      if (!delta) return;
+      event.preventDefault();
+      panel.scrollLeft +=
+        delta *
+        (event.deltaMode === 1
+          ? 16
+          : event.deltaMode === 2
+            ? panel.clientWidth
+            : 1);
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(panel);
+    panel.addEventListener("scroll", update);
+    panel.addEventListener("wheel", wheel, { passive: false });
+    update();
+    return () => {
+      observer.disconnect();
+      panel.removeEventListener("scroll", update);
+      panel.removeEventListener("wheel", wheel);
+    };
+  }, []);
+  useEffect(() => {
+    tabButtons.current[
+      RIBBON_TABS.findIndex((tab) => tab.id === activeTab)
+    ]?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [activeTab]);
   const [edges, setEdges] = useState({ left: false, right: false });
   const active =
     RIBBON_TABS.find((tab) => tab.id === activeTab) ?? RIBBON_TABS[0];
@@ -116,29 +162,42 @@ export function Ribbon({
     <section className="ribbon" aria-label="Workspace commands">
       <div className="ribbon-tab-row">
         <div
-          className="ribbon-tabs"
-          role="tablist"
-          aria-label="Command categories"
+          className="ribbon-tabs-scroll"
+          data-left={tabEdges.left}
+          data-right={tabEdges.right}
         >
-          {RIBBON_TABS.map((tab, index) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              ref={(element) => {
-                tabButtons.current[index] = element;
-              }}
-              id={`${instance}-tab-${tab.id}`}
-              aria-controls={`${instance}-panel-${tab.id}`}
-              aria-selected={active.id === tab.id}
-              tabIndex={active.id === tab.id ? 0 : -1}
-              className={active.id === tab.id ? "active" : undefined}
-              onClick={() => onTabChange(tab.id)}
-              onKeyDown={(event) => navigateTabs(event, index)}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <div
+            ref={tabs}
+            className="ribbon-tabs"
+            role="tablist"
+            aria-label="Command categories"
+          >
+            {RIBBON_TABS.map((tab, index) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                ref={(element) => {
+                  tabButtons.current[index] = element;
+                }}
+                id={`${instance}-tab-${tab.id}`}
+                aria-controls={`${instance}-panel-${tab.id}`}
+                aria-selected={active.id === tab.id}
+                tabIndex={active.id === tab.id ? 0 : -1}
+                className={active.id === tab.id ? "active" : undefined}
+                onClick={() => onTabChange(tab.id)}
+                onKeyDown={(event) => navigateTabs(event, index)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <span className="ribbon-tabs-hint left" aria-hidden="true">
+            &#8249;
+          </span>
+          <span className="ribbon-tabs-hint right" aria-hidden="true">
+            &#8250;
+          </span>
         </div>
         {utilityHeader && (
           <div className="header-utilities">{utilityHeader}</div>
