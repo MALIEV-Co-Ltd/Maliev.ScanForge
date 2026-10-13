@@ -5,43 +5,35 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { installSelectionBoundaryAttributes } from "./selection-boundary-highlight";
 import type { SelectionProcessingMode } from "./selection-processing-mode";
 
-/** A uniformly pulsing boundary with a steady translucent selection interior. */
+/** Center-out selection ripple and fine wireframe for every processing action. */
 export class SelectionProcessingHighlight {
   private readonly active = { value: false };
   private readonly time = { value: 0 };
   private reducedMotion = false;
-  private readonly smoothing = { value: false };
   private readonly motionEnabled = { value: true };
   private startedAt: number | undefined;
   private readonly outlines = new Set<LineSegments2>();
 
   private updateOutlines() {
-    const pulse = this.reducedMotion
-      ? 0.5
-      : 0.5 + 0.5 * Math.cos(this.time.value * 3.0);
     for (const line of this.outlines) {
       line.visible = this.active.value;
       const { width, opacity } = line.userData;
       line.material.linewidth = width;
-      line.material.opacity =
-        opacity * (this.smoothing.value ? 0.65 : 0.5 + 0.5 * pulse);
+      line.material.opacity = opacity * 0.65;
     }
   }
 
   setActive(
     active: boolean,
     reducedMotion = false,
-    mode: SelectionProcessingMode = "boundary",
+    // Retained for existing adapters; all operations now share the same ripple.
+    _mode: SelectionProcessingMode = "smoothing",
   ) {
-    if (
-      active !== this.active.value ||
-      (mode === "smoothing") !== this.smoothing.value
-    ) {
+    if (active !== this.active.value) {
       this.startedAt = undefined;
       this.time.value = 0;
     }
     this.active.value = active;
-    this.smoothing.value = mode === "smoothing";
     this.motionEnabled.value = !reducedMotion;
     this.reducedMotion = reducedMotion;
     if (!active || reducedMotion) this.time.value = 0;
@@ -123,7 +115,6 @@ export class SelectionProcessingHighlight {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.selectionProcessing = this.active;
       shader.uniforms.selectionProcessingTime = this.time;
-      shader.uniforms.selectionSmoothing = this.smoothing;
       shader.uniforms.selectionMotionEnabled = this.motionEnabled;
       shader.uniforms.selectionRadius = {
         value: Math.max(radius / scale, 0.000001),
@@ -149,25 +140,20 @@ export class SelectionProcessingHighlight {
       shader.fragmentShader = shader.fragmentShader
         .replace(
           "#include <common>",
-          "#include <common>\nvarying vec3 selectionPosition;\nuniform bool selectionProcessing;\nuniform float selectionProcessingTime;\nuniform bool selectionSmoothing;\nuniform bool selectionMotionEnabled;\nuniform float selectionRadius;" +
+          "#include <common>\nvarying vec3 selectionPosition;\nuniform bool selectionProcessing;\nuniform float selectionProcessingTime;\nuniform bool selectionMotionEnabled;\nuniform float selectionRadius;" +
             boundaryVaryings,
         )
         .replace(
           "#include <color_fragment>",
           `#include <color_fragment>
           if (selectionProcessing) {
-            diffuseColor.a *= 0.38;
-            float wireVisibility = 0.55 + 0.45 * cos(selectionProcessingTime * 3.0);
-            if (!selectionMotionEnabled) wireVisibility = 0.55;
-            if (selectionSmoothing) {
               float radius = length(selectionPosition) / selectionRadius;
               float travel = fract(selectionProcessingTime / 1.8) * 1.4 - 0.2;
               float wave = exp(-pow((radius - travel) / 0.18, 2.0));
               wave *= smoothstep(-0.2, 0.05, travel) * (1.0 - smoothstep(0.95, 1.2, travel));
               if (!selectionMotionEnabled) wave = 0.4;
-              wireVisibility = wave;
+              float wireVisibility = wave;
               diffuseColor.a = opacity * (0.14 + 0.48 * wave);
-            }
             float wire = 0.0;
               ${
                 hasBoundary
@@ -182,7 +168,7 @@ export class SelectionProcessingHighlight {
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v8:${hasBoundary}`;
+      `selection-processing-red-v9:${hasBoundary}`;
     return lines;
   }
 }

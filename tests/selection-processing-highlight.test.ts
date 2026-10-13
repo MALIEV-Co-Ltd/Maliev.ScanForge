@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import * as THREE from "three";
 import { SelectionProcessingHighlight } from "../src/selection-processing-highlight";
 
-it("keeps dark fine wireframe available for every processing mode, independently of the smoothing wave", () => {
+it("uses the outward ripple and dark fine wireframe for every processing mode", () => {
   const effect = new SelectionProcessingHighlight();
   const geometry = new THREE.PlaneGeometry(4, 4, 2, 2).toNonIndexed();
   const material = new THREE.MeshBasicMaterial({ color: "#e44b5b" });
@@ -16,17 +16,14 @@ it("keeps dark fine wireframe available for every processing mode, independently
     shader as THREE.WebGLProgramParametersWithUniforms,
     {} as THREE.WebGLRenderer,
   );
-  // The common wire pass follows the closed smoothing branch. A mode switch
-  // changes its visibility timing without removing the triangle edges.
-  expect(shader.fragmentShader).toMatch(
-    /diffuseColor\.a = opacity \* \(0\.14 \+ 0\.48 \* wave\);\s*}\s*float wire = 0\.0;/,
-  );
+  expect(shader.fragmentShader).not.toContain("selectionSmoothing");
+  expect(shader.fragmentShader).toContain("float wireVisibility = wave;");
   expect(shader.fragmentShader).toContain("smoothstep(0.15, 0.65,");
   expect(shader.fragmentShader).toContain("vec3(0.018, 0.023, 0.030)");
   for (const mode of ["boundary", "smoothing"] as const) {
     effect.setActive(true, false, mode);
     expect(shader.uniforms.selectionProcessing.value).toBe(true);
-    expect(shader.uniforms.selectionSmoothing.value).toBe(mode === "smoothing");
+    expect(shader.uniforms.selectionSmoothing).toBeUndefined();
     expect(effect.update(100)).toBe(true);
     effect.setActive(false);
     expect(shader.uniforms.selectionProcessing.value).toBe(false);
@@ -82,7 +79,7 @@ it("animates only while processing and restores the unmodified selection shader 
   material.dispose();
 });
 
-it("pulses a restrained outline independently of triangle size, hides it after processing, and releases disposed outlines", () => {
+it("keeps a restrained outline while the ripple animates, hides it after processing, and releases disposed outlines", () => {
   const effect = new SelectionProcessingHighlight();
   const geometry = new THREE.PlaneGeometry(1, 1, 20, 20).toNonIndexed();
   const material = new THREE.MeshBasicMaterial({ color: "#e44b5b" });
@@ -100,7 +97,7 @@ it("pulses a restrained outline independently of triangle size, hides it after p
   effect.update(0);
   effect.update(Math.PI / 3);
   expect(lines[0].material.linewidth).toBe(peakWidth);
-  expect(peakOpacity).toBeGreaterThan(lines[0].material.opacity * 1.5);
+  expect(lines[0].material.opacity).toBe(peakOpacity);
   effect.setActive(false);
   expect(lines.every((line) => !line.visible)).toBe(true);
   effect.setActive(true, true);
@@ -138,7 +135,7 @@ it("starts each smoothing ripple at the surface center and uses a static reduced
   effect.setActive(true, false, "smoothing");
   effect.update(100);
   expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
-  expect(shader.uniforms.selectionSmoothing.value).toBe(true);
+  expect(shader.uniforms.selectionSmoothing).toBeUndefined();
   expect(
     (shader.uniforms.selectionCenter.value as THREE.Vector3).length(),
   ).toBe(0);
