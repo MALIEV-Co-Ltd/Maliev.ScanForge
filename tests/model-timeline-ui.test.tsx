@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { ribbonCommandPalette } from "../src/ui/RibbonCommandIcon";
 import { ModelTimeline } from "../src/ui/ModelTimeline";
 it("renders a compact accessible draggable marker and both past and future steps without a separate range input", () => {
   const html = renderToStaticMarkup(
@@ -33,4 +34,33 @@ it("disables step actions and the playhead during processing", () => {
   expect(html).toContain('aria-disabled="true"');
   expect(html).toContain('tabindex="-1"');
   expect(html).toMatch(/aria-label="1: Opening part"[^>]*disabled/);
+});
+
+it("keeps only four navigation buttons and gives operation tracks the toolbar palette", () => {
+  const html = renderToStaticMarkup(
+    <ModelTimeline
+      labels={[
+        "Delete triangles",
+        "Create freeform",
+        "Create plane",
+        "Extrude sketch",
+      ]}
+      cursor={2}
+      disabled={false}
+      onSeek={() => {}}
+      onContextMenu={() => {}}
+    />,
+  );
+  const toolbar = html.slice(
+    html.indexOf('role="toolbar"'),
+    html.indexOf('class="timeline-track"'),
+  );
+  expect(toolbar.match(/<button/g)).toHaveLength(4);
+  expect(html).not.toContain("Scroll timeline left");
+  expect(html).not.toContain("Scroll timeline right");
+  expect(html).toContain("Middle-drag pans");
+  for (const command of ["editScan", "newFreeform", "fitPlane", "extrude"])
+    expect(html).toContain(
+      `--timeline-operation-color:${ribbonCommandPalette(command).base}`,
+    );
 });

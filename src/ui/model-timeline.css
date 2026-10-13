@@ -43,12 +43,13 @@
   width: max-content;
   list-style: none;
   margin: 0;
-  padding: 2px 8px 2px 2px;
-  gap: 4px;
-  border-bottom: 1px solid var(--border);
+  padding: 2px 16px 2px 2px;
+  gap: 16px;
 }
 .timeline-steps li {
   position: relative;
+  padding-bottom: 3px;
+  border-bottom: 2px solid var(--timeline-operation-color);
 }
 .timeline-steps button {
   width: 24px;
@@ -94,8 +95,9 @@
   border-right: 4px solid transparent;
   border-top: 5px solid var(--accent);
 }
-.timeline-playhead[aria-disabled="true"] {
-  cursor: default;
+.timeline-playhead::before,
+.timeline-playhead::after {
+  cursor: ew-resize;
 }
 @media (max-width: 760px) {
   .model-timeline {

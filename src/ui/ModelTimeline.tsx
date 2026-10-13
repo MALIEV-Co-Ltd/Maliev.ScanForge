@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import "./model-timeline.css";
 
-import { RibbonCommandIcon } from "./RibbonCommandIcon";
+import { RibbonCommandIcon, ribbonCommandPalette } from "./RibbonCommandIcon";
 import { timelineCommand } from "./timeline-command";
 
 export function ModelTimeline({
@@ -28,13 +28,18 @@ export function ModelTimeline({
   const track = useRef<HTMLDivElement>(null);
   const [markerLeft, setMarkerLeft] = useState(0);
   const dragging = useRef<number | null>(null);
+  const panning = useRef<{
+    pointerId: number;
+    x: number;
+    scrollLeft: number;
+  } | null>(null);
   useEffect(() => {
     const element = track.current;
     const item = element?.querySelector<HTMLElement>(
       '[aria-current="step"]',
     )?.parentElement;
     if (element && item) {
-      setMarkerLeft(item.offsetLeft + item.offsetWidth + 2);
+      setMarkerLeft(item.offsetLeft + item.offsetWidth + 8);
       if (item.offsetLeft < element.scrollLeft)
         element.scrollLeft = item.offsetLeft;
       else if (
@@ -80,19 +85,41 @@ export function ModelTimeline({
           <ChevronsRight size={14} />,
         )}
       </div>
-      <button
-        type="button"
-        title="Scroll timeline left"
-        aria-label="Scroll timeline left"
-        onClick={() =>
-          track.current?.scrollBy({ left: -200, behavior: "smooth" })
-        }
-      >
-        <ChevronLeft size={14} />
-      </button>
       <div
         className="timeline-track"
         ref={track}
+        title="Scroll to browse timeline - Middle-drag pans"
+        onPointerDown={(event) => {
+          if (event.button !== 1) return;
+          event.preventDefault();
+          panning.current = {
+            pointerId: event.pointerId,
+            x: event.clientX,
+            scrollLeft: event.currentTarget.scrollLeft,
+          };
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }}
+        onPointerMove={(event) => {
+          const pan = panning.current;
+          if (pan?.pointerId === event.pointerId)
+            event.currentTarget.scrollLeft =
+              pan.scrollLeft + pan.x - event.clientX;
+        }}
+        onPointerUp={(event) => {
+          if (panning.current?.pointerId !== event.pointerId) return;
+          panning.current = null;
+          if (event.currentTarget.hasPointerCapture(event.pointerId))
+            event.currentTarget.releasePointerCapture(event.pointerId);
+        }}
+        onPointerCancel={() => {
+          panning.current = null;
+        }}
+        onLostPointerCapture={() => {
+          panning.current = null;
+        }}
+        onAuxClick={(event) => {
+          if (event.button === 1) event.preventDefault();
+        }}
         onWheel={(event) => {
           if (
             Math.abs(event.deltaY) > Math.abs(event.deltaX) &&
@@ -106,7 +133,18 @@ export function ModelTimeline({
       >
         <ol className="timeline-steps">
           {["Starting state", ...labels].map((label, index) => (
-            <li key={index} className={index > cursor ? "timeline-future" : ""}>
+            <li
+              key={index}
+              className={index > cursor ? "timeline-future" : ""}
+              style={
+                {
+                  "--timeline-operation-color":
+                    index === 0
+                      ? "var(--border)"
+                      : ribbonCommandPalette(timelineCommand(label)).base,
+                } as CSSProperties
+              }
+            >
               <button
                 type="button"
                 title={`${index}: ${label}`}
@@ -174,7 +212,7 @@ export function ModelTimeline({
               .querySelectorAll<HTMLElement>(".timeline-steps li")
               .forEach((item, index) => {
                 const delta = Math.abs(
-                  item.offsetLeft + item.offsetWidth + 2 - x,
+                  item.offsetLeft + item.offsetWidth + 8 - x,
                 );
                 if (delta < distance) {
                   distance = delta;
@@ -193,16 +231,6 @@ export function ModelTimeline({
           }}
         />
       </div>
-      <button
-        type="button"
-        title="Scroll timeline right"
-        aria-label="Scroll timeline right"
-        onClick={() =>
-          track.current?.scrollBy({ left: 200, behavior: "smooth" })
-        }
-      >
-        <ChevronRight size={14} />
-      </button>
     </section>
   );
 }
