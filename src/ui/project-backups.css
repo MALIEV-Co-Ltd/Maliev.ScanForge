@@ -16,21 +16,211 @@
   white-space: nowrap;
 }
 .project-recovery-dialog {
-  width: min(480px, 85vw);
-  max-height: 75vh;
+  width: min(680px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
   overflow: auto;
-  padding: 24px;
+  padding: 0;
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 .project-recovery-dialog::backdrop {
   background: #0007;
 }
-.project-backups-list button {
-  display: block;
+.recovery-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
+}
+.recovery-header > svg {
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+.recovery-header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.recovery-dismiss {
+  width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-color: transparent;
+}
+.recovery-body {
+  padding: 20px;
+}
+.recovery-instruction {
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+.recovery-storage-error {
+  margin: 0 0 16px;
+  padding: 12px;
+  background: var(--input);
+  line-height: 1.5;
+}
+.recovery-table-scroll {
+  max-height: min(320px, 45dvh);
+  overflow: auto;
+  border: 1px solid var(--border);
+  scrollbar-color: var(--muted) var(--input);
+  scrollbar-width: thin;
+}
+.recovery-table {
   width: 100%;
-  margin: 8px 0;
+  min-width: 480px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+.recovery-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px 12px;
+  background: var(--chrome);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
   text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.recovery-table th.recovery-select-column {
+  width: 36px;
+  padding: 0;
+}
+.recovery-table th:nth-child(2) {
+  width: 45%;
+}
+.recovery-table th:nth-child(3) {
+  width: 34%;
+}
+.recovery-table td {
+  height: 44px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.recovery-table tr:last-child td {
+  border-bottom: 0;
+}
+.recovery-table td:first-child {
+  padding: 8px 10px;
+}
+.recovery-row {
+  cursor: pointer;
+}
+.recovery-row:hover {
+  background: var(--hover);
+}
+.recovery-row.selected {
+  background: var(--selected);
+  color: var(--selected-text);
+}
+.recovery-row:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.recovery-table input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.recovery-project span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.recovery-table time {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 8px;
+  row-gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.recovery-time,
+.recovery-snapshot {
+  color: var(--muted);
+}
+.recovery-row.selected .recovery-time,
+.recovery-row.selected .recovery-snapshot {
+  color: var(--selected-text);
+}
+.recovery-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.recovery-empty p {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.recovery-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--chrome);
+}
+.recovery-footer p {
+  margin: 0;
+  max-width: 340px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.recovery-footer strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.recovery-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+.recovery-actions button {
+  min-width: 80px;
+}
+.recovery-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .recovery-header {
+    padding: 12px 16px;
+  }
+  .recovery-body {
+    padding: 16px;
+  }
+  .recovery-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px;
+  }
+  .recovery-actions {
+    justify-content: flex-end;
+  }
 }

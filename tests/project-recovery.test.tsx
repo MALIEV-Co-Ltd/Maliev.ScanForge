@@ -37,3 +37,37 @@ it("places backup and recovery in Main ribbon and excludes it from other tabs an
     renderToStaticMarkup(<Ribbon {...props} activeTab="cad" />),
   ).not.toContain('aria-label="Backup and recovery"');
 });
+it("separates project, saved date and snapshot from the selected restore action", () => {
+  const html = renderToStaticMarkup(
+    <ProjectRecovery
+      backups={[
+        {
+          id: "session",
+          name: "Bracket",
+          savedAt: 1791882000000,
+          file: new Blob(),
+        },
+        {
+          id: "session:previous",
+          name: "Bracket",
+          savedAt: 1791881000000,
+          file: new Blob(),
+        },
+      ]}
+      status="Backup ready"
+      disabled={false}
+      offerRecovery={false}
+      onRestore={() => {}}
+    />,
+  );
+  expect(html).toContain('aria-label="Available project backups"');
+  expect(html).toContain('scope="col">Project');
+  expect(html).toContain('scope="col">Saved');
+  expect(html).toContain('scope="col">Snapshot');
+  expect(html).toContain("Bracket.scanforge");
+  expect(html).toContain("Latest");
+  expect(html).toContain("Previous");
+  expect(html).toContain('type="radio"');
+  expect(html).toMatch(/disabled="">Restore<\/button>/);
+  expect(html).toContain('aria-label="Close project backups"');
+});
