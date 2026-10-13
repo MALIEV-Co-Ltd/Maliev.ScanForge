@@ -30,12 +30,14 @@ export function prepareNoiseOctree(
   minimumExtent = 0.5,
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
+  sourceBounds?: NoiseBounds,
 ) {
   const prepared = packNoiseOctree(
     triangles,
     minimumExtent,
     maximumDepth,
     options,
+    sourceBounds,
   );
   const budget = { nodes: 0 };
   splitNoiseNode(
@@ -63,6 +65,7 @@ export function packNoiseOctree(
   minimumExtent = 0.5,
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
+  sourceBounds?: NoiseBounds,
 ): PackedNoiseTree {
   const indexed = Array.isArray(triangles)
     ? undefined
@@ -128,6 +131,15 @@ export function packNoiseOctree(
     }
   }
   const padding = 0.009999999776482582;
+  if (sourceBounds) {
+    if (
+      !sourceBounds.every(Number.isFinite) ||
+      [0, 1, 2].some((axis) => sourceBounds[axis] > sourceBounds[axis + 3])
+    )
+      throw new RangeError("Target surface bounds are invalid");
+    for (let axis = 0; axis < 6; axis++)
+      b[axis] = Math.fround(sourceBounds[axis]);
+  }
   const padded: NoiseBounds = [
     Math.fround(b[0] - padding),
     Math.fround(b[1] - padding),
