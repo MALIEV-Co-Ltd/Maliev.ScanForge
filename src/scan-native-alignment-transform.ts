@@ -1,6 +1,43 @@
 import { nativeAlignmentParameters } from "./scan-native-alignment-refinement";
 import { nativeAlignmentRotation } from "./scan-native-alignment";
 
+/** Native controller Euler extraction and offset encoding (radians, millimetres). */
+export function nativeAlignmentSixParameters(
+  matrix: readonly number[],
+): number[] {
+  if (matrix.length !== 12 || !matrix.every(Number.isFinite))
+    throw new Error("Alignment initialization requires a finite 3x4 matrix.");
+  let z = Math.atan2(matrix[4], matrix[0]);
+  if (z < -Math.PI / 2) z += Math.PI;
+  if (z > Math.PI / 2) z -= Math.PI;
+  let sine = Math.sin(z),
+    cosine = Math.cos(z);
+  let y = Math.atan2(-matrix[8], cosine * matrix[0] + sine * matrix[4]);
+  let x = Math.atan2(
+    matrix[2] * sine - matrix[6] * cosine,
+    matrix[5] * cosine - matrix[1] * sine,
+  );
+  if (Math.abs(x) > Math.PI / 2 && Math.abs(y) > Math.PI / 2) {
+    z += Math.PI;
+    while (z * 57.29577951308232 > 180) z -= 0.6366197723675814;
+    sine = Math.sin(z);
+    cosine = Math.cos(z);
+    y = Math.atan2(-matrix[8], cosine * matrix[0] + sine * matrix[4]);
+    x = Math.atan2(
+      matrix[2] * sine - matrix[6] * cosine,
+      matrix[5] * cosine - matrix[1] * sine,
+    );
+  }
+  return [
+    matrix[3] + 10,
+    matrix[7] + 10,
+    matrix[11] + 10,
+    x + Math.PI / 2,
+    y + Math.PI / 2,
+    z + Math.PI / 2,
+  ];
+}
+
 const epsilon = Number.EPSILON;
 /** Scaled partial-pivot LU, including native last-row tie selection. */
 function inverse3(input: readonly number[]): number[] | undefined {

@@ -611,3 +611,28 @@ surface-refinement parity after a transform.
 The shared alignment worker must next consume these retained buffers before this
 controller can replace the application's surface refinement. Full Align parity
 and multicore execution remain unproven.
+
+## Verified controller bootstrap pose
+
+The controller's `[10,10,10,pi/2,pi/2,pi/2]` parameters encode identity;
+they do not request a 10 mm translation or a 90-degree rotation. Original
+`0x140aaa570` first invokes correspondence centering `0x140aaa2b0`, extracts
+Euler angles through `0x140622fe0`, and adds the parameter offsets. The centering
+helper returns identity even for translated correspondence records.
+
+Fresh REA Euler extraction evidence is
+`ev_6be06132e457e3e6b451874b963ca95ae2095c93e23e321edd78839e5b5765b5`.
+The external `alignment-bootstrap-sequence` probe executes the original
+centering, Euler and transform procedures on empty and translated records, then
+the original Euler procedure on 30 retained mixed-transform matrices. The two
+bootstrap cases reproduce identity exactly; the 30 additional cases capture
+offset-encoded Euler parameters, including the native angle-branch behavior.
+The first runtime attempt failed at an unbound CRT `atan2` import. The subsequent
+run binds that import and completes all 32 cases; its allocation is released and
+the process exits. The fixture retains the image digest and execution limits.
+
+`nativeAlignmentSixParameters` now implements this conversion, and the recovered
+surface controller derives its neutral seed from an identity matrix. No GUI or
+MCP schema/default changes are introduced. Full controller execution, target
+group dispatch, application worker integration and native UI parity remain
+separate requirements; these captures do not prove them.

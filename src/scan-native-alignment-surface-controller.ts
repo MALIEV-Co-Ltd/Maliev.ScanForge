@@ -3,7 +3,10 @@ import { prepareNativeAlignmentSources } from "./scan-native-alignment-source";
 import { prepareNativeAlignmentSurface } from "./scan-native-alignment-surface";
 import { partitionNativeAlignmentVertices } from "./scan-native-alignment-partition";
 import { nativeRefineAlignmentSurface } from "./scan-native-alignment-surface-search";
-import { nativeAlignmentSixTransform } from "./scan-native-alignment-transform";
+import {
+  nativeAlignmentSixTransform,
+  nativeAlignmentSixParameters,
+} from "./scan-native-alignment-transform";
 
 type SourceMesh = Parameters<typeof prepareNativeAlignmentSources>[0][number];
 
@@ -35,7 +38,7 @@ export function nativeRefineAlignmentMeshes(
     options.workerCount ?? 1,
   );
   const result = nativeRefineAlignmentSurface(
-    [10, 10, 10, Math.PI / 2, Math.PI / 2, Math.PI / 2],
+    nativeAlignmentSixParameters([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]),
     lanes.map((lane) => lane.vertices),
     fixed.query,
     { ...options, budget: 1000, step: Math.fround(options.step ?? 0.0002) },
