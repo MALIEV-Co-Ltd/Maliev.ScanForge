@@ -3,6 +3,8 @@ import { GripVertical } from "lucide-react";
 import "./ScanQuickTools.css";
 import { ScanToolIcon } from "./ScanToolIcon";
 
+const POINTER_CLEARANCE = 48;
+
 export function ScanQuickTools(props: {
   x: number;
   y: number;
@@ -21,6 +23,7 @@ export function ScanQuickTools(props: {
     const element = toolbar.current;
     if (!element) return;
     const rect = element.getBoundingClientRect();
+    const above = props.y - rect.height - POINTER_CLEARANCE;
     setPosition({
       x: Math.max(
         8,
@@ -30,7 +33,7 @@ export function ScanQuickTools(props: {
         8,
         Math.min(
           window.innerHeight - rect.height - 8,
-          props.y - rect.height - 8,
+          above >= 8 ? above : props.y + POINTER_CLEARANCE,
         ),
       ),
     });
@@ -65,7 +68,7 @@ export function ScanQuickTools(props: {
               props.x - 112,
             ),
           ),
-        top: position?.y ?? Math.max(8, props.y - 48),
+        top: position?.y ?? Math.max(8, props.y - 52 - POINTER_CLEARANCE),
       }}
       tabIndex={0}
       aria-description="Drag the toolbar background to move it, or focus the toolbar and use arrow keys."

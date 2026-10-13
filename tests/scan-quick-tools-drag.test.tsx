@@ -90,7 +90,28 @@ it("keeps the measured wider image toolbar inside the viewport on opening", () =
       getBoundingClientRect: () => ({ width: 286, height: 52 }),
     };
     mounted.mock.calls.at(-1)![0]();
-    expect(moved).toHaveBeenLastCalledWith({ x: 506, y: 539 });
+    expect(moved).toHaveBeenLastCalledWith({ x: 506, y: 499 });
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+it("opens below the pointer when the toolbar cannot fit above with clearance", () => {
+  vi.stubGlobal("window", { innerWidth: 800, innerHeight: 600 });
+  try {
+    const noop = () => {};
+    const tree = ScanQuickTools({
+      x: 400,
+      y: 40,
+      onDelete: noop,
+      onHide: noop,
+      onIsolate: noop,
+      onInvert: noop,
+    });
+    tree.props.ref.current = {
+      getBoundingClientRect: () => ({ width: 286, height: 52 }),
+    };
+    mounted.mock.calls.at(-1)![0]();
+    expect(moved).toHaveBeenLastCalledWith({ x: 257, y: 88 });
   } finally {
     vi.unstubAllGlobals();
   }
