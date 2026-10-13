@@ -74,6 +74,7 @@ it("separates project, saved date and snapshot from the selected restore action"
   expect(html).toContain('type="radio"');
   expect(html).toMatch(/disabled="">Restore<\/button>/);
   expect(html).toContain('aria-label="Close project backups"');
-  expect(html).toMatch(/disabled="">Delete<\/button>/);
+  expect(html.match(/aria-label="Delete backup Bracket"/g)).toHaveLength(2);
+  expect(html.slice(html.indexOf("<footer"))).not.toContain("Delete");
   expect(html).toContain("recovery-thumbnail");
 });

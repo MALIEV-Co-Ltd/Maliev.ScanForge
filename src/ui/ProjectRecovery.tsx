@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { FileClock, History, X } from "lucide-react";
+import { Check, FileClock, History, Trash2, X } from "lucide-react";
 import type { Backup } from "../project-backup";
 import "./project-backups.css";
 
@@ -45,7 +45,7 @@ export function ProjectRecovery({
 }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const offered = useRef(false),
@@ -59,25 +59,25 @@ export function ProjectRecovery({
     onDismiss?.();
   }
   function restore(backup: Backup) {
-    if (disabled || deleting || confirmDelete) return;
+    if (disabled || deleting || !!confirmDeleteId) return;
     close();
     onRestore(backup);
   }
   useEffect(() => {
     if (open) {
       setSelectedId(null);
-      setConfirmDelete(false);
+      setConfirmDeleteId(null);
       setDeleteError("");
     }
   }, [open]);
-  async function deleteSelected() {
-    if (!selected || !onDelete) return;
+  async function deleteBackup(backup: Backup) {
+    if (disabled || deleting || !onDelete) return;
     setDeleting(true);
     setDeleteError("");
     try {
-      await onDelete(selected);
-      setSelectedId(null);
-      setConfirmDelete(false);
+      await onDelete(backup);
+      if (selectedId === backup.id) setSelectedId(null);
+      setConfirmDeleteId(null);
     } catch (error) {
       setDeleteError(error instanceof Error ? error.message : String(error));
     } finally {
@@ -154,6 +154,11 @@ export function ProjectRecovery({
                   <th scope="col">Project</th>
                   <th scope="col">Saved</th>
                   <th scope="col">Snapshot</th>
+                  {onDelete && (
+                    <th scope="col" className="recovery-delete-column">
+                      <span className="recovery-sr-only">Delete</span>
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -171,7 +176,7 @@ export function ProjectRecovery({
                       onClick={() => {
                         if (!disabled && !deleting) {
                           setSelectedId(backup.id);
-                          setConfirmDelete(false);
+                          setConfirmDeleteId(null);
                         }
                       }}
                       onDoubleClick={() => restore(backup)}
@@ -218,6 +223,66 @@ export function ProjectRecovery({
                       <td className="recovery-snapshot">
                         {previous ? "Previous" : "Latest"}
                       </td>
+                      {onDelete && (
+                        <td className="recovery-delete-column">
+                          <button
+                            type="button"
+                            className={
+                              "recovery-row-delete" +
+                              (confirmDeleteId === backup.id
+                                ? " confirming"
+                                : "")
+                            }
+                            aria-label={
+                              (confirmDeleteId === backup.id
+                                ? "Confirm delete"
+                                : "Delete") +
+                              " backup " +
+                              backup.name
+                            }
+                            title={
+                              confirmDeleteId === backup.id
+                                ? "Click again to delete this backup"
+                                : "Delete this backup"
+                            }
+                            disabled={disabled || deleting}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              if (confirmDeleteId === backup.id)
+                                void deleteBackup(backup);
+                              else {
+                                setConfirmDeleteId(backup.id);
+                                setDeleteError("");
+                              }
+                            }}
+                            onDoubleClick={(event) => event.stopPropagation()}
+                            onBlur={() => {
+                              if (!deleting) setConfirmDeleteId(null);
+                            }}
+                            onKeyDown={(event) => {
+                              if (
+                                event.key === "Escape" &&
+                                confirmDeleteId === backup.id
+                              ) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                setConfirmDeleteId(null);
+                              }
+                            }}
+                          >
+                            {confirmDeleteId === backup.id ? (
+                              <>
+                                <Check size={16} aria-hidden="true" />
+                                <span>
+                                  {deleting ? "Deleting…" : "Delete?"}
+                                </span>
+                              </>
+                            ) : (
+                              <Trash2 size={16} aria-hidden="true" />
+                            )}
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}
@@ -236,56 +301,19 @@ export function ProjectRecovery({
               Could not delete backup: {deleteError}
             </p>
           )}
-          {confirmDelete && selected && (
-            <div
-              className="recovery-delete-confirm"
-              role="group"
-              aria-label="Confirm backup deletion"
-            >
-              <p>
-                Delete the backup for <strong>{selected.name}</strong>? This
-                removes its saved snapshots. Your open project stays unchanged.
-                If this is the open project, automatic backups stop until you
-                open another project.
-              </p>
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={() => setConfirmDelete(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={() => void deleteSelected()}
-              >
-                {deleting ? "Deleting…" : "Delete backup"}
-              </button>
-            </div>
-          )}
         </div>
         <footer className="recovery-footer">
           <p>
             Open this list from <strong>Main → File → Backup</strong>.
           </p>
           <div className="recovery-actions">
-            {onDelete && (
-              <button
-                type="button"
-                disabled={disabled || deleting || !selected || confirmDelete}
-                onClick={() => setConfirmDelete(true)}
-              >
-                Delete
-              </button>
-            )}
             <button type="button" autoFocus onClick={close}>
               Close
             </button>
             <button
               type="button"
               className="accent"
-              disabled={disabled || deleting || confirmDelete || !selected}
+              disabled={disabled || deleting || !!confirmDeleteId || !selected}
               onClick={() => {
                 if (selected) restore(selected);
               }}

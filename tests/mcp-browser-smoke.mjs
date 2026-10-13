@@ -297,10 +297,31 @@ try {
   await page.getByRole("tab", { name: "Main", exact: true }).click();
   await page.getByRole("button", { name: "Backup", exact: true }).click();
   const recovery = page.getByRole("dialog", { name: "Project backups" });
-  await recovery.getByRole("radio").first().check();
-  await recovery.getByRole("button", { name: "Delete", exact: true }).click();
+  assert.equal(
+    await recovery.getByRole("button", { name: "Delete", exact: true }).count(),
+    0,
+  );
+  await recovery.getByRole("button", { name: /^Delete backup / }).click();
+  assert.equal((await call("backup_list")).result.backups.length, 1);
+  assert.equal(await recovery.getByRole("radio").first().isChecked(), false);
   await recovery
-    .getByRole("button", { name: "Delete backup", exact: true })
+    .getByRole("button", { name: /^Confirm delete backup / })
+    .press("Escape");
+  assert.equal(await recovery.isVisible(), true);
+  await recovery.getByRole("button", { name: /^Delete backup / }).click();
+  await recovery.getByRole("radio").first().focus();
+  assert.equal(
+    await recovery
+      .getByRole("button", { name: /^Confirm delete backup / })
+      .count(),
+    0,
+  );
+  await recovery.getByRole("button", { name: /^Delete backup / }).click();
+  await recovery.screenshot({
+    path: fileURLToPath(new URL("row-delete-confirmation.png", artifactDir)),
+  });
+  await recovery
+    .getByRole("button", { name: /^Confirm delete backup / })
     .click();
   await recovery.getByText("No backups yet", { exact: true }).waitFor();
   assert.equal((await call("backup_list")).result.backups.length, 0);
