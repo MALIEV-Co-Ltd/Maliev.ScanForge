@@ -53,9 +53,7 @@ export class SelectionProcessingHighlight {
     const lines: LineSegments2[] = [];
     if (segments.length) {
       for (const [width, opacity, color] of [
-        [20, 0.12, "#ff263f"],
-        [10, 0.32, "#ff263f"],
-        [3.5, 0.95, "#ffb3b9"],
+        [2.25, 0.85, "#dc4658"],
       ] as const) {
         const lineGeometry = new LineSegmentsGeometry().setPositions(segments);
         const lineMaterial = new LineMaterial({
@@ -63,7 +61,7 @@ export class SelectionProcessingHighlight {
           linewidth: width,
           opacity,
           transparent: true,
-          blending: THREE.AdditiveBlending,
+          blending: THREE.NormalBlending,
           depthWrite: false,
           polygonOffset: true,
           polygonOffsetFactor: -2,
@@ -115,27 +113,13 @@ export class SelectionProcessingHighlight {
           "#include <color_fragment>",
           `#include <color_fragment>
           if (selectionProcessing) {
-
-
-            float pulse = 0.5 + 0.5 * sin(selectionProcessingTime * 2.4);
-            vec3 brightRed = vec3(1.0, 0.055, 0.075);
-            float brightness = 0.20;
-            float rim = 0.0;
-            ${
-              hasBoundary
-                ? `vec3 edgeDistance = selectionBarycentric / max(fwidth(selectionBarycentric), vec3(0.0001));
-            vec3 glow = (vec3(1.0) - smoothstep(vec3(0.0), vec3(4.0 + 2.0 * pulse), edgeDistance)) * selectionBoundary;
-            rim = max(glow.x, max(glow.y, glow.z));`
-                : ""
-            }
-            diffuseColor.rgb = mix(mix(diffuseColor.rgb, brightRed, brightness), vec3(1.0, 0.20, 0.23), rim * (0.65 + 0.35 * pulse));
-            diffuseColor.a *= mix(0.32, 0.70, rim);
+            diffuseColor.a *= 0.38;
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v4:${hasBoundary}`;
+      `selection-processing-red-v5:${hasBoundary}`;
     return lines;
   }
 }

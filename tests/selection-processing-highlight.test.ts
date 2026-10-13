@@ -42,22 +42,24 @@ it("animates only while processing and restores the unmodified selection shader 
   material.dispose();
 });
 
-it("pulses a wide outline independently of triangle size, hides it after processing, and releases disposed outlines", () => {
+it("pulses a restrained outline independently of triangle size, hides it after processing, and releases disposed outlines", () => {
   const effect = new SelectionProcessingHighlight();
   const geometry = new THREE.PlaneGeometry(1, 1, 20, 20).toNonIndexed();
   const material = new THREE.MeshBasicMaterial({ color: "#e44b5b" });
   const lines = effect.install(material, geometry);
-  expect(lines).toHaveLength(3);
+  expect(lines).toHaveLength(1);
+  expect(lines[0].material.blending).toBe(THREE.NormalBlending);
+  expect(lines[0].material.linewidth).toBe(2.25);
   expect(lines.every((line) => !line.visible)).toBe(true);
   // Only the perimeter is emitted, regardless of the dense interior triangles.
   expect(lines[0].geometry.getAttribute("instanceStart").count).toBe(80);
   effect.setActive(true);
   expect(lines.every((line) => line.visible)).toBe(true);
   const peakWidth = lines[0].material.linewidth;
-  const peakOpacity = lines[2].material.opacity;
+  const peakOpacity = lines[0].material.opacity;
   effect.update(Math.PI / 3);
   expect(lines[0].material.linewidth).toBe(peakWidth);
-  expect(peakOpacity).toBeGreaterThan(lines[2].material.opacity * 1.5);
+  expect(peakOpacity).toBeGreaterThan(lines[0].material.opacity * 1.5);
   effect.setActive(false);
   expect(lines.every((line) => !line.visible)).toBe(true);
   effect.setActive(true, true);
