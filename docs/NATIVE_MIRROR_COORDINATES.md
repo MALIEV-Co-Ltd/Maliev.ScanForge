@@ -1,5 +1,39 @@
 # Mirror Mesh coordinate verification
 
+## Exact planar NURBS references
+
+The CAD worker now retains a single planar B-spline face's UV frame from exact
+surface derivatives and the complete control net. Rational weights are supported.
+Every pole must lie within 0.0000001 mm of that plane; checking only corners or
+display triangles is insufficient. The adaptor supplies world coordinates,
+including the face location. Reversed face orientation reverses the normal.
+Undefined midpoint derivatives omit this optional frame without failing import.
+Curved and multi-face objects do not receive a plane frame from this path.
+
+The actual pinned OpenCascade smoke covers planar polynomial and weighted tilted
+surfaces, translated/rotated/scaled frames, STEP roundtrips, and a curved patch
+whose corners are all coplanar. Native handle and virtual-file cleanup remain
+part of that gate. This is an exact CAD producer feeding the already recovered
+Mirror frame policy; it does not establish the original application's surface
+classification or face-picking behavior.
+
+`tests/fixtures/mirror-nurbs-plane-native.json` retains four fresh executions of
+the original Mirror frame/inverse/coordinate instructions using the frame exported
+from the imported weighted tilted NURBS face. All 891 Float32 coordinates, frame
+bytes, and inverse bytes match the port. Project serialization and Mirror request
+tests also retain these outputs. The mapped-image digest and ABI/sqrt adapters
+are retained in the fixture provenance; native picking and full UI execution are
+outside this numerical capture.
+
+Validation passed: production build without warnings/errors, the actual CAD
+WASM smoke with native-handle/file cleanup, 90 focused tests, and all 9,391 tests
+across 199 files. The rebuilt browser's restored NURBS reference produced an
+accepted copy matching all 864 annular native coordinates while preserving the
+source and exact reference BRep/frame. Browser logs were empty of warnings/errors.
+The current manifest is `scanforge-71b4cd374058dfc3`; formatting, diff, and
+prohibited-name checks passed. The original-instruction probe released both
+mapped allocations and exited.
+
 The recovered ribbon builder binds Mirror to `0x84c9`. Its mapped message-map
 action is `0x140812d40`; REA Evidence is
 `ev_62fedb3b99a167983969f6956ebb3e666b79c2bc81de72bd85a056c219a599f8`.

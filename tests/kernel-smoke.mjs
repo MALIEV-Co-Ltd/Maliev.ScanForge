@@ -714,6 +714,14 @@ try {
     weights: [1, 1, 1, 1],
   };
   const nurbs = await request("surface", patch);
+  assert.ok(nurbs.planeFrame, "Planar NURBS retains an exact UV plane frame");
+  assertPlaneFrame(nurbs);
+  [5, 10, 0].forEach((value, axis) =>
+    close(nurbs.planeFrame.center[axis], value, "Exact NURBS frame center"),
+  );
+  [1, 0, 0].forEach((value, axis) =>
+    close(nurbs.planeFrame.tangent[axis], value, "Exact NURBS U tangent"),
+  );
   assert.deepEqual(
     bounds(nurbs.positions),
     [0, 0, 0, 10, 20, 0],
@@ -733,6 +741,79 @@ try {
     data: patchStep,
     extension: "step",
   });
+  assertPlaneFrame(patchImported);
+  for (const field of ["center", "normal", "tangent"])
+    nurbs.planeFrame[field].forEach((value, axis) =>
+      close(
+        patchImported.planeFrame[field][axis],
+        value,
+        `NURBS STEP ${field}`,
+      ),
+    );
+  const tiltedNurbs = await request("surface", {
+    ...patch,
+    points: [
+      [2, 3, 4],
+      [5, 3, 7],
+      [2, 9, 4],
+      [5, 9, 7],
+    ],
+    weights: [1, 2, 3, 4],
+  });
+  assertPlaneFrame(tiltedNurbs);
+  const movedNurbs = await request("transform", {
+    kernelId: tiltedNurbs.kernelId,
+    translation: [7, -2, 5],
+    rotation: [15, 35, 70],
+    scale: 2,
+  });
+  assertPlaneFrame(movedNurbs);
+  assert.notDeepEqual(
+    movedNurbs.planeFrame.tangent,
+    tiltedNurbs.planeFrame.tangent,
+  );
+  const movedNurbsStep = await request("export", [movedNurbs.kernelId]);
+  const restoredNurbs = await request("import", {
+    data: movedNurbsStep,
+    extension: "step",
+  });
+  assertPlaneFrame(restoredNurbs);
+  for (const field of ["center", "normal", "tangent"])
+    movedNurbs.planeFrame[field].forEach((value, axis) =>
+      close(
+        restoredNurbs.planeFrame[field][axis],
+        value,
+        `Tilted NURBS ${field}`,
+      ),
+    );
+  if (process.env.SCANFORGE_QA_NURBS_STEP)
+    writeFileSync(process.env.SCANFORGE_QA_NURBS_STEP, movedNurbsStep);
+  const interiorCurved = await request("surface", {
+    ...patch,
+    countU: 3,
+    countV: 3,
+    degreeU: 2,
+    degreeV: 2,
+    knotsU: [0, 0, 0, 1, 1, 1],
+    knotsV: [0, 0, 0, 1, 1, 1],
+    points: [
+      [0, 0, 0],
+      [5, 0, 0],
+      [10, 0, 0],
+      [0, 10, 0],
+      [5, 10, 4],
+      [10, 10, 0],
+      [0, 20, 0],
+      [5, 20, 0],
+      [10, 20, 0],
+    ],
+    weights: Array(9).fill(1),
+  });
+  assert.equal(
+    interiorCurved.planeFrame,
+    undefined,
+    "Coplanar corners do not make a curved control net planar",
+  );
   assert.deepEqual(
     bounds(patchImported.positions),
     bounds(nurbs.positions),
@@ -753,6 +834,11 @@ try {
     weights: [1, 2, 3, 4],
   };
   const rational = await request("surface", rationalPatch);
+  assert.equal(
+    rational.planeFrame,
+    undefined,
+    "Curved rational face has no plane frame",
+  );
   function midpoint(kernelId) {
     const shape = vm.runInContext(
       `shapes.get(${JSON.stringify(kernelId)})`,

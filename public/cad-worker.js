@@ -27,6 +27,65 @@ function cleanup(handles) {
 function statusValue(status) {
   return status?.value ?? status;
 }
+
+// Verify the entire exact control net, then retain the surface's UV frame.
+// BRepAdaptor applies the face location to both its spline copy and derivatives.
+function splinePlaneFrame(oc, adaptor, reverse) {
+  const handles = [];
+  const own = (value) => (handles.push(value), value);
+  try {
+    const handle = own(adaptor.BSpline());
+    const spline = handle.get(); // Borrowed from the owned handle.
+    const u = (adaptor.FirstUParameter() + adaptor.LastUParameter()) / 2;
+    const v = (adaptor.FirstVParameter() + adaptor.LastVParameter()) / 2;
+    if (!Number.isFinite(u) || !Number.isFinite(v)) return;
+    const point = own(new oc.gp_Pnt_1()),
+      du = own(new oc.gp_Vec_1()),
+      dv = own(new oc.gp_Vec_1());
+    try {
+      adaptor.D1(u, v, point, du, dv);
+    } catch {
+      // A valid trimmed surface can lack derivatives at this parameter. Its
+      // CAD import still succeeds, but it cannot publish this UV plane frame.
+      return;
+    }
+    const center = [point.X(), point.Y(), point.Z()];
+    const tangent = [du.X(), du.Y(), du.Z()];
+    const normal = [
+      du.Y() * dv.Z() - du.Z() * dv.Y(),
+      du.Z() * dv.X() - du.X() * dv.Z(),
+      du.X() * dv.Y() - du.Y() * dv.X(),
+    ];
+    const tangentLength = Math.hypot(...tangent),
+      normalLength = Math.hypot(...normal);
+    if (!(tangentLength > 0) || !(normalLength > 0)) return;
+    for (let axis = 0; axis < 3; axis++) {
+      tangent[axis] /= tangentLength;
+      normal[axis] /= normalLength;
+    }
+    if (![...center, ...tangent, ...normal].every(Number.isFinite)) return;
+    for (let i = 1; i <= spline.NbUPoles(); i++)
+      for (let j = 1; j <= spline.NbVPoles(); j++) {
+        const pole = spline.Pole(i, j);
+        try {
+          const distance =
+            (pole.X() - center[0]) * normal[0] +
+            (pole.Y() - center[1]) * normal[1] +
+            (pole.Z() - center[2]) * normal[2];
+          if (!Number.isFinite(distance) || Math.abs(distance) > 1e-7) return;
+        } finally {
+          pole.delete();
+        }
+      }
+    return {
+      center,
+      tangent,
+      normal: normal.map((value) => (reverse ? -value : value)),
+    };
+  } finally {
+    cleanup(handles);
+  }
+}
 function ensureDone(oc, status, action) {
   if (
     statusValue(status) !==
@@ -114,6 +173,13 @@ function mesh(oc, shape, onProgress = () => {}) {
               ),
               tangent: [tangent.X(), tangent.Y(), tangent.Z()],
             };
+          } else {
+            const type = statusValue(adaptor.GetType());
+            if (
+              type ===
+              statusValue(oc.GeomAbs_SurfaceType.GeomAbs_BSplineSurface)
+            )
+              planeFrame = splinePlaneFrame(oc, adaptor, reverse);
           }
         }
         const surfaceHandle = local(oc.BRep_Tool.Surface_2(face));

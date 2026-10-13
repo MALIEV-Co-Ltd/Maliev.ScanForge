@@ -12,6 +12,7 @@ import { transformPositions } from "../src/geometry";
 import type { Entity, Vec3 } from "../src/types";
 import capture from "./fixtures/mirror-tangent-native.json";
 import cadCapture from "./fixtures/mirror-cad-plane-native.json";
+import nurbsCapture from "./fixtures/mirror-nurbs-plane-native.json";
 
 const decode = (hex: string) =>
   new Float32Array(
@@ -44,7 +45,7 @@ function reference(entry: (typeof capture.cases)[number]): Entity {
   };
 }
 
-it.each([...capture.cases, ...cadCapture.cases])(
+it.each([...capture.cases, ...cadCapture.cases, ...nurbsCapture.cases])(
   "preserves native $name mirror against $plane.name through both project serializers and reference binding",
   async (entry) => {
     const plane = reference(entry);
