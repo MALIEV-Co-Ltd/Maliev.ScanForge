@@ -96,18 +96,16 @@ export function deviationExtrema(
 
 export class DeviationCallouts {
   private root = document.createElement("div");
-  private bounds: THREE.Box3;
+  private footprint: THREE.Box3[];
+  private container: HTMLElement;
   private markers: { point: THREE.Vector3; element: HTMLDivElement }[];
   constructor(
     container: HTMLElement,
     points: ReturnType<typeof deviationExtrema>,
     positions: ArrayLike<number>,
   ) {
-    this.bounds = new THREE.Box3();
-    for (let i = 0; i < positions.length; i += 3)
-      this.bounds.expandByPoint(
-        new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]),
-      );
+    this.container = container;
+    this.footprint = meshFootprint(positions);
     this.root.style.cssText =
       "position:absolute;inset:0;pointer-events:none;overflow:hidden";
     this.root.className = "deviation-callouts";
@@ -136,8 +134,27 @@ export class DeviationCallouts {
     height: number,
     planes: readonly THREE.Plane[] = [],
   ) {
-    const bounds = projectedModelBounds(this.bounds, camera, width, height);
-    const occupied: ScreenRect[] = [];
+    const bounds = this.footprint.map((box) =>
+      projectedModelBounds(box, camera, width, height),
+    );
+    const origin = this.container.getBoundingClientRect();
+    const occupied: ScreenRect[] = Array.from(
+      (
+        this.container.closest(".workspace") ?? this.container
+      ).querySelectorAll<HTMLElement>(
+        ".command-host, .deviation-legend, .viewport-tools-container, .camera-gizmo, .scan-quick-tools",
+      ),
+    )
+      .filter((node) => !node.hidden && node.getClientRects().length > 0)
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          x: rect.left - origin.left,
+          y: rect.top - origin.top,
+          width: rect.width,
+          height: rect.height,
+        };
+      });
     for (const { point, element } of this.markers) {
       const projected = point.clone().project(camera);
       element.hidden =
@@ -219,8 +236,44 @@ export function projectedModelBounds(
     height: Math.max(...projected.map((p) => p.y)) - y,
   };
 }
+/** Group complete triangles into bounded spatial cells once. Their projected
+ * boxes conservatively cover the surface, including concave meshes, without
+ * re-projecting millions of scan vertices on every camera update. */
+export function meshFootprint(positions: ArrayLike<number>): THREE.Box3[] {
+  const bounds = new THREE.Box3();
+  const point = new THREE.Vector3();
+  for (let i = 0; i < positions.length; i += 3)
+    bounds.expandByPoint(
+      point.set(positions[i], positions[i + 1], positions[i + 2]),
+    );
+  const extent = bounds.getSize(new THREE.Vector3());
+  const cell = Math.max(extent.x, extent.y, extent.z) / 32 || 1;
+  const cells = new Map<number, THREE.Box3>();
+  for (let i = 0; i + 8 < positions.length; i += 9) {
+    let key = 0;
+    for (let axis = 0; axis < 3; axis++)
+      key +=
+        Math.floor(
+          ((positions[i + axis] +
+            positions[i + 3 + axis] +
+            positions[i + 6 + axis]) /
+            3 -
+            bounds.min.getComponent(axis)) /
+            cell,
+        ) *
+        64 ** axis;
+    let box = cells.get(key);
+    if (!box) cells.set(key, (box = new THREE.Box3()));
+    for (let j = 0; j < 9; j += 3)
+      box.expandByPoint(
+        point.set(positions[i + j], positions[i + j + 1], positions[i + j + 2]),
+      );
+  }
+  return [...cells.values()];
+}
+
 export function placeDeviationLabel(
-  model: ScreenRect,
+  model: ScreenRect | readonly ScreenRect[],
   anchor: { x: number; y: number },
   width: number,
   height: number,
@@ -229,38 +282,70 @@ export function placeDeviationLabel(
   occupied: ScreenRect[] = [],
 ): ScreenRect | undefined {
   const margin = 12,
-    gap = 24;
-  const clampX = (x: number) =>
-    Math.max(margin, Math.min(viewportWidth - width - margin, x));
-  const clampY = (y: number) =>
-    Math.max(margin, Math.min(viewportHeight - height - margin, y));
-  const candidates = [
-    { x: clampX(anchor.x - width / 2), y: model.y - gap - height },
-    { x: clampX(anchor.x - width / 2), y: model.y + model.height + gap },
-    { x: model.x - gap - width, y: clampY(anchor.y - height / 2) },
-    { x: model.x + model.width + gap, y: clampY(anchor.y - height / 2) },
-    ...[margin, viewportWidth - width - margin].flatMap((x) =>
-      [margin, viewportHeight - height - margin].map((y) => ({ x, y })),
-    ),
-  ].map((p) => ({ ...p, width, height }));
-  const overlaps = (a: ScreenRect, b: ScreenRect) =>
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y;
-  return candidates
-    .filter(
-      (r) =>
-        r.x >= margin &&
-        r.y >= margin &&
-        r.x + width <= viewportWidth - margin &&
-        r.y + height <= viewportHeight - margin &&
-        !overlaps(r, model) &&
-        !occupied.some((o) => overlaps(r, o)),
-    )
-    .sort(
-      (a, b) =>
-        Math.hypot(a.x + width / 2 - anchor.x, a.y + height / 2 - anchor.y) -
-        Math.hypot(b.x + width / 2 - anchor.x, b.y + height / 2 - anchor.y),
-    )[0];
+    step = 8,
+    gap = 10;
+  if (
+    width + 2 * margin > viewportWidth ||
+    height + 2 * margin > viewportHeight
+  )
+    return;
+  const cols = Math.ceil(viewportWidth / step),
+    rows = Math.ceil(viewportHeight / step);
+  const blocked = new Uint8Array(cols * rows);
+  for (const rect of [
+    ...(Array.isArray(model) ? model : [model as ScreenRect]),
+    ...occupied,
+  ]) {
+    const left = Math.max(0, Math.floor((rect.x - gap) / step));
+    const right = Math.min(cols, Math.ceil((rect.x + rect.width + gap) / step));
+    const top = Math.max(0, Math.floor((rect.y - gap) / step));
+    const bottom = Math.min(
+      rows,
+      Math.ceil((rect.y + rect.height + gap) / step),
+    );
+    if (right <= left || bottom <= top) continue;
+    for (let y = top; y < bottom; y++)
+      blocked.fill(1, y * cols + left, y * cols + right);
+  }
+  // Integral occupancy makes each candidate's overlap check constant time.
+  const stride = cols + 1,
+    sums = new Uint32Array(stride * (rows + 1));
+  for (let y = 0; y < rows; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < cols; x++) {
+      rowSum += blocked[y * cols + x];
+      sums[(y + 1) * stride + x + 1] = sums[y * stride + x + 1] + rowSum;
+    }
+  }
+  let best: ScreenRect | undefined,
+    score = Infinity;
+  for (let y = margin; y + height <= viewportHeight - margin; y += step)
+    for (let x = margin; x + width <= viewportWidth - margin; x += step) {
+      const left = Math.floor(x / step),
+        right = Math.ceil((x + width) / step);
+      const top = Math.floor(y / step),
+        bottom = Math.ceil((y + height) / step);
+      if (
+        sums[bottom * stride + right] -
+        sums[top * stride + right] -
+        sums[bottom * stride + left] +
+        sums[top * stride + left]
+      )
+        continue;
+      const dx = Math.max(x, Math.min(anchor.x, x + width)) - anchor.x;
+      const dy = Math.max(y, Math.min(anchor.y, y + height)) - anchor.y;
+      const distance = dx * dx + dy * dy;
+      // Prefer a short diagonal attachment over a rigid axial leader when
+      // distances are similar; never force labels into distant corners.
+      const candidate =
+        distance +
+        (Math.abs(dx) < 8 || Math.abs(dy) < 8 ? 144 : 0) +
+        0.001 *
+          ((x + width / 2 - anchor.x) ** 2 + (y + height / 2 - anchor.y) ** 2);
+      if (candidate < score) {
+        score = candidate;
+        best = { x, y, width, height };
+      }
+    }
+  return best;
 }

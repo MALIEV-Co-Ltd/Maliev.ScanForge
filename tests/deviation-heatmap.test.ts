@@ -5,6 +5,7 @@ import {
   deviationExtrema,
   projectedModelBounds,
   placeDeviationLabel,
+  meshFootprint,
   type ScreenRect,
 } from "../src/deviation-heatmap";
 import { createNoiseComparisonOverlay } from "../src/noise-comparison-overlay";
@@ -113,4 +114,69 @@ it("anchors extrema to original sample coordinates and excludes unmatched and hi
     ["Maximum", 0.03, [0, 1, 0]],
   ]);
   expect(deviationExtrema(positions, [NaN, NaN, NaN])).toEqual([]);
+});
+
+it("uses nearby clear space in concave silhouettes instead of the overall bounding box", () => {
+  const shape = [
+    { x: 300, y: 180, width: 80, height: 400 },
+    { x: 620, y: 180, width: 80, height: 400 },
+    { x: 300, y: 180, width: 400, height: 60 },
+  ];
+  const anchor = { x: 380, y: 390 };
+  const label = placeDeviationLabel(shape, anchor, 130, 26, 1000, 700)!;
+  expect(label).toBeDefined();
+  expect(label.x).toBeGreaterThan(390);
+  expect(label.x + label.width).toBeLessThan(620);
+  expect(Math.hypot(label.x - anchor.x, label.y - anchor.y)).toBeLessThan(80);
+});
+it("avoids tool panels, the scale legend, and the other label near either point", () => {
+  const model = { x: 380, y: 220, width: 200, height: 200 };
+  const panel = { x: 0, y: 0, width: 360, height: 600 };
+  const legend = { x: 850, y: 0, width: 150, height: 700 };
+  const occupied = [panel, legend];
+  for (const anchor of [
+    { x: 390, y: 240 },
+    { x: 390, y: 250 },
+  ]) {
+    const label = placeDeviationLabel(
+      model,
+      anchor,
+      130,
+      26,
+      1000,
+      700,
+      occupied,
+    )!;
+    expect(label).toBeDefined();
+    for (const obstacle of [model, ...occupied])
+      expect(
+        label.x + label.width <= obstacle.x ||
+          label.x >= obstacle.x + obstacle.width ||
+          label.y + label.height <= obstacle.y ||
+          label.y >= obstacle.y + obstacle.height,
+      ).toBe(true);
+    expect(
+      Math.hypot(
+        label.x + label.width / 2 - anchor.x,
+        label.y + label.height / 2 - anchor.y,
+      ),
+    ).toBeLessThan(200);
+    occupied.push(label);
+  }
+});
+it("covers complete triangles with bounded cells without filling a concave model's empty space", () => {
+  const positions = [-5, 0, 0, -4, 1, 0, -4, 0, 0, 4, 0, 0, 5, 1, 0, 5, 0, 0];
+  const footprint = meshFootprint(positions);
+  expect(footprint).toHaveLength(2);
+  for (let i = 0; i < positions.length; i += 3)
+    expect(
+      footprint.some((box) =>
+        box.containsPoint(
+          new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]),
+        ),
+      ),
+    ).toBe(true);
+  expect(
+    footprint.some((box) => box.containsPoint(new THREE.Vector3(0, 0, 0))),
+  ).toBe(false);
 });
