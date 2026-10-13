@@ -564,3 +564,35 @@ reduction code (reduction report markup and reduction worker contract); those
 changes were preserved and excluded from the isolated alignment checkout. This
 records the validation boundary rather than claiming the shared dirty worktree
 passed. The helper has no UI consumer, so no new browser behavior is claimed.
+
+## Production PLY import verification
+
+`src/ply-topology.ts` now preserves PLY vertex order and triangle indices before
+expanding coordinates for the renderer. It retains coincident and unreferenced
+vertices: neither coordinate welding nor triangle-soup traversal can restore the
+original vertex ordering. The GUI and MCP import paths still use the same
+`importScan` worker, `readScan`, and `parseMesh` operation. No import options or
+agent schemas change in this slice.
+
+The opt-in owner-scan tests now use this production indexed parser instead of
+their separate binary PLY reader. They compare full-resolution source normals,
+sampling flags and selected vertices for all three scans, target adjacency and
+surface queries for scan 1, and the recovered surface controller's refinement
+results for scans 2 and 3 against scan 1. Run them with
+`SCANFORGE_ALIGNMENT_EXAMPLES` set to the owner scan folder and
+`tests/scan-native-alignment-user-examples.test.ts` selected.
+
+A fresh original-procedure execution produced exactly the retained
+`alignment-user-refinement.json` results for both registrations. Its mapped-image
+digest is `e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1`.
+The external `alignment-import-native` probe, result, lease ledger and cleanup
+receipt record this run. It executes the original target builder and refinement
+procedures with retained source sampling, serial scheduling and CRT adapters;
+it does not execute the full application constructor or capture the original UI.
+This is direct native execution evidence, not a new REA Evidence ID.
+
+This closes the production-parser verification gap. Imported entities still
+store rendered triangle soup; indexed topology must next be carried through
+entity lifecycle, project persistence and the shared alignment worker before
+this controller can replace the application's surface refinement. Full Align
+parity and multicore execution remain unproven.

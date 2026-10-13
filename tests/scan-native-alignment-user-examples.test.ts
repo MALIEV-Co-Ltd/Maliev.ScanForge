@@ -7,6 +7,7 @@ import second from "./fixtures/alignment-user-ply-2-source.json";
 import third from "./fixtures/alignment-user-ply-3-source.json";
 import refinement from "./fixtures/alignment-user-refinement.json";
 import { nativeRefineAlignmentMeshes } from "../src/scan-native-alignment-surface-controller";
+import { parsePlyTopology } from "../src/ply-topology";
 import topology from "./fixtures/alignment-user-target-adjacency.json";
 import surface from "./fixtures/alignment-user-target-surface.json";
 import { prepareNativeAlignmentSurface } from "../src/scan-native-alignment-surface";
@@ -25,28 +26,12 @@ function readExample(expected: {
 }) {
   const raw = readFileSync(join(folder!, expected.file.split(/[\\/]/).pop()!));
   expect(digest(raw)).toBe(expected.sha256);
-  const marker = Buffer.from("end_header\r\n");
-  let offset = raw.indexOf(marker) + marker.length;
-  if (offset === marker.length - 1) {
-    const marker = Buffer.from("end_header\n");
-    offset = raw.indexOf(marker) + marker.length;
-  }
-  expect(offset).toBeGreaterThan(12);
-  const vertices = new Float32Array(expected.vertices * 3);
-  for (let id = 0; id < expected.vertices; id++)
-    for (let axis = 0; axis < 3; axis++)
-      vertices[id * 3 + axis] = raw.readFloatLE(offset + id * 24 + axis * 4);
-  offset += expected.vertices * 24;
-  const triangles = new Uint32Array(expected.triangles * 3);
-  for (let id = 0; id < expected.triangles; id++) {
-    if (raw[offset] !== 3)
-      throw new Error("Example PLY contains a non-triangle face.");
-    for (let corner = 0; corner < 3; corner++)
-      triangles[id * 3 + corner] = raw.readUInt32LE(offset + 1 + corner * 4);
-    offset += 13;
-  }
-  expect(offset).toBe(raw.length);
-  return { vertices, triangles };
+  const topology = parsePlyTopology(
+    raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength),
+  );
+  expect(topology.vertices.length).toBe(expected.vertices * 3);
+  expect(topology.triangles.length).toBe(expected.triangles * 3);
+  return topology;
 }
 
 it.skipIf(!folder).each([first, second, third])(

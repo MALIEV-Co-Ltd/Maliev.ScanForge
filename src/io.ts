@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
-import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
+import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import type { Entity, Project, Positions, MeshSelectionState } from "./types";
@@ -94,16 +94,10 @@ export function geometryPositions(
   }
 }
 export function parseMesh(data: ArrayBuffer, extension: string): Float32Array {
-  if (extension === "stl" || extension === "ply") {
-    const geometry =
-      extension === "stl"
-        ? new STLLoader().parse(data)
-        : new PLYLoader().parse(data);
+  if (extension === "ply") return expandPlyTopology(parsePlyTopology(data));
+  if (extension === "stl") {
+    const geometry = new STLLoader().parse(data);
     try {
-      if (extension === "ply" && !geometry.index)
-        throw new Error(
-          "PLY must contain polygon faces. Point clouds are not supported yet.",
-        );
       return geometryPositions(geometry);
     } finally {
       geometry.dispose();
