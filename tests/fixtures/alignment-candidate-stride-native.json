@@ -1,0 +1,1248 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "instructionStart": "0x140aadf97",
+    "instructionEndExclusive": "0x140aadfc0",
+    "nativeBytes": "48b877be9f1a2fdd240649f7e74d8bef4c2bea49d1ed4c03ea49c1ed09b8010000004c3be8440f42e8",
+    "kernelSha256": "14c91d18fa2de58f4a7c6a160f04de7436d2d33b4cdc7630619c1d9c2b25ef38",
+    "execution": "Unmodified original scalar stride instructions; harness binds count, preserves nonvolatile registers and returns stride; no candidate, topology or registration execution"
+  },
+  "cases": [
+    {
+      "count": 0,
+      "stride": 1
+    },
+    {
+      "count": 1,
+      "stride": 1
+    },
+    {
+      "count": 2,
+      "stride": 1
+    },
+    {
+      "count": 3,
+      "stride": 1
+    },
+    {
+      "count": 4,
+      "stride": 1
+    },
+    {
+      "count": 99,
+      "stride": 1
+    },
+    {
+      "count": 100,
+      "stride": 1
+    },
+    {
+      "count": 999,
+      "stride": 1
+    },
+    {
+      "count": 1000,
+      "stride": 1
+    },
+    {
+      "count": 1001,
+      "stride": 1
+    },
+    {
+      "count": 1999,
+      "stride": 1
+    },
+    {
+      "count": 2000,
+      "stride": 2
+    },
+    {
+      "count": 2001,
+      "stride": 2
+    },
+    {
+      "count": 2999,
+      "stride": 2
+    },
+    {
+      "count": 3000,
+      "stride": 3
+    },
+    {
+      "count": 3001,
+      "stride": 3
+    },
+    {
+      "count": 3999,
+      "stride": 3
+    },
+    {
+      "count": 4000,
+      "stride": 4
+    },
+    {
+      "count": 4001,
+      "stride": 4
+    },
+    {
+      "count": 4999,
+      "stride": 4
+    },
+    {
+      "count": 5000,
+      "stride": 5
+    },
+    {
+      "count": 5001,
+      "stride": 5
+    },
+    {
+      "count": 5999,
+      "stride": 5
+    },
+    {
+      "count": 6000,
+      "stride": 6
+    },
+    {
+      "count": 6001,
+      "stride": 6
+    },
+    {
+      "count": 6999,
+      "stride": 6
+    },
+    {
+      "count": 7000,
+      "stride": 7
+    },
+    {
+      "count": 7001,
+      "stride": 7
+    },
+    {
+      "count": 7999,
+      "stride": 7
+    },
+    {
+      "count": 8000,
+      "stride": 8
+    },
+    {
+      "count": 8001,
+      "stride": 8
+    },
+    {
+      "count": 8999,
+      "stride": 8
+    },
+    {
+      "count": 9000,
+      "stride": 9
+    },
+    {
+      "count": 9001,
+      "stride": 9
+    },
+    {
+      "count": 9999,
+      "stride": 9
+    },
+    {
+      "count": 10000,
+      "stride": 10
+    },
+    {
+      "count": 10001,
+      "stride": 10
+    },
+    {
+      "count": 10999,
+      "stride": 10
+    },
+    {
+      "count": 11000,
+      "stride": 11
+    },
+    {
+      "count": 11001,
+      "stride": 11
+    },
+    {
+      "count": 11999,
+      "stride": 11
+    },
+    {
+      "count": 12000,
+      "stride": 12
+    },
+    {
+      "count": 12001,
+      "stride": 12
+    },
+    {
+      "count": 12999,
+      "stride": 12
+    },
+    {
+      "count": 13000,
+      "stride": 13
+    },
+    {
+      "count": 13001,
+      "stride": 13
+    },
+    {
+      "count": 13999,
+      "stride": 13
+    },
+    {
+      "count": 14000,
+      "stride": 14
+    },
+    {
+      "count": 14001,
+      "stride": 14
+    },
+    {
+      "count": 14999,
+      "stride": 14
+    },
+    {
+      "count": 15000,
+      "stride": 15
+    },
+    {
+      "count": 15001,
+      "stride": 15
+    },
+    {
+      "count": 15999,
+      "stride": 15
+    },
+    {
+      "count": 16000,
+      "stride": 16
+    },
+    {
+      "count": 16001,
+      "stride": 16
+    },
+    {
+      "count": 16999,
+      "stride": 16
+    },
+    {
+      "count": 17000,
+      "stride": 17
+    },
+    {
+      "count": 17001,
+      "stride": 17
+    },
+    {
+      "count": 17999,
+      "stride": 17
+    },
+    {
+      "count": 18000,
+      "stride": 18
+    },
+    {
+      "count": 18001,
+      "stride": 18
+    },
+    {
+      "count": 18999,
+      "stride": 18
+    },
+    {
+      "count": 19000,
+      "stride": 19
+    },
+    {
+      "count": 19001,
+      "stride": 19
+    },
+    {
+      "count": 19999,
+      "stride": 19
+    },
+    {
+      "count": 20000,
+      "stride": 20
+    },
+    {
+      "count": 20001,
+      "stride": 20
+    },
+    {
+      "count": 20999,
+      "stride": 20
+    },
+    {
+      "count": 21000,
+      "stride": 21
+    },
+    {
+      "count": 21001,
+      "stride": 21
+    },
+    {
+      "count": 21999,
+      "stride": 21
+    },
+    {
+      "count": 22000,
+      "stride": 22
+    },
+    {
+      "count": 22001,
+      "stride": 22
+    },
+    {
+      "count": 22999,
+      "stride": 22
+    },
+    {
+      "count": 23000,
+      "stride": 23
+    },
+    {
+      "count": 23001,
+      "stride": 23
+    },
+    {
+      "count": 23999,
+      "stride": 23
+    },
+    {
+      "count": 24000,
+      "stride": 24
+    },
+    {
+      "count": 24001,
+      "stride": 24
+    },
+    {
+      "count": 24999,
+      "stride": 24
+    },
+    {
+      "count": 25000,
+      "stride": 25
+    },
+    {
+      "count": 25001,
+      "stride": 25
+    },
+    {
+      "count": 25999,
+      "stride": 25
+    },
+    {
+      "count": 26000,
+      "stride": 26
+    },
+    {
+      "count": 26001,
+      "stride": 26
+    },
+    {
+      "count": 26999,
+      "stride": 26
+    },
+    {
+      "count": 27000,
+      "stride": 27
+    },
+    {
+      "count": 27001,
+      "stride": 27
+    },
+    {
+      "count": 27999,
+      "stride": 27
+    },
+    {
+      "count": 28000,
+      "stride": 28
+    },
+    {
+      "count": 28001,
+      "stride": 28
+    },
+    {
+      "count": 28999,
+      "stride": 28
+    },
+    {
+      "count": 29000,
+      "stride": 29
+    },
+    {
+      "count": 29001,
+      "stride": 29
+    },
+    {
+      "count": 29999,
+      "stride": 29
+    },
+    {
+      "count": 30000,
+      "stride": 30
+    },
+    {
+      "count": 30001,
+      "stride": 30
+    },
+    {
+      "count": 30999,
+      "stride": 30
+    },
+    {
+      "count": 31000,
+      "stride": 31
+    },
+    {
+      "count": 31001,
+      "stride": 31
+    },
+    {
+      "count": 31999,
+      "stride": 31
+    },
+    {
+      "count": 32000,
+      "stride": 32
+    },
+    {
+      "count": 32001,
+      "stride": 32
+    },
+    {
+      "count": 32999,
+      "stride": 32
+    },
+    {
+      "count": 33000,
+      "stride": 33
+    },
+    {
+      "count": 33001,
+      "stride": 33
+    },
+    {
+      "count": 33999,
+      "stride": 33
+    },
+    {
+      "count": 34000,
+      "stride": 34
+    },
+    {
+      "count": 34001,
+      "stride": 34
+    },
+    {
+      "count": 34999,
+      "stride": 34
+    },
+    {
+      "count": 35000,
+      "stride": 35
+    },
+    {
+      "count": 35001,
+      "stride": 35
+    },
+    {
+      "count": 35999,
+      "stride": 35
+    },
+    {
+      "count": 36000,
+      "stride": 36
+    },
+    {
+      "count": 36001,
+      "stride": 36
+    },
+    {
+      "count": 36999,
+      "stride": 36
+    },
+    {
+      "count": 37000,
+      "stride": 37
+    },
+    {
+      "count": 37001,
+      "stride": 37
+    },
+    {
+      "count": 37999,
+      "stride": 37
+    },
+    {
+      "count": 38000,
+      "stride": 38
+    },
+    {
+      "count": 38001,
+      "stride": 38
+    },
+    {
+      "count": 38999,
+      "stride": 38
+    },
+    {
+      "count": 39000,
+      "stride": 39
+    },
+    {
+      "count": 39001,
+      "stride": 39
+    },
+    {
+      "count": 39999,
+      "stride": 39
+    },
+    {
+      "count": 40000,
+      "stride": 40
+    },
+    {
+      "count": 40001,
+      "stride": 40
+    },
+    {
+      "count": 40999,
+      "stride": 40
+    },
+    {
+      "count": 41000,
+      "stride": 41
+    },
+    {
+      "count": 41001,
+      "stride": 41
+    },
+    {
+      "count": 41999,
+      "stride": 41
+    },
+    {
+      "count": 42000,
+      "stride": 42
+    },
+    {
+      "count": 42001,
+      "stride": 42
+    },
+    {
+      "count": 42999,
+      "stride": 42
+    },
+    {
+      "count": 43000,
+      "stride": 43
+    },
+    {
+      "count": 43001,
+      "stride": 43
+    },
+    {
+      "count": 43999,
+      "stride": 43
+    },
+    {
+      "count": 44000,
+      "stride": 44
+    },
+    {
+      "count": 44001,
+      "stride": 44
+    },
+    {
+      "count": 44999,
+      "stride": 44
+    },
+    {
+      "count": 45000,
+      "stride": 45
+    },
+    {
+      "count": 45001,
+      "stride": 45
+    },
+    {
+      "count": 45999,
+      "stride": 45
+    },
+    {
+      "count": 46000,
+      "stride": 46
+    },
+    {
+      "count": 46001,
+      "stride": 46
+    },
+    {
+      "count": 46999,
+      "stride": 46
+    },
+    {
+      "count": 47000,
+      "stride": 47
+    },
+    {
+      "count": 47001,
+      "stride": 47
+    },
+    {
+      "count": 47999,
+      "stride": 47
+    },
+    {
+      "count": 48000,
+      "stride": 48
+    },
+    {
+      "count": 48001,
+      "stride": 48
+    },
+    {
+      "count": 48999,
+      "stride": 48
+    },
+    {
+      "count": 49000,
+      "stride": 49
+    },
+    {
+      "count": 49001,
+      "stride": 49
+    },
+    {
+      "count": 49999,
+      "stride": 49
+    },
+    {
+      "count": 50000,
+      "stride": 50
+    },
+    {
+      "count": 50001,
+      "stride": 50
+    },
+    {
+      "count": 50999,
+      "stride": 50
+    },
+    {
+      "count": 51000,
+      "stride": 51
+    },
+    {
+      "count": 51001,
+      "stride": 51
+    },
+    {
+      "count": 51999,
+      "stride": 51
+    },
+    {
+      "count": 52000,
+      "stride": 52
+    },
+    {
+      "count": 52001,
+      "stride": 52
+    },
+    {
+      "count": 52999,
+      "stride": 52
+    },
+    {
+      "count": 53000,
+      "stride": 53
+    },
+    {
+      "count": 53001,
+      "stride": 53
+    },
+    {
+      "count": 53999,
+      "stride": 53
+    },
+    {
+      "count": 54000,
+      "stride": 54
+    },
+    {
+      "count": 54001,
+      "stride": 54
+    },
+    {
+      "count": 54999,
+      "stride": 54
+    },
+    {
+      "count": 55000,
+      "stride": 55
+    },
+    {
+      "count": 55001,
+      "stride": 55
+    },
+    {
+      "count": 55999,
+      "stride": 55
+    },
+    {
+      "count": 56000,
+      "stride": 56
+    },
+    {
+      "count": 56001,
+      "stride": 56
+    },
+    {
+      "count": 56999,
+      "stride": 56
+    },
+    {
+      "count": 57000,
+      "stride": 57
+    },
+    {
+      "count": 57001,
+      "stride": 57
+    },
+    {
+      "count": 57999,
+      "stride": 57
+    },
+    {
+      "count": 58000,
+      "stride": 58
+    },
+    {
+      "count": 58001,
+      "stride": 58
+    },
+    {
+      "count": 58999,
+      "stride": 58
+    },
+    {
+      "count": 59000,
+      "stride": 59
+    },
+    {
+      "count": 59001,
+      "stride": 59
+    },
+    {
+      "count": 59999,
+      "stride": 59
+    },
+    {
+      "count": 60000,
+      "stride": 60
+    },
+    {
+      "count": 60001,
+      "stride": 60
+    },
+    {
+      "count": 60999,
+      "stride": 60
+    },
+    {
+      "count": 61000,
+      "stride": 61
+    },
+    {
+      "count": 61001,
+      "stride": 61
+    },
+    {
+      "count": 61999,
+      "stride": 61
+    },
+    {
+      "count": 62000,
+      "stride": 62
+    },
+    {
+      "count": 62001,
+      "stride": 62
+    },
+    {
+      "count": 62999,
+      "stride": 62
+    },
+    {
+      "count": 63000,
+      "stride": 63
+    },
+    {
+      "count": 63001,
+      "stride": 63
+    },
+    {
+      "count": 63999,
+      "stride": 63
+    },
+    {
+      "count": 64000,
+      "stride": 64
+    },
+    {
+      "count": 64001,
+      "stride": 64
+    },
+    {
+      "count": 64999,
+      "stride": 64
+    },
+    {
+      "count": 65000,
+      "stride": 65
+    },
+    {
+      "count": 65001,
+      "stride": 65
+    },
+    {
+      "count": 65999,
+      "stride": 65
+    },
+    {
+      "count": 66000,
+      "stride": 66
+    },
+    {
+      "count": 66001,
+      "stride": 66
+    },
+    {
+      "count": 66999,
+      "stride": 66
+    },
+    {
+      "count": 67000,
+      "stride": 67
+    },
+    {
+      "count": 67001,
+      "stride": 67
+    },
+    {
+      "count": 67999,
+      "stride": 67
+    },
+    {
+      "count": 68000,
+      "stride": 68
+    },
+    {
+      "count": 68001,
+      "stride": 68
+    },
+    {
+      "count": 68999,
+      "stride": 68
+    },
+    {
+      "count": 69000,
+      "stride": 69
+    },
+    {
+      "count": 69001,
+      "stride": 69
+    },
+    {
+      "count": 69999,
+      "stride": 69
+    },
+    {
+      "count": 70000,
+      "stride": 70
+    },
+    {
+      "count": 70001,
+      "stride": 70
+    },
+    {
+      "count": 70999,
+      "stride": 70
+    },
+    {
+      "count": 71000,
+      "stride": 71
+    },
+    {
+      "count": 71001,
+      "stride": 71
+    },
+    {
+      "count": 71999,
+      "stride": 71
+    },
+    {
+      "count": 72000,
+      "stride": 72
+    },
+    {
+      "count": 72001,
+      "stride": 72
+    },
+    {
+      "count": 72999,
+      "stride": 72
+    },
+    {
+      "count": 73000,
+      "stride": 73
+    },
+    {
+      "count": 73001,
+      "stride": 73
+    },
+    {
+      "count": 73999,
+      "stride": 73
+    },
+    {
+      "count": 74000,
+      "stride": 74
+    },
+    {
+      "count": 74001,
+      "stride": 74
+    },
+    {
+      "count": 74999,
+      "stride": 74
+    },
+    {
+      "count": 75000,
+      "stride": 75
+    },
+    {
+      "count": 75001,
+      "stride": 75
+    },
+    {
+      "count": 75999,
+      "stride": 75
+    },
+    {
+      "count": 76000,
+      "stride": 76
+    },
+    {
+      "count": 76001,
+      "stride": 76
+    },
+    {
+      "count": 76999,
+      "stride": 76
+    },
+    {
+      "count": 77000,
+      "stride": 77
+    },
+    {
+      "count": 77001,
+      "stride": 77
+    },
+    {
+      "count": 77999,
+      "stride": 77
+    },
+    {
+      "count": 78000,
+      "stride": 78
+    },
+    {
+      "count": 78001,
+      "stride": 78
+    },
+    {
+      "count": 78999,
+      "stride": 78
+    },
+    {
+      "count": 79000,
+      "stride": 79
+    },
+    {
+      "count": 79001,
+      "stride": 79
+    },
+    {
+      "count": 79999,
+      "stride": 79
+    },
+    {
+      "count": 80000,
+      "stride": 80
+    },
+    {
+      "count": 80001,
+      "stride": 80
+    },
+    {
+      "count": 80999,
+      "stride": 80
+    },
+    {
+      "count": 81000,
+      "stride": 81
+    },
+    {
+      "count": 81001,
+      "stride": 81
+    },
+    {
+      "count": 81999,
+      "stride": 81
+    },
+    {
+      "count": 82000,
+      "stride": 82
+    },
+    {
+      "count": 82001,
+      "stride": 82
+    },
+    {
+      "count": 82999,
+      "stride": 82
+    },
+    {
+      "count": 83000,
+      "stride": 83
+    },
+    {
+      "count": 83001,
+      "stride": 83
+    },
+    {
+      "count": 83999,
+      "stride": 83
+    },
+    {
+      "count": 84000,
+      "stride": 84
+    },
+    {
+      "count": 84001,
+      "stride": 84
+    },
+    {
+      "count": 84999,
+      "stride": 84
+    },
+    {
+      "count": 85000,
+      "stride": 85
+    },
+    {
+      "count": 85001,
+      "stride": 85
+    },
+    {
+      "count": 85999,
+      "stride": 85
+    },
+    {
+      "count": 86000,
+      "stride": 86
+    },
+    {
+      "count": 86001,
+      "stride": 86
+    },
+    {
+      "count": 86999,
+      "stride": 86
+    },
+    {
+      "count": 87000,
+      "stride": 87
+    },
+    {
+      "count": 87001,
+      "stride": 87
+    },
+    {
+      "count": 87999,
+      "stride": 87
+    },
+    {
+      "count": 88000,
+      "stride": 88
+    },
+    {
+      "count": 88001,
+      "stride": 88
+    },
+    {
+      "count": 88999,
+      "stride": 88
+    },
+    {
+      "count": 89000,
+      "stride": 89
+    },
+    {
+      "count": 89001,
+      "stride": 89
+    },
+    {
+      "count": 89999,
+      "stride": 89
+    },
+    {
+      "count": 90000,
+      "stride": 90
+    },
+    {
+      "count": 90001,
+      "stride": 90
+    },
+    {
+      "count": 90999,
+      "stride": 90
+    },
+    {
+      "count": 91000,
+      "stride": 91
+    },
+    {
+      "count": 91001,
+      "stride": 91
+    },
+    {
+      "count": 91999,
+      "stride": 91
+    },
+    {
+      "count": 92000,
+      "stride": 92
+    },
+    {
+      "count": 92001,
+      "stride": 92
+    },
+    {
+      "count": 92999,
+      "stride": 92
+    },
+    {
+      "count": 93000,
+      "stride": 93
+    },
+    {
+      "count": 93001,
+      "stride": 93
+    },
+    {
+      "count": 93999,
+      "stride": 93
+    },
+    {
+      "count": 94000,
+      "stride": 94
+    },
+    {
+      "count": 94001,
+      "stride": 94
+    },
+    {
+      "count": 94999,
+      "stride": 94
+    },
+    {
+      "count": 95000,
+      "stride": 95
+    },
+    {
+      "count": 95001,
+      "stride": 95
+    },
+    {
+      "count": 95999,
+      "stride": 95
+    },
+    {
+      "count": 96000,
+      "stride": 96
+    },
+    {
+      "count": 96001,
+      "stride": 96
+    },
+    {
+      "count": 96999,
+      "stride": 96
+    },
+    {
+      "count": 97000,
+      "stride": 97
+    },
+    {
+      "count": 97001,
+      "stride": 97
+    },
+    {
+      "count": 97999,
+      "stride": 97
+    },
+    {
+      "count": 98000,
+      "stride": 98
+    },
+    {
+      "count": 98001,
+      "stride": 98
+    },
+    {
+      "count": 98999,
+      "stride": 98
+    },
+    {
+      "count": 99000,
+      "stride": 99
+    },
+    {
+      "count": 99001,
+      "stride": 99
+    },
+    {
+      "count": 99999,
+      "stride": 99
+    },
+    {
+      "count": 100000,
+      "stride": 100
+    },
+    {
+      "count": 100001,
+      "stride": 100
+    },
+    {
+      "count": 2147483647,
+      "stride": 2147483
+    },
+    {
+      "count": 4294967295,
+      "stride": 4294967
+    }
+  ]
+}

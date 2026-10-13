@@ -214,3 +214,29 @@ exited with access violations before producing captures. The corrected successfu
 probe releases its mapped allocation and exits. These metric captures do not
 verify the complete refinement wrapper's optional RMS output, N-point candidate
 enumeration, outer ranking policy, native UI or allocator behavior.
+
+## N-point candidate schedule
+
+`src/scan-native-alignment-candidates.ts` recovers the initializer's sampling
+schedule. For at least three pairs it fixes the first and middle point as anchors,
+then visits sampled third points in ascending order, excluding both anchors.
+The stride is `max(1, floor(count / 1000))`; it changes at 2000 points and can
+produce almost 2000 candidates immediately below that boundary.
+
+The original scalar instructions at `0x140aadf97` through `0x140aadfc0` were
+executed unmodified in a 4 KiB mapping. The harness binds the count, preserves
+nonvolatile registers and returns the stride. All 309 captured counts match,
+including division boundaries and the unsigned 32-bit limit. References are in
+`tests/fixtures/alignment-candidate-stride-native.json`. The complete loop order
+is supported by the initializer's assembly and decompilation Evidence
+`ev_c3b35a91dffc3b74ca02812807ea612afab0fb463efb284867068a3ed9b0148f`;
+this scalar probe does not execute the complete candidate loop or registration.
+The port independently rejects candidate enumeration above signed 32-bit count
+to avoid the native loop counter's overflow range. It does not claim native
+overflow behavior.
+
+The recovered caller converts RMS scores to Float32 and uses strict less-than
+when replacing the current best, preserving the first candidate on ties. It
+refines each accepted candidate only below 100 pairs with tolerance 0.001 and
+budget 100, then refines the final chosen matrix with tolerance 0.0001 and budget 1000. These policies remain static observations pending complete original caller
+captures and are not integrated into the UI by the schedule helper.
