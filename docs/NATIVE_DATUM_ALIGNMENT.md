@@ -153,8 +153,32 @@ Plane conversion static Evidence:
 `ev_db0f4003751d9f0c100becf4934a17b92f37fb84e15be0d7060f27272bd952c9`.
 Rigid inversion static Evidence:
 `ev_6d45d815a7a8d907c22ce9514c5a56a1a061c2ba99e71daab18613d5ad3a00e9`.
-Direction and point feature converters are recovered but their payload paths
-and CAD adapters still require runtime verification before public integration.
+
+## Verified fitted-feature axis and point conversions
+
+`src/scan-native-datum-feature.ts` ports the numeric payload paths in
+`0x1405413c0` and `0x140541630`. The axis converter has three layouts:
+interface `0x14117bf40` computes `(length * direction + origin + origin) * 0.5`;
+interface `0x14114bbe0` computes `length * direction * 0.5 + origin`;
+interface `0x14114bbc0` copies origin. Direction is copied without normalization.
+The mathematical placement names in the port describe these formulas, not a
+verified mapping from application entity kinds to native classes.
+
+The point converter copies the XYZ payload at offset `0x38` for interfaces
+`0x141176cc8` and `0x14117ddf0`, or offset `0x30` for `0x14114bbc0`.
+`alignment-datum-feature-native.json` retains 120 axis and 36 point executions.
+Each capture executes the complete original converter with a caller-owned
+interface adapter that accepts only its declared GUID. The fixture supplies
+payload memory; it does not substitute the conversion algorithm. Tests require
+exact double bytes and verify that input vectors remain unchanged.
+
+Axis conversion static Evidence:
+`ev_400cc473de0a1e3d651a031ef8f7115f6aad5c2c70994ede0fcf3055df67c473`.
+Point conversion static Evidence:
+`ev_540f569ca9e16ccf2c1b01d1784440b6874ecca7bea42ac5dd0af2f903301e34`.
+Actual feature classification, native/application class mapping, picking and
+CAD-backed conversion remain unverified. Public integration still requires
+those boundaries and geometry publication to be verified.
 
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing primitive reference conversion,

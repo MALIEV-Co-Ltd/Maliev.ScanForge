@@ -1,0 +1,1843 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "axisProcedure": "0x1405413c0",
+    "pointProcedure": "0x140541630",
+    "execution": "Original feature conversion with caller-owned interface adapter selecting the declared interface GUID; no interactive picking or CAD adapter capture",
+    "nativeUiCapture": false
+  },
+  "axes": [
+    {
+      "name": "axis-0-0",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [15.6873490797295, -79.830855537968, 10.988936038984193],
+      "direction": [
+        0.4935820469010328, 0.1331709952075455, -0.0386614300107575
+      ],
+      "length": 71.25635924275441,
+      "accepted": true,
+      "nativePointBits": "70294d6beaa24040333c998d84c552c0b62ff77b16392340",
+      "nativeDirectionBits": "884a5527d996df3f60999846bf0bc13f408d06536ecba3bf"
+    },
+    {
+      "name": "axis-0-1",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [62.51663076272348, 26.825046541934768, 33.90867059491384],
+      "direction": [0.9656739903907343, 0.05366907718046865, 0.779313968660079],
+      "length": 6.413730880238261,
+      "accepted": true,
+      "nativePointBits": "c029ac3a4267504082f8729e45ff3a40166453a133344240",
+      "nativeDirectionBits": "c66eea23cde6ee3fa0dd9766837aab3f94c016d923f0e83f"
+    },
+    {
+      "name": "axis-0-2",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [78.77714917598405, -0.523089372320058, -23.974739116277163],
+      "direction": [
+        -0.16816168921083263, -0.5134455569773599, 0.04787728865023033
+      ],
+      "length": 65.13598056405318,
+      "accepted": true,
+      "nativePointBits": "98f06bc03a5352405bb655f6b63e31c0d4c23c605c6a36c0",
+      "nativeDirectionBits": "d8e1cc7d5286c5bf06d16f60256ee0bfe0a1f2395f83a83f"
+    },
+    {
+      "name": "axis-0-3",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-34.172399604405186, -92.40530018678402, -89.62993137431437],
+      "direction": [-0.9372379878757662, 0.5864702043403267, 0.706491958332577],
+      "length": 51.46396188671262,
+      "accepted": true,
+      "nativePointBits": "c19450b80a254dc0ba3e3fd61c5453c092dccde3d4dc51c0",
+      "nativeDirectionBits": "2cd94f85dafdedbf640b77295dc4e23ffc9cfd05959be63f"
+    },
+    {
+      "name": "axis-0-4",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [69.42606529052364, 41.8036400792048, -35.752606963099055],
+      "direction": [
+        0.32105035437585205, -0.8933548576572503, 0.6744825454786483
+      ],
+      "length": 26.31992351983785,
+      "accepted": true,
+      "nativePointBits": "6b1c5139ab695240192fcd56100c3e40201269885ee03ac0",
+      "nativeDirectionBits": "b4761ac9168cd43f3e8a2bed5c96ecbf50b7516b5c95e53f"
+    },
+    {
+      "name": "axis-0-5",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [51.45997461375336, -39.14915235544605, 26.14613181343867],
+      "direction": [
+        0.28900696803282844, -0.9536778499717762, 0.1710337801506594
+      ],
+      "length": 17.83950827916967,
+      "accepted": true,
+      "nativePointBits": "9a50da20d8044b4079ca27c6eed347c00552e941f5ab3b40",
+      "nativeDirectionBits": "6c180115177fd23f468c11698784eebf281121566fe4c53f"
+    },
+    {
+      "name": "axis-0-6",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-78.05006123191968, 57.37828792913663, -92.3116499801293],
+      "direction": [
+        0.885454022855447, 0.7444804998940073, 0.025371706989684162
+      ],
+      "length": 10.29357878237144,
+      "accepted": true,
+      "nativePointBits": "462b894b8a5f52c0eeec0b5fe09a4e402f80a99a960b57c0",
+      "nativeDirectionBits": "34d3c8aca355ec3f68bef1c4c8d2e73fc0bb0e6f0afb993f"
+    },
+    {
+      "name": "axis-0-7",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-57.42462667427024, 46.03551429051714, -26.11084557085563],
+      "direction": [
+        0.923698356990104, -0.47289294030554463, 0.25962748466033747
+      ],
+      "length": 61.66148683725162,
+      "accepted": true,
+      "nativePointBits": "3450e60042f23cc0f326391eb4743f404dda49ea381b32c0",
+      "nativeDirectionBits": "988654dbef8eed3f34c847c0e043debfac91f098bc9dd03f"
+    },
+    {
+      "name": "axis-0-8",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-7.696584873114176, 5.541273453501304, 38.87941824125059],
+      "direction": [
+        0.7362777995334304, 0.9893843133870555, 0.21428754857049337
+      ],
+      "length": 28.155784684783114,
+      "accepted": true,
+      "nativePointBits": "144bb6a567590540500833863f7833409eed948fb4f24440",
+      "nativeDirectionBits": "ac8ab875968fe73fba87a54a09a9ef3f986f863ec66dcb3f"
+    },
+    {
+      "name": "axis-0-9",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [31.03478976285919, -22.00434379625409, -54.0017551614137],
+      "direction": [
+        -0.3468902209304332, -0.27208823590348397, 0.5059231760783087
+      ],
+      "length": 49.46347046039923,
+      "accepted": true,
+      "nativePointBits": "84e18bb8a174364081ef1c75cabb3cc0eec9a090a4be44c0",
+      "nativeDirectionBits": "00b38c0a7333d6bf283cb5c6e469d1bfe26ef1cc8530e03f"
+    },
+    {
+      "name": "axis-0-10",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-65.49288575670538, -32.51806158619539, 96.51021387727855],
+      "direction": [
+        0.07152106537504133, 0.22385390614524114, -0.4054902576917643
+      ],
+      "length": 59.45658079415211,
+      "accepted": true,
+      "nativePointBits": "22dd7397efae4fc0e4e6f51bffdc39c0575bc2e3291d5540",
+      "nativeDirectionBits": "10c9c25c344fb23f90e2fcaa3ea7cc3fd07ee8688df3d9bf"
+    },
+    {
+      "name": "axis-0-11",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-8.948922133461565, 24.475744474556734, -8.174980968986986],
+      "direction": [
+        -0.9859401033653086, -0.3219466296292519, 0.2797028341559633
+      ],
+      "length": 60.79489519456582,
+      "accepted": true,
+      "nativePointBits": "19efe74aa17543c027c24a8df7602d400000d93703f2d43f",
+      "nativeDirectionBits": "809a7842d28cefbff8295409c69ad4bf901853b7a6e6d13f"
+    },
+    {
+      "name": "axis-0-12",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-89.19059633358233, 32.179368767017024, -18.202162213933633],
+      "direction": [
+        -0.13158506211716703, -0.5503261408363052, 0.3096556222377769
+      ],
+      "length": 50.729113163722694,
+      "accepted": true,
+      "nativePointBits": "9ea360eacd2157c002a6ec99783832409af142f01db224c0",
+      "nativeDirectionBits": "e8b93781c7d7c0bf86d32091459ce1bf7c29a2d065d1d33f"
+    },
+    {
+      "name": "axis-0-13",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-24.296854918087263, -71.60632481321639, 34.000607294043505],
+      "direction": [
+        -0.45621768717279254, -0.6916519671094221, -0.9437306628167164
+      ],
+      "length": 62.661244737086975,
+      "accepted": true,
+      "nativePointBits": "92114281934b43c07a029a72ad5157c0e44b222c54bb1140",
+      "nativeDirectionBits": "c8e390abab32ddbf805e5e4e0322e6bf66f7a0a50a33eebf"
+    },
+    {
+      "name": "axis-0-14",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-61.29247601293062, 92.87248487271196, 1.1385909495621291],
+      "direction": [
+        0.44940324201069703, 0.7264573547917541, -0.10058212376536857
+      ],
+      "length": 17.794215258422344,
+      "accepted": true,
+      "nativePointBits": "ad418fa4a4a54cc0a0ac63a27ed55840acc799e59731cf3f",
+      "nativeDirectionBits": "90bfc9d005c3dc3fb89d987e233fe73f706d2204c0bfb9bf"
+    },
+    {
+      "name": "axis-0-15",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-69.44868331622784, 77.72316577975613, -94.82236859653581],
+      "direction": [
+        -0.5719554772342319, -0.39860030010271297, -0.889582815542983
+      ],
+      "length": 4.767687656640458,
+      "accepted": true,
+      "nativePointBits": "6caca508fab351c09610d54178315340eced1f085a3c58c0",
+      "nativeDirectionBits": "b2a6af92754de2bfe87b47d5aa82d9bf1ee77a617677ecbf"
+    },
+    {
+      "name": "axis-0-16",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [54.924566469274424, 75.03662756860768, 31.44330414349986],
+      "direction": [
+        0.7488464455976336, 0.9158105119154947, 0.25662241959356225
+      ],
+      "length": 38.2808213642486,
+      "accepted": true,
+      "nativePointBits": "ad997fb67f50514079a01d11332457403c0134f8752d4240",
+      "nativeDirectionBits": "6e2a32d28cf6e73f7a52c0d8514eed3f88c8e470806cd03f"
+    },
+    {
+      "name": "axis-0-17",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-27.832108463328524, 68.90583817286753, 89.50807913689368],
+      "direction": [
+        0.2660959524764339, -0.8021268032260676, 0.42741095781593463
+      ],
+      "length": 31.9335946435615,
+      "accepted": true,
+      "nativePointBits": "802a6f3f5a9537c054c303c0990c4c4062a5091447155840",
+      "nativeDirectionBits": "04fe5e51b707d13f4a3b63d405abe9bfd85f717db35adb3f"
+    },
+    {
+      "name": "axis-0-18",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-11.398103072967444, 65.24601861181446, 83.7642157041864],
+      "direction": [
+        0.5172726869839859, 0.04602061529008794, -0.5507130221136185
+      ],
+      "length": 63.55529927646422,
+      "accepted": true,
+      "nativePointBits": "e4a144c68e281440446f372c57ad50407eee19ece2905040",
+      "nativeDirectionBits": "7cba36737f8de03f20b7399b0390a73fb8b26eea709fe1bf"
+    },
+    {
+      "name": "axis-0-19",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [75.6033295007336, -40.027552679547206, -32.113321028187784],
+      "direction": [
+        0.30054330751952807, -0.5806251576570816, -0.5211911949030876
+      ],
+      "length": 43.461568358172784,
+      "accepted": true,
+      "nativePointBits": "2331e2899988544072ebaa1e8f524ac0fb656f2d38b845c0",
+      "nativeDirectionBits": "acfe34ff193cd33f80e7eb357b94e2bf324d222899ade0bf"
+    },
+    {
+      "name": "axis-0-20",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [20.705950562997117, -57.58159176117095, 89.57081395975894],
+      "direction": [
+        0.5839124727157585, -0.7280814564067533, 0.5902811395227747
+      ],
+      "length": 56.623236310644714,
+      "accepted": true,
+      "nativePointBits": "78961b02659e4240ba3f9fe1768c53c0842e889416925a40",
+      "nativeDirectionBits": "364dc13569afe23fece9827b714ce7bf1045b64595e3e23f"
+    },
+    {
+      "name": "axis-0-21",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [15.61471766573996, -50.66522056636285, 28.487814686990106],
+      "direction": [
+        -0.6700726853518626, 0.31540722594763704, 0.08127638493304379
+      ],
+      "length": 3.229768866027633,
+      "accepted": true,
+      "nativePointBits": "d6708494b4102d402e95cbb0f31349c0a3a900277b9e3c40",
+      "nativeDirectionBits": "c8eeb0453c71e5bff07f17caa12fd43fd07a397787ceb43f"
+    },
+    {
+      "name": "axis-0-22",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [50.58364645628299, -22.272227478966215, 33.50026153827454],
+      "direction": [
+        0.39102094576931656, 0.34245862381155523, 0.6621565243942467
+      ],
+      "length": 51.853015637950136,
+      "accepted": true,
+      "nativePointBits": "e68d559b585c4e401adead1175c92ac0c438d42376554940",
+      "nativeDirectionBits": "445588b77c06d93f343e6093d7ead53ff06623e16230e53f"
+    },
+    {
+      "name": "axis-0-23",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [26.655126827212825, 48.114483567249664, 39.76937642363595],
+      "direction": [
+        -0.09190340518465945, 0.5806927098918868, -0.43759081325899984
+      ],
+      "length": 21.29896352725253,
+      "accepted": true,
+      "nativePointBits": "f0996ac228ad394030b9bb3637264b4013430444fc8d4140",
+      "nativeDirectionBits": "00bea847fb86b7bf525cc0e00895e23f808efee57c01dcbf"
+    },
+    {
+      "name": "axis-0-24",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-21.798051142917487, -46.6645283998975, -64.64296003520116],
+      "direction": [
+        0.6685199004300497, 0.26935958698940166, -0.8059141465095534
+      ],
+      "length": 67.98012576785985,
+      "accepted": true,
+      "nativePointBits": "a0f059817499ed3fa2dc253a26c142c07e5f7c5b4e0257c0",
+      "nativeDirectionBits": "ca4fa2d88364e53f70f23efe2f3dd13f988dd4760ccae9bf"
+    },
+    {
+      "name": "axis-0-25",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-14.304824620235749, -31.226939787623948, -61.40159448187994],
+      "direction": [
+        -0.8251766168378223, 0.5960723764099289, -0.053613957418146674
+      ],
+      "length": 66.61647440952041,
+      "accepted": true,
+      "nativePointBits": "7aee67d21ee544c0ce35b338e2be26c07ac5db18fc974fc0",
+      "nativeDirectionBits": "7ec1d7cad867eabf445957600613e33fe0ad70e34973abbf"
+    },
+    {
+      "name": "axis-0-26",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [67.74044297706459, 25.97105037331346, 11.92273053750202],
+      "direction": [
+        0.18253176202549315, -0.770783815346328, -0.6034003694372643
+      ],
+      "length": 11.530222445245082,
+      "accepted": true,
+      "nativePointBits": "9e1bc58fbc325140510cc26b03873540a1e500df5be32040",
+      "nativeDirectionBits": "58bc3066335dc73fc85ae6d142aae8bf6613a44a0e4fe3bf"
+    },
+    {
+      "name": "axis-0-27",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-66.66037955912415, -47.65601043172973, -31.2768794473603],
+      "direction": [
+        -0.2570473444133661, 0.42228166648008236, -0.33241957300991
+      ],
+      "length": 55.59826117486779,
+      "accepted": true,
+      "nativePointBits": "eae113b0967352c05034f5865ef541c0a047f70e494244c0",
+      "nativeDirectionBits": "0cdc71b47673d0bf8cdeceaea906db3fa82ea8be5c46d5bf"
+    },
+    {
+      "name": "axis-0-28",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [66.5480951446977, 40.53673156656433, 88.29555096017015],
+      "direction": [
+        -0.8257949093239769, -0.05890722822060912, 0.7273163586393634
+      ],
+      "length": 20.426938277419474,
+      "accepted": true,
+      "nativePointBits": "149f2c1b930e4d402a038ed8b0f74340b20fa59755ee5740",
+      "nativeDirectionBits": "16fe1772e96ceabf803a69951629aebfbe75c6f42c46e73f"
+    },
+    {
+      "name": "axis-0-29",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [49.56496483455214, 47.17219175578202, 7.912097326106533],
+      "direction": [
+        -0.5593009660833501, 0.6343584389256112, -0.3800676478154874
+      ],
+      "length": 54.454802094306096,
+      "accepted": true,
+      "nativePointBits": "acdb1873172b4140932e78846c1c50401c6c58da3f7d03c0",
+      "nativeDirectionBits": "cc5fbe23cbe5e1bf5011a411aa4ce43f88a668410753d8bf"
+    },
+    {
+      "name": "axis-0-30",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [33.48042065482244, 59.33321550491718, -59.47805168546208],
+      "direction": [
+        0.39780905953129686, -0.6926469697618465, 0.36976759695808203
+      ],
+      "length": 34.5673079079358,
+      "accepted": true,
+      "nativePointBits": "4f746de4912d4440d4ffb9a84dae4740102a23a2268b4ac0",
+      "nativeDirectionBits": "f0522f21b475d93fc69e59fa292ae6bfd88c03b645aad73f"
+    },
+    {
+      "name": "axis-0-31",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [41.73542155771926, -92.47751941535536, -29.876278326131583],
+      "direction": [
+        -0.2935154089257921, 0.17138509858980155, -0.28824966862634027
+      ],
+      "length": 58.35477699480471,
+      "accepted": true,
+      "nativePointBits": "bb4939b6f0954040282a805886de55c09a04f7f9b02443c0",
+      "nativeDirectionBits": "80558ddaf4c8d2bff082bb68f2efc53f5c4ff5bcae72d2bf"
+    },
+    {
+      "name": "axis-0-32",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [52.64938488214358, -71.42307894697161, -10.771523136590886],
+      "direction": [
+        0.3097220598840942, -0.4117866994397137, -0.1568876886762265
+      ],
+      "length": 87.81423330113215,
+      "accepted": true,
+      "nativePointBits": "eea5a994e58f504018d7de73386056c002c8a55cf6a831c0",
+      "nativeDirectionBits": "f45283797cd2d33fd45dc199b65adabfc0340152e514c4bf"
+    },
+    {
+      "name": "axis-0-33",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [91.77144646588425, -11.206948998594555, -87.7822321082357],
+      "direction": [
+        0.25426713850307237, -0.12055064569165963, 0.18424293193786623
+      ],
+      "length": 64.22532965709698,
+      "accepted": true,
+      "nativePointBits": "51dab4f0f1fb58404010797803282ec0464670a3677754c0",
+      "nativeDirectionBits": "5c5d14ade945d03f70e2c13868dcbebff09c98bb4595c73f"
+    },
+    {
+      "name": "axis-0-34",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-95.21043014373534, 33.86808368033758, 1.783750553334599],
+      "direction": [
+        -0.08835274079335131, 0.210765049299797, -0.812549474812595
+      ],
+      "length": 2.1636258604036085,
+      "accepted": true,
+      "nativePointBits": "362e57b095d357c0f4ce6bbe4c0c4140555970cc7ff3ec3f",
+      "nativeDirectionBits": "302b3804499eb6bf50f4f06059faca3f5e7796c16700eabf"
+    },
+    {
+      "name": "axis-0-35",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [60.53247678717733, 88.61698873783129, 37.32860490531067],
+      "direction": [
+        -0.8851753380213927, -0.5836565188059941, 0.2614708944193349
+      ],
+      "length": 2.628642315015898,
+      "accepted": true,
+      "nativePointBits": "351f46c13daf4d406b0eef6064f655408e0452ab0cd64240",
+      "nativeDirectionBits": "52e2003b5b53ecbf78ce8b6f50ade2bf2cc3186bf0bbd03f"
+    },
+    {
+      "name": "axis-0-36",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [43.91789309062929, 6.0521656307659555, -2.186423223761352],
+      "direction": [0.1436371383171242, 0.2516537620283441, 0.5646358266891618],
+      "length": 80.62963845180535,
+      "accepted": true,
+      "nativePointBits": "0c88d659b3da484065fe5315923230404a1d4912a7933440",
+      "nativeDirectionBits": "e812c8a5b362c23f48ef7461181bd03fbaf438277f11e23f"
+    },
+    {
+      "name": "axis-0-37",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-97.31071996104615, -58.89408330218422, -10.089880403304363],
+      "direction": [
+        -0.33860460358034006, 0.8408514224403456, 0.4911846238627484
+      ],
+      "length": 24.652446838120486,
+      "accepted": true,
+      "nativePointBits": "3078aaff005f59c0f08b05a6c84348c08a0c3e7f472410c0",
+      "nativeDirectionBits": "48c4a9a4b2abd5bfc8a4053e41e8ea3fdc77f2a1916fdf3f"
+    },
+    {
+      "name": "axis-0-38",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-30.860421153722967, -16.625353027632713, 4.9909678589430655],
+      "direction": [
+        -0.4837148796778019, 0.24069656319139598, 0.2502296099542354
+      ],
+      "length": 44.40238263906459,
+      "accepted": true,
+      "nativePointBits": "d67de45bbbcc44c0bc3f90362e9026c0a33c4feebc172540",
+      "nativeDirectionBits": "c48033412ff5debf9054951d25cfce3f3ca2cf0dc303d03f"
+    },
+    {
+      "name": "axis-0-39",
+      "mode": 0,
+      "guid": "0x14117bf40",
+      "origin": [-23.877497123158193, -26.596495875481622, 71.87856737311697],
+      "direction": [
+        0.45489767927120117, 0.176223291317688, -0.23178494678979145
+      ],
+      "length": 62.19937687191035,
+      "accepted": true,
+      "nativePointBits": "8c1d42a3ec7523c0c27fc598b21d35c099f3795fe32a5040",
+      "nativeDirectionBits": "34c0df270b1ddd3fb060801c7c8ec63f9868150f21abcdbf"
+    },
+    {
+      "name": "axis-1-0",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-46.45096247833913, 91.16767709166271, -64.479537754317],
+      "direction": [
+        0.6034972083647798, 0.31695392381632015, 0.5993045487094486
+      ],
+      "length": 13.657529601885773,
+      "accepted": true,
+      "nativePointBits": "b73a569b372a45c0e0b134d0405557401999bb218a314ec0",
+      "nativeDirectionBits": "caeda460d94fe33f7051481cf948d43fc8a2a1bb802de33f"
+    },
+    {
+      "name": "axis-1-1",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [27.007689371965583, 29.125385726381012, -89.35915846853848],
+      "direction": [
+        -0.8545215380363125, -0.4247957064167065, -0.7389322618182583
+      ],
+      "length": 54.73524789642815,
+      "accepted": true,
+      "nativePointBits": "701aadc7c2f80c40b8a384bcee7f31407f7fba233f655bc0",
+      "nativeDirectionBits": "a0fe728d3d58ebbf489fa254da2fdbbfd4ff4e4555a5e7bf"
+    },
+    {
+      "name": "axis-1-2",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-29.09688309618292, -27.940977945570907, -30.42651287334759],
+      "direction": [
+        0.3194992612503391, 0.2800879825266116, -0.28794520578003735
+      ],
+      "length": 49.9444498698044,
+      "accepted": true,
+      "nativePointBits": "0ba79750471e35c02845699d51f234c0e2502d9efece42c0",
+      "nativeDirectionBits": "c0a58a07ad72d43f28153d25f6ecd13f446077bab16dd2bf"
+    },
+    {
+      "name": "axis-1-3",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-48.14258750082121, -39.65959792006395, 30.518495349813264],
+      "direction": [
+        0.31933186699461125, -0.3910740720025516, -0.5572738060530125
+      ],
+      "length": 31.903859363914147,
+      "accepted": true,
+      "nativePointBits": "cd6d5771398645c021dbe823f1f246c0934ed1c5ffa03540",
+      "nativeDirectionBits": "a0ff53edee6fd43fe820648b5b07d9bfca487de02fd5e1bf"
+    },
+    {
+      "name": "axis-1-4",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [9.200180810352762, 20.128044995519858, 37.67944742016962],
+      "direction": [
+        -0.0578531095377528, -0.8129365265344832, -0.5879832350559162
+      ],
+      "length": 83.5585161735087,
+      "accepted": true,
+      "nativePointBits": "5da2536cea211b40805fec36f3ab2bc0ec244ae1563a2a40",
+      "nativeDirectionBits": "0084df3aec9eadbfe80f66769303eabf862aa537c2d0e2bf"
+    },
+    {
+      "name": "axis-1-5",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-51.799668596006, 58.43817986465649, -91.70293654231953],
+      "direction": [
+        -0.1582223166937209, 0.9279085039852883, 0.28305277432953724
+      ],
+      "length": 24.38308926599311,
+      "accepted": true,
+      "nativePointBits": "7d43c42c44dd4ac054dc20660d70514026d05c2d221056c0",
+      "nativeDirectionBits": "9033d9fda040c4bfd681c92c6db1ed3f44653262891dd23f"
+    },
+    {
+      "name": "axis-1-6",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [75.66555857308492, 1.0254491682913738, 58.73317559421179],
+      "direction": [
+        0.24103068619146972, -0.8143883923556863, 0.41289218944648454
+      ],
+      "length": 27.421079385782388,
+      "accepted": true,
+      "nativePointBits": "5bd9f41218be534041a6ec87cf4724c0e0fb5fc239195040",
+      "nativeDirectionBits": "b02c43f117dace3f2c1ced3e780feabf40939c5cd36cda3f"
+    },
+    {
+      "name": "axis-1-7",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-86.12701399575542, -58.33827537843661, 82.35749899114452],
+      "direction": [
+        -0.5919780833687878, 0.2544597288490251, -0.8435793983622841
+      ],
+      "length": 71.9677514334948,
+      "accepted": true,
+      "nativePointBits": "b73c4b7d6fdb5ac000c5d324469748c08271a97d49004a40",
+      "nativeDirectionBits": "0a9180057cf1e2bfcc8e63751149d03fa473f1389afeeabf"
+    },
+    {
+      "name": "axis-1-8",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [66.60401025855384, -75.4734891615552, -52.86287613927567],
+      "direction": [
+        0.05062620430264775, -0.641260638749138, -0.05162707668370281
+      ],
+      "length": 85.52899433577605,
+      "accepted": true,
+      "nativePointBits": "f7c14b8837315140d768d52b63b959c0a3cf8b1c0c894bc0",
+      "nativeDirectionBits": "60d99987adeba93fc077f4073585e4bf00a1e33bdd6eaabf"
+    },
+    {
+      "name": "axis-1-9",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-32.10578932237418, 48.36076666740365, 7.703069939435196],
+      "direction": [
+        0.4782132927598235, 0.3980216180843801, -0.2511260189537343
+      ],
+      "length": 28.537756168450215,
+      "accepted": true,
+      "nativePointBits": "534af7b53f4839c0a206a49f21054b409a5c4f7fa87a1040",
+      "nativeDirectionBits": "5c9e3aed0b9bde3fa07f31aa2f79d93f882ea5dd7212d0bf"
+    },
+    {
+      "name": "axis-1-10",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-63.47332974421194, -89.84829889511083, 23.74668962150028],
+      "direction": [0.3395068107901049, 0.5291747409547358, 0.9477425679932243],
+      "length": 64.06924998193644,
+      "accepted": true,
+      "nativePointBits": "a4397f2c764c4ac0f3fe265d5e3952c0f413f6efba0d4b40",
+      "nativeDirectionBits": "783747c67abad53fb6a2c8ddffeee03fc4dad138e853ee3f"
+    },
+    {
+      "name": "axis-1-11",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [7.0472276221596815, -66.96938192139228, 96.06949607257823],
+      "direction": [
+        -0.2821375722545183, 0.8267778471292293, -0.716396294073026
+      ],
+      "length": 31.174397130962962,
+      "accepted": true,
+      "nativePointBits": "1e90cb85293205408052638f860a4bc0403744ddc8395540",
+      "nativeDirectionBits": "649573bf8a0ed2bf4446cfd0f674ea3fa89dc0ebb7ece6bf"
+    },
+    {
+      "name": "axis-1-12",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [74.43185550739929, -56.17440727673475, 92.99004506016482],
+      "direction": [
+        0.8045459331661526, -0.1618251056143678, -0.7418316463314336
+      ],
+      "length": 79.45803081954422,
+      "accepted": true,
+      "nativePointBits": "f6b209b652995a40a493236f414d4fc01e710c6847c24f40",
+      "nativeDirectionBits": "7a82e21cd7bee93fd0892460afb6c4bffc3384b815bde7bf"
+    },
+    {
+      "name": "axis-1-13",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [32.70570280616562, -13.258451035652598, 26.99047056800407],
+      "direction": [
+        -0.6988652656829033, -0.8034455786714902, -0.5923872656229272
+      ],
+      "length": 23.002843666222322,
+      "accepted": true,
+      "nativePointBits": "a62df339f2aa3840a02fc4b8cc7f36c0124ad7525b2d3440",
+      "nativeDirectionBits": "b4638db01a5de6bfa8509080d3b5e9bfd45a8d23d6f4e2bf"
+    },
+    {
+      "name": "axis-1-14",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-23.878094173982205, -26.75814331739666, -74.41732818384872],
+      "direction": [
+        0.14089418130030906, -0.12948656477448783, 0.9388376793239441
+      ],
+      "length": 97.9437852114089,
+      "accepted": true,
+      "nativePointBits": "503cb2e66dfa30c0fee3215ab78c40c0ba01c2c2cf703cc0",
+      "nativeDirectionBits": "b8d5700ed208c23fe8287d080493c0bf305d1e51f50aee3f"
+    },
+    {
+      "name": "axis-1-15",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [98.25925784398416, -47.08781153686638, 36.07403070795149],
+      "direction": [
+        0.0969408604961619, 0.16379175948705416, 0.7673725346936735
+      ],
+      "length": 75.07549179709919,
+      "accepted": true,
+      "nativePointBits": "aa31a2187c795940565cde813f7844c0f13f722b49385040",
+      "nativeDirectionBits": "20247ac11dd1b83ff8f32cdd20f7c43f5a748bd8508ee83f"
+    },
+    {
+      "name": "axis-1-16",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [41.02478765895802, -62.392644457332814, -39.88899127128571],
+      "direction": [
+        0.19484724130146724, 0.8737109152587912, -0.2314842252759033
+      ],
+      "length": 54.757822865361916,
+      "accepted": true,
+      "nativePointBits": "022409de032e4740ac16b887563c43c08ba27c0a071d47c0",
+      "nativeDirectionBits": "08858d20c1f0c83f463be69770f5eb3f90c98c6c46a1cdbf"
+    },
+    {
+      "name": "axis-1-17",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-61.846648707183284, -10.5876108792814, -13.059592709096691],
+      "direction": [
+        -0.03226245858828225, 0.821483847359715, 0.2390208864320824
+      ],
+      "length": 17.170924521910305,
+      "accepted": true,
+      "nativePointBits": "f212e254d30f4fc02a9dc53041470cc034018974d50326c0",
+      "nativeDirectionBits": "80ea0c79b484a0bf7c45537e9849ea3f60b324853c98ce3f"
+    },
+    {
+      "name": "axis-1-18",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-41.42080759734847, 16.36133997389102, 40.01006703569047],
+      "direction": [
+        -0.1248777201742377, -0.07001137792891021, -0.6340116010621994
+      ],
+      "length": 47.80947990977654,
+      "accepted": true,
+      "nativePointBits": "fe161d0ef73346c091f33df51e602d40e6aa44d7abda3840",
+      "nativeDirectionBits": "60bb257cfcf7bfbff0748d0244ecb1bf8a187bb2d249e4bf"
+    },
+    {
+      "name": "axis-1-19",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-44.42390227981983, 77.22289025839672, -80.25731935693767],
+      "direction": [
+        -0.3069078990100478, 0.04065459227247037, 0.46431364270260733
+      ],
+      "length": 59.09010159622744,
+      "accepted": true,
+      "nativePointBits": "5e395edbe9be4ac0eefa2b58239b5340ac3aa26b81a250c0",
+      "nativeDirectionBits": "6476480761a4d3bfa0257cc0add0a43f10a39f9150b7dd3f"
+    },
+    {
+      "name": "axis-1-20",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-37.64007613797455, -65.13922958581202, -52.199158764045265],
+      "direction": [
+        0.22469580719042592, -0.04701369123875487, -0.9529817301642469
+      ],
+      "length": 46.68713879250199,
+      "accepted": true,
+      "nativePointBits": "9b1ef13a8b3240c0f3a1f60a268f50c0d62ed9667d9c52c0",
+      "nativeDirectionBits": "9831b70bd5c2cc3f005dabb42d12a8bfc2b5978ad37eeebf"
+    },
+    {
+      "name": "axis-1-21",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [71.03834385035793, 48.097619888406825, -64.4963732264987],
+      "direction": [
+        0.024585362635882513, -0.2902598473292044, 0.33999303103248013
+      ],
+      "length": 17.01101118883176,
+      "accepted": true,
+      "nativePointBits": "fd5a9d4cd6cf51408a02e1f27cd046401c8ee03d62cd4ec0",
+      "nativeDirectionBits": "40f8ecc1e72c993f98bce7099e93d2bf2cc1492172c2d53f"
+    },
+    {
+      "name": "axis-1-22",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [49.18857794161997, 55.4567240324981, 46.579539226293406],
+      "direction": [
+        -0.36704898499317573, -0.40389723911786635, -0.8891712068499722
+      ],
+      "length": 9.583420779408728,
+      "accepted": true,
+      "nativePointBits": "e0c7233603b74740a63f431abcc24a4056961455d1284540",
+      "nativeDirectionBits": "04d8a406bb7dd7bfec2d3dce73d9d9bf3ae5be2c1774ecbf"
+    },
+    {
+      "name": "axis-1-23",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-48.52178330337886, 91.41568351192691, -27.58837972012884],
+      "direction": [
+        0.3059110017516644, -0.7029506894844093, 0.5694467312572187
+      ],
+      "length": 4.287866528162272,
+      "accepted": true,
+      "nativePointBits": "b35bc7cfd6ee47c099bb0092267a5640278f5f0c165e3ac0",
+      "nativeDirectionBits": "cca300bd0b94d33f7628c171927ee6bf1a0bf259e838e23f"
+    },
+    {
+      "name": "axis-1-24",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-23.374645650726336, 82.40320368249445, 34.356255368723765],
+      "direction": [
+        -0.15762386223167657, -0.4750758365473271, -0.6003744488447302
+      ],
+      "length": 47.75245873547875,
+      "accepted": true,
+      "nativePointBits": "3623dc1e5b233bc0d60d2b0edac351400a82621786053440",
+      "nativeDirectionBits": "6858adca042dc4bf94cc457ba467debf6c8ce4794436e3bf"
+    },
+    {
+      "name": "axis-1-25",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [12.067497937439711, -91.4747656608107, -3.467367183823839],
+      "direction": [
+        -0.66720143171713, 0.19121540796683578, -0.9956293420286373
+      ],
+      "length": 27.803881115590926,
+      "accepted": true,
+      "nativePointBits": "a8a169403a5606402332008b413456c0d63495f1fc4e31c0",
+      "nativeDirectionBits": "f03822d1b659e5bfd8bbda19bf79c83f8e6ede1032dcefbf"
+    },
+    {
+      "name": "axis-1-26",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-59.751982762215825, 57.915144822616355, -13.317310037914027],
+      "direction": [
+        0.024742524621233608, 0.5548716781974958, -0.31130798124629
+      ],
+      "length": 41.323427746961364,
+      "accepted": true,
+      "nativePointBits": "65449137d19e4dc0caf29abc4d58514020cbe608ddbf33c0",
+      "nativeDirectionBits": "405246b81a56993f58b7ea3f82c1e13f34f19b4f78ecd3bf"
+    },
+    {
+      "name": "axis-1-27",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-96.12657558346514, -42.54109910464425, -36.89279079141243],
+      "direction": [
+        0.46189315845686174, 0.9359159357527764, -0.4479693742667725
+      ],
+      "length": 74.55619744147313,
+      "accepted": true,
+      "nativePointBits": "c26a41ee1dba53c030ef9d2e949b1ec0fd21f76ececb4ac0",
+      "nativeDirectionBits": "20607452a88fdd3f12a1fbf905f3ed3fbc7605bd87abdcbf"
+    },
+    {
+      "name": "axis-1-28",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [19.4215839304303, 94.99255691651288, -56.534958150541925],
+      "direction": [
+        0.5700044063960699, 0.45258766635828973, 0.7465494726228485
+      ],
+      "length": 28.530352584084905,
+      "accepted": true,
+      "nativePointBits": "ce0f491f848d3b40a3faa522b95c59402570827451f146c0",
+      "nativeDirectionBits": "228181e1793de23f703c654232f7dc3f9a5b38b8bbe3e73f"
+    },
+    {
+      "name": "axis-1-29",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-26.654838733796353, -17.38279292310922, 2.3239320744169873],
+      "direction": [
+        -0.05285160304807901, -0.9234010722440396, 0.00482051648226034
+      ],
+      "length": 45.65029030128208,
+      "accepted": true,
+      "nativePointBits": "304d179276dc3bc0a055bdbed23a43c08e96e493c0780340",
+      "nativeDirectionBits": "c0ed43855d0fabbfba24cc67808cedbf0019428aadbe733f"
+    },
+    {
+      "name": "axis-1-30",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [26.73416013959151, -62.70912564297095, -83.41248584871187],
+      "direction": [0.3382415811653925, 0.1551285277754313, 0.6522205660299454],
+      "length": 75.74880081609952,
+      "accepted": true,
+      "nativePointBits": "d2f1a0e1bdc54340fb6dcd85b76a4cc0cecc6b08e25a4dc0",
+      "nativeDirectionBits": "142c5004c0a5d53ff06dbc6840dbc33f38121caafddee43f"
+    },
+    {
+      "name": "axis-1-31",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [91.64810626017734, 1.9516085309466007, 11.11321902682451],
+      "direction": [
+        -0.4164501074710312, 0.8829822734859019, 0.3044845949321504
+      ],
+      "length": 17.464595424920816,
+      "accepted": true,
+      "nativePointBits": "ef870312bd005640bc7da22efb522340c02115a64c8b2b40",
+      "nativeDirectionBits": "ac3d005a1ea7dabfca3a720a6441ec3f24a457f4ac7cd33f"
+    },
+    {
+      "name": "axis-1-32",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-11.86863834984311, 80.93292355245322, 57.49186593865733],
+      "direction": [
+        -0.5092443639699633, 0.12272366941348034, -0.27173190087497523
+      ],
+      "length": 32.7466145672496,
+      "accepted": true,
+      "nativePointBits": "dafdb832e73434c09a2f5ce74ebc5440d03401b877854a40",
+      "nativeDirectionBits": "c88b1dd6ba4be0bfa0759382d16abf3f7c6de2320e64d1bf"
+    },
+    {
+      "name": "axis-1-33",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-0.9202679304930967, 13.587426310407551, 2.199735482850855],
+      "direction": [
+        0.6429584493836813, 0.11973323959657578, 0.8126626782655026
+      ],
+      "length": 10.07314683158147,
+      "accepted": true,
+      "nativePointBits": "3343864b588b0240efc0127d85612c4033cdb616cc2b1940",
+      "nativeDirectionBits": "e64519991d93e43f90b94f6cd6a6be3f36903a295501ea3f"
+    },
+    {
+      "name": "axis-1-34",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [39.92819304600741, -46.918390606332935, -76.44928202950271],
+      "direction": [
+        0.12699035388178026, -0.18735129155494112, 0.4630886353309669
+      ],
+      "length": 90.31500746565978,
+      "accepted": true,
+      "nativePointBits": "07366855d5d44640ac81b37a79b04bc0ee808e0ec8c44bc0",
+      "nativeDirectionBits": "08346a4c3841c03f30c10b8b20fbc7bf5854f9833ea3dd3f"
+    },
+    {
+      "name": "axis-1-35",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [17.02040557945304, 38.595438605140686, -43.99975554953575],
+      "direction": [
+        -0.019867766985736335, -0.14758049485061853, 0.6509397292117873
+      ],
+      "length": 68.9727232234851,
+      "accepted": true,
+      "nativePointBits": "5f551d32d25530403f179220c2c0404034f0dd451c8d35c0",
+      "nativeDirectionBits": "800bcb45375894bf789874ebeae3c2bf1237148e7fd4e43f"
+    },
+    {
+      "name": "axis-1-36",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [46.25182118535193, 16.251848448644736, 82.13000898338916],
+      "direction": [
+        -0.43460357890297474, 0.7452583695967205, 0.8610570964812971
+      ],
+      "length": 38.297404567984394,
+      "accepted": true,
+      "nativePointBits": "f679574801f742409ebe50bec7853e40d9d8fd858fa75840",
+      "nativeDirectionBits": "a43887878bd0dbbf4c9f8f1428d9e73f4607ac9cc78deb3f"
+    },
+    {
+      "name": "axis-1-37",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [8.037405829740791, -39.55946420582217, 55.22456484663752],
+      "direction": [
+        -0.8968741552915611, 0.32989947298018274, 0.739936106514407
+      ],
+      "length": 61.620174214635455,
+      "accepted": true,
+      "nativePointBits": "2b3186d7699833c00a597df82d653dc07390757169815340",
+      "nativeDirectionBits": "2e5bb36d31b3ecbfa8b8daad121dd53f867c537c8eade73f"
+    },
+    {
+      "name": "axis-1-38",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-50.23058875609261, -40.92781154360472, 73.81480116616109],
+      "direction": [
+        -0.35894941297279614, -0.08167509780521565, -0.3599625027423854
+      ],
+      "length": 23.727770990988382,
+      "accepted": true,
+      "nativePointBits": "d13839999b3e4bc072165732caf244c03df26bf2d4625140",
+      "nativeDirectionBits": "5cbd68f506f9d6bfa093f8c1a8e8b4bf9826442aa009d7bf"
+    },
+    {
+      "name": "axis-1-39",
+      "mode": 1,
+      "guid": "0x14114bbe0",
+      "origin": [-85.135336777404, -56.83173477522703, -75.27013649777932],
+      "direction": [
+        0.07273074083873299, -0.07772717562518183, -0.6083264209021866
+      ],
+      "length": 22.058581753063574,
+      "accepted": true,
+      "nativePointBits": "19c50da1521555c0e856307e31d84cc04cbbc8dfb07e54c0",
+      "nativeDirectionBits": "20f350597b9eb23f2013529dede5b3bff62962f86877e3bf"
+    },
+    {
+      "name": "axis-2-0",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [69.34597504095373, -45.64954324326715, -74.38458739411999],
+      "direction": [
+        0.30973663173062027, 0.2753836495953259, -0.7450336385288077
+      ],
+      "length": 39.50017564583606,
+      "accepted": true,
+      "nativePointBits": "3a887f7424565140c995a53b24d346c0c00c72149d9852c0",
+      "nativeDirectionBits": "58ffe997b9d2d33ff45c37bee29fd13feed5fcc850d7e7bf"
+    },
+    {
+      "name": "axis-2-1",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [71.11861773661406, -96.98646846952073, -64.4947928581444],
+      "direction": [
+        0.5096630549305297, -0.03078471594872889, -0.016969604548873418
+      ],
+      "length": 3.526933659340663,
+      "accepted": true,
+      "nativePointBits": "e8ded86e97c751401cc8a54c223f58c09201aaafaa1f50c0",
+      "nativeDirectionBits": "94fe1ce5284fe03f80a2dd5007869fbfc0fc40e27a6091bf"
+    },
+    {
+      "name": "axis-2-2",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-39.37971000181007, 59.48052799389586, -42.76855792396474],
+      "direction": [
+        0.039300659446046105, -0.9770008118207862, -0.2569588107180507
+      ],
+      "length": 87.8529944154543,
+      "accepted": true,
+      "nativePointBits": "82de5b569ab043c0304cf9f081bd4d404f41261b606245c0",
+      "nativeDirectionBits": "8062104e371fa43f7af1dd349743efbf4cff1c5e0372d0bf"
+    },
+    {
+      "name": "axis-2-3",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [87.49129860992099, 37.56217715449853, 93.94430739823113],
+      "direction": [
+        0.9748760404767991, 0.17042620864610458, 0.24859846137826924
+      ],
+      "length": 44.38189245642193,
+      "accepted": true,
+      "nativePointBits": "948bb96f71df55409490c66bf5c7424082314c886f7c5740",
+      "nativeDirectionBits": "f20ef03c2f32ef3fd81542a886d0c53fa050ba0a13d2cf3f"
+    },
+    {
+      "name": "axis-2-4",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-55.8002228820327, 75.86789371618448, 27.245807246593074],
+      "direction": [0.4784609382450711, 0.2156707209828701, 0.7072640910815504],
+      "length": 74.48725325868372,
+      "accepted": true,
+      "nativePointBits": "b0eb11b46de64bc0a4da15928bf75240b03c4539ed3e3b40",
+      "nativeDirectionBits": "80448ba01a9fde3fe0bfa922199bcb3fd6929a4de8a1e63f"
+    },
+    {
+      "name": "axis-2-5",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-42.59486636647236, -34.689570650127436, -32.94914172870935],
+      "direction": [
+        -0.42320584067945255, -0.7194608151622384, -0.7127680406761365
+      ],
+      "length": 69.47906706978935,
+      "accepted": true,
+      "nativePointBits": "9cbec294244c45c0164adfd9435841c0ac09e6797d7940c0",
+      "nativeDirectionBits": "a0714cf3cd15dbbf9402fcafd205e7bfeed00aecfecee6bf"
+    },
+    {
+      "name": "axis-2-6",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [38.920402297221756, -29.368421824977602, 5.640952997703323],
+      "direction": [
+        0.2133758091480733, 0.4531592365085926, 0.31915484337767275
+      ],
+      "length": 11.879987293903724,
+      "accepted": true,
+      "nativePointBits": "88dd12becf754340546989e4505e3dc0c0a28dfb55901640",
+      "nativeDirectionBits": "a8350605e64fcb3fb0d22b998f00dd3fe0b1aa6f086dd43f"
+    },
+    {
+      "name": "axis-2-7",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-66.19123108810763, -86.45975315807345, -9.31947386910565],
+      "direction": [0.5489228220752784, -0.808098333504583, 0.3037711173451356],
+      "length": 44.87248019707934,
+      "accepted": true,
+      "nativePointBits": "a65951213d8c50c0208a82986c9d55c08078371492a322c0",
+      "nativeDirectionBits": "52ec1a98c690e13f4e564b09f1dbe9bf00df9d69fc70d33f"
+    },
+    {
+      "name": "axis-2-8",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-81.98306897996248, -69.14667853928347, 48.9552425456732],
+      "direction": [
+        -0.44371520946627885, 0.5995511305057197, 0.009301719696785726
+      ],
+      "length": 78.14702233541647,
+      "accepted": true,
+      "nativePointBits": "a9a9279aea7e54c0d84f622e634951c004b54263457a4840",
+      "nativeDirectionBits": "2c4f597ad465dcbf1ea939da852fe33f806e27afc70c833f"
+    },
+    {
+      "name": "axis-2-9",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-93.82480490043585, -54.56935876486002, -43.527148309497846],
+      "direction": [
+        0.14751460410282413, -0.1054992485879418, -0.9471747024734178
+      ],
+      "length": 71.36894724879755,
+      "accepted": true,
+      "nativePointBits": "f63c7e9ac97457c0e3617dbfe0484bc0acb7869879c345c0",
+      "nativeDirectionBits": "08ea2630c2e1c23fa01270aeff01bbbf7a195752414feebf"
+    },
+    {
+      "name": "axis-2-10",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [39.60782895768355, -9.212973580351445, 32.92284959918405],
+      "direction": [
+        -0.27322553224586454, 0.8673305491438625, 0.21183783662212208
+      ],
+      "length": 92.75033860067921,
+      "accepted": true,
+      "nativePointBits": "0468db56cdcd4340000b85df0a6d22c0a4cf87ef1f764040",
+      "nativeDirectionBits": "54675bf1867cd1bfa6a0ecfe2bc1eb3fc8772c92801dcb3f"
+    },
+    {
+      "name": "axis-2-11",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [59.21819862685305, 10.09801750863899, 33.286327616742085],
+      "direction": [
+        -0.9019894039702534, 0.3041652969603421, -0.9323835128775344
+      ],
+      "length": 1.400860198516693,
+      "accepted": true,
+      "nativePointBits": "d82ebfeeed9b4d406814d4592f322440a8ec2262a6a44040",
+      "nativeDirectionBits": "3281ece118ddecbf8475c1b87177d33f746fe4f215d6edbf"
+    },
+    {
+      "name": "axis-2-12",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-1.7530177244235716, -94.0803765344101, 18.093395187698675],
+      "direction": [
+        -0.5443745059912888, -0.29729810954517966, -0.61077222946393
+      ],
+      "length": 56.00937858020139,
+      "accepted": true,
+      "nativePointBits": "40523b505c0cfcbf10aa9ee3248557c004c53cbfe8173240",
+      "nativeDirectionBits": "9c478015846be1bfe02f6aa6ee06d3bf6448db33728be3bf"
+    },
+    {
+      "name": "axis-2-13",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [46.64764176874573, 3.5731474670382255, 95.47536097767556],
+      "direction": [0.8290582609931467, 0.8603313888103348, -0.576687432577287],
+      "length": 4.63124264840559,
+      "accepted": true,
+      "nativePointBits": "ac24ecece552474020b7d556ce950c40503a73506cde5740",
+      "nativeDirectionBits": "de36ae30a587ea3f6a3455b1d587eb3f7ce0dd333974e2bf"
+    },
+    {
+      "name": "axis-2-14",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-81.59462132242462, -86.33820756377624, -88.30189931153942],
+      "direction": [0.4453282647686998, -0.535993529990916, 0.7766849161834088],
+      "length": 11.498997121306902,
+      "accepted": true,
+      "nativePointBits": "5a5497460e6654c0716b5631a59555c0ca6f7d51521356c0",
+      "nativeDirectionBits": "a89f4a1f4280dc3fecb645e7db26e1bf5abc49539adae83f"
+    },
+    {
+      "name": "axis-2-15",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-7.622876427576102, -3.1895122452442877, -48.34612165080272],
+      "direction": [
+        -0.6393330602150049, 0.2221943605289176, 0.23088746631484813
+      ],
+      "length": 3.260876466309392,
+      "accepted": true,
+      "nativePointBits": "008e7751d37d1ec04020fcfe1e8409c04f51d9b64d2c48c0",
+      "nativeDirectionBits": "5e001c9b6a75e4bf18e6e963dd70cc3f20757072b88dcd3f"
+    },
+    {
+      "name": "axis-2-16",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-82.51970320869674, 9.233135736699467, 0.6949417689574773],
+      "direction": [
+        0.7647734819060938, -0.035360374254026716, -0.6267810652412038
+      ],
+      "length": 57.975519195810215,
+      "accepted": true,
+      "nativePointBits": "a43e3fd142a154c0604e39915d772240007f4985f63ce63f",
+      "nativeDirectionBits": "a24fb43c0679e83f80a0fd45c11aa2bf00d11e2a970ee4bf"
+    },
+    {
+      "name": "axis-2-17",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-13.799229119152344, -74.86559609440789, -39.404329084282],
+      "direction": [
+        0.29216021219994137, -0.1508701441674818, 0.0625018089925038
+      ],
+      "length": 95.80723849542238,
+      "accepted": true,
+      "nativePointBits": "588a218f34992bc0be4129ed65b752c00ae8300ec1b343c0",
+      "nativeDirectionBits": "b4d525bfc0b2d23fa031927fb64fc3bfe04a90591e00b03f"
+    },
+    {
+      "name": "axis-2-18",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [60.6481935573122, -69.4617635237293, -82.43674871806343],
+      "direction": [
+        0.2843357235727344, 0.3545201103209936, -0.4229544804477905
+      ],
+      "length": 43.139701575966924,
+      "accepted": true,
+      "nativePointBits": "2011a901f8524e40cc3998888d5d51c0c029e5b0f39b54c0",
+      "nativeDirectionBits": "bc1475768e32d23f3897e61d75b0d63f5c134eabaf11dbbf"
+    },
+    {
+      "name": "axis-2-19",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-58.69782850211036, 85.86036581697414, 60.70520479166484],
+      "direction": [
+        -0.07751299155263047, 0.3110513491061324, 0.135061812909691
+      ],
+      "length": 46.58675856179419,
+      "accepted": true,
+      "nativePointBits": "ed63c17152594dc004a0c93b107755406c978e26445a4e40",
+      "nativeDirectionBits": "f0d1bb33e4d7b3bfb066f2ea43e8d33f205bb19ab449c13f"
+    },
+    {
+      "name": "axis-2-20",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-98.68053285415954, 14.200902624741389, -17.07300010217918],
+      "direction": [
+        -0.479987360950906, -0.1583019108213919, 0.7887111619215705
+      ],
+      "length": 72.64426514053565,
+      "accepted": true,
+      "nativePointBits": "001eacd98dab58c0c0e375b5dc662c40d8767b22b01231c0",
+      "nativeDirectionBits": "60c271e81cb8debfd0a3efac3c43c4bf902fce301f3de93f"
+    },
+    {
+      "name": "axis-2-21",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-52.42380208586792, -56.70245844581383, 64.87011447100664],
+      "direction": [
+        -0.0013964997225532905, 0.9625935575630165, -0.33264905516014753
+      ],
+      "length": 66.01426661543277,
+      "accepted": true,
+      "nativePointBits": "c06391253f364ac0e2c88928ea594cc0fe2f9bf4af375040",
+      "nativeDirectionBits": "0088c82858e156bfb259220191cdee3f10523d431f4ad5bf"
+    },
+    {
+      "name": "axis-2-22",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [35.80573220199247, 10.821477840683414, 21.86549529748747],
+      "direction": [
+        -0.8960834027936904, -0.8940861461857881, -0.8400616221901038
+      ],
+      "length": 9.202335032455562,
+      "accepted": true,
+      "nativePointBits": "2472983b22e74140783f58be98a42540ec8c8d1991dd3540",
+      "nativeDirectionBits": "ec97af19b7acecbf9c96b58c5a9cecbf6ccc3de9c8e1eabf"
+    },
+    {
+      "name": "axis-2-23",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [53.95174131603727, -51.773726251025764, -18.10308608805795],
+      "direction": [
+        -0.18511293868553458, -0.6443842714367263, 0.9467325115332665
+      ],
+      "length": 51.895557850419884,
+      "accepted": true,
+      "nativePointBits": "e850d1a8d2f94a402e1b387609e349c0a8e190d9631a32c0",
+      "nativeDirectionBits": "f843dce0c7b1c7bfb2147cc3cb9ee4bfe20ce3faa14bee3f"
+    },
+    {
+      "name": "axis-2-24",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-29.85480285673701, 71.0764011730997, 46.769240669875586],
+      "direction": [
+        -0.7480929527940532, -0.41296314339277207, 0.650458742218404
+      ],
+      "length": 79.3940902397909,
+      "accepted": true,
+      "nativePointBits": "7c362a5cd4da3dc0b6f5bec1e3c4514034ef6f7a76624740",
+      "nativeDirectionBits": "00cbd3a160f0e7bff4d1d4f6fc6ddabffc3527da8ed0e43f"
+    },
+    {
+      "name": "axis-2-25",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [7.27845668302524, -7.0711124961253375, -27.863566306481033],
+      "direction": [
+        -0.042315396964536456, -0.611605170943214, -0.5160540072271111
+      ],
+      "length": 34.43077319615754,
+      "accepted": true,
+      "nativePointBits": "c0c8abbf231d1d40f0c7d4b6d1481cc0784374ae12dd3bc0",
+      "nativeDirectionBits": "20ee281c5daaa5bfbe7fe8014592e3bf7a5380b18383e0bf"
+    },
+    {
+      "name": "axis-2-26",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-16.12717541741273, 66.27973149852707, -69.02415112403975],
+      "direction": [
+        0.250227007549384, -0.5763564004974289, 0.41604236438025777
+      ],
+      "length": 74.45139987756275,
+      "accepted": true,
+      "nativePointBits": "90a472918e2030c06e75f11ee791504064fa27b18b4151c0",
+      "nativeDirectionBits": "00098023b803d03f6a415ffa8271e2bfd4e0302770a0da3f"
+    },
+    {
+      "name": "axis-2-27",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [23.50375583380074, 83.51072840079183, 21.568215370091792],
+      "direction": [
+        -0.2019067622131998, 0.11887046308129467, 0.4778902585348077
+      ],
+      "length": 72.46822625588722,
+      "accepted": true,
+      "nativePointBits": "e8576f24f680374084a22cc6afe05440f8a0ff8f76913540",
+      "nativeDirectionBits": "300246ae14d8c9bf5000656f4b6ebe3f98f9de05c195de3f"
+    },
+    {
+      "name": "axis-2-28",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [33.62677532424837, -29.457121150242145, 91.77639020535423],
+      "direction": [
+        -0.7792591467578998, 0.9051270716146347, 0.7628618603267705
+      ],
+      "length": 44.96495062081334,
+      "accepted": true,
+      "nativePointBits": "14cb7f2c3ad04040949946e405753dc0983b8b60b0f15640",
+      "nativeDirectionBits": "b0e3cde0b0efe8bf32e4690ccdf6ec3fae03af465d69e83f"
+    },
+    {
+      "name": "axis-2-29",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [29.182683081288644, -29.05930965955217, -31.660321415322485],
+      "direction": [
+        -0.24823355788854373, 0.3768872600849713, -0.03056873154940165
+      ],
+      "length": 31.319197445630742,
+      "accepted": true,
+      "nativePointBits": "d0aa8351c42e3d400c1df8ea2e0f3dc094a803d30aa93fc0",
+      "nativeDirectionBits": "905473021ec6cfbf100416beeb1ed83f80b823d9684d9fbf"
+    },
+    {
+      "name": "axis-2-30",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [30.32086632768366, -26.93019746555308, -37.35063118479647],
+      "direction": [
+        0.14720458346870746, -0.6755351052364478, -0.03523967373359227
+      ],
+      "length": 58.40153453854826,
+      "accepted": true,
+      "nativePointBits": "f8c9af4b24523e40605fcd6b21ee3ac04cd48f7be1ac42c0",
+      "nativeDirectionBits": "20e2e88b99d7c23f764b09ccfb9de5bf003c6a3cef0aa2bf"
+    },
+    {
+      "name": "axis-2-31",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [88.09669787726605, 23.568392100941637, -71.52121989446701],
+      "direction": [
+        0.06557829025768802, 0.9139451155524747, -0.0820511397949808
+      ],
+      "length": 59.16209906909965,
+      "accepted": true,
+      "nativePointBits": "d21c4b4c300656405cd90c2582913740aa30b0aa5be151c0",
+      "nativeDirectionBits": "60fffb23bdc9b03fd460b4d3093fed3f00db04b24d01b5bf"
+    },
+    {
+      "name": "axis-2-32",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [83.22418694573062, -37.13825651809657, -99.44618205124335],
+      "direction": [
+        0.9752096426522503, -0.8166338994688338, 0.6849844106039171
+      ],
+      "length": 59.476568467139856,
+      "accepted": true,
+      "nativePointBits": "9a06341459ce544080d7bb63b29142c0c189293f8edc58c0",
+      "nativeDirectionBits": "aaed3ddaea34ef3f46c1606add21eabf80093a6d64ebe53f"
+    },
+    {
+      "name": "axis-2-33",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-71.74397383402236, 76.20140209177652, -68.46124248066927],
+      "direction": [
+        0.7986206646365335, -0.11883131444326045, 0.7509951528592844
+      ],
+      "length": 47.894533353311026,
+      "accepted": true,
+      "nativePointBits": "2b8d6d449def51c0ac6199c5e30c534007802eff841d51c0",
+      "nativeDirectionBits": "1cc290ec4c8ee93f604546a1ba6bbebf54869ffc2608e83f"
+    },
+    {
+      "name": "axis-2-34",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-91.92633483558478, -70.80051905580775, 67.00611892952145],
+      "direction": [
+        0.23878675052688725, 0.04355623618501303, 0.1567140235873905
+      ],
+      "length": 77.17533130262863,
+      "accepted": true,
+      "nativePointBits": "dcfee71149fb56c0392147b43bb351c0988ba64064c05040",
+      "nativeDirectionBits": "68941d729090ce3fc028e7c3004da63ff8f21083340fc43f"
+    },
+    {
+      "name": "axis-2-35",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-52.78713626364713, 81.28978212789988, -32.7963702573534],
+      "direction": [
+        -0.5777357205654003, -0.6108365636835027, 0.5552168438605269
+      ],
+      "length": 82.66581654872121,
+      "accepted": true,
+      "nativePointBits": "16ee8ee1c0644ac0e69256ca8b525440846be975ef6540c0",
+      "nativeDirectionBits": "84e6319fcf7ce2bfe217071ff98be3bfb837521d56c4e13f"
+    },
+    {
+      "name": "axis-2-36",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [92.40085585735329, -2.3578131088644767, 85.66169838437673],
+      "direction": [
+        -0.7264649993471586, -0.2417295865279525, -0.7564066652664925
+      ],
+      "length": 22.68900476939467,
+      "accepted": true,
+      "nativePointBits": "846f539fa71957406039851ecddc02c0b42d2e44596a5540",
+      "nativeDirectionBits": "864fbc86333fe7bff87b4ebefef0cebfde7839c07b34e8bf"
+    },
+    {
+      "name": "axis-2-37",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [14.100842260156128, -53.4262125661827, -37.534143915809956],
+      "direction": [
+        -0.44997081378214543, -0.9259489544619268, -0.2740016917926875
+      ],
+      "length": 77.96055612734439,
+      "accepted": true,
+      "nativePointBits": "c0d9c298a1332c40107324228eb64ac06de1ecd35ec442c0",
+      "nativeDirectionBits": "1453566252ccdcbf64bda5b35fa1edbfc41653643e89d1bf"
+    },
+    {
+      "name": "axis-2-38",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [64.53407449404469, -67.66709113741538, 97.07485204388581],
+      "direction": [
+        -0.4017896120725464, -0.7288777374551079, 0.6963211055222505
+      ],
+      "length": 53.76136683017033,
+      "accepted": true,
+      "nativePointBits": "2e63c9462e225040a2a9069fb1ea50c0d0213a60ca445840",
+      "nativeDirectionBits": "e057eec6ebb6d9bf84dea467f752e7bfb671f7324348e63f"
+    },
+    {
+      "name": "axis-2-39",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [27.27581537883937, -53.264932507278886, 11.385190687735175],
+      "direction": [
+        0.35503496641367027, 0.6680656967954282, 0.9347978288440726
+      ],
+      "length": 16.45569732821126,
+      "accepted": true,
+      "nativePointBits": "54d92fd69b463b407e34f34ee9a14ac0b817bdb637c52640",
+      "nativeDirectionBits": "18b96b94e4b8d63f2a1bea4fcb60e53f243ae822dde9ed3f"
+    }
+  ],
+  "points": [
+    {
+      "name": "point-0-0",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [15.691846948218725, 86.89575964523982, 22.281391477722792],
+      "accepted": true,
+      "nativePointBits": "a8df60c339622f406c58432054b9554048319a4509483640"
+    },
+    {
+      "name": "point-0-1",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [50.205985612272656, -48.83070206880702, 98.46577120791105],
+      "accepted": true,
+      "nativePointBits": "2c148ebc5d1a4940731f0572546a48c05e590a32cf9d5840"
+    },
+    {
+      "name": "point-0-2",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [-13.735836206125157, -16.64297501780152, -43.46640959313437],
+      "accepted": true,
+      "nativePointBits": "600af185bf782bc0409ac1029aa430c0c2863e4fb3bb45c0"
+    },
+    {
+      "name": "point-0-3",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [90.82363245391113, 99.5443883231633, 38.93641737823131],
+      "accepted": true,
+      "nativePointBits": "3e5ee564b6b45640e2131f42d7e258406c744f86dc774340"
+    },
+    {
+      "name": "point-0-4",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [-8.379768178980711, -32.65586841623988, 17.81943432013749],
+      "accepted": true,
+      "nativePointBits": "389189f970c220c0641d0b7ff35340c0e4359672c6d13140"
+    },
+    {
+      "name": "point-0-5",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [82.55125051404545, -74.83227459278896, 36.085707298128824],
+      "accepted": true,
+      "nativePointBits": "9e6e3cb047a354408054a7fc43b552c0f43eed74f80a4240"
+    },
+    {
+      "name": "point-0-6",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [-82.28032101423693, 77.82954192274178, 67.98796551491213],
+      "accepted": true,
+      "nativePointBits": "de218dc7f09154c09035013717755340e607b6d33aff5040"
+    },
+    {
+      "name": "point-0-7",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [59.70448753570756, 87.572947413137, 13.219488856565803],
+      "accepted": true,
+      "nativePointBits": "dc26c7a52cda4d401470a02babe45540b892e9d760702a40"
+    },
+    {
+      "name": "point-0-8",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [40.738510957950695, -85.37971845007328, 0.6075319778494617],
+      "accepted": true,
+      "nativePointBits": "6411ee86875e44402a309d4e4d5855c0806704e7e670e33f"
+    },
+    {
+      "name": "point-0-9",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [31.269786979152997, 66.80656644552988, -76.3765473404425],
+      "accepted": true,
+      "nativePointBits": "48596cc210453f408466dec89eb350402a26045a191853c0"
+    },
+    {
+      "name": "point-0-10",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [45.01610942454158, 37.76126604807581, 47.537823457118066],
+      "accepted": true,
+      "nativePointBits": "20c8a5df0f8246403805762a71e1424000ac2766d7c44740"
+    },
+    {
+      "name": "point-0-11",
+      "mode": 0,
+      "guid": "0x141176cc8",
+      "origin": [43.748108541600885, 60.13054880363299, -43.11992707511276],
+      "accepted": true,
+      "nativePointBits": "5c044c05c2df45405c11bdd2b5104e40d3c138c5598f45c0"
+    },
+    {
+      "name": "point-1-0",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [48.6345099184303, -62.635669724824126, 64.08465223708964],
+      "accepted": true,
+      "nativePointBits": "a852fa9e37514840a69623a05d514fc0547537f16a055040"
+    },
+    {
+      "name": "point-1-1",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-31.15390517703102, 80.3776493027894, 35.12580788095585],
+      "accepted": true,
+      "nativePointBits": "8808665466273fc09c35fb672b1854406824ff781a904140"
+    },
+    {
+      "name": "point-1-2",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-77.74814612702122, 17.96373700769371, -98.38412450650182],
+      "accepted": true,
+      "nativePointBits": "da0b4ba0e16f53c048fdf177b7f631401e41f47e959858c0"
+    },
+    {
+      "name": "point-1-3",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [51.01721374627871, 79.63129196226254, 64.6325688358886],
+      "accepted": true,
+      "nativePointBits": "84a75e0f348249404c09671667e8534010a7ff017c285040"
+    },
+    {
+      "name": "point-1-4",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [20.602958190750115, 85.78223099831311, -95.26108886751614],
+      "accepted": true,
+      "nativePointBits": "8820ce775b9a344006eb9a121072554037d514aeb5d057c0"
+    },
+    {
+      "name": "point-1-5",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-95.84904113431743, 85.06975436705414, 40.52162760705542],
+      "accepted": true,
+      "nativePointBits": "8936a0b056f657c00c5005db76445540347f84b1c4424440"
+    },
+    {
+      "name": "point-1-6",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-71.26827496157446, 69.88814564994385, -27.407753448556548],
+      "accepted": true,
+      "nativePointBits": "1293be6a2bd151c0fc25da60d7785140b061ae8762683bc0"
+    },
+    {
+      "name": "point-1-7",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [88.82840216593144, -24.67076054771256, 39.19389810907526],
+      "accepted": true,
+      "nativePointBits": "1ca7848a043556405cdf97f6b6ab38c0049e3aa7d1984340"
+    },
+    {
+      "name": "point-1-8",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-52.06549044044788, -26.753239606296447, -17.234721486273855],
+      "accepted": true,
+      "nativePointBits": "4ff6a1fd61084ac05c18934fd4c03ac0f83613b5163c31c0"
+    },
+    {
+      "name": "point-1-9",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-93.08196250941818, 40.96649625795516, 48.85367599156072],
+      "accepted": true,
+      "nativePointBits": "bf5caedf3e4557c0d8cf3d26b67b44401c914041456d4840"
+    },
+    {
+      "name": "point-1-10",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-57.57564846301817, 92.37553358894078, -17.055649454157006],
+      "accepted": true,
+      "nativePointBits": "ee534dd9aec94cc036c308be0818574004a5e90a3f0e31c0"
+    },
+    {
+      "name": "point-1-11",
+      "mode": 1,
+      "guid": "0x14117ddf0",
+      "origin": [-45.54837981119151, 50.751834365223004, 40.235679050891946],
+      "accepted": true,
+      "nativePointBits": "566d454f31c646c02452c51b3c60494074f72bbb2a1e4440"
+    },
+    {
+      "name": "point-2-0",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [79.30070173232829, -37.312022960042654, 87.22129048489916],
+      "accepted": true,
+      "nativePointBits": "d68c7ab23ed35340fe7d4c5ef0a742c0b4e3909f29ce5540"
+    },
+    {
+      "name": "point-2-1",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-61.57274916674184, 39.95098879027233, -31.662151772236655],
+      "accepted": true,
+      "nativePointBits": "d6fb3dd84fc94ec0888a2c00baf94340b0be4ec782a93fc0"
+    },
+    {
+      "name": "point-2-2",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-26.277169857724274, -22.60640735898292, -95.27143505799287],
+      "accepted": true,
+      "nativePointBits": "dc5c929af4463ac0a8e23e833d9b36c04e4426315fd157c0"
+    },
+    {
+      "name": "point-2-3",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [54.68933066802978, 91.14563517012215, -33.97488555711574],
+      "accepted": true,
+      "nativePointBits": "aca8c1fc3b584b409c342d1652c95640d293c80cc9fc40c0"
+    },
+    {
+      "name": "point-2-4",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [31.955714630917157, 39.59085837908168, -10.356294927560896],
+      "accepted": true,
+      "nativePointBits": "1019ccb6a9f43f40985c533fa1cb4340a035eb496cb624c0"
+    },
+    {
+      "name": "point-2-5",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-43.90520043635888, -47.24204931049925, 33.674342735484544],
+      "accepted": true,
+      "nativePointBits": "403e9f9bddf345c08b4ec878fb9e47c0c499dddc50d64040"
+    },
+    {
+      "name": "point-2-6",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [59.65330037143249, -44.89474316063004, -26.904403865226612],
+      "accepted": true,
+      "nativePointBits": "34e2b8589fd34d40e49ca2f1867246c03886ff0287e73ac0"
+    },
+    {
+      "name": "point-2-7",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [60.87989468838947, 76.69650560612905, 95.4778571301685],
+      "accepted": true,
+      "nativePointBits": "48479f63a0704e4084f33f8c932c5340fc8e123695de5740"
+    },
+    {
+      "name": "point-2-8",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-77.60639487819773, -5.083970272486795, 71.10221500939551],
+      "accepted": true,
+      "nativePointBits": "8e94762ccf6653c000ab984dfc5514c0e6a0d2b08ac65140"
+    },
+    {
+      "name": "point-2-9",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-38.604635724655644, 50.123051134016464, -80.94734285906875],
+      "accepted": true,
+      "nativePointBits": "d3b113b4644d43c0102bba23c00f49402a73f143a13c54c0"
+    },
+    {
+      "name": "point-2-10",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-64.34800575251677, 68.15386041360279, -53.32952512357634],
+      "accepted": true,
+      "nativePointBits": "4878ebb9451650c0ac2459d9d8095140417c16e12daa4ac0"
+    },
+    {
+      "name": "point-2-11",
+      "mode": 2,
+      "guid": "0x14114bbc0",
+      "origin": [-53.32095177693894, -81.28329972943419, -98.68233891865981],
+      "accepted": true,
+      "nativePointBits": "dec5a4f214a94ac0ac383095215254c0a41bdb70abab58c0"
+    }
+  ]
+}
