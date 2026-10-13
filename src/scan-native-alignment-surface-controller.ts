@@ -3,6 +3,7 @@ import { prepareNativeAlignmentSources } from "./scan-native-alignment-source";
 import { prepareNativeAlignmentSurface } from "./scan-native-alignment-surface";
 import { partitionNativeAlignmentVertices } from "./scan-native-alignment-partition";
 import { nativeRefineAlignmentSurface } from "./scan-native-alignment-surface-search";
+import { nativeAlignmentTargetGroupQuery } from "./scan-native-alignment-target-group";
 import {
   nativeAlignmentSixTransform,
   nativeAlignmentSixParameters,
@@ -15,7 +16,7 @@ type SourceMesh = Parameters<typeof prepareNativeAlignmentSources>[0][number];
  */
 export function nativeRefineAlignmentMeshes(
   sources: readonly SourceMesh[],
-  target: SourceMesh,
+  target: SourceMesh | readonly SourceMesh[],
   sampleBudget: number,
   options: MeshProcessingOptions & {
     selectionOnly?: boolean;
@@ -27,12 +28,18 @@ export function nativeRefineAlignmentMeshes(
   } = {},
 ) {
   const moving = prepareNativeAlignmentSources(sources, sampleBudget, options);
-  const fixed = prepareNativeAlignmentSurface(
-    target.vertices,
-    target.triangles,
-    options,
-  );
-  if (!fixed) throw new Error("Alignment target has no usable triangles.");
+  const targets: readonly SourceMesh[] =
+    "vertices" in target ? [target] : target;
+  if (!targets.length) throw new Error("Alignment requires a fixed target.");
+  const fixed = targets.map((mesh) => {
+    const prepared = prepareNativeAlignmentSurface(
+      mesh.vertices,
+      mesh.triangles,
+      options,
+    );
+    if (!prepared) throw new Error("Alignment target has no usable triangles.");
+    return prepared;
+  });
   const lanes = partitionNativeAlignmentVertices(
     moving.map((mesh) => mesh.vertices),
     options.workerCount ?? 1,
@@ -41,7 +48,7 @@ export function nativeRefineAlignmentMeshes(
   const result = nativeRefineAlignmentSurface(
     nativeAlignmentSixParameters([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]),
     lanes.map((lane) => lane.vertices),
-    fixed.query,
+    nativeAlignmentTargetGroupQuery(fixed.map((mesh) => mesh.query)),
     {
       ...options,
       budget: 1000,

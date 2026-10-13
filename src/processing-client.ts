@@ -272,6 +272,17 @@ export function processMesh(
             }
           : { ...request, positions: source };
       if (copied.kind === "nativeRefine") {
+        copied.additionalTargets = copied.additionalTargets?.map((target) => {
+          const triangles = Uint32Array.from(target.indexedMesh.triangles);
+          transfers.push(triangles.buffer);
+          return {
+            positions: clone(target.positions),
+            indexedMesh: {
+              vertices: clone(target.indexedMesh.vertices),
+              triangles,
+            },
+          };
+        });
         for (const key of ["sourceIndexed", "targetIndexed"] as const) {
           const mesh = copied[key];
           const triangles = Uint32Array.from(mesh.triangles);

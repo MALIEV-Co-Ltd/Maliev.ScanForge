@@ -94,6 +94,74 @@ function harness(entities: Entity[] = [entity()]) {
 }
 
 describe("shared workspace operation contracts", () => {
+  it("passes ordered fixed mesh targets through shared refinement without changing them", async () => {
+    const indexedMesh = {
+      vertices: new Float32Array(triangle),
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    const source = entity({ positions: indexedMesh.vertices, indexedMesh });
+    const first = entity({
+      id: "fixed-first",
+      positions: indexedMesh.vertices,
+      indexedMesh,
+    });
+    const second = entity({
+      id: "fixed-second",
+      positions: indexedMesh.vertices,
+      indexedMesh,
+    });
+    const h = harness([source, first, second]);
+    vi.mocked(processMesh).mockResolvedValueOnce({
+      positions: source.positions,
+      indexedMesh,
+    } as never);
+    await h.ops.mesh_process(
+      {
+        entityId: source.id,
+        targetIds: [second.id, first.id],
+        operation: {
+          kind: "nativeRefine",
+          sampleBudget: 500,
+          initialRadius: 10,
+        },
+      },
+      h.context,
+    );
+    expect(vi.mocked(processMesh).mock.calls.at(-1)![0]).toMatchObject({
+      target: second.positions,
+      additionalTargets: [{ positions: first.positions, indexedMesh }],
+    });
+    expect(h.state.entities.slice(1)).toEqual([first, second]);
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: source.id,
+          targetIds: [first.id, first.id],
+          operation: {
+            kind: "nativeRefine",
+            sampleBudget: 500,
+            initialRadius: 10,
+          },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow("distinct");
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: source.id,
+          targetId: first.id,
+          targetIds: [second.id],
+          operation: {
+            kind: "nativeRefine",
+            sampleBudget: 500,
+            initialRadius: 10,
+          },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow("not both");
+  });
   it.each(["paired", "icp", "global"] as const)(
     "retains indexed topology through MCP %s processing and undo snapshots",
     async (kind) => {

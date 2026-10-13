@@ -7,39 +7,60 @@ export interface NativeSurfaceRefinementRequest {
   target: Positions;
   sourceIndexed: IndexedMesh;
   targetIndexed: IndexedMesh;
+  additionalTargets?: { positions: Positions; indexedMesh: IndexedMesh }[];
   sourceTriangleMask?: Uint8Array;
   sampleBudget: number;
   initialRadius: number;
 }
 export function nativeSurfaceRefinementRequest(
   source: Entity,
-  target: Entity,
+  target: Entity | readonly Entity[],
   sampleBudget: number,
   initialRadius: number,
   sourceTriangleMask?: Uint8Array,
 ): NativeSurfaceRefinementRequest {
-  if (source.id === target.id)
-    throw new Error("Alignment requires two different objects.");
+  const targets: readonly Entity[] = Array.isArray(target)
+    ? target
+    : [target as Entity];
   if (
-    source.meshSelection?.hidden?.length ||
-    target.meshSelection?.hidden?.length
+    !targets.length ||
+    targets.length > 32 ||
+    new Set(targets.map((entity) => entity.id)).size !== targets.length
   )
-    throw new Error("Reveal hidden triangles before surface refinement.");
-  if (
-    source.kind !== "mesh" ||
-    target.kind !== "mesh" ||
-    !source.indexedMesh ||
-    !target.indexedMesh
-  )
-    throw new Error(
-      "Surface refinement requires indexed PLY meshes for both moving and fixed objects.",
-    );
+    throw new Error("Alignment requires distinct fixed targets.");
+  const first = targets[0];
+  for (const target of targets) {
+    if (source.id === target.id)
+      throw new Error("Alignment requires two different objects.");
+    if (
+      source.meshSelection?.hidden?.length ||
+      target.meshSelection?.hidden?.length
+    )
+      throw new Error("Reveal hidden triangles before surface refinement.");
+    if (
+      source.kind !== "mesh" ||
+      target.kind !== "mesh" ||
+      !source.indexedMesh ||
+      !target.indexedMesh
+    )
+      throw new Error(
+        "Surface refinement requires indexed PLY meshes for both moving and fixed objects.",
+      );
+  }
   return {
     kind: "nativeRefine",
     positions: source.positions,
-    target: target.positions,
-    sourceIndexed: source.indexedMesh,
-    targetIndexed: target.indexedMesh,
+    target: first.positions,
+    sourceIndexed: source.indexedMesh!,
+    targetIndexed: first.indexedMesh!,
+    ...(targets.length > 1
+      ? {
+          additionalTargets: targets.slice(1).map((entity) => ({
+            positions: entity.positions,
+            indexedMesh: entity.indexedMesh!,
+          })),
+        }
+      : {}),
     sampleBudget,
     initialRadius,
     sourceTriangleMask,
@@ -51,7 +72,10 @@ export function refineNativeSurface(
 ) {
   if (
     !indexedMeshMatches(request.sourceIndexed, request.positions) ||
-    !indexedMeshMatches(request.targetIndexed, request.target)
+    !indexedMeshMatches(request.targetIndexed, request.target) ||
+    request.additionalTargets?.some(
+      (target) => !indexedMeshMatches(target.indexedMesh, target.positions),
+    )
   )
     throw new Error(
       "Alignment indexed topology does not match its render geometry.",
@@ -86,7 +110,12 @@ export function refineNativeSurface(
   progress(0, "Preparing native surface refinement");
   const result = nativeRefineAlignmentMeshes(
     [{ ...request.sourceIndexed, flags }],
-    request.targetIndexed,
+    request.additionalTargets?.length
+      ? [
+          request.targetIndexed,
+          ...request.additionalTargets.map((target) => target.indexedMesh),
+        ]
+      : request.targetIndexed,
     request.sampleBudget,
     {
       selectionOnly: !!mask,

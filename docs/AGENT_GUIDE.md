@@ -201,6 +201,12 @@ rejected. Older projects and other mesh formats can lack this optional metadata.
 
 For recovered surface refinement, call `mesh_process` with moving `entityId`,
 fixed `targetId`, and `operation:{kind:"nativeRefine",sampleBudget:500,initialRadius:10}`.
+For multiple fixed surfaces, use `targetIds:["first","second"]` instead of
+`targetId`. The ordered list accepts one to 32 distinct fixed mesh objects;
+the moving object cannot appear in it. Distance ties retain the first fixed
+target. Every fixed mesh remains unchanged. This parameter is exclusive to
+`nativeRefine`. The GUI offers additional fixed surface checkboxes after the
+primary registration target; additional targets follow checkbox selection order.
 Both objects must be indexed PLY meshes with no hidden triangles. Coordinates
 and radius are millimetres; sampling accepts 1 to 100,000 vertices. Optional
 `selectionOnly:true` marks vertices incident to selected moving triangles and

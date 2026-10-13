@@ -75,6 +75,7 @@ export function MeshTools({
     [surfaceSamples, setSurfaceSamples] = useState(500),
     [distance, setDistance] = useState(10),
     [icpIterations, setIcpIterations] = useState(40);
+  const [additionalTargetIds, setAdditionalTargetIds] = useState<string[]>([]);
   const [sourceLandmarks, setSourceLandmarks] = useState(""),
     [targetLandmarks, setTargetLandmarks] = useState("");
   const [working, setWorking] = useState(false),
@@ -101,6 +102,12 @@ export function MeshTools({
     (entity) => entity.id !== selected?.id && entity.positions.length >= 9,
   );
   const blocked = disabled || working || !selected;
+  const fixedTargets = [
+    targets.find((entity) => entity.id === targetId),
+    ...additionalTargetIds
+      .filter((id) => id !== targetId)
+      .map((id) => targets.find((entity) => entity.id === id)),
+  ].filter((entity): entity is Entity => !!entity);
   async function run(request: ProcessingRequest, label: string) {
     if (controller.current) return;
     const cancellation = new AbortController();
@@ -379,6 +386,37 @@ export function MeshTools({
           min={0.000001}
           step={1}
         />
+        <fieldset>
+          <legend>Additional fixed surfaces</legend>
+          {targets
+            .filter(
+              (entity) =>
+                entity.id !== targetId &&
+                entity.indexedMesh &&
+                !entity.meshSelection?.hidden.length,
+            )
+            .map((entity) => (
+              <label key={entity.id}>
+                <input
+                  type="checkbox"
+                  checked={additionalTargetIds.includes(entity.id)}
+                  disabled={
+                    blocked ||
+                    (!additionalTargetIds.includes(entity.id) &&
+                      additionalTargetIds.length >= 31)
+                  }
+                  onChange={(event) =>
+                    setAdditionalTargetIds((ids) =>
+                      event.target.checked
+                        ? [...ids, entity.id]
+                        : ids.filter((id) => id !== entity.id),
+                    )
+                  }
+                />
+                {entity.name}
+              </label>
+            ))}
+        </fieldset>
         <Field
           label="Surface refinement samples"
           value={surfaceSamples}
@@ -398,6 +436,10 @@ export function MeshTools({
           disabled={
             !selected?.indexedMesh ||
             !!selected.meshSelection?.hidden.length ||
+            fixedTargets.some(
+              (entity) =>
+                !entity.indexedMesh || !!entity.meshSelection?.hidden.length,
+            ) ||
             !!targets.find((entity) => entity.id === targetId)?.meshSelection
               ?.hidden.length ||
             !targets.find((entity) => entity.id === targetId)?.indexedMesh
@@ -408,7 +450,7 @@ export function MeshTools({
               void run(
                 nativeSurfaceRefinementRequest(
                   selected,
-                  target,
+                  fixedTargets,
                   surfaceSamples,
                   distance,
                   triangleSelection?.some(Boolean)

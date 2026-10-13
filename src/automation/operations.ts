@@ -639,12 +639,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "sourceTriangleMask" in op ||
         "sourceIndexed" in op ||
         "targetIndexed" in op ||
+        "additionalTargets" in op ||
         "seeds" in op
       )
         throw new Error(
           "Geometry and selection must refer to workspace objects.",
         );
       const selection = a.selectionOnly ? mask(s, e) : undefined;
+      if (a.targetIds !== undefined && kind !== "nativeRefine")
+        throw new Error("targetIds is supported only for surface refinement.");
       if (
         selection &&
         !readonly &&
@@ -703,12 +706,21 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         });
       }
       if (kind === "nativeRefine") {
-        if (!a.targetId) throw new Error("Alignment requires targetId.");
+        if (a.targetId && a.targetIds)
+          throw new Error("Use targetId or targetIds, not both.");
+        const ids = a.targetIds ?? (a.targetId ? [a.targetId] : []);
+        if (
+          !Array.isArray(ids) ||
+          !ids.length ||
+          ids.length > 32 ||
+          ids.some((id) => typeof id !== "string")
+        )
+          throw new Error("Alignment requires one to 32 fixed targetIds.");
         Object.assign(
           request,
           nativeSurfaceRefinementRequest(
             e,
-            object(s, a.targetId),
+            ids.map((id) => object(s, id)),
             op.sampleBudget,
             op.initialRadius,
             selection,

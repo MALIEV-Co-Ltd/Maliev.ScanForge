@@ -27,11 +27,12 @@ A two-lane case with opposing nearest-target normals rejects a lane and produces
 the native Float32-maximum sentinel; it must not be replaced by averaging only
 successful workers.
 
-This kernel is not yet exposed as a multiple-fixed-target GUI/MCP operation.
-Preparing target groups, preserving object order and selection through the shared
-application operation, CAD-surface target queries, and enclosing application
-controller comparisons remain necessary before advertising that capability. The existing
-GUI/MCP surface-refinement action still accepts one fixed indexed PLY mesh.
+The shared surface-refinement operation now prepares ordered indexed mesh target
+groups. GUI additional fixed surface checkboxes and MCP `targetIds` use the same
+request builder, geometry validation and worker. Target buffers are copied before
+transfer and remain immutable. Existing single-target requests remain supported.
+CAD-surface target queries and enclosing native application-controller comparisons
+remain unverified; this operation accepts indexed mesh surfaces only.
 
 Seven further captures execute the complete original refinement thread
 `0x140aaa250` on those controlled target groups. The probe binds allocation/free,

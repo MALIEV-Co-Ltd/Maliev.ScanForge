@@ -37,6 +37,11 @@ it("returns rejection diagnostics without replacement geometry when the native s
 });
 it("copies indexed buffers into the client worker and releases cancellation without detaching scene data", async () => {
   const input = request(native.cases[0]);
+  const additional = {
+    positions: input.target,
+    indexedMesh: input.targetIndexed,
+  };
+  const grouped = { ...input, additionalTargets: [additional] };
   let sent: typeof input | undefined;
   let terminated = false;
   vi.stubGlobal(
@@ -51,7 +56,17 @@ it("copies indexed buffers into the client worker and releases cancellation with
     },
   );
   const controller = new AbortController();
-  const pending = processMesh(input, { signal: controller.signal });
+  const pending = processMesh(grouped, { signal: controller.signal });
+  const groupSent = sent as typeof grouped;
+  expect(groupSent.additionalTargets[0].positions).not.toBe(
+    additional.positions,
+  );
+  expect(groupSent.additionalTargets[0].indexedMesh.vertices).not.toBe(
+    additional.indexedMesh.vertices,
+  );
+  expect(groupSent.additionalTargets[0].indexedMesh.triangles).not.toBe(
+    additional.indexedMesh.triangles,
+  );
   expect(sent!.sourceIndexed.vertices).not.toBe(input.sourceIndexed.vertices);
   expect(sent!.targetIndexed.triangles).not.toBe(input.targetIndexed.triangles);
   expect(sent!.sourceTriangleMask).not.toBe(input.sourceTriangleMask);
@@ -113,6 +128,19 @@ it.each(native.cases)(
         ),
       ).toBe(true);
     expect([...input.positions]).toEqual(before);
+    messages.length = 0;
+    await scope.onmessage({
+      data: {
+        ...input,
+        additionalTargets: [
+          { positions: input.target, indexedMesh: input.targetIndexed },
+        ],
+      },
+    });
+    expect(messages.at(-1)!.error).toBeUndefined();
+    expect(messages.at(-1)!.result!.refinement).toEqual(
+      output.result!.refinement,
+    );
   },
 );
 it("rejects stale geometry, empty selections and invalid sampling before mutation", () => {
@@ -135,6 +163,20 @@ it("rejects stale geometry, empty selections and invalid sampling before mutatio
   expect(() =>
     refineNativeSurface({ ...input, sampleBudget: 0 }, vi.fn()),
   ).toThrow("sampling");
+  expect(() =>
+    refineNativeSurface(
+      {
+        ...input,
+        additionalTargets: [
+          {
+            positions: new Float32Array(input.target.length),
+            indexedMesh: input.targetIndexed,
+          },
+        ],
+      },
+      vi.fn(),
+    ),
+  ).toThrow("topology");
 });
 it("requires independent indexed mesh objects and rejects hidden geometry through the shared request", () => {
   const input = request(native.cases[0]);
@@ -176,4 +218,26 @@ it("requires independent indexed mesh objects and rejects hidden geometry throug
       10,
     ),
   ).toThrow("Reveal");
+  expect(() => nativeSurfaceRefinementRequest(source, [], 500, 10)).toThrow(
+    "distinct",
+  );
+  expect(() =>
+    nativeSurfaceRefinementRequest(
+      source,
+      [
+        target,
+        { ...target, id: "hidden", meshSelection: { saved: [], hidden: [0] } },
+      ],
+      500,
+      10,
+    ),
+  ).toThrow("Reveal");
+  expect(() =>
+    nativeSurfaceRefinementRequest(
+      source,
+      [target, { ...target, id: "unindexed", indexedMesh: undefined }],
+      500,
+      10,
+    ),
+  ).toThrow("indexed PLY");
 });

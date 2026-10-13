@@ -334,6 +334,12 @@ try {
   );
   const beforeMoving = await geometry(moving.id),
     beforeFixed = await geometry(fixed.id);
+  const fixedExtra = await importNative(
+    "native-fixed-extra.ply",
+    fixture.vertices,
+    fixture.triangles,
+  );
+  const beforeExtra = await geometry(fixedExtra.id);
   await mutate("selection_set", {
     entityId: moving.id,
     triangles: Array.from(
@@ -344,7 +350,7 @@ try {
   const refined = await job(
     await mutate("mesh_process", {
       entityId: moving.id,
-      targetId: fixed.id,
+      targetIds: [fixed.id, fixedExtra.id],
       selectionOnly: true,
       operation: {
         kind: "nativeRefine",
@@ -379,12 +385,25 @@ try {
     mode: "inspect",
     toolPanelOpen: true,
   });
-  await page
-    .getByRole("button", { name: "Registration target", exact: true })
-    .click();
+  const registrationTarget = page.getByRole("button", {
+    name: "Registration target",
+    exact: true,
+  });
+  await registrationTarget.scrollIntoViewIfNeeded();
+  // Settle the inspector scroll before opening its scroll-dismissed menu.
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  await registrationTarget.click();
   await page
     .getByRole("option", { name: fixed.name, exact: true })
     .press("Enter");
+  await page
+    .getByRole("checkbox", { name: fixedExtra.name, exact: true })
+    .check();
   await page
     .getByRole("spinbutton", {
       name: "Surface refinement samples",
@@ -405,6 +424,7 @@ try {
     .waitFor({ timeout: 30000 });
   assert.deepEqual(await geometry(moving.id), afterMoving);
   assert.deepEqual(await geometry(fixed.id), beforeFixed);
+  assert.deepEqual(await geometry(fixedExtra.id), beforeExtra);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -417,6 +437,7 @@ try {
     undoRestoration: true,
     nativeRefinement: true,
     guiNativeRefinement: true,
+    guiMcpTargetGroupRefinement: true,
     guiMcpPairedTopologyRetention: true,
     errors,
   };
