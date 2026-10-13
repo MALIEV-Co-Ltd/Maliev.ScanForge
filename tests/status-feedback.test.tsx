@@ -35,6 +35,15 @@ it("exposes changing tool instructions accessibly and in the hover title", () =>
   expect(html).toContain("Left-drag draws selection rectangle");
   expect(html).toContain('title="Left-drag');
 });
+it("shows a brief idle hint and retains detailed navigation on hover", () => {
+  const html = renderToStaticMarkup(
+    <ActiveToolHint context={{ mode: "inspect" }} />,
+  );
+  const visible = html.slice(html.indexOf(">") + 1);
+  expect(visible).toContain("Select an object");
+  expect(visible).not.toContain("orbits");
+  expect(html).toContain("Middle-drag orbits");
+});
 
 it("groups progress, command guidance, and model details with shortcuts on the right", () => {
   const html = renderToStaticMarkup(

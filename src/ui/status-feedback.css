@@ -1,7 +1,7 @@
 .workbench footer.statusbar {
   display: grid;
   grid-template-columns:
-    minmax(0, min(34vw, 640px)) minmax(0, 1fr)
+    minmax(0, min(22vw, 360px)) minmax(0, 1fr)
     minmax(0, max-content);
   grid-template-rows: minmax(0, 1fr);
   min-width: 0;
@@ -86,7 +86,7 @@
 }
 @media (max-width: 1000px) {
   .workbench footer.statusbar {
-    grid-template-columns: minmax(0, 30vw) minmax(0, 1fr) minmax(0, max-content);
+    grid-template-columns: minmax(0, 25vw) minmax(0, 1fr) minmax(0, max-content);
   }
   .status-operation {
     padding-inline-end: 8px;

@@ -23,6 +23,19 @@ export interface ToolGuidanceContext {
 }
 const navigation = "Middle-drag orbits · Ctrl+drag pans · Shift+drag zooms";
 const menu = "Right-click opens tools menu";
+/** Show one useful next action; the full controls remain in the hint's title. */
+export function compactToolGuidance(context: ToolGuidanceContext): string {
+  const full = activeToolGuidance(context);
+  if (full.startsWith("Left-click selects ·"))
+    return "Select an object · Right-click for tools";
+  if (context.busy) return "Processing · Cancel to stop";
+  if (context.planePicking) return "Left-click creates sketch · Escape cancels";
+  if (context.mode === "section" && full.includes(" section ·"))
+    return full.split(" · ").slice(0, 2).join(" · ");
+  if (context.parameterTool && full.startsWith(`${context.parameterTool}:`))
+    return `${context.parameterTool} · ${full.includes("Preview checks result") ? "Preview → Accept" : "Apply to finish"}`;
+  return full.split(" · ")[0];
+}
 /** Instructions reflect the actual viewport input handlers, not just the ribbon tab. */
 export function activeToolGuidance(context: ToolGuidanceContext): string {
   if (context.busy)

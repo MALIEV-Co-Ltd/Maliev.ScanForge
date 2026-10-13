@@ -1,6 +1,46 @@
 import { expect, it } from "vitest";
-import { activeToolGuidance } from "../src/ui/tool-guidance";
+import {
+  activeToolGuidance,
+  compactToolGuidance,
+} from "../src/ui/tool-guidance";
 const base = { mode: "inspect" as const };
+it("keeps visible hints brief while preserving active command precedence", () => {
+  expect(compactToolGuidance(base)).toBe(
+    "Select an object · Right-click for tools",
+  );
+  expect(
+    compactToolGuidance({ ...base, parameterTool: "Reduce polygons" }),
+  ).toBe("Reduce polygons · Preview → Accept");
+  expect(
+    compactToolGuidance({
+      ...base,
+      busy: true,
+      parameterTool: "Reduce polygons",
+    }),
+  ).toBe("Processing · Cancel to stop");
+  expect(
+    compactToolGuidance({
+      ...base,
+      reference: "plane",
+      parameterTool: "Reduce polygons",
+    }),
+  ).toBe("Left-click picks planar reference");
+  expect(
+    compactToolGuidance({
+      mode: "brush",
+      brushActive: true,
+      selectionTool: "rectangle",
+      selectThrough: true,
+    }),
+  ).toBe("Left-drag draws selection rectangle");
+  expect(
+    compactToolGuidance({
+      mode: "section",
+      sectionAxis: "X",
+      sectionOffset: "12.5",
+    }),
+  ).toBe("X section · 12.5 mm");
+});
 it("uses active picking and processing state ahead of the underlying edit mode", () => {
   expect(
     activeToolGuidance({ ...base, busy: true, planePicking: true }),

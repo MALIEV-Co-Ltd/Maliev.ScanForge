@@ -79,7 +79,9 @@ it("separates the keyboard reference from active tool controls", () => {
   );
   expect(html).not.toContain("Current tool controls");
   expect(html).not.toContain("status-controls");
-  expect(html).toContain(">Alt</kbd>");
+  expect(html).toContain(">Left-drag</kbd>");
+  expect(html).toContain("Alt subtracts · Ctrl+wheel changes brush size");
+  expect(html).not.toContain(">Alt</kbd>");
   expect(html).toContain(">U</kbd>");
   expect(renderToStaticMarkup(<StatusKeyboard busy />)).toContain(
     "Modeling shortcuts paused while processing.",

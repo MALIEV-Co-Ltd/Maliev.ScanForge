@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { Keyboard } from "lucide-react";
-import { activeToolGuidance, type ToolGuidanceContext } from "./tool-guidance";
+import {
+  activeToolGuidance,
+  compactToolGuidance,
+  type ToolGuidanceContext,
+} from "./tool-guidance";
 import "./status-feedback.css";
 import { Kbd, ShortcutText } from "./Kbd";
 import { shortcutReference } from "./shortcut-reference";
@@ -36,7 +40,7 @@ export function ActiveToolHint({ context }: { context: ToolGuidanceContext }) {
       title={hint}
       tabIndex={0}
     >
-      <ShortcutText text={hint} />
+      <ShortcutText text={compactToolGuidance(context)} />
     </span>
   );
 }
