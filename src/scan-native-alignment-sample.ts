@@ -1,5 +1,20 @@
 import { ALIGNMENT_QUERY_SENTINEL } from "./scan-native-alignment-query";
 
+type SampleNode = {
+  ids: number[];
+  bounds: number[];
+  center: number[];
+  depth: number;
+  points: number[][];
+  inputFlags: number[];
+  outputFlags: number[];
+};
+
+/** One pool per native alignment constructor, shared by its source meshes. */
+export function createNativeAlignmentSamplingState() {
+  return { nodes: [] as SampleNode[], levelCounts: [] as number[] };
+}
+
 /** Native sample-node accumulation; inputs are cached Float32 vertices and center. */
 export function nativeAlignmentSampleRepresentative(
   vertices: readonly { point: readonly number[]; flags: number }[],
@@ -33,7 +48,10 @@ export function nativeAlignmentSampleRepresentative(
 export function nativeSampleAlignmentVertices(
   vertices: readonly { point: readonly number[]; flags: number }[],
   budget: number,
-  options: { signal?: AbortSignal } = {},
+  options: {
+    signal?: AbortSignal;
+    state?: ReturnType<typeof createNativeAlignmentSamplingState>;
+  } = {},
 ) {
   if (!Number.isSafeInteger(budget) || budget < 0 || budget > 0xffffffff)
     throw new RangeError("Alignment sample count must be an unsigned integer.");
@@ -43,28 +61,35 @@ export function nativeSampleAlignmentVertices(
   };
   check();
   const flags = vertices.map((vertex) => vertex.flags);
+  const state = options.state ?? createNativeAlignmentSamplingState();
   const eligible = vertices.flatMap((vertex, id) =>
     (vertex.flags & 5) === 4 ? [id] : [],
   );
   if (eligible.length <= budget)
-    return { flags, levelCounts: [] as number[], nodes: 0 };
+    return {
+      flags,
+      levelCounts: state.levelCounts.slice(),
+      nodes: state.nodes.length,
+    };
   const points = vertices.map((vertex) => vertex.point.map(Math.fround));
+  const inputFlags = vertices.map((vertex) => vertex.flags);
   const distinct = new Set(eligible.map((id) => points[id].join(",")));
   // The native loop cannot terminate if no depth can exceed the requested count.
   if (distinct.size <= budget)
     throw new RangeError(
       "Alignment samples cannot separate coincident vertices.",
     );
-  type Node = {
-    ids: number[];
-    bounds: number[];
-    center: number[];
-    depth: number;
-  };
-  const makeNode = (ids: number[], bounds: number[], depth: number): Node => ({
+  const makeNode = (
+    ids: number[],
+    bounds: number[],
+    depth: number,
+  ): SampleNode => ({
     ids,
     bounds,
     depth,
+    points,
+    inputFlags,
+    outputFlags: flags,
     center: [0, 1, 2].map((axis) =>
       Math.fround(Math.fround(bounds[axis] + bounds[axis + 3]) * 0.5),
     ),
@@ -82,14 +107,18 @@ export function nativeSampleAlignmentVertices(
       bounds[axis] = Math.min(bounds[axis], points[id][axis]);
       bounds[axis + 3] = Math.max(bounds[axis + 3], points[id][axis]);
     }
-  const nodes = [makeNode(eligible, bounds, 0)];
-  let frontier = nodes.slice();
-  const levelCounts = [1];
+  const root = makeNode(eligible, bounds, 0);
+  const nodes = state.nodes;
+  nodes.push(root);
+  let frontier = [root];
+  const levelCounts = state.levelCounts;
+  levelCounts.push(1);
+  let localDepth = 0;
   do {
     check();
-    if (levelCounts.length > 256)
+    if (localDepth++ > 256)
       throw new RangeError("Alignment sample subdivision did not converge.");
-    const next: Node[] = [];
+    const next: SampleNode[] = [];
     for (const node of frontier) {
       check();
       const groups = new Map<number, number[]>();
@@ -104,7 +133,7 @@ export function nativeSampleAlignmentVertices(
         else groups.set(slot, [id]);
       }
       // Native allocation follows first occurrence; later traversal follows slot order.
-      const children = new Map<number, Node>();
+      const children = new Map<number, SampleNode>();
       for (const [slot, ids] of groups) {
         const childBounds = node.bounds.slice();
         for (let axis = 0; axis < 3; axis++)
@@ -132,12 +161,15 @@ export function nativeSampleAlignmentVertices(
   for (const node of nodes) {
     if (node.depth !== depth) continue;
     const result = nativeAlignmentSampleRepresentative(
-      node.ids.map((id) => ({ point: points[id], flags: vertices[id].flags })),
+      node.ids.map((id) => ({
+        point: node.points[id],
+        flags: node.inputFlags[id],
+      })),
       node.center,
     );
     const representative =
       result.preferredIndex >= 0 ? result.preferredIndex : result.nearestIndex;
-    if (representative >= 0) flags[node.ids[representative]] |= 4;
+    if (representative >= 0) node.outputFlags[node.ids[representative]] |= 4;
   }
-  return { flags, levelCounts, nodes: nodes.length };
+  return { flags, levelCounts: levelCounts.slice(), nodes: nodes.length };
 }
