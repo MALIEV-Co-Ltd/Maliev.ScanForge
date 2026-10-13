@@ -1,4 +1,5 @@
 import "./canvas-pick-menu.css";
+import { matchesLocalShortcut } from "./shortcut-registry";
 
 export interface CanvasPickChoice {
   id: string;
@@ -83,7 +84,7 @@ export class CanvasPickMenu {
   };
   private key = (event: KeyboardEvent) => {
     if (!this.menu) return;
-    if (event.key === "Escape") {
+    if (matchesLocalShortcut(event, "cancel")) {
       event.preventDefault();
       this.close();
     } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {

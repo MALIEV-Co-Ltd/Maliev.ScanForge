@@ -3,6 +3,23 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { ShortcutText } from "../src/ui/Kbd";
 import { ActiveToolHint } from "../src/ui/StatusFeedback";
 import { shortcutReference } from "../src/ui/shortcut-reference";
+import type { ShortcutContext } from "../src/keyboard-shortcuts";
+const shortcuts: ShortcutContext = {
+  mode: "main",
+  platform: "windows",
+  allowExtensions: true,
+  availableActions: new Set([
+    "save",
+    "clear-selection",
+    "toggle-visibility",
+    "selection-brush",
+    "selection-through",
+    "sketch-line",
+    "fit-cylinder",
+    "fillet",
+  ]),
+  visibilityCategories: ["meshes", "surfaces", "solids"],
+};
 it("renders mouse chords and modifiers as semantic keycaps without altering prose", () => {
   const html = renderToStaticMarkup(
     <ShortcutText text="Left-click selects · Ctrl+wheel changes brush size · Escape cancels" />,
@@ -13,33 +30,38 @@ it("renders mouse chords and modifiers as semantic keycaps without altering pros
   expect(html).toContain(" changes brush size");
 });
 it("maps implemented shortcuts with local mode precedence and excludes unsupported routes", () => {
-  const main = shortcutReference("main");
+  const main = shortcutReference(shortcuts);
   expect(main.find((x) => x.keys.join("+") === "Ctrl+S")?.label).toBe(
     "Save project",
   );
   expect(main.some((x) => x.label === "Magic wand")).toBe(false);
   expect(
-    shortcutReference("selection", true).find((x) => x.keys[0] === "B")?.label,
+    shortcutReference({ ...shortcuts, mode: "selection" }).find(
+      (x) => x.keys[0] === "B",
+    )?.label,
   ).toBe("Filled brush");
   expect(
-    shortcutReference("sketch", true).find((x) => x.keys[0] === "L")?.label,
+    shortcutReference({ ...shortcuts, mode: "sketch" }).find(
+      (x) => x.keys[0] === "L",
+    )?.label,
   ).toBe("Draw line");
   expect(
-    shortcutReference("primitive-fit", true).find((x) => x.keys[0] === "C")
-      ?.label,
+    shortcutReference({ ...shortcuts, mode: "primitive-fit" }).find(
+      (x) => x.keys[0] === "C",
+    )?.label,
   ).toBe("Fit cylinder");
   expect(
     main.some((x) => ["Ctrl+2", "Ctrl+5", "Ctrl+6"].includes(x.keys.join("+"))),
   ).toBe(false);
   expect(
-    shortcutReference("main", true, true).find(
-      (x) => x.keys.join("+") === "Ctrl+F",
-    )?.label,
+    shortcutReference(shortcuts).find((x) => x.keys.join("+") === "Ctrl+F")
+      ?.label,
   ).toBe("Open CAD fillet tools");
 });
 it("separates the keyboard reference from active tool controls", () => {
   const html = renderToStaticMarkup(
     <ActiveToolHint
+      shortcuts={{ ...shortcuts, mode: "selection" }}
       context={{
         mode: "brush",
         brushActive: true,

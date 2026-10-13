@@ -1,3 +1,10 @@
+import {
+  availableShortcutBinding,
+  matchesShortcutBinding,
+  modeShortcutBindings,
+  shortcutChord,
+  type ShortcutPlatform,
+} from "./shortcut-registry";
 /** Shipped shortcut catalog recovered from the installed localization resource.
  * Dispatch precedence and unsupported commands are explicitly controlled by the host.
  */
@@ -71,6 +78,7 @@ export interface ShortcutAction {
 }
 export interface ShortcutKeyEvent {
   key: string;
+  code?: string;
   ctrlKey?: boolean;
   metaKey?: boolean;
   shiftKey?: boolean;
@@ -81,6 +89,11 @@ export interface ShortcutKeyEvent {
 }
 export interface ShortcutContext {
   mode: ShortcutMode;
+  platform?: ShortcutPlatform;
+  /** All registered host commands, including temporarily unavailable commands. */
+  supportedActions?: ReadonlySet<ShortcutActionId>;
+  visibilityCategories?: readonly VisibilityCategory[];
+  allowConfiguredRotation?: boolean;
   busy?: boolean;
   textEditing?: boolean;
   modalOpen?: boolean;
@@ -91,51 +104,6 @@ export interface ShortcutContext {
   /** Existing ScanForge additions B, U and Ctrl+Shift+Z are opt-in, not native evidence. */
   allowExtensions?: boolean;
 }
-const views: Record<string, ShortcutActionId> = {
-  a: "fit-view",
-  t: "view-top",
-  m: "view-bottom",
-  l: "view-left",
-  r: "view-right",
-  f: "view-front",
-  k: "view-back",
-  i: "view-isometric",
-};
-const sketch: Record<string, ShortcutActionId> = {
-  l: "sketch-line",
-  c: "sketch-circle",
-  r: "sketch-arc",
-  d: "sketch-dimensions",
-  t: "sketch-trim",
-  m: "sketch-mirror",
-  o: "sketch-offset",
-  j: "sketch-join",
-};
-const freeform: Record<string, ShortcutActionId> = {
-  s: "freeform-split",
-  q: "freeform-smooth",
-  d: "freeform-bridge",
-};
-const primitive: Record<string, ShortcutActionId> = {
-  p: "fit-plane",
-  c: "fit-cylinder",
-  o: "fit-cone",
-  e: "fit-sphere",
-};
-const categories: Record<string, VisibilityCategory> = {
-  "1": "meshes",
-  "2": "point-clouds",
-  "3": "surfaces",
-  "4": "solids",
-  "5": "sketches",
-  "6": "references",
-  "7": "planes",
-  "8": "cylinders",
-  "9": "cones",
-  "0": "spheres",
-  p: "primitives",
-};
-
 export function resolveKeyboardShortcut(
   event: ShortcutKeyEvent,
   context: ShortcutContext,
@@ -150,83 +118,17 @@ export function resolveKeyboardShortcut(
     event.altKey
   )
     return null;
-  // Meta chords belong to the browser/platform: the shipped Windows catalog specifies Ctrl.
-  if (event.metaKey) return null;
-  const key = event.key.toLowerCase(),
-    command = !!event.ctrlKey,
-    shifted = !!event.shiftKey;
-  let action: ShortcutAction | undefined;
-  if (key.startsWith("arrow") && !shifted && !context.nativeControl) {
-    const direction = key.slice(5);
-    if (["left", "right", "up", "down"].includes(direction))
-      action = {
-        id: "rotate-view",
-        direction: direction as ShortcutAction["direction"],
-        configuredAngle: command,
-      };
-  } else if (command && (key === "z" || key === "y")) {
-    if (!shifted || (context.allowExtensions && key === "z")) {
-      const redo = key === "y" || shifted;
-      const domain =
-        context.mode === "sketch"
-          ? "sketch"
-          : context.mode === "selection"
-            ? "selection"
-            : "model";
-      action = {
-        id: `${redo ? "redo" : "undo"}-${domain}` as ShortcutActionId,
-      };
-    }
-  } else if (command && !shifted) {
-    const global: Record<string, ShortcutActionId> = {
-      n: "new",
-      o: "open",
-      s: "save",
-      h: "hide-meshes",
-      q: "clear-selection",
-    };
-    if (context.mode === "freeform" && key === "r")
-      action = { id: "freeform-refine" };
-    else if (global[key]) action = { id: global[key] };
-    else if (context.mode === "main" || context.mode === "selection") {
-      if (categories[key])
-        action = { id: "toggle-visibility", category: categories[key] };
-      else if (key === "t") action = { id: "trim" };
-      else if (key === "f") action = { id: "fillet" };
-    }
-  } else if (!command) {
-    if (context.mode === "primitive-fit" && shifted && key === "l")
-      action = { id: "fit-line" };
-    else if (!shifted) {
-      // A mode-specific chord reserves the key, even if its action is unavailable.
-      const local =
-        context.mode === "sketch"
-          ? sketch[key]
-          : context.mode === "freeform"
-            ? freeform[key]
-            : context.mode === "primitive-fit"
-              ? primitive[key]
-              : undefined;
-      if (local) action = { id: local };
-      else if (views[key]) action = { id: views[key] };
-      else if (context.mode === "main" || context.mode === "selection") {
-        const main: Record<string, ShortcutActionId> = {
-          h: "hide-selected",
-          s: "new-sketch",
-          d: "compare",
-          w: "selection-wand",
-        };
-        if (main[key]) action = { id: main[key] };
-        else if (context.mode === "selection" && context.allowExtensions) {
-          if (key === "b") action = { id: "selection-brush" };
-          if (key === "u") action = { id: "selection-through" };
-        }
-      }
-    }
-  }
-  return action && context.availableActions.has(action.id) ? action : null;
+  const entry = modeShortcutBindings(context).find((binding) =>
+    matchesShortcutBinding(
+      event,
+      shortcutChord(binding, context.platform),
+      context.platform,
+    ),
+  );
+  if (!entry || !availableShortcutBinding(entry, context)) return null;
+  if (entry.action.id === "rotate-view" && context.nativeControl) return null;
+  return entry.action;
 }
-
 /** The host passes this result to ShortcutContext.textEditing/nativeControl. */
 export function keyboardTargetContext(target: EventTarget | null): {
   textEditing: boolean;

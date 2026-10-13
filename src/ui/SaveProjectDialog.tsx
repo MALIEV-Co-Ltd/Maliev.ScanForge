@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./save-project-dialog.css";
+import { matchesLocalShortcut } from "../shortcut-registry";
 
 export function SaveProjectDialog({
   name,
@@ -35,7 +36,7 @@ export function SaveProjectDialog({
         aria-modal="true"
         aria-labelledby="save-project-title"
         onKeyDown={(event) => {
-          if (event.key === "Escape") {
+          if (matchesLocalShortcut(event, "cancel")) {
             event.preventDefault();
             onCancel();
           }

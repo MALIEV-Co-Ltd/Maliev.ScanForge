@@ -27,7 +27,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "three": "^0.180.0",
-    "three-mesh-bvh": "0.9.16"
+    "three-mesh-bvh": "0.9.16",
+    "tinykeys": "4.0.1"
   },
   "devDependencies": {
     "@types/react": "^19.1.1",

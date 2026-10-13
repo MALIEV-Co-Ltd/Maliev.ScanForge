@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { matchesLocalShortcut } from "../shortcut-registry";
 
 export interface ContextAction {
   label: string;
@@ -59,7 +60,7 @@ export function ContextMenu({
       if (!menu.contains(e.target as Node)) onClose();
     };
     const escape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (matchesLocalShortcut(e, "cancel")) {
         e.preventDefault();
         onClose();
       }

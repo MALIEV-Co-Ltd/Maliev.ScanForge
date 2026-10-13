@@ -4,6 +4,7 @@ import { activeToolGuidance, type ToolGuidanceContext } from "./tool-guidance";
 import "./status-feedback.css";
 import { Kbd, ShortcutText } from "./Kbd";
 import { shortcutReference } from "./shortcut-reference";
+import type { ShortcutContext } from "../keyboard-shortcuts";
 export function StatusMessage({
   message,
   children,
@@ -17,7 +18,13 @@ export function StatusMessage({
     </div>
   );
 }
-export function ActiveToolHint({ context }: { context: ToolGuidanceContext }) {
+export function ActiveToolHint({
+  context,
+  shortcuts,
+}: {
+  context: ToolGuidanceContext;
+  shortcuts?: ShortcutContext;
+}) {
   const hint = activeToolGuidance(context);
   return (
     <>
@@ -39,29 +46,46 @@ export function ActiveToolHint({ context }: { context: ToolGuidanceContext }) {
           {!context.busy && (
             <>
               <dl>
-                {shortcutReference(
-                  context.shortcutMode ??
-                    (context.sketchTool
-                      ? "sketch"
-                      : context.mode === "brush"
-                        ? "selection"
-                        : "main"),
-                  context.hasSelection,
-                  context.hasCadSelection,
-                ).map(({ keys, label }) => (
-                  <div style={{ display: "contents" }} key={keys.join("+")}>
-                    <dt>{label}</dt>
-                    <dd>
-                      {keys.map((key, i) => (
-                        <span key={key}>
-                          {i > 0 && " + "}
-                          <Kbd>{key.replace("Arrow", "")}</Kbd>
-                        </span>
-                      ))}
-                    </dd>
-                  </div>
-                ))}
+                {(shortcuts ? shortcutReference(shortcuts) : []).map(
+                  ({ keys, label, scope, enabled, active }) => (
+                    <div
+                      className={
+                        enabled ? "shortcut-row" : "shortcut-row unavailable"
+                      }
+                      key={`${label}:${keys.join("+")}`}
+                      title={
+                        !active
+                          ? `Available in ${scope ?? "another tool mode"}`
+                          : !enabled
+                            ? "Available when the command's required selection or dialog state allows it"
+                            : undefined
+                      }
+                    >
+                      <dt>
+                        {label}
+                        {scope && <small>{scope}</small>}
+                      </dt>
+                      <dd>
+                        {keys.map((key, i) => (
+                          <span key={key}>
+                            {i > 0 && " + "}
+                            <Kbd
+                              aria-label={
+                                key === "\u2318" ? "Command" : undefined
+                              }
+                            >
+                              {key}
+                            </Kbd>
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  ),
+                )}
               </dl>
+              <p className="shortcut-reference-note">
+                Dimmed shortcuts need another tool mode or selection.
+              </p>
             </>
           )}
           {context.busy && <p>Modeling shortcuts paused while processing.</p>}

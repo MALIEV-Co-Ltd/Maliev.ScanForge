@@ -1,4 +1,5 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
+import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
 import { NavigationPivot } from "./navigation-pivot";
 import {
@@ -1215,7 +1216,7 @@ export class Viewport {
   }
   private sketchKeyDown(event: KeyboardEvent): void {
     if (
-      event.key === "Escape" &&
+      matchesLocalShortcut(event, "cancel") &&
       (this.sketchDrag || this.sketchCurvePoints.length)
     ) {
       this.cancelSketchDrag();

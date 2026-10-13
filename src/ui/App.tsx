@@ -32,7 +32,13 @@ import {
   keyboardTargetContext,
   resolveKeyboardShortcut,
   type ShortcutActionId,
+  type ShortcutContext,
 } from "../keyboard-shortcuts";
+import {
+  matchesLocalShortcut,
+  shortcutPlatform,
+  VIEWPORT_VISIBILITY_CATEGORIES,
+} from "../shortcut-registry";
 import { SketchUndo } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
@@ -940,7 +946,7 @@ export function App() {
   useEffect(() => {
     if (!planePicking) return;
     const cancel = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (matchesLocalShortcut(event, "cancel")) {
         event.preventDefault();
         setPlanePicking(false);
       }
@@ -1299,99 +1305,120 @@ export function App() {
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
   }, [entities]);
+  const actions: Partial<Record<ShortcutActionId, (() => void) | undefined>> = {
+    new: requestNewDocument,
+    open: () => fileInput.current?.click(),
+    save,
+    "fit-view": () => viewport.current?.fitView(),
+    "view-top": () => viewport.current?.setView("top"),
+    "view-bottom": () => viewport.current?.setView("bottom"),
+    "view-left": () => viewport.current?.setView("left"),
+    "view-right": () => viewport.current?.setView("right"),
+    "view-front": () => viewport.current?.setView("front"),
+    "view-back": () => viewport.current?.setView("back"),
+    "view-isometric": () => viewport.current?.setView("iso"),
+    "rotate-view": () => {},
+    "undo-model": undo,
+    "redo-model": redo,
+    "undo-selection": () => selectionUndo(),
+    "redo-selection": () => selectionUndo(true),
+    "undo-sketch": () => sketchUndo(),
+    "redo-sketch": () => sketchUndo(true),
+    "hide-meshes": () => {
+      setEntities(
+        entities.map((e) =>
+          e.kind === "mesh" && !e.surfacePatch ? { ...e, visible: false } : e,
+        ),
+      );
+      setDirty(true);
+    },
+    "toggle-visibility": () => {},
+    "clear-selection": () =>
+      mode === "brush" ? changeSelection(null) : setSelectedId(null),
+    "hide-selected": selected
+      ? () =>
+          mode === "brush" && selectedTriangleCount
+            ? selectionVisibility("hide")
+            : updateSelected({ visible: false })
+      : undefined,
+    "new-sketch": selected ? openSketchCreation : undefined,
+    compare: selected ? () => showTools("deviation") : undefined,
+    "selection-wand": selected
+      ? () => {
+          setMode("brush");
+          setSelectionTool("wand");
+          showTools("mesh");
+        }
+      : undefined,
+    "fit-plane": selected ? () => runFit("plane") : undefined,
+    "fit-cylinder": selected ? () => runFit("cylinder") : undefined,
+    "fit-cone": selected ? () => runFit("cone") : undefined,
+    "fit-sphere": selected ? () => runFit("sphere") : undefined,
+    fillet: selected?.kernelId ? () => showTools("advancedCad") : undefined,
+    "selection-brush":
+      mode === "brush" ? () => setSelectionTool("brush") : undefined,
+    "selection-through":
+      mode === "brush" ? () => setSelectThrough((v) => !v) : undefined,
+    "sketch-line":
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? () => setSketchDrawingTool("line")
+        : undefined,
+    "sketch-circle":
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? () => setSketchDrawingTool("circle")
+        : undefined,
+    "sketch-arc":
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? () => setSketchDrawingTool("arc3")
+        : undefined,
+    "sketch-dimensions":
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? () => setSketchDrawingConstraints((v) => !v)
+        : undefined,
+  };
+  const shortcutContext: ShortcutContext = {
+    mode:
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? "sketch"
+        : workspace === "fit" && toolPanelOpen
+          ? "primitive-fit"
+          : workspace === "surface" && toolPanelOpen
+            ? "freeform"
+            : mode === "brush"
+              ? "selection"
+              : "main",
+    platform: shortcutPlatform(),
+    busy,
+    modalOpen: !!(
+      nPoints ||
+      surfaceFit ||
+      createSketch ||
+      primitiveDialog ||
+      settingsOpen ||
+      saveDialogOpen ||
+      newDocumentDialog ||
+      contextMenu
+    ),
+    supportedActions: new Set(Object.keys(actions) as ShortcutActionId[]),
+    availableActions: new Set(
+      (Object.keys(actions) as ShortcutActionId[]).filter(
+        (id) => !!actions[id],
+      ),
+    ),
+    visibilityCategories: VIEWPORT_VISIBILITY_CATEGORIES,
+    allowConfiguredRotation: false,
+    allowExtensions: true,
+  };
   const inputCommands = useRef<(event: KeyboardEvent) => void>(() => {});
   inputCommands.current = (event) => {
-    const actions: Partial<Record<ShortcutActionId, () => void>> = {
-      new: requestNewDocument,
-      open: () => fileInput.current?.click(),
-      save,
-      "fit-view": () => viewport.current?.fitView(),
-      "view-top": () => viewport.current?.setView("top"),
-      "view-bottom": () => viewport.current?.setView("bottom"),
-      "view-left": () => viewport.current?.setView("left"),
-      "view-right": () => viewport.current?.setView("right"),
-      "view-front": () => viewport.current?.setView("front"),
-      "view-back": () => viewport.current?.setView("back"),
-      "view-isometric": () => viewport.current?.setView("iso"),
-      "rotate-view": () => {},
-      "undo-model": undo,
-      "redo-model": redo,
-      "undo-selection": () => selectionUndo(),
-      "redo-selection": () => selectionUndo(true),
-      "undo-sketch": () => sketchUndo(),
-      "redo-sketch": () => sketchUndo(true),
-      "hide-meshes": () => {
-        setEntities(
-          entities.map((e) =>
-            e.kind === "mesh" && !e.surfacePatch ? { ...e, visible: false } : e,
-          ),
-        );
-        setDirty(true);
-      },
-      "toggle-visibility": () => {},
-    };
-    if (selected) {
-      actions["hide-selected"] = () =>
-        mode === "brush" && selectedTriangleCount
-          ? selectionVisibility("hide")
-          : updateSelected({ visible: false });
-      actions["new-sketch"] = openSketchCreation;
-      actions.compare = () => showTools("deviation");
-      actions["selection-wand"] = () => {
-        setMode("brush");
-        setSelectionTool("wand");
-        showTools("mesh");
-      };
-      actions["fit-plane"] = () => runFit("plane");
-      actions["fit-cylinder"] = () => runFit("cylinder");
-      actions["fit-cone"] = () => runFit("cone");
-      actions["fit-sphere"] = () => runFit("sphere");
-      if (selected.kernelId) actions.fillet = () => showTools("advancedCad");
-    }
-    if (mode === "brush") {
-      actions["selection-brush"] = () => setSelectionTool("brush");
-      actions["selection-through"] = () => setSelectThrough((v) => !v);
-      actions["clear-selection"] = () => changeSelection(null);
-    }
-    if (workspace === "sketch" && toolPanelOpen && !createSketch) {
-      actions["sketch-line"] = () => setSketchDrawingTool("line");
-      actions["sketch-circle"] = () => setSketchDrawingTool("circle");
-      actions["sketch-arc"] = () => setSketchDrawingTool("arc3");
-      actions["sketch-dimensions"] = () =>
-        setSketchDrawingConstraints((v) => !v);
-    }
     const resolved = resolveKeyboardShortcut(event, {
-      mode:
-        workspace === "sketch" && toolPanelOpen && !createSketch
-          ? "sketch"
-          : workspace === "fit" && toolPanelOpen
-            ? "primitive-fit"
-            : workspace === "surface" && toolPanelOpen
-              ? "freeform"
-              : mode === "brush"
-                ? "selection"
-                : "main",
+      ...shortcutContext,
       ...keyboardTargetContext(event.target),
-      busy,
-      modalOpen: !!(
-        nPoints ||
-        surfaceFit ||
-        createSketch ||
-        primitiveDialog ||
-        settingsOpen ||
-        newDocumentDialog ||
-        contextMenu
-      ),
-      availableActions: new Set(Object.keys(actions) as ShortcutActionId[]),
-      allowExtensions: true,
+      modalOpen:
+        shortcutContext.modalOpen ||
+        !!document.querySelector('[aria-modal="true"],dialog[open]'),
     });
-    if (
-      !resolved ||
-      (resolved.id === "rotate-view" && resolved.configuredAngle) ||
-      (resolved.id === "toggle-visibility" &&
-        ["point-clouds", "sketches", "references"].includes(resolved.category!))
-    )
-      return;
+    if (!resolved) return;
     event.preventDefault();
     if (resolved.id === "rotate-view")
       viewport.current?.rotateView(resolved.direction!, 90);
@@ -1578,7 +1605,7 @@ export function App() {
   }, [selected?.id, selected?.positions]);
   useEffect(() => {
     const cancel = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && scanReferencePick.current) {
+      if (matchesLocalShortcut(event, "cancel") && scanReferencePick.current) {
         scanReferencePick.current = null;
         setMessage("Reference picking cancelled.");
       }
@@ -4734,7 +4761,7 @@ export function App() {
             aria-labelledby="new-document-title"
             onKeyDown={(event) => {
               event.stopPropagation();
-              if (event.key === "Escape") {
+              if (matchesLocalShortcut(event, "cancel")) {
                 event.preventDefault();
                 setNewDocumentDialog(false);
               }
@@ -4947,19 +4974,11 @@ export function App() {
           )}
         </StatusMessage>
         <ActiveToolHint
+          shortcuts={shortcutContext}
           context={{
             hasSelection: !!selected,
             hasCadSelection: !!selected?.kernelId,
-            shortcutMode:
-              workspace === "sketch" && toolPanelOpen && !createSketch
-                ? "sketch"
-                : workspace === "fit" && toolPanelOpen
-                  ? "primitive-fit"
-                  : workspace === "surface" && toolPanelOpen
-                    ? "freeform"
-                    : mode === "brush"
-                      ? "selection"
-                      : "main",
+            shortcutMode: shortcutContext.mode,
             busy,
             planePicking,
             mode,

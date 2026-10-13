@@ -74,3 +74,23 @@
   margin: 0;
   white-space: nowrap;
 }
+.shortcut-row {
+  display: contents;
+}
+.shortcut-row.unavailable > dt,
+.shortcut-row.unavailable > dd {
+  color: var(--muted);
+}
+.shortcut-row.unavailable .app-kbd {
+  color: var(--muted);
+}
+.shortcut-row small {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+}
+.shortcut-reference .shortcut-reference-note {
+  margin: 12px 0 0;
+  line-height: 1.4;
+  color: var(--muted);
+}

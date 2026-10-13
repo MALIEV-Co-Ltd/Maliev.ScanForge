@@ -1,4 +1,5 @@
 import "./camera-gizmo.css";
+import { matchesLocalShortcut } from "./shortcut-registry";
 import * as THREE from "three";
 
 export type Projection = "orthographic" | "perspective";
@@ -436,7 +437,7 @@ export class CameraGizmo {
             items.length
         ]?.focus();
       }
-      if (event.key === "Escape") {
+      if (matchesLocalShortcut(event, "cancel")) {
         this.menu.hidden = true;
         toggle.setAttribute("aria-expanded", "false");
         toggle.focus();

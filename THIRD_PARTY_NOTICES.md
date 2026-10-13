@@ -8,6 +8,7 @@ ScanForge makes use of facilities provided by Open CASCADE Technology. Its indep
 | three-mesh-bvh 0.9.16       | MIT                                             | https://github.com/gkjohnson/three-mesh-bvh              |
 | React / React DOM           | MIT                                             | https://github.com/facebook/react                        |
 | Lucide                      | ISC                                             | https://github.com/lucide-icons/lucide                   |
+| tinykeys 4.0.1              | MIT                                             | https://github.com/jamiebuilds/tinykeys                  |
 | OpenCascade.js 1.1.1        | LGPL-2.1-only                                   | https://github.com/donalffons/opencascade.js/tree/v1.1.1 |
 | Open CASCADE Technology     | LGPL-2.1 with OCCT exception                    | https://github.com/Open-Cascade-SAS/OCCT                 |
 | FreeType, Fontconfig, Regal | Upstream license terms; see provenance document | See docs/CAD_DISTRIBUTION.md                             |
