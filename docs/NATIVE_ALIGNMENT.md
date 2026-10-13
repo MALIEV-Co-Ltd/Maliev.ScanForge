@@ -3,8 +3,9 @@
 ## Executed solver components
 
 `src/scan-native-alignment.ts` contains two recovered paired-point solver kernels.
-They are components for the ongoing solver port; the application still uses its
-existing independently authored registration implementation. They do not enable
+These kernels now feed the complete paired-point numerical wrapper documented
+below. The application still uses its existing independently authored registration
+implementation. They do not enable
 the gated Align ribbon commands or establish complete native alignment parity.
 
 The quaternion conversion at `0x140aac800` only renormalizes when squared length
@@ -53,17 +54,17 @@ this with the existing closed-form rigid fit would skip native behavior.
 `0x140aadde0` constructs initial transforms from point triples. The triple helper
 `0x140aaf400` rejects squared vector lengths below `2^-23` and absolute normalized
 dot products above `0.9962`; it uses triangle centroids and constructed frames.
-The complete triple helper and its frame constructor now have the executed gate
-below. The outer N-point candidate enumeration is still separate work.
+The complete triple helper, frame constructor and outer N-point candidate
+enumeration now have executed comparisons below.
 REA Evidence: `ev_06aecd48127374b20a1549fa59249fe891e727d38fdfac936304299550bac21a`.
 
 `0x140aadba0` represents rotation and translation as seven parameters and invokes
 the optimizer `0x140b25340` with callback `0x140aae6d0`. The callback constructs a
 rotation and calls the verified absolute-error objective. Optimizer step rules and
-termination now have the executed component gate below. Complete initialization,
-paired-point outer ranking, and subsequent
-mesh/CAD refinement (`0x14054d440`) still require extraction and original-result
-verification. No native solver convergence or Fine Align parity is claimed.
+termination now have the executed component gate below. Complete initialization
+and paired-point outer ranking are verified in the connected numerical wrapper.
+Subsequent mesh/CAD refinement (`0x14054d440`) still requires extraction and
+original-result verification. No native solver convergence or Fine Align parity is claimed.
 
 Coordinate-system alignment, interactive alignment and multi-scan Global Fine
 Align remain separate requirements; this paired-point extraction does not cover
@@ -332,5 +333,46 @@ REA recovered the native eigen solver at `0x140b31a10` (Evidence
 `ev_aece2c37738f9da53043ac5e16317ae5283b75f3cbeff39aec2b83575eccc245`)
 and line-center adjustment at `0x140b33b20` (Evidence
 `ev_5d56c135b260ef1fe9d367fb66350a2d1d92701de7ea46014367cbf905b77a31`).
-Their port and complete outer solver comparison remain pending before UI
-integration. This gate component does not claim complete registration parity.
+The following complete solver port supersedes that component-only checkpoint.
+UI integration remains pending the moving/fixed call-site and mesh/CAD path.
+
+## Executed eigen solver and complete paired-point wrapper
+
+`src/scan-native-alignment-eigen.ts` specializes original `0x140b31a10` to the
+3x3 matrices used by the line fit. It preserves Householder reduction, QL
+iteration, the strict absolute off-diagonal threshold of 2^-23, the 30-iteration
+failure rule, double-epsilon radius handling, and descending eigenvalue sorting
+with the last tied candidate winning. Forty original executions cover zero,
+repeated eigenvalues, rank-one, tiny and large scales, and 32 seeded symmetric
+matrices. Eigenvalues and eigenvector columns match every original double byte.
+The original scaled hypotenuse helper `0x140895090` returns zero in its second
+branch when the second magnitude is at most double epsilon; the port preserves
+that rule. Its Evidence is
+`ev_d7447f7f05133cfeaea3e1c95b8a4839a9b08b0992ef383dba2f21c3dc8bfca4`.
+
+The line-fit port connects ordered covariance sums to that solver and the
+original line-center adjustment. It normalizes the direction, falls back to X
+for negligible squared direction length, and projects the center toward the
+origin only beyond the native scaled epsilon threshold. All twenty retained
+original line-fit outcomes, center bytes, direction bytes, line RMS bytes, and
+registration acceptance outcomes are compared without supplying native fitted
+centers or directions to the port.
+
+`src/scan-native-alignment-registration.ts` now implements the complete original
+outer numerical wrapper: the source line gate, refinement from identity,
+N-point initialized candidate followed by another refinement, squared-error
+ranking with the initialized candidate winning ties, double RMS, and the final
+transpose/translation inverse. Its returned matrix maps target points to source
+points. All twenty original accepted flags and matrix/RMS bytes are compared,
+including the rejection paths and zero/one/two-point cases. The refinement
+component's previously authored three-point guard was removed to reproduce the
+underlying numerical wrapper; UI minimum-point requirements remain separate.
+Empty inputs preserve the captured native indefinite NaN representation using
+explicit IEEE storage, including the optimizer's nonzero translation result.
+
+These are original-instruction numerical comparisons with the retained allocator,
+object-access and cleanup bindings. Native UI point-pair dispatch, preview,
+accept/undo, mesh/CAD refinement, failure UI and practical performance still need
+verification before substituting this solver into application commands. Generic
+N-dimensional eigen solving and allocator failure behavior are not covered by
+the 3x3 specialization. The broader alignment feature remains incomplete.

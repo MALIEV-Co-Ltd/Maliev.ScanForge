@@ -97,7 +97,7 @@ it("checks cancellation between paired evaluations", () => {
 it("rejects mismatched or nonrepresentable point inputs", () => {
   const capture = fixture.cases[0];
   expect(() =>
-    nativeRefineAlignmentParameters(capture.initial, [], []),
+    nativeRefineAlignmentParameters(capture.initial, [], [[0, 0, 0]]),
   ).toThrow("paired");
   const source = capture.source.map((point) => point.slice()) as Vec3[];
   source[0][0] = 1e100;

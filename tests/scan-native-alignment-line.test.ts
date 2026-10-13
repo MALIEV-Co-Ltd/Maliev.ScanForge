@@ -2,6 +2,7 @@ import { expect, it } from "vitest";
 import type { Vec3 } from "../src/types";
 import {
   nativeAlignmentLineGate,
+  nativeAlignmentLineFit,
   nativeAlignmentLineRms,
 } from "../src/scan-native-alignment-line";
 import points from "./fixtures/alignment-npoints-native.json";
@@ -27,10 +28,18 @@ it.each(fixture.cases)(
       ).join(""),
     ).toBe(capture.sourceSha256);
     const before = JSON.stringify(input.source);
+    const fit = nativeAlignmentLineFit(input.source as Vec3[]);
+    expect(fit.accepted).toBe(capture.gate.accepted);
+    fit.center.forEach((value, id) =>
+      expect(bits(value)).toBe(bits(capture.gate.center[id])),
+    );
+    fit.direction.forEach((value, id) =>
+      expect(bits(value)).toBe(bits(capture.gate.direction[id])),
+    );
     const rms = nativeAlignmentLineRms(
       input.source as Vec3[],
-      capture.gate.center as Vec3,
-      capture.gate.direction as Vec3,
+      fit.center,
+      fit.direction,
     );
     expect(bits(rms)).toBe(capture.gate.lineRmsBits);
     expect(nativeAlignmentLineGate(capture.gate.accepted, rms)).toBe(

@@ -95,10 +95,8 @@ export function nativeRefineAlignmentParameters(
   options: NativeAlignmentRefinementOptions = {},
 ) {
   nativeAlignmentMatrix(initial);
-  if (source.length < 3 || source.length !== target.length)
-    throw new Error(
-      "Alignment refinement requires at least three paired points.",
-    );
+  if (source.length !== target.length)
+    throw new Error("Alignment refinement requires paired points.");
   const points = (input: readonly Vec3[]): Vec3[] =>
     input.map((point) => {
       if (point.length !== 3 || !point.every(Number.isFinite))
