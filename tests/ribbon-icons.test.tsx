@@ -16,10 +16,36 @@ describe("complete ribbon artwork", () => {
   const commands = [
     ...new Set(
       RIBBON_TABS.flatMap((tab) =>
-        tab.groups.flatMap((group) => group.tools.map((tool) => tool.id)),
+        tab.groups.flatMap((group) =>
+          group.tools.flatMap((tool) => [
+            tool.id,
+            ...(tool.options ?? []).map((option) => option.id),
+          ]),
+        ),
       ),
     ),
   ];
+  it("uses generated illustrations throughout every semantic ribbon tab", () => {
+    const familiarUtilities = new Set([
+      "undo",
+      "redo",
+      "delete",
+      "videoTutorials",
+      "helpGuide",
+      "helpPdf",
+      "shortcuts",
+      "examples",
+      "checkUpdates",
+      "systemLog",
+      "resetLayout",
+      "changeLog",
+      "credits",
+      "about",
+    ]);
+    expect(
+      commands.filter((command) => !RIBBON_RASTER_ICONS[command]).sort(),
+    ).toEqual([...familiarUtilities].sort());
+  });
   it("renders local decorative artwork for every command, including unavailable tools", () => {
     expect(Object.keys(RIBBON_ICON_ARTWORK)).toEqual(
       expect.arrayContaining(commands),
@@ -58,9 +84,11 @@ describe("complete ribbon artwork", () => {
       ["exportStep", "exportStl"],
       ["fillet", "chamfer"],
     ])
-      expect(new Set(group.map((id) => RIBBON_ICON_ARTWORK[id])).size).toBe(
-        group.length,
-      );
+      expect(
+        new Set(
+          group.map((id) => RIBBON_RASTER_ICONS[id] ?? RIBBON_ICON_ARTWORK[id]),
+        ).size,
+      ).toBe(group.length);
   });
   it("rejects missing artwork instead of silently displaying a generic fallback", () => {
     expect(() =>
@@ -92,8 +120,11 @@ describe("complete ribbon artwork", () => {
       if (!RIBBON_RASTER_ICONS[command])
         expect(markup).toContain(DEFAULT_REFERENCE_COLOR);
     }
-    expect(
-      renderToStaticMarkup(<RibbonCommandIcon command="primitive" />),
-    ).toContain(DEFAULT_PART_COLOR);
+    const solidMarkup = renderToStaticMarkup(
+      <RibbonCommandIcon command="primitive" />,
+    );
+    expect(solidMarkup).toContain('data-palette="cad"');
+    if (!RIBBON_RASTER_ICONS.primitive)
+      expect(solidMarkup).toContain(DEFAULT_PART_COLOR);
   });
 });

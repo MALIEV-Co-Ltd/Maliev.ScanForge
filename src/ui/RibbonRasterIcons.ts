@@ -16,9 +16,15 @@ import measureImage from "./assets/ribbon-tools/measure.png";
 import sectionViewImage from "./assets/ribbon-tools/sectionView.png";
 import deviationImage from "./assets/ribbon-tools/deviation.png";
 import exportStepImage from "./assets/ribbon-tools/exportStep.png";
+import clearImage from "./assets/scan-tools/clear.png";
+import revealImage from "./assets/scan-tools/reveal.png";
+import { RIBBON_EXTENDED_ICONS } from "./RibbonExtendedIcons";
 
 /** Generated illustrations are reserved for the larger semantic commands. */
 export const RIBBON_RASTER_ICONS: Readonly<Record<string, string>> = {
+  ...RIBBON_EXTENDED_ICONS,
+  deselectAll: clearImage,
+  showHidden: revealImage,
   newDocument: newDocumentImage,
   open: openImage,
   save: saveImage,

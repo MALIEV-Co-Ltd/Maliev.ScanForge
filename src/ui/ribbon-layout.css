@@ -14,6 +14,14 @@
   padding-bottom: 2px;
   gap: 2px;
 }
+/* Keep unavailable illustrations recognizable without suggesting availability. */
+.ribbon-button:disabled:has(img.ribbon-command-image) {
+  opacity: 0.6;
+}
+.ribbon .ribbon-button:disabled img.ribbon-command-image {
+  filter: grayscale(0.65);
+  opacity: 1;
+}
 .ribbon-options .ribbon-button img.ribbon-command-image,
 .ribbon-group-compact .ribbon-button img.ribbon-command-image {
   width: 28px;
