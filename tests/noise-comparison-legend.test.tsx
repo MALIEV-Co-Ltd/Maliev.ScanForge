@@ -70,7 +70,7 @@ it("labels reduced geometry separately from smoothing", () => {
   const markup = renderToStaticMarkup(
     <ScanToolsPanel {...props} tool="reducePolygons" />,
   );
-  expect(markup).toContain("Measure deviation from original");
+  expect(markup).toContain("measured automatically");
   expect(markup).toContain("to the reduced result");
   expect(markup).toContain("Show reduced result");
   expect(markup).not.toContain("Show smoothed result");

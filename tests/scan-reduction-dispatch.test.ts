@@ -103,6 +103,10 @@ it("worker transfers original-surface colors separately from reduced geometry", 
   if (!("result" in final.message))
     throw new Error("Expected reduction result");
   const result = final.message.result;
+  expect(result.noiseComparison?.statistics).toMatchObject({
+    originalTriangles: positions.length / 9,
+    reducedTriangles: result.positions!.length / 9,
+  });
   expect(result.noiseComparison?.rgb).toHaveLength(positions.length);
   expect(final.transfers).toEqual([
     result.positions!.buffer,

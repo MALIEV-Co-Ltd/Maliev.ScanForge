@@ -1,0 +1,87 @@
+.reduction-results {
+  border-top: 1px solid var(--border, #454545);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+.reduction-results p {
+  font-size: 11px;
+  color: var(--muted, #bbb);
+  line-height: 1.4;
+}
+.reduction-results dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+  font-size: 12px;
+}
+.reduction-results dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.deviation-negative {
+  color: #49c5ff;
+}
+.deviation-positive {
+  color: #ffbe38;
+}
+.reduction-progress {
+  margin: 12px 0;
+}
+.reduction-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  margin-bottom: 7px;
+}
+.reduction-progress-label strong {
+  font-variant-numeric: tabular-nums;
+}
+.reduction-progress-track {
+  height: 6px;
+  background: #444;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.reduction-progress-track > div {
+  height: 100%;
+  background: #e2b944;
+}
+.reduction-color-scale {
+  position: absolute;
+  right: 14px;
+  top: 115px;
+  z-index: 3;
+  padding: 12px;
+  background: var(--surface, #252525);
+  color: var(--text, #eee);
+  border: 1px solid var(--border, #454545);
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 11px;
+}
+.reduction-color-scale-body {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  height: min(40vh, 360px);
+}
+.reduction-color-scale-ramp {
+  width: 18px;
+}
+.reduction-color-scale-ticks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+.reduction-color-scale p {
+  font-size: 10px;
+  margin: 10px 0 0;
+}
+@media (max-width: 700px) {
+  .reduction-color-scale {
+    display: none;
+  }
+}

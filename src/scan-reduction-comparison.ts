@@ -7,6 +7,7 @@ import {
 } from "./scan-noise-octree";
 import { queryNoiseOctree } from "./scan-noise-octree-query";
 import { noiseTriangleDistance } from "./scan-noise-deviation";
+import { linearProgress, type ReductionStatistics } from "./reduction-report";
 
 /** Original samples and reduced connectivity are independent after edge collapse. */
 export function compareReductionSurface(
@@ -31,13 +32,17 @@ export function compareReductionSurface(
     throw new Error(
       "Reduction comparison thresholds must be positive finite Float32 values.",
     );
-  const prepared = prepareNoiseOctree(reduced, 0.5, 10, options);
+  const progress = linearProgress(options.onProgress);
+  const prepared = prepareNoiseOctree(reduced, 0.5, 10, {
+    ...options,
+    onProgress: progress(0, 0.25),
+  });
   return comparePreparedReductionSurface(
     originalCoordinates,
     prepared,
     tolerance,
     paletteThreshold,
-    options,
+    { ...options, onProgress: progress(0.25, 1) },
   );
 }
 
@@ -109,6 +114,9 @@ export function compareReductionSamples(
   const radius = colorThreshold * 5;
   let matched = 0,
     within = 0;
+  let minimum = Infinity,
+    maximum = -Infinity,
+    sumSquares = 0;
   for (let id = 0; id < total; id++) {
     if (id % 1024 === 0) {
       check();
@@ -141,12 +149,27 @@ export function compareReductionSamples(
       Math.abs(hit.distance) > radius ? Math.abs(hit.distance) : hit.distance;
     distances[id] = distance;
     matched++;
+    minimum = Math.min(minimum, distance);
+    maximum = Math.max(maximum, distance);
+    sumSquares += distance * distance;
     if (Math.abs(distance) <= reportTolerance) within++;
     rgb.set(nativeNoiseColor(distance, colorThreshold), id * 3);
   }
   options.onProgress?.(1, "Reduction comparison completed");
   check();
+  const statistics: ReductionStatistics = {
+    minimum: matched ? minimum : null,
+    maximum: matched ? maximum : null,
+    rms: matched ? Math.sqrt(sumSquares / matched) : null,
+    percentage: total ? (within * 100) / total : 0,
+    total,
+    matched,
+    within,
+    unmatched: total - matched,
+    tolerance: reportTolerance,
+  };
   return {
+    statistics,
     distances,
     rgb,
     matched,

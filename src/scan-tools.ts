@@ -2,6 +2,7 @@ import type { Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { analyzeMesh } from "./mesh-processing";
 import { compareReductionSurface } from "./scan-reduction-comparison";
+import { linearProgress } from "./reduction-report";
 import {
   reduceScanMesh,
   reduceScanNoise,
@@ -87,10 +88,6 @@ function reducePolygonsWithComparison(
   const measure = operation.measureDeviation ?? false;
   const tolerance = operation.deviation ?? 0.05;
   const paletteThreshold = operation.paletteThreshold ?? 0.05;
-  if (measure && operation.mode === "deviation")
-    throw new Error(
-      "Surface comparison requires count or percentage reduction.",
-    );
   if (
     measure &&
     [tolerance, paletteThreshold].some(
@@ -101,18 +98,17 @@ function reducePolygonsWithComparison(
     throw new Error(
       "Comparison thresholds must be positive finite Float32 values.",
     );
+  const progress = linearProgress(options.onProgress);
   const result = reduceScanMesh(positions, {
     ...operation,
     ...options,
-    onProgress: (fraction, stage) =>
-      options.onProgress?.(fraction * (measure ? 0.85 : 1), stage),
+    onProgress: progress(0, measure ? 0.8 : 1),
   });
   if (!measure) return result;
   const original = analyzeMesh(positions, {
     ...options,
     tolerance: 1e-6,
-    onProgress: (fraction, stage) =>
-      options.onProgress?.(0.85 + fraction * 0.05, stage),
+    onProgress: progress(0.8, 0.85),
   });
   // The comparison constructor needs facet coordinates, not another welded
   // topology. Preserve every published triangle and its order directly.
@@ -129,12 +125,16 @@ function reducePolygonsWithComparison(
     paletteThreshold,
     {
       ...options,
-      onProgress: (fraction, stage) =>
-        options.onProgress?.(0.9 + fraction * 0.1, stage),
+      onProgress: progress(0.85, 0.98),
     },
   );
   const rgb = new Uint8Array(positions.length);
   for (let corner = 0; corner < original.triangles.length; corner++) {
+    if (corner % 4096 === 0)
+      progress(0.98, 1)(
+        corner / original.triangles.length,
+        "Preparing deviation display",
+      );
     if (corner % 4096 === 0 && options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
     const vertex = original.triangles[corner];
@@ -143,9 +143,18 @@ function reducePolygonsWithComparison(
   if (options.signal?.aborted)
     throw new DOMException("Mesh operation cancelled.", "AbortError");
   const rangeLabel = Number((Math.fround(paletteThreshold) * 5).toPrecision(6));
+  progress(1, 1)(1, "Reduction and comparison complete");
   return {
     ...result,
-    noiseComparison: { rgb, threshold: Math.fround(paletteThreshold) },
+    noiseComparison: {
+      rgb,
+      threshold: Math.fround(paletteThreshold),
+      statistics: {
+        ...comparison.statistics,
+        originalTriangles: positions.length / 9,
+        reducedTriangles: result.positions.length / 9,
+      },
+    },
     summary:
       result.summary +
       ` Original-to-surface comparison: ${comparison.percentage.toFixed(2)}% (${comparison.within}/${comparison.total}) within ${tolerance} mm; ${comparison.total - comparison.matched} unmatched beyond the ${rangeLabel} mm search radius.`,

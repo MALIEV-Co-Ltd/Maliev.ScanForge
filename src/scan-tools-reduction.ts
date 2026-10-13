@@ -28,7 +28,11 @@ export interface ScanToolResult {
   positions: Float32Array;
   summary: string;
   /** RGB bytes at original facet corners; render on the pre-edit surface. */
-  noiseComparison?: { rgb: Uint8Array; threshold: number };
+  noiseComparison?: {
+    rgb: Uint8Array;
+    threshold: number;
+    statistics?: import("./reduction-report").ReductionStatistics;
+  };
 }
 type Options = MeshProcessingOptions;
 const point = (v: ArrayLike<number>, i: number): Vec3 => [
@@ -203,7 +207,11 @@ export function reduceScanMesh(
   }
   const t =
       options.patchTopology ??
-      topology(positions, options, Math.min(1e-6, bound / 100)),
+      topology(
+        positions,
+        { ...options, onProgress: (f, s) => progress(options, f * 0.2, s) },
+        Math.min(1e-6, bound / 100),
+      ),
     v = t.vertices.slice(),
     faces = Array.from({ length: original }, (_, i) =>
       Array.from(t.triangles.slice(i * 3, i * 3 + 3)),
@@ -233,7 +241,11 @@ export function reduceScanMesh(
     return set;
   };
   for (let pass = 0; pass < 64 && count > target; pass++) {
-    progress(options, 1 - count / original, "Collapsing interior mesh edges");
+    progress(
+      options,
+      0.2 + (0.75 * (original - count)) / Math.max(1, original - target),
+      "Collapsing interior mesh edges",
+    );
     const edges = new Map<string, [number, number]>();
     faces.forEach((f, i) => {
       if (live[i])
@@ -257,7 +269,7 @@ export function reduceScanMesh(
       if (checks % 2048 === 0)
         progress(
           options,
-          1 - count / original,
+          0.2 + (0.75 * (original - count)) / Math.max(1, original - target),
           "Checking manifold edge collapses",
         );
       if (!incident[a].size || !incident[b].size) continue;

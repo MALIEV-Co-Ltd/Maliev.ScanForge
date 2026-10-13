@@ -72,10 +72,12 @@ scope.onmessage = async ({ data: incoming }) => {
   geometryKey = key;
   const previousCache = { ...topologyCache };
   let lastProgress = -Infinity;
+  let lastStage = "";
   function progress(fraction: number, stage: string) {
     const now = performance.now();
-    if (now - lastProgress > 100 || fraction === 1) {
+    if (now - lastProgress > 100 || fraction === 1 || stage !== lastStage) {
       lastProgress = now;
+      lastStage = stage;
       scope.postMessage({ progress: fraction, stage });
     }
   }

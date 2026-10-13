@@ -36,7 +36,7 @@ it.each(["scaleMesh", "mirrorMesh"] as const)(
     expect(panel(true)).not.toContain("Update comparison");
   },
 );
-it.each(["reduceNoise", "reducePolygons"] as const)(
+it.each(["reduceNoise"] as const)(
   "%s gates comparison and acceptance on an available preview",
   (tool) => {
     const panel = (previewReady: boolean) =>

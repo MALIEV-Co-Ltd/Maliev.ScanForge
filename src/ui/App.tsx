@@ -1,5 +1,7 @@
 import { SaveProjectDialog } from "./SaveProjectDialog";
 import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
+import { linearProgress, type ReductionStatistics } from "../reduction-report";
+import { ReductionColorScale } from "./ReductionResults";
 import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
 import { CanvasError } from "./CanvasError";
@@ -274,6 +276,7 @@ export function App() {
   const [processingBusy, setProcessingBusy] = useState(false);
   const [scanTool, setScanTool] = useState<ScanToolId>("reducePolygons");
   const [scanToolProgress, setScanToolProgress] = useState("");
+  const [scanToolFraction, setScanToolFraction] = useState<number>();
   const [scanToolResult, setScanToolResult] = useState("");
   const scanToolOutput = useRef<Entity["positions"] | null>(null);
   const [noiseComparison, setNoiseComparison] = useState<{
@@ -283,6 +286,7 @@ export function App() {
     output: Entity["positions"];
     rgb: Uint8Array;
     threshold: number;
+    statistics?: ReductionStatistics;
     visible: boolean;
   } | null>(null);
   const [scanPreview, setScanPreview] = useState<{
@@ -1518,6 +1522,7 @@ export function App() {
     dismissScanTool();
   }
   function dismissScanTool() {
+    setScanToolFraction(undefined);
     setScanPreview(null);
     setNoiseComparison(null);
     scanToolAbort.current?.abort();
@@ -1526,6 +1531,7 @@ export function App() {
     setMode("inspect");
   }
   function openScanTool(tool: ScanToolId) {
+    setScanToolFraction(undefined);
     setScanPreview(null);
     releaseProcessingSession();
     setNoiseComparison(null);
@@ -1582,6 +1588,22 @@ export function App() {
     if (!selected || busy || scanToolAbort.current) return;
     const source = selected;
     const controller = new AbortController();
+    const reduction = parameters.kind === "reducePolygons";
+    const reportEvent = (fraction: number, stage: string) => {
+      if (controller.signal.aborted) return;
+      setScanToolFraction(reduction ? fraction : undefined);
+      setScanToolProgress(
+        reduction ? stage : `${stage} · ${Math.round(fraction * 100)}%`,
+      );
+      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+    };
+    const report = reduction
+      ? linearProgress(reportEvent)
+      : (_start: number, _end: number) => reportEvent;
+    setScanToolFraction(reduction ? 0 : undefined);
+    setScanToolProgress(
+      `Preparing ${scanToolTitles[parameters.kind].toLowerCase()}`,
+    );
     try {
       const request = scanToolRequest(
         source,
@@ -1614,14 +1636,11 @@ export function App() {
         {
           signal: controller.signal,
           reuseTopology: true,
-          onProgress: (fraction, stage) =>
-            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+          onProgress: report(0, reduction ? 0.75 : 1),
         },
       );
       if (controller.signal.aborted || !result.positions) return;
-      const summary = String(
-        result.diagnostics.summary ?? "Mesh tool complete",
-      );
+      let summary = String(result.diagnostics.summary ?? "Mesh tool complete");
       if (isPreview) {
         setScanPreview({
           id: previewId,
@@ -1632,9 +1651,8 @@ export function App() {
           output: result.positions,
         });
         if (
-          (parameters.kind === "reduceNoise" ||
-            parameters.kind === "reducePolygons") &&
-          parameters.measureDeviation
+          parameters.kind === "reducePolygons" ||
+          (parameters.kind === "reduceNoise" && parameters.measureDeviation)
         ) {
           const compared = await processMesh(
             {
@@ -1651,12 +1669,11 @@ export function App() {
             {
               signal: controller.signal,
               reuseTopology: true,
-              onProgress: (fraction, stage) =>
-                setScanToolProgress(
-                  `${stage} · ${Math.round(fraction * 100)}%`,
-                ),
+              onProgress: report(reduction ? 0.75 : 0, reduction ? 0.99 : 1),
             },
           );
+          if (controller.signal.aborted) return;
+          summary += ` ${String(compared.diagnostics.summary)}`;
           if (compared.noiseComparison)
             setNoiseComparison({
               kind: parameters.kind,
@@ -1690,20 +1707,29 @@ export function App() {
         });
       setScanToolResult(summary);
       setMessage(summary);
+      if (reduction) report(1, 1)(1, "Reduction and comparison complete");
     } catch (error) {
       if (controller.signal.aborted)
         setMessage("Mesh operation cancelled; original geometry retained.");
       else setError(errorText(error));
+      setScanToolFraction(undefined);
+      setScanToolProgress("");
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
         setProcessingBusy(false);
-        setScanToolProgress("");
+        if (!reduction) setScanToolProgress("");
+        if (controller.signal.aborted) setScanToolFraction(undefined);
       }
     }
   }
   function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
+    if (
+      activeScanPreview.kind === "reducePolygons" &&
+      !activeNoiseComparison?.statistics
+    )
+      return;
     if (
       (activeScanPreview.kind === "scaleMesh" ||
         activeScanPreview.kind === "mirrorMesh") &&
@@ -1752,6 +1778,14 @@ export function App() {
     scanToolAbort.current = controller;
     setProcessingBusy(true);
     setError("");
+    const report = linearProgress((fraction, stage) => {
+      setScanToolFraction(
+        preview.kind === "reducePolygons" ? fraction : undefined,
+      );
+      setScanToolProgress(stage);
+      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+    });
+    report(0, 1)(0, "Preparing surface comparison");
     try {
       const result = await processMesh(
         {
@@ -1766,8 +1800,7 @@ export function App() {
         {
           signal: controller.signal,
           reuseTopology: true,
-          onProgress: (fraction, stage) =>
-            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+          onProgress: report(0, 0.99),
         },
       );
       if (!controller.signal.aborted && result.noiseComparison) {
@@ -1780,14 +1813,16 @@ export function App() {
           visible: true,
         });
         setScanToolResult(String(result.diagnostics.summary));
+        report(1, 1)(1, "Surface comparison complete");
       }
     } catch (error) {
       if (!controller.signal.aborted) setError(errorText(error));
+      setScanToolFraction(undefined);
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
         setProcessingBusy(false);
-        setScanToolProgress("");
+        if (preview.kind !== "reducePolygons") setScanToolProgress("");
       }
     }
   }
@@ -3628,6 +3663,14 @@ export function App() {
         </aside>
         <section className="canvas-area" aria-label="3D viewport">
           <div ref={viewportHost} className="viewport" />
+          {activeNoiseComparison?.kind === "reducePolygons" &&
+            activeNoiseComparison.visible &&
+            activeNoiseComparison.statistics && (
+              <ReductionColorScale
+                threshold={activeNoiseComparison.threshold}
+                tolerance={activeNoiseComparison.statistics.tolerance}
+              />
+            )}
           {dragging && (
             <div className="drop-overlay">Drop a scan or CAD file to open</div>
           )}
@@ -3786,6 +3829,9 @@ export function App() {
               disabled={actionBusy}
               busy={processingBusy}
               progress={scanToolProgress}
+              progressFraction={
+                scanTool === "reducePolygons" ? scanToolFraction : undefined
+              }
               result={
                 activeScanPreview ||
                 selected?.positions === scanToolOutput.current
@@ -3812,6 +3858,7 @@ export function App() {
                 activeNoiseComparison
                   ? {
                       threshold: activeNoiseComparison.threshold,
+                      statistics: activeNoiseComparison.statistics,
                       visible: activeNoiseComparison.visible,
                     }
                   : undefined

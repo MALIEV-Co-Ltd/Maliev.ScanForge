@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { ReductionProgress, ReductionResults } from "./ReductionResults";
+import type { ReductionStatistics } from "../reduction-report";
 import type { Entity, Vec3 } from "../types";
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { Field, VectorField } from "./controls";
@@ -122,8 +124,13 @@ export interface ScanToolsPanelProps {
   disabled?: boolean;
   busy?: boolean;
   progress?: string;
+  progressFraction?: number;
   result?: string;
-  comparison?: { threshold: number; visible: boolean };
+  comparison?: {
+    threshold: number;
+    visible: boolean;
+    statistics?: ReductionStatistics;
+  };
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
@@ -144,6 +151,7 @@ export function ScanToolsPanel({
   disabled = false,
   busy = false,
   progress,
+  progressFraction,
   result,
   comparison,
   onToggleComparison,
@@ -238,9 +246,8 @@ export function ScanToolsPanel({
         (mode === "percentage" &&
           (!positive(percentage) || percentage >= 100)) ||
         (mode === "deviation" && !positive(deviation)) ||
-        (mode !== "deviation" &&
-          measureDeviation &&
-          (!positive(deviation) || !positive(paletteThreshold))))
+        !positive(deviation) ||
+        !positive(paletteThreshold))
     )
       problem =
         "Choose a smaller triangle count, a percentage between 0 and 100, or a positive deviation.";
@@ -298,7 +305,7 @@ export function ScanToolsPanel({
           targetTriangles,
           percentage,
           deviation,
-          measureDeviation: mode !== "deviation" && measureDeviation,
+          measureDeviation: true,
           paletteThreshold,
         });
         break;
@@ -400,41 +407,30 @@ export function ScanToolsPanel({
                 onChange={setDeviation}
               />
             )}
+            <p className="scan-tools-note">
+              Deviation from the original is measured automatically after
+              reduction.
+            </p>
             {mode !== "deviation" && (
-              <>
-                <label className="scan-tools-check">
-                  <input
-                    type="checkbox"
-                    checked={measureDeviation}
-                    disabled={!!onAccept && !previewReady}
-                    onChange={(event) => changeComparison(event.target.checked)}
-                  />
-                  Measure deviation from original
-                </label>
-                {measureDeviation && (
-                  <>
-                    <Field
-                      label="Comparison tolerance (mm)"
-                      value={deviation}
-                      min={0.001}
-                      step={0.01}
-                      onChange={setDeviation}
-                    />
-                    <Field
-                      label="Color threshold (mm)"
-                      value={paletteThreshold}
-                      min={0.001}
-                      step={0.01}
-                      onChange={setPaletteThreshold}
-                    />
-                    <p className="scan-tools-note">
-                      Measures the original surface against the reduced result.
-                      The color threshold sets the search range.
-                    </p>
-                  </>
-                )}
-              </>
+              <Field
+                label="Comparison tolerance (mm)"
+                value={deviation}
+                min={0.001}
+                step={0.01}
+                onChange={setDeviation}
+              />
             )}
+            <Field
+              label="Color threshold (mm)"
+              value={paletteThreshold}
+              min={0.001}
+              step={0.01}
+              onChange={setPaletteThreshold}
+            />
+            <p className="scan-tools-note">
+              Measures the original surface against the reduced result. The
+              color threshold sets the search range.
+            </p>
           </>
         )}
         {tool === "reduceNoise" && (
@@ -678,9 +674,19 @@ export function ScanToolsPanel({
           {problem}
         </p>
       )}
-      {progress && <p role="status">{progress}</p>}
+      {tool === "reducePolygons" && progressFraction !== undefined ? (
+        <ReductionProgress
+          fraction={progressFraction}
+          stage={progress || "Preparing polygon reduction"}
+        />
+      ) : (
+        progress && <p role="status">{progress}</p>
+      )}
       {result && <p role="status">{result}</p>}
-      {onCompare && measureDeviation && (
+      {tool === "reducePolygons" && comparison?.statistics && (
+        <ReductionResults statistics={comparison.statistics} />
+      )}
+      {onCompare && (measureDeviation || tool === "reducePolygons") && (
         <button
           disabled={
             busy ||
@@ -713,7 +719,11 @@ export function ScanToolsPanel({
         </button>
         {onAccept && (
           <button
-            disabled={busy || !previewReady}
+            disabled={
+              busy ||
+              !previewReady ||
+              (tool === "reducePolygons" && !comparison?.statistics)
+            }
             onClick={() =>
               onAccept(
                 tool === "scaleMesh" || tool === "mirrorMesh"

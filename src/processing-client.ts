@@ -100,7 +100,11 @@ export interface ProcessingResult {
   selection?: Uint8Array;
   kind: ProcessingRequest["kind"];
   positions?: Float32Array;
-  noiseComparison?: { rgb: Uint8Array; threshold: number };
+  noiseComparison?: {
+    rgb: Uint8Array;
+    threshold: number;
+    statistics?: import("./reduction-report").ReductionStatistics;
+  };
   segments?: Float32Array[];
   segmentClassifications?: RegionClassification[];
   repairSheets?: MeshSheetDiagnostics[];

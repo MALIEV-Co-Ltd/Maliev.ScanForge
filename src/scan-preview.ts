@@ -10,6 +10,7 @@ import { prepareNoiseOctree, type PackedNoiseTree } from "./scan-noise-octree";
 import { comparePreparedNoiseSurface } from "./scan-noise-deviation";
 import { comparePreparedReductionSurface } from "./scan-reduction-comparison";
 import { nativeNoiseColor } from "./scan-noise-color";
+import { linearProgress, type ReductionStatistics } from "./reduction-report";
 
 export type ScanPreviewRequest = {
   kind: "scanPreview";
@@ -36,6 +37,7 @@ export class ScanPreviewSession {
     options: MeshProcessingOptions = {},
   ) {
     const operation = request.operation;
+    const progress = linearProgress(options.onProgress);
     if (
       operation.kind !== "reduceNoise" &&
       operation.kind !== "reducePolygons" &&
@@ -51,11 +53,13 @@ export class ScanPreviewSession {
         : analyzeMesh(request.positions, {
             ...options,
             tolerance: 1e-6,
+            onProgress: progress(0, 0.2),
           });
     // Edit successor adoption must not replace the original's retained topology.
     const editOptions = {
       ...options,
       topologyCache: { ...options.topologyCache },
+      onProgress: progress(original ? 0.2 : 0, 1),
     };
     const outcome =
       operation.kind === "reduceNoise"
@@ -102,6 +106,8 @@ export class ScanPreviewSession {
       throw new Error("Comparison thresholds must be positive finite values.");
     if (options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const progress = linearProgress(options.onProgress);
+    progress(0, 0.25)(0, "Indexing reduced surface for comparison");
     if (!this.prepared) {
       // Packed preview facets already preserve source corner order. No weld or adjacency rebuild.
       this.prepared = prepareNoiseOctree(
@@ -114,17 +120,18 @@ export class ScanPreviewSession {
         },
         0.5,
         10,
-        options,
+        { ...options, onProgress: progress(0, 0.25) },
       );
     }
     let rgb: Uint8Array;
+    let statistics: ReductionStatistics | undefined;
     let within: number, total: number, matched: number;
     if (this.kind === "reduceNoise") {
       const measured = comparePreparedNoiseSurface(
         this.original,
         this.prepared,
         deviation,
-        options,
+        { ...options, onProgress: progress(0.25, 0.95) },
       );
       within = measured.within;
       total = measured.total;
@@ -142,19 +149,36 @@ export class ScanPreviewSession {
         this.prepared,
         deviation,
         paletteThreshold,
-        options,
+        { ...options, onProgress: progress(0.25, 0.95) },
       );
+      statistics = {
+        ...measured.statistics,
+        originalTriangles: this.original.triangles.length / 3,
+        reducedTriangles: this.output.length / 9,
+      };
       within = measured.within;
       total = measured.total;
       matched = measured.matched;
       rgb = new Uint8Array(this.original.triangles.length * 3);
-      this.original.triangles.forEach((id, corner) =>
-        rgb.set(measured.rgb.subarray(id * 3, id * 3 + 3), corner * 3),
-      );
+      this.original.triangles.forEach((id, corner) => {
+        if (corner % 4096 === 0) {
+          if (options.signal?.aborted)
+            throw new DOMException("Mesh operation cancelled.", "AbortError");
+          progress(0.95, 1)(
+            corner / this.original!.triangles.length,
+            "Preparing deviation display",
+          );
+        }
+        rgb.set(measured.rgb.subarray(id * 3, id * 3 + 3), corner * 3);
+      });
     }
+    if (options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    progress(1, 1)(1, "Surface comparison complete");
     return {
       noiseComparison: {
         rgb,
+        statistics,
         threshold:
           this.kind === "reduceNoise"
             ? deviation
