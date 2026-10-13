@@ -1,13 +1,12 @@
 import "./ToolPanel.css";
 import { SaveProjectDialog } from "./SaveProjectDialog";
-import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
+import { ActiveToolHint, StatusMessage, StatusBar } from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
 import { ReductionColorScale } from "./ReductionResults";
 import { toleranceCoverage } from "../reduction-display";
 import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
 import { CanvasError } from "./CanvasError";
-import { StatusMetrics } from "./StatusMetrics";
 import {
   releaseProcessingSession,
   retainProcessingGeometry,
@@ -4951,73 +4950,74 @@ export function App() {
           onCancel={() => setSaveDialogOpen(false)}
         />
       )}
-      <footer className="statusbar">
-        <span className={busy ? "status-dot busy" : "status-dot"} />
-        <StatusMessage
-          message={
-            importProgress ? `Importing ${importProgress.name}` : message
-          }
-        >
-          {importProgress ? (
-            <ImportProgress
-              name={importProgress.name}
-              fraction={importProgress.fraction}
-              onCancel={
-                importAbort.current
-                  ? () => importAbort.current?.abort()
-                  : undefined
-              }
-            />
-          ) : (
-            message
-          )}
-        </StatusMessage>
-        <ActiveToolHint
-          shortcuts={shortcutContext}
-          context={{
-            hasSelection: !!selected,
-            hasCadSelection: !!selected?.kernelId,
-            shortcutMode: shortcutContext.mode,
-            busy,
-            planePicking,
-            mode,
-            brushActive:
-              mode === "brush" &&
-              !selected?.kernelId &&
-              !scanPanel &&
-              !scanBoundaryPaths.length,
-            selectionTool,
-            selectThrough,
-            subtract: subtractBrush,
-            sketchTool:
-              workspace === "sketch" && toolPanelOpen && !createSketch
-                ? sketchDrawingTool
-                : undefined,
-            landmarkSide: nPoints ? landmarkPickSide : undefined,
-            landmarkPreview: !!nPoints?.preview,
-            reference: scanReferencePick.current ?? undefined,
-            panel:
-              workspace === "mesh" && toolPanelOpen
-                ? (scanPanel ?? undefined)
-                : undefined,
-            parameterTool:
-              workspace === "scanTools" && toolPanelOpen
-                ? scanToolTitles[scanTool]
-                : undefined,
-            previewAuthoring: surfaceFit
-              ? "surface"
-              : createSketch
-                ? "sketch section"
-                : undefined,
-            sectionAxis: axis.toUpperCase(),
-            sectionOffset: number(offset),
-          }}
-        />
-        <StatusMetrics
-          facets={selected ? selected.positions.length / 9 : undefined}
-        />
-        <span className="status-end">Units: mm</span>
-      </footer>
+      <StatusBar
+        busy={busy}
+        facets={selected ? selected.positions.length / 9 : undefined}
+        shortcuts={shortcutContext}
+        operation={
+          <StatusMessage
+            message={
+              importProgress ? `Importing ${importProgress.name}` : message
+            }
+          >
+            {importProgress ? (
+              <ImportProgress
+                name={importProgress.name}
+                fraction={importProgress.fraction}
+                onCancel={
+                  importAbort.current
+                    ? () => importAbort.current?.abort()
+                    : undefined
+                }
+              />
+            ) : (
+              message
+            )}
+          </StatusMessage>
+        }
+        hint={
+          <ActiveToolHint
+            context={{
+              hasSelection: !!selected,
+              hasCadSelection: !!selected?.kernelId,
+              shortcutMode: shortcutContext.mode,
+              busy,
+              planePicking,
+              mode,
+              brushActive:
+                mode === "brush" &&
+                !selected?.kernelId &&
+                !scanPanel &&
+                !scanBoundaryPaths.length,
+              selectionTool,
+              selectThrough,
+              subtract: subtractBrush,
+              sketchTool:
+                workspace === "sketch" && toolPanelOpen && !createSketch
+                  ? sketchDrawingTool
+                  : undefined,
+              landmarkSide: nPoints ? landmarkPickSide : undefined,
+              landmarkPreview: !!nPoints?.preview,
+              reference: scanReferencePick.current ?? undefined,
+              panel:
+                workspace === "mesh" && toolPanelOpen
+                  ? (scanPanel ?? undefined)
+                  : undefined,
+              parameterTool:
+                workspace === "scanTools" && toolPanelOpen
+                  ? scanToolTitles[scanTool]
+                  : undefined,
+              previewAuthoring: surfaceFit
+                ? "surface"
+                : createSketch
+                  ? "sketch section"
+                  : undefined,
+              sectionAxis: axis.toUpperCase(),
+              sectionOffset: number(offset),
+            }}
+          />
+        }
+      />
       {primitiveDialog && (
         <div className="modal-backdrop">
           <section

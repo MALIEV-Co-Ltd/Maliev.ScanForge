@@ -1,49 +1,115 @@
-.workbench footer.statusbar > .status-message {
-  flex: 0 1 200px;
-  width: 200px;
-  max-width: 200px;
+.workbench footer.statusbar {
+  display: grid;
+  grid-template-columns:
+    minmax(320px, min(34vw, 640px)) minmax(0, 1fr)
+    max-content;
+  gap: 0;
+  padding-inline: 12px;
+}
+.status-operation,
+.status-guidance,
+.status-details {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+.status-operation {
+  gap: 8px;
+  padding-inline-end: 12px;
+}
+.status-guidance {
+  border-inline: 1px solid var(--border);
+  padding-inline: 12px;
+}
+.status-details {
+  gap: 12px;
+  padding-inline-start: 12px;
+  white-space: nowrap;
+}
+.workbench footer.statusbar .status-message {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .workbench .status-message .status-import-progress {
+  display: flex;
   width: 100%;
 }
 .workbench .status-message .status-import-filename {
   flex: 1;
   min-width: 0;
+  max-width: none;
 }
 .workbench .status-message .status-import-track {
-  width: 60px;
-  min-width: 40px;
+  width: clamp(80px, 7vw, 140px);
+  min-width: 60px;
+  flex-shrink: 0;
 }
-.workbench footer.statusbar .status-navigation-hint {
+.workbench footer.statusbar .status-guidance .status-navigation-hint {
   display: block;
-  flex: 1 1 160px;
-  margin-left: 8px;
+  flex: 1;
+  margin: 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.workbench footer.statusbar .status-project-name,
-.workbench footer.statusbar .save-state,
-.workbench footer.statusbar .status-end {
+.workbench footer.statusbar .status-details .status-metrics {
+  display: flex;
+  margin: 0;
+}
+.workbench footer.statusbar .status-details .status-end {
+  margin: 0;
   flex-shrink: 0;
 }
-@media (max-width: 800px) {
-  .workbench footer.statusbar > .status-message {
-    flex-basis: 110px;
-    width: 110px;
-    max-width: 110px;
+@media (max-width: 1000px) {
+  .workbench footer.statusbar {
+    grid-template-columns: minmax(220px, 30vw) minmax(0, 1fr) max-content;
   }
-  .workbench footer.statusbar .status-metrics {
-    display: none;
+  .status-operation {
+    padding-inline-end: 8px;
+  }
+  .status-guidance {
+    padding-inline: 8px;
+  }
+  .status-details {
+    gap: 8px;
+    padding-inline-start: 8px;
+  }
+}
+@media (max-width: 800px) {
+  .workbench footer.statusbar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 28px 28px;
+    height: auto;
+    min-height: 56px;
+  }
+  .status-guidance {
+    border-inline-end: 0;
+  }
+  .status-details {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    padding-inline-start: 0;
+    border-block-start: 1px solid var(--border);
   }
 }
 @media (max-width: 480px) {
-  .workbench footer.statusbar .status-project-name {
-    display: none;
+  .workbench footer.statusbar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(3, 26px);
+    min-height: 78px;
+    padding-inline: 8px;
+  }
+  .status-operation {
+    padding-inline-end: 0;
+  }
+  .status-guidance {
+    border-inline: 0;
+    border-block-start: 1px solid var(--border);
+    padding-inline: 0;
   }
 }

@@ -1,6 +1,10 @@
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { StatusMessage, ActiveToolHint } from "../src/ui/StatusFeedback";
+import {
+  StatusMessage,
+  ActiveToolHint,
+  StatusBar,
+} from "../src/ui/StatusFeedback";
 import { ImportProgress } from "../src/ui/ImportProgress";
 it("retains full operation text for assistive technology and hover while giving layout a dedicated bounded slot", () => {
   const message = "Operation " + "long details ".repeat(100);
@@ -30,4 +34,38 @@ it("exposes changing tool instructions accessibly and in the hover title", () =>
   expect(html).toContain('tabindex="0"');
   expect(html).toContain("Left-drag draws selection rectangle");
   expect(html).toContain('title="Left-drag');
+});
+
+it("groups progress, command guidance, and model details with shortcuts on the right", () => {
+  const html = renderToStaticMarkup(
+    <StatusBar
+      busy
+      facets={12345}
+      shortcuts={{ mode: "main", availableActions: new Set() }}
+      operation={
+        <StatusMessage message="Importing mesh">
+          <ImportProgress name="mesh.stl" fraction={0.5} onCancel={() => {}} />
+        </StatusMessage>
+      }
+      hint={<ActiveToolHint context={{ mode: "inspect" }} />}
+    />,
+  );
+  const operation = html.slice(
+    html.indexOf('aria-label="Operation progress"'),
+    html.indexOf('aria-label="Command guidance"'),
+  );
+  const guidance = html.slice(
+    html.indexOf('aria-label="Command guidance"'),
+    html.indexOf('aria-label="Model information"'),
+  );
+  const details = html.slice(html.indexOf('aria-label="Model information"'));
+  expect(operation).toContain('role="progressbar"');
+  expect(operation).toContain('aria-label="Cancel import"');
+  expect(guidance).toContain('aria-label="Active tool controls"');
+  expect(guidance).not.toContain('aria-label="Keyboard shortcuts"');
+  expect(details).toContain("12,345");
+  expect(details).toContain("JS heap:");
+  expect(details).toContain("Units: mm");
+  expect(details).toContain('aria-label="Keyboard shortcuts"');
+  expect(details).toContain("Modeling shortcuts paused while processing.");
 });

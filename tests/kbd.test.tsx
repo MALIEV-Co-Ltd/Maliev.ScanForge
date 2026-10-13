@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ShortcutText } from "../src/ui/Kbd";
-import { ActiveToolHint } from "../src/ui/StatusFeedback";
+import { ActiveToolHint, StatusKeyboard } from "../src/ui/StatusFeedback";
 import { shortcutReference } from "../src/ui/shortcut-reference";
 import type { ShortcutContext } from "../src/keyboard-shortcuts";
 const shortcuts: ShortcutContext = {
@@ -60,15 +60,17 @@ it("maps implemented shortcuts with local mode precedence and excludes unsupport
 });
 it("separates the keyboard reference from active tool controls", () => {
   const html = renderToStaticMarkup(
-    <ActiveToolHint
-      shortcuts={{ ...shortcuts, mode: "selection" }}
-      context={{
-        mode: "brush",
-        brushActive: true,
-        selectionTool: "brush",
-        hasSelection: true,
-      }}
-    />,
+    <>
+      <StatusKeyboard shortcuts={{ ...shortcuts, mode: "selection" }} />
+      <ActiveToolHint
+        context={{
+          mode: "brush",
+          brushActive: true,
+          selectionTool: "brush",
+          hasSelection: true,
+        }}
+      />
+    </>,
   );
   expect(html).toContain('title="Left-drag draws filled selection');
   expect(html).toContain('aria-label="Shortcut reference"');
@@ -79,9 +81,7 @@ it("separates the keyboard reference from active tool controls", () => {
   expect(html).not.toContain("status-controls");
   expect(html).toContain(">Alt</kbd>");
   expect(html).toContain(">U</kbd>");
-  expect(
-    renderToStaticMarkup(
-      <ActiveToolHint context={{ mode: "inspect", busy: true }} />,
-    ),
-  ).toContain("Modeling shortcuts paused while processing.");
+  expect(renderToStaticMarkup(<StatusKeyboard busy />)).toContain(
+    "Modeling shortcuts paused while processing.",
+  );
 });
