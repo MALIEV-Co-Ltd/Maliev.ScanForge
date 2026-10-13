@@ -1,0 +1,13 @@
+.save-project-dialog form {
+  display: grid;
+  gap: 10px;
+}
+.save-project-dialog input {
+  width: 100%;
+}
+.save-project-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}

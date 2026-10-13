@@ -1,3 +1,4 @@
+import { SaveProjectDialog } from "./SaveProjectDialog";
 import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
 import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
@@ -195,6 +196,7 @@ export function App() {
     () => entities[0]?.id ?? null,
   );
   const [name, setName] = useState("Untitled project");
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [flatShading, setFlatShading] = useState(true);
   const [floorGrid, setFloorGrid] = useState(true);
   const [gridSpacing, setGridSpacing] = useState(10);
@@ -2910,16 +2912,21 @@ export function App() {
     });
   }
   function save() {
+    setSaveDialogOpen(true);
+  }
+  function saveNamedProject(projectName: string) {
+    setSaveDialogOpen(false);
     void action("Saving project…", async () => {
       download(
-        await serializeProjectBlob(name, entities, {
+        await serializeProjectBlob(projectName, entities, {
           sketch: activeSketchId ? legacySketch.current : sketchDraft,
           sketches: savedSketches,
           activeSketchId: activeSketchId ?? undefined,
         }),
-        `${name.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
+        `${projectName.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
         "application/json",
       );
+      setName(projectName);
       setDirty(false);
       setMessage("Project downloaded · exact CAD retained where available");
     });
@@ -4803,6 +4810,13 @@ export function App() {
           </section>
         </div>
       )}
+      {saveDialogOpen && (
+        <SaveProjectDialog
+          name={name}
+          onSave={saveNamedProject}
+          onCancel={() => setSaveDialogOpen(false)}
+        />
+      )}
       <footer className="statusbar">
         <span className={busy ? "status-dot busy" : "status-dot"} />
         <StatusMessage
@@ -4824,22 +4838,6 @@ export function App() {
             message
           )}
         </StatusMessage>
-        <span className="save-state">
-          {dirty ? "Unsaved changes" : "Project unchanged"}
-        </span>
-        <label className="status-project-name">
-          <span>Project</span>
-          <input
-            aria-label="Project name"
-            value={name}
-            maxLength={200}
-            disabled={busy}
-            onChange={(e) => {
-              setName(e.target.value);
-              setDirty(true);
-            }}
-          />
-        </label>
         <ActiveToolHint
           context={{
             busy,
