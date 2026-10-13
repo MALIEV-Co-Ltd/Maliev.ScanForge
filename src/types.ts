@@ -2,6 +2,7 @@ export type Vec3 = [number, number, number];
 import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
 import type { ParametricFeature } from "./parametric";
+import type { ScanSourceCounts } from "./scan-source";
 export type Positions = number[] | Float32Array;
 export interface IndexedMesh {
   vertices: Positions;
@@ -41,8 +42,8 @@ export interface Entity {
   meshSelection?: MeshSelectionState;
   // Geometry is stored in world coordinates in millimetres.
   source?: string;
-  /** Source counts for sampled imports; project geometry contains only the display sample. */
-  scanSource?: { bytes: number; triangles: number; displayedTriangles: number };
+  /** Source and accepted counts distinguish preview sampling from facet rejection. */
+  scanSource?: ScanSourceCounts;
   kernelId?: string;
   brep?: string;
   fit?: FitResult;

@@ -182,8 +182,12 @@ All successful probes release their mapped image and allocation arena and exit.
 The captured low byte of the return register is retained as raw evidence, not
 interpreted as a success boolean.
 
-This reconstruction remains internal. Complete import-entry/finalizer execution,
-shared GUI/MCP import integration and native alignment outputs for these STL
-sources remain required. Reader captures do not certify finalization or alignment
-on the owner's STL scans. Application behavior and MCP contracts are unchanged
-by this evidence-only slice.
+Full-resolution binary STL now uses this mapping in the shared GUI/MCP import
+parser. It expands accepted indices for rendering, publishes indexed connectivity
+through the existing import callback and preserves input versus accepted facet
+counts. Preview imports remain bounded triangle samples without full topology.
+Progress covers reading and mapping; cancellation rejects before publishing data.
+
+Complete import-entry/finalizer execution and native alignment outputs for these
+STL sources remain required. Reader captures certify mapped geometry, not
+finalization or alignment on the owner's STL scans.

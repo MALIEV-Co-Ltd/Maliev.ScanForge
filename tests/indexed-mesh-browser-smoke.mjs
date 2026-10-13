@@ -253,6 +253,71 @@ try {
   );
   assertTopology(await geometry(imported.id));
   assertTopology(await geometry(gui.id));
+  const stlCapture = JSON.parse(
+    await readFile(
+      new URL("fixtures/stl-reader-native.json", import.meta.url),
+      "utf8",
+    ),
+  ).samples.find((sample) => sample.name === "near-key");
+  const stl = Buffer.alloc(84 + (stlCapture.coordinates.length / 9) * 50);
+  stl.writeUInt32LE(stlCapture.coordinates.length / 9, 80);
+  stlCapture.coordinates.forEach((value, i) =>
+    stl.writeFloatLE(value, 84 + Math.floor(i / 9) * 50 + 12 + (i % 9) * 4),
+  );
+  await page.locator('input[type="file"][accept*=".asc"]').setInputFiles({
+    name: "gui-native.stl",
+    mimeType: "application/octet-stream",
+    buffer: stl,
+  });
+  const importDialog = page.getByRole("dialog", { name: "Import scan" });
+  await importDialog
+    .getByRole("button", { name: "Import", exact: true })
+    .click();
+  let guiStl;
+  for (let i = 0; i < 100; i++) {
+    guiStl = (await call("project_get")).result.objects.find(
+      (object) => object.name === "gui-native.stl",
+    );
+    if (guiStl) break;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert(guiStl);
+  const uploadStl = (
+    await call("artifact_put", {
+      name: "mcp-native.stl",
+      offset: 0,
+      base64: stl.toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", { artifactId: uploadStl.artifactId }),
+  );
+  const mcpStl = (await call("project_get")).result.objects.find(
+    (object) => object.name === "mcp-native.stl",
+  );
+  assert(mcpStl);
+  const nativeGeometry = await geometry(guiStl.id);
+  assert.deepEqual(nativeGeometry.indexedMesh.triangles, stlCapture.triangles);
+  const rawStl = await geometry(mcpStl.id);
+  assert.deepEqual(rawStl.indexedMesh.vertices, stlCapture.vertices);
+  assert.deepEqual(rawStl.indexedMesh.triangles, stlCapture.triangles);
+  const lower = [Infinity, Infinity, Infinity],
+    upper = [-Infinity, -Infinity, -Infinity];
+  rawStl.positions.forEach((value, i) => {
+    lower[i % 3] = Math.min(lower[i % 3], value);
+    upper[i % 3] = Math.max(upper[i % 3], value);
+  });
+  await mutate("mesh_transform", {
+    entityId: mcpStl.id,
+    translation: [
+      -(lower[0] / 2 + upper[0] / 2),
+      -(lower[1] / 2 + upper[1] / 2),
+      -lower[2],
+    ],
+    rotation: [0, 0, 0],
+    scale: 1,
+  });
+  assert.deepEqual(await geometry(mcpStl.id), nativeGeometry);
   const sourceLandmarks = [0, 0, 0, 10, 0, 0, 0, 10, 0];
   const targetLandmarks = [3, 4, 5, 13, 4, 5, 3, 14, 5];
   await job(
@@ -430,6 +495,7 @@ try {
     passed: true,
     guiImport: true,
     mcpImport: true,
+    guiMcpNativeStlImport: true,
     unitConversion: true,
     originPlacement: true,
     binaryPersistence: true,

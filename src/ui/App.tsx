@@ -1,3 +1,4 @@
+import { isSampledScan } from "../scan-source";
 import { AppSelect } from "./AppSelect";
 import {
   selectionProcessingMode,
@@ -2537,10 +2538,7 @@ export function App() {
             id: crypto.randomUUID(),
             name:
               file.name +
-              (scanSource &&
-              scanSource.displayedTriangles < scanSource.triangles
-                ? " [sampled preview]"
-                : ""),
+              (isSampledScan(scanSource) ? " [sampled preview]" : ""),
             kind: extension === "asc" ? "pointcloud" : "mesh",
             positions,
             normals: pointNormals,
@@ -3050,10 +3048,7 @@ export function App() {
             hidden: session.hidden,
             selection: session.selection,
             options,
-            sampled:
-              !!session.source.scanSource &&
-              session.source.scanSource.displayedTriangles <
-                session.source.scanSource.triangles,
+            sampled: isSampledScan(session.source.scanSource),
           },
           {
             signal: controller.signal,
@@ -4746,8 +4741,7 @@ export function App() {
                         </p>
                       )}
                       {selected.scanSource &&
-                        selected.scanSource.displayedTriangles <
-                          selected.scanSource.triangles && (
+                        isSampledScan(selected.scanSource) && (
                           <p role="note" className="muted">
                             Sampled source: {number(selected.scanSource.bytes)}{" "}
                             bytes · {number(selected.scanSource.triangles)}{" "}

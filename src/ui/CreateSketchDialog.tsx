@@ -1,3 +1,4 @@
+import { isSampledScan } from "../scan-source";
 import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import { useState } from "react";
@@ -38,11 +39,9 @@ export function CreateSketchDialog({
       <h2>Create Sketch</h2>
       <section className="tool-section tool-panel-content">
         <p>{source.name} · For extruded surface</p>
-        {source.scanSource &&
-          source.scanSource.displayedTriangles <
-            source.scanSource.triangles && (
-            <p role="note">References use the sampled display scan.</p>
-          )}
+        {source.scanSource && isSampledScan(source.scanSource) && (
+          <p role="note">References use the sampled display scan.</p>
+        )}
         <fieldset disabled={busy}>
           <label className="field">
             Reference plane

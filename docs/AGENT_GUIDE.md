@@ -185,7 +185,15 @@ Upload bytes through `artifact_put` with the original filename, base64 content a
 
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
-PLY mesh imports retain original vertex order and triangle indices. `project_get`
+PLY mesh imports retain original vertex order and triangle indices. Full-resolution
+binary STL imports retain connectivity reconstructed by the verified native reader
+mapping, including quantized coordinate identities and collapsed-facet rejection.
+Render coordinates use those mapped vertices, so they agree with indexed geometry.
+STL previews and text STL imports do not provide indexed topology. `project_get`
+reports `scanSource` counts; optional `acceptedTriangles` distinguishes full
+native facet rejection from preview sampling while retaining input `triangles`.
+Legacy projects without accepted counts retain their existing preview semantics.
+`project_get`
 and `object_get` report `indexedTopology:{vertices,triangles}` when that data is
 available. `object_get` with `includeGeometry:true` includes `indexedMesh` arrays
 in its geometry artifact. JSON and binary project exports preserve this topology,
@@ -210,7 +218,7 @@ the moving object cannot appear in it. Distance ties retain the first fixed
 target. Every fixed mesh remains unchanged. This parameter is exclusive to
 `nativeRefine`. The GUI offers additional fixed surface checkboxes after the
 primary registration target; additional targets follow checkbox selection order.
-Both objects must be indexed PLY meshes with no hidden triangles. Coordinates
+Both objects must be indexed meshes with no hidden triangles. Coordinates
 and radius are millimetres; sampling accepts 1 to 100,000 vertices. Optional
 `selectionOnly:true` marks vertices incident to selected moving triangles and
 skips sampling, matching the recovered selection-only preparation path.

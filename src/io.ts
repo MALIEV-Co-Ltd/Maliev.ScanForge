@@ -213,7 +213,13 @@ export function validateProject(value: unknown): Project {
         entity.scanSource.triangles < 1 ||
         !Number.isSafeInteger(entity.scanSource.displayedTriangles) ||
         entity.scanSource.displayedTriangles < 1 ||
-        entity.scanSource.displayedTriangles > entity.scanSource.triangles)
+        entity.scanSource.displayedTriangles > entity.scanSource.triangles ||
+        (entity.scanSource.acceptedTriangles !== undefined &&
+          (!Number.isSafeInteger(entity.scanSource.acceptedTriangles) ||
+            entity.scanSource.acceptedTriangles < 1 ||
+            entity.scanSource.acceptedTriangles > entity.scanSource.triangles ||
+            entity.scanSource.displayedTriangles >
+              entity.scanSource.acceptedTriangles)))
     )
       throw new Error("Invalid scan source counts.");
     // Kernel handles are ephemeral; exact BRep is restored in a new worker.

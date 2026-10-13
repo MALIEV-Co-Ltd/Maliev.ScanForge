@@ -209,7 +209,7 @@ it("requires independent indexed mesh objects and rejects hidden geometry throug
       500,
       10,
     ),
-  ).toThrow("indexed PLY");
+  ).toThrow("indexed meshes");
   expect(() =>
     nativeSurfaceRefinementRequest(
       { ...source, meshSelection: { saved: [], hidden: [0] } },
@@ -239,5 +239,5 @@ it("requires independent indexed mesh objects and rejects hidden geometry throug
       500,
       10,
     ),
-  ).toThrow("indexed PLY");
+  ).toThrow("indexed meshes");
 });

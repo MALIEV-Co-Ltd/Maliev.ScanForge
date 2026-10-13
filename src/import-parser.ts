@@ -1,5 +1,7 @@
 import { parseMesh } from "./io";
 import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
+import { nativeStlTopology } from "./scan-native-stl-topology";
+import type { ScanSourceCounts } from "./scan-source";
 
 export interface ScanFile {
   readonly size: number;
@@ -15,18 +17,14 @@ export interface ScanImportOptions {
   previewTriangles?: number;
   onSource?: (source: ScanSource) => void;
 }
-export interface ScanSource {
-  bytes: number;
-  triangles: number;
-  displayedTriangles: number;
-}
+export type ScanSource = ScanSourceCounts;
 const TRIANGLES_PER_CHUNK = 16_384;
 
 function checkAbort(signal?: AbortSignal) {
   if (signal?.aborted) throw new DOMException("Import cancelled", "AbortError");
 }
 
-/** Read binary STL in bounded chunks directly into its final render buffer. */
+/** Read binary STL in bounded chunks, retaining native connectivity at full resolution. */
 export async function readScan(
   file: ScanFile,
   extension: string,
@@ -85,13 +83,34 @@ export async function readScan(
           }
           if (keep) nextSample++;
         }
-        options.onProgress?.((start + count) / triangles);
+        options.onProgress?.(
+          ((start + count) / triangles) *
+            (options.previewTriangles === undefined ? 0.5 : 1),
+        );
+      }
+      checkAbort(options.signal);
+      if (options.previewTriangles === undefined) {
+        const indexed = nativeStlTopology(positions, {
+          signal: options.signal,
+          onProgress: (fraction) => options.onProgress?.(0.5 + fraction * 0.45),
+        });
+        if (!indexed.triangles.length)
+          throw new Error(
+            "STL has no accepted triangles after vertex mapping.",
+          );
+        positions = expandPlyTopology(indexed);
+        checkAbort(options.signal);
+        options.onIndexedMesh?.(indexed);
       }
       options.onSource?.({
         bytes: file.size,
         triangles,
-        displayedTriangles: displayed,
+        displayedTriangles: positions.length / 9,
+        ...(options.previewTriangles === undefined
+          ? { acceptedTriangles: positions.length / 9 }
+          : {}),
       });
+      options.onProgress?.(1);
       return positions;
     }
     // Binary headers can contain arbitrary text, including "solid". Only an

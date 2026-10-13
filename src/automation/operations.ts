@@ -1,3 +1,4 @@
+import { isSampledScan } from "../scan-source";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
 import {
   listBackups,
@@ -746,7 +747,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           sourceId: e.id,
           hidden: e.meshSelection?.hidden ?? [],
           selection,
-          sampled: !!e.scanSource,
+          sampled: isSampledScan(e.scanSource),
         });
       if (kind === "scanTools") {
         if ("targets" in op.operation || "selection" in op.operation)

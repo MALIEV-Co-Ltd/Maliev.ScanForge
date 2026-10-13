@@ -68,10 +68,25 @@ export function nativeStlSpatialBucket(
  * Process spatial buckets independently to bound live hash-table allocations.
  * This is not the ASCII/fallback STL path.
  */
-export function nativeStlTopology(coordinates: Float32Array) {
+export function nativeStlTopology(
+  coordinates: Float32Array,
+  options: {
+    signal?: AbortSignal;
+    onProgress?: (fraction: number) => void;
+  } = {},
+) {
+  function progress(fraction: number) {
+    if (options.signal?.aborted)
+      throw new DOMException("Import cancelled", "AbortError");
+    options.onProgress?.(fraction);
+    if (options.signal?.aborted)
+      throw new DOMException("Import cancelled", "AbortError");
+  }
+  progress(0);
   if (!coordinates.length || coordinates.length % 9)
     throw new Error("STL topology requires complete facets.");
   const tree = nativeStlSpatialTree(coordinates);
+  progress(0.1);
   const cornerCount = coordinates.length / 3;
   if (cornerCount > 0x7fffffff)
     throw new Error("STL topology exceeds the spatial index capacity.");
@@ -79,6 +94,7 @@ export function nativeStlTopology(coordinates: Float32Array) {
   const tails = new Int32Array(512).fill(-1);
   const next = new Int32Array(cornerCount).fill(-1);
   for (let corner = 0; corner < cornerCount; corner++) {
+    if (corner % 16_384 === 0) progress(0.1 + (corner / cornerCount) * 0.2);
     const offset = corner * 3;
     const bucket = nativeStlSpatialBucket(
       tree,
@@ -95,9 +111,12 @@ export function nativeStlTopology(coordinates: Float32Array) {
   const vertices = new Float32Array(coordinates.length);
   let vertexCount = 0;
   for (let bucket = 0; bucket < heads.length; bucket++) {
+    progress(0.3 + (bucket / heads.length) * 0.6);
     if (heads[bucket] < 0) continue;
     const table = new NativeStlVertexTable();
     for (let corner = heads[bucket]; corner >= 0; corner = next[corner]) {
+      if (corner % 16_384 === 0 && options.signal?.aborted)
+        throw new DOMException("Import cancelled", "AbortError");
       const offset = corner * 3;
       representatives[corner] = table.insert(
         [
@@ -121,6 +140,7 @@ export function nativeStlTopology(coordinates: Float32Array) {
   const triangles = new Uint32Array(cornerCount);
   let count = 0;
   for (let i = 0; i < cornerCount; i += 3) {
+    if (i % 49_152 === 0) progress(0.9 + (i / cornerCount) * 0.1);
     const a = mappedCorners[i],
       b = mappedCorners[i + 1],
       c = mappedCorners[i + 2];
@@ -130,8 +150,10 @@ export function nativeStlTopology(coordinates: Float32Array) {
       triangles[count++] = c;
     }
   }
-  return {
+  const result = {
     vertices: vertices.slice(0, vertexCount * 3),
     triangles: triangles.slice(0, count),
   };
+  progress(1);
+  return result;
 }

@@ -127,6 +127,26 @@ describe("file boundaries", () => {
       ),
     ).toThrow("source counts");
   });
+  it("persists accepted native counts and rejects inconsistent accepted geometry", () => {
+    const scanSource = {
+      bytes: 184,
+      triangles: 2,
+      acceptedTriangles: 1,
+      displayedTriangles: 1,
+    };
+    expect(
+      parseProject(serializeProject("Native", [{ ...entity, scanSource }]))
+        .entities[0].scanSource,
+    ).toEqual(scanSource);
+    for (const acceptedTriangles of [0, 3, NaN, 0.5])
+      expect(() =>
+        parseProject(
+          serializeProject("Invalid", [
+            { ...entity, scanSource: { ...scanSource, acceptedTriangles } },
+          ]),
+        ),
+      ).toThrow("source counts");
+  });
   it("persists rational surface controls and constrained sketch drafts through both save paths", async () => {
     const surfacePatch = createGridPatch(4, 4, 20, 30, 3);
     const authoring = { sketch: rectangleSketch(20, 30) };

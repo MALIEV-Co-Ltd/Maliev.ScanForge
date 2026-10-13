@@ -51,7 +51,7 @@ export function nativeSurfaceRefinementRequest(
       !target.indexedMesh
     )
       throw new Error(
-        "Surface refinement requires indexed PLY meshes for both moving and fixed objects.",
+        "Surface refinement requires indexed meshes for both moving and fixed objects.",
       );
   }
   return {

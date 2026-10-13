@@ -96,6 +96,45 @@ function harness(entities: Entity[] = [entity()]) {
 }
 
 describe("shared workspace operation contracts", () => {
+  it.each([undefined, 1])(
+    "reports preview sampling consistently for accepted count %s",
+    async (acceptedTriangles) => {
+      const scanSource = {
+        bytes: 184,
+        triangles: 2,
+        displayedTriangles: 1,
+        ...(acceptedTriangles === undefined ? {} : { acceptedTriangles }),
+      };
+      const h = harness([entity({ scanSource })]);
+      vi.mocked(processMesh).mockRejectedValueOnce(
+        new Error("request captured"),
+      );
+      await expect(
+        h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            operation: {
+              kind: "sketchSection",
+              options: {
+                plane: "OXY",
+                offset: 0,
+                onSlicingPlane: true,
+                selectedOnly: false,
+              },
+            },
+          },
+          h.context,
+        ),
+      ).rejects.toThrow("request captured");
+      expect(vi.mocked(processMesh).mock.lastCall![0]).toMatchObject({
+        sampled: acceptedTriangles === undefined,
+      });
+      const state = (await h.ops.project_get({}, h.context)) as {
+        objects: { scanSource: unknown }[];
+      };
+      expect(state.objects[0].scanSource).toEqual(scanSource);
+    },
+  );
   it("applies the stronger selected-smoothing preset through MCP and honors explicit overrides", async () => {
     const positions = new Float32Array(smoothingInput.positions);
     for (const iterations of [undefined, 2]) {
