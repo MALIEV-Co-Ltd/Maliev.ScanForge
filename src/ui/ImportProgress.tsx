@@ -1,4 +1,5 @@
 import "./ImportProgress.css";
+import { OverflowStatusText } from "./OverflowStatusText";
 
 export function ImportProgress({
   name,
@@ -15,9 +16,10 @@ export function ImportProgress({
       : null;
   return (
     <div className="status-import-progress">
-      <span className="status-import-filename" title={`Importing ${name}`}>
-        Importing {name}
-      </span>
+      <OverflowStatusText
+        className="status-import-filename"
+        text={`Importing ${name}`}
+      />
       <div
         className={`status-import-track${percent === null ? " indeterminate" : ""}`}
         role="progressbar"

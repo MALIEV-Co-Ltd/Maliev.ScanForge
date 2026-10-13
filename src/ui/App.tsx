@@ -4985,6 +4985,8 @@ export function App() {
               planePicking,
               mode,
               brushActive:
+                toolPanelOpen &&
+                workspace === "mesh" &&
                 mode === "brush" &&
                 !selected?.kernelId &&
                 !scanPanel &&

@@ -40,7 +40,8 @@ for (const [tool, action] of [
     expect(hint).toContain(action);
     expect(hint).toContain("Alt subtracts");
     expect(hint).toContain("Select through enabled");
-    expect(hint).toContain("Right-click opens tools menu");
+    expect(hint).not.toContain("Right-click opens tools menu");
+    expect(hint).not.toContain("orbits");
     expect(hint.includes("Ctrl+wheel")).toBe(
       ["brush", "freehand", "line"].includes(tool),
     );
@@ -93,4 +94,15 @@ it("describes measurement, section position, and parameters without claiming non
   expect(
     activeToolGuidance({ ...base, previewAuthoring: "surface" }),
   ).toContain("Adjust surface settings in panel");
+});
+
+it("shows general navigation only without an active command", () => {
+  expect(activeToolGuidance(base)).toContain("Middle-drag orbits");
+  const hint = activeToolGuidance({
+    ...base,
+    parameterTool: "Reduce polygons",
+  });
+  expect(hint).toContain("Preview checks result");
+  expect(hint).not.toContain("selects object");
+  expect(hint).not.toContain("orbits");
 });

@@ -1,0 +1,32 @@
+.overflow-status-text {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.overflow-status-track {
+  display: inline-flex;
+  width: max-content;
+  gap: 32px;
+}
+.scrolling .overflow-status-track {
+  animation: status-text-loop var(--scroll-duration) linear infinite;
+}
+.overflow-status-text:hover .overflow-status-track,
+.overflow-status-text:focus .overflow-status-track {
+  animation-play-state: paused;
+}
+@keyframes status-text-loop {
+  0%,
+  10% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-1 * var(--scroll-distance)));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scrolling .overflow-status-track {
+    animation: none;
+  }
+}

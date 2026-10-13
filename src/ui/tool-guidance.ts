@@ -28,16 +28,16 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
   if (context.busy)
     return "Processing · modeling input paused · use the active Cancel button to stop";
   if (context.planePicking)
-    return `Hover highlights plane · Left-click creates sketch · Hold left-click selects through · Escape cancels · ${menu}`;
+    return `Hover highlights plane · Left-click creates sketch · Hold left-click selects through · Escape cancels`;
   if (context.reference)
-    return `Left-click picks ${context.reference === "plane" ? "planar reference" : "cylinder"} · Escape cancels picking · ${menu} · ${navigation}`;
+    return `Left-click picks ${context.reference === "plane" ? "planar reference" : "cylinder"} · Escape cancels picking`;
   if (context.landmarkSide)
     return context.landmarkPreview
-      ? `Alignment preview · Choose moving/fixed picking to edit points · Apply accepts · Cancel discards · ${menu}`
-      : `Left-click adds ${context.landmarkSide} landmark · Pick matching points on the other object · ${menu} · ${navigation}`;
+      ? `Alignment preview · Choose moving/fixed picking to edit points · Apply accepts · Cancel discards`
+      : `Left-click adds ${context.landmarkSide} landmark · Pick matching points on the other object`;
   if (context.sketchTool) {
     const instructions: Record<SketchDrawingTool, string> = {
-      navigate: `Left/middle-drag orbits · Ctrl+drag pans · Shift+drag zooms · ${menu}`,
+      navigate: `Left/middle-drag orbits · Ctrl+drag pans · Shift+drag zooms`,
       line: "Left-drag draws line · Release sets endpoint · Right-click or Escape cancels unfinished drawing",
       move: "Left-drag moves an endpoint · Release applies · Right-click or Escape cancels unfinished move",
       circle:
@@ -48,12 +48,12 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
     };
     return context.sketchTool === "navigate"
       ? instructions.navigate
-      : `${instructions[context.sketchTool]} · ${navigation}`;
+      : instructions[context.sketchTool];
   }
   if (context.previewAuthoring)
-    return `Adjust ${context.previewAuthoring} settings in panel · Preview checks result · Apply accepts · ${menu} · ${navigation}`;
+    return `Adjust ${context.previewAuthoring} settings in panel · Preview checks result · Apply accepts`;
   if (context.panel)
-    return `Select ${context.panel === "components" ? "mesh component" : context.panel === "holes" ? "hole" : "boundary loop"} in panel · Left-click selects object · ${menu} · ${navigation}`;
+    return `Select ${context.panel === "components" ? "mesh component" : context.panel === "holes" ? "hole" : "boundary loop"} in panel`;
   if (context.mode === "brush" && context.brushActive) {
     const tools = {
       brush: "Left-drag draws filled selection",
@@ -64,12 +64,12 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
       wand: "Left-click selects connected curvature region · Degrees slider changes tolerance",
     };
     const tool = context.selectionTool ?? "brush";
-    return `${tools[tool]} · ${context.subtract ? "Subtract mode" : "Alt subtracts"}${context.selectThrough ? " · Select through enabled" : ""}${["brush", "freehand", "line"].includes(tool) ? " · Ctrl+wheel changes brush size" : ""} · ${menu} · ${navigation}`;
+    return `${tools[tool]} · ${context.subtract ? "Subtract mode" : "Alt subtracts"}${context.selectThrough ? " · Select through enabled" : ""}${["brush", "freehand", "line"].includes(tool) ? " · Ctrl+wheel changes brush size" : ""}`;
   }
   if (context.mode === "measure")
-    return `Left-click two surface points measures distance · Next click starts new measurement · ${menu} · ${navigation}`;
+    return `Left-click two surface points measures distance · Next click starts new measurement`;
   if (context.mode === "section")
-    return `${context.sectionAxis ?? "Z"} section · ${context.sectionOffset ?? "0"} mm · Panel offset moves cutting plane · Left-click selects object · ${menu} · ${navigation}`;
+    return `${context.sectionAxis ?? "Z"} section · ${context.sectionOffset ?? "0"} mm · Panel offset moves cutting plane`;
   if (context.parameterTool) {
     const actions = [
       "Reduce polygons",
@@ -79,7 +79,7 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
     ].includes(context.parameterTool)
       ? "Preview checks result · Accept completes"
       : "Apply completes";
-    return `${context.parameterTool}: adjust settings in panel · ${actions} · Left-click selects object · ${menu} · ${navigation}`;
+    return `${context.parameterTool}: adjust settings in panel · ${actions}`;
   }
-  return `Left-click selects · Hold left-click selects through · ${menu} · Left/middle-drag orbits · Ctrl+drag pans · Shift+drag zooms`;
+  return `Left-click selects · Hold left-click selects through · ${menu} · ${navigation}`;
 }

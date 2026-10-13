@@ -6,6 +6,7 @@ import { Kbd, ShortcutText } from "./Kbd";
 import { shortcutReference } from "./shortcut-reference";
 import type { ShortcutContext } from "../keyboard-shortcuts";
 import { StatusMetrics } from "./StatusMetrics";
+import { OverflowStatusText } from "./OverflowStatusText";
 export function StatusMessage({
   message,
   children,
@@ -15,7 +16,13 @@ export function StatusMessage({
 }) {
   return (
     <div className="status-message" aria-live="polite" title={message}>
-      {children ?? message}
+      {children === undefined || typeof children === "string" ? (
+        <OverflowStatusText
+          text={typeof children === "string" ? children : message}
+        />
+      ) : (
+        children
+      )}
     </div>
   );
 }
