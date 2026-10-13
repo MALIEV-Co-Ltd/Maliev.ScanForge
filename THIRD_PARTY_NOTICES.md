@@ -1,6 +1,6 @@
 # Third-party notices
 
-ScanForge makes use of facilities provided by Open CASCADE Technology. Its independently authored source is MIT licensed; third-party components are not relicensed.
+ScanForge makes use of facilities provided by Open CASCADE Technology. Current covered ScanForge code uses the [ScanForge Source-Available License](LICENSE). Previously MIT-licensed ScanForge versions and portions retain their original permissions and [historical notice](docs/licenses/SCANFORGE_PREVIOUS_MIT.txt). Third-party components are not relicensed.
 
 | Component                   | License                                         | Source                                                   |
 | --------------------------- | ----------------------------------------------- | -------------------------------------------------------- |

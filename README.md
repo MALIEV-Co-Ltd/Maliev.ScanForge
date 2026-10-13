@@ -1,6 +1,6 @@
 # ScanForge
 
-An independently authored, open-source scan-to-CAD workbench that runs in a modern browser. TypeScript and React provide the interface, Three.js renders geometry, and OpenCascade.js processes exact CAD inside an isolated WebAssembly worker.
+An independently authored, source-available scan-to-CAD workbench that runs in a modern browser. TypeScript and React provide the interface, Three.js renders geometry, and OpenCascade.js processes exact CAD inside an isolated WebAssembly worker.
 
 **Status: experimental workbench.** Editable rational NURBS patches, compatible closed-patch solid reconstruction, dependency-driven parametric rebuilds, line/arc sketch constraints, classified segmentation, scan registration and nonmanifold sheet repair are implemented. Their limits are explicit: this is not a complete professional reconstruction suite or a verified reproduction of another application's algorithms. See [capabilities](docs/CAPABILITIES.md).
 
@@ -116,4 +116,6 @@ ScanForge supports local AI-agent control through MCP. The editor and agents sha
 
 ## License
 
-Authored ScanForge code: [MIT](LICENSE). Dependencies retain their own licenses, including LGPL-2.1 for OpenCascade.js. See [third-party notices](THIRD_PARTY_NOTICES.md). Open-source licensing requirements still apply.
+Current covered ScanForge code uses the [ScanForge Source-Available License](LICENSE). Source inspection, local evaluation, and development of contributions to this repository are permitted. Independent distributions, production deployments, and competing services containing newly covered material require written permission from MALIEV. This is not an open-source license. GitHub's rights to view and fork public repositories are preserved.
+
+Previously MIT-licensed versions and portions retain their original permissions; this change cannot prevent independent versions based on that material. Dependencies retain their own licenses, including LGPL-2.1 for OpenCascade.js. See [third-party notices](THIRD_PARTY_NOTICES.md), the [licensing policy and transition](docs/LICENSING.md), and [contribution instructions](CONTRIBUTING.md). Hosted-service pricing and end-user terms are separate from the source license; this repository change does not implement billing or restrict exports technically.

@@ -1,23 +1,82 @@
-MIT License
+ScanForge Source-Available License 1.0
 
 Copyright (c) 2026 MALIEV Co., Ltd.
+All rights reserved except as expressly granted below.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Scope and prior licenses
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+These terms apply to MALIEV-owned ScanForge code distributed with this license
+and to contributions whose owners have authorized distribution on these terms.
+They do not replace third-party licenses or withdraw any rights already granted
+for copies or portions previously distributed under MIT or another license.
+Earlier MIT versions and previously MIT-licensed portions remain available under
+their original terms, including when present in a later version. The historical
+MIT notice is retained in docs/licenses/SCANFORGE_PREVIOUS_MIT.txt. These terms
+grant additional permissions and govern new covered material; they do not
+retroactively restrict previously licensed material.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. Limited permissions
 
-Bundled dependencies retain their own licenses; see THIRD_PARTY_NOTICES.md.
+Subject to these terms, you may:
+
+a. View and inspect the covered source code.
+b. Clone, build, run, test, and modify it locally solely to evaluate ScanForge
+   or develop contributions to the official MALIEV-Co-Ltd/Maliev.ScanForge
+   repository. Evaluation does not include production use or providing services
+   to other people.
+c. Submit proposed changes to the official repository under CONTRIBUTING.md.
+d. View and fork the public repository as permitted by GitHub's applicable
+   terms. Those platform rights are preserved independently of this license.
+
+Retain copyright notices, this license, and applicable third-party notices in
+copies made under these permissions.
+
+3. Uses requiring separate permission
+
+Except to the extent permitted by section 1, GitHub's applicable terms, or
+applicable law, prior written permission from MALIEV Co., Ltd. is required to:
+
+a. Publish, distribute, sublicense, sell, or otherwise supply independent
+   versions, builds, or derivative products containing covered material.
+b. Deploy or operate covered material as an independent hosted application,
+   service, API, or commercial offering, whether paid or free.
+c. Use covered material in production, including self-hosted production use,
+   or use modifications for purposes beyond evaluation and contribution.
+
+Permission to access MALIEV's official hosted application, or use official
+end-user distributions in production, is governed by their separate service or
+end-user terms. This source license grants no free export entitlement, payment
+bypass right, or access to private services. Commercial permission can be
+requested through the official repository's maintainers.
+
+4. Ownership, contributions, and branding
+
+Ownership of covered material remains with its respective copyright holders.
+Contribution terms are described in CONTRIBUTING.md. This license grants no
+rights to MALIEV or ScanForge trademarks, logos, or claims of endorsement.
+It does not assert ownership of users' imported scans, designs, or exported
+files and does not impose this source license on those files merely because
+they were processed by ScanForge.
+
+5. Third-party components
+
+Third-party components retain their own licenses and permissions. Nothing in
+these terms restricts rights granted by those licenses or excuses compliance
+with them. See THIRD_PARTY_NOTICES.md and docs/CAD_DISTRIBUTION.md.
+
+6. Termination
+
+Permissions granted by this license terminate if you violate its conditions.
+Termination does not revoke independently granted rights under section 1 or
+third-party licenses. Contact MALIEV for written permission to resume uses
+requiring this license after termination.
+
+7. Disclaimer
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE COVERED MATERIAL IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE MATERIAL OR ITS USE.
+
+This is a source-available license, not an open-source license.
