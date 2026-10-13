@@ -3,12 +3,15 @@
 }
 .ribbon-tabs-scroll {
   position: relative;
+  display: grid;
   flex: 1 1 auto;
   min-width: 0;
   align-self: center;
   height: fit-content;
 }
 .ribbon .ribbon-tabs-scroll .ribbon-tabs {
+  grid-area: 1 / 1;
+  min-width: 0;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -27,9 +30,9 @@
   flex: 0 0 auto;
 }
 .ribbon-tabs-hint {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  grid-area: 1 / 1;
+  align-self: center;
+  z-index: 1;
   height: 16px;
   width: 20px;
   display: none;
@@ -41,10 +44,10 @@
   background: var(--chrome);
 }
 .ribbon-tabs-hint.left {
-  left: 0;
+  justify-self: start;
 }
 .ribbon-tabs-hint.right {
-  right: 0;
+  justify-self: end;
 }
 .ribbon-tabs-scroll[data-left="true"] .left,
 .ribbon-tabs-scroll[data-right="true"] .right {
