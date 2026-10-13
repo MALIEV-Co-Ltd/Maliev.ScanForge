@@ -1,0 +1,49 @@
+.workbench footer.statusbar > .status-message {
+  flex: 0 1 200px;
+  width: 200px;
+  max-width: 200px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workbench .status-message .status-import-progress {
+  width: 100%;
+}
+.workbench .status-message .status-import-filename {
+  flex: 1;
+  min-width: 0;
+}
+.workbench .status-message .status-import-track {
+  width: 60px;
+  min-width: 40px;
+}
+.workbench footer.statusbar .status-navigation-hint {
+  display: block;
+  flex: 1 1 160px;
+  margin-left: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workbench footer.statusbar .status-project-name,
+.workbench footer.statusbar .save-state,
+.workbench footer.statusbar .status-end {
+  flex-shrink: 0;
+}
+@media (max-width: 800px) {
+  .workbench footer.statusbar > .status-message {
+    flex-basis: 110px;
+    width: 110px;
+    max-width: 110px;
+  }
+  .workbench footer.statusbar .status-metrics {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .workbench footer.statusbar .status-project-name {
+    display: none;
+  }
+}

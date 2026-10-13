@@ -1,3 +1,4 @@
+import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
 import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
 import { CanvasError } from "./CanvasError";
@@ -4804,19 +4805,25 @@ export function App() {
       )}
       <footer className="statusbar">
         <span className={busy ? "status-dot busy" : "status-dot"} />
-        {importProgress ? (
-          <ImportProgress
-            name={importProgress.name}
-            fraction={importProgress.fraction}
-            onCancel={
-              importAbort.current
-                ? () => importAbort.current?.abort()
-                : undefined
-            }
-          />
-        ) : (
-          <span aria-live="polite">{message}</span>
-        )}
+        <StatusMessage
+          message={
+            importProgress ? `Importing ${importProgress.name}` : message
+          }
+        >
+          {importProgress ? (
+            <ImportProgress
+              name={importProgress.name}
+              fraction={importProgress.fraction}
+              onCancel={
+                importAbort.current
+                  ? () => importAbort.current?.abort()
+                  : undefined
+              }
+            />
+          ) : (
+            message
+          )}
+        </StatusMessage>
         <span className="save-state">
           {dirty ? "Unsaved changes" : "Project unchanged"}
         </span>
@@ -4833,17 +4840,43 @@ export function App() {
             }}
           />
         </label>
-        <span className="status-navigation-hint">
-          {planePicking
-            ? "Hover a plane · click to create sketch · hold to select through · Escape cancels"
-            : mode === "brush"
-              ? "Left-drag selects · Alt subtracts · Ctrl+wheel resizes · middle-drag orbits"
-              : mode === "measure"
-                ? "Click two points on a surface to measure distance"
-                : mode === "section"
-                  ? `${axis.toUpperCase()} section · ${number(offset)} mm`
-                  : "Click selects · left/middle-drag rotates · Ctrl+drag pans · Shift+drag zooms"}
-        </span>
+        <ActiveToolHint
+          context={{
+            busy,
+            planePicking,
+            mode,
+            brushActive:
+              mode === "brush" &&
+              !selected?.kernelId &&
+              !scanPanel &&
+              !scanBoundaryPaths.length,
+            selectionTool,
+            selectThrough,
+            subtract: subtractBrush,
+            sketchTool:
+              workspace === "sketch" && toolPanelOpen && !createSketch
+                ? sketchDrawingTool
+                : undefined,
+            landmarkSide: nPoints ? landmarkPickSide : undefined,
+            landmarkPreview: !!nPoints?.preview,
+            reference: scanReferencePick.current ?? undefined,
+            panel:
+              workspace === "mesh" && toolPanelOpen
+                ? (scanPanel ?? undefined)
+                : undefined,
+            parameterTool:
+              workspace === "scanTools" && toolPanelOpen
+                ? scanToolTitles[scanTool]
+                : undefined,
+            previewAuthoring: surfaceFit
+              ? "surface"
+              : createSketch
+                ? "sketch section"
+                : undefined,
+            sectionAxis: axis.toUpperCase(),
+            sectionOffset: number(offset),
+          }}
+        />
         <StatusMetrics
           facets={selected ? selected.positions.length / 9 : undefined}
         />
