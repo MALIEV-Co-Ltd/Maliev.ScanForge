@@ -24,8 +24,8 @@ import {
   applyRigidTransform,
   registerIcp,
   registerGlobal,
-  registerPairedPoints,
 } from "./registration";
+import { registerNativeLandmarks } from "./native-landmark-registration";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -319,7 +319,7 @@ scope.onmessage = async ({ data: incoming }) => {
     } else {
       const registration =
         request.kind === "paired"
-          ? registerPairedPoints(
+          ? registerNativeLandmarks(
               request.sourceLandmarks,
               request.targetLandmarks,
               {
@@ -349,6 +349,9 @@ scope.onmessage = async ({ data: incoming }) => {
       );
       result.registration = registration;
       result.diagnostics = {
+        ...(request.kind === "paired"
+          ? { algorithm: "native-landmark-registration" }
+          : {}),
         rms: registration.rms,
         maxError: registration.maxError,
         converged: registration.converged,

@@ -636,8 +636,9 @@ describe("processing worker resource ownership", () => {
       data: {
         kind: "paired",
         positions,
-        sourceLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
-        targetLandmarks: [2, 0, 0, 3, 0, 0, 2, 1, 0],
+        // Native registration requires landmarks spread at least 1 mm RMS from their fitted line.
+        sourceLandmarks: [0, 0, 0, 10, 0, 0, 0, 10, 0],
+        targetLandmarks: [2, 0, 0, 12, 0, 0, 2, 10, 0],
       },
     });
     const aligned = (replies.at(-1)!.message as { result: ProcessingResult })

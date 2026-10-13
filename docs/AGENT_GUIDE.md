@@ -171,6 +171,14 @@ For STEP, every included object must be exact CAD. Hide scan/reference objects b
 
 Call `artifact_read` with the artifact ID, byte `offset` and optional `length` (maximum 262,144). Decode each returned `base64` chunk, append in offset order, and stop at `eof:true`. Use the agent's own authorized file tools to save bytes at the requested location. ScanForge does not grant arbitrary filesystem read/write privileges. Delete disposable artifacts through `artifact_delete`; exporting does not mark the browser project as saved.
 
+## Point clouds and landmark registration
+
+`project_import` accepts `.asc` scans containing XYZ columns and optional NX/NY/NZ columns. Choose the import unit as for other scans. Every point is retained as a `pointcloud` object, without artificial triangle faces; normals survive project round trips and rigid alignment. Import results and object summaries report `points`, rather than `triangles`. Triangle topology and mesh-editing operations reject point clouds.
+
+GUI N-point alignment and `mesh_process` with `operation.kind: "paired"` use the same recovered landmark-registration wrapper. Supply matching `sourceLandmarks` and `targetLandmarks` XYZ arrays in world-space millimeters, with at least three points on each side. The returned transform maps the moving/source object into the fixed/target frame. It applies to the whole moving mesh or point cloud and leaves the fixed object unchanged. Scanner normals rotate with their object.
+
+The recovered geometric gate rejects landmarks lying on a line or clustered too closely: when line fitting succeeds, the source landmarks must have at least 1 mm RMS distance from the fitted line. Choose widely spread landmarks. Failure leaves geometry unchanged; there is no fallback to a different fitting algorithm. Successful diagnostics identify `algorithm: "native-landmark-registration"`; RMS follows the recovered Float32 landmark conversion and fit, while maximum error is measured on those converted landmarks. `iterations: 1` counts the registration invocation, not internal simplex evaluations. ICP/global registration remains a separate implementation and is not covered by this landmark parity claim.
+
 ## Feature coverage
 
 | Area                     | Tools / contracts                                                                                                                                                                                                                                               |
