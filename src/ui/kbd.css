@@ -14,22 +14,34 @@
 .kbd-chord {
   white-space: nowrap;
 }
-.workbench footer.statusbar .status-controls {
-  flex: 1 1 160px;
-  min-width: 0;
+.workbench footer.statusbar .status-keyboard {
+  order: 1;
+  flex: 0 0 auto;
   position: relative;
 }
-.workbench footer.statusbar .status-controls .status-navigation-hint {
+.workbench footer.statusbar .status-navigation-hint {
   margin: 0 8px;
   padding: 3px 0;
   text-align: center;
+}
+.status-keyboard-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--muted);
+}
+.status-keyboard:hover .status-keyboard-icon {
+  color: var(--text);
 }
 .shortcut-reference {
   display: none;
   position: absolute;
   bottom: 100%;
   right: 0;
-  width: min(540px, 80vw);
+  box-sizing: border-box;
+  width: min(300px, calc(100vw - 32px));
   max-height: min(420px, 65vh);
   overflow: auto;
   white-space: normal;
@@ -41,8 +53,7 @@
   box-shadow: 0 4px 16px #0004;
   z-index: 100;
 }
-.status-controls:hover .shortcut-reference,
-.status-controls:focus-within .shortcut-reference {
+.status-keyboard:hover .shortcut-reference {
   display: block;
 }
 .shortcut-reference h3 {
@@ -55,10 +66,11 @@
 }
 .shortcut-reference dl {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 7px 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 8px;
   margin: 0;
 }
 .shortcut-reference dd {
   margin: 0;
+  white-space: nowrap;
 }

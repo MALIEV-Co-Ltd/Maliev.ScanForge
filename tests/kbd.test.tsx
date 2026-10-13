@@ -37,7 +37,7 @@ it("maps implemented shortcuts with local mode precedence and excludes unsupport
     )?.label,
   ).toBe("Open CAD fillet tools");
 });
-it("keeps complete instructions accessible while presenting the active controls and reference as keycaps", () => {
+it("separates the keyboard reference from active tool controls", () => {
   const html = renderToStaticMarkup(
     <ActiveToolHint
       context={{
@@ -50,11 +50,16 @@ it("keeps complete instructions accessible while presenting the active controls 
   );
   expect(html).toContain('title="Left-drag draws filled selection');
   expect(html).toContain('aria-label="Shortcut reference"');
+  expect(html).toContain(
+    'class="status-keyboard-icon" aria-label="Keyboard shortcuts"',
+  );
+  expect(html).not.toContain("Current tool controls");
+  expect(html).not.toContain("status-controls");
   expect(html).toContain(">Alt</kbd>");
   expect(html).toContain(">U</kbd>");
   expect(
     renderToStaticMarkup(
       <ActiveToolHint context={{ mode: "inspect", busy: true }} />,
     ),
-  ).not.toContain("Keyboard shortcuts");
+  ).toContain("Modeling shortcuts paused while processing.");
 });
