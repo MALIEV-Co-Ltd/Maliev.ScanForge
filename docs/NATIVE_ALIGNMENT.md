@@ -417,3 +417,55 @@ mesh/CAD refinement. That path calls controller construction `0x140aa8ea0` and
 refinement `0x140aaa570`. Extracting and validating those operations remains
 necessary before replacing the application's preview pipeline. The fixed object
 must remain unchanged through preview, acceptance, cancellation and undo/redo.
+
+## Six-parameter refinement transform and complete function inventory
+
+A focused REA extraction on 2026-10-13 supplied explicit function seeds for
+previously unseeded refinement callees. The initial decompilations had one-byte
+inventory bodies and incomplete assembly; those records cannot establish complete
+instruction coverage. The replacement records contain complete bodies and assembly:
+
+| Function                          | Body bytes | Assembly instructions | REA Evidence                                                          |
+| --------------------------------- | ---------: | --------------------: | --------------------------------------------------------------------- |
+| Axis rotation `0x140b30740`       |        690 |                   140 | `ev_ca5afaf1793eeeacb31c2a2a4990943a02be57a19fed7fd72ddcb673fdd02595` |
+| Objective callback `0x140aaa020`  |        126 |                    29 | `ev_91de89bba5b03051c677bc4898aaf27c14f20c97a42b208e36df93e7c91aa494` |
+| Optimizer wrapper `0x140b25b80`   |        677 |                   161 | `ev_eaafc184fd9d228b1536e459295a05f0065416b22a381392d617c76e6af32b2a` |
+| Rotation correction `0x140ae82d0` |        469 |                   111 | `ev_fdebb9fd8f56ad694db01a29da0ca3f4fc58bd4ba6678f6dbf9c9709c4cca00c` |
+| Polar solver `0x140aed610`        |      1,684 |                   453 | `ev_7178591f25ab2448c518341946160766ad5aee8b2486b334c9e8c142e6171ef3` |
+| Optimizer core `0x140b23f20`      |      3,325 |                   824 | `ev_ceb9fa6b77241011aac0f9876c4f3a3fbbf8d57a706788c20c89a0a7e0e2da1c` |
+
+The complete original transform `0x140aaa0a0` was executed on 60 retained
+inputs: identity, translation, fixed-angle cases and 25 seeded mixed transforms,
+each with translation-only mode both disabled and enabled. Translation parameters
+are offset by 10; angle parameters are offset by pi/2. Rotations follow current
+local Z, Y and X axes and invoke the original correction/orthonormalization path
+after each rotation. The caller assembly passes double angles; the decompiler's
+`undefined4` annotation on the rotation helper is not a Float32 conversion.
+
+The probe preserves the original polar solver and numerical callees. Adaptations
+are limited to retained allocation/free bindings, standard CRT imports and the
+security-cookie check. An earlier attempt failed at an unbound allocation import;
+its failed result is excluded. The corrected run released its mapped allocation
+and exited. All 60 outputs are finite, captured matrix bytes round-trip exactly,
+translation error is zero, and the maximum rotation orthogonality residual is
+4.440892098500626e-16. These are native reference captures, not comparisons with
+an application port or native UI exports.
+
+The retained controller `0x140aaa570` distributes marked, non-hidden moving
+vertices round-robin into 0x70-byte worker records. Dispatcher `0x140aa91c0`
+calls workers directly for a single record and scheduler wrappers for multiple
+records. This is static dispatch evidence; actual concurrent execution and worker
+numerical output remain unverified. The refinement thread entry specifies a
+search budget of 1,000, a 1e-10 tolerance argument and a Float32-stored step promoted
+to double (default 0.00019999999494757503). The optimizer wrapper additionally
+initializes 1e-8 and 1e-10 tolerances. Their convergence use must be traced through
+the recovered core before treating them as equivalent to the paired-point search.
+
+The complete extraction, 60-case results, binding manifest, fault record and
+verification are retained outside the repository under the existing analysis
+folder, in `alignment-six-transform-results.json`,
+`alignment-six-transform-verification.json` and
+`alignment-refinement-dispatch-trace.json`. All task-created probe and REA
+processes were checked absent. The application preview remains unchanged until
+the rotation correction, six-parameter optimizer and mesh/CAD query workers are
+ported and compared with these original results.
