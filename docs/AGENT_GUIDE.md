@@ -4,6 +4,8 @@ ScanForge exposes its browser-owned workspace through an official-SDK MCP stdio 
 
 Read this guide through the MCP resource `scanforge://agent-guide`. Discover exact input schemas through `tools/list` or `capabilities_get`. Read live state through `project_get` or `scanforge://project`. The application API version is **1.0**; the saved project version and MCP protocol version are separate contracts.
 
+For agents changing ScanForge itself, [AGENTS.md](../AGENTS.md) requires every application change to retain or add equivalent MCP access through shared application operations. GUI-only changes are incomplete. Include MCP coverage, contract tests and updated agent documentation in the same change; missing parity blocks completion and commit.
+
 ## Setup for the human/operator
 
 Requires Node.js 22.12+, installed repository dependencies, and ScanForge open in a modern browser. From the repository:
