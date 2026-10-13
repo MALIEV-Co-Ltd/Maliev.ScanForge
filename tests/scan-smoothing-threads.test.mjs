@@ -33,6 +33,7 @@ class ThreadWorker {
   static owned = [];
   initialized = 0;
   iterations = 0;
+  vertexBuffers = new Set();
   constructor() {
     this.thread = new CpuWorker(
       new URL(`data:text/javascript,${encodeURIComponent(bridge)}`),
@@ -46,7 +47,10 @@ class ThreadWorker {
   }
   postMessage(data) {
     if (data.initialize) this.initialized++;
-    if ("iteration" in data) this.iterations++;
+    if ("iteration" in data) {
+      this.iterations++;
+      this.vertexBuffers.add(data.vertices.buffer);
+    }
     this.thread.postMessage(data);
   }
   terminate() {
@@ -105,7 +109,7 @@ it.each([
     const pool = new SelectedSmoothingPool();
     try {
       let totalIterations = 0;
-      for (const iterations of [2, 1, 3, 5, 2]) {
+      for (const [operation, iterations] of [2, 1, 3, 5, 2].entries()) {
         const stages = [];
         const actual = await pool.smooth(topology, selection, iterations, 0.5, {
           onProgress: (_, stage) => stages.push(stage),
@@ -115,6 +119,10 @@ it.each([
         for (const worker of ThreadWorker.owned) {
           expect(worker.initialized).toBe(1);
           expect(worker.iterations).toBe(totalIterations);
+          // One owned input buffer per operation, reused only after the joined
+          // iteration. Real structured clones keep each child snapshot stable.
+          expect(worker.vertexBuffers.size).toBe(operation + 1);
+          expect(worker.vertexBuffers.has(actual.buffer)).toBe(true);
         }
         expect(stages).toHaveLength(iterations);
         expect(

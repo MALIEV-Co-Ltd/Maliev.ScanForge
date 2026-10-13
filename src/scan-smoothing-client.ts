@@ -1,7 +1,6 @@
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
 import { smoothSelectedVertices } from "./scan-selected-smooth";
 import {
-  publishSmoothingTargets,
   smoothingRings,
   smoothingSelection,
   type SmoothingRings,
@@ -113,7 +112,7 @@ export class SelectedSmoothingPool {
     try {
       this.prepare(topology.triangles, rings, movable);
       this.expiry = setTimeout(() => this.cancel(), 120_000);
-      let vertices = Float64Array.from(topology.vertices, Math.fround);
+      const vertices = Float64Array.from(topology.vertices, Math.fround);
       for (let step = 0; step < iterations; step++) {
         if (generation !== this.generation || options.signal?.aborted)
           throw aborted();
@@ -127,14 +126,18 @@ export class SelectedSmoothingPool {
         const targets = await this.calculate(vertices, strength);
         if (generation !== this.generation || options.signal?.aborted)
           throw aborted();
-        // No shard can observe this iteration's output before both have finished.
-        const combined = new Float64Array(movable.length * 3);
-        let offset = 0;
+        // Both workers have finished reading their cloned input. Publish into
+        // our owned scratch only now; the canonical source remains immutable.
+        // Avoid a full vertex copy and a combined target allocation per step.
+        let index = 0;
         for (const part of targets) {
-          combined.set(part, offset);
-          offset += part.length;
+          for (let offset = 0; offset < part.length; offset += 3) {
+            const destination = movable[index++] * 3;
+            vertices[destination] = part[offset];
+            vertices[destination + 1] = part[offset + 1];
+            vertices[destination + 2] = part[offset + 2];
+          }
         }
-        vertices = publishSmoothingTargets(vertices, movable, combined);
       }
       return vertices;
     } catch (error) {

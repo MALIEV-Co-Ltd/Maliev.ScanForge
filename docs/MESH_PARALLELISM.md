@@ -1,5 +1,33 @@
 # Mesh processing parallelism
 
+## Selected smoothing publication without repeated copies (2026-10-13)
+
+The selected-area Smooth pool now publishes joined worker targets directly into
+one operation-owned coordinate buffer. It waits for both workers before writing;
+each child still receives a structured clone of the complete iteration input.
+The canonical mesh remains immutable. This removes the combined target array and
+full coordinate copy from every iteration without changing target arithmetic,
+rounding, worker admission, or the serial fallback. For 300,000 total and selected
+vertices, it avoids 14.4 MB of array allocation per iteration. This is an allocation
+reduction, not a measured browser latency improvement.
+
+The real-thread tests check one owned buffer per operation, cached connectivity,
+iterations 1/2/3/5, source immutability, and byte equality with the serial kernel.
+Their native selected Smooth comparisons remain the two-iteration annular and
+disconnected-fan captures; extra iteration counts do not claim new native captures.
+
+Both original-instruction Reduce Noise correction probes were separately rerun
+for selected iterations 1–5 with boundaries enabled and locked. All ten outputs
+match the retained fixtures across 8,640 Float32 coordinates. The probes retain
+the supplied-weight and object-access adapters described below; they do not
+constitute fresh native UI exports. Both mapped allocations were released and
+both processes exited. The rebuilt browser's accepted five-iteration result with
+locked boundaries matches all 864 native coordinate bytes and creates one edit.
+The production build passed without warnings or errors, all 52 focused tests and
+all 9,383 tests across 199 files passed, and scoped formatting/diff checks passed.
+The browser loaded `index-Z7Ru1tS9.js` and logged no warnings or errors. Test-owned
+CPU workers were terminated and their exits verified by the real-thread gates.
+
 ## Selected preview and multicore regression gate (2026-10-13)
 
 The production preview worker now has a regression gate across all ten retained

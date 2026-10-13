@@ -177,6 +177,11 @@ it("waits for both out-of-order shards then reuses workers and expires idle reso
     owned = pool();
   const job = owned.smooth(topology, selection, 2, 0.5);
   const [a, b] = WorkerDouble.instances;
+  const first = a.sent.at(-1)!;
+  if (!("iteration" in first)) throw new Error("Expected iteration.");
+  const scratch = first.vertices;
+  const before = new Uint8Array(scratch.buffer).slice();
+  expect(scratch.buffer).not.toBe(topology.vertices.buffer);
   let done = false;
   void job.then(() => {
     done = true;
@@ -185,12 +190,19 @@ it("waits for both out-of-order shards then reuses workers and expires idle reso
   await Promise.resolve();
   expect(done).toBe(false);
   expect(a.sent).toHaveLength(2);
+  expect(
+    new Uint8Array(scratch.buffer).every((byte, i) => byte === before[i]),
+  ).toBe(true);
   a.complete();
   await Promise.resolve();
   expect(a.sent).toHaveLength(3);
+  const next = a.sent.at(-1)!;
+  if (!("iteration" in next)) throw new Error("Expected next iteration.");
+  expect(next.vertices).toBe(scratch);
   a.complete();
   b.complete();
   const result = await job;
+  expect(result).toBe(scratch);
   const serial = smoothSelectedVertices(topology, selection, 2, 0.5, {});
   expect(sameBytes(result, serial)).toBe(true);
   WorkerDouble.auto = true;
