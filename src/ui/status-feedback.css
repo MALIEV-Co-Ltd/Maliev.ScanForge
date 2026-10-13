@@ -22,6 +22,29 @@
   gap: 8px;
   padding-inline-end: 12px;
 }
+.status-operation-feedback {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 6px;
+  width: 100%;
+}
+.status-operation-track {
+  grid-column: 1 / -1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 2px;
+}
+.status-operation-track > span {
+  display: block;
+  height: 100%;
+  background: #e8bf37;
+}
+.status-operation-percent {
+  font-variant-numeric: tabular-nums;
+}
 .status-guidance {
   grid-column: 2;
   grid-row: 1;

@@ -1,11 +1,45 @@
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   StatusMessage,
   ActiveToolHint,
   StatusBar,
+  OperationStatus,
+  completedStatusTimeout,
 } from "../src/ui/StatusFeedback";
 import { ImportProgress } from "../src/ui/ImportProgress";
+it("renders operation progress separately from scrolling text, including completed progress", () => {
+  for (const fraction of [0, 0.5, 1]) {
+    const html = renderToStaticMarkup(
+      <OperationStatus
+        message="Reduction complete · 100%"
+        fraction={fraction}
+        busy={fraction < 1}
+      />,
+    );
+    expect(html).toContain('role="progressbar"');
+    expect(html).toContain(`aria-valuenow="${fraction * 100}"`);
+    expect(html).toContain("status-operation-track");
+  }
+});
+it("expires completed feedback at five seconds and cancels stale operation timers", () => {
+  vi.useFakeTimers();
+  try {
+    const ready = vi.fn();
+    completedStatusTimeout(ready);
+    vi.advanceTimersByTime(4999);
+    expect(ready).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    expect(ready).toHaveBeenCalledOnce();
+    const stale = vi.fn();
+    const cancel = completedStatusTimeout(stale);
+    cancel();
+    vi.advanceTimersByTime(5000);
+    expect(stale).not.toHaveBeenCalled();
+  } finally {
+    vi.useRealTimers();
+  }
+});
 it("retains full operation text for assistive technology and hover while giving layout a dedicated bounded slot", () => {
   const message = "Operation " + "long details ".repeat(100);
   const html = renderToStaticMarkup(<StatusMessage message={message} />);

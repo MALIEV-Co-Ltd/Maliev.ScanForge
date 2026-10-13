@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Keyboard } from "lucide-react";
 import {
   activeToolGuidance,
@@ -11,6 +11,57 @@ import { shortcutReference } from "./shortcut-reference";
 import type { ShortcutContext } from "../keyboard-shortcuts";
 import { StatusMetrics } from "./StatusMetrics";
 import { OverflowStatusText } from "./OverflowStatusText";
+export function completedStatusTimeout(callback: () => void) {
+  const timer = setTimeout(callback, 5000);
+  return () => clearTimeout(timer);
+}
+export function OperationStatus({
+  message,
+  fraction,
+  busy,
+}: {
+  message: string;
+  fraction?: number;
+  busy: boolean;
+}) {
+  const [expired, setExpired] = useState<string>();
+  const completed =
+    !busy && ((fraction ?? 0) >= 1 || /\bcomplete(?:d)?\b/i.test(message));
+  const key = `${message}:${busy}`;
+  useEffect(() => {
+    if (completed) return completedStatusTimeout(() => setExpired(key));
+    setExpired(undefined);
+  }, [key, completed]);
+  const ready = expired === key;
+  const percent =
+    (fraction === undefined && !completed) || ready
+      ? undefined
+      : Math.round(Math.max(0, Math.min(1, fraction ?? 1)) * 100);
+  return (
+    <StatusMessage message={ready ? "Ready" : message}>
+      <div className="status-operation-feedback">
+        <OverflowStatusText
+          text={ready ? "Ready" : message.replace(/ · \d+%$/, "")}
+        />
+        {percent !== undefined && (
+          <>
+            <span className="status-operation-percent">{percent}%</span>
+            <div
+              className="status-operation-track"
+              role="progressbar"
+              aria-label="Operation progress"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={percent}
+            >
+              <span style={{ width: `${percent}%` }} />
+            </div>
+          </>
+        )}
+      </div>
+    </StatusMessage>
+  );
+}
 export function StatusMessage({
   message,
   children,

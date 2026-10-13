@@ -8,7 +8,12 @@ import {
   objectPickable,
 } from "../object-operations";
 import { SaveProjectDialog } from "./SaveProjectDialog";
-import { ActiveToolHint, StatusMessage, StatusBar } from "./StatusFeedback";
+import {
+  ActiveToolHint,
+  StatusMessage,
+  StatusBar,
+  OperationStatus,
+} from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
 import { ReductionColorScale } from "./ReductionResults";
 import { toleranceCoverage } from "../reduction-display";
@@ -5032,12 +5037,8 @@ export function App() {
         facets={selected ? selected.positions.length / 9 : undefined}
         shortcuts={shortcutContext}
         operation={
-          <StatusMessage
-            message={
-              importProgress ? `Importing ${importProgress.name}` : message
-            }
-          >
-            {importProgress ? (
+          importProgress ? (
+            <StatusMessage message={`Importing ${importProgress.name}`}>
               <ImportProgress
                 name={importProgress.name}
                 fraction={importProgress.fraction}
@@ -5047,10 +5048,19 @@ export function App() {
                     : undefined
                 }
               />
-            ) : (
-              message
-            )}
-          </StatusMessage>
+            </StatusMessage>
+          ) : (
+            <OperationStatus
+              message={message}
+              fraction={
+                message ===
+                `${scanToolProgress} · ${Math.floor((scanToolFraction ?? 0) * 100)}%`
+                  ? scanToolFraction
+                  : undefined
+              }
+              busy={busy}
+            />
+          )
         }
         hint={
           <ActiveToolHint
