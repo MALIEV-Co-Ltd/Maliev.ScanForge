@@ -144,7 +144,13 @@ export function parseMesh(data: ArrayBuffer, extension: string): Float32Array {
   throw new Error("Supported scan formats: STL, OBJ and polygon PLY.");
 }
 export function parseProject(text: string): Project {
-  const input = JSON.parse(text) as Partial<Project>;
+  return validateProject(JSON.parse(text));
+}
+/** Validate decoded project data without expanding binary geometry into JSON. */
+export function validateProject(value: unknown): Project {
+  if (!value || typeof value !== "object")
+    throw new Error("Unsupported ScanForge project format.");
+  const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
     input.version !== 1 ||
@@ -208,6 +214,13 @@ export function parseProject(text: string): Project {
       throw new Error("Invalid CAD edge geometry.");
     if (entity.surfacePatch !== undefined) validatePatch(entity.surfacePatch);
     if (
+      entity.normals !== undefined &&
+      (!Array.isArray(entity.normals) ||
+        entity.normals.length !== entity.positions.length ||
+        !entity.normals.every(Number.isFinite))
+    )
+      throw new Error("Invalid CAD normals.");
+    if (
       entity.surfaceScanId !== undefined &&
       typeof entity.surfaceScanId !== "string"
     )
@@ -217,6 +230,7 @@ export function parseProject(text: string): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      normals: entity.normals,
       edgePositions: entity.edgePositions,
       planeFrame:
         entity.planeFrame === undefined

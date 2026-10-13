@@ -1,0 +1,36 @@
+.project-recovery-command {
+  position: relative;
+}
+.project-recovery-command .ribbon-button {
+  width: 104px;
+}
+.backup-status {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 65px;
+  font-size: 10px;
+  width: 104px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-recovery-dialog {
+  width: min(480px, 85vw);
+  max-height: 75vh;
+  overflow: auto;
+  padding: 24px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.project-recovery-dialog::backdrop {
+  background: #0007;
+}
+.project-backups-list button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  text-align: left;
+}

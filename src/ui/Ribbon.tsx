@@ -22,6 +22,7 @@ export interface RibbonProps extends RibbonState {
   onTabChange: (id: string) => void;
   actions: RibbonActions;
   utilityHeader?: ReactNode;
+  projectRecovery?: ReactNode;
 }
 
 export function Ribbon({
@@ -29,6 +30,7 @@ export function Ribbon({
   onTabChange,
   actions,
   utilityHeader,
+  projectRecovery,
   ...state
 }: RibbonProps) {
   const instance = useId();
@@ -215,6 +217,9 @@ export function Ribbon({
                     </button>
                   );
                 })}
+                {active.id === "main" &&
+                  group.label === "File" &&
+                  projectRecovery}
               </div>
               <span className="ribbon-group-title">{group.label}</span>
             </div>

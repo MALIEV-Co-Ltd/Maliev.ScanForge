@@ -9,6 +9,13 @@ import {
 } from "../object-operations";
 import { SaveProjectDialog } from "./SaveProjectDialog";
 import {
+  decodeProjectFile,
+  encodeProjectFile,
+  type ProjectSession,
+} from "../project-file";
+import { useProjectBackups } from "./useProjectBackups";
+import { ProjectRecovery } from "./ProjectRecovery";
+import {
   ActiveToolHint,
   StatusMessage,
   StatusBar,
@@ -142,8 +149,6 @@ import {
   download,
   exportStl,
   geometryPositions,
-  parseProject,
-  serializeProjectBlob,
   validatePositions,
 } from "../io";
 import { importScan } from "../import-client";
@@ -427,6 +432,32 @@ export function App() {
   const [center, setCenter] = useState<Vec3>([0, 0, 15]);
   const [history, setHistory] = useState<Revision[]>([]);
   const [future, setFuture] = useState<Revision[]>([]);
+  const projectSession: ProjectSession = {
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      units: "mm",
+      name,
+      entities,
+      authoring: {
+        sketch: activeSketchId ? legacySketch.current : sketchDraft,
+        sketches: savedSketches,
+        activeSketchId: activeSketchId ?? undefined,
+      },
+    },
+    history,
+    future,
+  };
+  const {
+    backups,
+    status: backupStatus,
+    offerRecovery,
+    dismissRecovery,
+  } = useProjectBackups(
+    projectSession,
+    !busy &&
+      (dirty || entities.length > 0 || history.length > 0 || future.length > 0),
+  );
   const operationLabel = useRef<string | null>(null);
   const viewportHost = useRef<HTMLDivElement>(null);
   const viewport = useRef<Viewport | null>(null);
@@ -1565,7 +1596,7 @@ export function App() {
     }
     const label =
       operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
-    setHistory((previous) => [...previous.slice(-19), { entities, label }]);
+    setHistory((previous) => [...previous, { entities, label }]);
     setFuture([]);
     setEntities(next);
     setDirty(true);
@@ -1605,7 +1636,7 @@ export function App() {
   function redo() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p.slice(-19), { entities, label: next.label }]);
+      setHistory((p) => [...p, { entities, label: next.label }]);
       setEntities(restoreModelDisplay(next.entities, entities));
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
@@ -2203,7 +2234,7 @@ export function App() {
     if (fileInput.current) fileInput.current.value = "";
     viewport.current?.setView("iso");
   }
-  async function openFile(file: File, unit?: ScanUnit) {
+  async function openFile(file: File, unit?: ScanUnit, recovery = false) {
     if (!unit && /\.(stl|obj|ply)$/i.test(file.name)) {
       setPendingScanImport(file);
       return;
@@ -2217,7 +2248,8 @@ export function App() {
       });
       const extension = file.name.split(".").pop()!.toLowerCase();
       if (extension === "scanforge" || extension === "json") {
-        const project = parseProject(await file.text());
+        const session = await decodeProjectFile(file);
+        const project = session.project;
         if (
           dirty &&
           !window.confirm(
@@ -2230,16 +2262,38 @@ export function App() {
         // Restore to a separate worker so a failed load preserves the existing project.
         const restoredCad = new CadClient();
         try {
-          const restored: Entity[] = [];
-          for (const entity of project.entities) {
-            if (entity.brep) {
-              const data = await restoredCad.importFile(
-                new TextEncoder().encode(entity.brep),
-                "brep",
-              );
-              restored.push({ ...entity, ...data });
-            } else restored.push(entity);
+          const handles = new Map<string, string>();
+          async function restoreState(items: Entity[]): Promise<Entity[]> {
+            const restored: Entity[] = [];
+            for (const entity of items) {
+              if (entity.brep) {
+                let kernelId = handles.get(entity.brep);
+                if (!kernelId) {
+                  const data = await restoredCad.importFile(
+                    new TextEncoder().encode(entity.brep),
+                    "brep",
+                  );
+                  kernelId = data.kernelId;
+                  handles.set(entity.brep, kernelId);
+                }
+                restored.push({ ...entity, kernelId });
+              } else restored.push(entity);
+            }
+            return restored;
           }
+          const restored = await restoreState(project.entities);
+          const restoredHistory: Revision[] = [],
+            restoredFuture: Revision[] = [];
+          for (const item of session.history)
+            restoredHistory.push({
+              label: item.label,
+              entities: await restoreState(item.entities),
+            });
+          for (const item of session.future)
+            restoredFuture.push({
+              label: item.label,
+              entities: await restoreState(item.entities),
+            });
           cad.current?.dispose();
           cad.current = restoredCad;
           knownKernelIds.current = new Set();
@@ -2262,9 +2316,9 @@ export function App() {
               project.authoring?.sketch ??
               rectangleSketch(),
           );
-          setHistory([]);
-          setFuture([]);
-          setDirty(false);
+          setHistory(restoredHistory);
+          setFuture(restoredFuture);
+          setDirty(recovery);
           setMeasure([]);
         } catch (e) {
           restoredCad.dispose();
@@ -3082,17 +3136,18 @@ export function App() {
     setSaveDialogOpen(false);
     void action("Saving project…", async () => {
       download(
-        await serializeProjectBlob(projectName, entities, {
-          sketch: activeSketchId ? legacySketch.current : sketchDraft,
-          sketches: savedSketches,
-          activeSketchId: activeSketchId ?? undefined,
+        await encodeProjectFile({
+          ...projectSession,
+          project: { ...projectSession.project, name: projectName },
         }),
         `${projectName.replace(/[^a-z0-9-_ ]/gi, "_")}.scanforge`,
-        "application/json",
+        "application/x-scanforge",
       );
       setName(projectName);
       setDirty(false);
-      setMessage("Project downloaded · exact CAD retained where available");
+      setMessage(
+        "Project downloaded · CAD and complete model timeline retained",
+      );
     });
   }
   function revolve(points: [number, number][], angle: number) {
@@ -3159,6 +3214,22 @@ export function App() {
       }}
     >
       <Ribbon
+        projectRecovery={
+          <ProjectRecovery
+            backups={backups}
+            status={backupStatus}
+            disabled={busy}
+            offerRecovery={offerRecovery && entities.length === 0}
+            onDismiss={dismissRecovery}
+            onRestore={(backup) => {
+              void openFile(
+                new File([backup.file], `${backup.name}.scanforge`),
+                undefined,
+                true,
+              );
+            }}
+          />
+        }
         utilityHeader={
           <header className="header">
             <div className="header-actions">
