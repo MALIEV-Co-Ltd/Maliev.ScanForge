@@ -169,6 +169,9 @@ export function parseProject(text: string): Project {
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
       typeof entity.visible !== "boolean" ||
+      (entity.selectable !== undefined &&
+        typeof entity.selectable !== "boolean") ||
+      (entity.locked !== undefined && typeof entity.locked !== "boolean") ||
       typeof entity.opacity !== "number" ||
       !Number.isFinite(entity.opacity) ||
       entity.opacity < 0 ||
@@ -225,6 +228,8 @@ export function parseProject(text: string): Project {
             },
       color: entity.color,
       visible: entity.visible,
+      selectable: entity.selectable,
+      locked: entity.locked,
       opacity: entity.opacity,
       meshSelection:
         entity.meshSelection === undefined

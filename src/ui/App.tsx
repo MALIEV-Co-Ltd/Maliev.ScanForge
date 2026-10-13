@@ -1,4 +1,12 @@
 import "./ToolPanel.css";
+import "./ObjectList.css";
+import { objectContextActions } from "./object-context-actions";
+import { RenameObjectDialog } from "./RenameObjectDialog";
+import {
+  duplicateObject,
+  lockedObjectEdit,
+  objectPickable,
+} from "../object-operations";
 import { SaveProjectDialog } from "./SaveProjectDialog";
 import { ActiveToolHint, StatusMessage, StatusBar } from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
@@ -354,6 +362,10 @@ export function App() {
     objectId?: string;
     revision?: number;
   } | null>(null);
+  const [renameObject, setRenameObject] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
   const wandRef = useRef<(mask: Uint8Array, remove: boolean) => void>(() => {});
   const [selectionAngle, setSelectionAngle] = useState(30);
@@ -425,6 +437,9 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  useEffect(() => {
+    if (selected && !objectPickable(selected)) setSelectedId(null);
+  }, [selected]);
   const activeScanPreview =
     scanPreview &&
     workspace === "scanTools" &&
@@ -1464,7 +1479,71 @@ export function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+  function objectMenuActions() {
+    const target = entities.find(
+      (entity) => entity.id === contextMenu?.objectId,
+    );
+    const patch = (change: Partial<Entity>) => {
+      if (!target) return;
+      commit(
+        entities.map((entity) =>
+          entity.id === target.id ? { ...entity, ...change } : entity,
+        ),
+      );
+      if (change.locked || change.selectable === false) {
+        if (selectedId === target.id) {
+          setSelectedId(null);
+          setMode("inspect");
+          setToolPanelOpen(false);
+        }
+      }
+    };
+    return objectContextActions(target, busy, {
+      properties: () => {
+        if (target) {
+          setSelectedId(target.id);
+          showTools("properties");
+        }
+      },
+      duplicate: () => {
+        if (target) {
+          const copy = duplicateObject(target, crypto.randomUUID(), entities);
+          commit([...entities, copy]);
+          setSelectedId(copy.id);
+          setMessage(`Duplicated ${target.name}`);
+        }
+      },
+      rename: () => {
+        if (target) setRenameObject({ id: target.id, name: target.name });
+      },
+      visibility: () => patch({ visible: !target?.visible }),
+      selectable: () => patch({ selectable: target?.selectable === false }),
+      lock: () => patch({ locked: !target?.locked }),
+      edit: () => {
+        if (target) {
+          setSelectedId(target.id);
+          setMode("brush");
+          setWorkspace("mesh");
+          setToolPanelOpen(true);
+        }
+      },
+      remove: () => {
+        if (!target) return;
+        try {
+          commit(entities.filter((entity) => entity.id !== target.id));
+          if (selectedId === target.id) setSelectedId(null);
+        } catch (error) {
+          setError(errorText(error));
+        }
+      },
+    });
+  }
   function commit(next: Entity[], preserveSelectionFor?: string) {
+    const protectedObject = lockedObjectEdit(entities, next);
+    if (protectedObject) {
+      setError(`Unlock ${protectedObject.name} before editing or deleting it.`);
+      return;
+    }
     next = next.map((entity) => {
       const old = entities.find((e) => e.id === entity.id);
       return old &&
@@ -2028,7 +2107,7 @@ export function App() {
     });
   }
   function deleteSelected() {
-    if (!selected) return;
+    if (!selected || selected.locked) return;
     try {
       entityFeatureModel(
         entities.filter((entity) => entity.id !== selected.id),
@@ -3242,6 +3321,20 @@ export function App() {
           }
         />
       )}
+      {renameObject && (
+        <RenameObjectDialog
+          name={renameObject.name}
+          onClose={() => setRenameObject(null)}
+          onRename={(name) => {
+            commit(
+              entities.map((entity) =>
+                entity.id === renameObject.id ? { ...entity, name } : entity,
+              ),
+            );
+            setRenameObject(null);
+          }}
+        />
+      )}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -3285,7 +3378,6 @@ export function App() {
                         });
                     },
                   },
-                  { label: "Close menu", run: () => {} },
                 ]
               : contextMenu.kind === "history"
                 ? [
@@ -3310,47 +3402,9 @@ export function App() {
                       disabled: busy || !future.length,
                       run: redo,
                     },
-                    { label: "Close menu", run: () => {} },
                   ]
                 : contextMenu.kind === "object"
-                  ? [
-                      {
-                        label: "Object properties",
-                        disabled: busy,
-                        run: () => showTools("properties"),
-                      },
-                      {
-                        label: selected?.visible
-                          ? "Hide object"
-                          : "Show object",
-                        disabled: busy || !selected,
-                        run: () => {
-                          if (selected)
-                            commit(
-                              entities.map((e) =>
-                                e.id === selected.id
-                                  ? { ...e, visible: !e.visible }
-                                  : e,
-                              ),
-                            );
-                        },
-                      },
-                      {
-                        label: "Edit scan selection",
-                        disabled: busy || !selected || selected.kind !== "mesh",
-                        run: () => {
-                          setMode("brush");
-                          setWorkspace("mesh");
-                          setToolPanelOpen(true);
-                        },
-                      },
-                      {
-                        label: "Delete object",
-                        disabled: busy || !selected,
-                        run: deleteSelected,
-                      },
-                      { label: "Close menu", run: () => {} },
-                    ]
+                  ? objectMenuActions()
                   : workspace === "sketch" && toolPanelOpen && !createSketch
                     ? [
                         {
@@ -3380,7 +3434,6 @@ export function App() {
                           disabled: busy,
                           run: () => viewport.current?.viewSketchNormal(),
                         },
-                        { label: "Close menu", run: () => {} },
                       ]
                     : [
                         {
@@ -3482,7 +3535,6 @@ export function App() {
                           disabled: busy || !selectedTriangleCount,
                           run: () => editSelection("delete"),
                         },
-                        { label: "Close menu", run: () => {} },
                       ]
           }
         />
@@ -3559,7 +3611,7 @@ export function App() {
                   onContextMenu={(event) => {
                     event.preventDefault();
                     if (busy) return;
-                    setSelectedId(entity.id);
+                    if (objectPickable(entity)) setSelectedId(entity.id);
                     setContextMenu({
                       x: event.clientX,
                       y: event.clientY,
@@ -3589,7 +3641,9 @@ export function App() {
                   <button
                     className="object-name"
                     disabled={busy}
-                    onClick={() => setSelectedId(entity.id)}
+                    onClick={() => {
+                      if (objectPickable(entity)) setSelectedId(entity.id);
+                    }}
                   >
                     <span>
                       {entity.kind === "mesh" ? (
@@ -3600,6 +3654,19 @@ export function App() {
                     </span>
                     <span>{entity.name}</span>
                   </button>
+                  {(entity.locked || entity.selectable === false) && (
+                    <span
+                      className="object-protection"
+                      aria-label={
+                        entity.locked ? "Locked object" : "Unselectable object"
+                      }
+                      title={
+                        entity.locked ? "Locked object" : "Unselectable object"
+                      }
+                    >
+                      {entity.locked ? "🔒" : "∅"}
+                    </span>
+                  )}
                   {!!entity.meshSelection?.saved.length && (
                     <ul className="saved-selection-list">
                       {entity.meshSelection.saved.map((saved) => (

@@ -21,6 +21,9 @@ export interface Entity {
   edgePositions?: number[];
   color: string;
   visible: boolean;
+  /** Unset preserves selectable, unlocked behavior in older project files. */
+  selectable?: boolean;
+  locked?: boolean;
   opacity: number;
   meshSelection?: MeshSelectionState;
   // Geometry is stored in world coordinates in millimetres.

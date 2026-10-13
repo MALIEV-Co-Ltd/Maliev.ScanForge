@@ -59,6 +59,8 @@ export function restoreModelDisplay(
       color: live.color,
       opacity: live.opacity,
       visible: live.visible,
+      selectable: live.selectable,
+      locked: live.locked,
       meshSelection:
         entity.positions === live.positions
           ? live.meshSelection

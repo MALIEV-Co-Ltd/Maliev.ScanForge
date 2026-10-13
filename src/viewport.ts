@@ -1410,6 +1410,7 @@ export class Viewport {
       .filter(
         (item) =>
           item.mesh.visible &&
+          item.mesh.userData.objectPickable !== false &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -1476,6 +1477,7 @@ export class Viewport {
       .filter(
         (item) =>
           item.mesh.visible &&
+          item.mesh.userData.objectPickable !== false &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -1597,6 +1599,8 @@ export class Viewport {
         item.mesh.material.vertexColors = false;
       }
       item.mesh.visible = entity.visible;
+      item.mesh.userData.objectPickable =
+        !entity.locked && entity.selectable !== false;
       const edgePositions = entity.kernelId ? entity.edgePositions : undefined;
       if (item.edgePositions !== edgePositions) {
         if (item.cadEdges) {

@@ -1,0 +1,29 @@
+.workspace .object-list > li {
+  min-height: 28px;
+  margin-bottom: 2px;
+}
+.workspace .object-list > li > button {
+  min-height: 28px;
+  height: 28px;
+  padding-block: 3px;
+  color: inherit;
+}
+.workspace .object-list > li > .visibility {
+  min-width: 26px;
+  padding-inline: 5px;
+}
+.workspace .object-list > li > button:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--hover);
+}
+.workspace .object-list > li.selected > button:hover:not(:disabled) {
+  color: #123947;
+  background: #ccecf6;
+}
+.workspace .object-list > li.selected > button svg {
+  color: inherit;
+}
+.object-protection {
+  padding-inline-end: 5px;
+  font-size: 11px;
+}
