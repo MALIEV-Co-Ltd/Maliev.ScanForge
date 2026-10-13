@@ -15,6 +15,51 @@ npm run dev
 
 Open the loopback URL printed by Vite. No application server, account, API key, proprietary activation, or external CAD service is required. Do not open `index.html` through `file://`: browsers require HTTP(S) for workers and offline installation.
 
+## Connect and control through MCP
+
+Agents can control ScanForge through its local MCP stdio server. Start the application using the commands above and keep its browser tab open: geometry executes in that browser. Read the [complete agent guide](docs/AGENT_GUIDE.md) for modeling examples, artifact transfers, limits and recovery.
+
+Generate a pairing token locally:
+
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+Configure your agent's MCP client to launch Node directly. Replace the example checkout path and token; keep the real token in local client secret/environment configuration, outside source control. Client configuration syntax may vary.
+
+```json
+{
+  "mcpServers": {
+    "scanforge": {
+      "command": "node",
+      "args": [
+        "B:/maliev-legacy/reverse-engineering-online/scripts/mcp-server.mjs"
+      ],
+      "env": {
+        "SCANFORGE_MCP_TOKEN": "REPLACE_WITH_A_RANDOM_TOKEN_OF_AT_LEAST_32_CHARACTERS",
+        "SCANFORGE_BRIDGE_PORT": "5184",
+        "SCANFORGE_ORIGINS": "http://127.0.0.1:5173,http://localhost:5173"
+      }
+    }
+  }
+}
+```
+
+Use `node` as the stdio command, not `npm run mcp`: npm startup output can interfere with MCP messages. In ScanForge, open **Settings → AI agent access**, enter `http://127.0.0.1:5184` and the same token, then select **Connect agent**. Closing Settings keeps the connection active. **Disconnect agent** revokes access and requests cancellation of current agent work. This integration requires explicit browser pairing; remote MCP and unattended headless modeling are not supplied.
+
+Once paired, the agent should:
+
+1. Read the MCP resource `scanforge://agent-guide`, then discover tools and schemas with `tools/list` or `capabilities_get`.
+2. Call `project_get` (or read `scanforge://project`) to inspect objects, units and the current `revision`.
+3. Invoke a discovered tool with its documented parameters. For mutations, include the current `expectedRevision` and a new `requestId`.
+4. If a tool returns a `jobId`, poll `job_get` approximately once per second until it succeeds, fails or is cancelled. Check `ok`, terminal status, diagnostics and actual results.
+5. Refresh `project_get` before the next mutation. On a lost response, retry with the same request ID and identical arguments; on a revision conflict, inspect fresh state before submitting a new request.
+6. Use import/export tools and artifact transfer tools to exchange files; delete unneeded artifacts when finished. See the guide for chunk sizes and transient retention limits.
+
+Tools cover projects, object properties, selection, mesh analysis/processing, CAD creation/rebuild, sketches, surfaces, history, viewport controls, settings and file import/export. Discover current capabilities rather than assuming a GUI command or unsupported operation is available.
+
+**Repository requirement:** every application change must also expose equivalent agent access through shared application operations, with MCP tests and documentation. Missing MCP parity blocks completion and commit. See [AGENTS.md](AGENTS.md) and the [MCP architecture](docs/MCP_ARCHITECTURE.md).
+
 ## Build and validate
 
 ```sh
