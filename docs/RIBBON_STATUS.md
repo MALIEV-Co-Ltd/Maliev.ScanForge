@@ -16,7 +16,7 @@ The ten supplied ribbon screenshots are the command inventory reference. Missing
 - **In progress:** an implementation exists, but its complete UI workflow and reference options are not fully verified. The ribbon button is disabled.
 - **Planned:** no command implementation exists. The ribbon button is disabled.
 
-The explicit allowlist is in `src/ui/ribbon-verification.ts`. A registered callback or passing numerical test does not enable a command. Unknown implemented commands default to In progress. Buttons have native disabled attributes, visible status badges, and explanatory tooltips/accessibility descriptions.
+The explicit allowlist is in `src/ui/ribbon-verification.ts`. A registered callback or passing numerical test does not enable a command. Unknown implemented commands default to In progress. Buttons have native disabled attributes, yellow wrench icons for In progress, yellow milestone icons for Planned, and explanatory tooltips/accessibility descriptions. Status icons sit beside the command artwork (or at the end of an option-menu row); verified commands have no status icon.
 
 ## Verified command scopes
 

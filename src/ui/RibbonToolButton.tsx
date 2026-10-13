@@ -1,4 +1,5 @@
 import { useId, useRef, useState } from "react";
+import { Milestone, Wrench } from "lucide-react";
 import { RibbonCommandIcon } from "./RibbonCommandIcon";
 import { ribbonVerification } from "./ribbon-verification";
 import {
@@ -47,8 +48,12 @@ export function RibbonToolButton({
       <RibbonCommandIcon command={tool.id} />
       <span className="ribbon-button-label">{tool.label}</span>
       {verification.status !== "verified" && (
-        <span className="ribbon-verification-badge" aria-hidden="true">
-          {verification.status === "planned" ? "Planned" : "In progress"}
+        <span
+          className="ribbon-status-icon"
+          data-status-icon={verification.status}
+          aria-hidden="true"
+        >
+          {verification.status === "planned" ? <Milestone /> : <Wrench />}
         </span>
       )}
     </button>

@@ -38,7 +38,8 @@
   max-width: none;
   text-align: left;
 }
-.ribbon-options .ribbon-verification-badge {
+.ribbon .ribbon-options .ribbon-button .ribbon-status-icon {
+  position: static;
   margin-left: auto;
   flex-shrink: 0;
 }
@@ -52,7 +53,7 @@
   width: 100%;
   min-height: 0;
   flex-direction: row;
-  padding: 2px 2px 8px;
+  padding: 2px 16px 2px 2px;
   gap: 4px;
 }
 .ribbon-group-compact .ribbon-button svg {
@@ -64,9 +65,7 @@
   text-align: left;
   max-width: 76px;
 }
-.ribbon-group-compact .ribbon-verification-badge {
-  position: absolute;
+.ribbon .ribbon-group-compact .ribbon-button .ribbon-status-icon {
   right: 2px;
-  bottom: 0;
-  font-size: 7px;
+  top: 2px;
 }

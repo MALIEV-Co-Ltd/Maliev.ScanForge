@@ -1,11 +1,19 @@
-.ribbon .ribbon-button .ribbon-verification-badge {
-  font-size: 9px;
-  line-height: 12px;
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 0 3px;
-  white-space: nowrap;
+.ribbon .ribbon-button {
+  position: relative;
+}
+.ribbon .ribbon-button .ribbon-status-icon {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  display: inline-flex;
+  color: #facc15;
+  pointer-events: none;
+}
+.ribbon .ribbon-button .ribbon-status-icon svg {
+  width: 13px;
+  height: 13px;
+  color: inherit;
+  stroke-width: 2.5;
 }
 .ribbon .ribbon-button[data-verification="unverified"],
 .ribbon .ribbon-button[data-verification="planned"] {

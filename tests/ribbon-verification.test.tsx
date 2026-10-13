@@ -71,7 +71,7 @@ describe("ribbon verification gate", () => {
       for (const id of commands) expect(ids, `${tabId}:${id}`).toContain(id);
     }
   });
-  it("renders real disabled buttons and visible status labels on every tab", () => {
+  it("renders disabled buttons and status icons on every tab without visible status labels", () => {
     for (const tab of RIBBON_TABS) {
       const commands = tab.groups.flatMap((group) =>
         group.tools.flatMap((tool) => [tool, ...(tool.options ?? [])]),
@@ -88,6 +88,8 @@ describe("ribbon verification gate", () => {
         />,
       );
       expect(markup).not.toContain("ribbon-verification-legend");
+      expect(markup).not.toMatch(/>(In progress|Planned)</);
+      expect(markup).not.toContain("ribbon-verification-badge");
       for (const tool of commands) {
         const button = markup.match(
           new RegExp(`<button[^>]*data-command="${tool.id}"[^>]*>`),
@@ -98,6 +100,20 @@ describe("ribbon verification gate", () => {
         expect(button?.includes('disabled=""'), tool.id).toBe(
           status !== "verified",
         );
+        const content = markup.match(
+          new RegExp(
+            `<button[^>]*data-command="${tool.id}"[^>]*>([\\s\\S]*?)</button>`,
+          ),
+        )?.[1];
+        if (status === "verified") {
+          expect(content, tool.id).not.toContain("ribbon-status-icon");
+        } else {
+          expect(content, tool.id).toContain(`data-status-icon="${status}"`);
+          expect(content, tool.id).toContain(
+            status === "planned" ? "lucide-milestone" : "lucide-wrench",
+          );
+          expect(button, tool.id).toContain("aria-description=");
+        }
       }
     }
   });
