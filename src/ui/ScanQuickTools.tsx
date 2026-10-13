@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { GripVertical } from "lucide-react";
 import "./ScanQuickTools.css";
 import { ScanToolIcon } from "./ScanToolIcon";
@@ -16,6 +16,25 @@ export function ScanQuickTools(props: {
   const [position, setPosition] = useState<{ x: number; y: number } | null>(
     null,
   );
+  const toolbar = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const element = toolbar.current;
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    setPosition({
+      x: Math.max(
+        8,
+        Math.min(window.innerWidth - rect.width - 8, props.x - rect.width / 2),
+      ),
+      y: Math.max(
+        8,
+        Math.min(
+          window.innerHeight - rect.height - 8,
+          props.y - rect.height - 8,
+        ),
+      ),
+    });
+  }, [props.x, props.y]);
   const drag = useRef<{
     pointer: number;
     x: number;
@@ -32,6 +51,7 @@ export function ScanQuickTools(props: {
   }
   return (
     <div
+      ref={toolbar}
       className="scan-quick-tools"
       role="toolbar"
       aria-label="Quick selection tools"

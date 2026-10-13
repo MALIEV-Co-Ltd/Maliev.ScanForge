@@ -1,10 +1,12 @@
 import { expect, it, vi } from "vitest";
 import { ScanQuickTools } from "../src/ui/ScanQuickTools";
 const moved = vi.hoisted(() => vi.fn());
+const mounted = vi.hoisted(() => vi.fn());
 vi.mock("react", async () => ({
   ...(await vi.importActual("react")),
   useState: (value: unknown) => [value, moved],
   useRef: (value: unknown) => ({ current: value }),
+  useLayoutEffect: mounted,
 }));
 it("drags with pointer capture, clamps to the viewport and stops on cancellation", () => {
   vi.stubGlobal("window", { innerWidth: 800, innerHeight: 600 });
@@ -68,6 +70,27 @@ it("drags with pointer capture, clamps to the viewport and stops on cancellation
     handle.props.onPointerCancel();
     handle.props.onPointerMove(event);
     expect(moved).toHaveBeenCalledTimes(afterKeyboard);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+it("keeps the measured wider image toolbar inside the viewport on opening", () => {
+  vi.stubGlobal("window", { innerWidth: 800, innerHeight: 600 });
+  try {
+    const noop = () => {};
+    const tree = ScanQuickTools({
+      x: 799,
+      y: 599,
+      onDelete: noop,
+      onHide: noop,
+      onIsolate: noop,
+      onInvert: noop,
+    });
+    tree.props.ref.current = {
+      getBoundingClientRect: () => ({ width: 286, height: 52 }),
+    };
+    mounted.mock.calls.at(-1)![0]();
+    expect(moved).toHaveBeenLastCalledWith({ x: 506, y: 539 });
   } finally {
     vi.unstubAllGlobals();
   }
