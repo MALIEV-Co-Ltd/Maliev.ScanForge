@@ -94,6 +94,46 @@ function harness(entities: Entity[] = [entity()]) {
 }
 
 describe("shared workspace operation contracts", () => {
+  it.each(["paired", "icp", "global"] as const)(
+    "retains indexed topology through MCP %s processing and undo snapshots",
+    async (kind) => {
+      const moving = entity();
+      moving.indexedMesh = {
+        vertices: new Float32Array(moving.positions),
+        triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+      };
+      const h = harness([moving, entity({ id: "fixed" })]);
+      const indexedMesh = {
+        vertices: new Float32Array(moving.indexedMesh.vertices),
+        triangles: new Uint32Array(moving.indexedMesh.triangles),
+      };
+      vi.mocked(processMesh).mockResolvedValueOnce({
+        kind,
+        diagnostics: {},
+        positions: new Float32Array(moving.positions),
+        indexedMesh,
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: moving.id,
+          targetId: "fixed",
+          operation: {
+            kind,
+            sourceLandmarks: [0, 0, 0, 10, 0, 0, 0, 10, 0],
+            targetLandmarks: [0, 0, 0, 10, 0, 0, 0, 10, 0],
+          },
+        },
+        h.context,
+      );
+      expect(vi.mocked(processMesh).mock.calls.at(-1)?.[0]).toMatchObject({
+        sourceIndexed: moving.indexedMesh,
+      });
+      expect(h.state.entities[0].indexedMesh).toBe(indexedMesh);
+      expect(h.state.history[0].entities[0].indexedMesh).toBe(
+        moving.indexedMesh,
+      );
+    },
+  );
   it("binds imported exact CAD as a project-local persistent seed", async () => {
     const h = harness([entity({ kernelId: "native", brep: "BREP" })]);
     const result = (await h.ops.cad_bind({ entityId: "mesh" }, h.context)) as {

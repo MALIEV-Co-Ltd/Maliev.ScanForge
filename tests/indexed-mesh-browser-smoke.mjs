@@ -253,6 +253,41 @@ try {
   );
   assertTopology(await geometry(imported.id));
   assertTopology(await geometry(gui.id));
+  const sourceLandmarks = [0, 0, 0, 10, 0, 0, 0, 10, 0];
+  const targetLandmarks = [3, 4, 5, 13, 4, 5, 3, 14, 5];
+  await job(
+    await mutate("mesh_process", {
+      entityId: gui.id,
+      operation: { kind: "paired", sourceLandmarks, targetLandmarks },
+    }),
+  );
+  const pairedGeometry = await geometry(gui.id);
+  assertTopology(pairedGeometry);
+  assert.equal(
+    pairedGeometry.indexedMesh.vertices.length,
+    guiGeometry.indexedMesh.vertices.length,
+  );
+  await mutate("history_undo", {});
+  await mutate("selection_set", { entityId: gui.id, triangles: [] });
+  await mutate("ui_set", {
+    workspace: "processing",
+    mode: "inspect",
+    toolPanelOpen: true,
+  });
+  await page
+    .getByRole("textbox", { name: "Source registration landmarks" })
+    .fill("0,0,0\n10,0,0\n0,10,0");
+  await page
+    .getByRole("textbox", { name: "Target registration landmarks" })
+    .fill("3,4,5\n13,4,5\n3,14,5");
+  await page
+    .getByRole("button", { name: "Align paired landmarks", exact: true })
+    .click();
+  await page
+    .getByText(/Align paired landmarks complete/)
+    .waitFor({ timeout: 30000 });
+  assert.deepEqual(await geometry(gui.id), pairedGeometry);
+  await mutate("history_undo", {});
   const native = JSON.parse(
     await readFile(
       new URL("fixtures/alignment-controller-thread.json", import.meta.url),
@@ -382,6 +417,7 @@ try {
     undoRestoration: true,
     nativeRefinement: true,
     guiNativeRefinement: true,
+    guiMcpPairedTopologyRetention: true,
     errors,
   };
   console.log(JSON.stringify(ledger.result));

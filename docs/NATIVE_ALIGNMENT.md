@@ -648,3 +648,11 @@ Worker-boundary tests compare the retained original thread fixtures. This path
 requires indexed PLY meshes and revealed geometry. It is separate from existing
 point-cloud/mesh ICP; target groups, CAD targets, other importer topologies,
 hidden-geometry behavior and multicore dispatch still require verification.
+
+Whole-object paired-point, ICP and global alignment now retain the moving mesh's
+indexed vertex ordering and connectivity in the shared worker. Every indexed
+coordinate, including unused vertices, receives the same rigid transform as the
+render buffer. Stale metadata fails before registration. GUI and MCP pass the
+original topology only when operating on the full source buffer; partial
+extractions do not inherit it. This verifies topology continuity into recovered
+surface refinement, not native equivalence of the existing ICP/global solvers.

@@ -1,5 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
 import { refineNativeSurface } from "./native-surface-refinement";
+import { indexedMeshMatches } from "./indexed-mesh";
 import { editPointCloud } from "./point-cloud-processing";
 import { ScanPreviewSession } from "./scan-preview";
 import { runScanTool } from "./scan-tools";
@@ -24,6 +25,7 @@ import {
 } from "./mesh-processing";
 import {
   applyRigidTransform,
+  transformPoint,
   registerIcp,
   registerGlobal,
 } from "./registration";
@@ -333,6 +335,13 @@ scope.onmessage = async ({ data: incoming }) => {
           .join(", "),
       };
     } else {
+      if (
+        request.sourceIndexed &&
+        !indexedMeshMatches(request.sourceIndexed, request.positions)
+      )
+        throw new Error(
+          "Alignment indexed topology does not match its render geometry.",
+        );
       const registration =
         request.kind === "paired"
           ? registerNativeLandmarks(
@@ -364,6 +373,26 @@ scope.onmessage = async ({ data: incoming }) => {
         },
       );
       result.registration = registration;
+      if (request.sourceIndexed) {
+        const source = request.sourceIndexed.vertices;
+        const vertices = new Float32Array(source.length);
+        for (let offset = 0; offset < source.length; offset += 3)
+          vertices.set(
+            transformPoint(
+              [source[offset], source[offset + 1], source[offset + 2]],
+              registration.transform,
+            ),
+            offset,
+          );
+        if (!vertices.every(Number.isFinite))
+          throw new Error(
+            "Transformed indexed coordinates exceed Float32 output precision.",
+          );
+        result.indexedMesh = {
+          vertices,
+          triangles: Uint32Array.from(request.sourceIndexed.triangles),
+        };
+      }
       result.diagnostics = {
         ...(request.kind === "paired"
           ? { algorithm: "native-landmark-registration" }

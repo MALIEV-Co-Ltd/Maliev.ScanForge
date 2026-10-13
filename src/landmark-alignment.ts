@@ -57,6 +57,8 @@ export function landmarkRequest(session: LandmarkAlignment) {
   return {
     kind: "paired" as const,
     positions: session.moving.positions,
+    sourceIndexed:
+      session.moving.kind === "mesh" ? session.moving.indexedMesh : undefined,
     sourceLandmarks: pairs.moving.flat(),
     targetLandmarks: pairs.fixed.flat(),
   };
@@ -91,6 +93,7 @@ export function acceptLandmarkAlignment(
       ? {
           ...e,
           positions: session.preview!.positions!,
+          indexedMesh: session.preview!.indexedMesh,
           normals: e.normals
             ? rotatePointNormals(
                 e.normals,

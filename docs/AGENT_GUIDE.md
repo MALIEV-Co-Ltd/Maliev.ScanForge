@@ -191,7 +191,11 @@ available. `object_get` with `includeGeometry:true` includes `indexedMesh` array
 in its geometry artifact. JSON and binary project exports preserve this topology,
 including undo/redo snapshots. Whole-object transforms through the GUI or
 `mesh_transform` retain vertex IDs and triangle connectivity while transforming
-all indexed coordinates, including unused vertices. Other geometry edits
+all indexed coordinates, including unused vertices. Whole-object `mesh_process`
+alignment (`paired`, `icp`, `global`) also retains indexed topology through the
+shared GUI/MCP worker, so the aligned scan can subsequently use surface refinement.
+Selection-driven ICP still moves and preserves the entire source mesh. A partial
+geometry extraction does not inherit whole-object topology. Other geometry edits
 invalidate it; metadata edits retain it. A malformed or stale indexed topology in an imported project is
 rejected. Older projects and other mesh formats can lack this optional metadata.
 

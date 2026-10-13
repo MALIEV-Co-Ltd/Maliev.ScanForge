@@ -72,12 +72,14 @@ export type ProcessingRequest =
     }
   | {
       kind: "paired";
+      sourceIndexed?: import("./types").IndexedMesh;
       positions: Positions;
       sourceLandmarks: number[];
       targetLandmarks: number[];
     }
   | {
       kind: "icp" | "global";
+      sourceIndexed?: import("./types").IndexedMesh;
       sourceTriangleMask?: Uint8Array;
       positions: Positions;
       target: Positions;
@@ -276,6 +278,17 @@ export function processMesh(
           transfers.push(triangles.buffer);
           copied[key] = { vertices: clone(mesh.vertices), triangles };
         }
+      }
+      if (
+        (copied.kind === "paired" ||
+          copied.kind === "icp" ||
+          copied.kind === "global") &&
+        copied.sourceIndexed
+      ) {
+        const mesh = copied.sourceIndexed;
+        const triangles = Uint32Array.from(mesh.triangles);
+        transfers.push(triangles.buffer);
+        copied.sourceIndexed = { vertices: clone(mesh.vertices), triangles };
       }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);

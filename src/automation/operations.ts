@@ -676,6 +676,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? partitionTriangles(e.positions, selection).selected
             : e.positions,
       } as ProcessingRequest;
+      if (
+        (kind === "paired" || kind === "icp" || kind === "global") &&
+        e.kind === "mesh" &&
+        request.positions === e.positions
+      )
+        Object.assign(request, { sourceIndexed: e.indexedMesh });
       if (kind === "pointCloudEdit")
         Object.assign(request, {
           normals: e.normals,

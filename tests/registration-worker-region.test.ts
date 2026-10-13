@@ -3,6 +3,7 @@ import type {
   ProcessingRequest,
   ProcessingResponse,
 } from "../src/processing-client";
+import { indexedMeshMatches } from "../src/indexed-mesh";
 
 afterEach(() => vi.unstubAllGlobals());
 it("the worker fits only the priority region and returns the entire moving scan", async () => {
@@ -17,6 +18,10 @@ it("the worker fits only the priority region and returns the entire moving scan"
     ),
   );
   const replies: ProcessingResponse[] = [];
+  const sourceIndexed = {
+    vertices: new Float32Array([9, 8, 7, ...moving]),
+    triangles: new Uint32Array([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+  };
   const scope = {
     onmessage: null as ((event: { data: ProcessingRequest }) => void) | null,
     postMessage: (message: ProcessingResponse) => replies.push(message),
@@ -28,6 +33,7 @@ it("the worker fits only the priority region and returns the entire moving scan"
     data: {
       kind: "icp",
       positions: moving,
+      sourceIndexed,
       target: fixed,
       sourceTriangleMask: new Uint8Array([1, 1, 0]),
       maxDistance: 1,
@@ -46,4 +52,10 @@ it("the worker fits only the priority region and returns the entire moving scan"
   expect(reply.result.positions![18]).toBeCloseTo(100.05, 4);
   expect(moving[18]).toBe(100);
   expect(fixed[0]).toBeCloseTo(0.05, 5);
+  expect(
+    indexedMeshMatches(reply.result.indexedMesh, reply.result.positions!),
+  ).toBe(true);
+  expect(reply.result.indexedMesh!.triangles).toEqual(sourceIndexed.triangles);
+  expect(reply.result.indexedMesh!.vertices[0]).toBeCloseTo(9.05, 5);
+  expect(sourceIndexed.vertices[0]).toBe(9);
 });

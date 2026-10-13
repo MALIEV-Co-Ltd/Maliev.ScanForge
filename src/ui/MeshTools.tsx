@@ -111,6 +111,14 @@ export function MeshTools({
     try {
       busyCallback.current?.(true);
       onStatus(`${label}…`);
+      if (
+        (request.kind === "paired" ||
+          request.kind === "icp" ||
+          request.kind === "global") &&
+        selected?.kind === "mesh" &&
+        request.positions === selected.positions
+      )
+        request = { ...request, sourceIndexed: selected.indexedMesh };
       const outcome = await processMesh(request, {
         signal: cancellation.signal,
         onProgress: (fraction, stage) =>

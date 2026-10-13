@@ -63,6 +63,25 @@ function previewed() {
   };
 }
 describe("landmark alignment session", () => {
+  it("passes original topology into a picked-point preview and retains its transformed successor on acceptance", () => {
+    const session: import("../src/landmark-alignment").LandmarkAlignment =
+      previewed();
+    const indexedMesh = {
+      vertices: new Float32Array(moving.positions),
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    session.moving = { ...moving, indexedMesh };
+    expect(landmarkRequest(session).sourceIndexed).toBe(indexedMesh);
+    const successor = {
+      vertices: new Float32Array(session.preview!.positions!),
+      triangles: indexedMesh.triangles,
+    };
+    session.preview = { ...session.preview!, indexedMesh: successor };
+    const result = acceptLandmarkAlignment(session, [session.moving, fixed]);
+    expect(result[0].indexedMesh).toBe(successor);
+    expect(result[1]).toBe(fixed);
+    expect(session.moving.indexedMesh).toBe(indexedMesh);
+  });
   it("keeps per-object order when picks are interleaved and labels corresponding pairs", () => {
     const session = picked(),
       request = landmarkRequest(session);
