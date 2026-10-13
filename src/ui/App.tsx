@@ -13,6 +13,7 @@ import {
   type ScanToolParameters,
 } from "./ScanToolsPanel";
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { transformPlaneFrame } from "../plane-frame";
 import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
@@ -1444,6 +1445,8 @@ export function App() {
       patch = { ...patch, surfacePatch: undefined, surfaceScanId: undefined };
     if (patch.positions && !("fit" in patch))
       patch = { ...patch, fit: undefined };
+    if (patch.positions && !("planeFrame" in patch))
+      patch = { ...patch, planeFrame: undefined };
     if (selected)
       commit(
         entities.map((e) => (e.id === selected.id ? { ...e, ...patch } : e)),
@@ -2387,6 +2390,13 @@ export function App() {
             id: crypto.randomUUID(),
             name: "Fitted plane reference",
             kind: "plane",
+            planeFrame: {
+              center: [...fit.center],
+              normal: [...fit.axis],
+              tangent: new THREE.Vector3(1, 0, 0)
+                .applyQuaternion(q)
+                .toArray() as Vec3,
+            },
             positions: geometryPositions(geometry),
             color: DEFAULT_REFERENCE_COLOR,
             visible: true,
@@ -2445,7 +2455,17 @@ export function App() {
           rotation,
           scale,
         );
-        updateSelected({ positions });
+        updateSelected({
+          positions,
+          planeFrame: selected.planeFrame
+            ? transformPlaneFrame(
+                selected.planeFrame,
+                translation,
+                rotation,
+                scale,
+              )
+            : undefined,
+        });
         setMessage("Transform applied to mesh");
       }
     });

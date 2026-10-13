@@ -1,5 +1,6 @@
 import { fitPlane, fitCylinder } from "./geometry";
 import type { Entity, Vec3, Positions } from "./types";
+import { validatePlaneFrame } from "./plane-frame";
 function referenceSamples(positions: Positions) {
   if (positions.length <= 6000) return positions;
   const out: number[] = [],
@@ -13,7 +14,19 @@ function referenceSamples(positions: Positions) {
 
 export function mirrorReference(
   entity: Entity,
-): { center: Vec3; normal: Vec3 } | null {
+): { center: Vec3; normal: Vec3; tangent?: Vec3 } | null {
+  if (entity.planeFrame) {
+    try {
+      validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
+      return {
+        center: [...entity.planeFrame.center],
+        normal: [...entity.planeFrame.normal],
+        tangent: [...entity.planeFrame.tangent],
+      };
+    } catch {
+      return null;
+    }
+  }
   if (entity.fit?.kind === "plane")
     return { center: entity.fit.center, normal: entity.fit.axis };
   if (!["plane", "cad"].includes(entity.kind) || entity.positions.length < 9)

@@ -78,9 +78,36 @@ The Mirror operation and preview session now accept an optional tangent and use
 the recovered hint policy when supplied. All new frame, inverse and coordinate
 bytes match their captures, including the frame-builder fallback for degenerate
 tangents. Existing origin-plane output remains byte-identical. This slice
-verifies the numerical consumer; construction/CAD-plane creation and project
-persistence do not yet retain and supply the stored tangent. Those producers must
-be integrated before claiming arbitrary picked-plane parity.
+verifies the numerical consumer. The stored construction-plane workflow is now
+integrated below; imported CAD planes without orientation metadata continue using
+the geometry-fit fallback and do not establish arbitrary picked-plane parity.
+
+## Stored construction-plane workflow
+
+New fitted-plane references store `planeFrame` with their center, normal and
+tangent. The tangent is the original plane geometry's local X direction rotated
+by the same quaternion used to construct its display surface. Both project
+serializers retain this optional v1 field; parsing validates finite vectors,
+unit normal, nonzero tangent, reference-object kind and coplanarity with the
+saved geometry. Existing projects without the field remain readable. Uniform
+object transforms rotate the axes and move the center with the geometry;
+unrelated geometry edits invalidate the stored frame. Mirror reference binding
+copies and supplies all three vectors to the verified coordinate consumer.
+
+All 20 tangent captures pass through string and Blob serialization, reload,
+reference binding and Mirror with exact native output bytes. Transform and
+malformed/stale-frame regressions are included. The browser loaded the current
+build, opened the same annular mesh with a rotated oblique reference, accepted a
+mirrored copy and saved it. All 864 source bytes remained original, all 864 copy
+bytes matched the native reference, and the saved plane frame stayed identical.
+No browser warnings/errors were reported. This verifies an explicit stored
+reference, not the complete original native plane-picking UI or CAD surface
+orientation recovery. Imported planar CAD faces still need their own exact
+surface frame extraction.
+
+Stored-frame validation: production build passed without warnings/errors; 130
+focused tests and all 9,375 tests across 199 files passed. Scoped formatting,
+diff and prohibited-name checks passed. The browser loaded `index-BTR4kCAz.js`.
 
 Validation for the tangent slice: production build passed without warnings/errors;
 all 111 focused tests and all 9,353 tests across 198 files passed. Scoped formatting,

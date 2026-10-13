@@ -7,6 +7,7 @@ import type { Entity, Project, Positions, MeshSelectionState } from "./types";
 import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
+import { validatePlaneFrame } from "./plane-frame";
 
 /** Validate sparse triangle slots without allocating a mask proportional to mesh size. */
 export function validateMeshSelection(
@@ -175,6 +176,8 @@ export function parseProject(text: string): Project {
     )
       throw new Error("Invalid project object.");
     ids.add(entity.id);
+    if (entity.planeFrame !== undefined)
+      validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
     if (entity.meshSelection !== undefined)
       validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
     if (
@@ -212,6 +215,14 @@ export function parseProject(text: string): Project {
       kind: entity.kind,
       positions: entity.positions,
       edgePositions: entity.edgePositions,
+      planeFrame:
+        entity.planeFrame === undefined
+          ? undefined
+          : {
+              center: [...entity.planeFrame.center],
+              normal: [...entity.planeFrame.normal],
+              tangent: [...entity.planeFrame.tangent],
+            },
       color: entity.color,
       visible: entity.visible,
       opacity: entity.opacity,
@@ -293,6 +304,9 @@ export function serializeProject(
   authoring?: Project["authoring"],
 ): string {
   for (const entity of entities)
+    if (entity.planeFrame !== undefined)
+      validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
+  for (const entity of entities)
     if (entity.meshSelection !== undefined)
       validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
   return JSON.stringify({
@@ -324,6 +338,8 @@ export async function serializeProjectBlob(
       ...metadata
     } = entities[index];
     validatePositions(positions);
+    if (metadata.planeFrame !== undefined)
+      validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
     if (metadata.meshSelection !== undefined)
       validateMeshSelection(metadata.meshSelection, positions.length / 9);
     if (index) parts.push(",");

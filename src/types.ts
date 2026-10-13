@@ -30,6 +30,8 @@ export interface Entity {
   kernelId?: string;
   brep?: string;
   fit?: FitResult;
+  /** Persistent construction-plane orientation, including rotation about its normal. */
+  planeFrame?: { center: Vec3; normal: Vec3; tangent: Vec3 };
   surfacePatch?: NurbsPatch;
   surfaceScanId?: string;
   /** Authoring recipe and output slot travel with entity history and project files. */
