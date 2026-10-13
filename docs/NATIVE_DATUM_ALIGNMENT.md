@@ -53,7 +53,39 @@ Normalization Evidence:
 The mapped image SHA-256 is
 `e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1`.
 
-The numerical helper is not yet connected to a public application action and
-is not advertised in MCP discovery. Completing the secondary/tertiary rules,
+## Verified plane-reference sequences
+
+`src/scan-native-datum-plane.ts` ports the complete plane-reference constructor
+and its secondary/tertiary acceptance and construction helpers. The retained
+`alignment-datum-plane-native.json` fixture executes the original constructor
+at `0x1403a0970` and captures all 232 bytes of frame state after every call.
+Eighty sequences contain 236 steps, covering axis permutations, reversed and
+oblique normals, zero normals, parallel references, repeated axis assignments,
+and secondary/tertiary calls without initialization. Tests require exact return
+acceptance and every state byte, including rejected states and signed zeros.
+They also verify that the application helper does not mutate its input.
+
+The secondary orientation uses opposite cross-product orders for the two
+remaining axis assignments. Both orders preserve the native orientation;
+substituting the reversed transverse vector flips two axes. Plane intersection,
+projection, normalization and determinant rollback preserve native arithmetic
+order and thresholds.
+
+Secondary acceptance Evidence:
+`ev_345a3621f8de710c43787312907a068c743526cd7a4c4c99ee2b4a4cdb563ff9`.
+Secondary construction Evidence:
+`ev_a52fce0dadb7950f95a58195879e140737938b7a5b474103f10adbe2f6a18b4b`.
+Tertiary acceptance Evidence:
+`ev_f1b8652730877f2da514ea51264b1002cccc907f6f487b324b0fc8ea35d56de6`.
+Tertiary construction Evidence:
+`ev_69c213d8bceefb15647389a5d642154d4335acdb2a0262e30dcb555a8c2a817c`.
+Secondary orientation Evidence:
+`ev_510a734d054d30e50651a18fb00db775cc4e07816c9c2889d39e36747b69654f`.
+These are static analysis references; the fixture separately records direct
+native numerical execution. This coverage starts with a primary plane, not a
+primary point or direction, and does not establish complete dialog behavior.
+
+The numerical helpers are not yet connected to a public application action and
+are not advertised in MCP discovery. Completing point/direction reference rules,
 primitive reference conversion, preview/reset/acceptance and shared GUI/MCP
 operation remains required before enabling coordinate-system alignment.
