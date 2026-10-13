@@ -58,8 +58,9 @@ REA Evidence: `ev_ca3a6e9f8ab52f0e3127acb59820d3bce8af539da2e894558f70c17c29aafb
 
 `0x140aadba0` represents rotation and translation as seven parameters and invokes
 the optimizer `0x140b25340` with callback `0x140aae6d0`. The callback constructs a
-rotation and calls the verified absolute-error objective. Optimizer step rules,
-termination, complete initialization, paired-point outer ranking, and subsequent
+rotation and calls the verified absolute-error objective. Optimizer step rules and
+termination now have the executed component gate below. Complete initialization,
+paired-point outer ranking, and subsequent
 mesh/CAD refinement (`0x14054d440`) still require extraction and original-result
 verification. No native solver convergence or Fine Align parity is claimed.
 
@@ -67,3 +68,42 @@ Coordinate-system alignment, interactive alignment and multi-scan Global Fine
 Align remain separate requirements; this paired-point extraction does not cover
 them. Full promotion also requires browser picking, preview/reset/cancel/accept,
 immutable fixed objects, undo/redo and project persistence checks.
+
+## Executed simplex search
+
+`src/scan-native-simplex.ts` ports optimizer `0x140b25340` and trial helper
+`0x140b25e30`. It preserves positive/negative initial perturbation selection,
+ordered simplex sums, last-minimum tie selection, strict trial replacement,
+reflection/expansion/contraction/shrink, relative objective-spread termination,
+and the native strict evaluation-budget comparison. A zero spread over zero
+objective is NaN and does not trigger convergence. Status one means the spread
+test passed; status two means the budget was exceeded. Initial objective and
+perturbation calls do not contribute to that budget counter.
+
+The default step is Float32 `0.005` widened to double
+`0.004999999888241291`, matching the caller constant. Invalid inputs and non-finite
+objectives are rejected at the port boundary; cancellation is checked before
+every evaluation. These safeguards are independently authored, not native parity
+claims.
+
+Six executions of the complete original optimizer and trial helper produce 202
+recorded objective calls. Tests match every parameter double byte at every call,
+the final parameter bytes, returned error and termination status. Inputs include
+one/two/seven parameters, signed coordinates, equal perturbations, zero objectives
+and positive/negative exhausted budgets. The capture supplies deterministic
+quadratic, absolute-error and constant objectives; it does not yet execute the
+paired-point callback or complete registration.
+
+The external probe supplies vector allocation/copy, retained-allocation release
+and CRT memcpy/memset adapters. Six-byte import thunks use separate jump
+trampolines so adjacent imports remain distinct. Neither optimizer nor trial
+arithmetic is replaced. The mapped allocation was released, and the successful
+probe process exited. Earlier adapter attempts terminated before producing
+captures; their processes were confirmed absent. Native scheduling and allocator
+behavior are outside this capture.
+
+The references are in `tests/fixtures/alignment-simplex-native.json`. Optimizer
+REA Evidence is `ev_c5650053f988799558148f6d2e7ea06c3d21920de1b97d55d84d43e4936ce66b`;
+trial Evidence is `ev_6d90fcab953ca34c4d310e827908d54b6ef388862f539152c4723a37ab5dfb5d`.
+Its assembly Evidence is `ev_400e949f08e5cd4c39ca10dacec232c08301fdb1e04ec5cc5caa4f4d1391d96b`.
+The source image digest is the same as the preceding kernel captures.
