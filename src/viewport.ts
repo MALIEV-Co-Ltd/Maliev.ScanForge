@@ -1,6 +1,7 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
+import { applyMeshFocus } from "./mesh-focus-material";
 import { NavigationPivot } from "./navigation-pivot";
 import {
   createScanBoundaryEdges,
@@ -1605,9 +1606,11 @@ export class Viewport {
       }
       item.color = entity.color;
       const material = item.mesh.material;
-      material.color.set(material.vertexColors ? "#ffffff" : entity.color);
-      material.emissive.set(entity.id === selectedId ? "#68c6e3" : "#000000");
-      material.emissiveIntensity = entity.id === selectedId ? 0.35 : 0;
+      applyMeshFocus(
+        material,
+        entity.color,
+        !!selectedId && entity.id !== selectedId,
+      );
       material.flatShading = this.flatShading;
       material.polygonOffset = !!item.cadEdges;
       material.polygonOffsetFactor = 1;
@@ -2122,7 +2125,11 @@ export class Viewport {
       if (!item.mesh.material.vertexColors) continue;
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
-      item.mesh.material.color.set(item.color);
+      applyMeshFocus(
+        item.mesh.material,
+        item.color,
+        !!this.selectedId && item.mesh.userData.entityId !== this.selectedId,
+      );
       item.mesh.material.needsUpdate = true;
     }
   }
@@ -2160,12 +2167,15 @@ export class Viewport {
         new THREE.BufferAttribute(colors, 3),
       );
       item.mesh.material.vertexColors = true;
-      item.mesh.material.color.set("#ffffff");
     } else {
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
-      item.mesh.material.color.set(item.color);
     }
+    applyMeshFocus(
+      item.mesh.material,
+      item.color,
+      !!this.selectedId && entityId !== this.selectedId,
+    );
     item.mesh.material.needsUpdate = true;
     this.invalidate();
   }
