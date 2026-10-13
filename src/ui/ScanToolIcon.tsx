@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import "./ScanToolIcon.css";
+import wandScanImage from "./assets/wand-scan.png";
 
 export type ScanIconName =
   | "wand"
@@ -34,11 +35,25 @@ export type ScanIconName =
 /** Small mesh diagrams: gold denotes the selected triangles, cyan the operation. */
 export function ScanToolIcon({
   name,
-  size = 22,
+  size,
 }: {
   name: ScanIconName;
   size?: number;
 }) {
+  if (name === "wand") {
+    return (
+      <img
+        className="scan-feature-icon"
+        src={wandScanImage}
+        width={size ?? 56}
+        height={size ?? 56}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        data-scan-icon="wand"
+      />
+    );
+  }
   const mesh = (
     <g stroke="#8babbc" fill="#344653">
       <path d="M3 5h18v14H3z" />
@@ -54,20 +69,6 @@ export function ScanToolIcon({
   );
   let drawing: ReactNode;
   switch (name) {
-    case "wand":
-      drawing = (
-        <>
-          {mesh}
-          <path d="m3 19 9-7 9 7Z" fill="#f5c65d" />
-          <path d="m6 19 11-13" stroke="#eaf7ff" strokeWidth="3" />
-          <path
-            d="m17 2 1 3 3 1-3 1-1 3-1-3-3-1 3-1Z"
-            fill="#ffd56d"
-            stroke="#ffd56d"
-          />
-        </>
-      );
-      break;
     case "brush":
     case "freehand":
       drawing = (
@@ -367,8 +368,8 @@ export function ScanToolIcon({
   return (
     <svg
       className="scan-feature-icon"
-      width={size}
-      height={size}
+      width={size ?? 22}
+      height={size ?? 22}
       viewBox="0 0 24 24"
       fill="none"
       strokeWidth="1.4"

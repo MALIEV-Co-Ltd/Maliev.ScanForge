@@ -170,3 +170,14 @@ section.edit-scan-dialog .scan-dialog-footer {
   padding-top: 8px;
   margin-top: 0;
 }
+
+/* Keep the generated wand/scan contact large enough to read as a 3D gesture. */
+section.edit-scan-dialog .scan-tool-row button:has([data-scan-icon="wand"]) {
+  flex-direction: column;
+  gap: 2px;
+}
+section.edit-scan-dialog .scan-tool-row [data-scan-icon="wand"] {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
