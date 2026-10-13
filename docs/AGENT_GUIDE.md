@@ -201,6 +201,9 @@ rejected. Older projects and other mesh formats can lack this optional metadata.
 
 For recovered surface refinement, call `mesh_process` with moving `entityId`,
 fixed `targetId`, and `operation:{kind:"nativeRefine",sampleBudget:500,initialRadius:10}`.
+The equivalent GUI entry is Scan Data → Fine align, also available in the Main
+Align options menu. Its ribbon gate covers this indexed surface-refinement
+workflow; the separate origin/reference alignment commands remain unverified.
 For multiple fixed surfaces, use `targetIds:["first","second"]` instead of
 `targetId`. The ordered list accepts one to 32 distinct fixed mesh objects;
 the moving object cannot appear in it. Distance ties retain the first fixed

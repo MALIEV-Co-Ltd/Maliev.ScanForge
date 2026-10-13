@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Ribbon } from "../src/ui/Ribbon";
-import { RIBBON_TABS, ribbonToolAvailability } from "../src/ui/ribbon-model";
+import {
+  RIBBON_TABS,
+  getRibbonToolMetadata,
+  ribbonToolAvailability,
+} from "../src/ui/ribbon-model";
 import { ribbonVerification } from "../src/ui/ribbon-verification";
 
 const ready = {
@@ -11,6 +15,23 @@ const ready = {
   canRedo: true,
 };
 describe("ribbon verification gate", () => {
+  it("exposes verified fine alignment while retaining the unfinished origin alignment gate", () => {
+    const fine = getRibbonToolMetadata("fineAlign")!;
+    expect(
+      ribbonToolAvailability(fine, ready, { fineAlign: vi.fn() }).available,
+    ).toBe(true);
+    expect(
+      ribbonToolAvailability(
+        fine,
+        { ...ready, disabled: true },
+        { fineAlign: vi.fn() },
+      ).available,
+    ).toBe(false);
+    expect(ribbonVerification("align", true).status).toBe("unverified");
+    expect(ribbonVerification("alignCoordinates", false).status).toBe(
+      "planned",
+    );
+  });
   it("blocks every unverified and planned command even with a supplied callback", () => {
     for (const tab of RIBBON_TABS)
       for (const group of tab.groups)

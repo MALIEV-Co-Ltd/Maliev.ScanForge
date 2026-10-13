@@ -648,7 +648,8 @@ Worker-boundary tests compare the retained original thread fixtures. This path
 requires indexed PLY meshes and revealed geometry. It is separate from existing
 point-cloud/mesh ICP; ordered indexed mesh target groups are now available in both
 interfaces through the verified query kernel. CAD targets, other importer topologies,
-hidden-geometry behavior and multicore dispatch still require verification.
+hidden-geometry behavior still require verification. Multicore dispatch and the
+bounded application pool are documented in NATIVE_ALIGNMENT_TARGET_GROUPS.md.
 
 Whole-object paired-point, ICP and global alignment now retain the moving mesh's
 indexed vertex ordering and connectivity in the shared worker. Every indexed

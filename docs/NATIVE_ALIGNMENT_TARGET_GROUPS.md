@@ -75,11 +75,9 @@ Final per-lane selection flags also match all ten original dispatcher executions
 Coordinates entering the original vertex records are Float32; comparisons round
 decimal source coordinates before transforming, as application preparation does.
 
-The application refiner still evaluates correspondence lanes serially inside its
-processing worker. These captures verify the native scheduling boundary and
-provide regression inputs for a future bounded application pool; they do not
-claim that application alignment now uses multiple CPU cores. Native target
-construction, enclosing UI behavior and CAD queries remain separate gates.
+These captures verified the native scheduling boundary before integration of
+the bounded application pool described below. Native target construction,
+enclosing native UI behavior and CAD queries remain separate gates.
 
 An application pool must preserve logical lanes independently of physical worker
 count. Each evaluation must send the same pre-evaluation best objective to every
@@ -117,3 +115,14 @@ remain outside this evidence. This capture is direct native execution, not a
 new REA Evidence ID. The recovered procedures and image digest are in its
 provenance; external probe, fault, result and cleanup files remain under the
 isolated native analysis directory.
+
+## Ribbon access
+
+Fine align is enabled in Scan Data and in the Main Align options menu. Its
+verification entry covers indexed mesh surface refinement, including the bounded
+CPU pool. The broader Align / Principal axes entry and origin/reference commands
+remain gated independently; enabling Fine align does not certify those workflows.
+An actual application browser check imports two PLY meshes, selects the moving
+scan, opens Fine align from the ribbon, chooses its fixed target, enables multiple
+CPU cores and completes refinement. The shared `mesh_process` / `nativeRefine`
+operation remains unchanged and exposes the same parameters and diagnostics.

@@ -213,7 +213,6 @@ describe("ribbon command inventory", () => {
       "chamfer",
       "repairMesh",
       "segmentMesh",
-      "fineAlign",
       "sketch2d",
       "splitSolid",
       "circularPattern",
