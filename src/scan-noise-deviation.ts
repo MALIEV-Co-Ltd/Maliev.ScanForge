@@ -87,8 +87,12 @@ export function noiseTriangleDistance(
         region = 3;
         const first = aa - d,
           second = bb - e;
-        if (second < first) opposite(first - second);
-        else alongU();
+        if (second < first) {
+          // Region 3 measures the BC parameter from B toward C; regions 2/6
+          // measure it in the opposite direction.
+          opposite(first - second);
+          [s, t] = [t, s];
+        } else alongU();
       } else {
         region = 2;
         const numerator = cc - e - bb - -d;
