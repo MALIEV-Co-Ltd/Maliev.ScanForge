@@ -74,3 +74,41 @@ export function nativeAlignmentObjective(
   }
   return error;
 }
+
+/** Outer candidate metric. Inputs are paired Float32 points; per-point squares
+ * are combined before accumulation, as in the original instruction sequence.
+ */
+export function nativeAlignmentSquaredError(
+  matrix: readonly number[],
+  source: readonly Vec3[],
+  target: readonly Vec3[],
+): number {
+  if (matrix.length !== 12 || source.length !== target.length)
+    throw new Error("Alignment error requires a 3x4 matrix and paired points.");
+  let error = 0;
+  for (let id = 0; id < source.length; id++) {
+    const [x, y, z] = source[id];
+    const [tx, ty, tz] = target[id];
+    const dx =
+      Math.fround(y * matrix[1] + x * matrix[0] + z * matrix[2] + matrix[3]) -
+      tx;
+    const dy =
+      Math.fround(x * matrix[4] + y * matrix[5] + z * matrix[6] + matrix[7]) -
+      ty;
+    const dz =
+      Math.fround(x * matrix[8] + y * matrix[9] + z * matrix[10] + matrix[11]) -
+      tz;
+    error += dx * dx + dy * dy + dz * dz;
+  }
+  return error;
+}
+
+/** Original RMS wrapper returns zero for empty paired inputs. */
+export function nativeAlignmentRms(
+  matrix: readonly number[],
+  source: readonly Vec3[],
+  target: readonly Vec3[],
+): number {
+  const error = nativeAlignmentSquaredError(matrix, source, target);
+  return source.length ? Math.sqrt(error / source.length) : error;
+}

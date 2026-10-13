@@ -185,3 +185,32 @@ allocations are released and the processes exit. These are component captures,
 not native UI exports or allocator/scheduler parity. N-point candidate enumeration,
 RMS ranking, outer registration and mesh/CAD refinement remain unverified. The
 new solver component is not yet wired into the application Align UI.
+
+## Executed candidate error metrics
+
+`nativeAlignmentSquaredError` and `nativeAlignmentRms` in
+`src/scan-native-alignment.ts` implement the original candidate metrics
+`0x140aaf150` and `0x140aae810`. Transformed coordinates round to Float32 before
+subtracting paired Float32 targets. Each point combines squared X, Y and Z
+residuals before addition to the total. RMS divides by point count and takes
+a double square root; an empty pair set returns zero. The kernel consumes
+iterator cursors, while the RMS wrapper copies cursors and preserves its inputs.
+The port has immutable array inputs. This differs from the optimizer's L1
+objective and must not be replaced by that objective when ranking candidates.
+
+Sixty-four executions of both original routines cover 0/1/4/17 points, identity
+and seeded general matrices, and coordinate scales from 0.00001 to 1000000.
+Tests compare every squared-error and RMS double byte and preserve source inputs.
+References are in `tests/fixtures/alignment-metrics-native.json`. Assembly Evidence
+is `ev_e7a413f8b0146e85daf41b1fa0dd7a5013e5e99f8c760e9f0bda1a1e25d1eddd`
+(squared error) and
+`ev_a6774b9828624aa0928a49a29e0d6d6840e4f33f219921ae15a10c314415d0db`
+(RMS). Both routines use the same mapped-image digest as the preceding captures.
+
+The probe supplies Float32 point iterator storage and resolves the square-root
+import to system UCRT; neither metric's numerical instructions are replaced.
+An initial RMS iterator adapter used the wrong pointer depth and its two attempts
+exited with access violations before producing captures. The corrected successful
+probe releases its mapped allocation and exits. These metric captures do not
+verify the complete refinement wrapper's optional RMS output, N-point candidate
+enumeration, outer ranking policy, native UI or allocator behavior.
