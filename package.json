@@ -19,21 +19,27 @@
     "test:cad": "node --max-old-space-size=768 tests/kernel-smoke.mjs",
     "format:check": "prettier --check .",
     "preview": "vite preview --host 127.0.0.1",
-    "prepare:kernel": "node scripts/prepare-kernel.mjs"
+    "prepare:kernel": "node scripts/prepare-kernel.mjs",
+    "mcp": "node scripts/mcp-server.mjs",
+    "test:mcp:browser": "node tests/mcp-browser-smoke.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
     "lucide-react": "^0.468.0",
     "opencascade.js": "1.1.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "three": "^0.180.0",
     "three-mesh-bvh": "0.9.16",
-    "tinykeys": "4.0.1"
+    "tinykeys": "4.0.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
+    "@types/node": "26.6.5",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.1",
     "@types/three": "^0.180.0",
+    "playwright": "1.64.0",
     "prettier": "^3.9.10",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",

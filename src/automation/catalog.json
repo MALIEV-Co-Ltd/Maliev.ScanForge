@@ -1,0 +1,3799 @@
+[
+  {
+    "name": "capabilities_get",
+    "description": "Discover API version, complete command schemas, resource limits and supported features.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "project_get",
+    "description": "Inspect workspace, objects, feature recipes, authoring, history and settings; response revision guards writes.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_get",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "includeGeometry": {
+          "type": "boolean"
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_update",
+    "description": "Change name/display/protection properties using shared project validation.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "patch": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": ""
+            },
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}$"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "visible": {
+              "type": "boolean"
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "selectable": {
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "patch", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_duplicate",
+    "description": "Duplicate geometry without duplicating parametric identity.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_delete",
+    "description": "Delete one object; dependent feature integrity and locks are enforced.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "cad_bind",
+    "description": "Bind an imported exact body as a persistent feature seed for dependent CAD recipes.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "mesh_copy",
+    "description": "Create a separate editable triangle copy of any object.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "selection_get",
+    "description": "Read current selection via an artifact of sorted triangle slots.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "selection_set",
+    "description": "Select sorted unique triangle slots of one object, guarded by current revision.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "triangles": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 0,
+          "maxItems": 100000,
+          "uniqueItems": true
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "triangles", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "selection_edit",
+    "description": "Copy, cut or delete the selected triangles.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["copy", "cut", "delete"]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "mesh_analyze",
+    "description": "Compute mesh topology diagnostics in a cancellable worker.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "tolerance": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "mesh_process",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "operation": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["scanTools"]
+                },
+                "operation": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["reducePolygons"]
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": ["triangles", "percentage", "deviation"]
+                        },
+                        "targetTriangles": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "percentage": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 100
+                        },
+                        "deviation": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "measureDeviation": {
+                          "type": "boolean"
+                        },
+                        "paletteThreshold": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "mode"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["reduceNoise"]
+                        },
+                        "iterations": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 100
+                        },
+                        "deviation": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "selectionOnly": {
+                          "type": "boolean"
+                        },
+                        "applyBoundaryEdges": {
+                          "type": "boolean"
+                        },
+                        "measureDeviation": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": ["kind"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["scaleMesh"]
+                        },
+                        "factor": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "factor"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["flipNormals"]
+                        }
+                      },
+                      "required": ["kind"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["repolygonize"]
+                        },
+                        "resolution": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["averageMesh"]
+                        },
+                        "tolerance": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["mirrorMesh"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "normal": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "tangent": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "center", "normal"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["unroll"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "offsetDegrees": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["kind", "center", "axis", "radius"],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["kind", "operation"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["repair"]
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "fillHoles": {
+                  "type": "boolean"
+                },
+                "splitNonManifold": {
+                  "type": "boolean"
+                },
+                "planarityTolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxPerimeter": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": [
+                "kind",
+                "tolerance",
+                "fillHoles",
+                "planarityTolerance",
+                "maxPerimeter"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["smooth"]
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "strength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": ["kind", "tolerance", "iterations", "strength"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["decimate"]
+                },
+                "cellSize": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "cellSize"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["segment"]
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "angleDegrees": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 180
+                }
+              },
+              "required": ["kind", "tolerance", "angleDegrees"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["paired"]
+                },
+                "sourceLandmarks": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 9,
+                  "maxItems": 3000
+                },
+                "targetLandmarks": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 9,
+                  "maxItems": 3000
+                }
+              },
+              "required": ["kind", "sourceLandmarks", "targetLandmarks"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["icp"]
+                },
+                "maxDistance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxIterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000
+                },
+                "sampleSize": {
+                  "type": "integer",
+                  "minimum": 3,
+                  "maximum": 100000
+                },
+                "targetSampleSize": {
+                  "type": "integer",
+                  "minimum": 3,
+                  "maximum": 100000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "trimFraction": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "kind",
+                "maxDistance",
+                "maxIterations",
+                "sampleSize",
+                "targetSampleSize",
+                "tolerance",
+                "trimFraction"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["global"]
+                },
+                "maxDistance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxIterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000
+                },
+                "sampleSize": {
+                  "type": "integer",
+                  "minimum": 3,
+                  "maximum": 100000
+                },
+                "targetSampleSize": {
+                  "type": "integer",
+                  "minimum": 3,
+                  "maximum": 100000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "trimFraction": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "kind",
+                "maxDistance",
+                "maxIterations",
+                "sampleSize",
+                "targetSampleSize",
+                "tolerance",
+                "trimFraction"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["selectionMorphology"]
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["grow", "shrink", "boundary"]
+                }
+              },
+              "required": ["kind", "operation"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["connectedSelection"]
+                },
+                "allConnected": {
+                  "type": "boolean"
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "angleDegrees": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 180
+                }
+              },
+              "required": ["kind", "tolerance", "angleDegrees"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sketchSection"]
+                },
+                "options": {
+                  "type": "object",
+                  "description": "SketchSectionOptions: frame,offset?,tolerance,chordTolerance"
+                }
+              },
+              "required": ["kind", "options"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["scanEdit"]
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "inventory",
+                    "componentExtract",
+                    "componentKeep",
+                    "componentRemove",
+                    "componentFlip",
+                    "fillHoles",
+                    "boundarySmooth",
+                    "boundaryProject",
+                    "smoothSelected",
+                    "defeature",
+                    "split"
+                  ]
+                },
+                "indices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 0,
+                  "maxItems": 1000000
+                },
+                "algorithm": {
+                  "type": "string",
+                  "enum": ["automatic", "flat", "tangent", "curvature"]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["entire", "partial", "bridge"]
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "diameter": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "strength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "plane": {
+                  "type": "object",
+                  "properties": {
+                    "origin": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "normal": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    }
+                  },
+                  "required": ["origin", "normal"],
+                  "additionalProperties": false
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "fitTolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "action"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "selectionOnly": {
+          "type": "boolean"
+        },
+        "createNew": {
+          "type": "boolean"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "mesh_transform",
+    "description": "Transform an editable triangle object (XYZ rotation radians, translation mm).",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "translation": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "rotation": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": [
+        "entityId",
+        "translation",
+        "rotation",
+        "scale",
+        "expectedRevision",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "analysis_fit",
+    "description": "Fit a plane/sphere/cylinder/cone; analytical residuals are estimates, not certified metrology.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["plane", "sphere", "cylinder", "cone"]
+        },
+        "selectionOnly": {
+          "type": "boolean"
+        }
+      },
+      "required": ["entityId", "kind"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "analysis_section",
+    "description": "Compute an axis section and CSV/DXF artifacts in world millimetres.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "axis": {
+          "type": "string",
+          "enum": ["x", "y", "z"]
+        },
+        "offset": {
+          "type": "number"
+        }
+      },
+      "required": ["entityId", "axis", "offset"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "analysis_deviation",
+    "description": "Evaluate deviations against a supplied validated primitive fit; report via artifact.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "fit": {
+          "type": "object",
+          "description": "FitResult from analysis_fit"
+        }
+      },
+      "required": ["entityId", "fit"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "analysis_measure",
+    "description": "Measure distance between two world points in millimetres.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "second": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      },
+      "required": ["first", "second"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "cad_create",
+    "description": "Create exact CAD from a validated recipe. Dependency refs use featureId/output from project_get; use cad_bind for imported exact bodies. Edge/face indices are valid only at expectedRevision.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["primitive"]
+                },
+                "input": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["box"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "size": {
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "center", "size"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sphere"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "center", "radius"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["cylinder"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "center",
+                        "axis",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["cone"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "topRadius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "center",
+                        "axis",
+                        "radius",
+                        "topRadius",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["kind", "input"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["importBrep"]
+                },
+                "brep": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000000
+                }
+              },
+              "required": ["kind", "brep"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["extrude"]
+                },
+                "profile": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["polygon"]
+                        },
+                        "points": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "minItems": 2,
+                            "maxItems": 2
+                          },
+                          "minItems": 3,
+                          "maxItems": 10000
+                        },
+                        "frame": {
+                          "type": "object"
+                        }
+                      },
+                      "required": ["kind", "points"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sketch"]
+                        },
+                        "sketch": {
+                          "type": "object",
+                          "description": "Sketch v1, validated by validateSketch"
+                        },
+                        "chordTolerance": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "sketch"],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "height": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["revolve"]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "minItems": 3,
+                  "maxItems": 10000
+                },
+                "angleDegrees": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "points", "angleDegrees"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["loft"]
+                },
+                "profiles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "points": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "minItems": 3,
+                        "maxItems": 10000
+                      },
+                      "z": {
+                        "type": "number"
+                      }
+                    },
+                    "required": ["points", "z"],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2,
+                  "maxItems": 1000
+                },
+                "ruled": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind", "profiles", "ruled"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sweep"]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "minItems": 3,
+                  "maxItems": 10000
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "minItems": 2,
+                  "maxItems": 10000
+                }
+              },
+              "required": ["kind", "points", "path"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["surface"]
+                },
+                "patch": {
+                  "type": "object",
+                  "description": "Validated rational NURBS patch; see surface_get"
+                }
+              },
+              "required": ["kind", "patch"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["closedShell"]
+                },
+                "patches": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "minItems": 2,
+                  "maxItems": 1000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "patches", "tolerance"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pattern"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "pattern": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["linear"]
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "step": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "count", "step"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["circular"]
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "angleDegrees": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "count",
+                        "center",
+                        "axis",
+                        "angleDegrees"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["kind", "source", "pattern"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["mirror"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "planeOrigin": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "normal": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["kind", "source", "planeOrigin", "normal"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["transform"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "translation": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "rotation": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "scale": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": [
+                "kind",
+                "source",
+                "translation",
+                "rotation",
+                "scale"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["boolean"]
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["union", "subtract", "intersect"]
+                },
+                "first": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "second": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["kind", "operation", "first", "second"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["split"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "cutter": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["kind", "source", "cutter"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["edges"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "edgeIndices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1,
+                  "maxItems": 10000
+                },
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["fillet", "chamfer"]
+                }
+              },
+              "required": [
+                "kind",
+                "source",
+                "edgeIndices",
+                "amount",
+                "operation"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["offset"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "distance": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "distance"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["shell"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "faceIndices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1,
+                  "maxItems": 10000
+                },
+                "thickness": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "faceIndices", "thickness"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["thicken"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "thickness": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "thickness"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sew"]
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "featureId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "description": "Feature ID from project_get; never a worker handle"
+                      },
+                      "output": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": ["featureId"],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 1000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "sources", "tolerance"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "hideInputs": {
+          "type": "boolean"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["recipe", "name", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "cad_rebuild",
+    "description": "Atomically edit a feature recipe and rebuild dependents; preserve prior outputs for Undo.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "recipe": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["primitive"]
+                },
+                "input": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["box"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "size": {
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "center", "size"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sphere"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "center", "radius"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["cylinder"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "center",
+                        "axis",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["cone"]
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "topRadius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "center",
+                        "axis",
+                        "radius",
+                        "topRadius",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["kind", "input"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["importBrep"]
+                },
+                "brep": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000000
+                }
+              },
+              "required": ["kind", "brep"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["extrude"]
+                },
+                "profile": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["polygon"]
+                        },
+                        "points": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "minItems": 2,
+                            "maxItems": 2
+                          },
+                          "minItems": 3,
+                          "maxItems": 10000
+                        },
+                        "frame": {
+                          "type": "object"
+                        }
+                      },
+                      "required": ["kind", "points"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sketch"]
+                        },
+                        "sketch": {
+                          "type": "object",
+                          "description": "Sketch v1, validated by validateSketch"
+                        },
+                        "chordTolerance": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "sketch"],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "height": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["revolve"]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "minItems": 3,
+                  "maxItems": 10000
+                },
+                "angleDegrees": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "points", "angleDegrees"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["loft"]
+                },
+                "profiles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "points": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "minItems": 3,
+                        "maxItems": 10000
+                      },
+                      "z": {
+                        "type": "number"
+                      }
+                    },
+                    "required": ["points", "z"],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2,
+                  "maxItems": 1000
+                },
+                "ruled": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind", "profiles", "ruled"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sweep"]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "minItems": 3,
+                  "maxItems": 10000
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "minItems": 2,
+                  "maxItems": 10000
+                }
+              },
+              "required": ["kind", "points", "path"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["surface"]
+                },
+                "patch": {
+                  "type": "object",
+                  "description": "Validated rational NURBS patch; see surface_get"
+                }
+              },
+              "required": ["kind", "patch"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["closedShell"]
+                },
+                "patches": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "minItems": 2,
+                  "maxItems": 1000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "patches", "tolerance"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pattern"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "pattern": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["linear"]
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "step": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["kind", "count", "step"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["circular"]
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "center": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "axis": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "angleDegrees": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "count",
+                        "center",
+                        "axis",
+                        "angleDegrees"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["kind", "source", "pattern"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["mirror"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "planeOrigin": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "normal": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["kind", "source", "planeOrigin", "normal"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["transform"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "translation": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "rotation": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "scale": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": [
+                "kind",
+                "source",
+                "translation",
+                "rotation",
+                "scale"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["boolean"]
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["union", "subtract", "intersect"]
+                },
+                "first": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "second": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["kind", "operation", "first", "second"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["split"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "cutter": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["kind", "source", "cutter"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["edges"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "edgeIndices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1,
+                  "maxItems": 10000
+                },
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": ["fillet", "chamfer"]
+                }
+              },
+              "required": [
+                "kind",
+                "source",
+                "edgeIndices",
+                "amount",
+                "operation"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["offset"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "distance": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "distance"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["shell"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "faceIndices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1,
+                  "maxItems": 10000
+                },
+                "thickness": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "faceIndices", "thickness"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["thicken"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "thickness": {
+                  "type": "number"
+                }
+              },
+              "required": ["kind", "source", "thickness"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sew"]
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "featureId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "description": "Feature ID from project_get; never a worker handle"
+                      },
+                      "output": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": ["featureId"],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 1000
+                },
+                "tolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "sources", "tolerance"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "recipe", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sketch_get",
+    "description": "Inspect current sketch, including frame, curves and constraints.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sketch_set",
+    "description": "Replace the active sketch draft with a validated Sketch v1; CAD remains unchanged until rebuild/extrude.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sketch": {
+          "type": "object"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["sketch", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sketch_solve",
+    "description": "Solve supplied sketch constraints and return residual/conflict/degree-of-freedom diagnostics.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sketch": {
+          "type": "object"
+        }
+      },
+      "required": ["sketch"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "surface_get",
+    "description": "Inspect a rational NURBS patch.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "surface_set",
+    "description": "Create/update a validated rational NURBS control grid, weights and knots; exact CAD edits require rebuilding.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patch": {
+          "type": "object"
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["patch", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "surface_fit",
+    "description": "Fit a scan projection to a NURBS patch; closed automatic reconstruction remains unsupported.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "options": {
+          "type": "object",
+          "description": "SurfaceFitOptions; validated by existing surface fitter"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "options", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "project_import",
+    "description": "Import a completed artifact. Scan units explicit. replace=true required for project replacement; imported geometry stays local.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["mm", "cm", "m", "in", "ft"]
+        },
+        "replace": {
+          "type": "boolean"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["artifactId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "project_export",
+    "description": "Export project, visible STL or exact STEP as a local artifact. Does not write arbitrary filesystem paths.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["project", "stl", "step"]
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": ["format"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "history_undo",
+    "description": "Undo one modeling revision through the shared history.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "history_redo",
+    "description": "Redo one modeling revision through the shared history.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "viewport_set",
+    "description": "Set standard camera view; fit frames the visible workspace.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "type": "string",
+          "enum": [
+            "iso",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "front",
+            "back",
+            "fit"
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["view", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "settings_set",
+    "description": "Set display and grid preferences through the application.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patch": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "enum": ["light", "dark", "system"]
+            },
+            "wireframe": {
+              "type": "boolean"
+            },
+            "flatShading": {
+              "type": "boolean"
+            },
+            "floorGrid": {
+              "type": "boolean"
+            },
+            "gridSpacing": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "snapGrid": {
+              "type": "boolean"
+            },
+            "originVisible": {
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["patch", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "job_get",
+    "description": "Inspect running/completed job; poll at modest intervals.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["jobId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "job_cancel",
+    "description": "Request cancellation. Native CAD may settle before releasing its admission lane; no cancelled output is committed.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["jobId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "artifact_put",
+    "description": "Create/append a local upload artifact with ordered base64 chunks (max1MiB decoded). This grants no workspace edit.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "base64": {
+          "type": "string",
+          "maxLength": 1400000
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["name", "base64", "offset"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "artifact_read",
+    "description": "Read an artifact as base64 chunks; expires15min after last use.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 262144
+        }
+      },
+      "required": ["artifactId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "artifact_delete",
+    "description": "Release a transient artifact (does not delete a project file).",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        }
+      },
+      "required": ["artifactId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "project_new",
+    "description": "Create an empty workspace. Explicit discard=true required; export unsaved work first.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "discard": {
+          "type": "boolean"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["discard", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_select",
+    "description": "Select an explicit object; omit entityId to clear selection.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "history_seek",
+    "description": "Seek to a retained modeling timeline index (0 is starting state).",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["index", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "selection_modify",
+    "description": "Select all, clear or invert triangles without transferring large slot arrays.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["all", "clear", "invert"]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "selection_saved",
+    "description": "Save, load or delete a persistent named triangle selection.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "action": {
+          "type": "string",
+          "enum": ["save", "load", "delete"]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "selectionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sketch_manage",
+    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["create", "activate", "rename", "delete"]
+        },
+        "sketchId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "sketch": {
+          "type": "object"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "mesh_quick",
+    "description": "Clean degenerate facets or center/align principal axes using editor geometry helpers.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["cleanup", "alignPrincipalAxes"]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "surface_operation",
+    "description": "Use editor NURBS helpers: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["grid", "quadImport", "knot", "crease", "snap", "join"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "countU": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 64
+        },
+        "countV": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 64
+        },
+        "degree": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "axis": {
+          "type": "string",
+          "enum": ["u", "v"]
+        },
+        "parameter": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.999999999
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scanId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "referenceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "referenceEdge": {
+              "type": "string",
+              "enum": ["u0", "u1", "v0", "v1"]
+            },
+            "targetEdge": {
+              "type": "string",
+              "enum": ["u0", "u1", "v0", "v1"]
+            },
+            "continuity": {
+              "type": "string",
+              "enum": ["C0", "C1"]
+            },
+            "reverse": {
+              "type": "boolean"
+            }
+          },
+          "required": ["referenceEdge", "targetEdge", "continuity"],
+          "additionalProperties": false
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": ["operation", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "surface_shell",
+    "description": "Inspect compatible patch seam/topology diagnostics or generate a box patch shell. Returns an artifact suitable for closedShell CAD recipe.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": ""
+          },
+          "minItems": 1,
+          "maxItems": 1000
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "depth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "segments": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "triangleBudget": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000000
+            },
+            "weldTolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": ["segments", "triangleBudget", "weldTolerance"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["options"],
+      "additionalProperties": false
+    }
+  }
+]

@@ -1,0 +1,290 @@
+import { describe, it, expect, vi } from "vitest";
+import {
+  createOperations,
+  createCadFeature,
+  rebuildCadFeature,
+} from "../src/automation/operations";
+import type {
+  WorkspaceHost,
+  WorkspaceSnapshot,
+  CommandContext,
+} from "../src/automation/api";
+import type { CadClient } from "../src/cad/client";
+import type { Entity } from "../src/types";
+import type { ParametricRecipe } from "../src/parametric";
+import { processMesh } from "../src/processing-client";
+import { createGridPatch } from "../src/surfaces";
+vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
+
+const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+function entity(patch: Partial<Entity> = {}): Entity {
+  return {
+    id: "mesh",
+    name: "Scan",
+    kind: "mesh",
+    positions: new Float32Array([...triangle, ...triangle.map((v) => v + 3)]),
+    color: "#ffffff",
+    visible: true,
+    opacity: 1,
+    ...patch,
+  };
+}
+const recipe: ParametricRecipe = {
+  kind: "primitive",
+  input: { kind: "box", center: [0, 0, 0], size: [1, 1, 1] },
+};
+function harness(entities: Entity[] = [entity()]) {
+  let sequence = 0;
+  const cad = {
+    primitive: vi.fn(async () => ({
+      kernelId: `native-${++sequence}`,
+      positions: [...triangle],
+      brep: "BREP",
+    })),
+    release: vi.fn(async () => {}),
+  } as unknown as CadClient;
+  const state: WorkspaceSnapshot = {
+    name: "Test",
+    entities,
+    history: [],
+    future: [],
+    authoring: {},
+    selectedId: "mesh",
+    selection: new Uint8Array([1, 0]),
+    settings: {},
+  };
+  const host: WorkspaceHost = {
+    snapshot: () => state,
+    cad: () => cad,
+    commit: vi.fn((next, label) => {
+      state.history.push({ entities: state.entities, label });
+      state.entities = next;
+    }),
+    replace: vi.fn(),
+    select: vi.fn(),
+    setSelection: vi.fn((entityId, mask) => {
+      state.selectedId = entityId;
+      state.selection = mask;
+    }),
+    setSketch: vi.fn(),
+    undo: vi.fn(),
+    redo: vi.fn(),
+    view: vi.fn(),
+    settings: vi.fn(),
+    busy: () => false,
+    activity: vi.fn(),
+  };
+  const controller = new AbortController();
+  const context: CommandContext = {
+    signal: controller.signal,
+    progress: vi.fn(),
+    check: () => {
+      if (controller.signal.aborted)
+        throw new DOMException("Cancelled", "AbortError");
+    },
+    artifact: vi.fn((_data, name, mime) => ({
+      artifactId: "artifact",
+      name,
+      mime,
+      bytes: 1,
+    })),
+    artifactBlob: vi.fn(),
+  };
+  return { host, state, cad, context, controller, ops: createOperations(host) };
+}
+
+describe("shared workspace operation contracts", () => {
+  it("binds imported exact CAD as a project-local persistent seed", async () => {
+    const h = harness([entity({ kernelId: "native", brep: "BREP" })]);
+    const result = (await h.ops.cad_bind({ entityId: "mesh" }, h.context)) as {
+      ref: { featureId: string };
+    };
+    expect(h.state.entities[0].parametric?.feature.id).toBe(
+      result.ref.featureId,
+    );
+    expect(h.state.entities[0].kernelId).toBe("native");
+  });
+  it("creates a NURBS authoring patch when no target is supplied", async () => {
+    const h = harness([]);
+    await h.ops.surface_set(
+      { patch: createGridPatch(10, 10, 3, 3) },
+      h.context,
+    );
+    expect(h.state.entities).toHaveLength(1);
+    expect(h.state.entities[0].surfacePatch).toBeDefined();
+  });
+  it("does not classify its own mesh commit as a stale revision", async () => {
+    const h = harness();
+    const initial = h.state.entities;
+    h.context.check = () => {
+      if (h.state.entities !== initial) throw new Error("Stale revision");
+    };
+    vi.mocked(processMesh).mockResolvedValueOnce({
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        positions: new Float32Array(triangle),
+        curves: [[0, 0, 0, 1, 0, 0]],
+        diagnostics: {},
+      },
+    });
+    const response = (await h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: { kind: "scanEdit", action: "fillHoles" },
+      },
+      h.context,
+    )) as { artifact: unknown };
+    expect(h.host.commit).toHaveBeenCalledOnce();
+    expect(response.artifact).toBeDefined();
+  });
+  it("rejects partial mesh replacement before launching an operation", async () => {
+    const h = harness();
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: {
+            kind: "smooth",
+            iterations: 1,
+            strength: 0.5,
+            tolerance: 1e-6,
+          },
+          selectionOnly: true,
+        },
+        h.context,
+      ),
+    ).rejects.toThrow("createNew");
+    expect(h.host.commit).not.toHaveBeenCalled();
+  });
+  it("partitions a triangle selection without changing unselected coordinates", async () => {
+    const h = harness();
+    const original = h.state.entities[0].positions.slice();
+    const result = (await h.ops.selection_edit(
+      { entityId: "mesh", operation: "cut" },
+      h.context,
+    )) as { entityId: string };
+    expect(h.state.entities.find((e) => e.id === "mesh")!.positions).toEqual(
+      new Float32Array(original.slice(9)),
+    );
+    expect(
+      h.state.entities.find((e) => e.id === result.entityId)!.positions,
+    ).toEqual(new Float32Array(original.slice(0, 9)));
+    expect(original.length).toBe(18);
+  });
+  it("rejects a selection belonging to a different object", async () => {
+    const h = harness();
+    h.state.selectedId = "different";
+    await expect(async () =>
+      h.ops.selection_edit(
+        { entityId: "mesh", operation: "delete" },
+        h.context,
+      ),
+    ).rejects.toThrow("Select triangles");
+    expect(h.host.commit).not.toHaveBeenCalled();
+  });
+  it("rejects invalid triangle indices rather than silently selecting another face", async () => {
+    const h = harness();
+    await expect(async () =>
+      h.ops.selection_set({ entityId: "mesh", triangles: [2] }, h.context),
+    ).rejects.toThrow("out of bounds");
+    expect(h.host.setSelection).not.toHaveBeenCalled();
+  });
+  it("forbids overwriting geometry through metadata commands", async () => {
+    const h = harness();
+    await expect(async () =>
+      h.ops.object_update(
+        { entityId: "mesh", patch: { positions: triangle } },
+        h.context,
+      ),
+    ).rejects.toThrow("metadata");
+    expect(h.host.commit).not.toHaveBeenCalled();
+  });
+  it("keeps locked and exact bodies protected from mesh edits", async () => {
+    for (const patch of [{ locked: true }, { kernelId: "cad" }]) {
+      const h = harness([entity(patch)]);
+      await expect(async () =>
+        h.ops.mesh_transform(
+          {
+            entityId: "mesh",
+            translation: [1, 0, 0],
+            rotation: [0, 0, 0],
+            scale: 1,
+          },
+          h.context,
+        ),
+      ).rejects.toThrow();
+      expect(h.host.commit).not.toHaveBeenCalled();
+    }
+  });
+  it("creates an independent tessellation while retaining exact CAD on its source", async () => {
+    const h = harness([entity({ kernelId: "native", brep: "BREP" })]);
+    await h.ops.mesh_copy({ entityId: "mesh" }, h.context);
+    expect(h.state.entities[0].kernelId).toBe("native");
+    expect(h.state.entities[1].kernelId).toBeUndefined();
+    expect(h.state.entities[1].positions).not.toBe(
+      h.state.entities[0].positions,
+    );
+  });
+  it("cancellation immediately before a mutation prevents commits", async () => {
+    const h = harness();
+    h.controller.abort();
+    await expect(async () =>
+      h.ops.object_update(
+        { entityId: "mesh", patch: { name: "Changed" } },
+        h.context,
+      ),
+    ).rejects.toThrow();
+    expect(h.host.commit).not.toHaveBeenCalled();
+  });
+  it("releases only newly evaluated CAD handles after a stale commit", async () => {
+    const h = harness([]);
+    h.context.check = () => {
+      throw new Error("Stale revision");
+    };
+    await expect(
+      h.ops.cad_create({ recipe, name: "Box" }, h.context),
+    ).rejects.toThrow("Stale");
+    expect(h.cad.release).toHaveBeenCalledWith(["native-1"]);
+    expect(h.host.commit).not.toHaveBeenCalled();
+  });
+  it("returns compact summaries without geometry arrays or BREP", async () => {
+    const h = harness([entity({ kernelId: "native", brep: "huge" })]);
+    const result = (await h.ops.project_get({}, h.context)) as {
+      objects: Record<string, unknown>[];
+    };
+    expect(result.objects[0]).not.toHaveProperty("positions");
+    expect(result.objects[0]).not.toHaveProperty("brep");
+    expect(result.objects[0].exactCad).toBe(true);
+  });
+  it("validates missing dependencies before calling the CAD evaluator", async () => {
+    const h = harness([]);
+    await expect(
+      createCadFeature(
+        h.cad,
+        [],
+        { kind: "offset", source: { featureId: "foreign" }, distance: 1 },
+        "Offset",
+      ),
+    ).rejects.toThrow();
+    expect(h.cad.primitive).not.toHaveBeenCalled();
+  });
+  it("retains the previous native body for history after rebuilding", async () => {
+    const h = harness([]);
+    const initial = await createCadFeature(h.cad, [], recipe, "Box");
+    const rebuilt = await rebuildCadFeature(
+      h.cad,
+      initial.entities,
+      [],
+      [],
+      initial.created[0].id,
+      {
+        kind: "primitive",
+        input: { kind: "box", center: [0, 0, 0], size: [2, 2, 2] },
+      },
+    );
+    expect(rebuilt.entities[0].id).toBe(initial.created[0].id);
+    expect(rebuilt.entities[0].kernelId).toBe("native-2");
+    expect(h.cad.release).not.toHaveBeenCalled();
+  });
+});

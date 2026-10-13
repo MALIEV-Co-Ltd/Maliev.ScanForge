@@ -56,12 +56,14 @@ The built-in bracket is independently generated demonstration geometry, not meas
 - CAD tessellation uses 0.15 mm linear and 0.35 rad angular deflection. Large or unusual models may fail import or exceed browser limits.
 - CAD operations execute serially, with a 90-second timeout. A timeout destroys the worker and invalidates live CAD handles; save/reopen a project to restore retained BREP.
 - Undo/redo retains at most 20 snapshots. Shapes unreachable from the current project and undo/redo stacks are released.
-- Imported data is not uploaded. No telemetry, analytics, cloud geometry processing, CDN assets, or network APIs are used at runtime.
+- Normal editor operation keeps imported data local, with no telemetry, analytics, cloud geometry processing or CDN assets. Explicit MCP pairing enables loopback command and artifact transfer to the configured local agent bridge; geometry still executes in the browser.
 - GPU resources, listeners, and workers are disposed when the page closes. Rendering pauses when idle.
 - Mesh topology uses memory proportional to mesh complexity. Importing a large file does not prove that all repair operations fit available memory. Mesh processing has cancellation, a two-minute inactivity lease and a fifteen-minute hard expiry.
 - Scan fitting remains a projected height-field method. Closed reconstruction requires compatible supplied patches; it does not discover an arbitrary scan's surface network or certify global self-intersections and nested cavities. Segmentation and PCA/ICP registration are heuristic. Ambiguous nonmanifold junctions split into separate manifold sheets; optional planar capping cannot repair arbitrary holes. Parametric edge/face recipes use kernel indices, which may become invalid after topology changes; persistent topology naming is absent.
 
 ## Architecture
+
+ScanForge supports local AI-agent control through MCP. The editor and agents share CAD creation/rebuild operations, project validation and modeling history. Configure a stdio MCP client, then pair its loopback bridge in **Settings → AI agent access**. Agents can inspect and edit supported scan/CAD/sketch/surface features, run cancellable jobs, and transfer local import/export artifacts. See the [agent setup and usage guide](docs/AGENT_GUIDE.md) and [MCP architecture](docs/MCP_ARCHITECTURE.md). Browser pairing is explicit; the ordinary editor needs no bridge. Headless and remote/cloud MCP execution are not included.
 
 `src/ui/` owns interaction and project state. `src/viewport.ts` owns rendering and picking. `src/geometry.ts` contains independent analytical mesh algorithms. `src/io.ts` validates file/project boundaries. `src/cad/client.ts` owns a dedicated worker, and `public/cad-worker.js` owns native CAD handles and a disposable virtual filesystem. Tests exercise analytical geometry, file boundaries, and real native CAD roundtrips.
 

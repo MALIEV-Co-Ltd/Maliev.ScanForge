@@ -2,6 +2,9 @@ import "./ToolPanel.css";
 import "./ObjectList.css";
 import { objectContextActions } from "./object-context-actions";
 import { RenameObjectDialog } from "./RenameObjectDialog";
+import { AgentConnection } from "./AgentConnection";
+import { useWorkspaceApi } from "../automation/use-workspace-api";
+import { createCadFeature, rebuildCadFeature } from "../automation/operations";
 import {
   duplicateObject,
   lockedObjectEdit,
@@ -1618,7 +1621,7 @@ export function App() {
         entities.map((e) => (e.id === selected.id ? { ...e, ...patch } : e)),
       );
   }
-  function undo() {
+  function undoModel() {
     if (history.length) {
       const next = history[history.length - 1];
       setFuture((p) => [{ entities, label: next.label }, ...p]);
@@ -1633,7 +1636,7 @@ export function App() {
       setMessage(`Undid ${next.label}`);
     }
   }
-  function redo() {
+  function redoModel() {
     if (future.length) {
       const next = future[0];
       setHistory((p) => [...p, { entities, label: next.label }]);
@@ -2577,17 +2580,13 @@ export function App() {
     });
   }
   async function addPrimitive(input: KernelPrimitive, label: string) {
-    const result = await cad.current!.primitive(input);
-    const entity: Entity = {
-      id: crypto.randomUUID(),
-      name: label,
-      kind: input.kind,
-      ...result,
-      color: DEFAULT_PART_COLOR,
-      visible: true,
-      opacity: 0.85,
-      parametric: featureBinding(label, { kind: "primitive", input }),
-    };
+    const result = await createCadFeature(
+      cad.current!,
+      entities,
+      { kind: "primitive", input },
+      label,
+    );
+    const entity = { ...result.created[0], kind: input.kind, opacity: 0.85 };
     commit([...entities, entity]);
     setSelectedId(entity.id);
     setPrimitiveDialog(false);
@@ -3021,17 +3020,21 @@ export function App() {
   ) {
     void action(label, async () => {
       const bound = bindFeatureInputs(entities, inputIds);
-      const authoring = recipe
-        ? featureBinding(
-            label,
-            typeof recipe === "function" ? recipe(bound.refs) : recipe,
-          )
-        : undefined;
-      if (authoring)
-        entityFeatureModel([
-          ...bound.entities,
-          { parametric: authoring } as Entity,
-        ]);
+      if (recipe) {
+        const resolved =
+          typeof recipe === "function" ? recipe(bound.refs) : recipe;
+        const result = await createCadFeature(
+          cad.current!,
+          bound.entities,
+          resolved,
+          label.replace(/…$/, ""),
+          { hideInputs },
+        );
+        commit(result.entities);
+        setSelectedId(result.created[0].id);
+        setMessage(`${result.created[0].name} created as exact CAD`);
+        return;
+      }
       const result = await run();
       const entity: Entity = {
         ...result,
@@ -3042,7 +3045,7 @@ export function App() {
         opacity: 1,
         visible: true,
         surfacePatch: patch,
-        parametric: authoring,
+        parametric: undefined,
       };
       commit([
         ...bound.entities.map((input) =>
@@ -3071,61 +3074,20 @@ export function App() {
   }
   function rebuildFeature(recipe: ParametricRecipe) {
     void action("Rebuilding parametric features…", async () => {
-      if (!selected?.parametric) throw new Error("Select a parametric body.");
-      const previous = entityFeatureState(entities);
-      const featureId = selected.parametric.feature.id;
-      if (
-        (recipe.kind === "split") !==
-        (selected.parametric.feature.recipe.kind === "split")
-      )
-        throw new Error(
-          "A recipe edit must preserve its number of outputs. Create a separate split feature instead.",
-        );
-      const model = {
-        ...previous.model,
-        features: previous.model.features.map((feature) =>
-          feature.id === featureId ? { ...feature, recipe } : feature,
-        ),
-      };
-      const preserveKernelIds = new Set(
-        [
-          ...entities,
-          ...history.flatMap((revision) => revision.entities),
-          ...future.flatMap((revision) => revision.entities),
-        ].flatMap((entity) => (entity.kernelId ? [entity.kernelId] : [])),
+      if (!selected) throw new Error("Select a parametric body.");
+      const result = await rebuildCadFeature(
+        cad.current!,
+        entities,
+        history,
+        future,
+        selected.id,
+        recipe,
       );
-      const rebuilt = await rebuildParametric(
-        previous,
-        model,
-        createCadEvaluator(cad.current!),
-        { preserveKernelIds },
-      );
-      const recipes = new Map(
-        rebuilt.model.features.map((feature) => [feature.id, feature]),
-      );
-      commit(
-        entities.map((entity) => {
-          const binding = entity.parametric;
-          if (!binding) return entity;
-          const feature = recipes.get(binding.feature.id)!;
-          const result = rebuilt.results[feature.id][binding.output];
-          return {
-            ...entity,
-            ...result,
-            parametric: { feature, output: binding.output },
-            surfacePatch:
-              feature.recipe.kind === "surface"
-                ? feature.recipe.patch
-                : undefined,
-          };
-        }),
-      );
-      if (rebuilt.cleanupFailures.length)
-        setError(
-          rebuilt.cleanupFailures.map((failure) => failure.message).join("; "),
-        );
+      commit(result.entities);
+      if (result.cleanupFailures.length)
+        setError(result.cleanupFailures.map((f) => f.message).join("; "));
       setMessage(
-        `Rebuilt ${rebuilt.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
+        `Rebuilt ${result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
       );
     });
   }
@@ -3193,6 +3155,138 @@ export function App() {
     measure.length === 2
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
+  const workspaceApi = useWorkspaceApi({
+    snapshot: () => ({
+      name,
+      entities,
+      history,
+      future,
+      authoring: projectSession.project.authoring ?? {},
+      sketchDraft,
+      selectedId,
+      selection: triangleMask,
+      settings: {
+        theme,
+        wireframe,
+        flatShading,
+        floorGrid,
+        gridSpacing,
+        snapGrid,
+        originVisible,
+      },
+    }),
+    cad: () => {
+      if (!cad.current) throw new Error("CAD runtime is unavailable");
+      return cad.current;
+    },
+    commit: (next, label) => {
+      const protectedObject = lockedObjectEdit(entities, next);
+      if (protectedObject)
+        throw new Error(
+          `Unlock ${protectedObject.name} before editing or deleting it.`,
+        );
+      entityFeatureModel(next);
+      operationLabel.current = label;
+      try {
+        commit(next);
+      } finally {
+        operationLabel.current = null;
+      }
+    },
+    replace: (project, restoredCad, session) => {
+      if (restoredCad) {
+        cad.current?.dispose();
+        cad.current = restoredCad;
+        knownKernelIds.current.clear();
+      }
+      selectionSessions.current.clear();
+      sketchUndoSessions.current.clear();
+      setEntities(project.entities);
+      setName(project.name);
+      setSelectedId(project.entities[0]?.id ?? null);
+      setTriangleMask(null);
+      setSavedSketches(project.authoring?.sketches ?? []);
+      setActiveSketchId(project.authoring?.activeSketchId ?? null);
+      legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
+      setSketchDraft(
+        project.authoring?.sketches?.find(
+          (s) => s.id === project.authoring?.activeSketchId,
+        )?.sketch ?? legacySketch.current,
+      );
+      setHistory(session?.history ?? []);
+      setFuture(session?.future ?? []);
+      setDirty(true);
+      setMeasure([]);
+      setFit(null);
+      cancelSurfaceFit();
+      cancelLandmarks();
+      dismissScanTool();
+    },
+    select: setSelectedId,
+    setSelection: (entityId, mask) => {
+      const entity = entities.find((e) => e.id === entityId);
+      if (!entity) throw new Error("Selection object disappeared");
+      const session = sessionFor(entity);
+      session.set({ ...session.state, mask });
+      setSelectedId(entityId);
+      applySelectionState(entity, session.state);
+    },
+    setSketch: updateSketchDraft,
+    setAuthoring: (authoring) => {
+      setSavedSketches(authoring.sketches ?? []);
+      setActiveSketchId(authoring.activeSketchId ?? null);
+      legacySketch.current = authoring.sketch ?? rectangleSketch();
+      setSketchDraft(
+        authoring.sketches?.find((s) => s.id === authoring.activeSketchId)
+          ?.sketch ?? legacySketch.current,
+      );
+      setDirty(true);
+    },
+    undo: undoModel,
+    redo: redoModel,
+    view: (view) => {
+      if (view === "fit") viewport.current?.fitView();
+      else viewport.current?.setView(view as "iso");
+    },
+    settings: (patch) => {
+      if (patch.theme !== undefined) setTheme(patch.theme as Theme);
+      if (patch.wireframe !== undefined)
+        setWireframe(patch.wireframe as boolean);
+      if (patch.flatShading !== undefined)
+        setFlatShading(patch.flatShading as boolean);
+      if (patch.floorGrid !== undefined)
+        setFloorGrid(patch.floorGrid as boolean);
+      if (patch.gridSpacing !== undefined)
+        setGridSpacing(patch.gridSpacing as number);
+      if (patch.snapGrid !== undefined) setSnapGrid(patch.snapGrid as boolean);
+      if (patch.originVisible !== undefined)
+        setOriginVisible(patch.originVisible as boolean);
+    },
+    busy: () => busyRef.current,
+    activity: (running, label) => {
+      busyRef.current = running;
+      setBusy(running);
+      setMessage(label);
+    },
+  });
+  async function uiCommand(
+    command: string,
+    args: Record<string, unknown> = {},
+  ) {
+    const result = await workspaceApi.invoke(command, {
+      ...args,
+      expectedRevision: workspaceApi.currentRevision(),
+      requestId: crypto.randomUUID(),
+    });
+    if (!result.ok) setError(result.error.message);
+    return result;
+  }
+  function undo() {
+    void uiCommand("history_undo");
+  }
+  function redo() {
+    void uiCommand("history_redo");
+  }
   return (
     <div
       className="workbench"
@@ -4954,8 +5048,12 @@ export function App() {
           </section>
         </div>
       )}
-      {settingsOpen && (
-        <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
+      {
+        <div
+          className="modal-backdrop"
+          style={{ display: settingsOpen ? undefined : "none" }}
+          onClick={() => setSettingsOpen(false)}
+        >
           <section
             className="modal"
             role="dialog"
@@ -4995,6 +5093,7 @@ export function App() {
               Current appearance: {resolvedTheme}. System follows your operating
               system.
             </p>
+            <AgentConnection api={workspaceApi} />
             <h3>Scan import</h3>
             <label>
               <input
@@ -5095,7 +5194,7 @@ export function App() {
             </label>
           </section>
         </div>
-      )}
+      }
       {saveDialogOpen && (
         <SaveProjectDialog
           name={name}
