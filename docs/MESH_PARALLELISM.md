@@ -1,5 +1,35 @@
 # Mesh processing parallelism
 
+## Selected preview and multicore regression gate (2026-10-13)
+
+The production preview worker now has a regression gate across all ten retained
+selection-only correction captures: iterations 1–5 with boundary smoothing enabled
+and locked, on the same 96-facet mesh and 16-facet selection. The test transfers
+and detaches each published result, reuses one canonical geometry key, switches
+iteration count and boundary policy, then repeats the first case. All Float32
+coordinate bytes match the corresponding native reference; the source stays
+unchanged and subsequent previews emit no welding or topology-building stages.
+Comparison uses the retained preview and does not rerun smoothing.
+
+The current production build passed without warnings or errors. All 84 focused
+noise and selected-smoothing tests and all 9,286 tests across 197 files passed.
+The focused tests execute the production child kernels on two actual CPU threads,
+check iteration barriers and cached connectivity, and await termination of every
+test-owned worker. The application already routes eligible selected smoothing and
+Reduce Noise jobs through these bounded pools; smaller jobs retain their serial
+path to avoid thread startup and transfer overhead.
+
+Fresh browser exports from this build match all 864 native coordinate bytes for
+two selected iterations with boundary smoothing enabled and five selected
+iterations with boundaries locked. Accept creates one undoable edit. The browser
+loaded `index-BQ0IyawU.js` and reported no warnings or errors.
+
+These references execute the original correction kernel with the adapter and
+weight-preparation limitations documented below. This is a renewed numerical and
+application-integration gate, not a new native UI capture or evidence of arbitrary
+mesh parity. No GPU implementation or new end-to-end latency claim is made.
+The regression is in `tests/scan-noise-preview-native.test.ts`.
+
 ## Selected Reduce Noise correction verification
 
 The latest continuation reran both original-instruction selected correction
