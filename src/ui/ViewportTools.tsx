@@ -142,16 +142,6 @@ export function ViewportTools(props: {
   const [settings, setSettings] = useState(false);
   return (
     <div className="viewport-tools-container">
-      {props.normals && (
-        <div
-          className="normals-legend"
-          role="status"
-          aria-label="Normals orientation legend"
-        >
-          <span style={{ color: "#b8b8b8" }}>● Front</span>
-          <span style={{ color: "#e85a78" }}>● Back</span>
-        </div>
-      )}
       <div
         className="viewport-tools"
         role="toolbar"
@@ -164,10 +154,28 @@ export function ViewportTools(props: {
             aria-pressed={!!props.normals}
             onClick={() => props.onNormals?.(!props.normals)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M2 19 9 8l4 11z" fill="#b8b8b8" stroke="#64727a" />
-              <path d="m11 19 6-11 5 11z" fill="#e85a78" stroke="#933b50" />
-              <path d="M9 10V2m-3 3 3-3 3 3" fill="none" stroke="#b8b8b8" />
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              data-viewport-icon="normals"
+            >
+              <path
+                d="m3 16 9-5 9 5-9 5z"
+                fill="var(--icon-grid-fill)"
+                stroke="var(--icon-grid-edge)"
+              />
+              <path d="M12 16V3m-4 4 4-4 4 4" stroke="var(--icon-gold-edge)" />
+              <path
+                d="M12 16h3v-3"
+                stroke="var(--icon-detail)"
+                strokeWidth="1.2"
+              />
             </svg>
           </button>
           <button

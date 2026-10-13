@@ -228,7 +228,7 @@ export function App() {
   const [name, setName] = useState("Untitled project");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [flatShading, setFlatShading] = useState(true);
-  const [normalsDisplay, setNormalsDisplay] = useState(false);
+  const [normalsDisplay, setNormalsDisplay] = useState(true);
   const [floorGrid, setFloorGrid] = useState(true);
   const [gridSpacing, setGridSpacing] = useState(10);
   const [snapGrid, setSnapGrid] = useState(false);

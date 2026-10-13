@@ -207,7 +207,7 @@ export class Viewport {
   private disposed = false;
   private frame: number | null = null;
   private wireframe = false;
-  private normalsDisplay = false;
+  private normalsDisplay = true;
   private normalsMaterials = new WeakMap<
     THREE.MeshStandardMaterial,
     ReturnType<typeof installNormalsDisplay>
@@ -1710,10 +1710,10 @@ export class Viewport {
   setNormalsDisplay(enabled: boolean): void {
     this.normalsDisplay = enabled;
     if (this.triangleSelection)
-      this.triangleSelection.visible = !enabled && !this.noiseComparison;
+      this.triangleSelection.visible = !this.noiseComparison;
     for (const child of this.noiseComparisonGroup?.children ?? [])
       if (child instanceof THREE.Mesh)
-        this.normalsMaterials?.get(child.material)?.(enabled);
+        this.normalsMaterials?.get(child.material)?.(false);
     for (const { mesh } of this.objects.values())
       this.normalsMaterials?.get(mesh.material)?.(
         enabled && mesh.material.userData.normalsMesh,
@@ -2031,8 +2031,7 @@ export class Viewport {
         this.triangleSelection &&
         this.noiseComparison.selectionVisible !== undefined
       )
-        this.triangleSelection.visible =
-          !this.normalsDisplay && this.noiseComparison.selectionVisible;
+        this.triangleSelection.visible = this.noiseComparison.selectionVisible;
       this.noiseComparison = undefined;
     }
     if (this.noiseComparisonGroup) this.clearGroup(this.noiseComparisonGroup);
@@ -2053,7 +2052,8 @@ export class Viewport {
     this.normalsMaterials ??= new WeakMap();
     const updateNormals = installNormalsDisplay(overlay.material);
     this.normalsMaterials.set(overlay.material, updateNormals);
-    updateNormals(this.normalsDisplay);
+    // Deviation colors take priority over the default orientation display.
+    updateNormals(false);
     if (display && this.container)
       this.deviationCallouts = new DeviationCallouts(
         this.container,
@@ -2081,8 +2081,7 @@ export class Viewport {
 
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
-    this.triangleSelection.visible =
-      !this.normalsDisplay && !this.noiseComparison;
+    this.triangleSelection.visible = !this.noiseComparison;
     // A selection reset can render one effect after the newly selected geometry.
     // Never upload stale triangle slots from the previous object.
     if (positions && mask && mask.length * 9 === positions.length) {

@@ -103,7 +103,7 @@ it("flipping normals reverses the actual visible triangle side, not just shading
   reversed.dispose();
   material.dispose();
 });
-it("hides selected-triangle tint while inspecting orientation and updates comparison materials", () => {
+it("keeps selections visible and preserves deviation colors with default normals enabled", () => {
   const view = Object.create(Viewport.prototype) as any;
   const material = new THREE.MeshStandardMaterial();
   const update = installNormalsDisplay(material);
@@ -119,8 +119,8 @@ it("hides selected-triangle tint while inspecting orientation and updates compar
   );
   const shader = compile(material);
   view.setNormalsDisplay(true);
-  expect(view.triangleSelection.visible).toBe(false);
-  expect(shader.uniforms.normalsDisplayEnabled.value).toBe(true);
+  expect(view.triangleSelection.visible).toBe(true);
+  expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
   view.setNormalsDisplay(false);
   expect(view.triangleSelection.visible).toBe(true);
   expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
