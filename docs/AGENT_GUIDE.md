@@ -230,6 +230,9 @@ limits and measured latency.
 Refinement reuses worker-local triangle-query scratch without changing native
 arithmetic or the GUI/MCP operation contract; full-resolution STL comparisons
 still require exact native parameters, objective values, matrices and lane flags.
+Origin/reference alignment is still disabled. `NATIVE_DATUM_ALIGNMENT.md`
+records its recovered dialog routing and verified primary-frame numerical stage;
+the complete shared workflow and remaining frame stages are not yet available.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;
