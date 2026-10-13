@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
+import { createPortal } from "react-dom";
 import type { CSSProperties, MouseEvent } from "react";
 import {
   ChevronLeft,
@@ -26,6 +27,34 @@ export function ModelTimeline({
   onContextMenu: (event: MouseEvent, index: number) => void;
 }) {
   const track = useRef<HTMLDivElement>(null);
+  const tooltipId = useId();
+  const [tooltip, setTooltip] = useState<{
+    text: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const tooltipEvents = (text: string) => {
+    const show = (element: HTMLElement) => {
+      const rect = element.getBoundingClientRect();
+      setTooltip({
+        text,
+        x: Math.max(
+          120,
+          Math.min(window.innerWidth - 120, rect.left + rect.width / 2),
+        ),
+        y: rect.top - 6,
+      });
+    };
+    return {
+      onMouseEnter: (event: React.MouseEvent<HTMLButtonElement>) =>
+        show(event.currentTarget),
+      onMouseLeave: () => setTooltip(null),
+      onFocus: (event: React.FocusEvent<HTMLButtonElement>) =>
+        show(event.currentTarget),
+      onBlur: () => setTooltip(null),
+      "aria-describedby": tooltip?.text === text ? tooltipId : undefined,
+    };
+  };
   const [markerLeft, setMarkerLeft] = useState(0);
   const dragging = useRef<number | null>(null);
   const panning = useRef<{
@@ -53,7 +82,7 @@ export function ModelTimeline({
   const control = (label: string, index: number, icon: React.ReactNode) => (
     <button
       type="button"
-      title={label}
+      {...tooltipEvents(label)}
       aria-label={label}
       disabled={disabled || index === cursor}
       onClick={() => onSeek(index)}
@@ -88,7 +117,7 @@ export function ModelTimeline({
       <div
         className="timeline-track"
         ref={track}
-        title="Scroll to browse timeline - Middle-drag pans"
+        aria-label="Scroll to browse timeline - Middle-drag pans"
         onPointerDown={(event) => {
           if (event.button !== 1) return;
           event.preventDefault();
@@ -153,7 +182,7 @@ export function ModelTimeline({
             >
               <button
                 type="button"
-                title={`${index}: ${label}`}
+                {...tooltipEvents(`${index}: ${label}`)}
                 aria-label={`${index}: ${label}`}
                 aria-current={index === cursor ? "step" : undefined}
                 disabled={disabled}
@@ -237,6 +266,18 @@ export function ModelTimeline({
           }}
         />
       </div>
+      {tooltip &&
+        createPortal(
+          <div
+            id={tooltipId}
+            className="timeline-tooltip"
+            role="tooltip"
+            style={{ left: tooltip.x, top: tooltip.y }}
+          >
+            {tooltip.text}
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
