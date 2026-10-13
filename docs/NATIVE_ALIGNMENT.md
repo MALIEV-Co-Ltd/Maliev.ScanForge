@@ -53,8 +53,9 @@ this with the existing closed-form rigid fit would skip native behavior.
 `0x140aadde0` constructs initial transforms from point triples. The triple helper
 `0x140aaf400` rejects squared vector lengths below `2^-23` and absolute normalized
 dot products above `0.9962`; it uses triangle centroids and constructed frames.
-These checks are currently static evidence, not executed initializer parity.
-REA Evidence: `ev_ca3a6e9f8ab52f0e3127acb59820d3bce8af539da2e894558f70c17c29aafb91`.
+The complete triple helper and its frame constructor now have the executed gate
+below. The outer N-point candidate enumeration is still separate work.
+REA Evidence: `ev_06aecd48127374b20a1549fa59249fe891e727d38fdfac936304299550bac21a`.
 
 `0x140aadba0` represents rotation and translation as seven parameters and invokes
 the optimizer `0x140b25340` with callback `0x140aae6d0`. The callback constructs a
@@ -107,3 +108,42 @@ REA Evidence is `ev_c5650053f988799558148f6d2e7ea06c3d21920de1b97d55d84d43e4936c
 trial Evidence is `ev_6d90fcab953ca34c4d310e827908d54b6ef388862f539152c4723a37ab5dfb5d`.
 Its assembly Evidence is `ev_400e949f08e5cd4c39ca10dacec232c08301fdb1e04ec5cc5caa4f4d1391d96b`.
 The source image digest is the same as the preceding kernel captures.
+
+## Executed three-pair initializer
+
+`src/scan-native-alignment-initializer.ts` implements the complete triplet helper
+`0x140aaf400` and frame constructor `0x140aae990`. It checks all four vectors in
+native order, normalizes them using the recovered double reciprocal, rejects
+near-collinearity, uses triangle centroids, constructs orthonormal frames, and
+composes the inverse target-centered frame with the source-centered frame.
+The shared transpose/translation inverse already verified for Mirror is reused;
+no new independently approximated matrix inverse is introduced.
+
+Eighty-two executions of the original helper cover identity, translation,
+quarter-turn, five coordinate scales, duplicate points, collinearity thresholds
+and sixty seeded triangle pairs, plus Float32 maximum-coordinate and sentinel
+cases on both sides. Seventy-eight inputs are accepted and four rejected.
+Tests match every returned matrix double byte and the original success flag;
+inputs remain unchanged. Rejected inputs do not produce a transform. This gate
+covers three-pair initialization, not N-point candidate enumeration, optimization,
+outer error ranking or subsequent mesh/CAD refinement.
+
+The frame translation retains the native sentinel branch: all three translation
+values are negated only when local X is not NaN and its Float32 representation
+differs from the positive Float32 maximum. Explicit sentinel inputs verify this
+branch, which is outside ordinary scan coordinate ranges.
+
+The probe executes the original normalization, frame construction, inversion and
+composition instructions. It binds the square-root import to system UCRT and
+replaces the security-cookie checker with a plain return, preserving the original
+AL success flag. The assembly confirms that the frame constructor writes AL=1
+and the rejection branch writes AL=0; a callback that overwrites RAX would not
+be a valid flag adapter. Native allocation, UI picking and application security
+behavior are outside this probe. The mapped allocation is released and the
+process exits.
+
+References are in `tests/fixtures/alignment-triplet-native.json`, using the same
+source image digest as the preceding captures. Frame assembly Evidence is
+`ev_a6eab1c05f14382f2488c5fe491bc42913427bcbe4b226282d440edd75a2863b`;
+triplet assembly Evidence is
+`ev_420e7d618af86d93999ffb6950e15d8b1ff51f3e5f0576f18420079b8475c3b8`.
