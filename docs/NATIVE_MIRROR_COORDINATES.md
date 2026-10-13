@@ -56,6 +56,39 @@ capture and metadata implementation. The native create-copy flag is recovered
 and integrated in the preview/copy slice below. No multicore/GPU speedup is
 claimed for Mirror Mesh.
 
+## Picked-plane tangent arithmetic gate
+
+The recovered plane-selection handler `0x14061ffe0` reads the normal at plane
+offset `0x38`, center at `0x50`, and tangent at `0x68`. Its cross-product
+instructions construct `normal × tangent` as the hint passed to frame builder
+`0x140365fe0`. This explains why a normal-only frame can differ in intermediate
+Float32 rounding from a frame retaining the plane's rotation about its normal.
+
+`mirror-tangent-native.json` adds 20 numerical captures (4,455 coordinates) over
+five explicit planes: rotated XY, rotated oblique, negative normal, parallel
+tangent and small tangent. The isolated harness executes the original frame
+constructor, inverse and coordinate instructions from the same SHA-verified
+mapped image. Hint inputs follow the cross-product arithmetic recovered above;
+the complete plane-picking handler is not executed. ABI entry/exit and sqrt
+adapters are unchanged from the earlier probe, and facet order still uses the
+separately verified winding reversal. Native allocations were released and the
+probe process exited.
+
+The Mirror operation and preview session now accept an optional tangent and use
+the recovered hint policy when supplied. All new frame, inverse and coordinate
+bytes match their captures, including the frame-builder fallback for degenerate
+tangents. Existing origin-plane output remains byte-identical. This slice
+verifies the numerical consumer; construction/CAD-plane creation and project
+persistence do not yet retain and supply the stored tangent. Those producers must
+be integrated before claiming arbitrary picked-plane parity.
+
+Validation for the tangent slice: production build passed without warnings/errors;
+all 111 focused tests and all 9,353 tests across 198 files passed. Scoped formatting,
+diff and prohibited-name checks passed. The refreshed browser loaded
+`index-BBweanhJ.js`, reopened the verified source/copy project and reported no
+warnings/errors. This browser refresh verifies the current bundle and project
+loading, not interactive tangent picking.
+
 ## Preview and source-preserving copy integration
 
 The recovered acceptance handler `0x14061f5d0` reads the create-copy flag at

@@ -144,7 +144,7 @@ export function flipScanNormals(
 }
 export function mirrorScanMesh(
   p: Positions,
-  o: MeshProcessingOptions & { center: Vec3; normal: Vec3 },
+  o: MeshProcessingOptions & { center: Vec3; normal: Vec3; tangent?: Vec3 },
 ): ScanTransformResult {
   validate(p, o);
   const center = vector(o.center, "Mirror plane origin"),
@@ -152,6 +152,9 @@ export function mirrorScanMesh(
   const frame = mirrorPlaneFrame(
       center.toArray() as Vec3,
       normal.toArray() as Vec3,
+      o.tangent
+        ? (vector(o.tangent, "Mirror plane tangent").toArray() as Vec3)
+        : undefined,
     ),
     inverse = inverseMirrorFrame(frame);
   const out = mapPoints(p, o, (v) =>

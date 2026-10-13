@@ -1,13 +1,22 @@
 import type { Vec3 } from "./types";
 
 /** Native plane-frame policy with a stable tangent hint for origin planes. */
-export function mirrorPlaneFrame(center: Vec3, normal: Vec3): number[] {
-  let hint: Vec3 = Math.abs(normal[2]) === 1 ? [0, 1, 0] : [0, 0, 1];
+export function mirrorPlaneFrame(
+  center: Vec3,
+  normal: Vec3,
+  tangent?: Vec3,
+): number[] {
   const cross = (a: Vec3, b: Vec3): Vec3 => [
     a[1] * b[2] - a[2] * b[1],
     a[2] * b[0] - a[0] * b[2],
     a[0] * b[1] - a[1] * b[0],
   ];
+  // The picked-plane handler uses normal cross stored tangent as its hint.
+  let hint: Vec3 = tangent
+    ? cross(normal, tangent)
+    : Math.abs(normal[2]) === 1
+      ? [0, 1, 0]
+      : [0, 0, 1];
   const candidate = cross(hint, normal);
   if (candidate.reduce((sum, value) => sum + value * value, 0) <= 0.0001) {
     let axis = 0;

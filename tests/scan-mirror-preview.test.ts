@@ -7,6 +7,7 @@ import type {
   ProcessingResponse,
 } from "../src/processing-client";
 import capture from "./fixtures/mirror-coordinate-native.json";
+import tangentCapture from "./fixtures/mirror-tangent-native.json";
 
 const decode = (hex: string) =>
   new Float32Array(
@@ -16,10 +17,15 @@ const bits = (p: Float32Array) =>
   Array.from(new Uint8Array(p.buffer), (b) =>
     b.toString(16).padStart(2, "0"),
   ).join("");
-const operation = (entry: (typeof capture.cases)[number]) => ({
+const operation = (
+  entry: (typeof capture.cases)[number] | (typeof tangentCapture.cases)[number],
+) => ({
   kind: "mirrorMesh" as const,
   center: entry.plane.center as Vec3,
-  normal: (entry.plane.inputNormal ?? entry.plane.normal) as Vec3,
+  normal: ("inputNormal" in entry.plane
+    ? entry.plane.inputNormal
+    : entry.plane.normal) as Vec3,
+  tangent: "tangent" in entry.plane ? (entry.plane.tangent as Vec3) : undefined,
 });
 afterEach(() => {
   vi.clearAllTimers();
@@ -27,7 +33,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it.each(capture.cases)(
+it.each([...capture.cases, ...tangentCapture.cases])(
   "previews and copies native $name mirror on $plane.name while retaining source",
   async (entry) => {
     const positions = decode(entry.inputBits);
