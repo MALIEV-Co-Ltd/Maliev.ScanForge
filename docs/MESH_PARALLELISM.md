@@ -1,5 +1,26 @@
 # Mesh processing parallelism
 
+## Extended selected Reduce Noise parity (2026-10-13)
+
+The production async path, transferred preview path, and actual two-CPU-worker
+transport now check eight and ten selected iterations with boundary smoothing
+both enabled and locked. The four new original-instruction captures use the same
+96-facet mesh and 16-facet selection as the existing one-through-five gates.
+They compare Float32 output bytes exactly; thread tests place connected vertices
+on opposite worker shards and preserve immutable source coordinates.
+
+The native correction probe also reran the one- and three-iteration anchors.
+Its original correction instructions remain unchanged. Weights are supplied by
+the production port, with allocator, object-access, temporary-mask and normal
+refresh adapters; this is correction-kernel parity, not a fresh native UI export
+or independent verification of the complete weight-construction pipeline.
+
+Selected Reduce Noise already uses the bounded CPU pool through
+`reduceScanNoiseAsync`. Jobs with at least 300,000 vertices use two workers when
+hardware, estimated memory and device-memory admission allow it; smaller jobs
+use the serial path to avoid transport overhead. No GPU execution or measured
+latency improvement is claimed by this verification extension.
+
 ## Reduce Noise iteration buffers (2026-10-13)
 
 The two-worker Reduce Noise parent now allocates coordinate and mean storage once

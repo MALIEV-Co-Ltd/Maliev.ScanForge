@@ -4,6 +4,7 @@ import ts from "typescript";
 import { afterEach, expect, it, vi } from "vitest";
 import { analyzeMesh } from "../src/mesh-processing";
 import { NoiseSmoothingPool } from "../src/scan-noise-parallel";
+import extended from "./fixtures/noise-annular-selected-extended.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import selected2 from "./fixtures/noise-annular-selected-2.json";
@@ -86,6 +87,11 @@ it.each([
   whole2,
   whole3,
   boundaryOff,
+  ...extended.cases.map((capture) => ({
+    ...capture,
+    positions: extended.positions,
+    selection: extended.selection,
+  })),
   ...selectedBoundaryOff.cases.map((capture) => ({
     ...capture,
     positions: selectedBoundaryOff.positions,

@@ -6,6 +6,7 @@ import fixture from "./fixtures/noise-annular-default.json";
 import whole2 from "./fixtures/noise-annular-whole-2.json";
 import whole3 from "./fixtures/noise-annular-whole-3.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
+import extended from "./fixtures/noise-annular-selected-extended.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
 import selected2 from "./fixtures/noise-annular-selected-2.json";
 import selected4 from "./fixtures/noise-annular-selected-4.json";
@@ -34,6 +35,11 @@ it.each([
   selected4,
   selected5,
   boundaryOff,
+  ...extended.cases.map((capture) => ({
+    ...capture,
+    positions: extended.positions,
+    selection: extended.selection,
+  })),
   ...selectedBoundaryOff.cases.map((capture) => ({
     ...capture,
     positions: selectedBoundaryOff.positions,

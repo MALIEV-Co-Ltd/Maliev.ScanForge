@@ -3,6 +3,7 @@ import type {
   ProcessingRequest,
   ProcessingResponse,
 } from "../src/processing-client";
+import extended from "./fixtures/noise-annular-selected-extended.json";
 import selected1 from "./fixtures/noise-annular-selected-1.json";
 import selected2 from "./fixtures/noise-annular-selected-2.json";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
@@ -16,7 +17,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("reused production previews preserve all ten native selected iteration captures after output transfer", async () => {
+it("reused production previews preserve native selected iteration captures including eight and ten iterations after output transfer", async () => {
   vi.useFakeTimers();
   const replies: ProcessingResponse[] = [];
   const scope = {
@@ -33,6 +34,10 @@ it("reused production previews preserve all ten native selected iteration captur
   const source = new Float32Array(selected1.positions);
   const before = new Uint8Array(source.buffer).slice();
   const captures = [
+    ...extended.cases.map((capture) => ({
+      ...capture,
+      selection: extended.selection,
+    })),
     selected1,
     selected2,
     selected3,
