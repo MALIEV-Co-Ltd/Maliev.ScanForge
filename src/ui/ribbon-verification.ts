@@ -17,6 +17,8 @@ const verifiedWorkflows: Record<string, string> = {
   averageMesh: "docs/SCAN_DATA_TOOLS.md: nearest surface averaging workflow",
   mirrorMesh: "docs/SCAN_DATA_TOOLS.md: origin and object reference planes",
   unroll: "docs/SCAN_DATA_TOOLS.md: cylinder reference and seam handling",
+  splitMesh:
+    "docs/AGENT_GUIDE.md: dedicated Split mesh; tests/scan-edit.test.ts: plane and convex mesh splitting",
   editScan: "docs/SCAN_DATA_MVP.md; docs/VALIDATION.md: Scan Data edit MVP",
   newDocument: "docs/VALIDATION.md: New document and colored command icons",
   open: "docs/VALIDATION.md: browser scan import and file validation",

@@ -199,6 +199,7 @@ import {
   landmarkMarkers,
   type LandmarkAlignment,
 } from "../landmark-alignment";
+import { SplitMeshPanel } from "./SplitMeshPanel";
 import { EditScanDialog } from "./EditScanDialog";
 import { ScanQuickTools } from "./ScanQuickTools";
 import { AdvancedCadTools } from "./AdvancedCadTools";
@@ -369,6 +370,7 @@ export function App() {
   const [scanPanel, setScanPanel] = useState<
     "components" | "holes" | "boundaries" | null
   >(null);
+  const [splitMeshOpen, setSplitMeshOpen] = useState(false);
   const [meshClip, setMeshClip] = useState<ScanClipBounds | null>(null);
   const scanEditAbort = useRef<AbortController | null>(null);
   const lastHiddenSelection = useRef<number[]>([]);
@@ -809,6 +811,7 @@ export function App() {
     setScanBoundaryPaths([]);
     setMeshClip(null);
     setScanPanel(null);
+    setSplitMeshOpen(false);
     lastHiddenSelection.current = [];
     scanEditAbort.current?.abort();
   }, [selectedId]);
@@ -1688,6 +1691,7 @@ export function App() {
     );
   }
   function showTools(nextWorkspace: string) {
+    setSplitMeshOpen(false);
     if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
     cancelLandmarks();
     cancelSurfaceFit();
@@ -3540,6 +3544,12 @@ export function App() {
           exportStep,
           exportStl: exportMesh,
           settings: () => setSettingsOpen(true),
+          splitMesh: () => {
+            setMode("inspect");
+            showTools("mesh");
+            setScanPanel(null);
+            setSplitMeshOpen(true);
+          },
           editScan: () => {
             setMode("brush");
             showTools("mesh");
@@ -4231,7 +4241,11 @@ export function App() {
             !selected?.kernelId &&
             !selected?.parametric
           ) &&
-            !(workspace === "mesh" && selected && scanPanel) && (
+            !(
+              workspace === "mesh" &&
+              selected &&
+              (scanPanel || splitMeshOpen)
+            ) && (
               <h2>
                 {(
                   {
@@ -4346,6 +4360,37 @@ export function App() {
                 );
               }}
             />
+          ) : workspace === "mesh" && selected && splitMeshOpen ? (
+            <SplitMeshPanel
+              key={selected.id}
+              cutters={entities.filter((entity) => entity.id !== selected.id)}
+              busy={busy}
+              onSplit={(targetId) => {
+                const target = entities.find(
+                  (entity) => entity.id === targetId,
+                );
+                if (target)
+                  void runScanEdit(
+                    {
+                      action: "split",
+                      target: target.positions,
+                      plane:
+                        target.kind === "plane" && target.fit
+                          ? {
+                              origin: target.fit.center,
+                              normal: target.fit.axis,
+                            }
+                          : undefined,
+                    },
+                    "Split mesh",
+                  );
+              }}
+              onClose={() => {
+                scanEditAbort.current?.abort();
+                setToolPanelOpen(false);
+                setSplitMeshOpen(false);
+              }}
+            />
           ) : workspace === "mesh" && selected && scanPanel ? (
             <ScanTopologyPanels
               key={`${selected.id}-${scanPanel}`}
@@ -4399,42 +4444,6 @@ export function App() {
               clip={meshClip}
               clipFull={stats ? { min: stats.min, max: stats.max } : undefined}
               onClip={setMeshClip}
-              onSmooth={() =>
-                runScanEdit(
-                  {
-                    action: "smoothSelected",
-                    selection: triangleMask ?? undefined,
-                  },
-                  "Smooth selected area",
-                )
-              }
-              onDefeature={() =>
-                runScanEdit(
-                  { action: "defeature", selection: triangleMask ?? undefined },
-                  "Defeature selected area",
-                )
-              }
-              cutters={entities.filter((entity) => entity.id !== selected.id)}
-              onSplit={(targetId) => {
-                const target = entities.find(
-                  (entity) => entity.id === targetId,
-                );
-                if (target)
-                  void runScanEdit(
-                    {
-                      action: "split",
-                      target: target.positions,
-                      plane:
-                        target.kind === "plane" && target.fit
-                          ? {
-                              origin: target.fit.center,
-                              normal: target.fit.axis,
-                            }
-                          : undefined,
-                    },
-                    "Split mesh",
-                  );
-              }}
               selectedCount={selectedTriangleCount}
               hiddenCount={selected.meshSelection?.hidden.length ?? 0}
               wireframe={wireframe}
@@ -5399,6 +5408,7 @@ export function App() {
                 mode === "brush" &&
                 !selected?.kernelId &&
                 !scanPanel &&
+                !splitMeshOpen &&
                 !scanBoundaryPaths.length,
               selectionTool,
               selectThrough,

@@ -1,9 +1,7 @@
-import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import type { Positions } from "../types";
 import { useState } from "react";
 import { ScanDiagnostics } from "./ScanDiagnostics";
-import type { Entity } from "../types";
 import type { ScanClipBounds } from "../scan-clip-box";
 import { ScanToolIcon, type ScanIconName } from "./ScanToolIcon";
 import "./EditScanDialog.css";
@@ -49,10 +47,6 @@ export interface EditScanDialogProps {
   clip?: ScanClipBounds | null;
   clipFull?: ScanClipBounds;
   onClip?: (bounds: ScanClipBounds | null) => void;
-  onSmooth?: () => void;
-  onDefeature?: () => void;
-  onSplit?: (targetId: string) => void;
-  cutters?: Entity[];
   busy?: boolean;
 }
 /** Groups follow the installed reference manual, pages 26–27 and 219–220.
@@ -62,7 +56,6 @@ export function EditScanDialog(props: EditScanDialogProps) {
   const [quickTools, setQuickTools] = useState(true);
   const [saving, setSaving] = useState(false);
   const [selectionName, setSelectionName] = useState("Selection 1");
-  const [cutter, setCutter] = useState("");
   const tools = [
     { id: "wand", label: "Magic wand", text: "Wand" },
     { id: "brush", label: "Free hand (filled)", text: "Brush" },
@@ -458,50 +451,6 @@ export function EditScanDialog(props: EditScanDialogProps) {
                 {props.hiddenCount.toLocaleString()} hidden
               </p>
             </section>
-
-            <fieldset>
-              <legend>Selected area</legend>
-              <div className="button-row">
-                <button
-                  disabled={!props.selectedCount || !props.onSmooth}
-                  onClick={() => props.onSmooth?.()}
-                >
-                  <ScanToolIcon name="smooth" size={18} /> Smooth selected area
-                </button>
-                <button
-                  disabled={!props.selectedCount || !props.onDefeature}
-                  onClick={props.onDefeature}
-                >
-                  <ScanToolIcon name="defeature" size={18} /> Defeature selected
-                  area
-                </button>
-              </div>
-            </fieldset>
-            <fieldset>
-              <legend>Split mesh</legend>
-              <label>
-                Cutting solid, surface or mesh
-                <AppSelect
-                  aria-label="Mesh splitter"
-                  value={cutter}
-                  onChange={(event) => setCutter(event.target.value)}
-                >
-                  <option value="">Choose an object…</option>
-                  {props.cutters?.map((entity) => (
-                    <option key={entity.id} value={entity.id}>
-                      {entity.name}
-                    </option>
-                  ))}
-                </AppSelect>
-              </label>
-              <button
-                disabled={!cutter || !props.onSplit}
-                onClick={() => props.onSplit?.(cutter)}
-              >
-                <ScanToolIcon name="split" size={18} /> Split with selected
-                object
-              </button>
-            </fieldset>
           </details>
         </fieldset>
       </div>

@@ -85,40 +85,39 @@ export function ScanToolIcon({
       break;
     case "line":
       drawing = (
-        <>
-          <path d="m4 18 15-12" stroke="#f5c65d" strokeWidth="5" />
-          <circle cx="4" cy="18" r="2" fill="#f3f9fc" />
-          <path d="m15 6 4-4 3 3-4 4Z" fill="#7bd7e8" stroke="#d4f8ff" />
-        </>
+        <g stroke="#f5c65d" strokeWidth="2">
+          <path d="m4 19 16-14" />
+          <circle cx="4" cy="19" r="1.5" fill="#f5c65d" />
+          <circle cx="20" cy="5" r="1.5" fill="#f5c65d" />
+        </g>
       );
       break;
     case "rectangle":
+      drawing = (
+        <rect
+          x="3"
+          y="5"
+          width="18"
+          height="14"
+          stroke="#f5c65d"
+          strokeWidth="2"
+          strokeDasharray="3 2"
+        />
+      );
+      break;
     case "circle":
       drawing = (
         <>
           {mesh}
-          {name === "rectangle" ? (
-            <rect
-              x="5"
-              y="7"
-              width="14"
-              height="10"
-              fill="#f5c65d"
-              fillOpacity=".6"
-              stroke="#8de7fa"
-              strokeDasharray="2 2"
-            />
-          ) : (
-            <circle
-              cx="12"
-              cy="12"
-              r="7"
-              fill="#f5c65d"
-              fillOpacity=".6"
-              stroke="#8de7fa"
-              strokeDasharray="2 2"
-            />
-          )}
+          <circle
+            cx="12"
+            cy="12"
+            r="7"
+            fill="#f5c65d"
+            fillOpacity=".6"
+            stroke="#8de7fa"
+            strokeDasharray="2 2"
+          />
         </>
       );
       break;
@@ -227,17 +226,23 @@ export function ScanToolIcon({
     case "invert":
       drawing = (
         <>
-          <path d="M3 5h18v14H3Z" fill="#f5c65d" stroke="#ffe09a" />
-          <path d="m3 19 9-14 9 14Z" fill="#344653" stroke="#8babbc" />
+          <path d="M5 7h14v10H5Z" fill="#344653" stroke="#8babbc" />
+          <path d="M5 7h7v10H5Z" fill="#f5c65d" stroke="#ffe09a" />
           <path
-            d="M5 2h14m-3-2 3 2-3 2M19 22H5m3-2-3 2 3 2"
+            d="M4 5c4-4 12-4 16 0m-4 0h4V1M20 19c-4 4-12 4-16 0m4 0H4v4"
             stroke="#8de7fa"
-            fill="none"
           />
         </>
       );
       break;
     case "clear":
+      drawing = (
+        <g stroke="#8babbc" strokeDasharray="2 2">
+          <path d="M3 5h18v14H3Z" />
+          <path d="m3 5 9 7 9-7M3 19l9-7 9 7M12 12V5" />
+        </g>
+      );
+      break;
     case "delete":
       drawing = (
         <>
@@ -281,36 +286,41 @@ export function ScanToolIcon({
     case "copy":
       drawing = (
         <>
-          {mesh}
-          {selected}
-          <path d="m14 6 5 3 4-6" stroke="#8de7fa" fill="none" />
-          <path d="m15 2 6 2-1 6Z" fill="#f5c65d" stroke="#ffe09a" />
-          {name === "cut" && (
-            <path d="M2 13h20" stroke="#ff9e86" strokeDasharray="2 2" />
+          <path d="m3 17 6-10 6 10Z" fill="#f5c65d" stroke="#ffe09a" />
+          {name === "copy" ? (
+            <path d="m7 4 3-2 6 10" stroke="#8babbc" />
+          ) : (
+            <path d="M2 12h14" stroke="#8babbc" strokeDasharray="2 2" />
           )}
+          <path d="M19 13v8m-4-4h8" stroke="#8de7fa" strokeWidth="2" />
         </>
       );
       break;
     case "smooth":
       drawing = (
         <>
-          <path d="m2 9 5-5 5 8 5-8 5 5" stroke="#8babbc" fill="none" />
-          <path
-            d="M2 18c5-12 15-12 20 0"
-            stroke="#8de7fa"
-            strokeWidth="2.5"
-            fill="none"
-          />
-          <path d="m10 3 2 4 2-4" stroke="#f5c65d" fill="none" />
+          <path d="m2 8 3-4 3 5 4-6 4 5 3-4 3 4" stroke="#f5c65d" />
+          <path d="M2 21c5-8 15-8 20 0M2 21l5-2 5 2 5-2 5 2" stroke="#8de7fa" />
+          <path d="M12 10v5m-3-3 3 3 3-3" stroke="#eaf7ff" />
         </>
       );
       break;
     case "defeature":
       drawing = (
         <>
-          <path d="M2 19h20M2 9h6l4-6 4 6h6" stroke="#8babbc" fill="none" />
-          <path d="M3 14h18" stroke="#8de7fa" strokeWidth="2.5" />
-          <path d="m9 3 6 6m0-6-6 6" stroke="#ff9e86" />
+          <path d="M2 9h6V3h8v6h6" stroke="#f5c65d" />
+          <path
+            d="M8 3h8v6H8Z"
+            fill="#f5c65d"
+            fillOpacity=".2"
+            stroke="#f5c65d"
+            strokeDasharray="2 2"
+          />
+          <path
+            d="M2 21h20M12 11v5m-3-3 3 3 3-3"
+            stroke="#8de7fa"
+            strokeWidth="2"
+          />
         </>
       );
       break;

@@ -154,3 +154,10 @@ it("keeps the mesh identity in the object list instead of repeating it in the ed
   expect(html).not.toContain('class="edit-scan-name"');
   expect(html).toContain('aria-label="Edit Fixture scan"');
 });
+
+it("keeps mesh splitting and selected-area processing outside the Edit Scan content", () => {
+  const html = render();
+  expect(html).not.toContain("Mesh splitter");
+  expect(html).not.toContain("Selected area</legend>");
+  expect(html).not.toContain("Split mesh</legend>");
+});

@@ -362,6 +362,7 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
       'stroke="#8bbb80" stroke-width="2"',
     ) +
     path("M19 19 30 30m-6 0h6v-6", "none", 'stroke="#8bbb80" stroke-width="2"'),
+  splitMesh: mesh + path("M14 1v30h4V1Z", purple),
   splitSolid: solid + path("M14 1v30h4V1Z", purple),
   fillet:
     path("M3 29V3h9v9Q12 20 20 20h9v9Z", gold) +

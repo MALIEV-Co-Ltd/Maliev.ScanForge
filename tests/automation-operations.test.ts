@@ -288,3 +288,31 @@ describe("shared workspace operation contracts", () => {
     expect(h.cad.release).not.toHaveBeenCalled();
   });
 });
+
+it("keeps the dedicated mesh split available through MCP processing with workspace cutters", async () => {
+  const cutter = entity({ id: "cutter", name: "Cutting mesh" });
+  const h = harness([entity(), cutter]);
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    diagnostics: {},
+    scanEdit: {
+      segments: [new Float32Array(triangle), new Float32Array(triangle)],
+      diagnostics: {},
+    },
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      targetId: "cutter",
+      operation: { kind: "scanEdit", action: "split" },
+    },
+    h.context,
+  );
+  expect(vi.mocked(processMesh).mock.calls.at(-1)?.[0]).toMatchObject({
+    kind: "scanEdit",
+    action: "split",
+    target: cutter.positions,
+  });
+  expect(h.host.commit).toHaveBeenCalledOnce();
+  expect(h.state.entities.length).toBeGreaterThan(2);
+});
