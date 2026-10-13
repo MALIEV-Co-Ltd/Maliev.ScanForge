@@ -171,13 +171,26 @@ section.edit-scan-dialog .scan-dialog-footer {
   margin-top: 0;
 }
 
-/* Keep the generated wand/scan contact large enough to read as a 3D gesture. */
-section.edit-scan-dialog .scan-tool-row button:has([data-scan-icon="wand"]) {
+/* Generated selection gestures need room for their surface and tool. */
+section.edit-scan-dialog .scan-tool-row button:has([data-scan-raster]) {
   flex-direction: column;
   gap: 2px;
 }
-section.edit-scan-dialog .scan-tool-row [data-scan-icon="wand"] {
+section.edit-scan-dialog .scan-tool-row [data-scan-raster] {
   width: 56px;
   height: 56px;
   object-fit: contain;
+}
+section.edit-scan-dialog .edit-scan-actions button:has([data-scan-raster]) {
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 2px;
+}
+section.edit-scan-dialog .edit-scan-actions [data-scan-raster] {
+  width: 40px;
+  height: 40px;
+}
+section.edit-scan-dialog .edit-scan-through [data-scan-raster] {
+  width: 40px;
+  height: 40px;
 }

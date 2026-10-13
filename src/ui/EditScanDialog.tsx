@@ -308,7 +308,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
                   onClick={props.onConnected}
                   title="Select entire connected objects from marked facets"
                 >
-                  <ScanToolIcon name="components" />
+                  <ScanToolIcon name="connected" />
                   Select connected objects
                 </button>
               )}

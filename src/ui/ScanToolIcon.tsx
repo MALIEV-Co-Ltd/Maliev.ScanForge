@@ -1,6 +1,22 @@
 import type { ReactNode } from "react";
 import "./ScanToolIcon.css";
 import wandScanImage from "./assets/wand-scan.png";
+import componentsImage from "./assets/scan-tools/components.png";
+import holesImage from "./assets/scan-tools/holes.png";
+import boundariesImage from "./assets/scan-tools/boundaries.png";
+import brushImage from "./assets/scan-tools/brush.png";
+import freehandImage from "./assets/scan-tools/freehand.png";
+import lineImage from "./assets/scan-tools/line.png";
+import rectangleImage from "./assets/scan-tools/rectangle.png";
+import circleImage from "./assets/scan-tools/circle.png";
+import throughImage from "./assets/scan-tools/through.png";
+import allImage from "./assets/scan-tools/all.png";
+import clearImage from "./assets/scan-tools/clear.png";
+import invertImage from "./assets/scan-tools/invert.png";
+import hideImage from "./assets/scan-tools/hide.png";
+import isolateImage from "./assets/scan-tools/isolate.png";
+import revealImage from "./assets/scan-tools/reveal.png";
+import connectedImage from "./assets/scan-tools/connected.png";
 
 export type ScanIconName =
   | "wand"
@@ -29,10 +45,33 @@ export type ScanIconName =
   | "defeature"
   | "split"
   | "components"
+  | "connected"
   | "holes"
   | "boundaries";
 
-/** Small mesh diagrams: gold denotes the selected triangles, cyan the operation. */
+const rasterIcons: Partial<Record<ScanIconName, string>> = {
+  wand: wandScanImage,
+  components: componentsImage,
+  holes: holesImage,
+  boundaries: boundariesImage,
+  brush: brushImage,
+  freehand: freehandImage,
+  line: lineImage,
+  rectangle: rectangleImage,
+  circle: circleImage,
+  through: throughImage,
+  all: allImage,
+  clear: clearImage,
+  invert: invertImage,
+  hide: hideImage,
+  isolate: isolateImage,
+  reveal: revealImage,
+  connected: connectedImage,
+  boundary: boundariesImage,
+  revealSelected: revealImage,
+};
+
+/** Generated CAD images: gold denotes selection, cyan denotes the action. */
 export function ScanToolIcon({
   name,
   size,
@@ -40,17 +79,19 @@ export function ScanToolIcon({
   name: ScanIconName;
   size?: number;
 }) {
-  if (name === "wand") {
+  const rasterImage = rasterIcons[name];
+  if (rasterImage) {
     return (
       <img
         className="scan-feature-icon"
-        src={wandScanImage}
+        src={rasterImage}
         width={size ?? 56}
         height={size ?? 56}
         alt=""
         aria-hidden="true"
         draggable={false}
-        data-scan-icon="wand"
+        data-scan-icon={name}
+        data-scan-raster="true"
       />
     );
   }

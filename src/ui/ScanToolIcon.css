@@ -2,6 +2,13 @@
   flex: 0 0 auto;
   vertical-align: middle;
 }
+img.scan-feature-icon {
+  object-fit: contain;
+}
+.scan-diagnostics img.scan-feature-icon {
+  width: 36px;
+  height: 36px;
+}
 .scan-tool-row button,
 .scan-quick-tools button {
   display: inline-flex;
