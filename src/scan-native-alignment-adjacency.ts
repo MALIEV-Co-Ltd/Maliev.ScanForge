@@ -50,7 +50,7 @@ export function nativeBuildAlignmentAdjacency(
 ) {
   if (vertices.length % 3 || !vertices.length || triangles.length % 3)
     throw new Error("Invalid alignment adjacency geometry.");
-  const bounds = [
+  const bounds: [number, number, number, number, number, number] = [
     Infinity,
     Infinity,
     Infinity,
@@ -117,6 +117,7 @@ export function nativeBuildAlignmentAdjacency(
     recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
   }
   return {
+    bounds,
     vertexBuckets,
     neighbors,
     neighborEdges,

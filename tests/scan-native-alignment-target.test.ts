@@ -4,8 +4,22 @@ import { prepareNativeAlignmentTarget } from "../src/scan-native-alignment-targe
 import { queryNoiseOctree } from "../src/scan-noise-octree-query";
 import { noiseTriangleDistance } from "../src/scan-noise-deviation";
 
-it.each(native.cases)("matches original target builder: $name", (sample) => {
-  const result = prepareNativeAlignmentTarget(sample.points, {
+it.each(
+  native.cases.flatMap((sample) => [
+    { ...sample, indexed: false },
+    { ...sample, indexed: true },
+  ]),
+)("matches original target builder: $name indexed=$indexed", (sample) => {
+  const input = sample.indexed
+    ? {
+        coordinates: new Float32Array(sample.points.flat(2)),
+        indices: Uint32Array.from(
+          { length: sample.points.length * 3 },
+          (_, id) => id,
+        ),
+      }
+    : sample.points;
+  const result = prepareNativeAlignmentTarget(input, {
     minimumExtent: sample.minextent,
     filterExcluded: sample.filterHidden,
     triangleFlags: sample.flags,
