@@ -180,6 +180,29 @@ Actual feature classification, native/application class mapping, picking and
 CAD-backed conversion remain unverified. Public integration still requires
 those boundaries and geometry publication to be verified.
 
+## Verified origin-reference dispatch and flip behavior
+
+`src/scan-native-datum-origin.ts` ports the complete numerical dispatcher
+`0x140543ae0`. Origin planes XY/YZ/XZ have normal axes Z/X/Y and the plane
+assignment indices map to Z/X/Y. Origin directions X/Y/Z use axis indices
+X/Y/Z. The origin point uses the point constructor. Flips negate every vector
+component, including signed zero, while preserving the current stage.
+
+The recovered pseudocode incorrectly assigns zero to the stage in its flip
+branches. The assembly contains no modification of the EDX stage argument
+before either constructor call. Direct execution corroborates this: the
+126-case fixture covers every stage, assignment, reference and flip and tests
+acceptance plus all 232 state bytes. Treating flips as a reset fails 36 cases.
+
+Dispatcher static Evidence:
+`ev_9167677d1f2735d1f3e1867d633df3c0fb51f2bd077b58504758a7c202c6f49c`.
+Dispatcher assembly Evidence:
+`ev_3aa14e81b9008b84cda6d6ff3c5ee4fd4f3ab8b5a1ecb2fab5ef63d5d8461860`.
+`alignment-datum-origin-native.json` separately retains original dispatcher
+execution against caller-owned frame storage; it is not a native dialog capture.
+The focused interface cross-reference query does not establish native class
+names or the application-to-native feature mapping. That mapping stays open.
+
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing primitive reference conversion,
 preview/reset/acceptance and shared GUI/MCP
