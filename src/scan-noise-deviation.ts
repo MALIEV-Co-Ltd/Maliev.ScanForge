@@ -20,21 +20,34 @@ export function noiseTriangleDistance(
   c: number[],
   radius = Infinity,
   closestOut?: number[],
+  regionOut?: number[],
+  cachedNormal?: readonly number[],
 ): number {
+  if (regionOut) regionOut[0] = 0;
   const u = b.map((x, i) => sub(x, a[i]));
   const v = c.map((x, i) => sub(x, a[i]));
   const q = p.map((x, i) => sub(x, a[i]));
   // Face normals use double cross products, a Float32 length denominator and storage.
-  const du = b.map((x, i) => x - a[i]),
-    dv = c.map((x, i) => x - a[i]);
-  const n = [
-    du[1] * dv[2] - du[2] * dv[1],
-    du[2] * dv[0] - du[0] * dv[2],
-    du[0] * dv[1] - du[1] * dv[0],
-  ];
-  const length = f(Math.sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]));
-  if (!(length > Number.EPSILON)) return Infinity;
-  for (let i = 0; i < 3; i++) n[i] = f(n[i] / length);
+  let n = cachedNormal;
+  if (!n) {
+    const du = b.map((x, i) => x - a[i]),
+      dv = c.map((x, i) => x - a[i]);
+    const computed = [
+      du[1] * dv[2] - du[2] * dv[1],
+      du[2] * dv[0] - du[0] * dv[2],
+      du[0] * dv[1] - du[1] * dv[0],
+    ];
+    const length = f(
+      Math.sqrt(
+        computed[0] * computed[0] +
+          computed[1] * computed[1] +
+          computed[2] * computed[2],
+      ),
+    );
+    if (!(length > Number.EPSILON)) return Infinity;
+    for (let i = 0; i < 3; i++) computed[i] = f(computed[i] / length);
+    n = computed;
+  }
   if (
     Math.abs(add(add(mul(n[0], q[0]), mul(n[1], q[1])), mul(n[2], q[2]))) >
     radius
@@ -49,6 +62,7 @@ export function noiseTriangleDistance(
   if (!(determinant > 0)) return Infinity;
   let s = d * cc - e * bb,
     t = e * aa - d * bb;
+  let region = 0;
   const alongU = () => {
     s = d <= 0 ? 0 : aa <= d ? 1 : d / aa;
     t = 0;
@@ -70,11 +84,13 @@ export function noiseTriangleDistance(
   if (determinant < t + s) {
     if (s >= 0) {
       if (t < 0) {
+        region = 3;
         const first = aa - d,
           second = bb - e;
         if (second < first) opposite(first - second);
         else alongU();
       } else {
+        region = 2;
         const numerator = cc - e - bb - -d;
         if (numerator <= 0) {
           s = 0;
@@ -82,6 +98,7 @@ export function noiseTriangleDistance(
         } else opposite(numerator);
       }
     } else {
+      region = 6;
       const first = cc - e,
         second = bb - d;
       if (first <= second) alongV();
@@ -92,10 +109,19 @@ export function noiseTriangleDistance(
       const reciprocal = 1 / determinant;
       s *= reciprocal;
       t *= reciprocal;
-    } else alongU();
-  } else if (t >= 0) alongV();
-  else if (d > 0) alongU();
-  else alongV();
+    } else {
+      region = 1;
+      alongU();
+    }
+  } else if (t >= 0) {
+    region = 4;
+    alongV();
+  } else {
+    region = 5;
+    if (d > 0) alongU();
+    else alongV();
+  }
+  if (regionOut) regionOut[0] = region;
   const closest = a.map((x, i) => f(f(u[i] * s + x) + v[i] * t));
   if (closestOut) for (let i = 0; i < 3; i++) closestOut[i] = closest[i];
   const delta = p.map((x, i) => x - closest[i]);
