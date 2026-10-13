@@ -376,3 +376,44 @@ accept/undo, mesh/CAD refinement, failure UI and practical performance still nee
 verification before substituting this solver into application commands. Generic
 N-dimensional eigen solving and allocator failure behavior are not covered by
 the 3x3 specialization. The broader alignment feature remains incomplete.
+
+## Executed landmark mapping and candidate dispatch
+
+`src/scan-native-alignment-landmarks.ts` reproduces two parts of the original
+preview path. Original `0x14054d050` excludes fixed-side records and maps moving
+landmarks to the original mesh's Float32 vertex storage using ordered squared
+XYZ distances and strict improvement. Ties preserve the first vertex. The
+initial distance is Float32 max represented as double; if no vertex improves
+that bound, the index remains 0xffffffff. Landmark coordinates remain doubles
+in this mapping helper, rather than being rounded again. Forty complete original
+helper executions cover active and retained landmark-list branches, empty data,
+fixed-only lists, duplicate and equidistant vertices, a sub-Float32 landmark
+perturbation, the distance sentinel, and twelve seeded inputs. All vertex indices
+match the port. Evidence:
+`ev_5d4d5953060dc429e3a48da0d103fa26234686d1c960dab5e0c3ebffa1ba1106`.
+
+Original candidate builder `0x14054c7a0` converts tagged landmark coordinates to
+Float32 into per-side temporary meshes, passes fixed points first and moving
+points second to `0x140aacbc0`, and publishes only an accepted result. The
+wrapper's inversion therefore yields the moving-to-fixed transform. Forty
+complete original builder captures cover both active and retained landmark-list
+branches over the existing twenty point sets. All thirty published matrices
+match every double byte; all ten no-candidate outcomes match. The port keeps the
+preview's equal-side-count guard independently, while fewer than three pairs
+produce no candidate. Evidence:
+`ev_454fb0a1977d5398856a37f96d0d2a7ea060b382daaeb788c658ad3f8dc030ec`.
+
+The mapping probe preserves original temporary vector allocation and filtering
+instructions, supplying original-mesh getters and preallocated output storage.
+The candidate probe adapts only temporary mesh construction, append/getters and
+release storage in addition to the retained allocator/CRT bindings; per-side
+conversion, solver call and publication execute original instructions. These are
+numerical/helper captures, not native UI exports or complete preview validation.
+Both mappings are released and probe processes exit.
+
+The original preview subsequently restores/copies the retained moving mesh,
+applies the candidate, transforms moving markers, and invokes `0x14054d440`
+mesh/CAD refinement. That path calls controller construction `0x140aa8ea0` and
+refinement `0x140aaa570`. Extracting and validating those operations remains
+necessary before replacing the application's preview pipeline. The fixed object
+must remain unchanged through preview, acceptance, cancellation and undo/redo.
