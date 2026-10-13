@@ -10,6 +10,7 @@ import {
 } from "./scan-tools-reduction";
 import { runScanEdit } from "./scan-edit";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
+import { SELECTED_SMOOTHING_DEFAULTS } from "./scan-selected-smooth";
 import { morphTriangleSelection } from "./selection-morphology";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { extractSketchSection } from "./sketch-section";
@@ -152,8 +153,8 @@ scope.onmessage = async ({ data: incoming }) => {
         selectedVertices = await selectedSmoothing.smooth(
           topology,
           request.selection ?? new Uint8Array(),
-          request.iterations ?? 2,
-          request.strength ?? 0.5,
+          request.iterations ?? SELECTED_SMOOTHING_DEFAULTS.iterations,
+          request.strength ?? SELECTED_SMOOTHING_DEFAULTS.strength,
           { onProgress: progress },
         );
       }

@@ -24,6 +24,8 @@ it("matches native selected smoothing on the same annular mesh and selected face
       positions,
       selection,
       tolerance: 0.001,
+      iterations: 2,
+      strength: 0.5,
     },
     { topologyCache: cache, onProgress: (_, s) => stages.push(s) },
   ).positions!;
@@ -112,6 +114,8 @@ it("matches the native first-facet fan at a shared disconnected vertex exactly",
       positions,
       selection: new Uint8Array(fans.selection),
       tolerance: 0.001,
+      iterations: 2,
+      strength: 0.5,
     },
     { topologyCache: cache, onProgress: (_, s) => stages.push(s) },
   ).positions!;

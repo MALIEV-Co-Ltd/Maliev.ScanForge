@@ -14,6 +14,8 @@ import type { Entity } from "../src/types";
 import type { ParametricRecipe } from "../src/parametric";
 import { processMesh } from "../src/processing-client";
 import { createGridPatch } from "../src/surfaces";
+import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
+import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
@@ -94,6 +96,45 @@ function harness(entities: Entity[] = [entity()]) {
 }
 
 describe("shared workspace operation contracts", () => {
+  it("applies the stronger selected-smoothing preset through MCP and honors explicit overrides", async () => {
+    const positions = new Float32Array(smoothingInput.positions);
+    for (const iterations of [undefined, 2]) {
+      const h = harness([entity({ positions })]);
+      h.state.selection = new Uint8Array(smoothingInput.selection);
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        const edit = runScanEdit(request as ScanEditRequest);
+        return {
+          kind: "scanEdit",
+          scanEdit: edit,
+          diagnostics: edit.diagnostics,
+        };
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          selectionOnly: true,
+          operation: {
+            kind: "scanEdit",
+            action: "smoothSelected",
+            ...(iterations === undefined ? {} : { iterations, strength: 0.5 }),
+          },
+        },
+        h.context,
+      );
+      expect(h.state.entities[0].positions).toEqual(
+        runScanEdit({
+          kind: "scanEdit",
+          action: "smoothSelected",
+          positions,
+          selection: new Uint8Array(smoothingInput.selection),
+          iterations: iterations ?? 6,
+          strength: 0.5,
+        }).positions,
+      );
+      expect(h.host.commit).toHaveBeenCalledOnce();
+    }
+  });
+
   it("passes ordered fixed mesh targets through shared refinement without changing them", async () => {
     const indexedMesh = {
       vertices: new Float32Array(triangle),

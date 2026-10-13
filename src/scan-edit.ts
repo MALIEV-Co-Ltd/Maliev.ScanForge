@@ -9,7 +9,10 @@ import { runHoleFill } from "./scan-edit-holes";
 import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
-import { smoothSelectedVertices } from "./scan-selected-smooth";
+import {
+  SELECTED_SMOOTHING_DEFAULTS,
+  smoothSelectedVertices,
+} from "./scan-selected-smooth";
 
 export interface ScanEditOptions extends MeshProcessingOptions {
   /** Internal worker hook; never part of a serialized edit request. */
@@ -156,8 +159,16 @@ function smoothing(
   t: MeshTopology,
   o: ScanEditOptions,
 ): Float32Array {
-  const strength = r.strength ?? (r.action === "smoothSelected" ? 0.5 : 0.3),
-    iterations = r.iterations ?? (r.action === "smoothSelected" ? 2 : 3);
+  const strength =
+      r.strength ??
+      (r.action === "smoothSelected"
+        ? SELECTED_SMOOTHING_DEFAULTS.strength
+        : 0.3),
+    iterations =
+      r.iterations ??
+      (r.action === "smoothSelected"
+        ? SELECTED_SMOOTHING_DEFAULTS.iterations
+        : 3);
   if (
     !Number.isFinite(strength) ||
     strength <= 0 ||

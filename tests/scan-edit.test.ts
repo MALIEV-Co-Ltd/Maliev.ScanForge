@@ -37,7 +37,7 @@ it("publishes precomputed worker smoothing with the same geometry and successor 
   const selection = new Uint8Array(positions.length / 9).fill(1);
   const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
   const topology = analyzeMesh(positions, { topologyCache });
-  const computed = smoothSelectedVertices(topology, selection, 2, 0.5, {});
+  const computed = smoothSelectedVertices(topology, selection, 6, 0.5, {});
   let used = false;
   const result = runScanEdit(
     { kind: "scanEdit", action: "smoothSelected", positions, selection },
@@ -46,7 +46,7 @@ it("publishes precomputed worker smoothing with the same geometry and successor 
       selectedSmoothing: (current, mask, iterations, strength) => {
         expect(current).toBe(topology);
         expect(mask).toBe(selection);
-        expect([iterations, strength]).toEqual([2, 0.5]);
+        expect([iterations, strength]).toEqual([6, 0.5]);
         used = true;
         return computed;
       },

@@ -5,6 +5,13 @@ import {
   smoothingSelection,
   smoothingTargets,
 } from "./scan-smoothing-kernel";
+
+/** Shared quick-action defaults for GUI workers and agent operations. */
+export const SELECTED_SMOOTHING_DEFAULTS = {
+  iterations: 6,
+  strength: 0.5,
+} as const;
+
 export function smoothSelectedVertices(
   topology: MeshTopology,
   selection: Uint8Array,

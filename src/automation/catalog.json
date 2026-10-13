@@ -1003,11 +1003,13 @@
                   "exclusiveMinimum": 0
                 },
                 "strength": {
+                  "description": "Selected-area smoothing defaults to 0.5; boundary smoothing defaults to 0.3.",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 "iterations": {
+                  "description": "Selected-area smoothing defaults to 6 passes; boundary smoothing defaults to 3. Explicit values override these defaults.",
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 100
