@@ -3,6 +3,33 @@ export interface Revision {
   entities: Entity[];
   label: string;
 }
+/** Seek atomically across both undo and redo snapshots, without replaying edits. */
+export function seekModelRevision(
+  history: Revision[],
+  entities: Entity[],
+  future: Revision[],
+  index: number,
+): { history: Revision[]; entities: Entity[]; future: Revision[] } {
+  const count = history.length + future.length;
+  if (!Number.isInteger(index) || index < 0 || index > count)
+    throw new RangeError("Model revision is outside the retained timeline");
+  if (index === history.length) return { history, entities, future };
+  const labels = [...history, ...future].map((revision) => revision.label);
+  const states = [
+    ...history.map((revision) => revision.entities),
+    entities,
+    ...future.map((revision) => revision.entities),
+  ];
+  return {
+    history: labels
+      .slice(0, index)
+      .map((label, i) => ({ label, entities: states[i] })),
+    entities: restoreModelDisplay(states[index], entities),
+    future: labels
+      .slice(index)
+      .map((label, i) => ({ label, entities: states[index + i + 1] })),
+  };
+}
 /** Display and selection authoring changes never enter the modeling timeline. */
 export function modelChanged(before: Entity[], after: Entity[]): boolean {
   if (before.length !== after.length) return true;

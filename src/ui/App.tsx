@@ -1,3 +1,4 @@
+import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
 import { CanvasError } from "./CanvasError";
 import { StatusMetrics } from "./StatusMetrics";
@@ -62,13 +63,11 @@ import {
   Layers,
   MousePointer2,
   Plus,
-  Redo2,
   Ruler,
   ScanLine,
   Settings,
   Trash2,
   Triangle,
-  Undo2,
   X,
 } from "lucide-react";
 import {
@@ -90,6 +89,7 @@ import {
   changeLabel,
   modelChanged,
   restoreModelDisplay,
+  seekModelRevision,
   type Revision,
 } from "../history";
 import { ContextMenu } from "./ContextMenu";
@@ -1485,23 +1485,22 @@ export function App() {
     }
   }
   function restoreRevision(index: number) {
-    if (busy || index < 0 || index >= history.length) return;
-    const target = history[index];
-    const undone = history.slice(index);
-    const redoStates = undone.map((revision, i) => ({
-      entities: i + 1 < undone.length ? undone[i + 1].entities : entities,
-      label: revision.label,
-    }));
-    setEntities(restoreModelDisplay(target.entities, entities));
+    if (busy || index === history.length) return;
+    const next = seekModelRevision(history, entities, future, index);
+    setEntities(next.entities);
     setSelectedId(
-      target.entities.some((entity) => entity.id === selectedId)
+      next.entities.some((entity) => entity.id === selectedId)
         ? selectedId
-        : (target.entities[0]?.id ?? null),
+        : (next.entities[0]?.id ?? null),
     );
-    setFuture([...redoStates, ...future]);
-    setHistory(history.slice(0, index));
+    setHistory(next.history);
+    setFuture(next.future);
     setDirty(true);
-    setMessage(`Restored model before ${target.label}`);
+    setMessage(
+      index === 0
+        ? "Restored starting state"
+        : `Restored model after ${next.history[index - 1].label}`,
+    );
   }
   function showTools(nextWorkspace: string) {
     if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
@@ -3208,7 +3207,7 @@ export function App() {
                       disabled:
                         busy ||
                         contextMenu.revision === undefined ||
-                        contextMenu.revision >= history.length,
+                        contextMenu.revision > history.length + future.length,
                       run: () => {
                         if (contextMenu.revision !== undefined)
                           restoreRevision(contextMenu.revision);
@@ -3618,101 +3617,6 @@ export function App() {
               </ul>
             )}
           </div>
-          <section
-            className="history-panel"
-            aria-label="Model history"
-            onContextMenu={(event) => {
-              event.preventDefault();
-              if (!busy)
-                setContextMenu({
-                  x: event.clientX,
-                  y: event.clientY,
-                  kind: "history",
-                });
-            }}
-          >
-            <div className="history-heading">
-              <h2>History</h2>
-              <div>
-                <button
-                  aria-label="Undo history"
-                  title="Undo"
-                  disabled={busy || !history.length}
-                  onClick={undo}
-                >
-                  <Undo2 size={14} />
-                </button>
-                <button
-                  aria-label="Redo history"
-                  title="Redo"
-                  disabled={busy || !future.length}
-                  onClick={redo}
-                >
-                  <Redo2 size={14} />
-                </button>
-              </div>
-            </div>
-            <ol className="history-list">
-              <li>
-                <button
-                  disabled={busy || !history.length}
-                  onContextMenu={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if (!busy)
-                      setContextMenu({
-                        x: event.clientX,
-                        y: event.clientY,
-                        kind: "history",
-                        revision: 0,
-                      });
-                  }}
-                  onClick={() => restoreRevision(0)}
-                >
-                  <Layers size={14} />
-                  <span>Initial state</span>
-                </button>
-              </li>
-              {history.map((revision, index) => (
-                <li key={index}>
-                  <button
-                    onContextMenu={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      if (!busy)
-                        setContextMenu({
-                          x: event.clientX,
-                          y: event.clientY,
-                          kind: "history",
-                          revision: index + 1,
-                        });
-                    }}
-                    title={`Restore model after ${revision.label}`}
-                    aria-current={
-                      index === history.length - 1 ? "step" : undefined
-                    }
-                    disabled={busy}
-                    onClick={() => {
-                      if (index + 1 < history.length)
-                        restoreRevision(index + 1);
-                    }}
-                  >
-                    <Box size={14} />
-                    <span>{revision.label}</span>
-                  </button>
-                </li>
-              ))}
-              {future.map((revision, index) => (
-                <li key={`future-${index}`} className="future-revision">
-                  <span>{revision.label}</span>
-                </li>
-              ))}
-              <li className="end-of-model">End of model</li>
-            </ol>
-            <p className="history-note">
-              {history.length} undo steps · session history
-            </p>
-          </section>
         </aside>
         <section className="canvas-area" aria-label="3D viewport">
           <div ref={viewportHost} className="viewport" />
@@ -4689,6 +4593,22 @@ export function App() {
           )}
         </aside>
       </main>
+      <ModelTimeline
+        labels={[...history, ...future].map((revision) => revision.label)}
+        cursor={history.length}
+        disabled={busy}
+        onSeek={restoreRevision}
+        onContextMenu={(event, revision) => {
+          event.preventDefault();
+          if (!busy)
+            setContextMenu({
+              x: event.clientX,
+              y: event.clientY,
+              kind: "history",
+              revision,
+            });
+        }}
+      />
       {newDocumentDialog && (
         <div className="modal-backdrop">
           <section
