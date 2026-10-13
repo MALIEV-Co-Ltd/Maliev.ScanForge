@@ -42,6 +42,8 @@ class ThreadWorker {
   initialized = 0;
   operations = 0;
   phases = 0;
+  coordinateInputs = [];
+  meanInputs = [];
   constructor() {
     this.thread = new CpuWorker(
       new URL(`data:text/javascript,${encodeURIComponent(bridge)}`),
@@ -56,7 +58,11 @@ class ThreadWorker {
   postMessage(data) {
     if (data.initialize) this.initialized++;
     if (data.operation) this.operations++;
-    if (data.job) this.phases++;
+    if (data.job) {
+      this.phases++;
+      this.coordinateInputs.push(data.job.vertices);
+      if (data.job.means) this.meanInputs.push(data.job.means);
+    }
     this.thread.postMessage(data);
   }
   terminate() {
@@ -137,6 +143,12 @@ it.each([
         { onProgress: (_, stage) => stages.push(stage) },
       );
       expect(ThreadWorker.owned).toHaveLength(2);
+      for (const worker of ThreadWorker.owned) {
+        expect(new Set(worker.coordinateInputs).size).toBe(1);
+        expect(worker.coordinateInputs[0]).toBe(result);
+        expect(new Set(worker.meanInputs).size).toBe(1);
+        expect(worker.meanInputs).toHaveLength(capture.iterations);
+      }
       expect(
         stages.filter((stage) => stage === "Preparing noise weights"),
       ).toHaveLength(1);

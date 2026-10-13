@@ -1,5 +1,22 @@
 # Mesh processing parallelism
 
+## Reduce Noise iteration buffers (2026-10-13)
+
+The two-worker Reduce Noise parent now allocates coordinate and mean storage once
+per operation. Both child results must arrive before either buffer is updated;
+children continue to read structured clones, and the canonical source remains
+immutable. Ordered sums, Float32 correction rounding, admission limits and serial
+fallback are unchanged. At 300,000 vertices this avoids 14.4 MB of full-array
+allocation for each iteration after the first; child result allocation and message
+copies remain. This is an allocation reduction, not a measured latency gain.
+
+The real CPU-thread gate checks buffer reuse and native coordinate bytes for
+selected iterations 1–5 with boundaries enabled and locked, including neighborhoods
+crossing worker shards. Both original-instruction correction probes were rerun:
+all ten cases match all 8,640 retained Float32 coordinates. Their supplied-weight,
+normal-refresh and object-access adapters remain; these are not fresh UI exports.
+Both mapped allocations were released and both probe processes exited.
+
 ## Selected smoothing publication without repeated copies (2026-10-13)
 
 The selected-area Smooth pool now publishes joined worker targets directly into

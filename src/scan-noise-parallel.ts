@@ -94,6 +94,7 @@ export class NoiseSmoothingPool {
   private pending?: {
     id: number;
     values: (Float64Array | undefined)[];
+    destination: Float64Array<ArrayBuffer>;
     resolve: (v: Float64Array<ArrayBuffer>) => void;
     reject: (e: Error) => void;
   };
@@ -163,7 +164,8 @@ export class NoiseSmoothingPool {
           operation: { weights, movable, applyBoundaryEdges, neededMeans },
         });
       this.expiry = setTimeout(() => this.cancel(), 120_000);
-      let vertices = Float64Array.from(topology.vertices, Math.fround);
+      const vertices = Float64Array.from(topology.vertices, Math.fround);
+      const means = new Float64Array(vertices.length);
       for (let step = 0; step < iterations; step++) {
         check();
         progress = step / iterations;
@@ -172,14 +174,10 @@ export class NoiseSmoothingPool {
           "Reducing mesh noise on two CPU workers",
         );
         check();
-        const means = await this.calculate({ vertices });
+        await this.calculate({ vertices }, means);
         check();
-        const next = await this.calculate({
-          vertices,
-          means,
-        });
+        await this.calculate({ vertices, means }, vertices);
         check();
-        vertices = next;
       }
       options.onProgress?.(1, "Noise reduction completed");
       check();
@@ -246,7 +244,9 @@ export class NoiseSmoothingPool {
         pending.values[part] = data.values;
         if (pending.values.every(Boolean)) {
           this.pending = undefined;
-          const combined = new Float64Array(count * 3);
+          // Both children have finished reading their structured-cloned input.
+          // Publish only after the join, into operation-owned reusable storage.
+          const combined = pending.destination;
           combined.set(pending.values[0]!);
           combined.set(pending.values[1]!, Math.floor(count / 2) * 3);
           pending.resolve(combined);
@@ -271,10 +271,17 @@ export class NoiseSmoothingPool {
   }
   private calculate(
     job: Omit<NonNullable<NoiseWorkerRequest["job"]>, "id">,
+    destination: Float64Array<ArrayBuffer>,
   ): Promise<Float64Array<ArrayBuffer>> {
     return new Promise((resolve, reject) => {
       const id = ++this.id;
-      this.pending = { id, values: [undefined, undefined], resolve, reject };
+      this.pending = {
+        id,
+        values: [undefined, undefined],
+        destination,
+        resolve,
+        reject,
+      };
       try {
         for (const worker of this.workers)
           worker.postMessage({ job: { ...job, id } });
