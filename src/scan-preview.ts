@@ -25,7 +25,8 @@ export class ScanPreviewSession {
   private prepared?: PackedNoiseTree;
   private constructor(
     readonly id: string,
-    readonly kind: "reduceNoise" | "reducePolygons" | "scaleMesh",
+    readonly kind:
+      "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh",
     readonly original: MeshTopology | undefined,
     readonly output: Float32Array,
     readonly summary: string,
@@ -38,13 +39,14 @@ export class ScanPreviewSession {
     if (
       operation.kind !== "reduceNoise" &&
       operation.kind !== "reducePolygons" &&
-      operation.kind !== "scaleMesh"
+      operation.kind !== "scaleMesh" &&
+      operation.kind !== "mirrorMesh"
     )
       throw new Error("This tool does not support mesh preview.");
-    // Scaling reads the original coordinates directly and needs no welding or
+    // Transforms read the original coordinates directly and need no welding or
     // adjacency. Only the two comparison tools retain indexed source topology.
     const original =
-      operation.kind === "scaleMesh"
+      operation.kind === "scaleMesh" || operation.kind === "mirrorMesh"
         ? undefined
         : analyzeMesh(request.positions, {
             ...options,
@@ -67,7 +69,8 @@ export class ScanPreviewSession {
               kind: "scanTools",
               positions: request.positions,
               operation:
-                operation.kind === "scaleMesh"
+                operation.kind === "scaleMesh" ||
+                operation.kind === "mirrorMesh"
                   ? operation
                   : { ...operation, measureDeviation: false },
             },
@@ -87,7 +90,9 @@ export class ScanPreviewSession {
     options: MeshProcessingOptions = {},
   ) {
     if (!this.original)
-      throw new Error("Scale preview does not support surface comparison.");
+      throw new Error(
+        `${this.kind === "mirrorMesh" ? "Mirror" : "Scale"} preview does not support surface comparison.`,
+      );
     if (
       ![deviation, paletteThreshold].every(
         (value) =>

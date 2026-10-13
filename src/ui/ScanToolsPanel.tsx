@@ -128,6 +128,7 @@ export interface ScanToolsPanelProps {
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
   onAccept?: (options?: { createNewObject?: boolean }) => void;
+  onInvalidatePreview?: () => void;
   onCompare?: (deviation: number, paletteThreshold: number) => void;
   onClose: () => void;
   onCancel: () => void;
@@ -149,6 +150,7 @@ export function ScanToolsPanel({
   onApply,
   previewReady = false,
   onAccept,
+  onInvalidatePreview,
   onCompare,
   onClose,
   onCancel,
@@ -581,10 +583,21 @@ export function ScanToolsPanel({
         {tool === "mirrorMesh" && (
           <>
             <label>
+              <input
+                type="checkbox"
+                checked={createNewObject}
+                onChange={(event) => setCreateNewObject(event.target.checked)}
+              />
+              Create new object
+            </label>
+            <label>
               Mirror plane
               <select
                 value={plane}
-                onChange={(e) => setPlane(e.target.value as typeof plane)}
+                onChange={(e) => {
+                  setPlane(e.target.value as typeof plane);
+                  onInvalidatePreview?.();
+                }}
               >
                 <option value="OXY">XY origin plane</option>
                 <option value="OYZ">YZ origin plane</option>
@@ -598,7 +611,10 @@ export function ScanToolsPanel({
                   Reference plane
                   <select
                     value={referenceId}
-                    onChange={(e) => setReferenceId(e.target.value)}
+                    onChange={(e) => {
+                      setReferenceId(e.target.value);
+                      onInvalidatePreview?.();
+                    }}
                   >
                     <option value="">Choose plane…</option>
                     {planes.map((e) => (
@@ -611,7 +627,10 @@ export function ScanToolsPanel({
                 {onPickReference && (
                   <button
                     type="button"
-                    onClick={() => onPickReference("plane")}
+                    onClick={() => {
+                      onInvalidatePreview?.();
+                      onPickReference("plane");
+                    }}
                   >
                     Pick plane on canvas
                   </button>
@@ -696,7 +715,11 @@ export function ScanToolsPanel({
           <button
             disabled={busy || !previewReady}
             onClick={() =>
-              onAccept(tool === "scaleMesh" ? { createNewObject } : undefined)
+              onAccept(
+                tool === "scaleMesh" || tool === "mirrorMesh"
+                  ? { createNewObject }
+                  : undefined,
+              )
             }
           >
             Accept

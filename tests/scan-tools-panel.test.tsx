@@ -12,27 +12,30 @@ const mesh: Entity = {
   visible: true,
   opacity: 1,
 };
-it("Scale separates preview from acceptance and offers cancellation without comparison controls", () => {
-  const panel = (previewReady: boolean) =>
-    renderToStaticMarkup(
-      <ScanToolsPanel
-        tool="scaleMesh"
-        selected={mesh}
-        entities={[mesh]}
-        previewReady={previewReady}
-        onApply={() => {}}
-        onAccept={() => {}}
-        onCancel={() => {}}
-        onClose={() => {}}
-      />,
-    );
-  expect(panel(false)).toContain('disabled="">Accept');
-  expect(panel(true)).not.toContain('disabled="">Accept');
-  expect(panel(true)).toContain(">Preview</button>");
-  expect(panel(true)).toContain(">Cancel</button>");
-  expect(panel(true)).toContain('type="checkbox"/>Create new object');
-  expect(panel(true)).not.toContain("Update comparison");
-});
+it.each(["scaleMesh", "mirrorMesh"] as const)(
+  "%s separates preview from acceptance and offers cancellation without comparison controls",
+  (tool) => {
+    const panel = (previewReady: boolean) =>
+      renderToStaticMarkup(
+        <ScanToolsPanel
+          tool={tool}
+          selected={mesh}
+          entities={[mesh]}
+          previewReady={previewReady}
+          onApply={() => {}}
+          onAccept={() => {}}
+          onCancel={() => {}}
+          onClose={() => {}}
+        />,
+      );
+    expect(panel(false)).toContain('disabled="">Accept');
+    expect(panel(true)).not.toContain('disabled="">Accept');
+    expect(panel(true)).toContain(">Preview</button>");
+    expect(panel(true)).toContain(">Cancel</button>");
+    expect(panel(true)).toContain('type="checkbox"/>Create new object');
+    expect(panel(true)).not.toContain("Update comparison");
+  },
+);
 it.each(["reduceNoise", "reducePolygons"] as const)(
   "%s gates comparison and acceptance on an available preview",
   (tool) => {

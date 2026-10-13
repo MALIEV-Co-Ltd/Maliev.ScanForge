@@ -15,7 +15,7 @@ import {
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
-import { scaledMeshCopy } from "../scan-scaled-copy";
+import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
@@ -283,7 +283,7 @@ export function App() {
   } | null>(null);
   const [scanPreview, setScanPreview] = useState<{
     id: string;
-    kind: "reduceNoise" | "reducePolygons" | "scaleMesh";
+    kind: "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh";
     entityId: string;
     source: Entity["positions"];
     output: Float32Array;
@@ -1585,7 +1585,8 @@ export function App() {
       const isPreview =
         parameters.kind === "reduceNoise" ||
         parameters.kind === "reducePolygons" ||
-        parameters.kind === "scaleMesh";
+        parameters.kind === "scaleMesh" ||
+        parameters.kind === "mirrorMesh";
       const previewId = crypto.randomUUID();
       setScanPreview(null);
       scanToolAbort.current = controller;
@@ -1618,7 +1619,7 @@ export function App() {
         setScanPreview({
           id: previewId,
           kind: parameters.kind as
-            "reduceNoise" | "reducePolygons" | "scaleMesh",
+            "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh",
           entityId: source.id,
           source: source.positions,
           output: result.positions,
@@ -1697,16 +1698,17 @@ export function App() {
   function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
     if (
-      activeScanPreview.kind === "scaleMesh" &&
+      (activeScanPreview.kind === "scaleMesh" ||
+        activeScanPreview.kind === "mirrorMesh") &&
       options?.createNewObject &&
       selected
     ) {
-      const copy = scaledMeshCopy(
-        selected,
-        activeScanPreview.output,
-        crypto.randomUUID(),
-      );
-      operationLabel.current = "Scale mesh · create new object";
+      const copy = (
+        activeScanPreview.kind === "mirrorMesh"
+          ? mirroredMeshCopy
+          : scaledMeshCopy
+      )(selected, activeScanPreview.output, crypto.randomUUID());
+      operationLabel.current = `${scanToolTitles[activeScanPreview.kind]} · create new object`;
       try {
         commit([...entities, copy]);
         setSelectedId(copy.id);
@@ -1734,6 +1736,7 @@ export function App() {
     if (
       !preview ||
       preview.kind === "scaleMesh" ||
+      preview.kind === "mirrorMesh" ||
       busy ||
       scanToolAbort.current
     )
@@ -3860,10 +3863,12 @@ export function App() {
               onAccept={
                 scanTool === "reduceNoise" ||
                 scanTool === "reducePolygons" ||
-                scanTool === "scaleMesh"
+                scanTool === "scaleMesh" ||
+                scanTool === "mirrorMesh"
                   ? acceptScanPreview
                   : undefined
               }
+              onInvalidatePreview={() => setScanPreview(null)}
               onCompare={
                 scanTool === "reduceNoise" || scanTool === "reducePolygons"
                   ? updateScanComparison

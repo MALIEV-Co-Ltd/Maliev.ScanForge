@@ -53,8 +53,42 @@ the normal because its construction-plane metadata does not retain the native
 plane's tangent orientation. Origin-plane hints match the recovered policy;
 arbitrary picked-plane tangent orientation still needs a matching reference
 capture and metadata implementation. The native create-copy flag is recovered
-but is not integrated by this coordinate slice. No multicore/GPU speedup is
+and integrated in the preview/copy slice below. No multicore/GPU speedup is
 claimed for Mirror Mesh.
+
+## Preview and source-preserving copy integration
+
+The recovered acceptance handler `0x14061f5d0` reads the create-copy flag at
+dialog byte offset `0x1da8` (`param_1[0x3b5]`). When set, it constructs a new
+owner via `0x14088aac0`, clones the mesh via `0x140b350e0`, adopts that mesh via
+`0x14034aba0`, and transforms the clone. The source is retained. The retained
+decompilation and assembly evidence is `ev_fddac368011e66e3ba160def0fcb5235d26bb172c9580ee2da46627600243547`
+and `ev_9b4a7861a1bbb8daee0ccc18872a378e65a5d5431000e1ff8bee108b1d58cf1a`.
+
+The application now previews Mirror Mesh from immutable source coordinates with
+no welding or topology construction. Accept either replaces the source or adopts
+the prepared result into a distinct mesh. Create new object is read at acceptance,
+so it can be changed after preview without recomputing geometry. Copies retain
+display color, opacity and source attribution, while dropping stale derived
+normals, boundaries, selections and fitted-surface metadata. The checkbox defaults
+to false as an application choice; the native checkbox default is unverified.
+Changing the reference plane invalidates the displayed preview and disables Accept
+until another preview is generated. Cancel retains source geometry and history.
+
+All 24 native numerical cases verify preview and copy output byte-for-byte.
+Worker tests switch planes using one canonical source and detach every published
+buffer, verifying the source remains unchanged and reflection never compounds.
+Validation passed: production build without warnings/errors, 98 focused tests,
+and all 9,313 tests across 198 files. The browser loaded `index-CaG0T3OR.js`.
+Its YZ copy export contains two distinct objects: all 864 source coordinate bytes
+match the original and all 864 copy bytes match the native capture. Undo and Cancel
+exports retain one original object; Redo restores the same verified pair. Browser
+plane-change and copy-option acceptance guards passed, with no warnings/errors.
+
+This integrates the recovered copy branch and verifies its geometry and application
+history behavior. It does not execute the complete native clone/history/UI path or
+verify native copy naming and metadata equivalence. Picked-plane tangent parity,
+native confirmation behavior and native normal-refresh parity remain incomplete.
 
 Validation: `npm run build` passed with zero warnings/errors. The four focused
 native/transform/reference/panel files passed 56 tests; `npm test` passed 9,285
