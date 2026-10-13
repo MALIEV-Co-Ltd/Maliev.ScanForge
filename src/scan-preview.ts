@@ -11,6 +11,7 @@ import { comparePreparedNoiseSurface } from "./scan-noise-deviation";
 import { comparePreparedReductionSurface } from "./scan-reduction-comparison";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { linearProgress, type ReductionStatistics } from "./reduction-report";
+import { reductionDisplayColor } from "./reduction-display";
 
 export type ScanPreviewRequest = {
   kind: "scanPreview";
@@ -18,7 +19,12 @@ export type ScanPreviewRequest = {
   previewId: string;
 } & (
   | { phase: "create"; operation: ScanToolOperation }
-  | { phase: "compare"; deviation: number; paletteThreshold?: number }
+  | {
+      phase: "compare";
+      deviation: number;
+      paletteThreshold?: number;
+      displayRange?: number;
+    }
 );
 
 /** An immutable original and one disposable preview; comparison never runs an edit. */
@@ -92,7 +98,13 @@ export class ScanPreviewSession {
     deviation: number,
     paletteThreshold = deviation,
     options: MeshProcessingOptions = {},
+    displayRange?: number,
   ) {
+    if (
+      displayRange !== undefined &&
+      (!Number.isFinite(displayRange) || displayRange <= 0)
+    )
+      throw new Error("Display range must be positive and finite.");
     if (!this.original)
       throw new Error(
         `${this.kind === "mirrorMesh" ? "Mirror" : "Scale"} preview does not support surface comparison.`,
@@ -125,6 +137,7 @@ export class ScanPreviewSession {
     }
     let rgb: Uint8Array;
     let statistics: ReductionStatistics | undefined;
+    let sampleDistances: Float64Array | undefined;
     let within: number, total: number, matched: number;
     if (this.kind === "reduceNoise") {
       const measured = comparePreparedNoiseSurface(
@@ -156,6 +169,7 @@ export class ScanPreviewSession {
         originalTriangles: this.original.triangles.length / 3,
         reducedTriangles: this.output.length / 9,
       };
+      if (displayRange !== undefined) sampleDistances = measured.distances;
       within = measured.within;
       total = measured.total;
       matched = measured.matched;
@@ -169,7 +183,12 @@ export class ScanPreviewSession {
             "Preparing deviation display",
           );
         }
-        rgb.set(measured.rgb.subarray(id * 3, id * 3 + 3), corner * 3);
+        rgb.set(
+          displayRange === undefined
+            ? measured.rgb.subarray(id * 3, id * 3 + 3)
+            : reductionDisplayColor(measured.distances[id], displayRange),
+          corner * 3,
+        );
       });
     }
     if (options.signal?.aborted)
@@ -179,6 +198,8 @@ export class ScanPreviewSession {
       noiseComparison: {
         rgb,
         statistics,
+        sampleDistances,
+        displayRange,
         threshold:
           this.kind === "reduceNoise"
             ? deviation

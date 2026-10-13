@@ -104,6 +104,8 @@ export interface ProcessingResult {
     rgb: Uint8Array;
     threshold: number;
     statistics?: import("./reduction-report").ReductionStatistics;
+    sampleDistances?: Float64Array;
+    displayRange?: number;
   };
   segments?: Float32Array[];
   segmentClassifications?: RegionClassification[];

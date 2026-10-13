@@ -1,42 +1,151 @@
 import type { ReductionStatistics } from "../reduction-report";
 import "./ReductionResults.css";
-import { nativeNoiseColor } from "../scan-noise-color";
+import { useEffect, useRef, useState } from "react";
+import { toleranceAtPointer } from "../reduction-display";
 
 export function ReductionColorScale({
   threshold,
   tolerance,
+  lowerTolerance = -Math.min(threshold, tolerance),
+  upperTolerance = Math.min(threshold, tolerance),
+  onToleranceChange,
+  disabled = false,
 }: {
   threshold: number;
   tolerance: number;
+  lowerTolerance?: number;
+  upperTolerance?: number;
+  onToleranceChange?: (lower: number, upper: number) => void;
+  disabled?: boolean;
 }) {
-  const range = threshold * 5;
-  const stops = Array.from(
-    { length: 51 },
-    (_, i) =>
-      `rgb(${nativeNoiseColor(range * (1 - i / 25), threshold).join(",")}) ${i * 2}%`,
-  ).join(",");
+  const range = threshold;
+  const body = useRef<HTMLDivElement>(null);
+  const [bounds, setBounds] = useState([lowerTolerance, upperTolerance]);
+  const draft = useRef(bounds);
+  useEffect(() => {
+    const next = [lowerTolerance, upperTolerance];
+    setBounds(next);
+    draft.current = next;
+  }, [lowerTolerance, upperTolerance]);
+  const setBound = (index: number, value: number, commit = false) => {
+    if (disabled || !Number.isFinite(value)) return;
+    const next = [...draft.current];
+    next[index] =
+      index === 0
+        ? Math.max(-range, Math.min(next[1], value))
+        : Math.min(range, Math.max(next[0], value));
+    draft.current = next;
+    setBounds(next);
+    if (commit) onToleranceChange?.(next[0], next[1]);
+  };
+  const drag = (index: number, y: number) => {
+    const rect = body.current?.getBoundingClientRect();
+    if (rect)
+      setBound(index, toleranceAtPointer(y, rect.top, rect.height, range));
+  };
   return (
     <aside
       className="reduction-color-scale"
       aria-label="Signed deviation colour scale"
+      onPointerDown={(event) => event.stopPropagation()}
     >
       <strong>Deviation (mm)</strong>
-      <div className="reduction-color-scale-body">
-        <div
-          className="reduction-color-scale-ramp"
-          style={{ background: `linear-gradient(to bottom, ${stops})` }}
-        />
+      <div className="reduction-color-scale-body" ref={body}>
+        <div className="reduction-color-scale-ramp" />
         <div className="reduction-color-scale-ticks">
           {[1, 0.5, 0, -0.5, -1].map((f) => (
-            <span key={f}>
+            <span
+              key={f}
+              style={{
+                visibility: bounds.some(
+                  (bound) => Math.abs(f - bound / range) < 0.13,
+                )
+                  ? "hidden"
+                  : "visible",
+              }}
+            >
               {f > 0 ? "+" : f < 0 ? "−" : ""}
               {Math.abs(f * range).toFixed(3)}
             </span>
           ))}
         </div>
+        {[1, 0].map((index) => (
+          <div
+            key={index}
+            className="reduction-tolerance-marker"
+            style={{ top: `${50 * (1 - bounds[index] / range)}%` }}
+          >
+            <div
+              role="slider"
+              aria-orientation="vertical"
+              tabIndex={disabled ? -1 : 0}
+              aria-label={index ? "Upper tolerance" : "Lower tolerance"}
+              aria-valuemin={index ? bounds[0] : -range}
+              aria-valuemax={index ? range : bounds[1]}
+              aria-valuenow={bounds[index]}
+              aria-valuetext={`${bounds[index].toFixed(3)} mm`}
+              aria-disabled={disabled}
+              className="reduction-tolerance-handle"
+              onPointerDown={(event) => {
+                if (disabled) return;
+                event.preventDefault();
+                event.stopPropagation();
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }}
+              onPointerMove={(event) => {
+                if (event.currentTarget.hasPointerCapture(event.pointerId))
+                  drag(index, event.clientY);
+              }}
+              onPointerUp={(event) => {
+                if (!event.currentTarget.hasPointerCapture(event.pointerId))
+                  return;
+                drag(index, event.clientY);
+                event.currentTarget.releasePointerCapture(event.pointerId);
+                onToleranceChange?.(draft.current[0], draft.current[1]);
+              }}
+              onPointerCancel={(event) => {
+                if (event.currentTarget.hasPointerCapture(event.pointerId))
+                  event.currentTarget.releasePointerCapture(event.pointerId);
+                draft.current = [lowerTolerance, upperTolerance];
+                setBounds(draft.current);
+              }}
+              onKeyDown={(event) => {
+                const direction =
+                  event.key === "ArrowUp" || event.key === "ArrowRight"
+                    ? 1
+                    : event.key === "ArrowDown" || event.key === "ArrowLeft"
+                      ? -1
+                      : 0;
+                if (direction) {
+                  event.preventDefault();
+                  setBound(
+                    index,
+                    bounds[index] + (direction * range) / 100,
+                    true,
+                  );
+                }
+              }}
+            />
+            <label>
+              <span>{index ? "Upper" : "Lower"}</span>
+              <input
+                aria-label={
+                  index ? "Upper tolerance value" : "Lower tolerance value"
+                }
+                type="number"
+                step={range / 100}
+                min={index ? bounds[0] : -range}
+                max={index ? range : bounds[1]}
+                value={Number(bounds[index].toPrecision(6))}
+                disabled={disabled}
+                onChange={(event) =>
+                  setBound(index, event.currentTarget.valueAsNumber, true)
+                }
+              />
+            </label>
+          </div>
+        ))}
       </div>
-      <p>Tolerance ±{tolerance.toPrecision(3)} mm</p>
-      <p>Grey: unmatched</p>
     </aside>
   );
 }
@@ -56,7 +165,6 @@ export function ReductionResults({
       aria-label="Reduction deviation results"
     >
       <strong>Deviation results</strong>
-      <p>Original mesh → reduced surface · Original coordinates</p>
       {s.originalTriangles !== undefined &&
         s.reducedTriangles !== undefined && (
           <p>
@@ -78,21 +186,12 @@ export function ReductionResults({
         <dd className="deviation-positive">{mm(s.maximum, true)}</dd>
         <dt>RMS</dt>
         <dd>{mm(s.rms)}</dd>
-        <dt>Tolerance</dt>
-        <dd>±{s.tolerance.toPrecision(3)} mm</dd>
         <dt>Within tolerance</dt>
         <dd>{s.percentage.toFixed(2)}%</dd>
-        <dt>Matched samples</dt>
-        <dd>
-          {s.matched.toLocaleString()} / {s.total.toLocaleString()}
-        </dd>
-        <dt>Unmatched</dt>
-        <dd>{s.unmatched.toLocaleString()}</dd>
       </dl>
-      <p>
-        Signed original-vertex distances. RMS and extrema use matched samples;
-        unmatched samples count outside tolerance.
-      </p>
+      {s.unmatched > 0 && (
+        <p>{s.unmatched.toLocaleString()} samples could not be measured.</p>
+      )}
     </section>
   );
 }

@@ -156,7 +156,8 @@ it("keeps reduction identity while rendering one percentage bar and measured res
   expect(html).toContain("+0.040");
   expect(html).toContain("RMS");
   expect(html).toContain("90.00");
-  expect(html).toContain("Unmatched");
+  expect(html).toContain("1 samples could not be measured");
+  expect(html).not.toContain("Matched samples");
 });
 
 it("requires a completed deviation report for acceptance and always offers automatic measurement", () => {
@@ -193,6 +194,6 @@ it("requires a completed deviation report for acceptance and always offers autom
     );
   expect(panel(false)).toContain('disabled="">Accept');
   expect(panel(true)).not.toContain('disabled="">Accept');
-  expect(panel(false)).toContain("measured automatically");
+  expect(panel(false)).not.toContain("Color threshold");
   expect(panel(false)).not.toContain("Measure deviation from original</label>");
 });

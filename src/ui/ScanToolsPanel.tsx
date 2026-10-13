@@ -182,7 +182,7 @@ export function ScanToolsPanel({
     if (enabled && onCompare) onCompare(deviation, paletteThreshold);
     else if (comparison?.visible && onToggleComparison) onToggleComparison();
   }
-  const [paletteThreshold, setPaletteThreshold] = useState(0.05);
+  const paletteThreshold = deviation;
   const [factor, setFactor] = useState(1);
   const [scaleMode, setScaleMode] = useState<"factor" | "percentage">("factor");
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
@@ -306,7 +306,7 @@ export function ScanToolsPanel({
           percentage,
           deviation,
           measureDeviation: true,
-          paletteThreshold,
+          paletteThreshold: deviation,
         });
         break;
       case "reduceNoise":
@@ -407,10 +407,6 @@ export function ScanToolsPanel({
                 onChange={setDeviation}
               />
             )}
-            <p className="scan-tools-note">
-              Deviation from the original is measured automatically after
-              reduction.
-            </p>
             {mode !== "deviation" && (
               <Field
                 label="Comparison tolerance (mm)"
@@ -420,17 +416,6 @@ export function ScanToolsPanel({
                 onChange={setDeviation}
               />
             )}
-            <Field
-              label="Color threshold (mm)"
-              value={paletteThreshold}
-              min={0.001}
-              step={0.01}
-              onChange={setPaletteThreshold}
-            />
-            <p className="scan-tools-note">
-              Measures the original surface against the reduced result. The
-              color threshold sets the search range.
-            </p>
           </>
         )}
         {tool === "reduceNoise" && (
@@ -682,11 +667,11 @@ export function ScanToolsPanel({
       ) : (
         progress && <p role="status">{progress}</p>
       )}
-      {result && <p role="status">{result}</p>}
+      {result && tool !== "reducePolygons" && <p role="status">{result}</p>}
       {tool === "reducePolygons" && comparison?.statistics && (
         <ReductionResults statistics={comparison.statistics} />
       )}
-      {onCompare && (measureDeviation || tool === "reducePolygons") && (
+      {onCompare && tool !== "reducePolygons" && measureDeviation && (
         <button
           disabled={
             busy ||
@@ -699,15 +684,18 @@ export function ScanToolsPanel({
           Update comparison
         </button>
       )}
-      {(tool === "reduceNoise" || tool === "reducePolygons") &&
-        comparison &&
-        onToggleComparison && (
-          <NoiseComparisonLegend
-            {...comparison}
-            resultKind={tool === "reducePolygons" ? "reduced" : "smoothed"}
-            onToggle={onToggleComparison}
-          />
-        )}
+      {tool === "reduceNoise" && comparison && onToggleComparison && (
+        <NoiseComparisonLegend
+          {...comparison}
+          resultKind="smoothed"
+          onToggle={onToggleComparison}
+        />
+      )}
+      {tool === "reducePolygons" && comparison && onToggleComparison && (
+        <button aria-pressed={comparison.visible} onClick={onToggleComparison}>
+          {comparison.visible ? "Show reduced mesh" : "Show deviation"}
+        </button>
+      )}
       <footer>
         {busy ? (
           <button onClick={onCancel}>Cancel operation</button>

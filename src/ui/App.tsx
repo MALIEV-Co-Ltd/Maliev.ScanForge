@@ -2,6 +2,7 @@ import { SaveProjectDialog } from "./SaveProjectDialog";
 import { ActiveToolHint, StatusMessage } from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
 import { ReductionColorScale } from "./ReductionResults";
+import { toleranceCoverage } from "../reduction-display";
 import { ModelTimeline } from "./ModelTimeline";
 import { ViewportTools } from "./ViewportTools";
 import { CanvasError } from "./CanvasError";
@@ -287,6 +288,10 @@ export function App() {
     rgb: Uint8Array;
     threshold: number;
     statistics?: ReductionStatistics;
+    sampleDistances?: Float64Array;
+    displayRange?: number;
+    lowerTolerance?: number;
+    upperTolerance?: number;
     visible: boolean;
   } | null>(null);
   const [scanPreview, setScanPreview] = useState<{
@@ -1661,6 +1666,7 @@ export function App() {
               positions: source.positions,
               previewId,
               deviation: parameters.deviation,
+              displayRange: reduction ? parameters.deviation : undefined,
               paletteThreshold:
                 parameters.kind === "reducePolygons"
                   ? parameters.paletteThreshold
@@ -1794,6 +1800,8 @@ export function App() {
           positions: preview.source,
           previewId: preview.id,
           deviation,
+          displayRange:
+            preview.kind === "reducePolygons" ? deviation : undefined,
           paletteThreshold:
             preview.kind === "reduceNoise" ? deviation : paletteThreshold,
         },
@@ -3667,8 +3675,37 @@ export function App() {
             activeNoiseComparison.visible &&
             activeNoiseComparison.statistics && (
               <ReductionColorScale
-                threshold={activeNoiseComparison.threshold}
+                threshold={
+                  activeNoiseComparison.displayRange ??
+                  activeNoiseComparison.statistics.tolerance
+                }
                 tolerance={activeNoiseComparison.statistics.tolerance}
+                lowerTolerance={activeNoiseComparison.lowerTolerance}
+                upperTolerance={activeNoiseComparison.upperTolerance}
+                disabled={busy}
+                onToleranceChange={(lower, upper) =>
+                  setNoiseComparison((previous) => {
+                    if (
+                      !previous?.statistics ||
+                      !previous.sampleDistances ||
+                      previous.kind !== "reducePolygons"
+                    )
+                      return previous;
+                    return {
+                      ...previous,
+                      lowerTolerance: lower,
+                      upperTolerance: upper,
+                      statistics: {
+                        ...previous.statistics,
+                        ...toleranceCoverage(
+                          previous.sampleDistances,
+                          lower,
+                          upper,
+                        ),
+                      },
+                    };
+                  })
+                }
               />
             )}
           {dragging && (

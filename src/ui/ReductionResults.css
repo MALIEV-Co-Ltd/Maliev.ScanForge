@@ -53,22 +53,31 @@
   right: 14px;
   top: 115px;
   z-index: 3;
-  padding: 12px;
+  padding: 9px 6px;
+  width: 106px;
   background: var(--surface, #252525);
   color: var(--text, #eee);
   border: 1px solid var(--border, #454545);
   border-radius: 4px;
-  pointer-events: none;
-  font-size: 11px;
+  font-size: 10px;
 }
 .reduction-color-scale-body {
+  position: relative;
   display: flex;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 5px;
+  margin: 28px 0;
   height: min(40vh, 360px);
 }
 .reduction-color-scale-ramp {
-  width: 18px;
+  width: 12px;
+  background: linear-gradient(
+    to bottom,
+    #ff0000,
+    #ffff00 25%,
+    #00ff00 50%,
+    #00ffff 75%,
+    #0000ff
+  );
 }
 .reduction-color-scale-ticks {
   display: flex;
@@ -76,9 +85,43 @@
   justify-content: space-between;
   font-variant-numeric: tabular-nums;
 }
-.reduction-color-scale p {
+.reduction-tolerance-marker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  border-top: 1px solid var(--text);
+}
+.reduction-tolerance-handle {
+  position: absolute;
+  left: -8px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 1px solid #444;
+  cursor: ns-resize;
+  touch-action: none;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+.reduction-tolerance-handle:focus-visible {
+  outline: 2px solid #e2b944;
+  clip-path: none;
+}
+.reduction-tolerance-marker label {
+  position: absolute;
+  right: 0;
+  top: -22px;
+  width: 58px;
+  padding-left: 3px;
+  background: var(--surface);
+  font-size: 9px;
+}
+.reduction-tolerance-marker input {
+  width: 58px;
+  padding: 2px;
   font-size: 10px;
-  margin: 10px 0 0;
+  height: 21px;
 }
 @media (max-width: 700px) {
   .reduction-color-scale {

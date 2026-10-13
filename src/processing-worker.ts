@@ -101,6 +101,7 @@ scope.onmessage = async ({ data: incoming }) => {
           request.deviation,
           request.paletteThreshold,
           { onProgress: progress },
+          request.displayRange,
         );
         result.noiseComparison = comparison.noiseComparison;
         result.diagnostics.summary = comparison.summary;
@@ -388,6 +389,8 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.positions) transfers.push(result.positions.buffer);
     if (result.noiseComparison)
       transfers.push(result.noiseComparison.rgb.buffer);
+    if (result.noiseComparison?.sampleDistances)
+      transfers.push(result.noiseComparison.sampleDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     scope.postMessage({ result }, transfers);
   } catch (error) {
