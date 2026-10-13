@@ -469,3 +469,49 @@ folder, in `alignment-six-transform-results.json`,
 processes were checked absent. The application preview remains unchanged until
 the rotation correction, six-parameter optimizer and mesh/CAD query workers are
 ported and compared with these original results.
+
+## Ported six-parameter transform and rotation correction
+
+`src/scan-native-alignment-transform.ts` implements the extracted local-axis
+rotation sequence, scaled polar iteration, scaled partial-pivot LU inversion,
+and quaternion fallback. LU pivot scores select the later row on equality;
+row and pivot rejection use a strict comparison with double epsilon. The
+iteration retains the native arithmetic order, ten-iteration limit, and fallback
+on the original input rotation. Translation components remain unchanged during
+correction.
+
+The additional focused REA records are:
+
+- LU decomposition `0x140399440`: `ev_0622965fa4f189971d0ed81cd01c37ec5640e47e7f60bfaecfdf52976e422e88`.
+- Forward/back substitution `0x140399100`: `ev_cfcae9ff85d964be9c2edf89442bd06e563b247085b587070a309394397f266e`.
+- Inverse wrapper `0x140af06b0`: `ev_5b62281ca47f2e0a150970f6cf86655f62a0bc3a0b74ae5ec8d8fa97ace06407`.
+- Frobenius norm `0x140af08a0`: `ev_3cc450f70041253d2c70cc8daab03521ed8badd08daf32acd569f0fa6f870f85`.
+
+Thirty new executions of the complete original rotation-correction routine cover
+identity, scaling, shear, reflection, zero and rank-deficient matrices, epsilon
+thresholds, extreme anisotropy, pivot ties, and twenty seeded mixed matrices.
+All thirty port outputs match the original matrix bytes exactly. These captures
+retain the original solver and quaternion fallback, with the same allocation,
+CRT and security-cookie adapters as the earlier transform probe. The probe
+released its mapped allocation and exited; its ledger and cleanup receipt remain
+outside the repository. Repository fixtures retain the provenance and bindings.
+
+For the sixty complete six-parameter transforms, JavaScript math produces 54
+byte-identical outputs. Six outputs differ because JavaScript sin/cos and the
+probe's Windows CRT exports round differently. Repeating every comparison with
+the captured CRT trigonometric values produces 60 byte-identical outputs. The
+production path uses JavaScript math; its tests bound every rotation component
+error to 5e-16 and require exact translation bytes. This is an explicit numerical
+limit, not a claim of complete native byte parity for JavaScript trigonometry.
+The CRT fixture is used only to isolate arithmetic in tests, never in production.
+
+This helper has not replaced the application's alignment preview. The recovered
+six-parameter optimizer, mesh/CAD query workers, and complete preview/accept/
+cancel/undo pipeline still require native comparison before integration. No
+concurrency or full Align feature parity is established by these transform tests.
+
+Validation for this port: `npm run build` completed without warnings/errors;
+`npx vitest run tests/scan-native-alignment-transform.test.ts --maxWorkers=1`
+passed 151 tests; `npm test` passed 217 files and 10,430 tests. Scoped Prettier,
+diff whitespace and prohibited-name checks passed. The new helper has no UI
+consumer yet, so no browser behavior change is claimed for this slice.
