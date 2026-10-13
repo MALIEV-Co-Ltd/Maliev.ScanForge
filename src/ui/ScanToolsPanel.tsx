@@ -1,4 +1,5 @@
 import { PreviewButton } from "./PreviewButton";
+import { ReductionModeSelect } from "./ReductionModeSelect";
 import { useEffect, useMemo, useState } from "react";
 import { ReductionProgress, ReductionResults } from "./ReductionResults";
 import type { ReductionStatistics } from "../reduction-report";
@@ -379,17 +380,14 @@ export function ScanToolsPanel({
         >
           {tool === "reducePolygons" && (
             <>
-              <label>
-                Reduce by
-                <select
-                  value={mode}
-                  onChange={(e) => setMode(e.target.value as typeof mode)}
-                >
-                  <option value="triangles">Number of triangles</option>
-                  <option value="percentage">Percentage remaining</option>
-                  <option value="deviation">Deviation from original</option>
-                </select>
-              </label>
+              <ReductionModeSelect
+                value={mode}
+                disabled={busy || disabled}
+                onChange={(value) => {
+                  setMode(value);
+                  onInvalidatePreview?.();
+                }}
+              />
               {mode === "triangles" && (
                 <Field
                   label="Target triangles"

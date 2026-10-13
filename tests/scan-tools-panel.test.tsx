@@ -81,9 +81,9 @@ function render(
 }
 it("shows only the current tool and a colored geometry diagram", () => {
   const html = render("reducePolygons");
-  expect(html).toContain("Number of triangles");
+  expect(html).toContain('aria-haspopup="listbox"');
   expect(html).toContain("Percentage remaining");
-  expect(html).toContain("Deviation from original");
+  expect(html).toContain('aria-label="Reduce by"');
   expect(html).toContain('value="50"');
   expect(html).toContain('stroke="#87d3e8"');
   expect(html).not.toContain("Smooth iterations");
