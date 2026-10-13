@@ -67,8 +67,8 @@ export class SelectionProcessingHighlight {
             float phase = dot(selectionPosition, vec3(6.0, 4.0, 3.0));
             float flow = 0.5 + 0.5 * sin(phase - selectionProcessingTime * 1.8 + 0.6 * sin(selectionPosition.y * 7.0 + selectionProcessingTime));
             float pulse = 0.5 + 0.5 * sin(selectionProcessingTime * 2.4);
-            vec3 gold = vec3(1.0, 0.48, 0.025);
-            vec3 yellow = vec3(1.0, 0.92, 0.18);
+            vec3 brightRed = vec3(1.0, 0.055, 0.075);
+            float brightness = 0.25 + 0.55 * pulse + 0.20 * flow;
             float rim = 0.0;
             ${
               hasBoundary
@@ -77,13 +77,13 @@ export class SelectionProcessingHighlight {
             rim = max(glow.x, max(glow.y, glow.z));`
                 : ""
             }
-            diffuseColor.rgb = mix(mix(gold, yellow, flow), vec3(1.0, 0.97, 0.65), rim * (0.75 + 0.25 * pulse));
-            diffuseColor.a *= mix(0.42 + 0.12 * flow + 0.08 * pulse, 1.0, rim);
+            diffuseColor.rgb = mix(mix(diffuseColor.rgb, brightRed, brightness), vec3(1.0, 0.20, 0.23), rim * (0.65 + 0.35 * pulse));
+            diffuseColor.a *= mix(0.60 + 0.12 * flow + 0.12 * pulse, 1.0, rim);
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-gold-v2:${hasBoundary}`;
+      `selection-processing-red-v3:${hasBoundary}`;
   }
 }
