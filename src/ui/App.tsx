@@ -968,6 +968,9 @@ export function App() {
     );
   }, [scanBoundaryPaths, workspace, toolPanelOpen]);
   useEffect(() => {
+    viewport.current?.setSelectionProcessing(processingBusy);
+  }, [processingBusy]);
+  useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
     const preview = createSketch?.preview;
     viewport.current?.setSectionLines(
@@ -3568,6 +3571,9 @@ export function App() {
     },
     busy: () => busyRef.current,
     activity: (running, label) => {
+      viewport.current?.setSelectionProcessing(
+        running && label === "Agent/API: mesh_process",
+      );
       busyRef.current = running;
       setBusy(running);
       setMessage(label);
@@ -4046,6 +4052,10 @@ export function App() {
             <ScanQuickTools
               x={quickToolsPoint.x}
               y={quickToolsPoint.y}
+              onDeselect={() => {
+                setQuickToolsPoint(null);
+                changeSelection(null);
+              }}
               onSmooth={() => {
                 setQuickToolsPoint(null);
                 void runScanEdit(

@@ -12,6 +12,7 @@ export function ScanQuickTools(props: {
   onHide: () => void;
   onIsolate: () => void;
   onInvert: () => void;
+  onDeselect?: () => void;
   onDefeature?: () => void;
   onSmooth?: () => void;
 }) {
@@ -138,6 +139,14 @@ export function ScanQuickTools(props: {
         onClick={props.onDelete}
       >
         <ScanToolIcon name="delete" />
+      </button>
+      <button
+        title="Deselect all"
+        aria-label="Deselect all"
+        disabled={!props.onDeselect}
+        onClick={props.onDeselect}
+      >
+        <ScanToolIcon name="clear" />
       </button>
       <button
         title="Defeature selected area"

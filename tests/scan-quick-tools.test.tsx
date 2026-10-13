@@ -33,6 +33,7 @@ it("exposes selection actions and enables geometry tools only with working callb
   );
   expect(labels).toEqual([
     "Delete selected",
+    "Deselect all",
     "Defeature",
     "Smooth selected",
     "Hide selected",
@@ -49,8 +50,10 @@ it("exposes selection actions and enables geometry tools only with working callb
       onInvert={noop}
       onSmooth={noop}
       onDefeature={noop}
+      onDeselect={noop}
     />,
   );
   expect(available).not.toMatch(/aria-label="Defeature" disabled/);
   expect(available).not.toMatch(/aria-label="Smooth selected" disabled/);
+  expect(available).not.toMatch(/aria-label="Deselect all" disabled/);
 });

@@ -1,5 +1,6 @@
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
+import { SelectionProcessingHighlight } from "./selection-processing-highlight";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
 import { applyMeshFocus } from "./mesh-focus-material";
@@ -137,6 +138,7 @@ export class Viewport {
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
   private readonly triangleSelection = new THREE.Group();
+  private readonly selectionProcessing = new SelectionProcessingHighlight();
   private readonly boundaryEdges = new THREE.Group();
   private noiseComparisonGroup?: THREE.Group;
   private noiseComparison?: {
@@ -591,6 +593,10 @@ export class Viewport {
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
     this.updateControls();
+    const selectionAnimating =
+      this.triangleSelection.visible &&
+      this.triangleSelection.children.length > 0 &&
+      this.selectionProcessing.update(performance.now() / 1000);
     updateOriginMarker(
       this.originGeometry,
       this.camera,
@@ -620,7 +626,8 @@ export class Viewport {
     );
     const navigating = this.updateNavigationPivotMarker(performance.now());
     this.gizmo?.update(this.camera);
-    if (this.viewTransition || navigating) this.invalidate();
+    if (this.viewTransition || navigating || selectionAnimating)
+      this.invalidate();
   };
 
   private updateNavigationPivotMarker(now: number): boolean {
@@ -2233,6 +2240,14 @@ export class Viewport {
     this.invalidate();
   }
 
+  setSelectionProcessing(active: boolean): void {
+    this.selectionProcessing.setActive(
+      active,
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
+    );
+    this.invalidate();
+  }
+
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
     this.triangleSelection.visible = !this.noiseComparison;
@@ -2252,31 +2267,31 @@ export class Viewport {
               buffer[next++] = positions[i * stride + j];
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.BufferAttribute(buffer, 3));
-        this.triangleSelection.add(
-          points
-            ? new THREE.Points(
-                geometry,
-                new THREE.PointsMaterial({
-                  color: "#e44b5b",
-                  size: 3,
-                  sizeAttenuation: false,
-                  depthWrite: false,
-                }),
-              )
-            : new THREE.Mesh(
-                geometry,
-                new THREE.MeshBasicMaterial({
-                  color: "#e44b5b",
-                  side: THREE.DoubleSide,
-                  transparent: true,
-                  opacity: 0.7,
-                  depthWrite: false,
-                  polygonOffset: true,
-                  polygonOffsetFactor: -1,
-                  polygonOffsetUnits: -1,
-                }),
-              ),
-        );
+        const overlay = points
+          ? new THREE.Points(
+              geometry,
+              new THREE.PointsMaterial({
+                color: "#e44b5b",
+                size: 3,
+                sizeAttenuation: false,
+                depthWrite: false,
+              }),
+            )
+          : new THREE.Mesh(
+              geometry,
+              new THREE.MeshBasicMaterial({
+                color: "#e44b5b",
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.7,
+                depthWrite: false,
+                polygonOffset: true,
+                polygonOffsetFactor: -1,
+                polygonOffsetUnits: -1,
+              }),
+            );
+        this.selectionProcessing?.install(overlay.material, geometry);
+        this.triangleSelection.add(overlay);
       }
     }
     this.applyClipPlanes();
