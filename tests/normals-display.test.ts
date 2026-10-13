@@ -39,7 +39,7 @@ it("colors front and back winding distinctly without replacing lighting or clipp
   const version = material.version;
   update(true, true);
   expect(shader.uniforms.normalsDisplayEnabled.value).toBe(true);
-  expect(shader.uniforms.normalsDisplayDim.value).toBe(0.45);
+  expect(shader.uniforms.normalsDisplayDim.value).toBe(0.12);
   update(false);
   expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
   expect(material.version).toBe(version);

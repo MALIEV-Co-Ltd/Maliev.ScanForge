@@ -37,12 +37,12 @@ it("keeps active meshes neutral, dims other meshes, and restores colors after de
     expect(material("a").emissive.getHex()).toBe(0);
     expect(material("a").opacity).toBe(0.7);
     expect(material("b").color.r).toBeCloseTo(
-      new THREE.Color(b.color).r * 0.42,
+      new THREE.Color(b.color).r * 0.12,
     );
     view.setEntities([a, b], b.id);
     expect(material("b").color.getHexString()).toBe("cc8844");
     expect(material("a").color.r).toBeCloseTo(
-      new THREE.Color(a.color).r * 0.42,
+      new THREE.Color(a.color).r * 0.12,
     );
     view.setDeviation(b.id, [0, 0, 0], 0.05);
     expect(material("b").color.getHexString()).toBe("ffffff");

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { INACTIVE_MESH_BRIGHTNESS } from "./mesh-focus-material";
 
 export const NORMALS_FRONT_COLOR = "#b8b8b8";
 export const NORMALS_BACK_COLOR = "#e85a78";
@@ -35,6 +36,6 @@ export function installNormalsDisplay(material: THREE.MeshStandardMaterial) {
   material.needsUpdate = true;
   return (show: boolean, inactive = false) => {
     enabled.value = show;
-    dim.value = inactive ? 0.45 : 1;
+    dim.value = inactive ? INACTIVE_MESH_BRIGHTNESS : 1;
   };
 }
