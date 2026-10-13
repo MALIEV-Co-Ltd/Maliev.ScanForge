@@ -20,8 +20,9 @@
   position: relative;
 }
 .workbench footer.statusbar .status-controls .status-navigation-hint {
-  margin-left: 8px;
+  margin: 0 8px;
   padding: 3px 0;
+  text-align: center;
 }
 .shortcut-reference {
   display: none;
