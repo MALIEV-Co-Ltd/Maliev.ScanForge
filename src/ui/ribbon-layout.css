@@ -2,6 +2,23 @@
   display: flex;
   align-items: stretch;
 }
+/* Larger command illustrations share the existing 68px ribbon row. */
+.ribbon-button img.ribbon-command-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.ribbon-button:has(img.ribbon-command-image) {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  gap: 2px;
+}
+.ribbon-options .ribbon-button img.ribbon-command-image,
+.ribbon-group-compact .ribbon-button img.ribbon-command-image {
+  width: 28px;
+  height: 28px;
+}
 .ribbon-options-toggle {
   width: 16px;
   padding: 0;

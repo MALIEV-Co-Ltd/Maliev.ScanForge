@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { RIBBON_TABS } from "../src/ui/ribbon-model";
+import { RIBBON_RASTER_ICONS } from "../src/ui/RibbonRasterIcons";
 import {
   RibbonCommandIcon,
   RIBBON_ICON_ARTWORK,
@@ -29,9 +30,16 @@ describe("complete ribbon artwork", () => {
       );
       expect(markup).toContain(`data-artwork="${command}"`);
       expect(markup).toContain('aria-hidden="true"');
-      expect(markup).toContain('viewBox="0 0 32 32"');
-      expect(markup).not.toMatch(/lucide|<image|<script|href=|url\(/);
-      expect(markup).toMatch(/(?:fill|stroke)="#[a-f0-9]{6}"/);
+      expect(markup).not.toMatch(/lucide|<image|<script|url\(/);
+      if (RIBBON_RASTER_ICONS[command]) {
+        expect(markup).toContain("<img");
+        expect(markup).toContain('alt=""');
+        expect(markup).toContain(RIBBON_RASTER_ICONS[command]);
+      } else {
+        expect(markup).not.toContain("href=");
+        expect(markup).toContain('viewBox="0 0 32 32"');
+        expect(markup).toMatch(/(?:fill|stroke)="#[a-f0-9]{6}"/);
+      }
     }
   });
   it("distinguishes operations with different geometric results", () => {
@@ -70,7 +78,7 @@ describe("complete ribbon artwork", () => {
           <RibbonCommandIcon command={tool.id} />,
         );
         expect(markup).toContain(`data-palette="${family}"`);
-        expect(markup).toContain(color);
+        if (!RIBBON_RASTER_ICONS[tool.id]) expect(markup).toContain(color);
         expect(markup).not.toContain("#edbe48");
       }
     }
@@ -81,7 +89,8 @@ describe("complete ribbon artwork", () => {
         <RibbonCommandIcon command={command} />,
       );
       expect(markup).toContain('data-palette="reference"');
-      expect(markup).toContain(DEFAULT_REFERENCE_COLOR);
+      if (!RIBBON_RASTER_ICONS[command])
+        expect(markup).toContain(DEFAULT_REFERENCE_COLOR);
     }
     expect(
       renderToStaticMarkup(<RibbonCommandIcon command="primitive" />),

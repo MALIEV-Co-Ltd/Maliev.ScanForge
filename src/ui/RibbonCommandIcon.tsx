@@ -4,6 +4,7 @@ import {
   DEFAULT_REFERENCE_COLOR,
 } from "../appearance";
 import { RIBBON_TABS } from "./ribbon-model";
+import { RIBBON_RASTER_ICONS } from "./RibbonRasterIcons";
 /** Independently drawn, local SVG artwork. Each command has an explicit entry. */
 const path = (d: string, fill = "none", extra = "") =>
   `<path d="${d}" fill="${fill}" ${extra}/>`;
@@ -492,6 +493,21 @@ export function RibbonCommandIcon({ command }: { command: string }) {
   const artwork = RIBBON_ICON_ARTWORK[command];
   if (!artwork) throw new Error(`Missing ribbon artwork: ${command}`);
   const palette = ribbonCommandPalette(command);
+  const image = RIBBON_RASTER_ICONS[command];
+  if (image)
+    return (
+      <img
+        className="ribbon-cad-icon ribbon-command-image"
+        data-artwork={command}
+        data-palette={palette.family}
+        src={image}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        width={40}
+        height={40}
+      />
+    );
   const colors: Record<string, string> = {
     [gold]: palette.base,
     [light]: palette.light,

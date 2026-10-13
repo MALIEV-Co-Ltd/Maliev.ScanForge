@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, FileClock, History, Trash2, X } from "lucide-react";
+import { Check, FileClock, Trash2, X } from "lucide-react";
+import { RIBBON_RASTER_ICONS } from "./RibbonRasterIcons";
 import type { Backup } from "../project-backup";
 import "./project-backups.css";
 
@@ -103,7 +104,15 @@ export function ProjectRecovery({
         disabled={disabled}
         onClick={() => setOpen(true)}
       >
-        <History size={28} aria-hidden="true" />
+        <img
+          className="ribbon-cad-icon ribbon-command-image"
+          src={RIBBON_RASTER_ICONS.backup}
+          width={40}
+          height={40}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+        />
         <span className="ribbon-button-label">Backup</span>
       </button>
       <dialog

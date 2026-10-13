@@ -20,6 +20,8 @@ import connectedImage from "./assets/scan-tools/connected.png";
 import deleteImage from "./assets/scan-tools/delete.png";
 import defeatureImage from "./assets/scan-tools/defeature.png";
 import smoothImage from "./assets/scan-tools/smooth.png";
+import cutImage from "./assets/ribbon-tools/cut.png";
+import copyImage from "./assets/ribbon-tools/copy.png";
 
 export type ScanIconName =
   | "wand"
@@ -73,6 +75,8 @@ const rasterIcons: Partial<Record<ScanIconName, string>> = {
   delete: deleteImage,
   defeature: defeatureImage,
   smooth: smoothImage,
+  cut: cutImage,
+  copy: copyImage,
   boundary: boundariesImage,
   revealSelected: revealImage,
 };
