@@ -3,8 +3,67 @@ import * as THREE from "three";
 import {
   installDeviationHeatmap,
   deviationExtrema,
+  projectedModelBounds,
+  placeDeviationLabel,
+  type ScreenRect,
 } from "../src/deviation-heatmap";
 import { createNoiseComparisonOverlay } from "../src/noise-comparison-overlay";
+
+it("keeps both labels outside model bounds through camera rotations and zoom", () => {
+  const box = new THREE.Box3(
+    new THREE.Vector3(-1, -1, -1),
+    new THREE.Vector3(1, 1, 1),
+  );
+  const camera = new THREE.PerspectiveCamera(45, 1.6, 0.1, 100);
+  for (let angle = 0; angle < Math.PI * 2; angle += 0.15) {
+    camera.position.set(8 * Math.cos(angle), 4, 8 * Math.sin(angle));
+    camera.lookAt(0, 0, 0);
+    camera.updateMatrixWorld();
+    const bounds = projectedModelBounds(box, camera, 960, 600);
+    const occupied: ScreenRect[] = [];
+    for (const anchor of [
+      { x: 480, y: 300 },
+      { x: 490, y: 310 },
+    ]) {
+      const rect = placeDeviationLabel(
+        bounds,
+        anchor,
+        150,
+        26,
+        960,
+        600,
+        occupied,
+      )!;
+      expect(rect).toBeDefined();
+      expect(
+        rect.x + rect.width <= bounds.x ||
+          rect.x >= bounds.x + bounds.width ||
+          rect.y + rect.height <= bounds.y ||
+          rect.y >= bounds.y + bounds.height,
+      ).toBe(true);
+      expect(
+        occupied.every(
+          (o) =>
+            rect.x + rect.width <= o.x ||
+            rect.x >= o.x + o.width ||
+            rect.y + rect.height <= o.y ||
+            rect.y >= o.y + o.height,
+        ),
+      ).toBe(true);
+      occupied.push(rect);
+    }
+  }
+  expect(
+    placeDeviationLabel(
+      { x: 0, y: 0, width: 960, height: 600 },
+      { x: 480, y: 300 },
+      150,
+      26,
+      960,
+      600,
+    ),
+  ).toBeUndefined();
+});
 
 it("changes shader tolerance uniforms without replacing measured samples or geometry", () => {
   const mesh = createNoiseComparisonOverlay(

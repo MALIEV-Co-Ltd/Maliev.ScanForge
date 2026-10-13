@@ -2007,6 +2007,7 @@ export class Viewport {
       this.deviationCallouts = new DeviationCallouts(
         this.container,
         deviationExtrema(positions, display.distances, item.hidden),
+        positions,
       );
     overlay.visible = item.mesh.visible;
     this.noiseComparisonGroup ??= new THREE.Group();
