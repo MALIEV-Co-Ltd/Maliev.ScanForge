@@ -67,6 +67,57 @@ const projectLine = (
   return direction.map((value, i) => value * distance + origin[i]);
 };
 
+/** Native point-reference constructor, including constrained anchor projection. */
+export function nativeDatumPointReference(
+  input: NativeDatumPlaneState,
+  stage: 0 | 1 | 2,
+  point: readonly number[],
+): { accepted: boolean; state: NativeDatumPlaneState } {
+  if (
+    point.length !== 3 ||
+    !point.every(Number.isFinite) ||
+    ![0, 1, 2].includes(stage)
+  )
+    throw new Error(
+      "Datum point requires a finite point vector and stage 0–2.",
+    );
+  const state =
+    stage === 0 ? createNativeDatumPlaneState() : structuredClone(input);
+  if (stage === 0) {
+    state.anchor = [...point];
+    translate(state, state.anchor);
+    state.flags = 1;
+    state.stage = 0;
+    return { accepted: true, state };
+  }
+  const projectPlane = () => {
+    const distance =
+      (point[1] - state.planePoint[1]) * state.planeNormal[1] +
+      (point[0] - state.planePoint[0]) * state.planeNormal[0] +
+      (point[2] - state.planePoint[2]) * state.planeNormal[2];
+    return point.map((value, i) => value - state.planeNormal[i] * distance);
+  };
+  if (stage === 1) {
+    if (state.stage < 0 || state.flags & 1) return { accepted: false, state };
+    state.anchor =
+      state.flags & 4
+        ? projectPlane()
+        : projectLine(point, state.linePoint, state.lineDirection);
+    state.flags |= 8;
+  } else {
+    if (state.stage <= 0 || state.flags & 9) return { accepted: false, state };
+    state.anchor = projectLine(
+      projectPlane(),
+      state.linePoint,
+      state.lineDirection,
+    );
+    state.flags |= 64;
+  }
+  translate(state, state.anchor);
+  state.stage = stage;
+  return { accepted: true, state };
+}
+
 function intersectLinePlane(
   origin: number[],
   direction: number[],

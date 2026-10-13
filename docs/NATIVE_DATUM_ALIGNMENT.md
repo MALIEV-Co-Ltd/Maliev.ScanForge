@@ -85,7 +85,28 @@ These are static analysis references; the fixture separately records direct
 native numerical execution. This coverage starts with a primary plane, not a
 primary point or direction, and does not establish complete dialog behavior.
 
+## Verified point-reference constructor
+
+`nativeDatumPointReference` ports the original constructor at `0x1403a0cb0`.
+Primary points reset the frame and set its translation. Secondary points
+project onto the stored primary plane or line. Tertiary points project onto
+the plane and then the stored line. Existing anchor flags reject redundant
+point constraints without changing state.
+
+`alignment-datum-point-native.json` retains 78 native executions across all
+three stages and all prior plane/direction/point type combinations. Every setup
+step calls the original constructor and retains its raw frame bytes. The point
+test begins with that captured native state, independently of the application
+plane port, and compares acceptance plus all returned state bytes. This proves
+the point constructor on those mixed states, not the application direction
+constructor or the full dialog. Input state remains unchanged.
+
+Point constructor static Evidence:
+`ev_b5a6eb468ae8ddbbeafaa1ab7af76b691c30bc18903f4f98de2f4b074c21bb91`.
+The original direction acceptance, construction and fallback helpers have also
+been recovered; their application port and runtime equivalence remain pending.
+
 The numerical helpers are not yet connected to a public application action and
-are not advertised in MCP discovery. Completing point/direction reference rules,
+are not advertised in MCP discovery. Completing direction reference rules,
 primitive reference conversion, preview/reset/acceptance and shared GUI/MCP
 operation remains required before enabling coordinate-system alignment.
