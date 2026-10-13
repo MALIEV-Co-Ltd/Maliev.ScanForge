@@ -20,6 +20,8 @@ it("renders a compact accessible draggable marker and both past and future steps
   expect(html).toContain("2: Delete triangles");
   expect(html).not.toContain("<input");
   expect(html).not.toContain("timeline-position");
+  expect(html).not.toContain("<img");
+  expect(html).toContain('data-artwork="open"');
 });
 it("disables step actions and the playhead during processing", () => {
   const html = renderToStaticMarkup(

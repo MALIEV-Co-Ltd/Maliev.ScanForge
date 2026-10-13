@@ -19,10 +19,12 @@ import exportStepImage from "./assets/ribbon-tools/exportStep.png";
 import clearImage from "./assets/scan-tools/clear.png";
 import revealImage from "./assets/scan-tools/reveal.png";
 import { RIBBON_EXTENDED_ICONS } from "./RibbonExtendedIcons";
+import { RIBBON_HELP_ICONS } from "./RibbonHelpIcons";
 
 /** Generated illustrations are reserved for the larger semantic commands. */
 export const RIBBON_RASTER_ICONS: Readonly<Record<string, string>> = {
   ...RIBBON_EXTENDED_ICONS,
+  ...RIBBON_HELP_ICONS,
   deselectAll: clearImage,
   showHidden: revealImage,
   newDocument: newDocumentImage,

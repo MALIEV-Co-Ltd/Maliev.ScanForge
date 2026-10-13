@@ -25,26 +25,10 @@ describe("complete ribbon artwork", () => {
       ),
     ),
   ];
-  it("uses generated illustrations throughout every semantic ribbon tab", () => {
-    const familiarUtilities = new Set([
-      "undo",
-      "redo",
-      "delete",
-      "videoTutorials",
-      "helpGuide",
-      "helpPdf",
-      "shortcuts",
-      "examples",
-      "checkUpdates",
-      "systemLog",
-      "resetLayout",
-      "changeLog",
-      "credits",
-      "about",
-    ]);
+  it("uses generated illustrations for every full-size ribbon command", () => {
     expect(
       commands.filter((command) => !RIBBON_RASTER_ICONS[command]).sort(),
-    ).toEqual([...familiarUtilities].sort());
+    ).toEqual([]);
   });
   it("renders local decorative artwork for every command, including unavailable tools", () => {
     expect(Object.keys(RIBBON_ICON_ARTWORK)).toEqual(
@@ -94,6 +78,20 @@ describe("complete ribbon artwork", () => {
     expect(() =>
       renderToStaticMarkup(<RibbonCommandIcon command="unregistered" />),
     ).toThrow("Missing ribbon artwork");
+  });
+  it("keeps compact command controls simple while their ribbon illustrations stay generated", () => {
+    for (const command of ["delete", "repairMesh", "newFreeform"]) {
+      const compact = renderToStaticMarkup(
+        <RibbonCommandIcon command={command} compact />,
+      );
+      expect(compact).toContain("<svg");
+      expect(compact).not.toContain("<img");
+      expect(compact).toContain(`data-artwork="${command}"`);
+      const fullSize = renderToStaticMarkup(
+        <RibbonCommandIcon command={command} />,
+      );
+      expect(fullSize).toContain("<img");
+    }
   });
   it("uses purple authoring geometry and grey CAD geometry throughout their tabs", () => {
     for (const [tabId, family, color] of [

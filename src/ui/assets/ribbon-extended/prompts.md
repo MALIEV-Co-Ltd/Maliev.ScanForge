@@ -2,7 +2,7 @@
 
 Generated with the built-in image generation workflow. Transparent raster originals are retained in Codex generated images; application assets use a 256-pixel version with alpha preserved for crisp 40-pixel rendering at high pixel density.
 
-Large semantic commands use illustrative geometry. Undo, redo, delete and Help utilities retain simple familiar symbols; compact header, viewport, timeline, object-tree and status controls remain simple. Existing scan Clear and Show hidden illustrations are reused only for the same actions.
+Full-size ribbon commands use generated illustrative geometry, including Help and Edit utilities. Compact header, viewport, timeline, object-tree and status controls remain simple. Existing scan Clear and Show hidden illustrations are reused only for the same actions.
 
 Each command remains attached to its existing GUI/shared-operation/MCP contract and availability status. Artwork does not implement or enable planned commands.
 

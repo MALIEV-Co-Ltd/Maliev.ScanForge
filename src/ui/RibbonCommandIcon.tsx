@@ -489,11 +489,17 @@ export function ribbonCommandPalette(command: string) {
     };
   return { family: "scan", base: gold, light, shade, edge: "#705817" };
 }
-export function RibbonCommandIcon({ command }: { command: string }) {
+export function RibbonCommandIcon({
+  command,
+  compact = false,
+}: {
+  command: string;
+  compact?: boolean;
+}) {
   const artwork = RIBBON_ICON_ARTWORK[command];
   if (!artwork) throw new Error(`Missing ribbon artwork: ${command}`);
   const palette = ribbonCommandPalette(command);
-  const image = RIBBON_RASTER_ICONS[command];
+  const image = compact ? undefined : RIBBON_RASTER_ICONS[command];
   if (image)
     return (
       <img

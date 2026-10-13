@@ -192,7 +192,7 @@ export function ModelTimeline({
                 {index === 0 ? (
                   <Layers size={16} />
                 ) : (
-                  <RibbonCommandIcon command={timelineCommand(label)} />
+                  <RibbonCommandIcon command={timelineCommand(label)} compact />
                 )}
               </button>
             </li>
