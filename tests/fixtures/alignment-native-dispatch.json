@@ -1,0 +1,824 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "controller": "0x140aa91c0",
+    "searchThread": "0x140aaa250",
+    "constructedQueryNodes": true,
+    "nativeTargetConstructorExecuted": false,
+    "originalControllerAndWorkersExecuted": true,
+    "schedulerShim": null,
+    "originalDispatchersExecuted": true,
+    "realParallelSchedulingVerified": true,
+    "taskThreadIds": [
+      4412, 17536, 20364, 21388, 23068, 27324, 27840, 31256, 45096, 49696,
+      49924, 50444, 51828, 54796, 55368, 61624
+    ],
+    "runtimePath": "C:\\Windows\\System32\\concrt140.dll",
+    "runtimeSha256": "b2faf3b85b23c840b654e57d5497a0ad31acd02fb01856cad4725a1715d5f78e",
+    "runtimeBindings": [
+      {
+        "name": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ",
+        "rva": "0xe420",
+        "locations": ["0xeaa0e8", "0x85690e0"]
+      },
+      {
+        "name": "??0SchedulerPolicy@Concurrency@@QEAA@_KZZ",
+        "rva": "0x21010",
+        "locations": ["0xeaa0f0"]
+      },
+      {
+        "name": "??1SchedulerPolicy@Concurrency@@QEAA@XZ",
+        "rva": "0x21100",
+        "locations": ["0xeaa0f8"]
+      },
+      {
+        "name": "?GetPolicy@CurrentScheduler@Concurrency@@SA?AVSchedulerPolicy@2@XZ",
+        "rva": "0xe710",
+        "locations": ["0xeaa100"]
+      },
+      {
+        "name": "?Create@CurrentScheduler@Concurrency@@SAXAEBVSchedulerPolicy@2@@Z",
+        "rva": "0xe600",
+        "locations": ["0xeaa108"]
+      },
+      {
+        "name": "?Detach@CurrentScheduler@Concurrency@@SAXXZ",
+        "rva": "0xe690",
+        "locations": ["0xeaa110"]
+      },
+      {
+        "name": "?Alloc@Concurrency@@YAPEAX_K@Z",
+        "rva": "0x25810",
+        "locations": ["0xeaa118"]
+      },
+      {
+        "name": "?PPLParallelForeachEventGuid@Concurrency@@3U_GUID@@B",
+        "rva": "0x31f20",
+        "locations": ["0xeaa120"]
+      },
+      {
+        "name": "??0_TaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x25e30",
+        "locations": ["0xeaa128"]
+      },
+      {
+        "name": "??1_TaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x26030",
+        "locations": ["0xeaa130"]
+      },
+      {
+        "name": "?_Schedule@_TaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27d00",
+        "locations": ["0xeaa138"]
+      },
+      {
+        "name": "?_RunAndWait@_TaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+        "rva": "0x276d0",
+        "locations": ["0xeaa140"]
+      },
+      {
+        "name": "?_CurrentContext@_Context@details@Concurrency@@SA?AV123@XZ",
+        "rva": "0xbe40",
+        "locations": ["0xeaa148"]
+      },
+      {
+        "name": "?_SpinOnce@?$_SpinWait@$00@details@Concurrency@@QEAA_NXZ",
+        "rva": "0x11a0",
+        "locations": ["0xeaa150"]
+      },
+      {
+        "name": "?_Trace_ppl_function@Concurrency@@YAXAEBU_GUID@@EW4ConcRT_EventType@1@@Z",
+        "rva": "0x297b0",
+        "locations": ["0xeaa158"]
+      },
+      {
+        "name": "?Free@Concurrency@@YAXPEAX@Z",
+        "rva": "0x25930",
+        "locations": ["0xeaa160"]
+      },
+      {
+        "name": "?PPLParallelForEventGuid@Concurrency@@3U_GUID@@B",
+        "rva": "0x31f10",
+        "locations": ["0xeaa168"]
+      },
+      {
+        "name": "??1_StructuredTaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x25fb0",
+        "locations": ["0xeaa170"]
+      },
+      {
+        "name": "?_Schedule@_StructuredTaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27bd0",
+        "locations": ["0xeaa178"]
+      },
+      {
+        "name": "?_RunAndWait@_StructuredTaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27390",
+        "locations": ["0xeaa180"]
+      },
+      {
+        "name": "?_GetNumberOfVirtualProcessors@_CurrentScheduler@details@Concurrency@@SAIXZ",
+        "rva": "0xe8a0",
+        "locations": ["0xeaa188"]
+      },
+      {
+        "name": "?_CheckTaskCollection@_UnrealizedChore@details@Concurrency@@IEAAXXZ",
+        "rva": "0x9650",
+        "locations": ["0xeaa190"]
+      },
+      {
+        "name": "??1_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+        "rva": "0xc1d0",
+        "locations": ["0xeaa198"]
+      },
+      {
+        "name": "?_Yield@_Context@details@Concurrency@@SAXXZ",
+        "rva": "0xbe00",
+        "locations": ["0xeaa1a0"]
+      },
+      {
+        "name": "?_Reference@_Scheduler@details@Concurrency@@QEAAIXZ",
+        "rva": "0xbe80",
+        "locations": ["0xeaa1a8"]
+      },
+      {
+        "name": "?_UnderlyingYield@details@Concurrency@@YAXXZ",
+        "rva": "0x2b6c0",
+        "locations": ["0xeaa1b0"]
+      },
+      {
+        "name": "??0_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+        "rva": "0xc030",
+        "locations": ["0xeaa1b8"]
+      }
+    ],
+    "patchedImports": [
+      "CRT memcpy/memmove/memset",
+      "CRT sqrt/sqrtf/sin/cos/acos",
+      "retained allocation/free imports",
+      "security cookie return",
+      "progress callback",
+      "current ConCRT imports (original dispatcher code retained; chore entry instrumentation forwards to original)",
+      "security cookie check"
+    ],
+    "retainedReaEvidenceIds": [
+      "ev_ba23f71c45a4394d763adf06e2549b612ac52f233a8c2dae9b18aab96d58b77e",
+      "ev_8bf3b166a924870722f3b9c783dd977e03bafadb8ac2d6d806701553612f4af8"
+    ],
+    "capturedConfiguredLanes": 16,
+    "limitations": [
+      "Task entry instrumentation forwards to original chore functions; current installed ConCRT imports are rebound.",
+      "Controlled target/query records bypass the native target constructor and GUI.",
+      "Observed overlapping native task intervals on distinct threads establish concurrency, not a CPU-speedup benchmark.",
+      "Application worker pool acceleration remains separate from this native dispatch verification."
+    ],
+    "imageBase": "0x140000000",
+    "relocationEntriesChecked": 3
+  },
+  "samples": [
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.25,
+        "parameters": [
+          10.071104036714907, 10.100713242534932, 9.51064910840427,
+          1.583467866205349, 1.6041291519696292, 1.5714107725520838
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9994443241512949, -0.00019210777357484257, 0.03333175687485996,
+          0.07110403671490673, 0.0006141044018033966, 0.9999197878355788,
+          -0.012650722138869572, 0.10071324253493152, -0.03332665296043285,
+          0.012664161616725015, 0.9993642745330655, -0.48935089159573053
+        ],
+        "matrixBits": "62e2cca972fbef3f5fd4a935112e29bfe938642bdc10a13f00da4dc8df33b23fdec239297b1f443ff4106cc857ffef3f589adb2e9fe889bf802ef6d257c8b93fe7b319e93010a1bf42fdccffaaef893f08217dc9cafaef3fc003eb668651dfbf",
+        "best": 1.1059861476449673e-24,
+        "flags": [[4]]
+      },
+      "name": "nearest-first",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[0.5]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.25,
+      "workers": [
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.0625,
+        "parameters": [
+          10.070536814209262, 9.89574633726434, 10.238080481499614,
+          1.5780828670491434, 1.5536332490017584, 1.5796385834105147
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9998136312571063, -0.008966953985838268, -0.0170966806338215,
+          0.07053681420926239, 0.008840839105050634, 0.9999332560951425,
+          -0.007437937811303218, -0.10425366273566006, 0.017162235180699377,
+          0.007285402609469553, 0.9998261751886777, 0.23808048149961358
+        ],
+        "matrixBits": "4d040b2879feef3fce4ae930445d82bfb809c5d0ca8191bf005c315eb30eb23f46669a56251b823fd590230774ffef3f183e633a3e777ebf8018f0375eb0babfa2384f1bfa92913f1e43225f4cd77d3f2ad8837693feef3fc0aaedd46b79ce3f",
+        "best": 0.0,
+        "flags": [[4]]
+      },
+      "name": "nearest-later",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[1.75]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.0625,
+      "workers": [
+        {
+          "error": 0.0625,
+          "maximum": 0.25,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 1.0,
+        "parameters": [
+          10.13129793353891, 9.924654060849274, 10.954310319893885,
+          1.5830731590880927, 1.4838287211754309, 1.5210947670050232
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9949904993533895, 0.04861235808630962, -0.08735413463472158,
+          0.13129793353891017, -0.04949334006632841, 0.9987428410902026,
+          -0.007946487283638577, -0.07534593915072563, 0.08685801912069738,
+          0.012230127242129019, 0.9961456261521555, 0.9543103198938852
+        ],
+        "matrixBits": "69b6d150f6d6ef3f24045310b8e3a83fc42f6d2fd75cb6bf007f4ae55ecec03fbccce8e93057a9bfe616f38bb3f5ef3f8aad02783f4680bf00ed8918df49b3bf02cc84bf533cb63f00353fe41b0c893ffa0fccca6ce0ef3fc0bec5cbb589ee3f",
+        "best": 0.0,
+        "flags": [[4]]
+      },
+      "name": "tie-positive-first",
+      "targetPlanes": [
+        [0, 1],
+        [2, -1]
+      ],
+      "lanes": [[1]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 1.0,
+      "workers": [
+        {
+          "error": 1.0,
+          "maximum": 1.0,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 1.0,
+        "parameters": [
+          10.13129793353891, 9.924654060849274, 10.954310319893885,
+          1.5830731590880927, 1.4838287211754309, 1.5210947670050232
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9949904993533895, 0.04861235808630962, -0.08735413463472158,
+          0.13129793353891017, -0.04949334006632841, 0.9987428410902026,
+          -0.007946487283638577, -0.07534593915072563, 0.08685801912069738,
+          0.012230127242129019, 0.9961456261521555, 0.9543103198938852
+        ],
+        "matrixBits": "69b6d150f6d6ef3f24045310b8e3a83fc42f6d2fd75cb6bf007f4ae55ecec03fbccce8e93057a9bfe616f38bb3f5ef3f8aad02783f4680bf00ed8918df49b3bf02cc84bf533cb63f00353fe41b0c893ffa0fccca6ce0ef3fc0bec5cbb589ee3f",
+        "best": 0.0,
+        "flags": [[4]]
+      },
+      "name": "tie-negative-first",
+      "targetPlanes": [
+        [2, -1],
+        [0, 1]
+      ],
+      "lanes": [[1]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 1.0,
+      "workers": [
+        {
+          "error": 1.0,
+          "maximum": 1.0,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.25,
+        "parameters": [
+          10.145832529371823, 9.7863024657829, 10.481988182774824,
+          1.58607263907956, 1.536909056848763, 1.5875848890504105
+        ],
+        "accepted": true,
+        "matrix": [
+          0.999285037717781, -0.017303295179803516, -0.033615611987490884,
+          0.14583252937182323, 0.016778135434737634, 0.9997337226846745,
+          -0.01584228198133312, -0.21369753421710058, 0.03388078459402252,
+          0.015266948056604475, 0.9993092678106865, 0.481988182774824
+        ],
+        "matrixBits": "ed288c9d24faef3f3423a47bf4b791bfe41a3ec41036a1bf00272ceca3aac23f0894eb9b492e913fc6727493d1fdef3f8aed038cf53890bf806159d8705acbbf7c9a967bd258a13f511ce71447448f3f76c5fa6d57faef3fc0e284f6e4d8de3f",
+        "best": 0.0,
+        "flags": [[0, 4]]
+      },
+      "name": "different-nearest-per-vertex",
+      "targetPlanes": [
+        [0, 1],
+        [10, -1]
+      ],
+      "lanes": [[0.5, 9.5]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.25,
+      "workers": [
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 3.4028234663852886e38,
+        "parameters": [
+          10.0, 10.0, 10.0, 1.5707963267948966, 1.5707963267948966,
+          1.5707963267948966
+        ],
+        "accepted": true,
+        "matrix": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+        "matrixBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "best": 3.4028234663852886e38,
+        "flags": [[0], [4]]
+      },
+      "name": "different-nearest-per-lane",
+      "targetPlanes": [
+        [0, 1],
+        [10, -1]
+      ],
+      "lanes": [[0.5], [9.5]],
+      "normals": [1, 1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 3.4028234663852886e38,
+      "workers": [
+        {
+          "error": 0.0,
+          "maximum": -3.4028234663852886e38,
+          "sign": -1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.25,
+          "maximum": 0.5,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.0625,
+        "parameters": [
+          10.071482700521965, 9.891654715228078, 10.238372533999028,
+          1.5783308670979486, 1.5537745075743477, 1.5796549691725723
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9998159005015794, -0.008986514213031515, -0.016953101973229502,
+          0.07148270052196537, 0.00885724319959792, 0.9999312430290056,
+          -0.007684950056495501, -0.10834528477192151, 0.017020997242197997,
+          0.007533377513880237, 0.9998267519306105, 0.23837253399902814
+        ],
+        "matrixBits": "349a55ea7dfeef3f33383385856782bf9ac0296a275c91bf00bbf8b4b04cb23f87fbff0ebf23823fd5dc61ce6fffef3f03ea9f12417a7fbf006ec53e84bcbbbf498f00caf36d913f4f00cfa051db7e3feea626ac94feef3f402ee5befd82ce3f",
+        "best": 0.0,
+        "flags": [[4]]
+      },
+      "name": "three-targets",
+      "targetPlanes": [
+        [0, 1],
+        [2, 1],
+        [4, -1]
+      ],
+      "lanes": [[3.75]],
+      "normals": [1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.0625,
+      "workers": [
+        {
+          "error": 0.0625,
+          "maximum": 0.25,
+          "sign": -1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.19427246864885106,
+        "parameters": [
+          10.023956324892294, 10.027832997683099, 9.848125757924404,
+          1.5750008775307838, 1.5813889460867974, 1.570680905180828
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9999438920721342, 0.00015995683444166198, 0.010591842211966587,
+          0.02395632489229449, -0.00011541513851356327, 0.9999911490881159,
+          -0.0042057609032534055, 0.02783299768309888, -0.010592421204704982,
+          0.004204302467788017, 0.9999350601182966, -0.1518742420755963
+        ],
+        "matrixBits": "d61c49558affef3fa85ad2be42f7243fe8013dff2cb1853f006ec7bf0188983f41a644fb60411ebff2ee3370edffef3f705d8c580f3a71bf00b831db40809c3f59fe46b57ab185bff852a0d98738713fbe9eaacf77ffef3f80e4687b9d70c3bf",
+        "best": 0.0018784183587723735,
+        "flags": [
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4]
+        ]
+      },
+      "name": "4-lane-refinement",
+      "targetPlanes": [
+        [0, 1],
+        [2, 1]
+      ],
+      "lanes": [
+        [0.125, 0.15],
+        [0.140625, 0.1578125],
+        [0.15625, 0.165625],
+        [0.171875, 0.1734375]
+      ],
+      "normals": [1, 1, 1, 1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.19427246864885106,
+      "workers": [
+        {
+          "error": 0.03812500178813938,
+          "maximum": 0.15000000596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.044680177662521636,
+          "maximum": 0.15781250596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.051845705099403894,
+          "maximum": 0.16562500596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.05962158409878615,
+          "maximum": 0.17343750596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 0.5227246262878182,
+        "parameters": [
+          10.025943023541778, 10.036866965130608, 9.825049244946719,
+          1.5754961362116613, 1.5826021749994994, 1.5710144943881472
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9999302879866171, -0.0001626814399659774, 0.011806468640117617,
+          0.025943023541778132, 0.000218152387809622, 0.9999889442225199,
+          -0.004697216438014781, 0.036866965130608165, -0.011805573960493539,
+          0.004699464594925032, 0.9999192684692022, -0.17495075505328117
+        ],
+        "matrixBits": "13d6a5cd6dffef3fe45bbbedae5225bf93418665fd2d883f0068afd6ce909a3fb92c0cbefa972c3f698379d0e8ffef3ff071bc6f633d73bf00d513133ae0a23fc40e9150852d88bf3711e7ebbe3f733f1ce596b156ffef3f00a3ae4dc964c6bf",
+        "best": 0.012837282083391063,
+        "flags": [
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4]
+        ]
+      },
+      "name": "8-lane-refinement",
+      "targetPlanes": [
+        [0, 1],
+        [2, 1]
+      ],
+      "lanes": [
+        [0.125, 0.15],
+        [0.140625, 0.1578125],
+        [0.15625, 0.165625],
+        [0.171875, 0.1734375],
+        [0.1875, 0.18125],
+        [0.203125, 0.1890625],
+        [0.21875, 0.196875],
+        [0.234375, 0.2046875]
+      ],
+      "normals": [1, 1, 1, 1, 1, 1, 1, 1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 0.5227246262878182,
+      "workers": [
+        {
+          "error": 0.03812500178813938,
+          "maximum": 0.15000000596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.044680177662521636,
+          "maximum": 0.15781250596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.051845705099403894,
+          "maximum": 0.16562500596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.05962158409878615,
+          "maximum": 0.17343750596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.06800781466066841,
+          "maximum": 0.1875,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.07700439678505067,
+          "maximum": 0.203125,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.08661133047193292,
+          "maximum": 0.21875,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.09682861572131518,
+          "maximum": 0.234375,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    },
+    {
+      "search": {
+        "initial": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "budget": 1000,
+        "step": 0.00019999999494757503,
+        "initialError": 1.738418008536101,
+        "parameters": [
+          10.53930146462491, 9.538968040849335, 9.855130553543557,
+          1.5348303098274765, 1.6928837494251647, 1.4872544421113725
+        ],
+        "accepted": true,
+        "matrix": [
+          0.9890949485418321, 0.07902689642869316, 0.12428166562240417,
+          0.5393014646249092, -0.08282362801541236, 0.9962333712130866,
+          0.025677163468208607, -0.46103195915066486, -0.12178435618500053,
+          -0.03569061112193386, 0.9919146893086863, -0.14486944645644328
+        ],
+        "matrixBits": "f6071473aaa6ef3fd565aa4f1b3bb43fc0335759ecd0bf3fe0f62725f541e13f3b8aa9e5ed33b5bfbc6891ce24e1ef3fe66666451d4b9a3f60a0bd308c81ddbf429ffa72422dbfbfd4fe152f0a46a2bf0217e0dfc3bdef3f802a5cff148bc2bf",
+        "best": 0.11097381313778254,
+        "flags": [
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4],
+          [4, 4]
+        ]
+      },
+      "name": "16-lane-refinement",
+      "targetPlanes": [
+        [0, 1],
+        [2, 1]
+      ],
+      "lanes": [
+        [0.125, 0.15],
+        [0.140625, 0.1578125],
+        [0.15625, 0.165625],
+        [0.171875, 0.1734375],
+        [0.1875, 0.18125],
+        [0.203125, 0.1890625],
+        [0.21875, 0.196875],
+        [0.234375, 0.2046875],
+        [0.25, 0.2125],
+        [0.265625, 0.2203125],
+        [0.28125, 0.228125],
+        [0.296875, 0.2359375],
+        [0.3125, 0.24375],
+        [0.328125, 0.2515625],
+        [0.34375, 0.259375],
+        [0.359375, 0.2671875]
+      ],
+      "normals": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      "initializing": true,
+      "cancelled": false,
+      "error": 1.738418008536101,
+      "workers": [
+        {
+          "error": 0.03812500178813938,
+          "maximum": 0.15000000596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.044680177662521636,
+          "maximum": 0.15781250596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.051845705099403894,
+          "maximum": 0.16562500596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.05962158409878615,
+          "maximum": 0.17343750596046448,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.06800781466066841,
+          "maximum": 0.1875,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.07700439678505067,
+          "maximum": 0.203125,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.08661133047193292,
+          "maximum": 0.21875,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.09682861572131518,
+          "maximum": 0.234375,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.10765625253319744,
+          "maximum": 0.25,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.1190942409075797,
+          "maximum": 0.265625,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.13114258084446195,
+          "maximum": 0.28125,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.1438012723438442,
+          "maximum": 0.296875,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.15707031540572647,
+          "maximum": 0.3125,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.17094971003010873,
+          "maximum": 0.328125,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.18543945621699098,
+          "maximum": 0.34375,
+          "sign": 1.0,
+          "votes": [0, 0]
+        },
+        {
+          "error": 0.20053955396637324,
+          "maximum": 0.359375,
+          "sign": 1.0,
+          "votes": [0, 0]
+        }
+      ],
+      "dispatch": []
+    }
+  ]
+}

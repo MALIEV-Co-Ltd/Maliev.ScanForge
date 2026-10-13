@@ -1,10 +1,11 @@
 import { expect, it } from "vitest";
 import native from "./fixtures/alignment-target-group-search-native.json";
+import dispatched from "./fixtures/alignment-native-dispatch.json";
 import { nativeAlignmentTargetGroupQuery } from "../src/scan-native-alignment-target-group";
 import { prepareNativeAlignmentSurface } from "../src/scan-native-alignment-surface";
 import { nativeRefineAlignmentSurface } from "../src/scan-native-alignment-surface-search";
 import { nativeAlignmentSixTransform } from "../src/scan-native-alignment-transform";
-it.each(native.samples)(
+it.each([...native.samples, ...dispatched.samples])(
   "matches the original complete target-group search: $name",
   (sample) => {
     const targets = sample.targetPlanes.map(([height, normal]) => {
@@ -17,7 +18,8 @@ it.each(native.samples)(
     });
     const lanes = sample.lanes.map((heights, lane) =>
       heights.map((height) => ({
-        point: [0.5, 0.5, height],
+        // The original vertex records store coordinates as Float32 before transforms.
+        point: [0.5, 0.5, Math.fround(height)],
         normal: [0, 0, sample.normals[lane]],
         flags: 4,
       })),
@@ -32,6 +34,8 @@ it.each(native.samples)(
     expect(result.best).toBe(sample.search.best);
     expect(result.parameters).toEqual(sample.search.parameters);
     expect(result.converged).toBe(sample.search.accepted);
+    if ("flags" in sample.search)
+      expect(result.flags).toEqual(sample.search.flags);
     expect(nativeAlignmentSixTransform(result.parameters)).toEqual(
       sample.search.matrix,
     );
