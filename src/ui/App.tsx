@@ -436,7 +436,9 @@ export function App() {
   const [center, setCenter] = useState<Vec3>([0, 0, 15]);
   const [history, setHistory] = useState<Revision[]>([]);
   const [future, setFuture] = useState<Revision[]>([]);
+  const [projectId, setProjectId] = useState<string>(() => crypto.randomUUID());
   const projectSession: ProjectSession = {
+    projectId,
     project: {
       format: "maliev-scanforge",
       version: 1,
@@ -457,10 +459,12 @@ export function App() {
     status: backupStatus,
     offerRecovery,
     dismissRecovery,
+    deleteBackup,
   } = useProjectBackups(
     projectSession,
     !busy &&
       (dirty || entities.length > 0 || history.length > 0 || future.length > 0),
+    () => viewport.current?.captureThumbnail() ?? Promise.resolve(null),
   );
   const operationLabel = useRef<string | null>(null);
   const viewportHost = useRef<HTMLDivElement>(null);
@@ -2199,6 +2203,7 @@ export function App() {
   }
   function newDocument() {
     if (busy) return;
+    setProjectId(crypto.randomUUID());
     setSketchPlaneDialog(false);
     setPlanePicking(false);
     setOriginVisible(true);
@@ -2241,7 +2246,7 @@ export function App() {
     if (fileInput.current) fileInput.current.value = "";
     viewport.current?.setView("iso");
   }
-  async function openFile(file: File, unit?: ScanUnit, recovery = false) {
+  async function openFile(file: File, unit?: ScanUnit) {
     if (!unit && /\.(stl|obj|ply)$/i.test(file.name)) {
       setPendingScanImport(file);
       return;
@@ -2325,7 +2330,8 @@ export function App() {
           );
           setHistory(restoredHistory);
           setFuture(restoredFuture);
-          setDirty(recovery);
+          setProjectId(session.projectId ?? crypto.randomUUID());
+          setDirty(false);
           setMeasure([]);
         } catch (e) {
           restoredCad.dispose();
@@ -3161,6 +3167,7 @@ export function App() {
       : null;
   const workspaceApi = useWorkspaceApi({
     snapshot: () => ({
+      projectId,
       name,
       entities,
       history,
@@ -3198,6 +3205,7 @@ export function App() {
       }
     },
     replace: (project, restoredCad, session) => {
+      setProjectId(session?.projectId ?? crypto.randomUUID());
       if (restoredCad) {
         cad.current?.dispose();
         cad.current = restoredCad;
@@ -3227,6 +3235,9 @@ export function App() {
       dismissScanTool();
     },
     select: setSelectedId,
+    deleteBackup: async (id) => {
+      await deleteBackup({ id });
+    },
     setSelection: (entityId, mask) => {
       const entity = entities.find((e) => e.id === entityId);
       if (!entity) throw new Error("Selection object disappeared");
@@ -3319,12 +3330,24 @@ export function App() {
             disabled={busy}
             offerRecovery={offerRecovery && entities.length === 0}
             onDismiss={dismissRecovery}
+            onDelete={async (backup) => {
+              const result = await uiCommand("backup_delete", {
+                backupId: backup.id,
+              });
+              if (!result.ok) throw new Error(result.error.message);
+            }}
             onRestore={(backup) => {
-              void openFile(
-                new File([backup.file], `${backup.name}.scanforge`),
-                undefined,
-                true,
-              );
+              if (
+                dirty &&
+                !window.confirm(
+                  "Replace the current project? Unsaved changes will be lost.",
+                )
+              )
+                return;
+              void uiCommand("backup_restore", {
+                backupId: backup.id,
+                replace: true,
+              });
             }}
           />
         }

@@ -13,6 +13,11 @@ export function useWorkspaceApi(host: WorkspaceHost) {
     const mutate = (run: () => void) => flushSync(run);
     const proxy: WorkspaceHost = {
       snapshot: () => current.current.snapshot(),
+      deleteBackup: async (id) => {
+        if (!current.current.deleteBackup)
+          throw new Error("Backup deletion unavailable");
+        await current.current.deleteBackup(id);
+      },
       cad: () => current.current.cad(),
       commit: (entities, label) =>
         mutate(() => current.current.commit(entities, label)),

@@ -3,6 +3,7 @@ import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 
 export interface ProjectSession {
+  projectId?: string;
   project: Project;
   history: Revision[];
   future: Revision[];
@@ -180,6 +181,7 @@ export async function encodeProjectFile(
         format: "scanforge-binary",
         version: 2,
         name: session.project.name,
+        projectId: session.projectId,
         units: "mm",
         authoring: session.project.authoring,
         current,
@@ -366,6 +368,10 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
     entities: state(m.current),
   });
   return {
+    ...(typeof m.projectId === "string" &&
+    /^[a-zA-Z0-9-]{1,128}$/.test(m.projectId)
+      ? { projectId: m.projectId }
+      : {}),
     project,
     history: revisions(m.history),
     future: revisions(m.future),

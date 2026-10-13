@@ -5,6 +5,7 @@ import type { Sketch } from "../sketch";
 import type { Entity, Project } from "../types";
 
 export interface WorkspaceSnapshot {
+  projectId?: string;
   name: string;
   entities: Entity[];
   history: Revision[];
@@ -22,7 +23,7 @@ export interface WorkspaceHost {
   replace(
     project: Project,
     cad?: CadClient,
-    session?: { history: Revision[]; future: Revision[] },
+    session?: { history: Revision[]; future: Revision[]; projectId?: string },
   ): void;
   select(id: string | null): void;
   setSelection(entityId: string, mask: Uint8Array): void;
@@ -34,6 +35,7 @@ export interface WorkspaceHost {
   settings(patch: Record<string, unknown>): void;
   busy(): boolean;
   activity(busy: boolean, message: string): void;
+  deleteBackup?(id: string): Promise<void>;
 }
 export interface ArtifactInfo {
   artifactId: string;

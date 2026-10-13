@@ -1,42 +1,58 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  BackupQueue,
+  BACKUP_INTERVAL_MS,
+  IntervalBackupController,
   listBackups,
+  removeBackup,
   writeBackup,
   type Backup,
 } from "../project-backup";
 import { encodeProjectFile, type ProjectSession } from "../project-file";
 
-export function useProjectBackups(session: ProjectSession, enabled: boolean) {
+export function useProjectBackups(
+  session: ProjectSession,
+  enabled: boolean,
+  captureThumbnail?: () => Promise<Blob | null>,
+) {
   const [backups, setBackups] = useState<Backup[]>([]);
   const [status, setStatus] = useState("Checking backups…");
-  const [ready, setReady] = useState(false);
   const [offerRecovery, setOfferRecovery] = useState(false);
-  const id = useRef(crypto.randomUUID());
-  const queue = useRef<BackupQueue<ProjectSession> | null>(null);
-  const latest = useRef(session);
-  latest.current = session;
-  const eligible = useRef(enabled);
-  eligible.current = enabled;
+  const controller = useRef<IntervalBackupController<ProjectSession> | null>(
+    null,
+  );
+  const latest = useRef({ session, enabled, captureThumbnail });
+  latest.current = { session, enabled, captureThumbnail };
+  const deleting = useRef(false);
   useEffect(() => {
     let mounted = true;
-    const writer = new BackupQueue<ProjectSession>(
-      async (snapshot) => {
+    let ready = false;
+    const writer = new IntervalBackupController<ProjectSession>(
+      async (id, snapshot, allowed) => {
         if (mounted) setStatus("Backing up…");
+        let thumbnail: Blob | null = null;
+        try {
+          thumbnail = (await latest.current.captureThumbnail?.()) ?? null;
+        } catch {
+          /* A thumbnail failure must never prevent project recovery. */
+        }
         const file = await encodeProjectFile(snapshot);
-        const backup = {
-          id: id.current,
+        if (!allowed()) return;
+        const backup: Backup = {
+          id,
           name: snapshot.project.name,
           savedAt: Date.now(),
           file,
+          ...(thumbnail ? { thumbnail } : {}),
         };
         await writeBackup(backup);
         if (mounted) {
-          setStatus(
-            `Backed up at ${new Date(backup.savedAt).toLocaleTimeString()}`,
-          );
+          setStatus("Backup ready");
           setBackups(await listBackups());
         }
+      },
+      async (id) => {
+        await removeBackup(id);
+        if (mounted) setBackups(await listBackups());
       },
       (error) => {
         if (mounted)
@@ -45,59 +61,62 @@ export function useProjectBackups(session: ProjectSession, enabled: boolean) {
           );
       },
     );
-    queue.current = writer;
+    controller.current = writer;
     void listBackups()
       .then((items) => {
         if (mounted) {
           setBackups(items);
           setOfferRecovery(items.length > 0);
           setStatus("Backup ready");
-          setReady(true);
+          ready = true;
         }
       })
       .catch((error) => {
-        if (mounted) {
+        if (mounted)
           setStatus(
             `Backup unavailable: ${String(error)}. Save a project file.`,
           );
-          setReady(true);
-        }
       });
-    const flush = () => {
-      if (eligible.current) writer.enqueue(latest.current);
-    };
-    const hidden = () => {
-      if (document.visibilityState === "hidden") flush();
-    };
-    document.addEventListener("visibilitychange", hidden);
-    window.addEventListener("pagehide", flush);
+    const timer = setInterval(() => {
+      if (!ready || deleting.current) return;
+      const { session: snapshot, enabled: eligible } = latest.current;
+      if (!snapshot.projectId) return;
+      writer.update(
+        snapshot.projectId,
+        snapshot,
+        [
+          snapshot.project.name,
+          snapshot.project.entities,
+          snapshot.project.authoring?.sketch,
+          snapshot.project.authoring?.sketches,
+          snapshot.project.authoring?.activeSketchId,
+          snapshot.history,
+          snapshot.future,
+        ],
+        eligible,
+      );
+      void writer.tick();
+    }, BACKUP_INTERVAL_MS);
     return () => {
       mounted = false;
+      clearInterval(timer);
       writer.stop();
-      queue.current = null;
-      document.removeEventListener("visibilitychange", hidden);
-      window.removeEventListener("pagehide", flush);
+      controller.current = null;
     };
   }, []);
-  useEffect(() => {
-    if (!ready || !enabled) return;
-    const timer = setTimeout(() => queue.current?.enqueue(session), 750);
-    return () => clearTimeout(timer);
-  }, [
-    session.project.name,
-    session.project.entities,
-    session.project.authoring?.sketch,
-    session.project.authoring?.sketches,
-    session.project.authoring?.activeSketchId,
-    session.history,
-    session.future,
-    ready,
-    enabled,
-  ]);
   return {
     backups,
     status,
     offerRecovery,
     dismissRecovery: () => setOfferRecovery(false),
+    deleteBackup: async (backup: Pick<Backup, "id">) => {
+      if (!controller.current) throw new Error("Backups are not ready.");
+      deleting.current = true;
+      try {
+        await controller.current.delete(backup.id);
+      } finally {
+        deleting.current = false;
+      }
+    },
   };
 }

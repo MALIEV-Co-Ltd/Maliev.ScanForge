@@ -52,6 +52,15 @@ it("round trips current state, Unicode names, undo/redo and shared lossless geom
     seekModelRevision(undo.history, undo.entities, undo.future, 2).entities,
   ).toHaveLength(2);
 });
+it("preserves stable project identity in portable files while accepting older files", async () => {
+  const source = { ...session(), projectId: "existing-project" };
+  expect(
+    (await decodeProjectFile(await encodeProjectFile(source))).projectId,
+  ).toBe("existing-project");
+  expect(
+    (await decodeProjectFile(await encodeProjectFile(session()))).projectId,
+  ).toBeUndefined();
+});
 it("retains more than twenty revisions and deduplicates their payloads", async () => {
   const source = session();
   source.history = Array.from({ length: 40 }, (_, i) => ({

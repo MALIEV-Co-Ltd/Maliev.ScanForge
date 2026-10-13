@@ -3,6 +3,29 @@ import { FileClock, History, X } from "lucide-react";
 import type { Backup } from "../project-backup";
 import "./project-backups.css";
 
+function BackupThumbnail({ file }: { file?: Blob }) {
+  const [url, setUrl] = useState<string>();
+  useEffect(() => {
+    if (!file) {
+      setUrl(undefined);
+      return;
+    }
+    const next = URL.createObjectURL(file);
+    setUrl(next);
+    return () => URL.revokeObjectURL(next);
+  }, [file]);
+  return url ? (
+    <img className="recovery-thumbnail" src={url} alt="" />
+  ) : (
+    <span
+      className="recovery-thumbnail recovery-thumbnail-empty"
+      aria-hidden="true"
+    >
+      <FileClock size={20} />
+    </span>
+  );
+}
+
 export function ProjectRecovery({
   backups,
   status,
@@ -10,6 +33,7 @@ export function ProjectRecovery({
   offerRecovery,
   onRestore,
   onDismiss,
+  onDelete,
 }: {
   backups: Backup[];
   status: string;
@@ -17,9 +41,13 @@ export function ProjectRecovery({
   offerRecovery: boolean;
   onRestore: (backup: Backup) => void;
   onDismiss?: () => void;
+  onDelete?: (backup: Backup) => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const offered = useRef(false),
     dialog = useRef<HTMLDialogElement>(null);
   const title = useId();
@@ -31,13 +59,31 @@ export function ProjectRecovery({
     onDismiss?.();
   }
   function restore(backup: Backup) {
-    if (disabled) return;
+    if (disabled || deleting || confirmDelete) return;
     close();
     onRestore(backup);
   }
   useEffect(() => {
-    if (open) setSelectedId(null);
+    if (open) {
+      setSelectedId(null);
+      setConfirmDelete(false);
+      setDeleteError("");
+    }
   }, [open]);
+  async function deleteSelected() {
+    if (!selected || !onDelete) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await onDelete(selected);
+      setSelectedId(null);
+      setConfirmDelete(false);
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setDeleting(false);
+    }
+  }
   useEffect(() => {
     if (offerRecovery && backups.length && !offered.current) {
       offered.current = true;
@@ -123,7 +169,10 @@ export function ProjectRecovery({
                           : "recovery-row"
                       }
                       onClick={() => {
-                        if (!disabled) setSelectedId(backup.id);
+                        if (!disabled && !deleting) {
+                          setSelectedId(backup.id);
+                          setConfirmDelete(false);
+                        }
                       }}
                       onDoubleClick={() => restore(backup)}
                     >
@@ -132,7 +181,7 @@ export function ProjectRecovery({
                           type="radio"
                           name={selectionGroup}
                           checked={selectedId === backup.id}
-                          disabled={disabled}
+                          disabled={disabled || deleting}
                           aria-label={`Select ${backup.name}, ${date.toLocaleString()}, ${previous ? "previous" : "latest"} snapshot`}
                           onChange={() => setSelectedId(backup.id)}
                           onKeyDown={(event) => {
@@ -144,6 +193,7 @@ export function ProjectRecovery({
                         />
                       </td>
                       <td className="recovery-project">
+                        <BackupThumbnail file={backup.thumbnail} />
                         <span title={`${backup.name}.scanforge`}>
                           {backup.name}.scanforge
                         </span>
@@ -181,19 +231,61 @@ export function ProjectRecovery({
               </div>
             )}
           </div>
+          {deleteError && (
+            <p className="recovery-storage-error" role="alert">
+              Could not delete backup: {deleteError}
+            </p>
+          )}
+          {confirmDelete && selected && (
+            <div
+              className="recovery-delete-confirm"
+              role="group"
+              aria-label="Confirm backup deletion"
+            >
+              <p>
+                Delete the backup for <strong>{selected.name}</strong>? This
+                removes its saved snapshots. Your open project stays unchanged.
+                If this is the open project, automatic backups stop until you
+                open another project.
+              </p>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => setConfirmDelete(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => void deleteSelected()}
+              >
+                {deleting ? "Deleting…" : "Delete backup"}
+              </button>
+            </div>
+          )}
         </div>
         <footer className="recovery-footer">
           <p>
             Open this list from <strong>Main → File → Backup</strong>.
           </p>
           <div className="recovery-actions">
+            {onDelete && (
+              <button
+                type="button"
+                disabled={disabled || deleting || !selected || confirmDelete}
+                onClick={() => setConfirmDelete(true)}
+              >
+                Delete
+              </button>
+            )}
             <button type="button" autoFocus onClick={close}>
               Close
             </button>
             <button
               type="button"
               className="accent"
-              disabled={disabled || !selected}
+              disabled={disabled || deleting || confirmDelete || !selected}
               onClick={() => {
                 if (selected) restore(selected);
               }}

@@ -1,5 +1,79 @@
 [
   {
+    "name": "backup_list",
+    "description": "List browser-local project backups, their stable identities, save times, sizes and optional thumbnail artifacts. Backups update every 30 seconds only when changed.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "includeThumbnails": {
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "backup_restore",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "backupId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "replace": {
+          "type": "boolean",
+          "enum": [true]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["backupId", "replace", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "backup_delete",
+    "description": "Delete a project backup and its legacy previous snapshot. The open model is unchanged; deleting its backup pauses automatic backups for the page session.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "backupId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["backupId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "capabilities_get",
     "description": "Discover API version, complete command schemas, resource limits and supported features.",
     "readOnly": true,

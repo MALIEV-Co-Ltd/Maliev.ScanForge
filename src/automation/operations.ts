@@ -1,4 +1,9 @@
 import type { Entity, Project, Positions, KernelMesh } from "../types";
+import {
+  listBackups,
+  backupProjectId,
+  BACKUP_INTERVAL_MS,
+} from "../project-backup";
 import { DEFAULT_PART_COLOR, DEFAULT_FREEFORM_COLOR } from "../appearance";
 import { CadClient } from "../cad/client";
 import type { Revision } from "../history";
@@ -273,11 +278,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     c.check();
     host.commit(entities, label);
   };
-  return {
+  const operations: Record<string, Handler> = {
     project_get: () => {
       const s = host.snapshot();
       return {
         name: s.name,
+        projectId: s.projectId,
         units: "mm",
         objects: s.entities.map(summary),
         selectedId: s.selectedId,
@@ -286,6 +292,60 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         authoring: s.authoring,
         settings: s.settings,
       };
+    },
+    backup_list: async (a, c) => ({
+      intervalMs: BACKUP_INTERVAL_MS,
+      changedProjectsOnly: true,
+      projectId: host.snapshot().projectId,
+      backups: (await listBackups()).map((backup) => ({
+        id: backup.id,
+        projectId: backupProjectId(backup.id),
+        name: backup.name,
+        savedAt: backup.savedAt,
+        bytes: backup.file.size,
+        snapshot: backup.id.endsWith(":previous") ? "previous" : "latest",
+        ...(backup.thumbnail && a.includeThumbnails
+          ? {
+              thumbnail: c.artifact(
+                backup.thumbnail,
+                `${backup.name}.webp`,
+                backup.thumbnail.type,
+              ),
+            }
+          : {}),
+      })),
+    }),
+    backup_delete: async (a, c) => {
+      c.check();
+      if (!host.deleteBackup) throw new Error("Backup deletion unavailable");
+      const backup = (await listBackups()).find(
+        (item) => item.id === a.backupId,
+      );
+      if (!backup) throw new Error("Backup not found");
+      c.check();
+      await host.deleteBackup(backup.id);
+      return {
+        deletedProjectId: backupProjectId(backup.id),
+        automaticBackupsPaused:
+          host.snapshot().projectId === backupProjectId(backup.id),
+      };
+    },
+    backup_restore: async (a, c) => {
+      if (!a.replace) throw new Error("Backup restore requires replace:true.");
+      const backup = (await listBackups()).find(
+        (item) => item.id === a.backupId,
+      );
+      if (!backup) throw new Error("Backup not found");
+      c.check();
+      return operations.project_import(
+        {
+          artifactId: "backup",
+          name: `${backup.name}.scanforge`,
+          replace: true,
+          recoveryProjectId: backupProjectId(backup.id),
+        },
+        { ...c, artifactBlob: () => backup.file },
+      );
     },
     object_get: (a, c) => {
       const e = object(host.snapshot(), a.entityId);
@@ -894,6 +954,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           host.replace({ ...project, entities: restored }, cad, {
             history,
             future,
+            projectId: a.recoveryProjectId ?? session.projectId,
           });
           transferred = true;
           return { objects: restored.length };
@@ -966,6 +1027,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let data: Blob | Uint8Array, name: string, mime: string;
       if (a.format === "project") {
         data = await encodeProjectFile({
+          projectId: s.projectId,
           project: {
             format: "maliev-scanforge",
             version: 1,
@@ -1017,4 +1079,5 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return { updated: true };
     },
   };
+  return operations;
 }

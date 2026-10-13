@@ -175,6 +175,7 @@ try {
     viewport: { width: 1440, height: 1000 },
   });
   const errors = [];
+  page.on("dialog", (dialog) => dialog.accept());
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
@@ -270,6 +271,44 @@ try {
   assert(repair.entityIds.length === 1);
   const analyzed = await job(await call("mesh_analyze", { entityId: meshId }));
   assert(analyzed.stats?.triangles > 0 || analyzed.topology?.triangles > 0);
+  // Interval-produced browser backup is available through the same MCP/GUI operations.
+  await page.waitForTimeout(31000);
+  const backups = await call("backup_list", { includeThumbnails: true });
+  assert.equal(backups.result.intervalMs, 30000);
+  assert.equal(backups.result.backups.length, 1);
+  const backup = backups.result.backups[0];
+  assert.equal(backup.projectId, (await call("project_get")).result.projectId);
+  assert(backup.thumbnail?.bytes > 100);
+  const preview = await call("artifact_read", {
+    artifactId: backup.thumbnail.artifactId,
+  });
+  assert(Buffer.from(preview.result.base64, "base64").length > 100);
+  const beforeRecovery = await call("project_get");
+  await job(
+    await mutate("backup_restore", { backupId: backup.id, replace: true }),
+  );
+  const recovered = await call("project_get");
+  assert.equal(recovered.result.projectId, backup.projectId);
+  assert.equal(recovered.result.undo, beforeRecovery.result.undo);
+  assert.equal(
+    recovered.result.objects.length,
+    beforeRecovery.result.objects.length,
+  );
+  await page.getByRole("tab", { name: "Main", exact: true }).click();
+  await page.getByRole("button", { name: "Backup", exact: true }).click();
+  const recovery = page.getByRole("dialog", { name: "Project backups" });
+  await recovery.getByRole("radio").first().check();
+  await recovery.getByRole("button", { name: "Delete", exact: true }).click();
+  await recovery
+    .getByRole("button", { name: "Delete backup", exact: true })
+    .click();
+  await recovery.getByText("No backups yet", { exact: true }).waitFor();
+  assert.equal((await call("backup_list")).result.backups.length, 0);
+  assert.equal(
+    (await call("project_get")).result.objects.length,
+    recovered.result.objects.length,
+  );
+  await recovery.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByRole("button", { name: "Disconnect agent", exact: true })
@@ -289,6 +328,7 @@ try {
     "UI undo and MCP redo",
     "STEP content and project export artifacts",
     "mesh copy/transform/winding worker/topology",
+    "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
     "disconnect rejects calls",
   ];
   await page.screenshot({

@@ -3,6 +3,7 @@ export interface Backup {
   name: string;
   savedAt: number;
   file: Blob;
+  thumbnail?: Blob;
 }
 /** IndexedDB transactions retain the previous successful backup atomically. */
 async function database(): Promise<IDBDatabase> {
@@ -54,18 +55,115 @@ export async function writeBackup(backup: Backup): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction("backups", "readwrite"),
         store = transaction.objectStore("backups");
-      const previous = store.get(backup.id);
-      previous.onsuccess = () => {
-        if (previous.result)
-          store.put({ ...previous.result, id: `${backup.id}:previous` });
-        store.put(backup);
-      };
+      store.put(backup);
+      store.delete(`${backup.id}:previous`);
       transaction.oncomplete = () => resolve();
       transaction.onabort = () => reject(transaction.error);
       transaction.onerror = () => reject(transaction.error);
     });
   } finally {
     db.close();
+  }
+}
+
+export function backupProjectId(id: string): string {
+  return id.replace(/:previous$/, "");
+}
+
+/** Delete the project and its legacy previous snapshot together. */
+export async function removeBackup(id: string): Promise<void> {
+  const db = await database();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction("backups", "readwrite");
+      const store = transaction.objectStore("backups");
+      store.delete(backupProjectId(id));
+      store.delete(`${backupProjectId(id)}:previous`);
+      transaction.oncomplete = () => resolve();
+      transaction.onabort = () => reject(transaction.error);
+      transaction.onerror = () => reject(transaction.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export const BACKUP_INTERVAL_MS = 30_000;
+
+/** Interval writer: edits only update the pending state; deletes serialize after writes. */
+export class IntervalBackupController<T> {
+  private current?: {
+    id: string;
+    value: T;
+    key: readonly unknown[];
+    enabled: boolean;
+  };
+  private saved = new Map<string, readonly unknown[]>();
+  private deleted = new Set<string>();
+  private tail: Promise<void> = Promise.resolve();
+  private writing = false;
+  private stopped = false;
+  constructor(
+    private save: (
+      id: string,
+      value: T,
+      allowed: () => boolean,
+    ) => Promise<void>,
+    private remove: (id: string) => Promise<void>,
+    private failed: (error: unknown) => void,
+  ) {}
+  update(
+    id: string,
+    value: T,
+    key: readonly unknown[],
+    enabled: boolean,
+  ): void {
+    this.current = { id, value, key, enabled };
+  }
+  tick(): Promise<void> {
+    const snapshot = this.current;
+    if (
+      this.stopped ||
+      this.writing ||
+      !snapshot?.enabled ||
+      this.deleted.has(snapshot.id)
+    )
+      return this.tail;
+    const saved = this.saved.get(snapshot.id);
+    if (
+      saved &&
+      saved.length === snapshot.key.length &&
+      saved.every((item, i) => item === snapshot.key[i])
+    )
+      return this.tail;
+    this.writing = true;
+    const allowed = () => !this.stopped && !this.deleted.has(snapshot.id);
+    this.tail = this.tail.then(async () => {
+      try {
+        if (allowed()) {
+          await this.save(snapshot.id, snapshot.value, allowed);
+          if (allowed()) this.saved.set(snapshot.id, snapshot.key);
+        }
+      } catch (error) {
+        this.failed(error);
+      } finally {
+        this.writing = false;
+      }
+    });
+    return this.tail;
+  }
+  delete(id: string): Promise<void> {
+    id = backupProjectId(id);
+    this.deleted.add(id);
+    const operation = this.tail.then(() => this.remove(id));
+    this.tail = operation.catch((error) => {
+      this.deleted.delete(id);
+      this.failed(error);
+    });
+    return operation;
+  }
+  stop(): void {
+    this.stopped = true;
   }
 }
 

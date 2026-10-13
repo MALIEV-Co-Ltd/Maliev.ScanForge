@@ -61,6 +61,7 @@ it("separates project, saved date and snapshot from the selected restore action"
       disabled={false}
       offerRecovery={false}
       onRestore={() => {}}
+      onDelete={async () => {}}
     />,
   );
   expect(html).toContain('aria-label="Available project backups"');
@@ -73,4 +74,6 @@ it("separates project, saved date and snapshot from the selected restore action"
   expect(html).toContain('type="radio"');
   expect(html).toMatch(/disabled="">Restore<\/button>/);
   expect(html).toContain('aria-label="Close project backups"');
+  expect(html).toMatch(/disabled="">Delete<\/button>/);
+  expect(html).toContain("recovery-thumbnail");
 });

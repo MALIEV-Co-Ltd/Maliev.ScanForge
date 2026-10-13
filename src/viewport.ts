@@ -497,6 +497,23 @@ export class Viewport {
       )?.point;
   }
 
+  /** Render and copy before WebGL clears its drawing buffer after presentation. */
+  async captureThumbnail(): Promise<Blob | null> {
+    if (this.disposed) return null;
+    if (this.frame !== null) cancelAnimationFrame(this.frame);
+    this.render();
+    const source = this.renderer.domElement;
+    if (!source.width || !source.height) return null;
+    const canvas = document.createElement("canvas");
+    const scale = Math.min(1, 192 / source.width, 128 / source.height);
+    canvas.width = Math.max(1, Math.round(source.width * scale));
+    canvas.height = Math.max(1, Math.round(source.height * scale));
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.drawImage(source, 0, 0, canvas.width, canvas.height);
+    return new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.7));
+  }
+
   private render = (): void => {
     this.frame = null;
     if (this.disposed) return;
