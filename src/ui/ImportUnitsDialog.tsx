@@ -1,12 +1,11 @@
+import "./ImportUnitsDialog.css";
 import { useState } from "react";
 import { SCAN_UNITS, type ScanUnit } from "../import-units";
 
 export function ImportUnitsDialog({
-  filename,
   onImport,
   onCancel,
 }: {
-  filename: string;
   onImport: (unit: ScanUnit) => void;
   onCancel: () => void;
 }) {
@@ -14,19 +13,14 @@ export function ImportUnitsDialog({
   return (
     <div className="modal-backdrop">
       <section
-        className="modal"
+        className="modal import-units-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby="import-units-title"
       >
-        <h2 id="import-units-title">Import scan units</h2>
-        <p>{filename}</p>
-        <p className="muted">
-          Choose the units used by this file. Geometry is converted to
-          millimeters.
-        </p>
+        <h2 id="import-units-title">Import scan</h2>
         <label className="select-field">
-          File unit
+          Units
           <select
             autoFocus
             value={unit}
@@ -42,7 +36,7 @@ export function ImportUnitsDialog({
         <div className="import-unit-actions">
           <button onClick={onCancel}>Cancel</button>
           <button className="accent" onClick={() => onImport(unit)}>
-            Import scan
+            Import
           </button>
         </div>
       </section>

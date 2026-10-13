@@ -3209,7 +3209,6 @@ export function App() {
       />
       {pendingScanImport && (
         <ImportUnitsDialog
-          filename={pendingScanImport.name}
           onCancel={() => setPendingScanImport(null)}
           onImport={(unit) => {
             const file = pendingScanImport;

@@ -28,14 +28,12 @@ it("rejects overflow rather than committing invalid coordinates", () => {
 });
 it("shows file units before import, with explicit import and cancel actions", () => {
   const html = renderToStaticMarkup(
-    <ImportUnitsDialog
-      filename="scan.stl"
-      onImport={() => {}}
-      onCancel={() => {}}
-    />,
+    <ImportUnitsDialog onImport={() => {}} onCancel={() => {}} />,
   );
   expect(html).toContain('role="dialog"');
-  expect(html).toContain("scan.stl");
+  expect(html).not.toContain("<p");
+  expect(html).toContain("Units");
+  expect(html).toContain(">Import</button>");
   expect(html).toContain("Millimeter");
   expect(html).toContain("Inches");
   expect(html).toContain("Cancel");

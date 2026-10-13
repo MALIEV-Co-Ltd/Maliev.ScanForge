@@ -1,0 +1,14 @@
+.modal.import-units-dialog {
+  width: 320px;
+  padding: 16px;
+}
+.import-units-dialog h2 {
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.import-units-dialog .select-field {
+  margin: 0;
+}
+.import-units-dialog .import-unit-actions {
+  margin-top: 14px;
+}
