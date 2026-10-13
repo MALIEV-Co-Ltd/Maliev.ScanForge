@@ -6,6 +6,7 @@ import first from "./fixtures/alignment-user-ply-source.json";
 import second from "./fixtures/alignment-user-ply-2-source.json";
 import third from "./fixtures/alignment-user-ply-3-source.json";
 import refinement from "./fixtures/alignment-user-refinement.json";
+import multicore from "./fixtures/alignment-user-multicore-refinement.json";
 import { nativeRefineAlignmentMeshes } from "../src/scan-native-alignment-surface-controller";
 import { parsePlyTopology } from "../src/ply-topology";
 import { expandPlyTopology } from "../src/ply-topology";
@@ -19,6 +20,31 @@ import { prepareNativeAlignmentSource } from "../src/scan-native-alignment-sourc
 
 // Large owner-supplied scans remain outside the repository and default CI suite.
 const folder = process.env.SCANFORGE_ALIGNMENT_EXAMPLES;
+it.skipIf(!folder).each(multicore.cases[0].registrations)(
+  "matches original two-lane owner scan refinement: $sourceFile",
+  (expected) => {
+    const metadata = [first, second, third].find(
+      (input) => input.sha256 === expected.sourceSha256,
+    )!;
+    const result = nativeRefineAlignmentMeshes(
+      [readExample(metadata)],
+      readExample(surface.cases[0]),
+      expected.sampleBudget,
+      {
+        workerCount: 2,
+        initialRadius: expected.initialRadius,
+        step: expected.step,
+      },
+    );
+    expect(result.parameters).toEqual(expected.parameters);
+    expect(result.initialError).toBe(expected.initialError);
+    expect(result.best).toBe(expected.best);
+    expect(result.accepted).toBe(expected.accepted);
+    expect(result.matrix).toEqual(expected.matrix);
+    expect(result.flags).toEqual(expected.laneFlags);
+  },
+  120000,
+);
 it.skipIf(!folder).each(refinement.cases[0].registrations)(
   "matches the application surface-refinement adapter on owner scan: $sourceFile",
   (expected) => {
