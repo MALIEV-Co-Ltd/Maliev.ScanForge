@@ -4,12 +4,25 @@ import { join } from "node:path";
 import { expect, it } from "vitest";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import capture from "./fixtures/stl-owner-topology-native.json";
+import readerCapture from "./fixtures/stl-owner-reader-native.json";
 
 const folder = process.env.SCANFORGE_ALIGNMENT_EXAMPLES;
 for (const original of capture.sources)
   it.skipIf(!folder)(
     `matches the original mapping pipeline on the owner's full ${original.file}`,
     () => {
+      const reader = readerCapture.sources.find(
+        (source) => source.sourceFile === original.file,
+      )!;
+      expect(reader.provenance.originalOptimizedReaderExecuted).toBe(true);
+      expect(reader.sourceSha256).toBe(original.sourceSha256);
+      for (const field of [
+        "vertexCount",
+        "triangleCount",
+        "verticesSha256",
+        "trianglesSha256",
+      ] as const)
+        expect(reader[field]).toBe(original[field]);
       const bytes = readFileSync(join(folder!, original.file));
       expect(createHash("sha256").update(bytes).digest("hex")).toBe(
         original.sourceSha256,

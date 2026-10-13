@@ -163,7 +163,27 @@ The short slot-28 thunk is established by its retained bytes and relative jump;
 REA does not identify it as a separate procedure. This is static finalization
 evidence, not a capture of the complete import entry.
 
-This reconstruction remains internal. Complete reader/finalizer execution,
+## Complete optimized reader execution
+
+Original routine `0x1408c5db0` now executes from header parsing through spatial
+classification, concurrent bucket mapping, global vertex transfer, facet
+construction and local cleanup. Its full outputs match the reconstructed
+pipeline byte for byte on six controlled meshes and all three owner STL scans.
+The captures are retained in `tests/fixtures/stl-reader-native.json` and
+`tests/fixtures/stl-owner-reader-native.json`.
+
+The probe adapts file mapping and mesh collection storage, rebinds original
+Concrt imports to the installed runtime and intercepts tracing callbacks.
+Classification uses one configured worker; the reader's bucket mapping still
+uses the original concurrent runtime. This capture does not establish a
+multicore speedup. Allocation is bounded to 512 MiB for scans 1/2 and 1024 MiB
+for scan 3; large temporary allocations are released on the final scan probe.
+All successful probes release their mapped image and allocation arena and exit.
+The captured low byte of the return register is retained as raw evidence, not
+interpreted as a success boolean.
+
+This reconstruction remains internal. Complete import-entry/finalizer execution,
 shared GUI/MCP import integration and native alignment outputs for these STL
-sources remain required. These mapping captures do not certify the full import
-entry or alignment on the owner's STL scans.
+sources remain required. Reader captures do not certify finalization or alignment
+on the owner's STL scans. Application behavior and MCP contracts are unchanged
+by this evidence-only slice.

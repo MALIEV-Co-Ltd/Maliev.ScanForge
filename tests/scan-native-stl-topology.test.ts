@@ -6,6 +6,7 @@ import {
   type NativeStlSpatialNode,
 } from "../src/scan-native-stl-topology";
 import capture from "./fixtures/stl-topology-native.json";
+import readerCapture from "./fixtures/stl-reader-native.json";
 
 function collectNodes(
   node: NativeStlSpatialNode,
@@ -24,6 +25,15 @@ function collectNodes(
 }
 
 describe("original optimized STL spatial mapping and facet construction", () => {
+  for (const sample of readerCapture.samples)
+    it(`matches complete original reader output for ${sample.name}`, () => {
+      expect(readerCapture.provenance.originalOptimizedReaderExecuted).toBe(
+        true,
+      );
+      const result = nativeStlTopology(Float32Array.from(sample.coordinates));
+      expect(Array.from(result.vertices)).toEqual(sample.vertices);
+      expect(Array.from(result.triangles)).toEqual(sample.triangles);
+    });
   for (const sample of capture.samples) {
     it(`matches ${sample.name} spatial nodes and corner buckets`, () => {
       const coordinates = Float32Array.from(sample.coordinates);

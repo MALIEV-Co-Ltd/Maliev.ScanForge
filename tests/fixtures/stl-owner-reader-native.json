@@ -1,0 +1,476 @@
+{
+  "sources": [
+    {
+      "provenance": {
+        "procedure": "0x1408c5db0",
+        "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+        "originalOptimizedReaderExecuted": true,
+        "fileMappingAndStorageIntercepted": true,
+        "originalConcrtImportsRebound": [
+          {
+            "name": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ",
+            "rva": "0xe420",
+            "locations": ["0xeaa0e8", "0x85690e0"]
+          },
+          {
+            "name": "??0SchedulerPolicy@Concurrency@@QEAA@_KZZ",
+            "rva": "0x21010",
+            "locations": ["0xeaa0f0"]
+          },
+          {
+            "name": "??1SchedulerPolicy@Concurrency@@QEAA@XZ",
+            "rva": "0x21100",
+            "locations": ["0xeaa0f8"]
+          },
+          {
+            "name": "?GetPolicy@CurrentScheduler@Concurrency@@SA?AVSchedulerPolicy@2@XZ",
+            "rva": "0xe710",
+            "locations": ["0xeaa100"]
+          },
+          {
+            "name": "?Create@CurrentScheduler@Concurrency@@SAXAEBVSchedulerPolicy@2@@Z",
+            "rva": "0xe600",
+            "locations": ["0xeaa108"]
+          },
+          {
+            "name": "?Detach@CurrentScheduler@Concurrency@@SAXXZ",
+            "rva": "0xe690",
+            "locations": ["0xeaa110"]
+          },
+          {
+            "name": "?Alloc@Concurrency@@YAPEAX_K@Z",
+            "rva": "0x25810",
+            "locations": ["0xeaa118"]
+          },
+          {
+            "name": "?PPLParallelForeachEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f20",
+            "locations": ["0xeaa120"]
+          },
+          {
+            "name": "??0_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25e30",
+            "locations": ["0xeaa128"]
+          },
+          {
+            "name": "??1_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x26030",
+            "locations": ["0xeaa130"]
+          },
+          {
+            "name": "?_Schedule@_TaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27d00",
+            "locations": ["0xeaa138"]
+          },
+          {
+            "name": "?_RunAndWait@_TaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x276d0",
+            "locations": ["0xeaa140"]
+          },
+          {
+            "name": "?_CurrentContext@_Context@details@Concurrency@@SA?AV123@XZ",
+            "rva": "0xbe40",
+            "locations": ["0xeaa148"]
+          },
+          {
+            "name": "?_SpinOnce@?$_SpinWait@$00@details@Concurrency@@QEAA_NXZ",
+            "rva": "0x11a0",
+            "locations": ["0xeaa150"]
+          },
+          {
+            "name": "?_Trace_ppl_function@Concurrency@@YAXAEBU_GUID@@EW4ConcRT_EventType@1@@Z",
+            "rva": "0x297b0",
+            "locations": ["0xeaa158"]
+          },
+          {
+            "name": "?Free@Concurrency@@YAXPEAX@Z",
+            "rva": "0x25930",
+            "locations": ["0xeaa160"]
+          },
+          {
+            "name": "?PPLParallelForEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f10",
+            "locations": ["0xeaa168"]
+          },
+          {
+            "name": "??1_StructuredTaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25fb0",
+            "locations": ["0xeaa170"]
+          },
+          {
+            "name": "?_Schedule@_StructuredTaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27bd0",
+            "locations": ["0xeaa178"]
+          },
+          {
+            "name": "?_RunAndWait@_StructuredTaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27390",
+            "locations": ["0xeaa180"]
+          },
+          {
+            "name": "?_GetNumberOfVirtualProcessors@_CurrentScheduler@details@Concurrency@@SAIXZ",
+            "rva": "0xe8a0",
+            "locations": ["0xeaa188"]
+          },
+          {
+            "name": "?_CheckTaskCollection@_UnrealizedChore@details@Concurrency@@IEAAXXZ",
+            "rva": "0x9650",
+            "locations": ["0xeaa190"]
+          },
+          {
+            "name": "??1_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc1d0",
+            "locations": ["0xeaa198"]
+          },
+          {
+            "name": "?_Yield@_Context@details@Concurrency@@SAXXZ",
+            "rva": "0xbe00",
+            "locations": ["0xeaa1a0"]
+          },
+          {
+            "name": "?_Reference@_Scheduler@details@Concurrency@@QEAAIXZ",
+            "rva": "0xbe80",
+            "locations": ["0xeaa1a8"]
+          },
+          {
+            "name": "?_UnderlyingYield@details@Concurrency@@YAXXZ",
+            "rva": "0x2b6c0",
+            "locations": ["0xeaa1b0"]
+          },
+          {
+            "name": "??0_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc030",
+            "locations": ["0xeaa1b8"]
+          }
+        ],
+        "traceCallbackIntercepted": true,
+        "classificationWorkerCount": 1,
+        "fullImportEntryExecuted": false,
+        "arenaCapMiB": 512,
+        "arenaUsedMiB": 64
+      },
+      "sourceFile": "scan-1.stl",
+      "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "vertexCount": 139338,
+      "triangleCount": 273139,
+      "verticesSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+      "trianglesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+      "returnRegisterLowByte": 178
+    },
+    {
+      "provenance": {
+        "procedure": "0x1408c5db0",
+        "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+        "originalOptimizedReaderExecuted": true,
+        "fileMappingAndStorageIntercepted": true,
+        "originalConcrtImportsRebound": [
+          {
+            "name": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ",
+            "rva": "0xe420",
+            "locations": ["0xeaa0e8", "0x85690e0"]
+          },
+          {
+            "name": "??0SchedulerPolicy@Concurrency@@QEAA@_KZZ",
+            "rva": "0x21010",
+            "locations": ["0xeaa0f0"]
+          },
+          {
+            "name": "??1SchedulerPolicy@Concurrency@@QEAA@XZ",
+            "rva": "0x21100",
+            "locations": ["0xeaa0f8"]
+          },
+          {
+            "name": "?GetPolicy@CurrentScheduler@Concurrency@@SA?AVSchedulerPolicy@2@XZ",
+            "rva": "0xe710",
+            "locations": ["0xeaa100"]
+          },
+          {
+            "name": "?Create@CurrentScheduler@Concurrency@@SAXAEBVSchedulerPolicy@2@@Z",
+            "rva": "0xe600",
+            "locations": ["0xeaa108"]
+          },
+          {
+            "name": "?Detach@CurrentScheduler@Concurrency@@SAXXZ",
+            "rva": "0xe690",
+            "locations": ["0xeaa110"]
+          },
+          {
+            "name": "?Alloc@Concurrency@@YAPEAX_K@Z",
+            "rva": "0x25810",
+            "locations": ["0xeaa118"]
+          },
+          {
+            "name": "?PPLParallelForeachEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f20",
+            "locations": ["0xeaa120"]
+          },
+          {
+            "name": "??0_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25e30",
+            "locations": ["0xeaa128"]
+          },
+          {
+            "name": "??1_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x26030",
+            "locations": ["0xeaa130"]
+          },
+          {
+            "name": "?_Schedule@_TaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27d00",
+            "locations": ["0xeaa138"]
+          },
+          {
+            "name": "?_RunAndWait@_TaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x276d0",
+            "locations": ["0xeaa140"]
+          },
+          {
+            "name": "?_CurrentContext@_Context@details@Concurrency@@SA?AV123@XZ",
+            "rva": "0xbe40",
+            "locations": ["0xeaa148"]
+          },
+          {
+            "name": "?_SpinOnce@?$_SpinWait@$00@details@Concurrency@@QEAA_NXZ",
+            "rva": "0x11a0",
+            "locations": ["0xeaa150"]
+          },
+          {
+            "name": "?_Trace_ppl_function@Concurrency@@YAXAEBU_GUID@@EW4ConcRT_EventType@1@@Z",
+            "rva": "0x297b0",
+            "locations": ["0xeaa158"]
+          },
+          {
+            "name": "?Free@Concurrency@@YAXPEAX@Z",
+            "rva": "0x25930",
+            "locations": ["0xeaa160"]
+          },
+          {
+            "name": "?PPLParallelForEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f10",
+            "locations": ["0xeaa168"]
+          },
+          {
+            "name": "??1_StructuredTaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25fb0",
+            "locations": ["0xeaa170"]
+          },
+          {
+            "name": "?_Schedule@_StructuredTaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27bd0",
+            "locations": ["0xeaa178"]
+          },
+          {
+            "name": "?_RunAndWait@_StructuredTaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27390",
+            "locations": ["0xeaa180"]
+          },
+          {
+            "name": "?_GetNumberOfVirtualProcessors@_CurrentScheduler@details@Concurrency@@SAIXZ",
+            "rva": "0xe8a0",
+            "locations": ["0xeaa188"]
+          },
+          {
+            "name": "?_CheckTaskCollection@_UnrealizedChore@details@Concurrency@@IEAAXXZ",
+            "rva": "0x9650",
+            "locations": ["0xeaa190"]
+          },
+          {
+            "name": "??1_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc1d0",
+            "locations": ["0xeaa198"]
+          },
+          {
+            "name": "?_Yield@_Context@details@Concurrency@@SAXXZ",
+            "rva": "0xbe00",
+            "locations": ["0xeaa1a0"]
+          },
+          {
+            "name": "?_Reference@_Scheduler@details@Concurrency@@QEAAIXZ",
+            "rva": "0xbe80",
+            "locations": ["0xeaa1a8"]
+          },
+          {
+            "name": "?_UnderlyingYield@details@Concurrency@@YAXXZ",
+            "rva": "0x2b6c0",
+            "locations": ["0xeaa1b0"]
+          },
+          {
+            "name": "??0_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc030",
+            "locations": ["0xeaa1b8"]
+          }
+        ],
+        "traceCallbackIntercepted": true,
+        "classificationWorkerCount": 1,
+        "fullImportEntryExecuted": false,
+        "arenaCapMiB": 512,
+        "arenaUsedMiB": 392.046142578125
+      },
+      "sourceFile": "scan-2.stl",
+      "sourceSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "vertexCount": 1299033,
+      "triangleCount": 2547403,
+      "verticesSha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9",
+      "trianglesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+      "returnRegisterLowByte": 178
+    },
+    {
+      "provenance": {
+        "procedure": "0x1408c5db0",
+        "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+        "originalOptimizedReaderExecuted": true,
+        "fileMappingAndStorageIntercepted": true,
+        "originalConcrtImportsRebound": [
+          {
+            "name": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ",
+            "rva": "0xe420",
+            "locations": ["0xeaa0e8", "0x85690e0"]
+          },
+          {
+            "name": "??0SchedulerPolicy@Concurrency@@QEAA@_KZZ",
+            "rva": "0x21010",
+            "locations": ["0xeaa0f0"]
+          },
+          {
+            "name": "??1SchedulerPolicy@Concurrency@@QEAA@XZ",
+            "rva": "0x21100",
+            "locations": ["0xeaa0f8"]
+          },
+          {
+            "name": "?GetPolicy@CurrentScheduler@Concurrency@@SA?AVSchedulerPolicy@2@XZ",
+            "rva": "0xe710",
+            "locations": ["0xeaa100"]
+          },
+          {
+            "name": "?Create@CurrentScheduler@Concurrency@@SAXAEBVSchedulerPolicy@2@@Z",
+            "rva": "0xe600",
+            "locations": ["0xeaa108"]
+          },
+          {
+            "name": "?Detach@CurrentScheduler@Concurrency@@SAXXZ",
+            "rva": "0xe690",
+            "locations": ["0xeaa110"]
+          },
+          {
+            "name": "?Alloc@Concurrency@@YAPEAX_K@Z",
+            "rva": "0x25810",
+            "locations": ["0xeaa118"]
+          },
+          {
+            "name": "?PPLParallelForeachEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f20",
+            "locations": ["0xeaa120"]
+          },
+          {
+            "name": "??0_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25e30",
+            "locations": ["0xeaa128"]
+          },
+          {
+            "name": "??1_TaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x26030",
+            "locations": ["0xeaa130"]
+          },
+          {
+            "name": "?_Schedule@_TaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27d00",
+            "locations": ["0xeaa138"]
+          },
+          {
+            "name": "?_RunAndWait@_TaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x276d0",
+            "locations": ["0xeaa140"]
+          },
+          {
+            "name": "?_CurrentContext@_Context@details@Concurrency@@SA?AV123@XZ",
+            "rva": "0xbe40",
+            "locations": ["0xeaa148"]
+          },
+          {
+            "name": "?_SpinOnce@?$_SpinWait@$00@details@Concurrency@@QEAA_NXZ",
+            "rva": "0x11a0",
+            "locations": ["0xeaa150"]
+          },
+          {
+            "name": "?_Trace_ppl_function@Concurrency@@YAXAEBU_GUID@@EW4ConcRT_EventType@1@@Z",
+            "rva": "0x297b0",
+            "locations": ["0xeaa158"]
+          },
+          {
+            "name": "?Free@Concurrency@@YAXPEAX@Z",
+            "rva": "0x25930",
+            "locations": ["0xeaa160"]
+          },
+          {
+            "name": "?PPLParallelForEventGuid@Concurrency@@3U_GUID@@B",
+            "rva": "0x31f10",
+            "locations": ["0xeaa168"]
+          },
+          {
+            "name": "??1_StructuredTaskCollection@details@Concurrency@@QEAA@XZ",
+            "rva": "0x25fb0",
+            "locations": ["0xeaa170"]
+          },
+          {
+            "name": "?_Schedule@_StructuredTaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27bd0",
+            "locations": ["0xeaa178"]
+          },
+          {
+            "name": "?_RunAndWait@_StructuredTaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+            "rva": "0x27390",
+            "locations": ["0xeaa180"]
+          },
+          {
+            "name": "?_GetNumberOfVirtualProcessors@_CurrentScheduler@details@Concurrency@@SAIXZ",
+            "rva": "0xe8a0",
+            "locations": ["0xeaa188"]
+          },
+          {
+            "name": "?_CheckTaskCollection@_UnrealizedChore@details@Concurrency@@IEAAXXZ",
+            "rva": "0x9650",
+            "locations": ["0xeaa190"]
+          },
+          {
+            "name": "??1_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc1d0",
+            "locations": ["0xeaa198"]
+          },
+          {
+            "name": "?_Yield@_Context@details@Concurrency@@SAXXZ",
+            "rva": "0xbe00",
+            "locations": ["0xeaa1a0"]
+          },
+          {
+            "name": "?_Reference@_Scheduler@details@Concurrency@@QEAAIXZ",
+            "rva": "0xbe80",
+            "locations": ["0xeaa1a8"]
+          },
+          {
+            "name": "?_UnderlyingYield@details@Concurrency@@YAXXZ",
+            "rva": "0x2b6c0",
+            "locations": ["0xeaa1b0"]
+          },
+          {
+            "name": "??0_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+            "rva": "0xc030",
+            "locations": ["0xeaa1b8"]
+          }
+        ],
+        "traceCallbackIntercepted": true,
+        "classificationWorkerCount": 1,
+        "fullImportEntryExecuted": false,
+        "arenaCapMiB": 1024,
+        "arenaUsedMiB": 288,
+        "arenaUnitCorrection": "Converted retained page byte total to MiB; large allocations already released at capture."
+      },
+      "sourceFile": "scan-3.stl",
+      "sourceSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "vertexCount": 1683605,
+      "triangleCount": 3326910,
+      "verticesSha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1",
+      "trianglesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+      "returnRegisterLowByte": 178
+    }
+  ]
+}
