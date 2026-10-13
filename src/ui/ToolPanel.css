@@ -78,6 +78,9 @@
   min-height: 28px;
   flex-shrink: 0;
 }
+.workspace > .inspector.command-host > h2 {
+  padding-right: 0;
+}
 .inspector > h2 > button,
 .tool-panel > header > button {
   border: 0;

@@ -167,6 +167,6 @@ section.edit-scan-dialog .edit-scan-create {
   padding: 5px;
 }
 section.edit-scan-dialog .scan-dialog-footer {
-  padding-top: 6px;
-  margin-top: 6px;
+  padding-top: 8px;
+  margin-top: 0;
 }
