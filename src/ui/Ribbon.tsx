@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { RibbonToolButton } from "./RibbonToolButton";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./ribbon-verification.css";
 import "./ribbon-tabs-scroll.css";
 import { ribbonOverflowEdges } from "./ribbon-overflow";
@@ -193,10 +194,10 @@ export function Ribbon({
             ))}
           </div>
           <span className="ribbon-tabs-hint left" aria-hidden="true">
-            &#8249;
+            <ChevronLeft size={14} />
           </span>
           <span className="ribbon-tabs-hint right" aria-hidden="true">
-            &#8250;
+            <ChevronRight size={14} />
           </span>
         </div>
         {utilityHeader && (
