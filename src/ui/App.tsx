@@ -577,6 +577,8 @@ export function App() {
         setSpaceMouseStatus,
       );
       spaceMouse.current.preferences = spaceMousePreferences;
+      spaceMouse.current.onInputMotion = () =>
+        viewport.current?.noteSpaceMouseInput();
       void spaceMouse.current
         .restoreAuthorized()
         .catch((error) =>

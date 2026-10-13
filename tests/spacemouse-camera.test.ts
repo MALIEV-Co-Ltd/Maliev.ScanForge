@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import * as THREE from "three";
 import {
   SpaceMouseController,
@@ -155,8 +155,15 @@ describe("SpaceMouse to camera workflow", () => {
     try {
       await controller.connect();
       expect(device.opened).toBe(true);
+      const inputMotion = vi.fn();
+      controller.onInputMotion = inputMotion;
+      device.send(2, [0, 0, 0]);
+      expect(inputMotion).not.toHaveBeenCalled();
       device.send(1, [350, 175, -70]);
       device.send(2, [140, -105, 70]);
+      expect(inputMotion).toHaveBeenCalledTimes(2);
+      // Input ownership is announced before the first camera animation frame.
+      expect(pivot.length()).toBe(0);
       tick(16);
       expect(pivot.length()).toBeGreaterThan(0);
       expect(camera.position.distanceTo(pivot)).toBeCloseTo(100);

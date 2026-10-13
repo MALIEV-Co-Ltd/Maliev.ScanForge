@@ -17,6 +17,7 @@ import { EMPTY_SCENE_EXTENT, updateCameraClipping } from "./camera-clipping";
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
+import { SpaceMouseInputGate } from "./spacemouse-input";
 import { cameraMouseButtons, subtractSelection } from "./mouse-input";
 import type { ScreenRegion } from "./screen-selection";
 import { AsyncScreenSelectionIndex } from "./screen-selection-client";
@@ -142,6 +143,7 @@ export class Viewport {
   private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
   private readonly navigationPivot = new NavigationPivot();
+  private readonly spaceMouseInput = new SpaceMouseInputGate();
   private mouseOrbitPivot?: THREE.Vector3;
   private mouseOrbitPointer?: number;
   private readonly pivotMarker = document.createElement("div");
@@ -379,6 +381,10 @@ export class Viewport {
         theme === "dark" ? "#20282c" : "#3b454d",
       );
     this.invalidate();
+  }
+
+  noteSpaceMouseInput(): void {
+    this.spaceMouseInput.noteMotion();
   }
 
   navigate(motion: Motion6D, seconds: number): void {
@@ -1326,6 +1332,7 @@ export class Viewport {
     this.selectionOverlay.hidden = false;
   }
   private selectionWheel = (event: WheelEvent): void => {
+    if (this.spaceMouseInput.consumeWheel(event)) return;
     if (!this.brushing || !event.ctrlKey || !this.onBrushScale) return;
     event.preventDefault();
     event.stopImmediatePropagation();

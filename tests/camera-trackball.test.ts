@@ -1,8 +1,96 @@
 import { expect, it, vi } from "vitest";
-import { OrthographicCamera, Vector3 } from "three";
+import { OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import { cameraMouseButtons } from "../src/mouse-input";
-import { configureNavigationSensitivity } from "../src/camera-navigation";
+import {
+  configureNavigationSensitivity,
+  navigateCamera,
+} from "../src/camera-navigation";
+import { SpaceMouseInputGate } from "../src/spacemouse-input";
+
+it.each(["orthographic", "perspective"])(
+  "raw pitch takes priority over driver wheel zoom in %s, then mouse wheel resumes",
+  (projection) => {
+    vi.stubGlobal(
+      "window",
+      Object.assign(new EventTarget(), { pageXOffset: 0, pageYOffset: 0 }),
+    );
+    let now = 1000;
+    const gate = new SpaceMouseInputGate(() => now);
+    const element = Object.assign(new EventTarget(), {
+      style: {},
+      clientWidth: 600,
+      clientHeight: 600,
+      ownerDocument: { documentElement: { clientLeft: 0, clientTop: 0 } },
+      getBoundingClientRect: () => ({
+        left: 0,
+        top: 0,
+        width: 600,
+        height: 600,
+      }),
+    });
+    const intercept = (event: Event) => gate.consumeWheel(event as WheelEvent);
+    element.addEventListener("wheel", intercept);
+    const camera =
+      projection === "orthographic"
+        ? new OrthographicCamera()
+        : new PerspectiveCamera();
+    camera.position.set(0, -100, 0);
+    camera.up.set(0, 0, 1);
+    const controls = new TrackballControls(
+      camera,
+      element as unknown as HTMLElement,
+    );
+    controls.staticMoving = true;
+    const wheel = () => {
+      const event = Object.assign(new Event("wheel", { cancelable: true }), {
+        deltaMode: 0,
+        deltaY: -100,
+      });
+      element.dispatchEvent(event);
+      controls.update();
+      return event;
+    };
+    const extent = () =>
+      projection === "orthographic"
+        ? camera.zoom
+        : camera.position.distanceTo(controls.target);
+    try {
+      const initialExtent = extent();
+      const initialPosition = camera.position.clone();
+      for (const direction of [1, -1]) {
+        for (let i = 0; i < 30; i++) {
+          now += 16;
+          // Raw report notification precedes both wheel delivery and RAF.
+          gate.noteMotion();
+          wheel();
+          navigateCamera(
+            camera,
+            controls.target,
+            { translation: [0, 0, 0], rotation: [direction * 0.5, 0, 0] },
+            0.016,
+          );
+          controls.update();
+          expect(extent()).toBeCloseTo(initialExtent, 10);
+          if (direction === 1 && i === 29)
+            expect(camera.position.distanceTo(initialPosition)).toBeGreaterThan(
+              1,
+            );
+        }
+      }
+      now += 249;
+      wheel();
+      expect(extent()).toBeCloseTo(initialExtent, 10);
+      now += 1;
+      wheel();
+      expect(extent()).not.toBeCloseTo(initialExtent, 6);
+    } finally {
+      controls.dispose();
+      element.removeEventListener("wheel", intercept);
+      vi.unstubAllGlobals();
+    }
+  },
+);
 
 it("mouse orbit continues through both poles and a complete revolution", () => {
   const browserWindow = Object.assign(new EventTarget(), {

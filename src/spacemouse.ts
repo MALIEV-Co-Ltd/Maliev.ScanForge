@@ -211,6 +211,8 @@ export class SpaceMouseController {
   private receivedMotion = false;
   private autoReconnect = true;
   preferences = { ...DEFAULT_SPACE_MOUSE };
+  /** Notify the viewport before RAF so emulated wheel input cannot also zoom. */
+  onInputMotion?: () => void;
   constructor(
     private access: HidAccess | undefined,
     private onMotion: (motion: Motion6D, seconds: number) => void,
@@ -304,6 +306,17 @@ export class SpaceMouseController {
       );
     }
     const now = this.clock();
+    if (value.translation || value.rotation) {
+      const input = filteredMotion(
+        {
+          translation: value.translation ?? [0, 0, 0],
+          rotation: value.rotation ?? [0, 0, 0],
+        },
+        this.preferences,
+      );
+      if ([...input.translation, ...input.rotation].some((axis) => axis !== 0))
+        this.onInputMotion?.();
+    }
     if (value.translation) {
       this.motion.translation = value.translation;
       this.translationAt = now;
