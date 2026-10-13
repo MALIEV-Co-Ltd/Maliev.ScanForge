@@ -21,6 +21,12 @@ import { drawSketchLine } from "../src/sketch-drawing";
 
 it("draws three world planes at the world origin with matching right-handed normals", () => {
   const group = createOriginGeometry("OYZ");
+  const axes = group.children.find(
+    (child) => child instanceof THREE.AxesHelper,
+  ) as THREE.AxesHelper;
+  expect(Array.from(axes.geometry.getAttribute("color").array)).toEqual([
+    1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
+  ]);
   for (const plane of ORIGIN_PLANES) {
     const mesh = group.children.find(
       (c) => c.userData.originPlane === plane,

@@ -77,7 +77,7 @@ export function createOriginGeometry(
 ): THREE.Group {
   const group = new THREE.Group();
   group.name = "World origin";
-  group.add(new THREE.AxesHelper(35));
+  group.add(new THREE.AxesHelper(35).setColors(0xff0000, 0x00ff00, 0x0000ff));
   const colors = { OXY: 0x669bd1, OYZ: 0xdb7971, OXZ: 0x79ba8c };
   for (const plane of ORIGIN_PLANES) {
     const frame = coordinateSketchFrame(plane, 0);
