@@ -11,6 +11,7 @@ import { runScanTool } from "../src/scan-tools";
 import { transformPositions } from "../src/geometry";
 import type { Entity, Vec3 } from "../src/types";
 import capture from "./fixtures/mirror-tangent-native.json";
+import cadCapture from "./fixtures/mirror-cad-plane-native.json";
 
 const decode = (hex: string) =>
   new Float32Array(
@@ -43,7 +44,7 @@ function reference(entry: (typeof capture.cases)[number]): Entity {
   };
 }
 
-it.each(capture.cases)(
+it.each([...capture.cases, ...cadCapture.cases])(
   "preserves native $name mirror against $plane.name through both project serializers and reference binding",
   async (entry) => {
     const plane = reference(entry);

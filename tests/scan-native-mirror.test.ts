@@ -4,13 +4,14 @@ import { inverseMirrorFrame, mirrorPlaneFrame } from "../src/scan-mirror-frame";
 import type { Vec3 } from "../src/types";
 import capture from "./fixtures/mirror-coordinate-native.json";
 import tangentCapture from "./fixtures/mirror-tangent-native.json";
+import cadCapture from "./fixtures/mirror-cad-plane-native.json";
 
 const decode = (hex: string) =>
   new Float32Array(
     Uint8Array.from(hex.match(/../g)!, (byte) => parseInt(byte, 16)).buffer,
   );
 
-it.each([...capture.cases, ...tangentCapture.cases])(
+it.each([...capture.cases, ...tangentCapture.cases, ...cadCapture.cases])(
   "matches original Mirror arithmetic for $name on $plane.name",
   (entry) => {
     const positions = decode(entry.inputBits),

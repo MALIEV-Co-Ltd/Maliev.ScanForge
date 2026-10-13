@@ -102,8 +102,45 @@ mirrored copy and saved it. All 864 source bytes remained original, all 864 copy
 bytes matched the native reference, and the saved plane frame stayed identical.
 No browser warnings/errors were reported. This verifies an explicit stored
 reference, not the complete original native plane-picking UI or CAD surface
-orientation recovery. Imported planar CAD faces still need their own exact
-surface frame extraction.
+orientation recovery. Exact analytic CAD plane extraction is covered below;
+planar spline faces and selecting individual faces inside solids remain incomplete.
+
+## Exact analytic CAD plane extraction
+
+The CAD worker now reads a single analytic plane face through
+`BRepAdaptor_Surface`, `Plane()` and its `gp_Ax3` position. The adaptor applies
+the face location, so center, normal and X direction are in world coordinates.
+Reversed faces reverse the normal. The stored frame travels through `KernelMesh`
+into the imported entity and its project file. Multi-face shapes and non-analytic
+surfaces do not receive a whole-object plane frame.
+
+The actual OpenCascade smoke gate constructs a tilted analytic face, exports and
+reimports STEP, reimports BRep, then applies translation, rotation and uniform
+scale. Every stage verifies unit orthogonal axes and coplanarity with its world
+geometry. STEP retains the same frame, and all shape handles and temporary virtual
+files are released by the smoke gate.
+
+The browser imported that same STEP face and supplied its extracted frame to
+Mirror. Four new original-instruction captures (891 coordinates) use those exact
+center/normal/tangent values, including the small nonzero Y component of the
+OpenCascade normal. All frame, inverse and mirrored coordinate bytes match the
+application and project round-trip tests. The accepted annular copy matches all
+864 native output bytes, retains the original mesh bytes and the reference's BRep
+and frame, and reports no browser warnings/errors.
+
+The native harness executes the existing SHA-verified original frame constructor,
+inverse and coordinate block with the documented ABI and sqrt adapters. It does
+not execute the complete native CAD-import or picking UI. Planar BSpline/NURBS
+surfaces, coplanar multi-face compounds and face picking within a solid still need
+their own surface-frame and interaction work. Numerical references are retained
+in `tests/fixtures/mirror-cad-plane-native.json`.
+
+Validation passed: production build without warnings/errors, the actual
+OpenCascade smoke gate, 98 focused tests and all 9,383 tests across 199 files.
+Scoped formatting, diff and prohibited-name checks passed. The current CAD worker
+SHA-256 is `49d6af0ba2a651228b0208f8f80d7f9d392693c98aee52346e8fc1ba7901d726`;
+the offline manifest is `scanforge-21a058a1b659d2a9`. Native mapped allocations
+were released and the probe exited; no native helper remains running.
 
 Stored-frame validation: production build passed without warnings/errors; 130
 focused tests and all 9,375 tests across 199 files passed. Scoped formatting,

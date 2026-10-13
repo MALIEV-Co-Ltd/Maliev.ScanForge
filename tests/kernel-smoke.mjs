@@ -91,12 +91,89 @@ function close(actual, expected, message) {
 }
 try {
   const oc = await vm.runInContext("kernel()", context);
+  const planeHandles = [];
+  let exactPlane;
+  try {
+    const wire = context.polygonWire(
+      oc,
+      [
+        [2, 3, 4],
+        [5, 3, 7],
+        [5, 9, 7],
+        [2, 9, 4],
+      ],
+      planeHandles,
+    );
+    const maker = new oc.BRepBuilderAPI_MakeFace_15(wire, true);
+    planeHandles.push(maker);
+    exactPlane = context.register(oc, maker.Face());
+  } finally {
+    context.cleanup(planeHandles);
+  }
+  assert.ok(
+    exactPlane.planeFrame,
+    "Analytic planar CAD extracts a stored frame",
+  );
+  const assertPlaneFrame = (result) => {
+    const frame = result.planeFrame;
+    assert.ok(frame, "Exact plane frame retained");
+    close(Math.hypot(...frame.normal), 1, "Plane unit normal");
+    close(Math.hypot(...frame.tangent), 1, "Plane unit tangent");
+    close(
+      frame.normal.reduce((s, n, i) => s + n * frame.tangent[i], 0),
+      0,
+      "Plane axes orthogonal",
+    );
+    for (let i = 0; i < result.positions.length; i += 3)
+      close(
+        frame.normal.reduce(
+          (s, n, a) => s + n * (result.positions[i + a] - frame.center[a]),
+          0,
+        ),
+        0,
+        "Plane frame matches world CAD geometry",
+      );
+  };
+  assertPlaneFrame(exactPlane);
+  const exactPlaneStep = await request("export", [exactPlane.kernelId]);
+  if (process.env.SCANFORGE_QA_PLANE_STEP)
+    writeFileSync(process.env.SCANFORGE_QA_PLANE_STEP, exactPlaneStep);
+  const restoredPlane = await request("import", {
+    data: exactPlaneStep,
+    extension: "step",
+  });
+  assertPlaneFrame(restoredPlane);
+  for (const key of ["center", "normal", "tangent"])
+    restoredPlane.planeFrame[key].forEach((v, i) =>
+      close(v, exactPlane.planeFrame[key][i], `STEP plane ${key}`),
+    );
+  const restoredPlaneBrep = await request("import", {
+    data: new TextEncoder().encode(restoredPlane.brep),
+    extension: "brep",
+  });
+  assertPlaneFrame(restoredPlaneBrep);
+  const movedPlane = await request("transform", {
+    kernelId: restoredPlaneBrep.kernelId,
+    translation: [7, -2, 5],
+    rotation: [15, 35, 70],
+    scale: 2,
+  });
+  assertPlaneFrame(movedPlane);
+  assert.notDeepEqual(
+    movedPlane.planeFrame.tangent,
+    restoredPlaneBrep.planeFrame.tangent,
+  );
   const box = await request("primitive", {
     kind: "box",
     center: [0, 0, 0],
     size: [10, 20, 30],
   });
   assert.equal(box.positions.length, 108);
+  assert.equal(
+    box.planeFrame,
+    undefined,
+    "A multi-face solid is not one plane reference",
+  );
   assert.equal(
     box.edgePositions.length,
     72,

@@ -71,6 +71,7 @@ function mesh(oc, shape, onProgress = () => {}) {
       normals = [];
     let faceCount = 0,
       completedFaces = 0;
+    let planeFrame;
     for (; explorer.More(); explorer.Next()) faceCount++;
     explorer.ReInit();
     for (; explorer.More(); explorer.Next()) {
@@ -94,6 +95,27 @@ function mesh(oc, shape, onProgress = () => {}) {
         const reverse =
           statusValue(face.Orientation_1()) ===
           statusValue(oc.TopAbs_Orientation.TopAbs_REVERSED);
+        if (faceCount === 1) {
+          const adaptor = local(new oc.BRepAdaptor_Surface_2(face, true));
+          if (
+            statusValue(adaptor.GetType()) ===
+            statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Plane)
+          ) {
+            // The adaptor includes the face's location; these are world coordinates.
+            const plane = local(adaptor.Plane()),
+              axes = local(plane.Position());
+            const center = local(axes.Location()),
+              normal = local(axes.Direction()),
+              tangent = local(axes.XDirection());
+            planeFrame = {
+              center: [center.X(), center.Y(), center.Z()],
+              normal: [normal.X(), normal.Y(), normal.Z()].map((v) =>
+                reverse ? -v : v,
+              ),
+              tangent: [tangent.X(), tangent.Y(), tangent.Z()],
+            };
+          }
+        }
         const surfaceHandle = local(oc.BRep_Tool.Surface_2(face));
         const properties = local(
           new oc.GeomLProp_SLProps_1(surfaceHandle, 0, 0, 2, 1e-9),
@@ -189,7 +211,7 @@ function mesh(oc, shape, onProgress = () => {}) {
     }
     const edgePositions = cadEdgePositions(oc, shape, deflection);
     onProgress(0.9);
-    return { positions, normals, edgePositions };
+    return { positions, normals, edgePositions, planeFrame };
   } finally {
     cleanup(handles);
   }
@@ -275,12 +297,16 @@ function register(oc, shape, onProgress = () => {}) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
-    const { positions, normals, edgePositions } = mesh(oc, shape, onProgress);
+    const { positions, normals, edgePositions, planeFrame } = mesh(
+      oc,
+      shape,
+      onProgress,
+    );
     const kernelId = `cad-${sessionId}-${++nextShape}`;
     const brep = serializeBrep(oc, shape);
     onProgress(0.98);
     shapes.set(kernelId, shape);
-    return { kernelId, positions, normals, edgePositions, brep };
+    return { kernelId, positions, normals, edgePositions, brep, planeFrame };
   } catch (error) {
     shape.delete();
     throw error;

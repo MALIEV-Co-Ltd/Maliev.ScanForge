@@ -102,4 +102,5 @@ export interface KernelMesh {
   normals?: number[];
   edgePositions?: number[];
   brep?: string;
+  planeFrame?: Entity["planeFrame"];
 }
