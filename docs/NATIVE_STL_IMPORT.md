@@ -1,7 +1,7 @@
 # Native STL import extraction
 
-This investigation supplies a recovered facet-validation primitive. It does not
-yet enable native surface refinement for STL imports. The optimized binary
+This investigation supplies recovered facet validation and optimized vertex
+mapping. It does not yet enable native surface refinement for STL imports. The optimized binary
 reader's complete import still needs an original execution check. Its coordinate
 keys, hash, map iteration order, spatial mapping and facet acceptance now have
 direct execution captures and matching ports on controlled meshes.
@@ -116,17 +116,54 @@ facet creation is
 `ev_d06828c4621ac08069320e538a192458df21ea1bf1221088cb02291143a95c6f`.
 The direct execution fixture is `tests/fixtures/stl-topology-native.json`.
 
-The original mapping pipeline also executes on the owner's full `scan-1.stl`,
-bound to SHA-256
-`6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9`.
-It yields 139,338 mapped vertices and 273,139 accepted facets. The port matches
-the original Float32 vertex buffer and Uint32 index buffer byte for byte using
-the captured SHA-256 digests. `tests/scan-native-stl-user-examples.test.ts` runs
-this full-resolution check when `SCANFORGE_ALIGNMENT_EXAMPLES` identifies the
-owner's local scan folder. Only source identity and output digests are retained
-in the repository; scan geometry remains external.
+The original mapping pipeline also executes on all three full owner STL scans.
+The port matches both original Float32 vertex buffers and Uint32 index buffers
+byte for byte using captured SHA-256 digests.
 
-This reconstruction remains internal. Captures for the two larger owner scans,
-resource and performance checks, the optimized reader's final mesh processing,
-and shared GUI/MCP import integration remain required. These captures do not
-certify full reader execution or alignment on the owner's STL scans.
+| Source       | Mapped vertices | Accepted facets | Input facets |
+| ------------ | --------------: | --------------: | -----------: |
+| `scan-1.stl` |         139,338 |         273,139 |      273,139 |
+| `scan-2.stl` |       1,299,033 |       2,547,403 |    2,547,405 |
+| `scan-3.stl` |       1,683,605 |       3,326,910 |    3,326,910 |
+
+Scan 2 has two rejected facets with repeated mapped vertex identities. Keeping
+the original facet count would disagree with native connectivity. The bounded
+probe executes the same original routines, uses typed arrays and a capped
+allocation arena, and releases its image and arena before exiting. It reproduces
+the earlier scan-1 output before capturing the two larger scans.
+
+`tests/scan-native-stl-user-examples.test.ts` runs these full-resolution checks
+when `SCANFORGE_ALIGNMENT_EXAMPLES` identifies the owner's local scan folder.
+Only source identities and output digests are retained in the repository; scan
+geometry remains external. The table now computes its needed low 32 hash bits
+with integer multiplication instead of BigInt multiplication. Both native hash
+captures and every full owner output constrain this optimization.
+
+## Finalization trace
+
+The reader's `+0x98` virtual call is on its progress object (`param_4`), rather
+than its mesh (`param_2`). Import entry `0x1408c8560` subsequently calls mesh
+virtual slot `+0x58` with argument 1. The previously identified mesh vtable
+`0x140ebfcf0` binds that slot to `0x1401de640`:
+
+- `0x1401dd8d0` assigns consecutive vertex IDs in existing collection order.
+- Mesh slot `+0x28` clears a validity field and tail-jumps to `0x140b2f7e0`, which
+  recomputes bounds using the stored transform and vertex coordinates.
+- `0x140b375e0` rebuilds cached facet normals.
+- With argument 1, slot `+0x68` invokes the previously extracted mesh topology
+  callback, then the finalizer clears its derived-state pointer.
+
+REA evidence for finalization is
+`ev_20c537310b6deb91021be7238a13ee33013084f02384a62a66ea74ea7ec97771`,
+vertex ID assignment is
+`ev_88fe5cc53fb32057ee0fe9d5a7de2157b775a1fe317112b19db9032fbbf1d96c`,
+and bounds computation is
+`ev_8941e3247cb051b087f76d663d231308bb378a90ed93f1ba9c1a5108f8eb3e38`.
+The short slot-28 thunk is established by its retained bytes and relative jump;
+REA does not identify it as a separate procedure. This is static finalization
+evidence, not a capture of the complete import entry.
+
+This reconstruction remains internal. Complete reader/finalizer execution,
+shared GUI/MCP import integration and native alignment outputs for these STL
+sources remain required. These mapping captures do not certify the full import
+entry or alignment on the owner's STL scans.

@@ -3,6 +3,7 @@ import {
   NativeStlVertexTable,
   nativeStlCoordinateKey,
   nativeStlVertexHash,
+  nativeStlVertexBucketHash,
   type NativeStlKey,
 } from "../src/scan-native-stl-vertices";
 import hashCapture from "./fixtures/stl-hash-native.json";
@@ -27,6 +28,14 @@ describe("original optimized STL hash", () => {
       );
       for (const bucket of sample.buckets)
         expect((hash & BigInt(bucket.mask)).toString()).toBe(bucket.result);
+      const raw = sample.buckets.find(
+        (bucket) => bucket.mask === "18446744073709551615",
+      )!;
+      expect(
+        nativeStlVertexBucketHash(
+          sample.keys.map(BigInt) as unknown as NativeStlKey,
+        ),
+      ).toBe(Number(BigInt.asUintN(32, BigInt(raw.result))));
     });
 });
 

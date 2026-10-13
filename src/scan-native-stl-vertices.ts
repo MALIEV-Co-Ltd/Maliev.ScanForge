@@ -38,6 +38,25 @@ export function nativeStlVertexHash(key: NativeStlKey): bigint {
   );
 }
 
+const keyBytes = new DataView(new ArrayBuffer(8));
+function coordinateBucketHash(key: bigint) {
+  keyBytes.setBigInt64(0, BigInt.asIntN(64, key), true);
+  let hash = 0x84222325;
+  for (let i = 0; i < 8; i++)
+    hash = Math.imul(hash ^ keyBytes.getUint8(i), 0x1b3);
+  return hash;
+}
+
+/** Exact low 32 hash bits; table masks do not need the discarded high bits. */
+export function nativeStlVertexBucketHash(key: NativeStlKey) {
+  return (
+    (coordinateBucketHash(key[0]) ^
+      (coordinateBucketHash(key[1]) << 1) ^
+      (coordinateBucketHash(key[2]) << 2)) >>>
+    0
+  );
+}
+
 interface VertexEntry {
   key: NativeStlKey;
   value: number;
@@ -71,7 +90,7 @@ export class NativeStlVertexTable {
     const entry: VertexEntry = {
       key: [key[0], key[1], key[2]],
       value,
-      hash: Number(BigInt.asUintN(32, nativeStlVertexHash(key))),
+      hash: nativeStlVertexBucketHash(key),
     };
     this.lookup.set(identity, entry);
     this.link(entry);
