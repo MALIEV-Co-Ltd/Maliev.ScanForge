@@ -72,8 +72,8 @@ export function useWorkspaceApi(host: WorkspaceHost) {
       view: (view) => current.current.view(view),
       settings: (patch) => mutate(() => current.current.settings(patch)),
       busy: () => current.current.busy(),
-      activity: (busy, message) =>
-        mutate(() => current.current.activity(busy, message)),
+      activity: (busy, message, selectionMode) =>
+        mutate(() => current.current.activity(busy, message, selectionMode)),
     };
     api.current = new ApplicationApi(proxy, {
       ...createOperations(proxy),

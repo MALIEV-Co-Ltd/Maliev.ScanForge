@@ -1,4 +1,8 @@
 import catalog from "./catalog.json";
+import {
+  selectionProcessingMode,
+  type SelectionProcessingMode,
+} from "../selection-processing-mode";
 import type { CadClient } from "../cad/client";
 import type { Revision } from "../history";
 import type { Sketch } from "../sketch";
@@ -40,7 +44,11 @@ export interface WorkspaceHost {
   view(view: string): void;
   settings(patch: Record<string, unknown>): void;
   busy(): boolean;
-  activity(busy: boolean, message: string): void;
+  activity(
+    busy: boolean,
+    message: string,
+    selectionMode?: SelectionProcessingMode,
+  ): void;
   deleteBackup?(id: string): Promise<void>;
   inspectApplication?(maxControls: number): unknown;
   setInterface?(patch: InterfacePatch): void;
@@ -560,7 +568,13 @@ export class ApplicationApi {
         );
       // A single admission lane also protects native read operations from concurrent edits.
       this.active = job;
-      this.host.activity(true, `Agent/API: ${command}`);
+      this.host.activity(
+        true,
+        `Agent/API: ${command}`,
+        command === "mesh_process"
+          ? selectionProcessingMode(args.operation)
+          : "boundary",
+      );
       job.timer = setTimeout(
         () =>
           job.controller.abort(

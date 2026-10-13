@@ -3,12 +3,16 @@ import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { installSelectionBoundaryAttributes } from "./selection-boundary-highlight";
+import type { SelectionProcessingMode } from "./selection-processing-mode";
 
 /** A uniformly pulsing boundary with a steady translucent selection interior. */
 export class SelectionProcessingHighlight {
   private readonly active = { value: false };
   private readonly time = { value: 0 };
   private reducedMotion = false;
+  private readonly smoothing = { value: false };
+  private readonly motionEnabled = { value: true };
+  private startedAt: number | undefined;
   private readonly outlines = new Set<LineSegments2>();
 
   private updateOutlines() {
@@ -19,12 +23,26 @@ export class SelectionProcessingHighlight {
       line.visible = this.active.value;
       const { width, opacity } = line.userData;
       line.material.linewidth = width;
-      line.material.opacity = opacity * (0.5 + 0.5 * pulse);
+      line.material.opacity =
+        opacity * (this.smoothing.value ? 0.65 : 0.5 + 0.5 * pulse);
     }
   }
 
-  setActive(active: boolean, reducedMotion = false) {
+  setActive(
+    active: boolean,
+    reducedMotion = false,
+    mode: SelectionProcessingMode = "boundary",
+  ) {
+    if (
+      active !== this.active.value ||
+      (mode === "smoothing") !== this.smoothing.value
+    ) {
+      this.startedAt = undefined;
+      this.time.value = 0;
+    }
     this.active.value = active;
+    this.smoothing.value = mode === "smoothing";
+    this.motionEnabled.value = !reducedMotion;
     this.reducedMotion = reducedMotion;
     if (!active || reducedMotion) this.time.value = 0;
     this.updateOutlines();
@@ -32,7 +50,8 @@ export class SelectionProcessingHighlight {
 
   update(seconds: number): boolean {
     if (!this.active.value || this.reducedMotion) return false;
-    this.time.value = seconds;
+    this.startedAt ??= seconds;
+    this.time.value = seconds - this.startedAt;
     this.updateOutlines();
     return true;
   }
@@ -46,6 +65,25 @@ export class SelectionProcessingHighlight {
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
     const scale = Math.max(size.x, size.y, size.z, 0.000001);
+    // Anchor the ripple on the selected surface, rather than inside a curved mesh.
+    const positions = geometry.getAttribute("position");
+    const point = new THREE.Vector3();
+    let nearest = Infinity;
+    const surfaceCenter = center.clone();
+    for (let i = 0; i < positions.count; i++) {
+      point.fromBufferAttribute(positions, i);
+      const distance = point.distanceToSquared(center);
+      if (distance < nearest) {
+        nearest = distance;
+        surfaceCenter.copy(point);
+      }
+    }
+    let radius = 0;
+    for (let i = 0; i < positions.count; i++) {
+      point.fromBufferAttribute(positions, i);
+      radius = Math.max(radius, point.distanceTo(surfaceCenter));
+    }
+    center.copy(surfaceCenter);
     const hasBoundary = material instanceof THREE.MeshBasicMaterial;
     const segments = hasBoundary
       ? installSelectionBoundaryAttributes(geometry)
@@ -85,6 +123,11 @@ export class SelectionProcessingHighlight {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.selectionProcessing = this.active;
       shader.uniforms.selectionProcessingTime = this.time;
+      shader.uniforms.selectionSmoothing = this.smoothing;
+      shader.uniforms.selectionMotionEnabled = this.motionEnabled;
+      shader.uniforms.selectionRadius = {
+        value: Math.max(radius / scale, 0.000001),
+      };
       shader.uniforms.selectionCenter = { value: center };
       shader.uniforms.selectionScale = { value: scale };
       shader.vertexShader = shader.vertexShader
@@ -106,7 +149,7 @@ export class SelectionProcessingHighlight {
       shader.fragmentShader = shader.fragmentShader
         .replace(
           "#include <common>",
-          "#include <common>\nvarying vec3 selectionPosition;\nuniform bool selectionProcessing;\nuniform float selectionProcessingTime;" +
+          "#include <common>\nvarying vec3 selectionPosition;\nuniform bool selectionProcessing;\nuniform float selectionProcessingTime;\nuniform bool selectionSmoothing;\nuniform bool selectionMotionEnabled;\nuniform float selectionRadius;" +
             boundaryVaryings,
         )
         .replace(
@@ -114,12 +157,28 @@ export class SelectionProcessingHighlight {
           `#include <color_fragment>
           if (selectionProcessing) {
             diffuseColor.a *= 0.38;
+            if (selectionSmoothing) {
+              float radius = length(selectionPosition) / selectionRadius;
+              float travel = fract(selectionProcessingTime / 1.8) * 1.4 - 0.2;
+              float wave = exp(-pow((radius - travel) / 0.18, 2.0));
+              wave *= smoothstep(-0.2, 0.05, travel) * (1.0 - smoothstep(0.95, 1.2, travel));
+              if (!selectionMotionEnabled) wave = 0.4;
+              float wire = 0.0;
+              ${
+                hasBoundary
+                  ? `vec3 edgeDistance = selectionBarycentric / max(fwidth(selectionBarycentric), vec3(0.0001));
+              wire = 1.0 - smoothstep(0.5, 1.2, min(edgeDistance.x, min(edgeDistance.y, edgeDistance.z)));`
+                  : ""
+              }
+              diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.38, 0.015, 0.025), wire * wave * 0.75);
+              diffuseColor.a = opacity * (0.14 + 0.48 * wave + 0.28 * wire * wave);
+            }
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v5:${hasBoundary}`;
+      `selection-processing-red-v6:${hasBoundary}`;
     return lines;
   }
 }

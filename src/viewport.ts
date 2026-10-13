@@ -2240,10 +2240,14 @@ export class Viewport {
     this.invalidate();
   }
 
-  setSelectionProcessing(active: boolean): void {
+  setSelectionProcessing(
+    active: boolean,
+    mode: "boundary" | "smoothing" = "boundary",
+  ): void {
     this.selectionProcessing.setActive(
       active,
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
+      mode,
     );
     this.invalidate();
   }

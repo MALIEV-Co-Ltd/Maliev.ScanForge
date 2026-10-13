@@ -72,6 +72,29 @@ const mutation = (api: ApplicationApi, requestId = "request-1") => ({
   requestId,
 });
 describe("shared application API", () => {
+  it("reports smoothing feedback through the same activity adapter used by MCP jobs", async () => {
+    const { api, host } = setup({ mesh_process: async () => ({ done: true }) });
+    const activity = vi.spyOn(host, "activity");
+    const result = await api.invoke("mesh_process", {
+      ...mutation(api),
+      entityId: "mesh",
+      operation: {
+        kind: "smooth",
+        tolerance: 0.001,
+        iterations: 2,
+        strength: 0.2,
+      },
+    });
+    expect(result.ok).toBe(true);
+    expect(activity).toHaveBeenCalledWith(
+      true,
+      "Agent/API: mesh_process",
+      "smoothing",
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(activity.mock.calls.some(([running]) => !running)).toBe(true);
+    api.dispose();
+  });
   it("publishes only commands with a real handler or gateway implementation", async () => {
     const { api, operations } = setup();
     const builtins = [

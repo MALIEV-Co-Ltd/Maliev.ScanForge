@@ -28,6 +28,8 @@ it("animates only while processing and restores the unmodified selection shader 
   expect(effect.update(1)).toBe(false);
   effect.setActive(true);
   expect(effect.update(2)).toBe(true);
+  expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
+  effect.update(4);
   expect(shader.uniforms.selectionProcessingTime.value).toBe(2);
   effect.setActive(false);
   expect(effect.update(3)).toBe(false);
@@ -57,6 +59,7 @@ it("pulses a restrained outline independently of triangle size, hides it after p
   expect(lines.every((line) => line.visible)).toBe(true);
   const peakWidth = lines[0].material.linewidth;
   const peakOpacity = lines[0].material.opacity;
+  effect.update(0);
   effect.update(Math.PI / 3);
   expect(lines[0].material.linewidth).toBe(peakWidth);
   expect(peakOpacity).toBeGreaterThan(lines[0].material.opacity * 1.5);
@@ -75,4 +78,47 @@ it("pulses a restrained outline independently of triangle size, hides it after p
   expect(lines.every((line) => line.visible)).toBe(true);
   geometry.dispose();
   material.dispose();
+});
+
+it("starts each smoothing ripple at the surface center and uses a static reduced-motion fallback", () => {
+  const effect = new SelectionProcessingHighlight();
+  const geometry = new THREE.PlaneGeometry(4, 4, 2, 2).toNonIndexed();
+  const material = new THREE.MeshBasicMaterial({
+    color: "#e44b5b",
+    opacity: 0.7,
+  });
+  const lines = effect.install(material, geometry);
+  const shader = {
+    uniforms: {} as Record<string, { value: unknown }>,
+    vertexShader: THREE.ShaderLib.basic.vertexShader,
+    fragmentShader: THREE.ShaderLib.basic.fragmentShader,
+  };
+  material.onBeforeCompile(
+    shader as THREE.WebGLProgramParametersWithUniforms,
+    {} as THREE.WebGLRenderer,
+  );
+  effect.setActive(true, false, "smoothing");
+  effect.update(100);
+  expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
+  expect(shader.uniforms.selectionSmoothing.value).toBe(true);
+  expect(
+    (shader.uniforms.selectionCenter.value as THREE.Vector3).length(),
+  ).toBe(0);
+  effect.update(101);
+  expect(shader.uniforms.selectionProcessingTime.value).toBe(1);
+  effect.setActive(false);
+  effect.setActive(true, true, "smoothing");
+  expect(shader.uniforms.selectionMotionEnabled.value).toBe(false);
+  expect(effect.update(102)).toBe(false);
+  expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
+  effect.setActive(false);
+  effect.setActive(true, false, "smoothing");
+  effect.update(500);
+  expect(shader.uniforms.selectionProcessingTime.value).toBe(0);
+  lines.forEach((line) => {
+    line.geometry.dispose();
+    line.material.dispose();
+  });
+  material.dispose();
+  geometry.dispose();
 });

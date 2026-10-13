@@ -1,4 +1,8 @@
 import { AppSelect } from "./AppSelect";
+import {
+  selectionProcessingMode,
+  type SelectionProcessingMode,
+} from "../selection-processing-mode";
 import "./ToolPanel.css";
 import "./ObjectList.css";
 import { objectContextActions } from "./object-context-actions";
@@ -314,6 +318,8 @@ export function App() {
   } | null>(null);
   const [actionBusy, setBusy] = useState(false);
   const [processingBusy, setProcessingBusy] = useState(false);
+  const [selectionProcessingEffect, setSelectionProcessingEffect] =
+    useState<SelectionProcessingMode>("boundary");
   const [scanTool, setScanTool] = useState<ScanToolId>("reducePolygons");
   const [scanToolProgress, setScanToolProgress] = useState("");
   const [scanToolFraction, setScanToolFraction] = useState<number>();
@@ -968,8 +974,13 @@ export function App() {
     );
   }, [scanBoundaryPaths, workspace, toolPanelOpen]);
   useEffect(() => {
-    viewport.current?.setSelectionProcessing(processingBusy);
-  }, [processingBusy]);
+    viewport.current?.setSelectionProcessing(
+      processingBusy,
+      selectionProcessingEffect,
+    );
+    if (!processingBusy && selectionProcessingEffect !== "boundary")
+      setSelectionProcessingEffect("boundary");
+  }, [processingBusy, selectionProcessingEffect]);
   useEffect(() => {
     viewport.current?.setSection(axis, offset, mode === "section");
     const preview = createSketch?.preview;
@@ -1304,6 +1315,9 @@ export function App() {
     )
       return;
     const source = selected;
+    setSelectionProcessingEffect(
+      selectionProcessingMode({ kind: "pointCloudEdit", ...operation }),
+    );
     const controller = new AbortController();
     scanEditAbort.current = controller;
     setProcessingBusy(true);
@@ -1380,6 +1394,9 @@ export function App() {
       setError("Create a separate mesh copy before editing an exact CAD body.");
       return;
     }
+    setSelectionProcessingEffect(
+      selectionProcessingMode({ kind: "scanEdit", ...operation }),
+    );
     const controller = new AbortController();
     scanEditAbort.current = controller;
     setProcessingBusy(true);
@@ -3570,9 +3587,10 @@ export function App() {
         setOriginVisible(patch.originVisible as boolean);
     },
     busy: () => busyRef.current,
-    activity: (running, label) => {
+    activity: (running, label, selectionMode) => {
       viewport.current?.setSelectionProcessing(
         running && label === "Agent/API: mesh_process",
+        selectionMode,
       );
       busyRef.current = running;
       setBusy(running);
