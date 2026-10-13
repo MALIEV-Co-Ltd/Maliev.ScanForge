@@ -5,6 +5,30 @@ import {
   type SketchFrame,
 } from "./sketch-frame";
 import type { Vec3 } from "./types";
+import type { NavigationCamera } from "./camera-gizmo";
+const ORIGIN_MARKER_RADIUS = 0.7;
+
+/** Keep the origin dot six CSS pixels across, independent of model size or zoom. */
+export function updateOriginMarker(
+  group: THREE.Group,
+  camera: NavigationCamera,
+  viewportHeight: number,
+): void {
+  const marker = group.children.find((child) => child.userData.originMarker);
+  if (!marker || !Number.isFinite(viewportHeight) || viewportHeight <= 0)
+    return;
+  camera.updateMatrixWorld();
+  const position = marker.getWorldPosition(new THREE.Vector3());
+  const depth = -position.applyMatrix4(camera.matrixWorldInverse).z;
+  const perspective = camera instanceof THREE.PerspectiveCamera;
+  marker.visible = !perspective || depth > 0;
+  if (!marker.visible) return;
+  const worldHeight =
+    (2 * (perspective ? depth : 1)) /
+    Math.abs(camera.projectionMatrix.elements[5]);
+  const scale = (3 * worldHeight) / (viewportHeight * ORIGIN_MARKER_RADIUS);
+  if (Number.isFinite(scale) && scale > 0) marker.scale.setScalar(scale);
+}
 export const ORIGIN_PLANES = ["OXY", "OYZ", "OXZ"] as const;
 export type OriginPlane = (typeof ORIGIN_PLANES)[number];
 export const PLANE_LABELS = {
@@ -93,10 +117,11 @@ export function createOriginGeometry(
     group.add(mesh, edge);
   }
   const marker = new THREE.Mesh(
-    new THREE.SphereGeometry(0.7, 10, 8),
+    new THREE.SphereGeometry(ORIGIN_MARKER_RADIUS, 10, 8),
     new THREE.MeshBasicMaterial({ color: 0xe5e5e5 }),
   );
   marker.name = "Origin (0, 0, 0) mm";
+  marker.userData.originMarker = true;
   group.add(marker);
   return group;
 }

@@ -46,6 +46,7 @@ import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import {
   createOriginGeometry,
   highlightOriginPlane,
+  updateOriginMarker,
   PLANE_LABELS,
   type OriginPlane,
 } from "./origin";
@@ -471,6 +472,11 @@ export class Viewport {
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
     this.updateControls();
+    updateOriginMarker(
+      this.originGeometry,
+      this.camera,
+      this.container.clientHeight,
+    );
     renderSceneWithGrid(
       this.renderer,
       this.scene,
