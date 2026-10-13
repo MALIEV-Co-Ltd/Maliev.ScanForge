@@ -515,3 +515,52 @@ Validation for this port: `npm run build` completed without warnings/errors;
 passed 151 tests; `npm test` passed 217 files and 10,430 tests. Scoped Prettier,
 diff whitespace and prohibited-name checks passed. The new helper has no UI
 consumer yet, so no browser behavior change is claimed for this slice.
+
+## Six-parameter refinement optimizer port
+
+`src/scan-native-refinement-simplex.ts` implements the original six-dimensional
+refinement search, separate from the paired-point optimizer. It evaluates the
+initial point first, then positive axis perturbations, using `abs(parameter) *
+step` for nonzero parameters and `step` for zero. The seven-point sort preserves
+equal-error ordering. Centroids, reflection, expansion, contraction and shrink
+retain the original arithmetic and comparison rules, including the negative
+contraction factor in the branch where reflection is no better than the worst
+point. The budget counts search iterations, not objective evaluations.
+
+Convergence requires both population standard deviation of the seven objective
+values at most 1e-8 and every sorted simplex point within Euclidean parameter
+distance 1e-10 of the best. The default step is Float32 0.0002 promoted to double
+(0.00019999999494757503), with a default budget of 1,000. Zero budget still
+initializes and evaluates the simplex, then reports nonconvergence. Cancellation
+and finite-input validation are application safeguards around the recovered
+search; callbacks receive copies so observers cannot corrupt the search state.
+
+Additional focused REA records from the seeded, complete function inventory:
+
+- Convergence `0x140b24de0`: `ev_cbba46997459a2ef3742c8d35590b0f0fdbaafdbde9b40f84b4059009700ff0d`.
+- Sorting `0x140b23c60`: `ev_d87855da586b661410b01573fe5c46da8d2c922c26e2cb4370164ee87c9f04fd`.
+- Initial simplex storage `0x140b24c20`: `ev_b14b96d22edd8009d7c7953d082afd7fb1ff28c37c423adc53d8cfd7cccb40be`.
+
+Twenty executions of the complete original optimizer use caller-supplied
+quadratic, constant, linear and anisotropic quadratic objectives at budgets 0,
+1, 12, 60 and 1,000. All 5,639 evaluated parameter vectors and objective values,
+final parameters, errors, iteration counts and convergence flags match the port
+byte-for-byte. The constant objective converges after 25 shrink iterations;
+the three other 1,000-budget captures exhaust their budgets. The controlled
+objectives isolate optimizer behavior; they do not reproduce the mesh/CAD query
+callback or establish full native alignment results. Allocation/CRT/cookie
+adapters are retained in fixture provenance. Mapped images were released and
+native/REA helper processes exited, with receipts retained outside the repository.
+
+The geometry-query workers and controller integration remain the next required
+boundary. This search helper has no UI consumer yet and establishes no multicore
+or complete preview/accept/cancel/undo parity.
+
+Validation: the isolated checkout at base `de8822b` plus this alignment slice
+passed `npm run build`, 22 focused tests, and all 218 files / 10,452 tests in
+`npm test`. Scoped Prettier, whitespace and prohibited-name checks passed. The
+shared-worktree full suite had two failures in concurrently edited polygon
+reduction code (reduction report markup and reduction worker contract); those
+changes were preserved and excluded from the isolated alignment checkout. This
+records the validation boundary rather than claiming the shared dirty worktree
+passed. The helper has no UI consumer, so no new browser behavior is claimed.
