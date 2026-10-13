@@ -1,0 +1,27 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedures": [
+      "0x1408c4c80",
+      "0x1408c4da0",
+      "0x1408c6c50",
+      "0x1408c6d40",
+      "0x1401de690"
+    ],
+    "originalSpatialConstructionExecuted": true,
+    "originalCornerMappingExecuted": true,
+    "originalFaceAcceptanceExecuted": true,
+    "allocationAndFaceStorageIntercepted": true,
+    "fullReaderExecuted": false
+  },
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "samples": [
+    {
+      "name": "owner-scan-1",
+      "vertexCount": 139338,
+      "triangleCount": 273139,
+      "verticesSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+      "trianglesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+    }
+  ]
+}
