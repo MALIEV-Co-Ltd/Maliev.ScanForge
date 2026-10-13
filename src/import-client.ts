@@ -49,6 +49,7 @@ export function importScan(
         progress?: number;
         positions?: Float32Array;
         source?: ScanSource;
+        pointCloud?: { normals?: Float32Array };
         error?: string;
       }>,
     ) => {
@@ -59,13 +60,16 @@ export function importScan(
       }
       cleanup();
       if (event.data.positions) {
-        options.onSource?.(
-          event.data.source ?? {
-            bytes: file.size,
-            triangles: event.data.positions.length / 9,
-            displayedTriangles: event.data.positions.length / 9,
-          },
-        );
+        if (event.data.pointCloud)
+          options.onPointCloud?.(event.data.pointCloud);
+        else
+          options.onSource?.(
+            event.data.source ?? {
+              bytes: file.size,
+              triangles: event.data.positions.length / 9,
+              displayedTriangles: event.data.positions.length / 9,
+            },
+          );
         resolve(event.data.positions);
       } else reject(new Error(event.data.error ?? "Scan import failed."));
     };

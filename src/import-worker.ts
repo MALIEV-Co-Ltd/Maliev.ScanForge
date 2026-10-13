@@ -1,6 +1,7 @@
 import { readScan, type ScanSource } from "./import-parser";
 import { convertScanUnits, type ScanUnit } from "./import-units";
 import { placeScanOnOrigin } from "./import-origin";
+import { readAscPointCloud } from "./asc-import";
 
 const scope = self as unknown as {
   onmessage: (
@@ -17,6 +18,20 @@ const scope = self as unknown as {
 scope.onmessage = async ({ data }) => {
   try {
     let source: ScanSource | undefined;
+    if (data.extension === "asc") {
+      const cloud = await readAscPointCloud(data.file, {
+        onProgress: (progress) => scope.postMessage({ progress }),
+      });
+      convertScanUnits(cloud.positions, data.unit);
+      if (data.placeAtOrigin) placeScanOnOrigin(cloud.positions, true);
+      const transfers = [cloud.positions.buffer as ArrayBuffer];
+      if (cloud.normals) transfers.push(cloud.normals.buffer as ArrayBuffer);
+      scope.postMessage(
+        { positions: cloud.positions, pointCloud: { normals: cloud.normals } },
+        transfers,
+      );
+      return;
+    }
     const positions = await readScan(data.file, data.extension, {
       previewTriangles: data.previewTriangles,
       onSource: (value) => {

@@ -185,6 +185,7 @@ import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
+import { pointCloudStats } from "../point-cloud";
 import {
   beginLandmarkAlignment,
   pickLandmark,
@@ -519,7 +520,12 @@ export function App() {
     [triangleMask],
   );
   const stats = useMemo(
-    () => (selected ? meshStats(selected.positions) : null),
+    () =>
+      selected
+        ? selected.kind === "pointcloud"
+          ? pointCloudStats(selected.positions)
+          : meshStats(selected.positions)
+        : null,
     [selected?.positions],
   );
   const section = useMemo(
@@ -2247,14 +2253,14 @@ export function App() {
     viewport.current?.setView("iso");
   }
   async function openFile(file: File, unit?: ScanUnit) {
-    if (!unit && /\.(stl|obj|ply)$/i.test(file.name)) {
+    if (!unit && /\.(stl|obj|ply|asc)$/i.test(file.name)) {
       setPendingScanImport(file);
       return;
     }
     await action(`Opening ${file.name}…`, async () => {
       setImportProgress({
         name: file.name,
-        fraction: /\.(stl|obj|ply|step|stp|iges|igs|brep)$/i.test(file.name)
+        fraction: /\.(stl|obj|ply|asc|step|stp|iges|igs|brep)$/i.test(file.name)
           ? 0
           : null,
       });
@@ -2360,6 +2366,7 @@ export function App() {
           const controller = new AbortController();
           importAbort.current = controller;
           let positions;
+          let pointNormals: number[] | undefined;
           let scanSource: ScanSource | undefined;
           try {
             positions = await importScan(file, {
@@ -2368,6 +2375,11 @@ export function App() {
               previewTriangles: previewImport ? 250_000 : undefined,
               onSource: (source) => {
                 scanSource = source;
+              },
+              onPointCloud: (cloud) => {
+                pointNormals = cloud.normals
+                  ? Array.from(cloud.normals)
+                  : undefined;
               },
               signal: controller.signal,
               onProgress: (progress) => {
@@ -2388,8 +2400,9 @@ export function App() {
               scanSource.displayedTriangles < scanSource.triangles
                 ? " [sampled preview]"
                 : ""),
-            kind: "mesh",
+            kind: extension === "asc" ? "pointcloud" : "mesh",
             positions,
+            normals: pointNormals,
             color: DEFAULT_PART_COLOR,
             visible: true,
             opacity: 1,
@@ -3485,7 +3498,7 @@ export function App() {
         ref={fileInput}
         type="file"
         hidden
-        accept=".stl,.obj,.ply,.step,.stp,.iges,.igs,.brep,.scanforge,.json"
+        accept=".stl,.obj,.ply,.asc,.step,.stp,.iges,.igs,.brep,.scanforge,.json"
         onChange={(e) => {
           const file = e.target.files?.[0];
           e.target.value = "";
@@ -4408,20 +4421,34 @@ export function App() {
                           </p>
                         )}
                       <dl>
-                        <dt>Vertices (triangle soup)</dt>
+                        <dt>
+                          {selected.kind === "pointcloud"
+                            ? "Points"
+                            : "Vertices (triangle soup)"}
+                        </dt>
                         <dd>{number(stats.vertices)}</dd>
-                        <dt>Triangles</dt>
-                        <dd>{number(stats.triangles)}</dd>
+                        {selected.kind !== "pointcloud" && (
+                          <>
+                            <dt>Triangles</dt>
+                            <dd>{number(stats.triangles)}</dd>
+                          </>
+                        )}
                         <dt>Bounds (mm)</dt>
                         <dd>{stats.size.map(number).join(" × ")}</dd>
-                        <dt>Surface area (mm²)</dt>
-                        <dd>{number(stats.area)}</dd>
-                        <dt>Volume estimate (mm³)</dt>
-                        <dd>{number(stats.volume)}</dd>
+                        {selected.kind !== "pointcloud" && (
+                          <>
+                            <dt>Surface area (mm²)</dt>
+                            <dd>{number(stats.area)}</dd>
+                            <dt>Volume estimate (mm³)</dt>
+                            <dd>{number(stats.volume)}</dd>
+                          </>
+                        )}
                       </dl>
-                      <p className="muted">
-                        Volume assumes a closed, consistently oriented mesh.
-                      </p>
+                      {selected.kind !== "pointcloud" && (
+                        <p className="muted">
+                          Volume assumes a closed, consistently oriented mesh.
+                        </p>
+                      )}
                     </Panel>
                     <Panel title="Display" className="display-panel">
                       <label className="slider-row">
@@ -5233,7 +5260,11 @@ export function App() {
       )}
       <StatusBar
         busy={busy}
-        facets={selected ? selected.positions.length / 9 : undefined}
+        facets={
+          selected && selected.kind !== "pointcloud"
+            ? selected.positions.length / 9
+            : undefined
+        }
         shortcuts={shortcutContext}
         operation={
           importProgress ? (

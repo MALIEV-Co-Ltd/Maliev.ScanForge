@@ -9,13 +9,20 @@ export interface MeshSelectionState {
   saved: { id: string; name: string; triangles: number[] }[];
 }
 export type EntityKind =
-  "mesh" | "cad" | "plane" | "sphere" | "cylinder" | "cone" | "box";
+  | "mesh"
+  | "pointcloud"
+  | "cad"
+  | "plane"
+  | "sphere"
+  | "cylinder"
+  | "cone"
+  | "box";
 export interface Entity {
   id: string;
   name: string;
   kind: EntityKind;
   positions: Positions;
-  /** Display normals evaluated from exact CAD surfaces, aligned to triangle vertices. */
+  /** CAD display normals or imported scanner normals, aligned to XYZ positions. */
   normals?: number[];
   /** Paired world-space points sampled from exact CAD topological edges. */
   edgePositions?: number[];

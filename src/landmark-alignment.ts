@@ -1,6 +1,7 @@
 import type { Entity, Vec3 } from "./types";
 import type { ProcessingResult } from "./processing-client";
 import { transformPoint } from "./registration";
+import { rotatePointNormals } from "./point-cloud";
 
 export interface LandmarkAlignment {
   moving: Entity;
@@ -14,7 +15,7 @@ export function beginLandmarkAlignment(
 ): LandmarkAlignment {
   if (
     moving.id === fixed.id ||
-    moving.kind !== "mesh" ||
+    (moving.kind !== "mesh" && moving.kind !== "pointcloud") ||
     moving.kernelId ||
     moving.parametric ||
     moving.surfacePatch
@@ -87,7 +88,17 @@ export function acceptLandmarkAlignment(
     throw new Error("Alignment preview does not match the moving scan.");
   return entities.map((e) =>
     e.id === session.moving.id
-      ? { ...e, positions: session.preview!.positions!, fit: undefined }
+      ? {
+          ...e,
+          positions: session.preview!.positions!,
+          normals: e.normals
+            ? rotatePointNormals(
+                e.normals,
+                session.preview!.registration!.transform.rotation,
+              )
+            : undefined,
+          fit: undefined,
+        }
       : e,
   );
 }

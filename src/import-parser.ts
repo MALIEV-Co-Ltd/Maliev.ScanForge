@@ -6,6 +6,7 @@ export interface ScanFile {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 export interface ScanImportOptions {
+  onPointCloud?: (cloud: { normals?: Float32Array }) => void;
   onProgress?: (fraction: number) => void;
   signal?: AbortSignal;
   /** Optional display budget, never a file-size acceptance limit. All records are validated. */

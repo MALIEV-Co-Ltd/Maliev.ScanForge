@@ -34,6 +34,7 @@ import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 import { importScan } from "../import-client";
+import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
 import { exportSectionDxf } from "../section-dxf";
@@ -208,6 +209,10 @@ function object(state: WorkspaceSnapshot, entityId: string) {
 }
 function editable(entity: Entity, meshOnly = false) {
   if (entity.locked) throw new Error("Object is locked.");
+  if (meshOnly && entity.kind === "pointcloud")
+    throw new Error(
+      "This tool requires triangle mesh geometry, not a point cloud.",
+    );
   if (meshOnly && (entity.kernelId || entity.parametric))
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
@@ -223,7 +228,9 @@ function summary(e: Entity) {
   } = e;
   return {
     ...metadata,
-    triangles: positions.length / 9,
+    ...(e.kind === "pointcloud"
+      ? { points: positions.length / 3 }
+      : { triangles: positions.length / 9 }),
     exactCad: !!e.kernelId,
     hasBrep: !!e.brep,
   };
@@ -494,6 +501,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_analyze: async (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      if (e.kind === "pointcloud")
+        throw new Error("Point clouds do not have triangle topology.");
       const result = await processMesh(
         {
           kind: "report",
@@ -514,6 +523,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         e = object(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      if (
+        e.kind === "pointcloud" &&
+        !["paired", "global", "icp"].includes(kind)
+      )
+        throw new Error("This operation requires triangle mesh geometry.");
       const readonly =
         [
           "report",
@@ -526,7 +540,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           ["inventory", "boundaryProject", "boundarySmooth"].includes(
             op.action,
           ));
-      if (!readonly) editable(e, true);
+      if (!readonly) editable(e, e.kind !== "pointcloud");
       if (
         "positions" in op ||
         "target" in op ||
@@ -605,7 +619,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let next = s.entities;
       const created: Entity[] = [];
       if (positions) {
-        const updated = meshEdited(e, positions);
+        const updated =
+          e.kind === "pointcloud"
+            ? {
+                ...e,
+                positions,
+                normals:
+                  e.normals && result.registration
+                    ? rotatePointNormals(
+                        e.normals,
+                        result.registration.transform.rotation,
+                      )
+                    : e.normals,
+              }
+            : meshEdited(e, positions);
         if (a.createNew) {
           updated.id = id();
           updated.name = `${e.name} ${kind}`;
@@ -985,16 +1012,23 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           throw error;
         }
       } else {
+        let pointNormals: number[] | undefined;
         const positions = await importScan(new File([blob], name), {
           unit: a.unit ?? "mm",
           signal: c.signal,
           onProgress: (f) => c.progress(f, "Importing scan"),
+          onPointCloud: (cloud) => {
+            pointNormals = cloud.normals
+              ? Array.from(cloud.normals)
+              : undefined;
+          },
         });
         entity = {
           id: id(),
           name,
-          kind: "mesh",
+          kind: extension === "asc" ? "pointcloud" : "mesh",
           positions,
+          normals: pointNormals,
           visible: true,
           color: DEFAULT_PART_COLOR,
           opacity: 1,
@@ -1016,7 +1050,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         if (entity.kernelId) await host.cad().release([entity.kernelId]);
         throw error;
       }
-      return { entityId: entity.id, triangles: entity.positions.length / 9 };
+      return entity.kind === "pointcloud"
+        ? { entityId: entity.id, points: entity.positions.length / 3 }
+        : { entityId: entity.id, triangles: entity.positions.length / 9 };
     },
     project_export: async (a, c) => {
       const s = host.snapshot(),

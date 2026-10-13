@@ -56,15 +56,20 @@ export function validateMeshSelection(
   }
 }
 
-export function validatePositions(value: unknown): asserts value is Positions {
+export function validatePositions(
+  value: unknown,
+  pointCloud = false,
+): asserts value is Positions {
   if (
     (!Array.isArray(value) && !(value instanceof Float32Array)) ||
     !value.length ||
-    value.length % 9 !== 0 ||
+    value.length % (pointCloud ? 3 : 9) !== 0 ||
     !value.every((x) => typeof x === "number" && Number.isFinite(x))
   ) {
     throw new Error(
-      "Invalid triangle geometry: coordinates must be finite complete triangles.",
+      pointCloud
+        ? "Invalid point geometry: coordinates must be finite complete XYZ points."
+        : "Invalid triangle geometry: coordinates must be finite complete triangles.",
     );
   }
 }
@@ -163,15 +168,22 @@ export function validateProject(value: unknown): Project {
   }
   const ids = new Set<string>();
   const entities: Entity[] = input.entities.map((entity) => {
-    validatePositions(entity.positions);
+    validatePositions(entity.positions, entity.kind === "pointcloud");
     if (
       typeof entity.id !== "string" ||
       ids.has(entity.id) ||
       typeof entity.name !== "string" ||
       entity.name.length > 200 ||
-      !["mesh", "cad", "plane", "sphere", "cylinder", "cone", "box"].includes(
-        entity.kind,
-      ) ||
+      ![
+        "mesh",
+        "pointcloud",
+        "cad",
+        "plane",
+        "sphere",
+        "cylinder",
+        "cone",
+        "box",
+      ].includes(entity.kind) ||
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
       typeof entity.visible !== "boolean" ||
@@ -187,6 +199,8 @@ export function validateProject(value: unknown): Project {
     ids.add(entity.id);
     if (entity.planeFrame !== undefined)
       validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
+    if (entity.kind === "pointcloud" && entity.meshSelection !== undefined)
+      throw new Error("Point clouds cannot contain triangle selections.");
     if (entity.meshSelection !== undefined)
       validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
     if (
@@ -219,7 +233,7 @@ export function validateProject(value: unknown): Project {
         entity.normals.length !== entity.positions.length ||
         !entity.normals.every(Number.isFinite))
     )
-      throw new Error("Invalid CAD normals.");
+      throw new Error("Invalid CAD normals or point-cloud normals.");
     if (
       entity.surfaceScanId !== undefined &&
       typeof entity.surfaceScanId !== "string"
@@ -356,7 +370,7 @@ export async function serializeProjectBlob(
       positions,
       ...metadata
     } = entities[index];
-    validatePositions(positions);
+    validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
     if (metadata.meshSelection !== undefined)
@@ -380,6 +394,7 @@ export async function serializeProjectBlob(
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();
   for (const entity of entities) {
+    if (entity.kind === "pointcloud") continue;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(
       "position",

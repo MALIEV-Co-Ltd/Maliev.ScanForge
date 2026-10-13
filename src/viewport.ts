@@ -75,6 +75,7 @@ import {
 } from "./sketch-drawing";
 
 type Item = {
+  pointCloud?: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>;
   edgePositions?: number[];
   cadEdges?: THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
   hidden?: number[];
@@ -481,7 +482,7 @@ export class Viewport {
     this.raycaster.setFromCamera(screen, this.camera);
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
-      .map((item) => item.mesh);
+      .map((item) => item.pointCloud ?? item.mesh);
     for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
     return this.raycaster
       .intersectObjects(meshes, false)
@@ -1449,7 +1450,7 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.mesh);
+      .map((item) => item.pointCloud ?? item.mesh);
     const hit = this.raycaster
       .intersectObjects(candidates, false)
       .find((candidate) =>
@@ -1516,7 +1517,7 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.mesh);
+      .map((item) => item.pointCloud ?? item.mesh);
     return this.raycaster
       .intersectObjects(meshes, false)
       .filter((hit) =>
@@ -1557,6 +1558,8 @@ export class Viewport {
         item.mesh.material.dispose();
         item.cadEdges?.geometry.dispose();
         item.cadEdges?.material.dispose();
+        item.pointCloud?.geometry.dispose();
+        item.pointCloud?.material.dispose();
         this.objects.delete(id);
       }
     }
@@ -1584,6 +1587,12 @@ export class Viewport {
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
         item.selectionIndex = undefined;
+        if (item.pointCloud) {
+          item.mesh.remove(item.pointCloud);
+          item.pointCloud.geometry.dispose();
+          item.pointCloud.material.dispose();
+          item.pointCloud = undefined;
+        }
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
@@ -1619,7 +1628,7 @@ export class Viewport {
             "normal",
             new THREE.Float32BufferAttribute(entity.normals, 3),
           );
-        else
+        else if (entity.kind !== "pointcloud")
           geometry.setAttribute(
             "normal",
             new THREE.BufferAttribute(
@@ -1629,6 +1638,26 @@ export class Viewport {
           );
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();
+        if (entity.kind === "pointcloud") {
+          const pointsGeometry = new THREE.BufferGeometry();
+          pointsGeometry.setAttribute(
+            "position",
+            geometry.getAttribute("position"),
+          );
+          pointsGeometry.computeBoundingBox();
+          pointsGeometry.computeBoundingSphere();
+          item.pointCloud = new THREE.Points(
+            pointsGeometry,
+            new THREE.PointsMaterial({
+              color: entity.color,
+              size: 2,
+              sizeAttenuation: false,
+            }),
+          );
+          item.pointCloud.userData.entityId = entity.id;
+          item.mesh.add(item.pointCloud);
+          geometry.setDrawRange(0, 0);
+        }
         item.mesh.geometry = geometry;
         item.positions = entity.positions;
         item.mesh.material.vertexColors = false;
@@ -1661,6 +1690,15 @@ export class Viewport {
         item.edgePositions = edgePositions;
       }
       item.color = entity.color;
+      if (item.pointCloud) {
+        item.pointCloud.name = entity.name;
+        item.pointCloud.material.color.set(entity.color);
+        item.pointCloud.material.opacity = entity.opacity;
+        item.pointCloud.material.transparent = entity.opacity < 1;
+        item.pointCloud.material.clippingPlanes = this.clipping
+          ? [this.clippingPlane]
+          : [];
+      }
       const material = item.mesh.material;
       this.normalsMaterials ??= new WeakMap();
       let updateNormals = this.normalsMaterials.get(material);
@@ -1704,6 +1742,11 @@ export class Viewport {
       }
     }
     if (!this.bounds.isEmpty()) {
+      if (this.raycaster)
+        this.raycaster.params.Points.threshold = Math.max(
+          this.bounds.getSize(new THREE.Vector3()).length() / 800,
+          0.05,
+        );
       this.extent = Math.max(
         this.bounds.getSize(new THREE.Vector3()).length(),
         0.01,
@@ -1947,6 +1990,11 @@ export class Viewport {
           : []),
       ];
       item.mesh.material.needsUpdate = true;
+      if (item.pointCloud) {
+        item.pointCloud.material.clippingPlanes =
+          item.mesh.material.clippingPlanes;
+        item.pointCloud.material.needsUpdate = true;
+      }
       if (item.cadEdges) {
         item.cadEdges.material.clippingPlanes =
           item.mesh.material.clippingPlanes;
@@ -2331,6 +2379,8 @@ export class Viewport {
       item.mesh.material.dispose();
       item.cadEdges?.geometry.dispose();
       item.cadEdges?.material.dispose();
+      item.pointCloud?.geometry.dispose();
+      item.pointCloud?.material.dispose();
     }
     this.objects.clear();
     this.clearGroup(this.section);

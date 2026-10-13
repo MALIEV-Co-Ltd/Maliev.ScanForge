@@ -1,8 +1,11 @@
 /** Translate the worker-owned scan buffer: XY bounds centered on the origin, base on Z=0.
  * Rigid translation preserves orientation, dimensions and triangle winding.
  */
-export function placeScanOnOrigin(positions: Float32Array): Float32Array {
-  if (!positions.length || positions.length % 9)
+export function placeScanOnOrigin(
+  positions: Float32Array,
+  pointCloud = false,
+): Float32Array {
+  if (!positions.length || positions.length % (pointCloud ? 3 : 9))
     throw new Error("Expected complete scan triangles for origin placement.");
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
