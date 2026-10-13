@@ -1,6 +1,5 @@
 import { expect, it, vi } from "vitest";
 import { ScanQuickTools } from "../src/ui/ScanQuickTools";
-import type { ReactElement } from "react";
 const moved = vi.hoisted(() => vi.fn());
 vi.mock("react", async () => ({
   ...(await vi.importActual("react")),
@@ -19,19 +18,15 @@ it("drags with pointer capture, clamps to the viewport and stops on cancellation
       onIsolate: noop,
       onInvert: noop,
     });
-    const children = tree.props.children as ReactElement<any>[];
-    const handle = children.find(
-      (child) => child.props["aria-label"] === "Move quick selection tools",
-    )!;
+    const handle = tree;
     const target = {
-      parentElement: {
-        getBoundingClientRect: () => ({
-          left: 200,
-          top: 100,
-          width: 230,
-          height: 38,
-        }),
-      },
+      getBoundingClientRect: () => ({
+        left: 200,
+        top: 100,
+        width: 230,
+        height: 38,
+      }),
+      closest: () => null,
       setPointerCapture: vi.fn(),
       hasPointerCapture: () => true,
       releasePointerCapture: vi.fn(),
@@ -42,6 +37,7 @@ it("drags with pointer capture, clamps to the viewport and stops on cancellation
       clientX: 210,
       clientY: 110,
       currentTarget: target,
+      target,
       preventDefault: vi.fn(),
       stopPropagation: vi.fn(),
     };
@@ -58,6 +54,20 @@ it("drags with pointer capture, clamps to the viewport and stops on cancellation
     expect(moved).toHaveBeenCalledTimes(calls);
     handle.props.onKeyDown({ ...event, key: "ArrowRight", shiftKey: false });
     expect(moved).toHaveBeenLastCalledWith({ x: 210, y: 100 });
+    const afterKeyboard = moved.mock.calls.length;
+    const buttonTarget = { closest: () => ({}) };
+    handle.props.onPointerDown({ ...event, target: buttonTarget });
+    handle.props.onPointerMove(event);
+    handle.props.onKeyDown({
+      ...event,
+      target: buttonTarget,
+      key: "ArrowRight",
+    });
+    expect(moved).toHaveBeenCalledTimes(afterKeyboard);
+    handle.props.onPointerDown(event);
+    handle.props.onPointerCancel();
+    handle.props.onPointerMove(event);
+    expect(moved).toHaveBeenCalledTimes(afterKeyboard);
   } finally {
     vi.unstubAllGlobals();
   }

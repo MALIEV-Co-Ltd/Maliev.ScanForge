@@ -24,7 +24,7 @@ export function ScanQuickTools(props: {
     top: number;
   } | null>(null);
   function move(x: number, y: number, element: HTMLElement) {
-    const rect = element.parentElement!.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     setPosition({
       x: Math.max(8, Math.min(window.innerWidth - rect.width - 8, x)),
       y: Math.max(8, Math.min(window.innerHeight - rect.height - 8, y)),
@@ -47,70 +47,68 @@ export function ScanQuickTools(props: {
           ),
         top: position?.y ?? Math.max(8, props.y - 48),
       }}
-    >
-      <button
-        className="scan-quick-drag-handle"
-        aria-label="Move quick selection tools"
-        title="Drag to move � arrow keys to reposition"
-        onPointerDown={(event) => {
-          if (event.button !== 0) return;
-          event.preventDefault();
-          event.stopPropagation();
-          const rect =
-            event.currentTarget.parentElement!.getBoundingClientRect();
-          drag.current = {
-            pointer: event.pointerId,
-            x: event.clientX,
-            y: event.clientY,
-            left: rect.left,
-            top: rect.top,
-          };
-          event.currentTarget.setPointerCapture(event.pointerId);
-        }}
-        onPointerMove={(event) => {
-          const start = drag.current;
-          if (start?.pointer === event.pointerId)
-            move(
-              start.left + event.clientX - start.x,
-              start.top + event.clientY - start.y,
-              event.currentTarget,
-            );
-        }}
-        onPointerUp={(event) => {
-          if (drag.current?.pointer === event.pointerId) {
-            drag.current = null;
-            if (event.currentTarget.hasPointerCapture(event.pointerId))
-              event.currentTarget.releasePointerCapture(event.pointerId);
-          }
-        }}
-        onPointerCancel={() => {
-          drag.current = null;
-        }}
-        onLostPointerCapture={() => {
-          drag.current = null;
-        }}
-        onKeyDown={(event) => {
-          const direction = {
-            ArrowLeft: [-1, 0],
-            ArrowRight: [1, 0],
-            ArrowUp: [0, -1],
-            ArrowDown: [0, 1],
-          }[event.key];
-          if (!direction) return;
-          event.preventDefault();
-          event.stopPropagation();
-          const rect =
-            event.currentTarget.parentElement!.getBoundingClientRect();
-          const step = event.shiftKey ? 40 : 10;
+      tabIndex={0}
+      aria-description="Drag the toolbar background to move it, or focus the toolbar and use arrow keys."
+      onPointerDown={(event) => {
+        if (event.button !== 0 || (event.target as Element).closest("button"))
+          return;
+        event.preventDefault();
+        event.stopPropagation();
+        const rect = event.currentTarget.getBoundingClientRect();
+        drag.current = {
+          pointer: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+          left: rect.left,
+          top: rect.top,
+        };
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }}
+      onPointerMove={(event) => {
+        const start = drag.current;
+        if (start?.pointer === event.pointerId)
           move(
-            rect.left + direction[0] * step,
-            rect.top + direction[1] * step,
+            start.left + event.clientX - start.x,
+            start.top + event.clientY - start.y,
             event.currentTarget,
           );
-        }}
-      >
-        <GripVertical size={18} />
-      </button>
+      }}
+      onPointerUp={(event) => {
+        if (drag.current?.pointer === event.pointerId) {
+          drag.current = null;
+          if (event.currentTarget.hasPointerCapture(event.pointerId))
+            event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+      }}
+      onPointerCancel={() => {
+        drag.current = null;
+      }}
+      onLostPointerCapture={() => {
+        drag.current = null;
+      }}
+      onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const direction = {
+          ArrowLeft: [-1, 0],
+          ArrowRight: [1, 0],
+          ArrowUp: [0, -1],
+          ArrowDown: [0, 1],
+        }[event.key];
+        if (!direction) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const rect = event.currentTarget.getBoundingClientRect();
+        const step = event.shiftKey ? 40 : 10;
+        move(
+          rect.left + direction[0] * step,
+          rect.top + direction[1] * step,
+          event.currentTarget,
+        );
+      }}
+    >
+      <span className="scan-quick-grip" aria-hidden="true" title="Drag to move">
+        <GripVertical size={12} />
+      </span>
       <button
         title="Delete selected"
         aria-label="Delete selected"

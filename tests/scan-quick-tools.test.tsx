@@ -15,6 +15,9 @@ it("exposes selection actions and enables geometry tools only with working callb
     />,
   );
   expect(html).toContain('role="toolbar"');
+  expect(html).toContain('tabindex="0"');
+  expect(html).toContain('class="scan-quick-grip" aria-hidden="true"');
+  expect(html).not.toContain('aria-label="Move quick selection tools"');
   for (const label of [
     "Delete selected",
     "Hide selected",
@@ -29,7 +32,6 @@ it("exposes selection actions and enables geometry tools only with working callb
     (match) => match[1],
   );
   expect(labels).toEqual([
-    "Move quick selection tools",
     "Delete selected",
     "Defeature",
     "Smooth selected",
