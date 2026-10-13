@@ -1,0 +1,34 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "worker": "0x140aa9a20",
+    "orientationWorker": "0x140aa96b0",
+    "nearestQuery": "0x140213e90",
+    "triangleLeaf": "0x140214b40",
+    "patchedImports": ["CRT sqrt", "CRT cos"],
+    "originalWorkersExecuted": true,
+    "callerBuiltNodes": true,
+    "fullUiParity": false
+  },
+  "targetNormal": [1, 1, 1],
+  "samples": [
+    {
+      "name": "negative-cancellation",
+      "points": [[0.5, 0.5, 0.125]],
+      "normals": [[1, -2.980232238769531e-8, -1]],
+      "votes": [0, 1]
+    },
+    {
+      "name": "positive-cancellation",
+      "points": [[0.5, 0.5, 0.125]],
+      "normals": [[1, 2.980232238769531e-8, -1]],
+      "votes": [1, 0]
+    },
+    {
+      "name": "zero-cancellation",
+      "points": [[0.5, 0.5, 0.125]],
+      "normals": [[1, 0, -1]],
+      "votes": [1, 0]
+    }
+  ]
+}

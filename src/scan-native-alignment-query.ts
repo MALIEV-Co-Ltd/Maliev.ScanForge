@@ -17,6 +17,66 @@ const transformed = (p: readonly number[], m: readonly number[]) => [
   Math.fround(p[0] * m[4] + p[1] * m[5] + p[2] * m[6] + m[7]),
   Math.fround(p[0] * m[8] + p[1] * m[9] + p[2] * m[10] + m[11]),
 ];
+/** The orientation pass uses an unrestricted query and float32 transformed normals. */
+export function nativeAlignmentOrientationWorker(
+  vertices: readonly AlignmentQueryVertex[],
+  query: (
+    point: readonly number[],
+    radius: number,
+  ) => AlignmentQueryHit | undefined,
+  options: {
+    transform?: readonly number[];
+    rotation?: readonly number[];
+  } = {},
+) {
+  let positive = 0,
+    negative = 0;
+  for (const vertex of vertices) {
+    if ((vertex.flags & 5) !== 4) continue;
+    const hit = query(
+      transformed(vertex.point, options.transform ?? identity),
+      ALIGNMENT_QUERY_SENTINEL,
+    );
+    if (!hit || !(Math.abs(hit.distance) < ALIGNMENT_QUERY_SENTINEL)) continue;
+    const normal = transformed(vertex.normal, options.rotation ?? identity);
+    const dot =
+      hit.normal[1] * normal[1] +
+      hit.normal[0] * normal[0] +
+      hit.normal[2] * normal[2];
+    if (dot >= 0) positive++;
+    else negative++;
+  }
+  return [positive, negative] as const;
+}
+
+/** Controller vote reduction; equal totals select the negative orientation. */
+export function nativeAlignmentOrientationSign(
+  workers: readonly (readonly [number, number])[],
+) {
+  let positive = 0,
+    negative = 0;
+  for (const votes of workers) {
+    positive = (positive + votes[0]) | 0;
+    negative = (negative + votes[1]) | 0;
+  }
+  return positive > negative ? 1 : -1;
+}
+
+/** Native controller reduces errors in worker order and rejects any empty worker. */
+export function nativeAlignmentQueryError(
+  workers: readonly { maximum: number; error: number }[],
+  cancelled = false,
+) {
+  if (cancelled || workers.length === 0) return ALIGNMENT_QUERY_SENTINEL;
+  let error = 0;
+  for (const worker of workers) {
+    if (worker.maximum === -ALIGNMENT_QUERY_SENTINEL)
+      return ALIGNMENT_QUERY_SENTINEL;
+    error += worker.error;
+  }
+  return error;
+}
+
 export function nativeAlignmentQueryWorker(
   vertices: readonly AlignmentQueryVertex[],
   query: (
