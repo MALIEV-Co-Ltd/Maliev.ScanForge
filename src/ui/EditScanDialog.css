@@ -1,0 +1,172 @@
+section.edit-scan-dialog {
+  padding: 12px;
+}
+.edit-scan-name {
+  margin: 0 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.edit-scan-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+section.edit-scan-dialog .edit-scan-section h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.edit-scan-section h3 small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+section.edit-scan-dialog .scan-diagnostics {
+  margin-bottom: 0;
+}
+section.edit-scan-dialog .scan-diagnostics > div {
+  margin: 0;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+}
+section.edit-scan-dialog .scan-diagnostics > small {
+  margin-top: 6px;
+}
+section.edit-scan-dialog .scan-tool-row,
+section.edit-scan-dialog .edit-scan-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0 0 8px;
+}
+section.edit-scan-dialog .scan-tool-row button,
+section.edit-scan-dialog .edit-scan-actions button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: auto;
+  height: auto;
+  min-height: 36px;
+  padding: 3px 2px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+section.edit-scan-dialog .scan-tool-row button[aria-pressed="true"] {
+  background: var(--selected);
+  color: var(--selected-text);
+  border-color: var(--accent);
+}
+section.edit-scan-dialog .edit-scan-through {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 7px;
+  text-align: left;
+}
+.edit-scan-through[aria-pressed="true"] {
+  background: var(--selected);
+  border-color: var(--accent);
+}
+section.edit-scan-dialog .check {
+  margin: 7px 0;
+}
+section.edit-scan-dialog .button-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0 0;
+}
+section.edit-scan-dialog .button-row button {
+  padding: 6px;
+  font-size: 11px;
+}
+section.edit-scan-dialog .edit-scan-create {
+  margin: 0 0 10px;
+  padding: 8px;
+}
+.edit-scan-more summary {
+  cursor: pointer;
+  padding: 6px 0;
+  font-weight: 600;
+  font-size: 11px;
+}
+.edit-scan-more summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+section.edit-scan-dialog .edit-scan-extra {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 4px;
+}
+.edit-scan-additional {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+.edit-scan-counts,
+.edit-scan-hint {
+  font-size: 10px;
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+section.edit-scan-dialog .scan-dialog-footer {
+  margin-bottom: 0;
+}
+
+section.edit-scan-dialog .scan-diagnostics button {
+  min-height: 26px;
+  padding: 3px 7px;
+  font-size: 11px;
+}
+section.edit-scan-dialog .scan-diagnostics > div > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+section.edit-scan-dialog .edit-scan-actions button {
+  flex-direction: row;
+  min-height: 30px;
+  gap: 4px;
+}
+section.edit-scan-dialog .edit-scan-section h3 {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+}
+section.edit-scan-dialog .muted {
+  font-size: 10px;
+  margin: 6px 0;
+}
+section.edit-scan-dialog .edit-scan-create .button-row {
+  margin-top: 0;
+}
+
+section.edit-scan-dialog .scan-tool-row button {
+  flex-direction: row;
+  min-height: 32px;
+  gap: 4px;
+}
+section.edit-scan-dialog .scan-tool-row button svg,
+section.edit-scan-dialog .edit-scan-through svg {
+  width: 18px;
+  height: 18px;
+}
+section.edit-scan-dialog .edit-scan-through {
+  min-height: 28px;
+  padding: 3px 7px;
+}
+section.edit-scan-dialog .edit-scan-create {
+  padding: 5px;
+}
+section.edit-scan-dialog .scan-dialog-footer {
+  padding-top: 6px;
+  margin-top: 6px;
+}

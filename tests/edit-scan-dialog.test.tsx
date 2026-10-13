@@ -46,6 +46,53 @@ function button(markup: string, label: string) {
   )?.[0];
 }
 describe("dedicated scan edit dialog", () => {
+  it("labels selection buttons visibly and groups secondary operations in closed disclosures", () => {
+    const html = render({ selectedCount: 12 });
+    for (const [label, text] of [
+      ["Magic wand", "Wand"],
+      ["Free hand (filled)", "Brush"],
+      ["Free hand", "Outline"],
+      ["Select by drawing a line", "Line"],
+      ["Select by drawing a rectangle", "Rectangle"],
+      ["Select by drawing a circle", "Circle"],
+      ["Select all triangles", "Select all"],
+      ["Deselect all", "Clear"],
+      ["Invert selection", "Invert"],
+      ["Enlarge selection", "Enlarge"],
+    ]) {
+      const opening = button(html, label)!;
+      const content = html.slice(
+        html.indexOf(opening),
+        html.indexOf("</button>", html.indexOf(opening)),
+      );
+      expect(content).toContain(`<span>${text}</span>`);
+    }
+    for (const heading of [
+      "Mesh information",
+      "Selection tools",
+      "Selection actions",
+      "Display",
+    ])
+      expect(html).toContain(heading);
+    for (const title of [
+      "More selection actions",
+      "Additional tools &amp; display",
+    ])
+      expect(html).toMatch(
+        new RegExp(`<details[^>]*><summary>${title}</summary>`),
+      );
+    expect(html).not.toMatch(/<details[^>]*\sopen(?:=|>)/);
+    expect(html).toContain('title="Fixture scan"');
+    expect(html).toContain("12 selected");
+  });
+  it("keeps connected-component settings contextual to the wand tool", () => {
+    expect(render({ tool: "wand" })).toContain(
+      "Select all connected triangles",
+    );
+    expect(render({ tool: "brush" })).not.toContain(
+      "Select all connected triangles",
+    );
+  });
   it("disables angle filtering for connected-component wand selection", () => {
     const html = render({ tool: "wand", allConnected: true });
     expect(
