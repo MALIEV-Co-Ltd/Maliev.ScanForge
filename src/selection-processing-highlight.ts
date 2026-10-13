@@ -170,15 +170,15 @@ export class SelectionProcessingHighlight {
               wire = 1.0 - smoothstep(0.5, 1.2, min(edgeDistance.x, min(edgeDistance.y, edgeDistance.z)));`
                   : ""
               }
-              diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.38, 0.015, 0.025), wire * wave * 0.75);
-              diffuseColor.a = opacity * (0.14 + 0.48 * wave + 0.28 * wire * wave);
+              diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.055, 0.060, 0.070), wire);
+              diffuseColor.a = opacity * mix(0.14 + 0.48 * wave, 0.85 * wave, wire);
             }
           }
         `,
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v6:${hasBoundary}`;
+      `selection-processing-red-v7:${hasBoundary}`;
     return lines;
   }
 }
