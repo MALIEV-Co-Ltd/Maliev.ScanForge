@@ -15,7 +15,7 @@ const labels: Partial<Record<ShortcutActionId, string>> = {
   "view-front": "Front view",
   "view-back": "Back view",
   "view-isometric": "Isometric view",
-  "rotate-view": "Rotate view 90Â°",
+  "rotate-view": "Rotate view 90\u00b0",
   "hide-meshes": "Hide meshes",
   "hide-selected": "Hide selected object or triangles",
   "new-sketch": "Create sketch",
