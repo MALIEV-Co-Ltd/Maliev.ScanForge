@@ -88,3 +88,38 @@ it("aligns a point cloud and rotates its normals while keeping the fixed target 
   expect(result[0].normals).toEqual([0, 1, 0, -1, 0, 0, 0, 0, 1]);
   expect(result[1]).toBe(fixed);
 });
+
+it("round trips point selections using point indices instead of facets", async () => {
+  const selected = {
+    ...cloud,
+    meshSelection: {
+      hidden: [1],
+      saved: [{ id: "saved", name: "First", triangles: [0] }],
+    },
+  };
+  expect(
+    parseProject(serializeProject("Scan", [selected])).entities[0]
+      .meshSelection,
+  ).toEqual(selected.meshSelection);
+  expect(
+    parseProject(await (await serializeProjectBlob("Scan", [selected])).text())
+      .entities[0].meshSelection,
+  ).toEqual(selected.meshSelection);
+  const decoded = await decodeProjectFile(
+    await encodeProjectFile({
+      project: parseProject(serializeProject("Scan", [selected])),
+      history: [],
+      future: [],
+    }),
+  );
+  expect(decoded.project.entities[0].meshSelection).toEqual(
+    selected.meshSelection,
+  );
+  expect(() =>
+    parseProject(
+      serializeProject("Scan", [
+        { ...selected, meshSelection: { hidden: [2], saved: [] } },
+      ]),
+    ),
+  ).toThrow();
+});

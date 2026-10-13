@@ -138,6 +138,11 @@ import {
   type HidAccess,
   type SpaceMousePreferences,
 } from "../spacemouse";
+import { PointCloudTools } from "./PointCloudTools";
+import {
+  editPointCloud,
+  type PointCloudEditRequest,
+} from "../point-cloud-processing";
 import { partitionTriangles, selectionCount } from "../selection";
 import { fittedPrimitive } from "../fitted-primitive";
 import {
@@ -655,7 +660,11 @@ export function App() {
       viewport.current.setTheme(resolveTheme(theme));
       viewport.current.onSelectionStatus = (status) =>
         setMessage(
-          status === "pending" ? "Selecting facets…" : "Selection ready",
+          status === "pending"
+            ? brushRef.current.entity?.kind === "pointcloud"
+              ? "Selecting points..."
+              : "Selecting facets..."
+            : "Selection ready",
         );
       spaceMouse.current = new SpaceMouseController(
         (navigator as Navigator & { hid?: HidAccess }).hid,
@@ -846,7 +855,7 @@ export function App() {
   }, [selectedId, selected?.positions]);
   useEffect(() => {
     const origin = wandRegion.current;
-    if (!origin) return;
+    if (!origin || selected?.kind === "pointcloud") return;
     if (
       origin.entityId !== selectedId ||
       origin.positions !== selected?.positions ||
@@ -1110,7 +1119,7 @@ export function App() {
       record = {
         positions: entity.positions,
         session: new SelectionSession(
-          entity.positions.length / 9,
+          entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
           entity.meshSelection?.hidden,
         ),
       };
@@ -1152,7 +1161,9 @@ export function App() {
     const session = sessionFor(entity);
     const mask =
       (typeof next === "function" ? next(session.state.mask) : next) ??
-      new Uint8Array(entity.positions.length / 9);
+      new Uint8Array(
+        entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
+      );
     const hidden = new Set(session.state.hidden);
     session.set({
       mask: Uint8Array.from(mask, (v, i) => (hidden.has(i) ? 0 : v)),
@@ -1181,7 +1192,7 @@ export function App() {
       revealed = new Set(lastHiddenSelection.current);
     session.set({
       mask: indicesMask(
-        selected.positions.length / 9,
+        selected.positions.length / (selected.kind === "pointcloud" ? 3 : 9),
         lastHiddenSelection.current,
       ),
       hidden: session.state.hidden.filter((index) => !revealed.has(index)),
@@ -1191,6 +1202,14 @@ export function App() {
   }
   async function morphSelection(operation: "grow" | "shrink" | "boundary") {
     if (!selected || busy || scanEditAbort.current) return;
+    if (selected.kind === "pointcloud") {
+      if (operation !== "boundary")
+        await runPointEdit({
+          action: operation,
+          selection: triangleMask ?? undefined,
+        });
+      return;
+    }
     const controller = new AbortController();
     scanEditAbort.current = controller;
     setProcessingBusy(true);
@@ -1271,11 +1290,89 @@ export function App() {
     operationLabel.current = null;
     setMessage(label);
   }
+  async function runPointEdit(
+    operation: Omit<PointCloudEditRequest, "kind" | "positions" | "normals">,
+  ) {
+    if (
+      !selected ||
+      selected.kind !== "pointcloud" ||
+      busy ||
+      scanEditAbort.current
+    )
+      return;
+    const source = selected;
+    const controller = new AbortController();
+    scanEditAbort.current = controller;
+    setProcessingBusy(true);
+    setError("");
+    try {
+      const result = await processMesh(
+        {
+          kind: "pointCloudEdit",
+          positions: source.positions,
+          normals: source.normals,
+          ...operation,
+        },
+        {
+          signal: controller.signal,
+          onProgress: (fraction, stage) =>
+            setMessage(`${stage}  -  ${Math.round(fraction * 100)}%`),
+        },
+      );
+      if (controller.signal.aborted) return;
+      const edited = result.pointCloudEdit;
+      if (edited?.selection) changeSelection(edited.selection);
+      if (edited?.positions) {
+        operationLabel.current = `Point cloud ${operation.action}`;
+        commit(
+          edited.positions.length
+            ? entities.map((entity) =>
+                entity.id === source.id
+                  ? {
+                      ...entity,
+                      positions: edited.positions!,
+                      normals: edited.normals
+                        ? Array.from(edited.normals)
+                        : undefined,
+                      meshSelection: undefined,
+                    }
+                  : entity,
+              )
+            : entities.filter((entity) => entity.id !== source.id),
+        );
+        operationLabel.current = null;
+        if (!edited.positions.length) setSelectedId(null);
+        setMessage(`${edited.positions.length / 3} points retained`);
+      }
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        setError(errorText(error));
+        setMessage("Point cloud edit failed  -  original points retained");
+      }
+    } finally {
+      if (scanEditAbort.current === controller) {
+        scanEditAbort.current = null;
+        setProcessingBusy(false);
+      }
+    }
+  }
   async function runScanEdit(
     operation: Omit<ScanEditRequest, "kind" | "positions">,
     label: string,
   ) {
     if (!selected || busy || scanEditAbort.current) return;
+    if (selected.kind === "pointcloud") {
+      if (operation.action === "smoothSelected")
+        await runPointEdit({
+          action: "smooth",
+          selection: operation.selection,
+        });
+      else
+        setError(
+          "This operation needs triangle topology. Use point-cloud processing for scan points.",
+        );
+      return;
+    }
     if (selected.parametric || selected.kernelId) {
       setError("Create a separate mesh copy before editing an exact CAD body.");
       return;
@@ -1375,7 +1472,10 @@ export function App() {
     const session = sessionFor(entity),
       chosen = new Set(saved.triangles);
     session.set({
-      mask: indicesMask(entity.positions.length / 9, saved.triangles),
+      mask: indicesMask(
+        entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
+        saved.triangles,
+      ),
       hidden: session.state.hidden.filter((i) => !chosen.has(i)),
     });
     applySelectionState(entity, session.state);
@@ -1713,6 +1813,14 @@ export function App() {
     setMode("inspect");
   }
   function openScanTool(tool: ScanToolId) {
+    if (selected?.kind === "pointcloud") {
+      setMode("brush");
+      showTools("mesh");
+      setMessage(
+        "Use point-cloud processing to simplify or reduce scan noise.",
+      );
+      return;
+    }
     setScanToolFraction(undefined);
     setScanPreview(null);
     releaseProcessingSession();
@@ -2427,13 +2535,24 @@ export function App() {
       );
     });
   }
-  function growSelection(clickedSeeds?: Uint8Array, remove = false) {
+  function growSelection(
+    clickedSeeds?: Uint8Array,
+    remove = false,
+    wholeComponent = false,
+  ) {
     if (
       !selected ||
       busy ||
       (!clickedSeeds && (!triangleMask || !selectedTriangleCount))
     )
       return;
+    if (selected.kind === "pointcloud") {
+      void runPointEdit({
+        action: "connectedSelection",
+        selection: clickedSeeds ?? triangleMask ?? undefined,
+      });
+      return;
+    }
     const source = selected;
     const seeds = new Uint8Array(clickedSeeds ?? triangleMask!);
     const baseline = new Uint8Array(sessionFor(source).state.mask);
@@ -2449,7 +2568,7 @@ export function App() {
             seeds,
             tolerance: selectionTolerance,
             angleDegrees: selectionAngle,
-            allConnected,
+            allConnected: wholeComponent || allConnected,
           },
           {
             signal: controller.signal,
@@ -2515,6 +2634,61 @@ export function App() {
       return;
     }
     if (!selected || !triangleMask || !selectedTriangleCount) return;
+    if (selected.kind === "pointcloud") {
+      try {
+        const request = {
+          kind: "pointCloudEdit" as const,
+          positions: selected.positions,
+          normals: selected.normals,
+          selection: triangleMask,
+        };
+        const picked =
+          operation !== "delete"
+            ? editPointCloud({ ...request, action: "extract" })
+            : undefined;
+        const remainder =
+          operation !== "copy"
+            ? editPointCloud({ ...request, action: "delete" })
+            : undefined;
+        let next = entities;
+        if (remainder)
+          next = remainder.positions!.length
+            ? next.map((entity) =>
+                entity.id === selected.id
+                  ? {
+                      ...entity,
+                      positions: remainder.positions!,
+                      normals: remainder.normals
+                        ? Array.from(remainder.normals)
+                        : undefined,
+                      meshSelection: undefined,
+                    }
+                  : entity,
+              )
+            : next.filter((entity) => entity.id !== selected.id);
+        if (picked) {
+          const created: Entity = {
+            ...selected,
+            id: crypto.randomUUID(),
+            name: `${selected.name} selection`,
+            positions: picked.positions!,
+            normals: picked.normals ? Array.from(picked.normals) : undefined,
+            meshSelection: undefined,
+          };
+          next = [...next, created];
+          setSelectedId(created.id);
+        } else if (!remainder?.positions?.length) setSelectedId(null);
+        operationLabel.current = `${operation} ${selectedTriangleCount} points`;
+        commit(next);
+        operationLabel.current = null;
+        setMessage(
+          `${selectedTriangleCount} points ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
+        );
+      } catch (error) {
+        setError(errorText(error));
+      }
+      return;
+    }
     const { selected: picked, remainder } = partitionTriangles(
       selected.positions,
       triangleMask,
@@ -3774,7 +3948,8 @@ export function App() {
                             if (selected)
                               changeSelection(
                                 new Uint8Array(
-                                  selected.positions.length / 9,
+                                  selected.positions.length /
+                                    (selected.kind === "pointcloud" ? 3 : 9),
                                 ).fill(1),
                               );
                           },
@@ -3786,7 +3961,11 @@ export function App() {
                             if (selected)
                               changeSelection(
                                 Uint8Array.from(
-                                  { length: selected.positions.length / 9 },
+                                  {
+                                    length:
+                                      selected.positions.length /
+                                      (selected.kind === "pointcloud" ? 3 : 9),
+                                  },
                                   (_, i) => (triangleMask?.[i] ? 0 : 1),
                                 ),
                               );
@@ -3893,7 +4072,11 @@ export function App() {
               onInvert={() =>
                 changeSelection(
                   Uint8Array.from(
-                    { length: selected!.positions.length / 9 },
+                    {
+                      length:
+                        selected!.positions.length /
+                        (selected!.kind === "pointcloud" ? 3 : 9),
+                    },
                     (_, i) => (triangleMask?.[i] ? 0 : 1),
                   ),
                 )
@@ -4417,6 +4600,18 @@ export function App() {
               key={selected.id}
               name={selected.name}
               positions={selected.positions}
+              pointCloud={selected.kind === "pointcloud"}
+              pointTools={
+                selected.kind === "pointcloud" ? (
+                  <PointCloudTools
+                    count={selected.positions.length / 3}
+                    selection={triangleMask}
+                    busy={busy}
+                    onApply={runPointEdit}
+                  />
+                ) : undefined
+              }
+              onConnected={() => growSelection(undefined, false, true)}
               tool={selectionTool}
               onTool={(tool) => {
                 setScanBoundaryPaths([]);
@@ -4437,7 +4632,10 @@ export function App() {
               onMorph={morphSelection}
               onSelectAll={() =>
                 changeSelection(
-                  new Uint8Array(selected.positions.length / 9).fill(1),
+                  new Uint8Array(
+                    selected.positions.length /
+                      (selected.kind === "pointcloud" ? 3 : 9),
+                  ).fill(1),
                 )
               }
               onRevealSelected={revealSelectedTriangles}
@@ -4456,7 +4654,11 @@ export function App() {
               onInvert={() =>
                 changeSelection(
                   Uint8Array.from(
-                    { length: selected.positions.length / 9 },
+                    {
+                      length:
+                        selected.positions.length /
+                        (selected.kind === "pointcloud" ? 3 : 9),
+                    },
                     (_, index) => (triangleMask?.[index] ? 0 : 1),
                   ),
                 )
@@ -5364,6 +5566,11 @@ export function App() {
         facets={
           selected && selected.kind !== "pointcloud"
             ? selected.positions.length / 9
+            : undefined
+        }
+        points={
+          selected?.kind === "pointcloud"
+            ? selected.positions.length / 3
             : undefined
         }
         shortcuts={shortcutContext}

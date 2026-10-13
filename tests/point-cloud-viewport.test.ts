@@ -37,13 +37,38 @@ it("renders points without triangles, updates visibility and clipping, and dispo
     expect(points.geometry.getAttribute("position").count).toBe(4);
     expect(mesh.geometry.drawRange.count).toBe(0);
     expect(points.userData.entityId).toBe(cloud.id);
+    view.setEntities(
+      [{ ...cloud, meshSelection: { hidden: [1, 3], saved: [] } }],
+      cloud.id,
+    );
+    const visiblePoints = mesh.children[0] as THREE.Points;
+    expect(Array.from(visiblePoints.geometry.getIndex()!.array)).toEqual([
+      0, 2,
+    ]);
+    const triangleSelection = new THREE.Group();
+    Object.assign(view, { triangleSelection });
+    view.setTriangleSelection(cloud.positions, new Uint8Array([0, 0, 1, 0]));
+    expect(triangleSelection.children[0]).toBeInstanceOf(THREE.Points);
+    expect(
+      Array.from(
+        (triangleSelection.children[0] as THREE.Points).geometry.getAttribute(
+          "position",
+        ).array,
+      ),
+    ).toEqual([0, 1, 0]);
+    view.setEntities([cloud], cloud.id);
+    const restoredPoints = mesh.children[0] as THREE.Points<
+      THREE.BufferGeometry,
+      THREE.PointsMaterial
+    >;
+    expect(restoredPoints.geometry.getIndex()).toBeNull();
     Object.assign(view, { clipping: true });
     view.setEntities([{ ...cloud, visible: false, opacity: 0.4 }], null);
     expect(mesh.visible).toBe(false);
-    expect(points.material.opacity).toBe(0.4);
-    expect(points.material.clippingPlanes).toHaveLength(1);
-    const geometryDisposed = vi.spyOn(points.geometry, "dispose"),
-      materialDisposed = vi.spyOn(points.material, "dispose");
+    expect(restoredPoints.material.opacity).toBe(0.4);
+    expect(restoredPoints.material.clippingPlanes).toHaveLength(1);
+    const geometryDisposed = vi.spyOn(restoredPoints.geometry, "dispose"),
+      materialDisposed = vi.spyOn(restoredPoints.material, "dispose");
     view.setEntities(
       [{ ...cloud, positions: new Float32Array([0, 0, 1]) }],
       null,

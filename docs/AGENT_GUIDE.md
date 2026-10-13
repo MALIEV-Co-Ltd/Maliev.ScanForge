@@ -216,6 +216,8 @@ Call `artifact_read` with the artifact ID, byte `offset` and optional `length` (
 
 ## Point clouds and landmark registration
 
+See [point-cloud editing](POINT_CLOUD_EDITING.md) for selection, deletion, simplification, noise reduction and connected-selection MCP contracts.
+
 `project_import` accepts `.asc` scans containing XYZ columns and optional NX/NY/NZ columns. Choose the import unit as for other scans. Every point is retained as a `pointcloud` object, without artificial triangle faces; normals survive project round trips and rigid alignment. Import results and object summaries report `points`, rather than `triangles`. Triangle topology and mesh-editing operations reject point clouds.
 
 GUI N-point alignment and `mesh_process` with `operation.kind: "paired"` use the same recovered landmark-registration wrapper. Supply matching `sourceLandmarks` and `targetLandmarks` XYZ arrays in world-space millimeters, with at least three points on each side. The returned transform maps the moving/source object into the fixed/target frame. It applies to the whole moving mesh or point cloud and leaves the fixed object unchanged. Scanner normals rotate with their object.

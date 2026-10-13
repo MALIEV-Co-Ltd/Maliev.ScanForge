@@ -1,15 +1,17 @@
 import * as THREE from "three";
 import { ScreenSelectionIndex } from "./screen-selection";
 
-let index: ScreenSelectionIndex | undefined;
+import { PointScreenSelectionIndex } from "./point-screen-selection";
+
+let index: ScreenSelectionIndex | PointScreenSelectionIndex | undefined;
 self.onmessage = ({ data }) => {
   try {
     if (data.initialize) {
       index?.dispose();
-      index = new ScreenSelectionIndex(
-        data.initialize.positions,
-        data.initialize.hidden,
-      );
+      const Index = data.initialize.pointCloud
+        ? PointScreenSelectionIndex
+        : ScreenSelectionIndex;
+      index = new Index(data.initialize.positions, data.initialize.hidden);
       return;
     }
     if (!index) throw new Error("Selection geometry is unavailable.");

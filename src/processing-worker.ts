@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { editPointCloud } from "./point-cloud-processing";
 import { ScanPreviewSession } from "./scan-preview";
 import { runScanTool } from "./scan-tools";
 import {
@@ -83,7 +84,10 @@ scope.onmessage = async ({ data: incoming }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "scanPreview") {
+    if (request.kind === "pointCloudEdit") {
+      result.pointCloudEdit = editPointCloud(request, progress);
+      result.diagnostics = result.pointCloudEdit.diagnostics;
+    } else if (request.kind === "scanPreview") {
       if (request.phase === "create") {
         scanPreview = undefined;
         scanPreview = await ScanPreviewSession.create(request, {
@@ -366,7 +370,10 @@ scope.onmessage = async ({ data: incoming }) => {
       }
     }
     const transfers: Transferable[] = [];
-    const successor = result.scanEdit?.positions ?? result.positions;
+    const successor =
+      result.pointCloudEdit?.positions ??
+      result.scanEdit?.positions ??
+      result.positions;
     if (
       geometryKey !== undefined &&
       successor &&
@@ -378,10 +385,20 @@ scope.onmessage = async ({ data: incoming }) => {
       if (topologyCache.positions !== successor) topologyCache = {};
       topologyCache.positions = successor;
       canonicalPositions = successor;
-      if (result.scanEdit?.positions)
+      if (result.pointCloudEdit?.positions)
+        result.pointCloudEdit.positions = successor.slice();
+      else if (result.scanEdit?.positions)
         result.scanEdit.positions = successor.slice();
       else result.positions = successor.slice();
     }
+    if (result.pointCloudEdit?.positions)
+      transfers.push(result.pointCloudEdit.positions.buffer);
+    if (result.pointCloudEdit?.normals)
+      transfers.push(result.pointCloudEdit.normals.buffer);
+    if (result.pointCloudEdit?.selection)
+      transfers.push(result.pointCloudEdit.selection.buffer);
+    if (result.pointCloudEdit?.sourceIndices)
+      transfers.push(result.pointCloudEdit.sourceIndices.buffer);
     if (result.scanEdit?.positions)
       transfers.push(result.scanEdit.positions.buffer);
     if (result.scanEdit?.selection)

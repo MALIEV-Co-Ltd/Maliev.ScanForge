@@ -316,46 +316,90 @@
   },
   {
     "name": "selection_set",
-    "description": "Select sorted unique triangle slots of one object, guarded by current revision.",
+    "description": "Set selected triangle slots for meshes or point slots for point clouds.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
-      "properties": {
-        "entityId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200,
-          "description": ""
-        },
-        "triangles": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 0
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": ""
+            },
+            "triangles": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minItems": 0,
+              "maxItems": 100000,
+              "uniqueItems": true
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+            }
           },
-          "minItems": 0,
-          "maxItems": 100000,
-          "uniqueItems": true
+          "required": [
+            "entityId",
+            "expectedRevision",
+            "requestId",
+            "triangles"
+          ],
+          "additionalProperties": false
         },
-        "expectedRevision": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "requestId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200,
-          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": ""
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minItems": 0,
+              "maxItems": 100000,
+              "uniqueItems": true,
+              "description": "Zero-based XYZ point slots for point-cloud objects."
+            }
+          },
+          "required": ["entityId", "expectedRevision", "requestId", "points"],
+          "additionalProperties": false
         }
-      },
-      "required": ["entityId", "triangles", "expectedRevision", "requestId"],
-      "additionalProperties": false
+      ]
     }
   },
   {
     "name": "selection_edit",
-    "description": "Copy, cut or delete the selected triangles.",
+    "description": "Copy, cut or delete selected mesh triangles or point-cloud samples while preserving normals.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -411,7 +455,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -998,6 +1042,59 @@
                 "fitTolerance": {
                   "type": "number",
                   "exclusiveMinimum": 0
+                }
+              },
+              "required": ["kind", "action"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pointCloudEdit"]
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "delete",
+                    "extract",
+                    "voxel",
+                    "sampleCount",
+                    "smooth",
+                    "connectedSelection",
+                    "grow",
+                    "shrink"
+                  ]
+                },
+                "cellSize": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Voxel spacing in mm; default 0.5."
+                },
+                "targetPoints": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "neighborRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Point neighborhood radius in mm; default 0.5."
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "strength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum cumulative displacement from original sample, mm; default 0.05."
                 }
               },
               "required": ["kind", "action"],

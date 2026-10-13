@@ -38,6 +38,23 @@ it("bounds parallelism by geometry size, CPU availability and memory", () => {
   expect(selectionWorkerCount(100_000)).toBe(1);
 });
 
+it("initializes point workers with one mask slot per XYZ sample", async () => {
+  vi.stubGlobal("Worker", WorkerDouble);
+  WorkerDouble.instances = [];
+  const index = new AsyncScreenSelectionIndex([0, 0, 0, 1, 0, 0], [1], true);
+  try {
+    const pending = index.select(new THREE.OrthographicCamera(), region, view);
+    const worker = WorkerDouble.latest;
+    expect(worker.sent[0].initialize.pointCloud).toBe(true);
+    expect(worker.sent[0].initialize.hidden).toEqual([1]);
+    expect(worker.sent[1].range).toEqual({ start: 0, end: 2 });
+    worker.onmessage?.({ data: { mask: new Uint8Array([1, 0]), start: 0 } });
+    expect([...(await pending)]).toEqual([1, 0]);
+  } finally {
+    index.dispose();
+  }
+});
+
 it("merges out-of-order shards only after both finish and releases both", async () => {
   vi.stubGlobal("Worker", WorkerDouble);
   vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });

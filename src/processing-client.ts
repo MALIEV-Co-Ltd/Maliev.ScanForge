@@ -1,4 +1,8 @@
 import type { Positions } from "./types";
+import type {
+  PointCloudEditRequest,
+  PointCloudEditResult,
+} from "./point-cloud-processing";
 import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import type { ScanToolsRequest } from "./scan-tools";
@@ -12,6 +16,7 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | PointCloudEditRequest
   | ScanPreviewRequest
   | ScanToolsRequest
   | ScanEditRequest
@@ -95,6 +100,7 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  pointCloudEdit?: PointCloudEditResult;
   scanEdit?: ScanEditResult;
   sketchSection?: SketchSectionResult;
   selection?: Uint8Array;
@@ -217,7 +223,8 @@ export function processMesh(
         true,
         request.kind === "scanPreview"
           ? undefined
-          : (event.data.result.scanEdit?.positions ??
+          : (event.data.result.pointCloudEdit?.positions ??
+              event.data.result.scanEdit?.positions ??
               event.data.result.positions),
       );
       resolve(event.data.result);
@@ -256,6 +263,13 @@ export function processMesh(
           : { ...request, positions: source };
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
+      if (copied.kind === "pointCloudEdit") {
+        if (copied.normals) copied.normals = clone(copied.normals);
+        if (copied.selection) {
+          copied.selection = new Uint8Array(copied.selection);
+          transfers.push(copied.selection.buffer);
+        }
+      }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
         if (copied.operation.kind === "averageMesh")

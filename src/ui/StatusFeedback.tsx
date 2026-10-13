@@ -164,12 +164,14 @@ export function StatusBar({
   operation,
   hint,
   facets,
+  points,
   shortcuts,
 }: {
   busy: boolean;
   operation: ReactNode;
   hint: ReactNode;
   facets?: number;
+  points?: number;
   shortcuts: ShortcutContext;
 }) {
   return (
@@ -197,7 +199,7 @@ export function StatusBar({
         role="group"
         aria-label="Model information"
       >
-        <StatusMetrics facets={facets} />
+        <StatusMetrics facets={facets} points={points} />
         <span className="status-end">Units: mm</span>
         <StatusKeyboard busy={busy} shortcuts={shortcuts} />
       </div>

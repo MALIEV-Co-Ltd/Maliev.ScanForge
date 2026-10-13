@@ -928,6 +928,7 @@ export class Viewport {
     item.selectionIndex ??= new AsyncScreenSelectionIndex(
       item.positions,
       item.hidden,
+      !!item.pointCloud,
     );
     const rect = this.renderer.domElement.getBoundingClientRect();
     const visible = await item.selectionIndex.select(
@@ -1418,6 +1419,7 @@ export class Viewport {
       item.selectionIndex ??= new AsyncScreenSelectionIndex(
         item.positions,
         item.hidden,
+        !!item.pointCloud,
       );
       const rect = this.renderer.domElement.getBoundingClientRect();
       const index = item.selectionIndex;
@@ -1540,11 +1542,16 @@ export class Viewport {
     if (
       this.brushing &&
       this.selectionTool === "wand" &&
-      hit.faceIndex != null
+      (hit.faceIndex != null || hit.index != null)
     ) {
       const item = this.objects.get(id)!;
-      const mask = new Uint8Array(item.positions.length / 9);
-      mask[item.triangleSlots?.[hit.faceIndex] ?? hit.faceIndex] = 1;
+      const mask = new Uint8Array(
+        item.positions.length / (item.pointCloud ? 3 : 9),
+      );
+      const slot = item.pointCloud
+        ? (hit.index ?? 0)
+        : (item.triangleSlots?.[hit.faceIndex!] ?? hit.faceIndex!);
+      mask[slot] = 1;
       this.onSelection?.(
         id,
         mask,
@@ -1672,7 +1679,10 @@ export class Viewport {
             : new THREE.Float32BufferAttribute(entity.positions, 3),
         );
         item.triangleSlots = undefined;
-        if (entity.meshSelection?.hidden.length) {
+        if (
+          entity.kind !== "pointcloud" &&
+          entity.meshSelection?.hidden.length
+        ) {
           const hidden = new Set(entity.meshSelection.hidden);
           const slots: number[] = [],
             indices = new Uint32Array(
@@ -1715,6 +1725,13 @@ export class Viewport {
             "position",
             geometry.getAttribute("position"),
           );
+          if (entity.meshSelection?.hidden.length) {
+            const hidden = new Set(entity.meshSelection.hidden);
+            const visible = [];
+            for (let i = 0; i < entity.positions.length / 3; i++)
+              if (!hidden.has(i)) visible.push(i);
+            pointsGeometry.setIndex(visible);
+          }
           pointsGeometry.computeBoundingBox();
           pointsGeometry.computeBoundingSphere();
           item.pointCloud = new THREE.Points(
@@ -1877,18 +1894,18 @@ export class Viewport {
       item &&
       selection &&
       item.positions &&
-      selection.length === item.positions.length / 9 &&
+      selection.length === item.positions.length / (item.pointCloud ? 3 : 9) &&
       selection.some(Boolean)
     ) {
       bounds = new THREE.Box3();
       for (let i = 0; i < selection.length; i++)
         if (selection[i])
-          for (let j = 0; j < 9; j += 3)
+          for (let j = 0; j < (item.pointCloud ? 3 : 9); j += 3)
             bounds.expandByPoint(
               new THREE.Vector3(
-                item.positions[i * 9 + j],
-                item.positions[i * 9 + j + 1],
-                item.positions[i * 9 + j + 2],
+                item.positions[i * (item.pointCloud ? 3 : 9) + j],
+                item.positions[i * (item.pointCloud ? 3 : 9) + j + 1],
+                item.positions[i * (item.pointCloud ? 3 : 9) + j + 2],
               ),
             );
     }
@@ -2107,6 +2124,7 @@ export class Viewport {
         item.selectionIndex ??= new AsyncScreenSelectionIndex(
           item.positions,
           item.hidden,
+          !!item.pointCloud,
         );
         item.selectionIndex.prepare();
       }
@@ -2220,31 +2238,44 @@ export class Viewport {
     this.triangleSelection.visible = !this.noiseComparison;
     // A selection reset can render one effect after the newly selected geometry.
     // Never upload stale triangle slots from the previous object.
-    if (positions && mask && mask.length * 9 === positions.length) {
+    const points = !!this.objects?.get(this.selectedId ?? "")?.pointCloud;
+    const stride = points ? 3 : 9;
+    if (positions && mask && mask.length * stride === positions.length) {
       let count = 0;
       for (const value of mask) count += value;
       if (count) {
-        const buffer = new Float32Array(count * 9);
+        const buffer = new Float32Array(count * stride);
         let next = 0;
         for (let i = 0; i < mask.length; i++)
           if (mask[i])
-            for (let j = 0; j < 9; j++) buffer[next++] = positions[i * 9 + j];
+            for (let j = 0; j < stride; j++)
+              buffer[next++] = positions[i * stride + j];
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.BufferAttribute(buffer, 3));
         this.triangleSelection.add(
-          new THREE.Mesh(
-            geometry,
-            new THREE.MeshBasicMaterial({
-              color: "#e44b5b",
-              side: THREE.DoubleSide,
-              transparent: true,
-              opacity: 0.7,
-              depthWrite: false,
-              polygonOffset: true,
-              polygonOffsetFactor: -1,
-              polygonOffsetUnits: -1,
-            }),
-          ),
+          points
+            ? new THREE.Points(
+                geometry,
+                new THREE.PointsMaterial({
+                  color: "#e44b5b",
+                  size: 3,
+                  sizeAttenuation: false,
+                  depthWrite: false,
+                }),
+              )
+            : new THREE.Mesh(
+                geometry,
+                new THREE.MeshBasicMaterial({
+                  color: "#e44b5b",
+                  side: THREE.DoubleSide,
+                  transparent: true,
+                  opacity: 0.7,
+                  depthWrite: false,
+                  polygonOffset: true,
+                  polygonOffsetFactor: -1,
+                  polygonOffsetUnits: -1,
+                }),
+              ),
         );
       }
     }

@@ -161,3 +161,19 @@ it("keeps mesh splitting and selected-area processing outside the Edit Scan cont
   expect(html).not.toContain("Selected area</legend>");
   expect(html).not.toContain("Split mesh</legend>");
 });
+
+it("offers whole connected mesh selection after marking facets", () => {
+  const html = renderToStaticMarkup(
+    <EditScanDialog {...defaults} selectedCount={1} onConnected={noop} />,
+  );
+  expect(html).toContain("Select connected objects");
+});
+it("uses point labels and avoids mesh diagnostics and repatching for point clouds", () => {
+  const html = renderToStaticMarkup(
+    <EditScanDialog {...defaults} pointCloud onSelectAll={noop} />,
+  );
+  expect(html).toContain("Select all points");
+  expect(html).toContain("Delete selected points");
+  expect(html).not.toContain("Individual meshes");
+  expect(html).not.toContain("Defeature selected");
+});

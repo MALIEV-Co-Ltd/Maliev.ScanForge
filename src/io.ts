@@ -199,10 +199,11 @@ export function validateProject(value: unknown): Project {
     ids.add(entity.id);
     if (entity.planeFrame !== undefined)
       validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
-    if (entity.kind === "pointcloud" && entity.meshSelection !== undefined)
-      throw new Error("Point clouds cannot contain triangle selections.");
     if (entity.meshSelection !== undefined)
-      validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
+      validateMeshSelection(
+        entity.meshSelection,
+        entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
+      );
     if (
       entity.scanSource !== undefined &&
       (!Number.isSafeInteger(entity.scanSource.bytes) ||
@@ -341,7 +342,10 @@ export function serializeProject(
       validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
   for (const entity of entities)
     if (entity.meshSelection !== undefined)
-      validateMeshSelection(entity.meshSelection, entity.positions.length / 9);
+      validateMeshSelection(
+        entity.meshSelection,
+        entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
+      );
   return JSON.stringify({
     format: "maliev-scanforge",
     version: 1,
@@ -374,7 +378,10 @@ export async function serializeProjectBlob(
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
     if (metadata.meshSelection !== undefined)
-      validateMeshSelection(metadata.meshSelection, positions.length / 9);
+      validateMeshSelection(
+        metadata.meshSelection,
+        positions.length / (metadata.kind === "pointcloud" ? 3 : 9),
+      );
     if (index) parts.push(",");
     parts.push(JSON.stringify(metadata).slice(0, -1), ',"positions":[');
     for (let start = 0; start < positions.length; start += 65_536) {

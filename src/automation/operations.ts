@@ -30,6 +30,7 @@ import {
   sectionMesh,
 } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
+import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
@@ -236,11 +237,14 @@ function summary(e: Entity) {
   };
 }
 function mask(state: WorkspaceSnapshot, e: Entity, required = true) {
+  const slots = e.positions.length / (e.kind === "pointcloud" ? 3 : 9);
   const selection = state.selectedId === e.id ? state.selection : null;
-  if (!selection || selection.length !== e.positions.length / 9) {
+  if (!selection || selection.length !== slots) {
     if (required)
-      throw new Error("Select triangles on the specified object first.");
-    return new Uint8Array(e.positions.length / 9);
+      throw new Error(
+        `Select ${e.kind === "pointcloud" ? "points" : "triangles"} on the specified object first.`,
+      );
+    return new Uint8Array(slots);
   }
   selectionCount(selection);
   if (required && !selection.some(Boolean))
@@ -252,9 +256,15 @@ function selectedPositions(
   e: Entity,
   selectionOnly?: boolean,
 ): Positions {
-  return selectionOnly
-    ? partitionTriangles(e.positions, mask(state, e)).selected
-    : e.positions;
+  if (!selectionOnly) return e.positions;
+  return e.kind === "pointcloud"
+    ? editPointCloud({
+        kind: "pointCloudEdit",
+        action: "extract",
+        positions: e.positions,
+        selection: mask(state, e),
+      }).positions!
+    : partitionTriangles(e.positions, mask(state, e)).selected;
 }
 function json(context: CommandContext, value: unknown, name: string) {
   context.check();
@@ -448,6 +458,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         selection = mask(s, e, false);
       return {
         entityId: e.id,
+        elementKind: e.kind === "pointcloud" ? "points" : "triangles",
         count: selectionCount(selection),
         artifact: json(
           c,
@@ -463,14 +474,23 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         e = object(s, a.entityId);
       if (e.locked || e.selectable === false)
         throw new Error("Object cannot be selected.");
-      const selected = new Uint8Array(e.positions.length / 9);
-      for (const triangle of a.triangles) {
+      const pointCloud = e.kind === "pointcloud";
+      if (pointCloud ? !Array.isArray(a.points) : !Array.isArray(a.triangles))
+        throw new Error(
+          `Provide ${pointCloud ? "points" : "triangles"} indices for this object.`,
+        );
+      const selected = new Uint8Array(
+        e.positions.length / (pointCloud ? 3 : 9),
+      );
+      for (const triangle of pointCloud ? a.points : a.triangles) {
         if (
           !Number.isSafeInteger(triangle) ||
           triangle < 0 ||
           triangle >= selected.length
         )
-          throw new Error("Triangle index is out of bounds.");
+          throw new Error(
+            `${pointCloud ? "Point" : "Triangle"} index is out of bounds.`,
+          );
         selected[triangle] = 1;
       }
       c.check();
@@ -480,7 +500,57 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     selection_edit: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
-      editable(e, a.operation !== "copy");
+      editable(e, e.kind !== "pointcloud" && a.operation !== "copy");
+      if (e.kind === "pointcloud") {
+        const selection = mask(s, e);
+        const extracted = editPointCloud({
+          kind: "pointCloudEdit",
+          action: "extract",
+          positions: e.positions,
+          normals: e.normals,
+          selection,
+        });
+        let next = s.entities;
+        let copy: Entity | undefined;
+        if (a.operation !== "delete") {
+          copy = {
+            ...e,
+            id: id(),
+            name: `${e.name} selection`,
+            positions: extracted.positions!,
+            normals: extracted.normals
+              ? Array.from(extracted.normals)
+              : undefined,
+            meshSelection: undefined,
+          };
+          next = [...next, copy];
+        }
+        if (a.operation !== "copy") {
+          const remainder = editPointCloud({
+            kind: "pointCloudEdit",
+            action: "delete",
+            positions: e.positions,
+            normals: e.normals,
+            selection,
+          });
+          next = remainder.positions!.length
+            ? next.map((entity) =>
+                entity.id === e.id
+                  ? {
+                      ...e,
+                      positions: remainder.positions!,
+                      normals: remainder.normals
+                        ? Array.from(remainder.normals)
+                        : undefined,
+                      meshSelection: undefined,
+                    }
+                  : entity,
+              )
+            : next.filter((entity) => entity.id !== e.id);
+        }
+        commit(c, next, `${a.operation} selected points`);
+        return { entityId: copy?.id, points: extracted.positions!.length / 3 };
+      }
       const parts = partitionTriangles(e.positions, mask(s, e));
       let next = s.entities;
       let copy: Entity | undefined;
@@ -525,9 +595,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const kind = op.kind as ProcessingRequest["kind"];
       if (
         e.kind === "pointcloud" &&
-        !["paired", "global", "icp"].includes(kind)
+        !["paired", "global", "icp", "pointCloudEdit"].includes(kind)
       )
         throw new Error("This operation requires triangle mesh geometry.");
+      if (kind === "pointCloudEdit" && e.kind !== "pointcloud")
+        throw new Error("Point-cloud editing requires a point cloud.");
       const readonly =
         [
           "report",
@@ -536,6 +608,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           "sketchSection",
           "scanPreview",
         ].includes(kind) ||
+        (kind === "pointCloudEdit" &&
+          ["connectedSelection", "grow", "shrink"].includes(op.action)) ||
         (kind === "scanEdit" &&
           ["inventory", "boundaryProject", "boundarySmooth"].includes(
             op.action,
@@ -543,6 +617,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (!readonly) editable(e, e.kind !== "pointcloud");
       if (
         "positions" in op ||
+        "normals" in op ||
         "target" in op ||
         "selection" in op ||
         "sourceTriangleMask" in op ||
@@ -555,7 +630,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (
         selection &&
         !readonly &&
-        !["scanEdit", "scanTools", "icp", "global"].includes(kind) &&
+        !["scanEdit", "scanTools", "icp", "global", "pointCloudEdit"].includes(
+          kind,
+        ) &&
         !a.createNew
       )
         throw new Error(
@@ -565,10 +642,29 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         ...op,
         positions:
           selection &&
-          !["scanEdit", "scanTools", "icp", "global"].includes(kind)
+          ![
+            "scanEdit",
+            "scanTools",
+            "icp",
+            "global",
+            "pointCloudEdit",
+          ].includes(kind)
             ? partitionTriangles(e.positions, selection).selected
             : e.positions,
       } as ProcessingRequest;
+      if (kind === "pointCloudEdit")
+        Object.assign(request, {
+          normals: e.normals,
+          selection: [
+            "delete",
+            "extract",
+            "connectedSelection",
+            "grow",
+            "shrink",
+          ].includes(op.action)
+            ? mask(s, e)
+            : selection,
+        });
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
         Object.assign(request, {
@@ -613,9 +709,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       });
       c.check();
       const edit = result.scanEdit;
-      const positions = edit?.positions ?? result.positions;
+      const pointEdit = result.pointCloudEdit;
+      const positions =
+        pointEdit?.positions ?? edit?.positions ?? result.positions;
       const segments = edit?.segments ?? result.segments;
-      const selected = edit?.selection ?? result.selection;
+      const selected =
+        pointEdit?.selection ?? edit?.selection ?? result.selection;
       let next = s.entities;
       const created: Entity[] = [];
       if (positions) {
@@ -624,8 +723,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? {
                 ...e,
                 positions,
-                normals:
-                  e.normals && result.registration
+                meshSelection: pointEdit ? undefined : e.meshSelection,
+                normals: pointEdit
+                  ? pointEdit.normals
+                    ? Array.from(pointEdit.normals)
+                    : undefined
+                  : e.normals && result.registration
                     ? rotatePointNormals(
                         e.normals,
                         result.registration.transform.rotation,
@@ -633,7 +736,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                     : e.normals,
               }
             : meshEdited(e, positions);
-        if (a.createNew) {
+        if (!positions.length)
+          next = next.filter((entity) => entity.id !== e.id);
+        else if (a.createNew) {
           updated.id = id();
           updated.name = `${e.name} ${kind}`;
           created.push(updated);
@@ -651,7 +756,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const response = {
         entityIds: created.length
           ? created.map((x) => x.id)
-          : positions
+          : positions?.length
             ? [e.id]
             : [],
         diagnostics: result.diagnostics,

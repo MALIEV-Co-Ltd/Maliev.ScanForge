@@ -10,6 +10,9 @@ export type ScanSelectionTool =
   "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand";
 export interface EditScanDialogProps {
   name: string;
+  pointCloud?: boolean;
+  onConnected?: () => void;
+  pointTools?: import("react").ReactNode;
   positions: Positions;
   tool: ScanSelectionTool;
   onTool: (tool: ScanSelectionTool) => void;
@@ -68,6 +71,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
     },
     { id: "circle", label: "Select by drawing a circle", text: "Circle" },
   ] as const;
+  const unit = props.pointCloud ? "points" : "triangles";
   const actions: {
     icon: ScanIconName;
     label: string;
@@ -78,7 +82,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
   }[] = [
     {
       icon: "all",
-      label: "Select all triangles",
+      label: `Select all ${unit}`,
       text: "Select all",
       disabled: !props.onSelectAll,
       run: props.onSelectAll,
@@ -143,7 +147,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
     },
     {
       icon: "revealSelected",
-      label: "Show selected triangles",
+      label: `Show selected ${unit}`,
       text: "Show last hidden",
       disabled: !props.hiddenCount || !props.onRevealSelected,
       run: props.onRevealSelected,
@@ -151,8 +155,8 @@ export function EditScanDialog(props: EditScanDialogProps) {
     },
     {
       icon: "delete",
-      label: "Delete selected triangles",
-      text: "Delete triangles",
+      label: `Delete selected ${unit}`,
+      text: `Delete ${unit}`,
       disabled: !props.selectedCount,
       run: props.onDelete,
       extra: true,
@@ -160,7 +164,11 @@ export function EditScanDialog(props: EditScanDialogProps) {
   ];
   const actionButtons = (extra = false) =>
     actions
-      .filter((action) => !!action.extra === extra)
+      .filter(
+        (action) =>
+          !!action.extra === extra &&
+          (!props.pointCloud || action.icon !== "boundary"),
+      )
       .map((action) => (
         <button
           key={action.icon}
@@ -180,37 +188,45 @@ export function EditScanDialog(props: EditScanDialogProps) {
     >
       <div className="tool-panel-content">
         <section className="edit-scan-section" aria-label="Mesh information">
-          <h3>Mesh information</h3>
-          <ScanDiagnostics
-            positions={props.positions}
-            onEdit={props.onTopology}
-          />
+          <h3>
+            {props.pointCloud ? "Point cloud information" : "Mesh information"}
+          </h3>
+          {props.pointCloud ? (
+            <p>{(props.positions.length / 3).toLocaleString()} points</p>
+          ) : (
+            <ScanDiagnostics
+              positions={props.positions}
+              onEdit={props.onTopology}
+            />
+          )}
         </section>
         <fieldset
           disabled={props.busy}
           style={{ border: 0, padding: 0, margin: 0 }}
         >
-          <section className="edit-scan-section" aria-label="Select triangles">
+          <section className="edit-scan-section" aria-label={`Select ${unit}`}>
             <h3>Selection tools</h3>
             <div
               className="scan-tool-row"
               role="group"
               aria-label="Selection tools"
             >
-              {tools.map(({ id, label, text }) => {
-                return (
-                  <button
-                    key={id}
-                    aria-label={label}
-                    title={label}
-                    aria-pressed={props.tool === id}
-                    onClick={() => props.onTool(id)}
-                  >
-                    <ScanToolIcon name={id} />
-                    <span>{text}</span>
-                  </button>
-                );
-              })}
+              {tools
+                .filter(({ id }) => !props.pointCloud || id !== "wand")
+                .map(({ id, label, text }) => {
+                  return (
+                    <button
+                      key={id}
+                      aria-label={label}
+                      title={label}
+                      aria-pressed={props.tool === id}
+                      onClick={() => props.onTool(id)}
+                    >
+                      <ScanToolIcon name={id} />
+                      <span>{text}</span>
+                    </button>
+                  );
+                })}
             </div>
             <button
               className="edit-scan-through"
@@ -286,6 +302,16 @@ export function EditScanDialog(props: EditScanDialogProps) {
               aria-label="Selection actions"
             >
               {actionButtons()}
+              {!props.pointCloud && (
+                <button
+                  disabled={!props.selectedCount || !props.onConnected}
+                  onClick={props.onConnected}
+                  title="Select entire connected objects from marked facets"
+                >
+                  <ScanToolIcon name="components" />
+                  Select connected objects
+                </button>
+              )}
             </div>
             <details className="edit-scan-more">
               <summary>More selection actions</summary>
@@ -423,6 +449,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
               </button>
             </div>
           </fieldset>
+          {props.pointTools}
           <details className="edit-scan-more edit-scan-additional">
             <summary>Additional tools & display</summary>
             <section className="edit-scan-section" aria-label="Display">
@@ -438,14 +465,18 @@ export function EditScanDialog(props: EditScanDialogProps) {
                 />
                 Show quick tools dialog
               </label>
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={props.wireframe}
-                  onChange={(event) => props.onWireframe(event.target.checked)}
-                />
-                Show mesh wireframe
-              </label>
+              {!props.pointCloud && (
+                <label className="check">
+                  <input
+                    type="checkbox"
+                    checked={props.wireframe}
+                    onChange={(event) =>
+                      props.onWireframe(event.target.checked)
+                    }
+                  />
+                  Show mesh wireframe
+                </label>
+              )}
               <p role="status" className="edit-scan-counts">
                 {props.selectedCount.toLocaleString()} selected ·{" "}
                 {props.hiddenCount.toLocaleString()} hidden

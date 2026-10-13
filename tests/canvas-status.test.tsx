@@ -40,3 +40,9 @@ it("reports only valid browser heap readings, leaving unsupported readings unava
   ])
     expect(reportedHeapBytes(source)).toBeUndefined();
 });
+
+it("reports points without a facet label for the selected point cloud", () => {
+  const html = renderToStaticMarkup(<StatusMetrics points={30580} />);
+  expect(html).toContain("Points: 30,580");
+  expect(html).not.toContain("Facets:");
+});

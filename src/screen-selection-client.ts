@@ -16,6 +16,7 @@ export class AsyncScreenSelectionIndex {
   constructor(
     private positions: Positions,
     private hidden: number[] = [],
+    private pointCloud = false,
   ) {}
   /** Start the owned BVH while the user chooses a tool or draws the first loop. */
   prepare(): void {
@@ -26,7 +27,11 @@ export class AsyncScreenSelectionIndex {
   }
   private ensureWorker(): Worker {
     if (!this.workers.length) {
-      const count = selectionWorkerCount(this.positions.length / 9);
+      const count = this.pointCloud
+        ? 1
+        : selectionWorkerCount(
+            this.positions.length / (this.pointCloud ? 3 : 9),
+          );
       for (let part = 0; part < count; part++) {
         const worker = new Worker(
           new URL("./screen-selection-worker.ts", import.meta.url),
@@ -67,9 +72,16 @@ export class AsyncScreenSelectionIndex {
         };
         // Each shard needs the entire mesh for correct cross-shard occlusion.
         const positions = Float32Array.from(this.positions);
-        worker.postMessage({ initialize: { positions, hidden: this.hidden } }, [
-          positions.buffer,
-        ]);
+        worker.postMessage(
+          {
+            initialize: {
+              positions,
+              hidden: this.hidden,
+              pointCloud: this.pointCloud,
+            },
+          },
+          [positions.buffer],
+        );
       }
     }
     return this.workers[0];
@@ -96,7 +108,7 @@ export class AsyncScreenSelectionIndex {
       this.pending = {
         resolve,
         reject,
-        mask: new Uint8Array(this.positions.length / 9),
+        mask: new Uint8Array(this.positions.length / (this.pointCloud ? 3 : 9)),
         remaining: this.workers.length,
       };
       this.lease = setTimeout(() => {
