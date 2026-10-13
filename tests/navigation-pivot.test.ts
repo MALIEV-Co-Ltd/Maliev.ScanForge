@@ -34,6 +34,7 @@ it("shows the pivot marker at the projected object center only during navigation
     container: { clientWidth: 1000, clientHeight: 500 },
     cancelViewTransition: vi.fn(),
     invalidate: vi.fn(),
+    navigationSurfacePoint: vi.fn(),
   });
   const clock = vi.spyOn(performance, "now").mockReturnValue(100);
   try {
@@ -228,7 +229,7 @@ it("uses the cursor surface ahead of selected facets and raycasts only at gestur
   }
 });
 
-it("falls back to selected facets, object, visible scene, then origin after cursor leave", () => {
+it("falls back to selected facets, object, visible scene, then origin when both rays miss", () => {
   const { view, pivot, mesh, triangles, dispose } = cursorFixture();
   const other = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4));
   other.position.set(30, 10, 0);
@@ -237,6 +238,9 @@ it("falls back to selected facets, object, visible scene, then origin after curs
   const motion = { translation: [0, 0, 0], rotation: [0, 0, 1] };
   try {
     view.navigationCursor = undefined;
+    view.camera.position.set(100, 100, 100);
+    view.camera.lookAt(100, 100, 0);
+    view.controls.target.set(100, 100, 0);
     view.navigate(motion, 0.05);
     expect(pivot.point.toArray()).toEqual([-10, 0, 0]);
     triangles.clear();
@@ -256,6 +260,80 @@ it("falls back to selected facets, object, visible scene, then origin after curs
     dispose();
     other.geometry.dispose();
     (other.material as THREE.Material).dispose();
+  }
+});
+
+it.each(["empty space", "outside canvas", "cursor leave", "no pointer"])(
+  "uses the camera-center mesh surface when the pointer is at %s",
+  (location) => {
+    const { view, pivot, dispose } = cursorFixture();
+    const clock = vi.spyOn(performance, "now").mockReturnValue(0);
+    const raycast = vi.spyOn(view.raycaster, "intersectObjects");
+    try {
+      view.camera.position.set(7, 3, 100);
+      view.camera.lookAt(7, 3, 0);
+      view.controls.target.set(7, 3, 0);
+      if (location === "empty space")
+        view.navigationCursor = { clientX: 950, clientY: 250 };
+      else if (location === "outside canvas")
+        view.navigationCursor = { clientX: -1, clientY: 250 };
+      // pointerleave clears navigationCursor; this fixture has no DOM listeners.
+      else view.navigationCursor = undefined;
+      const motion = { translation: [0, 0, 0], rotation: [0, 0, 1] };
+      view.navigate(motion, 0.05);
+      expect(pivot.point.x).toBeCloseTo(7);
+      expect(pivot.point.y).toBeCloseTo(3);
+      expect(pivot.point.z).toBeCloseTo(5);
+      const fixed = pivot.point.clone();
+      const calls = raycast.mock.calls.length;
+      view.navigationCursor = { clientX: 600, clientY: 250 };
+      clock.mockReturnValue(200);
+      view.navigate(motion, 0.05);
+      expect(pivot.point.equals(fixed)).toBe(true);
+      expect(raycast).toHaveBeenCalledTimes(calls);
+      clock.mockReturnValue(600);
+      view.navigate(motion, 0.05);
+      expect(pivot.point.equals(fixed)).toBe(false);
+    } finally {
+      clock.mockRestore();
+      dispose();
+    }
+  },
+);
+
+it("uses the nearest unclipped camera-center surface in perspective view", () => {
+  const { view, pivot, mesh, dispose } = cursorFixture();
+  const back = new THREE.Mesh(new THREE.BoxGeometry(40, 40, 10));
+  back.position.z = -20;
+  view.objects.set("back", { mesh: back });
+  const clock = vi.spyOn(performance, "now").mockReturnValue(0);
+  try {
+    const camera = new THREE.PerspectiveCamera(45, 2, 0.01, 1000);
+    camera.position.set(8, 4, 100);
+    camera.lookAt(8, 4, 0);
+    view.camera = camera;
+    view.controls.target.set(8, 4, 0);
+    view.navigationCursor = undefined;
+    const motion = { translation: [0, 0, 0], rotation: [0, 0, 1] };
+    view.navigate(motion, 0.05);
+    expect(pivot.point.z).toBeCloseTo(5);
+    mesh.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), -10),
+    ];
+    camera.position.set(8, 4, 100);
+    camera.lookAt(8, 4, 0);
+    clock.mockReturnValue(400);
+    view.navigate(motion, 0.05);
+    expect(pivot.point.x).toBeCloseTo(8);
+    expect(pivot.point.y).toBeCloseTo(4);
+    expect(pivot.point.z).toBeCloseTo(-15);
+    back.visible = false;
+    expect(view.navigationSurfacePoint(true)).toBeUndefined();
+  } finally {
+    clock.mockRestore();
+    dispose();
+    back.geometry.dispose();
+    (back.material as THREE.Material).dispose();
   }
 });
 

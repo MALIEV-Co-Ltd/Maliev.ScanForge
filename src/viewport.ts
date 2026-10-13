@@ -420,7 +420,7 @@ export class Viewport {
         now,
         scene,
         selection,
-        this.navigationSurfacePoint(),
+        this.navigationSurfacePoint() ?? this.navigationSurfacePoint(true),
       );
     } else this.navigationPivot.update(now, this.bounds);
     const pivot = this.navigationPivot.point;
@@ -429,27 +429,30 @@ export class Viewport {
     this.invalidate();
   }
 
-  private navigationSurfacePoint(): THREE.Vector3 | undefined {
-    if (!this.navigationCursor) return;
-    const rect = this.renderer.domElement.getBoundingClientRect();
-    const { clientX, clientY } = this.navigationCursor;
-    if (
-      !rect.width ||
-      !rect.height ||
-      clientX < rect.left ||
-      clientX > rect.right ||
-      clientY < rect.top ||
-      clientY > rect.bottom
-    )
-      return;
-    this.camera.updateMatrixWorld();
-    this.raycaster.setFromCamera(
-      new THREE.Vector2(
+  private navigationSurfacePoint(
+    cameraCenter = false,
+  ): THREE.Vector3 | undefined {
+    const screen = new THREE.Vector2();
+    if (!cameraCenter) {
+      if (!this.navigationCursor) return;
+      const rect = this.renderer.domElement.getBoundingClientRect();
+      const { clientX, clientY } = this.navigationCursor;
+      if (
+        !rect.width ||
+        !rect.height ||
+        clientX < rect.left ||
+        clientX > rect.right ||
+        clientY < rect.top ||
+        clientY > rect.bottom
+      )
+        return;
+      screen.set(
         ((clientX - rect.left) / rect.width) * 2 - 1,
         -((clientY - rect.top) / rect.height) * 2 + 1,
-      ),
-      this.camera,
-    );
+      );
+    }
+    this.camera.updateMatrixWorld();
+    this.raycaster.setFromCamera(screen, this.camera);
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
       .map((item) => item.mesh);
