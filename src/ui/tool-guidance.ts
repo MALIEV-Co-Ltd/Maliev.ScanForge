@@ -1,5 +1,8 @@
 import type { SketchDrawingTool } from "../sketch-drawing";
 export interface ToolGuidanceContext {
+  shortcutMode?: import("../keyboard-shortcuts").ShortcutMode;
+  hasSelection?: boolean;
+  hasCadSelection?: boolean;
   busy?: boolean;
   planePicking?: boolean;
   mode: "inspect" | "measure" | "section" | "brush";

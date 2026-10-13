@@ -4887,6 +4887,18 @@ export function App() {
         </StatusMessage>
         <ActiveToolHint
           context={{
+            hasSelection: !!selected,
+            hasCadSelection: !!selected?.kernelId,
+            shortcutMode:
+              workspace === "sketch" && toolPanelOpen && !createSketch
+                ? "sketch"
+                : workspace === "fit" && toolPanelOpen
+                  ? "primitive-fit"
+                  : workspace === "surface" && toolPanelOpen
+                    ? "freeform"
+                    : mode === "brush"
+                      ? "selection"
+                      : "main",
             busy,
             planePicking,
             mode,

@@ -1,0 +1,63 @@
+.app-kbd {
+  display: inline-block;
+  padding: 1px 4px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 1px 0 var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.kbd-chord {
+  white-space: nowrap;
+}
+.workbench footer.statusbar .status-controls {
+  flex: 1 1 160px;
+  min-width: 0;
+  position: relative;
+}
+.workbench footer.statusbar .status-controls .status-navigation-hint {
+  margin-left: 8px;
+  padding: 3px 0;
+}
+.shortcut-reference {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  width: min(540px, 80vw);
+  max-height: min(420px, 65vh);
+  overflow: auto;
+  white-space: normal;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 12px;
+  box-shadow: 0 4px 16px #0004;
+  z-index: 100;
+}
+.status-controls:hover .shortcut-reference,
+.status-controls:focus-within .shortcut-reference {
+  display: block;
+}
+.shortcut-reference h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+.shortcut-reference p {
+  margin: 0 0 10px;
+  line-height: 1.9;
+}
+.shortcut-reference dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+  margin: 0;
+}
+.shortcut-reference dd {
+  margin: 0;
+}
