@@ -135,7 +135,13 @@ export function ModelTimeline({
           {["Starting state", ...labels].map((label, index) => (
             <li
               key={index}
-              className={index > cursor ? "timeline-future" : ""}
+              className={
+                index === cursor
+                  ? "timeline-current"
+                  : index > cursor
+                    ? "timeline-future"
+                    : ""
+              }
               style={
                 {
                   "--timeline-operation-color":
