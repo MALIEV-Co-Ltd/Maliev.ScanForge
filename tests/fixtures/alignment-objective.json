@@ -1,0 +1,219 @@
+{
+  "provenance": {
+    "procedure": "0x140aaa020",
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "originalTransformControllerAndWorkersExecuted": true,
+    "callerBuiltTarget": true,
+    "nativeUiParity": false,
+    "adapters": "Retained allocation/free, CRT, progress and security cookie only"
+  },
+  "samples": [
+    {
+      "name": "positive",
+      "points": [
+        [0.5, 0.5, 0.125],
+        [-0.125, 0.5, 0.25],
+        [0.75, 0.25, 0.5]
+      ],
+      "normal": [0, 0, 1],
+      "neighbors": true,
+      "radius": 10,
+      "steps": [
+        {
+          "parameters": [
+            10, 10, 10, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": true,
+          "error": 0.34375,
+          "best": 0.34375,
+          "flags": [4, 4, 4],
+          "sign": 1.0,
+          "workerError": 0.34375,
+          "minimum": 0.125,
+          "maximum": 0.5
+        },
+        {
+          "parameters": [
+            10, 10, 9.875, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.171875,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": 1.0,
+          "workerError": 0.171875,
+          "minimum": 0.0,
+          "maximum": 0.375
+        },
+        {
+          "parameters": [
+            10.25, 10, 10, 1.6707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.39254514157789555,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": 1.0,
+          "workerError": 0.39254514157789555,
+          "minimum": 0.17429222166538239,
+          "maximum": 0.5224604606628418
+        },
+        {
+          "parameters": [
+            10, 10, 10.5, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.390625,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": 1.0,
+          "workerError": 0.390625,
+          "minimum": 0.625,
+          "maximum": 0.625
+        }
+      ]
+    },
+    {
+      "name": "negative",
+      "points": [
+        [0.5, 0.5, 0.125],
+        [-0.125, 0.5, 0.25],
+        [0.75, 0.25, 0.5]
+      ],
+      "normal": [0, 0, -1],
+      "neighbors": true,
+      "radius": 10,
+      "steps": [
+        {
+          "parameters": [
+            10, 10, 10, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": true,
+          "error": 0.34375,
+          "best": 0.34375,
+          "flags": [4, 4, 4],
+          "sign": -1.0,
+          "workerError": 0.34375,
+          "minimum": 0.125,
+          "maximum": 0.5
+        },
+        {
+          "parameters": [
+            10, 10, 9.875, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.171875,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": -1.0,
+          "workerError": 0.171875,
+          "minimum": 0.0,
+          "maximum": 0.375
+        },
+        {
+          "parameters": [
+            10.25, 10, 10, 1.6707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.39254514157789555,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": -1.0,
+          "workerError": 0.39254514157789555,
+          "minimum": 0.17429222166538239,
+          "maximum": 0.5224604606628418
+        },
+        {
+          "parameters": [
+            10, 10, 10.5, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.390625,
+          "best": 0.171875,
+          "flags": [4, 4, 4],
+          "sign": -1.0,
+          "workerError": 0.390625,
+          "minimum": 0.625,
+          "maximum": 0.625
+        }
+      ]
+    },
+    {
+      "name": "open",
+      "points": [
+        [0.5, 0.5, 0.125],
+        [-0.125, 0.5, 0.25],
+        [0.75, 0.25, 0.5]
+      ],
+      "normal": [0, 0, 1],
+      "neighbors": false,
+      "radius": 10,
+      "steps": [
+        {
+          "parameters": [
+            10, 10, 10, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": true,
+          "error": 0.265625,
+          "best": 0.265625,
+          "flags": [4, 0, 4],
+          "sign": 1.0,
+          "workerError": 0.265625,
+          "minimum": 0.125,
+          "maximum": 0.5
+        },
+        {
+          "parameters": [
+            10, 10, 9.875, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.140625,
+          "best": 0.140625,
+          "flags": [4, 0, 4],
+          "sign": 1.0,
+          "workerError": 0.140625,
+          "minimum": 0.0,
+          "maximum": 0.375
+        },
+        {
+          "parameters": [
+            10.25, 10, 10, 1.6707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.30334271148908365,
+          "best": 0.140625,
+          "flags": [4, 0, 4],
+          "sign": 1.0,
+          "workerError": 0.30334271148908365,
+          "minimum": 0.17429222166538239,
+          "maximum": 0.5224604606628418
+        },
+        {
+          "parameters": [
+            10, 10, 10.5, 1.5707963267948966, 1.5707963267948966,
+            1.5707963267948966
+          ],
+          "initializing": false,
+          "error": 0.390625,
+          "best": 0.140625,
+          "flags": [4, 0, 4],
+          "sign": 1.0,
+          "workerError": 0.390625,
+          "minimum": 0.625,
+          "maximum": 0.625
+        }
+      ]
+    }
+  ]
+}
