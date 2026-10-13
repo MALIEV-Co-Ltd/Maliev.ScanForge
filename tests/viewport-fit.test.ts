@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { Viewport } from "../src/viewport";
+import { DEFAULT_CAMERA_NEAR } from "../src/camera-clipping";
 
 function fixture(aspect = 1) {
   const camera = new THREE.PerspectiveCamera(42, aspect, 0.01, 100000);
@@ -39,7 +40,7 @@ describe("import camera fit", () => {
     expect(target.toArray()).toEqual([0, 0, 0]);
     expect(camera.position.length()).toBeGreaterThan(100);
     expect(camera.position.length()).toBeLessThan(300);
-    expect(camera.near).toBe(0.01);
+    expect(camera.near).toBe(DEFAULT_CAMERA_NEAR);
     expect(camera.far).toBe(10000);
     for (const point of [
       new THREE.Vector3(),

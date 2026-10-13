@@ -2,10 +2,10 @@ import { Box3, OrthographicCamera, Vector3 } from "three";
 import type { NavigationCamera } from "./camera-gizmo";
 
 export const EMPTY_SCENE_EXTENT = 100;
-export const DEFAULT_CAMERA_NEAR = 0.01;
+export const DEFAULT_CAMERA_NEAR = 0.001;
 export const DEFAULT_CAMERA_FAR = 10000;
 
-/** Fit depth precision to visible geometry after every camera movement. */
+/** Keep a stable millimetre working range; extend it for outlying geometry. */
 export function updateCameraClipping(
   camera: NavigationCamera,
   bounds: Box3,
@@ -50,9 +50,9 @@ export function updateCameraClipping(
   // Perspective must retain a positive near plane when navigating inside a scan.
   const near =
     camera instanceof OrthographicCamera
-      ? closest - margin
-      : Math.max(epsilon, closest - margin);
-  const far = Math.max(near + margin, furthest + margin);
+      ? Math.min(-DEFAULT_CAMERA_FAR, closest - margin)
+      : Math.min(DEFAULT_CAMERA_NEAR, Math.max(epsilon, closest - margin));
+  const far = Math.max(DEFAULT_CAMERA_FAR, near + margin, furthest + margin);
   if (camera.near !== near || camera.far !== far) {
     camera.near = near;
     camera.far = far;

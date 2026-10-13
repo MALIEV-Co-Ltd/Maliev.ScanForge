@@ -13,7 +13,11 @@ import {
 } from "./scan-clip-box";
 import { CanvasPickMenu, type CanvasPickChoice } from "./canvas-pick-menu";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
-import { EMPTY_SCENE_EXTENT, updateCameraClipping } from "./camera-clipping";
+import {
+  DEFAULT_CAMERA_FAR,
+  EMPTY_SCENE_EXTENT,
+  updateCameraClipping,
+} from "./camera-clipping";
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
@@ -99,14 +103,16 @@ export class Viewport {
     100,
     100,
     -100,
-    0.01,
-    100000,
+    -DEFAULT_CAMERA_FAR,
+    DEFAULT_CAMERA_FAR,
   );
   private readonly gizmo: CameraGizmo;
   private selectionGeneration = 0;
   private readonly renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: false,
+    // Preserve perspective depth precision across the millimetre/metre range.
+    logarithmicDepthBuffer: true,
   });
   private readonly controls: TrackballControls;
   private readonly observer: ResizeObserver;
@@ -471,6 +477,9 @@ export class Viewport {
       this.gridScene,
       this.camera,
       this.bounds,
+      this.originGeometry.visible
+        ? new THREE.Box3().setFromObject(this.originGeometry)
+        : undefined,
     );
     for (const marker of this.landmarkLabels) {
       const projected = new THREE.Vector3(...marker.point).project(this.camera);

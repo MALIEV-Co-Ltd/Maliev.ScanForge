@@ -1,9 +1,68 @@
 import { expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { createViewportGrid, renderSceneWithGrid } from "../src/viewport-grid";
-import { updateCameraClipping } from "../src/camera-clipping";
+import {
+  DEFAULT_CAMERA_NEAR,
+  updateCameraClipping,
+} from "../src/camera-clipping";
+import { createOriginGeometry } from "../src/origin";
 
 for (const perspective of [false, true]) {
+  it(`keeps origin axes in the model render range for tiny and distant parts (${perspective ? "perspective" : "orthographic"})`, () => {
+    const scene = new THREE.Scene();
+    const origin = createOriginGeometry();
+    scene.add(origin);
+    const gridScene = new THREE.Scene();
+    const camera = perspective
+      ? new THREE.PerspectiveCamera()
+      : new THREE.OrthographicCamera();
+    const renderer = {
+      autoClear: true,
+      clearDepth: vi.fn(),
+      render: (current: THREE.Scene) => {
+        if (current !== scene) return;
+        const points = [
+          new THREE.Vector3(),
+          new THREE.Vector3(35, 0, 0),
+          new THREE.Vector3(0, 35, 0),
+        ];
+        if (!perspective || camera.position.z > 35)
+          points.push(new THREE.Vector3(0, 0, 35));
+        for (const point of points)
+          expect(Math.abs(point.project(camera).z)).toBeLessThan(1);
+      },
+    };
+    try {
+      for (const centerZ of [0, 20000]) {
+        const bounds = new THREE.Box3(
+          new THREE.Vector3(-0.05, -0.05, centerZ - 0.05),
+          new THREE.Vector3(0.05, 0.05, centerZ + 0.05),
+        );
+        camera.position.set(0, 0, centerZ + 0.2);
+        camera.lookAt(0, 0, centerZ);
+        renderSceneWithGrid(
+          renderer as unknown as THREE.WebGLRenderer,
+          scene,
+          gridScene,
+          camera,
+          bounds,
+          new THREE.Box3().setFromObject(origin),
+        );
+        for (const z of [bounds.min.z, bounds.max.z])
+          expect(
+            Math.abs(new THREE.Vector3(0, 0, z).project(camera).z),
+          ).toBeLessThan(1);
+        if (centerZ === 20000) expect(camera.far).toBeGreaterThan(20000);
+      }
+    } finally {
+      origin.traverse((object) => {
+        const item = object as THREE.Mesh;
+        item.geometry?.dispose();
+        if (item.material)
+          for (const material of [item.material].flat()) material.dispose();
+      });
+    }
+  });
   it(`keeps empty-scene axes visible through both render passes (${perspective ? "perspective" : "orthographic"})`, () => {
     const scene = new THREE.Scene();
     const gridScene = new THREE.Scene();
@@ -39,7 +98,7 @@ for (const perspective of [false, true]) {
         camera,
         new THREE.Box3(),
       );
-      expect(camera.near).toBe(perspective ? 0.01 : -10000);
+      expect(camera.near).toBe(perspective ? DEFAULT_CAMERA_NEAR : -10000);
       expect(camera.far).toBe(10000);
     } finally {
       grid.geometry.dispose();
@@ -50,7 +109,7 @@ for (const perspective of [false, true]) {
     const scene = new THREE.Scene(),
       gridScene = new THREE.Scene();
     scene.background = new THREE.Color("#1c1c1c");
-    const grid = createViewportGrid();
+    const grid = createViewportGrid(10000);
     gridScene.add(grid);
     const camera = perspective
       ? new THREE.PerspectiveCamera()
@@ -93,7 +152,7 @@ for (const perspective of [false, true]) {
       );
       expect(passes[0].scene).toBe(gridScene);
       expect(passes[0].far).toBeGreaterThan(modelFar);
-      expect(passes[0].near).toBeLessThan(modelNear);
+      expect(passes[0].near).toBeLessThanOrEqual(modelNear);
       expect(passes[1]).toMatchObject({
         scene,
         near: modelNear,

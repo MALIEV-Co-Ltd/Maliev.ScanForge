@@ -39,7 +39,11 @@ export function renderSceneWithGrid(
   gridScene: THREE.Scene,
   camera: NavigationCamera,
   modelBounds: THREE.Box3,
+  referenceBounds?: THREE.Box3,
 ): void {
+  const clippingBounds = referenceBounds
+    ? modelBounds.clone().union(referenceBounds)
+    : modelBounds;
   const background = scene.background;
   const autoClear = renderer.autoClear;
   const near = camera.near,
@@ -53,7 +57,7 @@ export function renderSceneWithGrid(
     camera.near = near;
     camera.far = far;
     camera.updateProjectionMatrix();
-    updateCameraClipping(camera, modelBounds);
+    updateCameraClipping(camera, clippingBounds);
     renderer.autoClear = false;
     scene.background = null;
     renderer.render(scene, camera);
@@ -63,6 +67,6 @@ export function renderSceneWithGrid(
     camera.near = near;
     camera.far = far;
     camera.updateProjectionMatrix();
-    updateCameraClipping(camera, modelBounds);
+    updateCameraClipping(camera, clippingBounds);
   }
 }
