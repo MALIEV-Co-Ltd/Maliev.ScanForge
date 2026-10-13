@@ -1,0 +1,27 @@
+{
+  "provenance": {
+    "procedure": "0x140b38e30",
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "originalGlobalRebuildExecuted": true,
+    "serialSchedulingAdapter": true,
+    "crtArrayLifecycleAdapter": true,
+    "stackProbeAdapter": true,
+    "nativeUiCapture": false,
+    "bucketTolerance": 1.1920928955078125e-7
+  },
+  "cases": [
+    {
+      "name": "owner-ply-1",
+      "file": "B:\\temp\\alignment-example-files\\ply-1.ply",
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "triangles": 274154,
+      "vertexBucketsSha256": "3c047da27c03351318b29e063ac07669e9d961cce9542595eb856dc13b88e3b5",
+      "neighborsSha256": "e630cea36ac2d5b0d4dc9b07bfb85e60b01d234ec5b2a218e63e103a2389b486",
+      "neighborEdgesSha256": "528da4baadb3fc1a84d41a93bb7a4178a12494b535ad5ad57c26f5a8d91459cb",
+      "triangleFlagsSha256": "3813dd771a6936660966a690b04dcfa68509019d98400c836d4e648aa338e4ba",
+      "boundaryEdges": 6074,
+      "adjacencyValid": 1
+    }
+  ]
+}
