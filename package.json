@@ -21,10 +21,12 @@
     "preview": "vite preview --host 127.0.0.1",
     "prepare:kernel": "node scripts/prepare-kernel.mjs",
     "mcp": "node scripts/mcp-server.mjs",
-    "test:mcp:browser": "node tests/mcp-browser-smoke.mjs"
+    "test:mcp:browser": "node tests/mcp-browser-smoke.mjs",
+    "test:mcp:visual": "node tests/mcp-visual-smoke.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
+    "html-to-image": "1.11.13",
     "lucide-react": "^0.468.0",
     "opencascade.js": "1.1.1",
     "react": "^19.1.1",

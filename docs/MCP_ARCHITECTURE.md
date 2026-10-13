@@ -12,6 +12,10 @@ Provide semantic control of supported ScanForge modeling features through a stan
 
 The bridge's session identifier explicitly identifies the owning browser; it is independent of MCP transport/session versions. Geometry remains owned by the browser workers. There is one admission lane, not a duplicate agent worker pool. Heavy tools acknowledge a job immediately; agents read status separately. Native handles never appear in tool inspection output.
 
+## Visual workflow
+
+Visual workflow tools use the same host adapter: `workflow-operations.ts` exposes structured application observation, semantic UI/camera control, geometric picking, retained history and project naming. `application-observation.ts` inspects bounded visible accessible controls without credentials. `visual-capture.ts` renders the current WebGL frame synchronously, freezes its serialization during bounded local DOM capture and restores it in `finally`. PNG/JPEG results are stored as transient artifacts; the stdio adapter emits native MCP image content and metadata without repeating image bytes in JSON. Capture limits, redaction and browser-rendering limitations are documented in the agent guide. `session_get` recovers bounded job/artifact metadata; `tools_search` provides compact discovery without repeating full schemas.
+
 ## Mutation correctness
 
 All public mutations require `expectedRevision` and `requestId`. The revision includes geometry identity, metadata, authoring, selection, model history and relevant settings. A human action can advance it. Immediately before applying asynchronous work, the executor checks cancellation and whether the original revision is still current. Results that cannot be applied release newly owned native handles; previous model/history handles are preserved. Existing domain validation and lock checks run at commit.

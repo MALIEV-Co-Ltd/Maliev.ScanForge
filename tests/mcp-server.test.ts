@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import http from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 // The Node executable is intentionally JavaScript, independent of the browser bundle.
 // @ts-expect-error Node script has no browser TypeScript declaration.
 import { createBridge, createMcpServer } from "../scripts/mcp-server.mjs";
@@ -284,4 +285,94 @@ it("speaks official MCP tool and resource protocols through the SDK", async () =
     isError: true,
     structuredContent: { ok: false, error: { code: "BRIDGE_UNAVAILABLE" } },
   });
+});
+
+it("delivers screenshots as native MCP images without duplicating binary data in text", async () => {
+  const data = Buffer.from("\x89PNG\r\n\x1a\n", "binary").toString("base64");
+  const bridge = {
+    close: async () => {},
+    dispatch: async () => ({
+      ok: true,
+      revision: 4,
+      result: {
+        image: {
+          data,
+          mimeType: "image/png",
+          width: 800,
+          height: 600,
+          scope: "application",
+        },
+        artifact: { artifactId: "image-1" },
+      },
+    }),
+  };
+  const server = createMcpServer(
+    bridge,
+    [
+      {
+        name: "screenshot_capture",
+        description: "Capture current screen",
+        readOnly: true,
+        inputSchema: { type: "object", properties: {} },
+      },
+    ],
+    "Guide",
+  );
+  const client = new Client({ name: "visual-agent", version: "1" });
+  resources.push(server, client);
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await server.connect(b);
+  await client.connect(a);
+  const result = (await client.callTool({
+    name: "screenshot_capture",
+    arguments: {},
+  })) as CallToolResult;
+  expect(result.content[0]).toEqual({
+    type: "image",
+    data,
+    mimeType: "image/png",
+  });
+  expect(result.structuredContent).toMatchObject({
+    ok: true,
+    revision: 4,
+    result: {
+      image: { width: 800, height: 600 },
+      artifact: { artifactId: "image-1" },
+    },
+  });
+  expect(JSON.stringify(result.structuredContent)).not.toContain(data);
+  expect((result.content[1] as { text: string }).text).not.toContain(data);
+  expect((await client.listTools()).tools[0].annotations?.readOnlyHint).toBe(
+    false,
+  );
+});
+
+it("rejects oversized or unsupported browser image responses", async () => {
+  for (const image of [
+    { data: "AAAA", mimeType: "image/svg+xml" },
+    { data: "A".repeat(1398108), mimeType: "image/png" },
+  ]) {
+    const server = createMcpServer(
+      {
+        dispatch: async () => ({ ok: true, result: { image } }),
+        close: async () => {},
+      },
+      [
+        {
+          name: "screenshot_capture",
+          readOnly: true,
+          inputSchema: { type: "object" },
+        },
+      ],
+      "Guide",
+    );
+    const client = new Client({ name: "bad-image-test", version: "1" });
+    resources.push(server, client);
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    await server.connect(b);
+    await client.connect(a);
+    expect(
+      await client.callTool({ name: "screenshot_capture", arguments: {} }),
+    ).toMatchObject({ isError: true });
+  }
 });

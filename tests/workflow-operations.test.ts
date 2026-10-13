@@ -1,0 +1,244 @@
+import { expect, it, vi } from "vitest";
+import {
+  ApplicationApi,
+  type WorkspaceHost,
+  type WorkspaceSnapshot,
+} from "../src/automation/api";
+import { createWorkflowOperations } from "../src/automation/workflow-operations";
+import { VisualCaptureError } from "../src/automation/visual-capture";
+
+function setup() {
+  const state: WorkspaceSnapshot = {
+    name: "Original",
+    entities: [],
+    history: [{ entities: [], label: "Create box" }],
+    future: [
+      { entities: [], label: "Transform" },
+      { entities: [], label: "Fillet" },
+    ],
+    authoring: {},
+    selectedId: null,
+    selection: null,
+    settings: {},
+  };
+  const ui = { settingsOpen: false };
+  const controlViewport = vi.fn();
+  const image = {
+    data: btoa("\x89PNG\r\n\x1a\n"),
+    mimeType: "image/png" as const,
+    width: 800,
+    height: 600,
+    bytes: 8,
+    scope: "application" as const,
+    capturedAt: "2026-10-13T00:00:00Z",
+    sourceWidth: 800,
+    sourceHeight: 600,
+    redacted: "password-and-agent-token-inputs" as const,
+    renderer: "browser-dom-with-current-viewport" as const,
+  };
+  const host = {
+    snapshot: () => state,
+    busy: () => false,
+    activity: vi.fn(),
+    inspectApplication: () => ui,
+    setInterface: (patch: object) => Object.assign(ui, patch),
+    inspectViewport: () => ({ projection: "orthographic" }),
+    controlViewport,
+    pickViewport: () => ({ hits: [] }),
+    renameProject: (name: string) => {
+      state.name = name;
+    },
+    captureScreenshot: vi.fn(async () => image),
+  } as unknown as WorkspaceHost;
+  const api = new ApplicationApi(host, createWorkflowOperations(host));
+  const mutate = (name: string, args: object = {}) =>
+    api.invoke(name, {
+      ...args,
+      expectedRevision: api.currentRevision(),
+      requestId: crypto.randomUUID(),
+    });
+  return { state, ui, host, api, mutate, controlViewport, image };
+}
+it("returns ordered history labels compatible with the retained cursor", async () => {
+  const { api } = setup();
+  try {
+    expect(await api.invoke("history_get")).toMatchObject({
+      ok: true,
+      result: {
+        cursor: 1,
+        entries: [
+          { index: 0, label: "Starting state", current: false },
+          { index: 1, label: "Create box", current: true },
+          { index: 2, label: "Transform", current: false },
+          { index: 3, label: "Fillet", current: false },
+        ],
+      },
+    });
+  } finally {
+    api.dispose();
+  }
+});
+it("sets UI visibility through the shared host and rejects empty settings", async () => {
+  const { api, mutate, ui } = setup();
+  try {
+    expect((await mutate("ui_set", { settingsOpen: true })).ok).toBe(true);
+    expect(ui.settingsOpen).toBe(true);
+    expect((await mutate("ui_set")).ok).toBe(false);
+  } finally {
+    api.dispose();
+  }
+});
+it("renames without replacing geometry/history and guards stale writes", async () => {
+  const { api, mutate, state } = setup();
+  const history = state.history;
+  try {
+    const revision = api.currentRevision();
+    expect(await mutate("project_update", { name: "Fixture" })).toMatchObject({
+      ok: true,
+      result: { name: "Fixture" },
+    });
+    expect(state.history).toBe(history);
+    expect(
+      await api.invoke("project_update", {
+        name: "Stale",
+        expectedRevision: revision,
+        requestId: "old",
+      }),
+    ).toMatchObject({ ok: false, error: { code: "REVISION_CONFLICT" } });
+  } finally {
+    api.dispose();
+  }
+});
+it("validates navigation variants and refuses empty selection frames", async () => {
+  const { api, mutate, controlViewport } = setup();
+  try {
+    expect(
+      (
+        await mutate("viewport_control", {
+          action: "rotate",
+          direction: "left",
+          degrees: 15,
+        })
+      ).ok,
+    ).toBe(true);
+    expect(controlViewport).toHaveBeenCalledOnce();
+    expect(
+      (
+        await mutate("viewport_control", {
+          action: "rotate",
+          direction: "left",
+          degrees: 200,
+        })
+      ).ok,
+    ).toBe(false);
+    expect(
+      (await mutate("viewport_control", { action: "fit", selection: true })).ok,
+    ).toBe(false);
+  } finally {
+    api.dispose();
+  }
+});
+it("returns an image and readable artifact, recoverable through session metadata", async () => {
+  const { api, image } = setup();
+  try {
+    const result = await api.invoke("screenshot_capture");
+    expect(result).toMatchObject({
+      ok: true,
+      result: { image, artifact: { mime: "image/png", bytes: 8 } },
+    });
+    if (!result.ok) throw Error("Capture failed");
+    const artifact = (result.result as { artifact: { artifactId: string } })
+      .artifact;
+    expect(
+      await api.invoke("artifact_read", { artifactId: artifact.artifactId }),
+    ).toMatchObject({ ok: true, result: { base64: image.data } });
+    expect(await api.invoke("session_get")).toMatchObject({
+      ok: true,
+      result: {
+        activeJobId: null,
+        artifacts: [{ artifactId: artifact.artifactId }],
+      },
+    });
+  } finally {
+    api.dispose();
+  }
+});
+it("preserves screenshot failure codes and supports compact tool discovery", async () => {
+  const { api, host } = setup();
+  host.captureScreenshot = async () => {
+    throw new VisualCaptureError("CAPTURE_BUSY", "Capture in progress");
+  };
+  try {
+    expect(await api.invoke("screenshot_capture")).toMatchObject({
+      ok: false,
+      error: { code: "CAPTURE_BUSY" },
+    });
+    const result = await api.invoke("tools_search", {
+      query: "camera",
+      limit: 2,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw Error("Search failed");
+    const tools = (result.result as { tools: object[] }).tools;
+    expect(tools.length).toBeLessThanOrEqual(2);
+    expect(JSON.stringify(tools)).not.toContain("inputSchema");
+    expect(
+      await api.invoke("tools_search", {
+        query: "screenshot",
+        includeSchemas: true,
+      }),
+    ).toMatchObject({
+      ok: true,
+      result: {
+        tools: [
+          { name: "screenshot_capture", inputSchema: { type: "object" } },
+        ],
+      },
+    });
+  } finally {
+    api.dispose();
+  }
+});
+
+it("discards a named GUI preview while busy without releasing unrelated work", async () => {
+  const { api, host, mutate, state } = setup();
+  host.busy = () => true;
+  host.discardPreview = vi.fn();
+  const entities = state.entities;
+  try {
+    expect(
+      await mutate("preview_discard", { target: "surface" }),
+    ).toMatchObject({
+      ok: true,
+      result: { cancellationRequested: true, committedGeometryPreserved: true },
+    });
+    expect(host.discardPreview).toHaveBeenCalledWith("surface");
+    expect(host.activity).not.toHaveBeenCalled();
+    expect(state.entities).toBe(entities);
+    expect((await mutate("preview_discard", { target: "everything" })).ok).toBe(
+      false,
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
+it("discovers nested modeling subcommands and parameters without returning their full schemas", async () => {
+  const { api } = setup();
+  try {
+    for (const [query, name] of [
+      ["fillet", "cad_create"],
+      ["opacity", "object_update"],
+      ["reducePolygons", "mesh_process"],
+    ]) {
+      const result = await api.invoke("tools_search", { query });
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw Error("Search failed");
+      const tools = (result.result as { tools: Array<{ name: string }> }).tools;
+      expect(tools.some((tool) => tool.name === name)).toBe(true);
+      expect(JSON.stringify(tools)).not.toContain("inputSchema");
+    }
+  } finally {
+    api.dispose();
+  }
+});

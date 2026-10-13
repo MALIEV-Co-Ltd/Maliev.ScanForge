@@ -68,7 +68,7 @@ Never infer that an operation succeeded from a status message or transport succe
 
 ### Response contract
 
-Successful tools return MCP `structuredContent` and equivalent JSON text:
+Successful tools return MCP `structuredContent` and equivalent JSON text. `screenshot_capture` additionally returns native MCP image content; its structured metadata omits the base64 image to avoid duplicating it:
 
 ```json
 {
@@ -94,6 +94,49 @@ Failures return `isError: true` and:
 Bridge failures have code `BRIDGE_UNAVAILABLE` and may have no revision. An MCP connection alone does not establish a paired browser.
 
 Mutation receipts retain the latest 256 request IDs in the current application instance. Retry a lost response with the **same requestId and identical arguments**, including its original expected revision: this returns the prior receipt, without executing twice. Reusing an ID with different arguments returns `REQUEST_CONFLICT`. Do not retry an ID after leaving that retention window or reopening the application; inspect state to reconcile it first. Receipts and jobs are transient, not crash-durable guarantees.
+
+### See and navigate the application
+
+Use `application_inspect` to read the current panel, ribbon tab, interaction mode, visible dialogs, bounded accessible controls, status/errors, progress and GUI preview presence. Password/token and file-input values are omitted. Request `maxControls` up to 300 when a larger control inventory is useful. Use structured inspection before spending image tokens.
+
+Call `screenshot_capture` with:
+
+```json
+{
+  "scope": "application",
+  "format": "png",
+  "maxWidth": 1440,
+  "maxHeight": 1000
+}
+```
+
+The tool returns an MCP `{ "type": "image", "data": "...", "mimeType": "image/png" }` content block that a vision-capable agent can view directly. Structured metadata includes dimensions, scope, timestamp, redaction policy and an image artifact ID. `scope: "viewport"` focuses on geometry; `format: "jpeg"` and `quality: 0.85` reduce transfer size. Read the artifact through `artifact_read` when saving or comparing image bytes, then delete it when no longer needed.
+
+Captures render the current WebGL frame and the application DOM, including visible panels and dialogs. They exclude password/token controls, browser chrome, OS dialogs and other applications. DOM-to-image rendering can differ from browser-native screenshots, especially for nonembedded fonts. Limits are 2048 pixels per output dimension, 1 MiB per encoded image, 16 megapixels of source DOM area, 8 MiB for the frozen source viewport PNG and a ten-second deadline. `CAPTURE_TOO_LARGE` requires smaller dimensions or JPEG; `CAPTURE_BUSY` means retry after the current capture; `CAPTURE_UNSUPPORTED_ASSET` rejects remote assets; `CAPTURE_FAILED`/`CAPTURE_UNAVAILABLE` require inspecting browser readiness. There is no saved-thumbnail fallback.
+
+`viewport_get` reports projection, camera position/target/up/zoom, scene bounds and viewport dimensions. Use `viewport_control` with a fresh revision and request ID:
+
+```json
+{
+  "expectedRevision": 7,
+  "requestId": "frame-fixture-001",
+  "action": "fit",
+  "entityId": "actual-object-id"
+}
+```
+
+Other actions are `rotate` (`direction`, `degrees`), `projection` (`orthographic`/`perspective`), `camera` (`position`, `target`, optional `up`, `zoom`, `projection`) and `sketchNormal` (requires the sketch editor open). Coordinates are world millimetres; rotation is in degrees. For selection framing, provide `entityId` and `selection: true` with a nonempty active triangle selection. `viewport_pick` takes normalized top-left `x`/`y` in `[0,1]` and returns ordered rendered-object hits and world points. Mesh triangle indices address rendered tessellation; point-cloud hits expose `pointIndex` instead. Neither is a native CAD face/edge reference. Picking does not change selection; use `object_select` or selection tools afterwards.
+
+`ui_set` changes the ribbon tab, tool workspace, mode, tool-panel visibility or Settings visibility, and can dismiss the displayed error. It does not click arbitrary controls or accept GUI preview results. Changing workspace rejects an active GUI preview; inspect it, then explicitly use `preview_discard` with `target: "scan"`, `"surface"`, `"landmarks"` or `"sketchSection"` to discard the corresponding GUI preview. This uses the existing Cancel handlers, preserves committed geometry and remains available during GUI worker cleanup. It does not cancel API jobs; use `job_cancel` for those. Read visible control/status state to check the result. `settings_set` also exposes `normalsDisplay`; grid spacing uses the same supported bounds as the viewport.
+
+### Discover and recover efficiently
+
+- `tools_search`: match query terms against tool names, descriptions, supported parameters and nested modeling subcommands, bounded to 20 results. Include `includeSchemas: true` only when needed; `tools/list` remains authoritative for all schemas.
+- `session_get`: recover active and retained job IDs, progress/errors, artifact IDs/sizes and expiry. It omits binary contents and job results. A GUI-owned operation may make the application busy without an MCP job; `job_cancel` only targets API-owned jobs.
+- `history_get`: inspect retained transition labels and the current cursor before `history_seek`. Redo entries retain their chronological order.
+- `project_update`: rename the project while preserving objects, authoring, history and backup identity.
+
+An efficient visual loop is: inspect application/project state → frame the relevant object → capture the viewport → perform a semantic modeling command → await its terminal job → inspect diagnostics and fresh state → capture again to verify the visible result. Camera and panel actions preserve modeling history. Refresh the workspace revision before model changes; do not infer success from pixels alone.
 
 ### Create a solid
 
@@ -210,7 +253,7 @@ NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`,
 - Primitive fits use at most 20,000 sampled vertices. Synchronous section/deviation analysis is capped at 250,000 triangles; reduce a separate copy or a supported selected region when needed. Modeling estimates are not certified metrology.
 - Locked objects and affected locked dependents cannot be edited. Geometry changes invalidate stale triangle selection/authoring where applicable. Individual split outputs cannot be deleted alone.
 - Edge/face references remain kernel indices. Refresh state and revision after topology changes. Persistent topology naming is not implemented.
-- Unsupported geometry features remain unsupported: arbitrary automatic scan-to-solid reconstruction, scanner drivers and point-cloud import are not created by MCP integration. Browser-owned device permission dialogs, file choosers and modal layout navigation remain human/browser interactions; use file artifacts and semantic commands instead.
+- Unsupported geometry features remain unsupported: arbitrary automatic scan-to-solid reconstruction, scanner drivers are not created by MCP integration. ASC point clouds are supported by `project_import`; triangle-only processing rejects them. Browser-owned device permission dialogs and file choosers remain human/browser interactions; use file artifacts and semantic commands instead.
 - `REVISION_CONFLICT`: reread state and reconcile intent; use a new ID for a changed request. `REQUEST_CONFLICT`: do not reuse an ID for a different command. `INVALID_ARGUMENT`: correct the published-schema parameters. `RESOURCE_LIMIT`: release transient artifacts or use manual import. `OPERATION_FAILED`: inspect its exact message and job diagnostics. `BRIDGE_UNAVAILABLE`: check the running MCP client, paired browser, token/origin/port and ownership lease.
 - Native timeout resets can invalidate current browser handles; save retained BREP and reopen the project using the existing recovery workflow. Disconnect requests cancellation; it does not erase the user's project or persistent backups.
 
@@ -222,6 +265,7 @@ npm test -- tests/automation-api.test.ts tests/automation-operations.test.ts tes
 npm test
 npm run test:cad
 npm run test:mcp:browser
+npm run test:mcp:visual
 npm run format:check
 ```
 

@@ -3,6 +3,12 @@ import type { CadClient } from "../cad/client";
 import type { Revision } from "../history";
 import type { Sketch } from "../sketch";
 import type { Entity, Project } from "../types";
+import {
+  VisualCaptureError,
+  type VisualCaptureOptions,
+  type CapturedImage,
+} from "./visual-capture";
+import type { InterfacePatch, ViewportCommand } from "./workflow-operations";
 
 export interface WorkspaceSnapshot {
   projectId?: string;
@@ -36,6 +42,19 @@ export interface WorkspaceHost {
   busy(): boolean;
   activity(busy: boolean, message: string): void;
   deleteBackup?(id: string): Promise<void>;
+  inspectApplication?(maxControls: number): unknown;
+  setInterface?(patch: InterfacePatch): void;
+  inspectViewport?(): unknown;
+  controlViewport?(command: ViewportCommand): void;
+  pickViewport?(x: number, y: number, maxHits: number): unknown;
+  captureScreenshot?(
+    options: VisualCaptureOptions,
+    signal: AbortSignal,
+  ): Promise<CapturedImage>;
+  renameProject?(name: string): void;
+  discardPreview?(
+    target: "scan" | "surface" | "landmarks" | "sketchSection",
+  ): void;
 }
 export interface ArtifactInfo {
   artifactId: string;
@@ -69,6 +88,26 @@ export type ApiResult =
       error: { code: string; message: string };
     };
 type Schema = Record<string, any>;
+function discoveryKeywords(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(discoveryKeywords);
+  if (!value || typeof value !== "object") return [];
+  return Object.entries(value).flatMap(([key, entry]) => [
+    ...(key === "description" && typeof entry === "string" ? [entry] : []),
+    ...(key === "enum" && Array.isArray(entry)
+      ? entry.filter((item): item is string => typeof item === "string")
+      : []),
+    ...(key === "properties" && entry && typeof entry === "object"
+      ? Object.keys(entry)
+      : []),
+    ...discoveryKeywords(entry),
+  ]);
+}
+const discoveryIndex = catalog.map((tool) => ({
+  tool,
+  text: [tool.name, tool.description, ...discoveryKeywords(tool.inputSchema)]
+    .join(" ")
+    .toLowerCase(),
+}));
 class ApiError extends Error {
   constructor(
     readonly code: string,
@@ -292,6 +331,75 @@ export class ApplicationApi {
           "REVISION_CONFLICT",
           "Workspace changed; inspect project_get and use its current revision with a new requestId.",
         );
+      if (command === "preview_discard") {
+        if (!this.host.discardPreview)
+          throw new ApiError(
+            "UNSUPPORTED",
+            "GUI preview cancellation is unavailable.",
+          );
+        this.host.discardPreview(
+          args.target as "scan" | "surface" | "landmarks" | "sketchSection",
+        );
+        return this.success({
+          target: args.target,
+          cancellationRequested: true,
+          committedGeometryPreserved: true,
+          note: "GUI workers retain their cancellation/cleanup lifecycle. API jobs are cancelled separately through job_cancel.",
+        });
+      }
+      if (command === "tools_search") {
+        const terms = String(args.query ?? "")
+          .trim()
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean);
+        const matches = discoveryIndex
+          .filter((entry) => terms.every((term) => entry.text.includes(term)))
+          .map((entry) => entry.tool);
+        return this.success({
+          total: matches.length,
+          tools: matches
+            .slice(0, (args.limit as number) ?? 12)
+            .map(({ name, description, readOnly, job, inputSchema }) => ({
+              name,
+              description,
+              readOnly,
+              job: job ?? false,
+              ...(args.includeSchemas ? { inputSchema } : {}),
+            })),
+        });
+      }
+      if (command === "session_get") {
+        this.sweepArtifacts();
+        return this.success({
+          busy: this.host.busy(),
+          activeJobId: this.active?.jobId ?? null,
+          jobs: [...this.jobs.values()].map(
+            ({
+              jobId,
+              command,
+              status,
+              progress,
+              stage,
+              error,
+              controller,
+            }) => ({
+              jobId,
+              command,
+              status,
+              progress,
+              stage,
+              error,
+              cancellationRequested: controller.signal.aborted,
+            }),
+          ),
+          artifacts: [...this.artifacts.values()].map(({ info, used }) => ({
+            ...info,
+            expiresAt: new Date(used + 900000).toISOString(),
+          })),
+          retainedRequestCount: this.requests.size,
+        });
+      }
       if (command === "capabilities_get")
         return this.success({
           apiVersion: this.apiVersion,
@@ -504,7 +612,7 @@ export class ApplicationApi {
       revision: this.currentRevision(),
       error: {
         code:
-          error instanceof ApiError
+          error instanceof ApiError || error instanceof VisualCaptureError
             ? error.code
             : error instanceof DOMException && error.name === "AbortError"
               ? "CANCELLED"

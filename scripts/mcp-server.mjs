@@ -242,6 +242,7 @@ export function createMcpServer(bridge, catalog, guide) {
             "artifact_delete",
             "job_cancel",
             "project_export",
+            "screenshot_capture",
           ].includes(name),
         destructiveHint: !readOnly || name === "artifact_delete",
         openWorldHint: false,
@@ -256,6 +257,32 @@ export function createMcpServer(bridge, catalog, guide) {
       };
     try {
       const result = await bridge.dispatch(params.name, params.arguments ?? {});
+      if (params.name === "screenshot_capture" && result.ok) {
+        const { image, ...metadata } = result.result;
+        if (
+          !image ||
+          !["image/png", "image/jpeg"].includes(image.mimeType) ||
+          typeof image.data !== "string" ||
+          image.data.length > 1398104 ||
+          !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(
+            image.data,
+          )
+        )
+          throw failure("Invalid screenshot response from browser");
+        const { data, ...imageInfo } = image;
+        const structured = {
+          ...result,
+          result: { ...metadata, image: imageInfo },
+        };
+        return {
+          content: [
+            { type: "image", data, mimeType: image.mimeType },
+            { type: "text", text: JSON.stringify(structured) },
+          ],
+          structuredContent: structured,
+          isError: false,
+        };
+      }
       return {
         content: [{ type: "text", text: JSON.stringify(result) }],
         structuredContent: result,

@@ -1,0 +1,111 @@
+import type { Handler, WorkspaceHost } from "./api";
+
+export interface ViewportCommand {
+  action: "fit" | "rotate" | "projection" | "camera" | "sketchNormal";
+  entityId?: string;
+  selection?: boolean;
+  direction?: "left" | "right" | "up" | "down";
+  degrees?: number;
+  projection?: "orthographic" | "perspective";
+  position?: [number, number, number];
+  target?: [number, number, number];
+  up?: [number, number, number];
+  zoom?: number;
+}
+export interface InterfacePatch {
+  ribbonTab?: string;
+  workspace?: string;
+  mode?: "inspect" | "measure" | "section" | "brush";
+  toolPanelOpen?: boolean;
+  settingsOpen?: boolean;
+  dismissError?: boolean;
+}
+
+function unavailable(): never {
+  throw new Error("Visual workflow is unavailable in this application host.");
+}
+
+/** Semantic observation/navigation; modeling continues through the existing domain tools. */
+export function createWorkflowOperations(
+  host: WorkspaceHost,
+): Record<string, Handler> {
+  return {
+    application_inspect: (a) =>
+      host.inspectApplication?.(a.maxControls ?? 150) ?? unavailable(),
+    ui_set: (a, c) => {
+      const { expectedRevision: _revision, requestId: _id, ...patch } = a;
+      if (!Object.keys(patch).length)
+        throw new Error("Supply at least one interface setting.");
+      c.check();
+      if (!host.setInterface) unavailable();
+      host.setInterface(patch);
+      return host.inspectApplication?.(100) ?? unavailable();
+    },
+    viewport_get: () => host.inspectViewport?.() ?? unavailable(),
+    viewport_control: (a, c) => {
+      if (a.action === "fit" && a.selection && !a.entityId)
+        throw new Error("Selection framing requires an explicit object ID.");
+      if (a.action === "fit" && a.entityId) {
+        const state = host.snapshot();
+        if (!state.entities.some((entity) => entity.id === a.entityId))
+          throw new Error("Framing object not found.");
+        if (
+          a.selection &&
+          (state.selectedId !== a.entityId || !state.selection?.some(Boolean))
+        )
+          throw new Error(
+            "The requested object has no active triangle selection.",
+          );
+      }
+      c.check();
+      if (!host.controlViewport) unavailable();
+      host.controlViewport(a as ViewportCommand);
+      return host.inspectViewport?.() ?? unavailable();
+    },
+    viewport_pick: (a) =>
+      host.pickViewport?.(a.x, a.y, a.maxHits ?? 5) ?? unavailable(),
+    screenshot_capture: async (a, c) => {
+      if (!host.captureScreenshot) unavailable();
+      const image = await host.captureScreenshot(a, c.signal);
+      c.check();
+      const bytes = Uint8Array.from(atob(image.data), (char) =>
+        char.charCodeAt(0),
+      );
+      const artifact = c.artifact(
+        bytes,
+        `scanforge-${image.scope}.${image.mimeType === "image/png" ? "png" : "jpg"}`,
+        image.mimeType,
+      );
+      return { image, artifact, viewport: host.inspectViewport?.() };
+    },
+    history_get: () => {
+      const state = host.snapshot();
+      const labels = [
+        ...state.history.map((entry) => entry.label),
+        ...state.future.map((entry) => entry.label),
+      ];
+      return {
+        cursor: state.history.length,
+        entries: [
+          {
+            index: 0,
+            label: "Starting state",
+            current: state.history.length === 0,
+          },
+          ...labels.map((label, index) => ({
+            index: index + 1,
+            label,
+            current: index + 1 === state.history.length,
+          })),
+        ],
+        note: "Indices address retained history only; use history_seek with a fresh revision.",
+      };
+    },
+    project_update: (a, c) => {
+      c.check();
+      if (!host.renameProject) unavailable();
+      host.renameProject(a.name);
+      return { name: host.snapshot().name };
+    },
+  };
+}

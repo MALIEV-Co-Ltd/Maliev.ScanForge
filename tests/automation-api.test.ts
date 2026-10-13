@@ -8,6 +8,7 @@ import {
 } from "../src/automation/api";
 import { createOperations } from "../src/automation/operations";
 import { createAuthoringOperations } from "../src/automation/authoring-operations";
+import { createWorkflowOperations } from "../src/automation/workflow-operations";
 import catalog from "../src/automation/catalog.json";
 import type { CadClient } from "../src/cad/client";
 function setup(handlers?: Record<string, Handler>) {
@@ -57,6 +58,7 @@ function setup(handlers?: Record<string, Handler>) {
   const operations = {
     ...createOperations(host),
     ...createAuthoringOperations(host),
+    ...createWorkflowOperations(host),
   };
   return {
     state,
@@ -74,6 +76,9 @@ describe("shared application API", () => {
     const { api, operations } = setup();
     const builtins = [
       "capabilities_get",
+      "session_get",
+      "preview_discard",
+      "tools_search",
       "job_get",
       "job_cancel",
       "artifact_put",

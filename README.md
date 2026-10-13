@@ -58,6 +58,8 @@ Once paired, the agent should:
 
 Tools cover projects, object properties, selection, mesh analysis/processing, CAD creation/rebuild, sketches, surfaces, history, viewport controls, settings and file import/export. Discover current capabilities rather than assuming a GUI command or unsupported operation is available.
 
+For visual verification, use `application_inspect` for current UI/status and `screenshot_capture` with `scope: "application"` or `"viewport"`. Screenshots arrive as native MCP PNG/JPEG images plus downloadable artifact metadata; password/token inputs are excluded. Use `viewport_get`, `viewport_control` and `viewport_pick` to inspect and frame geometry. `tools_search` finds compact tool descriptions/schemas, `history_get` explains retained history, and `session_get` recovers active jobs and artifact IDs. See the agent guide for examples, capture bounds and recovery procedures.
+
 **Repository requirement:** every application change must also expose equivalent agent access through shared application operations, with MCP tests and documentation. Missing MCP parity blocks completion and commit. See [AGENTS.md](AGENTS.md) and the [MCP architecture](docs/MCP_ARCHITECTURE.md).
 
 ## Build and validate

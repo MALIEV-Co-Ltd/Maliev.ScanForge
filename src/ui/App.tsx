@@ -5,6 +5,9 @@ import { objectContextActions } from "./object-context-actions";
 import { RenameObjectDialog } from "./RenameObjectDialog";
 import { AgentConnection } from "./AgentConnection";
 import { useWorkspaceApi } from "../automation/use-workspace-api";
+import { captureApplicationImage } from "../automation/visual-capture";
+import { inspectApplicationDom } from "../automation/application-observation";
+import { RIBBON_TABS } from "./ribbon-model";
 import { createCadFeature, rebuildCadFeature } from "../automation/operations";
 import {
   duplicateObject,
@@ -3180,6 +3183,91 @@ export function App() {
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
   const workspaceApi = useWorkspaceApi({
+    discardPreview: (target) => {
+      if (target === "scan") closeScanTool();
+      else if (target === "surface") cancelSurfaceFit();
+      else if (target === "landmarks") cancelLandmarks();
+      else cancelSketchCreation();
+    },
+    inspectApplication: (maxControls) => {
+      const root = viewportHost.current?.closest<HTMLElement>(".workbench");
+      if (!root) throw new Error("Application is not mounted.");
+      return {
+        name,
+        selectedId,
+        dirty,
+        busy: busyRef.current,
+        message,
+        error,
+        workspace,
+        ribbonTab,
+        mode,
+        toolPanelOpen,
+        settingsOpen,
+        previews: {
+          scan: !!scanPreview,
+          landmarks: !!nPoints?.preview,
+          surface: !!surfaceFit?.preview,
+        },
+        progress: {
+          import: importProgress,
+          scan: { fraction: scanToolFraction, stage: scanToolProgress },
+        },
+        ...inspectApplicationDom(root, maxControls),
+      };
+    },
+    setInterface: (patch) => {
+      if (
+        patch.workspace !== undefined &&
+        (nPoints || surfaceFit || scanPreview || createSketch)
+      )
+        throw new Error(
+          "Finish or cancel the GUI preview before changing its tool panel.",
+        );
+      if (patch.ribbonTab !== undefined) {
+        if (!RIBBON_TABS.some((tab) => tab.id === patch.ribbonTab))
+          throw new Error("Unknown ribbon tab.");
+        setRibbonTab(patch.ribbonTab);
+      }
+      if (patch.workspace !== undefined) {
+        showTools(patch.workspace);
+      }
+      if (patch.mode !== undefined) setMode(patch.mode);
+      if (patch.toolPanelOpen !== undefined)
+        setToolPanelOpen(patch.toolPanelOpen);
+      if (patch.settingsOpen !== undefined) setSettingsOpen(patch.settingsOpen);
+      if (patch.dismissError) setError("");
+    },
+    inspectViewport: () => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      return viewport.current.inspectAgentView();
+    },
+    controlViewport: (command) => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      viewport.current.controlAgentView(command, triangleMask ?? undefined);
+    },
+    pickViewport: (x, y, maxHits) => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      return viewport.current.pickAgentView(x, y, maxHits);
+    },
+    captureScreenshot: (options, signal) => {
+      const root = viewportHost.current?.closest<HTMLElement>(".workbench");
+      if (!root || !viewportHost.current || !viewport.current)
+        throw new Error("Application is not ready for capture.");
+      return captureApplicationImage(
+        {
+          applicationRoot: root,
+          viewportRoot: viewportHost.current,
+          renderViewport: () => viewport.current!.captureFrame(),
+        },
+        options,
+        signal,
+      );
+    },
+    renameProject: (nextName) => {
+      setName(nextName);
+      setDirty(true);
+    },
     snapshot: () => ({
       projectId,
       name,
@@ -3194,6 +3282,7 @@ export function App() {
         theme,
         wireframe,
         flatShading,
+        normalsDisplay,
         floorGrid,
         gridSpacing,
         snapGrid,
@@ -3283,6 +3372,8 @@ export function App() {
         setWireframe(patch.wireframe as boolean);
       if (patch.flatShading !== undefined)
         setFlatShading(patch.flatShading as boolean);
+      if (patch.normalsDisplay !== undefined)
+        setNormalsDisplay(patch.normalsDisplay as boolean);
       if (patch.floorGrid !== undefined)
         setFloorGrid(patch.floorGrid as boolean);
       if (patch.gridSpacing !== undefined)

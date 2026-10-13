@@ -15,6 +15,8 @@ import {
   type ScanBoundaryPath,
 } from "./scan-boundary-edges";
 import * as THREE from "three";
+import { inspectCamera, pickCamera, setCameraPose } from "./viewport-agent";
+import type { ViewportCommand } from "./automation/workflow-operations";
 import {
   ScanClipBox,
   scanClipPlanes,
@@ -499,6 +501,75 @@ export class Viewport {
   }
 
   /** Render and copy before WebGL clears its drawing buffer after presentation. */
+  captureFrame(): { canvas: HTMLCanvasElement; dataUrl: string } {
+    if (this.disposed) throw new Error("Viewport has been disposed.");
+    if (this.frame !== null) cancelAnimationFrame(this.frame);
+    this.advanceViewTransition(performance.now() + 1000);
+    this.render();
+    return {
+      canvas: this.renderer.domElement,
+      dataUrl: this.renderer.domElement.toDataURL("image/png"),
+    };
+  }
+
+  inspectAgentView() {
+    this.advanceViewTransition(performance.now() + 1000);
+    return inspectCamera(
+      this.camera,
+      this.controls.target,
+      this.bounds,
+      this.container.clientWidth,
+      this.container.clientHeight,
+    );
+  }
+
+  controlAgentView(command: ViewportCommand, selection?: Uint8Array) {
+    this.viewTransition = undefined;
+    if (command.action === "fit")
+      this.fitView(command.entityId, command.selection ? selection : undefined);
+    else if (command.action === "rotate")
+      this.rotateView(command.direction!, command.degrees!);
+    else if (command.action === "projection")
+      this.setProjection(command.projection!);
+    else if (command.action === "sketchNormal") {
+      if (!this.sketchEditor)
+        throw new Error("Open the sketch editor before framing its normal.");
+      this.viewSketchNormal();
+    } else {
+      setCameraPose(
+        this.camera.clone(),
+        this.controls.target.clone(),
+        command.position!,
+        command.target!,
+        command.up,
+        command.zoom,
+      );
+      if (command.projection) this.setProjection(command.projection);
+      setCameraPose(
+        this.camera,
+        this.controls.target,
+        command.position!,
+        command.target!,
+        command.up,
+        command.zoom,
+      );
+      updateCameraClipping(this.camera, this.bounds);
+      this.controls.update();
+      this.invalidate();
+    }
+  }
+
+  pickAgentView(x: number, y: number, maxHits: number) {
+    this.advanceViewTransition(performance.now() + 1000);
+    return pickCamera(
+      this.camera,
+      [...this.objects.values()].map((item) => item.mesh),
+      x,
+      y,
+      maxHits,
+    );
+  }
+
   async captureThumbnail(): Promise<Blob | null> {
     if (this.disposed) return null;
     if (this.frame !== null) cancelAnimationFrame(this.frame);
