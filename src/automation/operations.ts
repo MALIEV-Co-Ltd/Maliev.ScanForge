@@ -724,6 +724,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             op.sampleBudget,
             op.initialRadius,
             selection,
+            op.workerCount ?? 1,
+            op.parallel ?? true,
           ),
         );
       }

@@ -1109,6 +1109,18 @@
                   "type": "string",
                   "enum": ["nativeRefine"]
                 },
+                "workerCount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16,
+                  "default": 1,
+                  "description": "Logical native lanes. Preserve this value when comparing serial and parallel output."
+                },
+                "parallel": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Use a bounded two-worker CPU pool when admitted; false evaluates the same logical lanes serially."
+                },
                 "sampleBudget": {
                   "type": "integer",
                   "minimum": 1,

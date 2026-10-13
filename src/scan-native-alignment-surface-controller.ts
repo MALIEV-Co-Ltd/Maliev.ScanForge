@@ -2,7 +2,10 @@ import type { MeshProcessingOptions } from "./mesh-processing";
 import { prepareNativeAlignmentSources } from "./scan-native-alignment-source";
 import { prepareNativeAlignmentSurface } from "./scan-native-alignment-surface";
 import { partitionNativeAlignmentVertices } from "./scan-native-alignment-partition";
-import { nativeRefineAlignmentSurface } from "./scan-native-alignment-surface-search";
+import {
+  nativeRefineAlignmentSurface,
+  nativeRefineAlignmentSurfaceAsync,
+} from "./scan-native-alignment-surface-search";
 import { nativeAlignmentTargetGroupQuery } from "./scan-native-alignment-target-group";
 import {
   nativeAlignmentSixTransform,
@@ -14,18 +17,19 @@ type SourceMesh = Parameters<typeof prepareNativeAlignmentSources>[0][number];
 /** Prepared mesh refinement and native thread success/matrix contract.
  * Target-group dispatch and the enclosing application constructor are separate.
  */
-export function nativeRefineAlignmentMeshes(
+type RefinementMeshOptions = MeshProcessingOptions & {
+  selectionOnly?: boolean;
+  workerCount?: number;
+  minimumExtent?: number;
+  initialRadius?: number;
+  translationOnly?: boolean;
+  step?: number;
+} & { parallel?: boolean };
+function prepareRefinementMeshes(
   sources: readonly SourceMesh[],
   target: SourceMesh | readonly SourceMesh[],
   sampleBudget: number,
-  options: MeshProcessingOptions & {
-    selectionOnly?: boolean;
-    workerCount?: number;
-    minimumExtent?: number;
-    initialRadius?: number;
-    translationOnly?: boolean;
-    step?: number;
-  } = {},
+  options: RefinementMeshOptions,
 ) {
   const moving = prepareNativeAlignmentSources(sources, sampleBudget, options);
   const targets: readonly SourceMesh[] =
@@ -45,11 +49,10 @@ export function nativeRefineAlignmentMeshes(
     options.workerCount ?? 1,
   );
   let evaluations = 0;
-  const result = nativeRefineAlignmentSurface(
-    nativeAlignmentSixParameters([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]),
-    lanes.map((lane) => lane.vertices),
-    nativeAlignmentTargetGroupQuery(fixed.map((mesh) => mesh.query)),
-    {
+  return {
+    lanes: lanes.map((lane) => lane.vertices),
+    fixed,
+    settings: {
       ...options,
       budget: 1000,
       step: Math.fround(options.step ?? 0.0002),
@@ -59,7 +62,13 @@ export function nativeRefineAlignmentMeshes(
           "Refining surface alignment",
         ),
     },
-  );
+  };
+}
+const initial = () =>
+  nativeAlignmentSixParameters([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]);
+function refinementMatrix<
+  T extends { converged: boolean; parameters: readonly number[] },
+>(result: T, options: RefinementMeshOptions) {
   const accepted = result.converged;
   return {
     ...result,
@@ -68,4 +77,45 @@ export function nativeRefineAlignmentMeshes(
       ? nativeAlignmentSixTransform(result.parameters, options.translationOnly)
       : [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
   };
+}
+
+export function nativeRefineAlignmentMeshes(
+  sources: readonly SourceMesh[],
+  target: SourceMesh | readonly SourceMesh[],
+  sampleBudget: number,
+  options: RefinementMeshOptions = {},
+) {
+  const prepared = prepareRefinementMeshes(
+    sources,
+    target,
+    sampleBudget,
+    options,
+  );
+  const result = nativeRefineAlignmentSurface(
+    initial(),
+    prepared.lanes,
+    nativeAlignmentTargetGroupQuery(prepared.fixed.map((fixed) => fixed.query)),
+    prepared.settings,
+  );
+  return refinementMatrix(result, options);
+}
+export async function nativeRefineAlignmentMeshesAsync(
+  sources: readonly SourceMesh[],
+  target: SourceMesh | readonly SourceMesh[],
+  sampleBudget: number,
+  options: RefinementMeshOptions = {},
+) {
+  const prepared = prepareRefinementMeshes(
+    sources,
+    target,
+    sampleBudget,
+    options,
+  );
+  const result = await nativeRefineAlignmentSurfaceAsync(
+    initial(),
+    prepared.lanes,
+    prepared.fixed.map((fixed) => fixed.surface),
+    prepared.settings,
+  );
+  return refinementMatrix(result, options);
 }

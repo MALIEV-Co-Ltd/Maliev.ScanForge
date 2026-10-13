@@ -89,3 +89,31 @@ original query radii and Float32 source records must remain unchanged. Changing
 lane count or merging lane means is an algorithm change, not a scheduling-only
 optimization. Worker admission, bounded lifetimes and cancellation must be
 validated separately before enabling application acceleration.
+
+# Bounded application CPU pool
+
+The GUI and MCP surface-refinement operation now use the same asynchronous
+native search state machine. A two-worker pool preserves logical lane IDs,
+persistent flags, target order and ordered reduction. It initializes targets
+sequentially and sends only evaluation parameters afterward. The default
+remains one logical lane; requesting two or more lanes admits the pool when
+available. `parallel:false` is the serial numerical reference at that lane count.
+
+The pool retains the 128 MiB additional-memory admission limit. On isolated
+origins, target Float32 and byte arrays are copied once into shared memory;
+workers treat those copies as immutable. Without isolation, copied targets may
+exceed admission and safely use the same serial lanes. Development and preview
+responses include COOP `same-origin` and COEP `require-corp`. A future production
+host needs these headers to enable sharing; otherwise diagnostics report the
+fallback. This does not publish or deploy the application.
+
+`tests/fixtures/alignment-user-multicore-refinement.json` retains a new execution
+of the original target builder, optimizer and two-lane dispatch on the owner's
+full-resolution second and third PLY scans against the first. The original
+ConCRT imports were rebound to the installed runtime, including the dispatch
+allocator/free imports. The selected source IDs come from the separately
+verified native sampling captures. Full constructor and original UI integration
+remain outside this evidence. This capture is direct native execution, not a
+new REA Evidence ID. The recovered procedures and image digest are in its
+provenance; external probe, fault, result and cleanup files remain under the
+isolated native analysis directory.

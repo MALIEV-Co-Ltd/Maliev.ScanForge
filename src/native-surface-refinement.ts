@@ -1,6 +1,9 @@
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { indexedMeshMatches } from "./indexed-mesh";
-import { nativeRefineAlignmentMeshes } from "./scan-native-alignment-surface-controller";
+import {
+  nativeRefineAlignmentMeshes,
+  nativeRefineAlignmentMeshesAsync,
+} from "./scan-native-alignment-surface-controller";
 export interface NativeSurfaceRefinementRequest {
   kind: "nativeRefine";
   positions: Positions;
@@ -11,6 +14,8 @@ export interface NativeSurfaceRefinementRequest {
   sourceTriangleMask?: Uint8Array;
   sampleBudget: number;
   initialRadius: number;
+  workerCount?: number;
+  parallel?: boolean;
 }
 export function nativeSurfaceRefinementRequest(
   source: Entity,
@@ -18,6 +23,8 @@ export function nativeSurfaceRefinementRequest(
   sampleBudget: number,
   initialRadius: number,
   sourceTriangleMask?: Uint8Array,
+  workerCount = 1,
+  parallel = true,
 ): NativeSurfaceRefinementRequest {
   const targets: readonly Entity[] = Array.isArray(target)
     ? target
@@ -63,10 +70,12 @@ export function nativeSurfaceRefinementRequest(
       : {}),
     sampleBudget,
     initialRadius,
+    workerCount,
+    parallel,
     sourceTriangleMask,
   };
 }
-export function refineNativeSurface(
+function prepareRequest(
   request: NativeSurfaceRefinementRequest,
   progress: (fraction: number, stage: string) => void,
 ) {
@@ -90,6 +99,15 @@ export function refineNativeSurface(
     throw new Error(
       "Invalid surface refinement sampling budget or initial radius.",
     );
+  if (
+    !Number.isInteger(request.workerCount ?? 1) ||
+    (request.workerCount ?? 1) < 1 ||
+    (request.workerCount ?? 1) > 16 ||
+    (request.parallel !== undefined && typeof request.parallel !== "boolean")
+  )
+    throw new Error(
+      "Alignment workerCount must be 1 to 16 and parallel must be boolean.",
+    );
   const mask = request.sourceTriangleMask;
   if (
     mask &&
@@ -108,7 +126,23 @@ export function refineNativeSurface(
         for (let corner = 0; corner < 3; corner++)
           flags[request.sourceIndexed.triangles[face * 3 + corner]] = 4;
   progress(0, "Preparing native surface refinement");
-  const result = nativeRefineAlignmentMeshes(
+  return { flags, mask };
+}
+export function refineNativeSurface(
+  request: NativeSurfaceRefinementRequest,
+  progress: (fraction: number, stage: string) => void,
+) {
+  const { flags, mask } = prepareRequest(request, progress);
+  const result = runRefinement(request, progress, flags, mask);
+  return finishRefinement(request, progress, result);
+}
+function runRefinement(
+  request: NativeSurfaceRefinementRequest,
+  progress: (fraction: number, stage: string) => void,
+  flags: Uint32Array | undefined,
+  mask: Uint8Array | undefined,
+) {
+  return nativeRefineAlignmentMeshes(
     [{ ...request.sourceIndexed, flags }],
     request.additionalTargets?.length
       ? [
@@ -119,10 +153,49 @@ export function refineNativeSurface(
     request.sampleBudget,
     {
       selectionOnly: !!mask,
+      workerCount: request.workerCount ?? 1,
+      parallel: request.parallel ?? true,
       initialRadius: request.initialRadius,
       onProgress: (fraction, stage) => progress(fraction * 0.2, stage),
     },
   );
+}
+export async function refineNativeSurfaceAsync(
+  request: NativeSurfaceRefinementRequest,
+  progress: (fraction: number, stage: string) => void,
+) {
+  const { flags, mask } = prepareRequest(request, progress);
+  const result = await nativeRefineAlignmentMeshesAsync(
+    [{ ...request.sourceIndexed, flags }],
+    request.additionalTargets?.length
+      ? [
+          request.targetIndexed,
+          ...request.additionalTargets.map((target) => target.indexedMesh),
+        ]
+      : request.targetIndexed,
+    request.sampleBudget,
+    {
+      selectionOnly: !!mask,
+      workerCount: request.workerCount ?? 1,
+      parallel: request.parallel ?? true,
+      initialRadius: request.initialRadius,
+      onProgress: (fraction, stage) => progress(fraction * 0.2, stage),
+    },
+  );
+  return {
+    ...finishRefinement(request, progress, result),
+    execution: {
+      physicalWorkers: result.physicalWorkers,
+      logicalLanes: result.logicalLanes,
+      fallbackReason: result.fallbackReason,
+    },
+  };
+}
+function finishRefinement(
+  request: NativeSurfaceRefinementRequest,
+  progress: (fraction: number, stage: string) => void,
+  result: ReturnType<typeof nativeRefineAlignmentMeshes>,
+) {
   const transform = (coordinates: Positions): Float32Array => {
     const output = new Float32Array(coordinates.length),
       m = result.matrix;

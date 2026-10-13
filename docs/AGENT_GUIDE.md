@@ -212,6 +212,16 @@ and radius are millimetres; sampling accepts 1 to 100,000 vertices. Optional
 `selectionOnly:true` marks vertices incident to selected moving triangles and
 skips sampling, matching the recovered selection-only preparation path.
 The GUI's **Refine indexed mesh surfaces** action uses the same request builder.
+The **Use multiple CPU cores** option selects two logical native lanes. MCP
+accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
+(default true). Two bounded CPU workers execute admitted multi-lane searches;
+memory or worker admission falls back to serial execution of those same lanes.
+Use `parallel:false` with the same `workerCount` for numerical comparisons.
+Changing the logical lane count can change native pruning and therefore output.
+Diagnostics include `physicalWorkers`, `logicalLanes`, and `fallbackReason`.
+Fixed query geometry is initialized once per worker, lane flags persist across
+evaluations, and results are reduced in lane order. Workers are released on
+completion, failure or cancellation and have finite idle and absolute leases.
 The search uses its recovered fixed 1,000-evaluation budget and Float32 step;
 the separate ICP maximum-iterations control does not apply to this action.
 Results expose `refinement` with acceptance, matrix, parameters, initial/best

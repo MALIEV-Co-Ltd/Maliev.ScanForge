@@ -1,5 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
-import { refineNativeSurface } from "./native-surface-refinement";
+import { refineNativeSurfaceAsync } from "./native-surface-refinement";
 import { indexedMeshMatches } from "./indexed-mesh";
 import { editPointCloud } from "./point-cloud-processing";
 import { ScanPreviewSession } from "./scan-preview";
@@ -89,10 +89,11 @@ scope.onmessage = async ({ data: incoming }) => {
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
     if (request.kind === "nativeRefine") {
-      const refined = refineNativeSurface(request, progress);
+      const refined = await refineNativeSurfaceAsync(request, progress);
       Object.assign(result, refined);
       result.diagnostics = {
         algorithm: "native-surface-refinement",
+        ...refined.execution,
         accepted: refined.refinement.accepted,
         initialSquaredError: refined.refinement.initialError,
         bestSquaredError: refined.refinement.best,

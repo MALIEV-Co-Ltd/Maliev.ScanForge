@@ -76,6 +76,7 @@ export function MeshTools({
     [distance, setDistance] = useState(10),
     [icpIterations, setIcpIterations] = useState(40);
   const [additionalTargetIds, setAdditionalTargetIds] = useState<string[]>([]);
+  const [parallelRefinement, setParallelRefinement] = useState(false);
   const [sourceLandmarks, setSourceLandmarks] = useState(""),
     [targetLandmarks, setTargetLandmarks] = useState("");
   const [working, setWorking] = useState(false),
@@ -417,6 +418,15 @@ export function MeshTools({
               </label>
             ))}
         </fieldset>
+        <label>
+          <input
+            type="checkbox"
+            checked={parallelRefinement}
+            disabled={blocked}
+            onChange={(event) => setParallelRefinement(event.target.checked)}
+          />
+          Use multiple CPU cores
+        </label>
         <Field
           label="Surface refinement samples"
           value={surfaceSamples}
@@ -456,6 +466,8 @@ export function MeshTools({
                   triangleSelection?.some(Boolean)
                     ? triangleSelection
                     : undefined,
+                  parallelRefinement ? 2 : 1,
+                  true,
                 ),
                 "Surface refinement",
               );

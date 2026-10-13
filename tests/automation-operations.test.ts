@@ -164,6 +164,8 @@ describe("shared workspace operation contracts", () => {
           kind: "nativeRefine",
           sampleBudget: 500,
           initialRadius: 10,
+          workerCount: 2,
+          parallel: false,
         },
       },
       h.context,
@@ -171,6 +173,8 @@ describe("shared workspace operation contracts", () => {
     expect(vi.mocked(processMesh).mock.calls.at(-1)![0]).toMatchObject({
       target: second.positions,
       additionalTargets: [{ positions: first.positions, indexedMesh }],
+      workerCount: 2,
+      parallel: false,
     });
     expect(h.state.entities.slice(1)).toEqual([first, second]);
     await expect(
