@@ -14,7 +14,10 @@ describe("ribbon verification gate", () => {
   it("blocks every unverified and planned command even with a supplied callback", () => {
     for (const tab of RIBBON_TABS)
       for (const group of tab.groups)
-        for (const tool of group.tools) {
+        for (const tool of group.tools.flatMap((tool) => [
+          tool,
+          ...(tool.options ?? []),
+        ])) {
           const result = ribbonToolAvailability(tool, ready, {
             [tool.action ?? tool.id]: vi.fn(),
           });
@@ -70,7 +73,9 @@ describe("ribbon verification gate", () => {
   });
   it("renders real disabled buttons and visible status labels on every tab", () => {
     for (const tab of RIBBON_TABS) {
-      const commands = tab.groups.flatMap((group) => group.tools);
+      const commands = tab.groups.flatMap((group) =>
+        group.tools.flatMap((tool) => [tool, ...(tool.options ?? [])]),
+      );
       const actions = Object.fromEntries(
         commands.map((tool) => [tool.action ?? tool.id, vi.fn()]),
       );
@@ -95,5 +100,43 @@ describe("ribbon verification gate", () => {
         );
       }
     }
+  });
+  it("keeps option menus usable while independently gating their commands", () => {
+    const markup = renderToStaticMarkup(
+      <Ribbon
+        {...ready}
+        hasSelection={false}
+        activeTab="main"
+        onTabChange={() => {}}
+        actions={{
+          repairMesh: vi.fn(),
+          cleanup: vi.fn(),
+          flipNormals: vi.fn(),
+          exportStep: vi.fn(),
+          exportStl: vi.fn(),
+        }}
+        projectRecovery={<button>Backup and recovery</button>}
+      />,
+    );
+    expect(markup).toContain('aria-label="Repair options"');
+    expect(markup).toContain('popover="auto"');
+    expect(markup).toMatch(/popovertarget=/i);
+    expect(markup).toContain("Backup and recovery");
+    for (const id of [
+      "repairMesh",
+      "cleanup",
+      "flipNormals",
+      "sketchFromSection",
+      "sectionView",
+    ])
+      expect(
+        markup.match(new RegExp(`<button[^>]*data-command="${id}"[^>]*>`))?.[0],
+        id,
+      ).toContain('disabled=""');
+    for (const id of ["exportStep", "exportStl"])
+      expect(
+        markup.match(new RegExp(`<button[^>]*data-command="${id}"[^>]*>`))?.[0],
+        id,
+      ).not.toContain('disabled=""');
   });
 });

@@ -24,12 +24,18 @@ describe("ribbon command inventory", () => {
       "open",
       "save",
       "editScan",
-      "cleanup",
+      "repairMesh",
+      "reducePolygons",
       "align",
+      "fitPlane",
+      "referenceAxis",
+      "referencePoint",
+      "coordinateSystem",
       "sketch2d",
-      "fitSurface",
-      "fitView",
+      "sketchFromSection",
       "measure",
+      "sectionView",
+      "deviation",
       "exportStep",
     ]);
     const otherCommands = RIBBON_TABS.slice(1).flatMap((tab) =>
@@ -69,10 +75,11 @@ describe("ribbon command inventory", () => {
       "Edit / View",
       "Scan Data",
       "Construct",
+      "Sketch",
       "Freeform",
       "Surfacing",
       "CAD",
-      "Analysis",
+      "Inspect",
       "Settings",
       "Help",
     ]);
@@ -82,6 +89,55 @@ describe("ribbon command inventory", () => {
       );
       expect(new Set(ids).size).toBe(ids.length);
     }
+  });
+  it("groups Main in workflow order and keeps deeper tools in compact options", () => {
+    const main = RIBBON_TABS[0];
+    expect(main.groups.map((group) => group.label)).toEqual([
+      "File",
+      "Scan Data",
+      "Construct",
+      "Sketch",
+      "Inspect",
+      "Export",
+    ]);
+    expect(
+      main.groups.find((group) => group.label === "Construct")?.compact,
+    ).toBe(true);
+    expect(
+      getRibbonToolMetadata("repairMesh")?.options?.map((tool) => tool.id),
+    ).toEqual(["cleanup", "flipNormals"]);
+    expect(
+      getRibbonToolMetadata("align")?.options?.map((tool) => tool.id),
+    ).toEqual([
+      "alignCoordinates",
+      "alignInteractive",
+      "alignNPoints",
+      "fineAlign",
+    ]);
+    expect(
+      getRibbonToolMetadata("exportStep")?.options?.map((tool) => tool.id),
+    ).toEqual(["exportStl"]);
+    expect(RIBBON_TABS.find((tab) => tab.id === "analysis")?.label).toBe(
+      "Inspect",
+    );
+    const sketch = RIBBON_TABS.find((tab) => tab.id === "sketch")!;
+    expect(
+      sketch.groups.flatMap((group) => group.tools.map((tool) => tool.id)),
+    ).toEqual([
+      "sketch2d",
+      "sketch3d",
+      "sketchFromSection",
+      "section",
+      "multipleSections",
+      "projectSketch",
+    ]);
+    for (const id of [
+      "sketchFromSection",
+      "sectionView",
+      "referenceAxis",
+      "coordinateSystem",
+    ])
+      expect(getRibbonToolMetadata(id)?.action, id).toBeUndefined();
   });
   it("never enables an unimplemented operation even if a caller injects a same-name callback", () => {
     const allTools = RIBBON_TABS.flatMap((tab) =>

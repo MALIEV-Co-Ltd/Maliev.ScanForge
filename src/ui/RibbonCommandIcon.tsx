@@ -180,6 +180,11 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     view("M6 6h16v16H6Z") +
     path("m6 6 20 20", "none", 'stroke-dasharray="2 2"'),
   coordinateSystem: axes,
+  referenceAxis: axes + path("M4 27 27 4", "none", 'stroke-width="3"'),
+  sketchFromSection:
+    plane + path("M6 20 12 12l7 8 7-8", "none", 'stroke="#bba1d1"'),
+  sectionView:
+    solid + path("M2 16h28", "none", 'stroke="#e37766" stroke-width="3"'),
   wireframe: path(
     "m16 3 12 6v13l-12 7-12-7V9Zm0 0v13m12-7-12 7L4 9m12 7v13M4 22l12-6 12 6",
     "none",
@@ -432,6 +437,8 @@ const primitiveCommands = new Set([
   "symmetryPlane",
   "referenceLine",
   "referencePoint",
+  "referenceAxis",
+  "coordinateSystem",
   "cadPlane",
   "cadCylinder",
   "cadCone",

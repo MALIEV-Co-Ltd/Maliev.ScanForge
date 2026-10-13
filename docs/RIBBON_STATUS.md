@@ -1,5 +1,13 @@
 # Ribbon verification status
 
+## Workflow layout
+
+Main presents File → Scan Data → Construct → Sketch → Inspect → Export. Scan preparation uses Edit Scan, Repair, Simplify and Align; secondary repair/alignment methods live in option menus. Construction references use a compact two-row layout. Measurement and export options share their existing command handlers and verification checks. Backup and recovery remains supplied by the project recovery component in File.
+
+Sketch has a dedicated tab for sketch creation, scan sections and projection references. Analysis is displayed as Inspect; its internal `analysis` tab ID is retained for compatibility. Zoom to fit remains in Edit / View and the viewport controls, and Fit surface remains in Surfacing.
+
+Section view, Section to sketch, Axis and Coordinate system are planned entries with no action binding. Cross section retains its existing handler and is not relabeled as either new section workflow. No verification allowlist entries were promoted. Option menus can be opened even when their primary command is unavailable; every option independently applies the original verification, callback, selection and busy checks.
+
 The ten supplied ribbon screenshots are the command inventory reference. Missing entries now appear in their corresponding tabs. Licensing commands remain excluded from the agreed scope. Every command has independently authored artwork.
 
 ## Status meanings

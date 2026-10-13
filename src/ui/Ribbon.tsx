@@ -6,13 +6,11 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { RibbonCommandIcon } from "./RibbonCommandIcon";
-import { ribbonVerification } from "./ribbon-verification";
+import { RibbonToolButton } from "./RibbonToolButton";
 import "./ribbon-verification.css";
 import { ribbonOverflowEdges } from "./ribbon-overflow";
 import {
   RIBBON_TABS,
-  ribbonToolAvailability,
   type RibbonActions,
   type RibbonState,
 } from "./ribbon-model";
@@ -169,54 +167,20 @@ export function Ribbon({
         >
           {active.groups.map((group) => (
             <div
-              className="ribbon-group"
+              className={`ribbon-group${group.compact ? " ribbon-group-compact" : ""}`}
               role="group"
               aria-label={group.label}
               key={group.label}
             >
               <div className="ribbon-group-tools">
-                {group.tools.map((tool) => {
-                  const verification = ribbonVerification(
-                    tool.id,
-                    !!tool.action,
-                  );
-                  const availability = ribbonToolAvailability(
-                    tool,
-                    state,
-                    actions,
-                  );
-                  return (
-                    <button
-                      key={tool.id}
-                      type="button"
-                      className="ribbon-button"
-                      data-command={tool.id}
-                      data-verification={verification.status}
-                      disabled={!availability.available}
-                      title={availability.reason}
-                      aria-label={tool.label}
-                      aria-description={availability.reason}
-                      onClick={
-                        availability.available && tool.action
-                          ? actions[tool.action]
-                          : undefined
-                      }
-                    >
-                      <RibbonCommandIcon command={tool.id} />
-                      <span className="ribbon-button-label">{tool.label}</span>
-                      {verification.status !== "verified" && (
-                        <span
-                          className="ribbon-verification-badge"
-                          aria-hidden="true"
-                        >
-                          {verification.status === "planned"
-                            ? "Planned"
-                            : "In progress"}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+                {group.tools.map((tool) => (
+                  <RibbonToolButton
+                    key={tool.id}
+                    tool={tool}
+                    state={state}
+                    actions={actions}
+                  />
+                ))}
                 {active.id === "main" &&
                   group.label === "File" &&
                   projectRecovery}

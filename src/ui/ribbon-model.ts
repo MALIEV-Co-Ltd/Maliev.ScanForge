@@ -110,10 +110,12 @@ export interface RibbonTool {
   readonly icon: RibbonIcon;
   readonly action?: RibbonActionId;
   readonly requiresSelection?: boolean;
+  readonly options?: readonly RibbonTool[];
 }
 export interface RibbonGroup {
   readonly label: string;
   readonly tools: readonly RibbonTool[];
+  readonly compact?: boolean;
 }
 export interface RibbonTab {
   readonly id: string;
@@ -135,6 +137,13 @@ const group = (label: string, ...tools: RibbonTool[]): RibbonGroup => ({
   label,
   tools,
 });
+const withOptions = (
+  primary: RibbonTool,
+  ...options: RibbonTool[]
+): RibbonTool => ({
+  ...primary,
+  options,
+});
 
 /** Command inventory is independently authored; missing operations stay explicit. */
 export const RIBBON_TABS: readonly RibbonTab[] = [
@@ -145,26 +154,63 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       group(
         "File",
         tool("newDocument", "New", "newDocument"),
-        tool("open", "Import", "folder"),
+        tool("open", "Open / Import", "folder"),
         tool("save", "Save project", "save"),
       ),
       group(
         "Scan Data",
         tool("editScan", "Edit scan", "editScan", true),
-        tool("cleanup", "Clean mesh", "cleanup", true),
-        tool("align", "Principal axes", "align", true),
+        withOptions(
+          tool("repairMesh", "Repair", "cleanup", true),
+          tool("cleanup", "Clean mesh", "cleanup", true),
+          tool("flipNormals", "Flip normals", "surface", true),
+        ),
+        tool("reducePolygons", "Simplify", "cleanup"),
+        withOptions(
+          tool("align", "Align", "align", true),
+          planned("alignCoordinates", "To origin / references", "align"),
+          planned("alignInteractive", "Move / rotate scan", "transform"),
+          tool("alignNPoints", "Between scans: point pairs", "select"),
+          tool("fineAlign", "Between scans: fine alignment", "align"),
+        ),
       ),
+      {
+        ...group(
+          "Construct",
+          withOptions(
+            tool("fitPlane", "Plane", "plane", true),
+            planned("middlePlane", "Middle plane", "plane"),
+            planned("symmetryPlane", "Symmetry plane", "plane"),
+            planned("cadPlane", "Plane from CAD", "plane"),
+          ),
+          planned("referenceAxis", "Axis", "align"),
+          planned("referencePoint", "Point", "select"),
+          planned("coordinateSystem", "Coordinate system", "align"),
+        ),
+        compact: true,
+      },
       group(
-        "Create",
-        tool("sketch2d", "2D sketch", "curve"),
-        tool("fitSurface", "Fit surface", "surface"),
+        "Sketch",
+        tool("sketch2d", "New sketch", "curve"),
+        planned("sketchFromSection", "Section to sketch", "section"),
       ),
       group(
         "Inspect",
-        tool("fitView", "Zoom to fit", "fit"),
-        tool("measure", "Measure", "measure", true),
+        withOptions(
+          tool("measure", "Measure", "measure", true),
+          tool("area", "Surface area", "surface", true),
+          tool("volume", "Volume", "box", true),
+        ),
+        planned("sectionView", "Section view", "section"),
+        tool("deviation", "Deviation", "deviation", true),
       ),
-      group("Export", tool("exportStep", "Export STEP", "export")),
+      group(
+        "Export",
+        withOptions(
+          tool("exportStep", "Export STEP", "export"),
+          tool("exportStl", "Export STL", "export"),
+        ),
+      ),
     ],
   },
   {
@@ -264,6 +310,8 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         planned("symmetryPlane", "Symmetry plane", "plane"),
         planned("referenceLine", "Reference line", "curve"),
         planned("referencePoint", "Reference point", "select"),
+        planned("referenceAxis", "Axis", "align"),
+        planned("coordinateSystem", "Coordinate system", "align"),
       ),
       group(
         "From CAD",
@@ -271,6 +319,24 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         planned("cadCylinder", "Cylinder", "cylinder"),
         planned("cadCone", "Cone", "cone"),
       ),
+    ],
+  },
+  {
+    id: "sketch",
+    label: "Sketch",
+    groups: [
+      group(
+        "Create",
+        tool("sketch2d", "New sketch", "curve"),
+        planned("sketch3d", "3D sketch", "curve"),
+      ),
+      group(
+        "From scan",
+        planned("sketchFromSection", "Section to sketch", "section"),
+        tool("section", "Cross section", "section", true),
+        planned("multipleSections", "Multiple sections", "section"),
+      ),
+      group("References", planned("projectSketch", "Project sketch", "curve")),
     ],
   },
   {
@@ -376,7 +442,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
   },
   {
     id: "analysis",
-    label: "Analysis",
+    label: "Inspect",
     groups: [
       group(
         "Tools",
@@ -390,8 +456,13 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Control",
-        tool("deviation", "Compare", "deviation", true),
+        tool("deviation", "Deviation", "deviation", true),
         planned("compareMeshes", "Compare to other meshes", "deviation"),
+      ),
+      group(
+        "Sections",
+        planned("sectionView", "Section view", "section"),
+        tool("section", "Cross section", "section", true),
       ),
     ],
   },
@@ -454,7 +525,9 @@ export interface RibbonState {
 }
 export function getRibbonToolMetadata(id: string): RibbonTool | undefined {
   return RIBBON_TABS.flatMap((tab) =>
-    tab.groups.flatMap((group) => group.tools),
+    tab.groups.flatMap((group) =>
+      group.tools.flatMap((tool) => [tool, ...(tool.options ?? [])]),
+    ),
   ).find((tool) => tool.id === id);
 }
 export function ribbonToolAvailability(
