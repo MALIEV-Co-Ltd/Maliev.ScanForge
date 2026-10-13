@@ -226,6 +226,226 @@ function secondaryDirection(
   return projected;
 }
 
+function closestLines(
+  a: number[],
+  u: number[],
+  b: readonly number[],
+  v: readonly number[],
+) {
+  const uv = v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
+  const uu = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
+  const vv = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+  const determinant = vv * uu - uv * uv;
+  if (!(2 ** -23 < Math.abs(determinant))) return undefined;
+  const dy = b[1] - a[1],
+    dz = b[2] - a[2];
+  const alongV = (b[0] - a[0]) * v[0] + dy * v[1] + dz * v[2];
+  const alongU = (b[0] - a[0]) * u[0] + dy * u[1] + dz * u[2];
+  const reciprocal = 1 / determinant;
+  const t = (alongU * vv - alongV * uv) * reciprocal;
+  return u.map((value, i) => value * t + a[i]);
+}
+
+/** Native direction-reference construction and tertiary fallback. */
+export function nativeDatumDirectionReference(
+  input: NativeDatumPlaneState,
+  stage: 0 | 1 | 2,
+  point: readonly number[],
+  direction: readonly number[],
+  axis: 0 | 1 | 2,
+): { accepted: boolean; state: NativeDatumPlaneState } {
+  if (
+    point.length !== 3 ||
+    direction.length !== 3 ||
+    !point.every(Number.isFinite) ||
+    !direction.every(Number.isFinite) ||
+    ![0, 1, 2].includes(stage) ||
+    ![0, 1, 2].includes(axis)
+  )
+    throw new Error(
+      "Datum direction requires finite point and direction vectors, stage and axis 0–2.",
+    );
+  const state =
+    stage === 0 ? createNativeDatumPlaneState() : structuredClone(input);
+  const remainingAxis = () => {
+    const first = (state.primaryAxis + 1) % 3;
+    return axis === first ? (state.primaryAxis + 2) % 3 : first;
+  };
+  const projectPlane = () => {
+    const distance =
+      (point[1] - state.planePoint[1]) * state.planeNormal[1] +
+      (point[0] - state.planePoint[0]) * state.planeNormal[0] +
+      (point[2] - state.planePoint[2]) * state.planeNormal[2];
+    return point.map((value, i) => value - state.planeNormal[i] * distance);
+  };
+  const intersection = () =>
+    intersectLinePlane(
+      [...point],
+      [...direction],
+      state.planePoint,
+      state.planeNormal,
+    );
+  if (stage === 0) {
+    state.linePoint = [...point];
+    state.lineDirection = normalize([...direction]);
+    state.primaryAxis = axis;
+    translate(state, [...point]);
+    state.matrix = nativeDatumPrimaryDirection(
+      state.matrix,
+      state.lineDirection,
+      axis,
+    );
+    state.flags = 2;
+    state.stage = 0;
+    return { accepted: true, state };
+  }
+  if (stage === 1) {
+    if (state.stage < 0) return { accepted: false, state };
+    if (state.primaryAxis === axis && state.flags & 2)
+      return { accepted: false, state };
+    if (state.primaryAxis === axis && state.flags & 4) {
+      if (!(0.9962 < Math.abs(dot(state.planeNormal, direction))))
+        return { accepted: false, state };
+    } else if (state.flags & 6) {
+      if (
+        !(
+          0.0872 <
+          crossLength(
+            direction,
+            state.flags & 4 ? state.planeNormal : state.lineDirection,
+          )
+        )
+      )
+        return { accepted: false, state };
+    }
+    state.secondaryAxis = -1;
+    if (state.primaryAxis === axis) {
+      state.anchor = intersection() ?? [0, 0, 0];
+      translate(state, state.anchor);
+      state.flags |= 8;
+    } else if (state.flags & 1) {
+      state.linePoint = [...point];
+      state.lineDirection = normalize([...direction]);
+      state.matrix = nativeDatumPrimaryDirection(
+        state.matrix,
+        state.lineDirection,
+        axis,
+      );
+      state.flags |= 16;
+      state.primaryAxis = axis;
+    } else if (!(state.flags & 2)) {
+      const hit = intersection();
+      if (hit) {
+        state.linePoint = hit;
+        state.lineDirection = secondaryDirection(state, direction, axis);
+      } else {
+        const projected = projectPlane();
+        state.lineDirection = secondaryDirection(state, direction, axis);
+        const distance =
+          (state.planePoint[1] - projected[1]) * state.lineDirection[1] +
+          (state.planePoint[0] - projected[0]) * state.lineDirection[0] +
+          (state.planePoint[2] - projected[2]) * state.lineDirection[2];
+        state.linePoint = state.lineDirection.map(
+          (value, i) => value * distance + projected[i],
+        );
+      }
+      translate(state, state.linePoint);
+      state.flags |= 16;
+      state.secondaryAxis = axis;
+    } else {
+      state.planePoint = closestLines(
+        state.linePoint,
+        state.lineDirection,
+        point,
+        direction,
+      ) ?? [0, 0, 0];
+      translate(state, state.planePoint);
+      secondaryDirection(state, direction, axis);
+      state.secondaryAxis = remainingAxis();
+      state.planeNormal = column(state.matrix, state.secondaryAxis);
+      state.flags |= 32;
+    }
+    state.stage = 1;
+    return { accepted: true, state };
+  }
+  const bothAxes = state.primaryAxis >= 0 && state.secondaryAxis >= 0;
+  const accepted =
+    state.stage > 0 &&
+    (bothAxes
+      ? 0.0872 < crossLength(direction, state.lineDirection) ||
+        0.9962 < Math.abs(dot(state.planeNormal, direction))
+      : state.primaryAxis !== axis &&
+        0.0872 <
+          crossLength(
+            direction,
+            state.flags & 0x24 ? state.planeNormal : state.lineDirection,
+          ));
+  if (!accepted) {
+    const hit =
+      state.stage > 0 &&
+      !bothAxes &&
+      state.primaryAxis !== axis &&
+      state.flags & 0x24
+        ? intersection()
+        : undefined;
+    if (!hit) return { accepted: false, state };
+    const dx = point[0] - state.anchor[0],
+      dy = point[1] - state.anchor[1],
+      dz = point[2] - state.anchor[2];
+    if (!(1 < Math.sqrt(dx * dx + dy * dy + dz * dz)))
+      return { accepted: false, state };
+    if (state.flags & 4) {
+      const normal = normalize(hit.map((value, i) => value - state.anchor[i]));
+      secondaryDirection(state, normal, axis);
+      state.flags |= 128;
+      state.stage = 2;
+    }
+    return { accepted: true, state };
+  }
+  if (!bothAxes) {
+    if (!(state.flags & 2)) {
+      const hit = intersection();
+      if (hit) state.linePoint = hit;
+      state.lineDirection = secondaryDirection(state, direction, axis);
+      state.flags |= 128;
+    } else {
+      // The native closest-line result here does not update frame translation.
+      closestLines(state.linePoint, state.lineDirection, point, direction);
+      secondaryDirection(state, direction, axis);
+      state.secondaryAxis = remainingAxis();
+      state.planeNormal = column(state.matrix, state.secondaryAxis);
+      state.flags |= 256;
+      state.secondaryAxis = axis;
+    }
+  } else {
+    let anchor: number[] | undefined;
+    if (!(state.flags & 2)) {
+      const hit = intersection();
+      anchor = hit
+        ? projectLine(hit, state.linePoint, state.lineDirection)
+        : closestLines(state.linePoint, state.lineDirection, point, direction);
+    } else {
+      anchor = closestLines(
+        state.linePoint,
+        state.lineDirection,
+        point,
+        direction,
+      );
+      if (!anchor)
+        anchor = projectLine(
+          intersection() ?? [0, 0, 0],
+          state.linePoint,
+          state.lineDirection,
+        );
+    }
+    state.anchor = anchor ?? [0, 0, 0];
+    translate(state, state.anchor);
+    state.flags |= 64;
+  }
+  state.stage = 2;
+  return { accepted: true, state };
+}
+
 /** Original plane-reference frame construction. Public modeling integration is separate. */
 export function nativeDatumPlaneReference(
   input: NativeDatumPlaneState,

@@ -103,10 +103,35 @@ constructor or the full dialog. Input state remains unchanged.
 
 Point constructor static Evidence:
 `ev_b5a6eb468ae8ddbbeafaa1ab7af76b691c30bc18903f4f98de2f4b074c21bb91`.
-The original direction acceptance, construction and fallback helpers have also
-been recovered; their application port and runtime equivalence remain pending.
+
+## Verified direction-reference constructor
+
+`nativeDatumDirectionReference` ports `0x1403a0aa0`, its secondary and tertiary
+acceptance/construction helpers, and its fallback. Closest-line projection
+uses the original `0x140211e90` arithmetic and strict determinant threshold.
+The fallback tests a strict distance greater than 1 before changing orientation;
+some accepted fallback states intentionally remain unchanged in the original.
+
+`alignment-datum-direction-native.json` retains 180 native executions. Tests
+compare each constructor call against its captured starting state, then replay
+every prior point/plane/direction setup through the application constructors
+and compare each intermediate state. Twenty-four additional cases exercise
+the fallback at distances 0.5, 1, 1.0000001 and 2 across all three axes, with
+both plane-first and point-first states. Every comparison requires exact
+acceptance and all state bytes, rather than a matrix tolerance.
+
+Direction secondary construction Evidence:
+`ev_182f648201989f56719204fe01acf4acc181aef5831477e9185b19c30ddea8ad`.
+Direction tertiary construction Evidence:
+`ev_ef370e00369711361abe177124f5a6ad25b8be48c650e5004812b3a914431e9d`.
+Fallback Evidence:
+`ev_a3352ef17f569a7f35fdff7661d5db8ac76e598f4cb196fa4b2f0672739086a2`.
+Closest-line projection Evidence:
+`ev_32dfb053be2d868d79fa76b4d70f47e28dad89737a926cfd80f8bb35cbccbcc9`.
+These static records are separate from the retained original-code executions.
+They do not establish primitive picking, UI acceptance, or geometry publication.
 
 The numerical helpers are not yet connected to a public application action and
-are not advertised in MCP discovery. Completing direction reference rules,
-primitive reference conversion, preview/reset/acceptance and shared GUI/MCP
+are not advertised in MCP discovery. Completing primitive reference conversion,
+preview/reset/acceptance and shared GUI/MCP
 operation remains required before enabling coordinate-system alignment.
