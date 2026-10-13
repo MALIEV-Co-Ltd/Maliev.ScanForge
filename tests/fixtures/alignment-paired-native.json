@@ -1,0 +1,2317 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "optimizer": "0x140b25340",
+    "callback": "0x140aae6d0",
+    "rotation": "0x140aac800",
+    "objective": "0x140aaef90",
+    "execution": "Original optimizer, trial, paired-point callback and all numerical helpers; recording callback forwards unchanged native parameters; vector/point storage, allocation, CRT and security-cookie adapters only",
+    "nativeUiCapture": false,
+    "patches": [
+      { "address": "0x140d58f36", "original": "ff25f48d1500" },
+      { "address": "0x140143510", "original": "48895c240848" },
+      { "address": "0x14016b1f0", "original": "48895c240848" },
+      { "address": "0x140d5b0f0", "original": "e92fdeffffcc" },
+      { "address": "0x140d58f30", "original": "ff251a8e1500" },
+      { "address": "0x140d5cf70", "original": "ff25b2181500" },
+      { "address": "0x140d5cf7c", "original": "ff25c6181500" },
+      { "address": "0x140d5cfac", "original": "ff25d61b1500" }
+    ]
+  },
+  "cases": [
+    {
+      "name": "translated-identity-seed",
+      "source": [
+        [0.0, 0.0, 0.0],
+        [2.0, 0.0, 0.0],
+        [0.0, 3.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "target": [
+        [0.4000000059604645, -0.20000000298023224, 0.699999988079071],
+        [2.4000000953674316, -0.20000000298023224, 0.699999988079071],
+        [0.4000000059604645, 2.799999952316284, 0.699999988079071],
+        [0.4000000059604645, -0.20000000298023224, 4.699999809265137]
+      ],
+      "initial": [1, 0, 0, 0, 0, 0, 0],
+      "budget": 120,
+      "step": 0.004999999888241291,
+      "tolerance": 0.0001,
+      "initialErrorBits": "000000c9cccc1440",
+      "status": 2,
+      "output": [
+        0.9502816683226794, 0.0572556140711343, 0.050270279588786784,
+        -0.057875516926182397, 0.0033450815996954996, 0.020003164631671965,
+        0.06169757487697923
+      ],
+      "outputBits": "30e5ed19b568ee3fac55e59b9b50ad3fdad796ad06bda93fbcc4df18dca1adbf1c31570225676b3f235da3a7b57b943f5ea3ad14d396af3f",
+      "errorBits": "0000c09f4a131040",
+      "trace": [
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "000000c9cccc1440"
+        },
+        {
+          "parametersBits": "000040e17a14f03f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "000000c9cccc1440"
+        },
+        {
+          "parametersBits": "0000803d0ad7ef3f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "000000c9cccc1440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000040e17a743f00000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000004a2c851440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000040e17a74bf00000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000008887141540"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000040e17a743f0000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "000040b1a0b81440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000040e17a74bf0000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000c03096e11440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000040e17a743f000000000000000000000000000000000000000000000000",
+          "errorBits": "00004090f2ff1440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000040e17a74bf000000000000000000000000000000000000000000000000",
+          "errorBits": "0000c0d18c991440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000000000000000000000000000000000000000000000000000040e17a743f00000000000000000000000000000000",
+          "errorBits": "000010e051b81440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000000000000000000000000000000000000000000000000000040e17a74bf00000000000000000000000000000000",
+          "errorBits": "0000f0a947e11440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000040e17a743f0000000000000000",
+          "errorBits": "0000f0b147e11440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000040e17a74bf0000000000000000",
+          "errorBits": "000010e051b81440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000040e17a743f",
+          "errorBits": "000010e051b81440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000040e17a74bf",
+          "errorBits": "0000f0b147e11440"
+        },
+        {
+          "parametersBits": "0000803d0ad7ef3fdbb66ddbdc67573fdbb66ddbdc67573fdbb66ddbdc6757bfdbb66ddbdc67573fdbb66ddbdc6757bfdbb66ddbdc67573f",
+          "errorBits": "00007e3c1f921440"
+        },
+        {
+          "parametersBits": "244992114cf4ef3f88c6fad0d2175e3f88c6fad0d2175e3f88c6fad0d2175ebf88c6fad0d2175e3f88c6fad0d2175ebf88c6fad0d2175e3f",
+          "errorBits": "000076e38f811440"
+        },
+        {
+          "parametersBits": "b66d5b1a72eeef3fe614bc1cde91663fe614bc1cde91663fe614bc1cde9166bfe614bc1cde91663fe614bc1cde9166bfe614bc1cde91663f",
+          "errorBits": "0000a47bf05b1440"
+        },
+        {
+          "parametersBits": "581f1a1948efef3fcd8d8e27bb7e653f9f4d28c6f52a6fbfcd8d8e27bb7e65bfcd8d8e27bb7e653fcd8d8e27bb7e65bfcd8d8e27bb7e653f",
+          "errorBits": "0000e4b2dc7b1440"
+        },
+        {
+          "parametersBits": "7071d84481eaef3f51b692a0f0a26b3f00f4ce4b19631c3f51b692a0f0a26bbf1b25244dc00669bf51b692a0f0a26bbf51b692a0f0a26b3f",
+          "errorBits": "000084cb3e6a1440"
+        },
+        {
+          "parametersBits": "486d5f0f5de4ef3febe282f92cc4713f242f4ed5b43f223febe282f92cc471bf490ea3390491513f9615b1fa5621613febe282f92cc4713f",
+          "errorBits": "0000482ae9531440"
+        },
+        {
+          "parametersBits": "ec230f978bd6ef3f6054447643a67a3fb546f53f8f5f2b3f6054447643a67abf6c95745686595a3f30d004dc7116773f6054447643a67a3f",
+          "errorBits": "00006e8e9d211440"
+        },
+        {
+          "parametersBits": "acc063f184d8ef3fe1b128d26461793f33fa01c3dd112a3fe1b128d2646179bf8c5dc42d4f18593f750b06c60b4655bfa07a5796746e2ebf",
+          "errorBits": "00406bc7cd281440"
+        },
+        {
+          "parametersBits": "98ae5b363dcdef3f10e08762e550803fd82038b457c2303fa849d138c93359bf233cfec1e921603fe0572c230f5a5bbfc9a0f5d9de41733f",
+          "errorBits": "00005a1e18271440"
+        },
+        {
+          "parametersBits": "5497631b66f3ef3f8c598f245137813fd37256e9c8b458bfc293045eb60e75bf3ca893fae7c7463f40851dba4b4b34bfaa4146f6723c713f",
+          "errorBits": "0000b1b1eb101440"
+        },
+        {
+          "parametersBits": "7fb12a05ca00f03fe42a20e97b5c883fd443dce58d6168bfc72699f115a97cbf008bdf38fe87353fd425af1fc85e303fa4abfbd5b0ed763f",
+          "errorBits": "0080afc615d11340"
+        },
+        {
+          "parametersBits": "e8458ec9e3caef3f0aa7558e75df7b3f09ea3a900c774ebf22bd3c7f7e8c81bf2978d1c9c32a623f9bdefa59584f5bbfb472202178a37d3f",
+          "errorBits": "0000baae4ee91340"
+        },
+        {
+          "parametersBits": "b67adee235d1ef3fcd3dc92ec93f853fdc2ab362d3476e3fe6f89b64a84e7fbf70b85e748a1d41bffe7207f20129543fe65ce0fed849783f",
+          "errorBits": "000024a34fc91340"
+        },
+        {
+          "parametersBits": "64a8c0c72cc2ef3ff90a3c61d62f8d3f8c7390fb9b807e3ff32883e626cb84bf10cc6a7f712a61bf24dd4c091fde693fe5e76cb4160f7f3f",
+          "errorBits": "0000e0cb5a701340"
+        },
+        {
+          "parametersBits": "c21387dc76caef3f5b4e6a0531148a3f7e2f5a99e4cd5e3f9115710ad31582bf42d89e64853e763f90e790a228826f3f90de43f1c6247a3f",
+          "errorBits": "0000be873e931340"
+        },
+        {
+          "parametersBits": "ee467e3e3ebcef3f169881779e97903fb69b69cb2ca850bfe054e7d031e886bfc0cecaa9ed3c393fdbb48ce142f2743f39486f151076803f",
+          "errorBits": "008021a57b681340"
+        },
+        {
+          "parametersBits": "8ab38f5024a3ef3fd2a276d14f7a973f3c3feda610c767bfb37cc3f50e8a8fbfbc0e20fa09364abf400ac1eced87823fb8698f5cdcde853f",
+          "errorBits": "0000708f37ef1240"
+        },
+        {
+          "parametersBits": "80828239ebc2ef3f9d3440eaa2f6913f0ee8f1b04d69453ff22f7da9a33e85bfa0a1d3d320e14e3fa9a18cb5a8167b3fd5bf5e7cb5f68c3f",
+          "errorBits": "0000f9bacf411340"
+        },
+        {
+          "parametersBits": "6663031a40cbef3fee16f3c6bbf3923f8201f884c745473f5fd5c9632bfa91bf107b3ef434b32b3f78eb09fd9126833f3a68b9d34462883f",
+          "errorBits": "0000c6d9ea021340"
+        },
+        {
+          "parametersBits": "10b79595b7beef3ff8160b4b85f5973fa13b1555be804d3f1a9efaf6701f90bf2084a9e055b5263f489cd904e771693fdf8d4ffaf7d8873f",
+          "errorBits": "0040e4a551b61240"
+        },
+        {
+          "parametersBits": "a200d994cdb2ef3ff40be4c0bf4da03f4e98d0cb956a543f9c62af0361da94bfde03352286d541bf74348356d1285e3fb63fe619e31b8d3f",
+          "errorBits": "0000d75a08731240"
+        },
+        {
+          "parametersBits": "feee2b9d7dc3ef3f343d15a98bfa9e3f05f2998ba6cb653f5a7a84f1397691bfbeb82ab0221354bfacab7cee0c5f873fadc9675e8d6f8a3f",
+          "errorBits": "00006737b2a61240"
+        },
+        {
+          "parametersBits": "7c1ea218107bef3f282f65b91c239f3f5cc50d0077e0793f682fc5fa540396bf0afa8e64dcd22c3f6077f61c32fa893f4bf07912c008913f",
+          "errorBits": "0040876706591240"
+        },
+        {
+          "parametersBits": "3a7cc81fce37ef3f00dee70dc64ea43f7fdcc5fc8a74863f43a2f4b9dc6f9dbf0eecf65d4cb4253f3c7b7905e85a933ffc72f7006aaf963f",
+          "errorBits": "004067ce4f0c1240"
+        },
+        {
+          "parametersBits": "006715354688ef3fb09111501f14a33fe6ff456cd19d703fbe62962564f699bf26711e0cd4287abf1f111dbfd66b8b3ff24f8e312fd8943f",
+          "errorBits": "006088f6d7591240"
+        },
+        {
+          "parametersBits": "f85186440580ef3f3b02e7bff8aaa53f12ed36fff14d64bf4626cafc3e0e9dbfe05dc467ffab16bf1f72f8ffc068913f095dc0af4b5a973f",
+          "errorBits": "00601f2235451240"
+        },
+        {
+          "parametersBits": "b6d757b1296cef3f1476bc8a839ba73ffe3dfa6c4c046c3f49cacc2e620ca1bf8091f5e192006cbffc1e0e39e1e8903f8ec81ebf8d2b933f",
+          "errorBits": "0000ba1d0d251240"
+        },
+        {
+          "parametersBits": "306181d7a948ef3fa8b59a279426ab3fc2adf20f6df2703f83fb5bf1f1589fbf69b3c2e548826ebfbcefee0ab733903fe8e7a8e22d74973f",
+          "errorBits": "000075cb783d1240"
+        },
+        {
+          "parametersBits": "aa4283c7eb56ef3f127a06a28d4aad3fd53113efe7fd833f265beab4be00a3bff567bec7cb116dbff2c7a986647e923fbff5eb9a86499c3f",
+          "errorBits": "0000985459e61140"
+        },
+        {
+          "parametersBits": "3c0afd82cf30ef3f3407563fa008b33f5339bdfdde7a903f2319a730dc8fa8bf0ccd2c36f82974bf5c69ce4e9b1b973f190b9f68497ba23f",
+          "errorBits": "0000d038cb861140"
+        },
+        {
+          "parametersBits": "dac522e1a90cef3fae03d3e6dbfdaf3fb46209ce7675803f6c1748f712aea6bf7490b4e7a21e71bfaab319b14856933fa557015bfd64a03f",
+          "errorBits": "0000c827dca51140"
+        },
+        {
+          "parametersBits": "6ca341ffe1edee3ffcc915de6bd4b13fa550c3983c54873fe49b0922407ca8bfdc2be16bdb2978bf2a6bda68e00fa13fa0cedaa8c454a23f",
+          "errorBits": "000078f30fa21140"
+        },
+        {
+          "parametersBits": "2a055bbd4cecee3f9650a7939fcfb23fcb7adadc50dd853f67834c4cb037a9bf00dd9b267091153f214e50f17a219c3fa0416e6d2072a13f",
+          "errorBits": "00e04ff40f851140"
+        },
+        {
+          "parametersBits": "3ed47d01509eee3f769476896772b73f363836f084a48c3f6a2c0d69ef55afbf81bfed4da52b6b3f7598185da1aba13f73cec1d724f5a43f",
+          "errorBits": "0000589b9e3f1140"
+        },
+        {
+          "parametersBits": "fc6355bf10b4ee3f4479bd30bf1eb53f389941d0ff70963f4a8499da2279acbf72f470434b7c75bfee516418388e9d3f7ed6de52edd7a23f",
+          "errorBits": "000030cda04d1140"
+        },
+        {
+          "parametersBits": "b69e044af7c0ee3fd4cc4ccec988b43f135496bd30de943f899b01eaf9fbaebfdab0418131bb60bf5541ec9afc49a13fa4886d9e82d3a43f",
+          "errorBits": "0000b010611b1140"
+        },
+        {
+          "parametersBits": "7a3d46031e7dee3fd4858cab8903b83f6328637afb2e9d3f36b55531dd51b3bf285f029e4baf53bf10a6a6250de2a53ffc12fa743860a93f",
+          "errorBits": "00007a5d92a01140"
+        },
+        {
+          "parametersBits": "783ccd9b8d6cee3f6a5f92b1e6ccb83f2572833872909a3f65851d50b0cbb0bf4a00008e820460bf3c4a67838f75a33f6c107254082eaa3f",
+          "errorBits": "000090be81391140"
+        },
+        {
+          "parametersBits": "be8582bed666ee3f4839bca08fa2be3f9e83a4ea7938973f1201101e1fa8b4bfd8fd2eb9922b79bf257babaf0108a53fe78aa79456a9ac3f",
+          "errorBits": "0000306f85df1240"
+        },
+        {
+          "parametersBits": "9bfe76479003ef3f2403cc5a5c8cae3f2ea7e632a5738c3f62bdc354025ea5bfb6d75f90ab2257bf00daf0db2e08993fb05b0dcb3a589f3f",
+          "errorBits": "0000da6f1ca81140"
+        },
+        {
+          "parametersBits": "5c03d496149bee3fb6264a7ac483b93f481e94cfec38943ff04a2b221555b1bf8a50277245b572bfc2cb6f445e31a23f8c969c2fee54a83f",
+          "errorBits": "000020af36781140"
+        },
+        {
+          "parametersBits": "68bb11318771ee3f434362ff4183bb3f12bb2bb236a59d3f6a0ba2495963b2bf4c21f77cef4d5fbf9ec8409dcf79a73fbafebb2d9ce0a93f",
+          "errorBits": "00007846b9a51140"
+        },
+        {
+          "parametersBits": "04fe15dd4f98ee3fe81264fc2ca2b83fa4f861df974a983f7d8b225645a0b0bfb7f4b6428b4c64bfeccc13cc2406a43ff5540d79b481a73f",
+          "errorBits": "0000e83689451140"
+        },
+        {
+          "parametersBits": "22d3c12ddc77ee3f1959ccf8689fbb3f526df33f64d19d3fc45a6ea3dfbcb2bfc8095ff616c6493fa52e2860b9eda03f8e891589626ba93f",
+          "errorBits": "000088c5cab51140"
+        },
+        {
+          "parametersBits": "5aafe18a60d0ee3fc36dc3242b47b43f921946c9ef33903f4d623eeb9fbbabbf97e835d9335171bf09dcada65607a13f5c7de9206c1aa43f",
+          "errorBits": "00007851015f1140"
+        },
+        {
+          "parametersBits": "a4e4903e6119ee3f78cb86b437c6ba3f40d375365fec983f4f14ecff0827b3bf00cc624e872fe23ea8028b6a3c00a83f73dbf8fd79bba93f",
+          "errorBits": "0018cfeb7ed01140"
+        },
+        {
+          "parametersBits": "d600e2f1f3eaee3f4538a21c06f8b43fce5feb0b3f97923f025d73a469ffabbfdf9a6f6f683a6ebf5a5060b0d2549d3f307ff58d554ba43f",
+          "errorBits": "0000cc41694f1140"
+        },
+        {
+          "parametersBits": "cceabd44eec5ee3f688c19f193feb23f71dcb72cfbb6943fc8e4302c1f4caabf80d7e4a1a92e19bf6c61b9f7ae5aa03f7892cb0885baa23f",
+          "errorBits": "00a029f9fc521140"
+        },
+        {
+          "parametersBits": "a406a63ca68dee3fae72dd374bddb73fb0cf0174fb059a3f3e7a59a7d468b0bf209fc6e56968483f88095a1a6253a13f896808ec7b90a63f",
+          "errorBits": "000031c005301140"
+        },
+        {
+          "parametersBits": "96ae30ee0388ee3ff8dee3c8168aba3f769b80493907973fac168579160fb2bf837e58fcf7c669bf0a6b7c651847a23f4efec9b2f208a93f",
+          "errorBits": "00004067569a1140"
+        },
+        {
+          "parametersBits": "be9b1aaf73b6ee3f0c210ca774e1b43f320ceab30a4b953fec36e79da2c0acbfb7f285e357234cbfd4232a53c9d5a03f6e2d4b73204ea43f",
+          "errorBits": "0000ff937d331140"
+        },
+        {
+          "parametersBits": "8232f82dfe53ee3f9d7579e9318ab83fc62428519dec993fd6422baa0b51b1bfa645aa46dc94543f0ba371ba0b96a43f6043266fee78a73f",
+          "errorBits": "00007c772d621140"
+        },
+        {
+          "parametersBits": "418de78036c5ee3f9b07d80f91dcb53f0c913a9d966c943f2c276c1015a8adbf736bbeca321964bfe486c0f05125a03f3cb041c6bb16a53f",
+          "errorBits": "0000d85e1f301140"
+        },
+        {
+          "parametersBits": "4e24d397c78fee3f2614f8cbb499b83f2c3262c7507f953fbfd85a3b763fb1bfd2dd632794916d3fce2a4f6c68dda43fd94ea2a69190a93f",
+          "errorBits": "0000fc0c804c1140"
+        },
+        {
+          "parametersBits": "38b4b3e1d998ee3f6e6d2965f7bab73ff00b9a89bcbb953f1953d707bd7eb0bf4bd8a4f712de563f58ea4754d557a33fc270b19168e2a73f",
+          "errorBits": "0000d033322f1140"
+        },
+        {
+          "parametersBits": "76071be9afabee3f83dd89b037d4b43f208fbf9f9eea923fe090ba535ba4adbf5e7809a11ded5f3f5ed5f83824d99e3f9c6a10ac6b02a53f",
+          "errorBits": "0000666e07171140"
+        },
+        {
+          "parametersBits": "2e8c1def5fb5ee3fd1c29c0a3dedb23f5e5aeeffa13a903fd44d75a743d6abbf514a11ed0d0c713f22736189913f9a3f70f59145c7c2a33f",
+          "errorBits": "000008ebce1b1140"
+        },
+        {
+          "parametersBits": "4c1be00682a9ee3f6695eac08144b53f868c7e5b0e339e3f2298486c1513afbfc68e4384af5a71bfc8ff4a0bc822a13fe1667265c692a73f",
+          "errorBits": "0000a065f5f61040"
+        },
+        {
+          "parametersBits": "d43e91091bafee3fdd95a4dc8e2db43f5d229826ba11a33f004ee66da8f1aebf0463f04c786980bf733364625bdea03f19b34a2c97e1a83f",
+          "errorBits": "0000a09a34d61040"
+        },
+        {
+          "parametersBits": "c0b3c84248eeee3f02da8a80e997b23f82296c7c7143953ff8cc94dd0110acbf9ccd8bdd48cd46bf42218992ba369d3f1ac16d26e7faa13f",
+          "errorBits": "0000a734162f1140"
+        },
+        {
+          "parametersBits": "9ced63c755b4ee3fa428ec360fdcb53fb24e4f3aad869a3f23f8c366245ab0bfb9e84ce1d69a5cbfd643892d2998a03fdbf279a8be30a73f",
+          "errorBits": "00006e381f0e1140"
+        },
+        {
+          "parametersBits": "c8607177c0a0ee3f864bb8b4cde0b43f070097eb70239d3f2c788548e055b0bf801be7734cb80a3f543b2c587069a13faaa7dc03db01a73f",
+          "errorBits": "00c0198f0ffb1040"
+        },
+        {
+          "parametersBits": "709311f1c5ddee3f42d5cc8ba605b23fc6f31e80e46d983f46fd4a8a5777adbfe6306a4b33686bbfeac6ce64ad41a03f1d6f092e7fa8a53f",
+          "errorBits": "000068ae7cf81040"
+        },
+        {
+          "parametersBits": "a025fa7443e6ee3f53411d8e7586b03fe742d167537d9d3f94ade910c649acbf7e6c808c07eb75bf3e4aeaccefb69a3ffe8a7990bdb3a33f",
+          "errorBits": "000060a4b9fa1040"
+        },
+        {
+          "parametersBits": "a246f38f8a8eee3fd616c1bf3d12b53f274d205ca627a03fa32c20bbdfa3b0bfaa26b3f786cc72bf8c3b3dd589bca13f7abd091a3319aa3f",
+          "errorBits": "0000407a4cf71040"
+        },
+        {
+          "parametersBits": "cad48d5373adee3fe2a6b224a348b33f0a8ba371b8fca13fe8c077b6b603afbfb8b936d0b64370bff436104d4a5d9e3f9a295bc537c2a83f",
+          "errorBits": "0000781a45c31040"
+        },
+        {
+          "parametersBits": "d66f5258b1a3ee3fe993e5cf8fa8b23f89bb0f7b88c3a53f96d3b21c9507afbf5daa01d8c53674bf1a11acd8f2419c3f14fad15892b9aa3f",
+          "errorBits": "00009850ef991040"
+        },
+        {
+          "parametersBits": "4c65d0f871c0ee3fbfa54602735eb23fcc570ad6917aa63f2c2615c36960b0bfe61d72f3715584bf6168c8bb51ada03f57de81c45935aa3f",
+          "errorBits": "0000000bc1b21040"
+        },
+        {
+          "parametersBits": "7eea81df41bbee3fc95947484a57b03f92f370749b4ea53fb0e2af657bb4adbf6b2d85d7308e81bf7a7c2d828c0f9f3ff2bd6362c5e3a83f",
+          "errorBits": "000030b366a81040"
+        },
+        {
+          "parametersBits": "f23079df69d6ee3fd6f15a62af06b03f7d60fcbf0ceda53ffe70377114e4acbf566e8e53f4478abf288f6d8dc1599c3f13344cb4599ca93f",
+          "errorBits": "0000309735b81040"
+        },
+        {
+          "parametersBits": "a001a7925f8cee3f54e599c5853cb43f1151c0605ccda73f5e9a00ab12b9b0bf04615eb26a9883bf0ec3c90aae76a23fa0a534c4a39aae3f",
+          "errorBits": "0000e0ffd8b71040"
+        },
+        {
+          "parametersBits": "9445ba449b7dee3f6831b76a4b5fb33f8a91f0dd9fa4ad3f71fa690bd5b3b0bf8cb5e977fc578bbf06d7b772e631a03f5d6343bf3534af3f",
+          "errorBits": "0000c02647cb1040"
+        },
+        {
+          "parametersBits": "846d11feffc7ee3f905cc9f3ddacaf3f873f1b307c8ead3f1033e4a160a0adbf36b8cacd43ec8dbfa21d6b15928c9c3f1cb29c4bf038ac3f",
+          "errorBits": "0000802511b81040"
+        },
+        {
+          "parametersBits": "ee14985c8caeee3f2cdadd134efbae3f5de0c8437ba3ad3f5aa43d021a96afbf2893842149c58abf9c8602c976cd9c3f35bc97d4ee64ae3f",
+          "errorBits": "0000900cc6941040"
+        },
+        {
+          "parametersBits": "fa7f1b0645aeee3f64312841664baa3fae9f30e92d76b13f864f69cc52e8afbf3aabce8b31f38fbf76961fcbd6559a3f62205f544d93b03f",
+          "errorBits": "00000089430d1140"
+        },
+        {
+          "parametersBits": "da241cdf07eeee3fc2e9b3520960ae3f923eaef24110a33f080b25c1139bacbf7424b8bbb5597fbfeaa160e9fe1f9d3f766e496c17d7a73f",
+          "errorBits": "000010336cbc1040"
+        },
+        {
+          "parametersBits": "09ad83b8ecd1ee3f0244b159d63bb03f50d37e6d59b5a53f7ec5905639ceadbf0f7b5f44a39782bff2646468f2f09d3fb0eb07015faea93f",
+          "errorBits": "00000056379e1040"
+        },
+        {
+          "parametersBits": "ce1317f0f093ee3fc9021866d097b23f91d910f9eab7aa3fac1c92afc7b0b0bf0071786905157dbf3911b0ad30cfa03f5a1b2d8d1974ad3f",
+          "errorBits": "000098fa049a1040"
+        },
+        {
+          "parametersBits": "be06a5167b93ee3fe7392f5b9a91b33f66dda554e446a23fd24e2069f1dbb0bf284d388482046abf1a268b2a2f6fa13fd09673bf8e31ab3f",
+          "errorBits": "0000104fc1d81040"
+        },
+        {
+          "parametersBits": "d25336c4debaee3f305137d239c5b03ffee63d3996bcaa3fb54dfb2d41a6aebffb8e9b027b1188bf46e9552505219e3f496b92e817f7ab3f",
+          "errorBits": "0000e065587d1040"
+        },
+        {
+          "parametersBits": "681ca66b64dcee3f12b1bb4a005cac3f8cad24f4a6dea83f1ca38fc99319adbf2f9cf9f7221c82bfeab6b7eb568c983f34b788e3d70ea83f",
+          "errorBits": "0000a0254f861040"
+        },
+        {
+          "parametersBits": "9e114c264eb0ee3fd4716fe551b3ad3f9b512bf552e0aa3f265b3ad1aebfacbf1871c3dc72bc80bfbe1beaaaf99a993f50733d35d8d6ab3f",
+          "errorBits": "000090ff0f6b1040"
+        },
+        {
+          "parametersBits": "c8e7093d3ca8ee3f0085e0d5872eaa3f82cebb843313ad3f8c62c2761cbfaabf6235d8a2e6df7dbf3cc196c424bb953fcc3d9b6d97a7ac3f",
+          "errorBits": "0000a83418b01040"
+        },
+        {
+          "parametersBits": "5205422f5db2ee3f7afb8d26c873b03f44f5f956a2a3ad3fa8c2b7a21586afbf7b999dd5c64783bfd02f3a3e0b579a3f88c799d32800ae3f",
+          "errorBits": "0000f03c71951040"
+        },
+        {
+          "parametersBits": "025ce4e5ad92ee3f65b38706389fb03f82b1ea32f980af3f9a03e25904eaafbf630bd5b6a77082bf9813aeb93e6e9a3f98d843ba7f71ae3f",
+          "errorBits": "0000206b2bcf1040"
+        },
+        {
+          "parametersBits": "c8d8db031dc2ee3fdbdfe6c4ae54b03fdccad95e4128a83f051565172c55aebf24dffc60e48d82bf9cd0b67c45109d3feae6562f27dfaa3f",
+          "errorBits": "000070fe8b841040"
+        },
+        {
+          "parametersBits": "862d89d8daddee3ffc42014f8d3bab3f5839db9f12c3a93fce60f385b677abbf6c3466e551a387bf6cacef3da373953fd05098a5edeea93f",
+          "errorBits": "0000f034518f1040"
+        },
+        {
+          "parametersBits": "8cbeef94b8deee3f7e289af67638a83f76c4a8bae5dbaf3f3481090b28cdacbf608e3eac23f08fbfb80eb72644de983f94f8e2ef8e6fac3f",
+          "errorBits": "000030ec2ae71040"
+        },
+        {
+          "parametersBits": "84c3792773b2ee3ffe73bfba7a05b13fc4fdf5ca9f49a83ffe7e48d8f978aebff686203826217fbf82d02e2c07699b3fb439967e1127ab3f",
+          "errorBits": "0000b0599c821040"
+        },
+        {
+          "parametersBits": "f883eb0413d0ee3f82308ac247f5ac3f4ed6986d5d74a63f5ea39b26c401acbf391fe71ffab385bfec1d01bc73179b3fe294f5a5a858a83f",
+          "errorBits": "000090315eb11040"
+        },
+        {
+          "parametersBits": "fc64aca4cab9ee3f5885772afeeaaf3f86ada11cd1d7ab3fd6bab04301a5aebfeafa2fa8d3e283bf57ebab5d25879a3fdeba30c84896ac3f",
+          "errorBits": "0000b01f106f1040"
+        },
+        {
+          "parametersBits": "841d52351ad7ee3f0c35f46f0526af3faedc07512ff1a53f18c87f47ddacabbf88cf8619d17d78bf0c2d69c9a7fa973fd69fb533b36fa73f",
+          "errorBits": "000088cb44b51040"
+        },
+        {
+          "parametersBits": "1497c6d2afb8ee3fe470e3eafb05af3f729f1847e8b6ab3f4a2d8ed3ca9baebf4f4854fcb02387bf38301c09c3989b3f1d355fec9fa7ac3f",
+          "errorBits": "0000c036f26b1040"
+        },
+        {
+          "parametersBits": "ce9072252d9dee3f1a48ad3085fdb13f283350496760aa3f53b51fb67e58b0bf3a4fb955d1787ebfdef16810f98aa03f067112c0c2acac3f",
+          "errorBits": "0000180d43891040"
+        },
+        {
+          "parametersBits": "fc37389258adee3f731e628e95e5b03fb4f4f21e1239aa3f3068acb2ab62afbfd00a7ff9225681bfe95519685e2d9e3ff9e873794dfdab3f",
+          "errorBits": "0000e0b39f721040"
+        },
+        {
+          "parametersBits": "3c85c8783291ee3f78003fac0834b23fb5ae4101cda7ab3feef2cf8f4bb6afbfbdf1934f058b84bf412b0172f7989f3fb6cf89d167acaf3f",
+          "errorBits": "000060296f611040"
+        },
+        {
+          "parametersBits": "a6b9597f996bee3f7194afef0c37b43f492fd007600cad3f6c0d78b95382b0bf841c617b76c285bfb6f292daa38fa13ffc2d45e497bdb13f",
+          "errorBits": "00008011f8991040"
+        },
+        {
+          "parametersBits": "20fafa01809dee3fe3dd3c2a4f96b03f5a893c57115ead3f6cc086ad97dfaebf868f2906bbaa84bf2e99a94b60ce9b3f1607818f4f3bae3f",
+          "errorBits": "0000c06c9e921040"
+        },
+        {
+          "parametersBits": "1ea163c3f5b8ee3f5d5f3cde1665b03f7c7af25cb575a93fdf7fedfcc677aebf3c0b480a1a1583bfc0827330ccbf9c3ff56e614731b6ab3f",
+          "errorBits": "0000c0346a781040"
+        },
+        {
+          "parametersBits": "9005e90a06afee3f923ea2a15f6faf3fcce743f06f92ad3f2232404072bbaebff8d1936a57a988bf5815fcc18dd79d3f14e8c4c2491cae3f",
+          "errorBits": "0000f06155971040"
+        },
+        {
+          "parametersBits": "079455e097b1ee3fd1de430008b2b03f467849d4d39ba93fc76b46f29789aebf1a27b12fc4d681bfb821a2d1a8049c3f4ce5a18f5fe4ab3f",
+          "errorBits": "0000f04cb4761040"
+        },
+        {
+          "parametersBits": "743eece3f3a3ee3f1ed5028de9e4af3f5cbadad2f8ccaa3f24b55990fa85aebf503fd4219bc17cbf22e833432c859a3f7e22cd1aea46ad3f",
+          "errorBits": "0000c8e4d9561040"
+        },
+        {
+          "parametersBits": "c633c7737e98ee3f7eee4c812412af3f0a24a91f2ad5aa3fdae88841d775aebffccf22b0ed1073bf8ee722d23fb7983f187eea33d3eead3f",
+          "errorBits": "0000d0cc9b431040"
+        },
+        {
+          "parametersBits": "ead1b63b969cee3f7df52cfbba13b03f74a0ec2f4478ac3f4233261ee7b3aebfc47409c4b6a280bfc0fd6caf61bf9a3fb8472524482aae3f",
+          "errorBits": "0000c09eee731040"
+        },
+        {
+          "parametersBits": "f88297a6f39dee3f981dd08a1e33af3f00650d656a23ad3f5a809fc72caeaebf3bb802c9088981bfcae69c4d951d9b3f1212784f5ca2ae3f",
+          "errorBits": "0000203224811040"
+        },
+        {
+          "parametersBits": "c40fe6d1aeacee3fd0ea8cd1e96bb03f74737a78b97daa3fecb09c27bd92aebf628b055655c381bffcd2a0f0e3ca9b3f7e7097bfde93ac3f",
+          "errorBits": "000030a29a691040"
+        },
+        {
+          "parametersBits": "527bb19a8eb7ee3fcb629a3e0e51b03f660b251e40b6a93f106f98e7637aaebf2cba84a78c0f83bf64b597cb4aaf9c3fdedf399e55e8ab3f",
+          "errorBits": "0000d092a9741040"
+        },
+        {
+          "parametersBits": "447c755354a3ee3fd05008cc0f23b03f30bb7a2bc3c7ab3f36c2825086a5aebf1e46e83cec3d81bfa9ab77f65b3b9b3fc26daa82cb99ad3f",
+          "errorBits": "0000201bb1651040"
+        },
+        {
+          "parametersBits": "e871f89fefa3ee3f94d9047a3f8fae3f70146aa05b67ac3f462fbda49495adbf357ebf60355582bfba754fa9df69983f44d2fa262b8bae3f",
+          "errorBits": "00001038be6f1040"
+        },
+        {
+          "parametersBits": "6c6388dc49a6ee3f69b2b4623a5eaf3f824c0c40c9dbab3f81fd3868da08aebf5c61efc6701582bfc6ed0159bfda993ff01799bbb3e7ad3f",
+          "errorBits": "0000405ebe651040"
+        },
+        {
+          "parametersBits": "bcd6300beb91ee3fdd85313e9a23b03f7864fef5bec9aa3f401472b0a126aebf547b8a2c63897ebfb64e8cfbd6de9b3f1a64808b9752ae3f",
+          "errorBits": "0000c8fcc8521040"
+        },
+        {
+          "parametersBits": "40925936f287ee3fa1817be0fec3b03f203d1222e5a6aa3f38bfd5a85e0eaebf76da5d253b8873bf428017033fe19a3f48f77f023ebbae3f",
+          "errorBits": "0000c888c14b1040"
+        },
+        {
+          "parametersBits": "7a3c6ae7cb84ee3f16df48706cf9b13fb0a98aee116dab3fd58dcf4f0d25b0bff81806f1185b7cbf72b19fc3403c9d3ff6134843c82fb03f",
+          "errorBits": "0000009b2a601040"
+        },
+        {
+          "parametersBits": "8a263fd4057dee3fd4a93b9abed8b03f56971bd60d14ac3f862dabb494f4aebfde9bc936e14078bf0ecc31bade759b3f010b1a3f155cb03f",
+          "errorBits": "0000103576561040"
+        },
+        {
+          "parametersBits": "322f1a7ea077ee3f78521cc694eab13ff26520a711c6aa3f16cac140d1c1afbf620939853c3574bf7e5edeff79db9d3f4ac90a261719b03f",
+          "errorBits": "0000a02d11541040"
+        },
+        {
+          "parametersBits": "56001381196eee3fc336bd29c8f8b13f58babc4c7790aa3f80bef7535f76afbf3488400a19d071bffa6561f7e53a9d3fa423ffccf49eb03f",
+          "errorBits": "000040351d461040"
+        },
+        {
+          "parametersBits": "8a1a8c393476ee3f16e4c2dac2adaf3f24cacf1e9e60aa3fcc7eda955653aebfd0edc07b873e52bf2cf717eb2030983f7c07f7a8049eaf3f",
+          "errorBits": "000018192d2d1040"
+        },
+        {
+          "parametersBits": "30e5ed19b568ee3fac55e59b9b50ad3fdad796ad06bda93fbcc4df18dca1adbf1c31570225676b3f235da3a7b57b943f5ea3ad14d396af3f",
+          "errorBits": "0000c09f4a131040"
+        },
+        {
+          "parametersBits": "38011047947aee3f8c2d103fc53dae3f144a8a43e81faa3f84cf1d842cfdacbff84c0f448a1955bfbe0f9fdaaf0c983ff8ad1d4181b1ae3f",
+          "errorBits": "00000435d5331040"
+        },
+        {
+          "parametersBits": "a2559b9fa781ee3f08445637a382af3f38fd183206eaa83fa859e9ceddc2adbfb8dc19dfb0a34fbf2e76bec896d9983fe20fe1eeb6c4ad3f",
+          "errorBits": "000087e6fd421040"
+        },
+        {
+          "parametersBits": "acc5096dea89ee3f7cb22f7ed022ac3fae10121bffafa93f3e2f27d9a463acbf389a6c9f7eda4abfa833e497ba05953fb0db824f2399ad3f",
+          "errorBits": "0000159e6d351040"
+        }
+      ]
+    },
+    {
+      "name": "quarter-turn-identity-seed",
+      "source": [
+        [0.0, 0.0, 0.0],
+        [2.0, 0.0, 0.0],
+        [0.0, 3.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "target": [
+        [0.0, 0.0, 0.0],
+        [0.0, 2.0, 0.0],
+        [-3.0, 0.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "initial": [1, 0, 0, 0, 0, 0, 0],
+      "budget": 160,
+      "step": 0.004999999888241291,
+      "tolerance": 0.0001,
+      "initialErrorBits": "0000000000002440",
+      "status": 2,
+      "output": [
+        0.618596829899976, -0.0020993126572207968, -0.033823968019353876,
+        0.6188998813136986, 0.011079111298159021, 0.0010035064509709118,
+        0.08843641129305543
+      ],
+      "outputBits": "ac8c3a948bcbe33f7e739ee6933261bf369bed086051a1bf22b3b71f07cee33f9c008e25a5b0863ff301d9d80271503fc67e47c6c4a3b63f",
+      "errorBits": "0000f05e1a04ed3f",
+      "trace": [
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000000000002440"
+        },
+        {
+          "parametersBits": "000040e17a14f03f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000000000002440"
+        },
+        {
+          "parametersBits": "0000803d0ad7ef3f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000000000002440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000040e17a743f00000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000805fdd232440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000040e17a74bf00000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000805fdd232440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000040e17a743f0000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000a03bc51e2440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000040e17a74bf0000000000000000000000000000000000000000000000000000000000000000",
+          "errorBits": "0000a03bc51e2440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000040e17a743f000000000000000000000000000000000000000000000000",
+          "errorBits": "000060cc45e62340"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000040e17a74bf000000000000000000000000000000000000000000000000",
+          "errorBits": "0000a0ab78192440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000000000000000000000000000000000000000000000000000040e17a743f00000000000000000000000000000000",
+          "errorBits": "000078743d0a2440"
+        },
+        {
+          "parametersBits": "000000000000f03f00000000000000000000000000000000000000000000000000000040e17a74bf00000000000000000000000000000000",
+          "errorBits": "0000280000002440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000040e17a743f0000000000000000",
+          "errorBits": "000028bc1e052440"
+        },
+        {
+          "parametersBits": "000000000000f03f000000000000000000000000000000000000000000000000000000000000000000000040e17a74bf0000000000000000",
+          "errorBits": "000078b41e052440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000040e17a743f",
+          "errorBits": "000078743d0a2440"
+        },
+        {
+          "parametersBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000040e17a74bf",
+          "errorBits": "000078743d0a2440"
+        },
+        {
+          "parametersBits": "6edb36f7d905f03fffffff3fe17a74bfdbb66ddbdc67573fdbb66ddbdc67573fdbb66ddbdc6757bfdbb66ddbdc6757bfdbb66ddbdc67573f",
+          "errorBits": "0000958190232440"
+        },
+        {
+          "parametersBits": "922469796304f03fffffff3fe17a64bf244992a4e58d513f244992a4e58d513f244992a4e58d51bf244992a4e58d51bf244992a4e58d513f",
+          "errorBits": "000089b2d5112440"
+        },
+        {
+          "parametersBits": "e0e554f51a07f03fdcb66ddbdc6747bf0f8df521e33973bf9c829753d56b5c3f9c829753d56b5cbf9c829753d56b5cbf9c829753d56b5c3f",
+          "errorBits": "0000eb4fa71a2440"
+        },
+        {
+          "parametersBits": "68acff375405f03f254992a4e58d41bf9753f012649962bff6a1b1fedf50553ff6a1b1fedf5055bff6a1b1fedf5055bff6a1b1fedf50553f",
+          "errorBits": "00008630670c2440"
+        },
+        {
+          "parametersBits": "af0ca944fc02f03f0e8df521e339633f7b9d1b1db12e5cbf1e81654825e2473f1e81654825e247bf1e81654825e247bf1e81654825e2473f",
+          "errorBits": "00006784d0192440"
+        },
+        {
+          "parametersBits": "991e39ac0904f03f7839054f601b55bff13d9bd0ff7a383fff667ae4b026503fff667ae4b02650bfff667ae4b02650bfff667ae4b026503f",
+          "errorBits": "00801a1c72052440"
+        },
+        {
+          "parametersBits": "555cfe14ad01f03f0c58869403f9253fcc95635a3679633f905bc5e54fd13a3f905bc5e54fd13abf905bc5e54fd13abf905bc5e54fd13a3f",
+          "errorBits": "004074ba160e2440"
+        },
+        {
+          "parametersBits": "63583f6f6a04f03fb6a24a04b89537bf7db236ef7a2952bf328f61fdbca9513f328f61fdbca951bf328f61fdbca951bf328f61fdbca9513f",
+          "errorBits": "0000bdb9f4042440"
+        },
+        {
+          "parametersBits": "46b434484408f03f9c4b1b8059dc3ebfe60692ab3d862bbfe29068699088603fe2906869908860bfe2906869908860bf45252742901072bf",
+          "errorBits": "000098a780022440"
+        },
+        {
+          "parametersBits": "05e51eed6f05f03fba3a90c5cc37513f2e7340fda59548bfb414947bb4bf553fb414947bb4bf55bfb414947bb4bf55bfac68d430fbbf5fbf",
+          "errorBits": "00008354b0062440"
+        },
+        {
+          "parametersBits": "3490723c6304f03fd7b8bf132a0d47bf77d35077b345183f6cd240caf18c513f6cd240caf18c51bf6cd240caf18c51bf52cc9a7c17b4303f",
+          "errorBits": "0030933a5dff2340"
+        },
+        {
+          "parametersBits": "3e080b86ba0af03fe0f61c3166ba3cbf0807a93376f436bf7b8010160c75653f7b8010160c7565bff15aa6d7a4346f3f059d0bd0b5cf4cbf",
+          "errorBits": "00805a3cacfc2340"
+        },
+        {
+          "parametersBits": "63742ad41d08f03f488cf0c17f731abf4efd9fb314f24f3f24c9e854a83b603f24c9e854a83b60bf1beb96025f08553ff4293081989d64bf",
+          "errorBits": "00000036ff002440"
+        },
+        {
+          "parametersBits": "aee19ffe3804f03f80fc07f6475d1e3f205855ff27313b3f24b2867ffae3503f24b2867ffae350bfd289ed6561f2693fa13a45a71fc76c3f",
+          "errorBits": "0000df44d6042440"
+        },
+        {
+          "parametersBits": "a07fcf754107f03fedf8b3a06e3f35bf72640b0469300cbfdc85fe3dd7055d3fdc85fe3dd7055dbfd4284cd64fa747bf3f69697910e763bf",
+          "errorBits": "0080e9e356fe2340"
+        },
+        {
+          "parametersBits": "3400477c2004f03fa8af517b99d634bffeb9facf426e51bf5ed0001cf181503f5ed0001cf18150bfe65f6176593047bf80349b037def5a3f",
+          "errorBits": "00c054eb52052440"
+        },
+        {
+          "parametersBits": "5797317e1e07f03f6f0c63a69c5624bff741753ddc7c3e3fce615dc6f8795c3fce615dc6f8795cbfb0084a2678c0493fce71e180853058bf",
+          "errorBits": "0080b0381dfd2340"
+        },
+        {
+          "parametersBits": "64c4c806470ef03fa41d25a8465b3ebf1bbefd7d9f08073f94d188910d8e6c3fd8092e5ca31b683f140bbd99f43b4a3fc7f6e0b5fe3455bf",
+          "errorBits": "0080ffdd39fb2340"
+        },
+        {
+          "parametersBits": "b866cdf20cf0ef3fc40061fed18343bfb586d8585f9d0d3fe0cf8edd515b723f1bc2d2c997ed53bfd6f4d46266dd503fb618d8e922445bbf",
+          "errorBits": "0080e1118cf12340"
+        },
+        {
+          "parametersBits": "e4789f0f3a0af03f45933390321749bfbd9f664bbd09133f440b938afb99773f4867eade309f59bfef837f5af1ae553f51eb0a043b8761bf",
+          "errorBits": "0000feb97eed2340"
+        },
+        {
+          "parametersBits": "e198f0ea8107f03fe00f83db7bf914bf4c9cfd2a3bebfabe225d71431ab4783f365a467e34c144bfccc9c4e0c838693f3ec65d82863869bf",
+          "errorBits": "0080360814eb2340"
+        },
+        {
+          "parametersBits": "89672f1cb604f03f4d9bddbaad8639bfe650c343e4de203fe42510e30fd27a3f78ecadf54db0393f395e075375416f3f640a0902c1ff42bf",
+          "errorBits": "00005a4ac4e72340"
+        },
+        {
+          "parametersBits": "dfafccf72804f03f972e6dee067f44bf127bd1fa70e03fbf60798d47064b803f807507a095b14f3f6d7e95d6c0fe693f2559dba903eb54bf",
+          "errorBits": "000028a101e42340"
+        },
+        {
+          "parametersBits": "223c9a34ae02f03f5664d7d0b6334cbfcb6c7acb8b874fbff45feedee9a8863f83249a4d1601633f477e8b1e09e3713fd14c58be424853bf",
+          "errorBits": "00007298e7da2340"
+        },
+        {
+          "parametersBits": "989bca8c80fcef3f52dfaa4341573ebfceb5498f1d37243fb71761740d6e833f626e14a5ecb36a3f90557c50ca42343f1e47671b2f0c60bf",
+          "errorBits": "00c00e4736de2340"
+        },
+        {
+          "parametersBits": "d0715f1d3fecef3f2c82edaf3ab53cbf44d804f38b522bbf1ab282f5cf2a853f80917a01f71e62bf456e740589076a3f8623eed69e675cbf",
+          "errorBits": "008010cfd0d42340"
+        },
+        {
+          "parametersBits": "566646a517d4ef3f6eb4d1b334e23bbf157e23ee72ee35bff4f0123e762e8c3f966f2718229e73bf03827b7ae7e1713ff25cba73770060bf",
+          "errorBits": "0000ae4975c42340"
+        },
+        {
+          "parametersBits": "50a547a36108f03f8c1a55fd98d930bfe6a4ef32c2ce35bffe377cef9b8e883f71d5dacce9594e3fa7cb7c7bfff66f3fa62fff0ffeb257bf",
+          "errorBits": "0060e4f172cc2340"
+        },
+        {
+          "parametersBits": "aa4659254eebef3fd0dc3ba7ca980e3f3ae43053b8743ebffaba51b74f94893f3c3818634c43603f01e8b7f89dcb713fc0f175c3ec5349bf",
+          "errorBits": "0040cb50cec82340"
+        },
+        {
+          "parametersBits": "f09e6b858ae6ef3f4321c5f1d24243bfe7fb9c74141e40bf27bae917c1ce8c3f98f537ba108a5d3f86eeadc2552c683f4cced54997074b3f",
+          "errorBits": "0000e516bac32340"
+        },
+        {
+          "parametersBits": "86d530dd4dd2ef3fe680efaca4944bbf6a833fc271c147bff91f81898d84923f78c3721bb3bf683fe380a2331ca6673f7c10dffc1bbf663f",
+          "errorBits": "0000380badb42340"
+        },
+        {
+          "parametersBits": "7a032a9b62dcef3f7a88fb4cf1b43abf7bb13c9b332b4dbf2ce8b0dfe53f913f9d0783e90c0c593f90ec536a8dee5f3f7c2a7277216e47bf",
+          "errorBits": "0000665ea7b42340"
+        },
+        {
+          "parametersBits": "b09d8fccddc5ef3f107f0a16134c3bbf2bbaa9f854ee56bf855727d39685963fee66c7cf042e613f9c8476cc5ea4503f88ba26b251a549bf",
+          "errorBits": "0000e70dc69b2340"
+        },
+        {
+          "parametersBits": "506dd6c432d5ef3fe65a80621b044ebf3fff7a1efa0653bfcc53c96483ce973feaa78bdca3a4643f712121eeadcc783fa6d93056d8e058bf",
+          "errorBits": "000043cdbb9d2340"
+        },
+        {
+          "parametersBits": "5c7ba16c77cdef3f2b9c92ae541643bfd220135566b65bbfa22532e2ea3c973f18d89a99082a4fbf1ee4b2cbca417e3fecf470f8c58e423f",
+          "errorBits": "0080eeb23e9f2340"
+        },
+        {
+          "parametersBits": "929f0d48a3b4ef3ff0960c65819c1bbfa47f0adf42ab49bf6a35b3cd7906993fa83cd7e438fe4ebf24ff5ef1b72b713f9c35652d4981323f",
+          "errorBits": "00409fe1da882340"
+        },
+        {
+          "parametersBits": "3a337ab7468cef3fbcabf24a06d9313f1089d2681ebd46bf2238d13c7cdf9f3f00c99d7ce01f65bf93bfc85a0fd0703f821a32d09c94503f",
+          "errorBits": "0000b8008c632340"
+        },
+        {
+          "parametersBits": "88c6acf86183ef3f53bbe84f884542bfef5d4aaf88d658bf4a080490d2ac9d3fc1a2ce68312442bf88c39ca3fc4f733f6d450edd398d543f",
+          "errorBits": "0080ea7f9f782340"
+        },
+        {
+          "parametersBits": "04ef8ce8258bef3fee6ffe4d183051bf363da7e5db985bbff084d06f82fea03f414706371c2763bf12809be2d4ee713f064571aead01533f",
+          "errorBits": "000075b9c3652340"
+        },
+        {
+          "parametersBits": "42ad210e858def3f9992ca3c225c48bfc258e780f60562bf5c95a3e9a72fa33f59a2f19aad0a753ff2c04eec3cdc713fdc827f2fd7756a3f",
+          "errorBits": "000081de5f562340"
+        },
+        {
+          "parametersBits": "b8508fc23b6aef3fca6e3b2ea6914dbf41cd78920aaa69bfec01b316ad41a93fa8153fba8aaf843f696038a567d9713f61398e407fd8773f",
+          "errorBits": "0080c3763f212340"
+        },
+        {
+          "parametersBits": "42619bce9271ef3fa0166a1d0c9436bf362bcc772c7664bf2ae263f01b8ba53f4c3ddcfe0b5345bf81c2a82bc2a3793f885ed891c9a444bf",
+          "errorBits": "00803248df342340"
+        },
+        {
+          "parametersBits": "b02172ed275cef3fcc0fae71f68d41bfc24f5dccf0dc5cbf02768eb1d304a63ff0e2e6ba5fe96b3fe854ec9d308d573f76b4fc69c94a543f",
+          "errorBits": "00006830052b2340"
+        },
+        {
+          "parametersBits": "d6872033d731ef3fb0938fc7bb8518bf2cc40808e42d64bf18d04e02e89fa83fd05de9c0d1dd283f182d9a0ca2c4573f4b0caf73bad6703f",
+          "errorBits": "00c031d357102340"
+        },
+        {
+          "parametersBits": "1895456a29e0ee3f8283aaf7f4d1343f73666e84178369bf31e3432a3bfcae3fa4ccbf1019f64fbf74feb592d1e44bbfa5ad4cb8325e7c3f",
+          "errorBits": "00008ffc51d12240"
+        },
+        {
+          "parametersBits": "48e7bfea8affee3fa288ef9c221e39bf626966e69e3d66bfec942d8210e7ae3f70a99e0b386431bf4acb08586765783f531c484692d8763f",
+          "errorBits": "00001ee041d02240"
+        },
+        {
+          "parametersBits": "120cd879619cee3f6c0d62602a0738bf872f6f1bd9a06bbfc0443d87995cb43f78e622d499b357bf2e303f95c741813f124b474298ef813f",
+          "errorBits": "00004bd06d642240"
+        },
+        {
+          "parametersBits": "e2f6659a0600ef3fac53c86f7d9728bf6285bdb0f8a169bf76fa396e685cb13f00dc47b67773613f02d0b840c62c6b3f97d9420a9148773f",
+          "errorBits": "0000148be1a52240"
+        },
+        {
+          "parametersBits": "c81956dd82d0ee3f062525707205423f1a33647064a26bbf595cfc32b0d0b23fe46698346b43753f2e49970a67736b3feed2628cecf67c3f",
+          "errorBits": "0000d263348b2240"
+        },
+        {
+          "parametersBits": "2a855e62bc99ee3ff0b08d60d8ad46bf4563885e800275bfba0b0eaf7271b63f4d3da6539e577f3fe60363e94fed6b3f64c74edcc654823f",
+          "errorBits": "0000621c663f2240"
+        },
+        {
+          "parametersBits": "24aed0377720ee3f2b9ac811833d53bf566c3fa7ee177ebf93eafa7e3caebd3f1a6750ceb2258a3f46c64b83e813693f6e09737de0758a3f",
+          "errorBits": "0020b2c2e59a2140"
+        },
+        {
+          "parametersBits": "8448ba441f54ee3f89db1740557834bf6f6e680ede4b73bf40422511d10ab93f36ea18aaff92833f20aac1eaa44b363f6d70c0cc6a9f8d3f",
+          "errorBits": "00c0b74ae6022240"
+        },
+        {
+          "parametersBits": "e600aff5191eee3fb06649eeb60d0ebf1813bc0c54c379bf66faf3d25bd0bc3fffd23df496b97d3fbb5b0c5e74dc733f645bd65077c4903f",
+          "errorBits": "0080e4b4bdad2140"
+        },
+        {
+          "parametersBits": "a2df9a0a21b1ed3f1b7478cd320c423f689f045358d777bf92b24410ccd1bf3f8093f42d9a4a30bf46d53b2a02f3603ff5ee2f78cc528e3f",
+          "errorBits": "0040be48cf4c2140"
+        },
+        {
+          "parametersBits": "18a7a0ae93d4ec3fc632a9a58fed543fccbbe8d781587dbfaf255d6923b5c43f7b038e2e893676bf007e85686e4c4e3f0c2c127209c3933f",
+          "errorBits": "0080dd19b2462040"
+        },
+        {
+          "parametersBits": "ae3223e49aa5ed3f8fad56b0c6e439bffb42aabb3ca87cbff0767867482ec23fb4fea59c5692833f4d4f385a8ee37f3f2b7f034dafa6913f",
+          "errorBits": "00003e230be62040"
+        },
+        {
+          "parametersBits": "6abdef7fc322ed3fe43eba78c3b20a3f8347156ab88f80bfdab94f2d04f6c33f679fc4bd828e813f004556aa2f0b743fd4bfa604644d963f",
+          "errorBits": "0000ec8206862040"
+        },
+        {
+          "parametersBits": "8e5be2467ed7ec3fc071b7a4392c4bbfb963e16ba6d182bf871e9850c83fc63f517110a45d887a3f4036b3bd02b6753f3de96b1b6b2f993f",
+          "errorBits": "0000422637012040"
+        },
+        {
+          "parametersBits": "727ca8fbfbdaeb3f92de92d787e258bf328fc5132dc688bfb316256c80abcc3f8776ccdbd62a7d3f15ffe6592ab4793fbfc1ca8b2114a13f",
+          "errorBits": "0000d081b6031d40"
+        },
+        {
+          "parametersBits": "f4ad09f41442ec3f4656c1eb0ab32fbfd9b7f30de2ec87bf6e82798d2bc2ca3f823df7d6bbdf8f3f20a73e9fed8339bf6c5c383fc5a79e3f",
+          "errorBits": "00803658551f1e40"
+        },
+        {
+          "parametersBits": "e869d07fe6f2eb3fe93c645c681632bf68ba3fbd6e4389bf7b9f10136c7ccc3f2241c5d9d8b3793fd2591ead05ac7e3f15d4cbeebb569d3f",
+          "errorBits": "00000888f8231d40"
+        },
+        {
+          "parametersBits": "f4aac0d14a8aeb3ff52e94ba9c7243bf76d131a9599189bf334d54506f9fce3f4d43827405fd803f36e761d60e966e3f3e8a09567bf99e3f",
+          "errorBits": "0000649decfe1b40"
+        },
+        {
+          "parametersBits": "fc7fc93f6340ea3f3afb6b607d3b4cbf6bb59b7a31e98fbf99bae001885dd33f34f0b371220d823f187f86e3a1046a3fd69051acfe09a33f",
+          "errorBits": "00009cdb1dba1740"
+        },
+        {
+          "parametersBits": "ac392f247a6cea3f8f1123c42215443fa22438b08a388cbf1d8f0d50f481d23fe01d450aa71f5b3fbfcf9f27ebbf763fe246a2ee39cea43f",
+          "errorBits": "0000b86293981840"
+        },
+        {
+          "parametersBits": "1eb7044196fbe93fcc202f2be9e21f3f88387d4c417490bf79b802fb2c87d33f4036cfbe1d5f653f40e4a737293b293f9a02620e9b04a63f",
+          "errorBits": "00808ad5dd771740"
+        },
+        {
+          "parametersBits": "557975ef9326e83f14035dc87ae7383f6c8c465b5a1995bff9f6a55e31bfd83f18b0546c02584cbfe791007d02866dbf1d2452c23c9dac3f",
+          "errorBits": "0000b34bea911140"
+        },
+        {
+          "parametersBits": "843d15c5cd11e93f2b5dd39ada312ebfda1e2508060093bfbeb05f9a5cdbd63fb07925f9395e4d3f48997d269983453fc0756be98caea83f",
+          "errorBits": "0000b14f92d71340"
+        },
+        {
+          "parametersBits": "f4c7ce9ce94ce83f6d67632401ed5ebf7e6a66ccde4697bf60036719500eda3f6c9b925d2419913f8792b93fc4a1723f00dbd1d24e2eae3f",
+          "errorBits": "0000f0ce03d11040"
+        },
+        {
+          "parametersBits": "62d8e5931409e63f43dab4c4246d6cbf44889cf73d3f9fbfd29de1a517f4e03f90a92db2876c9c3fea030e79df0d7a3fc01edbef592ab43f",
+          "errorBits": "000040768a5a0240"
+        },
+        {
+          "parametersBits": "a6a8a4a94318e73fa80c879b9b2555bf795cdeed112998bfb065c80841e5dc3fe0b534abd8604abf1d0351b5e2e97f3f76598ffebee0af3f",
+          "errorBits": "00006aaa69660a40"
+        },
+        {
+          "parametersBits": "566cd1296804e63fe802e150635659bf6b364a080ac99abf0001e362ed1be03fe640ff9e62767a3f0000174e93e79b3e28ba68d4f8b9b23f",
+          "errorBits": "80269f9a3aa40340"
+        },
+        {
+          "parametersBits": "a0304e044d71e43ff0403fcc3e6a34bf419092dccb249fbf00ab00182c9ee23f9cd7988b8c39763f309ba8200afd42bf404337c5b46eb43f",
+          "errorBits": "0000c483bbcdf43f"
+        },
+        {
+          "parametersBits": "b70aa18875bce03fb8dbc67cb125333f4a3af542d342a4bfaa5d7c16d257e83f26087f63e7c0723fa31c1313876970bf7134e0c40661ba3f",
+          "errorBits": "00004037c1ee0840"
+        },
+        {
+          "parametersBits": "62956240542ae43f8128f19db42d66bf7a22622cbd24a1bfad8e4abdfb34e33f5af321ef0a83883f2026bd9ddf635abfa0400daa416fb53f",
+          "errorBits": "0000a8d36d64f23f"
+        },
+        {
+          "parametersBits": "3c437c4e4109e13f7a0fb7a299e371bf222f8c6c0a30a6bf3b72ec87fc2ee83f944d07fb4a89913f2ad6f66e694575bf384f6b0354f3ba3f",
+          "errorBits": "0000b010cd7f0840"
+        },
+        {
+          "parametersBits": "305586494299e23fdfbd39bf00d75cbf744d23d9fcd6a2bf5499311ad47fe53fb89887e0d164773fb871520f94ab43bf90e276f5dfb8b93f",
+          "errorBits": "000060aac4b9fb3f"
+        },
+        {
+          "parametersBits": "6e9ec8578beee13f178f2a8bf02b67bf3e06e10269fca3bf889ef2e386a1e63fe1aabc6bf2ba8e3f1af77424828f593f2869b3fb56b9ba3f",
+          "errorBits": "0000a44b6a2f0240"
+        },
+        {
+          "parametersBits": "7eff364be712e13fdc94425543d771bf2e3df483f4a1a5bf6d85d890e09de83fdf4941c0cdcf953f3c1751dc70e27d3f27bdb0cd334ebc3f",
+          "errorBits": "0000f0b9c7cb0840"
+        },
+        {
+          "parametersBits": "21325608d468e03fb031a479472b6dbf93a260bec9d4a6bf3d8ae8e3a172e93fc82089e1be379c3f800a37c3dc5e71bf75b9d47cf834be3f",
+          "errorBits": "0000202089eb0c40"
+        },
+        {
+          "parametersBits": "040b51c1676ce53f56627771d8715ebfa416975132899dbfb14845dca032e13fbb2f7c91aabe793fb6ff2ed7b297733feaefaabe8581b33f",
+          "errorBits": "00008079e589ff3f"
+        },
+        {
+          "parametersBits": "4c4ccb1a55ace73f20f926836a8e2c3f34e69f2e88a296bf54ba6fb57a51da3f80f821ade004533fa0b7f77d334872bf5c01d47809a7ae3f",
+          "errorBits": "0000f49881c50f40"
+        },
+        {
+          "parametersBits": "b2121cbf42b9e23f6643d755ab506abfa92acb68c80da3bf5c5b50c397c0e53f4a7fe5d2eda7903f85e3bec5c7d7713f090e5f09880fb93f",
+          "errorBits": "000040df01fbfb3f"
+        },
+        {
+          "parametersBits": "68eab31deec9e13f1d70b61d912069bf7c1973d8c62ca5bfb10da87f7347e73f7c5d5e9de440933f25589a5dc2b2703fecad8a320db7ba3f",
+          "errorBits": "00007054f91e0440"
+        },
+        {
+          "parametersBits": "da0bcaa6c9f5e43f3cfa830b13915fbf8e3571f22aad9ebf2c4414eacee6e13f14e74e4ad78c833f3901823811b4503f1937f1eb3db9b43f",
+          "errorBits": "0000d0be8b81fa3f"
+        },
+        {
+          "parametersBits": "35d629029a76e13f38ceb2747d0747bf989b7abbcedca2bf3f57932ba2b4e63f4c7620c349887fbfe2e86637d8356fbf93e2b0837f6fb93f",
+          "errorBits": "0000f0467b6e0340"
+        },
+        {
+          "parametersBits": "d6d776ef75e4e43f96d0d26a53c266bf005ab9ebea6ea0bf2d0c4e473a64e23fc7377029e158933fa64bbb2759476f3fb48fd054a37bb53f",
+          "errorBits": "0000100330d9f83f"
+        },
+        {
+          "parametersBits": "b2699d69af69e63f6e471764cdc955bf6c07b9a453f89abfde34cb133aa2df3f286f7a44f940793f00501a1459ce5a3f2ca34e912a61b13f",
+          "errorBits": "000044d22a450540"
+        },
+        {
+          "parametersBits": "3fd13d5c540de33f3fd4e2142e1a64bf9ce5bf36595ca2bf825d6f6d6cede43f0ece5cf954348a3f544d5ee037df593fa9371ae14b63b83f",
+          "errorBits": "0000f87386bbf63f"
+        },
+        {
+          "parametersBits": "08c8a1be5f3ee23ff21d6143d93c64bfdcf300d5c2baa3bf5c3f3184cf50e63f096d6b209f25913f3c759191688064bf32c32dd80ffeb93f",
+          "errorBits": "0000685d1db80040"
+        },
+        {
+          "parametersBits": "453aa5c0e5a0e43f5d0c657be77960bf74e5d8932302a0bf5c4640862c7ae23f6b48c4864f3a823f4222621e7243683fbca40b45a820b53f",
+          "errorBits": "0000102285baf63f"
+        },
+        {
+          "parametersBits": "f25dd9e5d77ce53fd0a693e8d15549bfc4132f67a4259dbf434b8f424cd3e03f5cec4691d616733f13b5dd8d084464bfb6f4aae75f50b33f",
+          "errorBits": "000070a472e10040"
+        },
+        {
+          "parametersBits": "8265cb08286ae33ffaacea9edd5165bf78427edb0aefa1bf561720e34485e43f7a1c818ebf5e8b3f03e82685a9b2653fb407f200be9fb73f",
+          "errorBits": "0000c0212f0ff33f"
+        },
+        {
+          "parametersBits": "4269a7b687d8e53fe33fe35d4c3364bfe8c7b23eb10e9dbfba0ca94979cce03f80161ef19fd1913fa8af050427f16b3f36062491900db23f",
+          "errorBits": "0000c0499fc30140"
+        },
+        {
+          "parametersBits": "349acea41369e33f59ee5cbee6ba5fbf14d3b0ca13c3a1bf2e760f66fd52e43f85e4c1ac9eae813fbcb40ff1ef603a3f7a2b621c0cceb73f",
+          "errorBits": "000040f0274bf23f"
+        },
+        {
+          "parametersBits": "1e9289c6a70ae33f6ffb93e33cdc62bfb626d4a808b9a2bf04270e54b016e53f68c808122f408b3feffaf24811755a3f5cae371692eeb73f",
+          "errorBits": "000090429691f73f"
+        },
+        {
+          "parametersBits": "126974049c94e23f6c68e2f88f8a55bfb20f5b6c2948a2bf428b9d438b5ee53fd889e624fa58633f185a70f406b65dbfee3951524cdfb73f",
+          "errorBits": "0000d0c870cbfa3f"
+        },
+        {
+          "parametersBits": "253cb6747f50e43f7e693a8f10c363bf6cc7e18b3ae5a0bff2eb6186ce22e33f48bc7660e13a8e3f7a6d3effc1be633f42ba30948d14b63f",
+          "errorBits": "0000c081a83df33f"
+        },
+        {
+          "parametersBits": "f003933a83cbe43fc29a9ab2a3da5dbf40bd6329c6f09ebf41cdd069421de23f24465597bb21813fd89607d5be39443f8bd55590eee4b43f",
+          "errorBits": "00001c2976d0f83f"
+        },
+        {
+          "parametersBits": "92ee8ba3de7ae33fec4f022182e061bfb094cb43dfe8a1bf94d07ed95458e43fd7e75b3392b8883f0e2f57d1045f563f2838bf34292cb73f",
+          "errorBits": "0000b8cfd40bf23f"
+        },
+        {
+          "parametersBits": "e73a3eb922e8e43f869d7c7b3a195abfe87eb78228689fbf5c25bd4aed1be23f029125e514c1813f784e08795465433ff470a26f4f17b43f",
+          "errorBits": "000050345357f93f"
+        },
+        {
+          "parametersBits": "a9eb7df30784e33fe0b219dfc95662bf12dc66f947b2a1bf78cfc2a40c39e43fcbfe4ef48417883fcec3677714d4553ffc45bcc44c50b73f",
+          "errorBits": "000020f70f4df13f"
+        },
+        {
+          "parametersBits": "fcdf5d632d03e33f15fd0186243561bfefbc4601c289a2bf1c3f7ff1da0ee53f546f530905688b3fe03dfcc5cf9554bf610d08e7d8f9b73f",
+          "errorBits": "0000f055b09bf73f"
+        },
+        {
+          "parametersBits": "b26353a97739e43f8b480cbeb6a860bf535b342f0ba4a0bf8c041021581fe33f251268e7bc85843fec23143cb73f5f3fe6be8a6df4d6b53f",
+          "errorBits": "000090ad1e9af23f"
+        },
+        {
+          "parametersBits": "3af8da4ed222e33f260c2759cd9471bf08f2f4ddae47a3bf57865562c30fe53f722bce60ea9a923f0ba8c160d589683f7a24ab04ba12b93f",
+          "errorBits": "000030308884f73f"
+        },
+        {
+          "parametersBits": "8662f156ae1de43f54e8721fb96855bf9a32342ab87fa0bfd6e195ea913ae33f9466c0e409a3813f4e6786901b98343f8e3b1415b697b53f",
+          "errorBits": "00007a517b82f13f"
+        },
+        {
+          "parametersBits": "19d383fa1a35e33f187dedd4aaba5ebf80da2a92d9d7a1bf15679510eb91e43f9449575041fd7c3ffc8c3dce717043bf8d1bceec3549b73f",
+          "errorBits": "000098f9f137f43f"
+        },
+        {
+          "parametersBits": "e2a12956a609e43fc27e09c6a1a962bf310c744de221a1bfbacaeea8957ee33f68f66332d14b8a3f98f215c514305b3f941258aab761b63f",
+          "errorBits": "0000b053ecaef03f"
+        },
+        {
+          "parametersBits": "220465330449e43f8e929e395c185abfa9bd1d636b93a0bf3b01803567e4e23fdc823d3b350c813f8c686d74874152bfed3ebc422863b53f",
+          "errorBits": "000060546ec9f33f"
+        },
+        {
+          "parametersBits": "2acd7113dfa1e33f0ed463be714063bf442166fd2298a1bfd011b8770d1de43f1236b0f91cca883fe2019f6a9cfb5b3f829564919810b73f",
+          "errorBits": "000018da1b41f03f"
+        },
+        {
+          "parametersBits": "a7480a68644ee33f24fa5822f87262bf842608b82824a2bfce17c0ebd092e43f75974655531d893fa818e7f53a2b3cbf9fe9aa728e85b73f",
+          "errorBits": "00007042f6fcf33f"
+        },
+        {
+          "parametersBits": "ef1c01d9b2fee33ff1741f17471b61bf1f4e69911204a1bf5c09bc53367ce33f79b3df82a2ab853f66a9b0bd15ad553f94c9d2ee9a42b63f",
+          "errorBits": "000070921c65f03f"
+        },
+        {
+          "parametersBits": "b23ddf8e1051e33fc2cd4b13fff556bf1ffe006a219aa1bf4ed55c318791e43f4736559c3050843f5d9454fb1e15703f98b317dca329b83f",
+          "errorBits": "000040b86d7af33f"
+        },
+        {
+          "parametersBits": "76bf015403f4e33f1958de58078163bf63d9c93b1642a1bf55204f9a1e8ce33f16c46e5a5476873fd841cad745ae2dbf5edd8f36da1db63f",
+          "errorBits": "0000efc2da24f03f"
+        },
+        {
+          "parametersBits": "d0d5815c033ae43fc26abf0f6bd562bf9be19410f0d6a0bf218c8597b33ae33f6b60541063cb8c3f9a9cf61ea8665c3fdd8d3d715d4fb53f",
+          "errorBits": "00004852ee50f23f"
+        },
+        {
+          "parametersBits": "1b69bb924f9de33f12b4524b719b60bfb6d629dc0a88a1bfabfb6cf2ea0ce43f7e83a6c5cf75843f1432e109ae17483f12049971602eb73f",
+          "errorBits": "000040673717f03f"
+        },
+        {
+          "parametersBits": "98ed887d0f32e43fc5f7dd107c7560bf92a0b9307a95a0bfc3ab352bd01fe33f25aecf45ca89843f9a168c435b59433fbb4d436ae2f1b53f",
+          "errorBits": "0000e8634875f23f"
+        },
+        {
+          "parametersBits": "542e0bdaaaa8e33fe239f99cc08561bfa81707ff0594a1bf6087ecad330ae43f6ad9f837e0ac873f1ee672056f32533f8c3d208297ddb63f",
+          "errorBits": "0000803134aaef3f"
+        },
+        {
+          "parametersBits": "71d82a14d16de33f4e9e5d81509469bfac68d6f4924da2bf165c37e4e578e43f7fe29f87fd588d3f2e6d370637e95e3f9bb8f15f71e3b73f",
+          "errorBits": "0000c06ad01df33f"
+        },
+        {
+          "parametersBits": "01c03f06b7f1e33f66fd4418b3d85cbf1ec0dcdc2ef3a0bf6640fee8268ae33f8f4578cd8690843f541d4ed9a52d473fd29acbe7a42ab63f",
+          "errorBits": "0000781e56c3ef3f"
+        },
+        {
+          "parametersBits": "6767430fce26e43f67beb6f579d360bf136ec5af69e4a0bf6efc3fab7248e33fa4a741ff82e2853f54fa9896769c463fb358e0def3d6b53f",
+          "errorBits": "0000d44e35c5f13f"
+        },
+        {
+          "parametersBits": "984a6f7ab9ace33fc2f5c0e4f5f561bf9280fe66d07ea1bfb61a6226e6fce33f02a90b77448a873f25f2602c9e32533faa4a458bf6f1b63f",
+          "errorBits": "00001050d60bef3f"
+        },
+        {
+          "parametersBits": "f40587dba286e33f1639b2604c4d60bf58a896875c8fa1bfbf8559a60027e43fc650cad4a0e4823f604d79b47f4e2d3f46e5ac82bfeeb63f",
+          "errorBits": "0000be821fe1f03f"
+        },
+        {
+          "parametersBits": "e6fa8077e5e8e33f57adb36c8c1262bf3bb3fcdb403da1bf7b794968b0a8e33f008dfd1a0572883f5d407491834e553f40476da0f984b63f",
+          "errorBits": "000050546510ef3f"
+        },
+        {
+          "parametersBits": "e3ee8aaa5b8be33fbcc00f284d2262bfdea714a282bda1bfddd4fd251536e43f49ad7b1dc74f883f023c7d999323423f9d2d15bad220b73f",
+          "errorBits": "0000b4880328f13f"
+        },
+        {
+          "parametersBits": "6c91630ddde1e33fe4875b9b085d61bf8f2494956e32a1bf3c7c4c08aeaae33fedb186a9ab54863f8d2674c14286523f9662a3e1287ab63f",
+          "errorBits": "0000e0b978a7ee3f"
+        },
+        {
+          "parametersBits": "bc76a80078fae33f6c0592ed08e65ebff467003d630ca1bf885875749074e33f3697316b757d843f0000a0ac4ce5ce3e6be5b9c0d927b63f",
+          "errorBits": "009469032d73f03f"
+        },
+        {
+          "parametersBits": "8e77bf4e05b8e33fb81f7d6c164d62bff0b24c0d3375a1bf7e63e736eef2e33f5b8e1016f3b6873f6ad58cf99100553f7ce939dd68d6b63f",
+          "errorBits": "000000dffc47ee3f"
+        },
+        {
+          "parametersBits": "9add97be2f97e33fd64a1c56e6b45dbf46809d830a71a1bfc6817735df22e43f228c3389b4e3853f01bf9cb62f68633f04a19a26534fb73f",
+          "errorBits": "0000e036a46cf03f"
+        },
+        {
+          "parametersBits": "ff46a76ecedce33f6e4b6a4d625762bf1cc3be4dd34da1bfb13819c1ceb1e33f19f61f66ac11873f51a54d3c05af3b3f488e9272386ab63f",
+          "errorBits": "000028039e6aee3f"
+        },
+        {
+          "parametersBits": "12e1b3be0700e43f4519c55de03e62bfeaa18cba731aa1bfdfb741cf0a88e33f53a467700aa3893fafb3a20bde97553ff3ea217ec106b63f",
+          "errorBits": "0000802f6c4df03f"
+        },
+        {
+          "parametersBits": "1887b99dfdb5e33f5f4def0f4d0461bf8389c213a56ca1bfb82aa2e9b2ebe33fb3cb56701ec1853f663f3a8db1dd4c3fca3dbbb478e4b63f",
+          "errorBits": "00006045f31fee3f"
+        },
+        {
+          "parametersBits": "0ec32de48f9ae33fd6d22f67ab2b65bfa01689c903d2a1bf3dff4cb4ad26e43f72bf67295adf893f7e67e9cfe3dc563f2f5e58f9943fb73f",
+          "errorBits": "0000302199b5f03f"
+        },
+        {
+          "parametersBits": "c440bb3deddbe33fbcd3e5022e1c60bfbed50718e42aa1bf1cf0d19b48b1e33f082474a43be4853fbe49ef4aaed04c3faacb2eece06fb63f",
+          "errorBits": "000010c98e2fee3f"
+        },
+        {
+          "parametersBits": "dc10705141f2e33f76fa2ee1f5aa61bff819a8f72213a1bf551f5733398de33fe840c1948840863fd0fa8680efc54b3fc751e3a1496db63f",
+          "errorBits": "0000603c3bf9ef3f"
+        },
+        {
+          "parametersBits": "f666e47710bbe33f07aa06ee0d8f61bf3c582f3dcd73a1bf5e2d470ff5eae33f4af32a4fca51873ff00b273491de513f9a02110a84c1b63f",
+          "errorBits": "0000a0e5a3ebed3f"
+        },
+        {
+          "parametersBits": "041af26aeea4e33fa3aa673698f860bfd53f53ed7d79a1bf7a171e84ab01e43fb0f3a4c00929853fa4ba7cc5f296453fe50fc5a133d7b63f",
+          "errorBits": "0000b0b5696eef3f"
+        },
+        {
+          "parametersBits": "ae425db4e7d7e33faaac205f0fcc61bf62565220504ca1bffba03e2fefbee33fac666744c69f873f9ac7c605c1ad523f6a39c3208899b63f",
+          "errorBits": "0000803999e1ed3f"
+        },
+        {
+          "parametersBits": "eb7eb5c170ede33fe771e305360961bf26d444978029a1bf540a697fc19be33fde0db17aef16863f5a639479d182493f67be7e98f250b63f",
+          "errorBits": "000060949d68ef3f"
+        },
+        {
+          "parametersBits": "add7404ce7bce33fcb9409edc5ba61bf771510737c69a1bf9ed6a3fc9ce4e33f3902f5376f2d873f07427bd05096513f9aa7938eb5c9b63f",
+          "errorBits": "0000f035d1a0ed3f"
+        },
+        {
+          "parametersBits": "bb7000d3bdade33fe2bec3afebbc61bf6d50403a9d85a1bfa1c2e00787fee33f51f73003778a873fca2ebbc56b524a3f0f71aebc7adfb63f",
+          "errorBits": "0000f01af218ef3f"
+        },
+        {
+          "parametersBits": "40c9ca3ed5d4e33fa4957560017561bf862fbf3e3a47a1bfd58d3148a4bfe33f4643f17f1ea2863fc382ce89ff2e513f342666587d93b63f",
+          "errorBits": "0000c070f3b3ed3f"
+        },
+        {
+          "parametersBits": "cfbb7d3f85b0e33ffaeb2503e48160bfb58783eb5568a1bfc8b0882c5afbe33fea3641e096ad863fbe1206665bb25b3f0f038eb635fbb63f",
+          "errorBits": "0000305af6b8ee3f"
+        },
+        {
+          "parametersBits": "33e4dc22bcd1e33f9133d9ba02e261bf42f42ff57354a1bfb616f59b31c4e33f4d46a804a7f8863f5d27a0a9cf3a483f7a6b91c3778eb63f",
+          "errorBits": "00006863dd88ed3f"
+        },
+        {
+          "parametersBits": "2461492ea7dce33f128b76fa976d60bf8baa7f009b37a1bf30b95041e0ace33fa2aee94ff1d1853fc0271b62fd26463f90f19144777ab63f",
+          "errorBits": "0000589b706eee3f"
+        },
+        {
+          "parametersBits": "f4f1a1c62dc1e33f8e7afbcf36d561bfd770190acd65a1bfeab881b96ae1e33f6cd686a4b23d873f08056d274d85523f81eb0f776cbfb63f",
+          "errorBits": "000010ce155bed3f"
+        },
+        {
+          "parametersBits": "90ca21d41ab1e33f25e2cae7821c63bf574637cdbe92a1bf18af2a7746fce33fc802b00a5d07883f0b29fb1792d8523f7d184b5db9f7b63f",
+          "errorBits": "000010baabfdee3f"
+        },
+        {
+          "parametersBits": "37e354a338d1e33f56171f3c43dc60bfe4b153c5da44a1bfdb1fa81208c4e33fb81b03fe036d863fd40b31c4cb084f3fdede7508d791b63f",
+          "errorBits": "0000f060f96ced3f"
+        },
+        {
+          "parametersBits": "430c992cd2dee33f7e341855f32862bf6630ef719f45a1bf3c285cc786b6e33ff971b542975b883f45821d5a5d21533f61d4aaac856bb63f",
+          "errorBits": "0000b0b76450ee3f"
+        },
+        {
+          "parametersBits": "626871c132c0e33f278739a1764d61bf3cb34dabe362a1bf19aa10e167dee33f4475eea4bc67863faf70fad6f3364f3f7023b7f23bc6b63f",
+          "errorBits": "00007805d94ced3f"
+        },
+        {
+          "parametersBits": "17bf28d536dbe33fbc8458f3748b61bfac7b6643a239a1bf14008394aeb3e33f866fab0e0c88863f066a581d61184e3f19623b75d38fb63f",
+          "errorBits": "000048620038ee3f"
+        },
+        {
+          "parametersBits": "fe7c350f1ac3e33fb4205baf278e61bf1821bd7e4265a1bf0c22967023dde33f59120bbf5a1f873f3556c80af929513f7a9adbe417b5b63f",
+          "errorBits": "0000600b7e27ed3f"
+        },
+        {
+          "parametersBits": "9918c9fb6db8e33f41a32a99c33c61bfdd92860d4068a1bf0f1fc9ab55e8e33f0be4e6175f15863f548d87a16a9c4b3f28906b4dafbfb63f",
+          "errorBits": "0000285626e3ed3f"
+        },
+        {
+          "parametersBits": "2838384609d0e33f502aa36d3ca861bf81659f1b4c53a1bf804061ce48c9e33f044647792c3d873f5e078618de75513f1a4fedeb11a3b63f",
+          "errorBits": "0000908fc855ed3f"
+        },
+        {
+          "parametersBits": "6e1f0d9821bae33fc2e42bc074a261bf705b7ec0c870a1bfb140bfdd61eae33fa9e307ff533f873f383e73c66cc24e3fc41ca6ad2dcab63f",
+          "errorBits": "0000b06865f0ed3f"
+        },
+        {
+          "parametersBits": "cc5e1b5528cee33f6c2963385e8061bf80fa2edf9d51a1bf8cfa94ad53cae33f5febb6df6bc9863fd94929408dbb503fd823b66d29a1b63f",
+          "errorBits": "0000204b4938ed3f"
+        },
+        {
+          "parametersBits": "53a51e8dfdd6e33fa3341f49004c61bfedb611abb447a1bf504b6d80e6bde33fe48b3b097097863f7056c62fc8764d3f275139b75f88b63f",
+          "errorBits": "0000088358d0ed3f"
+        },
+        {
+          "parametersBits": "164b78dc6cc3e33fc1fc0e84149f61bfd47d10810a61a1bfca33965defdae33fa4a4466cef07873f533c55a295df503ffe11bd1860b9b63f",
+          "errorBits": "000090ec0b10ed3f"
+        },
+        {
+          "parametersBits": "33b61c1012bee33f103df1fda31161bf72ff31e35560a1bff6ee003dd1e4e33fe8abfe1096d0863f2d65b4295a90553fdabcb5e3dfcfb63f",
+          "errorBits": "0000d00dd088ed3f"
+        },
+        {
+          "parametersBits": "b3c1cc94fcc2e33fb03a2badbb4561bfa67cb1675d5da1bfe6f8bd54a9dce33f8112e94d9ada863fce507b949d33533f82a8acdb85bfb63f",
+          "errorBits": "00008098d61aed3f"
+        },
+        {
+          "parametersBits": "0989eb6684bae33ff8871ce6853562bf2d57bbd3ef76a1bff86ce64604ece33f47af2e9c887b873f0e761abdd936533f805ebcff8dd9b63f",
+          "errorBits": "0000e0264702ee3f"
+        },
+        {
+          "parametersBits": "ac8c3a948bcbe33f7e739ee6933261bf369bed086051a1bf22b3b71f07cee33f9c008e25a5b0863ff301d9d80271503fc67e47c6c4a3b63f",
+          "errorBits": "0000f05e1a04ed3f"
+        }
+      ]
+    },
+    {
+      "name": "known-pose",
+      "source": [
+        [0.0, 0.0, 0.0],
+        [2.0, 0.0, 0.0],
+        [0.0, 3.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "target": [
+        [0.4000000059604645, -0.20000000298023224, 0.699999988079071],
+        [0.4000000059604645, 1.7999999523162842, 0.699999988079071],
+        [-2.5999999046325684, -0.20000000298023224, 0.699999988079071],
+        [0.4000000059604645, -0.20000000298023224, 4.699999809265137]
+      ],
+      "initial": [0.7071067811865476, 0, 0, 0.7071067811865476, 0.4, -0.2, 0.7],
+      "budget": 100,
+      "step": 0.004999999888241291,
+      "tolerance": 0.0001,
+      "initialErrorBits": "0000000000000000",
+      "status": 2,
+      "output": [
+        0.7071067811865476, 0.0, 0.0, 0.7071067811865476, 0.4, -0.2, 0.7
+      ],
+      "outputBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+      "errorBits": "0000000000000000",
+      "trace": [
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "0000000000000000"
+        },
+        {
+          "parametersBits": "5d5ec4f394bde63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000007799993f"
+        },
+        {
+          "parametersBits": "3d193ad9a783e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000006bba993f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000040e17a743f0000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000c0a3a5b73f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000040e17a74bf0000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000c0a2a5b73f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f000000000000000000000040e17a743fcd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "00000040a4a5b73f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f000000000000000000000040e17a74bfcd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "00000040a3a5b73f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f000000000000000000000000000000005d5ec4f394bde63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000007899993f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f000000000000000000000000000000003d193ad9a783e63f9a9999999999d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000006cba993f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f343333355ebad93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000003c62803f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f000000fed478d93f9a9999999999c9bf666666666666e63f",
+          "errorBits": "000000005c62803f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f343333355ebac9bf666666666666e63f",
+          "errorBits": "000000003c62703f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f000000fed478c9bf666666666666e63f",
+          "errorBits": "000000005c62703f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bfcccc8c6e1283e63f",
+          "errorBits": "0000000000ac8c3f"
+        },
+        {
+          "parametersBits": "cd3b7f669ea0e63f00000000000000000000000000000000cd3b7f669ea0e63f9a9999999999d93f9a9999999999c9bf0000405eba49e63f",
+          "errorBits": "0000000000ac8c3f"
+        },
+        {
+          "parametersBits": "66b300d8e4a8e63fdbb66ddbdc6757bfffffff3fe17a743f66b300d8e4a8e63f7ac55758f6a2d93f7cc55758f6a2c9bfcfcc4c8d976ee63f",
+          "errorBits": "000000c0ed2bb83f"
+        },
+        {
+          "parametersBits": "b399df02b0a2e63fdbb66ddbdc6737bf00000040e17a64bfb399df02b0a2e63f922449c9f09bd93f922449c9f09bc9bf000020b07268e63f",
+          "errorBits": "000000807a4ea83f"
+        },
+        {
+          "parametersBits": "3ace40297ca9e63f042fa7e0e10f743fdbb66ddbdc6747bf3ace40297ca9e63f30ed898aa1a3d93f32ed898aa1a3c9bf8daf38592d6fe63f",
+          "errorBits": "0000004027ceb83f"
+        },
+        {
+          "parametersBits": "68a02fd7d5a2e63f7e68acef60b064bfdbb66ddbdc6727bf68a02fd7d5a2e63f80aed5951b9cd93f80aed5951b9cc9bfb0f81a239868e63f",
+          "errorBits": "000000807f22a83f"
+        },
+        {
+          "parametersBits": "64bbd25b75a7e63f2281654825e237bf042fa7e0e10f643f64bbd25b75a7e63f32ae4b9556a1d93f34ae4b9556a1c9bf6e38a2c22b6de63f",
+          "errorBits": "00000000a2caa83f"
+        },
+        {
+          "parametersBits": "1f621c59e1a3e63f6ca9abf66e8637bf7e68acef60b054bf1f621c59e1a3e63ffac6493c4a9dd93ffac6493c4a9dc9bf1c8ec0f4a069e63f",
+          "errorBits": "0000000020ff993f"
+        },
+        {
+          "parametersBits": "c059c6f59ba7e63fbab401b04ad9633f2281654825e227bfc059c6f59ba7e63ffa98724182a1d93ffc98724182a1c9bfdd4544f9516de63f",
+          "errorBits": "00000080bbdda93f"
+        },
+        {
+          "parametersBits": "be4ed55e07a4e63f61c2810fec1b55bf6ca9abf66e8627bfbe4ed55e07a4e63f1ee9bc40759dd93f1fe9bc40759dc9bffb4ba598c669e63f",
+          "errorBits": "00000000493a993f"
+        },
+        {
+          "parametersBits": "a3dbe9509ba6e63f00bceff3472fe3bebab401b04ad9533fa3dbe9509ba6e63f408a68e55fa0d93f428a68e55fa0c9bffa78bbe8536ce63f",
+          "errorBits": "00000000745b9a3f"
+        },
+        {
+          "parametersBits": "80c00fd78fa4e63f899ee8c831cb31bf61c2810fec1b45bf80c00fd78fa4e63fcc7791a60f9ed93fcc7791a60f9ec9bfd448bfb14d6ae63f",
+          "errorBits": "00000000a6338d3f"
+        },
+        {
+          "parametersBits": "baded4acfeaae63fbb9d8d2665353dbf6ac5a0339bd82ebf93440eaec185e63f8ad2f1d456a5d93f8cd2f1d456a5c9bf3d9853faab70e63f",
+          "errorBits": "000000805552a63f"
+        },
+        {
+          "parametersBits": "88a4147836a3e63fbb9d8d2665351dbf6ac5a0339bd80ebfead75622a0afe63fd6a76fe8889cd93fd6a76fe8889cc9bfdcb261cbf768e63f",
+          "errorBits": "00000000f6548b3f"
+        },
+        {
+          "parametersBits": "37d0ef697f86e63fb6964ea97e4b3fbf0bfccc24538630bfc093b5de01a7e63f5244c17d2da6d93f5644c17d2da6c9bfcd1b09ce6771e63f",
+          "errorBits": "000000804b39a43f"
+        },
+        {
+          "parametersBits": "d43a4f91cfafe63fb6964ea97e4b1fbf0bfccc24538610bfcad18c4437a2e63f4884a392be9cd93f4984a392be9cc9bfc0134fc02669e63f",
+          "errorBits": "00000000c6358e3f"
+        },
+        {
+          "parametersBits": "db4726c46aa3e63f427fdfb8f6c1523fa02d6a6b69a704bf65ef934c14a3e63ffed7dfa41da2d93f00d8dfa41da2c9bf02dd43f0d96de63f",
+          "errorBits": "0000000049599c3f"
+        },
+        {
+          "parametersBits": "058d2938e0a3e63ff0e3d2bae64846bfeb61b7cf49ef22bfe8f6449acaa3e63fd6a4c5599f9ed93fd8a4c5599f9ec9bf3df08c6ecb6ae63f",
+          "errorBits": "0000000094dd8b3f"
+        },
+        {
+          "parametersBits": "1d2ac69c3994e63f6c7307b04e2928bfa4655b3ebb7927bff376eca357a5e63fd8b370b05da3d93fdcb370b05da3c9bf619d62faf16ee63f",
+          "errorBits": "000000006a29963f"
+        },
+        {
+          "parametersBits": "a6f62c14eaa8e63f5f557f2ba3c621bfda6fc7fa9b2118bf14bb645cffa2e63f2cd0165a669ed93f2ed0165a669ec9bf28f6d38e996ae63f",
+          "errorBits": "00000000fc9e823f"
+        },
+        {
+          "parametersBits": "3146a0b1b7a0e63f001018ded9c3db3e4acf13290c58423f41ab38a58ca2e63f7090166225a2d93f7690166225a2c9bf63bed3b5e06de63f",
+          "errorBits": "00000000d0458f3f"
+        },
+        {
+          "parametersBits": "ece1b3cd99a3e63faebda0f942792abfecbbb802dc7d36bf30fb990a0fa4e63ff5bd7215159fd93ff6bd7215159fc9bf3866c472326be63f",
+          "errorBits": "00000000d4cc823f"
+        },
+        {
+          "parametersBits": "a68cad3f83a5e63ff47d1985502435bf29138f2db4e927bf801d63b279a7e63f2ac2de6d2ca8d93f30c2de6d2ca8c9bf1e1d16b1494ee63f",
+          "errorBits": "00000000e777953f"
+        },
+        {
+          "parametersBits": "03d0ca9cd7a1e63ff47d1985502415bf29138f2db4e907bf3a34783955a2e63fbee3aa4e3e9dd93fc0e3aa4e3e9dc9bfe0202f3fe075e63f",
+          "errorBits": "000000009095813f"
+        },
+        {
+          "parametersBits": "dce055afaca1e63fdf332f3b6b53413fd08e6a37d96be4be3406acd0e2a3e63feac818cfc1a2d93feac818cfc1a2c9bfda99d635bb69e63f",
+          "errorBits": "00000000a8b08f3f"
+        },
+        {
+          "parametersBits": "fba1f45553a3e63ff9bba47aa4c338bf57674e814d0a1dbfbbbadea7d0a3e63fdb6d1af7a79fd93fdc6d1af7a79fc9bfa45a5f60876ae63f",
+          "errorBits": "0000000064fc803f"
+        },
+        {
+          "parametersBits": "e85acfae5ea2e63ffa67910e5f6b1ebf03228b25c1e31cbf48f8c06ead94e63f1023c48dbca5d93f1223c48dbca5c9bfe3749303016ce63f",
+          "errorBits": "00000000520c923f"
+        },
+        {
+          "parametersBits": "2052c38500a3e63f4a908ea0e3821dbf8812bf7c2aca12bf02607175e3a8e63fa4c6c4d1d59ed93fa5c6c4d1d59ec9bf5e236e19ba69e63f",
+          "errorBits": "00000000e6af803f"
+        },
+        {
+          "parametersBits": "dbcfc68dcfa1e63f0020eb3ef7806f3e40d8bf4a5d7f303f3dcd96c99fa1e63f46c66a4d1ea3d93f48c66a4d1ea3c9bfdb89f3d45a69e63f",
+          "errorBits": "0000000008d6803f"
+        },
+        {
+          "parametersBits": "7a8b30b3779ae63fe85564dc48dffcbefe658adc5ce7193f66c9b5044ba2e63ff21eba2926a5d93ff21eba2926a5c9bf65b65aa89869e63f",
+          "errorBits": "00000000c28d873f"
+        },
+        {
+          "parametersBits": "dbdbed7b4da5e63f6d45054fe9771cbfc8f4e589bb3e07bfa8fe7846d2a2e63fdea3ff4d16a0d93fdfa3ff4d16a0c9bf38a63555596ae63f",
+          "errorBits": "00000000a4e7763f"
+        },
+        {
+          "parametersBits": "c947c14587a2e63ff8e8d38baab817bf8fe369440fa60b3f3ad334e218a3e63fb21df5341ea7d93fb21df5341ea7c9bf1044b8d9065be63f",
+          "errorBits": "000000009866863f"
+        },
+        {
+          "parametersBits": "f46d088703a2e63fb518c80667c915bff7aa21a2860bf6befa5ba72386a2e63f3b723d48b69fd93f3c723d48b69fc9bfac69d1e5296fe63f",
+          "errorBits": "0000000054cb773f"
+        },
+        {
+          "parametersBits": "d01d9d9aaba0e63f77288a7d5611333f249e55a5bad0223f140de3043fa1e63f2027b4a3b8a4d93f2227b4a3b8a4c9bfba5716bab267e63f",
+          "errorBits": "000000008036853f"
+        },
+        {
+          "parametersBits": "f0c01e67a9a2e63fba053279cb9c2bbfdffc9f9cb9be08bf52cf1f3f2ca3e63f2cdc4022eca0d93f2edc4022eca0c9bfea19cd36d269e63f",
+          "errorBits": "00000000e4fb753f"
+        },
+        {
+          "parametersBits": "4010e4a06da2e63f895b8fe7cb4a23bfd429a5c57df233bfbd1f5229e1a3e63fd28bc5aea1a0d93fd08bc5aea1a0c9bf1a2d77610169e63f",
+          "errorBits": "000000009281813f"
+        },
+        {
+          "parametersBits": "f41f8e12f7a1e63f738f33b9e34403bfec5e9a1a9a8b1d3fdda1852130a2e63fa977c1257fa2d93faa77c1257fa2c9bfab7214784469e63f",
+          "errorBits": "00000000e46a763f"
+        },
+        {
+          "parametersBits": "a57f21d1f0a0e63f50a5c9986507ebbe3111b14e05cd123fa5567d65b39ae63f2c0746f9f5a5d93f2c0746f9f5a5c9bff7172c818068e63f",
+          "errorBits": "00000000da01853f"
+        },
+        {
+          "parametersBits": "82dd9a987ca2e63f623931e565fa16bf3413c613bdc802bfaa5d747157a5e63fc616a5db9da0d93fc616a5db9da0c9bf84a05db36b69e63f",
+          "errorBits": "000000005078743f"
+        },
+        {
+          "parametersBits": "2ac4ff90dba3e63faceadadc3fba23bfa720c0f4dc60e5beaacd47e551a4e63fe86d8a0e1283d93f6833e26833adc9bf1d0a9f25b16ce63f",
+          "errorBits": "00000000021a863f"
+        },
+        {
+          "parametersBits": "e45d1fb16da1e63faceadadc3fba03bfa720c0f4dc60c5be446031468ba1e63fe101892b8bacd93f0ec06b0d809ec9bf548f3416f967e63f",
+          "errorBits": "00000000742c763f"
+        },
+        {
+          "parametersBits": "db680fa14ba2e63f38aea7c508860cbf9b5cc42812e4f03e268a227b22a2e63fa4c5958564a1d93f4a032717bea6c9bf2c3607b4df61e63f",
+          "errorBits": "000000002443763f"
+        },
+        {
+          "parametersBits": "18dac5b6259ee63f907b8d262a2becbe0d33de55f0b80d3fe333381ea4a1e63ff02f6cfd63a1d93feaec26dd44a8c9bf5447ba5f4464e63f",
+          "errorBits": "00000000f0497b3f"
+        },
+        {
+          "parametersBits": "6adba38a83a3e63fee5f784c483b16bfa6d5e923a101f4bef7cb68bc86a2e63fe2c6dab969a0d93f2276c9f121a2c9bf7fced617d468e63f",
+          "errorBits": "0000000038986c3f"
+        },
+        {
+          "parametersBits": "47390767eda1e63f7c0f0f8e3ef419bf14f588e8ad1622bfb69cb5015fa2e63f5a97b1bd629ed93f8acf4264c1a5c9bf67275c213965e63f",
+          "errorBits": "000000004832753f"
+        },
+        {
+          "parametersBits": "a19983ec7da1e63f5959c138e1aa18bf337e2936bd6516bf72271ef37da2e63f243ce56da19ed93fd8a2c03f3aa1c9bff5f113e0926de63f",
+          "errorBits": "00000000cc6f763f"
+        },
+        {
+          "parametersBits": "0c75ec3318a2e63fab374f98fbdc10bf7d712c2f5f75e3be7971215939a2e63f44a3a9bfb3a0d93f2e6b4d215da5c9bf1e650a7fcc64e63f",
+          "errorBits": "00000000806d6e3f"
+        },
+        {
+          "parametersBits": "5af41b948ca2e63fca3b684bbb101fbfca691b56bc0212bf87e853e446a3e63fe0e41fa91890d93ff6162a4f6eabc9bf74fab5529166e63f",
+          "errorBits": "00000000b4007c3f"
+        },
+        {
+          "parametersBits": "8283de69b5a1e63fe64d588b0d540ebfd96c0d0dd103f4be5402ba2dfaa1e63fa0baee8a6ea5d93fc855db9dbba1c9bf1cea54259f67e63f",
+          "errorBits": "0000000020096f3f"
+        },
+        {
+          "parametersBits": "9e360a280ba1e63f0877e7e9e4bd193fd0ad928cb4cdf0be531ab6784ea1e63ffe002c87019dd93f02f937823da9c9bf7ff4b1511764e63f",
+          "errorBits": "0000000088b6723f"
+        },
+        {
+          "parametersBits": "6074d98386a1e63f6e1e4474767b063f2d52735a68bd1c3fd37020d8cda1e63f24adb900269fd93feeec322467a5c9bf538f84995d68e63f",
+          "errorBits": "000000003095733f"
+        },
+        {
+          "parametersBits": "d11f3303b1a0e63f4829a575c70a123fd76003a9feb2093f59b549aad29de63f3e7da77f7f9cd93f2a758bc1e8abc9bfdf358edbdd63e63f",
+          "errorBits": "00000000d829793f"
+        },
+        {
+          "parametersBits": "16ee40b309a2e63f6f41f71c357209bfc5d84e9238a7eebe96b3a93f76a3e63f64b0a544969fd93f5fae1e9570a3c9bfdbc5693d0868e63f",
+          "errorBits": "00000000e0116a3f"
+        },
+        {
+          "parametersBits": "bcab3693cca1e63f6e089207290617bfdbc9e0b2534b21bfd5d9c485d5a1e63fd0e7fa6d179ed93f248d65e28fa6c9bfeee8f191d364e63f",
+          "errorBits": "00000000bc51753f"
+        },
+        {
+          "parametersBits": "37c2b00798a1e63f6d4aa84d1166e53e6831ccd4c8d0093f148b89c3cfa1e63fcffb095ce29ed93ffc94bf53b1a5c9bfbae59f177b67e63f",
+          "errorBits": "00000000f8656d3f"
+        },
+        {
+          "parametersBits": "845aec2e70a2e63f5fecb29bc00e26bf32345e4b74ece93ed5e2fdd579a2e63f7892ec48c5a0d93fa0ad6209b6a1c9bfd3112dc9116ae63f",
+          "errorBits": "00000000a43c723f"
+        },
+        {
+          "parametersBits": "8bd133ed16a2e63fcd8412afa7a61abf7ca07ae4f914d63eb4f0abfe2ea2e63f1a6e7c58d49fd93f780098e797a3c9bf7e4a4e2b9368e63f",
+          "errorBits": "00000000089b6a3f"
+        },
+        {
+          "parametersBits": "d6edaa8448a3e63f843ea8c8f0fc19bf6b1dfb8f8d1dc2be78d0d35c9ca3e63fdcc8bfdaf4a5d93f14ae5f89138ac9bff19728c86168e63f",
+          "errorBits": "0000000064be753f"
+        },
+        {
+          "parametersBits": "4f280aee48a1e63f843ea8c8f0fcf9be6b1dfb8f8d1da2bef86014e45da1e63f6a25e369b09cd93fec513e8a4baec9bfc8f2d63ee566e63f",
+          "errorBits": "00000000e8216a3f"
+        },
+        {
+          "parametersBits": "a4b07c8212a2e63f868f1b8df2b100bf4aea11d2a94ef73efb2445ee13a2e63f5ac64272a097d93ff8ae8af64ca6c9bf6c84f1ebf366e63f",
+          "errorBits": "0000000070a7603f"
+        },
+        {
+          "parametersBits": "8eab0518aea1e63fd8803b72a1dcf0bec5e4130deb75f63e6a7b0c12caa1e63f4c0c8f70c399d93fa61a2af9efa2c9bf805b101f646ae63f",
+          "errorBits": "000000006010683f"
+        },
+        {
+          "parametersBits": "7c7c109234a2e63fc31acbfbdfb819bff691b2c2f99d07bfe581370732a2e63f526fc2471e9ad93fc2841f3fd2a1c9bf65b308648a68e63f",
+          "errorBits": "00000000a8bb653f"
+        },
+        {
+          "parametersBits": "05ff605ae99fe63f70250ce95602ddbe04b5b007ba9ff03e6c5093da62a1e63f60d43380ca96d93f3883c0db4aa5c9bf4f9e04551c67e63f",
+          "errorBits": "00000000f0e46c3f"
+        },
+        {
+          "parametersBits": "502493fe9ca2e63f8878fe947f2011bff76506b294b2e5be146df3c33da2e63f420a71eb019ed93f6839472ceca2c9bf734222276668e63f",
+          "errorBits": "0000000040f3633f"
+        },
+        {
+          "parametersBits": "1c45ec457ca1e63fd80561c95e4ff53efea0307ee228ebbeefbcadd0bea1e63fa210d89dda96d93fdc76ffd4a3a3c9bf9644ee645067e63f",
+          "errorBits": "00000000d840673f"
+        },
+        {
+          "parametersBits": "251b7bf058a2e63fa45db15b65e506bfd007dd4f466ce6be15b0959caba2e63faae5dbbf5398d93f640bfed9e495c9bf3dd890ee1c69e63f",
+          "errorBits": "00000000f8ed623f"
+        },
+        {
+          "parametersBits": "f6cf0bcfaea1e63fe83d6245486ef3be5a23dcf82ae6d23ec1ee8c5b59a0e63fc420bbe35a93d93f60805d07e19cc9bffe2e09fe4868e63f",
+          "errorBits": "0000000018ea673f"
+        },
+        {
+          "parametersBits": "52f8919e0aa2e63f1e0447c9fb180bbf934346579e1003bf736c73309ca1e63fda134cfd5897d93f4e7ace82a69bc9bfc5d5f2125365e63f",
+          "errorBits": "0000000070ce613f"
+        },
+        {
+          "parametersBits": "dfbad62224a2e63f33304c8f8ac70ebf787c613faf5100bf051dc72369a3e63fb2fb6d91e59ed93f44eedf975ba1c9bf127baaa79566e63f",
+          "errorBits": "00000000f860673f"
+        },
+        {
+          "parametersBits": "2400e4cd06a2e63fe46b25f4708309bf7e78842f244cf7be7491b831a5a2e63ff64401e6029cd93fcb52bff33ca0c9bf0e28427d0267e63f",
+          "errorBits": "000000000825603f"
+        },
+        {
+          "parametersBits": "053286407ea2e63f709dbe85eabd1ebfbf18b7ea271cf1be23b03b8145a2e63fec638110df9cd93f305b99f79f99c9bfc33894fe7767e63f",
+          "errorBits": "0000000020af663f"
+        },
+        {
+          "parametersBits": "cab6dfc13da2e63fb7e5b8f779b915bfaf66cf3f3a3af0be563318d523a2e63f190fd7f35d9bd93f1be2f2ee209cc9bfb8bb2a186e67e63f",
+          "errorBits": "0000000090175f3f"
+        },
+        {
+          "parametersBits": "4f0b5494c8a1e63f3071312b3733d73e2ccc52264667f93ebad45f3ccea1e63f2cc553bcf699d93f8a8c6c2dd199c9bfa05e3ac5ec65e63f",
+          "errorBits": "00000000e01a463f"
+        },
+        {
+          "parametersBits": "2f132d7723a1e63f8046ff427866ddbe50e9f6c780f9a3be29070ca2a2a1e63fc6a85354eb94d93f80a698401d96c9bf31fcb90a5c65e63f",
+          "errorBits": "0000000078d7633f"
+        },
+        {
+          "parametersBits": "789706d981a1e63fc0558e21b6a3f6beb6b184d75c71c9bea4e0856ac9a1e63f24011bfa3097d93f3a4b84fb5099c9bfc20dd4911e66e63f",
+          "errorBits": "0000000000af563f"
+        },
+        {
+          "parametersBits": "98adda102aa1e63f9c24d1145e73f7bea07e33acc043c03e99f6d228f4a0e63f38d5fa6b469ad93f08799ae51ea4c9bf439a5e4dca63e63f",
+          "errorBits": "00000000786d663f"
+        },
+        {
+          "parametersBits": "c2ff92380da2e63fce2a5fc7771a04bfe41b4562f199dfbeb601a5bf3da2e63f8ea1e36ad098d93fcd26e55c7399c9bfbe484446c867e63f",
+          "errorBits": "000000004060543f"
+        },
+        {
+          "parametersBits": "42400d2179a1e63ff0b642ba141ae6be90f9ecfe51cb023f98d2debd31a2e63f84cf6c72ac9bd93ff85f8756bc9dc9bf029981ee4768e63f",
+          "errorBits": "0000000098e4633f"
+        },
+        {
+          "parametersBits": "4eca303fe6a1e63f866e99225eb405bf95e872834433f3befc45ce93c1a1e63fc44294da6d98d93fb8b3bcf72b9cc9bf9486d6491066e63f",
+          "errorBits": "00000000d0cf543f"
+        },
+        {
+          "parametersBits": "8d219f9764a1e63fc1cf4d4cf65b01bfb538750431ff01bfa16c7d78a2a1e63f20658dad9f9bd93f86e3b4073190c9bfb058c40b6666e63f",
+          "errorBits": "0000000070545e3f"
+        },
+        {
+          "parametersBits": "98db91f341a1e63f88f63dd52ed8e8be6084cd0e20efdb3ec93e4249c7a0e63fda3889e02097d93f32b25859ab91c9bfce79bdc72a66e63f",
+          "errorBits": "00000000706d603f"
+        },
+        {
+          "parametersBits": "01774f97d5a1e63f54f06fa417b004bf31046d455274efbecafc9ab72da2e63fef41a364ca9ad93fa5aa258d989cc9bf7efce08fcc66e63f",
+          "errorBits": "00000000a018543f"
+        },
+        {
+          "parametersBits": "7080913ceda0e63fa669fd7f483a023f007ab3c181ea6c3ebf68e3784ba1e63f1a34c9a99b97d93f9a37588be995c9bf5d66e4059165e63f",
+          "errorBits": "00000000b0c6533f"
+        },
+        {
+          "parametersBits": "cb30ce4ca4a1e63f70ce52dec171d23e5fd5ecd56c1ffe3e0f9c2dfab3a1e63fa2f423383496d93fa22957e17ba3c9bf985f2f355c66e63f",
+          "errorBits": "00000000c83d603f"
+        },
+        {
+          "parametersBits": "5ce5ea8474a1e63fba8a8f54d5e2f8beb89f3451ee76f3be7c78e9d8a6a1e63f000933d0449ad93f0d751dbe0395c9bf6a1a1f966366e63f",
+          "errorBits": "00000000f045503f"
+        },
+        {
+          "parametersBits": "6b63833c83a1e63f266f161c3038e0be75b4389e725fddbe6e53af2783a1e63f707f2f04849bd93fc084b3492199c9bfd91b3567b766e63f",
+          "errorBits": "00000000a021433f"
+        },
+        {
+          "parametersBits": "09ca708c02a1e63fb8ec36dcd3bef63e0e918ffffc20e83e113ba72879a1e63f6ee174e6289bd93fd60e9dd26795c9bf633b726ef566e63f",
+          "errorBits": "00000000103f573f"
+        },
+        {
+          "parametersBits": "3dca8052ada1e63f9c6ad83cd8defabe9c784885a7c4e6be42830479afa1e63f6e6a8c9d1c99d93f80ca74ee7a9ac9bfc873fd924966e63f",
+          "errorBits": "00000000a0a0473f"
+        },
+        {
+          "parametersBits": "273cc02cc0a0e63fb43a4d867b5af73e0004eb21c08c8dbec87f5956d4a0e63f504e7a1bdc9ad93ff4a59dbb6b98c9bff660391ad064e63f",
+          "errorBits": "00000000c081533f"
+        },
+        {
+          "parametersBits": "f46aff8aa8a0e63f7fd43d991a82053f399a96f00a0ce83eb3ce50b081a0e63f0ad66531e798d93fc620ed2a1594c9bfeac96c8a3a65e63f",
+          "errorBits": "000000009044563f"
+        },
+        {
+          "parametersBits": "fe733b548aa1e63f3efe082a1647f4be971cecf73a94e1be4471c8b5c2a1e63ff6e6d397519ad93f2d8897b4779ac9bfd9ef830e6866e63f",
+          "errorBits": "00000000a000443f"
+        },
+        {
+          "parametersBits": "40f0edc7bda1e63fd67e0b48148309bfa5684a177926d9be2c656e0086a1e63f68f24230dc9cd93f68cf155d119cc9bf09f59684b366e63f",
+          "errorBits": "00000000f063583f"
+        },
+        {
+          "parametersBits": "649c685f21a1e63f1cbeec37c52bed3ec933c00cfa78b8beda27c61a5aa1e63faea367cbeb98d93f8e9dc77f7397c9bf080a91a5d965e63f",
+          "errorBits": "00000000c0c5433f"
+        },
+        {
+          "parametersBits": "53e2139d06a2e63febd1aeacb13604bfa9b82eca327cd9be9559175b23a2e63f70a7d5f00d99d93f82154a404899c9bf504fed4ec067e63f",
+          "errorBits": "00000000e03c523f"
+        },
+        {
+          "parametersBits": "c8f8fe00b5a1e63f34ec72a16b7bf8be87e0e6973f58d3be22e3e799cfa1e63f28d17e7b8199d93f9ef91e1f1199c9bfba53c0410467e63f",
+          "errorBits": "00000000e081443f"
+        },
+        {
+          "parametersBits": "ad3e81b164a1e63f843b1daee5b5df3e66cb2c86be0af13ec95a627d5ca1e63f5e010e6d6d99d93f2623a6a2d89dc9bfa981ecba5a66e63f",
+          "errorBits": "000000006015483f"
+        },
+        {
+          "parametersBits": "58a85ba668a1e63f58e1991f91a691be7cc251414da9df3e362244146fa1e63f4643d745a399d93fa0f78369a39bc9bfd927b9f15c66e63f",
+          "errorBits": "0000000000dd353f"
+        },
+        {
+          "parametersBits": "1b50054518a1e63f3754c59ab282f13e14c57dd582f3ec3e6f7d597741a1e63fc094ee18bc9ad93f96dac027b698c9bf9812d6467a66e63f",
+          "errorBits": "0000000080a2463f"
+        },
+        {
+          "parametersBits": "a42e64883da1e63f0b9277933fa9d93ea835cc3e7805e03ee43ec4f75ca1e63f2c0a163a549ad93f91d66d592799c9bfe4eadf196e66e63f",
+          "errorBits": "000000004018393f"
+        },
+        {
+          "parametersBits": "d886ed48d5a0e63fd22947a6e5f7edbe2c7de9edff47fbbee06e3f5702a1e63f70bb5eb0fc99d93f6a9b12632f99c9bf412b3608fc66e63f",
+          "errorBits": "00000000a0ff493f"
+        },
+        {
+          "parametersBits": "316a7ac18ba1e63fdcff0b6ab453a33eac738742e976e83e44bb17439ba1e63fbd825639f899d93f4210d6baa899c9bfc851f9953066e63f",
+          "errorBits": "00000000c043383f"
+        },
+        {
+          "parametersBits": "0e4c4113dda0e63f1237c1ac2477f63e9c55d2811457df3e5de77b05f2a0e63fa0bd4cde939ad93faaeb6fc21a9ac9bf2b5a7711a865e63f",
+          "errorBits": "00000000a0e74a3f"
+        },
+        {
+          "parametersBits": "9a8d8f057fa1e63fc5c6cb1b8f7de9befa4be245aab1babe31e4cc3498a1e63f464c3214c699d93f2136f3875399c9bf5615ae35ad66e63f",
+          "errorBits": "00000000c0f5353f"
+        }
+      ]
+    },
+    {
+      "name": "nonunit-quaternion",
+      "source": [
+        [0.0, 0.0, 0.0],
+        [2.0, 0.0, 0.0],
+        [0.0, 3.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "target": [
+        [0.0, 0.0, 0.0],
+        [2.0, 0.0, 0.0],
+        [0.0, 3.0, 0.0],
+        [0.0, 0.0, 4.0]
+      ],
+      "initial": [2, 0, 0, 1, 0.5, -0.1, 0.2],
+      "budget": 100,
+      "step": 0.004999999888241291,
+      "tolerance": 0.0001,
+      "initialErrorBits": "000000ecffff1b40",
+      "status": 2,
+      "output": [
+        3.528297913551736, -0.676591122932193, -0.07278225068233785,
+        0.21652149843472912, 0.24910119270447822, -0.2405614265039419,
+        0.15732572474636575
+      ],
+      "outputBits": "78ffa941f4390c40f43e386da2a6e5bf2cf0688adba1b2bfdc3b54f9f9b6cb3fd2b807428ce2cf3f9ebbc181b7cacebf30754dd53f23c43f",
+      "errorBits": "0000bef3c88f0f40",
+      "trace": [
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000000ecffff1b40"
+        },
+        {
+          "parametersBits": "000040e17a14004000000000000000000000000000000000000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "0000001c6fe31b40"
+        },
+        {
+          "parametersBits": "0000803d0ad7ff3f00000000000000000000000000000000000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "00000054c71c1c40"
+        },
+        {
+          "parametersBits": "000000000000004000000040e17a743f0000000000000000000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "00008050eb281c40"
+        },
+        {
+          "parametersBits": "000000000000004000000040e17a74bf0000000000000000000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000080e6ffd61b40"
+        },
+        {
+          "parametersBits": "0000000000000040000000000000000000000040e17a743f000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000080d617061c40"
+        },
+        {
+          "parametersBits": "0000000000000040000000000000000000000040e17a74bf000000000000f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "00000021cef91b40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000040e17a14f03f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "0000008ca21c1c40"
+        },
+        {
+          "parametersBits": "0000000000000040000000000000000000000000000000000000803d0ad7ef3f000000000000e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000000844ae31b40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000040e17a14e03f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000000f4ffff1b40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f0000803d0ad7df3f9a9999999999b9bf9a9999999999c93f",
+          "errorBits": "000000f4ffff1b40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000e03f343333355ebab9bf9a9999999999c93f",
+          "errorBits": "0000001906011c40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000e03f000000fed478b9bf9a9999999999c93f",
+          "errorBits": "000000c7f9fe1b40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000e03f9a9999999999b9bf343333355ebac93f",
+          "errorBits": "0000009b18041c40"
+        },
+        {
+          "parametersBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000e03f9a9999999999b9bf000000fed478c93f",
+          "errorBits": "0000005de7fb1b40"
+        },
+        {
+          "parametersBits": "6edb36f7d9050040dbb66ddbdc6757bfdbb66ddbdc6757bf244992114cf4ef3f0000803d0ad7df3fb66ddbda3c90b9bfb66ddbda3c90c93f",
+          "errorBits": "000000d9b5e01b40"
+        },
+        {
+          "parametersBits": "b23eb4f48507004088c6fad0d2175ebf88c6fad0d2175ebf9c829716f4f0ef3f244992114cf4df3fe4ce1212908db9bfe4ce1212908dc93f",
+          "errorBits": "00000087c6d71b40"
+        },
+        {
+          "parametersBits": "c0999e3aac090040a07f333d755863bfa07f333d755863bf80ccc28aa7ecef3f9c829716f4f0df3fe2358dfc40b4b9bf667035a21f8ac93f",
+          "errorBits": "000080f59bcd1b40"
+        },
+        {
+          "parametersBits": "a1e6ed57820e0040713fcddbaf046dbf713fcddbaf046dbfbe322450fbe2ef3fe843e3216ee9df3fd2d0d3fbf6d1b9bfcd5b83a66282c93f",
+          "errorBits": "0000001ef5b41b40"
+        },
+        {
+          "parametersBits": "5c495078d10d004052b692a0f0a26bbf52b692a0f0a26bbf486d5f0f5de4ef3f7471d84481eadf3fea624d0f97a3b9bf82b63d009fadc93f",
+          "errorBits": "0000806e6dbc1b40"
+        },
+        {
+          "parametersBits": "e482f92cc4110040ebe282f92cc471bf9615b1fa5621613f38fa0ca677dcef3f486d5f0f5de4df3f709c37c371a6b9bf2a251ccb9292c93f",
+          "errorBits": "0000801f03ad1b40"
+        },
+        {
+          "parametersBits": "57447643a61a00406054447643a67abf30d004dc7116773f52771379b3caef3fec230f978bd6df3fdc9d06d8ddacb9bff26add630f8fc93f",
+          "errorBits": "00008043b6861b40"
+        },
+        {
+          "parametersBits": "889ab61819feff3fe2b128d2646179bf750b06c60b4655bf98ae5b363dcdef3fb4c063f184d8df3fcce69ff9f2abb9bfd61754e08f8fc93f",
+          "errorBits": "0000001595a81b40"
+        },
+        {
+          "parametersBits": "a0f5d9de4113004011e08762e55080bfe0572c230f5a5bbf5897631b66f3ef3f9cae5b363dcddf3f926a0f1531b1b9bf32ce64abb18cc93f",
+          "errorBits": "000000864a981b40"
+        },
+        {
+          "parametersBits": "4046f6723c1100408e598f24513781bf40851dba4b4b34bfd4f64393e2d5ef3f5c97631b66f3df3f6a4c932df8c3b9bfa61501380b95c93f",
+          "errorBits": "000000091b861b40"
+        },
+        {
+          "parametersBits": "a8fbd5b0ed160040e72a20e97b5c88bfd425af1fc85e303faecd1cd4adc6ef3f84b12a05ca00e03fc43befd6d5ddb9bf9de993667297c93f",
+          "errorBits": "0000006cdf581b40"
+        },
+        {
+          "parametersBits": "b086823df71300407aaa4bb3094486bf4a41d84024c3463f8440407b26cdef3f58c3f6b2efd9df3fea2e2d5394ddb9bf644e5cf48a9ac93f",
+          "errorBits": "00008077c46a1b40"
+        },
+        {
+          "parametersBits": "9459ee8c31210040ff33a5e02c3983bff9efba979beb4ebf90d5574793afef3fdc6886ae5bc3df3f96fcab00f7e4b9bf56b73162c68ec93f",
+          "errorBits": "0000803de14c1b40"
+        },
+        {
+          "parametersBits": "5e866553ca310040fecdf7000bb787bffb33ccb1b43057bf56c003eb5c87ef3f4a9dc98509a5df3f132e35b4a50ababf33c67dc65c89c93f",
+          "errorBits": "000000b13d081b40"
+        },
+        {
+          "parametersBits": "a821a42ea71d00401c6be1711c5b8bbf904bd53c597d683f048070e4a3b0ef3fccbaa95701c5df3fc048f1706bf8b9bfec9e0deb6470c93f",
+          "errorBits": "000040769f331b40"
+        },
+        {
+          "parametersBits": "f50216fa4921004074b13dac786090bf574768f66894743fc619e684a3a3ef3f989cd740acbbdf3fb0212a3808d5b9bf60315d587d96c93f",
+          "errorBits": "0000408a27161b40"
+        },
+        {
+          "parametersBits": "5f19272e883a004030e53b4c758690bfb03fd860d7c9723ffa97b1d97eadef3f32830a8857c4df3f8a1caa27c906babf105821d34a8bc93f",
+          "errorBits": "0000c05aa6f91a40"
+        },
+        {
+          "parametersBits": "6dff0cff455800408bc11458839d95bff820058a84d77e3faa8c5cab9f9def3f70e45dd340badf3f6837af3e3434babf2ef8874c2889c93f",
+          "errorBits": "0000400e92a31a40"
+        },
+        {
+          "parametersBits": "6298dbe40a3a0040c6ef06b6a98e92bf5899ef98da127f3f763ecc1dd46eef3fd0ed809432cadf3f024168aaf926babfd6f6ac5a268dc93f",
+          "errorBits": "0000007d1dc31a40"
+        },
+        {
+          "parametersBits": "1b3d5cae9e3b0040300900a3927397bfe089a80717704b3f62972cef467def3f7844800e5dbddf3f563c1f48304ebabf32cbb8e83c8ac93f",
+          "errorBits": "0000c045ba9c1a40"
+        },
+        {
+          "parametersBits": "7b39cfe31a4c00403b83b78593d89fbff7384b72d29859bf6c2739aa9056ef3fbcd438cac5b0df3f938b2b80d99ebabf517b26abd387c93f",
+          "errorBits": "0000a0fb4a281a40"
+        },
+        {
+          "parametersBits": "909bd3e35752004079e814d822e698bfff9b8873e407753f2a109043f258ef3fbe17d01d36aedf3f7833f822b254babf4e62e1676879c93f",
+          "errorBits": "0000c0bc5e5d1a40"
+        },
+        {
+          "parametersBits": "b62fed355b6000404252be222b7c9bbf43e23ee3c7917c3f90ba66c11040ef3f40d02615c06edf3facffca6b6676babffec476d1eb73c93f",
+          "errorBits": "00001820e6271a40"
+        },
+        {
+          "parametersBits": "bcc978f81185004054b8eadc9091a1bf1a6df0c9da2b853f02b10b38c2fcee3fdc868f1a5625df3fa0e138b6aec2babfaf32e8862862c93f",
+          "errorBits": "0000e09f7eba1940"
+        },
+        {
+          "parametersBits": "e282c9f12d7700408661065d390fa0bfb0f4f00c78f2793fa6f163a4b522ef3f82201424b47ddf3ff24294e59a95babf2ecccd0be896c93f",
+          "errorBits": "0000f01defe01940"
+        },
+        {
+          "parametersBits": "d6331d6d158c004016e658257af5a0bf39a9ac4d5225733fda27c9c3df0aef3fd43f65a05475df3fa6bc797403f0babf888ae71aee70c93f",
+          "errorBits": "0000c0e5b2a61940"
+        },
+        {
+          "parametersBits": "45cca0267bc10040c4ecf50c1958a5bf29da4ef9c66d723fe2ae3ae37dbeee3f74112cd02852df3f208aa112817dbbbf1cb72c7c265ec93f",
+          "errorBits": "00000056f21d1940"
+        },
+        {
+          "parametersBits": "1e320307a3a4004065c9491a7a9fa7bff168cd86f2388a3f507c4d12c2edee3f9cf2b3704974df3f22ef1f815b24bbbff4154205b671c93f",
+          "errorBits": "0000c0f758811940"
+        },
+        {
+          "parametersBits": "99709811d7ba004071a52a36175fa8bfd88444d704ae753fdc0ff3496ae1ee3f74a3e6a09436df3f3ea0b3a36c50bbbf80803d7d1566c93f",
+          "errorBits": "0000404362391940"
+        },
+        {
+          "parametersBits": "764e6a6ac5b80040e43dbfd5c2b7aabf30f5f769364b733f90c28da0d87cee3fd2be3078e720df3fa87e92be6694bbbff45c962b0e60c93f",
+          "errorBits": "000000ed98ec1840"
+        },
+        {
+          "parametersBits": "fbf5182005e900403ad64cb52156b1bf9cbee2b31e0a6b3f825d261b75eced3f002c9aca3ad4de3f482284fe7f44bcbf558f1d1b814bc93f",
+          "errorBits": "000080dda02e1840"
+        },
+        {
+          "parametersBits": "2acc4972c0e90040c7cc5515ef6cafbf89d66d0b75f57a3f74e7f2456259ee3f76da1c5faaeede3f1c5928629101bcbfd848978cb062c93f",
+          "errorBits": "000000bf52921840"
+        },
+        {
+          "parametersBits": "4aa14c2d081d01406f8a0a6bce30b0bf7edc0db8baf58f3f7ce27e796d13ee3f86fa6226a5b4de3f2817f420c31cbcbf8c6a72f7a849c93f",
+          "errorBits": "000000942f441840"
+        },
+        {
+          "parametersBits": "def2c00b582101403e9d89414074b2bfc9842ddf1a36853fec13ee29c6f9ed3f547f30cd44aede3ffec0a615c495bcbf5c22fa908224c93f",
+          "errorBits": "000040e6a9061840"
+        },
+        {
+          "parametersBits": "dbaabc186d7601407bd30c0b92aab7bf010a884b8a54893f1025b36c4e65ed3fbeaebe218d46de3f0500b0add895bdbf744d90d34febc83f",
+          "errorBits": "0000206798361740"
+        },
+        {
+          "parametersBits": "a07e007c6958014038269e4097f3b5bf4ca278815c677c3f04082d5c4fabed3ff24830b4fbc6de3f2274b68b4e37bdbf14e858504d37c93f",
+          "errorBits": "0000bc4bdf721740"
+        },
+        {
+          "parametersBits": "ad5075b3356c0140d68ba3b04ed2b5bf48cc69bf79dd663f56d298bb2e5eed3fdef553718446de3fea1e68e8546dbdbf90ae4e9e0f17c93f",
+          "errorBits": "0080a0431a161740"
+        },
+        {
+          "parametersBits": "f45fae09ffcf014068df628297d3babf781f7c6eae2562bf5a7d3e106596ec3f80f7a3f1a1afdd3fd0360c9cd191bebfdefad46abce9c83f",
+          "errorBits": "000080784d581640"
+        },
+        {
+          "parametersBits": "02329da631a50140926a12f75ea1b9bf5e8417d29cb4803f5ef0512acec2ec3f9a81a0338614de3fac4f129f602fbebf8e8b7efc28ffc83f",
+          "errorBits": "0000a0fd6baa1640"
+        },
+        {
+          "parametersBits": "67f3dc239ddf01401ae88e99f56abfbfa6f25690a778843f30ad7eeeac54ec3fecc55745319edd3f60e7d67c67c7bebf5cff3822f4ebc83f",
+          "errorBits": "000000c4f6701640"
+        },
+        {
+          "parametersBits": "b8fe5de696fd014073afc4e240ddbebf6c2d75d33834823f40f612052726ec3f0cf7c01c8da1dd3f328aa6a2260ebfbf0e3421617dc5c83f",
+          "errorBits": "0000804812271640"
+        },
+        {
+          "parametersBits": "ff17682082870240fec968c75238c3bf7f4e54faf790843fa6fda264890ceb3f5605937bfefadc3f5fd172a1384ac0bfa82966cbe376c83f",
+          "errorBits": "000000d3f2481540"
+        },
+        {
+          "parametersBits": "834bf5b9df310240c7f44e06265fc2bf703eb6a81c415cbf6adeb514b68eeb3fcc47f6b6625ddd3f28c3c676dc1cc0bfacb68ba04ca2c83f",
+          "errorBits": "0000803f42c71540"
+        },
+        {
+          "parametersBits": "420fb117d8c30240a6d114493992c4bfe8428c3e4cba823faa6337719c08eb3fd64290e8b3d2dc3f2d5e9205bd99c0bf8e78db591c70c83f",
+          "errorBits": "0000809d082c1540"
+        },
+        {
+          "parametersBits": "e51b7d9341b10340ec044c80cd85cabf880c56872eb6883fc0e63f1cb096e93f424e8b77f0d1db3fb384ba887bd5c1bf2a6d3af96902c83f",
+          "errorBits": "0000006a68811440"
+        },
+        {
+          "parametersBits": "d44536301f0003400401d99ea3b4c6bf5289c434b9937c3f38d4a38b4b1fea3f44de81a4a607dc3f904acb3f490cc1bfd4454e300f2cc83f",
+          "errorBits": "00008023deb91440"
+        },
+        {
+          "parametersBits": "50212f9a975203400ab194ae64f4c8bf00a0ed728613c63e14a0abf1dd75e93f30cf4f5cd3e3db3fec993828fa81c1bf229528ec6741c83f",
+          "errorBits": "0000009cdf751440"
+        },
+        {
+          "parametersBits": "895ce8daac400440b0d41b83f283cfbf737d52a2665079bf96dd27b4257ee73f685f987976b2da3fe1e6e81081ddc2bff9b874f873ecc73f",
+          "errorBits": "0000002c72af1340"
+        },
+        {
+          "parametersBits": "2b5df68888e20340e6c9bb3ac850cdbf003b7599c1d21e3f68cf00800997e83f22174715681edb3fd3f1ebaf2849c2bf723fa5e611dfc73f",
+          "errorBits": "000000813a261440"
+        },
+        {
+          "parametersBits": "d970e2ba3b3b04406211319b374fcebf520c0959399c72bf38d31d538ef3e73f70c5f83ef1ddda3f04ca0986fdd0c2bf3c7077d473a5c73f",
+          "errorBits": "000000a159bf1340"
+        },
+        {
+          "parametersBits": "4452fb99c6fb0440647d63295eb7d2bf1dc55f3e63ae7c3f4e890b69bd5ee63f20aa7b164efed93f9f2f708617eec3bf44967785044bc73f",
+          "errorBits": "000080354d781340"
+        },
+        {
+          "parametersBits": "6bcb2162aa9106402ae0c84d9ab8d8bfc457973c80c7873f490f7295e942e33f7183e728a425d83fbb39a5e2ae40c6bff8e3c892a87bc63f",
+          "errorBits": "0000000a3f9a1240"
+        },
+        {
+          "parametersBits": "1c420aacd6d905405eb3b940fcacd4bf16d0b41d8623853f547feead9f07e53f96d89228e9d2d83f073c386a3bdbc4bfb0791bde20f5c63f",
+          "errorBits": "000040c9a0d01240"
+        },
+        {
+          "parametersBits": "a78133db27770640b8039cb1c669d7bf60c01ecfaf5d56bfb8a9849789d1e33fd4323f4c4705d83f4a4c320be0fbc5bffef8bd0152b2c63f",
+          "errorBits": "00000016177b1240"
+        },
+        {
+          "parametersBits": "7b3699b8fa6e084013d38f589550debfa2d6ffe719f47cbfc17ff5b00934e03f924995b46b8ad53fbf0912c0b3d4c8bfa9e0e91c09d0c53f",
+          "errorBits": "00000063ac881140"
+        },
+        {
+          "parametersBits": "704fef16ee8b0740a9b65bff8c16dbbff8015cc150f262bf4c4de4e846e9e13f46e65503fc1dd73fba09ee6c1273c7bfc6764b979250c63f",
+          "errorBits": "000000987ff61140"
+        },
+        {
+          "parametersBits": "3dd136d9b3f40740c48cb1204c21ddbfa7f0e99ad49287bf1458c0925640e03f247dcf7cb5fbd53f4d63c4899d44c8bf549b3f6943fec53f",
+          "errorBits": "00000026787e1140"
+        },
+        {
+          "parametersBits": "e9ab13fc6c160a40f5a87b683f88e2bf9ff70416abdb97bf7e21019c532ad73f959471ff9710d33f9952498a2e7ccbbf6b32422130fcc43f",
+          "errorBits": "0000805331eb1040"
+        },
+        {
+          "parametersBits": "2e140fe01b890940b5e41be95811e1bf92191e6d029c79bf02bbfe653111db3facfc68fd2662d43f8b7f647ccd71cabfe5e9938c7f4ec53f",
+          "errorBits": "000080ad8d251140"
+        },
+        {
+          "parametersBits": "73c12f945fb40a40cc0983c8e487e3bfa85321b9dc0861bffc266aad2d64d63fba82200a64c8d23fa6b6a9ecea17ccbf9349a565fcdcc43f",
+          "errorBits": "0000001092261140"
+        },
+        {
+          "parametersBits": "2a17f55fd8860c404b3a0763f88ee6bf181e380578e2473f327a14ff1a48d03fb4a95e1dfeb0d03f25d54a0e61aecebf262a483c23b6c33f",
+          "errorBits": "000040f58ee91040"
+        },
+        {
+          "parametersBits": "3dba3d11f7541040db5c2744f6e5edbf5dc423d2a922713fc036db4e59c08d3fb69d83de8360c73f22e67d86684bd2bfbce231defa9ac13f",
+          "errorBits": "000000978c031440"
+        },
+        {
+          "parametersBits": "9ab7f12ff8d50c4018df58ad5097e7bf102d533244f592bf708f09e25dafcb3ffbd979fdb53dd03fe5f449bf437fcfbfb752f74c09c0c33f",
+          "errorBits": "000010545eff1040"
+        },
+        {
+          "parametersBits": "a1283ad983e80d4020d6845ff0c6e8bf76d3f1a18b179dbf6cf90d6cd8a7c43f226b79e16d51cd3f0c048667fd5ed0bf5c9a323b9d71c33f",
+          "errorBits": "00002012c5081140"
+        },
+        {
+          "parametersBits": "3e0782808fbf0e4087b2af4695cdeabf889a456e267896bf98e0f565c4f9b63f5af7fb21728bca3ff7e465b0a319d1bfb911f240b6cac23f",
+          "errorBits": "0000802158701240"
+        },
+        {
+          "parametersBits": "64fd5371d658094021516e31dadbe0bf461bc8b604937dbffcd1b5a3864ddc3fa0ebbf46eba7d43fc779e5a91f23cabf821db5811b6fc53f",
+          "errorBits": "000000ee6d541140"
+        },
+        {
+          "parametersBits": "9a7d0def531f0e405a9d204003ade9bf7405a4f6c3a491bf50f40a4c0df3bf3fecb1dec92431cd3f3e87cd4c9998d0bfa79444218e2fc33f",
+          "errorBits": "0000c01e12e91140"
+        },
+        {
+          "parametersBits": "4248360611db09407e163ed178c9e1bf37f351b2ebad83bfe6ee305e3f4dda3f6bcdab60f5cdd33fee4a7476d3ebcabfa88d005eea27c53f",
+          "errorBits": "000000da5a331140"
+        },
+        {
+          "parametersBits": "14cc6e85ad5a0d409649a3e8573de8bf86f013bdf32f92bf0478481fe509c73ffc3710229979ce3f657f8a500f0ed0bfd877b38d247cc33f",
+          "errorBits": "0000c0f796121140"
+        },
+        {
+          "parametersBits": "e0a69c8256d80d40f7dbcbe1af27e9bfda6872c0502092bff8d701a2fe97c23f020f249c6d91cd3f8230a3027767d0bf53b8bf2c1d49c33f",
+          "errorBits": "000020d1407c1140"
+        },
+        {
+          "parametersBits": "eadf4f6562da0a40dc87619506a1e3bfd6aaf62599d287bf2ceee45aef0cd63ff05b05bca58cd23f74d0281a9a64ccbf5358b01137b0c43f",
+          "errorBits": "000080f2f4001140"
+        },
+        {
+          "parametersBits": "62366330e4090d40f79e0f257270e7bfda6822b8a6a19cbf5647438b4738ca3ff4fbe1ae6c7acf3f646a7e77bfb8cfbf9e00d57a4087c33f",
+          "errorBits": "0000a0024bb61040"
+        },
+        {
+          "parametersBits": "daf07c7ea6340e408ee955d3b864e9bf06c45024f6f0a4bf06c47aa33df0c03f367732fc3e6fcc3f226274de94c4d0bf24dc6c8562dcc23f",
+          "errorBits": "000040924c741140"
+        },
+        {
+          "parametersBits": "48a4092061350f40d61d2a3a05b9ebbf0c296205a8b59ebf7848a5ea02c9b13fce0831d7819fc93f27a92e736c70d1bfca66d44eab93c23f",
+          "errorBits": "0000801067e61240"
+        },
+        {
+          "parametersBits": "34b80d302df40a40fd725ffd43bbe3bf1d5e9ceb54f588bfc960293b7569d53f9adef4788d7dd23f3cb4e256908dccbf1e09247dca9fc43f",
+          "errorBits": "000000be3eea1040"
+        },
+        {
+          "parametersBits": "007920193db40a40823246ae4943e3bfa487ef3c324b91bf3200739d12d2d63f1d78185109e3d23fc4bd301a5f32ccbfa194f9485ab9c43f",
+          "errorBits": "000000b93ffc1040"
+        },
+        {
+          "parametersBits": "d60ee069093c09403677c0045d26e1bf80c13efe2a2568bf7e4078cbda94db3ffdcceb0c5bacd43fa67ad64a0d44cabf0c9545568521c53f",
+          "errorBits": "00000008617d1140"
+        },
+        {
+          "parametersBits": "2ea2633d65bd0c4066bed388cbdee6bfa4546711d29296bf509bc6b64f48cd3f6c7bc8f79f29d03fbca4fe6d7f1fcfbf0859f74197ddc33f",
+          "errorBits": "000030bc0d9a1040"
+        },
+        {
+          "parametersBits": "c6fccfad2bd40c40a3f928825a39e7bf4ce84a6ec13e97bfe866a196cf7bcb3f2e54b652d819d03feeee3f3c1d65cfbf238eb7d6bda6c33f",
+          "errorBits": "0000700c73bc1040"
+        },
+        {
+          "parametersBits": "4814495012d80a40fda991cb3728e3bf9221cc4d5b6c91bfd441b4bccaebd53fc466e5bb885ed23fee1165dffa42ccbf2780a779b18fc43f",
+          "errorBits": "0000006c99a91040"
+        },
+        {
+          "parametersBits": "407f4a520a040d40000b03d38274e7bff9f2b7b5e61f93bf5a81fa56375fc93fa419de9fb326cf3fae851f4f9e94cfbf8781fb66798ac33f",
+          "errorBits": "0000806a3ec41040"
+        },
+        {
+          "parametersBits": "70f6666307780e4091b0cf5ba097e9bf9c953d826b6a86bfba9900f5b9b1c23fb2b7bc9529cdcc3fb87f7d422ebbd0bf34b19ea201dec23f",
+          "errorBits": "0000b0ee386f1140"
+        },
+        {
+          "parametersBits": "8a7ee895d32e0b40dcaa50a5174ce4bf6b6ccbc00db294bf56eca0f3f5b5d33f66c64c3217e6d13fcfbdf508bafaccbf1e529981a474c43f",
+          "errorBits": "0000002a68c91040"
+        },
+        {
+          "parametersBits": "6047620309ab0d40366455d2fc8de8bf0eee9d2d2eef98bfbe2162b29b3ac53f44f10ce8b19ccd3f2087339a1542d0bf5cef0248132ec33f",
+          "errorBits": "000060a0b00b1140"
+        },
+        {
+          "parametersBits": "ffdbe224e4a10b404bef9c32f2efe4bf9c3d84c7962f8fbfce4cab626bb6d23f1c45b957c091d13fbdca430e378bcdbfaec2dbaf5c43c43f",
+          "errorBits": "0000804679c71040"
+        },
+        {
+          "parametersBits": "f0b27579f3d60b40e962d85eb443e5bfd8c535c9036aa5bf59a195e87570d03f5bb5ffcd1fdbd03fccc5b3ea2910cebf0c439b171440c43f",
+          "errorBits": "0000803cfd581040"
+        },
+        {
+          "parametersBits": "d2003606017f0b4038f7c05c129ee4bf808ced4e6527b0bfed34565da384d03f2f3b50a630f0d03f203ee8580ec1cdbf7ecf44850c85c43f",
+          "errorBits": "000030ba500e1040"
+        },
+        {
+          "parametersBits": "1203bdace0450d40bb2cf850019ee7bfd226b8f5aaf7a0bfbe3e0c492b32c83f7a4f6eb489bfce3fce0105507bfccfbf0b8856d34286c33f",
+          "errorBits": "0000807abaa71040"
+        },
+        {
+          "parametersBits": "eef90020cf4a0d4049d57c152bbee7bfe4f8e7c99623a6bfd8632bb5a169c63f90d3016b1527ce3f04f02d0a520fd0bfe14f80418381c33f",
+          "errorBits": "000080c444a21040"
+        },
+        {
+          "parametersBits": "dcc25f2de1fc0b40cdcecbf5a54ee5bf35335eae6ef7a7bfb270389f66cfd03f316199ec6cedd03f30d16c30ac3ccebfb339f411d737c43f",
+          "errorBits": "000000eaf4531040"
+        },
+        {
+          "parametersBits": "ca34bad13cef0b403766d4b09afde4bf6a8149bde06ea9bfb3a182e087a1d03fd6af800362a3d03f705fa2ad7a17cebf41a7928e0745c43f",
+          "errorBits": "00004056bc181040"
+        },
+        {
+          "parametersBits": "e0431b34c2680b40198c4a116a13e4bfd844497d96eaa9bf34430437d644d23f6f5d8154c741d13f924eb738a04ccdbf19d286cbbd9ac43f",
+          "errorBits": "00008075da1c1040"
+        },
+        {
+          "parametersBits": "da0596e7eac30d403ee6215ad79ee8bfd28491a5d137b2bf50265aea1bd4c03f40764e37329ecc3f76ee2a752587d0bf1fb318e47495c33f",
+          "errorBits": "0000403010151140"
+        },
+        {
+          "parametersBits": "ac501c7608930b400eb935afdf85e4bfff9dea1f16499fbf2976d28a5b8bd23fdbdbd5d3ac5ad13fae4421e2ce75cdbfe5cc43542251c43f",
+          "errorBits": "00000018c5701040"
+        },
+        {
+          "parametersBits": "a808abc4ded90a402cb03a14bb46e3bf16ff867141cdabbf20bcdebc4414d43fc1f6cb8db1ded13fde6d99ec069cccbf78e38841dad8c43f",
+          "errorBits": "0000a015a4391040"
+        },
+        {
+          "parametersBits": "0216738062220a40b86a3506dfdfe1bf7f9c845f863fa8bf58e39a108681d73f91814ef03ff7d23fe02554f81e79cbbfcf45cfaeb23fc53f",
+          "errorBits": "000040d214681040"
+        },
+        {
+          "parametersBits": "2621a75139f10940d8b28c6dd651e1bfb3bc5541de66b3bf87bb011f939ad63f655f76d033aed23ff03ca5a14c6dcbbf05ee9516cb48c53f",
+          "errorBits": "0000c0859f141040"
+        },
+        {
+          "parametersBits": "1465a85736a40a406ab68c7d76c0e2bffe14184e5488b4bf47827bbe4adcd33f1e4972f328ded13f102d5fad4582ccbf7c3af384021cc53f",
+          "errorBits": "0000c08bcb1c1040"
+        },
+        {
+          "parametersBits": "78ffa941f4390c40f43e386da2a6e5bf2cf0688adba1b2bfdc3b54f9f9b6cb3fd2b807428ce2cf3f9ebbc181b7cacebf30754dd53f23c43f",
+          "errorBits": "0000bef3c88f0f40"
+        },
+        {
+          "parametersBits": "32744522bd450d4011a9b920048ae7bf2241bcb7e7e2b5bf707663e5f010c23faa13bd7292dccc3f3f433ce3c139d0bfe08c8c680695c33f",
+          "errorBits": "0000502dfd901040"
+        },
+        {
+          "parametersBits": "14ad1bbfe8700a40c7b1770dff50e2bfd6cf55df3aacb4bfa7e6e3d1a2b5d33fb68d200f0eb3d13f02c19ccebf2fccbf2849d4603925c53f",
+          "errorBits": "00008070a5df0f40"
+        }
+      ]
+    }
+  ]
+}

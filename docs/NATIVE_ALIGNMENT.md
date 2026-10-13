@@ -147,3 +147,41 @@ source image digest as the preceding captures. Frame assembly Evidence is
 `ev_a6eab1c05f14382f2488c5fe491bc42913427bcbe4b226282d440edd75a2863b`;
 triplet assembly Evidence is
 `ev_420e7d618af86d93999ffb6950e15d8b1ff51f3e5f0576f18420079b8475c3b8`.
+
+## Connected paired-point refinement
+
+`src/scan-native-alignment-refinement.ts` connects the recovered seven-parameter
+optimizer to the original paired-point objective. Point coordinates are rounded
+to Float32 once at the input boundary; optimization retains double parameters.
+The trace observer receives a copy, and cancellation is checked between objective
+evaluations. The returned error is the ordered L1 objective, not RMS.
+
+Four executions of the original callback and optimizer capture all 544 objective
+evaluations. Tests match every parameter and error double byte at every call,
+final parameters, error and termination status. Cases include translation, a
+quarter turn, a known pose and a non-unit quaternion. The source remains immutable.
+References are in `tests/fixtures/alignment-paired-native.json`. Callback REA
+Evidence is `ev_43f65ecd6567ac1ec2ba22bac119f03f0842a893be403ee35fc10fd946c2349b`.
+
+The matrix wrapper `0x140aadba0` is separately executed on fifteen combinations
+of five initial poses and three target sets. The gate includes negative-trace
+half turns about all three axes and compares the original matrix-to-quaternion
+helper and final matrix bytes. It executes the original parameter constructor
+`0x1401a76f0`, optimizer, callback and numerical helpers with optional RMS output
+disabled. References are in `tests/fixtures/alignment-refinement-matrix-native.json`.
+Wrapper REA Evidence is
+`ev_bcd23f9c5f0845ab64e0779210dac5712c693db4e2682d3dbe2c2388ee9fdea2`;
+quaternion extraction Evidence is
+`ev_eab8c19d8f9256b9c7f0f80f3e1fced2d52415f066b8e0ccff7ceb9bc03e26c9`.
+
+An earlier capture adapter omitted the parameter record's dimension at offset
+0x18 and produced invalid unchanged-matrix references. Those references were
+replaced after restoring execution of the original constructor. The corrected
+fifteen captures all match the port; tolerances were not relaxed.
+
+The probes retain supplied point storage, vector allocation/copy, CRT and
+security-cookie adapters. Numerical instructions are not substituted. Both mapped
+allocations are released and the processes exit. These are component captures,
+not native UI exports or allocator/scheduler parity. N-point candidate enumeration,
+RMS ranking, outer registration and mesh/CAD refinement remain unverified. The
+new solver component is not yet wired into the application Align UI.
