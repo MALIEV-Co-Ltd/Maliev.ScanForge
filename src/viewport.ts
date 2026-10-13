@@ -524,6 +524,7 @@ export class Viewport {
     const navigating = this.navigationPivot.active(now);
     const pivot = this.navigationPivot.point.clone().project(this.camera);
     this.pivotMarker.hidden =
+      this.mouseOrbitPointer !== undefined ||
       !navigating ||
       pivot.z < -1 ||
       pivot.z > 1 ||
@@ -574,15 +575,18 @@ export class Viewport {
     );
     if (this.beginSketchDrag(event)) return;
     if (
-      event.button === 1 &&
-      this.controls.mouseButtons.MIDDLE === THREE.MOUSE.ROTATE &&
+      ((event.button === 0 &&
+        this.controls.mouseButtons.LEFT === THREE.MOUSE.ROTATE) ||
+        (event.button === 1 &&
+          this.controls.mouseButtons.MIDDLE === THREE.MOUSE.ROTATE)) &&
       this.controls.enabled &&
       !this.controls.noRotate
     ) {
       this.cancelViewTransition();
       // Pick once at button-down, then preserve the world-space pivot until
       // release. Empty space retains the last surface pivot (or old target).
-      const surface = this.navigationSurfacePoint();
+      const surface =
+        this.navigationSurfacePoint() ?? this.navigationSurfacePoint(true);
       if (surface) this.mouseOrbitPivot = surface.clone();
       this.mouseOrbitPointer = event.pointerId;
     }

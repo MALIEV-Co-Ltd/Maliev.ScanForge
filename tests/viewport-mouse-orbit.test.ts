@@ -62,6 +62,74 @@ const down = (overrides = {}) => ({
 });
 
 it.each([false, true])(
+  "captures a stable surface pivot for ordinary left-drag (ortho: %s)",
+  (ortho) => {
+    const { view, camera, target, controls } = fixture(ortho);
+    const before = camera.position.clone();
+    view.pointerDown(down({ button: 0 }));
+    expect(view.mouseOrbitPointer).toBe(7);
+    expect(view.mouseOrbitPivot.x).toBeGreaterThan(1);
+    expect(camera.position.equals(before)).toBe(true);
+    expect(target.toArray()).toEqual([0, 0, 0]);
+    view.navigationCursor = { clientX: 20, clientY: 20 };
+    const pivot = view.mouseOrbitPivot.clone();
+    const screen = pivot.clone().project(camera);
+    controls.update.mockImplementation(() => {
+      const rotation = new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        0.2,
+      );
+      camera.position.sub(target).applyQuaternion(rotation).add(target);
+      camera.lookAt(target);
+      camera.updateMatrixWorld();
+    });
+    view.updateControls();
+    expect(camera.position.equals(before)).toBe(false);
+    expect(pivot.clone().project(camera).distanceTo(screen)).toBeLessThan(
+      1e-10,
+    );
+    expect(view.mouseOrbitPivot.equals(pivot)).toBe(true);
+    view.pointerUp({ pointerId: 7 });
+    expect(view.mouseOrbitPointer).toBeUndefined();
+  },
+);
+
+it("uses the view-center surface for left-drag starting in empty space", () => {
+  const { view, mesh } = fixture();
+  mesh.scale.setScalar(0.3);
+  view.pointerDown(down({ button: 0, clientX: 199, clientY: 1 }));
+  expect(view.mouseOrbitPivot.x).toBeCloseTo(0);
+  expect(view.mouseOrbitPivot.y).toBeCloseTo(0);
+  expect(view.mouseOrbitPivot.z).toBeCloseTo(0.3);
+});
+
+it.each([{ ctrlKey: true }, { shiftKey: true }, { metaKey: true }])(
+  "leaves modified left-drag pan and zoom alone %o",
+  (modifiers) => {
+    const { view } = fixture();
+    view.pointerDown(down({ button: 0, ...modifiers }));
+    expect(view.mouseOrbitPointer).toBeUndefined();
+  },
+);
+
+it("does not capture an orbit pivot for left-drag mesh selection", () => {
+  const { view } = fixture();
+  view.brushing = true;
+  view.pointerDown(down({ button: 0 }));
+  expect(view.mouseOrbitPointer).toBeUndefined();
+});
+
+it("hides the SpaceMouse marker during mouse orbit, even if its gesture is still active", () => {
+  const { view } = fixture();
+  view.navigationPivot = { active: () => true, point: new THREE.Vector3() };
+  view.pivotMarker = { hidden: false, style: {} };
+  view.container = { clientWidth: 200, clientHeight: 200 };
+  view.pointerDown(down({ button: 0 }));
+  view.updateNavigationPivotMarker(0);
+  expect(view.pivotMarker.hidden).toBe(true);
+});
+
+it.each([false, true])(
   "picks the visible mesh at middle-down without a camera jump (ortho: %s)",
   (ortho) => {
     const { view, camera, target, mesh } = fixture(ortho);
