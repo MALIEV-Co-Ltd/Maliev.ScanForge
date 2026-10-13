@@ -2,7 +2,9 @@
 
 This investigation supplies a recovered facet-validation primitive. It does not
 yet enable native surface refinement for STL imports. The optimized binary
-reader's connectivity and vertex ordering still need original execution checks.
+reader's complete connectivity still needs an original execution check. Its
+coordinate keys, hash and map iteration order now have direct execution captures
+and a matching port.
 GUI and MCP currently share the existing STL import path; neither interface
 advertises this incomplete native importer as verified.
 
@@ -52,3 +54,36 @@ the original results.
 The owner's STL examples contain 273,139, 2,547,405 and 3,326,910 facets. The PLY
 examples have different counts and digests. Their previously verified alignment
 captures therefore cannot certify these STL imports or their alignment outputs.
+
+## Optimized vertex table
+
+`scan-native-stl-vertices.ts` preserves the optimized reader's coordinate-key and
+unordered-table behavior. It is an internal reconstruction component; it is not
+yet connected to GUI or MCP imports, and does not enable STL fine alignment.
+
+The original `0x1408c6d40` converts each Float32 coordinate to double, multiplies
+by one million, then calls Windows UCRT `llround`. This is a coordinate key,
+rather than the fallback's distance-based insertion tolerance. Out-of-range CRT
+results are also captured, including zero outside the signed 64-bit range and
+the signed minimum at its endpoint.
+
+`0x1408ca030` hashes the little-endian signed 64-bit bytes of each key using
+FNV-1a, then combines them as `xHash XOR (yHash << 1) XOR (zHash << 2)` modulo
+64 bits. `0x1408c9d80` retains the first value for equal keys, appends new hash
+buckets, and prepends collisions inside an existing bucket. Rehashing reinserts
+the existing iteration sequence. Bucket counts grow from 8 to 64 to 512, then
+double. The linked-list port preserves this order without repeated array shifts.
+
+REA evidence includes hash extraction
+`ev_6037fdec49d5a6fe6b5f94f6561e34075315be4bcfb54bf67a08a9b3ba6f740a`,
+insertion extraction
+`ev_fc4185def6fe21d23fb5141e44a0c88914d2a025cba11d0e318f1c025ca3abb1`,
+and rehash extraction
+`ev_8cc80d7c22bb899509099bccee7efdcf9f2bc3bb5d6c991fdc04b7f33537ff21`.
+The fixtures capture original loaded-image execution, not additional REA
+Evidence IDs: 10 coordinate cases, 420 hash outputs, and 653 insertion steps with
+63 sequence checkpoints including all three growth transitions. Allocation is
+intercepted in the table probe; the original hash, insertion and rehash code run.
+These captures do not execute the complete optimized reader or its facet
+construction. Spatial bucket assignment and full-mesh connectivity remain to be
+verified before either shared application import interface uses this component.
