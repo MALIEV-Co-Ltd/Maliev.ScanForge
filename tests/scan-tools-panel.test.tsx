@@ -28,7 +28,8 @@ it.each(["scaleMesh", "mirrorMesh"] as const)(
           onClose={() => {}}
         />,
       );
-    expect(panel(false)).toContain('disabled="">Accept');
+    expect(panel(false)).toContain(">Preview</button>");
+    expect(panel(false)).not.toContain(">Accept</button>");
     expect(panel(true)).not.toContain('disabled="">Accept');
     expect(panel(true)).toContain('aria-label="Preview"');
     expect(panel(true)).toContain(">Cancel</button>");
@@ -53,7 +54,8 @@ it.each(["reduceNoise"] as const)(
           onClose={() => {}}
         />,
       );
-    expect(panel(false)).toContain('disabled="">Accept');
+    expect(panel(false)).toContain(">Preview</button>");
+    expect(panel(false)).not.toContain(">Accept</button>");
     expect(panel(false)).toContain('type="checkbox" disabled=""/>Measure');
     expect(panel(false)).toContain('aria-label="Preview"');
     expect(panel(true)).not.toContain('disabled="">Accept');
@@ -218,6 +220,19 @@ it.each([
     expect(footer.indexOf('aria-label="Preview"')).toBeLessThan(
       footer.indexOf(">Cancel</button>"),
     );
-    expect(footer).toContain("lucide-binoculars");
+    expect(footer).toContain("lucide-search");
   } else expect(footer).toContain(">Apply</button>");
+});
+
+it("reports a clear triangle count without repeating the selected filename and groups comparison settings", () => {
+  const html = render("reducePolygons", {
+    ...mesh,
+    name: "private-file-name.stl",
+  });
+  expect(html).not.toContain("private-file-name.stl");
+  expect(html).toContain("Triangles</span><strong>10</strong>");
+  const comparison = html.slice(
+    html.indexOf('aria-label="Deviation comparison"'),
+  );
+  expect(comparison).toContain("Comparison tolerance (mm)");
 });

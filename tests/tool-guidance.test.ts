@@ -86,7 +86,10 @@ it("describes measurement, section position, and parameters without claiming non
   ).toContain("X section · 12.5 mm");
   expect(
     activeToolGuidance({ ...base, parameterTool: "Reduce noise" }),
-  ).toContain("Reduce noise:");
+  ).toContain("Preview checks result · Accept completes");
+  expect(
+    activeToolGuidance({ ...base, parameterTool: "Flip normals" }),
+  ).toContain("Apply completes");
   expect(
     activeToolGuidance({ ...base, previewAuthoring: "surface" }),
   ).toContain("Adjust surface settings in panel");

@@ -296,6 +296,8 @@ export function ScanToolsPanel({
         "Select a fitted cylinder with a valid radius and enter a finite angle.";
   }
   const blocked = disabled || busy || !!problem;
+  const readyToAccept =
+    previewReady && (tool !== "reducePolygons" || !!comparison?.statistics);
   function apply() {
     if (blocked) return;
     switch (tool) {
@@ -365,12 +367,16 @@ export function ScanToolsPanel({
         </button>
       </header>
       <div className="tool-panel-content">
-        <p className="scan-tools-summary">
-          {selected
-            ? `${selected.name} · ${count.toLocaleString()} triangles`
-            : "No mesh selected"}
-        </p>
-        <fieldset disabled={busy || disabled}>
+        {selected && (
+          <div className="scan-tools-summary">
+            <span>Triangles</span>
+            <strong>{count.toLocaleString()}</strong>
+          </div>
+        )}
+        <fieldset
+          disabled={busy || disabled}
+          onChange={() => onInvalidatePreview?.()}
+        >
           {tool === "reducePolygons" && (
             <>
               <label>
@@ -412,15 +418,6 @@ export function ScanToolsPanel({
                   onChange={setDeviation}
                 />
               )}
-              {mode !== "deviation" && (
-                <Field
-                  label="Comparison tolerance (mm)"
-                  value={deviation}
-                  min={0.001}
-                  step={0.01}
-                  onChange={setDeviation}
-                />
-              )}
             </>
           )}
           {tool === "reduceNoise" && (
@@ -453,7 +450,10 @@ export function ScanToolsPanel({
                   type="checkbox"
                   checked={measureDeviation}
                   disabled={!!onAccept && !previewReady}
-                  onChange={(e) => changeComparison(e.target.checked)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    changeComparison(e.target.checked);
+                  }}
                 />
                 Measure deviation from original
               </label>
@@ -511,7 +511,10 @@ export function ScanToolsPanel({
                 <input
                   type="checkbox"
                   checked={createNewObject}
-                  onChange={(event) => setCreateNewObject(event.target.checked)}
+                  onChange={(event) => {
+                    event.stopPropagation();
+                    setCreateNewObject(event.target.checked);
+                  }}
                 />
                 Create new object
               </label>
@@ -574,7 +577,10 @@ export function ScanToolsPanel({
                 <input
                   type="checkbox"
                   checked={createNewObject}
-                  onChange={(event) => setCreateNewObject(event.target.checked)}
+                  onChange={(event) => {
+                    event.stopPropagation();
+                    setCreateNewObject(event.target.checked);
+                  }}
                 />
                 Create new object
               </label>
@@ -678,9 +684,6 @@ export function ScanToolsPanel({
           progress && <p role="status">{progress}</p>
         )}
         {result && tool !== "reducePolygons" && <p role="status">{result}</p>}
-        {tool === "reducePolygons" && comparison?.statistics && (
-          <ReductionResults statistics={comparison.statistics} />
-        )}
         {onCompare && tool !== "reducePolygons" && measureDeviation && (
           <button
             disabled={
@@ -701,14 +704,40 @@ export function ScanToolsPanel({
             onToggle={onToggleComparison}
           />
         )}
-        {tool === "reducePolygons" && comparison && onToggleComparison && (
-          <button
-            aria-pressed={comparison.visible}
-            onClick={onToggleComparison}
-          >
-            {comparison.visible ? "Show reduced mesh" : "Show deviation"}
-          </button>
-        )}
+        {tool === "reducePolygons" &&
+          (mode !== "deviation" || comparison?.statistics) && (
+            <section
+              className="scan-tools-deviation"
+              aria-label="Deviation comparison"
+            >
+              <h4>Deviation comparison</h4>
+              {mode !== "deviation" && (
+                <fieldset
+                  disabled={busy || disabled}
+                  onChange={() => onInvalidatePreview?.()}
+                >
+                  <Field
+                    label="Comparison tolerance (mm)"
+                    value={deviation}
+                    min={0.001}
+                    step={0.01}
+                    onChange={setDeviation}
+                  />
+                </fieldset>
+              )}
+              {comparison?.statistics && (
+                <ReductionResults statistics={comparison.statistics} />
+              )}
+              {comparison && onToggleComparison && (
+                <button
+                  aria-pressed={comparison.visible}
+                  onClick={onToggleComparison}
+                >
+                  {comparison.visible ? "Show reduced mesh" : "Show deviation"}
+                </button>
+              )}
+            </section>
+          )}
       </div>
       <footer className="tool-panel-actions">
         {onAccept && <PreviewButton disabled={blocked} onClick={apply} />}
@@ -724,20 +753,18 @@ export function ScanToolsPanel({
         )}
         {onAccept && (
           <button
-            disabled={
-              busy ||
-              !previewReady ||
-              (tool === "reducePolygons" && !comparison?.statistics)
-            }
+            disabled={blocked}
             onClick={() =>
-              onAccept(
-                tool === "scaleMesh" || tool === "mirrorMesh"
-                  ? { createNewObject }
-                  : undefined,
-              )
+              readyToAccept
+                ? onAccept(
+                    tool === "scaleMesh" || tool === "mirrorMesh"
+                      ? { createNewObject }
+                      : undefined,
+                  )
+                : apply()
             }
           >
-            Accept
+            {readyToAccept ? "Accept" : "Preview"}
           </button>
         )}
       </footer>

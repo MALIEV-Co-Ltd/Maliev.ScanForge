@@ -70,7 +70,16 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
     return `Left-click two surface points measures distance · Next click starts new measurement · ${menu} · ${navigation}`;
   if (context.mode === "section")
     return `${context.sectionAxis ?? "Z"} section · ${context.sectionOffset ?? "0"} mm · Panel offset moves cutting plane · Left-click selects object · ${menu} · ${navigation}`;
-  if (context.parameterTool)
-    return `${context.parameterTool}: adjust settings in panel · Preview checks result · Apply accepts · Left-click selects object · ${menu} · ${navigation}`;
+  if (context.parameterTool) {
+    const actions = [
+      "Reduce polygons",
+      "Reduce noise",
+      "Scale mesh",
+      "Mirror mesh",
+    ].includes(context.parameterTool)
+      ? "Preview checks result · Accept completes"
+      : "Apply completes";
+    return `${context.parameterTool}: adjust settings in panel · ${actions} · Left-click selects object · ${menu} · ${navigation}`;
+  }
   return `Left-click selects · Hold left-click selects through · ${menu} · Left/middle-drag orbits · Ctrl+drag pans · Shift+drag zooms`;
 }

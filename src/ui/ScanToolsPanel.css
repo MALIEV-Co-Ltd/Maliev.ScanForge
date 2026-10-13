@@ -45,7 +45,10 @@
 .scan-tools-summary {
   color: var(--muted);
   font-size: 11px;
-  overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 12px;
 }
 .scan-tools-message {
   color: var(--muted);
@@ -65,4 +68,23 @@
 }
 .scan-tools-diagram {
   flex-shrink: 0;
+}
+
+.scan-tools-summary strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.scan-tools-panel .field {
+  margin: 0;
+}
+.scan-tools-deviation {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+.scan-tools-deviation h4 {
+  margin: 0;
+  font-size: 12px;
 }

@@ -165,6 +165,15 @@ it("requires a completed deviation report for acceptance and always offers autom
     renderToStaticMarkup(
       <ScanToolsPanel
         tool="reducePolygons"
+        selected={{
+          id: "mesh",
+          name: "Source",
+          kind: "mesh",
+          positions: new Float32Array(90),
+          color: "#aaa",
+          visible: true,
+          opacity: 1,
+        }}
         entities={[]}
         previewReady
         onApply={() => {}}
@@ -192,7 +201,8 @@ it("requires a completed deviation report for acceptance and always offers autom
         }
       />,
     );
-  expect(panel(false)).toContain('disabled="">Accept');
+  expect(panel(false)).toContain(">Preview</button>");
+  expect(panel(false)).not.toContain(">Accept</button>");
   expect(panel(true)).not.toContain('disabled="">Accept');
   expect(panel(false)).not.toContain("Color threshold");
   expect(panel(false)).not.toContain("Measure deviation from original</label>");
