@@ -23,6 +23,11 @@ import smoothImage from "./assets/scan-tools/smooth.png";
 import cutImage from "./assets/ribbon-tools/cut.png";
 import copyImage from "./assets/ribbon-tools/copy.png";
 
+import growImage from "./assets/selection-viewport/grow.png";
+import shrinkImage from "./assets/selection-viewport/shrink.png";
+import clipImage from "./assets/selection-viewport/clip.png";
+import saveImage from "./assets/selection-viewport/save.png";
+
 export type ScanIconName =
   | "wand"
   | "brush"
@@ -55,6 +60,10 @@ export type ScanIconName =
   | "boundaries";
 
 const rasterIcons: Partial<Record<ScanIconName, string>> = {
+  grow: growImage,
+  shrink: shrinkImage,
+  clip: clipImage,
+  save: saveImage,
   wand: wandScanImage,
   components: componentsImage,
   holes: holesImage,

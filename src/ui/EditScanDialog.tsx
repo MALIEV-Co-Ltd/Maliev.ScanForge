@@ -177,7 +177,10 @@ export function EditScanDialog(props: EditScanDialogProps) {
           disabled={action.disabled}
           onClick={action.run}
         >
-          <ScanToolIcon name={action.icon} size={18} />
+          <ScanToolIcon
+            name={action.icon}
+            size={action.icon === "grow" || action.icon === "shrink" ? 36 : 18}
+          />
           <span>{action.text}</span>
         </button>
       ));
@@ -340,13 +343,13 @@ export function EditScanDialog(props: EditScanDialogProps) {
                     props.onClip?.(props.clip ? null : props.clipFull!)
                   }
                 >
-                  <ScanToolIcon name="clip" size={18} /> Clipping Box…
+                  <ScanToolIcon name="clip" size={36} /> Clipping Box…
                 </button>
                 <button
                   disabled={!props.selectedCount}
                   onClick={() => setSaving(true)}
                 >
-                  <ScanToolIcon name="save" size={18} /> Save selection status…
+                  <ScanToolIcon name="save" size={36} /> Save selection status…
                 </button>
               </div>
               {props.clip && props.clipFull && (

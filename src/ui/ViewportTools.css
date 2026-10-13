@@ -50,8 +50,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   padding: 4px;
   border: 1px solid var(--border);
   border-radius: 3px;
@@ -60,7 +60,7 @@
 .viewport-tools button:disabled {
   opacity: 0.55;
 }
-.viewport-tools button:disabled svg {
+.viewport-tools button:disabled img {
   opacity: 1;
   filter: grayscale(0.5);
 }
@@ -102,4 +102,9 @@
   white-space: nowrap;
   font-size: 10px;
   color: var(--muted);
+}
+
+.viewport-tools img {
+  object-fit: contain;
+  flex: 0 0 auto;
 }
