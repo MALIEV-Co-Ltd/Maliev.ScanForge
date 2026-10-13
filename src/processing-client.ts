@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import type { NativeSurfaceRefinementRequest } from "./native-surface-refinement";
 import type {
   PointCloudEditRequest,
   PointCloudEditResult,
@@ -16,6 +17,7 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | NativeSurfaceRefinementRequest
   | PointCloudEditRequest
   | ScanPreviewRequest
   | ScanToolsRequest
@@ -100,6 +102,10 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  indexedMesh?: import("./types").IndexedMesh;
+  refinement?: ReturnType<
+    typeof import("./native-surface-refinement").refineNativeSurface
+  >["refinement"];
   pointCloudEdit?: PointCloudEditResult;
   scanEdit?: ScanEditResult;
   sketchSection?: SketchSectionResult;
@@ -254,13 +260,23 @@ export function processMesh(
         ? new Float32Array(0)
         : clone(request.positions);
       const copied: ProcessingRequest =
-        request.kind === "icp" || request.kind === "global"
+        request.kind === "icp" ||
+        request.kind === "global" ||
+        request.kind === "nativeRefine"
           ? {
               ...request,
               positions: source,
               target: clone(request.target),
             }
           : { ...request, positions: source };
+      if (copied.kind === "nativeRefine") {
+        for (const key of ["sourceIndexed", "targetIndexed"] as const) {
+          const mesh = copied[key];
+          const triangles = Uint32Array.from(mesh.triangles);
+          transfers.push(triangles.buffer);
+          copied[key] = { vertices: clone(mesh.vertices), triangles };
+        }
+      }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
       if (copied.kind === "pointCloudEdit") {
@@ -296,7 +312,9 @@ export function processMesh(
         transfers.push(copied.seeds.buffer);
       }
       if (
-        (copied.kind === "icp" || copied.kind === "global") &&
+        (copied.kind === "icp" ||
+          copied.kind === "global" ||
+          copied.kind === "nativeRefine") &&
         copied.sourceTriangleMask
       ) {
         copied.sourceTriangleMask = new Uint8Array(copied.sourceTriangleMask);

@@ -37,11 +37,21 @@ export function nativeRefineAlignmentMeshes(
     moving.map((mesh) => mesh.vertices),
     options.workerCount ?? 1,
   );
+  let evaluations = 0;
   const result = nativeRefineAlignmentSurface(
     nativeAlignmentSixParameters([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]),
     lanes.map((lane) => lane.vertices),
     fixed.query,
-    { ...options, budget: 1000, step: Math.fround(options.step ?? 0.0002) },
+    {
+      ...options,
+      budget: 1000,
+      step: Math.fround(options.step ?? 0.0002),
+      onEvaluation: () =>
+        options.onProgress?.(
+          Math.min(0.99, 0.2 + (++evaluations / 1000) * 0.79),
+          "Refining surface alignment",
+        ),
+    },
   );
   const accepted = result.converged;
   return {

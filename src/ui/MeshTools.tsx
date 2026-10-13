@@ -9,13 +9,18 @@ import type { Entity } from "../types";
 import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
+import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 
 export interface MeshToolsProps {
   entities: Entity[];
   selected?: Entity;
   triangleSelection?: Uint8Array | null;
   disabled?: boolean;
-  onReplace: (positions: Float32Array, label: string) => void;
+  onReplace: (
+    positions: Float32Array,
+    label: string,
+    indexedMesh?: Entity["indexedMesh"],
+  ) => void;
   onCreateSegments: (
     positions: Float32Array[],
     label: string,
@@ -67,6 +72,7 @@ export function MeshTools({
     [cellSize, setCellSize] = useState(0.5),
     [angle, setAngle] = useState(25);
   const [targetId, setTargetId] = useState(""),
+    [surfaceSamples, setSurfaceSamples] = useState(500),
     [distance, setDistance] = useState(10),
     [icpIterations, setIcpIterations] = useState(40);
   const [sourceLandmarks, setSourceLandmarks] = useState(""),
@@ -111,7 +117,8 @@ export function MeshTools({
           setProgress(`${stage} · ${Math.round(fraction * 100)}%`),
       });
       if (cancellation.signal.aborted) return;
-      if (outcome.positions) onReplace(outcome.positions, label);
+      if (outcome.positions)
+        onReplace(outcome.positions, label, outcome.indexedMesh);
       if (outcome.segments)
         onCreateSegments(
           outcome.segments,
@@ -119,6 +126,10 @@ export function MeshTools({
           outcome.segmentClassifications,
         );
       setResult(outcome);
+      if (outcome.refinement && !outcome.refinement.accepted) {
+        onStatus("Surface refinement did not converge · geometry unchanged");
+        return;
+      }
       onStatus(
         `${label} complete${outcome.registration ? ` · RMS ${outcome.registration.rms.toPrecision(4)} mm${outcome.registration.converged ? "" : " · iteration limit reached"}` : ""}`,
       );
@@ -354,10 +365,17 @@ export function MeshTools({
           </AppSelect>
         </label>
         <Field
-          label="ICP search distance (mm)"
+          label="Alignment search distance (mm)"
           value={distance}
           onChange={setDistance}
           min={0.000001}
+          step={1}
+        />
+        <Field
+          label="Surface refinement samples"
+          value={surfaceSamples}
+          onChange={setSurfaceSamples}
+          min={1}
           step={1}
         />
         <Field
@@ -367,6 +385,34 @@ export function MeshTools({
           min={1}
           step={1}
         />
+        <button
+          className="wide"
+          disabled={
+            !selected?.indexedMesh ||
+            !!selected.meshSelection?.hidden.length ||
+            !!targets.find((entity) => entity.id === targetId)?.meshSelection
+              ?.hidden.length ||
+            !targets.find((entity) => entity.id === targetId)?.indexedMesh
+          }
+          onClick={() => {
+            const target = targets.find((entity) => entity.id === targetId);
+            if (selected && target)
+              void run(
+                nativeSurfaceRefinementRequest(
+                  selected,
+                  target,
+                  surfaceSamples,
+                  distance,
+                  triangleSelection?.some(Boolean)
+                    ? triangleSelection
+                    : undefined,
+                ),
+                "Surface refinement",
+              );
+          }}
+        >
+          Refine indexed mesh surfaces
+        </button>
         <button
           className="wide"
           disabled={!targets.some((entity) => entity.id === targetId)}

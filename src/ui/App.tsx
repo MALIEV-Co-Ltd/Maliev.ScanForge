@@ -5142,7 +5142,7 @@ export function App() {
                   triangleSelection={triangleMask}
                   disabled={busy}
                   onBusyChange={setProcessingBusy}
-                  onReplace={(positions, label) => {
+                  onReplace={(positions, label, indexedMesh) => {
                     if (selected?.parametric) {
                       createSegments([positions], label);
                       return;
@@ -5150,6 +5150,7 @@ export function App() {
                     operationLabel.current = label;
                     updateSelected({
                       positions,
+                      indexedMesh,
                       kind: "mesh",
                       kernelId: undefined,
                       brep: undefined,

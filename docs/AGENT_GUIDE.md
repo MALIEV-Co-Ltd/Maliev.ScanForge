@@ -195,6 +195,24 @@ all indexed coordinates, including unused vertices. Other geometry edits
 invalidate it; metadata edits retain it. A malformed or stale indexed topology in an imported project is
 rejected. Older projects and other mesh formats can lack this optional metadata.
 
+For recovered surface refinement, call `mesh_process` with moving `entityId`,
+fixed `targetId`, and `operation:{kind:"nativeRefine",sampleBudget:500,initialRadius:10}`.
+Both objects must be indexed PLY meshes with no hidden triangles. Coordinates
+and radius are millimetres; sampling accepts 1 to 100,000 vertices. Optional
+`selectionOnly:true` marks vertices incident to selected moving triangles and
+skips sampling, matching the recovered selection-only preparation path.
+The GUI's **Refine indexed mesh surfaces** action uses the same request builder.
+The search uses its recovered fixed 1,000-evaluation budget and Float32 step;
+the separate ICP maximum-iterations control does not apply to this action.
+Results expose `refinement` with acceptance, matrix, parameters, initial/best
+squared error and iterations, plus algorithm diagnostics. These objectives are
+not RMS distances. Rejected searches preserve geometry and history; accepted
+searches preserve indexed topology and use normal undo/createNew semantics.
+Point clouds, unindexed meshes, CAD targets and hidden geometry are currently
+rejected rather than silently routed to another algorithm. These remain gaps
+in full native alignment parity. Cancellation terminates the worker under the
+existing processing leases; native multicore execution is not enabled here.
+
 After the import job succeeds, obtain its `entityId` and call `mesh_analyze`. To reduce a copy:
 
 ```json

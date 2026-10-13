@@ -8,6 +8,9 @@ import third from "./fixtures/alignment-user-ply-3-source.json";
 import refinement from "./fixtures/alignment-user-refinement.json";
 import { nativeRefineAlignmentMeshes } from "../src/scan-native-alignment-surface-controller";
 import { parsePlyTopology } from "../src/ply-topology";
+import { expandPlyTopology } from "../src/ply-topology";
+import { refineNativeSurface } from "../src/native-surface-refinement";
+import { indexedMeshMatches } from "../src/indexed-mesh";
 import topology from "./fixtures/alignment-user-target-adjacency.json";
 import surface from "./fixtures/alignment-user-target-surface.json";
 import { prepareNativeAlignmentSurface } from "../src/scan-native-alignment-surface";
@@ -16,6 +19,40 @@ import { prepareNativeAlignmentSource } from "../src/scan-native-alignment-sourc
 
 // Large owner-supplied scans remain outside the repository and default CI suite.
 const folder = process.env.SCANFORGE_ALIGNMENT_EXAMPLES;
+it.skipIf(!folder).each(refinement.cases[0].registrations)(
+  "matches the application surface-refinement adapter on owner scan: $sourceFile",
+  (expected) => {
+    const metadata = [first, second, third].find(
+      (input) => input.sha256 === expected.sourceSha256,
+    )!;
+    const source = readExample(metadata),
+      target = readExample(surface.cases[0]);
+    const result = refineNativeSurface(
+      {
+        kind: "nativeRefine",
+        sourceIndexed: source,
+        targetIndexed: target,
+        positions: expandPlyTopology(source),
+        target: expandPlyTopology(target),
+        sampleBudget: expected.sampleBudget,
+        initialRadius: expected.initialRadius,
+      },
+      () => {},
+    );
+    expect(result.refinement).toMatchObject({
+      matrix: expected.matrix,
+      parameters: expected.parameters,
+      accepted: expected.accepted,
+      initialError: expected.initialError,
+      best: expected.best,
+    });
+    if (result.positions)
+      expect(indexedMeshMatches(result.indexedMesh, result.positions)).toBe(
+        true,
+      );
+  },
+  120000,
+);
 const digest = (data: Uint8Array) =>
   createHash("sha256").update(data).digest("hex");
 function readExample(expected: {

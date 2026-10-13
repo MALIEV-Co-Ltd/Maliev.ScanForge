@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { refineNativeSurface } from "./native-surface-refinement";
 import { editPointCloud } from "./point-cloud-processing";
 import { ScanPreviewSession } from "./scan-preview";
 import { runScanTool } from "./scan-tools";
@@ -84,7 +85,18 @@ scope.onmessage = async ({ data: incoming }) => {
   }
   try {
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
-    if (request.kind === "pointCloudEdit") {
+    if (request.kind === "nativeRefine") {
+      const refined = refineNativeSurface(request, progress);
+      Object.assign(result, refined);
+      result.diagnostics = {
+        algorithm: "native-surface-refinement",
+        accepted: refined.refinement.accepted,
+        initialSquaredError: refined.refinement.initialError,
+        bestSquaredError: refined.refinement.best,
+        iterations: refined.refinement.iterations,
+        evaluationBudget: 1000,
+      };
+    } else if (request.kind === "pointCloudEdit") {
       result.pointCloudEdit = editPointCloud(request, progress);
       result.diagnostics = result.pointCloudEdit.diagnostics;
     } else if (request.kind === "scanPreview") {
@@ -407,6 +419,10 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
     if (result.positions) transfers.push(result.positions.buffer);
+    if (result.indexedMesh?.vertices instanceof Float32Array)
+      transfers.push(result.indexedMesh.vertices.buffer);
+    if (result.indexedMesh?.triangles instanceof Uint32Array)
+      transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)
       transfers.push(result.noiseComparison.rgb.buffer);
     if (result.noiseComparison?.sampleDistances)

@@ -608,9 +608,9 @@ checks cover coordinate consistency, transformed topology inspection, undo and
 binary project persistence. This verifies topology preservation, not native
 surface-refinement parity after a transform.
 
-The shared alignment worker must next consume these retained buffers before this
-controller can replace the application's surface refinement. Full Align parity
-and multicore execution remain unproven.
+The distinct surface-refinement action below consumes these retained buffers in
+the shared worker. Existing ICP remains a separate implementation. Full Align
+parity and multicore execution remain unproven.
 
 ## Verified controller bootstrap pose
 
@@ -632,7 +632,19 @@ run binds that import and completes all 32 cases; its allocation is released and
 the process exits. The fixture retains the image digest and execution limits.
 
 `nativeAlignmentSixParameters` now implements this conversion, and the recovered
-surface controller derives its neutral seed from an identity matrix. No GUI or
-MCP schema/default changes are introduced. Full controller execution, target
-group dispatch, application worker integration and native UI parity remain
-separate requirements; these captures do not prove them.
+surface controller derives its neutral seed from an identity matrix. The bootstrap
+extraction itself introduces no GUI or MCP schema/default changes. Full native
+controller execution, target group dispatch and native UI parity remain separate
+requirements; these captures do not prove them. The shared worker integration is
+described below.
+
+The recovered surface refiner is now available as the distinct `nativeRefine`
+processing action in the GUI and MCP. Its worker receives dedicated copies of
+original indexed source/target geometry, converts selected moving triangles to
+vertex flags, and runs the verified controller. It returns native matrix,
+parameters, acceptance and objective values; only accepted results replace
+geometry, retaining transformed indexed buffers for subsequent refinement.
+Worker-boundary tests compare the retained original thread fixtures. This path
+requires indexed PLY meshes and revealed geometry. It is separate from existing
+point-cloud/mesh ICP; target groups, CAD targets, other importer topologies,
+hidden-geometry behavior and multicore dispatch still require verification.

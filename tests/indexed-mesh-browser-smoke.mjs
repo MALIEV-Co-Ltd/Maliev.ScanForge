@@ -154,11 +154,16 @@ try {
     const object = (
       await call("object_get", { entityId, includeGeometry: true })
     ).result;
-    assert.deepEqual(object.indexedTopology, { vertices: 4, triangles: 1 });
+    assert(object.indexedTopology);
     const artifact = (
       await call("artifact_read", { artifactId: object.geometry.artifactId })
     ).result;
-    return JSON.parse(Buffer.from(artifact.base64, "base64").toString());
+    const value = JSON.parse(Buffer.from(artifact.base64, "base64").toString());
+    assert.deepEqual(object.indexedTopology, {
+      vertices: value.indexedMesh.vertices.length / 3,
+      triangles: value.indexedMesh.triangles.length / 3,
+    });
+    return value;
   };
   const assertTopology = (value) => {
     assert.deepEqual(value.indexedMesh.triangles, [1, 2, 3]);
@@ -248,6 +253,123 @@ try {
   );
   assertTopology(await geometry(imported.id));
   assertTopology(await geometry(gui.id));
+  const native = JSON.parse(
+    await readFile(
+      new URL("fixtures/alignment-controller-thread.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const fixture = native.cases[0];
+  async function importNative(name, vertices, triangles) {
+    const ply =
+      `ply\nformat ascii 1.0\nelement vertex ${vertices.length}\nproperty float x\nproperty float y\nproperty float z\nelement face ${triangles.length / 3}\nproperty list uchar int vertex_indices\nend_header\n` +
+      vertices.map((v) => v.join(" ")).join("\n") +
+      "\n" +
+      Array.from(
+        { length: triangles.length / 3 },
+        (_, i) => `3 ${triangles.slice(i * 3, i * 3 + 3).join(" ")}`,
+      ).join("\n") +
+      "\n";
+    const uploaded = (
+      await call("artifact_put", {
+        name,
+        offset: 0,
+        base64: Buffer.from(ply).toString("base64"),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: uploaded.artifactId,
+        unit: "mm",
+      }),
+    );
+    return (await call("project_get")).result.objects.find(
+      (o) => o.name === name,
+    );
+  }
+  const moving = await importNative(
+    "native-moving.ply",
+    fixture.search.sourcePoints,
+    fixture.search.sourceTriangles,
+  );
+  const fixed = await importNative(
+    "native-fixed.ply",
+    fixture.vertices,
+    fixture.triangles,
+  );
+  const beforeMoving = await geometry(moving.id),
+    beforeFixed = await geometry(fixed.id);
+  await mutate("selection_set", {
+    entityId: moving.id,
+    triangles: Array.from(
+      { length: fixture.search.sourceTriangles.length / 3 },
+      (_, i) => i,
+    ),
+  });
+  const refined = await job(
+    await mutate("mesh_process", {
+      entityId: moving.id,
+      targetId: fixed.id,
+      selectionOnly: true,
+      operation: {
+        kind: "nativeRefine",
+        sampleBudget: 1,
+        initialRadius: fixture.search.initialRadius,
+      },
+    }),
+  );
+  assert.deepEqual(refined.result.refinement.matrix, fixture.search.matrix);
+  assert.deepEqual(
+    refined.result.refinement.parameters,
+    fixture.search.parameters,
+  );
+  assert.equal(refined.result.refinement.accepted, fixture.search.accepted);
+  assert.deepEqual(await geometry(fixed.id), beforeFixed);
+  const afterMoving = await geometry(moving.id);
+  assert.equal(
+    afterMoving.indexedMesh.triangles.length,
+    beforeMoving.indexedMesh.triangles.length,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(moving.id), beforeMoving);
+  await mutate("selection_set", {
+    entityId: moving.id,
+    triangles: Array.from(
+      { length: fixture.search.sourceTriangles.length / 3 },
+      (_, i) => i,
+    ),
+  });
+  await mutate("ui_set", {
+    workspace: "processing",
+    mode: "inspect",
+    toolPanelOpen: true,
+  });
+  await page
+    .getByRole("button", { name: "Registration target", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: fixed.name, exact: true })
+    .press("Enter");
+  await page
+    .getByRole("spinbutton", {
+      name: "Surface refinement samples",
+      exact: true,
+    })
+    .fill("1");
+  await page
+    .getByRole("spinbutton", {
+      name: "Alignment search distance (mm)",
+      exact: true,
+    })
+    .fill(String(fixture.search.initialRadius));
+  await page
+    .getByRole("button", { name: "Refine indexed mesh surfaces", exact: true })
+    .click();
+  await page
+    .getByText("Surface refinement complete", { exact: true })
+    .waitFor({ timeout: 30000 });
+  assert.deepEqual(await geometry(moving.id), afterMoving);
+  assert.deepEqual(await geometry(fixed.id), beforeFixed);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -258,6 +380,8 @@ try {
     binaryPersistence: true,
     transformTopologyRetention: true,
     undoRestoration: true,
+    nativeRefinement: true,
+    guiNativeRefinement: true,
     errors,
   };
   console.log(JSON.stringify(ledger.result));

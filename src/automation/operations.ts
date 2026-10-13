@@ -35,6 +35,7 @@ import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 import { importScan } from "../import-client";
 import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
+import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
@@ -636,6 +637,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "target" in op ||
         "selection" in op ||
         "sourceTriangleMask" in op ||
+        "sourceIndexed" in op ||
+        "targetIndexed" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -645,9 +648,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (
         selection &&
         !readonly &&
-        !["scanEdit", "scanTools", "icp", "global", "pointCloudEdit"].includes(
-          kind,
-        ) &&
+        ![
+          "scanEdit",
+          "scanTools",
+          "icp",
+          "global",
+          "pointCloudEdit",
+          "nativeRefine",
+        ].includes(kind) &&
         !a.createNew
       )
         throw new Error(
@@ -661,6 +669,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             "scanEdit",
             "scanTools",
             "icp",
+            "nativeRefine",
             "global",
             "pointCloudEdit",
           ].includes(kind)
@@ -686,6 +695,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           target: object(s, a.targetId).positions,
           sourceTriangleMask: selection,
         });
+      }
+      if (kind === "nativeRefine") {
+        if (!a.targetId) throw new Error("Alignment requires targetId.");
+        Object.assign(
+          request,
+          nativeSurfaceRefinementRequest(
+            e,
+            object(s, a.targetId),
+            op.sampleBudget,
+            op.initialRadius,
+            selection,
+          ),
+        );
       }
       if (kind === "scanEdit")
         Object.assign(request, {
@@ -750,7 +772,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       )
                     : e.normals,
               }
-            : meshEdited(e, positions);
+            : {
+                ...meshEdited(e, positions),
+                ...(result.indexedMesh
+                  ? { indexedMesh: result.indexedMesh }
+                  : {}),
+              };
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (a.createNew) {
@@ -777,6 +804,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         diagnostics: result.diagnostics,
         topology: result.topology,
         registration: result.registration,
+        refinement: result.refinement,
         ...(edit?.inventory || edit?.curves || result.sketchSection
           ? {
               artifact: json(
