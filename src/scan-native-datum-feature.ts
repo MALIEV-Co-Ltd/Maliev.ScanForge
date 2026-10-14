@@ -1,4 +1,5 @@
 import { nativeDatumPlaneGeometry } from "./scan-native-datum-apply";
+import type { FitResult } from "./types";
 
 export type NativeDatumAxisPlacement =
   "segmentMidpoint" | "extrusionMidpoint" | "origin";
@@ -51,6 +52,64 @@ export interface NativeDatumFeatureGeometry {
   direction?: readonly number[];
   length?: number;
   equationOffset?: number;
+}
+
+/** Convert application fit conventions into the native reference payload convention. */
+export function nativeDatumFitFeature(
+  fit: FitResult,
+  nativeConeOrigin?: readonly number[],
+): NativeDatumFeatureGeometry {
+  finiteVector(fit.center);
+  if (!["plane", "cylinder", "cone", "sphere"].includes(fit.kind))
+    throw new Error("Unsupported fitted primitive kind.");
+  if (fit.kind === "sphere") return { kind: "sphere", origin: [...fit.center] };
+  finiteVector(fit.axis);
+  if (!(Math.hypot(...fit.axis) > 0))
+    throw new Error("The fitted primitive has a zero reference axis.");
+  if (fit.kind === "cylinder") {
+    if (
+      fit.height === undefined ||
+      !Number.isFinite(fit.height) ||
+      fit.height < 0
+    )
+      throw new Error(
+        "A fitted cylinder requires a finite nonnegative height.",
+      );
+    return {
+      kind: "cylinder",
+      origin: fit.center.map(
+        (value, i) => value - fit.axis[i] * fit.height! * 0.5,
+      ),
+      direction: [...fit.axis],
+      length: fit.height,
+    };
+  }
+  if (fit.kind === "plane") {
+    const offset = -(
+      fit.axis[0] * fit.center[0] +
+      fit.axis[1] * fit.center[1] +
+      fit.axis[2] * fit.center[2]
+    );
+    if (!Number.isFinite(offset))
+      throw new Error("The fitted plane equation exceeds numerical precision.");
+    return {
+      kind: "plane",
+      origin: [...fit.center],
+      direction: [...fit.axis],
+      equationOffset: offset,
+    };
+  }
+  // The application stores a cone base center; do not guess the native cone anchor.
+  if (!nativeConeOrigin)
+    throw new Error(
+      "Cone reference requires its verified native origin metadata.",
+    );
+  finiteVector(nativeConeOrigin);
+  return {
+    kind: "cone",
+    origin: [...nativeConeOrigin],
+    direction: [...fit.axis],
+  };
 }
 
 /** RTTI-linked fitted scene classes; CAD-backed adapters are a separate boundary. */

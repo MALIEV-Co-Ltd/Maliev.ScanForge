@@ -178,7 +178,7 @@ Point conversion static Evidence:
 `ev_540f569ca9e16ccf2c1b01d1784440b6874ecca7bea42ac5dd0af2f903301e34`.
 These payload-only captures do not establish class identity. The RTTI-linked
 class captures below establish native fitted-class identity separately.
-Application fitted-metadata anchors, picking, CAD-backed conversion and geometry
+Picking, CAD-backed conversion and geometry
 publication still require verification before public integration.
 
 ## Verified origin-reference dispatch and flip behavior
@@ -203,7 +203,8 @@ Dispatcher assembly Evidence:
 execution against caller-owned frame storage; it is not a native dialog capture.
 The focused interface cross-reference query alone does not establish native
 class names. The subsequent RTTI and original cast-method trace below resolves
-the native fitted classes; application metadata mapping still remains open.
+the native fitted classes. The metadata adapter below covers authored fitting
+conventions; automatic cone-origin derivation remains open.
 
 ## Verified fitted scene-class resolution
 
@@ -238,8 +239,34 @@ Cast-method static Evidence, in table order:
 `ev_ac0eb667402f149d14c3313a4c790663d73892e5e10e255d21cc7dd4abd6c59c`,
 `ev_74380d293bc89d2ae2714238dd28a99058896cf512a6ba4393057fab0fbcae97`,
 `ev_4e93ac1843559b3adf1d37971e132ae6192f4aec6104df7d9ee5f5ad0a6a6997`.
-This establishes native fitted-class resolution, not the application's
-`FitResult.center` to native anchor conversion or interactive picking.
+This establishes native fitted-class resolution, not interactive picking.
+
+## Application fitting metadata to reference payload
+
+`nativeDatumFitFeature` maps authored `FitResult` metadata into the verified
+native payload resolver. Plane centers/normals define a plane equation with
+offset `-dot(axis, center)`. Sphere centers remain unchanged. The application
+cylinder center is a midpoint; the adapter reconstructs the base as
+`center - axis * height * 0.5`, and the original converter computes its midpoint.
+Missing/nonfinite/negative cylinder heights and zero reference axes are rejected.
+
+The application's cone fitting routine stores a base center. Its relationship
+to the native cone origin has not been established. The adapter therefore
+requires a separate verified native cone origin and rejects calls without it.
+It does not infer the native origin from the application base center.
+
+`alignment-datum-fit-anchor-native.json` contains 156 original converter calls
+through the RTTI-linked query thunks and cast routines. Payloads are constructed
+from authored application fit metadata; twelve plane cases additionally use
+native centering with the plane equation and a supplied reference point. Tests
+compare support, reconstructed payload origin and every returned double byte.
+Additional regressions require cone-origin metadata and demonstrate that an
+explicit native origin remains independent of the application's base center.
+
+These captures verify reference conversion of declared geometry, not recovery
+or parity of the native fitting algorithms. The application cone-origin
+derivation, interactive picking, CAD adapters and geometry publication remain
+required before the complete origin-alignment workflow can be enabled.
 
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing primitive reference conversion,
