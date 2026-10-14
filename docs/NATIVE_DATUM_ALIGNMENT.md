@@ -810,3 +810,42 @@ the full refresh routine and geometry-allowed Apply remain unverified. External
 `datum-reference-invalidation-*` and `datum-controller-runtime-verification`
 artifacts retain captures, verification and SHA-256 identities. PID 57048 exited
 and its mapped image was released.
+
+## Shared change flags and empty update consumption
+
+All six retained primitive vtables bind slot `0x1f0` to `0x140406460`.
+This complete 15-byte leaf routine writes the supplied byte at object offset
+`0x2b0` and that byte XOR 1 at `0x2b1`. It makes no calls. It neither releases
+geometry nor directly purges a topology/cache allocation. REA Evidence:
+`ev_70357e0200897c1ba5e872e1f1ffac8467b0394f46a5f4a13c1c9d0b8d73c14c`.
+The getter `0x140406440` reads the second byte; Evidence:
+`ev_458f55542a507f01b521c3c3456267e08c6c5ddc440892b8ec9a36c3f5e3b1dd`.
+
+Direct execution checks all 256 supplied byte values against five prior flag
+pairs: 1,280 setter cases match both output bytes and preserve every other
+object byte. These raw-byte checks do not imply that all values are valid UI
+booleans. A second 10,240-case run binds the original setter into the original
+recursive reference helper, replacing the earlier notification observer.
+Every reached object ends with `[1,0]`; unreached objects retain their prior
+flags and all other supplied object bytes remain unchanged. Independent
+verification matches all 11,520 cases. External `datum-reference-flags-*`
+artifacts retain captures, probe, SHA-256 identities and cleanup; PID 47708
+exited and its mapping was released.
+
+Consumer `0x1404d9cc0` tests the first byte before walking a different linked
+object tree through slot `0x188`. Its populated branch resolves related objects,
+calls update interfaces and geometry helpers, then resets the flag pair to
+`[0,1]`. Those populated effects are not yet verified. Evidence:
+`ev_5550b8a849d4de6fe884e8c19c5dc6ebb9ee073f73f19854f8dfdbe628167cc6`.
+With a supplied empty tree, all 1,280 original consumer executions match the
+guard/reset behavior: a zero first byte preserves the prior pair; a nonzero
+first byte resets it to `[0,1]`. The original getter matches the resulting
+second byte and all other object bytes remain unchanged. External
+`datum-empty-change-consumer-*` artifacts retain this limited capture and
+verification; PID 25412 exited and its mapping was released.
+
+This distinguishes a notification flag write from later update work. It does
+not justify evicting every referenced mesh's welded topology on notification.
+The populated update path, full refresh pipeline and geometry-allowed Apply
+controller remain separate requirements. No application behavior changed in
+this evidence slice.
