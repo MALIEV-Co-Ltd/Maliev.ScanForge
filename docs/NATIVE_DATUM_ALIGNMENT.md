@@ -1607,3 +1607,38 @@ Both native replay allocations were released, their processes exited, and the
 browser/bridge temporary resources were closed. Port 5173 continues serving live
 application sources. This slice does not certify the remaining region-fitting
 and complete Align controller workflows.
+
+## Runtime-verified region selection
+
+`docs/evidence/alignment-region-click-native.json` replaces the earlier static-only
+status for the region-map selection branch. It contains 672 direct original-code
+replays of `0x1406481f0`: seven initial sets, six hit region IDs (including zero,
+`0xfffffe` and invalid `0xffffff`), both Control/Alt states and four hit results
+(valid, Float32 maximum sentinel, NaN and missing facet). Original tree insertion,
+erasure, clearing and ordered map traversal execute unchanged. Camera/ray-hit
+results and the Alt query are controlled adapters; this proves region-ID selection
+semantics, not native ray intersection or fitting.
+
+The portable transition oracle matches every returned selected-ID set and
+changed flag (672 cases, zero differences). Control takes precedence over Alt.
+Without Control, a missed/invalid hit clears a nonempty set even when Alt is held.
+Ordinary clicks replace the set only when the hit region is not already selected;
+clicking an existing member leaves all selected regions intact. Region zero and
+`0xfffffe` are valid; only the masked `0xffffff` ID is rejected.
+
+The inspected segmentation wrapper `0x140647920` and release handler manage scores,
+labels, rendering and the selected-region map. Neither inspected body constructs
+a fitted reference. The inspected Apply handler `0x140545220` transforms its
+prepared object context at `0x4140`; it does not directly read the region-map
+owner at `0x4130`. These observations rule out those bodies as the missing fitting
+implementation; they do not rule out fitting elsewhere in the application.
+Future integration must trace an actual producer/consumer instead of assuming
+that region labeling itself generates plane/cylinder references.
+
+Validation: the retained corpus was parsed, its original image digest/procedure
+and all case inputs checked, and all 672 outputs compared to the independently
+extracted transition rules with zero differences. Native allocations were freed
+and owned replay processes exited. This is an evidence/documentation slice; no
+application behavior, GUI/MCP contract or executable source changed, so application
+build and test targets are not applicable to this slice. Existing live port 5173
+was preserved. The larger application implementation goal remains incomplete.
