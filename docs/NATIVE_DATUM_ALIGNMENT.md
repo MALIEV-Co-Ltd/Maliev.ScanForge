@@ -893,3 +893,52 @@ This evidence narrows the specialized reconstruction boundary. The full Apply
 controller and scene refresh still require their own scan/CAD execution checks;
 the subdivision-thickening branch is not a substitute for those checks. No
 application behavior changed in this slice.
+
+## Generic scene refresh execution
+
+The primary vtables for `cMeshObject`, `cVectorPointCloudObject`, `MTS_CADBody`
+and `MTS_CADModel` all bind slot `0x1f8` to `0x140406450`. Independent loaded-image
+checks verify these bindings. This complete ten-byte routine writes `[0,1]` to
+the flag pair at `0x2b0` and makes no calls; it does not rebuild geometry.
+REA Evidence:
+`ev_08afe1b5772a3c1f17256cb2e1958cf4dc9da60f4a9fbf157af3cb45c42b2226`.
+Slot `0x1e8` reads the first flag through `0x140406470`; order slots `0x88`
+and `0x90` read/write the integer at `0x16c`. Slot `0x238` uses the low byte of
+`0x140405f80` to test bit 5 of the state word at `0x168`. Its product meaning
+is not inferred from this bit test.
+
+The original complete scene-refresh routine `0x140827ea0` now executes with
+supplied scene enumeration, common-feature queries, reference resolution and
+progress interfaces. Original generic flag/order accessors and the original
+recursive reference helper execute unchanged. An identity localization adapter
+replaces `0x140b2b870` solely at the text boundary, avoiding its application TLS
+singleton; the original Windows tick-count import is rebound. The refresh
+routine itself is not stubbed. This is an isolated native execution, not an
+installed-application GUI capture.
+
+Independent verification matches 6,528 cases:
+
+- 384 cases exercise three objects, dirty masks, initial inverse flags,
+  update-order patterns, bit-5 skip masks and immediate-progress options.
+- 6,144 cases exercise every four-node forward DAG, all initial dirty masks,
+  two order patterns and three skip masks. Each reference tree also contains
+  a missing-object entry. The original recursive helper marks reached objects;
+  the first scene pass raises each direct dependent's order to at least the
+  parent's order plus one. Eligible dirty objects refresh in increasing order,
+  retaining scene order for equal values. Skipped objects retain their flags.
+
+The captures preserve every attached opaque geometry payload byte and every
+object byte outside the verified flags/order fields. Every supplied iterator
+is destroyed once. This verifies generic scene propagation and refresh
+scheduling, not owner-scan transformation arithmetic or specialized operations.
+Cycles, arbitrary scene permutations, special operation types, real progress
+UI and the enclosing geometry-allowed Apply callback remain outside coverage.
+
+External `datum-refresh-accessors-*`, `datum-refresh-target-slots.json` and
+`datum-scene-refresh-*`/`datum-scene-reference-refresh-*` retain complete REA
+records, captures, probes, independent verification and SHA-256 identities.
+Successful probe PIDs 53736 and 17556 released their mapped images and exited;
+REA server PID 54256 exited. An initial probe used an incomplete tick-import
+binding and exited before explicit cleanup; PID 35692 is confirmed absent and
+its process-owned allocation was reclaimed on exit. No application behavior
+changed in this evidence slice.
