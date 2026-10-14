@@ -14,6 +14,12 @@ export function useWorkspaceApi(host: WorkspaceHost) {
     const mutate = (run: () => void) => flushSync(run);
     const proxy: WorkspaceHost = {
       snapshot: () => current.current.snapshot(),
+      showDatumPreview: (entities) =>
+        mutate(() => {
+          if (!current.current.showDatumPreview)
+            throw new Error("Coordinate preview unavailable");
+          current.current.showDatumPreview(entities);
+        }),
       discardPreview: (target) =>
         mutate(() => {
           if (!current.current.discardPreview)

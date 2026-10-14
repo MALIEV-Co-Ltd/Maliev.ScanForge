@@ -4535,7 +4535,7 @@
       "properties": {
         "target": {
           "type": "string",
-          "enum": ["scan", "surface", "landmarks", "sketchSection"]
+          "enum": ["scan", "surface", "landmarks", "sketchSection", "datum"]
         },
         "expectedRevision": {
           "type": "integer",
@@ -4588,6 +4588,304 @@
         }
       },
       "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "alignment_preview",
+    "description": "Preview scan coordinate alignment from one to three native plane/direction/point constraints. Scans are meshes or point clouds, exact CAD targets unsupported. Ordered constraints build the reference frame; its rigid inverse transforms scans. Model/history stay unchanged; preview_discard target datum restores the committed scene.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["point"]
+                  }
+                },
+                "required": ["kind", "point", "axis"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["plane"]
+                  },
+                  "direction": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": ["kind", "point", "axis", "direction"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["direction"]
+                  },
+                  "direction": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": ["kind", "point", "axis", "direction"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "alignment_apply",
+    "description": "Apply native coordinate-frame scan alignment to unlocked meshes/point clouds as one history transaction, preserving indexed topology and saved selections. Same constraints as alignment_preview; source geometry is checked before commit. Exact CAD targets unsupported.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["point"]
+                  }
+                },
+                "required": ["kind", "point", "axis"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["plane"]
+                  },
+                  "direction": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": ["kind", "point", "axis", "direction"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["direction"]
+                  },
+                  "direction": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": ["kind", "point", "axis", "direction"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
   }

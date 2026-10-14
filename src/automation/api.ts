@@ -40,6 +40,7 @@ export interface WorkspaceHost {
   ): void;
   select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
   present?(signal?: AbortSignal): Promise<void>;
+  showDatumPreview?(entities: Entity[] | null): void;
   setSelection(entityId: string, mask: Uint8Array): void;
   setSketch(sketch: Sketch): void;
   setAuthoring?(authoring: NonNullable<Project["authoring"]>): void;
@@ -65,7 +66,7 @@ export interface WorkspaceHost {
   ): Promise<CapturedImage>;
   renameProject?(name: string): void;
   discardPreview?(
-    target: "scan" | "surface" | "landmarks" | "sketchSection",
+    target: "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
   ): void;
 }
 export interface ArtifactInfo {
@@ -355,7 +356,8 @@ export class ApplicationApi {
             "GUI preview cancellation is unavailable.",
           );
         this.host.discardPreview(
-          args.target as "scan" | "surface" | "landmarks" | "sketchSection",
+          args.target as
+            "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
         );
         return this.success({
           target: args.target,

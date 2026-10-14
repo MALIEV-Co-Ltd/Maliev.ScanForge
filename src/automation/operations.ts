@@ -1,5 +1,6 @@
 import { isSampledScan } from "../scan-source";
 import { createAlignmentOperations } from "./alignment-operations";
+import { createDatumOperations } from "./datum-operations";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
 import {
   listBackups,
@@ -314,6 +315,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   };
   const operations: Record<string, Handler> = {
     ...createAlignmentOperations(host),
+    ...createDatumOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {

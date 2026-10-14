@@ -293,6 +293,84 @@ try {
     scale: 1,
   });
   assert(transformed.ok);
+  await mutate("object_select", { entityId: meshId });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  const sourceAnalysis = await job(
+    await call("mesh_analyze", { entityId: meshId }),
+  );
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .click();
+  await page.getByLabel("Reference 1 point (mm) X", { exact: true }).fill("1");
+  await page
+    .getByRole("button", { name: "Preview alignment", exact: true })
+    .click();
+  await page
+    .getByText("Alignment preview ready · model unchanged", { exact: true })
+    .waitFor();
+  assert.equal((await call("application_inspect")).result.previews.datum, true);
+  await page.screenshot({
+    path: fileURLToPath(
+      new URL("coordinate-alignment-preview.png", artifactDir),
+    ),
+  });
+  const previewAnalysis = await job(
+    await call("mesh_analyze", { entityId: meshId }),
+  );
+  assert.deepEqual(previewAnalysis.stats, sourceAnalysis.stats);
+  await page
+    .getByRole("button", { name: "Cancel alignment", exact: true })
+    .click();
+  assert.equal(
+    (await call("application_inspect")).result.previews.datum,
+    false,
+  );
+  const constraints = [{ kind: "point", point: [1, 0, 0], axis: 0 }];
+  const nativePreview = await job(
+    await mutate("alignment_preview", { entityIds: [meshId], constraints }),
+  );
+  assert.deepEqual(nativePreview.targets[0].bounds.min, [-10, -5, -2.5]);
+  await mutate("preview_discard", { target: "datum" });
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("button", { name: "Preview alignment", exact: true })
+    .click();
+  await page
+    .getByText("Alignment preview ready · model unchanged", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Apply alignment", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .waitFor();
+  const alignedAnalysis = await job(
+    await call("mesh_analyze", { entityId: meshId }),
+  );
+  assert.deepEqual(
+    alignedAnalysis.stats.min,
+    nativePreview.targets[0].bounds.min,
+  );
+  assert.deepEqual(
+    alignedAnalysis.stats.max,
+    nativePreview.targets[0].bounds.max,
+  );
+  await mutate("history_undo", {});
+  const restoredAnalysis = await job(
+    await call("mesh_analyze", { entityId: meshId }),
+  );
+  assert.deepEqual(restoredAnalysis.stats, sourceAnalysis.stats);
   const repair = await job(
     await mutate("mesh_process", {
       entityId: meshId,
@@ -379,6 +457,7 @@ try {
     "browser pairing and persisted connection after Settings closes",
     "exact CAD creation rendered in UI",
     "MCP and GUI exact alignment references with identical coordinates and unchanged history",
+    "native coordinate preview/cancel, GUI apply and MCP undo restore identical scan geometry",
     "UI undo and MCP redo",
     "STEP content and project export artifacts",
     "mesh copy/transform/winding worker/topology",

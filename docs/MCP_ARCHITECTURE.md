@@ -50,6 +50,17 @@ face IDs/triangle ranges belong to the current body revision. Inspection is
 paged and bounded; unsupported reference types remain explicit. Full alignment
 preview and geometry application are still separate unfinished capabilities.
 
+Manual scan-frame alignment now uses `datum-operations.ts` for both GUI and MCP.
+It resolves ordered numerical constraints with the recovered constructors,
+applies their rigid inverse to immutable scan copies, and preserves indexed
+topology and selection identities. Preview is transient presentation through
+the editor adapter; committed project reads remain unchanged. Apply presents
+the prepared geometry, checks cancellation/revision, then commits once.
+Exact CAD targets are explicitly rejected. The preview-discard target `datum`
+shares the existing cancellation/reset contract, and viewport inspection reports
+the transient scene. The complete native dialog and automatic bindings remain
+separate unfinished work.
+
 **Mandatory repository rule:** every application change must also be available through MCP for agentic work. GUI and MCP must use shared application operations with consistent inputs, validation, errors, state transitions and results. Missing MCP parity blocks completion and commit; it must be addressed in the same coherent change. Existing tools may satisfy the rule when they fully expose the changed behavior. See the authoritative [repository instructions](../AGENTS.md) for scope, documentation and validation requirements.
 
 Add a complete input schema and accurate description to the registry, then an operation handler using existing/new domain services. Use explicit IDs and units. Place all asynchronous mutation checks immediately before the first state write; do not compare the start revision again after your own successful commit. Construct required artifacts before commit so resource-limit failures cannot report a failed command after changing the model.

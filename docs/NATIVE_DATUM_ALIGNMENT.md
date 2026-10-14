@@ -1,6 +1,8 @@
 # Native origin/reference alignment recovery
 
-Origin/reference alignment remains incomplete and disabled. The existing main
+The complete origin/reference dialog remains incomplete. A supported manual
+scan-frame preview/apply workflow is available in Object properties and MCP;
+the general ribbon command remains disabled. The existing main
 Align callback performs an independently authored principal-axis operation;
 that is not the recovered coordinate-system workflow.
 
@@ -21,7 +23,9 @@ Translation callback Evidence:
 
 The feature dispatcher at `0x140543ae0` routes plane/direction references into
 frame helpers `0x1403a0970` and `0x1403a0aa0`, with separate primary, secondary
-and tertiary stages. Flipping resets the stage argument to primary. The
+and tertiary stages. Native execution confirms that flipping preserves the
+stage argument, including signed-zero flips; the initial decompiler inference
+of a primary-stage reset was incorrect. The
 translation callback copies the prepared frame and adds offsets through its
 basis; world-axis translation is not an equivalent substitute.
 
@@ -418,3 +422,29 @@ bodies, pagination, fitted types, revision conflicts and cancellation.
 panel to compare every box-face point/direction between GUI and MCP and verify
 unchanged workspace revision. Neither route applies an alignment transform;
 viewport picking, preview and apply remain required work.
+
+## Scan-frame preview and application
+
+`datum-alignment.ts` compiles one to three plane/direction/point instructions
+through the original numerical constructors and uses the verified rigid inverse
+for scan application. Its sequence tests replay all 80 plane sequences and 258
+mixed direction/point captures, checking every 232-byte state and acceptance
+result. Scan transforms use double arithmetic with Float32 coordinate storage,
+retain indexed vertex/facet relationships and saved/hidden selections, and rotate
+normals without adding translation. Geometry-range overflow, locked objects and
+exact CAD targets are rejected before commit.
+
+`alignment_preview` and `alignment_apply` are shared GUI/MCP jobs. Preview changes
+the rendered scene while preserving committed geometry/history. Apply checks
+revision/cancellation immediately before one model commit, then restores the
+normal committed-scene presentation. Exact identity matrices do not create a
+history entry. The GUI opens from Object properties, supports one to three
+manual reference points/normals/directions, flips and axis assignment, scan-center
+origin placement, and canvas point picking. Changing controls discards the old
+preview. `preview_discard` with target `datum` restores the current model.
+
+The real SDK/browser test checks GUI preview/cancel, equal GUI-apply and MCP
+preview bounds, and exact geometry restoration by Undo. These checks do not
+establish the complete native UI workflow: automatic feature binding, frame-basis
+translation offsets, all-feature/CAD target scope and native geometry-loop parity
+still require work. General ribbon alignment is not advertised as complete.

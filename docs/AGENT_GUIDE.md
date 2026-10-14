@@ -269,8 +269,28 @@ Refresh after every model edit; face IDs are scoped to the current body/revision
 Inspection is bounded to 10,000 CAD faces and the existing 90-second kernel
 timeout. API contract tests replay all 104 native reference captures, and the
 browser/MCP integration test compares all six box-face coordinates with the GUI.
-Frame construction, viewport reference picking, preview and alignment apply
-still require integration; general origin/reference alignment remains disabled.
+The supported manual frame workflow is described below. Automatic reference
+bindings and the complete native dialog still require integration; the general
+origin/reference ribbon command remains disabled.
+
+The supported manual scan-frame workflow is now available through
+`alignment_preview` and `alignment_apply`. Both are native-geometry jobs requiring
+`expectedRevision`, `requestId`, `entityIds` (1–32 distinct unlocked mesh/point-cloud
+targets) and `constraints` (1–3 ordered references). Each reference has `kind`
+(`plane`, `direction`, `point`), `point` (XYZ mm), `axis` (0=X, 1=Y, 2=Z; ignored
+for points), optional `flip`, and a `direction` XYZ vector for planes/directions.
+Use physical unit normals/directions from `alignment_references` when available.
+Constructors are replayed in primary/secondary/tertiary order; incompatible
+constraints fail without a model commit. Exact CAD targets are not supported.
+Preview returns the native frame, rigid inverse matrix and proposed scan bounds;
+it preserves the model and history. `preview_discard` with `target:"datum"`
+restores the committed scene. Apply records one history step and preserves
+facet/point identities and saved selection slots. Identity transforms are no-ops.
+Use `job_get`/`job_cancel`; cancellation or revision conflict before commit
+discards the result. GUI Object properties invokes these same operations for
+manual coordinates, axis/flip controls, canvas point picking and center-to-origin.
+Automatic feature bindings and original frame-translation controls remain
+unfinished; the general ribbon command remains disabled.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;

@@ -10,6 +10,7 @@ import {
 } from "../object-selection";
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
+import { DatumAlignmentTools } from "./DatumAlignmentTools";
 import type { AlignmentReferencePage } from "../automation/alignment-operations";
 import {
   selectionProcessingMode,
@@ -245,6 +246,10 @@ type Mode = "inspect" | "measure" | "section" | "brush";
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
+  const datumPointPick = useRef<((point: Vec3) => void) | null>(null);
+  const datumPreview = useRef<{ base: Entity[]; entities: Entity[] } | null>(
+    null,
+  );
   const entitiesRef = useRef(entities);
   entitiesRef.current = entities;
   const [pendingScanImport, setPendingScanImport] = useState<File[] | null>(
@@ -621,6 +626,12 @@ export function App() {
         viewportHost.current!,
         (point, id) => {
           if (busyRef.current) return;
+          if (datumPointPick.current) {
+            const pick = datumPointPick.current;
+            datumPointPick.current = null;
+            pick(point);
+            return;
+          }
           if (surfaceFitRef.current || createSketchRef.current) return;
           if (nPointsRef.current) {
             if (nPointsRef.current.preview) {
@@ -648,6 +659,7 @@ export function App() {
           // Viewport invokes onSelect before onPick for one click. Keep the scan
           // selected until onPick binds the reference and completes the gesture.
           if (scanReferencePick.current) return;
+          if (datumPointPick.current) return;
           if (
             !busyRef.current &&
             !nPointsRef.current &&
@@ -742,6 +754,8 @@ export function App() {
     }
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
+        datumPreview.current = null;
+        datumPointPick.current = null;
         scanToolAbort.current?.abort();
         scanEditAbort.current?.abort();
         releaseProcessingSession();
@@ -763,24 +777,30 @@ export function App() {
     };
   }, []);
   useEffect(() => {
+    if (datumPreview.current?.base !== entities) datumPreview.current = null;
     viewport.current?.setEntities(
-      activeScanPreview
-        ? entities.map((e) =>
-            e.id === activeScanPreview.entityId
-              ? { ...e, positions: activeScanPreview.output }
-              : e,
-          )
-        : nPoints?.preview?.positions &&
-            landmarkSceneUnchanged(nPoints, entities)
+      datumPreview.current
+        ? datumPreview.current.entities
+        : activeScanPreview
           ? entities.map((e) =>
-              e.id === nPoints.moving.id
-                ? { ...e, positions: nPoints.preview!.positions! }
+              e.id === activeScanPreview.entityId
+                ? { ...e, positions: activeScanPreview.output }
                 : e,
             )
-          : surfaceFit?.preview &&
-              surfaceFitSourceUnchanged(surfaceFit, entities)
-            ? [...entities, surfaceFitEntity(surfaceFit, "surface-fit-preview")]
-            : entities,
+          : nPoints?.preview?.positions &&
+              landmarkSceneUnchanged(nPoints, entities)
+            ? entities.map((e) =>
+                e.id === nPoints.moving.id
+                  ? { ...e, positions: nPoints.preview!.positions! }
+                  : e,
+              )
+            : surfaceFit?.preview &&
+                surfaceFitSourceUnchanged(surfaceFit, entities)
+              ? [
+                  ...entities,
+                  surfaceFitEntity(surfaceFit, "surface-fit-preview"),
+                ]
+              : entities,
       selectedId,
       selectedIds,
     );
@@ -3497,9 +3517,17 @@ export function App() {
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
   const workspaceApi = useWorkspaceApi({
+    showDatumPreview: (next) => {
+      datumPreview.current = next ? { base: entities, entities: next } : null;
+      viewport.current?.setEntities(next ?? entities, selectedId, selectedIds);
+    },
     discardPreview: (target) => {
       if (target === "scan") closeScanTool();
-      else if (target === "surface") cancelSurfaceFit();
+      else if (target === "datum") {
+        datumPreview.current = null;
+        datumPointPick.current = null;
+        viewport.current?.setEntities(entities, selectedId, selectedIds);
+      } else if (target === "surface") cancelSurfaceFit();
       else if (target === "landmarks") cancelLandmarks();
       else cancelSketchCreation();
     },
@@ -3519,6 +3547,7 @@ export function App() {
         toolPanelOpen,
         settingsOpen,
         previews: {
+          datum: !!datumPreview.current,
           scan: !!scanPreview,
           landmarks: !!nPoints?.preview,
           surface: !!surfaceFit?.preview,
@@ -3533,7 +3562,11 @@ export function App() {
     setInterface: (patch) => {
       if (
         patch.workspace !== undefined &&
-        (nPoints || surfaceFit || scanPreview || createSketch)
+        (nPoints ||
+          surfaceFit ||
+          scanPreview ||
+          createSketch ||
+          datumPreview.current)
       )
         throw new Error(
           "Finish or cancel the GUI preview before changing its tool panel.",
@@ -4957,6 +4990,19 @@ export function App() {
                         }
                       />
                     )}
+                    {["mesh", "pointcloud"].includes(selected.kind) &&
+                      !selected.kernelId &&
+                      !selected.parametric && (
+                        <DatumAlignmentTools
+                          api={workspaceApi}
+                          entity={selected}
+                          center={stats.center}
+                          onPickPoint={(callback) => {
+                            datumPointPick.current = callback;
+                            if (callback) setMode("inspect");
+                          }}
+                        />
+                      )}
                     <Panel title="Display" className="display-panel">
                       <label className="slider-row">
                         <span>Opacity</span>
