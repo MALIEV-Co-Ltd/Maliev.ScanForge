@@ -4152,6 +4152,69 @@
     }
   },
   {
+    "name": "command_get",
+    "description": "Inspect repeatable ribbon and keyboard command identities, availability and the last command.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "command_run",
+    "description": "Launch a discovered repeatable command with the current selection and remember it for Spacebar. Returns launch acknowledgement, not operation completion. Active dialogs and busy operations reject launches.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["expectedRevision", "requestId", "name"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "command_repeat",
+    "description": "Repeat the last repeatable GUI or command_run command using current selection and settings. Returns launch acknowledgement, not operation completion. Rejects unavailable commands, busy operations and active dialogs.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "ui_set",
     "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them.",
     "readOnly": false,

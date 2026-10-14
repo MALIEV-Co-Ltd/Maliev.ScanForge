@@ -6,6 +6,61 @@ import {
 } from "../src/automation/api";
 import { createWorkflowOperations } from "../src/automation/workflow-operations";
 import { VisualCaptureError } from "../src/automation/visual-capture";
+import { CommandRepeat } from "../src/command-repeat";
+
+it("MCP launches and repeats the shared current command with revision, busy and retry guards", async () => {
+  const { host } = setup();
+  let busy = false;
+  const repeat = new CommandRepeat();
+  const run = vi.fn();
+  repeat.configure({ "ribbon:transform": run }, () => busy);
+  host.busy = () => busy;
+  host.activity = (running) => {
+    busy = running;
+  };
+  host.inspectCommands = () => repeat.inspect();
+  host.launchCommand = (name) => repeat.run(name);
+  const api = new ApplicationApi(host, createWorkflowOperations(host));
+  try {
+    expect(await api.invoke("command_get")).toMatchObject({
+      ok: true,
+      result: { lastCommand: null, canRepeat: false },
+    });
+    const args = {
+      name: "ribbon:transform",
+      expectedRevision: api.currentRevision(),
+      requestId: "launch",
+    };
+    expect(await api.invoke("command_run", args)).toMatchObject({
+      ok: true,
+      result: { command: args.name, status: "launched" },
+    });
+    await api.invoke("command_run", args);
+    expect(run).toHaveBeenCalledTimes(1);
+    const again = {
+      expectedRevision: api.currentRevision(),
+      requestId: "repeat",
+    };
+    expect((await api.invoke("command_repeat", again)).ok).toBe(true);
+    await api.invoke("command_repeat", again);
+    expect(run).toHaveBeenCalledTimes(2);
+    busy = true;
+    expect(
+      await api.invoke("command_repeat", { ...again, requestId: "busy" }),
+    ).toMatchObject({ ok: false, error: { code: "BUSY" } });
+    busy = false;
+    expect(
+      await api.invoke("command_repeat", {
+        ...again,
+        expectedRevision: 999,
+        requestId: "stale",
+      }),
+    ).toMatchObject({ ok: false, error: { code: "REVISION_CONFLICT" } });
+    expect(run).toHaveBeenCalledTimes(2);
+  } finally {
+    api.dispose();
+  }
+});
 
 function setup() {
   const state: WorkspaceSnapshot = {

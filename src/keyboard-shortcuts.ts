@@ -11,6 +11,7 @@ import {
 export type ShortcutMode =
   "main" | "selection" | "sketch" | "freeform" | "primitive-fit";
 export type ShortcutActionId =
+  | "repeat-command"
   | "new"
   | "open"
   | "save"

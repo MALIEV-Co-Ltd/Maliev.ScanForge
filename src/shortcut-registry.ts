@@ -40,6 +40,13 @@ const modelModes = ["main", "freeform", "primitive-fit"] as const;
 
 /** Both dispatch and the reference panel consume this catalog. Mod is platform-primary. */
 export const SHORTCUT_REGISTRY: readonly ShortcutBinding[] = [
+  binding(
+    "Space",
+    "Repeat previous command",
+    "repeat-command",
+    undefined,
+    true,
+  ),
   binding("Mod+N", "New project", "new"),
   binding("Mod+O", "Open scan or project", "open"),
   binding("Mod+S", "Save project", "save"),

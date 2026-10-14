@@ -1,3 +1,4 @@
+import { CommandRepeat } from "../command-repeat";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
 import { importBatch, validateImportBatch } from "../import-batch";
@@ -1590,6 +1591,144 @@ export function App() {
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
   }, [entities]);
+  const commandRepeat = useRef(new CommandRepeat());
+  const [, setCommandVersion] = useState(0);
+  const ribbonActions = {
+    newDocument: requestNewDocument,
+    open: () => fileInput.current?.click(),
+    save,
+    undo,
+    redo,
+    fitView: () => viewport.current?.fitView(),
+    iso: () => viewport.current?.setView("iso"),
+    top: () => viewport.current?.setView("top"),
+    bottom: () => viewport.current?.setView("bottom"),
+    left: () => viewport.current?.setView("left"),
+    right: () => viewport.current?.setView("right"),
+    front: () => viewport.current?.setView("front"),
+    back: () => viewport.current?.setView("back"),
+    fitPlane: () => runFit("plane"),
+    fitSphere: () => runFit("sphere"),
+    fitCylinder: () => runFit("cylinder"),
+    fitCone: () => runFit("cone"),
+    primitive: () => setPrimitiveDialog(true),
+    align: autoAlign,
+    transform: () => showTools("transform"),
+    section: () => {
+      setMode("section");
+      showTools("section");
+    },
+    extrude: () => showTools("reconstruct"),
+    revolve: () => showTools("reconstruct"),
+    boolean: () => showTools("reconstruct"),
+    measure: () => {
+      setMode("measure");
+      setMeasure([]);
+      showTools("measure");
+    },
+    deviation: () => showTools("deviation"),
+    area: () => showTools("measure"),
+    volume: () => showTools("measure"),
+    cleanup: removeDegenerate,
+    delete: deleteSelected,
+    exportStep,
+    exportStl: exportMesh,
+    settings: () => setSettingsOpen(true),
+    splitMesh: () => {
+      setMode("inspect");
+      showTools("mesh");
+      setScanPanel(null);
+      setSplitMeshOpen(true);
+    },
+    editScan: () => {
+      setMode("brush");
+      showTools("mesh");
+    },
+    select: () => {
+      setMode("brush");
+      showTools("mesh");
+    },
+    wireframe: () => setWireframe(!wireframe),
+    objectColor: () => showTools("properties"),
+    loft: () => showTools("advancedCad"),
+    sweep: () => showTools("advancedCad"),
+    fillet: () => showTools("advancedCad"),
+    chamfer: () => showTools("advancedCad"),
+    surfaceOffset: () => showTools("advancedCad"),
+    sewSurfaces: () => showTools("advancedCad"),
+    shell: () => showTools("advancedCad"),
+    surfaceThicken: () => showTools("advancedCad"),
+    fitSurface: openSurfaceFit,
+    nurbsSurface: () => showTools("surface"),
+    newFreeform: () => showTools("surface"),
+    autoFreeform: () => showTools("surface"),
+    quadObj: () => showTools("surface"),
+    sketch2d: openSketchCreation,
+    reducePolygons: () => openScanTool("reducePolygons"),
+    reduceNoise: () => openScanTool("reduceNoise"),
+    scaleMesh: () => openScanTool("scaleMesh"),
+    flipNormals: () => {
+      if (busy || scanToolAbort.current) return;
+      dismissScanTool();
+      void applyScanTool({ kind: "flipNormals" });
+    },
+    repolygonize: () => openScanTool("repolygonize"),
+    averageMesh: () => openScanTool("averageMesh"),
+    mirrorMesh: () => openScanTool("mirrorMesh"),
+    unroll: () => openScanTool("unroll"),
+    fineAlign: () => showTools("processing"),
+    alignNPoints: openLandmarks,
+    repairMesh: () => showTools("processing"),
+    segmentMesh: () => showTools("processing"),
+    splitSolid: () => showTools("advancedCad"),
+    circularPattern: () => showTools("advancedCad"),
+    linearPattern: () => showTools("advancedCad"),
+    mirrorBody: () => showTools("advancedCad"),
+  };
+  const excludedRepeatCommands = new Set([
+    "newDocument",
+    "open",
+    "save",
+    "undo",
+    "redo",
+    "delete",
+    "exportStep",
+    "exportStl",
+    "settings",
+  ]);
+  const globalRibbonCommands = new Set([
+    "fitView",
+    "iso",
+    "top",
+    "bottom",
+    "left",
+    "right",
+    "front",
+    "back",
+    "primitive",
+    "wireframe",
+    "newFreeform",
+  ]);
+  const repeatableRibbonActions = Object.fromEntries(
+    Object.entries(ribbonActions).map(([name, run]) => [
+      name,
+      excludedRepeatCommands.has(name)
+        ? run
+        : () => launchRepeatable(`ribbon:${name}`),
+    ]),
+  ) as typeof ribbonActions;
+  function launchRepeatable(name?: string) {
+    try {
+      runRepeatable(name);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error));
+    }
+  }
+  function runRepeatable(name?: string) {
+    const result = commandRepeat.current.run(name);
+    setCommandVersion((version) => version + 1);
+    return result;
+  }
   const actions: Partial<Record<ShortcutActionId, (() => void) | undefined>> = {
     new: requestNewDocument,
     open: () => fileInput.current?.click(),
@@ -1672,6 +1811,51 @@ export function App() {
         ? () => setSketchDrawingConstraints((v) => !v)
         : undefined,
   };
+  const excludedShortcutCommands = new Set([
+    "new",
+    "open",
+    "save",
+    "clear-selection",
+    "rotate-view",
+    "toggle-visibility",
+  ]);
+  const repeatCommands = Object.fromEntries([
+    ...Object.entries(ribbonActions)
+      .filter(([name]) => !excludedRepeatCommands.has(name))
+      .map(([name, run]) => [
+        `ribbon:${name}`,
+        selected || globalRibbonCommands.has(name) ? run : undefined,
+      ]),
+    ...Object.entries(actions)
+      .filter(
+        ([name]) =>
+          !excludedShortcutCommands.has(name) &&
+          !name.startsWith("undo-") &&
+          !name.startsWith("redo-"),
+      )
+      .map(([name, run]) => [`keyboard:${name}`, run]),
+  ]);
+  commandRepeat.current.configure(
+    repeatCommands,
+    () =>
+      busyRef.current ||
+      hasVisibleKeyboardModal() ||
+      !!(
+        scanPreview ||
+        datumPreview.current ||
+        nPoints ||
+        surfaceFit ||
+        createSketch ||
+        primitiveDialog ||
+        settingsOpen ||
+        saveDialogOpen ||
+        newDocumentDialog ||
+        contextMenu
+      ),
+  );
+  actions["repeat-command"] = commandRepeat.current.inspect().canRepeat
+    ? () => launchRepeatable()
+    : undefined;
   const shortcutContext: ShortcutContext = {
     mode:
       workspace === "sketch" && toolPanelOpen && !createSketch
@@ -1742,7 +1926,10 @@ export function App() {
         entities.map((e) => (matches(e) ? { ...e, visible: show } : e)),
       );
       setDirty(true);
-    } else actions[resolved.id]?.();
+    } else if (resolved.id === "repeat-command") launchRepeatable();
+    else if (`keyboard:${resolved.id}` in repeatCommands)
+      launchRepeatable(`keyboard:${resolved.id}`);
+    else actions[resolved.id]?.();
   };
   useEffect(() => {
     const handler = (e: KeyboardEvent) => inputCommands.current(e);
@@ -3528,6 +3715,8 @@ export function App() {
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
   const workspaceApi = useWorkspaceApi({
+    inspectCommands: () => commandRepeat.current.inspect(),
+    launchCommand: runRepeatable,
     showDatumPreview: (next) => {
       datumPreview.current = next ? { base: entities, entities: next } : null;
       viewport.current?.setEntities(next ?? entities, selectedId, selectedIds);
@@ -3547,6 +3736,7 @@ export function App() {
       if (!root) throw new Error("Application is not mounted.");
       return {
         name,
+        commands: commandRepeat.current.inspect(),
         selectedId,
         dirty,
         busy: busyRef.current,
@@ -3908,98 +4098,7 @@ export function App() {
         hasSelection={!!selected}
         canUndo={!!history.length}
         canRedo={!!future.length}
-        actions={{
-          newDocument: requestNewDocument,
-          open: () => fileInput.current?.click(),
-          save,
-          undo,
-          redo,
-          fitView: () => viewport.current?.fitView(),
-          iso: () => viewport.current?.setView("iso"),
-          top: () => viewport.current?.setView("top"),
-          bottom: () => viewport.current?.setView("bottom"),
-          left: () => viewport.current?.setView("left"),
-          right: () => viewport.current?.setView("right"),
-          front: () => viewport.current?.setView("front"),
-          back: () => viewport.current?.setView("back"),
-          fitPlane: () => runFit("plane"),
-          fitSphere: () => runFit("sphere"),
-          fitCylinder: () => runFit("cylinder"),
-          fitCone: () => runFit("cone"),
-          primitive: () => setPrimitiveDialog(true),
-          align: autoAlign,
-          transform: () => showTools("transform"),
-          section: () => {
-            setMode("section");
-            showTools("section");
-          },
-          extrude: () => showTools("reconstruct"),
-          revolve: () => showTools("reconstruct"),
-          boolean: () => showTools("reconstruct"),
-          measure: () => {
-            setMode("measure");
-            setMeasure([]);
-            showTools("measure");
-          },
-          deviation: () => showTools("deviation"),
-          area: () => showTools("measure"),
-          volume: () => showTools("measure"),
-          cleanup: removeDegenerate,
-          delete: deleteSelected,
-          exportStep,
-          exportStl: exportMesh,
-          settings: () => setSettingsOpen(true),
-          splitMesh: () => {
-            setMode("inspect");
-            showTools("mesh");
-            setScanPanel(null);
-            setSplitMeshOpen(true);
-          },
-          editScan: () => {
-            setMode("brush");
-            showTools("mesh");
-          },
-          select: () => {
-            setMode("brush");
-            showTools("mesh");
-          },
-          wireframe: () => setWireframe(!wireframe),
-          objectColor: () => showTools("properties"),
-          loft: () => showTools("advancedCad"),
-          sweep: () => showTools("advancedCad"),
-          fillet: () => showTools("advancedCad"),
-          chamfer: () => showTools("advancedCad"),
-          surfaceOffset: () => showTools("advancedCad"),
-          sewSurfaces: () => showTools("advancedCad"),
-          shell: () => showTools("advancedCad"),
-          surfaceThicken: () => showTools("advancedCad"),
-          fitSurface: openSurfaceFit,
-          nurbsSurface: () => showTools("surface"),
-          newFreeform: () => showTools("surface"),
-          autoFreeform: () => showTools("surface"),
-          quadObj: () => showTools("surface"),
-          sketch2d: openSketchCreation,
-          reducePolygons: () => openScanTool("reducePolygons"),
-          reduceNoise: () => openScanTool("reduceNoise"),
-          scaleMesh: () => openScanTool("scaleMesh"),
-          flipNormals: () => {
-            if (busy || scanToolAbort.current) return;
-            dismissScanTool();
-            void applyScanTool({ kind: "flipNormals" });
-          },
-          repolygonize: () => openScanTool("repolygonize"),
-          averageMesh: () => openScanTool("averageMesh"),
-          mirrorMesh: () => openScanTool("mirrorMesh"),
-          unroll: () => openScanTool("unroll"),
-          fineAlign: () => showTools("processing"),
-          alignNPoints: openLandmarks,
-          repairMesh: () => showTools("processing"),
-          segmentMesh: () => showTools("processing"),
-          splitSolid: () => showTools("advancedCad"),
-          circularPattern: () => showTools("advancedCad"),
-          linearPattern: () => showTools("advancedCad"),
-          mirrorBody: () => showTools("advancedCad"),
-        }}
+        actions={repeatableRibbonActions}
       />
       <input
         ref={fileInput}

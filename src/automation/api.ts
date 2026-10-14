@@ -30,6 +30,8 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  inspectCommands?(): unknown;
+  launchCommand?(name?: string): unknown;
   snapshot(): WorkspaceSnapshot;
   cad(): CadClient;
   commit(entities: Entity[], label: string): void;
@@ -582,6 +584,10 @@ export class ApplicationApi {
           "BUSY",
           "Workspace is executing an operation; wait for completion or cancel the active job.",
         );
+      // Launchers delegate progress and busy ownership to the normal GUI/domain
+      // command. Setting API activity here would block that command itself.
+      if (command === "command_run" || command === "command_repeat")
+        return this.success(await handler(args, context));
       // A single admission lane also protects native read operations from concurrent edits.
       this.active = job;
       this.host.activity(

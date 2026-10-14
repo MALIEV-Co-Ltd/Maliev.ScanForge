@@ -11,8 +11,15 @@ export function useWorkspaceApi(host: WorkspaceHost) {
   current.current = host;
   const api = useRef<ApplicationApi | null>(null);
   if (!api.current) {
-    const mutate = (run: () => void) => flushSync(run);
+    const mutate = <T>(run: () => T): T => flushSync(run);
     const proxy: WorkspaceHost = {
+      inspectCommands: () => current.current.inspectCommands?.(),
+      launchCommand: (name) =>
+        mutate(() => {
+          if (!current.current.launchCommand)
+            throw new Error("Command launch unavailable");
+          return current.current.launchCommand(name);
+        }),
       snapshot: () => current.current.snapshot(),
       showDatumPreview: (entities) =>
         mutate(() => {

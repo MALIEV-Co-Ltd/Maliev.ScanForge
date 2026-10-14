@@ -30,6 +30,17 @@ export function createWorkflowOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
   return {
+    command_get: () => host.inspectCommands?.() ?? unavailable(),
+    command_run: (a, c) => {
+      c.check();
+      if (!host.launchCommand) unavailable();
+      return host.launchCommand(a.name);
+    },
+    command_repeat: (_a, c) => {
+      c.check();
+      if (!host.launchCommand) unavailable();
+      return host.launchCommand();
+    },
     application_inspect: (a) =>
       host.inspectApplication?.(a.maxControls ?? 150) ?? unavailable(),
     ui_set: (a, c) => {
