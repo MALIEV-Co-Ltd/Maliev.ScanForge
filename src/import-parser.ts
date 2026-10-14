@@ -11,6 +11,7 @@ export interface ScanFile {
 export interface ScanImportOptions {
   onIndexedMesh?: (mesh: ReturnType<typeof parsePlyTopology>) => void;
   onPointCloud?: (cloud: { normals?: Float32Array }) => void;
+  onMeshNormals?: (normals: Float32Array) => void;
   onProgress?: (fraction: number) => void;
   signal?: AbortSignal;
   /** Optional display budget, never a file-size acceptance limit. All records are validated. */
@@ -131,11 +132,30 @@ export async function readScan(
     );
   const buffer = await file.arrayBuffer();
   checkAbort(options.signal);
-  const topology = extension === "ply" ? parsePlyTopology(buffer) : undefined;
+  let sourceNormals: Float32Array | undefined;
+  const topology =
+    extension === "ply"
+      ? parsePlyTopology(buffer, {
+          onNormals: (normals) => {
+            sourceNormals = normals;
+          },
+        })
+      : undefined;
   const positions = topology
     ? expandPlyTopology(topology)
     : parseMesh(buffer, extension);
   if (topology) options.onIndexedMesh?.(topology);
+  if (topology && sourceNormals) {
+    const normals = new Float32Array(positions.length);
+    for (let slot = 0; slot < topology.triangles.length; slot++) {
+      if (slot % 65536 === 0) checkAbort(options.signal);
+      const vertex = topology.triangles[slot] * 3;
+      normals[slot * 3] = sourceNormals[vertex];
+      normals[slot * 3 + 1] = sourceNormals[vertex + 1];
+      normals[slot * 3 + 2] = sourceNormals[vertex + 2];
+    }
+    options.onMeshNormals?.(normals);
+  }
   options.onSource?.({
     bytes: file.size,
     triangles: positions.length / 9,

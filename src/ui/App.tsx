@@ -2863,6 +2863,9 @@ export function App() {
         let indexedMesh: Entity["indexedMesh"];
         {
           positions = await importScan(file, {
+            onMeshNormals: (normals) => {
+              pointNormals = Array.from(normals);
+            },
             onIndexedMesh: (mesh) => {
               indexedMesh = mesh;
             },

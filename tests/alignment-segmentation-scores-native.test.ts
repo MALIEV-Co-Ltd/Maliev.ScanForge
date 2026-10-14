@@ -1,10 +1,23 @@
 import { expect, it } from "vitest";
 import native from "./fixtures/alignment-segmentation-scores-native.json";
+import { nativeSegmentationScores } from "../src/scan-native-segmentation-scores";
 
 const sentinel = 3.4028234663852886e38;
 it.each(native.cases)(
   "matches complete original score preparation for normals at $angles",
   (sample) => {
+    const ported = nativeSegmentationScores(
+      new Float32Array(sample.normals.flat()),
+      new Uint32Array(sample.triangles.flat()),
+      { capDegrees: sample.capDegrees },
+    );
+    expect(
+      Array.from(ported, (value) => {
+        const bytes = Buffer.alloc(8);
+        bytes.writeDoubleLE(value);
+        return bytes.toString("hex");
+      }),
+    ).toEqual(sample.nativeScoreBits);
     let scores = sample.normals.map(() => sentinel);
     for (const face of sample.triangles)
       for (const [a, b] of [

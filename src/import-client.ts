@@ -53,6 +53,7 @@ export function importScan(
         renderData?: ScanRenderData;
         source?: ScanSource;
         pointCloud?: { normals?: Float32Array };
+        meshNormals?: Float32Array;
         indexedMesh?: ReturnType<typeof parsePlyTopology>;
         error?: string;
       }>,
@@ -68,6 +69,8 @@ export function importScan(
           cacheScanRenderData(event.data.positions, event.data.renderData);
         if (event.data.indexedMesh)
           options.onIndexedMesh?.(event.data.indexedMesh);
+        if (event.data.meshNormals)
+          options.onMeshNormals?.(event.data.meshNormals);
         if (event.data.pointCloud)
           options.onPointCloud?.(event.data.pointCloud);
         else

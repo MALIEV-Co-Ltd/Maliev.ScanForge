@@ -3,7 +3,10 @@ import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
 /** Preserve file vertex and face order for indexed native geometry operations.
  * Coordinate welding cannot recover this order from rendered triangle soup.
  */
-export function parsePlyTopology(data: ArrayBuffer) {
+export function parsePlyTopology(
+  data: ArrayBuffer,
+  options: { onNormals?: (normals: Float32Array) => void } = {},
+) {
   const geometry = new PLYLoader().parse(data);
   try {
     const position = geometry.getAttribute("position");
@@ -23,6 +26,15 @@ export function parsePlyTopology(data: ArrayBuffer) {
       if (!Number.isSafeInteger(id) || id < 0 || id >= position.count)
         throw new Error("PLY face index is outside the vertex buffer.");
       triangles[slot] = id;
+    }
+    const normal = geometry.getAttribute("normal");
+    if (normal) {
+      if (normal.itemSize !== 3 || normal.count !== position.count)
+        throw new Error("Invalid PLY vertex normals.");
+      const normals = Float32Array.from(normal.array);
+      if (!normals.every(Number.isFinite))
+        throw new Error("PLY vertex normals must be finite.");
+      options.onNormals?.(normals);
     }
     return { vertices, triangles };
   } finally {

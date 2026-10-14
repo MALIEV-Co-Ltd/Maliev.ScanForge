@@ -1225,6 +1225,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         let pointNormals: number[] | undefined;
         let indexedMesh: Entity["indexedMesh"];
         const positions = await importScan(new File([blob], name), {
+          onMeshNormals: (normals) => {
+            pointNormals = Array.from(normals);
+          },
           onIndexedMesh: (mesh) => {
             indexedMesh = mesh;
           },

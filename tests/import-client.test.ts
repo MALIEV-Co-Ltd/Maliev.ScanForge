@@ -32,6 +32,25 @@ afterEach(() => {
 const file = { name: "scan.stl" } as File;
 
 describe("scan worker ownership", () => {
+  it("forwards transferred PLY normals and topology without copying", async () => {
+    const onMeshNormals = vi.fn(),
+      onIndexedMesh = vi.fn();
+    const pending = importScan({ name: "scan.ply" } as File, {
+      onMeshNormals,
+      onIndexedMesh,
+    });
+    const positions = new Float32Array(9),
+      meshNormals = new Float32Array(9);
+    const indexedMesh = {
+      vertices: new Float32Array(9),
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    ImportWorkerDouble.latest.reply({ positions, meshNormals, indexedMesh });
+    expect(await pending).toBe(positions);
+    expect(onMeshNormals.mock.calls[0][0]).toBe(meshNormals);
+    expect(onIndexedMesh.mock.calls[0][0]).toBe(indexedMesh);
+    expect(ImportWorkerDouble.latest.terminated).toBe(true);
+  });
   it("retains transferred render data without geometry or normal copies", async () => {
     const pending = importScan(file);
     const positions = new Float32Array(9);

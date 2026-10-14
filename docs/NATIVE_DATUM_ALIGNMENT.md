@@ -1322,3 +1322,50 @@ GUI Apply against MCP Preview, discard, Undo/Redo, successive Apply, binary
 recovery and world geometry export through the actual SDK bridge. Its browser
 receipt records successful checks and exact helper cleanup. The main Align
 button remains gated independently of this coordinate-alignment integration.
+
+### Full owner PLY score preparation and portable kernel
+
+The original score-preparation procedure at `0x140abf580` was executed on all
+stored coordinates, normals and triangle indices in the three supplied PLY
+scans. Native spatial buckets, ConCRT dispatch, conversion, normalization and
+neighbor averaging were retained. Array/container access and scratch ownership
+used controlled adapters. This capture does not execute the native importer or
+installed GUI, and does not establish complete controller parity.
+
+| Scan  |  Vertices | Triangles | Browser score differences | Maximum absolute difference |
+| ----- | --------: | --------: | ------------------------: | --------------------------: |
+| ply-1 |   140,113 |   274,154 |                         9 |       2.220446049250313e-16 |
+| ply-2 | 1,375,494 | 2,697,877 |                       145 |      3.3306690738754696e-16 |
+| ply-3 | 1,865,848 | 3,691,133 |                       296 |      3.3306690738754696e-16 |
+
+Replacing only the portable `Math.acos` outputs with the original Windows CRT
+`acos` outputs eliminates every difference on every scan. Browser arithmetic
+therefore is not claimed bit-identical. At all supported slider positions
+0 through 100, the recovered strict three-vertex threshold predicate produces
+identical face classifications: 672,979,564 comparisons, zero differences.
+This predicate replay does not replace a full native region/controller capture.
+
+`src/scan-native-segmentation-scores.ts` contains the portable preparation kernel;
+four native fixtures also verify exact score bytes. Its input requires the
+caller's unreferenced-vertex compaction and supplied Float32 vertex normals.
+It is not yet wired into the main Align controller or advertised as a standalone
+MCP operation. The existing segmentation workflow is unchanged.
+
+The import prerequisite is integrated: PLY file normals now survive the shared
+GUI/MCP parser, worker transfer, entity creation, geometry readback and project
+serialization. Expanded normals follow the original triangle index order;
+nonfinite normals reject import. Render-generated normals remain separate.
+External `owner-score-native-{2,3}-probe.py`, `owner-ply-*-native-scores.json`,
+`owner-ply-*-port-score-verification.json` and cleanup receipts in the analysis
+folder retain full-data comparisons and hashes. Native helper processes exited
+and their owned allocations were released. Isolated kernel elapsed times are
+not an application responsiveness benchmark or browser multicore claim.
+
+Validation for this integration: `npm run build` passed; focused import/kernel
+tests passed 76 tests; `npm test` passed 22,707 tests with 24 existing skips.
+The isolated browser replay in `.resources/ply-normals-browser.mjs` used the
+built application and actual SDK bridge. It verified GUI file import against
+MCP import, geometry artifact normals and binary export/reimport of both
+objects. Its receipt at `.resources/ply-normals-browser/browser-validation.json`
+records passing checks and closed helper ports/processes. This is import and
+recovery evidence, not completion of the main Align workflow.

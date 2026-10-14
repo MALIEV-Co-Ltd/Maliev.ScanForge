@@ -21,6 +21,7 @@ scope.onmessage = async ({ data }) => {
   try {
     let source: ScanSource | undefined;
     let indexedMesh: ReturnType<typeof parsePlyTopology> | undefined;
+    let meshNormals: Float32Array | undefined;
     if (data.extension === "asc") {
       const cloud = await readAscPointCloud(data.file, {
         onProgress: (progress) =>
@@ -47,6 +48,9 @@ scope.onmessage = async ({ data }) => {
       return;
     }
     const positions = await readScan(data.file, data.extension, {
+      onMeshNormals: (normals) => {
+        meshNormals = normals;
+      },
       onIndexedMesh: (mesh) => {
         indexedMesh = mesh;
       },
@@ -69,6 +73,7 @@ scope.onmessage = async ({ data }) => {
     const renderData = prepareScanRenderData(positions, indexedMesh);
     scope.postMessage({ progress: 0.95 });
     const transfers = [positions.buffer as ArrayBuffer];
+    if (meshNormals) transfers.push(meshNormals.buffer as ArrayBuffer);
     if (renderData.normals)
       transfers.push(renderData.normals.buffer as ArrayBuffer);
     if (indexedMesh)
@@ -77,7 +82,7 @@ scope.onmessage = async ({ data }) => {
         indexedMesh.triangles.buffer as ArrayBuffer,
       );
     scope.postMessage(
-      { positions, source, indexedMesh, renderData },
+      { positions, source, indexedMesh, renderData, meshNormals },
       transfers,
     );
   } catch (error) {
