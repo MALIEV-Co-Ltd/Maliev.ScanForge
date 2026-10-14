@@ -12,6 +12,7 @@ export function prepareNativeAlignmentSource(
     vertices: ArrayLike<number>;
     triangles: ArrayLike<number>;
     flags?: ArrayLike<number>;
+    normals?: ArrayLike<number>;
   },
   sampleBudget: number,
   options: MeshProcessingOptions & {
@@ -25,7 +26,8 @@ export function prepareNativeAlignmentSource(
   if (
     !Number.isInteger(count) ||
     mesh.triangles.length % 3 ||
-    (mesh.flags && mesh.flags.length !== count)
+    (mesh.flags && mesh.flags.length !== count) ||
+    (mesh.normals && mesh.normals.length !== mesh.vertices.length)
   )
     throw new Error("Invalid alignment source buffers.");
   const coordinates = Float64Array.from(mesh.vertices, Math.fround);
@@ -36,10 +38,14 @@ export function prepareNativeAlignmentSource(
     if (!Number.isSafeInteger(id) || id < 0 || id >= count)
       throw new Error("Alignment source triangle index is outside the buffer.");
   }
-  const normals = noiseNormals(
-    { vertices: coordinates, triangles: Uint32Array.from(mesh.triangles) },
-    options,
-  );
+  const normals = mesh.normals
+    ? Float32Array.from(mesh.normals)
+    : noiseNormals(
+        { vertices: coordinates, triangles: Uint32Array.from(mesh.triangles) },
+        options,
+      );
+  if (!normals.every(Number.isFinite))
+    throw new Error("Alignment source normals require finite Float32 values.");
   const vertices: AlignmentQueryVertex[] = Array.from(
     { length: count },
     (_, id) => {

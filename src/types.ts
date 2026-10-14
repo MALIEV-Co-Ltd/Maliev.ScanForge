@@ -7,6 +7,8 @@ export type Positions = number[] | Float32Array;
 export interface IndexedMesh {
   vertices: Positions;
   triangles: number[] | Uint32Array;
+  /** Scanner normals in original vertex order, including unused vertices. */
+  normals?: Positions;
 }
 /** Triangle slots refer to the current triangulation and must be sorted and unique. */
 export interface MeshSelectionState {

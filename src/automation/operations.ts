@@ -39,7 +39,11 @@ import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
 import { importScan } from "../import-client";
-import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
+import {
+  retainIndexedMesh,
+  transformIndexedMesh,
+  indexedRenderNormals,
+} from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
@@ -403,6 +407,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                     ? {
                         vertices: Array.from(e.indexedMesh.vertices),
                         triangles: Array.from(e.indexedMesh.triangles),
+                        ...(e.indexedMesh.normals
+                          ? { normals: Array.from(e.indexedMesh.normals) }
+                          : {}),
                       }
                     : undefined,
                   normals: e.normals,
@@ -825,7 +832,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             : {
                 ...meshEdited(e, positions),
                 ...(result.indexedMesh
-                  ? { indexedMesh: result.indexedMesh }
+                  ? {
+                      indexedMesh: result.indexedMesh,
+                      normals: indexedRenderNormals(result.indexedMesh),
+                    }
                   : {}),
               };
         if (!positions.length)
@@ -896,6 +906,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? {
                 ...meshEdited(e, transformed.positions),
                 indexedMesh: transformed.indexedMesh,
+                normals: transformed.normals,
               }
             : x,
         ),

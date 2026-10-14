@@ -2,6 +2,7 @@ import type { Entity, Vec3 } from "./types";
 import type { ProcessingResult } from "./processing-client";
 import { transformPoint } from "./registration";
 import { rotatePointNormals } from "./point-cloud";
+import { indexedRenderNormals } from "./indexed-mesh";
 
 export interface LandmarkAlignment {
   moving: Entity;
@@ -94,12 +95,14 @@ export function acceptLandmarkAlignment(
           ...e,
           positions: session.preview!.positions!,
           indexedMesh: session.preview!.indexedMesh,
-          normals: e.normals
-            ? rotatePointNormals(
-                e.normals,
-                session.preview!.registration!.transform.rotation,
-              )
-            : undefined,
+          normals: session.preview!.indexedMesh?.normals
+            ? indexedRenderNormals(session.preview!.indexedMesh)
+            : e.normals
+              ? rotatePointNormals(
+                  e.normals,
+                  session.preview!.registration!.transform.rotation,
+                )
+              : undefined,
           fit: undefined,
         }
       : e,

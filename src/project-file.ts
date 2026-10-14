@@ -33,7 +33,7 @@ type RecordData = Omit<
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
-  indexedMesh?: { vertices: Ref; triangles: Ref };
+  indexedMesh?: { vertices: Ref; triangles: Ref; normals?: Ref };
   meshSelection?: {
     hidden: Ref;
     saved: { id: string; name: string; triangles: Ref }[];
@@ -174,6 +174,9 @@ export async function encodeProjectFile(
                 indexedMesh: {
                   vertices: await store(indexedMesh.vertices),
                   triangles: await store(indexedMesh.triangles, true),
+                  ...(indexedMesh.normals
+                    ? { normals: await store(indexedMesh.normals) }
+                    : {}),
                 },
               }
             : {}),
@@ -355,6 +358,9 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
         ? {
             vertices: read(record.indexedMesh.vertices),
             triangles: read(record.indexedMesh.triangles),
+            ...(record.indexedMesh.normals
+              ? { normals: read(record.indexedMesh.normals) }
+              : {}),
           }
         : undefined,
       edgePositions: record.edgePositions

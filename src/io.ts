@@ -454,6 +454,9 @@ export function serializeProject(
         ? {
             vertices: Array.from(entity.indexedMesh.vertices),
             triangles: Array.from(entity.indexedMesh.triangles),
+            ...(entity.indexedMesh.normals
+              ? { normals: Array.from(entity.indexedMesh.normals) }
+              : {}),
           }
         : undefined,
     })),
@@ -509,8 +512,10 @@ export async function serializeProjectBlob(
       for (const [field, values] of [
         ["vertices", indexedMesh.vertices],
         ["triangles", indexedMesh.triangles],
+        ["normals", indexedMesh.normals],
       ] as const) {
-        parts.push(field === "triangles" ? "," : "", `"${field}":[`);
+        if (!values) continue;
+        parts.push(field === "vertices" ? "" : ",", `"${field}":[`);
         for (let start = 0; start < values.length; start += 65_536) {
           const batch: string[] = [];
           for (

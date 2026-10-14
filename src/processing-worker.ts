@@ -1,6 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
 import { refineNativeSurfaceAsync } from "./native-surface-refinement";
-import { indexedMeshMatches } from "./indexed-mesh";
+import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
 import { editPointCloud } from "./point-cloud-processing";
 import { ScanPreviewSession } from "./scan-preview";
 import { runScanTool } from "./scan-tools";
@@ -393,6 +393,14 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = {
           vertices,
           triangles: Uint32Array.from(request.sourceIndexed.triangles),
+          ...(request.sourceIndexed.normals
+            ? {
+                normals: rotateIndexedNormals(
+                  request.sourceIndexed.normals,
+                  registration.transform.rotation,
+                ),
+              }
+            : {}),
         };
       }
       result.diagnostics = {
@@ -452,6 +460,8 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.positions) transfers.push(result.positions.buffer);
     if (result.indexedMesh?.vertices instanceof Float32Array)
       transfers.push(result.indexedMesh.vertices.buffer);
+    if (result.indexedMesh?.normals instanceof Float32Array)
+      transfers.push(result.indexedMesh.normals.buffer);
     if (result.indexedMesh?.triangles instanceof Uint32Array)
       transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)

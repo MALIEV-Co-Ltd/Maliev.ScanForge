@@ -81,6 +81,8 @@ scope.onmessage = async ({ data }) => {
         indexedMesh.vertices.buffer as ArrayBuffer,
         indexedMesh.triangles.buffer as ArrayBuffer,
       );
+    if (indexedMesh?.normals instanceof Float32Array)
+      transfers.push(indexedMesh.normals.buffer as ArrayBuffer);
     scope.postMessage(
       { positions, source, indexedMesh, renderData, meshNormals },
       transfers,

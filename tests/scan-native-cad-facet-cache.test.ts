@@ -1,3 +1,4 @@
+import { prepareNativeAlignmentSource } from "../src/scan-native-alignment-source";
 import { expect, it } from "vitest";
 import native from "./fixtures/alignment-cad-facet-cache-native.json";
 import { nativeAlignmentFaceCache } from "../src/scan-native-alignment-face-cache";
@@ -15,6 +16,19 @@ it.each(native.cases)(
     const vertices = Float32Array.from(sample.coordinates);
     const triangles = Uint32Array.from(sample.triangles);
     const result = nativeAlignmentFaceCache(vertices, triangles);
+    const suppliedNormals = Float32Array.from(sample.vertexNormals);
+    const source = prepareNativeAlignmentSource(
+      {
+        vertices,
+        triangles,
+        normals: suppliedNormals,
+        flags: new Uint32Array(vertices.length / 3).fill(4),
+      },
+      1,
+      { selectionOnly: true },
+    );
+    expect(bits(source.normals)).toBe(sample.vertexNormalBits);
+    expect(bits(suppliedNormals)).toBe(sample.vertexNormalBits);
     expect(bits(result.normals)).toBe(sample.faceNormalBits);
     expect(Array.from(result.degenerate)).toEqual(sample.degenerate);
     const prepared = prepareNativeAlignmentSurface(vertices, triangles);

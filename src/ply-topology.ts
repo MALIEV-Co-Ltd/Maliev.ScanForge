@@ -27,16 +27,17 @@ export function parsePlyTopology(
         throw new Error("PLY face index is outside the vertex buffer.");
       triangles[slot] = id;
     }
+    let normals: Float32Array | undefined;
     const normal = geometry.getAttribute("normal");
     if (normal) {
       if (normal.itemSize !== 3 || normal.count !== position.count)
         throw new Error("Invalid PLY vertex normals.");
-      const normals = Float32Array.from(normal.array);
+      normals = Float32Array.from(normal.array);
       if (!normals.every(Number.isFinite))
         throw new Error("PLY vertex normals must be finite.");
       options.onNormals?.(normals);
     }
-    return { vertices, triangles };
+    return { vertices, triangles, ...(normals ? { normals } : {}) };
   } finally {
     geometry.dispose();
   }

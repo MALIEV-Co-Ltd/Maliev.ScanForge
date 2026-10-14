@@ -7,7 +7,7 @@ export function transformIndexedMesh(
   translation: Vec3,
   rotation: Vec3,
   scale: number,
-): Pick<Entity, "positions" | "indexedMesh"> {
+): Pick<Entity, "positions" | "indexedMesh" | "normals"> {
   const positions = transformPositions(
     entity.positions,
     translation,
@@ -21,13 +21,16 @@ export function transformIndexedMesh(
     positions instanceof Float32Array
       ? new Float32Array(indexed.vertices)
       : Array.from(indexed.vertices);
-  return {
-    positions,
-    indexedMesh: {
-      vertices: transformPositions(source, translation, rotation, scale),
-      triangles: indexed.triangles,
-    },
+  const indexedMesh: IndexedMesh = {
+    vertices: transformPositions(source, translation, rotation, scale),
+    triangles: indexed.triangles,
+    ...(indexed.normals
+      ? {
+          normals: transformPositions(indexed.normals, [0, 0, 0], rotation, 1),
+        }
+      : {}),
   };
+  return { positions, indexedMesh, normals: indexedRenderNormals(indexedMesh) };
 }
 
 export function indexedMeshMatches(
@@ -35,7 +38,7 @@ export function indexedMeshMatches(
   positions: Positions,
 ): value is IndexedMesh {
   if (!value || typeof value !== "object") return false;
-  const { vertices, triangles } = value as IndexedMesh;
+  const { vertices, triangles, normals } = value as IndexedMesh;
   if (
     !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
@@ -44,7 +47,11 @@ export function indexedMeshMatches(
     !triangles.length ||
     triangles.length % 3 ||
     triangles.length * 3 !== positions.length ||
-    !vertices.every(Number.isFinite)
+    !vertices.every(Number.isFinite) ||
+    (normals !== undefined &&
+      (!(Array.isArray(normals) || normals instanceof Float32Array) ||
+        normals.length !== vertices.length ||
+        !normals.every(Number.isFinite)))
   )
     return false;
   for (let slot = 0; slot < triangles.length; slot++) {
@@ -64,4 +71,43 @@ export function retainIndexedMesh(entity: Entity): Entity {
       indexedMeshMatches(entity.indexedMesh, entity.positions))
     ? entity
     : { ...entity, indexedMesh: undefined };
+}
+
+/** Native scan normal application rotates vectors without normalizing their magnitude. */
+export function rotateIndexedNormals(
+  normals: ArrayLike<number>,
+  rotation: readonly number[],
+): Float32Array {
+  if (
+    normals.length % 3 ||
+    rotation.length !== 9 ||
+    !rotation.every(Number.isFinite)
+  )
+    throw new Error(
+      "Indexed normals require XYZ values and a finite rotation.",
+    );
+  const result = new Float32Array(normals.length);
+  for (let offset = 0; offset < normals.length; offset += 3) {
+    const x = normals[offset],
+      y = normals[offset + 1],
+      z = normals[offset + 2];
+    for (let axis = 0; axis < 3; axis++)
+      result[offset + axis] =
+        y * rotation[axis * 3 + 1] +
+        x * rotation[axis * 3] +
+        z * rotation[axis * 3 + 2];
+  }
+  if (!result.every(Number.isFinite))
+    throw new Error("Rotated indexed normals exceed Float32 precision.");
+  return result;
+}
+
+/** Expand scanner vectors for display while retaining the original indexed records. */
+export function indexedRenderNormals(mesh?: IndexedMesh): number[] | undefined {
+  if (!mesh?.normals) return undefined;
+  const output = new Array<number>(mesh.triangles.length * 3);
+  for (let slot = 0; slot < mesh.triangles.length; slot++)
+    for (let axis = 0; axis < 3; axis++)
+      output[slot * 3 + axis] = mesh.normals[mesh.triangles[slot] * 3 + axis];
+  return output;
 }

@@ -1,5 +1,5 @@
 import type { Entity, IndexedMesh, Positions } from "./types";
-import { indexedMeshMatches } from "./indexed-mesh";
+import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
 import {
   nativeRefineAlignmentMeshes,
   nativeRefineAlignmentMeshesAsync,
@@ -232,6 +232,21 @@ function finishRefinement(
           indexedMesh: {
             vertices: transform(request.sourceIndexed.vertices),
             triangles: Uint32Array.from(request.sourceIndexed.triangles),
+            ...(request.sourceIndexed.normals
+              ? {
+                  normals: rotateIndexedNormals(request.sourceIndexed.normals, [
+                    result.matrix[0],
+                    result.matrix[1],
+                    result.matrix[2],
+                    result.matrix[4],
+                    result.matrix[5],
+                    result.matrix[6],
+                    result.matrix[8],
+                    result.matrix[9],
+                    result.matrix[10],
+                  ]),
+                }
+              : {}),
           },
         }
       : {}),

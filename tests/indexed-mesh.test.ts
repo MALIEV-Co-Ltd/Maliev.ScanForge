@@ -22,6 +22,7 @@ function mesh(): Entity {
   const indexedMesh = {
     vertices: new Float32Array([9, 9, 9, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),
     triangles: new Uint32Array([3, 2, 1, 1, 4, 3]),
+    normals: new Float32Array([2, 0, 0, 0, 3, 0, 0, 0, 4, 1, 2, 3, -1, -2, -3]),
   };
   return {
     id: "indexed",
@@ -101,6 +102,9 @@ it.each(["json", "blob", "binary"])(
     expect(Array.from(output.entities[0].indexedMesh!.vertices)).toEqual(
       Array.from(source.indexedMesh!.vertices),
     );
+    expect(Array.from(output.entities[0].indexedMesh!.normals!)).toEqual(
+      Array.from(source.indexedMesh!.normals!),
+    );
     expect(Array.from(output.entities[0].indexedMesh!.triangles)).toEqual([
       3, 2, 1, 1, 4, 3,
     ]);
@@ -166,10 +170,18 @@ it("retains indexed import topology and exposes counts through the MCP boundary"
     check: vi.fn(),
     progress: vi.fn(),
     artifactBlob: () => new File(["scan"], "scan.ply"),
+    artifact: (value: string) => JSON.parse(value),
   } as unknown as CommandContext;
   const operations = createOperations(host);
   await operations.project_import({ artifactId: "scan" }, context);
   expect(entities[0].indexedMesh).toBe(source.indexedMesh);
+  const inspected = (await operations.object_get(
+    { entityId: entities[0].id, includeGeometry: true },
+    context,
+  )) as { geometry: { indexedMesh: { normals: number[] } } };
+  expect(inspected.geometry.indexedMesh.normals).toEqual(
+    Array.from(source.indexedMesh!.normals!),
+  );
   expect(
     ((await operations.project_get({}, context)) as { objects: unknown[] })
       .objects[0],
@@ -219,4 +231,23 @@ it("applies import units and origin placement to render and indexed coordinates 
   expect(Array.from(result.indexedMesh!.vertices).slice(0, 3)).toEqual([
     980, 980, 980,
   ]);
+});
+
+it("rotates indexed normals without translation or scale, including unused vertices", () => {
+  const before = mesh();
+  const result = transformIndexedMesh(before, [10, 20, 30], [0, 0, 90], 7);
+  expect(result.indexedMesh!.normals![0]).toBeCloseTo(0);
+  expect(result.indexedMesh!.normals![1]).toBeCloseTo(2);
+  expect(result.indexedMesh!.normals![2]).toBe(0);
+  expect(result.indexedMesh!.normals!.length).toBe(15);
+  expect(before.indexedMesh!.normals![0]).toBe(2);
+});
+it("rejects invalid indexed normals before retaining topology", () => {
+  for (const normals of [[1], [NaN, ...new Array(14).fill(0)]]) {
+    const source = mesh();
+    source.indexedMesh!.normals = normals;
+    expect(indexedMeshMatches(source.indexedMesh, source.positions)).toBe(
+      false,
+    );
+  }
 });

@@ -1189,3 +1189,54 @@ skipped under existing suite conditions. Changed-file Prettier and whitespace
 checks passed. No GUI/MCP operation or schema changed; the new coverage verifies
 the existing shared prepared target surface. The live application on port 5173
 was observed responding after the rebuild.
+
+## Indexed scanner normals carried through application alignment
+
+The shared import and refinement path now retains optional `IndexedMesh.normals`
+in original vertex order, including unused PLY vertices. Provided normals are
+validated and copied as Float32 data by source preparation; their directions and
+magnitudes are preserved rather than replaced by generated mesh normals. The
+existing native-derived generator remains the fallback when the field is absent.
+The 48 populated native facet-cache fixtures now also check supplied vertex
+normal bytes through the application's source-preparation routine.
+
+The optional data survives GUI/MCP PLY import, JSON and streamed JSON saving,
+binary current/history snapshots, worker input/output copies and rigid
+alignment. Metadata edits retain it; invalid indexed topology is discarded by
+the existing retention rules. Paired/ICP/global, native surface refinement and
+origin/reference alignment rotate indexed normals with geometry. General mesh
+transforms rotate the vectors without translation or uniform scaling.
+
+Browser validation exposed a display-normal mismatch: the GUI paired operation
+kept old display vectors while MCP cleared them. Both now expand display normals
+from the transformed indexed records through one shared helper. The expansion
+uses a preallocated output array and preserves triangle order. Point-cloud paths remain unchanged. Meshes without supplied indexed scanner
+normals retain the existing native-derived source-normal fallback.
+
+MCP coverage uses existing `project_import`, `mesh_process`, `mesh_transform`,
+`object_get`, project export/import and history operations. Geometry artifacts
+include optional indexed normals; discovery text and the agent guide explain
+this data. Request parameters, revision/retry/cancellation policy and source
+buffer ownership remain unchanged. Older projects remain valid without this
+field; previously imported data cannot recover missing original normals on
+unused vertices without reimporting its source file.
+
+Focused regression coverage checks malformed normals, supplied magnitudes,
+unchanged source buffers, original unused vertices, rotation, all project save
+formats, worker transfers and MCP geometry access. The browser/MCP harness now
+uses the current explicit `landmarkAlignment` and `fineAlign` workspace entries
+instead of the old catch-all processing entry. It verifies GUI/MCP import,
+indexed scanner normals, unit conversion, origin placement, binary persistence,
+transforms, undo, paired geometry parity and native target-group refinement,
+with no console errors. This source-normal integration does not establish
+complete point-pair scene refinement or real CAD tessellation-engine parity.
+
+Validation for indexed-normal integration: production build passed with no warnings
+or errors; focused validation passed nine files and 594 tests; the full suite
+passed 341 files and 26,607 tests (five files and 24 tests skipped). Changed-file
+Prettier and whitespace checks passed. The real browser/MCP harness passed all
+recorded import, persistence, transform, undo and alignment comparisons with no
+console errors. The temporary browser, MCP bridge and artifact HTTP listener
+closed in `finally`; subsequent observation found no remaining owned processes
+or listeners. Build manifest is `scanforge-16dcadad26643b2e`. Port 5173 remains
+live for user testing; no push or deployment was performed.

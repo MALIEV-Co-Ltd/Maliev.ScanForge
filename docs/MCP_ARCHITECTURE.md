@@ -86,3 +86,11 @@ The shared datum operation owns one bounded transform executor per job and close
 Identity frames bypass coordinate transformation and output allocation before the executor is created. Their unchanged source bounds are scanned in cancellable chunks to preserve the result contract. Large nonidentity Float32 model buffers retain Float32 during copied-chunk transport; authored number arrays use Float64 transport to preserve their existing precision. Bounds and finite/range validation are fused with the transform pass, while numerical expression order and Float32 output storage remain native-compatible.
 
 The shared datum result includes `cadMatrix`, reconstructed from the original exact-shape Apply path. Native replay covers 338 original placement matrices and real transformed CAD-face evaluations. Mesh/point-cloud execution continues to use the original scan matrix; the new witness does not bypass the exact-CAD target gate. Kernel placement, copy policy, preview leases and Undo ownership remain required before enabling CAD targets.
+
+Indexed scanner normals are optional topology data shared by GUI/MCP import,
+project persistence and mesh processing. Worker input/output transfers own copies
+of these buffers so scene and history arrays remain attached. Native refinement
+source preparation preserves provided Float32 vectors and falls back to generated
+normals only when absent. Transformed indexed normals are expanded through a
+shared helper for display, keeping GUI and MCP alignment outcomes consistent.
+`object_get` includes indexed normals in its bounded geometry artifact.

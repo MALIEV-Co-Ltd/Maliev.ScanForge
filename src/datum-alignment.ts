@@ -143,6 +143,15 @@ export function datumScanTransformPlan(
         ? {
             vertices: vertices!,
             triangles: indexed.triangles,
+            ...(indexed.normals && matrix
+              ? {
+                  normals: transformDatumCoordinates(
+                    indexed.normals,
+                    matrix,
+                    true,
+                  ),
+                }
+              : {}),
           }
         : undefined,
       normals: normals ? Array.from(normals) : undefined,

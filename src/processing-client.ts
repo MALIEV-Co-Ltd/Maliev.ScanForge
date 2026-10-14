@@ -280,6 +280,9 @@ export function processMesh(
             indexedMesh: {
               vertices: clone(target.indexedMesh.vertices),
               triangles,
+              ...(target.indexedMesh.normals
+                ? { normals: clone(target.indexedMesh.normals) }
+                : {}),
             },
           };
         });
@@ -287,7 +290,11 @@ export function processMesh(
           const mesh = copied[key];
           const triangles = Uint32Array.from(mesh.triangles);
           transfers.push(triangles.buffer);
-          copied[key] = { vertices: clone(mesh.vertices), triangles };
+          copied[key] = {
+            vertices: clone(mesh.vertices),
+            triangles,
+            ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+          };
         }
       }
       if (
@@ -299,7 +306,11 @@ export function processMesh(
         const mesh = copied.sourceIndexed;
         const triangles = Uint32Array.from(mesh.triangles);
         transfers.push(triangles.buffer);
-        copied.sourceIndexed = { vertices: clone(mesh.vertices), triangles };
+        copied.sourceIndexed = {
+          vertices: clone(mesh.vertices),
+          triangles,
+          ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+        };
       }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);

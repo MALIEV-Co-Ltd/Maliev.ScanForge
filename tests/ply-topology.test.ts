@@ -70,3 +70,8 @@ it.each(["3 -1 2 1", "3 5 2 1"])(
     ).toThrow("PLY face index is outside the vertex buffer.");
   },
 );
+
+it("retains original indexed scanner normals as topology data", () => {
+  const mesh = parsePlyTopology(normalPly());
+  expect(mesh.normals).toEqual(new Float32Array([0, 0, 1, 0, 1, 0, 1, 0, 0]));
+});

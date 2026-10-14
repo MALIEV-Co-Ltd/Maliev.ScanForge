@@ -691,3 +691,40 @@ describe("processing worker resource ownership", () => {
     expect(replies.at(-1)!.transfers).toHaveLength(3);
   });
 });
+
+it("copies and transfers indexed normals without detaching source or history buffers", async () => {
+  const normals = new Float32Array([2, 0, 0, 0, 3, 0, 0, 0, 4]);
+  const sourceIndexed = {
+    vertices: positions,
+    triangles: new Uint32Array([0, 1, 2]),
+    normals,
+  };
+  const promise = processMesh({
+    kind: "nativeRefine",
+    positions,
+    target: positions,
+    sourceIndexed,
+    targetIndexed: sourceIndexed,
+    sampleBudget: 3,
+    initialRadius: 3,
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const sent = worker.sent as Extract<
+    ProcessingRequest,
+    { kind: "nativeRefine" }
+  >;
+  expect(sent.sourceIndexed.normals).toEqual(normals);
+  expect(sent.sourceIndexed.normals).not.toBe(normals);
+  expect(worker.transfers).toContain(
+    (sent.sourceIndexed.normals as Float32Array).buffer,
+  );
+  expect(normals.byteLength).toBe(36);
+  worker.reply({
+    result: {
+      kind: "nativeRefine",
+      positions: positions.slice(),
+      diagnostics: {},
+    },
+  });
+  await promise;
+});

@@ -149,7 +149,7 @@ try {
   };
 
   const ascii =
-    "ply\nformat ascii 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n99 99 99\n0 0 1\n2 0 1\n0 2 1\n3 1 2 3\n";
+    "ply\nformat ascii 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nproperty float nx\nproperty float ny\nproperty float nz\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n99 99 99 2 0 0\n0 0 1 0 3 0\n2 0 1 0 0 4\n0 2 1 -1 -2 -3\n3 1 2 3\n";
   const geometry = async (entityId) => {
     const object = (
       await call("object_get", { entityId, includeGeometry: true })
@@ -195,6 +195,8 @@ try {
   }
   assert(gui);
   const guiGeometry = await geometry(gui.id);
+  const scannerNormals = [2, 0, 0, 0, 3, 0, 0, 0, 4, -1, -2, -3];
+  assert.deepEqual(guiGeometry.indexedMesh.normals, scannerNormals);
   assertTopology(guiGeometry);
   assert.deepEqual(guiGeometry.positions, [-1, -1, 0, 1, -1, 0, -1, 1, 0]);
   const uploaded = (
@@ -215,6 +217,7 @@ try {
   );
   assert(imported);
   const importedGeometry = await geometry(imported.id);
+  assert.deepEqual(importedGeometry.indexedMesh.normals, scannerNormals);
   assertTopology(importedGeometry);
   assert.deepEqual(
     importedGeometry.positions,
@@ -253,6 +256,17 @@ try {
   );
   assertTopology(await geometry(imported.id));
   assertTopology(await geometry(gui.id));
+  assert.deepEqual(
+    (await geometry(gui.id)).indexedMesh.normals,
+    scannerNormals,
+  );
+  assert.deepEqual(
+    (await geometry(imported.id)).indexedMesh.normals,
+    scannerNormals,
+  );
+  await page.screenshot({
+    path: fileURLToPath(new URL("indexed-normals.png", out)),
+  });
   const stlCapture = JSON.parse(
     await readFile(
       new URL("fixtures/stl-reader-native.json", import.meta.url),
@@ -335,7 +349,7 @@ try {
   await mutate("history_undo", {});
   await mutate("selection_set", { entityId: gui.id, triangles: [] });
   await mutate("ui_set", {
-    workspace: "processing",
+    workspace: "landmarkAlignment",
     mode: "inspect",
     toolPanelOpen: true,
   });
@@ -446,7 +460,7 @@ try {
     ),
   });
   await mutate("ui_set", {
-    workspace: "processing",
+    workspace: "fineAlign",
     mode: "inspect",
     toolPanelOpen: true,
   });
@@ -499,6 +513,7 @@ try {
     unitConversion: true,
     originPlacement: true,
     binaryPersistence: true,
+    indexedScannerNormals: true,
     transformTopologyRetention: true,
     undoRestoration: true,
     nativeRefinement: true,

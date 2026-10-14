@@ -553,3 +553,20 @@ ranking residual; maxError is measured on transformed moving landmarks. Input,
 cancellation, history and worker contracts are unchanged. This fixes the initial
 candidate; the native subsequent full landmark-preview refinement is still a
 separate incomplete path, and the point-pair ribbon remains independently gated.
+
+### Indexed scanner normals in alignment
+
+PLY normals are retained both as display normals and as optional `indexedMesh.normals`
+in original vertex order, including unused vertices. `object_get` with
+`includeGeometry:true` returns those indexed normals in its geometry artifact.
+JSON, streamed JSON and binary project save/reopen preserve them. Older projects
+without this optional field remain supported.
+
+`mesh_process` with `operation.kind:"nativeRefine"` automatically uses supplied
+indexed scanner normals without regenerating or normalizing their magnitudes.
+Meshes without this data use the existing native-derived normal generator.
+Paired/ICP/global and origin/reference alignment rotate indexed normals with the
+scan; metadata changes retain them and invalidated topology is discarded.
+`mesh_transform` preserves normals through rotation, without applying translation
+or uniform scale to the vectors. The GUI and MCP derive display normals from the
+same transformed indexed records. No new operation parameter is required.

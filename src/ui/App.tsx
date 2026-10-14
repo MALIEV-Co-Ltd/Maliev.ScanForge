@@ -191,7 +191,11 @@ import {
   validatePositions,
 } from "../io";
 import { importScan } from "../import-client";
-import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
+import {
+  retainIndexedMesh,
+  transformIndexedMesh,
+  indexedRenderNormals,
+} from "../indexed-mesh";
 import {
   canonicalCloud,
   cloudPlacement,
@@ -5628,6 +5632,7 @@ export function App() {
                         updateSelected({
                           positions,
                           indexedMesh,
+                          normals: indexedRenderNormals(indexedMesh),
                           kind: "mesh",
                           kernelId: undefined,
                           brep: undefined,
