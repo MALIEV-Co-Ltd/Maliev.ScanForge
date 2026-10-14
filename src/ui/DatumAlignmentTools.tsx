@@ -12,6 +12,7 @@ export function DatumAlignmentTools({
   center,
   entities,
   readReferences,
+  onPickFace,
   onPickPoint,
 }: {
   api: ApplicationApi;
@@ -22,7 +23,11 @@ export function DatumAlignmentTools({
     entityId: string,
     offset: number,
     signal: AbortSignal,
+    triangleIndex?: number,
   ) => Promise<AlignmentReferencePage>;
+  onPickFace: (
+    callback: ((entityId: string, triangleIndex?: number) => void) | null,
+  ) => void;
   onPickPoint: (callback: ((point: Vec3) => void) | null) => void;
 }) {
   const [open, setOpen] = useState(false),
@@ -54,6 +59,7 @@ export function DatumAlignmentTools({
     return () => {
       disposed.current = true;
       onPickPoint(null);
+      onPickFace(null);
       if (activeJob.current)
         void api.invoke("job_cancel", { jobId: activeJob.current });
       if (heldPreview.current) void discard();
@@ -135,6 +141,7 @@ export function DatumAlignmentTools({
   }
   async function cancel() {
     onPickPoint(null);
+    onPickFace(null);
     if (activeJob.current)
       await api.invoke("job_cancel", { jobId: activeJob.current });
     await discard();
@@ -186,6 +193,7 @@ export function DatumAlignmentTools({
               index={index}
               value={bindings[index]}
               read={readReferences}
+              onPickFace={onPickFace}
               onChange={(value, required) => {
                 setRequiredReferences((current) => {
                   const next = [...current];

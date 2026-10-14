@@ -82,6 +82,58 @@ async function settle(
   throw new Error("Job did not settle");
 }
 describe("MCP alignment reference discovery", () => {
+  it("maps original render triangle slots to exact half-open CAD face ranges", async () => {
+    const { api, host } = setup([
+      {
+        kind: "plane",
+        faceIndex: 0,
+        firstTriangle: 0,
+        triangleCount: 2,
+        evaluatedPoint: [0, 0, 0],
+        derivativeU: [1, 0, 0],
+        derivativeV: [0, 1, 0],
+      },
+      {
+        kind: "unsupported",
+        faceIndex: 1,
+        firstTriangle: 2,
+        triangleCount: 3,
+        surfaceType: 3,
+      },
+    ]);
+    try {
+      for (const triangleIndex of [0, 1, 2, 4]) {
+        const job = await settle(
+          api,
+          await api.invoke("alignment_references", {
+            entityId: "cad",
+            triangleIndex,
+          }),
+        );
+        expect(job.status).toBe("succeeded");
+        expect(job.result.references).toHaveLength(1);
+        expect(job.result.references[0].faceIndex).toBe(
+          triangleIndex < 2 ? 0 : 1,
+        );
+      }
+      const missing = await settle(
+        api,
+        await api.invoke("alignment_references", {
+          entityId: "cad",
+          triangleIndex: 5,
+        }),
+      );
+      expect(missing.status).toBe("failed");
+      const invalid = await api.invoke("alignment_references", {
+        entityId: "cad",
+        triangleIndex: -1,
+      });
+      expect(invalid.ok).toBe(false);
+      expect(host.commit).not.toHaveBeenCalled();
+    } finally {
+      api.dispose();
+    }
+  });
   it("is discoverable with bounded, strict schemas", async () => {
     const { api } = setup();
     try {

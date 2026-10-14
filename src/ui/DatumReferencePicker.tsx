@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   AlignmentReference,
   AlignmentReferencePage,
@@ -11,6 +11,7 @@ export function DatumReferencePicker({
   value,
   onChange,
   read,
+  onPickFace,
 }: {
   entities: Entity[];
   index: number;
@@ -23,13 +24,60 @@ export function DatumReferencePicker({
     entityId: string,
     offset: number,
     signal: AbortSignal,
+    triangleIndex?: number,
   ) => Promise<AlignmentReferencePage>;
+  onPickFace: (
+    callback: ((entityId: string, triangleIndex?: number) => void) | null,
+  ) => void;
 }) {
   const [source, setSource] = useState(value?.entityId ?? "");
   const [offset, setOffset] = useState(0);
   const [page, setPage] = useState<AlignmentReferencePage | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const pickedRead = useRef<AbortController | null>(null);
+  useEffect(
+    () => () => {
+      pickedRead.current?.abort();
+      onPickFace(null);
+    },
+    [],
+  );
+  function startFacePick() {
+    pickedRead.current?.abort();
+    setError("");
+    onPickFace((entityId, triangleIndex) => {
+      if (triangleIndex === undefined) {
+        setError("Pick an exact CAD face.");
+        return;
+      }
+      const controller = new AbortController();
+      pickedRead.current = controller;
+      setLoading(true);
+      void read(entityId, 0, controller.signal, triangleIndex)
+        .then((result) => {
+          if (controller.signal.aborted) return;
+          const reference = result.references[0];
+          if (!reference || reference.kind === "unsupported")
+            throw new Error("This face cannot define an alignment reference.");
+          setSource(entityId);
+          setOffset(Math.floor((reference.faceIndex ?? 0) / 50) * 50);
+          setPage(result);
+          onChange({ entityId, reference }, true);
+        })
+        .catch((failure: unknown) => {
+          if (!controller.signal.aborted)
+            setError(
+              failure instanceof Error
+                ? failure.message
+                : "Face picking failed.",
+            );
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
+    });
+  }
   useEffect(() => {
     if (!source) {
       setPage(null);
@@ -58,6 +106,9 @@ export function DatumReferencePicker({
   }, [source, offset, entities]);
   return (
     <>
+      <button disabled={loading} onClick={startFacePick}>
+        Pick reference face on canvas
+      </button>
       <label className="field">
         <span>Reference object</span>
         <select

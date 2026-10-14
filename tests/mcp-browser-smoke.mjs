@@ -440,6 +440,61 @@ try {
     (await job(await call("mesh_analyze", { entityId: meshId }))).stats,
     sourceAnalysis.stats,
   );
+  await mutate("object_update", {
+    entityId: meshId,
+    patch: { visible: false },
+  });
+  await mutate("viewport_control", {
+    action: "fit",
+    entityId: created.entityIds[0],
+  });
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .click();
+  const viewportHit = (
+    await call("viewport_pick", { x: 0.5, y: 0.5, maxHits: 1 })
+  ).result.hits[0];
+  assert.equal(viewportHit.entityId, created.entityIds[0]);
+  const pickedReference = await job(
+    await call("alignment_references", {
+      entityId: viewportHit.entityId,
+      triangleIndex: viewportHit.triangleIndex,
+    }),
+  );
+  await page
+    .getByRole("button", { name: "Pick reference face on canvas", exact: true })
+    .click();
+  const canvas = await page.locator(".viewport canvas").first().boundingBox();
+  assert(canvas);
+  await page.mouse.click(
+    canvas.x + canvas.width / 2,
+    canvas.y + canvas.height / 2,
+  );
+  await page.waitForFunction(
+    (referenceId) =>
+      document.querySelector('[aria-label="Reference 1 feature"]')?.value ===
+      referenceId,
+    pickedReference.references[0].id,
+  );
+  assert.equal((await call("project_get")).result.selectedId, meshId);
+  for (let axis = 0; axis < 3; axis++)
+    assert.equal(
+      Number(
+        await page
+          .getByLabel(`Reference 1 point (mm) ${["X", "Y", "Z"][axis]}`, {
+            exact: true,
+          })
+          .inputValue(),
+      ),
+      pickedReference.references[0].point[axis],
+    );
+  await page
+    .getByRole("button", { name: "Cancel alignment", exact: true })
+    .click();
+  await mutate("object_update", { entityId: meshId, patch: { visible: true } });
   const repair = await job(
     await mutate("mesh_process", {
       entityId: meshId,

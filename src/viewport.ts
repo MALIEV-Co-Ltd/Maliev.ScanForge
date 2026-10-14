@@ -227,7 +227,11 @@ export class Viewport {
 
   constructor(
     private readonly container: HTMLElement,
-    private readonly onPick: (point: Vec3, entityId: string) => void,
+    private readonly onPick: (
+      point: Vec3,
+      entityId: string,
+      triangleIndex?: number,
+    ) => void,
     private readonly onSelect: (id: string) => void,
     private readonly onSelection?: (
       id: string,
@@ -1566,7 +1570,15 @@ export class Viewport {
         mask,
         subtractSelection(this.subtract, event.altKey),
       );
-    } else this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
+    } else
+      this.onPick(
+        [hit.point.x, hit.point.y, hit.point.z],
+        id,
+        hit.faceIndex == null
+          ? undefined
+          : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
+              hit.faceIndex),
+      );
     return id;
   }
 
@@ -1625,7 +1637,14 @@ export class Viewport {
           choose: () => {
             if (!this.objects.get(id)?.mesh.visible) return;
             this.onSelect(id);
-            this.onPick([hit.point.x, hit.point.y, hit.point.z], id);
+            this.onPick(
+              [hit.point.x, hit.point.y, hit.point.z],
+              id,
+              hit.faceIndex == null
+                ? undefined
+                : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
+                    hit.faceIndex),
+            );
           },
         };
       });

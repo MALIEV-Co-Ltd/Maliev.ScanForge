@@ -97,6 +97,21 @@ export function createAlignmentOperations(
       context.check();
       const offset = args.offset ?? 0,
         limit = args.limit ?? 50;
+      if (args.triangleIndex !== undefined) {
+        const triangle = args.triangleIndex;
+        references = references.filter(
+          (reference) =>
+            reference.source === "cadFace" &&
+            reference.firstTriangle !== undefined &&
+            reference.triangleCount !== undefined &&
+            triangle >= reference.firstTriangle &&
+            triangle < reference.firstTriangle + reference.triangleCount,
+        );
+        if (references.length !== 1)
+          throw new Error(
+            "The picked triangle does not identify one exact CAD face.",
+          );
+      }
       if (offset > references.length)
         throw new Error(
           "Reference offset exceeds the available reference count.",

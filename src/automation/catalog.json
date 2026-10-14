@@ -4554,7 +4554,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit.",
+    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -4585,6 +4585,12 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "triangleIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000000,
+          "description": "Optional original render triangle slot. Resolves exactly one CAD face using its half-open tessellation range; fitted-only objects cannot resolve a triangle."
         }
       },
       "required": ["entityId"],

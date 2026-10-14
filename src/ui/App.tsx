@@ -247,6 +247,9 @@ const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const datumPointPick = useRef<((point: Vec3) => void) | null>(null);
+  const datumFacePick = useRef<
+    ((entityId: string, triangleIndex?: number) => void) | null
+  >(null);
   const datumPreview = useRef<{ base: Entity[]; entities: Entity[] } | null>(
     null,
   );
@@ -624,8 +627,14 @@ export function App() {
     try {
       viewport.current = new Viewport(
         viewportHost.current!,
-        (point, id) => {
+        (point, id, triangleIndex) => {
           if (busyRef.current) return;
+          if (datumFacePick.current) {
+            const pick = datumFacePick.current;
+            datumFacePick.current = null;
+            pick(id, triangleIndex);
+            return;
+          }
           if (datumPointPick.current) {
             const pick = datumPointPick.current;
             datumPointPick.current = null;
@@ -660,6 +669,7 @@ export function App() {
           // selected until onPick binds the reference and completes the gesture.
           if (scanReferencePick.current) return;
           if (datumPointPick.current) return;
+          if (datumFacePick.current) return;
           if (
             !busyRef.current &&
             !nPointsRef.current &&
@@ -756,6 +766,7 @@ export function App() {
       if (!event?.persisted) {
         datumPreview.current = null;
         datumPointPick.current = null;
+        datumFacePick.current = null;
         scanToolAbort.current?.abort();
         scanEditAbort.current?.abort();
         releaseProcessingSession();
@@ -3759,12 +3770,14 @@ export function App() {
     entityId: string,
     offset: number,
     signal: AbortSignal,
+    triangleIndex?: number,
   ): Promise<AlignmentReferencePage> {
     signal.throwIfAborted();
     const receipt = await workspaceApi.invoke("alignment_references", {
       entityId,
       offset,
       limit: 50,
+      ...(triangleIndex === undefined ? {} : { triangleIndex }),
     });
     if (!receipt.ok) throw new Error(receipt.error.message);
     const { jobId } = receipt.result as { jobId: string };
@@ -4999,8 +5012,16 @@ export function App() {
                           center={stats.center}
                           entities={entities}
                           readReferences={readAlignmentReferences}
+                          onPickFace={(callback) => {
+                            datumFacePick.current = callback;
+                            if (callback) {
+                              datumPointPick.current = null;
+                              setMode("inspect");
+                            }
+                          }}
                           onPickPoint={(callback) => {
                             datumPointPick.current = callback;
+                            if (callback) datumFacePick.current = null;
                             if (callback) setMode("inspect");
                           }}
                         />
