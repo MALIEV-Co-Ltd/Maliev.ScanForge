@@ -4240,7 +4240,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4326,6 +4326,9 @@
           "type": "boolean"
         },
         "dismissError": {
+          "type": "boolean"
+        },
+        "datumAlignmentOpen": {
           "type": "boolean"
         }
       },

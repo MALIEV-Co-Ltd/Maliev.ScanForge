@@ -1,4 +1,5 @@
 import type { Handler, WorkspaceHost } from "./api";
+import type { Entity } from "../types";
 
 export interface ViewportCommand {
   action: "fit" | "rotate" | "projection" | "camera" | "sketchNormal";
@@ -17,8 +18,37 @@ export interface InterfacePatch {
   workspace?: string;
   mode?: "inspect" | "measure" | "section" | "brush";
   toolPanelOpen?: boolean;
+  datumAlignmentOpen?: boolean;
   settingsOpen?: boolean;
   dismissError?: boolean;
+}
+
+/** Shared entry validation/defaults for the ribbon and agent interface command. */
+export function coordinateAlignmentInterface(
+  patch: InterfacePatch,
+  selected?: Entity,
+): InterfacePatch {
+  if (!patch.datumAlignmentOpen) return patch;
+  if (
+    !selected ||
+    selected.locked ||
+    !selected.positions.length ||
+    (!selected.kernelId &&
+      (selected.parametric || !["mesh", "pointcloud"].includes(selected.kind)))
+  )
+    throw new Error("Select an unlocked scan or exact CAD object to align.");
+  if (patch.workspace && patch.workspace !== "properties")
+    throw new Error("Coordinate alignment uses the properties workspace.");
+  if (patch.toolPanelOpen === false)
+    throw new Error(
+      "Coordinate alignment requires the tool panel to be visible.",
+    );
+  return {
+    ...patch,
+    workspace: "properties",
+    toolPanelOpen: true,
+    mode: "inspect",
+  };
 }
 
 function unavailable(): never {
@@ -49,7 +79,13 @@ export function createWorkflowOperations(
         throw new Error("Supply at least one interface setting.");
       c.check();
       if (!host.setInterface) unavailable();
-      host.setInterface(patch);
+      const state = host.snapshot();
+      host.setInterface(
+        coordinateAlignmentInterface(
+          patch,
+          state.entities.find((entity) => entity.id === state.selectedId),
+        ),
+      );
       return host.inspectApplication?.(100) ?? unavailable();
     },
     viewport_get: () => host.inspectViewport?.() ?? unavailable(),

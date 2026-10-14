@@ -532,3 +532,13 @@ payload adapter. Result `constraints` contains resolved numerical references.
 The GUI's Origin reference selector uses the same contract in each slot; editing
 point/direction/type switches that slot back to manual input. Origin choices
 replace object bindings and require no source entity or CAD allocation.
+
+`ui_set` accepts `datumAlignmentOpen: true` to open the same reference-based
+alignment panel as the Main/Scan Data Align command. A selected, unlocked mesh,
+point cloud or exact CAD target is required. Opening normalizes workspace to
+`properties`, tool panel visibility to true and interaction mode to `inspect`;
+contradictory workspace/visibility inputs fail. `application_inspect` reports
+`datumAlignmentOpen`. Use `datumAlignmentOpen: false` to close an idle panel;
+discard an active datum preview first. Opening never changes model geometry or
+history. `command_run` with `name: "ribbon:align"` launches this same entry.
+The primary command no longer invokes the unverified principal-axis placeholder.

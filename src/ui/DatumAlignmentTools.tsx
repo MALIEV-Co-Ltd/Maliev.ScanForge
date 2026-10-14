@@ -19,6 +19,8 @@ export function DatumAlignmentTools({
   readReferences,
   onPickFace,
   onPickPoint,
+  open,
+  onOpenChange: setOpen,
 }: {
   api: ApplicationApi;
   entity: Entity;
@@ -34,9 +36,10 @@ export function DatumAlignmentTools({
     callback: ((entityId: string, triangleIndex?: number) => void) | null,
   ) => void;
   onPickPoint: (callback: ((point: Vec3) => void) | null) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false),
-    [count, setCount] = useState(1),
+  const [count, setCount] = useState(1),
     [busy, setBusy] = useState(false);
   const [error, setError] = useState(""),
     [preview, setPreview] = useState(false);

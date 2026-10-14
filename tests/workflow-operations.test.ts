@@ -7,6 +7,58 @@ import {
 import { createWorkflowOperations } from "../src/automation/workflow-operations";
 import { VisualCaptureError } from "../src/automation/visual-capture";
 import { CommandRepeat } from "../src/command-repeat";
+import { coordinateAlignmentInterface } from "../src/automation/workflow-operations";
+
+it("opens coordinate alignment through MCP with the shared ribbon defaults and validates targets", async () => {
+  const { api, state, mutate, ui } = setup();
+  try {
+    expect((await mutate("ui_set", { datumAlignmentOpen: true })).ok).toBe(
+      false,
+    );
+    state.entities = [
+      {
+        id: "scan",
+        name: "Scan",
+        kind: "mesh",
+        positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+        visible: true,
+        color: "#fff",
+        opacity: 1,
+      },
+    ];
+    state.selectedId = "scan";
+    const expected = coordinateAlignmentInterface(
+      { datumAlignmentOpen: true },
+      state.entities[0],
+    );
+    expect((await mutate("ui_set", { datumAlignmentOpen: true })).ok).toBe(
+      true,
+    );
+    expect(ui).toMatchObject(expected);
+    expect(
+      (await mutate("ui_set", { datumAlignmentOpen: true, workspace: "mesh" }))
+        .ok,
+    ).toBe(false);
+    expect(
+      (
+        await mutate("ui_set", {
+          datumAlignmentOpen: true,
+          toolPanelOpen: false,
+        })
+      ).ok,
+    ).toBe(false);
+    state.entities[0].locked = true;
+    expect((await mutate("ui_set", { datumAlignmentOpen: true })).ok).toBe(
+      false,
+    );
+    expect((await mutate("ui_set", { datumAlignmentOpen: false })).ok).toBe(
+      true,
+    );
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+  }
+});
 
 it("MCP launches and repeats the shared current command with revision, busy and retry guards", async () => {
   const { host } = setup();

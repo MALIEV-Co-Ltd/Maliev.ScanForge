@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  align:
+    "docs/NATIVE_DATUM_ALIGNMENT.md: reference-based coordinate alignment, native owner-scan Apply and GUI/MCP Preview/Apply parity",
   fineAlign:
     "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: indexed surface refinement; GUI/shared MCP parity and native owner-scan captures",
   reducePolygons:

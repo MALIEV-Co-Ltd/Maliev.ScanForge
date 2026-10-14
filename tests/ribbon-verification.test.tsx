@@ -15,7 +15,7 @@ const ready = {
   canRedo: true,
 };
 describe("ribbon verification gate", () => {
-  it("exposes verified fine alignment while retaining the unfinished origin alignment gate", () => {
+  it("exposes verified coordinate and fine alignment while retaining the separate coordinate-system gate", () => {
     const fine = getRibbonToolMetadata("fineAlign")!;
     expect(
       ribbonToolAvailability(fine, ready, { fineAlign: vi.fn() }).available,
@@ -27,7 +27,7 @@ describe("ribbon verification gate", () => {
         { fineAlign: vi.fn() },
       ).available,
     ).toBe(false);
-    expect(ribbonVerification("align", true).status).toBe("unverified");
+    expect(ribbonVerification("align", true).status).toBe("verified");
     expect(ribbonVerification("alignCoordinates", false).status).toBe(
       "planned",
     );

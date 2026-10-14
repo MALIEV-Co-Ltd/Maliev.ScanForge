@@ -13,6 +13,19 @@ const ready: RibbonState = {
   canUndo: true,
   canRedo: true,
 };
+it("opens the verified coordinate Align entry only with a selection and an idle application", () => {
+  const tool = getRibbonToolMetadata("align")!;
+  const actions = { align: vi.fn() };
+  expect(ribbonToolAvailability(tool, ready, actions).available).toBe(true);
+  expect(
+    ribbonToolAvailability(tool, { ...ready, hasSelection: false }, actions)
+      .available,
+  ).toBe(false);
+  expect(
+    ribbonToolAvailability(tool, { ...ready, disabled: true }, actions)
+      .available,
+  ).toBe(false);
+});
 describe("ribbon command inventory", () => {
   it("keeps Main to common workflows and advanced tools on dedicated tabs", () => {
     expect(
@@ -108,12 +121,7 @@ describe("ribbon command inventory", () => {
     ).toEqual(["cleanup", "flipNormals"]);
     expect(
       getRibbonToolMetadata("align")?.options?.map((tool) => tool.id),
-    ).toEqual([
-      "alignCoordinates",
-      "alignInteractive",
-      "alignNPoints",
-      "fineAlign",
-    ]);
+    ).toEqual(["alignInteractive", "alignNPoints", "fineAlign"]);
     expect(
       getRibbonToolMetadata("exportStep")?.options?.map((tool) => tool.id),
     ).toEqual(["exportStl"]);

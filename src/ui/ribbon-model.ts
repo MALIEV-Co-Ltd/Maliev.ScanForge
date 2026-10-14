@@ -169,7 +169,6 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("reducePolygons", "Simplify", "cleanup"),
         withOptions(
           tool("align", "Align", "align", true),
-          planned("alignCoordinates", "To origin / references", "align"),
           planned("alignInteractive", "Move / rotate scan", "transform"),
           tool("alignNPoints", "Between scans: point pairs", "select"),
           tool("fineAlign", "Between scans: fine alignment", "align"),
@@ -275,7 +274,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Align",
-        tool("align", "Principal axes", "align", true),
+        tool("align", "To origin / references", "align", true),
         planned("alignCoordinates", "By coordinate system", "align"),
         planned("alignInteractive", "Interactive", "transform"),
         tool("alignNPoints", "By N points", "select"),

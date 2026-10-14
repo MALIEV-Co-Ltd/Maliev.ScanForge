@@ -1669,3 +1669,37 @@ picking. Receipt: `.resources/origin-reference-browser/browser-validation.json`.
 Browser/bridge helpers exited and temporary ports closed; live source serving
 on port 5173 remains available. No duplicate native capture was launched: the
 existing original dispatcher corpus was reused and checked through the adapter.
+
+## Alignment command entry
+
+The Main Align command now opens the tested coordinate-reference workflow rather
+than the prior principal-axis placeholder. Scan Data labels this entry To origin /
+references. The redundant Main origin/reference submenu item is removed; point
+pairs and fine alignment remain separate workflows. This availability applies to
+reference-based alignment, not to every planned alignment or fitting feature.
+
+GUI and MCP `ui_set` share entry validation/defaults and the same interface setter.
+Panel open state is controlled by the workspace, observable through
+`application_inspect`, and available as `datumAlignmentOpen`. Opening requires an
+unlocked supported target, opens properties with inspect mode, and does not edit
+geometry. Closing while an alignment operation or preview is active is rejected.
+Native original constructors, origin/reference resolution, readiness and full
+owner-scan Apply evidence above support the modeling path used by this entry.
+Remaining native UI/specialized-scope gaps retain their stated coverage limits;
+enabling this concrete workflow does not certify the entire application goal.
+
+Validation: Release build passed with no warnings/errors, 205 focused tests passed,
+and the full suite passed 340 files / 26,513 tests (5 existing skipped files /
+24 skipped tests). The built browser replay verified enabled Main Align,
+MCP `command_run` and `ui_set` entry parity, no geometry edits on opening, idle
+close/reopen, active-preview preservation across a selection change, and the
+specific active-preview close denial. All seven origin references, GUI/MCP Apply
+geometry, Undo, axis eligibility and translation picking passed again.
+Receipt: `.resources/alignment-entry-browser/browser-validation.json`.
+An initial idle-close failure exposed the API's self-owned busy flag; interface
+closing now relies on the API's existing operation admission lock and a separate
+preview guard. The failure receipt is retained as `idle-close-failure-validation.json`.
+The prior principal-axis placeholder is no longer a Main command; a verified
+principal-axis workflow remains separate unfinished work rather than assumed
+parity. The complete goal remains active. Temporary browser/bridge resources
+were closed; live development on port 5173 was retained.

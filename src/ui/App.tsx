@@ -18,6 +18,10 @@ import {
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
+import {
+  coordinateAlignmentInterface,
+  type InterfacePatch,
+} from "../automation/workflow-operations";
 import type { AlignmentReferencePage } from "../automation/alignment-operations";
 import {
   selectionProcessingMode,
@@ -171,7 +175,6 @@ import {
 import { partitionTriangles, selectionCount } from "../selection";
 import { fittedPrimitive } from "../fitted-primitive";
 import {
-  alignPrincipalAxes,
   cleanupMesh,
   deviations,
   fitCylinder,
@@ -337,6 +340,14 @@ export function App() {
   const legacySketch = useRef<Sketch>(rectangleSketch());
   const [ribbonTab, setRibbonTab] = useState("main");
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
+  const [datumAlignmentOpen, setDatumAlignmentOpen] = useState(false);
+  useEffect(() => {
+    if (!datumPreview.current) {
+      datumPointPick.current = null;
+      datumFacePick.current = null;
+      setDatumAlignmentOpen(false);
+    }
+  }, [selectedId]);
   const [nPoints, setNPoints] = useState<LandmarkAlignment | null>(null);
   const [landmarkPickSide, setLandmarkPickSide] = useState<"moving" | "fixed">(
     "moving",
@@ -1631,7 +1642,7 @@ export function App() {
     fitCylinder: () => runFit("cylinder"),
     fitCone: () => runFit("cone"),
     primitive: () => setPrimitiveDialog(true),
-    align: autoAlign,
+    align: openAlignment,
     transform: () => showTools("transform"),
     section: () => {
       setMode("section");
@@ -2576,18 +2587,14 @@ export function App() {
       setError(errorText(error));
     }
   }
-  function autoAlign() {
-    void action("Aligning principal axes…", () => {
-      if (!selected || selected.kernelId)
-        throw new Error("Select a scan mesh for principal-axis alignment.");
-      updateSelected({
-        positions: alignPrincipalAxes(selected.positions).positions,
-      });
-      setMessage(
-        "Scan aligned to principal axes · review symmetric parts manually",
+  function openAlignment() {
+    try {
+      setInterface({ datumAlignmentOpen: true });
+    } catch (failure) {
+      setError(
+        failure instanceof Error ? failure.message : "Cannot open alignment.",
       );
-      requestAnimationFrame(() => viewport.current?.fitView());
-    });
+    }
   }
   function removeDegenerate() {
     void action("Removing degenerate triangles…", () => {
@@ -3749,6 +3756,40 @@ export function App() {
     measure.length === 2
       ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
       : null;
+  function setInterface(input: InterfacePatch) {
+    const patch = coordinateAlignmentInterface(input, selected);
+    if (
+      patch.workspace !== undefined &&
+      (nPoints ||
+        surfaceFit ||
+        scanPreview ||
+        createSketch ||
+        datumPreview.current)
+    )
+      throw new Error(
+        "Finish or cancel the GUI preview before changing its tool panel.",
+      );
+    if (patch.datumAlignmentOpen === false && datumPreview.current)
+      throw new Error("Finish or cancel alignment before closing its panel.");
+    if (patch.ribbonTab !== undefined) {
+      if (!RIBBON_TABS.some((tab) => tab.id === patch.ribbonTab))
+        throw new Error("Unknown ribbon tab.");
+      setRibbonTab(patch.ribbonTab);
+    }
+    if (patch.workspace !== undefined) showTools(patch.workspace);
+    if (patch.mode !== undefined) setMode(patch.mode);
+    if (patch.toolPanelOpen !== undefined)
+      setToolPanelOpen(patch.toolPanelOpen);
+    if (patch.datumAlignmentOpen !== undefined) {
+      if (!patch.datumAlignmentOpen) {
+        datumPointPick.current = null;
+        datumFacePick.current = null;
+      }
+      setDatumAlignmentOpen(patch.datumAlignmentOpen);
+    }
+    if (patch.settingsOpen !== undefined) setSettingsOpen(patch.settingsOpen);
+    if (patch.dismissError) setError("");
+  }
   const workspaceApi = useWorkspaceApi({
     inspectCommands: () => commandRepeat.current.inspect(),
     launchCommand: runRepeatable,
@@ -3781,6 +3822,7 @@ export function App() {
         ribbonTab,
         mode,
         toolPanelOpen,
+        datumAlignmentOpen,
         settingsOpen,
         previews: {
           datum: !!datumPreview.current,
@@ -3795,32 +3837,7 @@ export function App() {
         ...inspectApplicationDom(root, maxControls),
       };
     },
-    setInterface: (patch) => {
-      if (
-        patch.workspace !== undefined &&
-        (nPoints ||
-          surfaceFit ||
-          scanPreview ||
-          createSketch ||
-          datumPreview.current)
-      )
-        throw new Error(
-          "Finish or cancel the GUI preview before changing its tool panel.",
-        );
-      if (patch.ribbonTab !== undefined) {
-        if (!RIBBON_TABS.some((tab) => tab.id === patch.ribbonTab))
-          throw new Error("Unknown ribbon tab.");
-        setRibbonTab(patch.ribbonTab);
-      }
-      if (patch.workspace !== undefined) {
-        showTools(patch.workspace);
-      }
-      if (patch.mode !== undefined) setMode(patch.mode);
-      if (patch.toolPanelOpen !== undefined)
-        setToolPanelOpen(patch.toolPanelOpen);
-      if (patch.settingsOpen !== undefined) setSettingsOpen(patch.settingsOpen);
-      if (patch.dismissError) setError("");
-    },
+    setInterface,
     inspectViewport: () => {
       if (!viewport.current) throw new Error("Viewport is not ready.");
       return viewport.current.inspectAgentView();
@@ -5176,6 +5193,11 @@ export function App() {
                           (["mesh", "pointcloud"].includes(selected.kind) &&
                             !selected.parametric)) && (
                           <DatumAlignmentTools
+                            open={datumAlignmentOpen}
+                            onOpenChange={(open) => {
+                              if (open) openAlignment();
+                              else setDatumAlignmentOpen(false);
+                            }}
                             api={workspaceApi}
                             entity={selected}
                             center={stats.center}
