@@ -1362,3 +1362,38 @@ matrix handler, window-close, actual dialog disposal or model-history behavior.
 The geometry and record-copy operations are explicitly adapters, not native
 kernel measurements. Full GUI/MCP point-pair workflow integration remains gated.
 No production code changed; application build/tests are not applicable here.
+
+## Original preview handler execution and window-close binding
+
+The complete original preview handler `0x14054c410` now executes with controlled
+allocation, backup-wrapper construction, geometry clone/attach/apply, original
+point-record snapshot and redraw callbacks. The original candidate guards,
+backup decisions, point tagging and double coordinate-transform instructions
+execute unchanged. The supplied geometry has no pending-status or removable
+attachment, so those branches are not covered by this capture.
+
+Five point counts (0, 1, 3, 6 and 9) each run three successive candidate matrices,
+then invalid indices -1 and 3. A null-moving-object case brings the total to 26.
+The first preview constructs one backup and snapshots the points. Subsequent
+previews clone the saved original geometry, replace the current geometry and
+apply the requested matrix once. Their point transforms always start from the
+original snapshot, rather than previously transformed points. All 57 observed
+point records match an independent verifier bit for bit; fixed-tag records
+remain unchanged. Moving-tag arithmetic uses Y-times-coefficient before
+X-times-coefficient, then Z and translation, all in double precision. Invalid
+indices and null moving objects produce no callback or point-buffer changes.
+
+The original window-close entry `0x14054c400` contains exactly
+`e9 0b ff ff ff`, a relative jump to Cancel at `0x14054c310`. This establishes
+its dispatch to the separately replayed cancellation handler. It is not a new
+decompilation claim, and no additional close/disposal logic is inferred.
+
+`docs/evidence/landmark-preview-native.json` retains the 26 cases, matrices,
+original/observed points, callback order, original image identity and window-close
+branch bytes. The independent external verifier checks coverage, callback
+source identity, exact double point results and branch destination: zero
+differences. The replay's mapped image was released and all observed owned
+replay processes exited. Allocation and geometry callbacks remain adapters;
+this does not prove real mesh cloning/application, controller numerical output,
+actual dialog disposal, model history or full GUI/MCP point-pair integration.
+No production code changed, so application build/tests are not applicable here.
