@@ -688,3 +688,47 @@ Undo and Redo. Receipt:
 `.resources/landmark-direction-browser/browser-validation.json`. Disposable
 browser/bridge helpers exited and temporary ports closed; live port 5173 remains
 available. The broader native point-pair preview/refinement workflow remains gated.
+
+## Native landmark refinement region growth
+
+Fresh REA extraction recovered complete bodies and assembly for growth
+`0x14054d330` and scratch clearing `0x14054b920`. Growth evidence:
+`ev_8df226ebf9ce5f13c5cd1dceaff74e4c2a8036233dd3ebc370987fde50481d5a`
+(pseudocode), `ev_d79550f232bdb5d2292db4b868912c91db759b189b631cd86545ac3cf9e8b269`
+(assembly). Clearing evidence:
+`ev_cdf61f787a8a33fe06790f4b67f9e812c365d263d432b6f11c77b59d01b160c9`
+and `ev_909bddc63917ddbd0bc4db83fb2fe6137f869744412561030da01de389b4ecaa`.
+
+`docs/evidence/landmark-refinement-growth-native.json` retains 88 direct
+original-code cases and 248 growth steps. Original growth and clearing execute
+unchanged, with compiled contiguous container getters and a controlled scratch
+allocator/release using bit `0x80`. Cases cover empty/no-seed meshes, hidden
+seeds, chains, a 4,001-face fan, degenerate/random triangles, existing face flags
+and high UInt32 vertex bits. Every output vertex flag, face byte and selected-face
+count matches an independent typed-array transition oracle. Scratch release is
+observed once per call; native image allocations are released and processes exit.
+
+The first pass clears the borrowed scratch bit on all faces, then marks faces
+with any vertex satisfying `(flags & 5) == 4`. The second pass sets face selection
+bit 4 and vertex bit 4 for marked faces. This preserves one-ring growth per call;
+an in-place single-pass traversal would incorrectly expand across an entire
+chain. Hidden vertices cannot seed expansion, but retain their other bits if
+selected through another vertex's face. Unrelated flags, including high bits,
+are preserved. The return value counts all faces with selection bit 4, including
+previously selected faces, rather than selected vertices.
+
+The enclosing `0x14054d440` statically stops after a growth call reaches at least
+3,000 faces or the face count stops changing. Growth can overshoot: the fan case
+selects 4,001 faces in one original call. The corpus records up to eight calls
+per case, so long chains are partial growth sequences, not complete controller
+executions. The outer loop, selection reset, scene target collection and full
+refinement remain separate integration/verification requirements. No native
+scratch-allocation policy, full preview or GUI picking claim follows.
+
+Validation: all corpus inputs were structurally checked, its original image
+identity verified, and all 248 outputs compared with zero differences. Prettier
+and whitespace checks passed. This is a native-evidence/documentation slice;
+application executable source and GUI/MCP contracts did not change, so application
+build/test targets are not applicable. Native replay and REA helpers exited;
+user-required live development on port 5173 was preserved. The complete goal
+remains active.
