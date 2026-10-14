@@ -90,6 +90,7 @@ export function DatumAlignmentTools({
     targetIds.length > 0 &&
     targetIds.every((id) => targets.some((item) => item.id === id));
   const [requiredReferences, setRequiredReferences] = useState<boolean[]>([]);
+  const [referenceAcceptance, setReferenceAcceptance] = useState<boolean[]>([]);
   const [bindings, setBindings] = useState<
     ({ entityId: string; referenceId: string } | undefined)[]
   >([]);
@@ -199,7 +200,7 @@ export function DatumAlignmentTools({
         const job = response.result as {
           status: string;
           error?: { message: string };
-          result?: { translation?: number[] };
+          result?: { translation?: number[]; referenceAcceptance?: boolean[] };
         };
         if (job.status !== "running") {
           if (job.status !== "succeeded")
@@ -207,6 +208,7 @@ export function DatumAlignmentTools({
           heldPreview.current = command === "alignment_preview";
           if (job.result?.translation?.length === 3)
             setTranslation([...job.result.translation] as Vec3);
+          setReferenceAcceptance(job.result?.referenceAcceptance ?? []);
           setPreview(heldPreview.current);
           if (command === "alignment_apply") setOpen(false);
           return;
@@ -508,6 +510,15 @@ export function DatumAlignmentTools({
       {error && <p role="alert">{error}</p>}
       {preview && (
         <p role="status">Alignment preview ready · model unchanged</p>
+      )}
+      {preview && referenceAcceptance.some((accepted) => !accepted) && (
+        <p role="status">
+          References{" "}
+          {referenceAcceptance
+            .flatMap((accepted, index) => (accepted ? [] : [index + 1]))
+            .join(", ")}{" "}
+          did not constrain this frame.
+        </p>
       )}
       <div className="display-row">
         <button

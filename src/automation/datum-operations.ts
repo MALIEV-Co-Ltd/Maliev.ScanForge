@@ -120,9 +120,7 @@ export function createDatumOperations(
       args.translationPoint,
     );
     if (!frame.accepted)
-      throw new Error(
-        `Reference ${frame.steps.findIndex((step) => !step.accepted) + 1} is incompatible with the preceding frame constraints.`,
-      );
+      throw new Error("None of the references constrained an alignment frame.");
     context.check();
     const transformed = new Map<string, Entity>();
     const identity = nativeDatumIsIdentity(frame.state.matrix);
@@ -282,6 +280,7 @@ export function createDatumOperations(
         : {}),
       constraints: instructions,
       referenceOptions: frame.referenceOptions,
+      referenceAcceptance: frame.steps.map((step) => step.accepted),
       matrix: frame.matrix,
       cadMatrix,
       frame: frame.state,

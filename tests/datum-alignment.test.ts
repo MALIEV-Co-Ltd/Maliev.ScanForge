@@ -2,9 +2,11 @@ import { expect, it } from "vitest";
 import native from "./fixtures/alignment-datum-plane-native.json";
 import nativeDirections from "./fixtures/alignment-datum-direction-native.json";
 import nativePoints from "./fixtures/alignment-datum-point-native.json";
+import readiness from "./fixtures/alignment-frame-readiness-native.json";
 import {
   buildDatumAlignment,
   transformDatumScan,
+  nativeDatumFrameReady,
   type DatumInstruction,
 } from "../src/datum-alignment";
 import type { NativeDatumPlaneState } from "../src/scan-native-datum-plane";
@@ -26,6 +28,26 @@ function bits(state: NativeDatumPlaneState) {
   bytes.writeInt32LE(state.secondaryAxis, 0xe4);
   return bytes.toString("hex");
 }
+it.each(readiness.cases)(
+  "matches native readiness mask $accepted",
+  (sample) => {
+    expect(nativeDatumFrameReady(sample.accepted)).toBe(!!sample.ready);
+    expect(nativeDatumFrameReady(sample.accepted)).toBe(sample.buttonEnabled);
+  },
+);
+it("keeps an unconstrained frame unready", () => {
+  expect(
+    buildDatumAlignment([
+      {
+        kind: "plane",
+        point: [0, 0, 0],
+        direction: [1, 0, 0],
+        axis: 0,
+        stage: 1,
+      },
+    ]).accepted,
+  ).toBe(false);
+});
 it.each(native.cases)(
   "compiles the complete native plane sequence: $name",
   (sample) => {
@@ -42,6 +64,7 @@ it.each(native.cases)(
       expect(step.accepted).toBe(sample.steps[i].accepted);
       expect(bits(step.state)).toBe(sample.steps[i].nativeBits);
     });
+    expect(result.accepted).toBe(sample.steps.some((step) => step.accepted));
     expect(inputs).toEqual(before);
   },
 );

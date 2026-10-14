@@ -1560,3 +1560,50 @@ override clearing and Undo. Receipt:
 `.resources/reference-options-browser/browser-validation.json`. Native captures
 released their allocations and exited; browser and SDK bridge cleanup is retained
 in that receipt. Live development on port 5173 remains available for testing.
+
+## Pick dispatch and frame readiness
+
+REA traced incoming executable calls to the reference setter using section
+characteristics (the original section names are blank). Callback `0x14069bc80`
+has direct calls for primary, secondary and translation references; its tertiary
+branch performs equivalent record assignment inline. Evidence:
+`ev_483437e80f7d42eef4d11bc0422df08ca591f17ffdaa64eec15e638ce2fe7819`
+and assembly `ev_e45af88d810d9dbf80d6ddfed022e7018961e68fb54a817f903e68a7a8d064bd`.
+A controlled original-code replay covers 768 combinations of active context,
+pick flags, setter success, ray/override/missing owner, feature availability and
+segmentation mode. The external `align-pick-dispatch-native.json` records the
+observed flag advancement. Ray intersection, reference setters and UI refresh
+are adapters; this capture proves dispatch, not geometry fitting.
+
+Region-mode release `0x1406481f0` reads the hit facet's lower 24-bit region ID.
+It manages a region-ID map: Control toggles membership; Alt removes a selected
+region; an ordinary new-region pick replaces the map. An ordinary pick of an
+already selected region leaves it unchanged. A missed pick clears the map
+unless Control is held. This is static control-flow evidence
+`ev_7a1019de0e3b219ea484ac0d669d5a8fee4a10ad180261a420ca12e74a0adc17`,
+not a runtime-verified fitter. The adjacent `0x1405475e0` is a deleting destructor,
+not a fitting routine. These paths remain distinct from coordinate construction.
+
+The original frame recompute `0x140544410` accumulates reference-constructor
+results with OR into ready flag `0x458c`, then enables Apply from that flag.
+`alignment-frame-readiness-native.json` retains all eight actual original-code
+truth-table captures, including enabled Apply for a successful primary and
+rejected secondary/tertiary slots. Constructor results and MFC widgets are
+adapters; original accumulation and button enablement execute unchanged.
+
+The shared frame builder now uses this native readiness rule. GUI and MCP
+Preview/Apply retain successful frame contributions and report each reference's
+acceptance. GUI previews identify rejected references. This fixes the previous
+stricter all-references-must-succeed behavior without weakening input, target,
+cancellation, revision or transform validation.
+
+Validation: build passed with no warnings/errors; 4,081 focused tests passed.
+The affected full suite passed 340 files / 26,469 tests with 5 existing skipped
+files / 24 skipped tests. The built browser replay verified rejected-secondary
+readiness, the GUI rejection message, MCP `referenceAcceptance`, matching Apply
+geometry and Undo, plus the previous axis-eligibility and picked-translation
+checks. Receipt: `.resources/frame-readiness-browser/browser-validation.json`.
+Both native replay allocations were released, their processes exited, and the
+browser/bridge temporary resources were closed. Port 5173 continues serving live
+application sources. This slice does not certify the remaining region-fitting
+and complete Align controller workflows.

@@ -513,3 +513,11 @@ predicates, not a substitute for frame construction acceptance. Explicit MCP
 axes remain explicit; the GUI disables incompatible choices and picks the
 native default when selecting a new reference/type. Existing live bindings,
 revision checks, cancellation and history semantics are unchanged.
+
+`alignment_preview` and `alignment_apply` now follow native frame readiness:
+at least one accepted reference makes the frame ready. A rejected reference
+retains the frame produced by other references instead of failing the whole
+request. Job results expose `referenceAcceptance`, one boolean per constraint,
+and the GUI preview identifies references that did not constrain its frame.
+Malformed inputs, unresolved live bindings, locked targets, cancellation and
+transform failures still fail under the existing shared validation rules.

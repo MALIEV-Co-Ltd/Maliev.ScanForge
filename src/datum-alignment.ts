@@ -30,6 +30,10 @@ export interface DatumInstruction {
   stage?: 0 | 1 | 2;
 }
 
+/** Original 544410 readiness accumulation is OR, independent of failed slots. */
+export const nativeDatumFrameReady = (accepted: readonly boolean[]) =>
+  accepted.some(Boolean);
+
 /** Complete native constraint sequence, including rejected intermediate state. */
 export function buildDatumAlignment(
   instructions: readonly DatumInstruction[],
@@ -100,7 +104,7 @@ export function buildDatumAlignment(
       matrix: nativeDatumTranslation(state.matrix, offsets),
     };
   return {
-    accepted: steps.every((step) => step.accepted),
+    accepted: nativeDatumFrameReady(steps.map((step) => step.accepted)),
     state,
     steps,
     referenceOptions,

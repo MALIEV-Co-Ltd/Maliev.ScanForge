@@ -84,6 +84,42 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("previews and applies the accepted frame while reporting a rejected reference", async () => {
+  const { api, state } = setup();
+  const primary = {
+    kind: "plane",
+    point: [5, 6, 7],
+    direction: [0, 0, 1],
+    axis: 2,
+  };
+  const constraints = [primary, { ...primary, point: [20, 30, 40] }];
+  try {
+    const single = await settle(
+      api,
+      await api.invoke("alignment_preview", request(api, [primary])),
+    );
+    const partial = await settle(
+      api,
+      await api.invoke("alignment_preview", request(api, constraints)),
+    );
+    expect(partial.status).toBe("succeeded");
+    expect(partial.result.referenceAcceptance).toEqual([true, false]);
+    expect(partial.result.matrix).toEqual(single.result.matrix);
+    expect(state.history).toHaveLength(0);
+    const applied = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api, constraints)),
+    );
+    expect(applied.status).toBe("succeeded");
+    expect(applied.result.referenceAcceptance).toEqual([true, false]);
+    expect(Array.from(state.entities[0].positions)).toEqual([
+      0, 0, 0, 1, 0, 0, 0, 1, 0,
+    ]);
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+  }
+});
 it("exposes native reference-axis eligibility through shared alignment jobs", async () => {
   const { api, state } = setup();
   const constraints = [
@@ -1088,7 +1124,7 @@ it("skips coordinate allocation and CPU workers for a large identity Apply", asy
     vi.unstubAllGlobals();
   }
 });
-it("rejects incompatible constraints and unsupported targets before commit", async () => {
+it("retains a usable frame when another reference is incompatible and rejects locked targets", async () => {
   const { api, host, state } = setup();
   try {
     const constraints = [
@@ -1099,8 +1135,8 @@ it("rejects incompatible constraints and unsupported targets before commit", asy
       api,
       await api.invoke("alignment_apply", request(api, constraints)),
     );
-    expect(job.status).toBe("failed");
-    expect(job.error?.message).toMatch(/Reference 2/);
+    expect(job.status).toBe("succeeded");
+    expect(job.result.referenceAcceptance).toEqual([true, false]);
     state.entities = [{ ...state.entities[0], kernelId: "cad", locked: true }];
     expect(
       (await settle(api, await api.invoke("alignment_apply", request(api))))
