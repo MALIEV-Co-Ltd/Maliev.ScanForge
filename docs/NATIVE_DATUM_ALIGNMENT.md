@@ -499,8 +499,63 @@ Unlocked exact CAD bodies are accepted by shared `alignment_preview` and `alignm
 
 ## Native model-target choice
 
+The geometry-record transform path is described in the primitive section below;
+automatic target choice and geometry application are separate native stages.
+
 REA recovered the type-specific selectors at `0x1407d68a0` (reference scan) and `0x1407d69f0` (CAD model), plus their shared state accessors at `0x140405fa0` and `0x140405fb0`. Evidence: `ev_89c2277541efbbd55ee9eb6d6b2952c1a22af9660d16ded5ab110f2da612c45e`, `ev_157cafb43b2b0819b4765ad2dc9f5d94667d0bdad129cf76e699e4bc1cb197d8`, `ev_29d5edb5053f21c11bdcf187ba92d5b4ae4d10aa27f87aa920f5e239697950ad` and `ev_12bb964b01476665fbf39040ac864a6648f6dbea9e7ae983b4350a3f80916d98`.
 
 Direct execution of the original selectors and flag-accessor instructions covered 1,111 ordered scene states and 2,222 selector calls. Controlled iterator and type-query interfaces supplied null, unrelated, scan and CAD records with all combinations of the two relevant state bits. Each selector first returns the earliest matching object with bit 1 set; otherwise it returns the sole matching object with bit 0 set; otherwise it returns the sole matching object overall, or no object for ambiguity. Every iterator was destroyed once, and missing scene containers returned no target. All 2,222 results matched the recovered policy. The mapped image identity remains the SHA-256 above; probes, outputs and cleanup receipts are retained outside the repository under the native-analysis artifact folder.
 
 This verifies native target-choice control flow, not the GUI meaning of the two bits, original model aggregation or full Apply/controller scope. The original resources identify Align Mesh and reference-based positioning; the independently authored principal-axis callback must not be presented as the recovered native command. The application panel now offers explicit multi-object targets through the existing shared GUI/MCP transaction. Explicit targeting does not claim parity with the still-gated automatic selector or all-feature scope.
+
+## Native primitive geometry and cache transforms
+
+All six primitive object types use the shared dispatcher `0x140405e40` at
+vtable slot `0x250` (REA Evidence
+`ev_7d8fc8efad51fa75fae58933ee826509f434c6d532e00ec641851e33f042d920`).
+Assembly confirms that its first call forwards the matrix to the embedded
+geometry record at object offset `0x160`, through slot `0x70`; the decompiler's
+empty argument list is incomplete. It then notifies the geometry attachment,
+forwards the matrix to attached-property handlers, and signals object changes.
+
+The concrete handlers are point `0x14041a450`, line `0x14040c9c0`, plane
+`0x140413360`, sphere `0x14041f330`, cylinder `0x1404dec10`, and cone
+`0x1404dce60`. Their retained REA Evidence IDs, in the same order, are
+`ev_61ab4def7ba6d2666bddc8023332639359adb78d2f567b3009d2e5d9b5bc13c8`,
+`ev_4c5f03c14959d1084dd1ee372d9571d2fb020fd27465b589ff14fd47f3c971ff`,
+`ev_0c86d05592a55eb0470e4b9cd4afca0dc2cb9883bd02b0e0f8a3f89729e573df`,
+`ev_a1f24ed0475e0bd7dcec61eab9f9eefe16016eb6a71004be243461c6ffb475ee`,
+`ev_efab37c9358103a6030e6c929acc3055ce74f0ff96d474a595dffe7859bd07c1`,
+and `ev_1656f06f554b8af6dba103c2506f26c59a8d8de94849890fa0f93dba2fdc2e48`.
+Points and centers use double-precision affine arithmetic;
+directions omit translation. Plane normals and tangents are re-orthogonalized
+and normalized, then its plane equation is recomputed. Sphere radius and
+cylinder/cone scalar dimensions remain unchanged. Display vertices use separate
+double intermediate arithmetic and Float32 stores. The derived-cache clear at
+`0x140412e40` resets the cached CAD-shape/variant record, releases cached objects,
+empties its object list, and marks the cache dirty.
+Cache-clear Evidence is
+`ev_b301a2445bd7d39a92fbbc42f6c1a70b5c0d023c00ad76ac7321bff4257ff938`;
+the nested shape/variant reset is
+`ev_3d6c645bc1eec702da2b8874658ca3771d741e62fb79817d85888829f3518fa3`.
+
+Direct native execution covered all six handlers over the same 338 captured
+alignment matrices: 2,028 cases matched an arithmetic reconstruction byte for
+byte, including center/direction/plane fields and preserved scalar dimensions.
+The four cached types also matched all 1,352 Float32 display results and executed
+all 1,352 original empty-cache clears. Matrix inputs remained unchanged. The
+source geometry used center `[3,4,5]`, unit Z direction, unit X plane tangent,
+and fixed scalar dimensions; this does not establish arbitrary malformed inputs
+or populated-cache eviction.
+
+The probe executes original geometry, cache-clear and counter-update instructions.
+It rebinds OpenCascade/CRT imports, initializes a private empty counter map/cache,
+uses real Windows critical-section calls, and adapts allocation/free boundaries
+to the process heap. No geometry or cache-invalidation routines are replaced.
+Mutable data pages retain write permission while executable pages remain
+read-only. The successful run released the mapped image, all owned allocations,
+its exception observer and critical section. Native captures, replay, numerical
+verification and cleanup receipts remain in the external analysis folder as
+`datum-primitive-transform-*` artifacts. The application currently clears fitted
+metadata on alignment; preserving these verified primitive parameters and
+verifying populated-cache eviction remain required integration work.
