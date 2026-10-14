@@ -1,0 +1,135 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "captureSha256": "91fcbdd2e0c3bb69593524d4487dccb143c36f8b14ffb0a95f44b240c6c9123c",
+    "scope": "Extrema witnesses from the full native ASC captures; original accumulated pose and world bounds for four successive Apply calls"
+  },
+  "cases": [
+    {
+      "file": "asc-1.asc",
+      "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+      "pointIds": [
+        0, 743, 1030, 14774, 30283, 56752, 72719, 119444, 138835, 139656,
+        139764, 140112
+      ],
+      "positionsBits": "1f052a427368a041a0ba91c36a0d8342e8bcbac0a6eb82c3230a8a42d8b678c0f43d84c3d73483414abb16c2a4b08bc39a946440d11115c27b148fc321108a42cbd072428b5c91c3aa317742c471884283d093c3d5e7fac121c801be66769fc3952b1a4016fb8c422190a3c33bdf7dc04a6c83423749a4c32cbc03c07ff98142b8cea5c3cac3f441431cd7bf12a38dc3",
+      "normalsBits": "9d2a77bfcae27e3e9ad79c3d1ec2103fcbbec3be90163b3fdb8b5c3f4b94fdbe520be53d0b440b3f456755bfebf6c3bd8cd9eabec1c562bf5a7c8fbd84f4643fba13dc3e37defdbd1310fb3e800e5f3fc23f9b3c685d57bf7eab09bf3acd62bdb682cebe6b11613f10e781be674558bf6c7bd33e2025aebe558faa3d11c3a3bdc3497ebfed9f87bef243513fd0f002bf",
+      "steps": [
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6eb3f000000000000e03f00000000000000005020654a1fa153c0000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86eb35b4000000000000000000000000000000000000000000000f03fcdcccccccccc21c0",
+          "worldBoundsBits": "067cd3c213f08b42eb41aac312e139414aa52a43d95e87c3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86e735a40aa4c58e87ab6ebbf000000000000e0bf00000000000000005020654a1fa1544000000000000000000000000000000000000000000000f03fcdcccccccccc2dc0",
+          "worldBoundsBits": "13f0814225c2f3c0eb41adc34aa52543067cdb42d95e8ac3"
+        },
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6ebbffeffffffffffdf3f00000000000000009cb372ff572f4b40feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000002e6eb8a62b604000000000000000000000000000000000000000000000f03fcdcccccccccc37c0",
+          "worldBoundsBits": "4c13ebc0e1871d421eb5b1c36552b54253da1f430cd28ec3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000005cdc704d175f40aa4c58e87ab6eb3ffeffffffffffdfbf00000000000000009cb372ff572f49c000000000000000000000000000000000000000000000f03fcdcccccccccc3dc0",
+          "worldBoundsBits": "e18709426552adc21eb5b4c353da1a43a68935410cd291c3"
+        }
+      ]
+    },
+    {
+      "file": "asc-2.asc",
+      "sourceSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+      "pointIds": [
+        0, 2630, 113362, 135220, 475005, 686415, 1329778, 1334711, 1348827,
+        1355883, 1368664, 1375493
+      ],
+      "positionsBits": "de13574250e1003fbc948ac34220764227e28842339393c31cd3594091de8d42c7dba3c3938c7cc0adc98242a8c6a4c3302affc109a7453e31189fc363ce83427784c1c02b1783c3c4994540b9cd13c2d7538ec396a3884274247542179990c3a83589420ef33dc0a89683c3611a50c08d0884428706a5c36c787c41467614c27fda8ac30b465841eb221b4244eb9dc3",
+      "normalsBits": "65a9bdbee17a203ff2772f3f9e7e083f76fc533fb668313ecd3c01bf65e45c3f2754cbbc28635cbfd123023f7079acbcb4e861bf47c7edbe9028993dea160b3d6bb71dbd8fa97f3f5c7707bffc1b58bf3792af3dc4eb4e3f41810f3f1170383e4628463f965acfbe302af93e850636bfbc93ef3ee65c06bf4d86ab3ed36951bfc363ef3eafd0e7bed940423f9db9efbe",
+      "steps": [
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6eb3f000000000000e03f00000000000000005020654a1fa153c0000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86eb35b4000000000000000000000000000000000000000000000f03fcdcccccccccc21c0",
+          "worldBoundsBits": "3c16d4c2bd8a8d42ba79a9c3c4aa34417c882a435e8a87c3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86e735a40aa4c58e87ab6ebbf000000000000e0bf00000000000000005020654a1fa1544000000000000000000000000000000000000000000000f03fcdcccccccccc2dc0",
+          "worldBoundsBits": "bd8a83428755e9c0ba79acc37c8825433c16dc425e8a8ac3"
+        },
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6ebbffeffffffffffdf3f00000000000000009cb372ff572f4b40feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000002e6eb8a62b604000000000000000000000000000000000000000000000f03fcdcccccccccc37c0",
+          "worldBoundsBits": "22e2d0c0ec4d1d42edecb0c3edf7b4421ed21f4391fd8ec3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000005cdc704d175f40aa4c58e87ab6eb3ffeffffffffffdfbf00000000000000009cb372ff572f49c000000000000000000000000000000000000000000000f03fcdcccccccccc3dc0",
+          "worldBoundsBits": "ec4d0942edf7acc2edecb3c31ed21a431171284191fd91c3"
+        }
+      ]
+    },
+    {
+      "file": "asc-3.asc",
+      "sourceSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+      "pointIds": [
+        0, 3679, 103387, 1831585, 1849197, 1852947, 1854739, 1858975, 1861677,
+        1864390, 1864618, 1865847
+      ],
+      "positionsBits": "4339a1be8fc73640f81399c32098a73f36ad8b422751a4c3c7cb8342b554c0c0a41083c3d2a98fc000718142a6dba4c3c7a97542aff48842298c93c3f58a00c20729583e17399fc37ae41d40405312c22d328ec34732884226e47442395490c3bec17741dde414c289d18ac3dba2f03ffafe82427b24a5c30b048e42d731ae3e543384c334cb0a4141228442b4a8a1c3",
+      "normalsBits": "a28dad3d9984733faed897bee57d08bf9e7af43e93c8323ffb88a93d4e5079bc7a177f3ff4f9e0be8f70da3e9a5e4a3f1635783eb6831d3f2507403fd9cf02bf64e71dbe427c583f7b3332bf5b26d3be8672163ff965443f3d80053f3f38bf3e567b9e3b37ff7fbf594fa3b91f83b53eb82e06bdd2396f3f793e3f3fe3a977bebe841e3ff3746ebf4c9709b99145ba3e",
+      "steps": [
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6eb3f000000000000e03f00000000000000005020654a1fa153c0000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86eb35b4000000000000000000000000000000000000000000000f03fcdcccccccccc21c0",
+          "worldBoundsBits": "117cd4c245a68d42ae97a9c32119314177a12a43d78387c3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "000000000000e0bfaa4c58e87ab6eb3f00000000000000002a1d1fd86e735a40aa4c58e87ab6ebbf000000000000e0bf00000000000000005020654a1fa1544000000000000000000000000000000000000000000000f03fcdcccccccccc2dc0",
+          "worldBoundsBits": "45a683424232e2c0ae97acc377a12543117cdc42d7838ac3"
+        },
+        {
+          "frame": [
+            0.8660254037844386, -0.5, 0.0, 123.4, 0.5, 0.8660254037844386, 0.0,
+            -56.7, 0.0, 0.0, 1.0, 8.9
+          ],
+          "poseBits": "aa4c58e87ab6ebbffeffffffffffdf3f00000000000000009cb372ff572f4b40feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000002e6eb8a62b604000000000000000000000000000000000000000000000f03fcdcccccccccc37c0",
+          "worldBoundsBits": "8d8cdec011691d42e10ab1c3883cb54297cf1f430af78ec3"
+        },
+        {
+          "frame": [
+            0.0, -1.0, 0.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.0, 1.0, 6.0
+          ],
+          "poseBits": "feffffffffffdfbfaa4c58e87ab6ebbf0000000000000000005cdc704d175f40aa4c58e87ab6eb3ffeffffffffffdfbf00000000000000009cb372ff572f49c000000000000000000000000000000000000000000000f03fcdcccccccccc3dc0",
+          "worldBoundsBits": "11690942883cadc2e10ab4c397cf1a4347462f410af791c3"
+        }
+      ]
+    }
+  ]
+}

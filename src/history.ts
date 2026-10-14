@@ -1,4 +1,5 @@
 import type { Entity } from "./types";
+import { canonicalCloud, cloudPlacement } from "./point-cloud-placement";
 export interface Revision {
   entities: Entity[];
   label: string;
@@ -38,6 +39,7 @@ export function modelChanged(before: Entity[], after: Entity[]): boolean {
     return (
       !old ||
       old.kind !== next.kind ||
+      cloudPlacement(old)?.matrixBits !== cloudPlacement(next)?.matrixBits ||
       old.positions !== next.positions ||
       old.kernelId !== next.kernelId ||
       old.brep !== next.brep ||
@@ -53,7 +55,7 @@ export function restoreModelDisplay(
   return target.map((entity) => {
     const live = current.find((e) => e.id === entity.id);
     if (!live) return entity;
-    return {
+    return canonicalCloud({
       ...entity,
       name: live.name,
       color: live.color,
@@ -65,7 +67,7 @@ export function restoreModelDisplay(
         entity.positions === live.positions
           ? live.meshSelection
           : entity.meshSelection,
-    };
+    });
   });
 }
 export function changeLabel(before: Entity[], after: Entity[]): string {

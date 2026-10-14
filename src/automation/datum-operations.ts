@@ -1,6 +1,7 @@
 import type { Handler, WorkspaceHost } from "./api";
 import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
 import type { Entity } from "../types";
+import { cloudPlacement } from "../point-cloud-placement";
 import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
@@ -281,6 +282,7 @@ export function createDatumOperations(
           entityId: item.id,
           count: output.positions.length / (item.kind === "pointcloud" ? 3 : 9),
           kind: item.kind,
+          pointCloudPose: cloudPlacement(output)?.matrixBits,
           fit: output.fit,
           planeFrame: output.planeFrame,
           surfaceScanId: output.surfaceScanId,

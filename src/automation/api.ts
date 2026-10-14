@@ -1,4 +1,5 @@
 import catalog from "./catalog.json";
+import { cloudPlacement } from "../point-cloud-placement";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
   selectionProcessingMode,
@@ -268,7 +269,8 @@ export class ApplicationApi {
         e.locked,
         e.selectable,
         e.kernelId,
-        identity(e.positions),
+        identity(cloudPlacement(e)?.sourcePositions ?? e.positions),
+        cloudPlacement(e)?.matrixBits,
         identity(e.surfacePatch),
         identity(e.parametric),
         identity(e.authoringLinks),

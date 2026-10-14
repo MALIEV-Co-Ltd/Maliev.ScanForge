@@ -1113,10 +1113,47 @@ and resolve world coordinates at geometry-processing and MCP boundaries.
 History, serialization, selection, bounds, revisions and cancellation must
 preserve that representation. Mesh worker parity does not justify reusing
 repeated coordinate baking for point clouds. That application integration is
-still required; this evidence does not enable the main ribbon command.
+was still required at that capture checkpoint; the following section records
+its integration. This evidence does not enable the main ribbon command.
 
 External `datum-cloud-*` and `datum-controller-cloud-full-*` artifacts retain
 REA records, loaded-image slot checks, all source fields, original pose/bounds
 captures, importer comparison, divergence counts and independent verification.
 Successful native PID 56072 released its image and all owned allocations.
-No production application behavior changed in this evidence slice.
+No production application behavior changed in that evidence slice.
+
+### Deferred cloud pose integration
+
+The application now retains immutable local point/normal buffers and composes
+the recovered Float64 pose for successive origin/reference transforms. Public
+geometry access remains in world coordinates for existing processing tools and
+MCP exports. Geometry edits that replace those coordinates invalidate the old
+placement. The viewport keeps its local GPU position attribute and applies the
+pose as the object matrix; selection indexing and fit bounds use world values.
+
+The shared bounded CPU executor resolves derived coordinates and bounds. This
+still scales with point count and is not a constant-time end-to-end Apply claim.
+Large inputs retain the existing two-worker admission and cancellation rules.
+History and workspace revision identity include the pose. Binary projects with
+posed clouds use manifest version 3, deduplicate local buffers across history,
+and preserve the exact pose bytes; version 2 projects remain readable. JSON
+projects retain a world-space compatibility view plus local placement data.
+
+`application-cloud-pose-verification.json` in the external analysis folder
+replays the current shared executor on all 3,381,455 owner ASC points, across
+12 successive native pose/bounds captures. All poses and Float32 bounds match,
+and source point/normal buffers retain identity. This full-data replay uses the
+serial fallback; it does not by itself prove browser worker scheduling.
+`application-cloud-pose-parallel-verification.json` repeats those full-data
+comparisons through two real Node worker threads using the application's shared
+executor and kernel, with a transport adapter for the browser Worker interface.
+All 12 poses and bounds match; the source buffers are retained and every worker
+exits. This verifies the parallel computation, not browser scheduling or a
+controlled performance benchmark.
+`tests/point-cloud-placement.test.ts` covers native extrema witnesses, repeated
+pose composition, binary/JSON recovery, placement invalidation after edits and
+actual Three.js geometry/attribute reuse. `tests/cloud-pose-browser.mjs` verifies
+GUI Apply against MCP Preview, discard, Undo/Redo, successive Apply, binary
+recovery and world geometry export through the actual SDK bridge. Its browser
+receipt records successful checks and exact helper cleanup. The main Align
+button remains gated independently of this coordinate-alignment integration.

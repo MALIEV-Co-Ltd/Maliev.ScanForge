@@ -27,6 +27,12 @@ export interface Entity {
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Immutable local cloud buffers and native accumulated pose; positions remains a world-space view. */
+  pointCloudPlacement?: {
+    matrixBits: string;
+    sourcePositions: Positions;
+    sourceNormals?: number[];
+  };
   /** Original indexed import topology, valid only while it matches render positions. */
   indexedMesh?: IndexedMesh;
   /** CAD display normals or imported scanner normals, aligned to XYZ positions. */

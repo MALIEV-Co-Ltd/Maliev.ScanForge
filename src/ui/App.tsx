@@ -189,6 +189,7 @@ import {
 } from "../io";
 import { importScan } from "../import-client";
 import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
+import { canonicalCloud, cloudPlacement } from "../point-cloud-placement";
 import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
@@ -1224,9 +1225,11 @@ export function App() {
   }, [entities, history, future]);
   function sessionFor(entity: Entity): SelectionSession {
     let record = selectionSessions.current.get(entity.id);
-    if (!record || record.positions !== entity.positions) {
+    const placement = cloudPlacement(entity);
+    const key = placement?.sourcePositions ?? entity.positions;
+    if (!record || record.positions !== key) {
       record = {
-        positions: entity.positions,
+        positions: key,
         session: new SelectionSession(
           entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
           entity.meshSelection?.hidden,
@@ -1599,7 +1602,12 @@ export function App() {
   const selectionSession = selected ? sessionFor(selected) : undefined;
   void selectionVersion;
   useEffect(() => {
-    const live = new Map(entities.map((e) => [e.id, e.positions]));
+    const live = new Map(
+      entities.map((e) => [
+        e.id,
+        cloudPlacement(e)?.sourcePositions ?? e.positions,
+      ]),
+    );
     for (const [id, record] of selectionSessions.current)
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
@@ -2009,7 +2017,7 @@ export function App() {
     });
   }
   function commit(next: Entity[], preserveSelectionFor?: string) {
-    next = next.map(retainIndexedMesh);
+    next = next.map((entity) => canonicalCloud(retainIndexedMesh(entity)));
     const protectedObject = lockedObjectEdit(entities, next);
     if (protectedObject) {
       setError(`Unlock ${protectedObject.name} before editing or deleting it.`);
@@ -2019,11 +2027,13 @@ export function App() {
       const old = entities.find((e) => e.id === entity.id);
       return old &&
         old.positions !== entity.positions &&
+        !(entity.kind === "pointcloud" && cloudPlacement(entity)) &&
         entity.id !== preserveSelectionFor
         ? { ...entity, meshSelection: undefined }
         : entity;
     });
     entityFeatureModel(next);
+    next = next.map(canonicalCloud);
     if (!modelChanged(entities, next)) {
       setEntities(next);
       setDirty(true);

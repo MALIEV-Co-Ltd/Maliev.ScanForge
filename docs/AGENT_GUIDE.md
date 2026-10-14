@@ -426,6 +426,20 @@ The coordinate-alignment panel exposes an explicit **Objects to move** list when
 
 Coordinate alignment preserves fitted primitive parameters through the recovered native geometry handlers. Target results expose `fit` and `planeFrame`; Preview owns these proposed frames while committed metadata stays unchanged. Mesh/point-cloud metadata uses `matrix`; CAD fit metadata uses `cadMatrix` and its plane frame is freshly extracted from the transformed BRep. Rigid movement preserves radius, height, top radius, RMS and maximum residual values. Plane normals and tangents are normalized using the native arithmetic. Sphere orientation metadata stays unchanged because the native sphere record has no direction parameter. Apply and Undo/Redo keep geometry and metadata together; this does not enable the unverified automatic all-feature controller.
 
+Point-cloud coordinate alignment retains immutable local coordinates and normals
+and composes a double-precision placement instead of repeatedly rounding stored
+coordinates. Each target and `object_get` summary exposes `pointCloudPose`: 192
+hexadecimal characters encoding twelve little-endian Float64 values in row-major
+3x4 order. Geometry requested with `includeGeometry` remains in world coordinates.
+Execution reports `localBuffersRetained`, `poseBits`, physical worker count and
+fallback reason. Derived bounds and geometry still require CPU work under the
+existing bounded worker admission; retained GPU buffers do not mean the entire
+transaction is constant-time. Undo/Redo, preview discard and project recovery
+retain the pose. Geometry-changing edits discard inherited placement when they
+replace the world-coordinate buffers. Binary exports containing posed clouds use
+manifest version 3 and share local buffers across history; the reader also accepts
+version 2. JSON exports include both world compatibility geometry and placement.
+
 `mesh_process` segmentation now retains each worker's region classification and fitted parameters in its new mesh object, matching the GUI's classified-region output. Its response includes `segmentClassifications` in segment order. Use the returned `entityIds` with `project_get` and `alignment_preview` / `alignment_apply`; fits remain derived session metadata and project import still discards them under the existing project policy. This transport correction does not change or certify the segmentation/classification algorithm.
 
 Exact CAD `alignment_preview` and `alignment_apply` retain `surfaceScanId`, the

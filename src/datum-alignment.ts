@@ -6,6 +6,11 @@ import {
   type NativeDatumPlaneState,
 } from "./scan-native-datum-plane";
 import { nativeDatumInverseFrame } from "./scan-native-datum-apply";
+import {
+  cloudPoseMatrix,
+  nextCloudPlacement,
+  placedCloud,
+} from "./point-cloud-placement";
 import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity } from "./types";
@@ -131,6 +136,22 @@ export function transformDatumScan(
   matrix: readonly number[],
 ): Entity {
   const plan = datumScanTransformPlan(entity, matrix);
+  if (entity.kind === "pointcloud") {
+    const placement = nextCloudPlacement(entity, matrix);
+    const pose = cloudPoseMatrix(placement.matrixBits);
+    const positions = transformDatumCoordinates(
+      placement.sourcePositions,
+      pose,
+    );
+    const normals = placement.sourceNormals
+      ? transformDatumCoordinates(placement.sourceNormals, pose, true)
+      : undefined;
+    const result = plan.assemble(positions, undefined, normals);
+    return placedCloud(result, placement, {
+      positions,
+      normals: result.normals,
+    });
+  }
   return plan.assemble(
     transformDatumCoordinates(entity.positions, matrix),
     plan.indexed

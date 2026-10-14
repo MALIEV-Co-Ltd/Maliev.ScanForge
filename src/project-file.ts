@@ -2,6 +2,7 @@ import { parseProject, validateProject } from "./io";
 import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
+import { cloudPlacement, placedCloud } from "./point-cloud-placement";
 
 export interface ProjectSession {
   projectId?: string;
@@ -25,8 +26,10 @@ type RecordData = Omit<
   | "normals"
   | "meshSelection"
   | "indexedMesh"
+  | "pointCloudPlacement"
 > & {
   positions: Ref;
+  cloudPoseBits?: string;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
@@ -64,6 +67,7 @@ export async function encodeProjectFile(
   const entityCache = new Map<Entity, number>();
   const valueCache = new WeakMap<object, Ref>();
   let offset = 0;
+  let deferredClouds = false;
   async function store(
     value: Entity["positions"] | Uint32Array | string,
     integer = false,
@@ -130,6 +134,7 @@ export async function encodeProjectFile(
           normals,
           meshSelection,
           indexedMesh,
+          pointCloudPlacement: _placement,
           ...metadata
         } = entity;
         const selection: RecordData["meshSelection"] = meshSelection
@@ -146,14 +151,23 @@ export async function encodeProjectFile(
               triangles: await store(saved.triangles, true),
             });
           }
+        const placement = cloudPlacement(entity);
+        if (placement) deferredClouds = true;
         const record: RecordData = {
           ...metadata,
-          positions: await store(positions),
+          positions: await store(placement?.sourcePositions ?? positions),
+          ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
           ...(edgePositions
             ? { edgePositions: await store(edgePositions) }
             : {}),
           ...(brep !== undefined ? { brep: await store(brep) } : {}),
-          ...(normals ? { normals: await store(normals) } : {}),
+          ...((placement ? placement.sourceNormals : normals)
+            ? {
+                normals: await store(
+                  (placement ? placement.sourceNormals : normals)!,
+                ),
+              }
+            : {}),
           ...(selection ? { meshSelection: selection } : {}),
           ...(indexedMesh
             ? {
@@ -196,7 +210,7 @@ export async function encodeProjectFile(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: 2,
+        version: deferredClouds ? 3 : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -242,7 +256,7 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    m.version !== 2 ||
+    ![2, 3].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -334,7 +348,7 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
-    return {
+    const entity = {
       ...record,
       positions: read(record.positions),
       indexedMesh: record.indexedMesh
@@ -359,6 +373,15 @@ export async function decodeProjectFile(file: Blob): Promise<ProjectSession> {
           }
         : undefined,
     } as Entity;
+    if (record.cloudPoseBits !== undefined) {
+      if (m.version !== 3 || entity.kind !== "pointcloud") return invalid();
+      return placedCloud(entity, {
+        matrixBits: record.cloudPoseBits,
+        sourcePositions: entity.positions,
+        sourceNormals: entity.normals,
+      });
+    }
+    return entity;
   });
   function state(refs: number[]): Entity[] {
     if (

@@ -1,4 +1,9 @@
 import type { Entity, Positions } from "./types";
+import {
+  nextCloudPlacement,
+  placedCloud,
+  cloudPoseMatrix,
+} from "./point-cloud-placement";
 import { datumScanTransformPlan } from "./datum-alignment";
 import {
   executeDatumTransform,
@@ -208,6 +213,31 @@ export function createDatumTransformExecutor(
     transformScan: async (entity: Entity, matrix: readonly number[]) => {
       check();
       const plan = datumScanTransformPlan(entity, matrix);
+      if (entity.kind === "pointcloud") {
+        const placement = nextCloudPlacement(entity, matrix);
+        const pose = cloudPoseMatrix(placement.matrixBits);
+        const positions = await transform(placement.sourcePositions, pose);
+        const normals = placement.sourceNormals
+          ? await transform(placement.sourceNormals, pose, true)
+          : undefined;
+        const output = plan.assemble(
+          positions.output,
+          undefined,
+          normals?.output,
+        );
+        return {
+          entity: placedCloud(output, placement, {
+            positions: positions.output,
+            normals: output.normals,
+          }),
+          bounds: positions.bounds,
+          execution: {
+            ...positions.execution,
+            localBuffersRetained: true,
+            poseBits: placement.matrixBits,
+          },
+        };
+      }
       const positions = await transform(entity.positions, matrix);
       const vertices = plan.indexed
         ? await transform(plan.indexed.vertices, matrix)

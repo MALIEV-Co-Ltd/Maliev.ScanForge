@@ -16,6 +16,7 @@ import {
   type ScanBoundaryPath,
 } from "./scan-boundary-edges";
 import * as THREE from "three";
+import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
 import { scanRenderData } from "./scan-render-data";
 import { presentFrame } from "./frame-presentation";
 import { inspectCamera, pickCamera, setCameraPose } from "./viewport-agent";
@@ -87,6 +88,8 @@ type Item = {
   triangleSlots?: number[];
   selectionIndex?: AsyncScreenSelectionIndex;
   positions: Positions;
+  renderPositions?: Positions;
+  worldBounds?: THREE.Box3;
   color: string;
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
 };
@@ -1690,10 +1693,14 @@ export class Viewport {
         this.scene.add(mesh);
       }
       item.mesh.name = entity.name;
+      const placement = cloudPlacement(entity);
+      const renderPositions = placement?.sourcePositions ?? entity.positions;
+      const renderNormals = placement?.sourceNormals ?? entity.normals;
       if (
-        item.positions !== entity.positions ||
+        item.renderPositions !== renderPositions ||
         item.hidden !== entity.meshSelection?.hidden
       ) {
+        item.worldBounds = undefined;
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
         item.selectionIndex = undefined;
@@ -1706,9 +1713,9 @@ export class Viewport {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
-          entity.positions instanceof Float32Array
-            ? new THREE.BufferAttribute(entity.positions, 3)
-            : new THREE.Float32BufferAttribute(entity.positions, 3),
+          renderPositions instanceof Float32Array
+            ? new THREE.BufferAttribute(renderPositions, 3)
+            : new THREE.Float32BufferAttribute(renderPositions, 3),
         );
         item.triangleSlots = undefined;
         if (
@@ -1732,7 +1739,10 @@ export class Viewport {
           item.triangleSlots = slots;
         }
         item.hidden = entity.meshSelection?.hidden;
-        const prepared = scanRenderData(entity.positions);
+        const prepared =
+          entity.kind === "pointcloud"
+            ? undefined
+            : scanRenderData(entity.positions);
         if (prepared?.normals) {
           geometry.setAttribute(
             "normal",
@@ -1740,12 +1750,12 @@ export class Viewport {
           );
         } else if (
           entity.kernelId &&
-          entity.normals?.length === entity.positions.length &&
-          entity.normals.every(Number.isFinite)
+          renderNormals?.length === renderPositions.length &&
+          renderNormals.every(Number.isFinite)
         )
           geometry.setAttribute(
             "normal",
-            new THREE.Float32BufferAttribute(entity.normals, 3),
+            new THREE.Float32BufferAttribute(renderNormals, 3),
           );
         else if (entity.kind !== "pointcloud")
           geometry.setAttribute(
@@ -1798,7 +1808,30 @@ export class Viewport {
         }
         item.mesh.geometry = geometry;
         item.positions = entity.positions;
+        item.renderPositions = renderPositions;
         item.mesh.material.vertexColors = false;
+      }
+      if (item.positions !== entity.positions) {
+        item.selectionIndex?.dispose();
+        item.selectionIndex = undefined;
+        item.positions = entity.positions;
+        item.worldBounds = undefined;
+      }
+      item.mesh.matrixAutoUpdate = !placement;
+      if (placement) {
+        const m = cloudPoseMatrix(placement.matrixBits);
+        item.mesh.matrix.set(
+          ...(m.slice(0, 4) as [number, number, number, number]),
+          ...(m.slice(4, 8) as [number, number, number, number]),
+          ...(m.slice(8, 12) as [number, number, number, number]),
+          0,
+          0,
+          0,
+          1,
+        );
+        item.mesh.updateMatrixWorld(true);
+      } else {
+        item.mesh.matrix.identity();
       }
       item.mesh.visible = entity.visible;
       item.mesh.userData.objectPickable =
@@ -1876,7 +1909,17 @@ export class Viewport {
         item.mesh.geometry.boundingBox &&
         entity.positions.length > 0
       ) {
-        this.bounds.union(item.mesh.geometry.boundingBox);
+        if (placement) {
+          item.worldBounds ??= new THREE.Box3().setFromBufferAttribute(
+            new THREE.BufferAttribute(
+              entity.positions instanceof Float32Array
+                ? entity.positions
+                : new Float32Array(entity.positions),
+              3,
+            ),
+          );
+          this.bounds.union(item.worldBounds);
+        } else this.bounds.union(item.mesh.geometry.boundingBox);
       }
     }
     if (!this.bounds.isEmpty()) {
@@ -1947,7 +1990,9 @@ export class Viewport {
     this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
     if (entityId && !item) return;
-    let bounds = item ? new THREE.Box3().setFromObject(item.mesh) : this.bounds;
+    let bounds = item
+      ? (item.worldBounds?.clone() ?? new THREE.Box3().setFromObject(item.mesh))
+      : this.bounds;
     if (
       item &&
       selection &&

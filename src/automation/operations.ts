@@ -2,6 +2,7 @@ import { isSampledScan } from "../scan-source";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
+import { cloudPlacement } from "../point-cloud-placement";
 import {
   listBackups,
   backupProjectId,
@@ -231,10 +232,12 @@ function summary(e: Entity) {
     kernelId: _kernel,
     meshSelection: _selection,
     indexedMesh: _indexedMesh,
+    pointCloudPlacement: _placement,
     ...metadata
   } = e;
   return {
     ...metadata,
+    pointCloudPose: cloudPlacement(e)?.matrixBits,
     ...(e.indexedMesh
       ? {
           indexedTopology: {

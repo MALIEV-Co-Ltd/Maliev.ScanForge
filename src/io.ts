@@ -1,4 +1,10 @@
 import * as THREE from "three";
+import {
+  placedCloud,
+  cloudPlacement,
+  cloudPlacementJson,
+  cloudPoseMatrix,
+} from "./point-cloud-placement";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -271,7 +277,7 @@ export function validateProject(value: unknown): Project {
       )
         throw new Error("Invalid retained authoring references.");
     }
-    return {
+    const result: Entity = {
       id: entity.id,
       name: entity.name,
       kind: entity.kind,
@@ -323,6 +329,53 @@ export function validateProject(value: unknown): Project {
       scanSource: entity.scanSource,
       parametric: entity.parametric,
     };
+    if (entity.pointCloudPlacement !== undefined) {
+      const p = entity.pointCloudPlacement;
+      if (
+        entity.kind !== "pointcloud" ||
+        !p ||
+        typeof p !== "object" ||
+        Object.keys(p).some(
+          (k) =>
+            !["matrixBits", "sourcePositions", "sourceNormals"].includes(k),
+        )
+      )
+        throw new Error("Invalid point-cloud placement.");
+      cloudPoseMatrix(p.matrixBits);
+      validatePositions(p.sourcePositions, true);
+      if (
+        p.sourcePositions.length !== entity.positions.length ||
+        (p.sourceNormals !== undefined &&
+          (!Array.isArray(p.sourceNormals) ||
+            p.sourceNormals.length !== p.sourcePositions.length ||
+            !p.sourceNormals.every(Number.isFinite)))
+      )
+        throw new Error("Invalid point-cloud placement buffers.");
+      const existing = cloudPlacement(entity);
+      const placement = existing ?? {
+        matrixBits: p.matrixBits,
+        sourcePositions:
+          p.sourcePositions instanceof Float32Array
+            ? p.sourcePositions
+            : new Float32Array(p.sourcePositions),
+        sourceNormals: p.sourceNormals,
+      };
+      const posed = placedCloud(result, placement);
+      // Compatibility positions must describe the same world geometry as the pose.
+      const world = posed.positions;
+      const compatibilityPositions = entity.positions;
+      if (world.some((v, i) => v !== compatibilityPositions[i]))
+        throw new Error("Point-cloud placement disagrees with world geometry.");
+      const normals = posed.normals,
+        compatibilityNormals = entity.normals;
+      if (
+        !!normals !== !!compatibilityNormals ||
+        normals?.some((v, i) => v !== compatibilityNormals![i])
+      )
+        throw new Error("Point-cloud placement disagrees with world normals.");
+      return posed;
+    }
+    return result;
   });
   entityFeatureModel(entities);
   if (
@@ -396,6 +449,7 @@ export function serializeProject(
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
       positions: Array.from(entity.positions),
+      pointCloudPlacement: cloudPlacementJson(entity as Entity),
       indexedMesh: entity.indexedMesh
         ? {
             vertices: Array.from(entity.indexedMesh.vertices),
@@ -421,6 +475,7 @@ export async function serializeProjectBlob(
       fit: _fit,
       positions,
       indexedMesh,
+      pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
     validatePositions(positions, metadata.kind === "pointcloud");
@@ -432,7 +487,13 @@ export async function serializeProjectBlob(
         positions.length / (metadata.kind === "pointcloud" ? 3 : 9),
       );
     if (index) parts.push(",");
-    parts.push(JSON.stringify(metadata).slice(0, -1), ',"positions":[');
+    parts.push(
+      JSON.stringify({
+        ...metadata,
+        pointCloudPlacement: cloudPlacementJson(entities[index]),
+      }).slice(0, -1),
+      ',"positions":[',
+    );
     for (let start = 0; start < positions.length; start += 65_536) {
       const end = Math.min(start + 65_536, positions.length);
       const values: string[] = [];
