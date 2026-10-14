@@ -4,9 +4,11 @@
 
 `src/scan-native-alignment.ts` contains two recovered paired-point solver kernels.
 These kernels now feed the complete paired-point numerical wrapper documented
-below. The application still uses its existing independently authored registration
-implementation. They do not enable
-the gated Align ribbon commands or establish complete native alignment parity.
+below. GUI/MCP paired registration uses this recovered wrapper for its initial
+candidate; complete paired-point preview refinement remains unfinished. Coordinate
+Align and surface fine alignment have separate verified entries documented in
+NATIVE_DATUM_ALIGNMENT.md and NATIVE_ALIGNMENT_TARGET_GROUPS.md. These component
+captures do not establish complete native alignment parity.
 
 The quaternion conversion at `0x140aac800` only renormalizes when squared length
 differs from one by more than `2^-23` and exceeds `2^-52`. Its row-major rotation
@@ -658,3 +660,31 @@ render buffer. Stale metadata fails before registration. GUI and MCP pass the
 original topology only when operating on the full source buffer; partial
 extractions do not inherit it. This verifies topology continuity into recovered
 surface refinement, not native equivalence of the existing ICP/global solvers.
+
+## Application landmark candidate side ordering
+
+The shared registration worker previously called the paired-point wrapper with
+moving landmarks first, then inverted its returned matrix. Although that often
+produced a plausible moving-to-fixed transform, native optimization, line-spread
+gating and candidate ranking are asymmetric. Original builder `0x14054c7a0`
+passes fixed landmarks first and publishes the wrapper result directly.
+
+`registerNativeLandmarks` now uses that original ordering and removes the extra
+inversion. Its result is compared byte for byte to all published matrices in the
+40 retained active/retained candidate captures; no-candidate and too-few-point
+outcomes retain application validation. The standalone wrapper's native RMS is
+also checked with correctly assigned moving/fixed inputs. The same helper feeds
+GUI landmark requests and MCP paired `mesh_process` operations through the shared
+processing worker. Subsequent original preview refinement remains separate work;
+this fix does not promote the still-incomplete point-pair ribbon workflow.
+
+Validation: production build passed with no warnings/errors; 544 focused tests
+passed, including native publication bytes and the shared worker. The full suite
+passed 340 files / 26,553 tests with 5 existing skipped files / 24 skipped tests.
+The built browser/SDK replay compared an actual paired `mesh_process` result to
+original candidate matrix bytes, verified moving-to-fixed landmark proximity and
+moving mesh geometry, and confirmed fixed geometry preservation through Apply,
+Undo and Redo. Receipt:
+`.resources/landmark-direction-browser/browser-validation.json`. Disposable
+browser/bridge helpers exited and temporary ports closed; live port 5173 remains
+available. The broader native point-pair preview/refinement workflow remains gated.

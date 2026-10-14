@@ -6,9 +6,10 @@ import type {
 } from "./registration";
 import { transformPoint } from "./registration";
 import { nativeRegisterAlignmentPoints } from "./scan-native-alignment-registration";
-import { inverseMirrorFrame } from "./scan-mirror-frame";
 
-/** Adapt the recovered target-to-source wrapper to the application's moving-to-fixed contract. */
+/** Original candidate builder passes fixed landmarks first and publishes the
+ * wrapper's already-inverted moving-to-fixed matrix. Optimization is asymmetric.
+ */
 export function registerNativeLandmarks(
   source: Positions,
   target: Positions,
@@ -29,7 +30,7 @@ export function registerNativeLandmarks(
   const moving = points(source),
     fixed = points(target);
   options.onProgress?.(0, 0);
-  const result = nativeRegisterAlignmentPoints(moving, fixed, options);
+  const result = nativeRegisterAlignmentPoints(fixed, moving, options);
   if (!result.accepted)
     throw new Error(
       "Landmarks are collinear or clustered too closely. Choose points spread across the scan.",
@@ -38,7 +39,7 @@ export function registerNativeLandmarks(
     throw new Error(
       "Landmark alignment did not produce a finite rigid transform.",
     );
-  const matrix = inverseMirrorFrame(result.matrix);
+  const matrix = result.matrix;
   const transform: RigidTransform = {
     rotation: [
       matrix[0],

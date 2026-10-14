@@ -1,14 +1,55 @@
 import { expect, it, vi, afterEach } from "vitest";
 import { registerNativeLandmarks } from "../src/native-landmark-registration";
-import { inverseMirrorFrame } from "../src/scan-mirror-frame";
 import fixture from "./fixtures/alignment-registration-native.json";
 import inputs from "./fixtures/alignment-npoints-native.json";
+import candidates from "./fixtures/alignment-landmark-candidate-native.json";
 import type {
   ProcessingRequest,
   ProcessingResponse,
 } from "../src/processing-client";
 
 afterEach(() => vi.unstubAllGlobals());
+it.each(candidates.cases)(
+  "publishes the original moving-to-fixed candidate bytes: $name retained=$retained",
+  (capture) => {
+    const input = inputs.cases.find((row) => row.name === capture.name)!;
+    if (input.source.length < 3) {
+      expect(() =>
+        registerNativeLandmarks(input.target.flat(), input.source.flat()),
+      ).toThrow("at least three");
+      return;
+    }
+    if (!capture.accepted) {
+      expect(() =>
+        registerNativeLandmarks(input.target.flat(), input.source.flat()),
+      ).toThrow();
+      return;
+    }
+    const result = registerNativeLandmarks(
+      input.target.flat(),
+      input.source.flat(),
+    );
+    const r = result.transform.rotation,
+      t = result.transform.translation;
+    const matrix = [
+      r[0],
+      r[1],
+      r[2],
+      t[0],
+      r[3],
+      r[4],
+      r[5],
+      t[1],
+      r[6],
+      r[7],
+      r[8],
+      t[2],
+    ];
+    const bytes = Buffer.alloc(96);
+    matrix.forEach((value, id) => bytes.writeDoubleLE(value, id * 8));
+    expect(bytes.toString("hex")).toBe(capture.matrixBits);
+  },
+);
 const captures = fixture.cases.filter(
   (capture) =>
     inputs.cases.find((row) => row.name === capture.name)!.source.length >= 3,
@@ -17,8 +58,9 @@ it.each(captures)(
   "adapts the original wrapper direction and RMS: $name",
   (capture) => {
     const input = inputs.cases.find((row) => row.name === capture.name)!;
-    const source = input.source.flat(),
-      target = input.target.flat();
+    // The original builder's first solver input is the fixed side.
+    const source = input.target.flat(),
+      target = input.source.flat();
     const before = [...source];
     if (!capture.accepted) {
       expect(() => registerNativeLandmarks(source, target)).toThrow(
@@ -27,7 +69,7 @@ it.each(captures)(
       return;
     }
     const result = registerNativeLandmarks(source, target);
-    const expected = inverseMirrorFrame(capture.matrix);
+    const expected = capture.matrix;
     expect(result.transform.rotation).toEqual([
       expected[0],
       expected[1],
@@ -76,8 +118,8 @@ it("validates counts, finite coordinates, native spread gate and cancellation", 
 });
 it("uses the recovered wrapper in the actual shared processing worker", async () => {
   const input = inputs.cases.find((row) => row.name === "noisy-8")!;
-  const source = input.source.flat(),
-    target = input.target.flat();
+  const source = input.target.flat(),
+    target = input.source.flat();
   const positions = new Float32Array([...source, 100, 200, 300]);
   const replies: ProcessingResponse[] = [];
   const scope = {

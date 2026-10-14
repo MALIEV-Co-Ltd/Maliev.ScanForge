@@ -542,3 +542,14 @@ contradictory workspace/visibility inputs fail. `application_inspect` reports
 discard an active datum preview first. Opening never changes model geometry or
 history. `command_run` with `name: "ribbon:align"` launches this same entry.
 The primary command no longer invokes the unverified principal-axis placeholder.
+
+Paired `mesh_process` registration uses moving coordinates in `sourceLandmarks`
+and fixed coordinates in `targetLandmarks`. The worker now matches the original
+candidate builder: fixed landmarks are passed first to the asymmetric native
+solver, and its already-inverted moving-to-fixed result is published directly.
+The previous opposite-order solve plus another inversion could give different
+optimized candidates and spread-gate outcomes. RMS retains the native wrapper's
+ranking residual; maxError is measured on transformed moving landmarks. Input,
+cancellation, history and worker contracts are unchanged. This fixes the initial
+candidate; the native subsequent full landmark-preview refinement is still a
+separate incomplete path, and the point-pair ribbon remains independently gated.
