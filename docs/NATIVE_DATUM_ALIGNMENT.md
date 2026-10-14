@@ -545,8 +545,8 @@ byte, including center/direction/plane fields and preserved scalar dimensions.
 The four cached types also matched all 1,352 Float32 display results and executed
 all 1,352 original empty-cache clears. Matrix inputs remained unchanged. The
 source geometry used center `[3,4,5]`, unit Z direction, unit X plane tangent,
-and fixed scalar dimensions; this does not establish arbitrary malformed inputs
-or populated-cache eviction.
+and fixed scalar dimensions; this does not establish arbitrary malformed inputs.
+Populated-cache eviction is verified separately below.
 
 The probe executes original geometry, cache-clear and counter-update instructions.
 It rebinds OpenCascade/CRT imports, initializes a private empty counter map/cache,
@@ -558,8 +558,7 @@ its exception observer and critical section. Native captures, replay, numerical
 verification and cleanup receipts remain in the external analysis folder as
 `datum-primitive-transform-*` artifacts. The application port uses
 `nativeDatumTransformPrimitive` for fitted parameters and plane frames through
-the shared Preview/Apply operations. Populated native-cache eviction remains a
-separate verification requirement.
+the shared Preview/Apply operations.
 
 The retained 2,028-case fixture checks all six numerical handlers and the
 existing Float32 display transform against the native bytes. Fitted centers,
@@ -571,3 +570,45 @@ fit metadata uses the exact kernel placement matrix, while its fresh plane frame
 comes from the transformed BRep. Preview results expose each target's `fit` and
 `planeFrame` without modifying committed objects; Apply records owned metadata
 with geometry in the same history transaction.
+
+## Populated primitive-cache eviction
+
+The follow-up probe executes the same original six handlers over all 338
+matrices with populated derived caches. Each cached-type case owns a reference
+to a real planar OpenCascade face and a vector containing zero, one, or three
+real native-constructed render-mesh objects, plus one null entry. The original
+constructor `0x1401ddfb0` reserves vertex and triangle buffers. Their logical
+geometry counts remain empty; this verifies allocated-buffer lifetime, not
+rendering or tessellation regeneration. The planar face tests the generic
+handle lifetime and is not a geometry-matching cache for each primitive type.
+
+All 2,028 numerical outputs remain byte-identical to the earlier captures.
+All 1,352 cached-type executions reset the shape descriptor to null with
+orientation 3, restore the source's reference counts, preserve its descriptor,
+empty the cache vector, and mark it dirty. The original deleting destructor
+`0x140216ef8` releases all 1,796 cached render meshes, including nested
+allocations. Per-case allocation-set equality is checked before final cleanup;
+the cleanup loop cannot conceal a nested-buffer leak in these cases.
+
+REA Evidence for the deleting destructor is
+`ev_44de6ef1eec65c57349b0f34c61727ecd321d36da1e197594ba428aff6cce79e`;
+its core destructor `0x140b35890` is
+`ev_8c84a2b4873d87b84495b24e1be4db11de05a13038aa25f4fb1dee2d2a331df2`;
+the constructor is
+`ev_2a867a42a469510a8da5004d2534fc23b511bc43770ce24c7e5f96ee762d9fb5`.
+No constructor, destructor, geometry, or cache-invalidation computation is
+stubbed. Runtime allocation boundaries use the process heap; native data
+vtable pointers are relocated, and the mesh identifier counter's data page
+retains write permission. Executable instructions remain unchanged. Initial
+probe failures at an unbound allocation import and a read-only counter page
+were runtime-adapter defects, corrected before the successful capture.
+
+The independent verifier checks every numeric field, cache result, occupancy,
+deletion count, and cleanup receipt. External `datum-primitive-populated-*`
+artifacts retain the capture, probe, SHA-256 identities and verification.
+The successful PID 11748 exited, its mapped image was released, and no owned
+heap allocations remained. This establishes the captured cache eviction
+behavior; the original all-feature controller, dependent-feature propagation,
+and complete native UI workflow remain separate requirements. Application
+preview ownership and history retention continue through the existing shared
+GUI/MCP operations; this probe requires no new application cache layer.
