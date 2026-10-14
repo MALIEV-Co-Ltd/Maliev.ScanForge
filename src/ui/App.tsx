@@ -1,3 +1,9 @@
+import {
+  ToolWorkspace,
+  ToolSection,
+  workspaceGroup,
+  workspaceTitle,
+} from "./tool-panel-scope";
 import { CommandRepeat } from "../command-repeat";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
@@ -1625,9 +1631,9 @@ export function App() {
       setMode("section");
       showTools("section");
     },
-    extrude: () => showTools("reconstruct"),
-    revolve: () => showTools("reconstruct"),
-    boolean: () => showTools("reconstruct"),
+    extrude: () => showTools("extrude"),
+    revolve: () => showTools("revolve"),
+    boolean: () => showTools("boolean"),
     measure: () => {
       setMode("measure");
       setMeasure([]);
@@ -1656,15 +1662,15 @@ export function App() {
       showTools("mesh");
     },
     wireframe: () => setWireframe(!wireframe),
-    objectColor: () => showTools("properties"),
-    loft: () => showTools("advancedCad"),
-    sweep: () => showTools("advancedCad"),
-    fillet: () => showTools("advancedCad"),
-    chamfer: () => showTools("advancedCad"),
-    surfaceOffset: () => showTools("advancedCad"),
-    sewSurfaces: () => showTools("advancedCad"),
-    shell: () => showTools("advancedCad"),
-    surfaceThicken: () => showTools("advancedCad"),
+    objectColor: () => showTools("objectColor"),
+    loft: () => showTools("loft"),
+    sweep: () => showTools("sweep"),
+    fillet: () => showTools("fillet"),
+    chamfer: () => showTools("chamfer"),
+    surfaceOffset: () => showTools("surfaceOffset"),
+    sewSurfaces: () => showTools("sewSurfaces"),
+    shell: () => showTools("shell"),
+    surfaceThicken: () => showTools("surfaceThicken"),
     fitSurface: openSurfaceFit,
     nurbsSurface: () => showTools("surface"),
     newFreeform: () => showTools("surface"),
@@ -1683,14 +1689,14 @@ export function App() {
     averageMesh: () => openScanTool("averageMesh"),
     mirrorMesh: () => openScanTool("mirrorMesh"),
     unroll: () => openScanTool("unroll"),
-    fineAlign: () => showTools("processing"),
+    fineAlign: () => showTools("fineAlign"),
     alignNPoints: openLandmarks,
-    repairMesh: () => showTools("processing"),
-    segmentMesh: () => showTools("processing"),
-    splitSolid: () => showTools("advancedCad"),
-    circularPattern: () => showTools("advancedCad"),
-    linearPattern: () => showTools("advancedCad"),
-    mirrorBody: () => showTools("advancedCad"),
+    repairMesh: () => showTools("repairMesh"),
+    segmentMesh: () => showTools("segmentMesh"),
+    splitSolid: () => showTools("splitSolid"),
+    circularPattern: () => showTools("circularPattern"),
+    linearPattern: () => showTools("linearPattern"),
+    mirrorBody: () => showTools("mirrorBody"),
   };
   const excludedRepeatCommands = new Set([
     "newDocument",
@@ -1796,7 +1802,7 @@ export function App() {
     "fit-cylinder": selected ? () => runFit("cylinder") : undefined,
     "fit-cone": selected ? () => runFit("cone") : undefined,
     "fit-sphere": selected ? () => runFit("sphere") : undefined,
-    fillet: selected?.kernelId ? () => showTools("advancedCad") : undefined,
+    fillet: selected?.kernelId ? () => showTools("fillet") : undefined,
     "selection-brush":
       mode === "brush" ? () => setSelectionTool("brush") : undefined,
     "selection-through":
@@ -2096,6 +2102,14 @@ export function App() {
     );
   }
   function showTools(nextWorkspace: string) {
+    nextWorkspace =
+      (
+        {
+          processing: "repairMesh",
+          advancedCad: "loft",
+          reconstruct: "extrude",
+        } as Record<string, string>
+      )[nextWorkspace] ?? nextWorkspace;
     setSplitMeshOpen(false);
     if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
     cancelLandmarks();
@@ -2119,11 +2133,14 @@ export function App() {
   }
   function openScanTool(tool: ScanToolId) {
     if (selected?.kind === "pointcloud") {
-      setMode("brush");
-      showTools("mesh");
-      setMessage(
-        "Use point-cloud processing to simplify or reduce scan noise.",
-      );
+      if (tool !== "reducePolygons" && tool !== "reduceNoise") {
+        setError(
+          "This tool requires a triangle mesh. Select a mesh to use it.",
+        );
+        return;
+      }
+      setMode("inspect");
+      showTools(tool === "reduceNoise" ? "pointNoise" : "pointReduce");
       return;
     }
     setScanToolFraction(undefined);
@@ -3104,7 +3121,7 @@ export function App() {
     );
   }
   function runFit(kind: "plane" | "sphere" | "cylinder" | "cone") {
-    setWorkspace("reconstruct");
+    setWorkspace("fit");
     setToolPanelOpen(true);
     void action(`Fitting ${kind}…`, () => {
       if (!selected) throw new Error("Select an object first.");
@@ -4016,7 +4033,7 @@ export function App() {
   return (
     <div
       className="workbench"
-      data-workspace={workspace}
+      data-workspace={workspaceGroup(workspace)}
       data-panel-open={toolPanelOpen}
       onDragOver={(event) => {
         event.preventDefault();
@@ -4757,968 +4774,1039 @@ export function App() {
             onCancel={cancelLandmarks}
           />
         )}
-        <aside
-          className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
-          style={
-            nPoints || surfaceFit || createSketch
-              ? { display: "none" }
-              : undefined
-          }
-          inert={actionBusy}
-          aria-label="Tool options"
-        >
-          {!(
-            workspace === "scanTools" &&
-            !selected?.kernelId &&
-            !selected?.parametric
-          ) &&
-            !(
-              workspace === "mesh" &&
-              selected &&
-              (scanPanel || splitMeshOpen)
-            ) && (
-              <h2>
-                {(
-                  {
-                    mesh: "Edit scan",
-                    scanTools: "Exact CAD body",
-                    sketch: "Sketch tools",
-                    surface: "Surface tools",
-                    fit: "Fit primitives",
-                    transform: "Transform",
-                    section: "Cross section",
-                    reconstruct: "Reconstruction tools",
-                    advancedCad: "CAD tools",
-                    processing: "Mesh processing",
-                    measure: "Measure",
-                    deviation: "Deviation analysis",
-                    properties: "Object properties",
-                  } as Record<string, string>
-                )[workspace] ?? "Object properties"}{" "}
+        <ToolWorkspace.Provider value={workspace}>
+          <aside
+            className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
+            style={
+              nPoints || surfaceFit || createSketch
+                ? { display: "none" }
+                : undefined
+            }
+            inert={actionBusy}
+            aria-label="Tool options"
+          >
+            {!(
+              workspace === "scanTools" &&
+              !selected?.kernelId &&
+              !selected?.parametric
+            ) &&
+              !(
+                workspace === "mesh" &&
+                selected &&
+                (scanPanel || splitMeshOpen)
+              ) && (
+                <h2>
+                  {workspaceTitle(workspace) ??
+                    (
+                      {
+                        mesh: "Edit scan",
+                        scanTools: "Exact CAD body",
+                        sketch: "Sketch tools",
+                        surface: "Surface tools",
+                        fit: "Fit primitives",
+                        transform: "Transform",
+                        section: "Cross section",
+                        reconstruct: "Reconstruction tools",
+                        advancedCad: "CAD tools",
+                        processing: "Mesh processing",
+                        measure: "Measure",
+                        deviation: "Deviation analysis",
+                        properties: "Object properties",
+                      } as Record<string, string>
+                    )[workspace] ??
+                    "Object properties"}{" "}
+                  <button
+                    aria-label="Close tool options"
+                    onClick={() => {
+                      scanToolAbort.current?.abort();
+                      scanReferencePick.current = null;
+                      setToolPanelOpen(false);
+                      if (workspace === "mesh") setMode("inspect");
+                    }}
+                  >
+                    <X size={15} />
+                  </button>
+                </h2>
+              )}
+            {(workspace === "mesh" || workspace === "scanTools") &&
+            (selected?.kernelId || selected?.parametric) ? (
+              <section aria-label="Exact CAD body">
+                <p>
+                  Original CAD surfaces and solid topology are retained in
+                  OpenCascade.
+                </p>
+                <p>
+                  Scan Data tools edit triangles. Create a separate mesh copy to
+                  use them.
+                </p>
                 <button
-                  aria-label="Close tool options"
                   onClick={() => {
-                    scanToolAbort.current?.abort();
-                    scanReferencePick.current = null;
-                    setToolPanelOpen(false);
-                    if (workspace === "mesh") setMode("inspect");
+                    const copy = scanMeshCopy(selected, crypto.randomUUID());
+                    operationLabel.current = "Create mesh copy";
+                    commit([...entities, copy]);
+                    operationLabel.current = null;
+                    setSelectedId(copy.id);
                   }}
                 >
-                  <X size={15} />
+                  Create mesh copy
                 </button>
-              </h2>
-            )}
-          {(workspace === "mesh" || workspace === "scanTools") &&
-          (selected?.kernelId || selected?.parametric) ? (
-            <section aria-label="Exact CAD body">
-              <p>
-                Original CAD surfaces and solid topology are retained in
-                OpenCascade.
-              </p>
-              <p>
-                Scan Data tools edit triangles. Create a separate mesh copy to
-                use them.
-              </p>
-              <button
-                onClick={() => {
-                  const copy = scanMeshCopy(selected, crypto.randomUUID());
-                  operationLabel.current = "Create mesh copy";
-                  commit([...entities, copy]);
-                  operationLabel.current = null;
-                  setSelectedId(copy.id);
-                }}
-              >
-                Create mesh copy
-              </button>
-            </section>
-          ) : workspace === "scanTools" ? (
-            <ScanToolsPanel
-              key={`${scanTool}:${selected?.id}`}
-              entities={entities}
-              selected={selected}
-              triangleSelection={triangleMask}
-              tool={scanTool}
-              disabled={actionBusy}
-              busy={processingBusy}
-              progress={scanToolProgress}
-              progressFraction={
-                scanTool === "reducePolygons" ? scanToolFraction : undefined
-              }
-              result={
-                activeScanPreview ||
-                selected?.positions === scanToolOutput.current
-                  ? scanToolResult
-                  : undefined
-              }
-              onApply={applyScanTool}
-              previewReady={!!activeScanPreview}
-              onAccept={
-                scanTool === "reduceNoise" ||
-                scanTool === "reducePolygons" ||
-                scanTool === "scaleMesh" ||
-                scanTool === "mirrorMesh"
-                  ? acceptScanPreview
-                  : undefined
-              }
-              onInvalidatePreview={() => setScanPreview(null)}
-              onCompare={
-                scanTool === "reduceNoise" || scanTool === "reducePolygons"
-                  ? updateScanComparison
-                  : undefined
-              }
-              comparison={
-                activeNoiseComparison
-                  ? {
-                      threshold: activeNoiseComparison.threshold,
-                      statistics: activeNoiseComparison.statistics,
-                      visible: activeNoiseComparison.visible,
-                    }
-                  : undefined
-              }
-              onToggleComparison={() =>
-                setNoiseComparison((previous) =>
-                  previous ? { ...previous, visible: !previous.visible } : null,
-                )
-              }
-              onClose={closeScanTool}
-              onCancel={() => scanToolAbort.current?.abort()}
-              pickedReferenceId={pickedScanReference}
-              onPickReference={(kind) => {
-                scanReferencePick.current = kind;
-                setMode("inspect");
-                setMessage(
-                  `Pick a ${kind === "plane" ? "planar reference" : "cylinder"} on the canvas.`,
-                );
-              }}
-            />
-          ) : workspace === "mesh" && selected && splitMeshOpen ? (
-            <SplitMeshPanel
-              key={selected.id}
-              cutters={entities.filter((entity) => entity.id !== selected.id)}
-              busy={busy}
-              onSplit={(targetId) => {
-                const target = entities.find(
-                  (entity) => entity.id === targetId,
-                );
-                if (target)
-                  void runScanEdit(
-                    {
-                      action: "split",
-                      target: target.positions,
-                      plane:
-                        target.kind === "plane" && target.fit
-                          ? {
-                              origin: target.fit.center,
-                              normal: target.fit.axis,
-                            }
-                          : undefined,
-                    },
-                    "Split mesh",
+              </section>
+            ) : workspace === "scanTools" ? (
+              <ScanToolsPanel
+                key={`${scanTool}:${selected?.id}`}
+                entities={entities}
+                selected={selected}
+                triangleSelection={triangleMask}
+                tool={scanTool}
+                disabled={actionBusy}
+                busy={processingBusy}
+                progress={scanToolProgress}
+                progressFraction={
+                  scanTool === "reducePolygons" ? scanToolFraction : undefined
+                }
+                result={
+                  activeScanPreview ||
+                  selected?.positions === scanToolOutput.current
+                    ? scanToolResult
+                    : undefined
+                }
+                onApply={applyScanTool}
+                previewReady={!!activeScanPreview}
+                onAccept={
+                  scanTool === "reduceNoise" ||
+                  scanTool === "reducePolygons" ||
+                  scanTool === "scaleMesh" ||
+                  scanTool === "mirrorMesh"
+                    ? acceptScanPreview
+                    : undefined
+                }
+                onInvalidatePreview={() => setScanPreview(null)}
+                onCompare={
+                  scanTool === "reduceNoise" || scanTool === "reducePolygons"
+                    ? updateScanComparison
+                    : undefined
+                }
+                comparison={
+                  activeNoiseComparison
+                    ? {
+                        threshold: activeNoiseComparison.threshold,
+                        statistics: activeNoiseComparison.statistics,
+                        visible: activeNoiseComparison.visible,
+                      }
+                    : undefined
+                }
+                onToggleComparison={() =>
+                  setNoiseComparison((previous) =>
+                    previous
+                      ? { ...previous, visible: !previous.visible }
+                      : null,
+                  )
+                }
+                onClose={closeScanTool}
+                onCancel={() => scanToolAbort.current?.abort()}
+                pickedReferenceId={pickedScanReference}
+                onPickReference={(kind) => {
+                  scanReferencePick.current = kind;
+                  setMode("inspect");
+                  setMessage(
+                    `Pick a ${kind === "plane" ? "planar reference" : "cylinder"} on the canvas.`,
                   );
-              }}
-              onClose={() => {
-                scanEditAbort.current?.abort();
-                setToolPanelOpen(false);
-                setSplitMeshOpen(false);
-              }}
-            />
-          ) : workspace === "mesh" && selected && scanPanel ? (
-            <ScanTopologyPanels
-              key={`${selected.id}-${scanPanel}`}
-              section={scanPanel}
-              positions={selected.positions}
-              entities={entities}
-              selectedId={selected.id}
-              selection={triangleMask}
-              onReplace={replaceScanPositions}
-              onCreate={createSegments}
-              onSelection={changeSelection}
-              onBoundaryHighlight={setScanBoundaryPaths}
-              onProject={projectScanBoundaries}
-              onStatus={setMessage}
-              onError={setError}
-              onBusyChange={setProcessingBusy}
-              onBack={() => setScanPanel(null)}
-              wireframe={wireframe}
-              onWireframe={setWireframe}
-              onOpacity={(opacity) => updateSelected({ opacity })}
-            />
-          ) : workspace === "mesh" && selected ? (
-            <EditScanDialog
-              key={selected.id}
-              name={selected.name}
-              positions={selected.positions}
-              pointCloud={selected.kind === "pointcloud"}
-              pointTools={
-                selected.kind === "pointcloud" ? (
-                  <PointCloudTools
-                    count={selected.positions.length / 3}
-                    selection={triangleMask}
-                    busy={busy}
-                    onApply={runPointEdit}
-                  />
-                ) : undefined
-              }
-              onConnected={() => growSelection(undefined, false, true)}
-              tool={selectionTool}
-              onTool={(tool) => {
-                setScanBoundaryPaths([]);
-                setSelectionTool(tool);
-                setMode("brush");
-              }}
-              angle={selectionAngle}
-              onAngle={setSelectionAngle}
-              allConnected={allConnected}
-              onAllConnected={setAllConnected}
-              brushRadius={brushRadius}
-              quickTools={quickToolsEnabled}
-              onQuickTools={setQuickToolsEnabled}
-              through={selectThrough}
-              onThrough={setSelectThrough}
-              busy={busy}
-              onTopology={setScanPanel}
-              onMorph={morphSelection}
-              onSelectAll={() =>
-                changeSelection(
-                  new Uint8Array(
-                    selected.positions.length /
-                      (selected.kind === "pointcloud" ? 3 : 9),
-                  ).fill(1),
-                )
-              }
-              onRevealSelected={revealSelectedTriangles}
-              clip={meshClip}
-              clipFull={stats ? { min: stats.min, max: stats.max } : undefined}
-              onClip={setMeshClip}
-              selectedCount={selectedTriangleCount}
-              hiddenCount={selected.meshSelection?.hidden.length ?? 0}
-              wireframe={wireframe}
-              onWireframe={setWireframe}
-              canUndo={!!selectionSession?.canUndo}
-              canRedo={!!selectionSession?.canRedo}
-              onUndo={() => selectionUndo()}
-              onRedo={() => selectionUndo(true)}
-              onClear={() => changeSelection(null)}
-              onInvert={() =>
-                changeSelection(
-                  Uint8Array.from(
-                    {
-                      length:
-                        selected.positions.length /
+                }}
+              />
+            ) : (workspace === "pointNoise" || workspace === "pointReduce") &&
+              selected?.kind === "pointcloud" ? (
+              <PointCloudTools
+                key={`${workspace}:${selected.id}`}
+                tool={workspace === "pointNoise" ? "noise" : "reduce"}
+                count={selected.positions.length / 3}
+                selection={triangleMask}
+                busy={busy}
+                onApply={runPointEdit}
+              />
+            ) : workspace === "mesh" && selected && splitMeshOpen ? (
+              <SplitMeshPanel
+                key={selected.id}
+                cutters={entities.filter((entity) => entity.id !== selected.id)}
+                busy={busy}
+                onSplit={(targetId) => {
+                  const target = entities.find(
+                    (entity) => entity.id === targetId,
+                  );
+                  if (target)
+                    void runScanEdit(
+                      {
+                        action: "split",
+                        target: target.positions,
+                        plane:
+                          target.kind === "plane" && target.fit
+                            ? {
+                                origin: target.fit.center,
+                                normal: target.fit.axis,
+                              }
+                            : undefined,
+                      },
+                      "Split mesh",
+                    );
+                }}
+                onClose={() => {
+                  scanEditAbort.current?.abort();
+                  setToolPanelOpen(false);
+                  setSplitMeshOpen(false);
+                }}
+              />
+            ) : workspace === "mesh" && selected && scanPanel ? (
+              <ScanTopologyPanels
+                key={`${selected.id}-${scanPanel}`}
+                section={scanPanel}
+                positions={selected.positions}
+                entities={entities}
+                selectedId={selected.id}
+                selection={triangleMask}
+                onReplace={replaceScanPositions}
+                onCreate={createSegments}
+                onSelection={changeSelection}
+                onBoundaryHighlight={setScanBoundaryPaths}
+                onProject={projectScanBoundaries}
+                onStatus={setMessage}
+                onError={setError}
+                onBusyChange={setProcessingBusy}
+                onBack={() => setScanPanel(null)}
+                wireframe={wireframe}
+                onWireframe={setWireframe}
+                onOpacity={(opacity) => updateSelected({ opacity })}
+              />
+            ) : workspace === "mesh" && selected ? (
+              <EditScanDialog
+                key={selected.id}
+                name={selected.name}
+                positions={selected.positions}
+                pointCloud={selected.kind === "pointcloud"}
+                pointTools={
+                  selected.kind === "pointcloud" ? (
+                    <PointCloudTools
+                      count={selected.positions.length / 3}
+                      selection={triangleMask}
+                      busy={busy}
+                      onApply={runPointEdit}
+                    />
+                  ) : undefined
+                }
+                onConnected={() => growSelection(undefined, false, true)}
+                tool={selectionTool}
+                onTool={(tool) => {
+                  setScanBoundaryPaths([]);
+                  setSelectionTool(tool);
+                  setMode("brush");
+                }}
+                angle={selectionAngle}
+                onAngle={setSelectionAngle}
+                allConnected={allConnected}
+                onAllConnected={setAllConnected}
+                brushRadius={brushRadius}
+                quickTools={quickToolsEnabled}
+                onQuickTools={setQuickToolsEnabled}
+                through={selectThrough}
+                onThrough={setSelectThrough}
+                busy={busy}
+                onTopology={setScanPanel}
+                onMorph={morphSelection}
+                onSelectAll={() =>
+                  changeSelection(
+                    new Uint8Array(
+                      selected.positions.length /
                         (selected.kind === "pointcloud" ? 3 : 9),
-                    },
-                    (_, index) => (triangleMask?.[index] ? 0 : 1),
-                  ),
-                )
-              }
-              onHide={() => selectionVisibility("hide")}
-              onIsolate={() => selectionVisibility("isolate")}
-              onReveal={() => selectionVisibility("reveal")}
-              onCopy={() => editSelection("copy")}
-              onCut={() => editSelection("cut")}
-              onDelete={() => editSelection("delete")}
-              onSave={saveSelection}
-              onClose={() => {
-                scanEditAbort.current?.abort();
-                setToolPanelOpen(false);
-                setMode("inspect");
-              }}
-            />
-          ) : (
-            <>
-              {selected && stats ? (
-                <>
-                  <div inert={processingBusy || !!selectionAbort.current}>
-                    <div className="selected-title">
-                      <Triangle size={25} />
-                      <div>
-                        <input
-                          aria-label="Object name"
-                          value={selected.name}
-                          maxLength={200}
-                          onChange={(e) =>
-                            updateSelected({ name: e.target.value })
-                          }
-                        />
-                        <small>
-                          {selected.kernelId
-                            ? "Exact CAD + display mesh"
-                            : selected.kind === "plane"
-                              ? "Reference surface"
-                              : "Triangle mesh"}{" "}
-                          · mm
-                        </small>
-                      </div>
-                    </div>
-                    <Panel title="Geometry" className="geometry-panel">
-                      {selected.fit && (
-                        <p className="muted">
-                          {selected.fit.kind} fit · RMS{" "}
-                          {number(selected.fit.rms)} mm · maximum residual{" "}
-                          {number(selected.fit.maxError)} mm. Review fit quality
-                          before reconstruction.
-                        </p>
-                      )}
-                      {selected.scanSource &&
-                        isSampledScan(selected.scanSource) && (
-                          <p role="note" className="muted">
-                            Sampled source: {number(selected.scanSource.bytes)}{" "}
-                            bytes · {number(selected.scanSource.triangles)}{" "}
-                            source triangles ·{" "}
-                            {number(selected.scanSource.displayedTriangles)}{" "}
-                            imported triangles. Operations and exports use
-                            sampled geometry, not the complete source.
-                          </p>
-                        )}
-                      <dl>
-                        <dt>
-                          {selected.kind === "pointcloud"
-                            ? "Points"
-                            : "Vertices (triangle soup)"}
-                        </dt>
-                        <dd>{number(stats.vertices)}</dd>
-                        {selected.kind !== "pointcloud" && (
-                          <>
-                            <dt>Triangles</dt>
-                            <dd>{number(stats.triangles)}</dd>
-                          </>
-                        )}
-                        <dt>Bounds (mm)</dt>
-                        <dd>{stats.size.map(number).join(" × ")}</dd>
-                        {selected.kind !== "pointcloud" && (
-                          <>
-                            <dt>Surface area (mm²)</dt>
-                            <dd>{number(stats.area)}</dd>
-                            <dt>Volume estimate (mm³)</dt>
-                            <dd>{number(stats.volume)}</dd>
-                          </>
-                        )}
-                      </dl>
-                      {selected.kind !== "pointcloud" && (
-                        <p className="muted">
-                          Volume assumes a closed, consistently oriented mesh.
-                        </p>
-                      )}
-                    </Panel>
-                    {(selected.kernelId || selected.fit) && (
-                      <AlignmentReferences
-                        key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.fit)}`}
-                        entityId={selected.id}
-                        onRead={(offset, signal) =>
-                          readAlignmentReferences(selected.id, offset, signal)
-                        }
-                      />
-                    )}
-                    {(selected.kernelId ||
-                      (["mesh", "pointcloud"].includes(selected.kind) &&
-                        !selected.parametric)) && (
-                      <DatumAlignmentTools
-                        api={workspaceApi}
-                        entity={selected}
-                        center={stats.center}
-                        entities={entities}
-                        readReferences={readAlignmentReferences}
-                        onPickFace={(callback) => {
-                          datumFacePick.current = callback;
-                          if (callback) {
-                            datumPointPick.current = null;
-                            setMode("inspect");
-                          }
-                        }}
-                        onPickPoint={(callback) => {
-                          datumPointPick.current = callback;
-                          if (callback) datumFacePick.current = null;
-                          if (callback) setMode("inspect");
-                        }}
-                      />
-                    )}
-                    <Panel title="Display" className="display-panel">
-                      <label className="slider-row">
-                        <span>Opacity</span>
-                        <input
-                          aria-label="Opacity"
-                          type="range"
-                          min="0.1"
-                          max="1"
-                          step="0.05"
-                          value={selected.opacity}
-                          onChange={(e) =>
-                            updateSelected({
-                              opacity: Number(e.target.value),
-                            })
-                          }
-                        />
-                        <output>{selected.opacity.toFixed(2)}</output>
-                      </label>
-                      <div className="display-row">
-                        <span>Shading</span>
-                        <div className="segmented">
-                          <button
-                            className={!wireframe ? "active" : ""}
-                            onClick={() => setWireframe(false)}
-                          >
-                            Shaded
-                          </button>
-                          <button
-                            className={wireframe ? "active" : ""}
-                            onClick={() => setWireframe(true)}
-                          >
-                            Wireframe
-                          </button>
+                    ).fill(1),
+                  )
+                }
+                onRevealSelected={revealSelectedTriangles}
+                clip={meshClip}
+                clipFull={
+                  stats ? { min: stats.min, max: stats.max } : undefined
+                }
+                onClip={setMeshClip}
+                selectedCount={selectedTriangleCount}
+                hiddenCount={selected.meshSelection?.hidden.length ?? 0}
+                wireframe={wireframe}
+                onWireframe={setWireframe}
+                canUndo={!!selectionSession?.canUndo}
+                canRedo={!!selectionSession?.canRedo}
+                onUndo={() => selectionUndo()}
+                onRedo={() => selectionUndo(true)}
+                onClear={() => changeSelection(null)}
+                onInvert={() =>
+                  changeSelection(
+                    Uint8Array.from(
+                      {
+                        length:
+                          selected.positions.length /
+                          (selected.kind === "pointcloud" ? 3 : 9),
+                      },
+                      (_, index) => (triangleMask?.[index] ? 0 : 1),
+                    ),
+                  )
+                }
+                onHide={() => selectionVisibility("hide")}
+                onIsolate={() => selectionVisibility("isolate")}
+                onReveal={() => selectionVisibility("reveal")}
+                onCopy={() => editSelection("copy")}
+                onCut={() => editSelection("cut")}
+                onDelete={() => editSelection("delete")}
+                onSave={saveSelection}
+                onClose={() => {
+                  scanEditAbort.current?.abort();
+                  setToolPanelOpen(false);
+                  setMode("inspect");
+                }}
+              />
+            ) : (
+              <>
+                {selected && stats ? (
+                  <>
+                    <div inert={processingBusy || !!selectionAbort.current}>
+                      <div className="selected-title">
+                        <Triangle size={25} />
+                        <div>
+                          {workspace === "properties" ? (
+                            <input
+                              aria-label="Object name"
+                              value={selected.name}
+                              maxLength={200}
+                              onChange={(e) =>
+                                updateSelected({ name: e.target.value })
+                              }
+                            />
+                          ) : (
+                            <strong
+                              style={{ display: "block", paddingBottom: 5 }}
+                            >
+                              {selected.name}
+                            </strong>
+                          )}
+                          <small>
+                            {selected.kernelId
+                              ? "Exact CAD + display mesh"
+                              : selected.kind === "plane"
+                                ? "Reference surface"
+                                : "Triangle mesh"}{" "}
+                            · mm
+                          </small>
                         </div>
                       </div>
-                      <label className="color-field">
-                        Object color
-                        <input
-                          aria-label="Object color"
-                          type="color"
-                          value={selected.color}
-                          onChange={(e) =>
-                            updateSelected({ color: e.target.value })
-                          }
-                        />
-                      </label>
-                    </Panel>
-                    <Panel title="Transform" className="transform-panel">
-                      <VectorField
-                        label="Move (mm)"
-                        value={translation}
-                        onChange={setTranslation}
-                      />
-                      <VectorField
-                        label="Rotate (°)"
-                        value={rotation}
-                        onChange={setRotation}
-                      />
-                      <Field
-                        label="Uniform scale"
-                        value={scale}
-                        min={0.001}
-                        step={0.1}
-                        onChange={setScale}
-                      />
-                      <button
-                        className="wide"
-                        disabled={busy}
-                        onClick={applyTransform}
-                      >
-                        Apply transform
-                      </button>
-                      {selected.kernelId && (
-                        <p className="muted">
-                          Exact CAD transforms preserve STEP export.
-                        </p>
-                      )}
-                    </Panel>
-                    <Panel title="Cross section" className="section-panel">
-                      <label className="select-field">
-                        Axis
-                        <AppSelect
-                          aria-label="Section axis"
-                          value={axis}
-                          onChange={(e) =>
-                            setAxis(e.target.value as "x" | "y" | "z")
-                          }
-                        >
-                          <option value="x">X (YZ plane)</option>
-                          <option value="y">Y (XZ plane)</option>
-                          <option value="z">Z (XY plane)</option>
-                        </AppSelect>
-                      </label>
-                      <Field
-                        label="Offset (mm)"
-                        value={offset}
-                        step={0.5}
-                        onChange={setOffset}
-                      />
-                      <label className="check">
-                        <input
-                          type="checkbox"
-                          checked={mode === "section"}
-                          onChange={(e) =>
-                            setMode(e.target.checked ? "section" : "inspect")
-                          }
-                        />
-                        Show cross section
-                      </label>
-                      {mode === "section" && (
-                        <>
-                          <p className="muted">
-                            {section.segments.length / 6} segments · total{" "}
-                            {number(section.length)} mm
-                          </p>
-                          <button
-                            className="wide"
-                            disabled={!section.segments.length}
-                            onClick={() => {
-                              const rows = ["x1,y1,z1,x2,y2,z2"];
-                              for (
-                                let i = 0;
-                                i < section.segments.length;
-                                i += 6
-                              )
-                                rows.push(
-                                  section.segments.slice(i, i + 6).join(","),
-                                );
-                              download(
-                                rows.join("\n"),
-                                "section.csv",
-                                "text/csv",
-                              );
-                            }}
-                          >
-                            Export section CSV
-                          </button>
-                          <button
-                            className="wide"
-                            disabled={busy || !section.segments.length}
-                            onClick={() =>
-                              void action("Exporting section DXF…", () => {
-                                download(
-                                  exportSectionDxf(section),
-                                  "section.dxf",
-                                  "application/dxf",
-                                );
-                                setMessage(
-                                  "Cross section exported to DXF · world XYZ millimetres",
-                                );
-                              })
-                            }
-                          >
-                            Export section DXF
-                          </button>
-                        </>
-                      )}
-                    </Panel>
-                    <Panel title="Surface fitting" className="fitting-panel">
-                      <label className="check">
-                        <input
-                          type="checkbox"
-                          checked={localFit}
-                          onChange={(e) => setLocalFit(e.target.checked)}
-                        />
-                        Fit a local region
-                      </label>
-                      {localFit && (
-                        <>
-                          <Field
-                            label="Region radius (mm)"
-                            value={fitRadius}
-                            min={0.01}
-                            step={1}
-                            onChange={setFitRadius}
-                          />
-                          <p className="muted">
-                            {anchor
-                              ? `Anchor: ${anchor.map(number).join(", ")}`
-                              : "Click a surface in Inspect mode to anchor the region."}
-                          </p>
-                        </>
-                      )}
-                      {fit ? (
-                        <>
+                      <ToolSection tools={["properties", "measure"]}>
+                        <Panel title="Geometry" className="geometry-panel">
+                          {selected.fit && (
+                            <p className="muted">
+                              {selected.fit.kind} fit · RMS{" "}
+                              {number(selected.fit.rms)} mm · maximum residual{" "}
+                              {number(selected.fit.maxError)} mm. Review fit
+                              quality before reconstruction.
+                            </p>
+                          )}
+                          {selected.scanSource &&
+                            isSampledScan(selected.scanSource) && (
+                              <p role="note" className="muted">
+                                Sampled source:{" "}
+                                {number(selected.scanSource.bytes)} bytes ·{" "}
+                                {number(selected.scanSource.triangles)} source
+                                triangles ·{" "}
+                                {number(selected.scanSource.displayedTriangles)}{" "}
+                                imported triangles. Operations and exports use
+                                sampled geometry, not the complete source.
+                              </p>
+                            )}
                           <dl>
-                            <dt>Surface</dt>
-                            <dd>{fit.kind}</dd>
-                            <dt>RMS residual</dt>
-                            <dd>{number(fit.rms)} mm</dd>
-                            <dt>Maximum residual</dt>
-                            <dd>{number(fit.maxError)} mm</dd>
-                            {fit.radius && (
+                            <dt>
+                              {selected.kind === "pointcloud"
+                                ? "Points"
+                                : "Vertices (triangle soup)"}
+                            </dt>
+                            <dd>{number(stats.vertices)}</dd>
+                            {selected.kind !== "pointcloud" && (
                               <>
-                                <dt>Radius</dt>
-                                <dd>{number(fit.radius)} mm</dd>
+                                <dt>Triangles</dt>
+                                <dd>{number(stats.triangles)}</dd>
+                              </>
+                            )}
+                            <dt>Bounds (mm)</dt>
+                            <dd>{stats.size.map(number).join(" × ")}</dd>
+                            {selected.kind !== "pointcloud" && (
+                              <>
+                                <dt>Surface area (mm²)</dt>
+                                <dd>{number(stats.area)}</dd>
+                                <dt>Volume estimate (mm³)</dt>
+                                <dd>{number(stats.volume)}</dd>
                               </>
                             )}
                           </dl>
+                          {selected.kind !== "pointcloud" && (
+                            <p className="muted">
+                              Volume assumes a closed, consistently oriented
+                              mesh.
+                            </p>
+                          )}
+                        </Panel>
+                      </ToolSection>
+                      {workspace === "properties" &&
+                        (selected.kernelId || selected.fit) && (
+                          <AlignmentReferences
+                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.fit)}`}
+                            entityId={selected.id}
+                            onRead={(offset, signal) =>
+                              readAlignmentReferences(
+                                selected.id,
+                                offset,
+                                signal,
+                              )
+                            }
+                          />
+                        )}
+                      {workspace === "properties" &&
+                        (selected.kernelId ||
+                          (["mesh", "pointcloud"].includes(selected.kind) &&
+                            !selected.parametric)) && (
+                          <DatumAlignmentTools
+                            api={workspaceApi}
+                            entity={selected}
+                            center={stats.center}
+                            entities={entities}
+                            readReferences={readAlignmentReferences}
+                            onPickFace={(callback) => {
+                              datumFacePick.current = callback;
+                              if (callback) {
+                                datumPointPick.current = null;
+                                setMode("inspect");
+                              }
+                            }}
+                            onPickPoint={(callback) => {
+                              datumPointPick.current = callback;
+                              if (callback) datumFacePick.current = null;
+                              if (callback) setMode("inspect");
+                            }}
+                          />
+                        )}
+                      <ToolSection tools={["properties", "objectColor"]}>
+                        <Panel
+                          title={
+                            workspace === "objectColor"
+                              ? "Object color"
+                              : "Display"
+                          }
+                          className="display-panel"
+                        >
+                          <ToolSection tools={["properties"]}>
+                            <label className="slider-row">
+                              <span>Opacity</span>
+                              <input
+                                aria-label="Opacity"
+                                type="range"
+                                min="0.1"
+                                max="1"
+                                step="0.05"
+                                value={selected.opacity}
+                                onChange={(e) =>
+                                  updateSelected({
+                                    opacity: Number(e.target.value),
+                                  })
+                                }
+                              />
+                              <output>{selected.opacity.toFixed(2)}</output>
+                            </label>
+                            <div className="display-row">
+                              <span>Shading</span>
+                              <div className="segmented">
+                                <button
+                                  className={!wireframe ? "active" : ""}
+                                  onClick={() => setWireframe(false)}
+                                >
+                                  Shaded
+                                </button>
+                                <button
+                                  className={wireframe ? "active" : ""}
+                                  onClick={() => setWireframe(true)}
+                                >
+                                  Wireframe
+                                </button>
+                              </div>
+                            </div>
+                          </ToolSection>
+                          <label className="color-field">
+                            Object color
+                            <input
+                              aria-label="Object color"
+                              type="color"
+                              value={selected.color}
+                              onChange={(e) =>
+                                updateSelected({ color: e.target.value })
+                              }
+                            />
+                          </label>
+                        </Panel>
+                      </ToolSection>
+                      <ToolSection tools={["properties"]}>
+                        <ParametricTools
+                          selected={selected ?? undefined}
+                          disabled={busy}
+                          onRebuild={rebuildFeature}
+                          onError={setError}
+                        />
+                      </ToolSection>
+                      <ToolSection tools={["transform"]}>
+                        <Panel title="Transform" className="transform-panel">
+                          <VectorField
+                            label="Move (mm)"
+                            value={translation}
+                            onChange={setTranslation}
+                          />
+                          <VectorField
+                            label="Rotate (°)"
+                            value={rotation}
+                            onChange={setRotation}
+                          />
                           <Field
-                            label="Color tolerance (mm)"
-                            value={tolerance}
+                            label="Uniform scale"
+                            value={scale}
                             min={0.001}
                             step={0.1}
-                            onChange={(n) => setTolerance(Math.max(0.001, n))}
+                            onChange={setScale}
+                          />
+                          <button
+                            className="wide"
+                            disabled={busy}
+                            onClick={applyTransform}
+                          >
+                            Apply transform
+                          </button>
+                          {selected.kernelId && (
+                            <p className="muted">
+                              Exact CAD transforms preserve STEP export.
+                            </p>
+                          )}
+                        </Panel>
+                      </ToolSection>
+                      <ToolSection tools={["section"]}>
+                        <Panel title="Cross section" className="section-panel">
+                          <label className="select-field">
+                            Axis
+                            <AppSelect
+                              aria-label="Section axis"
+                              value={axis}
+                              onChange={(e) =>
+                                setAxis(e.target.value as "x" | "y" | "z")
+                              }
+                            >
+                              <option value="x">X (YZ plane)</option>
+                              <option value="y">Y (XZ plane)</option>
+                              <option value="z">Z (XY plane)</option>
+                            </AppSelect>
+                          </label>
+                          <Field
+                            label="Offset (mm)"
+                            value={offset}
+                            step={0.5}
+                            onChange={setOffset}
                           />
                           <label className="check">
                             <input
                               type="checkbox"
-                              checked={showDeviation}
+                              checked={mode === "section"}
                               onChange={(e) =>
-                                setShowDeviation(e.target.checked)
+                                setMode(
+                                  e.target.checked ? "section" : "inspect",
+                                )
                               }
                             />
-                            Show signed deviation
+                            Show cross section
                           </label>
-                          <button
-                            className="wide accent"
-                            disabled={busy}
-                            onClick={materializeFit}
-                          >
-                            Create fitted {fit.kind}
-                          </button>
-                          <p className="muted">
-                            Analytical surface distances; cylinder fitting
-                            requires a sampled side surface. Color map covers
-                            the entire object.
-                          </p>
-                        </>
-                      ) : (
-                        <p className="muted">
-                          Select a scan and fit a plane, sphere, cylinder or
-                          cone from the tool rail. Fits report residuals; review
-                          them before creating CAD.
-                        </p>
+                          {mode === "section" && (
+                            <>
+                              <p className="muted">
+                                {section.segments.length / 6} segments · total{" "}
+                                {number(section.length)} mm
+                              </p>
+                              <button
+                                className="wide"
+                                disabled={!section.segments.length}
+                                onClick={() => {
+                                  const rows = ["x1,y1,z1,x2,y2,z2"];
+                                  for (
+                                    let i = 0;
+                                    i < section.segments.length;
+                                    i += 6
+                                  )
+                                    rows.push(
+                                      section.segments
+                                        .slice(i, i + 6)
+                                        .join(","),
+                                    );
+                                  download(
+                                    rows.join("\n"),
+                                    "section.csv",
+                                    "text/csv",
+                                  );
+                                }}
+                              >
+                                Export section CSV
+                              </button>
+                              <button
+                                className="wide"
+                                disabled={busy || !section.segments.length}
+                                onClick={() =>
+                                  void action("Exporting section DXF…", () => {
+                                    download(
+                                      exportSectionDxf(section),
+                                      "section.dxf",
+                                      "application/dxf",
+                                    );
+                                    setMessage(
+                                      "Cross section exported to DXF · world XYZ millimetres",
+                                    );
+                                  })
+                                }
+                              >
+                                Export section DXF
+                              </button>
+                            </>
+                          )}
+                        </Panel>
+                      </ToolSection>
+                      <ToolSection tools={["fit", "deviation"]}>
+                        <Panel
+                          title="Surface fitting"
+                          className="fitting-panel"
+                        >
+                          <label className="check">
+                            <input
+                              type="checkbox"
+                              checked={localFit}
+                              onChange={(e) => setLocalFit(e.target.checked)}
+                            />
+                            Fit a local region
+                          </label>
+                          {localFit && (
+                            <>
+                              <Field
+                                label="Region radius (mm)"
+                                value={fitRadius}
+                                min={0.01}
+                                step={1}
+                                onChange={setFitRadius}
+                              />
+                              <p className="muted">
+                                {anchor
+                                  ? `Anchor: ${anchor.map(number).join(", ")}`
+                                  : "Click a surface in Inspect mode to anchor the region."}
+                              </p>
+                            </>
+                          )}
+                          {fit ? (
+                            <>
+                              <dl>
+                                <dt>Surface</dt>
+                                <dd>{fit.kind}</dd>
+                                <dt>RMS residual</dt>
+                                <dd>{number(fit.rms)} mm</dd>
+                                <dt>Maximum residual</dt>
+                                <dd>{number(fit.maxError)} mm</dd>
+                                {fit.radius && (
+                                  <>
+                                    <dt>Radius</dt>
+                                    <dd>{number(fit.radius)} mm</dd>
+                                  </>
+                                )}
+                              </dl>
+                              <Field
+                                label="Color tolerance (mm)"
+                                value={tolerance}
+                                min={0.001}
+                                step={0.1}
+                                onChange={(n) =>
+                                  setTolerance(Math.max(0.001, n))
+                                }
+                              />
+                              <label className="check">
+                                <input
+                                  type="checkbox"
+                                  checked={showDeviation}
+                                  onChange={(e) =>
+                                    setShowDeviation(e.target.checked)
+                                  }
+                                />
+                                Show signed deviation
+                              </label>
+                              <button
+                                className="wide accent"
+                                disabled={busy}
+                                onClick={materializeFit}
+                              >
+                                Create fitted {fit.kind}
+                              </button>
+                              <p className="muted">
+                                Analytical surface distances; cylinder fitting
+                                requires a sampled side surface. Color map
+                                covers the entire object.
+                              </p>
+                            </>
+                          ) : (
+                            <p className="muted">
+                              Select a scan and fit a plane, sphere, cylinder or
+                              cone from the tool rail. Fits report residuals;
+                              review them before creating CAD.
+                            </p>
+                          )}
+                        </Panel>
+                      </ToolSection>
+                      {workspaceGroup(workspace) === "reconstruct" && (
+                        <div className="solid-panels">
+                          <SolidTools
+                            entities={entities}
+                            selected={selected}
+                            busy={busy}
+                            onBoolean={boolean}
+                            onExtrude={extrude}
+                            onRevolve={revolve}
+                          />
+                        </div>
                       )}
-                      <button
-                        className="wide mesh-cleanup"
-                        disabled={busy}
-                        onClick={() =>
-                          void action("Removing degenerate triangles…", () => {
-                            const positions = cleanupMesh(selected.positions);
-                            validatePositions(positions);
-                            updateSelected({
-                              positions,
-                              kind: "mesh",
-                              kernelId: undefined,
-                              brep: undefined,
-                            });
-                            setMessage(
-                              `Removed ${(selected.positions.length - positions.length) / 9} degenerate triangles · mesh result`,
-                            );
-                          })
+                    </div>
+                  </>
+                ) : activeSketchId && workspace === "sketch" ? (
+                  <div className="selected-title">
+                    <ScanLine size={25} />
+                    <div>
+                      <strong>
+                        {
+                          savedSketches.find((s) => s.id === activeSketchId)
+                            ?.name
                         }
-                      >
-                        Remove degenerate triangles
-                      </button>
-                    </Panel>
-                    <div className="solid-panels">
-                      <SolidTools
-                        entities={entities}
-                        selected={selected}
-                        busy={busy}
-                        onBoolean={boolean}
-                        onExtrude={extrude}
-                        onRevolve={revolve}
-                      />
+                      </strong>
+                      <small>
+                        Sketch ·{" "}
+                        {sketchDraft.reference
+                          ? `${sketchDraft.reference.segments.length / 4} scan reference segments`
+                          : "editable profile"}
+                      </small>
                     </div>
                   </div>
-                </>
-              ) : activeSketchId && workspace === "sketch" ? (
-                <div className="selected-title">
-                  <ScanLine size={25} />
-                  <div>
-                    <strong>
-                      {savedSketches.find((s) => s.id === activeSketchId)?.name}
-                    </strong>
-                    <small>
-                      Sketch ·{" "}
-                      {sketchDraft.reference
-                        ? `${sketchDraft.reference.segments.length / 4} scan reference segments`
-                        : "editable profile"}
-                    </small>
+                ) : (
+                  <div className="empty-inspector">
+                    Select an object to inspect its geometry, or create a new
+                    surface or sketch.
                   </div>
-                </div>
-              ) : (
-                <div className="empty-inspector">
-                  Select an object to inspect its geometry, or create a new
-                  surface or sketch.
-                </div>
-              )}
-              <div className="surface-panels">
-                <SurfaceTools
-                  selectionId={selected?.id}
-                  scan={
-                    entities.find(
-                      (entity) => entity.id === selected?.surfaceScanId,
-                    )?.positions ?? selected?.positions
-                  }
-                  patch={selected?.surfacePatch}
-                  onPatchChange={editSurface}
-                  onCreateMesh={(positions, label) =>
-                    createMesh(positions, label)
-                  }
-                  onCreateClosedCad={(patches, tolerance) =>
-                    cadOperation(
-                      "Closed patch solid",
-                      () => cad.current!.closedShell(patches, tolerance),
-                      undefined,
-                      { kind: "closedShell", patches, tolerance },
-                    )
-                  }
-                  onExportPatch={(json) =>
-                    download(
-                      json,
-                      "surface.scanforge-nurbs.json",
-                      "application/json",
-                    )
-                  }
-                  onError={setError}
-                  disabled={busy}
-                  onBusyChange={setProcessingBusy}
-                />
-                <button
-                  disabled={busy || !selected?.surfacePatch}
-                  onClick={() =>
-                    cadOperation(
-                      "NURBS CAD face",
-                      () => cad.current!.surface(selected!.surfacePatch!),
-                      selected?.surfacePatch,
-                      { kind: "surface", patch: selected!.surfacePatch! },
-                    )
-                  }
-                >
-                  Create exact NURBS CAD face
-                </button>
-              </div>
-              <div className="sketch-panels">
-                <SketchTools
-                  value={sketchDraft}
-                  drawingTool={sketchDrawingTool}
-                  onDrawingTool={setSketchDrawingTool}
-                  drawingConstraints={sketchDrawingConstraints}
-                  onDrawingConstraints={setSketchDrawingConstraints}
-                  onNormalView={() => viewport.current?.viewSketchNormal()}
-                  canUndo={
-                    sketchUndoSessions.current.get(
-                      activeSketchId ? `saved:${activeSketchId}` : "legacy",
-                    )?.canUndo
-                  }
-                  canRedo={
-                    sketchUndoSessions.current.get(
-                      activeSketchId ? `saved:${activeSketchId}` : "legacy",
-                    )?.canRedo
-                  }
-                  onUndo={() => sketchUndo()}
-                  onRedo={() => sketchUndo(true)}
-                  showControlPoints={sketchControlPoints}
-                  onShowControlPoints={setSketchControlPoints}
-                  showMeshPoints={sketchMeshPoints}
-                  onShowMeshPoints={setSketchMeshPoints}
-                  onChange={updateSketchDraft}
-                  onExtrude={extrude}
-                  disabled={busy}
-                />
-              </div>
-              <div className="processing-panels">
-                <MeshTools
-                  entities={entities}
-                  selected={selected}
-                  triangleSelection={triangleMask}
-                  disabled={busy}
-                  onBusyChange={setProcessingBusy}
-                  onReplace={(positions, label, indexedMesh) => {
-                    if (selected?.parametric) {
-                      createSegments([positions], label);
-                      return;
-                    }
-                    operationLabel.current = label;
-                    updateSelected({
-                      positions,
-                      indexedMesh,
-                      kind: "mesh",
-                      kernelId: undefined,
-                      brep: undefined,
-                      surfacePatch: undefined,
-                      surfaceScanId: undefined,
-                    });
-                    operationLabel.current = null;
-                    setMessage(label);
-                  }}
-                  onCreateSegments={createSegments}
-                  onError={setError}
-                  onStatus={setMessage}
-                />
-              </div>
-              <div className="advanced-cad-panels">
-                <ParametricTools
-                  selected={selected ?? undefined}
-                  disabled={busy}
-                  onRebuild={rebuildFeature}
-                  onError={setError}
-                />
-                <AdvancedCadTools
-                  entities={entities}
-                  selected={selected}
-                  disabled={busy}
-                  onError={setError}
-                  onLoft={(profiles, ruled) =>
-                    cadOperation(
-                      "Loft",
-                      () => cad.current!.loft(profiles, ruled),
-                      undefined,
-                      { kind: "loft", profiles, ruled },
-                    )
-                  }
-                  onPattern={(pattern) =>
-                    cadOperation(
-                      `${pattern.kind} pattern`,
-                      () => cad.current!.pattern(selected!.kernelId!, pattern),
-                      undefined,
-                      (refs) => ({
-                        kind: "pattern",
-                        source: refs[0],
-                        pattern,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                  onMirror={(origin, normal) =>
-                    cadOperation(
-                      "Mirror body",
-                      () =>
-                        cad.current!.mirror(
-                          selected!.kernelId!,
-                          origin,
-                          normal,
-                        ),
-                      undefined,
-                      (refs) => ({
-                        kind: "mirror",
-                        source: refs[0],
-                        planeOrigin: origin,
-                        normal,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                  onSplit={(cutterId) => {
-                    void action("Splitting solid…", async () => {
-                      const cutter = entities.find(
-                        (entity) => entity.id === cutterId,
-                      );
-                      if (!selected?.kernelId || !cutter?.kernelId)
-                        throw new Error("Choose two exact CAD bodies.");
-                      const bound = bindFeatureInputs(entities, [
-                        selected.id,
-                        cutter.id,
-                      ]);
-                      const binding = featureBinding("Split solid", {
-                        kind: "split",
-                        source: bound.refs[0],
-                        cutter: bound.refs[1],
-                      });
-                      const results = await cad.current!.split(
-                        selected.kernelId,
-                        cutter.kernelId,
-                      );
-                      const created = results.map((result, index): Entity => ({
-                        ...result,
-                        id: crypto.randomUUID(),
-                        name: `Split ${index === 0 ? "inside" : "outside"}`,
-                        kind: "cad",
-                        color: DEFAULT_PART_COLOR,
-                        visible: true,
-                        opacity: 1,
-                        parametric: { ...binding, output: index },
-                      }));
-                      commit([
-                        ...bound.entities.map((entity) =>
-                          entity.id === selected.id || entity.id === cutter.id
-                            ? { ...entity, visible: false }
-                            : entity,
-                        ),
-                        ...created,
-                      ]);
-                      setSelectedId(created[0].id);
-                      setMessage("Created exact inside and outside bodies");
-                    });
-                  }}
-                  onSweep={(points, path) =>
-                    cadOperation(
-                      "Sweep",
-                      () => cad.current!.sweep(points, path),
-                      undefined,
-                      { kind: "sweep", points, path },
-                    )
-                  }
-                  onEdges={(indices, amount, operation) =>
-                    cadOperation(
-                      operation,
-                      () =>
-                        cad.current!.edgeTreatment(
-                          selected!.kernelId!,
-                          indices,
-                          amount,
+                )}
+                {workspaceGroup(workspace) === "surface" && (
+                  <div className="surface-panels">
+                    <SurfaceTools
+                      selectionId={selected?.id}
+                      scan={
+                        entities.find(
+                          (entity) => entity.id === selected?.surfaceScanId,
+                        )?.positions ?? selected?.positions
+                      }
+                      patch={selected?.surfacePatch}
+                      onPatchChange={editSurface}
+                      onCreateMesh={(positions, label) =>
+                        createMesh(positions, label)
+                      }
+                      onCreateClosedCad={(patches, tolerance) =>
+                        cadOperation(
+                          "Closed patch solid",
+                          () => cad.current!.closedShell(patches, tolerance),
+                          undefined,
+                          { kind: "closedShell", patches, tolerance },
+                        )
+                      }
+                      onExportPatch={(json) =>
+                        download(
+                          json,
+                          "surface.scanforge-nurbs.json",
+                          "application/json",
+                        )
+                      }
+                      onError={setError}
+                      disabled={busy}
+                      onBusyChange={setProcessingBusy}
+                    />
+                    <button
+                      disabled={busy || !selected?.surfacePatch}
+                      onClick={() =>
+                        cadOperation(
+                          "NURBS CAD face",
+                          () => cad.current!.surface(selected!.surfacePatch!),
+                          selected?.surfacePatch,
+                          { kind: "surface", patch: selected!.surfacePatch! },
+                        )
+                      }
+                    >
+                      Create exact NURBS CAD face
+                    </button>
+                  </div>
+                )}
+                {workspaceGroup(workspace) === "sketch" && (
+                  <div className="sketch-panels">
+                    <SketchTools
+                      value={sketchDraft}
+                      drawingTool={sketchDrawingTool}
+                      onDrawingTool={setSketchDrawingTool}
+                      drawingConstraints={sketchDrawingConstraints}
+                      onDrawingConstraints={setSketchDrawingConstraints}
+                      onNormalView={() => viewport.current?.viewSketchNormal()}
+                      canUndo={
+                        sketchUndoSessions.current.get(
+                          activeSketchId ? `saved:${activeSketchId}` : "legacy",
+                        )?.canUndo
+                      }
+                      canRedo={
+                        sketchUndoSessions.current.get(
+                          activeSketchId ? `saved:${activeSketchId}` : "legacy",
+                        )?.canRedo
+                      }
+                      onUndo={() => sketchUndo()}
+                      onRedo={() => sketchUndo(true)}
+                      showControlPoints={sketchControlPoints}
+                      onShowControlPoints={setSketchControlPoints}
+                      showMeshPoints={sketchMeshPoints}
+                      onShowMeshPoints={setSketchMeshPoints}
+                      onChange={updateSketchDraft}
+                      onExtrude={extrude}
+                      disabled={busy}
+                    />
+                  </div>
+                )}
+                {workspaceGroup(workspace) === "processing" && (
+                  <div className="processing-panels">
+                    <MeshTools
+                      key={`${workspace}:${selected?.id}`}
+                      tool={
+                        workspace === "processing"
+                          ? "repairMesh"
+                          : (workspace as import("./MeshTools").MeshTool)
+                      }
+                      entities={entities}
+                      selected={selected}
+                      triangleSelection={triangleMask}
+                      disabled={busy}
+                      onBusyChange={setProcessingBusy}
+                      onReplace={(positions, label, indexedMesh) => {
+                        if (selected?.parametric) {
+                          createSegments([positions], label);
+                          return;
+                        }
+                        operationLabel.current = label;
+                        updateSelected({
+                          positions,
+                          indexedMesh,
+                          kind: "mesh",
+                          kernelId: undefined,
+                          brep: undefined,
+                          surfacePatch: undefined,
+                          surfaceScanId: undefined,
+                        });
+                        operationLabel.current = null;
+                        setMessage(label);
+                      }}
+                      onCreateSegments={createSegments}
+                      onError={setError}
+                      onStatus={setMessage}
+                    />
+                  </div>
+                )}
+                {workspaceGroup(workspace) === "advancedCad" && (
+                  <div className="advanced-cad-panels">
+                    <AdvancedCadTools
+                      key={`${workspace}:${selected?.id}`}
+                      entities={entities}
+                      selected={selected}
+                      disabled={busy}
+                      onError={setError}
+                      onLoft={(profiles, ruled) =>
+                        cadOperation(
+                          "Loft",
+                          () => cad.current!.loft(profiles, ruled),
+                          undefined,
+                          { kind: "loft", profiles, ruled },
+                        )
+                      }
+                      onPattern={(pattern) =>
+                        cadOperation(
+                          `${pattern.kind} pattern`,
+                          () =>
+                            cad.current!.pattern(selected!.kernelId!, pattern),
+                          undefined,
+                          (refs) => ({
+                            kind: "pattern",
+                            source: refs[0],
+                            pattern,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                      onMirror={(origin, normal) =>
+                        cadOperation(
+                          "Mirror body",
+                          () =>
+                            cad.current!.mirror(
+                              selected!.kernelId!,
+                              origin,
+                              normal,
+                            ),
+                          undefined,
+                          (refs) => ({
+                            kind: "mirror",
+                            source: refs[0],
+                            planeOrigin: origin,
+                            normal,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                      onSplit={(cutterId) => {
+                        void action("Splitting solid…", async () => {
+                          const cutter = entities.find(
+                            (entity) => entity.id === cutterId,
+                          );
+                          if (!selected?.kernelId || !cutter?.kernelId)
+                            throw new Error("Choose two exact CAD bodies.");
+                          const bound = bindFeatureInputs(entities, [
+                            selected.id,
+                            cutter.id,
+                          ]);
+                          const binding = featureBinding("Split solid", {
+                            kind: "split",
+                            source: bound.refs[0],
+                            cutter: bound.refs[1],
+                          });
+                          const results = await cad.current!.split(
+                            selected.kernelId,
+                            cutter.kernelId,
+                          );
+                          const created = results.map(
+                            (result, index): Entity => ({
+                              ...result,
+                              id: crypto.randomUUID(),
+                              name: `Split ${index === 0 ? "inside" : "outside"}`,
+                              kind: "cad",
+                              color: DEFAULT_PART_COLOR,
+                              visible: true,
+                              opacity: 1,
+                              parametric: { ...binding, output: index },
+                            }),
+                          );
+                          commit([
+                            ...bound.entities.map((entity) =>
+                              entity.id === selected.id ||
+                              entity.id === cutter.id
+                                ? { ...entity, visible: false }
+                                : entity,
+                            ),
+                            ...created,
+                          ]);
+                          setSelectedId(created[0].id);
+                          setMessage("Created exact inside and outside bodies");
+                        });
+                      }}
+                      onSweep={(points, path) =>
+                        cadOperation(
+                          "Sweep",
+                          () => cad.current!.sweep(points, path),
+                          undefined,
+                          { kind: "sweep", points, path },
+                        )
+                      }
+                      onEdges={(indices, amount, operation) =>
+                        cadOperation(
                           operation,
-                        ),
-                      undefined,
-                      (refs) => ({
-                        kind: "edges",
-                        source: refs[0],
-                        edgeIndices: indices,
-                        amount,
-                        operation,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                  onOffset={(distance) =>
-                    cadOperation(
-                      "Offset",
-                      () => cad.current!.offset(selected!.kernelId!, distance),
-                      undefined,
-                      (refs) => ({
-                        kind: "offset",
-                        source: refs[0],
-                        distance,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                  onSew={(ids, tolerance) =>
-                    cadOperation(
-                      "Sew surfaces",
-                      () =>
-                        cad.current!.sew(
-                          ids.map(
-                            (id) =>
-                              entities.find((entity) => entity.id === id)!
-                                .kernelId!,
-                          ),
-                          tolerance,
-                        ),
-                      undefined,
-                      (refs) => ({ kind: "sew", sources: refs, tolerance }),
-                      ids,
-                    )
-                  }
-                  onShell={(indices, thickness) =>
-                    cadOperation(
-                      "Shell",
-                      () =>
-                        cad.current!.shell(
-                          selected!.kernelId!,
-                          indices,
-                          thickness,
-                        ),
-                      undefined,
-                      (refs) => ({
-                        kind: "shell",
-                        source: refs[0],
-                        faceIndices: indices,
-                        thickness,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                  onThicken={(thickness) =>
-                    cadOperation(
-                      "Thicken",
-                      () =>
-                        cad.current!.thicken(selected!.kernelId!, thickness),
-                      undefined,
-                      (refs) => ({
-                        kind: "thicken",
-                        source: refs[0],
-                        thickness,
-                      }),
-                      [selected!.id],
-                    )
-                  }
-                />
-              </div>
-            </>
-          )}
-        </aside>
+                          () =>
+                            cad.current!.edgeTreatment(
+                              selected!.kernelId!,
+                              indices,
+                              amount,
+                              operation,
+                            ),
+                          undefined,
+                          (refs) => ({
+                            kind: "edges",
+                            source: refs[0],
+                            edgeIndices: indices,
+                            amount,
+                            operation,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                      onOffset={(distance) =>
+                        cadOperation(
+                          "Offset",
+                          () =>
+                            cad.current!.offset(selected!.kernelId!, distance),
+                          undefined,
+                          (refs) => ({
+                            kind: "offset",
+                            source: refs[0],
+                            distance,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                      onSew={(ids, tolerance) =>
+                        cadOperation(
+                          "Sew surfaces",
+                          () =>
+                            cad.current!.sew(
+                              ids.map(
+                                (id) =>
+                                  entities.find((entity) => entity.id === id)!
+                                    .kernelId!,
+                              ),
+                              tolerance,
+                            ),
+                          undefined,
+                          (refs) => ({ kind: "sew", sources: refs, tolerance }),
+                          ids,
+                        )
+                      }
+                      onShell={(indices, thickness) =>
+                        cadOperation(
+                          "Shell",
+                          () =>
+                            cad.current!.shell(
+                              selected!.kernelId!,
+                              indices,
+                              thickness,
+                            ),
+                          undefined,
+                          (refs) => ({
+                            kind: "shell",
+                            source: refs[0],
+                            faceIndices: indices,
+                            thickness,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                      onThicken={(thickness) =>
+                        cadOperation(
+                          "Thicken",
+                          () =>
+                            cad.current!.thicken(
+                              selected!.kernelId!,
+                              thickness,
+                            ),
+                          undefined,
+                          (refs) => ({
+                            kind: "thicken",
+                            source: refs[0],
+                            thickness,
+                          }),
+                          [selected!.id],
+                        )
+                      }
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </aside>
+        </ToolWorkspace.Provider>
       </main>
       <ModelTimeline
         labels={[...history, ...future].map((revision) => revision.label)}
@@ -6014,7 +6102,9 @@ export function App() {
               parameterTool:
                 workspace === "scanTools" && toolPanelOpen
                   ? scanToolTitles[scanTool]
-                  : undefined,
+                  : toolPanelOpen
+                    ? workspaceTitle(workspace)
+                    : undefined,
               previewAuthoring: surfaceFit
                 ? "surface"
                 : createSketch

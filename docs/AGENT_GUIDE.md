@@ -471,3 +471,11 @@ dependent targets. Placement rejects a target list that would leave an
 incomplete output group or dependent recipe with a missing authoring source,
 before allocating any CAD result. Include the complete discovered group before
 Preview/Apply. Identity placement preserves recipes and needs no baking.
+
+### Command-specific tool panels
+
+`ui_set.workspace` accepts individual command panels: `fineAlign`, `repairMesh`, `segmentMesh`, `smoothMesh`, `decimateMesh`, `globalAlignment`, `landmarkAlignment`, `loft`, `sweep`, `fillet`, `chamfer`, `surfaceOffset`, `sewSurfaces`, `shell`, `surfaceThicken`, `splitSolid`, `linearPattern`, `circularPattern`, `mirrorBody`, `extrude`, `revolve`, and `boolean`. Panels share the inspector layout but mount only controls relevant to the active command. `application_inspect` reports that specific workspace and its accessible controls. Legacy `processing`, `advancedCad`, and `reconstruct` navigation resolves to `repairMesh`, `loft`, and `extrude`, respectively. Existing mesh and CAD semantic operations are unchanged.
+
+Primitive fit controls are available in the `fit` workspace. Point-cloud reduction and noise controls use `pointReduce` and `pointNoise`; GUI Reduce polygons / Reduce noise routes to these when a point cloud is selected. Their existing semantic `mesh_process` point-cloud operations remain available. Unsupported mesh-only commands report a mesh prerequisite instead of opening an unrelated point-cloud editor.
+
+`objectColor` opens the focused color control; `properties` retains the complete object inspector. Existing `object_update` color changes are unchanged.
