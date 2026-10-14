@@ -339,13 +339,13 @@ CAD plane controller static Evidence:
 CAD axis controller is also recovered:
 `ev_3e32768a6702c1a70f17bff691eab7bc75839b359d303927b7e77383816b4489`.
 The cylindrical, conical and toroidal axis paths are now verified below. Other
-CAD reference types, browser-kernel extraction and full shared GUI/MCP workflow
+CAD reference types and full shared GUI/MCP alignment workflow
 still require verification and integration.
 
-The numerical helpers are not yet connected to a public application action and
-are not advertised in MCP discovery. Completing CAD-backed reference conversion,
-preview/reset/acceptance and shared GUI/MCP
-operation remains required before enabling coordinate-system alignment.
+Frame construction and apply are not yet public application actions. Read-only
+CAD/fitted reference inspection is exposed through the shared GUI/MCP operation
+described below. Preview/reset/acceptance and the complete alignment operation
+remain required before enabling coordinate-system alignment.
 
 ## Verified CAD primitive axis references
 
@@ -372,8 +372,9 @@ to the original supplied DLLs and the current CRT. No geometry-returning stubs
 are substituted. Native surface and face objects are destructed, the mapped
 allocation is freed, and the probe process exits. These cases do not cover
 surfaces of revolution, the alternative CAD backend, native UI picking or the
-browser kernel transport. The functions remain internal numerical helpers;
-there is no newly advertised GUI or MCP operation in this slice.
+native UI picking. These captures prove reference calculation rather than full
+alignment. The reference calculations are now used by public read-only
+inspection; frame construction and apply remain unfinished.
 
 ## Browser kernel reference transport
 
@@ -394,6 +395,26 @@ render geometry, plane triangle coordinates lie on the evaluated plane,
 primitive axes agree with the authored body, spheres remain explicitly unsupported,
 repeated reads agree, BRep
 serialization remains unchanged, and released handles reject inspection.
-All transient native handles are released in `finally` blocks. This is an
-internal transport for the forthcoming shared GUI/MCP alignment operation;
-it is not independently advertised in MCP discovery or enabled in the ribbon.
+All transient native handles are released in `finally` blocks. The transport
+feeds the shared reference-inspection operation below. It does not enable
+general origin/reference alignment in the ribbon.
+
+## Shared GUI and MCP reference inspection
+
+`alignment_references` is a read-only, cancellable native job backed by
+`createAlignmentOperations`. It retrieves exact face inputs or converts
+supported authored fit metadata through the verified native reference math.
+The Object properties inspector invokes that same operation, then displays
+the resulting point and normal/direction. It supports paged reference lists
+and explicitly identifies unsupported surfaces. Source inputs and model
+geometry are preserved. The API checks the workspace revision after native
+completion; fitted metadata participates in revision tracking too. GUI requests
+are cancelled on panel disposal and poll within a bounded 95-second lifetime.
+
+`tests/alignment-automation.test.ts` replays all 104 native outputs through
+the public job contract, and covers discovery, strict schemas, locked read-only
+bodies, pagination, fitted types, revision conflicts and cancellation.
+`tests/mcp-browser-smoke.mjs` uses the actual SDK/bridge and rendered properties
+panel to compare every box-face point/direction between GUI and MCP and verify
+unchanged workspace revision. Neither route applies an alignment transform;
+viewport picking, preview and apply remain required work.

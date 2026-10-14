@@ -1,4 +1,5 @@
 import { isSampledScan } from "../scan-source";
+import { createAlignmentOperations } from "./alignment-operations";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
 import {
   listBackups,
@@ -307,6 +308,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     host.commit(entities.map(retainIndexedMesh), label);
   };
   const operations: Record<string, Handler> = {
+    ...createAlignmentOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {

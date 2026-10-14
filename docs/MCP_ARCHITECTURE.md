@@ -39,6 +39,17 @@ The API keeps at most32 terminal/running job records, latest256 retry receipts, 
 
 ## Adding features
 
+Alignment reference inspection uses `alignment-operations.ts` through the same
+operation registry as other application commands. `alignment_references` is a
+read-only native job, with the existing admission, revision and cancellation
+contract. Exact CAD inputs are transported by the owned kernel worker; fitted
+metadata follows the native reference adapter. The GUI properties panel invokes
+this public operation and polls the job. No alternate GUI geometry calculation
+is maintained. Fitted metadata participates in the revision identity, and CAD
+face IDs/triangle ranges belong to the current body revision. Inspection is
+paged and bounded; unsupported reference types remain explicit. Full alignment
+preview and geometry application are still separate unfinished capabilities.
+
 **Mandatory repository rule:** every application change must also be available through MCP for agentic work. GUI and MCP must use shared application operations with consistent inputs, validation, errors, state transitions and results. Missing MCP parity blocks completion and commit; it must be addressed in the same coherent change. Existing tools may satisfy the rule when they fully expose the changed behavior. See the authoritative [repository instructions](../AGENTS.md) for scope, documentation and validation requirements.
 
 Add a complete input schema and accurate description to the registry, then an operation handler using existing/new domain services. Use explicit IDs and units. Place all asynchronous mutation checks immediately before the first state write; do not compare the start revision again after your own successful commit. Construct required artifacts before commit so resource-limit failures cannot report a failed command after changing the model.

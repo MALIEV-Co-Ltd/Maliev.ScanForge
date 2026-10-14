@@ -263,6 +263,7 @@ export class ApplicationApi {
         identity(e.parametric),
         identity(e.meshSelection),
         identity(e.planeFrame),
+        identity(e.fit),
       ]),
       history: next.history.map((r) => r.label),
       future: next.future.map((r) => r.label),

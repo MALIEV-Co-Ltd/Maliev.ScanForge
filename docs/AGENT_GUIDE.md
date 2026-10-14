@@ -185,6 +185,12 @@ Upload bytes through `artifact_put` with the original filename, base64 content a
 
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
+For several scans/CAD files, use `project_import_batch` with `artifactIds` in import order, a common `unit`, current `expectedRevision`, and a fresh `requestId`. GUI drop and file-picker imports use the same sequential queue. Workers prepare smooth normals, bounds and statistics before transfer; import completion waits for a viewport draw and paint opportunity. Full resolution is retained unless sampled preview was explicitly chosen. Each completed file is an independent model undo step. A batch returns `completed` import results plus `failed` entries containing the original zero-based file `index` and `error`. A failed file does not discard successful imports; cancellation stops the remaining queue and retains committed objects. Inspect `project_get` after cancelling. Project files must be opened separately; they cannot be mixed into a batch. Existing artifact limits are unchanged.
+
+`object_select` accepts `toggle:true` (Ctrl/Command-click) and `range:true` (Shift-click); combining them adds a range. Range order follows the Objects list and skips locked/unselectable objects. The range anchor is the last ordinary/toggle selection; repeated Shift-clicks retain it. `project_get` reports `selectedIds`, `selectedId` (active object for single-object tools), and `selectionAnchorId`. Omitting `entityId` clears the object set. GUI and MCP share these semantics; selecting several objects does not make single-object modeling commands operate on every object.
+
+Ctrl+Z/Ctrl+Y use model history in the main workspace. Mesh selection uses its local undo/redo while a local step exists, then falls back to model history. Text fields and modal dialogs keep their native keyboard behavior. MCP retains explicit `history_undo`, `history_redo`, and triangle-selection operations.
+
 PLY mesh imports retain original vertex order and triangle indices. Full-resolution
 binary STL imports retain connectivity reconstructed by the verified native reader
 mapping, including quantized coordinate identities and collapsed-facet rejection.
@@ -242,14 +248,27 @@ and surface-distance routines. CAD-plane reference math is verified on actual
 trimmed faces using the original OpenCascade DLLs and controller, including
 reversed-face behavior. Cylinder, cone and torus axis references are also verified
 on 72 actual trimmed faces against the original CAD controller, with exact
-point/direction/length output bytes. These internal helpers are not public MCP
-actions. Other CAD references, primitive picking and the complete shared workflow
-are not yet available.
-The internal CAD client can now obtain exact per-face reference inputs and
-matching display-triangle ranges. The adapter replays 104 native reference
-captures, and real kernel tests cover its read-only face traversal and expired
-handle rejection. Public GUI/MCP reference picking and alignment apply still
-require integration; agents cannot yet invoke this transport as a public tool.
+point/direction/length output bytes. `alignment_references` exposes read-only
+reference inspection through the same operation as the GUI's **Alignment
+references** panel in Object properties. Pass `entityId`, optionally `centerAt`
+(a world point in mm projected onto planar references), `offset` and `limit`
+(1–100, default 50). This native job returns a `jobId`; use `job_get` to await
+completion and `job_cancel` to cancel. It returns `units`, `total`, `nextOffset`
+and reference records with stable object-local IDs, kind, source, point,
+direction and optional length. CAD records include face index and the matching
+display triangle range. Fitted primitives expose only supported reference types;
+unsupported CAD surfaces remain explicit unsupported records. When an exact
+body also retains fitted primitive metadata, both sources are listed with
+distinct IDs; an unsupported face does not suppress its fitted references. Bodies with no
+exact CAD or fit metadata have zero references. Reads do not change geometry,
+selection or history and may inspect locked bodies. Results are rejected if
+the model changes during inspection, including fitted reference metadata.
+Refresh after every model edit; face IDs are scoped to the current body/revision.
+Inspection is bounded to 10,000 CAD faces and the existing 90-second kernel
+timeout. API contract tests replay all 104 native reference captures, and the
+browser/MCP integration test compares all six box-face coordinates with the GUI.
+Frame construction, viewport reference picking, preview and alignment apply
+still require integration; general origin/reference alignment remains disabled.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;

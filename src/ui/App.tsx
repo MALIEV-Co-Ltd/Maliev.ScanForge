@@ -1,5 +1,7 @@
 import { isSampledScan } from "../scan-source";
 import { AppSelect } from "./AppSelect";
+import { AlignmentReferences } from "./AlignmentReferences";
+import type { AlignmentReferencePage } from "../automation/alignment-operations";
 import {
   selectionProcessingMode,
   type SelectionProcessingMode,
@@ -3604,6 +3606,48 @@ export function App() {
     if (!result.ok) setError(result.error.message);
     return result;
   }
+  async function readAlignmentReferences(
+    entityId: string,
+    offset: number,
+    signal: AbortSignal,
+  ): Promise<AlignmentReferencePage> {
+    signal.throwIfAborted();
+    const receipt = await workspaceApi.invoke("alignment_references", {
+      entityId,
+      offset,
+      limit: 50,
+    });
+    if (!receipt.ok) throw new Error(receipt.error.message);
+    const { jobId } = receipt.result as { jobId: string };
+    const cancel = () => {
+      void workspaceApi.invoke("job_cancel", { jobId });
+    };
+    signal.addEventListener("abort", cancel, { once: true });
+    try {
+      const expires = Date.now() + 95_000;
+      while (Date.now() < expires) {
+        signal.throwIfAborted();
+        const response = await workspaceApi.invoke("job_get", { jobId });
+        if (!response.ok) throw new Error(response.error.message);
+        const job = response.result as {
+          status: string;
+          result?: AlignmentReferencePage;
+          error?: { message: string };
+        };
+        if (job.status === "succeeded" && job.result) return job.result;
+        if (job.status !== "running")
+          throw new Error(
+            job.error?.message ?? "Reference inspection cancelled.",
+          );
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      cancel();
+      throw new Error("Reference inspection exceeded its time limit.");
+    } finally {
+      if (signal.aborted) cancel();
+      signal.removeEventListener("abort", cancel);
+    }
+  }
   function undo() {
     void uiCommand("history_undo");
   }
@@ -4781,6 +4825,15 @@ export function App() {
                         </p>
                       )}
                     </Panel>
+                    {(selected.kernelId || selected.fit) && (
+                      <AlignmentReferences
+                        key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.fit)}`}
+                        entityId={selected.id}
+                        onRead={(offset, signal) =>
+                          readAlignmentReferences(selected.id, offset, signal)
+                        }
+                      />
+                    )}
                     <Panel title="Display" className="display-panel">
                       <label className="slider-row">
                         <span>Opacity</span>

@@ -4467,5 +4467,44 @@
       "required": ["target", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
+  },
+  {
+    "name": "alignment_references",
+    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "centerAt": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Optional world-space point projected onto planar references"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10002
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
   }
 ]

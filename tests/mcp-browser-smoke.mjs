@@ -235,6 +235,38 @@ try {
   const snapshot = await call("project_get");
   assert.equal(snapshot.result.objects.length, 1);
   assert(snapshot.result.objects[0].exactCad);
+  await mutate("object_select", { entityId: created.entityIds[0] });
+  const referenceRevision = (await call("project_get")).revision;
+  const references = await job(
+    await call("alignment_references", { entityId: created.entityIds[0] }),
+  );
+  assert.equal(references.total, 6);
+  assert.equal(references.units, "mm");
+  assert(
+    references.references.every((reference) => reference.kind === "plane"),
+  );
+  assert.equal((await call("project_get")).revision, referenceRevision);
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  await page
+    .getByRole("button", { name: "Read alignment references", exact: true })
+    .click();
+  await page.getByText("6 references · mm", { exact: true }).waitFor();
+  const referenceSelector = page.getByLabel("Alignment reference", {
+    exact: true,
+  });
+  for (const reference of references.references) {
+    await referenceSelector.selectOption(reference.id);
+    const displayed = page.locator("dl[data-reference-id]");
+    assert.deepEqual(
+      JSON.parse(await displayed.getAttribute("data-reference-point")),
+      reference.point,
+    );
+    assert.deepEqual(
+      JSON.parse(await displayed.getAttribute("data-reference-direction")),
+      reference.direction,
+    );
+  }
+  assert.equal((await call("project_get")).revision, referenceRevision);
   // UI undo and MCP redo exercise the same command/history boundary.
   await page.getByRole("tab", { name: "Edit / View", exact: true }).click();
   await page.getByRole("button", { name: "Undo", exact: true }).click();
@@ -346,6 +378,7 @@ try {
     "official SDK stdio initialize/tools/resources",
     "browser pairing and persisted connection after Settings closes",
     "exact CAD creation rendered in UI",
+    "MCP and GUI exact alignment references with identical coordinates and unchanged history",
     "UI undo and MCP redo",
     "STEP content and project export artifacts",
     "mesh copy/transform/winding worker/topology",
