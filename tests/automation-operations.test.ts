@@ -158,6 +158,33 @@ function harness(entities: Entity[] = [entity()]) {
   };
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
+it("retains segmentation classification fits in agent-created regions", async () => {
+  const h = harness(),
+    fit = {
+      kind: "plane" as const,
+      center: [0, 0, 0] as [number, number, number],
+      axis: [0, 0, 1] as [number, number, number],
+      rms: 0,
+      maxError: 0,
+    };
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    segments: [new Float32Array(triangle)],
+    segmentClassifications: [{ kind: "plane", fit }],
+  } as never);
+  const result = (await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "segment", tolerance: 0.001, angleDegrees: 180 },
+      createNew: true,
+    },
+    h.context,
+  )) as { entityIds: string[]; segmentClassifications: { fit: unknown }[] };
+  expect(
+    h.state.entities.find((entity) => entity.id === result.entityIds[0])?.fit,
+  ).toEqual(fit);
+  expect(result.segmentClassifications[0].fit).toEqual(fit);
+  expect(h.host.commit).toHaveBeenCalledTimes(1);
+});
 
 describe("shared workspace operation contracts", () => {
   it.each([undefined, 1])(

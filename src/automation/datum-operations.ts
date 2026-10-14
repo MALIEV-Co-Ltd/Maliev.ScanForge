@@ -4,6 +4,7 @@ import type { Entity } from "../types";
 import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
+import { datumFeatureMetadata } from "../scan-native-datum-primitive";
 import {
   adoptDatumPreview,
   releaseDatumPreview,
@@ -192,7 +193,7 @@ export function createDatumOperations(
             ...entity,
             ...geometry,
             parametric: undefined,
-            fit: undefined,
+            fit: datumFeatureMetadata(entity, cadMatrix).fit,
             surfacePatch: undefined,
             surfaceScanId: undefined,
             indexedMesh: undefined,
@@ -238,6 +239,8 @@ export function createDatumOperations(
           entityId: item.id,
           count: output.positions.length / (item.kind === "pointcloud" ? 3 : 9),
           kind: item.kind,
+          fit: output.fit,
+          planeFrame: output.planeFrame,
           ...diagnostics.get(item.id),
         };
       }),

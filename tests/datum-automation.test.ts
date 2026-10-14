@@ -83,6 +83,43 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("preserves fitted parameters in shared scan Preview/Apply and owns transformed frames", async () => {
+  const { api, host, state } = setup();
+  const fit = {
+    kind: "cylinder" as const,
+    center: [5, 6, 7] as [number, number, number],
+    axis: [0, 0, 1] as [number, number, number],
+    radius: 2.25,
+    height: 7.5,
+    rms: 0.01,
+    maxError: 0.03,
+  };
+  state.entities[0] = { ...state.entities[0], fit };
+  try {
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", request(api)),
+    );
+    expect(preview.status).toBe("succeeded");
+    expect(preview.result.targets[0].fit).toEqual({
+      ...fit,
+      center: [0, 0, 0],
+    });
+    expect(state.entities[0].fit).toBe(fit);
+    expect(state.history).toHaveLength(0);
+    const apply = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api)),
+    );
+    expect(apply.status).toBe("succeeded");
+    expect(state.entities[0].fit).toEqual(preview.result.targets[0].fit);
+    expect(state.entities[0].fit?.center).not.toBe(fit.center);
+    expect(host.commit).toHaveBeenCalledTimes(1);
+    expect(state.history[0].entities[0].fit).toBe(fit);
+  } finally {
+    api.dispose();
+  }
+});
 function exactSetup() {
   const setupResult = setup();
   const { host, state } = setupResult;

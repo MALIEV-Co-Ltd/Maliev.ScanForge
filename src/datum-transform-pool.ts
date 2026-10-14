@@ -207,7 +207,7 @@ export function createDatumTransformExecutor(
     transform,
     transformScan: async (entity: Entity, matrix: readonly number[]) => {
       check();
-      const plan = datumScanTransformPlan(entity);
+      const plan = datumScanTransformPlan(entity, matrix);
       const positions = await transform(entity.positions, matrix);
       const vertices = plan.indexed
         ? await transform(plan.indexed.vertices, matrix)

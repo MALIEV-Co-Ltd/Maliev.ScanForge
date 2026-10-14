@@ -10,6 +10,7 @@ import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity } from "./types";
 import { transformDatumCoordinates } from "./datum-transform-kernel";
+import { datumFeatureMetadata } from "./scan-native-datum-primitive";
 export { transformDatumCoordinates } from "./datum-transform-kernel";
 
 export interface DatumInstruction {
@@ -84,7 +85,10 @@ export function buildDatumAlignment(
 }
 
 /** A rigid scan edit retains facet/point identity and all saved selection slots. */
-export function datumScanTransformPlan(entity: Entity) {
+export function datumScanTransformPlan(
+  entity: Entity,
+  matrix?: readonly number[],
+) {
   if (!entity.positions.length)
     throw new Error("An empty scan cannot be aligned.");
   if (entity.locked) throw new Error("Unlock the scan before aligning it.");
@@ -118,6 +122,7 @@ export function datumScanTransformPlan(entity: Entity) {
       planeFrame: undefined,
       surfacePatch: undefined,
       surfaceScanId: undefined,
+      ...(matrix ? datumFeatureMetadata(entity, matrix) : {}),
     }),
   };
 }
@@ -125,7 +130,7 @@ export function transformDatumScan(
   entity: Entity,
   matrix: readonly number[],
 ): Entity {
-  const plan = datumScanTransformPlan(entity);
+  const plan = datumScanTransformPlan(entity, matrix);
   return plan.assemble(
     transformDatumCoordinates(entity.positions, matrix),
     plan.indexed

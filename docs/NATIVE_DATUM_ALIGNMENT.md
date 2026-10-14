@@ -556,6 +556,18 @@ Mutable data pages retain write permission while executable pages remain
 read-only. The successful run released the mapped image, all owned allocations,
 its exception observer and critical section. Native captures, replay, numerical
 verification and cleanup receipts remain in the external analysis folder as
-`datum-primitive-transform-*` artifacts. The application currently clears fitted
-metadata on alignment; preserving these verified primitive parameters and
-verifying populated-cache eviction remain required integration work.
+`datum-primitive-transform-*` artifacts. The application port uses
+`nativeDatumTransformPrimitive` for fitted parameters and plane frames through
+the shared Preview/Apply operations. Populated native-cache eviction remains a
+separate verification requirement.
+
+The retained 2,028-case fixture checks all six numerical handlers and the
+existing Float32 display transform against the native bytes. Fitted centers,
+directions, radius/height/top-radius values and residuals survive rigid alignment.
+Sphere orientation metadata remains unchanged because its native geometric
+record has no directional parameter. Plane normals and tangents use the native
+orthogonalization and normalization. Scan metadata uses the scan matrix; CAD
+fit metadata uses the exact kernel placement matrix, while its fresh plane frame
+comes from the transformed BRep. Preview results expose each target's `fit` and
+`planeFrame` without modifying committed objects; Apply records owned metadata
+with geometry in the same history transaction.

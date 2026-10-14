@@ -835,9 +835,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
       if (segments?.length) {
-        for (const p of segments) {
+        for (const [index, p] of segments.entries()) {
           if (!p.length) continue;
           const copy = meshEdited(scanMeshCopy(e, id()), p);
+          const classification = result.segmentClassifications?.[index];
+          copy.fit = classification?.fit;
+          copy.name = `${e.name} segment ${index + 1}${classification ? ` · ${classification.kind === "freeform" ? "unclassified" : classification.kind}` : ""}`;
           created.push(copy);
         }
         next = [...next, ...created.filter((x) => !next.includes(x))];
@@ -849,6 +852,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? [e.id]
             : [],
         diagnostics: result.diagnostics,
+        segmentClassifications: result.segmentClassifications,
         topology: result.topology,
         registration: result.registration,
         refinement: result.refinement,
