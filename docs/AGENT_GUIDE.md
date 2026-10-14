@@ -238,7 +238,9 @@ inversion, fitted-feature axis/point payload conversion, and origin-reference
 dispatch with stage-preserving flips and fitted scene-class reference resolution.
 The authored fit-anchor adapter covers planes, cylinders, spheres and cones;
 cones use the native apex/outward-axis convention verified by original endpoint
-and surface-distance routines. Primitive picking and the complete shared
+and surface-distance routines. CAD-plane reference math is verified on actual
+trimmed faces using the original OpenCascade DLLs and controller, including
+reversed-face behavior. Other CAD references, primitive picking and the complete shared
 workflow are not yet available.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`

@@ -308,6 +308,39 @@ Square-root, cosine and sine bindings are rebound after checking relative
 export offsets. These captures establish geometry/reference conventions, not
 native fitting-algorithm parity, complete cone editing or native UI behavior.
 
+## Verified CAD plane references using original OpenCascade DLLs
+
+`src/scan-native-datum-cad.ts` ports the plane-reference calculation in the
+original OpenCascade branch of `0x14027e770`. It evaluates the trimmed face at
+the midpoint of its U/V limits, normalizes `D1U cross D1V`, and optionally
+projects the supplied reference point onto that plane. Projection retains the
+original Y/X/Z dot-product order. Face reversal does not flip this reference
+normal; explicit alignment flipping remains a separate operation. Existing
+sketch/render plane-frame metadata must not be substituted for this calculation.
+
+`alignment-datum-cad-plane-native.json` retains 32 complete original-controller
+calls on eight oblique, trimmed planar faces, each forward/reversed and with
+centering off/on. Faces are built by the original supplied OpenCascade DLLs
+through their exported plane and face constructors. Their original CAD adaptor
+provides bounds, evaluated points and derivatives. The controller executes
+unchanged geometry logic against those actual faces; no geometry-returning
+adapter replaces the CAD engine. Tests compare all output point/normal bytes
+and input ownership, including reversed-face behavior.
+
+The mapped image's imported pointers are rebound to the loaded original DLLs
+and current CRT. The snapshot backend flag was 1; the capture explicitly
+selects its original OpenCascade branch (0). It therefore establishes that
+branch, not the alternative CAD backend or native UI picking. Source DLLs
+remain outside the repository; the fixture records their names and SHA-256.
+Native face builders and adaptors are destructed and the owned process exits.
+
+CAD plane controller static Evidence:
+`ev_e7409d8a1d1effa74d0611033c99f45e7612412fa8a951d0c2ef8c5b90a9d5c4`.
+CAD axis controller is also recovered:
+`ev_3e32768a6702c1a70f17bff691eab7bc75839b359d303927b7e77383816b4489`.
+Its axis paths, other CAD reference types, browser-kernel extraction and full
+shared GUI/MCP workflow still require verification and integration.
+
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing CAD-backed reference conversion,
 preview/reset/acceptance and shared GUI/MCP
