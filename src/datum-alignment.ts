@@ -100,15 +100,12 @@ export function transformDatumCoordinates(
     const x = input[offset],
       y = input[offset + 1],
       z = input[offset + 2];
-    output[offset] =
-      y * matrix[1] + x * matrix[0] + z * matrix[2] + (vector ? 0 : matrix[3]);
-    output[offset + 1] =
-      x * matrix[4] + y * matrix[5] + z * matrix[6] + (vector ? 0 : matrix[7]);
-    output[offset + 2] =
-      x * matrix[8] +
-      y * matrix[9] +
-      z * matrix[10] +
-      (vector ? 0 : matrix[11]);
+    const a = y * matrix[1] + x * matrix[0] + z * matrix[2],
+      b = y * matrix[5] + x * matrix[4] + z * matrix[6],
+      c = y * matrix[9] + x * matrix[8] + z * matrix[10];
+    output[offset] = vector ? a : a + matrix[3];
+    output[offset + 1] = vector ? b : b + matrix[7];
+    output[offset + 2] = vector ? c : c + matrix[11];
   }
   if (
     !output.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9)

@@ -5,6 +5,7 @@ import {
   type DatumInstruction,
 } from "../datum-alignment";
 import type { Entity } from "../types";
+import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import {
   createAlignmentOperations,
   type AlignmentReferencePage,
@@ -163,10 +164,7 @@ export function createDatumOperations(
     },
     alignment_apply: async (args, context) => {
       const result = await prepare(args as DatumRequest, context);
-      const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
-      const changed = result.matrix.some(
-        (value, index) => value !== identity[index],
-      );
+      const changed = !nativeDatumIsIdentity(result.summary.frame.matrix);
       context.check();
       try {
         if (changed && host.showDatumPreview) {

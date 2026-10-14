@@ -1,3 +1,23 @@
+/** Original Apply frame identity predicate. */
+export function nativeDatumIsIdentity(
+  input: readonly number[],
+  tolerance = 0,
+): boolean {
+  if (
+    input.length !== 12 ||
+    !input.every(Number.isFinite) ||
+    !Number.isFinite(tolerance) ||
+    tolerance < 0
+  )
+    throw new Error(
+      "Identity comparison requires a finite 3x4 frame and nonnegative tolerance.",
+    );
+  return (
+    [0, 5, 10].every((i) => Math.abs(input[i] - 1) <= tolerance) &&
+    [1, 2, 3, 4, 6, 7, 8, 9, 11].every((i) => Math.abs(input[i]) <= tolerance)
+  );
+}
+
 /** Native plane feature conversion, before frame constraint construction. */
 export function nativeDatumPlaneGeometry(
   center: readonly number[],

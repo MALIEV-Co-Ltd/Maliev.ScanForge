@@ -76,6 +76,26 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("preserves native signed-zero normals through the shared Apply operation", async () => {
+  const { api, state } = setup();
+  state.entities[0].normals = Array(9).fill(-0);
+  const original = state.entities[0];
+  const result = await settle(
+    api,
+    await api.invoke("alignment_apply", {
+      entityIds: ["scan"],
+      constraints: point,
+      expectedRevision: api.currentRevision(),
+      requestId: "native-normal-signs",
+    }),
+  );
+  expect(result.status).toBe("succeeded");
+  expect(
+    state.entities[0].normals?.every((value) => Object.is(value, -0)),
+  ).toBe(true);
+  expect(original.normals?.every((value) => Object.is(value, -0))).toBe(true);
+  expect(state.history).toHaveLength(1);
+});
 it("resolves CAD references from current geometry and preserves GUI/MCP manual equivalence", async () => {
   const { api, host, state } = setup();
   state.entities.push({
