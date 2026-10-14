@@ -851,3 +851,50 @@ stored quality value; it uses a bounds diagonal divided by 1.9, with a 1.0
 fallback for invalid or tiny bounds, when dispatching the global builder. That
 builder and the produced cache at object offset `0x600` still require runtime
 verification. This is a separate preparation path from source normal generation.
+
+## Original target dependency suppression and type policy
+
+The original `0x14084be50` collector was replayed with nonempty dependency trees,
+a null exclusion root and an eligible candidate of priority two. Controlled
+scene lookups and virtual methods supply readiness, suppression, priority and
+membership responses. Linked-tree traversal, early acceptance and accumulated
+branch predicates execute unchanged. All 96 single-dependency combinations and
+25 ordered two-dependency combinations match the independent verifier.
+
+The original collector includes the candidate immediately if a dependency is
+missing, not ready, or suppressed. Otherwise it accumulates two independent
+conditions across the entire dependency list: at least one dependency has higher
+priority and is not exempt under the type policy, and at least one dependency
+reports membership of the candidate identifier. It excludes the candidate only
+when both accumulated conditions hold. These conditions may be satisfied by
+**different** dependencies. Equal priority is insufficient. A later invalid
+dependency causes inclusion even after an earlier dependency satisfies both
+conditions. A generic per-dependency exclusion test would produce different
+results.
+
+REA extracted type policy `0x140822300` as
+`ev_95a86dc79d8cd6a5381660cf393f0d73ad15d8ad3097db52a0489d12d220e6b3`
+(pseudocode) and
+`ev_61899814cd35b0097474d589e085424243923d997f06d8b8a309df155ebfff3a`
+(assembly). This original predicate also executes unchanged in the final
+collector replay; only its RTTI virtual query responses are adapted. It returns
+true for a null pointer or the first successful query among these six identities,
+in order: `0x141154ef8`, `0x141176ca8`, `0x141176d18`, `0x141154fd8`,
+`0x141155a78`, `0x14117cba8`. It returns false after six unsuccessful queries.
+All 64 masks and the null-pointer case reproduce both the result and exact
+short-circuit query order.
+
+The final corpus `docs/evidence/landmark-target-dependencies-native.json`
+contains 186 native cases: 121 collector cases and 65 policy cases. The external
+independent verifier checks the original image digest, unique combinations,
+collector counts and policy query sequences; zero differences. The task-owned
+image allocation was released and the native probe and REA server exited.
+The initial collector-only replay used a policy adapter; its results were
+superseded by the final replay with the original policy routine.
+
+This evidence does not establish the human-readable names of the six policy
+types, the virtual methods' internal implementations, a non-null exclusion-root
+hierarchy, CAD tessellation, optimization or installed GUI behavior. Those
+coverage limits remain separate from the verified collector branch behavior.
+No application code changed in this evidence slice; build and application tests
+are not applicable.

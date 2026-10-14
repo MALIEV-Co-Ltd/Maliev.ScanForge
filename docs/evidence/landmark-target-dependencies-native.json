@@ -1,0 +1,2106 @@
+{
+  "policyCases": [
+    {
+      "mask": 0,
+      "result": 0,
+      "queries": [0, 1, 2, 3, 4, 5]
+    },
+    {
+      "mask": 1,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 2,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 3,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 4,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 5,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 6,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 7,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 8,
+      "result": 1,
+      "queries": [0, 1, 2, 3]
+    },
+    {
+      "mask": 9,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 10,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 11,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 12,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 13,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 14,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 15,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 16,
+      "result": 1,
+      "queries": [0, 1, 2, 3, 4]
+    },
+    {
+      "mask": 17,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 18,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 19,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 20,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 21,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 22,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 23,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 24,
+      "result": 1,
+      "queries": [0, 1, 2, 3]
+    },
+    {
+      "mask": 25,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 26,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 27,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 28,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 29,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 30,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 31,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 32,
+      "result": 1,
+      "queries": [0, 1, 2, 3, 4, 5]
+    },
+    {
+      "mask": 33,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 34,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 35,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 36,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 37,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 38,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 39,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 40,
+      "result": 1,
+      "queries": [0, 1, 2, 3]
+    },
+    {
+      "mask": 41,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 42,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 43,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 44,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 45,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 46,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 47,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 48,
+      "result": 1,
+      "queries": [0, 1, 2, 3, 4]
+    },
+    {
+      "mask": 49,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 50,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 51,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 52,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 53,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 54,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 55,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 56,
+      "result": 1,
+      "queries": [0, 1, 2, 3]
+    },
+    {
+      "mask": 57,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 58,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 59,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 60,
+      "result": 1,
+      "queries": [0, 1, 2]
+    },
+    {
+      "mask": 61,
+      "result": 1,
+      "queries": [0]
+    },
+    {
+      "mask": 62,
+      "result": 1,
+      "queries": [0, 1]
+    },
+    {
+      "mask": 63,
+      "result": 1,
+      "queries": [0]
+    }
+  ],
+  "nullPolicyResult": 1,
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x14084be50",
+  "cases": [
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 0,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 2
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 1,
+          "policy": 1,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    }
+  ],
+  "pairedCases": [
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        },
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        },
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        },
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 0
+    },
+    {
+      "dependencies": [
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 0,
+          "priority": 1
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 1,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    },
+    {
+      "dependencies": [
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        },
+        {
+          "present": 0,
+          "ready": 1,
+          "suppressed": 0,
+          "policy": 0,
+          "member": 1,
+          "priority": 3
+        }
+      ],
+      "count": 1
+    }
+  ],
+  "patches": ["0x14016b970", "0x14016b870", "0x140d5b0f0"],
+  "scope": "Original collector dependency traversal and accumulation with null exclusion root, ready visible candidate, controlled scene lookup, object virtual methods and RTTI query adapters. Original type-policy predicate 822300 executes unchanged. Actual linked tree traversal, early acceptance and combined priority/membership branches execute unchanged. Includes all 64 type-policy masks and null pointer behavior; type names remain unidentified. Does not verify non-null exclusion root, CAD tessellation, optimizer or GUI."
+}
