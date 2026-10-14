@@ -1281,3 +1281,42 @@ process exited. This does not verify actual object coordinate/normal application
 scene targets, controller numerical output, UI state or complete preview/cancel.
 No application code changed; build and application tests are not applicable to
 this evidence slice.
+
+## Point-pair preview, Reset and Cancel dispatch
+
+The point-pair dialog message-map descriptor at RVA `0x119dd60` points to
+entries at RVA `0x119daf0`. Reading the original mapped image verifies six
+command bindings: Cancel (2) to `0x14054c310`, Preview (1106) to
+`0x14054ca20`, accept (1107) to `0x14054cb70`, Reset (4451) to
+`0x14054cee0`, remove-last (4452) to `0x14054ce30`, and clear-all (4453)
+to `0x14054ce90`. This resolves Cancel from dispatch evidence rather than
+guessing from adjacent geometry methods or vtable slots.
+
+The extracted preview helper `0x14054c410` creates an original-geometry backup
+on the first valid preview. Subsequent previews clone that backup before
+applying the next candidate matrix; they do not compound transformations on
+the previous preview. It also snapshots the original tagged point records.
+Moving points are transformed from that snapshot using double arithmetic;
+fixed points retain their original coordinates. Null moving objects and
+out-of-range candidate indices skip the body.
+
+Reset clears the preview flag and candidate vector, restores geometry and
+the original picked point records, marks rendering dirty, destroys the backup
+wrapper and clears its pointer. Picked pairs therefore survive Reset.
+Remove-last and clear-all operate only while the preview flag is unset;
+after preview they return without changing the records or refreshing the UI.
+
+Cancel clones the backup geometry back into the moving object, replaces its
+geometry ownership links, destroys the displaced preview geometry and marks
+rendering dirty, then delegates to dialog virtual slot `0x358`. Its handler
+does not itself clear or destroy the backup. Accept delegates to the same
+slot without restoring geometry. Disposal and history behavior behind that
+slot remain unverified. Window-close has a separate message-map entry at
+`0x14054c400`; its behavior is not established by Cancel's body.
+
+`docs/evidence/landmark-preview-lifecycle-static.json` retains the nine original
+message entries, their raw bytes, six REA pseudocode extracts and Evidence IDs,
+and the original mapped-image digest. The external bounded-memory verifier
+reads the map directly and checks all six bindings. These are static findings,
+not native execution or full GUI/MCP workflow parity. No application behavior
+changed, so application build and tests are not applicable to this slice.

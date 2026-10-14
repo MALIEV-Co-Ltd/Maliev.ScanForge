@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "static extraction; not runtime replay",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "descriptorRva": "0x119dd60",
+  "entriesRva": "0x119daf0",
+  "messageMap": [
+    {
+      "rva": "0x119daf0",
+      "message": 16,
+      "notification": 0,
+      "command": 0,
+      "lastCommand": 0,
+      "signature": 19,
+      "handler": "0x14054c400",
+      "bytes": "10000000000000000000000000000000130000000000000000c4544001000000"
+    },
+    {
+      "rva": "0x119db10",
+      "message": 273,
+      "notification": 0,
+      "command": 2,
+      "lastCommand": 2,
+      "signature": 58,
+      "handler": "0x14054c310",
+      "bytes": "110100000000000002000000020000003a0000000000000010c3544001000000"
+    },
+    {
+      "rva": "0x119db30",
+      "message": 273,
+      "notification": 0,
+      "command": 1106,
+      "lastCommand": 1106,
+      "signature": 58,
+      "handler": "0x14054ca20",
+      "bytes": "110100000000000052040000520400003a0000000000000020ca544001000000"
+    },
+    {
+      "rva": "0x119db50",
+      "message": 273,
+      "notification": 0,
+      "command": 1107,
+      "lastCommand": 1107,
+      "signature": 58,
+      "handler": "0x14054cb70",
+      "bytes": "110100000000000053040000530400003a0000000000000070cb544001000000"
+    },
+    {
+      "rva": "0x119db70",
+      "message": 273,
+      "notification": 0,
+      "command": 1053,
+      "lastCommand": 1053,
+      "signature": 58,
+      "handler": "0x14054cb80",
+      "bytes": "11010000000000001d0400001d0400003a0000000000000080cb544001000000"
+    },
+    {
+      "rva": "0x119db90",
+      "message": 273,
+      "notification": 0,
+      "command": 4452,
+      "lastCommand": 4452,
+      "signature": 58,
+      "handler": "0x14054ce30",
+      "bytes": "110100000000000064110000641100003a0000000000000030ce544001000000"
+    },
+    {
+      "rva": "0x119dbb0",
+      "message": 273,
+      "notification": 0,
+      "command": 4453,
+      "lastCommand": 4453,
+      "signature": 58,
+      "handler": "0x14054ce90",
+      "bytes": "110100000000000065110000651100003a0000000000000090ce544001000000"
+    },
+    {
+      "rva": "0x119dbd0",
+      "message": 273,
+      "notification": 0,
+      "command": 4451,
+      "lastCommand": 4451,
+      "signature": 58,
+      "handler": "0x14054cee0",
+      "bytes": "110100000000000063110000631100003a00000000000000e0ce544001000000"
+    },
+    {
+      "rva": "0x119dbf0",
+      "message": 3726,
+      "notification": 0,
+      "command": 0,
+      "lastCommand": 0,
+      "signature": 14,
+      "handler": "0x1401385f0",
+      "bytes": "8e0e00000000000000000000000000000e00000000000000f085134001000000"
+    }
+  ],
+  "sources": [
+    {
+      "address": "0x14054c310",
+      "evidence": "ev_3d2e4e9ee7ec16a86180f501edeeafe6ecad8d9a5273a7f29d58412451ad31c0",
+      "pseudocodeSha256": "b1cf78fd08c62646a3eb0cfbdaa610cb0c6e6e58d6295ebeac2ce3f754c1342b",
+      "pseudocode": "\nvoid FUN_14054c310(longlong *param_1)\n\n{\n  longlong lVar1;\n  longlong lVar2;\n  longlong *plVar3;\n  longlong lVar4;\n  undefined8 uVar5;\n  \n  uVar5 = 0xfffffffffffffffe;\n  if (param_1[0x31] != 0) {\n    lVar4 = (*(code *)0x7ffe9c9327f0)(0x170);\n    if (lVar4 == 0) {\n      lVar4 = 0;\n    }\n    else {\n      lVar4 = FUN_140b350e0(lVar4,*(undefined8 *)(param_1[0x31] + 0x160),1);\n    }\n    lVar1 = param_1[0x30];\n    lVar2 = *(longlong *)(lVar1 + 0x160);\n    if (lVar2 != 0) {\n      *(undefined8 *)((longlong)*(int *)(*(longlong *)(lVar2 + 8) + 8) + 0x18 + lVar2) = 0;\n    }\n    *(longlong *)(lVar1 + 0x160) = lVar4;\n    if (lVar4 != 0) {\n      *(longlong *)((longlong)*(int *)(*(longlong *)(lVar4 + 8) + 8) + 0x18 + lVar4) =\n           lVar1 + 8 + (longlong)*(int *)(*(longlong *)(lVar1 + 8) + 8);\n    }\n    if (lVar2 != 0) {\n      (*(code *)**(undefined8 **)(lVar2 + 0xf8))((undefined8 *)(lVar2 + 0xf8),1,lVar2,lVar4,uVar5);\n    }\n    plVar3 = (longlong *)param_1[0x30];\n    *(undefined1 *)(plVar3 + 0x57) = 0;\n    lVar4 = (**(code **)(*plVar3 + 0x268))();\n    *(undefined4 *)(lVar4 + 0xec) = 1;\n  }\n                    /* WARNING: Could not recover jumptable at 0x00014054c3f7. Too many branches */\n                    /* WARNING: Treating indirect jump as call */\n  (**(code **)(*param_1 + 0x358))(param_1);\n  return;\n}\n\n"
+    },
+    {
+      "address": "0x14054cb70",
+      "evidence": "ev_526ef6449945d856081524ac3dc3f1bf019cc722ec08ce1870631c299473122f",
+      "pseudocodeSha256": "d8986e34c3e9dd954b7cebab58ff3a800aa9a1bf077f6bd2df53f5e9c018f11a",
+      "pseudocode": "\nvoid FUN_14054cb70(longlong *param_1)\n\n{\n                    /* WARNING: Could not recover jumptable at 0x00014054cb73. Too many branches */\n                    /* WARNING: Treating indirect jump as call */\n  (**(code **)(*param_1 + 0x358))();\n  return;\n}\n\n"
+    },
+    {
+      "address": "0x14054c410",
+      "evidence": "ev_4125d1e46ce74f95e827534fa15787069d98e2849c8e2be2aea91ceec8b26b76",
+      "pseudocodeSha256": "0a7e421e3c1c64f4f78f50c9dd0016ce6f5c2045b99c987f8861668592bc0d45",
+      "pseudocode": "\nvoid FUN_14054c410(longlong param_1,int param_2)\n\n{\n  undefined8 *puVar1;\n  double *pdVar2;\n  undefined4 *puVar3;\n  double dVar4;\n  longlong lVar5;\n  undefined8 uVar6;\n  undefined8 uVar7;\n  double *pdVar8;\n  longlong *plVar9;\n  double *pdVar10;\n  double *pdVar11;\n  bool bVar12;\n  double dStack_98;\n  double dStack_90;\n  double dStack_88;\n  undefined4 uStack_80;\n  undefined4 uStack_7c;\n  undefined4 uStack_78;\n  undefined4 uStack_74;\n  double dStack_70;\n  char cStack_68;\n  undefined7 uStack_67;\n  undefined8 uStack_60;\n  double dStack_58;\n  double dStack_50;\n  double dStack_48;\n  double dStack_40;\n  double dStack_38;\n  \n  uStack_60 = 0xfffffffffffffffe;\n  plVar9 = *(longlong **)(param_1 + 0x180);\n  if (plVar9 != (longlong *)0x0) {\n    if ((ulonglong)(longlong)param_2 <\n        (ulonglong)((*(longlong *)(param_1 + 0x1d8) - *(longlong *)(param_1 + 0x1d0)) / 0x60)) {\n      pdVar11 = (double *)((longlong)param_2 * 0x60 + *(longlong *)(param_1 + 0x1d0));\n      lVar5 = (**(code **)(*plVar9 + 0x298))(plVar9,&UNK_141165580);\n      uVar7 = 0;\n      if ((lVar5 != 0) && (lVar5 != 8)) {\n        while( true ) {\n          LOCK();\n          bVar12 = *(int *)(lVar5 + 0x90) == 0;\n          if (bVar12) {\n            *(int *)(lVar5 + 0x90) = 0;\n          }\n          UNLOCK();\n          if (!bVar12) break;\n          (*(code *)0x7fff1cc5fe40)(0x32);\n        }\n      }\n      if (*(longlong *)(param_1 + 0x188) == 0) {\n        lVar5 = (*(code *)0x7ffe9c9327f0)(0x2e8);\n        uVar6 = uVar7;\n        if (lVar5 != 0) {\n          uVar6 = FUN_14088aac0(lVar5,*(undefined4 *)(*(longlong *)(param_1 + 0x180) + 0x2c0));\n        }\n        *(undefined8 *)(param_1 + 0x188) = uVar6;\n        lVar5 = (*(code *)0x7ffe9c9327f0)(0x170);\n        if (lVar5 != 0) {\n          uVar7 = FUN_140b350e0(lVar5,*(undefined8 *)(*(longlong *)(param_1 + 0x180) + 0x160),1);\n        }\n        lVar5 = func_0x00014034aba0(*(undefined8 *)(param_1 + 0x188),uVar7);\n        if (lVar5 != 0) {\n          (*(code *)**(undefined8 **)(lVar5 + 0xf8))((undefined8 *)(lVar5 + 0xf8),1);\n        }\n        puVar1 = (undefined8 *)(param_1 + 0x1b0);\n        *(undefined8 *)(param_1 + 0x1b8) = *puVar1;\n        if (puVar1 != (undefined8 *)(param_1 + 0x198)) {\n          FUN_14054ea30(puVar1,*(undefined8 *)(param_1 + 0x198),*(undefined8 *)(param_1 + 0x1a0));\n        }\n      }\n      else {\n        lVar5 = (*(code *)0x7ffe9c9327f0)(0x170);\n        if (lVar5 != 0) {\n          uVar7 = FUN_140b350e0(lVar5,*(undefined8 *)(*(longlong *)(param_1 + 0x188) + 0x160),1);\n        }\n        lVar5 = func_0x00014034aba0(*(undefined8 *)(param_1 + 0x180),uVar7);\n        if (lVar5 != 0) {\n          (*(code *)**(undefined8 **)(lVar5 + 0xf8))((undefined8 *)(lVar5 + 0xf8),1);\n        }\n      }\n      (**(code **)(**(longlong **)(param_1 + 0x180) + 0x250))\n                (*(longlong **)(param_1 + 0x180),pdVar11);\n      lVar5 = (**(code **)(**(longlong **)(param_1 + 0x180) + 0x298))\n                        (*(longlong **)(param_1 + 0x180),&UNK_141188e98);\n      if (lVar5 != 0) {\n        (**(code **)(**(longlong **)(param_1 + 0x180) + 0x2a0))\n                  (*(longlong **)(param_1 + 0x180),&UNK_141188e98);\n      }\n      *(undefined1 *)(param_1 + 400) = 1;\n      *(undefined8 *)(param_1 + 0x1a0) = *(undefined8 *)(param_1 + 0x198);\n      pdVar2 = *(double **)(param_1 + 0x1b8);\n      for (pdVar10 = *(double **)(param_1 + 0x1b0); pdVar10 != pdVar2; pdVar10 = pdVar10 + 4) {\n        dStack_40 = *pdVar10;\n        dStack_38 = pdVar10[1];\n        dVar4 = pdVar10[2];\n        cStack_68 = SUB81(pdVar10[3],0);\n        if (cStack_68 == '\\0') {\n          dStack_98 = dStack_38 * pdVar11[1] + dStack_40 * *pdVar11 + dVar4 * pdVar11[2] +\n                      pdVar11[3];\n          dStack_90 = dStack_38 * pdVar11[5] + dStack_40 * pdVar11[4] + dVar4 * pdVar11[6] +\n                      pdVar11[7];\n          dStack_88 = dStack_38 * pdVar11[9] + dStack_40 * pdVar11[8] + dVar4 * pdVar11[10] +\n                      pdVar11[0xb];\n          pdVar8 = &dStack_98;\n        }\n        else {\n          dStack_58 = dStack_40;\n          dStack_50 = dStack_38;\n          dStack_48 = dVar4;\n          pdVar8 = &dStack_58;\n        }\n        uStack_7c = *(undefined4 *)((longlong)pdVar8 + 4);\n        uStack_78 = *(undefined4 *)(pdVar8 + 1);\n        uStack_74 = *(undefined4 *)((longlong)pdVar8 + 0xc);\n        uStack_80 = *(undefined4 *)pdVar8;\n        dStack_70 = pdVar8[2];\n        puVar3 = *(undefined4 **)(param_1 + 0x1a0);\n        if (*(undefined4 **)(param_1 + 0x1a8) == puVar3) {\n          FUN_140212900((undefined8 *)(param_1 + 0x198),puVar3,&uStack_80);\n        }\n        else {\n          *puVar3 = *(undefined4 *)pdVar8;\n          puVar3[1] = uStack_7c;\n          puVar3[2] = uStack_78;\n          puVar3[3] = uStack_74;\n          *(double *)(puVar3 + 4) = dStack_70;\n          *(ulonglong *)(puVar3 + 6) = CONCAT71(uStack_67,cStack_68);\n          *(longlong *)(param_1 + 0x1a0) = *(longlong *)(param_1 + 0x1a0) + 0x20;\n        }\n      }\n      plVar9 = (longlong *)(*(longlong *)(param_1 + 0x138) + 0x1d0);\n      (**(code **)(*plVar9 + 0x10))(plVar9,0);\n    }\n  }\n  return;\n}\n\n"
+    },
+    {
+      "address": "0x14054cee0",
+      "evidence": "ev_b7c91b5e3947d5ed62f32f6380d85420ed8892d0659c66cb42c3528803499258",
+      "pseudocodeSha256": "abdce3d187af85558b1a215c9af4c9b8a6acbd6c26e1a9fa31f3378db6d59b34",
+      "pseudocode": "\nvoid FUN_14054cee0(longlong param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)\n\n{\n  undefined1 uVar1;\n  longlong lVar2;\n  undefined8 uVar3;\n  undefined8 uVar4;\n  longlong lVar5;\n  int iVar6;\n  undefined8 *puVar7;\n  longlong *plVar8;\n  longlong lVar9;\n  undefined8 uVar10;\n  int iVar11;\n  undefined4 uVar12;\n  int iVar13;\n  \n  *(undefined1 *)(param_1 + 0x1c8) = 0;\n  *(undefined8 *)(param_1 + 0x1d8) = *(undefined8 *)(param_1 + 0x1d0);\n  if (*(longlong *)(param_1 + 0x188) != 0) {\n    lVar5 = (*(code *)0x7ffe9c9327f0)\n                      (0x170,*(longlong *)(param_1 + 0x188),param_3,param_4,0xfffffffffffffffe);\n    if (lVar5 == 0) {\n      lVar5 = 0;\n    }\n    else {\n      lVar5 = FUN_140b350e0(lVar5,*(undefined8 *)(*(longlong *)(param_1 + 0x188) + 0x160),1);\n    }\n    lVar2 = *(longlong *)(param_1 + 0x180);\n    lVar9 = *(longlong *)(lVar2 + 0x160);\n    if (lVar9 != 0) {\n      *(undefined8 *)((longlong)*(int *)(*(longlong *)(lVar9 + 8) + 8) + 0x18 + lVar9) = 0;\n    }\n    *(longlong *)(lVar2 + 0x160) = lVar5;\n    if (lVar5 != 0) {\n      *(longlong *)((longlong)*(int *)(*(longlong *)(lVar5 + 8) + 8) + 0x18 + lVar5) =\n           lVar2 + 8 + (longlong)*(int *)(*(longlong *)(lVar2 + 8) + 8);\n    }\n    if (lVar9 != 0) {\n      (*(code *)**(undefined8 **)(lVar9 + 0xf8))((undefined8 *)(lVar9 + 0xf8),1);\n    }\n    if ((undefined8 *)(param_1 + 0x198) != (undefined8 *)(param_1 + 0x1b0)) {\n      FUN_14054ea30((undefined8 *)(param_1 + 0x198),*(undefined8 *)(param_1 + 0x1b0),\n                    *(undefined8 *)(param_1 + 0x1b8));\n    }\n    plVar8 = *(longlong **)(param_1 + 0x180);\n    *(undefined1 *)(plVar8 + 0x57) = 0;\n    lVar5 = (**(code **)(*plVar8 + 0x268))();\n    *(undefined4 *)(lVar5 + 0xec) = 1;\n    lVar5 = *(longlong *)(param_1 + 0x188);\n    if (lVar5 != 0) {\n      puVar7 = (undefined8 *)((longlong)*(int *)(*(longlong *)(lVar5 + 8) + 4) + 8 + lVar5);\n      (**(code **)*puVar7)(puVar7,1);\n    }\n  }\n  *(undefined8 *)(param_1 + 0x188) = 0;\n  plVar8 = (longlong *)(*(longlong *)(param_1 + 0x138) + 0x1d0);\n  (**(code **)(*plVar8 + 0x10))(plVar8,0);\n  iVar11 = 0;\n  lVar2 = *(longlong *)(param_1 + 0x1a0);\n  lVar5 = *(longlong *)(param_1 + 0x198);\n  for (lVar9 = lVar5; lVar9 != lVar2; lVar9 = lVar9 + 0x20) {\n    if (*(char *)(lVar9 + 0x18) != '\\0') {\n      iVar11 = iVar11 + 1;\n    }\n  }\n  iVar13 = 0;\n  for (lVar9 = lVar5; lVar9 != lVar2; lVar9 = lVar9 + 0x20) {\n    if (*(char *)(lVar9 + 0x18) == '\\0') {\n      iVar13 = iVar13 + 1;\n    }\n  }\n  iVar6 = 0;\n  for (; lVar5 != lVar2; lVar5 = lVar5 + 0x20) {\n    if (*(char *)(lVar5 + 0x18) == '\\0') {\n      iVar6 = iVar6 + 1;\n    }\n  }\n  uVar10 = 1;\n  if ((iVar11 == iVar6) && (2 < iVar11)) {\n    uVar4 = 1;\n  }\n  else {\n    uVar4 = 0;\n  }\n  uVar3 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x452);\n  (*(code *)0x7ffe9cbe5390)(uVar3,uVar4);\n  if ((ulonglong)((*(longlong *)(param_1 + 0x1d8) - *(longlong *)(param_1 + 0x1d0)) / 0x60) < 2) {\n    uVar4 = FUN_140b2b870(&UNK_14119d690);\n    uVar3 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x452);\n    (*(code *)0x7ffe9cbe4fe0)(uVar3,uVar4);\n    if ((*(longlong *)(param_1 + 0x1d8) - *(longlong *)(param_1 + 0x1d0)) - 0x60U < 0x60) {\n      uVar4 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x452);\n      (*(code *)0x7ffe9cbe5390)(uVar4,0);\n    }\n  }\n  else {\n    uVar4 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x452);\n    (*(code *)0x7ffe9cbe4fe0)(uVar4,&UNK_14119d668);\n  }\n  if ((*(char *)(param_1 + 0x1c8) == '\\0') && (0 < iVar13 + iVar11)) {\n    uVar12 = 1;\n  }\n  else {\n    uVar12 = 0;\n  }\n  uVar4 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x1164);\n  (*(code *)0x7ffe9cbe5390)(uVar4,uVar12);\n  if ((*(char *)(param_1 + 0x1c8) != '\\0') || (iVar13 + iVar11 < 1)) {\n    uVar10 = 0;\n  }\n  uVar4 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x1165);\n  (*(code *)0x7ffe9cbe5390)(uVar4,uVar10);\n  uVar1 = *(undefined1 *)(param_1 + 0x1c8);\n  uVar10 = (*(code *)0x7ffe9cbe4bd0)(param_1,0x1163);\n  (*(code *)0x7ffe9cbe5390)(uVar10,uVar1);\n  return;\n}\n\n"
+    },
+    {
+      "address": "0x14054ce30",
+      "evidence": "ev_bd8a127da48fe8215151e115d2b4233fc196afa5a8803867dc3aaeabf1a7c11e",
+      "pseudocodeSha256": "0687c2feedfd10b55848f8f1f9c8120c230b2bdc30120fc9dbe13b4e3343416a",
+      "pseudocode": "\nvoid FUN_14054ce30(longlong param_1)\n\n{\n  if (*(char *)(param_1 + 0x1c8) == '\\0') {\n    if ((*(longlong *)(param_1 + 0x1a0) - *(longlong *)(param_1 + 0x198) & 0xffffffffffffffe0U) != 0\n       ) {\n      *(longlong *)(param_1 + 0x1a0) = *(longlong *)(param_1 + 0x1a0) + -0x20;\n    }\n    FUN_14054c0e0();\n    (*(code *)0x7fff1ca329e0)(*(undefined8 *)(*(longlong *)(param_1 + 0x138) + 0x40),0,1);\n    return;\n  }\n  return;\n}\n\n"
+    },
+    {
+      "address": "0x14054ce90",
+      "evidence": "ev_cb53082c7b5f36f1ff5e5b7f1853039e64c7eecce93ccec059b2a2b443ea5efe",
+      "pseudocodeSha256": "ddeda87cd826033a321c32d9fcdfef583e30d0b6d66ef97e98adad45bb304ce8",
+      "pseudocode": "\nvoid FUN_14054ce90(longlong param_1)\n\n{\n  if (*(char *)(param_1 + 0x1c8) == '\\0') {\n    *(undefined8 *)(param_1 + 0x1a0) = *(undefined8 *)(param_1 + 0x198);\n    FUN_14054c0e0();\n    (*(code *)0x7fff1ca329e0)(*(undefined8 *)(*(longlong *)(param_1 + 0x138) + 0x40),0,1);\n    return;\n  }\n  return;\n}\n\n"
+    }
+  ],
+  "limitations": [
+    "Geometry clone and dialog callbacks have not been replayed here.",
+    "Accept delegates to virtual slot 0x358; history semantics remain unverified.",
+    "WM_CLOSE has its own handler at 0x14054c400; not extracted in this receipt."
+  ]
+}
