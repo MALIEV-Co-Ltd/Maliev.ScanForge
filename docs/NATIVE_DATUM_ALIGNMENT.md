@@ -587,6 +587,43 @@ and `ev_40592212bca078fc267676862ef776b49fede74f1eca942af60ed0f06269264b`.
 External `align-options-*`, `align-segmentation-core-*` and
 `align-segmentation-slider-*` files retain REA/probe results and cleanup receipts.
 
+#### Original threshold and region execution
+
+The original threshold routine `0x140ac09d0`, face-flag reset `0x14031fc20`
+and complete region traversal `0x140ac0630` now execute together in 28 captures,
+covering 248 faces, empty input, thresholds 0/0.25/0.5/1, exact threshold ties,
+mixed flag combinations, cycles and repeated neighbors. Vertex scores are
+caller-owned inputs. Geometry iterators, region records and preallocated scratch
+containers are controlled adapters; the original classification and traversal
+instructions remain intact. Score preparation, source importing and installed
+GUI execution are outside this capture.
+
+An independent verifier matches all labels, face flags, vertex flags, region
+membership/order, maximum region index and final dirty marker. A face is marked
+only when all three scores strictly exceed the threshold. Bit 1 is reset before
+classification; bit 2 changes the eligibility test, without assigning an
+unverified product meaning to either bit. Regions follow face order and a LIFO
+neighbor traversal, marking neighbors before pushing to avoid duplicate visits.
+Unassigned labels retain `0xffffffff`; assigned labels retain the high byte and
+use the lower 24 bits as the region ID. The stored maximum ID is zero for an
+empty region list, so it must not be interpreted as a region count.
+
+Region traversal Evidence:
+`ev_11fe914d9cee342cac336437e8046ec071444e8dba686a1200218ed3c4c95314`.
+Reset Evidence:
+`ev_a6bee1170a9f7ddfd9e8e09cc41446bf4c5cae5b1a10434818e314e67b46cbed`.
+The fixture and `tests/alignment-segmentation-regions-native.test.ts` compare
+every captured field. External `align-segmentation-runtime-*` files retain native
+results, the independent verifier and successful mapping cleanup.
+
+The next preparation dependency, `0x140b386d0`, removes unreferenced vertex
+records according to its flag mask and remaps face pointers into compacted
+storage; it is not a normal-estimation routine. Evidence:
+`ev_ab6c93a78f52ddef45f330816477ddc5856686284957c28bb10683111e6b3404`.
+The original score-preparation routine still needs runtime comparison on full
+scan input. The application's current adjacent-face-normal segmentation differs
+from this recovered path; these captures do not certify or enable it.
+
 ## Native primitive geometry and cache transforms
 
 All six primitive object types use the shared dispatcher `0x140405e40` at
