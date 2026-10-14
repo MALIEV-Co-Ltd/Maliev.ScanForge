@@ -1,0 +1,31 @@
+{
+  "inputPositions": [
+    [9.0, 9.0, 9.0],
+    [0.0, 0.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0]
+  ],
+  "inputNormals": [
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, 1.0]
+  ],
+  "inputTriangles": [[1, 2, 3]],
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedures": ["0x140abf580", "0x140abfc80"],
+  "positions": [
+    [0.0, 0.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0]
+  ],
+  "normals": [
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, 1.0]
+  ],
+  "triangles": [[1, 2, 3]],
+  "nativeScores": [0.0, 0.0, 0.0],
+  "nativeFaceFlags": [4],
+  "scope": "Original orphan removal, score preparation and bucket flags with caller-owned clone/container adapters and original cached bounds; native importer/GUI excluded"
+}

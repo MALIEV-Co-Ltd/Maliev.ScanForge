@@ -1416,3 +1416,60 @@ code only; GUI/MCP behavior and the existing verified workflows are preserved.
 The previously verified normal estimator used by STL source refinement remains
 available (`NATIVE_ALIGNMENT_STL.md`); the outstanding work is its exact input
 routing, native adjacency construction and the enclosing alignment controller.
+
+### Joined native preparation session
+
+`src/scan-native-segmentation-session.ts` joins the existing recovered global
+adjacency builder, supplied normals (or the verified angle-weighted estimator),
+score preparation and region traversal. It owns geometry copies, compacts
+unflagged orphan vertices in source order and retains their source IDs.
+Changing threshold reuses prepared adjacency/scores; it does not rebuild them.
+This is an internal reconstruction component, not a new advertised GUI/MCP
+capability. Flagged orphan-retention and the enclosing controller remain outside
+this adapter.
+
+The actual full native adjacency capture for the first PLY scan was reused after
+checking source and adjacency SHA-256 identities. Original score preparation and
+region routines then executed with that adjacency. The joined portable session
+matches every adjacency slot and every downstream label, face/vertex flag,
+region offset, traversal entry and maximum region index at all five thresholds.
+External `owner-region-actual-probe.py` and
+`owner-ply-1-actual-port-region-verification.json` retain that comparison.
+The larger scans' previous region captures still use controlled manifold
+adjacency; they are not upgraded to actual-native-adjacency claims by this check.
+
+The joined replay initially failed its face-flag comparison. Original score
+preparation overlays spatial bucket IDs on the low word of each Float64 score;
+updating a minimum can consume that tag. Its processed-face flags therefore
+cannot be taken from the adjacency builder. The preparation adapter now
+reproduces those aliasing tests in native face order, while grouping candidates
+to avoid scanning every face for every bucket. The fixture
+`alignment-segmentation-preparation-flags-native.json` captures the original
+three-face case: processing flags are `[4, 0, 4]`, even though both connected
+faces share a bucket. The regression requires these flags and original scores.
+Full first-scan downstream comparisons pass after this correction.
+
+The original mesh finalizer's `+0x68` slot resolves from retained vtable bytes to
+`0x140b38e30`; its existing REA extraction is
+`ev_75292a21a84ba42ce6a98ed4806f5f9ee80062d51c5c5a952e28b2a140cdc790`.
+That adjacency reconstruction already has native winding/nonmanifold fixtures
+and is reused here. No new claim is made about complete import finalization,
+automatic feature fitting or browser multicore scheduling.
+
+The session preserves import-finalization adjacency and its original cached
+bounds/buckets before orphan removal. The additional fixture
+`alignment-segmentation-orphan-native.json` executes original compaction and
+score preparation with a controlled clone/container adapter. An unused vertex
+at `[9,9,9]` is removed while the triangle's scores remain zero and its processing
+flag remains 4. Rebuilding bounds from only the retained unit triangle would
+produce a different flag. The session retains the original buckets through its
+source-ID remap; it does not substitute post-compaction bounds. Flagged orphan
+retention remains outside this fresh, unflagged-input adapter.
+
+Validation for the joined session: `npm run build` passed with no warnings or
+errors; all eight session tests passed; the complete suite passed 22,745 tests
+with 24 existing skips. Formatting, prohibited-brand and staged diff checks
+passed. The full first-scan replay passed after the final preparation-order
+change. All owned native probe processes exited and cleanup receipts confirm
+allocation release. No GUI/MCP command behavior changed in this slice, so no
+new browser workflow is claimed; the existing live application remains on 5173.
