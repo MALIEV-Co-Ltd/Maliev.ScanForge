@@ -309,7 +309,18 @@ try {
     version: 1,
     name: "Primitive alignment parity",
     units: "mm",
-    entities: [sphere, plane],
+    entities: [
+      sphere,
+      plane,
+      {
+        ...sphere,
+        id: "linked-cad",
+        name: "Scan-derived CAD",
+        kind: "cad",
+        brep: decode(record.brep),
+        surfaceScanId: sphere.id,
+      },
+    ],
   };
   const payload = Buffer.from(JSON.stringify(project));
   let artifactId;
@@ -376,6 +387,7 @@ try {
       ...sphereSegments.entityIds,
       planeSegments.entityIds[0],
       surface.entityIds[0],
+      "linked-cad",
     ],
     planeId = planeSegments.entityIds[0],
     surfaceId = surface.entityIds[0],
@@ -391,6 +403,7 @@ try {
   );
   assert.ok(Math.abs(expected.get(ids[0]).fit.radius - 2.25) < 1e-5);
   assert.notDeepEqual(expected.get(planeId).fit.axis, planeFit.axis);
+  assert.equal(expected.get("linked-cad").surfaceScanId, sphere.id);
   assert.deepEqual(
     (await call("project_get")).result.objects.map((object) => object.fit),
     before.result.objects.map((object) => object.fit),
@@ -475,6 +488,16 @@ try {
     before.result.objects.map((object) => object.fit),
   );
   await mutate("history_redo", {});
+  await mutate("object_select", { entityId: "linked-cad" });
+  const sourceReference = page.locator(`[data-source-scan-id="${sphere.id}"]`);
+  if (!(await sourceReference.isVisible()))
+    await page
+      .getByRole("button", {
+        name: "Align object to origin / references",
+        exact: true,
+      })
+      .click();
+  await sourceReference.waitFor();
   assert.deepEqual(
     (await call("project_get")).result.objects.map((object) => object.fit),
     placed.result.objects.map((object) => object.fit),
@@ -485,6 +508,7 @@ try {
     "GUI Apply equals shared MCP fit and plane-frame output",
     "GUI reference inspection sees moved fitted parameters",
     "MCP Undo/Redo restores fitted parameters",
+    "Exact CAD alignment retains source-scan dependency through GUI Apply and MCP Preview",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({

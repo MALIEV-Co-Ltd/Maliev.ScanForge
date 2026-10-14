@@ -195,7 +195,6 @@ export function createDatumOperations(
             parametric: undefined,
             fit: datumFeatureMetadata(entity, cadMatrix).fit,
             surfacePatch: undefined,
-            surfaceScanId: undefined,
             indexedMesh: undefined,
             meshSelection: undefined,
           });
@@ -241,6 +240,7 @@ export function createDatumOperations(
           kind: item.kind,
           fit: output.fit,
           planeFrame: output.planeFrame,
+          surfaceScanId: output.surfaceScanId,
           ...diagnostics.get(item.id),
         };
       }),

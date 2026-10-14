@@ -427,3 +427,11 @@ The coordinate-alignment panel exposes an explicit **Objects to move** list when
 Coordinate alignment preserves fitted primitive parameters through the recovered native geometry handlers. Target results expose `fit` and `planeFrame`; Preview owns these proposed frames while committed metadata stays unchanged. Mesh/point-cloud metadata uses `matrix`; CAD fit metadata uses `cadMatrix` and its plane frame is freshly extracted from the transformed BRep. Rigid movement preserves radius, height, top radius, RMS and maximum residual values. Plane normals and tangents are normalized using the native arithmetic. Sphere orientation metadata stays unchanged because the native sphere record has no direction parameter. Apply and Undo/Redo keep geometry and metadata together; this does not enable the unverified automatic all-feature controller.
 
 `mesh_process` segmentation now retains each worker's region classification and fitted parameters in its new mesh object, matching the GUI's classified-region output. Its response includes `segmentClassifications` in segment order. Use the returned `entityIds` with `project_get` and `alignment_preview` / `alignment_apply`; fits remain derived session metadata and project import still discards them under the existing project policy. This transport correction does not change or certify the segmentation/classification algorithm.
+
+Exact CAD `alignment_preview` and `alignment_apply` retain `surfaceScanId`, the
+source-scan identity for a fitted surface, and report it in each target result.
+The Object properties alignment panel shows the same reference by source name,
+or by identity when that source is absent. The stale fitting patch is still
+cleared after placement; retaining its source reference does not re-fit the
+surface or move that source automatically. History and project files preserve
+the reference. Automatic dependent-target expansion remains unfinished.

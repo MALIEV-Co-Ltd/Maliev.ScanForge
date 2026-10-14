@@ -15,6 +15,7 @@ import {
 } from "../src/datum-transform-worker";
 import type { NativeDatumPlaneState } from "../src/scan-native-datum-plane";
 import { nativeDatumCadTransform } from "../src/scan-native-datum-cad-transform";
+import { parseProject, serializeProject } from "../src/io";
 function setup() {
   const entity: Entity = {
     id: "scan",
@@ -142,6 +143,39 @@ function exactSetup() {
   host.cad = () => ({ transformDatum, release }) as unknown as CadClient;
   return { ...setupResult, release, transformDatum };
 }
+it("preserves exact CAD source-scan dependencies through Preview, Apply, history and project files", async () => {
+  const { api, host, state } = exactSetup();
+  state.entities[0] = {
+    ...state.entities[0],
+    color: "#ffffff",
+    surfaceScanId: "source-scan",
+  };
+  try {
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", request(api)),
+    );
+    expect(preview.status).toBe("succeeded");
+    expect(preview.result.targets[0].surfaceScanId).toBe("source-scan");
+    expect(state.history).toHaveLength(0);
+    const apply = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api)),
+    );
+    expect(apply.status).toBe("succeeded");
+    expect(apply.result.targets[0].surfaceScanId).toBe("source-scan");
+    expect(state.entities[0].surfaceScanId).toBe("source-scan");
+    expect(state.entities[0].surfacePatch).toBeUndefined();
+    expect(state.history[0].entities[0].surfaceScanId).toBe("source-scan");
+    expect(
+      parseProject(serializeProject("aligned", state.entities)).entities[0]
+        .surfaceScanId,
+    ).toBe("source-scan");
+    expect(host.commit).toHaveBeenCalledTimes(1);
+  } finally {
+    api.dispose();
+  }
+});
 it("shares exact CAD Preview/Apply with MCP and releases only temporary handles", async () => {
   const { api, host, state, release, transformDatum } = exactSetup();
   try {

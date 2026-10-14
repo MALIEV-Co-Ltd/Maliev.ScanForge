@@ -182,6 +182,13 @@ export function DatumAlignmentTools({
         Build a frame from up to three references. Preview preserves the model;
         Apply records one history step.
       </p>
+      {entity.surfaceScanId && (
+        <p className="muted" data-source-scan-id={entity.surfaceScanId}>
+          Source scan:{" "}
+          {entities.find((item) => item.id === entity.surfaceScanId)?.name ??
+            entity.surfaceScanId}
+        </p>
+      )}
       <fieldset disabled={busy}>
         {targets.length > 1 && (
           <fieldset>

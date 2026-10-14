@@ -702,3 +702,11 @@ verification, SHA-256 identities and cleanup. PID 43336 exited, its mapped image
 was released, and no owned heap allocations remained. This resolves the mesh
 exclusion interface; full wrapper construction, scene acquisition, dependent
 authoring updates and the complete Align controller remain unverified.
+
+The shared application CAD placement now retains the existing `surfaceScanId`
+reference rather than discarding it together with stale fitting geometry.
+Preview/Apply target results expose that identity and the GUI shows its source
+name or unresolved identity. This keeps a supported application dependency
+available for later aggregation and preserves it through history/project
+round trips. It does not establish complete native property-tree equivalence,
+preserve every authoring recipe, or implement automatic target expansion.
