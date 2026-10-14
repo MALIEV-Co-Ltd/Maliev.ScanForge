@@ -828,8 +828,9 @@ empty iteration, interspersed rejected objects, original iteration order, and
 retention of duplicate entries. The collector resets output end to output begin;
 it does not append to the previous list or deduplicate entries on this path.
 
-The excluded RTTI identities are `0x141164ba0`, `0x141176cd8`, and
-`0x14115c770`; their application-facing class names remain unverified. Do not
+The excluded interface identities are `0x141164ba0`, `0x141176cd8`, and
+`0x14115c770`. The mesh identity was already verified in
+`docs/NATIVE_DATUM_ALIGNMENT.md`; the other identities are resolved below. Do not
 assign these categories to our scene kinds based solely on address or guessed
 semantics. Nonempty dependency lists additionally invoke readiness, suppression,
 priority and dependency membership checks; this replay does not cover those
@@ -898,3 +899,46 @@ hierarchy, CAD tessellation, optimization or installed GUI behavior. Those
 coverage limits remain separate from the verified collector branch behavior.
 No application code changed in this evidence slice; build and application tests
 are not applicable.
+
+## Original target interface identities
+
+The eight remaining interface associations are now corroborated by both original
+query execution and valid MSVC complete-object locator records from the mapped
+image. `docs/evidence/landmark-target-type-queries-native.json` retains 24 original
+query results, interface bytes, per-routine REA Evidence IDs and compiler type
+records. Each routine was executed with its matching identifier and three
+supplied this-pointer offsets. The independent verifier checks image identity,
+original pointer-adjustment bytes, captured pointer deltas, locator signature,
+locator self RVA and actual compiler type-descriptor names: zero differences.
+
+| Interface identity | Native class association        | Query routine | Matching return adjustment |
+| ------------------ | ------------------------------- | ------------- | -------------------------- |
+| `0x141154ef8`      | Plane                           | `0x1404130a0` | -464 bytes                 |
+| `0x141176ca8`      | Cylinder                        | `0x1404de350` | -192 bytes                 |
+| `0x141176d18`      | Cone                            | `0x1404dcc10` | -432 bytes                 |
+| `0x141154fd8`      | Reference line                  | `0x14040c850` | -192 bytes                 |
+| `0x141155a78`      | Reference point                 | `0x14041a2f0` | -160 bytes                 |
+| `0x14117cba8`      | Sphere                          | `0x14041f070` | -376 bytes                 |
+| `0x141176cd8`      | Mesh-status/operation interface | `0x140466aa0` | -856 bytes                 |
+| `0x14115c770`      | Vector point cloud              | `0x14089eb70` | -288 bytes                 |
+
+The first six identities are exactly those queried by dependency priority policy
+`0x140822300`. The final two are collector exclusions; the other exclusion,
+`0x141164ba0`, was already verified as the mesh interface in
+`docs/NATIVE_DATUM_ALIGNMENT.md`. The earlier assertion that all three exclusion
+identities remained unidentified was too broad and has been corrected.
+
+These identities are interfaces, not an exhaustive scene-kind enumeration. For
+example, the previously verified rendering wrapper delegates unrecognized
+queries to its attached mesh, which can cause the mesh exclusion to succeed.
+The mesh-status routine appears in compiler vtables for imported, joined,
+separated-body and split-solid operations. A label such as "CAD" alone cannot
+reproduce this behavior; interface ownership/delegation and authoring
+relationships must be preserved when integrating scene target selection.
+
+This replay verifies matching query acceptance and pointer adjustments. It does
+not construct native objects, execute delegated mismatch branches, prove all
+classes implementing each interface, or validate complete alignment output.
+All task-owned query image/code allocations were released and query/REA
+processes exited. No application code changed; application build/tests are not
+applicable to this evidence slice.

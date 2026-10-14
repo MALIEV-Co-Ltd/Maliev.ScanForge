@@ -1,0 +1,370 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "cases": [
+    {
+      "procedure": "0x1404130a0",
+      "identity": "0x141154ef8",
+      "kind": "plane",
+      "inputOffset": 2048,
+      "resultOffset": 1584,
+      "delta": -464
+    },
+    {
+      "procedure": "0x1404130a0",
+      "identity": "0x141154ef8",
+      "kind": "plane",
+      "inputOffset": 4096,
+      "resultOffset": 3632,
+      "delta": -464
+    },
+    {
+      "procedure": "0x1404130a0",
+      "identity": "0x141154ef8",
+      "kind": "plane",
+      "inputOffset": 8192,
+      "resultOffset": 7728,
+      "delta": -464
+    },
+    {
+      "procedure": "0x1404de350",
+      "identity": "0x141176ca8",
+      "kind": "cylinder",
+      "inputOffset": 2048,
+      "resultOffset": 1856,
+      "delta": -192
+    },
+    {
+      "procedure": "0x1404de350",
+      "identity": "0x141176ca8",
+      "kind": "cylinder",
+      "inputOffset": 4096,
+      "resultOffset": 3904,
+      "delta": -192
+    },
+    {
+      "procedure": "0x1404de350",
+      "identity": "0x141176ca8",
+      "kind": "cylinder",
+      "inputOffset": 8192,
+      "resultOffset": 8000,
+      "delta": -192
+    },
+    {
+      "procedure": "0x1404dcc10",
+      "identity": "0x141176d18",
+      "kind": "cone",
+      "inputOffset": 2048,
+      "resultOffset": 1616,
+      "delta": -432
+    },
+    {
+      "procedure": "0x1404dcc10",
+      "identity": "0x141176d18",
+      "kind": "cone",
+      "inputOffset": 4096,
+      "resultOffset": 3664,
+      "delta": -432
+    },
+    {
+      "procedure": "0x1404dcc10",
+      "identity": "0x141176d18",
+      "kind": "cone",
+      "inputOffset": 8192,
+      "resultOffset": 7760,
+      "delta": -432
+    },
+    {
+      "procedure": "0x14040c850",
+      "identity": "0x141154fd8",
+      "kind": "line",
+      "inputOffset": 2048,
+      "resultOffset": 1856,
+      "delta": -192
+    },
+    {
+      "procedure": "0x14040c850",
+      "identity": "0x141154fd8",
+      "kind": "line",
+      "inputOffset": 4096,
+      "resultOffset": 3904,
+      "delta": -192
+    },
+    {
+      "procedure": "0x14040c850",
+      "identity": "0x141154fd8",
+      "kind": "line",
+      "inputOffset": 8192,
+      "resultOffset": 8000,
+      "delta": -192
+    },
+    {
+      "procedure": "0x14041a2f0",
+      "identity": "0x141155a78",
+      "kind": "point",
+      "inputOffset": 2048,
+      "resultOffset": 1888,
+      "delta": -160
+    },
+    {
+      "procedure": "0x14041a2f0",
+      "identity": "0x141155a78",
+      "kind": "point",
+      "inputOffset": 4096,
+      "resultOffset": 3936,
+      "delta": -160
+    },
+    {
+      "procedure": "0x14041a2f0",
+      "identity": "0x141155a78",
+      "kind": "point",
+      "inputOffset": 8192,
+      "resultOffset": 8032,
+      "delta": -160
+    },
+    {
+      "procedure": "0x14041f070",
+      "identity": "0x14117cba8",
+      "kind": "sphere",
+      "inputOffset": 2048,
+      "resultOffset": 1672,
+      "delta": -376
+    },
+    {
+      "procedure": "0x14041f070",
+      "identity": "0x14117cba8",
+      "kind": "sphere",
+      "inputOffset": 4096,
+      "resultOffset": 3720,
+      "delta": -376
+    },
+    {
+      "procedure": "0x14041f070",
+      "identity": "0x14117cba8",
+      "kind": "sphere",
+      "inputOffset": 8192,
+      "resultOffset": 7816,
+      "delta": -376
+    },
+    {
+      "procedure": "0x140466aa0",
+      "identity": "0x141176cd8",
+      "kind": "status-operation",
+      "inputOffset": 2048,
+      "resultOffset": 1192,
+      "delta": -856
+    },
+    {
+      "procedure": "0x140466aa0",
+      "identity": "0x141176cd8",
+      "kind": "status-operation",
+      "inputOffset": 4096,
+      "resultOffset": 3240,
+      "delta": -856
+    },
+    {
+      "procedure": "0x140466aa0",
+      "identity": "0x141176cd8",
+      "kind": "status-operation",
+      "inputOffset": 8192,
+      "resultOffset": 7336,
+      "delta": -856
+    },
+    {
+      "procedure": "0x14089eb70",
+      "identity": "0x14115c770",
+      "kind": "point-cloud",
+      "inputOffset": 2048,
+      "resultOffset": 1760,
+      "delta": -288
+    },
+    {
+      "procedure": "0x14089eb70",
+      "identity": "0x14115c770",
+      "kind": "point-cloud",
+      "inputOffset": 4096,
+      "resultOffset": 3808,
+      "delta": -288
+    },
+    {
+      "procedure": "0x14089eb70",
+      "identity": "0x14115c770",
+      "kind": "point-cloud",
+      "inputOffset": 8192,
+      "resultOffset": 7904,
+      "delta": -288
+    }
+  ],
+  "scope": "Original matching-identifier query returns corroborated by extracted routines and image MSVC type locators. Supplied this-pointer storage; no object construction or delegated mismatch queries.",
+  "mappings": [
+    {
+      "kind": "plane",
+      "procedure": "0x1404130a0",
+      "identity": "0x141154ef8",
+      "delta": -464,
+      "identifierBytes": "60660c24904cf04b9967d05753d7ae00",
+      "evidence": "ev_279fd7ea1627cbb31aec3479716a968710069298aa5e450a3b0e1b0fc17f0283",
+      "compilerTypes": [
+        {
+          "slot": 18341432,
+          "locator": 19896312,
+          "offset": 464,
+          "name": ".?AVQS_Plane@@"
+        },
+        {
+          "slot": 18342264,
+          "locator": 19896152,
+          "offset": 1896,
+          "name": ".?AVQS_PlaneObject@@"
+        }
+      ]
+    },
+    {
+      "kind": "cylinder",
+      "procedure": "0x1404de350",
+      "identity": "0x141176ca8",
+      "delta": -192,
+      "identifierBytes": "fff9a7fefc49fa42843471b8325eb7af",
+      "evidence": "ev_e745bdaa8bb4ab4fb9d04526b9336b82ca2f4b53340e3f52c480421f4eb51ad1",
+      "compilerTypes": [
+        {
+          "slot": 18430048,
+          "locator": 19935272,
+          "offset": 192,
+          "name": ".?AVST_CCylinder@@"
+        }
+      ]
+    },
+    {
+      "kind": "cone",
+      "procedure": "0x1404dcc10",
+      "identity": "0x141176d18",
+      "delta": -432,
+      "identifierBytes": "d7b92a4121f4534da98fca550a1df7f1",
+      "evidence": "ev_4887610520779dfd2775e34dd50b3b064150c1c0b3014d39342f6c5a47ea9c1a",
+      "compilerTypes": [
+        {
+          "slot": 18429456,
+          "locator": 19934648,
+          "offset": 432,
+          "name": ".?AVQS_Cone@@"
+        }
+      ]
+    },
+    {
+      "kind": "line",
+      "procedure": "0x14040c850",
+      "identity": "0x141154fd8",
+      "delta": -192,
+      "identifierBytes": "25f6b49d6789f24ca081cc7d7f282e17",
+      "evidence": "ev_2d91410c09151eee4625c96c908aa4dfbf0a4d8ab877f48e9a84d40ddfd1ea11",
+      "compilerTypes": [
+        {
+          "slot": 18335856,
+          "locator": 19894736,
+          "offset": 192,
+          "name": ".?AVQS_RefLine@@"
+        },
+        {
+          "slot": 18335864,
+          "locator": 19894736,
+          "offset": 192,
+          "name": ".?AVQS_RefLine@@"
+        }
+      ]
+    },
+    {
+      "kind": "point",
+      "procedure": "0x14041a2f0",
+      "identity": "0x141155a78",
+      "delta": -160,
+      "identifierBytes": "b805ff3cdc9ffb4cb4210e2096e89af9",
+      "evidence": "ev_c6d97c60386a2c8f51afc339c3cf4e4318dad0af802da9e1fbb8446fd6b64909",
+      "compilerTypes": [
+        {
+          "slot": 18344280,
+          "locator": 19897184,
+          "offset": 160,
+          "name": ".?AVST_CRefPoint@@"
+        }
+      ]
+    },
+    {
+      "kind": "sphere",
+      "procedure": "0x14041f070",
+      "identity": "0x14117cba8",
+      "delta": -376,
+      "identifierBytes": "60242eae7fb3f043aeed4195614b4476",
+      "evidence": "ev_bc090fa56b9b2f1bf6d493dbfba6d7227f61a9fe9ca76f7f5911d54826349589",
+      "compilerTypes": [
+        {
+          "slot": 18348136,
+          "locator": 19900472,
+          "offset": 376,
+          "name": ".?AVQS_Sphere@@"
+        },
+        {
+          "slot": 18348960,
+          "locator": 19899824,
+          "offset": 1616,
+          "name": ".?AVQS_SphereObject@@"
+        }
+      ]
+    },
+    {
+      "kind": "status-operation",
+      "procedure": "0x140466aa0",
+      "identity": "0x141176cd8",
+      "delta": -856,
+      "identifierBytes": "c4ae09a32c05e24d9a822eef627a5351",
+      "evidence": "ev_43c1f46ddc1889d5458ed891503ed31b316939f2b3907d9b7b6deb7f3d430958",
+      "compilerTypes": [
+        {
+          "slot": 18387424,
+          "locator": 19917864,
+          "offset": 840,
+          "name": ".?AVcMeshStatusObject@@"
+        },
+        {
+          "slot": 18387432,
+          "locator": 19917864,
+          "offset": 840,
+          "name": ".?AVcMeshStatusObject@@"
+        },
+        {
+          "slot": 18390344,
+          "locator": 19918048,
+          "offset": 856,
+          "name": ".?AVcMeshStatusObject@@"
+        },
+        {
+          "slot": 18390352,
+          "locator": 19918048,
+          "offset": 856,
+          "name": ".?AVcMeshStatusObject@@"
+        }
+      ]
+    },
+    {
+      "kind": "point-cloud",
+      "procedure": "0x14089eb70",
+      "identity": "0x14115c770",
+      "delta": -288,
+      "identifierBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "evidence": "ev_79c66d31b70a2a970e448208e69c1ac15c7a54ab69e3356b6a97013ee9dfa98c",
+      "compilerTypes": [
+        {
+          "slot": 19173512,
+          "locator": 20068992,
+          "offset": 288,
+          "name": ".?AVcVectorPointCloud@@"
+        },
+        {
+          "slot": 19173520,
+          "locator": 20068992,
+          "offset": 288,
+          "name": ".?AVcVectorPointCloud@@"
+        }
+      ]
+    }
+  ]
+}
