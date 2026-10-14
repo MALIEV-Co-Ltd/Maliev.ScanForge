@@ -750,3 +750,63 @@ recipes that would lose their source. Identity placement does not bake recipes.
 These are application integrity rules required by its existing feature-model
 contract, not captures of original dialog acceptance. Retained links do not
 make baked features regeneratable or establish every original property type.
+
+## Original Apply guards and settings
+
+The Apply callback `0x140545220` uses dialog offset `0x458c` as its entry-ready
+gate. Once entered, it calls UI data synchronization, formats and saves both
+scope choices, then tests the prepared matrix at `0x4400` for exact identity.
+Geometry processing additionally requires non-null context at `0x4140`.
+Original settings names identify offset `0x4094` as **Align All Features** and
+`0x4090` as **Align Imported CAD**. The latter filters its imported-CAD type
+query within the all-features iteration; explicitly selected CAD is handled
+earlier. This scope interpretation comes from original control flow and value
+names, not from the application's current explicit-target UI.
+
+The presumed logging helper `0x140a2e350` actually writes registry values.
+Its original string formatting helper `0x14088a840` uses the CRT wide formatter
+and local printf options getter `0x140172a70`. REA Evidence, respectively:
+`ev_8cf37d5d8429b5965e691d2bc6b878f0790f2eedac85d2748e9409cab8eccd48`,
+`ev_afa843eab37b791ef632f23d381f16626449185959b30f704523d6e37c0e4c16`,
+and `ev_00cd583fd15aa025ce758bfa2a1838af4d35b72b59f777e6f6152647f6e61bb4`.
+No installed settings were changed: owned adapters record registry
+create/set/close calls and supply UI synchronization. Original Apply,
+formatting, identity, settings-writer and cookie-check instructions execute.
+
+All 112 no-geometry cases preserve the complete supplied dialog record.
+They cover ready/not-ready, identity/translated matrices, present/missing
+context, both scope flags, supplied UI return values, and registry success or
+access denial. Ready cases attempt both settings writes even when geometry is
+gated off; successful values are UTF-16 strings with registry type 1. Each
+successful owned key is closed. Unready cases make no UI/settings calls.
+This does not capture real UI data-exchange side effects or geometry-allowed
+Apply. The independent verifier checks every captured event and preserved
+dialog result. External `datum-controller-guards-*` artifacts retain execution,
+image identity and cleanup; the original mapped image and owned heap were
+released and PID 44292 exited.
+
+## Original recursive reference notifications
+
+Post-Apply routine `0x140827ea0` invokes reference helper `0x140827d90`.
+The latter calls an object's slot `0x1f0`, obtains its reference tree through
+slot `0x190`, and resolves parents through model slot `0x58`. It skips self
+references, queries the common feature interface on each resolved parent, and
+recurses for successful casts. Missing references and null starts are skipped.
+Assembly passes true in `DL`: the notification argument is an 8-bit boolean,
+not a fully initialized 32-bit integer. Correcting the probe adapter's argument
+width resolved its initial callback assertion failure.
+
+REA Evidence for the full refresh and helper is
+`ev_62e3d3487184e3ad101a61b83cf8473f8d5f8e5ffe4c33eca5b6cc3e0838fb5d`
+and `ev_93ad8b4b91220507c262fd249f711addf7f50d48fe648b7e07ba9c553d0e2af0`.
+All 10,240 complete helper executions match ordered notifications across the
+64 four-node acyclic graphs, all 16 parent eligibility masks, self/missing links
+and null starts. The 11,808 observed notifications include repeated ancestors
+reached through multiple paths; the native helper has no duplicate-suppression
+set. Original traversal executes with supplied trees, type queries, identity
+resolution and notification observers. An independent iterative verifier checks
+the same order and flag bytes. Cache effects of slot `0x1f0`, cyclic graphs,
+the full refresh routine and geometry-allowed Apply remain unverified. External
+`datum-reference-invalidation-*` and `datum-controller-runtime-verification`
+artifacts retain captures, verification and SHA-256 identities. PID 57048 exited
+and its mapped image was released.
