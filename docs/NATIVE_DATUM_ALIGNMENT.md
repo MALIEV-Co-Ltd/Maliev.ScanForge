@@ -1473,3 +1473,54 @@ passed. The full first-scan replay passed after the final preparation-order
 change. All owned native probe processes exited and cleanup receipts confirm
 allocation release. No GUI/MCP command behavior changed in this slice, so no
 new browser workflow is claimed; the existing live application remains on 5173.
+
+### Native reference-selection setter and picked translation
+
+REA recovered `0x140544a70` from references to the primary/secondary/tertiary
+records, resolving the PE chained unwind block at `0x140544df3` to its actual
+root entry. Pseudocode Evidence:
+`ev_90f7c4ae48232fbf4c7dcca8edee937c67f4152ec09ddf5505878846c2771a33`;
+complete assembly:
+`ev_ad65b03b8b9ccfae393f837eed851c1f3d90450bb987faf9eff38fbe8f57483e`.
+The member-byte scan is candidate discovery, not REA proof by itself.
+
+Slots 0/1/2 select the reference record and update its corresponding control.
+Slot 3 resolves a picked world point and updates frame translation. With a
+valid source frame, it subtracts that frame's origin and projects onto its
+columns, preserving native multiply/add order. It uses the unshifted source
+frame at `+0x4618`, not the translated target frame; picking replaces previous
+offsets. With no valid frame, it stores the world point directly. The positive
+Float32-maximum X sentinel leaves the stored offsets unchanged.
+
+`alignment-picked-translation-native.json` contains 64 direct executions of the
+original slot-3 branch with four supplied frames, valid/invalid-frame states,
+oblique points, signed zeros and the unresolved sentinel. Point-type/payload
+resolution and MFC refresh use controlled adapters. Every changed offset matches
+the port's Float64 bytes; sentinel cases reject rather than invent a point.
+Input point bytes are retained separately because JSON formatting can erase
+negative-zero numeric spelling. This does not execute native viewport picking,
+the CAD/primitive resolver or mesh-region feature fitting.
+
+`nativeDatumTranslationFromPoint` supplies the shared arithmetic. The coordinate
+alignment panel now offers canvas translation-point picking. GUI Preview/Apply
+and MCP `alignment_preview`/`alignment_apply` use the same optional
+`translationPoint` input; current reference bindings are reread and the result
+reports computed offsets. Numeric editing clears the GUI override. The main
+Align entry and unfinished region-fitting controller remain independently gated.
+
+The inspected secondary interface callbacks at `0x1405470f0`, `0x140547080`,
+`0x140546ff0` handle window lifecycle, not region selection. `0x140542bc0`
+cleans up the editing context. These rejected candidates are retained externally
+and are not used as evidence of a region-picker implementation.
+
+Validation: `npm run build` passed with no warnings/errors; focused native,
+frame and shared API tests passed 486 tests; the full suite passed 22,810 tests
+with 24 existing skips. The isolated built-app browser replay verified a real
+mesh-surface pick, actual SDK `translationPoint` precedence, matching GUI/MCP
+Preview/Apply geometry, numeric editing clearing the override and Undo restoring
+the mesh. Its receipt is
+`.resources/picked-translation-browser/browser-validation.json`; owned browser,
+SDK bridge and native probe processes exited and temporary ports closed.
+The native corpus proves the translation branch's arithmetic, while the browser
+test proves our application interaction and parity. Neither is a complete native
+GUI/controller comparison.

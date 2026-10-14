@@ -12,6 +12,7 @@ import {
   placedCloud,
 } from "./point-cloud-placement";
 import { nativeDatumTranslation } from "./scan-native-datum-translation";
+import { nativeDatumTranslationFromPoint } from "./scan-native-datum-picked-translation";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity } from "./types";
 import { transformDatumCoordinates } from "./datum-transform-kernel";
@@ -32,6 +33,7 @@ export interface DatumInstruction {
 export function buildDatumAlignment(
   instructions: readonly DatumInstruction[],
   translation?: readonly number[],
+  translationPoint?: readonly number[],
 ) {
   if (instructions.length < 1 || instructions.length > 3)
     throw new Error("Coordinate alignment requires one to three references.");
@@ -76,16 +78,20 @@ export function buildDatumAlignment(
     steps.push(result);
     state = result.state;
   }
-  if (translation)
+  const offsets = translationPoint
+    ? nativeDatumTranslationFromPoint(state.matrix, translationPoint)
+    : translation;
+  if (offsets)
     state = {
       ...state,
-      matrix: nativeDatumTranslation(state.matrix, translation),
+      matrix: nativeDatumTranslation(state.matrix, offsets),
     };
   return {
     accepted: steps.every((step) => step.accepted),
     state,
     steps,
     matrix: nativeDatumInverseFrame(state.matrix),
+    translation: offsets ? [...offsets] : [0, 0, 0],
   };
 }
 

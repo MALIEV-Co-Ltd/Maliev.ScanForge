@@ -33,6 +33,7 @@ export interface DatumRequest {
   entityIds: string[];
   constraints: (DatumInstruction | DatumReferenceConstraint)[];
   translation?: number[];
+  translationPoint?: number[];
   parallel?: boolean;
 }
 export function createDatumOperations(
@@ -113,7 +114,11 @@ export function createDatumOperations(
         flip: constraint.flip,
       });
     }
-    const frame = buildDatumAlignment(instructions, args.translation);
+    const frame = buildDatumAlignment(
+      instructions,
+      args.translation,
+      args.translationPoint,
+    );
     if (!frame.accepted)
       throw new Error(
         `Reference ${frame.steps.findIndex((step) => !step.accepted) + 1} is incompatible with the preceding frame constraints.`,
@@ -271,7 +276,10 @@ export function createDatumOperations(
     );
     const summary = {
       units: "mm",
-      translation: args.translation ?? [0, 0, 0],
+      translation: frame.translation,
+      ...(args.translationPoint
+        ? { translationPoint: [...args.translationPoint] }
+        : {}),
       constraints: instructions,
       matrix: frame.matrix,
       cadMatrix,

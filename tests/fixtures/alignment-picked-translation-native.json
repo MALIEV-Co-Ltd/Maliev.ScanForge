@@ -1,0 +1,652 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140544a70",
+  "assemblyEvidence": "ev_ad65b03b8b9ccfae393f837eed851c1f3d90450bb987faf9eff38fbe8f57483e",
+  "scope": "Original picked-point translation branch with supplied resolved world point/frame; point-type/payload and MFC refresh adapters, no native GUI or mesh-region fitting claim",
+  "cases": [
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-0.0, 0.0, -0.0],
+      "nativeBits": "000000000000008000000000000000000000000000000080",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [1.0, 2.0, 3.0],
+      "nativeBits": "000000000000f03f00000000000000400000000000000840",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [0.1, -0.2, 3.45],
+      "nativeBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [1000.0, -2000.0, 3000.0],
+      "nativeBits": "0000000000408f400000000000409fc0000000000070a740",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [1e-20, -2e-20, 3e-20],
+      "nativeBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000000.0, 1000000000.0, 17.0],
+      "nativeBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": false,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-0.0, 0.0, -0.0],
+      "nativeBits": "000000000000008000000000000000000000000000000080",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [1.0, 2.0, 3.0],
+      "nativeBits": "000000000000f03f00000000000000400000000000000840",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [0.1, -0.2, 3.45],
+      "nativeBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [1000.0, -2000.0, 3000.0],
+      "nativeBits": "0000000000408f400000000000409fc0000000000070a740",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [1e-20, -2e-20, 3e-20],
+      "nativeBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000000.0, 1000000000.0, 17.0],
+      "nativeBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": false,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-0.0, 0.0, -0.0],
+      "nativeBits": "000000000000008000000000000000000000000000000080",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [1.0, 2.0, 3.0],
+      "nativeBits": "000000000000f03f00000000000000400000000000000840",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [0.1, -0.2, 3.45],
+      "nativeBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [1000.0, -2000.0, 3000.0],
+      "nativeBits": "0000000000408f400000000000409fc0000000000070a740",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [1e-20, -2e-20, 3e-20],
+      "nativeBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000000.0, 1000000000.0, 17.0],
+      "nativeBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": false,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-0.0, 0.0, -0.0],
+      "nativeBits": "000000000000008000000000000000000000000000000080",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [1.0, 2.0, 3.0],
+      "nativeBits": "000000000000f03f00000000000000400000000000000840",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [0.1, -0.2, 3.45],
+      "nativeBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [1000.0, -2000.0, 3000.0],
+      "nativeBits": "0000000000408f400000000000409fc0000000000070a740",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [1e-20, -2e-20, 3e-20],
+      "nativeBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000000.0, 1000000000.0, 17.0],
+      "nativeBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": false,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [0.0, 0.0, 0.0],
+      "nativeBits": "000000000000000000000000000000000000000000000000",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [1.0, 2.0, 3.0],
+      "nativeBits": "000000000000f03f00000000000000400000000000000840",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [0.1, -0.2, 3.45],
+      "nativeBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [1000.0, -2000.0, 3000.0],
+      "nativeBits": "0000000000408f400000000000409fc0000000000070a740",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [1e-20, -2e-20, 3e-20],
+      "nativeBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000000.0, 1000000000.0, 17.0],
+      "nativeBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      "valid": true,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [-3.0, 4.0, -5.0],
+      "nativeBits": "00000000000008c0000000000000104000000000000014c0",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-3.0, 4.0, -5.0],
+      "nativeBits": "00000000000008c0000000000000104000000000000014c0",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [-2.0, 6.0, -2.0],
+      "nativeBits": "00000000000000c0000000000000184000000000000000c0",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [-2.9, 3.8, -1.5499999999999998],
+      "nativeBits": "33333333333307c06666666666660e40ccccccccccccf8bf",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [997.0, -1996.0, 2995.0],
+      "nativeBits": "0000000000288f400000000000309fc0000000000066a740",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [-3.0, 4.0, -5.0],
+      "nativeBits": "00000000000008c0000000000000104000000000000014c0",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [-1000000003.0, 1000000004.0, 12.0],
+      "nativeBits": "0000800165cdcdc10000000265cdcd410000000000002840",
+      "updated": true
+    },
+    {
+      "frame": [1, 0, 0, 3, 0, 1, 0, -4, 0, 0, 1, 5],
+      "valid": true,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [20.0, 10.0, -30.0],
+      "nativeBits": "000000000000344000000000000024400000000000003ec0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [20.0, 10.0, -30.0],
+      "nativeBits": "000000000000344000000000000024400000000000003ec0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [22.0, 9.0, -27.0],
+      "nativeBits": "000000000000364000000000000022400000000000003bc0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [19.8, 9.9, -26.55],
+      "nativeBits": "cdcccccccccc3340cdcccccccccc2340cdcccccccc8c3ac0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [-1980.0, -990.0, 2970.0],
+      "nativeBits": "0000000000f09ec00000000000f08ec0000000000034a740",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [20.0, 10.0, -30.0],
+      "nativeBits": "000000000000344000000000000024400000000000003ec0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [1000000020.0, 1000000010.0, -13.0],
+      "nativeBits": "0000000a65cdcd410000000565cdcd410000000000002ac0",
+      "updated": true
+    },
+    {
+      "frame": [0, -1, 0, 10, 1, 0, 0, -20, 0, 0, 1, 30],
+      "valid": true,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [0, 0, 0],
+      "pointBits": "000000000000000000000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [-6.68, -2.24, -0.5999999999999996],
+      "nativeBits": "b81e85eb51b81ac0ec51b81e85eb01c0303333333333e3bf",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [-0.0, 0, -0.0],
+      "pointBits": "000000000000008000000000000000000000000000000080",
+      "nativeResult": 1,
+      "nativeTranslation": [-6.68, -2.24, -0.5999999999999996],
+      "nativeBits": "b81e85eb51b81ac0ec51b81e85eb01c0303333333333e3bf",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [1, 2, 3],
+      "pointBits": "000000000000f03f00000000000000400000000000000840",
+      "nativeResult": 1,
+      "nativeTranslation": [-6.48, 1.3599999999999997, 0.40000000000000013],
+      "nativeBits": "ec51b81e85eb19c0c1f5285c8fc2f53f9c9999999999d93f",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [0.1, -0.2, 3.45],
+      "pointBits": "9a9999999999b93f9a9999999999c9bf9a99999999990b40",
+      "nativeResult": 1,
+      "nativeTranslation": [
+        -4.827999999999999, -0.10399999999999998, 1.3900000000000001
+      ],
+      "nativeBits": "1c5a643bdf4f13c038b4c876be9fbabf3e0ad7a3703df63f",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [1000, -2000, 3000],
+      "pointBits": "0000000000408f400000000000409fc0000000000070a740",
+      "nativeResult": 1,
+      "nativeTranslation": [3393.32, 1197.76, 999.4],
+      "nativeBits": "713d0ad7a382aa40d7a3703d0ab7924033333333333b8f40",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [1e-20, -2e-20, 3e-20],
+      "pointBits": "2342920ca19cc73b2342920ca19cd7bb9bb16dc978b5e13b",
+      "nativeResult": 1,
+      "nativeTranslation": [-6.68, -2.24, -0.5999999999999996],
+      "nativeBits": "b81e85eb51b81ac0ec51b81e85eb01c0303333333333e3bf",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [-1000000000.0, 1000000000.0, 17],
+      "pointBits": "0000000065cdcdc10000000065cdcd410000000000003140",
+      "nativeResult": 1,
+      "nativeTranslation": [
+        -1159999998.52, 120000008.63999999, 800000009.6000001
+      ],
+      "nativeBits": "ae47a17f0c49d1c1285c8f22389c9c41cecccc0484d7c741",
+      "updated": true
+    },
+    {
+      "frame": [0.36, 0.48, -0.8, 3, -0.8, 0.6, 0, -4, 0.48, 0.64, 0.6, 5],
+      "valid": true,
+      "point": [3.4028234663852886e38, 0, 0],
+      "pointBits": "000000e0ffffef4700000000000000000000000000000000",
+      "nativeResult": 1,
+      "nativeTranslation": [17.0, 23.0, 31.0],
+      "nativeBits": "000000000000314000000000000037400000000000003f40",
+      "updated": false
+    }
+  ]
+}

@@ -84,6 +84,31 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("resolves a picked world point against the current frame and replaces manual offsets", async () => {
+  const { api, state } = setup();
+  try {
+    const result = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        entityIds: ["scan"],
+        constraints: point,
+        translation: [-90, -90, -90],
+        translationPoint: [6, 8, 10],
+        parallel: false,
+        expectedRevision: api.currentRevision(),
+        requestId: "picked-translation",
+      }),
+    );
+    expect(result.status).toBe("succeeded");
+    expect(result.result.translation).toEqual([1, 2, 3]);
+    expect(Array.from(state.entities[0].positions).slice(0, 3)).toEqual([
+      -1, -2, -3,
+    ]);
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+  }
+});
 it("discovers shared dependent CAD targets in scene order without changing history or revision", async () => {
   const { api, state } = setup();
   const seed = state.entities[0];

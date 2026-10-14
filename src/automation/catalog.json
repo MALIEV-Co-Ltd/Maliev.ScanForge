@@ -4904,6 +4904,17 @@
           "maxItems": 3,
           "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
         },
+        "translationPoint": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000.0,
+            "maximum": 1000000000.0
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
+        },
         "parallel": {
           "type": "boolean",
           "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
@@ -5106,6 +5117,17 @@
           "minItems": 3,
           "maxItems": 3,
           "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
+        },
+        "translationPoint": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000.0,
+            "maximum": 1000000000.0
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
         },
         "parallel": {
           "type": "boolean",

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ApplicationApi } from "../automation/api";
-import type { DatumInstruction } from "../datum-alignment";
+import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
+import { nativeDatumTranslationFromPoint } from "../scan-native-datum-picked-translation";
 import type { Entity, Vec3 } from "../types";
 import { Panel, VectorField } from "./controls";
 import { DatumReferencePicker } from "./DatumReferencePicker";
@@ -36,6 +37,7 @@ export function DatumAlignmentTools({
   const [error, setError] = useState(""),
     [preview, setPreview] = useState(false);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
+  const [translationPoint, setTranslationPoint] = useState<Vec3>();
   const [parallel, setParallel] = useState(true);
   const [targetIds, setTargetIds] = useState<string[]>([entity.id]);
   async function includeDependents() {
@@ -96,6 +98,20 @@ export function DatumAlignmentTools({
     { kind: "plane", point: [0, 0, 0], direction: [0, 0, 1], axis: 2 },
     { kind: "direction", point: [0, 0, 0], direction: [1, 0, 0], axis: 0 },
   ]);
+  useEffect(() => {
+    if (!translationPoint) return;
+    try {
+      const frame = buildDatumAlignment(instructions.slice(0, count));
+      setTranslation(
+        nativeDatumTranslationFromPoint(
+          frame.accepted ? frame.state.matrix : undefined,
+          translationPoint,
+        ) as Vec3,
+      );
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : String(failure));
+    }
+  }, [translationPoint, instructions, count]);
   const activeJob = useRef<string | null>(null),
     heldPreview = useRef(false),
     disposed = useRef(false);
@@ -153,6 +169,7 @@ export function DatumAlignmentTools({
             : item,
         ),
         translation,
+        ...(translationPoint ? { translationPoint } : {}),
         parallel,
         expectedRevision: api.currentRevision(),
         requestId: crypto.randomUUID(),
@@ -169,11 +186,14 @@ export function DatumAlignmentTools({
         const job = response.result as {
           status: string;
           error?: { message: string };
+          result?: { translation?: number[] };
         };
         if (job.status !== "running") {
           if (job.status !== "succeeded")
             throw new Error(job.error?.message ?? "Alignment cancelled.");
           heldPreview.current = command === "alignment_preview";
+          if (job.result?.translation?.length === 3)
+            setTranslation([...job.result.translation] as Vec3);
           setPreview(heldPreview.current);
           if (command === "alignment_apply") setOpen(false);
           return;
@@ -417,6 +437,7 @@ export function DatumAlignmentTools({
           label="Frame translation (mm)"
           value={translation}
           onChange={(value) => {
+            setTranslationPoint(undefined);
             if (heldPreview.current) {
               heldPreview.current = false;
               void discard();
@@ -426,6 +447,22 @@ export function DatumAlignmentTools({
             setTranslation(value);
           }}
         />
+        <button
+          onClick={() =>
+            onPickPoint((point) => {
+              if (heldPreview.current) {
+                heldPreview.current = false;
+                void discard();
+              }
+              setPreview(false);
+              setError("");
+              setTranslationPoint([...point]);
+              onPickPoint(null);
+            })
+          }
+        >
+          Pick translation point on canvas
+        </button>
         <label>
           <input
             type="checkbox"
