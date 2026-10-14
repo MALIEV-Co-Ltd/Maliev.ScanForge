@@ -806,3 +806,48 @@ Both image and executable capture allocations were released and the probe
 process exited. This replay does **not** execute controller construction,
 optimization, scene target collection or the installed GUI. Full point-pair
 workflow readiness remains gated; this evidence closes its caller ABI contract.
+
+## Original landmark target collection eligibility
+
+Focused REA extraction of scene collector `0x14084be50` is retained as
+`ev_6370dce497d87829f14446d4469bbb88eed4aa11d10bee77e2e0b153bf68e105`
+(pseudocode) and
+`ev_ebae9dead6786f2eece9494039a964482a23e2426c6f71f41df33d77c5ef1ea2`
+(assembly). Landmark refinement calls it with a null exclusion root and
+visible-only set to one. This collector precedes the separate visible scan
+iteration and target geometry assembly in `0x14054d440`.
+
+A native replay executes the original collector with controlled scene iteration,
+RTTI query responses, visibility/suppression callbacks and empty dependency
+containers. Output storage is preallocated; tree allocation/cleanup are adapted.
+Across all 64 combinations of base-type support, suppression, visibility,
+visible-only and four exclusion-type responses, the original output agrees with
+an independent predicate: supported, not suppressed, visible when required, and
+none of the three excluded type interfaces. Four additional native cases verify
+empty iteration, interspersed rejected objects, original iteration order, and
+retention of duplicate entries. The collector resets output end to output begin;
+it does not append to the previous list or deduplicate entries on this path.
+
+The excluded RTTI identities are `0x141164ba0`, `0x141176cd8`, and
+`0x14115c770`; their application-facing class names remain unverified. Do not
+assign these categories to our scene kinds based solely on address or guessed
+semantics. Nonempty dependency lists additionally invoke readiness, suppression,
+priority and dependency membership checks; this replay does not cover those
+branches or the non-null exclusion-root tree. Complete scene-target parity must
+retain those distinctions rather than substitute a generic visible-object filter.
+
+`docs/evidence/landmark-target-collector-native.json` retains all 68 captures and
+the exact input-image digest. External `verify-landmark-collector.mjs` checks
+image identity, full unique eligibility coverage, output counts and ordered
+results: zero differences. The probe image allocation was released and the
+probe and owned REA server exited. No executable application behavior changed.
+
+The related lazy target builder `0x140499b90` was extracted as
+`ev_b989da893960514dcf36549c337ef9214075166399631585e027842b79a5b9ca`
+with assembly
+`ev_b38ece04b7d7fbd5d0f87af6e3c7685d085f068527b4591bde6883b475901851`.
+Static evidence shows tessellation preparation depends on source bounds and a
+stored quality value; it uses a bounds diagonal divided by 1.9, with a 1.0
+fallback for invalid or tiny bounds, when dispatching the global builder. That
+builder and the produced cache at object offset `0x600` still require runtime
+verification. This is a separate preparation path from source normal generation.

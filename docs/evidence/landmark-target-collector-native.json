@@ -1,0 +1,538 @@
+{
+  "orderedCases": [
+    {
+      "input": [],
+      "output": []
+    },
+    {
+      "input": ["a", "hidden", "b"],
+      "output": ["a", "b"]
+    },
+    {
+      "input": ["b", "excluded", "a"],
+      "output": ["b", "a"]
+    },
+    {
+      "input": ["a", "b", "a"],
+      "output": ["a", "b", "a"]
+    }
+  ],
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x14084be50",
+  "cases": [
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 0,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 1
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 1
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 1
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 0,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 0,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 0,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 0,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18238368,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18312408,
+      "visibleOnly": 1,
+      "count": 0
+    },
+    {
+      "supported": 1,
+      "suppressed": 1,
+      "visible": 1,
+      "excluded": 18204528,
+      "visibleOnly": 1,
+      "count": 0
+    }
+  ],
+  "patches": ["0x14016b970", "0x14016b870", "0x140d5b0f0"],
+  "scope": "Original collector eligibility with null exclusion root and dependency-free objects; controlled scene iterator, RTTI queries, visibility/suppression and empty dependency containers. Tree allocation/cleanup adapted; output preallocated. No nonempty dependencies, scene traversal provider, tessellation, optimizer or GUI execution."
+}
