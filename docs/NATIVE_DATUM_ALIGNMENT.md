@@ -1056,3 +1056,67 @@ passed 21,535 tests with 24 existing skips (329 passing files, five skipped
 files). Touched-file formatting, whitespace and prohibited-name checks passed.
 The full-stream verifier compared the current shared kernel source and retained
 its digests with the native capture/probe digests and cleanup receipts.
+
+## Point-cloud deferred pose and repeated-alignment divergence
+
+Point clouds require a separate implementation from meshes. Primary
+`cVectorPointCloudObject` slot `0x250` binds `0x140892100`, which invokes geometry
+slot `0x30` and sends the common change notification. Geometry type
+`cVectorPointCloud` binds that slot to `0x14089f5b0`. Its complete transform
+routine composes the incoming frame on the left of the stored double-precision
+frame at `0x70`, writes the twelve resulting doubles and clears the two bytes
+at `0xd0`. It does not rewrite point or normal records. Composition helper
+`0x1401dcf80` uses ordered double products/sums with no Float32 intermediate.
+REA Evidence:
+`ev_10a1352dc1a9c0ab19023561bb3546fea6b8acaa0c8aaf99f56f5e6ec2e9346d`,
+`ev_3788a059de6562f4cd351f9a6c86024fb666a2b55a4a0f7b1c62f606508e0d5c`,
+`ev_e0da657985245b9572e99e77dd456d5ae1aee189aa2d586e0d752212d55d671c`.
+
+Point records span 48 bytes, with position at offset zero and normal at
+`0x10`; the point vector begins at geometry `0x18` and ends at `0x20`.
+The original world-bounds routine `0x14089fd50` separately composes the supplied
+world frame with the stored pose and dispatches `0x14089ffe0`. That worker
+transforms local Float32 positions using doubles, rounds resulting coordinates
+to Float32 and accumulates extrema. Bounds calculation does not replace the
+source point records. Evidence:
+`ev_2e28598d2cf67716d58c012e09b4ca3fc600f7c33c0ec4206f3c94b44fba4981`,
+`ev_db175d54dee8b404e441f592b7543f15e39096b321906ae26cb609efc1d8f9f9`.
+
+Complete prepared Apply executes four successive frames on all three ASC
+datasets using these original geometry and world-bounds routines:
+
+| Input     |    Points | Verified successive Apply steps |
+| --------- | --------: | ------------------------------: |
+| asc-1.asc |   140,113 |                               4 |
+| asc-2.asc | 1,375,494 |                               4 |
+| asc-3.asc | 1,865,848 |                               4 |
+
+All 3,381,455 point/normal records remain byte-identical. Every resulting pose
+and world-bound field matches independent verification. The current
+application ASC importer also matches every supplied source position and normal
+byte, covering the original input files rather than sampled points. The probe
+supplies scene/UI/lock/query interfaces and initialized provider state as in
+the mesh capture; it does not execute the original ASCII importer or installed
+UI. World bounds use the real concurrency runtime with two logical lanes.
+
+Replaying the application's current repeated Float32 baking exposes a real
+behavioral mismatch. After four steps, its coordinate streams differ from the
+deferred-pose result in 126,531, 1,229,139 and 1,682,634 coordinates respectively;
+maximum observed discrepancy is `0.0000152587890625` mm. The first transform
+matches, so single-transform tests do not detect this. Native application of
+the pose is independent of point count; instrumented Apply timings exclude the
+separate bounds queries and are not product performance benchmarks.
+
+The required integration is to retain immutable local source buffers and a
+composed double pose, render that pose without replacing the GPU point buffers,
+and resolve world coordinates at geometry-processing and MCP boundaries.
+History, serialization, selection, bounds, revisions and cancellation must
+preserve that representation. Mesh worker parity does not justify reusing
+repeated coordinate baking for point clouds. That application integration is
+still required; this evidence does not enable the main ribbon command.
+
+External `datum-cloud-*` and `datum-controller-cloud-full-*` artifacts retain
+REA records, loaded-image slot checks, all source fields, original pose/bounds
+captures, importer comparison, divergence counts and independent verification.
+Successful native PID 56072 released its image and all owned allocations.
+No production application behavior changed in this evidence slice.
