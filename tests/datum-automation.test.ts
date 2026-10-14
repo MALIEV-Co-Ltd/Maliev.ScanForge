@@ -8,6 +8,10 @@ import { createOperations } from "../src/automation/operations";
 import type { CadClient } from "../src/cad/client";
 import type { Entity } from "../src/types";
 import native from "./fixtures/alignment-datum-plane-native.json";
+import {
+  executeDatumTransform,
+  type DatumTransformRequest,
+} from "../src/datum-transform-worker";
 import type { NativeDatumPlaneState } from "../src/scan-native-datum-plane";
 function setup() {
   const entity: Entity = {
@@ -76,6 +80,73 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("exposes admitted CPU workers and explicit serial fallback through the shared API", async () => {
+  class WorkerAdapter {
+    static instances: WorkerAdapter[] = [];
+    stopped = false;
+    onmessage?: (event: { data: unknown }) => void;
+    constructor() {
+      WorkerAdapter.instances.push(this);
+    }
+    postMessage(input: DatumTransformRequest, transfer: Transferable[]) {
+      const copy = structuredClone(input, { transfer });
+      queueMicrotask(() => {
+        if (!this.stopped)
+          this.onmessage?.({ data: executeDatumTransform(copy) });
+      });
+    }
+    terminate() {
+      this.stopped = true;
+    }
+  }
+  vi.stubGlobal("Worker", WorkerAdapter);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });
+  const { api, state } = setup();
+  state.entities[0] = {
+    ...state.entities[0],
+    kind: "pointcloud",
+    positions: new Float32Array(1_100_000 * 3),
+  };
+  try {
+    const parallel = await settle(
+      api,
+      await api.invoke("alignment_preview", {
+        entityIds: ["scan"],
+        constraints: point,
+        parallel: true,
+        expectedRevision: api.currentRevision(),
+        requestId: "cpu-preview",
+      }),
+    );
+    expect(parallel.status).toBe("succeeded");
+    expect(parallel.result.targets[0].execution.physicalWorkers).toBe(2);
+    expect(WorkerAdapter.instances.every((worker) => worker.stopped)).toBe(
+      true,
+    );
+    const serial = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        entityIds: ["scan"],
+        constraints: point,
+        parallel: false,
+        expectedRevision: api.currentRevision(),
+        requestId: "serial-apply",
+      }),
+    );
+    expect(serial.status).toBe("succeeded");
+    expect(serial.result.targets[0].execution).toMatchObject({
+      physicalWorkers: 0,
+      fallbackReason: "single-core requested",
+    });
+    expect(serial.result.targets[0].bounds).toEqual(
+      parallel.result.targets[0].bounds,
+    );
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+    vi.unstubAllGlobals();
+  }
+});
 it("preserves native signed-zero normals through the shared Apply operation", async () => {
   const { api, state } = setup();
   state.entities[0].normals = Array(9).fill(-0);
@@ -374,6 +445,43 @@ it("does not commit an identity alignment", async () => {
     expect(host.commit).not.toHaveBeenCalled();
   } finally {
     api.dispose();
+  }
+});
+it("skips coordinate allocation and CPU workers for a large identity Apply", async () => {
+  const { api, state } = setup();
+  state.entities[0] = {
+    ...state.entities[0],
+    kind: "pointcloud",
+    positions: new Float32Array(1_100_000 * 3),
+  };
+  const original = state.entities[0],
+    factory = vi.fn(() => {
+      throw new Error("Identity should not create workers");
+    });
+  vi.stubGlobal("Worker", factory);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });
+  try {
+    const result = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        entityIds: ["scan"],
+        constraints: [{ kind: "point", point: [0, 0, 0], axis: 0 }],
+        parallel: true,
+        expectedRevision: api.currentRevision(),
+        requestId: "large-no-op",
+      }),
+    );
+    expect(result.status).toBe("succeeded");
+    expect(result.result.changed).toBe(false);
+    expect(result.result.targets[0].execution.fallbackReason).toBe(
+      "identity transform",
+    );
+    expect(factory).not.toHaveBeenCalled();
+    expect(state.entities[0]).toBe(original);
+    expect(state.history).toHaveLength(0);
+  } finally {
+    api.dispose();
+    vi.unstubAllGlobals();
   }
 });
 it("rejects incompatible constraints and unsupported targets before commit", async () => {

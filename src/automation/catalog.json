@@ -4662,7 +4662,7 @@
   },
   {
     "name": "alignment_preview",
-    "description": "Preview scan coordinate alignment from one to three native plane/direction/point constraints. Scans are meshes or point clouds, exact CAD targets unsupported. Ordered constraints build the reference frame; its rigid inverse transforms scans. Model/history stay unchanged; preview_discard target datum restores the committed scene. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision.",
+    "description": "Preview scan coordinate alignment from one to three native plane/direction/point constraints. Scans are meshes or point clouds, exact CAD targets unsupported. Ordered constraints build the reference frame; its rigid inverse transforms scans. Model/history stay unchanged; preview_discard target datum restores the committed scene. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4853,6 +4853,10 @@
           "minItems": 3,
           "maxItems": 3,
           "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
+        },
+        "parallel": {
+          "type": "boolean",
+          "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
         }
       },
       "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
@@ -4861,7 +4865,7 @@
   },
   {
     "name": "alignment_apply",
-    "description": "Apply native coordinate-frame scan alignment to unlocked meshes/point clouds as one history transaction, preserving indexed topology and saved selections. Same constraints as alignment_preview; source geometry is checked before commit. Exact CAD targets unsupported. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision.",
+    "description": "Apply native coordinate-frame scan alignment to unlocked meshes/point clouds as one history transaction, preserving indexed topology and saved selections. Same constraints as alignment_preview; source geometry is checked before commit. Exact CAD targets unsupported. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5052,6 +5056,10 @@
           "minItems": 3,
           "maxItems": 3,
           "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
+        },
+        "parallel": {
+          "type": "boolean",
+          "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
         }
       },
       "required": ["entityIds", "constraints", "expectedRevision", "requestId"],

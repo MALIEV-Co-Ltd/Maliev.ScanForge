@@ -1,11 +1,8 @@
 import type { Handler, WorkspaceHost } from "./api";
-import {
-  buildDatumAlignment,
-  transformDatumScan,
-  type DatumInstruction,
-} from "../datum-alignment";
+import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
 import type { Entity } from "../types";
 import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
+import { createDatumTransformExecutor } from "../datum-transform-pool";
 import {
   createAlignmentOperations,
   type AlignmentReferencePage,
@@ -24,6 +21,7 @@ export interface DatumRequest {
   entityIds: string[];
   constraints: (DatumInstruction | DatumReferenceConstraint)[];
   translation?: number[];
+  parallel?: boolean;
 }
 export function createDatumOperations(
   host: WorkspaceHost,
@@ -41,6 +39,10 @@ export function createDatumOperations(
     const targets = args.entityIds.map((id) => {
       const entity = snapshot.entities.find((item) => item.id === id);
       if (!entity) throw new Error(`Scan ${id} is not in this project.`);
+      if (!entity.positions.length)
+        throw new Error("An empty scan cannot be aligned.");
+      if (entity.positions.length % 3)
+        throw new Error("Alignment transform requires XYZ coordinates.");
       if (
         entity.locked ||
         entity.kernelId ||
@@ -96,12 +98,68 @@ export function createDatumOperations(
       );
     context.check();
     const transformed = new Map<string, Entity>();
-    for (let index = 0; index < targets.length; index++) {
-      context.progress(index / targets.length, "Transforming scan coordinates");
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      context.check();
-      const entity = targets[index];
-      transformed.set(entity.id, transformDatumScan(entity, frame.matrix));
+    const identity = nativeDatumIsIdentity(frame.state.matrix);
+    const diagnostics = new Map<
+      string,
+      { bounds: { min: number[]; max: number[] }; execution: unknown }
+    >();
+    const executor = identity
+      ? undefined
+      : createDatumTransformExecutor({
+          parallel: args.parallel,
+          signal: context.signal,
+        });
+    try {
+      for (let index = 0; index < targets.length; index++) {
+        context.progress(
+          index / targets.length,
+          "Transforming scan coordinates",
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        context.check();
+        const entity = targets[index];
+        if (identity) {
+          const min = [Infinity, Infinity, Infinity],
+            max = [-Infinity, -Infinity, -Infinity];
+          for (
+            let offset = 0;
+            offset < entity.positions.length;
+            offset += 262_144 * 3
+          ) {
+            context.check();
+            const end = Math.min(entity.positions.length, offset + 262_144 * 3);
+            for (let i = offset; i < end; i += 3)
+              for (let axis = 0; axis < 3; axis++) {
+                const value = entity.positions[i + axis];
+                if (!Number.isFinite(value) || Math.abs(value) > 1e9)
+                  throw new Error(
+                    "Aligned scan coordinates exceed the supported range.",
+                  );
+                min[axis] = Math.min(min[axis], value);
+                max[axis] = Math.max(max[axis], value);
+              }
+            await new Promise((resolve) => setTimeout(resolve, 0));
+          }
+          transformed.set(entity.id, entity);
+          diagnostics.set(entity.id, {
+            bounds: { min, max },
+            execution: {
+              physicalWorkers: 0,
+              chunkVertices: 262_144,
+              fallbackReason: "identity transform",
+            },
+          });
+          continue;
+        }
+        const result = await executor!.transformScan(entity, frame.matrix);
+        transformed.set(entity.id, result.entity);
+        diagnostics.set(entity.id, {
+          bounds: result.bounds,
+          execution: result.execution,
+        });
+      }
+    } finally {
+      executor?.close();
     }
     context.check();
     const next = snapshot.entities.map(
@@ -115,18 +173,11 @@ export function createDatumOperations(
       frame: frame.state,
       targets: targets.map((item) => {
         const output = transformed.get(item.id)!;
-        const min = [Infinity, Infinity, Infinity],
-          max = [-Infinity, -Infinity, -Infinity];
-        for (let offset = 0; offset < output.positions.length; offset += 3)
-          for (let axis = 0; axis < 3; axis++) {
-            min[axis] = Math.min(min[axis], output.positions[offset + axis]);
-            max[axis] = Math.max(max[axis], output.positions[offset + axis]);
-          }
         return {
           entityId: item.id,
           count: output.positions.length / (item.kind === "pointcloud" ? 3 : 9),
           kind: item.kind,
-          bounds: { min, max },
+          ...diagnostics.get(item.id),
         };
       }),
     };

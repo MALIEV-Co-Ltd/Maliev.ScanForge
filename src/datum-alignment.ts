@@ -8,7 +8,9 @@ import {
 import { nativeDatumInverseFrame } from "./scan-native-datum-apply";
 import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { retainIndexedMesh } from "./indexed-mesh";
-import type { Entity, Positions } from "./types";
+import type { Entity } from "./types";
+import { transformDatumCoordinates } from "./datum-transform-kernel";
+export { transformDatumCoordinates } from "./datum-transform-kernel";
 
 export interface DatumInstruction {
   kind: "plane" | "direction" | "point";
@@ -81,44 +83,8 @@ export function buildDatumAlignment(
   };
 }
 
-/** World-space scan application preserves native double arithmetic and Float32 storage. */
-export function transformDatumCoordinates(
-  input: Positions,
-  matrix: readonly number[],
-  vector = false,
-): Float32Array {
-  if (
-    input.length % 3 ||
-    matrix.length !== 12 ||
-    !matrix.every(Number.isFinite)
-  )
-    throw new Error(
-      "Alignment transform requires XYZ coordinates and a finite 3x4 matrix.",
-    );
-  const output = new Float32Array(input.length);
-  for (let offset = 0; offset < input.length; offset += 3) {
-    const x = input[offset],
-      y = input[offset + 1],
-      z = input[offset + 2];
-    const a = y * matrix[1] + x * matrix[0] + z * matrix[2],
-      b = y * matrix[5] + x * matrix[4] + z * matrix[6],
-      c = y * matrix[9] + x * matrix[8] + z * matrix[10];
-    output[offset] = vector ? a : a + matrix[3];
-    output[offset + 1] = vector ? b : b + matrix[7];
-    output[offset + 2] = vector ? c : c + matrix[11];
-  }
-  if (
-    !output.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9)
-  )
-    throw new Error("Aligned scan coordinates exceed the supported range.");
-  return output;
-}
-
 /** A rigid scan edit retains facet/point identity and all saved selection slots. */
-export function transformDatumScan(
-  entity: Entity,
-  matrix: readonly number[],
-): Entity {
+export function datumScanTransformPlan(entity: Entity) {
   if (!entity.positions.length)
     throw new Error("An empty scan cannot be aligned.");
   if (entity.locked) throw new Error("Unlock the scan before aligning it.");
@@ -132,21 +98,41 @@ export function transformDatumScan(
     );
   const indexed = retainIndexedMesh(entity).indexedMesh;
   return {
-    ...entity,
-    positions: transformDatumCoordinates(entity.positions, matrix),
-    indexedMesh: indexed
-      ? {
-          vertices: transformDatumCoordinates(indexed.vertices, matrix),
-          triangles: indexed.triangles,
-        }
-      : undefined,
-    normals: entity.normals
-      ? Array.from(transformDatumCoordinates(entity.normals, matrix, true))
-      : undefined,
-    edgePositions: undefined,
-    fit: undefined,
-    planeFrame: undefined,
-    surfacePatch: undefined,
-    surfaceScanId: undefined,
+    indexed,
+    assemble: (
+      positions: Float32Array,
+      vertices?: Float32Array,
+      normals?: Float32Array,
+    ): Entity => ({
+      ...entity,
+      positions,
+      indexedMesh: indexed
+        ? {
+            vertices: vertices!,
+            triangles: indexed.triangles,
+          }
+        : undefined,
+      normals: normals ? Array.from(normals) : undefined,
+      edgePositions: undefined,
+      fit: undefined,
+      planeFrame: undefined,
+      surfacePatch: undefined,
+      surfaceScanId: undefined,
+    }),
   };
+}
+export function transformDatumScan(
+  entity: Entity,
+  matrix: readonly number[],
+): Entity {
+  const plan = datumScanTransformPlan(entity);
+  return plan.assemble(
+    transformDatumCoordinates(entity.positions, matrix),
+    plan.indexed
+      ? transformDatumCoordinates(plan.indexed.vertices, matrix)
+      : undefined,
+    entity.normals
+      ? transformDatumCoordinates(entity.normals, matrix, true)
+      : undefined,
+  );
 }

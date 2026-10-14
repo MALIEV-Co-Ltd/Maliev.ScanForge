@@ -36,6 +36,7 @@ export function DatumAlignmentTools({
   const [error, setError] = useState(""),
     [preview, setPreview] = useState(false);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
+  const [parallel, setParallel] = useState(true);
   const [requiredReferences, setRequiredReferences] = useState<boolean[]>([]);
   const [bindings, setBindings] = useState<
     ({ entityId: string; referenceId: string } | undefined)[]
@@ -101,6 +102,7 @@ export function DatumAlignmentTools({
             : item,
         ),
         translation,
+        parallel,
         expectedRevision: api.currentRevision(),
         requestId: crypto.randomUUID(),
       });
@@ -312,6 +314,21 @@ export function DatumAlignmentTools({
             setTranslation(value);
           }}
         />
+        <label>
+          <input
+            type="checkbox"
+            checked={parallel}
+            onChange={(event) => {
+              if (heldPreview.current) {
+                heldPreview.current = false;
+                void discard();
+              }
+              setPreview(false);
+              setParallel(event.target.checked);
+            }}
+          />
+          Use multiple CPU cores for large scans
+        </label>
       </fieldset>
       {error && <p role="alert">{error}</p>}
       {preview && (
