@@ -1,0 +1,146 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140546cd0",
+  "evidenceId": "ev_94adbbc240519730d6adbaba56abef6112b2ed06015e4e799ddcc0a5633146fd",
+  "scope": "Complete original slider callback arithmetic and dispatch; base scroll, controls, profile write, formatter and segmentation processor are recorders. No Windows registry writes, mesh segmentation computation or installed GUI execution.",
+  "cases": [
+    {
+      "controlId": 1122,
+      "slider": 0,
+      "degreeBits": "00000000",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 0.0, "redraw": 1 },
+        { "kind": "format", "value": 0.0 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1122,
+      "slider": 1,
+      "degreeBits": "0ad7a33d",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 0.01, "redraw": 1 },
+        { "kind": "format", "value": 0.07999999821186066 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1122,
+      "slider": 12,
+      "degreeBits": "8fc2753f",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 0.12, "redraw": 1 },
+        { "kind": "format", "value": 0.9599999785423279 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1122,
+      "slider": 25,
+      "degreeBits": "00000040",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 0.25, "redraw": 1 },
+        { "kind": "format", "value": 2.0 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1122,
+      "slider": 50,
+      "degreeBits": "00008040",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 0.5, "redraw": 1 },
+        { "kind": "format", "value": 4.0 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1122,
+      "slider": 100,
+      "degreeBits": "00000041",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1122 },
+        { "kind": "update", "save": 1 },
+        { "kind": "message", "id": 1024 },
+        { "kind": "process", "value": 1.0, "redraw": 1 },
+        { "kind": "format", "value": 8.0 },
+        { "kind": "saveProfile", "flush": 1 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 0,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 1,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 12,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 25,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 50,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    },
+    {
+      "controlId": 1051,
+      "slider": 100,
+      "degreeBits": "0000f0c0",
+      "events": [
+        { "kind": "baseScroll" },
+        { "kind": "controlId", "value": 1051 }
+      ]
+    }
+  ]
+}

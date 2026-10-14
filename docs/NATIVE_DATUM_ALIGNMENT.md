@@ -550,6 +550,43 @@ tests, and `npm test` passed 22,654 tests with 24 skipped across 336 files.
 Prettier and diff checks passed. Port 5173 remained healthy. No application UI
 behavior changed in this capture slice, so no new GUI/MCP parity claim is made.
 
+### Native segmentation control path
+
+REA recovered centering callback `0x140546a10`, segmentation toggle
+`0x140546ad0`, slider callback `0x140546cd0`, frame recomputation `0x140544410`,
+display/processing wrapper `0x140647920`, and mesh routines `0x140abf580` and
+`0x140ac09d0`. These are functional alignment paths; activation is excluded.
+
+Direct execution of the complete original slider callback covers 12 cases:
+six slider positions and two control IDs. Control `0x462` stores the displayed
+value as Float32 `(position * 8) / 100`, while the processor receives a separate
+Float64 `position / 100`. It refreshes fields, requests the slider position,
+dispatches processing/redraw, formats the stored value and requests a profile
+write, in that order. Another control leaves the dialog unchanged. MFC methods,
+formatting, profile writing and processing are recorders; no Windows registry
+write or mesh-segmentation result is claimed. The original arithmetic and
+dispatch match all cases byte for byte. The fixture and
+`tests/alignment-segmentation-native.test.ts` preserve this distinction between
+the displayed value and processor input.
+
+Static segmentation-toggle analysis shows reference-picking controls being
+disabled in segmentation mode and restored when leaving it, plus display-state
+restoration. The wrapper calls mesh preparation only when its attachment query
+reports no existing segmentation data, then delegates to the threshold routine.
+The preparation body accumulates vertex-normal dot products and converts them
+to angles. The threshold body classifies a face only when its threshold is
+strictly less than all three vertex scores, then collects regions. Preparation,
+region traversal and full owner-scan results remain separate runtime checks;
+the slider capture is not a replacement for them.
+
+Slider Evidence: `ev_94adbbc240519730d6adbaba56abef6112b2ed06015e4e799ddcc0a5633146fd`.
+Toggle Evidence: `ev_e130e93e348d7a826138b91a12f84db06e996e8ad1be086fb90397f8a803b5f5`.
+Preparation and threshold Evidence:
+`ev_1c8e354f12fa027820b84dec8916761a77f89e67577c747cdf2fde341a54fb2f`
+and `ev_40592212bca078fc267676862ef776b49fede74f1eca942af60ed0f06269264b`.
+External `align-options-*`, `align-segmentation-core-*` and
+`align-segmentation-slider-*` files retain REA/probe results and cleanup receipts.
+
 ## Native primitive geometry and cache transforms
 
 All six primitive object types use the shared dispatcher `0x140405e40` at
@@ -1172,6 +1209,12 @@ geometry access remains in world coordinates for existing processing tools and
 MCP exports. Geometry edits that replace those coordinates invalidate the old
 placement. The viewport keeps its local GPU position attribute and applies the
 pose as the object matrix; selection indexing and fit bounds use world values.
+
+Legacy JSON arrays become Float32 local storage on first alignment. The selection
+session now keeps the original point-identity key through that conversion and
+successive poses; replacing geometry invalidates it. A browser regression first
+reproduced selection loss, then verified preservation through GUI Apply and the
+shared MCP operation. No numerical transform or public schema changed.
 
 The shared bounded CPU executor resolves derived coordinates and bounds. This
 still scales with point count and is not a constant-time end-to-end Apply claim.

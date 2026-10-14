@@ -267,6 +267,8 @@ try {
   const constraints = [
     { kind: "plane", point: [3, 4, 5], direction: [0, 1, 0], axis: 2 },
   ];
+  await mutate("object_select", { entityId: "cloud" });
+  await mutate("selection_set", { entityId: "cloud", points: [1, 3] });
   const preview = await job(
     await mutate("alignment_preview", { entityIds: ["cloud"], constraints }),
   );
@@ -322,6 +324,10 @@ try {
     applied.result.pointCloudPose,
     preview.targets[0].pointCloudPose,
   );
+  assert.equal(
+    (await call("selection_get", { entityId: "cloud" })).result.count,
+    2,
+  );
   await mutate("history_undo", {});
   assert.equal(
     (await call("object_get", { entityId: "cloud" })).result.pointCloudPose,
@@ -365,6 +371,7 @@ try {
   );
   ledger.steps = [
     "GUI Apply equals shared MCP pose",
+    "First GUI Apply preserves legacy JSON point selection",
     "Preview discarded without mutation",
     "MCP Undo/Redo restores pose",
     "Repeated MCP Apply composes retained pose",

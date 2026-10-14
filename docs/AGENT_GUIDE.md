@@ -440,6 +440,12 @@ replace the world-coordinate buffers. Binary exports containing posed clouds use
 manifest version 3 and share local buffers across history; the reader also accepts
 version 2. JSON exports include both world compatibility geometry and placement.
 
+The first alignment of a cloud loaded from a JSON project retains the active
+point selection while converting local storage to Float32. Subsequent poses and
+metadata-only changes retain the same point identities; geometry replacement
+invalidates that selection session. This uses the existing shared alignment
+operation and selection tools; no additional parameters are required.
+
 `mesh_process` segmentation now retains each worker's region classification and fitted parameters in its new mesh object, matching the GUI's classified-region output. Its response includes `segmentClassifications` in segment order. Use the returned `entityIds` with `project_get` and `alignment_preview` / `alignment_apply`; fits remain derived session metadata and project import still discards them under the existing project policy. This transport correction does not change or certify the segmentation/classification algorithm.
 
 Exact CAD `alignment_preview` and `alignment_apply` retain `surfaceScanId`, the

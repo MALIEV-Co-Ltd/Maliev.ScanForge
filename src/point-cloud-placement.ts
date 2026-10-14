@@ -13,6 +13,7 @@ const weakCache = new WeakMap<
   }
 >();
 const latest = new WeakMap<object, World>();
+const selectionSources = new WeakMap<Placement, Entity["positions"]>();
 
 /** Original cloud helper multiplies incoming * stored without Float32 intermediates. */
 export function composeCloudPose(a: readonly number[], b: readonly number[]) {
@@ -147,7 +148,7 @@ export function nextCloudPlacement(
 ): Placement {
   const old = cloudPlacement(entity);
   const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
-  return {
+  const placement: Placement = {
     matrixBits: cloudPoseBits(
       composeCloudPose(
         matrix,
@@ -161,6 +162,19 @@ export function nextCloudPlacement(
         : new Float32Array(entity.positions)),
     sourceNormals: old?.sourceNormals ?? entity.normals,
   };
+  selectionSources.set(
+    placement,
+    old ? (selectionSources.get(old) ?? old.sourcePositions) : entity.positions,
+  );
+  return placement;
+}
+
+/** Array-to-Float32 normalization changes storage, but preserves point identities. */
+export function cloudSelectionSource(entity: Entity) {
+  const placement = cloudPlacement(entity);
+  return placement
+    ? (selectionSources.get(placement) ?? placement.sourcePositions)
+    : entity.positions;
 }
 
 /** JSON retains a world-space compatibility view and restores the local representation. */

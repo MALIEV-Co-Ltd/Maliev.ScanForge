@@ -2,7 +2,11 @@ import { expect, it } from "vitest";
 import native from "./fixtures/alignment-cloud-pose-native.json";
 import { transformDatumScan } from "../src/datum-alignment";
 import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply";
-import { cloudPlacement, canonicalCloud } from "../src/point-cloud-placement";
+import {
+  cloudPlacement,
+  canonicalCloud,
+  cloudSelectionSource,
+} from "../src/point-cloud-placement";
 import { createDatumTransformExecutor } from "../src/datum-transform-pool";
 import { encodeProjectFile, decodeProjectFile } from "../src/project-file";
 import { serializeProject, parseProject } from "../src/io";
@@ -106,6 +110,29 @@ it("invalidates the pose when an existing world-space tool edits geometry", () =
   });
   expect(edited.pointCloudPlacement).toBeUndefined();
   expect(edited.positions[0]).toBe(Math.fround(moved.positions[0] + 1));
+});
+
+it("preserves point identities when the first alignment normalizes legacy JSON storage", () => {
+  const original = source(native.cases[0]);
+  original.positions = Array.from(original.positions);
+  const first = transformDatumScan(
+    original,
+    nativeDatumInverseFrame(native.cases[0].steps[0].frame),
+  );
+  expect(cloudPlacement(first)?.sourcePositions).toBeInstanceOf(Float32Array);
+  expect(cloudSelectionSource(first)).toBe(original.positions);
+  const renamed = canonicalCloud({ ...first, name: "Renamed" });
+  const second = transformDatumScan(
+    renamed,
+    nativeDatumInverseFrame(native.cases[0].steps[1].frame),
+  );
+  expect(cloudSelectionSource(second)).toBe(original.positions);
+  const edited = canonicalCloud({
+    ...second,
+    positions: second.positions.slice(),
+  });
+  expect(cloudSelectionSource(edited)).toBe(edited.positions);
+  expect(cloudSelectionSource(edited)).not.toBe(original.positions);
 });
 
 it("retains the actual GPU geometry and local attributes while updating the object frame", () => {

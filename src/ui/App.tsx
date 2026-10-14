@@ -189,7 +189,11 @@ import {
 } from "../io";
 import { importScan } from "../import-client";
 import { retainIndexedMesh, transformIndexedMesh } from "../indexed-mesh";
-import { canonicalCloud, cloudPlacement } from "../point-cloud-placement";
+import {
+  canonicalCloud,
+  cloudPlacement,
+  cloudSelectionSource,
+} from "../point-cloud-placement";
 import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
@@ -1225,8 +1229,7 @@ export function App() {
   }, [entities, history, future]);
   function sessionFor(entity: Entity): SelectionSession {
     let record = selectionSessions.current.get(entity.id);
-    const placement = cloudPlacement(entity);
-    const key = placement?.sourcePositions ?? entity.positions;
+    const key = cloudSelectionSource(entity);
     if (!record || record.positions !== key) {
       record = {
         positions: key,
@@ -1602,12 +1605,7 @@ export function App() {
   const selectionSession = selected ? sessionFor(selected) : undefined;
   void selectionVersion;
   useEffect(() => {
-    const live = new Map(
-      entities.map((e) => [
-        e.id,
-        cloudPlacement(e)?.sourcePositions ?? e.positions,
-      ]),
-    );
+    const live = new Map(entities.map((e) => [e.id, cloudSelectionSource(e)]));
     for (const [id, record] of selectionSessions.current)
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
