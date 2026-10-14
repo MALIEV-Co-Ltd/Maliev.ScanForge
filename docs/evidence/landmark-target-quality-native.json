@@ -1,0 +1,1390 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140499b90",
+  "cases": [
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0003646422752776584,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5373f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0007292845505553168,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5473f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.0001367408532291219,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec213f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.0002734817064582438,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec313f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0005469634129164876,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec413f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5073f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5173f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee507bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee517bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "unit",
+      "bounds": [0, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee527bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.003021621072506805,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0683f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.00604324214501361,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0783f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.01208648429002722,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0883f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.002266215804380104,
+      "angular": 0.4886921905584123,
+      "linearBits": "bbe67e589990623f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.004532431608760208,
+      "angular": 0.4886921905584123,
+      "linearBits": "bbe67e589990723f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.009064863217520416,
+      "angular": 0.4886921905584123,
+      "linearBits": "bbe67e589990823f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 0.0007554052681267013,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0483f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 0.0015108105362534026,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0583f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.003021621072506805,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc0683f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -0.0007554052681267013,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc048bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -0.0015108105362534026,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc058bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "oblong",
+      "bounds": [-5, -3, -1, 13, 7, 19],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.003021621072506805,
+      "angular": 0.4886921905584123,
+      "linearBits": "f988fe75ccc068bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0004,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2363a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0008,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2364a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.00015000000000000001,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9233f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.00030000000000000003,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9333f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0006000000000000001,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9433f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 5e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2360a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 0.0001,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2361a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -5e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2360abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -0.0001,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2361abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "zero",
+      "bounds": [0, 0, 0, 0, 0, 0],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0004,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2363a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0008,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2364a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.00015000000000000001,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9233f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.00030000000000000003,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9333f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0006000000000000001,
+      "angular": 0.4886921905584123,
+      "linearBits": "623255302aa9433f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 5e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2360a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 0.0001,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2361a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362a3f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -5e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2360abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -0.0001,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2361abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "tiny",
+      "bounds": [0, 0, 0, 1e-10, 0, 0],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0002,
+      "angular": 0.4886921905584123,
+      "linearBits": "2d431cebe2362abf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 2.0000000000000004e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997813d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0,
+      "factor": 1,
+      "linear": 4.000000000000001e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997913d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0,
+      "factor": 2,
+      "linear": 8.000000000000001e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997a13d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 1.5000000000000005e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "1cdfc44166637a3d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 3.000000000000001e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "1cdfc44166638a3d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 6.000000000000002e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "1cdfc44166639a3d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 5.000000000000001e-13,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997613d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 1.0000000000000002e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997713d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 2.0000000000000004e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d819997813d",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -5.000000000000001e-13,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d81999761bd",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -1.0000000000000002e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d81999771bd",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "threshold",
+      "bounds": [0, 0, 0, 1.9e-8, 0, 0],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -2.0000000000000004e-12,
+      "angular": 0.4886921905584123,
+      "linearBits": "12ea2d81999781bd",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 3.938586722919939e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a5f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0,
+      "factor": 1,
+      "linear": 7.877173445839878e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a6f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0,
+      "factor": 2,
+      "linear": 1.5754346891679756e147,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a7f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 2.953940042189954e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "50fba660f8a7575e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 5.907880084379908e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "50fba660f8a7675e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 1.1815760168759817e147,
+      "angular": 0.4886921905584123,
+      "linearBits": "50fba660f8a7775e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 9.846466807299848e145,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a3f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 1.9692933614599695e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a4f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 3.938586722919939e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a5f5e",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -9.846466807299848e145,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a3fde",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -1.9692933614599695e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a4fde",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "large",
+      "bounds": [0, 0, 0, 1e150, 2e150, 3e150],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -3.938586722919939e146,
+      "angular": 0.4886921905584123,
+      "linearBits": "6ba4de80a08a5fde",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0003646422752776584,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5373f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0007292845505553168,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5473f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.0001367408532291219,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec213f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.0002734817064582438,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec313f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0005469634129164876,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec413f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5073f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5173f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee507bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee517bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "reversed",
+      "bounds": [1, 0, 0, 0, 1, 1],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee527bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0003646422752776584,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5373f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0007292845505553168,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5473f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.0001367408532291219,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec213f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.0002734817064582438,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec313f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0005469634129164876,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec413f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5073f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5173f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee507bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee517bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-low",
+      "bounds": [-1.7976931348623157e308, 0, 0, 1, 1, 1],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee527bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0,
+      "factor": 0.5,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0,
+      "factor": 1,
+      "linear": 0.0003646422752776584,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5373f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0,
+      "factor": 2,
+      "linear": 0.0007292845505553168,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5473f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.25,
+      "factor": 0.5,
+      "linear": 0.0001367408532291219,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec213f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.25,
+      "factor": 1,
+      "linear": 0.0002734817064582438,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec313f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.25,
+      "factor": 2,
+      "linear": 0.0005469634129164876,
+      "angular": 0.4886921905584123,
+      "linearBits": "e81f3cfc42ec413f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.75,
+      "factor": 0.5,
+      "linear": 4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5073f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.75,
+      "factor": 1,
+      "linear": 9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5173f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 0.75,
+      "factor": 2,
+      "linear": 0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee5273f",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1,
+      "factor": 0.5,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1,
+      "factor": 1,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1,
+      "factor": 2,
+      "linear": 0.0,
+      "angular": 0.4886921905584123,
+      "linearBits": "0000000000000000",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1.25,
+      "factor": 0.5,
+      "linear": -4.55802844097073e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee507bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1.25,
+      "factor": 1,
+      "linear": -9.11605688194146e-5,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee517bf",
+      "angularBits": "2493109cbb46df3f"
+    },
+    {
+      "name": "sentinel-high",
+      "bounds": [0, 0, 0, 1.7976931348623157e308, 1, 1],
+      "quality": 1.25,
+      "factor": 2,
+      "linear": -0.0001823211376388292,
+      "angular": 0.4886921905584123,
+      "linearBits": "e07fa5a5aee527bf",
+      "angularBits": "2493109cbb46df3f"
+    }
+  ],
+  "gates": [
+    {
+      "geometry": 0,
+      "typeId": 0,
+      "builderPresent": 1,
+      "calls": 0
+    },
+    {
+      "geometry": 0,
+      "typeId": 7,
+      "builderPresent": 1,
+      "calls": 1
+    },
+    {
+      "geometry": 1,
+      "typeId": 0,
+      "builderPresent": 1,
+      "calls": 1
+    },
+    {
+      "geometry": 1,
+      "typeId": 7,
+      "builderPresent": 1,
+      "calls": 1
+    },
+    {
+      "geometry": 1,
+      "typeId": 7,
+      "builderPresent": 0,
+      "calls": 0
+    }
+  ],
+  "scope": "Original bounds-quality arithmetic, fallback and builder dispatch; controlled bounds provider and capture builder. Original sqrt import rebound to actual UCRT. No tessellation implementation, resulting CAD cache or GUI.",
+  "originalGlobalFactor": 1000.0
+}

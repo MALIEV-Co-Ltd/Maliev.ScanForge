@@ -942,3 +942,40 @@ classes implementing each interface, or validate complete alignment output.
 All task-owned query image/code allocations were released and query/REA
 processes exited. No application code changed; application build/tests are not
 applicable to this evidence slice.
+
+## Original CAD target preparation tolerances
+
+Original lazy target-preparation routine `0x140499b90` now has a bounded native
+replay. The original arithmetic and dispatch execute unchanged; the bounds
+provider and global builder are controlled adapters, and the original square
+root import is rebound to actual UCRT. This is parameter/dispatch verification,
+not execution of the tessellator or proof of resulting cache geometry.
+
+For valid bounds, the scale is their diagonal divided by 1.9. Invalid/reversed
+bounds and the extreme-double sentinel cases use dimensions `(1, 1, 1)` before
+computing this scale. If the computed scale is at most `1e-8`, it becomes 1.0.
+The linear tolerance passed to the builder is evaluated in this order:
+`(1 - quality) * 0.0004 * globalFactor * scale`. The angular tolerance is
+`0.4886921905584123` radians (28 degrees), with double bits
+`2493109cbb46df3f` in little-endian order. This routine does not clamp quality:
+quality 1 passes zero linear tolerance; quality greater than 1 passes a negative
+value. Validation or clamping inside the builder remains a separate question.
+
+Dispatch requires either a nonzero source handle at object offset `0x618` or a
+nonzero type identifier at `0x630`, and a present global builder. With both
+source fields zero, or with no builder, no build call occurs.
+
+`docs/evidence/landmark-target-quality-native.json` retains 135 numerical cases
+across nine bounds fixtures, five quality values and three global factors,
+plus five dispatch-gate cases. The independent external verifier checks the
+original image digest, all linear/angular output bits and call counts: zero
+differences. Bounds include oblong, zero, tiny, threshold, large, reversed and
+sentinel cases. Image and code allocations were released, and the probe exited.
+
+This native target-cache preparation is distinct from the application's current
+CAD display tessellation. The latter intentionally uses its own display limits;
+these captures do not justify replacing those limits or reducing imported STEP
+display quality. Connecting the native alignment target cache still requires
+verification of the builder's output and cache ownership/lifetime. No GUI/MCP
+application behavior changed in this evidence slice; build and application tests
+are not applicable.
