@@ -1320,3 +1320,45 @@ and the original mapped-image digest. The external bounded-memory verifier
 reads the map directly and checks all six bindings. These are static findings,
 not native execution or full GUI/MCP workflow parity. No application behavior
 changed, so application build and tests are not applicable to this slice.
+
+## Native execution of point-pair dialog state handlers
+
+The original Cancel (`0x14054c310`), accept (`0x14054cb70`), Reset
+(`0x14054cee0`), remove-last (`0x14054ce30`) and clear-all (`0x14054ce90`)
+handlers now execute in a bounded native replay. The original instruction bytes
+perform branch decisions, pointer replacement, virtual-base ownership updates,
+preview/candidate resets, and destructor dispatch. Host adapters provide
+allocation, geometry cloning, point-record copying, destruction, rendering and
+UI callbacks. Reset completes through its original tail jump to the shared
+UI-refresh adapter. No other parts of the handler are skipped.
+
+`docs/evidence/landmark-dialog-state-native.json` records 152 cases:
+
+- 16 Cancel and 16 accept cases cover backup presence, displaced geometry
+  presence, allocation success/failure, and both preview-flag states.
+- 20 remove-last and 20 clear-all cases cover zero through nine records and
+  both preview states.
+- 80 Reset cases cover those four Boolean conditions and original point-record
+  counts of zero, one, three, six and nine.
+
+Cancel calls the clone adapter with the backup's geometry and mode 1, detaches
+the displaced geometry, attaches the returned clone, dispatches destruction,
+marks rendering dirty, and closes. Without a backup it only closes. It retains
+the backup pointer for later disposal. Accept only closes and preserves geometry.
+Reset restores the backup geometry and original point-record range, destroys
+the backup exactly once, clears its pointer and candidate range, clears preview,
+redraws and refreshes. Without a backup it still clears candidates/preview and
+redraws, while retaining the existing point records. Removal/clear are complete
+no-ops after preview; before preview they refresh even when already empty.
+
+All 152 cases match the expected transitions with zero differences. An external
+verifier separately checks operation counts, clone-source identity, callback
+arguments, point counts and cleared/retained state. The native image allocation
+was released and the replay process exited. Allocation-failure cases characterize
+the original branch, not a recommended application failure policy.
+
+These captures do not establish real geometry-clone fidelity, the preview
+matrix handler, window-close, actual dialog disposal or model-history behavior.
+The geometry and record-copy operations are explicitly adapters, not native
+kernel measurements. Full GUI/MCP point-pair workflow integration remains gated.
+No production code changed; application build/tests are not applicable here.

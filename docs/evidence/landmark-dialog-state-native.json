@@ -1,0 +1,3858 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "cases": [
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "cancel",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "backupRetained": true
+    },
+    {
+      "operation": "accept",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "events": [
+        [
+          "close",
+          true
+        ]
+      ],
+      "geometryPreserved": true
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 0,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 1,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 2,
+      "after": 1,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 3,
+      "after": 2,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 4,
+      "after": 3,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 5,
+      "after": 4,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 6,
+      "after": 5,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 7,
+      "after": 6,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 8,
+      "after": 7,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 0,
+      "before": 9,
+      "after": 8,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 0,
+      "after": 0,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 1,
+      "after": 1,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 2,
+      "after": 2,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 3,
+      "after": 3,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 4,
+      "after": 4,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 5,
+      "after": 5,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 6,
+      "after": 6,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 7,
+      "after": 7,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 8,
+      "after": 8,
+      "events": []
+    },
+    {
+      "operation": "remove-last",
+      "preview": 1,
+      "before": 9,
+      "after": 9,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 0,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 1,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 2,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 3,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 4,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 5,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 6,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 7,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 8,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 0,
+      "before": 9,
+      "after": 0,
+      "events": [
+        [
+          "refresh",
+          true
+        ],
+        [
+          "invalidate",
+          77,
+          null,
+          1
+        ]
+      ]
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 0,
+      "after": 0,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 1,
+      "after": 1,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 2,
+      "after": 2,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 3,
+      "after": 3,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 4,
+      "after": 4,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 5,
+      "after": 5,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 6,
+      "after": 6,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 7,
+      "after": 7,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 8,
+      "after": 8,
+      "events": []
+    },
+    {
+      "operation": "clear-all",
+      "preview": 1,
+      "before": 9,
+      "after": 9,
+      "events": []
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": false,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": false,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": false,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": false,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 0,
+      "restoredRecordCount": 0,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          0
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 1,
+      "restoredRecordCount": 1,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          1
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 3,
+      "restoredRecordCount": 3,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          3
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 6,
+      "restoredRecordCount": 6,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          6
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    },
+    {
+      "operation": "reset",
+      "backup": true,
+      "oldGeometry": true,
+      "allocationSuccess": true,
+      "preview": true,
+      "originalRecordCount": 9,
+      "restoredRecordCount": 9,
+      "events": [
+        [
+          "allocate",
+          368
+        ],
+        [
+          "clone",
+          true,
+          1
+        ],
+        [
+          "destroy",
+          true,
+          1
+        ],
+        [
+          "restore-records",
+          true,
+          true,
+          9
+        ],
+        [
+          "render",
+          true
+        ],
+        [
+          "destroy-backup",
+          true,
+          1
+        ],
+        [
+          "redraw",
+          true,
+          0
+        ],
+        [
+          "refresh",
+          true
+        ]
+      ],
+      "backupCleared": true,
+      "candidatesCleared": true,
+      "previewCleared": true
+    }
+  ],
+  "scope": "Original Cancel, accept, Reset, remove-last and clear-all instructions with controlled allocation, clone, record-copy, destructor, render and UI callbacks. Clone callback reports source identity; does not perform real geometry cloning. Record-copy adapter copies the original bytes selected by the native caller. WM_CLOSE, preview matrices, actual dialog disposal and history are not executed. Reset ends through its original tail jump to the controlled shared UI refresh callback."
+}
