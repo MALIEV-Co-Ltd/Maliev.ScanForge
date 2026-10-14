@@ -338,10 +338,39 @@ CAD plane controller static Evidence:
 `ev_e7409d8a1d1effa74d0611033c99f45e7612412fa8a951d0c2ef8c5b90a9d5c4`.
 CAD axis controller is also recovered:
 `ev_3e32768a6702c1a70f17bff691eab7bc75839b359d303927b7e77383816b4489`.
-Its axis paths, other CAD reference types, browser-kernel extraction and full
-shared GUI/MCP workflow still require verification and integration.
+The cylindrical, conical and toroidal axis paths are now verified below. Other
+CAD reference types, browser-kernel extraction and full shared GUI/MCP workflow
+still require verification and integration.
 
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing CAD-backed reference conversion,
 preview/reset/acceptance and shared GUI/MCP
 operation remains required before enabling coordinate-system alignment.
+
+## Verified CAD primitive axis references
+
+`alignment-datum-cad-axis-native.json` records 72 original-controller calls on
+actual trimmed cylinder, cone and torus faces built using the supplied
+OpenCascade DLLs. Each type has twelve oblique placements and both face
+orientations. Original geometry constructors and adaptor primitive getters
+provide the primitive parameters; the original `0x14027eb60` controller
+produces the reference point, direction and length. Every output double is
+compared byte for byte with `nativeDatumCadAxisReference`, including input
+ownership and unchanged results for reversed faces.
+
+Cylinders normalize their primitive axis and place the reference point at
+`location + axis * firstV`. Cones first compute the apex using the raw axis,
+reference radius and tangent of the semi-angle, then apply the same trimmed
+V-bound construction. This follows the original controller's parameter
+convention; it must not be replaced by a mesh bounding-box midpoint. Both
+calculate length from the Euclidean distance between the two resulting axis
+points, preserving subtraction and square-root order. Tori use the primitive
+location, normalized axis and unit length, independent of their trimmed V bounds.
+
+The captured branch is explicitly OpenCascade, with imported pointers rebound
+to the original supplied DLLs and the current CRT. No geometry-returning stubs
+are substituted. Native surface and face objects are destructed, the mapped
+allocation is freed, and the probe process exits. These cases do not cover
+surfaces of revolution, the alternative CAD backend, native UI picking or the
+browser kernel transport. The functions remain internal numerical helpers;
+there is no newly advertised GUI or MCP operation in this slice.

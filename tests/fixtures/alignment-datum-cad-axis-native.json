@@ -1,0 +1,754 @@
+{
+  "provenance": {
+    "procedure": "0x14027eb60",
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "originalBackend": 1,
+    "selectedBackend": "OpenCascade",
+    "execution": "Original controller and supplied OpenCascade DLLs with actual trimmed native faces; imported pointers rebased, no geometry adapter replacement",
+    "dlls": [
+      {
+        "dll": "TKernel.dll",
+        "sha256": "e98958743dc563223fa24059a2ef4fc23506864b91d8d6b6df931ad0ffc1538a"
+      },
+      {
+        "dll": "TKMath.dll",
+        "sha256": "a227f46b8c15296167aa40231e5b53e300cd7fd7eda7a0baae56c593ebc46cfb"
+      },
+      {
+        "dll": "TKG3d.dll",
+        "sha256": "bb7648a9a47a863a1696914ea4c62572ddb7a0b3533297b13a2279a6fad3366f"
+      },
+      {
+        "dll": "TKBRep.dll",
+        "sha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5"
+      },
+      {
+        "dll": "TKTopAlgo.dll",
+        "sha256": "6ffca3e4b8793e7569e19cdb88816cb8c6f2028d642795dc37be30e92ae9c3c8"
+      }
+    ],
+    "nativeUiCapture": false
+  },
+  "cases": [
+    {
+      "name": "cad-axis-Cylindrical-0-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001040",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf00000000000008400000000000000000",
+      "nativePointBits": "ede92b172d14fd3f1316d4e8d2eb0ac068e4f65c38591840",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "0100000000001440"
+    },
+    {
+      "name": "cad-axis-Cylindrical-0-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001040",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf00000000000008400000000000000000",
+      "nativePointBits": "ede92b172d14fd3f1316d4e8d2eb0ac068e4f65c38591840",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "0100000000001440"
+    },
+    {
+      "name": "cad-axis-Cylindrical-1-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001440",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf0000000000000a400000000000000000",
+      "nativePointBits": "c3675ec476da0540fcca2cfab6dc08c0450248471b6c1640",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "0000000000001840"
+    },
+    {
+      "name": "cad-axis-Cylindrical-1-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001440",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf0000000000000a400000000000000000",
+      "nativePointBits": "c3675ec476da0540fcca2cfab6dc08c0450248471b6c1640",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "0000000000001840"
+    },
+    {
+      "name": "cad-axis-Cylindrical-2-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001840",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf0000000000000c400000000000000000",
+      "nativePointBits": "864b0b59fa360d407ab4f4a605c906c0671e4eefb8841440",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "0000000000001c40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-2-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001840",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf0000000000000c400000000000000000",
+      "nativePointBits": "864b0b59fa360d407ab4f4a605c906c0671e4eefb8841440",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "0000000000001c40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-3-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001c40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000000e400000000000000000",
+      "nativePointBits": "ef82a176d1501240e994fd0ee4b104c0dd0543eda2a11240",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "0100000000002040"
+    },
+    {
+      "name": "cad-axis-Cylindrical-3-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001c40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000000e400000000000000000",
+      "nativePointBits": "ef82a176d1501240e994fd0ee4b104c0dd0543eda2a11240",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "0100000000002040"
+    },
+    {
+      "name": "cad-axis-Cylindrical-4-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002040",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf00000000000010400000000000000000",
+      "nativePointBits": "8d6422e2a70d1640ee79277d759802c096a78e236dc11040",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "0000000000002240"
+    },
+    {
+      "name": "cad-axis-Cylindrical-4-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002040",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf00000000000010400000000000000000",
+      "nativePointBits": "8d6422e2a70d1640ee79277d759802c096a78e236dc11040",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "0000000000002240"
+    },
+    {
+      "name": "cad-axis-Cylindrical-5-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002240",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf00000000000011400000000000000000",
+      "nativePointBits": "969829d2f8d119403076d00fbf7d00c088d87658a2c50d40",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "0000000000002440"
+    },
+    {
+      "name": "cad-axis-Cylindrical-5-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002240",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf00000000000011400000000000000000",
+      "nativePointBits": "969829d2f8d119403076d00fbf7d00c088d87658a2c50d40",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "0000000000002440"
+    },
+    {
+      "name": "cad-axis-Cylindrical-6-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002440",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf00000000000012400000000000000000",
+      "nativePointBits": "2eacda84679d1d40a4a74af630c5fcbf73ae22cc82090a40",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "ffffffffffff2540"
+    },
+    {
+      "name": "cad-axis-Cylindrical-6-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002440",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf00000000000012400000000000000000",
+      "nativePointBits": "2eacda84679d1d40a4a74af630c5fcbf73ae22cc82090a40",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "ffffffffffff2540"
+    },
+    {
+      "name": "cad-axis-Cylindrical-7-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002640",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf00000000000013400000000000000000",
+      "nativePointBits": "ff935a8fb1b72040749c68c94f8ff8bf6f3c3d44dc4c0640",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "0100000000002840"
+    },
+    {
+      "name": "cad-axis-Cylindrical-7-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002640",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf00000000000013400000000000000000",
+      "nativePointBits": "ff935a8fb1b72040749c68c94f8ff8bf6f3c3d44dc4c0640",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "0100000000002840"
+    },
+    {
+      "name": "cad-axis-Cylindrical-8-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002840",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf00000000000014400000000000000000",
+      "nativePointBits": "07b3d4cca0a32240b55c573dca5af4bf1ecc5233838e0240",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "0100000000002a40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-8-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002840",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf00000000000014400000000000000000",
+      "nativePointBits": "07b3d4cca0a32240b55c573dca5af4bf1ecc5233838e0240",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "0100000000002a40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-9-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002a40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f00000000000015400000000000000000",
+      "nativePointBits": "cf4ea88b29922440d37773524128f0bf7054dfb15c9bfd3f",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "0200000000002c40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-9-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002a40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f00000000000015400000000000000000",
+      "nativePointBits": "cf4ea88b29922440d37773524128f0bf7054dfb15c9bfd3f",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "0200000000002c40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-10-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002c40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000016400000000000000000",
+      "nativePointBits": "aa74981df7822640763c28622ff0e7bf6cb44dc5c413f63f",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "0100000000002e40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-10-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002c40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000016400000000000000000",
+      "nativePointBits": "aa74981df7822640763c28622ff0e7bf6cb44dc5c413f63f",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "0100000000002e40"
+    },
+    {
+      "name": "cad-axis-Cylindrical-11-False",
+      "kind": "cylinder",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002e40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f00000000000017400000000000000000",
+      "nativePointBits": "eab9d18abb752840609ec781042adfbf087ac65d7a0bed3f",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "0100000000003040"
+    },
+    {
+      "name": "cad-axis-Cylindrical-11-True",
+      "kind": "cylinder",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002e40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f00000000000017400000000000000000",
+      "nativePointBits": "eab9d18abb752840609ec781042adfbf087ac65d7a0bed3f",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "0100000000003040"
+    },
+    {
+      "name": "cad-axis-Conical-0-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001040",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf0000000000000840333333333333c33f",
+      "nativePointBits": "2108e17ef5e7fcbf0942b85ffd3925c016a54c6ff91028c0",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "0100000000001440"
+    },
+    {
+      "name": "cad-axis-Conical-0-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001040",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf0000000000000840333333333333c33f",
+      "nativePointBits": "2108e17ef5e7fcbf0942b85ffd3925c016a54c6ff91028c0",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "0100000000001440"
+    },
+    {
+      "name": "cad-axis-Conical-1-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001440",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf0000000000000a40666666666666c63f",
+      "nativePointBits": "97e5bc45cf9a01c032f73e17455e23c0fe691dbaacab25c0",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "0100000000001840"
+    },
+    {
+      "name": "cad-axis-Conical-1-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001440",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf0000000000000a40666666666666c63f",
+      "nativePointBits": "97e5bc45cf9a01c032f73e17455e23c0fe691dbaacab25c0",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "0100000000001840"
+    },
+    {
+      "name": "cad-axis-Conical-2-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001840",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf0000000000000c409a9999999999c93f",
+      "nativePointBits": "1206675e17e002c085c199d705b821c0ca63009b0ecc23c0",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "0000000000001c40"
+    },
+    {
+      "name": "cad-axis-Conical-2-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001840",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf0000000000000c409a9999999999c93f",
+      "nativePointBits": "1206675e17e002c085c199d705b821c0ca63009b0ecc23c0",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "0000000000001c40"
+    },
+    {
+      "name": "cad-axis-Conical-3-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001c40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000000e40cdcccccccccccc3f",
+      "nativePointBits": "231f8f36ba8f02c007d34f71583620c0918f471bdd4722c0",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "0000000000002040"
+    },
+    {
+      "name": "cad-axis-Conical-3-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000001c40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000000e40cdcccccccccccc3f",
+      "nativePointBits": "231f8f36ba8f02c007d34f71583620c0918f471bdd4722c0",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "0000000000002040"
+    },
+    {
+      "name": "cad-axis-Conical-4-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002040",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf0000000000001040000000000000d03f",
+      "nativePointBits": "14eba8b814e200c005f9e292b1a01dc047b79bf7dd0821c0",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "0000000000002240"
+    },
+    {
+      "name": "cad-axis-Conical-4-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002040",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf0000000000001040000000000000d03f",
+      "nativePointBits": "14eba8b814e200c005f9e292b1a01dc047b79bf7dd0821c0",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "0000000000002240"
+    },
+    {
+      "name": "cad-axis-Conical-5-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002240",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf00000000000011409a9999999999d13f",
+      "nativePointBits": "50000ea9610efcbf314994f30d021bc07d5b7970910220c0",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "0000000000002440"
+    },
+    {
+      "name": "cad-axis-Conical-5-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002240",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf00000000000011409a9999999999d13f",
+      "nativePointBits": "50000ea9610efcbf314994f30d021bc07d5b7970910220c0",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "0000000000002440"
+    },
+    {
+      "name": "cad-axis-Conical-6-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002440",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf0000000000001240343333333333d33f",
+      "nativePointBits": "b8cd568b6554f4bfb7d96ab18c8a18c049208bbb5f5a1ec0",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "0000000000002640"
+    },
+    {
+      "name": "cad-axis-Conical-6-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002440",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf0000000000001240343333333333d33f",
+      "nativePointBits": "b8cd568b6554f4bfb7d96ab18c8a18c049208bbb5f5a1ec0",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "0000000000002640"
+    },
+    {
+      "name": "cad-axis-Conical-7-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002640",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf0000000000001340cdccccccccccd43f",
+      "nativePointBits": "8a04c22dcfc7e5bf40001966c43516c0a0803eff6a061dc0",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "0000000000002840"
+    },
+    {
+      "name": "cad-axis-Conical-7-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002640",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf0000000000001340cdccccccccccd43f",
+      "nativePointBits": "8a04c22dcfc7e5bf40001966c43516c0a0803eff6a061dc0",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "0000000000002840"
+    },
+    {
+      "name": "cad-axis-Conical-8-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002840",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf0000000000001440666666666666d63f",
+      "nativePointBits": "004859ba46c03bbf8f90d7662c0014c065e91a016f001cc0",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "0100000000002a40"
+    },
+    {
+      "name": "cad-axis-Conical-8-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002840",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf0000000000001440666666666666d63f",
+      "nativePointBits": "004859ba46c03bbf8f90d7662c0014c065e91a016f001cc0",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "0100000000002a40"
+    },
+    {
+      "name": "cad-axis-Conical-9-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002a40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f0000000000001540000000000000d83f",
+      "nativePointBits": "c6fee90abf2ce83f0f00817fb1e611c02480c2bebb401bc0",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "0200000000002c40"
+    },
+    {
+      "name": "cad-axis-Conical-9-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002a40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f0000000000001540000000000000d83f",
+      "nativePointBits": "c6fee90abf2ce83f0f00817fb1e611c02480c2bebb401bc0",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "0200000000002c40"
+    },
+    {
+      "name": "cad-axis-Conical-10-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002c40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000016409a9999999999d93f",
+      "nativePointBits": "ee9f3da28531f93fadbaf56414cd0fc05929337e59c01ac0",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "0100000000002e40"
+    },
+    {
+      "name": "cad-axis-Conical-10-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002c40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000016409a9999999999d93f",
+      "nativePointBits": "ee9f3da28531f93fadbaf56414cd0fc05929337e59c01ac0",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "0100000000002e40"
+    },
+    {
+      "name": "cad-axis-Conical-11-False",
+      "kind": "cone",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002e40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f0000000000001740343333333333db3f",
+      "nativePointBits": "ada7f12c809203402e1b18b74efa0bc0f921de64e2781ac0",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "0100000000003040"
+    },
+    {
+      "name": "cad-axis-Conical-11-True",
+      "kind": "cone",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f0000000000000040000000000000f0bf0000000000002e40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f0000000000001740343333333333db3f",
+      "nativePointBits": "ada7f12c809203402e1b18b74efa0bc0f921de64e2781ac0",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "0100000000003040"
+    },
+    {
+      "name": "cad-axis-Toroidal-0-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf00000000000024400000000000000040",
+      "nativePointBits": "000000000000004000000000000008c00000000000001c40",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-0-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000004000000000000008c00000000000001c4099b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3fef8acb3c4f76efbf582944c9c15bb13fae33953bb2b2c53f00000000000000006a6acebf14b6ed3f88bb3e66ddc4d7bf00000000000024400000000000000040",
+      "nativePointBits": "000000000000004000000000000008c00000000000001c40",
+      "nativeAxisBits": "99b0a046975ec73f99b0a046975ed73fbfdc48183d36ed3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-1-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf00000000000026400000000000000040",
+      "nativePointBits": "000000000000084000000000000006c00000000000001a40",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-1-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000084000000000000006c00000000000001a40e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f3a77135594d3eebf0d1c1058f682b93f102314eeb3e3cf3f00000000000000006b6acebf14b6ed3f89bb3e66ddc4d7bf00000000000026400000000000000040",
+      "nativePointBits": "000000000000084000000000000006c00000000000001a40",
+      "nativeAxisBits": "e9c10cdd492cd13fe15766d1b7e5d63fd9edbfc5259fec3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-2-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf00000000000028400000000000000040",
+      "nativePointBits": "000000000000104000000000000004c00000000000001840",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-2-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000104000000000000004c00000000000001840d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f27eb9dbef48cc0bf373a7e997bffed3ff16545ee31b0d4bf6b6acebf14b6ed3f000000000000000089bb3e66ddc4d7bf00000000000028400000000000000040",
+      "nativePointBits": "000000000000104000000000000004c00000000000001840",
+      "nativeAxisBits": "d2a3a5372d48d63fd2a3a5372d48d63fc60c8f8538daeb3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-3-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000002a400000000000000040",
+      "nativePointBits": "000000000000144000000000000002c00000000000001640",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-3-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000144000000000000002c0000000000000164014d1e795e8f2da3f44a7ec77208fd53f14d1e795e8f2ea3f4febfa047548c3bfaa0fc8d73621ee3f4febfa047548d3bfdaedbfc5259fec3f0000000000000000daedbfc5259fdcbf0000000000002a400000000000000040",
+      "nativePointBits": "000000000000144000000000000002c00000000000001640",
+      "nativeAxisBits": "16d1e795e8f2da3f45a7ec77208fd53f16d1e795e8f2ea3f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-4-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf0000000000002c400000000000000040",
+      "nativePointBits": "000000000000184000000000000000c00000000000001440",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-4-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "000000000000184000000000000000c000000000000014402fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f7b2884e7c75dc5bf02e4a532db44ee3f1077439626ced1bf55930f019570eb3f0000000000000000cdbe6fcdbf76e0bf0000000000002c400000000000000040",
+      "nativePointBits": "000000000000184000000000000000c00000000000001440",
+      "nativeAxisBits": "2fb7d9dd8125df3f74cf3be9abc3d43f51c38ae396f4e93f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-5-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf0000000000002e400000000000000040",
+      "nativePointBits": "0000000000001c40000000000000fcbf0000000000001240",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-5-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000001c40000000000000fcbf00000000000012404f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f67388e7d93dbc6bf527dbfa4af68ee3fb803417eb253d0bf5cfe4edc2537ea3f000000000000000040e5d0b3cd59e2bf0000000000002e400000000000000040",
+      "nativePointBits": "0000000000001c40000000000000fcbf0000000000001240",
+      "nativeAxisBits": "4f3bb36e3970e13f80b1837ef8edd33fdf9d249e76e9e83f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-6-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf00000000000030400000000000000040",
+      "nativePointBits": "0000000000002040000000000000f8bf0000000000001040",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-6-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002040000000000000f8bf0000000000001040919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f7c4ad91ffad6c7bf6e67ce78708bee3f1a9dcfa7b8cccdbfd4c6e095e0fce83f00000000000000007705e77780fde3bf00000000000030400000000000000040",
+      "nativePointBits": "0000000000002040000000000000f8bf0000000000001040",
+      "nativeAxisBits": "919e2ad9c314e33f919e2ad9c314d33f354675cff4d9e73f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-7-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf00000000000031400000000000000040",
+      "nativePointBits": "0000000000002240000000000000f4bf0000000000000c40",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-7-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002240000000000000f4bf0000000000000c400ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63fdbdd7f681f67c8bfbe7f924149acee3fb984aa573f1dcbbf02132ece10c9e73f0000000000000000e9dd8fb92868e5bf00000000000031400000000000000040",
+      "nativePointBits": "0000000000002240000000000000f4bf0000000000000c40",
+      "nativeAxisBits": "0ac0560ae784e43fcf71a2253f3dd23f430e0bef8ecce63f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-8-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf00000000000032400000000000000040",
+      "nativePointBits": "0000000000002440000000000000f0bf0000000000000840",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-8-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002440000000000000f0bf000000000000084089cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f2644c05c34a2c8bf3055f073c1caee3f2644c05c34a2c8bfcd3b7f669ea0e63f0000000000000000cd3b7f669ea0e6bf00000000000032400000000000000040",
+      "nativePointBits": "0000000000002440000000000000f0bf0000000000000840",
+      "nativeAxisBits": "89cfb432f3c5e53fd4725df5286bd13f89cfb432f3c5e53f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-9-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f00000000000033400000000000000040",
+      "nativePointBits": "0000000000002640000000000000e8bf0000000000000440",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-9-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002640000000000000e8bf000000000000044009137b4567dde63f4cdfcd4905a1d03f1f57419c46c9e43f587ff85ee19bc83f2d37122da5e6eebf67ff3ef9295fc63f7ef063188986e5bf00000000000000008b8807ce96ade73f00000000000033400000000000000040",
+      "nativePointBits": "0000000000002640000000000000e8bf0000000000000440",
+      "nativeAxisBits": "0a137b4567dde63f4ddfcd4905a1d03f2057419c46c9e43f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-10-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000034400000000000000040",
+      "nativePointBits": "0000000000002840000000000000e0bf0000000000000040",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-10-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002840000000000000e0bf000000000000004062b578268ed0e73fd8f1a088bdc0cf3f2797647576d8e33f9822fddbab64c83fa106e7bcefffeebf7f47a88ce453c43f98fc7efe637ce4bf0000000000000000b7c8feca4495e83f00000000000034400000000000000040",
+      "nativePointBits": "0000000000002840000000000000e0bf0000000000000040",
+      "nativeAxisBits": "63b578268ed0e73fdaf1a088bdc0cf3f2897647576d8e33f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-11-False",
+      "kind": "torus",
+      "reversed": false,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f00000000000035400000000000000040",
+      "nativePointBits": "0000000000002a40000000000000d0bf000000000000f83f",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "000000000000f03f"
+    },
+    {
+      "name": "cad-axis-Toroidal-11-True",
+      "kind": "torus",
+      "reversed": true,
+      "boundsBits": "9a9999999999b93f00000000000000404b6077872e551640e5f91021c8ee1d40",
+      "primitiveBits": "0000000000002a40000000000000d0bf000000000000f83f5b61e45247a4e83fbf3c8f030954ce3ff78539a285f4e23f060c45e7f509c83f9f9ab553ba16efbf2bce48d9d07dc23f70cc3b24c082e3bf00000000000000009256e7fb2c5de93f00000000000035400000000000000040",
+      "nativePointBits": "0000000000002a40000000000000d0bf000000000000f83f",
+      "nativeAxisBits": "5d61e45247a4e83fc13c8f030954ce3ff88539a285f4e23f",
+      "nativeLengthBits": "000000000000f03f"
+    }
+  ]
+}

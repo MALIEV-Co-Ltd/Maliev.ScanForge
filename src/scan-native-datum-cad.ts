@@ -38,3 +38,50 @@ export function nativeDatumCadPlaneReference(
     normal,
   };
 }
+
+/** Axis reference from native CAD primitive parameters and trimmed V bounds. */
+export function nativeDatumCadAxisReference(
+  kind: "cylinder" | "cone" | "torus",
+  location: readonly number[],
+  rawAxis: readonly number[],
+  firstV: number,
+  lastV: number,
+  radius = 0,
+  semiAngle = 0,
+): { point: number[]; direction: number[]; length: number } {
+  if (
+    ![location, rawAxis].every(
+      (vector) => vector.length === 3 && vector.every(Number.isFinite),
+    ) ||
+    ![firstV, lastV, radius, semiAngle].every(Number.isFinite)
+  )
+    throw new Error("CAD axis reference requires finite primitive parameters.");
+  const direction = [...rawAxis];
+  const norm = Math.sqrt(
+    direction[0] * direction[0] +
+      direction[1] * direction[1] +
+      direction[2] * direction[2],
+  );
+  if (norm >= Number.EPSILON) {
+    const reciprocal = 1 / norm;
+    for (let i = 0; i < 3; i++) direction[i] *= reciprocal;
+  }
+  if (kind === "torus") return { point: [...location], direction, length: 1 };
+  const origin =
+    kind === "cone"
+      ? location.map(
+          (value, i) => rawAxis[i] * -(radius / Math.tan(semiAngle)) + value,
+        )
+      : [...location];
+  const point = origin.map((value, i) => direction[i] * firstV + value);
+  const delta = origin.map(
+    (value, i) => direction[i] * lastV + value - point[i],
+  );
+  return {
+    point,
+    direction,
+    length: Math.sqrt(
+      delta[0] * delta[0] + delta[1] * delta[1] + delta[2] * delta[2],
+    ),
+  };
+}

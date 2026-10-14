@@ -240,8 +240,11 @@ The authored fit-anchor adapter covers planes, cylinders, spheres and cones;
 cones use the native apex/outward-axis convention verified by original endpoint
 and surface-distance routines. CAD-plane reference math is verified on actual
 trimmed faces using the original OpenCascade DLLs and controller, including
-reversed-face behavior. Other CAD references, primitive picking and the complete shared
-workflow are not yet available.
+reversed-face behavior. Cylinder, cone and torus axis references are also verified
+on 72 actual trimmed faces against the original CAD controller, with exact
+point/direction/length output bytes. These internal helpers are not public MCP
+actions. Other CAD references, primitive picking and the complete shared workflow
+are not yet available.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;
