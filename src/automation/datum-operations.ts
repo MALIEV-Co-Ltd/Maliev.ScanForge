@@ -6,6 +6,10 @@ import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
 import { datumFeatureMetadata } from "../scan-native-datum-primitive";
 import {
+  datumEntityDependencies,
+  nativeDatumDependentCandidates,
+} from "../datum-dependencies";
+import {
   adoptDatumPreview,
   releaseDatumPreview,
 } from "./datum-preview-resources";
@@ -248,6 +252,51 @@ export function createDatumOperations(
     return { next, summary, matrix: frame.matrix, kernelIds };
   };
   return {
+    alignment_targets: (args, context) => {
+      context.check();
+      const entities = host.snapshot().entities;
+      const byId = new Map(entities.map((entity) => [entity.id, entity]));
+      const seeds = args.entityIds as string[];
+      for (const id of seeds)
+        if (!byId.has(id))
+          throw new Error(`Alignment seed ${id} is not in this project.`);
+      const candidates = datumEntityDependencies(entities);
+      const dependentIds = [
+        ...new Set(nativeDatumDependentCandidates(candidates, seeds)),
+      ].filter((id) => !seeds.includes(id));
+      const entityIds = [...seeds, ...dependentIds];
+      const blocked = entityIds.flatMap((id) => {
+        const entity = byId.get(id)!;
+        if (entity.locked)
+          return [{ entityId: id, reason: "Object is locked." }];
+        if (!entity.positions.length || entity.positions.length % 3)
+          return [
+            { entityId: id, reason: "Target has no valid XYZ geometry." },
+          ];
+        if (
+          !entity.kernelId &&
+          (entity.parametric || !["mesh", "pointcloud"].includes(entity.kind))
+        )
+          return [
+            {
+              entityId: id,
+              reason: "Target requires exact CAD geometry before alignment.",
+            },
+          ];
+        return [];
+      });
+      context.check();
+      const included = new Set(entityIds);
+      return {
+        entityIds,
+        dependentIds,
+        blocked,
+        exceedsTargetLimit: entityIds.length > 32,
+        references: candidates
+          .filter((item) => included.has(item.id))
+          .map((item) => ({ entityId: item.id, references: item.references })),
+      };
+    },
     alignment_preview: async (args, context) => {
       if (!host.showDatumPreview)
         throw new Error(

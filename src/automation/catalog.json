@@ -1,5 +1,29 @@
 [
   {
+    "name": "alignment_targets",
+    "description": "Discover alignment targets from explicit seeds and transitive current authoring/source-scan references. Retains seeds first and dependent feature scene order, suppresses duplicates, excludes raw mesh/point-cloud dependents, and reports locked or unsupported targets and the 32-object limit. Read-only: review entityIds before passing them to alignment_preview/apply. Uses the same operation as Include dependent features in the alignment panel. Native complete controller and all authoring relationship types remain unfinished.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        }
+      },
+      "required": ["entityIds"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "backup_list",
     "description": "List browser-local project backups, their stable identities, save times, sizes and optional thumbnail artifacts. Backups update every 30 seconds only when changed.",
     "readOnly": true,

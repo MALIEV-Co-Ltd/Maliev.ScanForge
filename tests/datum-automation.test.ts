@@ -84,6 +84,92 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("discovers shared dependent CAD targets in scene order without changing history or revision", async () => {
+  const { api, state } = setup();
+  const seed = state.entities[0];
+  state.entities.push(
+    { ...seed, id: "raw", surfaceScanId: seed.id },
+    {
+      ...seed,
+      id: "cad",
+      kind: "cad",
+      kernelId: "cad",
+      surfaceScanId: seed.id,
+    },
+    {
+      ...seed,
+      id: "locked",
+      kind: "cad",
+      kernelId: "locked",
+      locked: true,
+      surfaceScanId: "cad",
+    },
+  );
+  const revision = api.currentRevision();
+  try {
+    const result = await api.invoke("alignment_targets", {
+      entityIds: [seed.id],
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw Error(result.error.message);
+    expect(result.result).toMatchObject({
+      entityIds: ["scan", "cad", "locked"],
+      dependentIds: ["cad", "locked"],
+      blocked: [{ entityId: "locked", reason: "Object is locked." }],
+      exceedsTargetLimit: false,
+    });
+    expect(api.currentRevision()).toBe(revision);
+    expect(state.history).toHaveLength(0);
+    expect(
+      (await api.invoke("alignment_targets", { entityIds: ["missing"] })).ok,
+    ).toBe(false);
+    expect(
+      (await api.invoke("alignment_targets", { entityIds: ["scan", "scan"] }))
+        .ok,
+    ).toBe(false);
+  } finally {
+    api.dispose();
+  }
+});
+it("reports empty, unsupported and over-limit dependent targets without partially selecting them", async () => {
+  const { api, state } = setup();
+  const seed = state.entities[0];
+  for (let i = 0; i < 32; i++)
+    state.entities.push({
+      ...seed,
+      id: `cad-${i}`,
+      kind: "cad",
+      kernelId: `cad-${i}`,
+      surfaceScanId: seed.id,
+    });
+  state.entities[1] = { ...state.entities[1], positions: [] };
+  state.entities[2] = {
+    ...state.entities[2],
+    kernelId: undefined,
+    kind: "plane",
+  };
+  try {
+    const response = await api.invoke("alignment_targets", {
+      entityIds: [seed.id],
+    });
+    if (!response.ok) throw Error(response.error.message);
+    expect(response.result).toMatchObject({
+      exceedsTargetLimit: true,
+      blocked: [
+        { entityId: "cad-0", reason: "Target has no valid XYZ geometry." },
+        {
+          entityId: "cad-1",
+          reason: "Target requires exact CAD geometry before alignment.",
+        },
+      ],
+    });
+    expect(state.entities).toHaveLength(33);
+    expect(state.selectedId).toBe(seed.id);
+    expect(state.history).toHaveLength(0);
+  } finally {
+    api.dispose();
+  }
+});
 it("preserves fitted parameters in shared scan Preview/Apply and owns transformed frames", async () => {
   const { api, host, state } = setup();
   const fit = {

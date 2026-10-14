@@ -38,6 +38,45 @@ export function DatumAlignmentTools({
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [parallel, setParallel] = useState(true);
   const [targetIds, setTargetIds] = useState<string[]>([entity.id]);
+  async function includeDependents() {
+    setBusy(true);
+    setError("");
+    try {
+      const response = await api.invoke("alignment_targets", {
+        entityIds: targetIds,
+      });
+      if (!response.ok) throw new Error(response.error.message);
+      const result = response.result as {
+        entityIds: string[];
+        blocked: { entityId: string; reason: string }[];
+        exceedsTargetLimit: boolean;
+      };
+      if (result.exceedsTargetLimit)
+        throw new Error(
+          "Dependent targets exceed the 32-object alignment limit.",
+        );
+      if (result.blocked.length)
+        throw new Error(
+          result.blocked
+            .map(
+              (item) =>
+                `${entities.find((entity) => entity.id === item.entityId)?.name ?? item.entityId}: ${item.reason}`,
+            )
+            .join(" "),
+        );
+      if (heldPreview.current) {
+        const discarded = await discard();
+        if (!discarded.ok) throw new Error(discarded.error.message);
+      }
+      heldPreview.current = false;
+      setPreview(false);
+      setTargetIds(result.entityIds);
+    } catch (error) {
+      setError(String(error instanceof Error ? error.message : error));
+    } finally {
+      setBusy(false);
+    }
+  }
   const targets = entities.filter(
     (item) =>
       !item.locked &&
@@ -190,6 +229,13 @@ export function DatumAlignmentTools({
         </p>
       )}
       <fieldset disabled={busy}>
+        <button
+          type="button"
+          disabled={!validTargets}
+          onClick={() => void includeDependents()}
+        >
+          Include dependent features
+        </button>
         {targets.length > 1 && (
           <fieldset>
             <legend>Objects to move · {targetIds.length} selected</legend>

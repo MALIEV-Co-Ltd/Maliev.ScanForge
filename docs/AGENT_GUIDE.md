@@ -434,4 +434,23 @@ The Object properties alignment panel shows the same reference by source name,
 or by identity when that source is absent. The stale fitting patch is still
 cleared after placement; retaining its source reference does not re-fit the
 surface or move that source automatically. History and project files preserve
-the reference. Automatic dependent-target expansion remains unfinished.
+the reference.
+
+Use read-only `alignment_targets` with `entityIds` to discover dependent features
+before placement. It returns seeds first, then transitive dependent targets in
+scene order, plus `dependentIds`, resolved reference identities, `blocked`
+targets and `exceedsTargetLimit`. Raw mesh/point-cloud dependents are excluded;
+source scans remain valid explicit seeds. Existing source-scan links and
+parametric feature/output references supply the application dependency graph.
+Locked, empty and unsupported targets are reported rather than silently omitted.
+Review the returned IDs, resolve blockers and pass the list to
+`alignment_preview` / `alignment_apply`. The GUI's **Include dependent features**
+action uses this same discovery operation and updates its visible target list
+before Apply. Discovery does not change geometry, selection, revision or history.
+
+The collector matches all 6,144 captured native cases. Application graph mapping
+and cycle bounds are separate implementation choices; complete native scene
+acquisition, every authoring relationship and the general Align controller are
+still unfinished. CAD placement currently clears stale parametric recipes, so
+recipe-only relationships are unavailable after placement; retained source-scan
+links remain discoverable. This operation does not certify all-feature alignment.

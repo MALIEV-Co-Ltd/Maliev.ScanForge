@@ -710,3 +710,23 @@ name or unresolved identity. This keeps a supported application dependency
 available for later aggregation and preserves it through history/project
 round trips. It does not establish complete native property-tree equivalence,
 preserve every authoring recipe, or implement automatic target expansion.
+
+## Shared dependent-target discovery
+
+`nativeDatumDependentCandidates` reproduces all 6,144 complete collector outputs
+from the retained native capture, including candidate order, duplicate visits,
+exclusions, indirect references, self/missing links and every seed subset.
+Its iterative reverse-reference traversal also bounds cycles; native cyclic
+behavior was not captured. `datumEntityDependencies` maps existing source-scan
+identities and exact parametric feature/output references into this graph using
+an output index. This application mapping is distinct from original scene
+acquisition and interface queries.
+
+Shared read-only `alignment_targets` retains explicit seed order, appends related
+features in scene order and suppresses duplicates for subsequent placement.
+It reports locked, empty and unsupported targets and the existing 32-object
+placement limit. GUI **Include dependent features** calls that operation and
+shows its resolved target list before Preview/Apply; blockers leave that list
+unchanged. No CAD geometry or history is allocated during discovery. Remaining
+requirements include complete authoring-reference retention, every native
+relationship type, and the original general Align controller.

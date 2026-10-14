@@ -498,6 +498,33 @@ try {
       })
       .click();
   await sourceReference.waitFor();
+  const dependentTargets = await call("alignment_targets", {
+    entityIds: [sphere.id],
+  });
+  assert.deepEqual(dependentTargets.result.entityIds, [
+    sphere.id,
+    "linked-cad",
+  ]);
+  assert.deepEqual(dependentTargets.result.blocked, []);
+  await mutate("object_select", { entityId: sphere.id });
+  const includeButton = page.getByRole("button", {
+    name: "Include dependent features",
+    exact: true,
+  });
+  if (!(await includeButton.isVisible()))
+    await page
+      .getByRole("button", {
+        name: "Align object to origin / references",
+        exact: true,
+      })
+      .click();
+  await includeButton.click();
+  assert.equal(
+    await page
+      .getByRole("checkbox", { name: "Move Scan-derived CAD", exact: true })
+      .isChecked(),
+    true,
+  );
   assert.deepEqual(
     (await call("project_get")).result.objects.map((object) => object.fit),
     placed.result.objects.map((object) => object.fit),
@@ -509,6 +536,7 @@ try {
     "GUI reference inspection sees moved fitted parameters",
     "MCP Undo/Redo restores fitted parameters",
     "Exact CAD alignment retains source-scan dependency through GUI Apply and MCP Preview",
+    "GUI dependent-target inclusion equals shared MCP discovery",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({
