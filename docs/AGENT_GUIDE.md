@@ -245,6 +245,11 @@ on 72 actual trimmed faces against the original CAD controller, with exact
 point/direction/length output bytes. These internal helpers are not public MCP
 actions. Other CAD references, primitive picking and the complete shared workflow
 are not yet available.
+The internal CAD client can now obtain exact per-face reference inputs and
+matching display-triangle ranges. The adapter replays 104 native reference
+captures, and real kernel tests cover its read-only face traversal and expired
+handle rejection. Public GUI/MCP reference picking and alignment apply still
+require integration; agents cannot yet invoke this transport as a public tool.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;

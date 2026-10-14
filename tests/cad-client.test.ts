@@ -77,6 +77,11 @@ describe("CAD worker ownership and cancellation", () => {
     ];
     const cases: [() => Promise<unknown>, string, unknown][] = [
       [
+        () => client.alignmentReferences("exact-cad"),
+        "alignmentReferences",
+        { kernelId: "exact-cad" },
+      ],
+      [
         () => client.extrude(points, 10, coordinateSketchFrame("OYZ", 7)),
         "extrude",
         { points, height: 10, frame: coordinateSketchFrame("OYZ", 7) },

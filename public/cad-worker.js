@@ -554,6 +554,108 @@ function getShape(id) {
   return shape;
 }
 
+/** Exact face parameters, with triangle slots matching the mesh traversal order. */
+function alignmentReferences(oc, input) {
+  const shape = getShape(input.kernelId),
+    handles = [];
+  const keep = (value) => (handles.push(value), value);
+  const coordinates = (value) => [value.X(), value.Y(), value.Z()];
+  const result = [];
+  let firstTriangle = 0;
+  try {
+    const explorer = keep(
+      new oc.TopExp_Explorer_2(
+        shape,
+        oc.TopAbs_ShapeEnum.TopAbs_FACE,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    for (; explorer.More(); explorer.Next()) {
+      if (result.length >= 10000)
+        throw new Error(
+          "Alignment reference inspection is limited to 10,000 CAD faces.",
+        );
+      const localHandles = [],
+        own = (value) => (localHandles.push(value), value);
+      try {
+        const current = own(explorer.Current()),
+          face = own(oc.TopoDS.Face_1(current));
+        const location = own(new oc.TopLoc_Location_1());
+        const triangulation = own(oc.BRep_Tool.Triangulation(face, location));
+        if (triangulation.IsNull())
+          throw new Error(
+            "CAD face has no triangulation for reference picking.",
+          );
+        const triangleCount = triangulation.get().NbTriangles();
+        const identity = {
+          faceIndex: result.length,
+          firstTriangle,
+          triangleCount,
+        };
+        firstTriangle += triangleCount;
+        const adaptor = own(new oc.BRepAdaptor_Surface_2(face, true));
+        const type = statusValue(adaptor.GetType());
+        if (type === statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Plane)) {
+          const u =
+            (adaptor.FirstUParameter() + adaptor.LastUParameter()) * 0.5;
+          const v =
+            (adaptor.FirstVParameter() + adaptor.LastVParameter()) * 0.5;
+          const point = own(new oc.gp_Pnt_1()),
+            du = own(new oc.gp_Vec_1()),
+            dv = own(new oc.gp_Vec_1());
+          adaptor.D1(u, v, point, du, dv);
+          result.push({
+            ...identity,
+            kind: "plane",
+            evaluatedPoint: coordinates(point),
+            derivativeU: coordinates(du),
+            derivativeV: coordinates(dv),
+          });
+        } else if (
+          [
+            statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Cylinder),
+            statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Cone),
+            statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Torus),
+          ].includes(type)
+        ) {
+          const kind =
+            type === statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Cylinder)
+              ? "cylinder"
+              : type === statusValue(oc.GeomAbs_SurfaceType.GeomAbs_Cone)
+                ? "cone"
+                : "torus";
+          const primitive = own(
+            kind === "cylinder"
+              ? adaptor.Cylinder()
+              : kind === "cone"
+                ? adaptor.Cone()
+                : adaptor.Torus(),
+          );
+          const axes = own(primitive.Position()),
+            center = own(axes.Location()),
+            direction = own(axes.Direction());
+          result.push({
+            ...identity,
+            kind,
+            location: coordinates(center),
+            axis: coordinates(direction),
+            firstV: adaptor.FirstVParameter(),
+            lastV: adaptor.LastVParameter(),
+            radius: kind === "cone" ? primitive.RefRadius() : 0,
+            semiAngle: kind === "cone" ? primitive.SemiAngle() : 0,
+          });
+        } else
+          result.push({ ...identity, kind: "unsupported", surfaceType: type });
+      } finally {
+        cleanup(localHandles);
+      }
+    }
+    return result;
+  } finally {
+    cleanup(handles);
+  }
+}
+
 function booleanShape(oc, input) {
   const first = getShape(input.firstId),
     second = getShape(input.secondId);
@@ -1602,6 +1704,8 @@ self.onmessage = (event) => {
       let result;
       if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
+      else if (operation === "alignmentReferences")
+        result = alignmentReferences(oc, payload);
       else if (operation === "export") result = exportStep(oc, payload);
       else if (operation === "boolean") result = booleanShape(oc, payload);
       else if (operation === "transform") result = transformShape(oc, payload);

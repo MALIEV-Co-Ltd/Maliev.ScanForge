@@ -1,6 +1,7 @@
 import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
+import type { CadAlignmentInput } from "./alignment-reference";
 
 export type CadPattern =
   | { kind: "linear"; count: number; step: Vec3 }
@@ -11,7 +12,8 @@ export type CadPattern =
       axis: Vec3;
       angleDegrees: number;
     };
-type Result = KernelMesh | KernelMesh[] | Uint8Array | boolean;
+type Result =
+  KernelMesh | KernelMesh[] | Uint8Array | boolean | CadAlignmentInput[];
 type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -48,6 +50,13 @@ export class CadClient {
 
   primitive(input: KernelPrimitive): Promise<KernelMesh> {
     return this.request("primitive", input) as Promise<KernelMesh>;
+  }
+
+  /** Read exact face inputs for shared alignment conversion; does not mutate the body. */
+  alignmentReferences(kernelId: string): Promise<CadAlignmentInput[]> {
+    return this.request("alignmentReferences", { kernelId }) as Promise<
+      CadAlignmentInput[]
+    >;
   }
 
   exportStep(kernelIds: string[]): Promise<Uint8Array> {

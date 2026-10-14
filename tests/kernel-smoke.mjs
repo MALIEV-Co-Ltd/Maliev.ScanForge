@@ -91,6 +91,113 @@ function close(actual, expected, message) {
 }
 try {
   const oc = await vm.runInContext("kernel()", context);
+  for (const specification of [
+    { kind: "box", center: [2, -3, 7], size: [4, 6, 8] },
+    { kind: "sphere", center: [2, -3, 7], radius: 3 },
+    {
+      kind: "cylinder",
+      center: [2, -3, 7],
+      axis: [0, 0, 1],
+      radius: 3,
+      height: 8,
+    },
+    {
+      kind: "cone",
+      center: [2, -3, 7],
+      axis: [0, 0, 1],
+      radius: 3,
+      topRadius: 1,
+      height: 8,
+    },
+  ]) {
+    const body = await request("primitive", specification);
+    const before = context.serializeBrep(oc, context.getShape(body.kernelId));
+    const references = await request("alignmentReferences", {
+      kernelId: body.kernelId,
+    });
+    if (specification.kind === "sphere")
+      assert.ok(
+        references.every(
+          (face) => face.kind === "unsupported" && face.surfaceType === 3,
+        ),
+      );
+    else if (specification.kind === "box")
+      assert.equal(
+        references.filter((face) => face.kind === "plane").length,
+        6,
+      );
+    else assert.ok(references.some((face) => face.kind === specification.kind));
+    assert.equal(
+      references.reduce((sum, face) => sum + face.triangleCount, 0),
+      body.positions.length / 9,
+    );
+    let next = 0;
+    references.forEach((face, index) => {
+      assert.equal(face.faceIndex, index);
+      assert.equal(face.firstTriangle, next);
+      next += face.triangleCount;
+      assert.ok(face.triangleCount > 0);
+      if (face.kind === "plane") {
+        assert.ok(
+          [
+            ...face.evaluatedPoint,
+            ...face.derivativeU,
+            ...face.derivativeV,
+          ].every(Number.isFinite),
+        );
+        const normal = [
+          face.derivativeU[1] * face.derivativeV[2] -
+            face.derivativeU[2] * face.derivativeV[1],
+          face.derivativeU[2] * face.derivativeV[0] -
+            face.derivativeU[0] * face.derivativeV[2],
+          face.derivativeU[0] * face.derivativeV[1] -
+            face.derivativeU[1] * face.derivativeV[0],
+        ];
+        for (let t = face.firstTriangle; t < next; t++) {
+          for (let vertex = 0; vertex < 3; vertex++) {
+            const offset = t * 9 + vertex * 3;
+            close(
+              normal.reduce(
+                (sum, value, i) =>
+                  sum +
+                  value * (body.positions[offset + i] - face.evaluatedPoint[i]),
+                0,
+              ),
+              0,
+              "Reference face triangle lies on evaluated plane",
+            );
+          }
+        }
+      } else if (face.kind !== "unsupported") {
+        assert.equal(face.kind, specification.kind);
+        face.location.forEach((value, i) =>
+          close(
+            value,
+            specification.center[i] -
+              specification.axis[i] * specification.height * 0.5,
+            "Axis location",
+          ),
+        );
+        face.axis.forEach((value, i) =>
+          close(value, specification.axis[i], "Axis direction"),
+        );
+        assert.ok(face.lastV > face.firstV);
+      }
+    });
+    assert.deepEqual(
+      await request("alignmentReferences", { kernelId: body.kernelId }),
+      references,
+    );
+    assert.equal(
+      context.serializeBrep(oc, context.getShape(body.kernelId)),
+      before,
+    );
+    await request("release", [body.kernelId]);
+    await assert.rejects(
+      request("alignmentReferences", { kernelId: body.kernelId }),
+      /expired/,
+    );
+  }
   const planeHandles = [];
   let exactPlane;
   try {
@@ -1175,7 +1282,7 @@ try {
     "tmp",
   ]);
   console.log(
-    "CAD smoke passed: primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
+    "CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
   );
 } finally {
   clearTimeout(expiry);

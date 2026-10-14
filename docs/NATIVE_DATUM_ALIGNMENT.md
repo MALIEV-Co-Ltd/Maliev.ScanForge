@@ -374,3 +374,26 @@ allocation is freed, and the probe process exits. These cases do not cover
 surfaces of revolution, the alternative CAD backend, native UI picking or the
 browser kernel transport. The functions remain internal numerical helpers;
 there is no newly advertised GUI or MCP operation in this slice.
+
+## Browser kernel reference transport
+
+`CadClient.alignmentReferences` now requests exact face inputs from the owned
+CAD worker. Faces use the same traversal order as tessellation and carry their
+face index, first triangle and triangle count. Plane inputs are evaluated at the
+trimmed UV midpoint using `D1`; cylinder, cone and torus inputs retain the
+adaptor's primitive location, axis and V limits. Reversed render normals are
+not substituted. Unsupported surface types remain explicit unsupported entries,
+rather than inferred planar or axial references. Inspection is bounded to
+10,000 faces and retains the existing queued-worker timeout/reset behavior.
+
+`evaluateCadAlignmentReference` converts that transport through the verified
+numerical helpers. Its contract tests replay all 104 native plane/axis inputs
+and compare output bytes and input ownership. Real WASM kernel smoke tests
+exercise boxes, cylinders and cones: face triangle ranges cover exactly the
+render geometry, plane triangle coordinates lie on the evaluated plane,
+primitive axes agree with the authored body, spheres remain explicitly unsupported,
+repeated reads agree, BRep
+serialization remains unchanged, and released handles reject inspection.
+All transient native handles are released in `finally` blocks. This is an
+internal transport for the forthcoming shared GUI/MCP alignment operation;
+it is not independently advertised in MCP discovery or enabled in the ribbon.
