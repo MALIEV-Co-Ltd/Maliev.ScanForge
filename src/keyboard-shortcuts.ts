@@ -125,7 +125,18 @@ export function resolveKeyboardShortcut(
       context.platform,
     ),
   );
-  if (!entry || !availableShortcutBinding(entry, context)) return null;
+  if (!entry) return null;
+  if (!availableShortcutBinding(entry, context)) {
+    const fallback =
+      entry.action.id === "undo-selection"
+        ? "undo-model"
+        : entry.action.id === "redo-selection"
+          ? "redo-model"
+          : null;
+    if (fallback && context.availableActions.has(fallback))
+      return { id: fallback };
+    return null;
+  }
   if (entry.action.id === "rotate-view" && context.nativeControl) return null;
   return entry.action;
 }
@@ -145,4 +156,17 @@ export function keyboardTargetContext(target: EventTarget | null): {
       'button,a,input,textarea,select,[role="menu"],[role="tablist"],[role="listbox"]',
     ),
   };
+}
+
+/** Persistently mounted, hidden settings must not suppress workspace shortcuts. */
+export function hasVisibleKeyboardModal(
+  root: Pick<Document, "querySelectorAll"> = document,
+): boolean {
+  return Array.from(
+    root.querySelectorAll('[aria-modal="true"],dialog[open]'),
+  ).some(
+    (element) =>
+      element.getClientRects().length > 0 &&
+      !element.closest('[hidden],[inert],[aria-hidden="true"]'),
+  );
 }

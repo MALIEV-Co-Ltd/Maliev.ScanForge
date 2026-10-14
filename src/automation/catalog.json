@@ -1144,7 +1144,11 @@
         },
         "targetIds": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true,
@@ -3319,6 +3323,44 @@
     }
   },
   {
+    "name": "project_import_batch",
+    "description": "Import multiple scan/CAD artifacts sequentially with bounded workers. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Existing artifact size limits still apply.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "enum": ["mm", "cm", "m", "in", "ft"]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "artifactIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Completed scan/CAD artifacts in import order. Project files must be opened separately."
+        }
+      },
+      "required": ["artifactIds", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "project_export",
     "description": "Export project, visible STL or exact STEP as a local artifact. Does not write arbitrary filesystem paths.",
     "readOnly": true,
@@ -3629,7 +3671,7 @@
   },
   {
     "name": "object_select",
-    "description": "Select an explicit object; omit entityId to clear selection.",
+    "description": "Select objects in tree order: ordinary selection replaces, toggle adds/removes, range selects from the last ordinary/toggle anchor. Combine toggle and range to add a range. Omit entityId to clear. Returns active and all selected IDs.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3650,6 +3692,14 @@
           "minLength": 1,
           "maxLength": 200,
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "toggle": {
+          "type": "boolean",
+          "description": "Ctrl/Command-click toggle semantics"
+        },
+        "range": {
+          "type": "boolean",
+          "description": "Shift-click range semantics in object tree order; skips locked/unselectable objects"
         }
       },
       "required": ["expectedRevision", "requestId"],

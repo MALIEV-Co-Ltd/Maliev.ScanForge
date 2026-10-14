@@ -158,6 +158,8 @@ it("retains indexed import topology and exposes counts through the MCP boundary"
     commit: (next: Entity[]) => {
       entities = next;
     },
+    select: vi.fn(),
+    view: vi.fn(),
   } as unknown as WorkspaceHost;
   const context = {
     signal: new AbortController().signal,

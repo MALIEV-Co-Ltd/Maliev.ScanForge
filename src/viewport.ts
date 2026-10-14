@@ -16,6 +16,8 @@ import {
   type ScanBoundaryPath,
 } from "./scan-boundary-edges";
 import * as THREE from "three";
+import { scanRenderData } from "./scan-render-data";
+import { presentFrame } from "./frame-presentation";
 import { inspectCamera, pickCamera, setCameraPose } from "./viewport-agent";
 import type { ViewportCommand } from "./automation/workflow-operations";
 import {
@@ -1629,7 +1631,11 @@ export class Viewport {
       });
   }
 
-  setEntities(entities: Entity[], selectedId: string | null): void {
+  setEntities(
+    entities: Entity[],
+    selectedId: string | null,
+    selectedIds: readonly string[] = selectedId ? [selectedId] : [],
+  ): void {
     this.setNoiseComparison();
     this.holdMenu?.close();
     if (selectedId !== this.selectedId) this.clearDeviations();
@@ -1707,7 +1713,13 @@ export class Viewport {
           item.triangleSlots = slots;
         }
         item.hidden = entity.meshSelection?.hidden;
-        if (
+        const prepared = scanRenderData(entity.positions);
+        if (prepared?.normals) {
+          geometry.setAttribute(
+            "normal",
+            new THREE.BufferAttribute(prepared.normals, 3),
+          );
+        } else if (
           entity.kernelId &&
           entity.normals?.length === entity.positions.length &&
           entity.normals.every(Number.isFinite)
@@ -1724,8 +1736,20 @@ export class Viewport {
               3,
             ),
           );
-        geometry.computeBoundingBox();
-        geometry.computeBoundingSphere();
+        if (prepared) {
+          const [minX, minY, minZ, maxX, maxY, maxZ] = prepared.bounds;
+          geometry.boundingBox = new THREE.Box3(
+            new THREE.Vector3(minX, minY, minZ),
+            new THREE.Vector3(maxX, maxY, maxZ),
+          );
+          geometry.boundingSphere = new THREE.Sphere(
+            geometry.boundingBox.getCenter(new THREE.Vector3()),
+            prepared.radius,
+          );
+        } else {
+          geometry.computeBoundingBox();
+          geometry.computeBoundingSphere();
+        }
         if (entity.kind === "pointcloud") {
           const pointsGeometry = new THREE.BufferGeometry();
           pointsGeometry.setAttribute(
@@ -1739,8 +1763,8 @@ export class Viewport {
               if (!hidden.has(i)) visible.push(i);
             pointsGeometry.setIndex(visible);
           }
-          pointsGeometry.computeBoundingBox();
-          pointsGeometry.computeBoundingSphere();
+          pointsGeometry.boundingBox = geometry.boundingBox;
+          pointsGeometry.boundingSphere = geometry.boundingSphere;
           item.pointCloud = new THREE.Points(
             pointsGeometry,
             new THREE.PointsMaterial({
@@ -1803,7 +1827,7 @@ export class Viewport {
       }
       material.userData.normalsMesh = entity.kind === "mesh";
       material.userData.normalsInactive =
-        !!selectedId && entity.id !== selectedId;
+        selectedIds.length > 0 && !selectedIds.includes(entity.id);
       updateNormals(
         this.normalsDisplay && entity.kind === "mesh",
         material.userData.normalsInactive,
@@ -1811,7 +1835,7 @@ export class Viewport {
       applyMeshFocus(
         material,
         entity.color,
-        !!selectedId && entity.id !== selectedId,
+        selectedIds.length > 0 && !selectedIds.includes(entity.id),
       );
       material.flatShading = this.flatShading;
       material.polygonOffset = !!item.cadEdges;
@@ -1891,6 +1915,14 @@ export class Viewport {
     this.grid.visible = visible;
     this.snapGrid = snap;
     this.invalidate();
+  }
+  present(signal?: AbortSignal): Promise<void> {
+    return presentFrame(() => {
+      if (this.disposed) throw new Error("Viewport is closed.");
+      if (this.frame !== null) cancelAnimationFrame(this.frame);
+      this.frame = null;
+      this.render();
+    }, signal);
   }
   fitView(entityId?: string, selection?: Uint8Array): void {
     this.viewTransition = undefined;

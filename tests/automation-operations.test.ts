@@ -19,6 +19,36 @@ import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it("imports a CAD batch through MCP in order, preserving undo steps and waiting for presentation", async () => {
+  const { host, state, cad, context, ops } = harness([]);
+  const presented: number[] = [];
+  host.present = async () => {
+    presented.push(state.entities.length);
+  };
+  cad.importFile = vi.fn(async () => ({
+    kernelId: `native-${state.entities.length}`,
+    positions: [...triangle],
+    brep: "BREP",
+  }));
+  vi.mocked(context.artifactBlob).mockImplementation(
+    (id) => new File(["CAD"], `${id}.step`),
+  );
+  const result = await ops.project_import_batch(
+    { artifactIds: ["first", "second"] },
+    context,
+  );
+  expect(result).toMatchObject({
+    completed: [{ triangles: 1 }, { triangles: 1 }],
+    failed: [],
+    cancelled: false,
+  });
+  expect(state.entities.map((e) => e.name)).toEqual([
+    "first.step",
+    "second.step",
+  ]);
+  expect(state.history).toHaveLength(2);
+  expect(presented).toEqual([1, 2]);
+});
 function entity(patch: Partial<Entity> = {}): Entity {
   return {
     id: "mesh",

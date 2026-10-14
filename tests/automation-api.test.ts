@@ -72,6 +72,118 @@ const mutation = (api: ApplicationApi, requestId = "request-1") => ({
   requestId,
 });
 describe("shared application API", () => {
+  it("imports every artifact in one batch job without mistaking its own commits for revision conflicts", async () => {
+    const { api, host, state } = setup();
+    let sequence = 0;
+    host.cad = () =>
+      ({
+        importFile: async () => ({
+          kernelId: `shape-${++sequence}`,
+          positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+          brep: "BREP",
+        }),
+      }) as unknown as CadClient;
+    const artifactIds: string[] = [];
+    for (const name of ["first.step", "second.step"]) {
+      const put = await api.invoke("artifact_put", {
+        name,
+        offset: 0,
+        base64: "Q0FE",
+      });
+      expect(put.ok).toBe(true);
+      artifactIds.push(
+        (put as { result: { artifactId: string } }).result.artifactId,
+      );
+    }
+    const result = await api.invoke("project_import_batch", {
+      ...mutation(api),
+      artifactIds,
+    });
+    expect(result.ok).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const job = await api.invoke("job_get", {
+      jobId: (result as { result: { jobId: string } }).result.jobId,
+    });
+    expect(job).toMatchObject({
+      ok: true,
+      result: {
+        status: "succeeded",
+        result: { failed: [], completed: [{ triangles: 1 }, { triangles: 1 }] },
+      },
+    });
+    expect(state.entities.map((e) => e.name)).toEqual([
+      "first.step",
+      "second.step",
+    ]);
+    expect(state.history).toHaveLength(2);
+    api.dispose();
+  });
+  it("still rejects an external revision after an owned batch mutation", async () => {
+    let host: WorkspaceHost;
+    const { api, host: owned } = setup({
+      mesh_process: async (_args, context) => {
+        context.mutate!(() => host.commit([], "Owned change"));
+        await Promise.resolve();
+        host.commit([], "External edit");
+        context.check();
+      },
+    });
+    host = owned;
+    const result = await api.invoke("mesh_process", {
+      ...mutation(api),
+      entityId: "scan",
+      operation: {
+        kind: "smooth",
+        tolerance: 0.001,
+        iterations: 1,
+        strength: 0.2,
+      },
+    });
+    expect(result.ok).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const job = await api.invoke("job_get", {
+      jobId: (result as { result: { jobId: string } }).result.jobId,
+    });
+    expect(job).toMatchObject({
+      ok: true,
+      result: { status: "failed", error: { code: "REVISION_CONFLICT" } },
+    });
+    api.dispose();
+  });
+  it("allows a job to acknowledge its own synchronous mutations while retaining revision checks", async () => {
+    let host: WorkspaceHost;
+    const { api, host: owned } = setup({
+      mesh_process: async (_args, context) => {
+        context.mutate!(() => host.commit([], "First owned change"));
+        await Promise.resolve();
+        context.check();
+        context.mutate!(() => host.commit([], "Second owned change"));
+        context.check();
+        return { imported: 2 };
+      },
+    });
+    host = owned;
+    const result = await api.invoke("mesh_process", {
+      ...mutation(api),
+      entityId: "scan",
+      operation: {
+        kind: "smooth",
+        tolerance: 0.001,
+        iterations: 1,
+        strength: 0.2,
+      },
+    });
+    expect(result.ok).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const receipt = await api.invoke("job_get", {
+      jobId: (result as { result: { jobId: string } }).result.jobId,
+    });
+    expect(receipt).toMatchObject({
+      ok: true,
+      result: { status: "succeeded", result: { imported: 2 } },
+    });
+    api.dispose();
+  });
   it.each([
     { kind: "smooth", tolerance: 0.001, iterations: 2, strength: 0.2 },
     { kind: "scanEdit", action: "defeature" },

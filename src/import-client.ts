@@ -1,6 +1,7 @@
 import type { ScanImportOptions, ScanSource } from "./import-parser";
 import type { ScanUnit } from "./import-units";
 import type { parsePlyTopology } from "./ply-topology";
+import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
@@ -49,6 +50,7 @@ export function importScan(
       event: MessageEvent<{
         progress?: number;
         positions?: Float32Array;
+        renderData?: ScanRenderData;
         source?: ScanSource;
         pointCloud?: { normals?: Float32Array };
         indexedMesh?: ReturnType<typeof parsePlyTopology>;
@@ -62,6 +64,8 @@ export function importScan(
       }
       cleanup();
       if (event.data.positions) {
+        if (event.data.renderData)
+          cacheScanRenderData(event.data.positions, event.data.renderData);
         if (event.data.indexedMesh)
           options.onIndexedMesh?.(event.data.indexedMesh);
         if (event.data.pointCloud)

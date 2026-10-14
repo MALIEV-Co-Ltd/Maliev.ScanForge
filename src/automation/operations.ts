@@ -8,6 +8,7 @@ import {
 } from "../project-backup";
 import { DEFAULT_PART_COLOR, DEFAULT_FREEFORM_COLOR } from "../appearance";
 import { CadClient } from "../cad/client";
+import { importBatch, validateImportBatch } from "../import-batch";
 import type { Revision } from "../history";
 import { entityFeatureState, bindFeatureInputs } from "../parametric-entities";
 import {
@@ -304,8 +305,12 @@ function meshEdited(e: Entity, positions: Positions): Entity {
 /** The UI and MCP call these same operation handlers; geometry always comes from the owning workspace. */
 export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
-    c.check();
-    host.commit(entities.map(retainIndexedMesh), label);
+    const write = () => host.commit(entities.map(retainIndexedMesh), label);
+    if (c.mutate) c.mutate(write);
+    else {
+      c.check();
+      write();
+    }
   };
   const operations: Record<string, Handler> = {
     ...createAlignmentOperations(host),
@@ -317,6 +322,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         units: "mm",
         objects: s.entities.map(summary),
         selectedId: s.selectedId,
+        selectedIds: s.selectedIds ?? (s.selectedId ? [s.selectedId] : []),
+        selectionAnchorId: s.selectionAnchorId ?? s.selectedId,
         undo: s.history.length,
         redo: s.future.length,
         authoring: s.authoring,
@@ -1227,16 +1234,60 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             units: "mm",
             entities: [entity],
           };
-          c.check();
-          host.replace(project);
+          if (c.mutate) c.mutate(() => host.replace(project));
+          else {
+            c.check();
+            host.replace(project);
+          }
         } else commit(c, [...s.entities, entity], "Import object");
       } catch (error) {
         if (entity.kernelId) await host.cad().release([entity.kernelId]);
         throw error;
       }
+      const show = () => {
+        host.select(entity.id);
+        host.view("fit");
+      };
+      if (c.mutate) c.mutate(show);
+      else show();
+      c.progress(0.98, "Rendering imported object");
+      await host.present?.(c.signal);
       return entity.kind === "pointcloud"
         ? { entityId: entity.id, points: entity.positions.length / 3 }
         : { entityId: entity.id, triangles: entity.positions.length / 9 };
+    },
+    project_import_batch: async (a, c) => {
+      const names = a.artifactIds.map((artifactId: string) => {
+        const blob = c.artifactBlob(artifactId);
+        return (blob as File).name ?? "import.stl";
+      });
+      validateImportBatch(names);
+      if (names.some((name: string) => /\.(scanforge|json)$/i.test(name)))
+        throw new Error("Open project files separately from scan batches.");
+      const result = await importBatch(
+        a.artifactIds as string[],
+        async (artifactId, index) => {
+          c.check();
+          return await operations.project_import(
+            { artifactId, unit: a.unit },
+            {
+              ...c,
+              progress: (fraction, stage) =>
+                c.progress(
+                  (index + fraction) / a.artifactIds.length,
+                  `${index + 1}/${a.artifactIds.length} · ${names[index]} · ${stage}`,
+                ),
+            },
+          );
+        },
+        c.signal,
+      );
+      if (result.cancelled)
+        throw new DOMException(
+          "Import batch cancelled; completed objects retained.",
+          "AbortError",
+        );
+      return result;
     },
     project_export: async (a, c) => {
       const s = host.snapshot(),

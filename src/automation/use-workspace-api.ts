@@ -57,7 +57,10 @@ export function useWorkspaceApi(host: WorkspaceHost) {
         mutate(() => current.current.commit(entities, label)),
       replace: (project, cad, session) =>
         mutate(() => current.current.replace(project, cad, session)),
-      select: (id) => mutate(() => current.current.select(id)),
+      select: (id, modifiers) =>
+        mutate(() => current.current.select(id, modifiers)),
+      present: (signal) =>
+        current.current.present?.(signal) ?? Promise.resolve(),
       setSelection: (entityId, mask) =>
         mutate(() => current.current.setSelection(entityId, mask)),
       setSketch: (sketch) => mutate(() => current.current.setSketch(sketch)),

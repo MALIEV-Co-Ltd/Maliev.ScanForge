@@ -7,6 +7,45 @@ import type {
   CommandContext,
 } from "../src/automation/api";
 import type { CadClient } from "../src/cad/client";
+import {
+  selectObject,
+  type ObjectSelectionState,
+} from "../src/object-selection";
+it("exposes toggle and range object selection through the same shared MCP operation", () => {
+  const { host, state, context } = setup();
+  state.entities = ["a", "b", "c"].map((id) => ({
+    ...state.entities[0],
+    id,
+    name: id,
+  }));
+  let selection: ObjectSelectionState = {
+    ids: [],
+    activeId: null,
+    anchorId: null,
+  };
+  host.select = (id, modifiers) => {
+    selection = id
+      ? selectObject(
+          selection,
+          state.entities.map((e) => e.id),
+          id,
+          modifiers,
+        )
+      : { ids: [], activeId: null, anchorId: null };
+    state.selectedId = selection.activeId;
+    state.selectedIds = selection.ids;
+  };
+  const ops = createAuthoringOperations(host);
+  ops.object_select({ entityId: "a" }, context);
+  ops.object_select({ entityId: "c", toggle: true }, context);
+  expect(state.selectedIds).toEqual(["a", "c"]);
+  ops.object_select({ entityId: "a", range: true }, context);
+  expect(state.selectedIds).toEqual(["a", "b", "c"]);
+  expect(ops.object_select({}, context)).toMatchObject({
+    selectedIds: [],
+    entityId: null,
+  });
+});
 function setup() {
   const patch = createGridPatch();
   const state: WorkspaceSnapshot = {

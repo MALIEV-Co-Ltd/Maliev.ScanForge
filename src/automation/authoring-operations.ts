@@ -55,8 +55,19 @@ export function createAuthoringOperations(
       if (e && (e.locked || e.selectable === false))
         throw new Error("Object cannot be selected");
       c.check();
-      host.select(e?.id ?? null);
-      return { entityId: e?.id ?? null };
+      if (!e && (a.toggle || a.range))
+        throw new Error("Object modifiers require an entityId.");
+      host.select(e?.id ?? null, {
+        toggle: a.toggle ?? false,
+        range: a.range ?? false,
+      });
+      const state = host.snapshot();
+      return {
+        entityId: state.selectedId,
+        selectedIds:
+          state.selectedIds ?? (state.selectedId ? [state.selectedId] : []),
+        anchorId: state.selectionAnchorId ?? state.selectedId,
+      };
     },
     history_seek: (a, c) => {
       const s = host.snapshot(),

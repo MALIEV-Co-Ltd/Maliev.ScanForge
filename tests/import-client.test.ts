@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { importScan } from "../src/import-client";
+import { scanRenderData } from "../src/scan-render-data";
 
 class ImportWorkerDouble {
   static latest: ImportWorkerDouble;
@@ -31,6 +32,25 @@ afterEach(() => {
 const file = { name: "scan.stl" } as File;
 
 describe("scan worker ownership", () => {
+  it("retains transferred render data without geometry or normal copies", async () => {
+    const pending = importScan(file);
+    const positions = new Float32Array(9);
+    const renderData = {
+      normals: new Float32Array(9),
+      bounds: [0, 0, 0, 1, 1, 0] as [
+        number,
+        number,
+        number,
+        number,
+        number,
+        number,
+      ],
+      radius: 1,
+    };
+    ImportWorkerDouble.latest.reply({ positions, renderData });
+    expect(await pending).toBe(positions);
+    expect(scanRenderData(positions)).toBe(renderData);
+  });
   it("passes the selected file unit into the import worker", async () => {
     const pending = importScan(file, { unit: "in" });
     expect(ImportWorkerDouble.latest.request).toMatchObject({

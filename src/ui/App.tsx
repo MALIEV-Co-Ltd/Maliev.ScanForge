@@ -1,4 +1,13 @@
 import { isSampledScan } from "../scan-source";
+import { flushSync } from "react-dom";
+import { importBatch, validateImportBatch } from "../import-batch";
+import { scanRenderData } from "../scan-render-data";
+import {
+  selectObject,
+  reconcileObjectSelection,
+  type ObjectSelectionState,
+  type ObjectSelectionModifiers,
+} from "../object-selection";
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
 import type { AlignmentReferencePage } from "../automation/alignment-operations";
@@ -62,6 +71,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
+  hasVisibleKeyboardModal,
   keyboardTargetContext,
   resolveKeyboardShortcut,
   type ShortcutActionId,
@@ -235,14 +245,48 @@ type Mode = "inspect" | "measure" | "section" | "brush";
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
-  const [pendingScanImport, setPendingScanImport] = useState<File | null>(null);
+  const entitiesRef = useRef(entities);
+  entitiesRef.current = entities;
+  const [pendingScanImport, setPendingScanImport] = useState<File[] | null>(
+    null,
+  );
   const [originVisible, setOriginVisible] = useState(true);
   const [originPlane, setOriginPlane] = useState<OriginPlane>("OXY");
   const [planePicking, setPlanePicking] = useState(false);
   const [sketchPlaneDialog, setSketchPlaneDialog] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(
-    () => entities[0]?.id ?? null,
-  );
+  const [objectSelection, setObjectSelection] = useState<ObjectSelectionState>({
+    ids: [],
+    activeId: null,
+    anchorId: null,
+  });
+  const selectedId = objectSelection.activeId;
+  const selectedIds = objectSelection.ids;
+  function setSelectedId(id: string | null) {
+    setObjectSelection({ ids: id ? [id] : [], activeId: id, anchorId: id });
+  }
+  function selectObjects(
+    id: string | null,
+    modifiers: ObjectSelectionModifiers = {},
+  ) {
+    if (!id) return setSelectedId(null);
+    setObjectSelection((state) =>
+      selectObject(
+        state,
+        entitiesRef.current.filter(objectPickable).map((e) => e.id),
+        id,
+        modifiers,
+      ),
+    );
+  }
+  useEffect(() => {
+    setObjectSelection((state) => {
+      const next = reconcileObjectSelection(
+        state,
+        entities.filter(objectPickable).map((e) => e.id),
+      );
+      return JSON.stringify(state) === JSON.stringify(next) ? state : next;
+    });
+  }, [entities]);
   const [name, setName] = useState("Untitled project");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [flatShading, setFlatShading] = useState(true);
@@ -544,7 +588,8 @@ export function App() {
       selected
         ? selected.kind === "pointcloud"
           ? pointCloudStats(selected.positions)
-          : meshStats(selected.positions)
+          : (scanRenderData(selected.positions)?.stats ??
+            meshStats(selected.positions))
         : null,
     [selected?.positions],
   );
@@ -737,6 +782,7 @@ export function App() {
             ? [...entities, surfaceFitEntity(surfaceFit, "surface-fit-preview")]
             : entities,
       selectedId,
+      selectedIds,
     );
     viewport.current?.setAlignmentMarkers(
       nPoints ? landmarkMarkers(nPoints) : [],
@@ -755,6 +801,7 @@ export function App() {
   }, [
     entities,
     selectedId,
+    selectedIds,
     nPoints,
     landmarkPickSide,
     surfaceFit,
@@ -1527,8 +1574,12 @@ export function App() {
     "rotate-view": () => {},
     "undo-model": undo,
     "redo-model": redo,
-    "undo-selection": () => selectionUndo(),
-    "redo-selection": () => selectionUndo(true),
+    "undo-selection": selectionSession?.canUndo
+      ? () => selectionUndo()
+      : undefined,
+    "redo-selection": selectionSession?.canRedo
+      ? () => selectionUndo(true)
+      : undefined,
     "undo-sketch": () => sketchUndo(),
     "redo-sketch": () => sketchUndo(true),
     "hide-meshes": () => {
@@ -1621,9 +1672,7 @@ export function App() {
     const resolved = resolveKeyboardShortcut(event, {
       ...shortcutContext,
       ...keyboardTargetContext(event.target),
-      modalOpen:
-        shortcutContext.modalOpen ||
-        !!document.querySelector('[aria-modal="true"],dialog[open]'),
+      modalOpen: shortcutContext.modalOpen || hasVisibleKeyboardModal(),
     });
     if (!resolved) return;
     event.preventDefault();
@@ -2392,174 +2441,231 @@ export function App() {
     if (fileInput.current) fileInput.current.value = "";
     viewport.current?.setView("iso");
   }
-  async function openFile(file: File, unit?: ScanUnit) {
-    if (!unit && /\.(stl|obj|ply|asc)$/i.test(file.name)) {
-      setPendingScanImport(file);
+  const importCommit = useRef(commit);
+  importCommit.current = commit;
+  const loadFile = useRef(openFile);
+  loadFile.current = openFile;
+  async function openFiles(files: File[], unit?: ScanUnit) {
+    if (!files.length || busyRef.current) return;
+    try {
+      validateImportBatch(files.map((file) => file.name));
+    } catch (error) {
+      setError(errorText(error));
       return;
     }
-    await action(`Opening ${file.name}…`, async () => {
-      setImportProgress({
-        name: file.name,
-        fraction: /\.(stl|obj|ply|asc|step|stp|iges|igs|brep)$/i.test(file.name)
-          ? 0
-          : null,
-      });
-      const extension = file.name.split(".").pop()!.toLowerCase();
-      if (extension === "scanforge" || extension === "json") {
-        const session = await decodeProjectFile(file);
-        const project = session.project;
-        if (
-          dirty &&
-          !window.confirm(
-            "Replace the current project? Unsaved changes will be lost.",
-          )
-        ) {
-          setMessage("Project replacement cancelled");
-          return;
-        }
-        // Restore to a separate worker so a failed load preserves the existing project.
-        const restoredCad = new CadClient();
+    if (
+      !unit &&
+      files.some((file) => /\.(stl|obj|ply|asc)$/i.test(file.name))
+    ) {
+      setPendingScanImport(files);
+      return;
+    }
+    const controller = new AbortController();
+    importAbort.current = controller;
+    await action(
+      `Opening ${files.length} file${files.length === 1 ? "" : "s"}…`,
+      async () => {
         try {
-          const handles = new Map<string, string>();
-          async function restoreState(items: Entity[]): Promise<Entity[]> {
-            const restored: Entity[] = [];
-            for (const entity of items) {
-              if (entity.brep) {
-                let kernelId = handles.get(entity.brep);
-                if (!kernelId) {
-                  const data = await restoredCad.importFile(
-                    new TextEncoder().encode(entity.brep),
-                    "brep",
-                  );
-                  kernelId = data.kernelId;
-                  handles.set(entity.brep, kernelId);
-                }
-                restored.push({ ...entity, kernelId });
-              } else restored.push(entity);
-            }
-            return restored;
-          }
-          const restored = await restoreState(project.entities);
-          const restoredHistory: Revision[] = [],
-            restoredFuture: Revision[] = [];
-          for (const item of session.history)
-            restoredHistory.push({
-              label: item.label,
-              entities: await restoreState(item.entities),
-            });
-          for (const item of session.future)
-            restoredFuture.push({
-              label: item.label,
-              entities: await restoreState(item.entities),
-            });
-          cad.current?.dispose();
-          cad.current = restoredCad;
-          knownKernelIds.current = new Set();
-          pendingImportFit.current = null;
-          setEntities(restored);
-          setSelectedId(
-            project.authoring?.activeSketchId
-              ? null
-              : (restored[0]?.id ?? null),
+          const result = await importBatch(
+            files,
+            async (file, index) => {
+              setMessage(`Opening ${index + 1}/${files.length} · ${file.name}`);
+              operationLabel.current = `Opening ${file.name}`;
+              await loadFile.current(file, unit, controller.signal);
+              return file.name;
+            },
+            controller.signal,
           );
-          setName(project.name);
-          sketchUndoSessions.current.clear();
-          setSavedSketches(project.authoring?.sketches ?? []);
-          legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
-          setActiveSketchId(project.authoring?.activeSketchId ?? null);
-          setSketchDraft(
-            project.authoring?.sketches?.find(
-              (s) => s.id === project.authoring?.activeSketchId,
-            )?.sketch ??
-              project.authoring?.sketch ??
-              rectangleSketch(),
+          if (result.failed.length)
+            setError(
+              result.failed
+                .map(
+                  (failure) => `${files[failure.index].name}: ${failure.error}`,
+                )
+                .join("\n"),
+            );
+          setMessage(
+            `${result.cancelled ? "Import cancelled" : "Opened"} · ${result.completed.length}/${files.length} files${result.failed.length ? ` · ${result.failed.length} failed` : ""}${unit ? ` · ${SCAN_UNITS[unit].label} converted to mm` : ""}`,
           );
-          setHistory(restoredHistory);
-          setFuture(restoredFuture);
-          setProjectId(session.projectId ?? crypto.randomUUID());
-          setDirty(false);
-          setMeasure([]);
-        } catch (e) {
-          restoredCad.dispose();
-          throw e;
+        } finally {
+          importAbort.current = null;
         }
-      } else {
-        let entity: Entity;
-        if (["step", "stp", "iges", "igs", "brep"].includes(extension)) {
-          const data = await file.arrayBuffer();
-          const result = await cad.current!.importFile(
-            new Uint8Array(data),
-            extension as "step" | "stp" | "iges" | "igs" | "brep",
-            (fraction) => setImportProgress({ name: file.name, fraction }),
-          );
-          entity = {
-            id: crypto.randomUUID(),
-            name: file.name,
-            kind: "cad",
-            ...result,
-            color: DEFAULT_PART_COLOR,
-            visible: true,
-            opacity: 1,
-            source: file.name,
-          };
-        } else {
-          const controller = new AbortController();
-          importAbort.current = controller;
-          let positions;
-          let pointNormals: number[] | undefined;
-          let scanSource: ScanSource | undefined;
-          let indexedMesh: Entity["indexedMesh"];
-          try {
-            positions = await importScan(file, {
-              onIndexedMesh: (mesh) => {
-                indexedMesh = mesh;
-              },
-              unit,
-              placeAtOrigin: true,
-              previewTriangles: previewImport ? 250_000 : undefined,
-              onSource: (source) => {
-                scanSource = source;
-              },
-              onPointCloud: (cloud) => {
-                pointNormals = cloud.normals
-                  ? Array.from(cloud.normals)
-                  : undefined;
-              },
-              signal: controller.signal,
-              onProgress: (progress) => {
-                setImportProgress({ name: file.name, fraction: progress });
-                setMessage(
-                  `Opening ${file.name} · ${Math.round(progress * 100)}%`,
-                );
-              },
-            });
-          } finally {
-            importAbort.current = null;
-          }
-          entity = {
-            id: crypto.randomUUID(),
-            name:
-              file.name +
-              (isSampledScan(scanSource) ? " [sampled preview]" : ""),
-            kind: extension === "asc" ? "pointcloud" : "mesh",
-            positions,
-            normals: pointNormals,
-            color: DEFAULT_PART_COLOR,
-            visible: true,
-            opacity: 1,
-            source: file.name,
-            scanSource,
-            indexedMesh,
-          };
-        }
-        pendingImportFit.current = entity.id;
-        commit([...entities, entity]);
-        setSelectedId(entity.id);
-      }
-      setMessage(
-        `Opened ${file.name}${unit ? ` · ${SCAN_UNITS[unit].label} converted to mm` : ""}`,
-      );
+      },
+    );
+  }
+  async function openFile(file: File, unit?: ScanUnit, signal?: AbortSignal) {
+    setImportProgress({
+      name: file.name,
+      fraction: /\.(stl|obj|ply|asc|step|stp|iges|igs|brep)$/i.test(file.name)
+        ? 0
+        : null,
     });
+    const extension = file.name.split(".").pop()!.toLowerCase();
+    if (extension === "scanforge" || extension === "json") {
+      const session = await decodeProjectFile(file);
+      signal?.throwIfAborted();
+      const project = session.project;
+      if (
+        dirty &&
+        !window.confirm(
+          "Replace the current project? Unsaved changes will be lost.",
+        )
+      ) {
+        setMessage("Project replacement cancelled");
+        return;
+      }
+      // Restore to a separate worker so a failed load preserves the existing project.
+      const restoredCad = new CadClient();
+      try {
+        const handles = new Map<string, string>();
+        async function restoreState(items: Entity[]): Promise<Entity[]> {
+          const restored: Entity[] = [];
+          for (const entity of items) {
+            signal?.throwIfAborted();
+            if (entity.brep) {
+              let kernelId = handles.get(entity.brep);
+              if (!kernelId) {
+                const data = await restoredCad.importFile(
+                  new TextEncoder().encode(entity.brep),
+                  "brep",
+                );
+                kernelId = data.kernelId;
+                handles.set(entity.brep, kernelId);
+              }
+              restored.push({ ...entity, kernelId });
+            } else restored.push(entity);
+          }
+          return restored;
+        }
+        const restored = await restoreState(project.entities);
+        const restoredHistory: Revision[] = [],
+          restoredFuture: Revision[] = [];
+        for (const item of session.history)
+          restoredHistory.push({
+            label: item.label,
+            entities: await restoreState(item.entities),
+          });
+        for (const item of session.future)
+          restoredFuture.push({
+            label: item.label,
+            entities: await restoreState(item.entities),
+          });
+        signal?.throwIfAborted();
+        cad.current?.dispose();
+        cad.current = restoredCad;
+        knownKernelIds.current = new Set();
+        pendingImportFit.current = null;
+        setEntities(restored);
+        setSelectedId(
+          project.authoring?.activeSketchId ? null : (restored[0]?.id ?? null),
+        );
+        setName(project.name);
+        sketchUndoSessions.current.clear();
+        setSavedSketches(project.authoring?.sketches ?? []);
+        legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
+        setActiveSketchId(project.authoring?.activeSketchId ?? null);
+        setSketchDraft(
+          project.authoring?.sketches?.find(
+            (s) => s.id === project.authoring?.activeSketchId,
+          )?.sketch ??
+            project.authoring?.sketch ??
+            rectangleSketch(),
+        );
+        setHistory(restoredHistory);
+        setFuture(restoredFuture);
+        setProjectId(session.projectId ?? crypto.randomUUID());
+        setDirty(false);
+        setMeasure([]);
+      } catch (e) {
+        restoredCad.dispose();
+        throw e;
+      }
+    } else {
+      let entity: Entity;
+      if (["step", "stp", "iges", "igs", "brep"].includes(extension)) {
+        const data = await file.arrayBuffer();
+        const result = await cad.current!.importFile(
+          new Uint8Array(data),
+          extension as "step" | "stp" | "iges" | "igs" | "brep",
+          (fraction) => setImportProgress({ name: file.name, fraction }),
+        );
+        entity = {
+          id: crypto.randomUUID(),
+          name: file.name,
+          kind: "cad",
+          ...result,
+          color: DEFAULT_PART_COLOR,
+          visible: true,
+          opacity: 1,
+          source: file.name,
+        };
+      } else {
+        let positions;
+        let pointNormals: number[] | undefined;
+        let scanSource: ScanSource | undefined;
+        let indexedMesh: Entity["indexedMesh"];
+        {
+          positions = await importScan(file, {
+            onIndexedMesh: (mesh) => {
+              indexedMesh = mesh;
+            },
+            unit,
+            placeAtOrigin: true,
+            previewTriangles: previewImport ? 250_000 : undefined,
+            onSource: (source) => {
+              scanSource = source;
+            },
+            onPointCloud: (cloud) => {
+              pointNormals = cloud.normals
+                ? Array.from(cloud.normals)
+                : undefined;
+            },
+            signal,
+            onProgress: (progress) => {
+              setImportProgress({ name: file.name, fraction: progress });
+              setMessage(
+                `Opening ${file.name} · ${Math.round(progress * 100)}%`,
+              );
+            },
+          });
+        }
+        entity = {
+          id: crypto.randomUUID(),
+          name:
+            file.name + (isSampledScan(scanSource) ? " [sampled preview]" : ""),
+          kind: extension === "asc" ? "pointcloud" : "mesh",
+          positions,
+          normals: pointNormals,
+          color: DEFAULT_PART_COLOR,
+          visible: true,
+          opacity: 1,
+          source: file.name,
+          scanSource,
+          indexedMesh,
+        };
+      }
+      pendingImportFit.current = entity.id;
+      setImportProgress({ name: file.name, fraction: null });
+      setMessage(`Rendering ${file.name}…`);
+      try {
+        signal?.throwIfAborted();
+        flushSync(() => {
+          importCommit.current([...entitiesRef.current, entity]);
+          setSelectedId(entity.id);
+        });
+      } catch (error) {
+        if (
+          entity.kernelId &&
+          !entitiesRef.current.some((item) => item.id === entity.id)
+        )
+          await cad.current?.release([entity.kernelId]);
+        throw error;
+      }
+    }
+    await viewport.current?.present(signal);
+    setMessage(
+      `Opened ${file.name}${unit ? ` · ${SCAN_UNITS[unit].label} converted to mm` : ""}`,
+    );
   }
   function growSelection(
     clickedSeeds?: Uint8Array,
@@ -3478,6 +3584,8 @@ export function App() {
       authoring: projectSession.project.authoring ?? {},
       sketchDraft,
       selectedId,
+      selectedIds,
+      selectionAnchorId: objectSelection.anchorId,
       selection: triangleMask,
       settings: {
         theme,
@@ -3538,7 +3646,8 @@ export function App() {
       cancelLandmarks();
       dismissScanTool();
     },
-    select: setSelectedId,
+    select: selectObjects,
+    present: (signal) => viewport.current?.present(signal) ?? Promise.resolve(),
     deleteBackup: async (id) => {
       await deleteBackup({ id });
     },
@@ -3670,8 +3779,8 @@ export function App() {
       onDrop={(event) => {
         event.preventDefault();
         setDragging(false);
-        const file = event.dataTransfer.files[0];
-        if (file && !busy) void openFile(file);
+        const files = Array.from(event.dataTransfer.files);
+        if (files.length && !busy) void openFiles(files);
       }}
     >
       <Ribbon
@@ -3842,21 +3951,22 @@ export function App() {
       <input
         ref={fileInput}
         type="file"
+        multiple
         hidden
         accept=".stl,.obj,.ply,.asc,.step,.stp,.iges,.igs,.brep,.scanforge,.json"
         onChange={(e) => {
-          const file = e.target.files?.[0];
+          const files = Array.from(e.target.files ?? []);
           e.target.value = "";
-          if (file) void openFile(file);
+          if (files.length) void openFiles(files);
         }}
       />
       {pendingScanImport && (
         <ImportUnitsDialog
           onCancel={() => setPendingScanImport(null)}
           onImport={(unit) => {
-            const file = pendingScanImport;
+            const files = pendingScanImport;
             setPendingScanImport(null);
-            void openFile(file, unit);
+            void openFiles(files, unit);
           }}
         />
       )}
@@ -4187,7 +4297,7 @@ export function App() {
                       objectId: entity.id,
                     });
                   }}
-                  className={entity.id === selectedId ? "selected" : ""}
+                  className={selectedIds.includes(entity.id) ? "selected" : ""}
                 >
                   <button
                     className="visibility"
@@ -4209,8 +4319,14 @@ export function App() {
                   <button
                     className="object-name"
                     disabled={busy}
-                    onClick={() => {
-                      if (objectPickable(entity)) setSelectedId(entity.id);
+                    aria-pressed={selectedIds.includes(entity.id)}
+                    onClick={(event) => {
+                      if (objectPickable(entity))
+                        void uiCommand("object_select", {
+                          entityId: entity.id,
+                          toggle: event.ctrlKey || event.metaKey,
+                          range: event.shiftKey,
+                        });
                     }}
                   >
                     <span>

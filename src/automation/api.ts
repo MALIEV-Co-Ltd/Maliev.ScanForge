@@ -13,6 +13,7 @@ import {
   type CapturedImage,
 } from "./visual-capture";
 import type { InterfacePatch, ViewportCommand } from "./workflow-operations";
+import type { ObjectSelectionModifiers } from "../object-selection";
 
 export interface WorkspaceSnapshot {
   projectId?: string;
@@ -22,6 +23,8 @@ export interface WorkspaceSnapshot {
   future: Revision[];
   authoring: NonNullable<Project["authoring"]>;
   selectedId: string | null;
+  selectedIds?: string[];
+  selectionAnchorId?: string | null;
   selection: Uint8Array | null;
   sketchDraft?: Sketch;
   settings: Record<string, unknown>;
@@ -35,7 +38,8 @@ export interface WorkspaceHost {
     cad?: CadClient,
     session?: { history: Revision[]; future: Revision[]; projectId?: string },
   ): void;
-  select(id: string | null): void;
+  select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
+  present?(signal?: AbortSignal): Promise<void>;
   setSelection(entityId: string, mask: Uint8Array): void;
   setSketch(sketch: Sketch): void;
   setAuthoring?(authoring: NonNullable<Project["authoring"]>): void;
@@ -74,6 +78,8 @@ export interface CommandContext {
   signal: AbortSignal;
   progress(fraction: number, stage: string): void;
   check(): void;
+  /** Check the revision, apply an owned synchronous write, then track its revision. */
+  mutate?(write: () => void): void;
   artifact(
     data: Blob | Uint8Array | string,
     name: string,
@@ -268,6 +274,8 @@ export class ApplicationApi {
       history: next.history.map((r) => r.label),
       future: next.future.map((r) => r.label),
       selectedId: next.selectedId,
+      selectedIds: next.selectedIds,
+      selectionAnchorId: next.selectionAnchorId,
       selection: identity(next.selection),
       sketch: identity(next.authoring.sketch),
       draft: identity(next.sketchDraft),
@@ -334,7 +342,7 @@ export class ApplicationApi {
     asynchronous: boolean,
   ): Promise<ApiResult> {
     try {
-      const startRevision = this.currentRevision();
+      let startRevision = this.currentRevision();
       if (!readOnly && args.expectedRevision !== startRevision)
         throw new ApiError(
           "REVISION_CONFLICT",
@@ -551,6 +559,11 @@ export class ApplicationApi {
               "REVISION_CONFLICT",
               "Workspace changed while operation ran; result was not applied.",
             );
+        },
+        mutate: (write) => {
+          context.check();
+          write();
+          startRevision = this.currentRevision();
         },
         artifact: (data, name, mime) => this.storeArtifact(data, name, mime),
         artifactBlob: (id) => {

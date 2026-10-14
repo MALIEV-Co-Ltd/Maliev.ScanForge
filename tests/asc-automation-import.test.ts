@@ -19,6 +19,8 @@ it("imports point clouds through the automation boundary with normals and point 
     commit: (next: Entity[]) => {
       entities = next;
     },
+    select: vi.fn(),
+    view: vi.fn(),
   } as unknown as WorkspaceHost;
   const context = {
     signal: new AbortController().signal,

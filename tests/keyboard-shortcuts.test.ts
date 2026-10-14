@@ -1,10 +1,41 @@
 import { describe, expect, it } from "vitest";
 import {
   keyboardTargetContext,
+  hasVisibleKeyboardModal,
   resolveKeyboardShortcut,
   type ShortcutActionId,
   type ShortcutContext,
 } from "../src/keyboard-shortcuts";
+
+it("hidden settings dialogs do not block workspace shortcuts, visible dialogs do", () => {
+  const hidden = { getClientRects: () => [], closest: () => null };
+  const visible = { getClientRects: () => [{}], closest: () => null };
+  const root = (elements: unknown[]) =>
+    ({ querySelectorAll: () => elements }) as unknown as Pick<
+      Document,
+      "querySelectorAll"
+    >;
+  expect(hasVisibleKeyboardModal(root([hidden]))).toBe(false);
+  expect(hasVisibleKeyboardModal(root([hidden, visible]))).toBe(true);
+});
+
+it("falls back to model undo/redo when mesh selection has no local history", () => {
+  for (const [key, id] of [
+    ["z", "undo-model"],
+    ["y", "redo-model"],
+  ] as const) {
+    expect(
+      resolveKeyboardShortcut(
+        { key, ctrlKey: true },
+        {
+          mode: "selection",
+          platform: "windows",
+          availableActions: new Set([id]),
+        },
+      ),
+    ).toEqual({ id });
+  }
+});
 
 const all = new Set<ShortcutActionId>([
   "new",
