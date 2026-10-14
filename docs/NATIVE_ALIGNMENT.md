@@ -979,3 +979,63 @@ display quality. Connecting the native alignment target cache still requires
 verification of the builder's output and cache ownership/lifetime. No GUI/MCP
 application behavior changed in this evidence slice; build and application tests
 are not applicable.
+
+## Original CAD cache builder dispatch and ownership
+
+The retained image binds global builder pointer `0x141615220` to object
+`0x1415d3c60`, whose vtable is `0x141158310`. Its slot `0x10` resolves to
+`0x1402d9530`, the operation invoked by the previously verified tolerance
+producer. Independent image readback checks this exact pointer chain.
+
+REA extraction is
+`ev_c1264e3fc5fbd6983576db0e009a0ecadcf434670d75a3f5a5b2f6861fef8bc8`
+(pseudocode) and
+`ev_69466b16aecb296ca6f0ad421c8488b66aac586c097f596252ee7f5e4c6d1623`
+(assembly). Related slot `0x18`, `0x1402d9d80`, was retained as
+`ev_a752a4be26dbebf383ff968f0b494e04747ab2d7e34032a7beafdcef35e863b9`
+and `ev_00f737f335acdeab5efc89fc54dbdd92c58bd2a911bfcd88dc4d1e7daf998aa8`;
+its output remains unverified.
+
+A bounded original-instruction replay verifies 64 builder cases. Backend flag
+`0x141615203` enables a minimum incoming linear tolerance of 0.005 mm. With a
+nonzero CAD handle at owner `0x630`, this selects the alternate helper
+`0x1402d8b30`. The original code allocates/constructs a new cache, calls the
+helper, marks cache byte `0x158`, releases the previous cache via its interface
+at `0xf8` with delete mode one, replaces owner pointer `0x600`, and notifies the
+owner through its interface at `0x3b8`, slot `0x20`. It returns success for both
+controlled helper return values. Actual helper failure/exception behavior is
+not covered by substituting a return value.
+
+On the standard path, linear tolerance is additionally limited by the builder's
+minimum and maximum values. The replay uses 0.001 and 0.05 to exercise those
+limits. The retained original builder instance has minimum zero and maximum
+Float32 maximum. Standard provider parameters are captured, then execution is
+redirected to the original epilogue before per-face work and cache assembly;
+this does not claim standard-path mesh output or full ownership verification.
+
+The alternate helper call writes its fifth argument as the builder's flag byte
+(true in the captures) and sixth argument as null. Its fourth integer register
+slot is not initialized by the callsite. An initial capture adapter assigned
+those trailing parameters to the wrong slots; the independent verifier detected
+that error. The final corpus was rerun with corrected ABI slots and supersedes
+the preliminary external capture.
+
+The original prefix also examines objects in the owner vector at `0x5d8`.
+For a non-null entry with an empty 48-byte record range at `0x390..0x398`, it
+invokes curve-related preparation `0x14027cbd0` only when the absolute difference
+between stored tolerance `0x3d0` and incoming tolerance exceeds `2^-23`. It then
+stores the incoming tolerance. Nonempty record ranges, smaller differences and
+exact equality to the threshold skip preparation. Twenty-eight additional
+captures verify both backend flags, empty/nonempty ranges and seven threshold
+positions, including exact positive and negative threshold equality. The
+preparation helper's geometry output is adapted and remains unverified.
+
+`docs/evidence/landmark-cad-builder-lifecycle-native.json` retains all 92 cases.
+The independent verifier checks pointer binding, branch tolerances, alternate
+cache replacement/release/notification counts, meaningful trailing call slots,
+and curve-prefix threshold transitions: zero differences. Allocation,
+constructor, tessellator/provider and virtual-method interfaces are adapters;
+these captures do not contain real tessellation output. Task-owned image/code
+allocations were released and the probe and REA server exited. No application
+code changed; build and application tests are not applicable to this evidence
+slice.

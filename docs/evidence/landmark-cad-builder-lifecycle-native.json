@@ -1,0 +1,1317 @@
+{
+  "edgeCases": [
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.03125,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.031250059604644775,
+      "desired": 0.03125,
+      "after": 0.031250059604644775,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.031249940395355225,
+      "desired": 0.03125,
+      "after": 0.031249940395355225,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.03125011920928955,
+      "desired": 0.03125,
+      "after": 0.03125011920928955,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.03124988079071045,
+      "desired": 0.03125,
+      "after": 0.03124988079071045,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.0312502384185791,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": [
+        {
+          "tolerance": 0.03125,
+          "edgeOffset": 736,
+          "outputOffset": 904
+        }
+      ]
+    },
+    {
+      "backend": 0,
+      "records": 0,
+      "before": 0.0312497615814209,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": [
+        {
+          "tolerance": 0.03125,
+          "edgeOffset": 736,
+          "outputOffset": 904
+        }
+      ]
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.03125,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.031250059604644775,
+      "desired": 0.03125,
+      "after": 0.031250059604644775,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.031249940395355225,
+      "desired": 0.03125,
+      "after": 0.031249940395355225,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.03125011920928955,
+      "desired": 0.03125,
+      "after": 0.03125011920928955,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.03124988079071045,
+      "desired": 0.03125,
+      "after": 0.03124988079071045,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.0312502384185791,
+      "desired": 0.03125,
+      "after": 0.0312502384185791,
+      "calls": []
+    },
+    {
+      "backend": 0,
+      "records": 1,
+      "before": 0.0312497615814209,
+      "desired": 0.03125,
+      "after": 0.0312497615814209,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.03125,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.031250059604644775,
+      "desired": 0.03125,
+      "after": 0.031250059604644775,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.031249940395355225,
+      "desired": 0.03125,
+      "after": 0.031249940395355225,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.03125011920928955,
+      "desired": 0.03125,
+      "after": 0.03125011920928955,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.03124988079071045,
+      "desired": 0.03125,
+      "after": 0.03124988079071045,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.0312502384185791,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": [
+        {
+          "tolerance": 0.03125,
+          "edgeOffset": 736,
+          "outputOffset": 904
+        }
+      ]
+    },
+    {
+      "backend": 1,
+      "records": 0,
+      "before": 0.0312497615814209,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": [
+        {
+          "tolerance": 0.03125,
+          "edgeOffset": 736,
+          "outputOffset": 904
+        }
+      ]
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.03125,
+      "desired": 0.03125,
+      "after": 0.03125,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.031250059604644775,
+      "desired": 0.03125,
+      "after": 0.031250059604644775,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.031249940395355225,
+      "desired": 0.03125,
+      "after": 0.031249940395355225,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.03125011920928955,
+      "desired": 0.03125,
+      "after": 0.03125011920928955,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.03124988079071045,
+      "desired": 0.03125,
+      "after": 0.03124988079071045,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.0312502384185791,
+      "desired": 0.03125,
+      "after": 0.0312502384185791,
+      "calls": []
+    },
+    {
+      "backend": 1,
+      "records": 1,
+      "before": 0.0312497615814209,
+      "desired": 0.03125,
+      "after": 0.0312497615814209,
+      "calls": []
+    }
+  ],
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x1402d9530",
+  "cases": [
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": -0.1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": -0.1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.004,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.004,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.004,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.004,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.005,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.005,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.03,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.03,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.05,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.05,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.07,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 0.07,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 0,
+      "tolerance": 1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": -0.1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": -0.1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.001,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.004,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.004,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.004,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.004,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.005,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.005,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.03,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.03,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.05,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.05,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.07,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 0.07,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 0,
+      "handle": 7,
+      "tolerance": 1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": -0.1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": -0.1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.004,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.004,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.005,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.005,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.005,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.03,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.03,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.03,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.05,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.05,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.07,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 0.07,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 1,
+      "backendReturn": 0,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 0,
+      "tolerance": 1,
+      "backendReturn": 1,
+      "call": {
+        "path": "standard-prefix",
+        "linear": 0.05,
+        "angular": 0.4886921905584123
+      },
+      "replaced": false,
+      "marked": 0,
+      "destroyed": [],
+      "notifications": 0,
+      "result": null
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": -0.1,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": -0.1,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.004,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.004,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.005,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.005,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.005,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.03,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.03,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.03,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.03,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.05,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.05,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.05,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.05,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.07,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.07,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 0.07,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 0.07,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 1,
+      "backendReturn": 0,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 1.0,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    },
+    {
+      "backend": 1,
+      "handle": 7,
+      "tolerance": 1,
+      "backendReturn": 1,
+      "call": {
+        "path": "alternate",
+        "handle": 7,
+        "linear": 1.0,
+        "parallel": 1,
+        "status": null
+      },
+      "replaced": true,
+      "marked": 1,
+      "destroyed": [1],
+      "notifications": 1,
+      "result": 1
+    }
+  ],
+  "limits": {
+    "minimum": 0.001,
+    "maximum": 0.05
+  },
+  "scope": "Original builder normalization and alternate-backend complete cache replacement/notification branch. Controlled allocation, constructor, backend tessellation and virtual callbacks. Standard branch captures provider parameters then jumps to original epilogue before mesh work/cleanup. Includes original edge cache update threshold and stored-tolerance write with rebuild callback adapted. No real tessellation output, per-face workers, edge geometry output or GUI."
+}
