@@ -1642,3 +1642,30 @@ and owned replay processes exited. This is an evidence/documentation slice; no
 application behavior, GUI/MCP contract or executable source changed, so application
 build and test targets are not applicable to this slice. Existing live port 5173
 was preserved. The larger application implementation goal remains incomplete.
+
+## Built-in origin references in shared alignment
+
+The existing `alignment-datum-origin-native.json` already captures the complete
+original dispatcher `0x140543ae0` and numerical constructors. The new shared
+origin payload adapter is compared against every retained native state/result,
+including all slots, native assignments and flips. It maps XY/YZ/XZ planes to
+world normals Z/X/Y, axes X/Y/Z to corresponding directions, and the origin
+point to zero. GUI/MCP target axes use physical X/Y/Z indices, converting the
+native plane radio order implicitly through the resolved numerical instruction.
+
+Both alignment job schemas now accept explicit origin constraints. The panel
+exposes all seven origin references per slot, replacing source object bindings.
+Manual point/direction/type edits clear the preset. Shared Preview/Apply,
+reference eligibility, readiness, cancellation, revision checks and history
+continue through the existing frame and transform operations. This exposes the
+verified built-in reference path; it does not certify the entire main controller.
+
+Validation: `npm run build` passed with no warnings/errors. Native origin replay
+and shared API focused checks passed 251 tests; the full suite passed 340 files /
+26,511 tests with 5 existing skipped files / 24 skipped tests. The built browser
+replay exercised all seven origin selectors, a flipped axis, GUI/MCP Apply
+geometry and Undo, then rechecked native axis eligibility and canvas translation
+picking. Receipt: `.resources/origin-reference-browser/browser-validation.json`.
+Browser/bridge helpers exited and temporary ports closed; live source serving
+on port 5173 remains available. No duplicate native capture was launched: the
+existing original dispatcher corpus was reused and checked through the adapter.

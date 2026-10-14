@@ -4878,6 +4878,29 @@
                 },
                 "required": ["kind", "entityId", "referenceId", "axis"],
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": ["origin"]
+                  },
+                  "reference": {
+                    "type": "string",
+                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["kind", "reference", "axis"],
+                "additionalProperties": false
               }
             ]
           },
@@ -4897,8 +4920,8 @@
           "type": "array",
           "items": {
             "type": "number",
-            "minimum": -1000000000.0,
-            "maximum": 1000000000.0
+            "minimum": -1000000000,
+            "maximum": 1000000000
           },
           "minItems": 3,
           "maxItems": 3,
@@ -4908,8 +4931,8 @@
           "type": "array",
           "items": {
             "type": "number",
-            "minimum": -1000000000.0,
-            "maximum": 1000000000.0
+            "minimum": -1000000000,
+            "maximum": 1000000000
           },
           "minItems": 3,
           "maxItems": 3,
@@ -5092,6 +5115,29 @@
                 },
                 "required": ["kind", "entityId", "referenceId", "axis"],
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": ["origin"]
+                  },
+                  "reference": {
+                    "type": "string",
+                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                  },
+                  "axis": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "flip": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["kind", "reference", "axis"],
+                "additionalProperties": false
               }
             ]
           },
@@ -5111,8 +5157,8 @@
           "type": "array",
           "items": {
             "type": "number",
-            "minimum": -1000000000.0,
-            "maximum": 1000000000.0
+            "minimum": -1000000000,
+            "maximum": 1000000000
           },
           "minItems": 3,
           "maxItems": 3,
@@ -5122,8 +5168,8 @@
           "type": "array",
           "items": {
             "type": "number",
-            "minimum": -1000000000.0,
-            "maximum": 1000000000.0
+            "minimum": -1000000000,
+            "maximum": 1000000000
           },
           "minItems": 3,
           "maxItems": 3,

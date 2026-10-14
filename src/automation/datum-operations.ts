@@ -1,6 +1,10 @@
 import type { Handler, WorkspaceHost } from "./api";
 import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
 import type { Entity } from "../types";
+import {
+  nativeDatumOriginPayload,
+  type NativeDatumOriginReference,
+} from "../scan-native-datum-origin";
 import { cloudPlacement } from "../point-cloud-placement";
 import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
@@ -31,7 +35,16 @@ export interface DatumReferenceConstraint {
 
 export interface DatumRequest {
   entityIds: string[];
-  constraints: (DatumInstruction | DatumReferenceConstraint)[];
+  constraints: (
+    | DatumInstruction
+    | DatumReferenceConstraint
+    | {
+        kind: "origin";
+        reference: NativeDatumOriginReference;
+        axis: 0 | 1 | 2;
+        flip?: boolean;
+      }
+  )[];
   translation?: number[];
   translationPoint?: number[];
   parallel?: boolean;
@@ -80,6 +93,14 @@ export function createDatumOperations(
     );
     const instructions: DatumInstruction[] = [];
     for (const constraint of args.constraints) {
+      if (constraint.kind === "origin") {
+        instructions.push({
+          ...nativeDatumOriginPayload(constraint.reference),
+          axis: constraint.axis,
+          flip: constraint.flip,
+        });
+        continue;
+      }
       if (constraint.kind !== "reference") {
         instructions.push(constraint);
         continue;

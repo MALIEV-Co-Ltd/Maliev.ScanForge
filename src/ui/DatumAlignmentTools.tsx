@@ -6,6 +6,10 @@ import type { Entity, Vec3 } from "../types";
 import { Panel, VectorField } from "./controls";
 import { DatumReferencePicker } from "./DatumReferencePicker";
 import type { AlignmentReferencePage } from "../automation/alignment-operations";
+import {
+  nativeDatumOriginPayload,
+  type NativeDatumOriginReference,
+} from "../scan-native-datum-origin";
 
 export function DatumAlignmentTools({
   api,
@@ -91,6 +95,9 @@ export function DatumAlignmentTools({
     targetIds.every((id) => targets.some((item) => item.id === id));
   const [requiredReferences, setRequiredReferences] = useState<boolean[]>([]);
   const [referenceAcceptance, setReferenceAcceptance] = useState<boolean[]>([]);
+  const [originReferences, setOriginReferences] = useState<
+    (NativeDatumOriginReference | undefined)[]
+  >([]);
   const [bindings, setBindings] = useState<
     ({ entityId: string; referenceId: string } | undefined)[]
   >([]);
@@ -140,6 +147,10 @@ export function DatumAlignmentTools({
   }, [entity.positions]);
   function update(index: number, patch: Partial<DatumInstruction>) {
     if (patch.kind || patch.point || patch.direction)
+      setOriginReferences((current) =>
+        current.map((item, i) => (i === index ? undefined : item)),
+      );
+    if (patch.kind || patch.point || patch.direction)
       setBindings((current) =>
         current.map((item, i) => (i === index ? undefined : item)),
       );
@@ -173,14 +184,21 @@ export function DatumAlignmentTools({
       const receipt = await api.invoke(command, {
         entityIds: targetIds,
         constraints: instructions.slice(0, count).map((item, index) =>
-          bindings[index]
+          originReferences[index]
             ? {
-                kind: "reference",
-                ...bindings[index],
+                kind: "origin",
+                reference: originReferences[index],
                 axis: item.axis,
                 flip: item.flip,
               }
-            : item,
+            : bindings[index]
+              ? {
+                  kind: "reference",
+                  ...bindings[index],
+                  axis: item.axis,
+                  flip: item.flip,
+                }
+              : item,
         ),
         translation,
         ...(translationPoint ? { translationPoint } : {}),
@@ -345,41 +363,81 @@ export function DatumAlignmentTools({
           return (
             <fieldset key={index}>
               <legend>{["Primary", "Secondary", "Tertiary"][index]}</legend>
-              <DatumReferencePicker
-                entities={entities}
-                index={index}
-                value={bindings[index]}
-                read={readReferences}
-                onPickFace={onPickFace}
-                onChange={(value, required) => {
-                  setRequiredReferences((current) => {
-                    const next = [...current];
-                    next[index] = required;
-                    return next;
-                  });
-                  if (
-                    value?.reference.point &&
-                    value.reference.kind !== "unsupported"
-                  ) {
-                    update(index, {
-                      kind: value.reference.kind,
-                      point: value.reference.point,
-                      direction: value.reference.direction,
-                      flip: false,
+              <label className="field">
+                <span>Origin reference</span>
+                <select
+                  aria-label={`Reference ${index + 1} origin reference`}
+                  value={originReferences[index] ?? ""}
+                  onChange={(event) => {
+                    const reference = event.target.value as
+                      NativeDatumOriginReference | "";
+                    if (reference)
+                      update(index, {
+                        ...nativeDatumOriginPayload(reference),
+                        flip: false,
+                      });
+                    else update(index, {});
+                    setOriginReferences((current) => {
+                      const next = [...current];
+                      next[index] = reference || undefined;
+                      return next;
                     });
-                  } else update(index, {});
-                  setBindings((current) => {
-                    const next = [...current];
-                    next[index] = value
-                      ? {
-                          entityId: value.entityId,
-                          referenceId: value.reference.id,
-                        }
-                      : undefined;
-                    return next;
-                  });
-                }}
-              />
+                    setRequiredReferences((current) => {
+                      const next = [...current];
+                      next[index] = false;
+                      return next;
+                    });
+                  }}
+                >
+                  <option value="">Manual / object reference</option>
+                  {(["XY", "YZ", "XZ", "X", "Y", "Z", "origin"] as const).map(
+                    (reference) => (
+                      <option key={reference} value={reference}>
+                        {reference === "origin"
+                          ? "Origin point"
+                          : `${reference} ${reference.length === 2 ? "plane" : "axis"}`}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+              {!originReferences[index] && (
+                <DatumReferencePicker
+                  entities={entities}
+                  index={index}
+                  value={bindings[index]}
+                  read={readReferences}
+                  onPickFace={onPickFace}
+                  onChange={(value, required) => {
+                    setRequiredReferences((current) => {
+                      const next = [...current];
+                      next[index] = required;
+                      return next;
+                    });
+                    if (
+                      value?.reference.point &&
+                      value.reference.kind !== "unsupported"
+                    ) {
+                      update(index, {
+                        kind: value.reference.kind,
+                        point: value.reference.point,
+                        direction: value.reference.direction,
+                        flip: false,
+                      });
+                    } else update(index, {});
+                    setBindings((current) => {
+                      const next = [...current];
+                      next[index] = value
+                        ? {
+                            entityId: value.entityId,
+                            referenceId: value.reference.id,
+                          }
+                        : undefined;
+                      return next;
+                    });
+                  }}
+                />
+              )}
               <label className="field">
                 <span>Type</span>
                 <select

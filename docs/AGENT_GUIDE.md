@@ -521,3 +521,14 @@ request. Job results expose `referenceAcceptance`, one boolean per constraint,
 and the GUI preview identifies references that did not constrain its frame.
 Malformed inputs, unresolved live bindings, locked targets, cancellation and
 transform failures still fail under the existing shared validation rules.
+
+Alignment constraints can now use `{ kind: "origin", reference: "XY", axis: 2 }`.
+`reference` is one of `XY`, `YZ`, `XZ` (world origin planes), `X`, `Y`, `Z`
+(world origin axes), or `origin` (the world origin point). `axis` remains the
+physical target X/Y/Z index 0/1/2, consistent with manual and object references;
+optional `flip` reverses planes/axes and is ignored for the origin point. Both
+`alignment_preview` and `alignment_apply` resolve these through the shared origin
+payload adapter. Result `constraints` contains resolved numerical references.
+The GUI's Origin reference selector uses the same contract in each slot; editing
+point/direction/type switches that slot back to manual input. Origin choices
+replace object bindings and require no source entity or CAD allocation.

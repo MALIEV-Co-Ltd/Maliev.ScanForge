@@ -15,6 +15,10 @@ import {
 } from "../src/datum-transform-worker";
 import type { NativeDatumPlaneState } from "../src/scan-native-datum-plane";
 import { nativeDatumCadTransform } from "../src/scan-native-datum-cad-transform";
+import {
+  nativeDatumOriginPayload,
+  type NativeDatumOriginReference,
+} from "../src/scan-native-datum-origin";
 import { parseProject, serializeProject } from "../src/io";
 function setup() {
   const entity: Entity = {
@@ -84,6 +88,57 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it.each(
+  (
+    ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"] as NativeDatumOriginReference[]
+  ).flatMap((reference) =>
+    [0, 1, 2].flatMap((axis) =>
+      [false, true].map((flip) => ({ reference, axis, flip })),
+    ),
+  ),
+)(
+  "exposes built-in origin $reference axis $axis flip $flip through Preview/Apply",
+  async ({ reference, axis, flip }) => {
+    const { api, state } = setup();
+    try {
+      const manual = await settle(
+        api,
+        await api.invoke(
+          "alignment_preview",
+          request(api, [
+            { ...nativeDatumOriginPayload(reference), axis, flip },
+          ]),
+        ),
+      );
+      const args = {
+        ...request(api),
+        constraints: [{ kind: "origin", reference, axis, flip }],
+      };
+      const preview = await settle(
+        api,
+        await api.invoke("alignment_preview", args),
+      );
+      expect(preview.status).toBe("succeeded");
+      expect(preview.result.matrix).toEqual(manual.result.matrix);
+      expect(preview.result.referenceAcceptance).toEqual(
+        manual.result.referenceAcceptance,
+      );
+      const applied = await settle(
+        api,
+        await api.invoke("alignment_apply", {
+          ...args,
+          expectedRevision: api.currentRevision(),
+          requestId: crypto.randomUUID(),
+        }),
+      );
+      expect(applied.status).toBe("succeeded");
+      expect(applied.result.matrix).toEqual(preview.result.matrix);
+      expect(state.history.length).toBe(applied.result.changed ? 1 : 0);
+    } finally {
+      api.dispose();
+    }
+  },
+);
 it("previews and applies the accepted frame while reporting a rejected reference", async () => {
   const { api, state } = setup();
   const primary = {
@@ -998,7 +1053,7 @@ it("exposes frame-basis translation through preview and apply with matching outp
   });
   expect(invalid.ok).toBe(false);
 });
-function request(api: ApplicationApi, constraints = point) {
+function request(api: ApplicationApi, constraints: unknown[] = point) {
   return {
     entityIds: ["scan"],
     constraints,

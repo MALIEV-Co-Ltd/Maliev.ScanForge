@@ -1,10 +1,16 @@
 import {
   nativeDatumOriginReference,
+  nativeDatumOriginPayload,
   type NativeDatumOriginReference,
 } from "../src/scan-native-datum-origin";
 import { expect, it } from "vitest";
 import native from "./fixtures/alignment-datum-origin-native.json";
-import { type NativeDatumPlaneState } from "../src/scan-native-datum-plane";
+import {
+  type NativeDatumPlaneState,
+  nativeDatumPlaneReference,
+  nativeDatumDirectionReference,
+  nativeDatumPointReference,
+} from "../src/scan-native-datum-plane";
 
 function bits(state: NativeDatumPlaneState) {
   const bytes = Buffer.alloc(0xe8);
@@ -67,5 +73,50 @@ it.each(native.cases)(
     expect(result.accepted).toBe(sample.accepted);
     expect(bits(state)).toBe(sample.beforeBits);
     expect(bits(result.state)).toBe(sample.nativeBits);
+    const payload = nativeDatumOriginPayload(
+      (
+        [
+          "XY",
+          "YZ",
+          "XZ",
+          "X",
+          "Y",
+          "Z",
+          "origin",
+        ] as NativeDatumOriginReference[]
+      )[sample.reference],
+    );
+    const direction = payload.direction?.map((value) =>
+      sample.flip ? -value : value,
+    );
+    const axis = (
+      payload.kind === "plane"
+        ? [2, 0, 1][sample.assignment]
+        : sample.assignment
+    ) as 0 | 1 | 2;
+    const replay =
+      payload.kind === "point"
+        ? nativeDatumPointReference(
+            state,
+            sample.stage as 0 | 1 | 2,
+            payload.point,
+          )
+        : payload.kind === "plane"
+          ? nativeDatumPlaneReference(
+              state,
+              sample.stage as 0 | 1 | 2,
+              payload.point,
+              direction!,
+              axis,
+            )
+          : nativeDatumDirectionReference(
+              state,
+              sample.stage as 0 | 1 | 2,
+              payload.point,
+              direction!,
+              axis,
+            );
+    expect(replay.accepted).toBe(sample.accepted);
+    expect(bits(replay.state)).toBe(sample.nativeBits);
   },
 );
