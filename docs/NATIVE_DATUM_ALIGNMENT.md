@@ -612,3 +612,53 @@ behavior; the original all-feature controller, dependent-feature propagation,
 and complete native UI workflow remain separate requirements. Application
 preview ownership and history retention continue through the existing shared
 GUI/MCP operations; this probe requires no new application cache layer.
+
+## Native dependent-object aggregation
+
+The Apply callback `0x140545220` gathers additional targets through
+`0x14084bbf0`, then uses a pointer-keyed set to suppress repeated transformations
+across its target groups. REA identifies `0x14016b970` as the set-header
+constructor and `0x14016c210` as its insertion routine. Their Evidence IDs are
+`ev_838832f8d6b74b3e0ac9067bb91d6532aeb2dd3458b4bdbcc10f4d91ba9760ff`
+and `ev_1636f27def230285c180956b34fd290f591adba4a3f57aae245d3dcda7173309`.
+This duplicate-suppression conclusion is static controller evidence; the
+complete Apply callback has not been replayed.
+
+The collector resets its output-vector end to its begin, requests a scene
+iterator through slot `0x48`, and visits candidates in iterator order. Two
+opaque type queries determine candidate eligibility and an exclusion branch.
+The meaning of those type identifiers in the GUI remains unresolved.
+Eligible candidates are appended once per visit when any alignment seed
+satisfies the recursive relationship predicate `0x14084b8f0`. Duplicate visits
+remain duplicate output entries: suppression belongs to the later Apply set.
+Collector Evidence is
+`ev_2c53991f1ad5537fd199e7b98dc1bb2e7961933733ca20f054b0ed9c4f59d3bc`.
+
+The predicate reads the candidate's reference tree through slot `0x190`, then
+resolves each stored reference through the model's slot `0x58`. Missing and
+self references are skipped. A direct match with the seed returns true;
+otherwise the predicate recurses through the resolved object's references.
+An empty tree or exhausted traversal returns false. Equality of candidate and
+seed alone does not qualify it. Predicate Evidence is
+`ev_e13b6592c3552435949f31d1badeec0d87b34377a0afa775575cc8cdd8ae031d`.
+
+Direct execution covers all 64 four-node directed acyclic graphs, with and
+without self/missing links. All 3,200 predicate calls match independent
+reachability checks. All 6,144 complete collector calls match ordered outputs
+over every seed subset, duplicate/null seeds, repeated/null candidates, and
+both opaque candidate-type branches. Each collector invocation destroys its
+iterator once and resets the supplied output end. A separate verifier uses
+iterative reachability, rather than the probe's recursive reconstruction, to
+check all 9,344 results.
+
+Original predicate, traversal, collector and cleanup instructions execute
+unchanged. Owned adapters supply scene iteration, type queries, dependency
+trees and identity resolution; output capacity is preallocated. These results
+do not verify scene acquisition, vector growth, cycles, native object-type
+meanings, or complete Apply/history behavior. They establish transitive
+dependency collection rather than grouping by names or coincident geometry.
+The application still uses explicit target selection; automatic expansion
+requires mapping its authoring relationships and native eligibility semantics.
+The external `datum-dependent-*` captures, probes, independent verification,
+image/capture SHA-256 identities and cleanup receipts retain this evidence.
+Both probe processes exited and their mapped images were released.
