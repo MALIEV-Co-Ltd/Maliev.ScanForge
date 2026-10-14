@@ -1,0 +1,183 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x14053fa00",
+  "evidenceId": "ev_22c3d42b26bdf1fc6a4871f0e1572c21584578fd1900b7aad9dc62b45020fea8",
+  "scope": "Original DDX callback dispatch only; MFC control/integer exchange and custom number exchange are recorders, not original parsing or native GUI",
+  "bindings": [
+    { "original": "0x7ffe9cbce700", "slots": 1 },
+    { "original": "0x7ffe9cb41900", "slots": 1 }
+  ],
+  "cases": [
+    {
+      "values": [0, 0, 0],
+      "events": [
+        { "kind": "control", "id": 4313, "offset": 18176 },
+        { "kind": "control", "id": 4315, "offset": 18408 },
+        { "kind": "control", "id": 1024, "offset": 18640 },
+        { "kind": "integer", "id": 4328, "offset": 17808 },
+        { "kind": "control", "id": 4328, "offset": 16256 },
+        { "kind": "integer", "id": 4316, "offset": 17812 },
+        { "kind": "integer", "id": 4318, "offset": 17816 },
+        { "kind": "integer", "id": 4319, "offset": 17820 },
+        { "kind": "integer", "id": 4329, "offset": 18872 },
+        { "kind": "integer", "id": 1042, "offset": 18876 },
+        { "kind": "integer", "id": 1044, "offset": 18880 },
+        { "kind": "control", "id": 4340, "offset": 360 },
+        { "kind": "control", "id": 4341, "offset": 1784 },
+        { "kind": "control", "id": 4342, "offset": 3208 },
+        { "kind": "control", "id": 4343, "offset": 4632 },
+        { "kind": "control", "id": 4344, "offset": 6056 },
+        { "kind": "control", "id": 1119, "offset": 7480 },
+        { "kind": "control", "id": 4346, "offset": 8904 },
+        { "kind": "control", "id": 4347, "offset": 10328 },
+        { "kind": "control", "id": 1120, "offset": 11752 },
+        {
+          "kind": "number",
+          "id": 1025,
+          "offset": 16488,
+          "value": 0.0,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1050,
+          "offset": 16496,
+          "value": 0.0,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1052,
+          "offset": 16504,
+          "value": 0.0,
+          "digits": 8,
+          "limit": 15
+        },
+        { "kind": "integer", "id": 4345, "offset": 16528 },
+        { "kind": "integer", "id": 4348, "offset": 16532 },
+        { "kind": "control", "id": 1051, "offset": 13176 },
+        { "kind": "integer", "id": 4631, "offset": 16536 },
+        { "kind": "control", "id": 1122, "offset": 16024 },
+        { "kind": "integer", "id": 4658, "offset": 16540 },
+        { "kind": "control", "id": 4658, "offset": 14600 }
+      ],
+      "dialogPreserved": true
+    },
+    {
+      "values": [1.25, -2.5, 9.875],
+      "events": [
+        { "kind": "control", "id": 4313, "offset": 18176 },
+        { "kind": "control", "id": 4315, "offset": 18408 },
+        { "kind": "control", "id": 1024, "offset": 18640 },
+        { "kind": "integer", "id": 4328, "offset": 17808 },
+        { "kind": "control", "id": 4328, "offset": 16256 },
+        { "kind": "integer", "id": 4316, "offset": 17812 },
+        { "kind": "integer", "id": 4318, "offset": 17816 },
+        { "kind": "integer", "id": 4319, "offset": 17820 },
+        { "kind": "integer", "id": 4329, "offset": 18872 },
+        { "kind": "integer", "id": 1042, "offset": 18876 },
+        { "kind": "integer", "id": 1044, "offset": 18880 },
+        { "kind": "control", "id": 4340, "offset": 360 },
+        { "kind": "control", "id": 4341, "offset": 1784 },
+        { "kind": "control", "id": 4342, "offset": 3208 },
+        { "kind": "control", "id": 4343, "offset": 4632 },
+        { "kind": "control", "id": 4344, "offset": 6056 },
+        { "kind": "control", "id": 1119, "offset": 7480 },
+        { "kind": "control", "id": 4346, "offset": 8904 },
+        { "kind": "control", "id": 4347, "offset": 10328 },
+        { "kind": "control", "id": 1120, "offset": 11752 },
+        {
+          "kind": "number",
+          "id": 1025,
+          "offset": 16488,
+          "value": 1.25,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1050,
+          "offset": 16496,
+          "value": -2.5,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1052,
+          "offset": 16504,
+          "value": 9.875,
+          "digits": 8,
+          "limit": 15
+        },
+        { "kind": "integer", "id": 4345, "offset": 16528 },
+        { "kind": "integer", "id": 4348, "offset": 16532 },
+        { "kind": "control", "id": 1051, "offset": 13176 },
+        { "kind": "integer", "id": 4631, "offset": 16536 },
+        { "kind": "control", "id": 1122, "offset": 16024 },
+        { "kind": "integer", "id": 4658, "offset": 16540 },
+        { "kind": "control", "id": 4658, "offset": 14600 }
+      ],
+      "dialogPreserved": true
+    },
+    {
+      "values": [-1234.5, 1234.5, 1e-5],
+      "events": [
+        { "kind": "control", "id": 4313, "offset": 18176 },
+        { "kind": "control", "id": 4315, "offset": 18408 },
+        { "kind": "control", "id": 1024, "offset": 18640 },
+        { "kind": "integer", "id": 4328, "offset": 17808 },
+        { "kind": "control", "id": 4328, "offset": 16256 },
+        { "kind": "integer", "id": 4316, "offset": 17812 },
+        { "kind": "integer", "id": 4318, "offset": 17816 },
+        { "kind": "integer", "id": 4319, "offset": 17820 },
+        { "kind": "integer", "id": 4329, "offset": 18872 },
+        { "kind": "integer", "id": 1042, "offset": 18876 },
+        { "kind": "integer", "id": 1044, "offset": 18880 },
+        { "kind": "control", "id": 4340, "offset": 360 },
+        { "kind": "control", "id": 4341, "offset": 1784 },
+        { "kind": "control", "id": 4342, "offset": 3208 },
+        { "kind": "control", "id": 4343, "offset": 4632 },
+        { "kind": "control", "id": 4344, "offset": 6056 },
+        { "kind": "control", "id": 1119, "offset": 7480 },
+        { "kind": "control", "id": 4346, "offset": 8904 },
+        { "kind": "control", "id": 4347, "offset": 10328 },
+        { "kind": "control", "id": 1120, "offset": 11752 },
+        {
+          "kind": "number",
+          "id": 1025,
+          "offset": 16488,
+          "value": -1234.5,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1050,
+          "offset": 16496,
+          "value": 1234.5,
+          "digits": 8,
+          "limit": 15
+        },
+        {
+          "kind": "number",
+          "id": 1052,
+          "offset": 16504,
+          "value": 1e-5,
+          "digits": 8,
+          "limit": 15
+        },
+        { "kind": "integer", "id": 4345, "offset": 16528 },
+        { "kind": "integer", "id": 4348, "offset": 16532 },
+        { "kind": "control", "id": 1051, "offset": 13176 },
+        { "kind": "integer", "id": 4631, "offset": 16536 },
+        { "kind": "control", "id": 1122, "offset": 16024 },
+        { "kind": "integer", "id": 4658, "offset": 16540 },
+        { "kind": "control", "id": 4658, "offset": 14600 }
+      ],
+      "dialogPreserved": true
+    }
+  ]
+}

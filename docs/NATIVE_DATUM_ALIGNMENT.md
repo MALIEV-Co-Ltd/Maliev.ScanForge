@@ -508,6 +508,48 @@ Direct execution of the original selectors and flag-accessor instructions covere
 
 This verifies native target-choice control flow, not the GUI meaning of the two bits, original model aggregation or full Apply/controller scope. The original resources identify Align Mesh and reference-based positioning; the independently authored principal-axis callback must not be presented as the recovered native command. The application panel now offers explicit multi-object targets through the existing shared GUI/MCP transaction. Explicit targeting does not claim parity with the still-gated automatic selector or all-feature scope.
 
+### Native command eligibility and dialog bindings
+
+The complete original command-update callback `0x1407ed1c0` has now executed
+3,333 times across the same 1,111 ordered scene states and three command-check
+states each. Its original scan/CAD selectors and flag accessors remain intact.
+It enables the command when the scan selector succeeds or, failing that, the CAD
+selector succeeds. Controlled scene iterators reset on construction, matching
+the original independent iterator lifetime. UI methods record the callback's
+enable/check requests; they do not execute an installed GUI. The original active
+dialog list is empty in these captures: command check states cover an absent
+entry, a matching zero dialog ID and a different ID. Other dialog classes remain
+outside this capture. The fixture retains original selector outputs alongside
+every callback result; `tests/alignment-command-native.test.ts` checks them
+against an independently decoded selection policy. Command callback Evidence:
+`ev_bc7adbdcbcb21b7fff83dde739c71d0dc80b8f73565baf8f3577771484682d61`.
+
+The small dialog at `0x1402ec110` is an activation prompt, not an alignment-choice
+dialog. It and the rejected activation branch are excluded from implementation.
+This distinction prevents inferring alignment behavior from that branch.
+
+REA recovered coordinate-dialog data exchange at `0x14053fa00` (Evidence
+`ev_22c3d42b26bdf1fc6a4871f0e1572c21584578fd1900b7aad9dc62b45020fea8`).
+Direct execution records all 30 ordered bindings under three translation inputs:
+90 dispatches, with unchanged dialog bytes. MFC control/integer exchange and the
+custom numeric exchange are controlled recorders; original numeric parsing,
+validation and installed GUI execution are not claimed. The three translation
+fields bind offsets `0x4068`, `0x4070`, `0x4078` and pass numeric-helper arguments
+8 and 15. Imported-CAD scope, all-feature scope, primitive-centering suppression
+and segmentation bind distinct integers at `0x4090`, `0x4094`, `0x4098`, `0x409c`.
+The retained template labels corroborate those four control identities. The
+fixture and regression test freeze field identity and dispatch order; this
+does not certify the four options' complete functional application workflows.
+
+External `align-command-enablement-*` and `align-dialog-binding-*` artifacts
+retain probes, REA records, native output and successful mapping cleanup. This
+is native verification work; GUI/MCP operations and the ribbon gate are unchanged.
+
+Validation: `npm run build` passed, the focused native-command file passed 1,114
+tests, and `npm test` passed 22,654 tests with 24 skipped across 336 files.
+Prettier and diff checks passed. Port 5173 remained healthy. No application UI
+behavior changed in this capture slice, so no new GUI/MCP parity claim is made.
+
 ## Native primitive geometry and cache transforms
 
 All six primitive object types use the shared dispatcher `0x140405e40` at
