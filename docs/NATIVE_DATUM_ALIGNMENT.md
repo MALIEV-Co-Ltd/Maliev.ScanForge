@@ -1369,3 +1369,50 @@ MCP import, geometry artifact normals and binary export/reimport of both
 objects. Its receipt at `.resources/ply-normals-browser/browser-validation.json`
 records passing checks and closed helper ports/processes. This is import and
 recovery evidence, not completion of the main Align workflow.
+
+### Portable classification and region traversal on all owner scans
+
+`src/scan-native-segmentation-regions.ts` now ports classification at
+`0x140ac09d0` and the original LIFO traversal at `0x140ac0630`. It resets the
+same flag bits, uses the strict three-vertex threshold predicate, preserves
+neighbor-slot push order, labels on push and returns native packed labels,
+ordered region offsets/traversal and the maximum region index. Inputs remain
+unchanged. Cancellation and malformed-index rejection precede traversal.
+
+The original procedures were executed on each complete owner PLY scan at five
+thresholds. Original score preparation, vector growth and CRT arithmetic were
+retained. Geometry containers and manifold adjacency were controlled adapters;
+adjacency slots were explicitly supplied in edge order 01, 12, 20. This verifies
+the region algorithm for that supplied adjacency, not the native importer's
+adjacency construction or its behavior at nonmanifold edges.
+
+| Scan  | Threshold 0 |  0.25 |   0.5 |  0.75 |   1 |
+| ----- | ----------: | ----: | ----: | ----: | --: |
+| ply-1 |           0 |   270 |   328 |   175 |  27 |
+| ply-2 |           0 | 6,814 | 1,642 |   406 |   1 |
+| ply-3 |           0 | 8,984 | 3,900 | 1,395 |   1 |
+
+These are native region counts. The portable kernel matches every face label,
+face/vertex flag, region offset, traversal entry and maximum region index at
+every capture. Repeating with browser-computed scores also matches exactly:
+66,631,640 face-label comparisons across both score sources, zero differences.
+This joins the recovered score and region stages on the full scans without
+claiming the still-unfinished automatic feature-fitting controller.
+
+`tests/scan-native-segmentation-regions.test.ts` additionally checks all 28
+native flag/traversal fixtures, malformed adjacency, cancellation and source
+buffer preservation. External `owner-region-native*-probe.py`,
+`owner-ply-*-native-regions.json`, `owner-ply-*-port-region-verification.json`
+and binary sidecars retain full captures with image/source/kernel hashes.
+Scratch/vector allocations and executable pages were released by the owned
+probe's finally handling; all three native processes exited. The existing GUI
+and MCP segmentation operation remains unchanged until its input preparation
+and controller are integrated and verified; no new capability is advertised.
+
+Validation: `npm run build` passed with no warnings/errors, the focused native
+tests passed 62 tests, and `npm test` passed 22,737 tests with 24 existing skips.
+Formatting and diff checks passed. This slice changes internal reconstruction
+code only; GUI/MCP behavior and the existing verified workflows are preserved.
+The previously verified normal estimator used by STL source refinement remains
+available (`NATIVE_ALIGNMENT_STL.md`); the outstanding work is its exact input
+routing, native adjacency construction and the enclosing alignment controller.
