@@ -1039,3 +1039,53 @@ these captures do not contain real tessellation output. Task-owned image/code
 allocations were released and the probe and REA server exited. No application
 code changed; build and application tests are not applicable to this evidence
 slice.
+
+## Original alternate tessellation provider options and empty results
+
+REA extraction of alternate wrapper `0x1402d8b30` is retained as
+`ev_24361f0fec9ddde304c2b368c351ce708d1e0f9b5e7ebb0b336273a980247038`
+and `ev_ee758c974d0965477ec0166865d91f0151fff1f75dcf5c10e58860c00cd2e5b9`.
+Standard per-face extraction `0x1401ed610` was retained as
+`ev_092c46d54a779559e9bf1c14e0d4ac9b12954404a5c9516c5dffc5b4282d7aa8`
+and `ev_945d952e2597d665da97f30a413e14ca8e56b2470400d75f662c923244b5b8b1`;
+its populated output remains unverified.
+
+A complete original-wrapper replay with an adapted provider returning an empty
+metadata table verifies 96 option combinations and one zero-handle case. The
+wrapper multiplies incoming tolerance by 1.5, then replaces that value with the
+global override at `0x1415a20b0` only when the override is positive. Provider
+primary tolerance is this value times the factor at `0x1415a20c8`; secondary
+tolerance is evaluated as this value times 0.2, then times the factor. The
+retained image's factor is 0.001 and its override is negative Float32 maximum.
+The wrapper receives already-normalized tolerance from its caller; it does not
+perform the caller's 0.005 minimum itself.
+
+Captured provider options have version 28 and mode `0x502a`, or `0x5029` when
+flag `0x14764d782` is enabled. Two option bytes follow the caller's fifth
+argument. Each provider invocation receives one handle, the supplied handle
+value, and a null selection pointer. The wrapper temporarily clears global
+byte `0x1415a20c0` during the provider call and restores its prior value on
+normal completion. The final replay retains the original cookie check and
+return instructions. Empty metadata produces result byte zero; handle zero
+also returns zero and skips provider invocation entirely.
+
+The decompiler infers a void signature here, but assembly writes the result byte
+into `EAX` before returning. Captured empty results establish that return byte;
+populated-result success and failures are separate coverage. The previously
+verified enclosing builder does not branch on this result and still installs
+the constructed cache. That observation is not a guarantee that real provider
+failures or exceptions are safe or equivalent to returning empty metadata.
+
+`docs/evidence/landmark-facet-provider-native.json` retains all 97 cases.
+The independent verifier checks original image identity, unique option coverage,
+tolerance values, version/mode and flag fields, call arguments, global-state
+transitions and return bytes: zero differences. The mapped image and code
+allocation were released; native probe and owned REA server exited.
+
+An offline attempt to bind the two retained external provider addresses to the
+supplied kernel DLL's exports did not produce a common, page-aligned module
+base. Therefore their exported symbol identity is not claimed verified. The
+external export comparison is retained for follow-up rather than used as proof.
+Populated facet-table conversion, real engine tessellation, standard per-face
+output and complete GUI/MCP alignment remain outstanding. No application code
+changed; build and application tests are not applicable to this evidence slice.
