@@ -76,6 +76,44 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("exposes frame-basis translation through preview and apply with matching output", async () => {
+  const { api, state } = setup();
+  const args = {
+    entityIds: ["scan"],
+    constraints: point,
+    translation: [1.25, -2.5, 3.75],
+    expectedRevision: api.currentRevision(),
+  };
+  const preview = await settle(
+    api,
+    await api.invoke("alignment_preview", {
+      ...args,
+      requestId: "offset-preview",
+    }),
+  );
+  expect(preview.status).toBe("succeeded");
+  expect(preview.result.translation).toEqual(args.translation);
+  expect(preview.result.bounds).toBeUndefined();
+  expect(preview.result.targets[0].bounds.min).toEqual([-1.25, 2.5, -3.75]);
+  expect(state.history).toHaveLength(0);
+  const applied = await settle(
+    api,
+    await api.invoke("alignment_apply", { ...args, requestId: "offset-apply" }),
+  );
+  expect(applied.status).toBe("succeeded");
+  expect(applied.result.matrix).toEqual(preview.result.matrix);
+  expect(state.entities[0].positions.slice(0, 3)).toEqual(
+    new Float32Array([-1.25, 2.5, -3.75]),
+  );
+  expect(state.history).toHaveLength(1);
+  const invalid = await api.invoke("alignment_preview", {
+    ...args,
+    translation: [1, 2],
+    requestId: "invalid-offset",
+    expectedRevision: api.currentRevision(),
+  });
+  expect(invalid.ok).toBe(false);
+});
 function request(api: ApplicationApi, constraints = point) {
   return {
     entityIds: ["scan"],

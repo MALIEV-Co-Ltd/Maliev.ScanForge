@@ -9,6 +9,7 @@ import type { Entity } from "../types";
 export interface DatumRequest {
   entityIds: string[];
   constraints: DatumInstruction[];
+  translation?: number[];
 }
 export function createDatumOperations(
   host: WorkspaceHost,
@@ -37,7 +38,7 @@ export function createDatumOperations(
         );
       return entity;
     });
-    const frame = buildDatumAlignment(args.constraints);
+    const frame = buildDatumAlignment(args.constraints, args.translation);
     if (!frame.accepted)
       throw new Error(
         `Reference ${frame.steps.findIndex((step) => !step.accepted) + 1} is incompatible with the preceding frame constraints.`,
@@ -57,6 +58,7 @@ export function createDatumOperations(
     );
     const summary = {
       units: "mm",
+      translation: args.translation ?? [0, 0, 0],
       matrix: frame.matrix,
       frame: frame.state,
       targets: targets.map((item) => {

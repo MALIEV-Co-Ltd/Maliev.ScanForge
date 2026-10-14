@@ -445,6 +445,12 @@ preview. `preview_discard` with target `datum` restores the current model.
 
 The real SDK/browser test checks GUI preview/cancel, equal GUI-apply and MCP
 preview bounds, and exact geometry restoration by Undo. These checks do not
-establish the complete native UI workflow: automatic feature binding, frame-basis
-translation offsets, all-feature/CAD target scope and native geometry-loop parity
+establish the complete native UI workflow: automatic feature binding,
+all-feature/CAD target scope and native geometry-loop parity
 still require work. General ribbon alignment is not advertised as complete.
+
+## Frame-basis translation verification
+
+The original complete callback at `0x1405465a0` was executed against 338 captured reference frames with three offset vectors each. All 1,014 resulting 96-byte matrices match `nativeDatumTranslation` byte for byte. Source matrices remain unchanged. The probe replaces only three UI data-exchange/window notification imports with no-op adapters; original numerical instructions are unchanged. This establishes the offset calculation, not native UI interaction or the downstream geometry loop. REA Evidence: `ev_59ca17f58b68ae543e92823ae4e766110b4b698f01e43c49f75c579788dbe6e4`.
+
+`alignment_preview` and `alignment_apply` accept optional `translation` XYZ offsets in mm along the constructed frame axes, before rigid inversion. The GUI exposes the same parameters as Frame translation (mm). Changing offsets invalidates the preview; they do not accumulate on the previously previewed frame. Omitting offsets preserves the constructor output including signed zeros. The native fixture records image identity, execution scope and adapter imports. Automatic feature binding, exact CAD targets and original mesh application-loop verification remain incomplete.

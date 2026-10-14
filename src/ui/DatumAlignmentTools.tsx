@@ -20,6 +20,7 @@ export function DatumAlignmentTools({
     [busy, setBusy] = useState(false);
   const [error, setError] = useState(""),
     [preview, setPreview] = useState(false);
+  const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [instructions, setInstructions] = useState<DatumInstruction[]>([
     { kind: "point", point: [0, 0, 0], axis: 0 },
     { kind: "plane", point: [0, 0, 0], direction: [0, 0, 1], axis: 2 },
@@ -66,6 +67,7 @@ export function DatumAlignmentTools({
       const receipt = await api.invoke(command, {
         entityIds: [entity.id],
         constraints: instructions.slice(0, count),
+        translation,
         expectedRevision: api.currentRevision(),
         requestId: crypto.randomUUID(),
       });
@@ -226,6 +228,21 @@ export function DatumAlignmentTools({
         >
           Use scan center as origin
         </button>
+      </fieldset>
+      <fieldset disabled={busy}>
+        <VectorField
+          label="Frame translation (mm)"
+          value={translation}
+          onChange={(value) => {
+            if (heldPreview.current) {
+              heldPreview.current = false;
+              void discard();
+            }
+            setPreview(false);
+            setError("");
+            setTranslation(value);
+          }}
+        />
       </fieldset>
       {error && <p role="alert">{error}</p>}
       {preview && (

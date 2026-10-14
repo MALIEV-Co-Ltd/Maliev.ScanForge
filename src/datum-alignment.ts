@@ -6,6 +6,7 @@ import {
   type NativeDatumPlaneState,
 } from "./scan-native-datum-plane";
 import { nativeDatumInverseFrame } from "./scan-native-datum-apply";
+import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity, Positions } from "./types";
 
@@ -20,7 +21,10 @@ export interface DatumInstruction {
 }
 
 /** Complete native constraint sequence, including rejected intermediate state. */
-export function buildDatumAlignment(instructions: readonly DatumInstruction[]) {
+export function buildDatumAlignment(
+  instructions: readonly DatumInstruction[],
+  translation?: readonly number[],
+) {
   if (instructions.length < 1 || instructions.length > 3)
     throw new Error("Coordinate alignment requires one to three references.");
   let state = createNativeDatumPlaneState();
@@ -64,6 +68,11 @@ export function buildDatumAlignment(instructions: readonly DatumInstruction[]) {
     steps.push(result);
     state = result.state;
   }
+  if (translation)
+    state = {
+      ...state,
+      matrix: nativeDatumTranslation(state.matrix, translation),
+    };
   return {
     accepted: steps.every((step) => step.accepted),
     state,

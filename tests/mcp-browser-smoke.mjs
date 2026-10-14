@@ -306,6 +306,9 @@ try {
     .click();
   await page.getByLabel("Reference 1 point (mm) X", { exact: true }).fill("1");
   await page
+    .getByLabel("Frame translation (mm) X", { exact: true })
+    .fill("1.25");
+  await page
     .getByRole("button", { name: "Preview alignment", exact: true })
     .click();
   await page
@@ -330,9 +333,13 @@ try {
   );
   const constraints = [{ kind: "point", point: [1, 0, 0], axis: 0 }];
   const nativePreview = await job(
-    await mutate("alignment_preview", { entityIds: [meshId], constraints }),
+    await mutate("alignment_preview", {
+      entityIds: [meshId],
+      constraints,
+      translation: [1.25, 0, 0],
+    }),
   );
-  assert.deepEqual(nativePreview.targets[0].bounds.min, [-10, -5, -2.5]);
+  assert.deepEqual(nativePreview.targets[0].bounds.min, [-11.25, -5, -2.5]);
   await mutate("preview_discard", { target: "datum" });
   await page
     .getByRole("button", {
