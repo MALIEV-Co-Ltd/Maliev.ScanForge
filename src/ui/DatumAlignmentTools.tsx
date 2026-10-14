@@ -148,9 +148,22 @@ export function DatumAlignmentTools({
     }
     setPreview(false);
     setError("");
-    setInstructions((current) =>
-      current.map((item, i) => (i === index ? { ...item, ...patch } : item)),
-    );
+    setInstructions((current) => {
+      const next = current.map((item, i) =>
+        i === index ? { ...item, ...patch } : item,
+      );
+      if (patch.kind) {
+        try {
+          const options = buildDatumAlignment(next.slice(0, index + 1))
+            .referenceOptions[index];
+          if (options.visible.some(Boolean) && options.enabled.some(Boolean))
+            next[index] = { ...next[index], axis: options.axis };
+        } catch {
+          /* Incomplete numeric input is reported by Preview. */
+        }
+      }
+      return next;
+    });
   }
   async function run(command: "alignment_preview" | "alignment_apply") {
     setBusy(true);
@@ -319,111 +332,124 @@ export function DatumAlignmentTools({
             ))}
           </select>
         </label>
-        {instructions.slice(0, count).map((item, index) => (
-          <fieldset key={index}>
-            <legend>{["Primary", "Secondary", "Tertiary"][index]}</legend>
-            <DatumReferencePicker
-              entities={entities}
-              index={index}
-              value={bindings[index]}
-              read={readReferences}
-              onPickFace={onPickFace}
-              onChange={(value, required) => {
-                setRequiredReferences((current) => {
-                  const next = [...current];
-                  next[index] = required;
-                  return next;
-                });
-                if (
-                  value?.reference.point &&
-                  value.reference.kind !== "unsupported"
-                ) {
-                  update(index, {
-                    kind: value.reference.kind,
-                    point: value.reference.point,
-                    direction: value.reference.direction,
-                    flip: false,
+        {instructions.slice(0, count).map((item, index) => {
+          let enabledAxes: boolean[] | undefined;
+          try {
+            enabledAxes = buildDatumAlignment(instructions.slice(0, index + 1))
+              .referenceOptions[index].enabledAxes;
+          } catch {
+            /* Keep editing available while numeric input is incomplete. */
+          }
+          return (
+            <fieldset key={index}>
+              <legend>{["Primary", "Secondary", "Tertiary"][index]}</legend>
+              <DatumReferencePicker
+                entities={entities}
+                index={index}
+                value={bindings[index]}
+                read={readReferences}
+                onPickFace={onPickFace}
+                onChange={(value, required) => {
+                  setRequiredReferences((current) => {
+                    const next = [...current];
+                    next[index] = required;
+                    return next;
                   });
-                } else update(index, {});
-                setBindings((current) => {
-                  const next = [...current];
-                  next[index] = value
-                    ? {
-                        entityId: value.entityId,
-                        referenceId: value.reference.id,
-                      }
-                    : undefined;
-                  return next;
-                });
-              }}
-            />
-            <label className="field">
-              <span>Type</span>
-              <select
-                aria-label={`Reference ${index + 1} type`}
-                value={item.kind}
-                onChange={(event) =>
-                  update(index, {
-                    kind: event.target.value as DatumInstruction["kind"],
-                    direction: item.direction ?? [0, 0, 1],
-                    flip: false,
-                  })
-                }
-              >
-                <option value="point">Point</option>
-                <option value="plane">Plane</option>
-                <option value="direction">Direction</option>
-              </select>
-            </label>
-            <VectorField
-              label={`Reference ${index + 1} point (mm)`}
-              value={item.point as Vec3}
-              onChange={(point) => update(index, { point })}
-            />
-            {item.kind !== "point" && (
-              <>
-                <VectorField
-                  label={`Reference ${index + 1} direction`}
-                  value={(item.direction ?? [0, 0, 1]) as Vec3}
-                  onChange={(direction) => update(index, { direction })}
-                />
-                <label className="field">
-                  <span>Target axis</span>
-                  <select
-                    aria-label={`Reference ${index + 1} target axis`}
-                    value={item.axis}
-                    onChange={(event) =>
-                      update(index, {
-                        axis: Number(event.target.value) as 0 | 1 | 2,
-                      })
-                    }
-                  >
-                    {["X", "Y", "Z"].map((axis, i) => (
-                      <option key={axis} value={i}>
-                        {axis}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={!!item.flip}
-                    onChange={(event) =>
-                      update(index, { flip: event.target.checked })
-                    }
+                  if (
+                    value?.reference.point &&
+                    value.reference.kind !== "unsupported"
+                  ) {
+                    update(index, {
+                      kind: value.reference.kind,
+                      point: value.reference.point,
+                      direction: value.reference.direction,
+                      flip: false,
+                    });
+                  } else update(index, {});
+                  setBindings((current) => {
+                    const next = [...current];
+                    next[index] = value
+                      ? {
+                          entityId: value.entityId,
+                          referenceId: value.reference.id,
+                        }
+                      : undefined;
+                    return next;
+                  });
+                }}
+              />
+              <label className="field">
+                <span>Type</span>
+                <select
+                  aria-label={`Reference ${index + 1} type`}
+                  value={item.kind}
+                  onChange={(event) =>
+                    update(index, {
+                      kind: event.target.value as DatumInstruction["kind"],
+                      direction: item.direction ?? [0, 0, 1],
+                      flip: false,
+                    })
+                  }
+                >
+                  <option value="point">Point</option>
+                  <option value="plane">Plane</option>
+                  <option value="direction">Direction</option>
+                </select>
+              </label>
+              <VectorField
+                label={`Reference ${index + 1} point (mm)`}
+                value={item.point as Vec3}
+                onChange={(point) => update(index, { point })}
+              />
+              {item.kind !== "point" && (
+                <>
+                  <VectorField
+                    label={`Reference ${index + 1} direction`}
+                    value={(item.direction ?? [0, 0, 1]) as Vec3}
+                    onChange={(direction) => update(index, { direction })}
                   />
-                  Flip reference direction
-                </label>
-              </>
-            )}
-            <button
-              onClick={() => onPickPoint((point) => update(index, { point }))}
-            >
-              Pick reference point on canvas
-            </button>
-          </fieldset>
-        ))}
+                  <label className="field">
+                    <span>Target axis</span>
+                    <select
+                      aria-label={`Reference ${index + 1} target axis`}
+                      value={item.axis}
+                      onChange={(event) =>
+                        update(index, {
+                          axis: Number(event.target.value) as 0 | 1 | 2,
+                        })
+                      }
+                    >
+                      {["X", "Y", "Z"].map((axis, i) => (
+                        <option
+                          key={axis}
+                          value={i}
+                          disabled={enabledAxes?.[i] === false}
+                        >
+                          {axis}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={!!item.flip}
+                      onChange={(event) =>
+                        update(index, { flip: event.target.checked })
+                      }
+                    />
+                    Flip reference direction
+                  </label>
+                </>
+              )}
+              <button
+                onClick={() => onPickPoint((point) => update(index, { point }))}
+              >
+                Pick reference point on canvas
+              </button>
+            </fieldset>
+          );
+        })}
         <button
           onClick={() =>
             update(0, { kind: "point", point: [...center], flip: false })

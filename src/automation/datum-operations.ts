@@ -281,6 +281,7 @@ export function createDatumOperations(
         ? { translationPoint: [...args.translationPoint] }
         : {}),
       constraints: instructions,
+      referenceOptions: frame.referenceOptions,
       matrix: frame.matrix,
       cadMatrix,
       frame: frame.state,

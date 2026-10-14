@@ -13,6 +13,7 @@ import {
 } from "./point-cloud-placement";
 import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { nativeDatumTranslationFromPoint } from "./scan-native-datum-picked-translation";
+import { nativeDatumReferenceOptions } from "./scan-native-datum-reference-options";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity } from "./types";
 import { transformDatumCoordinates } from "./datum-transform-kernel";
@@ -39,6 +40,7 @@ export function buildDatumAlignment(
     throw new Error("Coordinate alignment requires one to three references.");
   let state = createNativeDatumPlaneState();
   const steps: { accepted: boolean; state: NativeDatumPlaneState }[] = [];
+  const referenceOptions: ReturnType<typeof nativeDatumReferenceOptions>[] = [];
   for (let index = 0; index < instructions.length; index++) {
     const input = instructions[index],
       stage = input.stage ?? (index as 0 | 1 | 2);
@@ -49,6 +51,17 @@ export function buildDatumAlignment(
       throw new Error("Unsupported coordinate alignment reference or axis.");
     const direction = input.direction?.map((value) =>
       input.flip ? -value : value,
+    );
+    referenceOptions.push(
+      nativeDatumReferenceOptions(
+        state,
+        stage,
+        input.kind,
+        input.point,
+        input.direction,
+        input.flip,
+        input.kind === "plane" ? [2, 0, 1].indexOf(input.axis) : input.axis,
+      ),
     );
     let result: { accepted: boolean; state: NativeDatumPlaneState };
     if (input.kind === "point")
@@ -90,6 +103,7 @@ export function buildDatumAlignment(
     accepted: steps.every((step) => step.accepted),
     state,
     steps,
+    referenceOptions,
     matrix: nativeDatumInverseFrame(state.matrix),
     translation: offsets ? [...offsets] : [0, 0, 0],
   };

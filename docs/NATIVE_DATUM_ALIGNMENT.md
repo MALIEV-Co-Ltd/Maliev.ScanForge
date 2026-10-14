@@ -1524,3 +1524,39 @@ SDK bridge and native probe processes exited and temporary ports closed.
 The native corpus proves the translation branch's arithmetic, while the browser
 test proves our application interaction and parity. Neither is a complete native
 GUI/controller comparison.
+
+## Reference-axis option resolver
+
+REA extracted original procedure `0x140541770` (pseudocode evidence
+`ev_14ada3c5785bd7ea062e8a8a8742ee52265a7d21b555dc13569f3bcf1bc66bec`,
+assembly `ev_7ddcc3f3801bf26f6748d64f7f2d35003f9450b0158a71662827b89cb86168b1`).
+The retained `alignment-reference-options-native.json` records 3,648 direct
+original calls across 19 reset/plane/direction/point frame states, all three
+reference slots, both flip settings, two points and seven direction vectors.
+Resolved feature payload/type and MFC widgets are adapters; eligibility routines
+and the tertiary direction fallback execute original machine code. No native
+CAD payload resolver, mesh picking or automatic feature-fitting claim follows.
+
+The options resolver does not mutate the frame: every captured frame byte is
+unchanged. Its `3A2640` fallback tests line-plane intersection and original
+reference-point distance from the anchor strictly greater than 1. It is distinct
+from the mutating direction-reference constructor. Plane radio codes map to
+Z/X/Y, direction codes to X/Y/Z. Primary references default to Z. Secondary
+priority is radio 0/2/1; tertiary priority is 0/1/2. An all-disabled result retains
+the existing radio selection; point references hide axis choices.
+
+`scan-native-datum-reference-options.ts` matches every captured eligibility,
+visibility, selection and recognition result. The shared frame builder returns
+these options through GUI and MCP Preview/Apply. The GUI disables incompatible
+axes and selects the native default for newly picked references/types. The main
+Align controller remains gated until its remaining workflow is verified.
+
+Validation: `npm run build` passed with no warnings/errors; focused resolver and
+shared API tests passed 3,730 tests. `npm test` passed 340 files / 26,459 tests,
+with 5 existing skipped files / 24 skipped tests. The built-app browser replay
+verified primary plane default Z, secondary direction eligibility matching MCP,
+real canvas translation-point picking, GUI/MCP Preview/Apply geometry, numeric
+override clearing and Undo. Receipt:
+`.resources/reference-options-browser/browser-validation.json`. Native captures
+released their allocations and exited; browser and SDK bridge cleanup is retained
+in that receipt. Live development on port 5173 remains available for testing.

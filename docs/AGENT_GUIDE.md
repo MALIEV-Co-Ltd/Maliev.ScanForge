@@ -503,3 +503,13 @@ Preview/Apply. Identity placement preserves recipes and needs no baking.
 Primitive fit controls are available in the `fit` workspace. Point-cloud reduction and noise controls use `pointReduce` and `pointNoise`; GUI Reduce polygons / Reduce noise routes to these when a point cloud is selected. Their existing semantic `mesh_process` point-cloud operations remain available. Unsupported mesh-only commands report a mesh prerequisite instead of opening an unrelated point-cloud editor.
 
 `objectColor` opens the focused color control; `properties` retains the complete object inspector. Existing `object_update` color changes are unchanged.
+
+Reference-axis options are now computed by the same native-derived resolver in
+GUI and MCP. `alignment_preview` and `alignment_apply` job results include
+`referenceOptions` in constraint order: `enabledAxes` uses physical X/Y/Z order,
+`axis` is the native default, and `enabled`, `visible`, `selectionCode` preserve
+native radio order (plane Z/X/Y; direction X/Y/Z). These are eligibility
+predicates, not a substitute for frame construction acceptance. Explicit MCP
+axes remain explicit; the GUI disables incompatible choices and picks the
+native default when selecting a new reference/type. Existing live bindings,
+revision checks, cancellation and history semantics are unchanged.

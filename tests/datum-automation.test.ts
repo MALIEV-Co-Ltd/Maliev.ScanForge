@@ -84,6 +84,35 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("exposes native reference-axis eligibility through shared alignment jobs", async () => {
+  const { api, state } = setup();
+  const constraints = [
+    { kind: "plane", point: [0, 0, 0], direction: [0, 0, 1], axis: 2 },
+    { kind: "direction", point: [0, 0, 0], direction: [0, 0, 1], axis: 2 },
+  ];
+  try {
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", request(api, constraints)),
+    );
+    expect(preview.status).toBe("succeeded");
+    expect(preview.result.referenceOptions).toMatchObject([
+      { axis: 2, enabledAxes: [true, true, true], selectionCode: 0 },
+      { axis: 2, enabledAxes: [false, false, true], selectionCode: 2 },
+    ]);
+    expect(state.history).toHaveLength(0);
+    const apply = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api, constraints)),
+    );
+    expect(apply.status).toBe("succeeded");
+    expect(apply.result.referenceOptions).toEqual(
+      preview.result.referenceOptions,
+    );
+  } finally {
+    api.dispose();
+  }
+});
 it("resolves a picked world point against the current frame and replaces manual offsets", async () => {
   const { api, state } = setup();
   try {
