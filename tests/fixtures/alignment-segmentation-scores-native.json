@@ -1,0 +1,141 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedures": ["0x140abf580", "0x140ac09d0", "0x140ac0630"],
+  "scope": "Complete original score preparation including spatial buckets, native concurrency, angle conversion, normalization and smoothing, followed by original classification/DFS. Caller-owned geometry containers and region/scratch records; native importer and installed GUI excluded.",
+  "cases": [
+    {
+      "angles": [0, 0, 0, 0],
+      "positions": [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0]
+      ],
+      "normals": [
+        [0.0, 0.0, 1.0],
+        [0.0, 0.0, 1.0],
+        [0.0, 0.0, 1.0],
+        [0.0, 0.0, 1.0]
+      ],
+      "triangles": [
+        [0, 1, 2],
+        [0, 2, 3]
+      ],
+      "neighbors": [
+        [null, 1, null],
+        [null, 0, null]
+      ],
+      "capDegrees": 10,
+      "threshold": 0.25,
+      "nativeScoreBits": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000",
+        "0000000000000000"
+      ],
+      "nativeLabels": [4278190080, 4278190080],
+      "nativeRegions": [[0, 1]]
+    },
+    {
+      "angles": [0, 2, 4, 6],
+      "positions": [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0]
+      ],
+      "normals": [
+        [0.0, 0.0, 1.0],
+        [0.03489949554204941, 0.0, 0.9993908405303955],
+        [0.06975647062063217, 0.0, 0.9975640773773193],
+        [0.10452846437692642, 0.0, 0.9945219159126282]
+      ],
+      "triangles": [
+        [0, 1, 2],
+        [0, 2, 3]
+      ],
+      "neighbors": [
+        [null, 1, null],
+        [null, 0, null]
+      ],
+      "capDegrees": 10,
+      "threshold": 0.25,
+      "nativeScoreBits": [
+        "c93a78245155e53f",
+        "d25a0a16a8aaea3f",
+        "f7df6d0ea9aaea3f",
+        "d25a0a16a8aaea3f"
+      ],
+      "nativeLabels": [4294967295, 4294967295],
+      "nativeRegions": []
+    },
+    {
+      "angles": [0, 5, 10, 15],
+      "positions": [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0]
+      ],
+      "normals": [
+        [0.0, 0.0, 1.0],
+        [0.08715574443340302, 0.0, 0.9961947202682495],
+        [0.1736481785774231, 0.0, 0.9848077297210693],
+        [0.258819043636322, 0.0, 0.9659258127212524]
+      ],
+      "triangles": [
+        [0, 1, 2],
+        [0, 2, 3]
+      ],
+      "neighbors": [
+        [null, 1, null],
+        [null, 0, null]
+      ],
+      "capDegrees": 10,
+      "threshold": 0.25,
+      "nativeScoreBits": [
+        "000000000000f03f",
+        "000000000000f03f",
+        "000000000000f03f",
+        "000000000000f03f"
+      ],
+      "nativeLabels": [4294967295, 4294967295],
+      "nativeRegions": []
+    },
+    {
+      "angles": [0, 45, 90, 135],
+      "positions": [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0]
+      ],
+      "normals": [
+        [0.0, 0.0, 1.0],
+        [0.7071067690849304, 0.0, 0.7071067690849304],
+        [1.0, 0.0, 6.123234262925839e-17],
+        [0.7071067690849304, 0.0, -0.7071067690849304]
+      ],
+      "triangles": [
+        [0, 1, 2],
+        [0, 2, 3]
+      ],
+      "neighbors": [
+        [null, 1, null],
+        [null, 0, null]
+      ],
+      "capDegrees": 10,
+      "threshold": 0.25,
+      "nativeScoreBits": [
+        "000000e0ffffef47",
+        "000000e0ffffef47",
+        "000000e0ffffef47",
+        "000000e0ffffef47"
+      ],
+      "nativeLabels": [4294967295, 4294967295],
+      "nativeRegions": []
+    }
+  ],
+  "workerThreadIds": [8512, 43496, 54412, 57460],
+  "trackedHeapRemaining": 4
+}

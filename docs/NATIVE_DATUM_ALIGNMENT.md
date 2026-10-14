@@ -624,6 +624,49 @@ The original score-preparation routine still needs runtime comparison on full
 scan input. The application's current adjacent-face-normal segmentation differs
 from this recovered path; these captures do not certify or enable it.
 
+#### Complete score preparation execution
+
+Assembly confirms that the wrapper supplies a third argument of 10 degrees in
+XMM2 to `0x140abf580`, and preserves the normalized slider double in XMM1 for
+`0x140ac09d0`. The decompiler's abbreviated preparation call omitted that cap.
+Assembly Evidence: `ev_23e1e816e6ff9bdac38eee8ef8b73eb71b4447eadecd1ad1be4e853986b74cc7`.
+
+The complete original preparation now executes on four indexed quads with
+caller-owned Float32 positions/normals, followed by the original threshold and
+region routines. Spatial buckets, bucket-worker/remainder passes, acos conversion,
+normalization and neighbor averaging remain original code. The real ConCRT
+runtime executes the dispatch; geometry getter instrumentation observes four
+distinct native thread IDs across the run. This is concurrency evidence, not a
+controlled performance benchmark. Geometry interfaces and region/scratch
+bookkeeping are adapters; source importing and installed GUI remain excluded.
+
+Preparation has two material steps after raw angle calculation:
+`0x140abeae0` clips to the finite range and normalizes it, then `0x140abf2f0`
+averages neighboring scores in triangle order under the captured branch flag 0.
+Normalization can clip an angle-cap sentinel to the finite maximum when another
+finite score exists; it is incorrect to assume every capped vertex stays a
+sentinel. If all scores are sentinels, they remain sentinels. The alternative
+smoothing branch is not established by these captures.
+
+An independent implementation matches every final score byte, label and region
+order for flat, 2/4/6-degree, 5/10/15-degree and 45/90/135-degree normal inputs.
+The fixture and `tests/alignment-segmentation-scores-native.test.ts` preserve the
+normalization and smoothing behavior. Native allocation adapters release remaining
+scratch allocations before process exit; the successful probe releases its mapped
+image. Early failed probes exposed old memory-copy imports, which were repaired
+by rebinding the original import slots to real CRT functions without overwriting
+adjacent six-byte thunks.
+
+Normalization Evidence:
+`ev_67e41abdbc50909aac7d2ed84212e621f62ec79b5f5f8083efaadf5e915b7f72`.
+Smoothing Evidence:
+`ev_b93aee9860e68ec1c20715d9cdbf37d189ccf7a7b73906195738e9478099e38f`.
+Bucket worker Evidence:
+`ev_0b99030798d44daf63b3e4246a7e0395de3a8683af3e9eafcf68a260d48ade85`.
+External `segmentation-score-*` files retain ABI extraction, native results,
+independent verification and cleanup. Full owner-scan comparison and application
+integration remain required; the four small fixtures do not certify them.
+
 ## Native primitive geometry and cache transforms
 
 All six primitive object types use the shared dispatcher `0x140405e40` at
