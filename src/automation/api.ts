@@ -1,4 +1,5 @@
 import catalog from "./catalog.json";
+import { releaseDatumPreview } from "./datum-preview-resources";
 import {
   selectionProcessingMode,
   type SelectionProcessingMode,
@@ -361,6 +362,7 @@ export class ApplicationApi {
           args.target as
             "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
         );
+        if (args.target === "datum") await releaseDatumPreview(this.host);
         return this.success({
           target: args.target,
           cancellationRequested: true,
@@ -704,6 +706,7 @@ export class ApplicationApi {
   dispose() {
     this.disposed = true;
     this.cancelActive();
+    void releaseDatumPreview(this.host).catch(() => {});
     this.artifacts.clear();
     this.requests.clear();
   }

@@ -14,6 +14,7 @@ import {
   type DatumTransformRequest,
 } from "../src/datum-transform-worker";
 import type { NativeDatumPlaneState } from "../src/scan-native-datum-plane";
+import { nativeDatumCadTransform } from "../src/scan-native-datum-cad-transform";
 function setup() {
   const entity: Entity = {
     id: "scan",
@@ -55,6 +56,7 @@ function setup() {
       busy = value;
     },
     showDatumPreview: vi.fn(),
+    discardPreview: vi.fn(),
     present: vi.fn(async () => {}),
     inspectApplication: () => ({ previews: {} }),
   };
@@ -81,6 +83,115 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+function exactSetup() {
+  const setupResult = setup();
+  const { host, state } = setupResult;
+  state.entities[0] = {
+    ...state.entities[0],
+    kind: "cad",
+    kernelId: "source",
+    brep: "original",
+  };
+  let next = 0;
+  const release = vi.fn(async (_ids: string[]) => {});
+  const transformDatum = vi.fn(
+    async (_id: string, matrix: readonly number[]) => ({
+      kernelId: `placed-${++next}`,
+      positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      brep: "placed",
+      placementMatrix: nativeDatumCadTransform(matrix),
+    }),
+  );
+  host.cad = () => ({ transformDatum, release }) as unknown as CadClient;
+  return { ...setupResult, release, transformDatum };
+}
+it("shares exact CAD Preview/Apply with MCP and releases only temporary handles", async () => {
+  const { api, host, state, release, transformDatum } = exactSetup();
+  try {
+    for (let i = 0; i < 2; i++) {
+      const preview = await settle(
+        api,
+        await api.invoke("alignment_preview", request(api)),
+      );
+      expect(preview.status).toBe("succeeded");
+      expect(preview.result.targets[0].execution.backend).toBe("OpenCascade");
+    }
+    expect(release).toHaveBeenCalledWith(["placed-1"]);
+    expect(state.entities[0].kernelId).toBe("source");
+    expect(state.history).toHaveLength(0);
+    const discard = await api.invoke("preview_discard", {
+      target: "datum",
+      expectedRevision: api.currentRevision(),
+      requestId: "discard-exact",
+    });
+    expect(discard.ok).toBe(true);
+    expect(release).toHaveBeenCalledWith(["placed-2"]);
+    const apply = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api)),
+    );
+    expect(apply.status).toBe("succeeded");
+    expect(state.entities[0].kernelId).toBe("placed-3");
+    expect(state.entities[0].brep).toBe("placed");
+    expect(state.history[0].entities[0].kernelId).toBe("source");
+    expect(host.commit).toHaveBeenCalledTimes(1);
+    expect(transformDatum).toHaveBeenCalledTimes(3);
+    expect(release.mock.calls.flatMap(([ids]) => ids)).toEqual([
+      "placed-1",
+      "placed-2",
+    ]);
+  } finally {
+    api.dispose();
+  }
+});
+it("releases exact CAD outputs on parity failure without committing", async () => {
+  const { api, state, release, transformDatum } = exactSetup();
+  transformDatum.mockImplementationOnce(async () => ({
+    kernelId: "bad",
+    positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    brep: "bad",
+    placementMatrix: Array(12).fill(0),
+  }));
+  try {
+    const job = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api)),
+    );
+    expect(job.status).toBe("failed");
+    expect(job.error?.message).toMatch(/native frame/);
+    expect(release).toHaveBeenCalledWith(["bad"]);
+    expect(state.entities[0].kernelId).toBe("source");
+    expect(state.history).toHaveLength(0);
+  } finally {
+    api.dispose();
+  }
+});
+it("releases exact CAD outputs when cancelled during presentation", async () => {
+  const { api, host, state, release } = exactSetup();
+  let finish: undefined | (() => void);
+  vi.mocked(host.present!).mockImplementationOnce(
+    () =>
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  try {
+    const receipt = await api.invoke("alignment_apply", request(api));
+    for (let i = 0; i < 100 && !finish; i++)
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    expect(finish).toBeTypeOf("function");
+    if (!receipt.ok) throw new Error(receipt.error.message);
+    await api.invoke("job_cancel", {
+      jobId: (receipt.result as { jobId: string }).jobId,
+    });
+    finish!();
+    expect((await settle(api, receipt)).status).toBe("cancelled");
+    expect(release).toHaveBeenCalledWith(["placed-1"]);
+    expect(state.history).toHaveLength(0);
+  } finally {
+    api.dispose();
+  }
+});
 it("publishes the original exact-CAD placement matrix through shared Preview and Apply", async () => {
   const { api, state } = setup(),
     sample = native.cases[0],
@@ -544,7 +655,7 @@ it("rejects incompatible constraints and unsupported targets before commit", asy
     );
     expect(job.status).toBe("failed");
     expect(job.error?.message).toMatch(/Reference 2/);
-    state.entities = [{ ...state.entities[0], kernelId: "cad" }];
+    state.entities = [{ ...state.entities[0], kernelId: "cad", locked: true }];
     expect(
       (await settle(api, await api.invoke("alignment_apply", request(api))))
         .status,

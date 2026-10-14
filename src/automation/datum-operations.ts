@@ -5,6 +5,10 @@ import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
 import {
+  adoptDatumPreview,
+  releaseDatumPreview,
+} from "./datum-preview-resources";
+import {
   createAlignmentOperations,
   type AlignmentReferencePage,
 } from "./alignment-operations";
@@ -46,12 +50,11 @@ export function createDatumOperations(
         throw new Error("Alignment transform requires XYZ coordinates.");
       if (
         entity.locked ||
-        entity.kernelId ||
-        entity.parametric ||
-        !["mesh", "pointcloud"].includes(entity.kind)
+        (!entity.kernelId &&
+          (entity.parametric || !["mesh", "pointcloud"].includes(entity.kind)))
       )
         throw new Error(
-          "Select unlocked mesh or point cloud targets; exact CAD targets are not supported yet.",
+          "Select unlocked mesh, point cloud or exact CAD targets.",
         );
       return entity;
     });
@@ -100,6 +103,8 @@ export function createDatumOperations(
     context.check();
     const transformed = new Map<string, Entity>();
     const identity = nativeDatumIsIdentity(frame.state.matrix);
+    const cadMatrix = nativeDatumCadTransform(frame.matrix);
+    const kernelIds: string[] = [];
     const diagnostics = new Map<
       string,
       { bounds: { min: number[]; max: number[] }; execution: unknown }
@@ -152,6 +157,57 @@ export function createDatumOperations(
           });
           continue;
         }
+        if (entity.kernelId) {
+          const result = await host
+            .cad()
+            .transformDatum(entity.kernelId, frame.matrix);
+          kernelIds.push(result.kernelId);
+          context.check();
+          if (
+            result.placementMatrix.length !== 12 ||
+            !result.placementMatrix.every((value, i) =>
+              Object.is(value, cadMatrix[i]),
+            )
+          )
+            throw new Error(
+              "Exact CAD placement disagrees with the verified native frame.",
+            );
+          const min = [Infinity, Infinity, Infinity],
+            max = [-Infinity, -Infinity, -Infinity];
+          if (!result.positions.length || result.positions.length % 9)
+            throw new Error(
+              "Exact CAD alignment returned invalid display geometry.",
+            );
+          for (let i = 0; i < result.positions.length; i++) {
+            const value = result.positions[i];
+            if (!Number.isFinite(value) || Math.abs(value) > 1e9)
+              throw new Error(
+                "Aligned CAD coordinates exceed the supported range.",
+              );
+            min[i % 3] = Math.min(min[i % 3], value);
+            max[i % 3] = Math.max(max[i % 3], value);
+          }
+          const { placementMatrix: _placementMatrix, ...geometry } = result;
+          transformed.set(entity.id, {
+            ...entity,
+            ...geometry,
+            parametric: undefined,
+            fit: undefined,
+            surfacePatch: undefined,
+            surfaceScanId: undefined,
+            indexedMesh: undefined,
+            meshSelection: undefined,
+          });
+          diagnostics.set(entity.id, {
+            bounds: { min, max },
+            execution: {
+              backend: "OpenCascade",
+              copyGeometry: false,
+              physicalWorkers: 1,
+            },
+          });
+          continue;
+        }
         const result = await executor!.transformScan(entity, frame.matrix);
         transformed.set(entity.id, result.entity);
         diagnostics.set(entity.id, {
@@ -159,10 +215,13 @@ export function createDatumOperations(
           execution: result.execution,
         });
       }
+      context.check();
+    } catch (error) {
+      if (kernelIds.length) await host.cad().release(kernelIds);
+      throw error;
     } finally {
       executor?.close();
     }
-    context.check();
     const next = snapshot.entities.map(
       (item) => transformed.get(item.id) ?? item,
     );
@@ -171,7 +230,7 @@ export function createDatumOperations(
       translation: args.translation ?? [0, 0, 0],
       constraints: instructions,
       matrix: frame.matrix,
-      cadMatrix: nativeDatumCadTransform(frame.matrix),
+      cadMatrix,
       frame: frame.state,
       targets: targets.map((item) => {
         const output = transformed.get(item.id)!;
@@ -183,7 +242,7 @@ export function createDatumOperations(
         };
       }),
     };
-    return { next, summary, matrix: frame.matrix };
+    return { next, summary, matrix: frame.matrix, kernelIds };
   };
   return {
     alignment_preview: async (args, context) => {
@@ -205,10 +264,22 @@ export function createDatumOperations(
           "Finish or cancel the active preview before previewing coordinate alignment.",
         );
       const result = await prepare(args as DatumRequest, context);
-      context.check();
-      host.showDatumPreview(result.next);
-      await host.present?.(context.signal);
-      context.check();
+      let adopted = false;
+      try {
+        context.check();
+        await adoptDatumPreview(host, result.kernelIds);
+        adopted = true;
+        context.check();
+        host.showDatumPreview(result.next);
+        await host.present?.(context.signal);
+        context.check();
+      } catch (error) {
+        host.showDatumPreview(null);
+        if (adopted) await releaseDatumPreview(host);
+        else if (result.kernelIds.length)
+          await host.cad().release(result.kernelIds);
+        throw error;
+      }
       return {
         ...result.summary,
         preview: true,
@@ -218,18 +289,26 @@ export function createDatumOperations(
     alignment_apply: async (args, context) => {
       const result = await prepare(args as DatumRequest, context);
       const changed = !nativeDatumIsIdentity(result.summary.frame.matrix);
-      context.check();
+      let committed = false;
       try {
+        context.check();
+        host.showDatumPreview?.(null);
+        await releaseDatumPreview(host);
+        context.check();
         if (changed && host.showDatumPreview) {
           host.showDatumPreview(result.next);
           await host.present?.(context.signal);
         }
         context.check();
-        if (changed)
+        if (changed) {
           host.commit(result.next, "Align scans to origin/reference frame");
+          committed = true;
+        }
         host.showDatumPreview?.(null);
       } catch (error) {
         host.showDatumPreview?.(null);
+        if (!committed && result.kernelIds.length)
+          await host.cad().release(result.kernelIds);
         throw error;
       }
       return { ...result.summary, changed, preview: false };

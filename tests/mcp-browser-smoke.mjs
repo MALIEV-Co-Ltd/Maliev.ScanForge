@@ -268,6 +268,77 @@ try {
   }
   assert.equal((await call("project_get")).revision, referenceRevision);
   // UI undo and MCP redo exercise the same command/history boundary.
+  const exactConstraints = [{ kind: "point", point: [1, 2, 3], axis: 0 }];
+  const exactPreview = await job(
+    await mutate("alignment_preview", {
+      entityIds: created.entityIds,
+      constraints: exactConstraints,
+    }),
+  );
+  assert.equal(exactPreview.targets[0].execution.backend, "OpenCascade");
+  assert.equal((await call("project_get")).revision, referenceRevision);
+  await mutate("preview_discard", { target: "datum" });
+  await page
+    .getByRole("button", {
+      name: "Align object to origin / references",
+      exact: true,
+    })
+    .click();
+  for (const [axis, value] of [
+    ["X", "1"],
+    ["Y", "2"],
+    ["Z", "3"],
+  ])
+    await page
+      .getByLabel(`Reference 1 point (mm) ${axis}`, { exact: true })
+      .fill(value);
+  await page
+    .getByRole("button", { name: "Preview alignment", exact: true })
+    .click();
+  await page
+    .getByText("Alignment preview ready · model unchanged", { exact: true })
+    .waitFor();
+  assert.equal((await call("project_get")).revision, referenceRevision);
+  await page
+    .getByRole("button", { name: "Apply alignment", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Align object to origin / references",
+      exact: true,
+    })
+    .waitFor();
+  const placedReferences = await job(
+    await call("alignment_references", { entityId: created.entityIds[0] }),
+  );
+  placedReferences.references.forEach((reference, i) =>
+    reference.point.forEach((value, axis) =>
+      assert.ok(
+        Math.abs(
+          value - (references.references[i].point[axis] - [1, 2, 3][axis]),
+        ) < 1e-10,
+      ),
+    ),
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    (
+      await job(
+        await call("alignment_references", { entityId: created.entityIds[0] }),
+      )
+    ).references,
+    references.references,
+  );
+  await mutate("history_redo", {});
+  assert.deepEqual(
+    (
+      await job(
+        await call("alignment_references", { entityId: created.entityIds[0] }),
+      )
+    ).references,
+    placedReferences.references,
+  );
+  await mutate("history_undo", {});
   await page.getByRole("tab", { name: "Edit / View", exact: true }).click();
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   assert.equal((await call("project_get")).result.objects.length, 0);
@@ -300,7 +371,7 @@ try {
   );
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .click();
@@ -344,7 +415,7 @@ try {
   await mutate("preview_discard", { target: "datum" });
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .click();
@@ -359,7 +430,7 @@ try {
     .click();
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .waitFor();
@@ -381,7 +452,7 @@ try {
   assert.deepEqual(restoredAnalysis.stats, sourceAnalysis.stats);
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .click();
@@ -427,7 +498,7 @@ try {
     .click();
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .waitFor();
@@ -451,7 +522,7 @@ try {
   });
   await page
     .getByRole("button", {
-      name: "Align scan to origin / references",
+      name: "Align object to origin / references",
       exact: true,
     })
     .click();

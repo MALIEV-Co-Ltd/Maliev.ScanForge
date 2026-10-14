@@ -2,6 +2,7 @@ import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
 import type { CadAlignmentInput } from "./alignment-reference";
+import { nativeDatumInverseFrame } from "../scan-native-datum-apply";
 
 export type CadPattern =
   | { kind: "linear"; count: number; step: Vec3 }
@@ -87,6 +88,19 @@ export class CadClient {
       rotation,
       scale,
     }) as Promise<KernelMesh>;
+  }
+
+  transformDatum(
+    kernelId: string,
+    matrix: readonly number[],
+  ): Promise<KernelMesh & { placementMatrix: number[] }> {
+    const inverse = nativeDatumInverseFrame(matrix);
+    return this.request("datumTransform", {
+      kernelId,
+      origin: [inverse[3], inverse[7], inverse[11]],
+      xDirection: [inverse[0], inverse[4], inverse[8]],
+      zDirection: [inverse[2], inverse[6], inverse[10]],
+    }) as Promise<KernelMesh & { placementMatrix: number[] }>;
   }
 
   extrude(

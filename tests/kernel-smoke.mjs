@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
 import { webcrypto } from "node:crypto";
+import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply.ts";
 
 // Exercise the actual classic-worker protocol without a server or detached worker.
 // Run only after resource admission: WASM initialization requires substantial RAM.
@@ -91,6 +92,110 @@ function close(actual, expected, message) {
 }
 try {
   const oc = await vm.runInContext("kernel()", context);
+  const cadDatumCases = JSON.parse(
+    readFileSync(
+      new URL("tests/fixtures/alignment-datum-cad-transform-native.json", root),
+      "utf8",
+    ),
+  ).cases;
+  let datumSource;
+  const datumHandles = [];
+  try {
+    const point = new oc.gp_Pnt_3(2, 3, 4);
+    datumHandles.push(point);
+    const normal = new oc.gp_Dir_4(0, 0, 1);
+    datumHandles.push(normal);
+    const plane = new oc.gp_Pln_3(point, normal);
+    datumHandles.push(plane);
+    const maker = new oc.BRepBuilderAPI_MakeFace_9(plane, -1, 3, -2, 4);
+    datumHandles.push(maker);
+    datumSource = context.register(oc, maker.Face());
+  } finally {
+    context.cleanup(datumHandles);
+  }
+  const sourceBrep = context.serializeBrep(
+    oc,
+    context.getShape(datumSource.kernelId),
+  );
+  for (const sample of cadDatumCases) {
+    const inputBytes = Buffer.from(sample.matrixBits, "hex");
+    const inverse = nativeDatumInverseFrame(
+      Array.from({ length: 12 }, (_, i) => inputBytes.readDoubleLE(i * 8)),
+    );
+    const output = await request("datumTransform", {
+      kernelId: datumSource.kernelId,
+      origin: [inverse[3], inverse[7], inverse[11]],
+      xDirection: [inverse[0], inverse[4], inverse[8]],
+      zDirection: [inverse[2], inverse[6], inverse[10]],
+    });
+    const bytes = Buffer.alloc(96);
+    output.placementMatrix.forEach((value, i) =>
+      bytes.writeDoubleLE(value, i * 8),
+    );
+    assert.equal(bytes.toString("hex"), sample.nativeMatrixBits, sample.name);
+    assert.ok(
+      context
+        .getShape(output.kernelId)
+        .IsPartner(context.getShape(datumSource.kernelId)),
+      "Rigid placement shares exact source topology",
+    );
+    const handles = [];
+    try {
+      const face = oc.TopoDS.Face_1(context.getShape(output.kernelId));
+      handles.push(face);
+      const adaptor = new oc.BRepAdaptor_Surface_2(face, true);
+      handles.push(adaptor);
+      const p = new oc.gp_Pnt_1(),
+        du = new oc.gp_Vec_1(),
+        dv = new oc.gp_Vec_1();
+      handles.push(p, du, dv);
+      adaptor.D1(1, 1, p, du, dv);
+      for (const [actual, key] of [
+        [p, "nativePointBits"],
+        [du, "nativeDuBits"],
+        [dv, "nativeDvBits"],
+      ]) {
+        const bytes = Buffer.alloc(24);
+        [actual.X(), actual.Y(), actual.Z()].forEach((value, i) =>
+          bytes.writeDoubleLE(value, i * 8),
+        );
+        assert.equal(
+          bytes.toString("hex"),
+          sample[key],
+          `Original face D1 ${key}: ${sample.name}`,
+        );
+      }
+    } finally {
+      context.cleanup(handles);
+    }
+    const expected = [];
+    for (let i = 0; i < datumSource.positions.length; i += 3)
+      for (let axis = 0; axis < 3; axis++)
+        expected.push(
+          output.placementMatrix[axis * 4] * datumSource.positions[i] +
+            output.placementMatrix[axis * 4 + 1] *
+              datumSource.positions[i + 1] +
+            output.placementMatrix[axis * 4 + 2] *
+              datumSource.positions[i + 2] +
+            output.placementMatrix[axis * 4 + 3],
+        );
+    bounds(output.positions).forEach((value, i) =>
+      close(value, bounds(expected)[i], "Exact placement display bounds"),
+    );
+    await request("release", [output.kernelId]);
+    await assert.rejects(
+      request("alignmentReferences", { kernelId: output.kernelId }),
+    );
+  }
+  assert.equal(
+    context.serializeBrep(oc, context.getShape(datumSource.kernelId)),
+    sourceBrep,
+    "Source exact BRep unchanged by 338 placements",
+  );
+  await request("release", [datumSource.kernelId]);
+  console.log(
+    `CAD datum parity: ${cadDatumCases.length} native matrices, shared exact topology, display bounds and handle releases passed.`,
+  );
   for (const specification of [
     { kind: "box", center: [2, -3, 7], size: [4, 6, 8] },
     { kind: "sphere", center: [2, -3, 7], radius: 3 },

@@ -158,7 +158,7 @@ export function DatumAlignmentTools({
         disabled={!!entity.locked}
         onClick={() => setOpen(true)}
       >
-        Align scan to origin / references
+        Align object to origin / references
       </button>
     );
   return (

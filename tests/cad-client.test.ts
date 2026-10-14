@@ -77,6 +77,20 @@ describe("CAD worker ownership and cancellation", () => {
     ];
     const cases: [() => Promise<unknown>, string, unknown][] = [
       [
+        () =>
+          client.transformDatum(
+            "exact-cad",
+            [1, 0, 0, -5, 0, 1, 0, -6, 0, 0, 1, -7],
+          ),
+        "datumTransform",
+        {
+          kernelId: "exact-cad",
+          origin: [5, 6, 7],
+          xDirection: [1, 0, 0],
+          zDirection: [0, 0, 1],
+        },
+      ],
+      [
         () => client.alignmentReferences("exact-cad"),
         "alignmentReferences",
         { kernelId: "exact-cad" },

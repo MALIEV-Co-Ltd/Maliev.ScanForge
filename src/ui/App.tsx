@@ -789,7 +789,14 @@ export function App() {
     };
   }, []);
   useEffect(() => {
-    if (datumPreview.current?.base !== entities) datumPreview.current = null;
+    if (datumPreview.current && datumPreview.current.base !== entities) {
+      datumPreview.current = null;
+      void workspaceApi.invoke("preview_discard", {
+        target: "datum",
+        expectedRevision: workspaceApi.currentRevision(),
+        requestId: crypto.randomUUID(),
+      });
+    }
     viewport.current?.setEntities(
       datumPreview.current
         ? datumPreview.current.entities
@@ -5102,29 +5109,29 @@ export function App() {
                         }
                       />
                     )}
-                    {["mesh", "pointcloud"].includes(selected.kind) &&
-                      !selected.kernelId &&
-                      !selected.parametric && (
-                        <DatumAlignmentTools
-                          api={workspaceApi}
-                          entity={selected}
-                          center={stats.center}
-                          entities={entities}
-                          readReferences={readAlignmentReferences}
-                          onPickFace={(callback) => {
-                            datumFacePick.current = callback;
-                            if (callback) {
-                              datumPointPick.current = null;
-                              setMode("inspect");
-                            }
-                          }}
-                          onPickPoint={(callback) => {
-                            datumPointPick.current = callback;
-                            if (callback) datumFacePick.current = null;
-                            if (callback) setMode("inspect");
-                          }}
-                        />
-                      )}
+                    {(selected.kernelId ||
+                      (["mesh", "pointcloud"].includes(selected.kind) &&
+                        !selected.parametric)) && (
+                      <DatumAlignmentTools
+                        api={workspaceApi}
+                        entity={selected}
+                        center={stats.center}
+                        entities={entities}
+                        readReferences={readAlignmentReferences}
+                        onPickFace={(callback) => {
+                          datumFacePick.current = callback;
+                          if (callback) {
+                            datumPointPick.current = null;
+                            setMode("inspect");
+                          }
+                        }}
+                        onPickPoint={(callback) => {
+                          datumPointPick.current = callback;
+                          if (callback) datumFacePick.current = null;
+                          if (callback) setMode("inspect");
+                        }}
+                      />
+                    )}
                     <Panel title="Display" className="display-panel">
                       <label className="slider-row">
                         <span>Opacity</span>

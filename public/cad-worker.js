@@ -738,6 +738,41 @@ function finiteVector(vector) {
   );
 }
 
+function datumTransformShape(oc, input) {
+  const shape = getShape(input.kernelId);
+  if (
+    !finiteVector(input.origin) ||
+    !finiteVector(input.xDirection) ||
+    !finiteVector(input.zDirection)
+  )
+    throw new Error("Exact CAD alignment requires finite frame vectors.");
+  const handles = [];
+  try {
+    const point = new oc.gp_Pnt_3(...input.origin);
+    handles.push(point);
+    const x = new oc.gp_Dir_4(...input.xDirection);
+    handles.push(x);
+    const z = new oc.gp_Dir_4(...input.zDirection);
+    handles.push(z);
+    const axes = new oc.gp_Ax3_3(point, z, x);
+    handles.push(axes);
+    const transform = new oc.gp_Trsf_1();
+    handles.push(transform);
+    transform.SetTransformation_2(axes);
+    const placementMatrix = [];
+    for (let row = 1; row <= 3; row++)
+      for (let col = 1; col <= 4; col++)
+        placementMatrix.push(transform.Value(row, col));
+    const maker = new oc.BRepBuilderAPI_Transform_2(shape, transform, false);
+    handles.push(maker);
+    if (!maker.IsDone())
+      throw new Error("Exact CAD alignment failed to build a result.");
+    return { ...register(oc, maker.Shape()), placementMatrix };
+  } finally {
+    cleanup(handles);
+  }
+}
+
 function rigidCopy(oc, shape, matrix, translation) {
   const transform = new oc.gp_Trsf_1();
   let maker;
@@ -1709,6 +1744,8 @@ self.onmessage = (event) => {
       else if (operation === "export") result = exportStep(oc, payload);
       else if (operation === "boolean") result = booleanShape(oc, payload);
       else if (operation === "transform") result = transformShape(oc, payload);
+      else if (operation === "datumTransform")
+        result = datumTransformShape(oc, payload);
       else if (operation === "pattern") result = patternShape(oc, payload);
       else if (operation === "mirror") result = mirrorShape(oc, payload);
       else if (operation === "split") result = splitShape(oc, payload);

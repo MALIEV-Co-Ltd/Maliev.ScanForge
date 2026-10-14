@@ -275,13 +275,13 @@ origin/reference ribbon command remains disabled.
 
 The supported manual scan-frame workflow is now available through
 `alignment_preview` and `alignment_apply`. Both are native-geometry jobs requiring
-`expectedRevision`, `requestId`, `entityIds` (1–32 distinct unlocked mesh/point-cloud
+`expectedRevision`, `requestId`, `entityIds` (1–32 distinct unlocked mesh/point-cloud/exact-CAD
 targets) and `constraints` (1–3 ordered references). Each reference has `kind`
 (`plane`, `direction`, `point`), `point` (XYZ mm), `axis` (0=X, 1=Y, 2=Z; ignored
 for points), optional `flip`, and a `direction` XYZ vector for planes/directions.
 Use physical unit normals/directions from `alignment_references` when available.
 Constructors are replayed in primary/secondary/tertiary order; incompatible
-constraints fail without a model commit. Exact CAD targets are not supported.
+constraints fail without a model commit. Exact CAD targets retain their BRep geometry.
 Preview returns the native frame, rigid inverse matrix and proposed scan bounds;
 it preserves the model and history. `preview_discard` with `target:"datum"`
 restores the committed scene. Apply records one history step and preserves
@@ -289,8 +289,8 @@ facet/point identities and saved selection slots. Identity transforms are no-ops
 Use `job_get`/`job_cancel`; cancellation or revision conflict before commit
 discards the result. GUI Object properties invokes these same operations for
 manual coordinates, axis/flip controls, canvas point picking and center-to-origin.
-Automatic feature bindings and original frame-translation controls remain
-unfinished; the general ribbon command remains disabled.
+Feature bindings and frame-relative translation are available through the shared
+operations described below; the general ribbon command remains disabled.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`
 (default true). Two bounded CPU workers execute admitted multi-lane searches;
@@ -406,11 +406,11 @@ Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agen
 
 Coordinate alignment also accepts optional `translation: [x, y, z]` in mm. These offsets follow the constructed reference frame axes and are applied before rigid inversion. They are not world-axis translation. Both preview and apply return the offsets alongside the resulting matrix; omission means no offset. The GUI uses the same shared operation through Frame translation (mm). Translation inputs must contain exactly three finite values within +/-1e9 mm. Editing them discards the current preview; apply remains one history transaction.
 
-Origin/reference constraints can bind current CAD faces or fitted features: `{ "kind": "reference", "entityId": "cad-id", "referenceId": "cad-id/face/0", "axis": 2, "flip": false }`. Obtain stable IDs through `alignment_references`; optional `centerAt` is passed to the verified reference conversion. Preview and Apply read those references again at the requested workspace revision. Missing, foreign and unsupported reference IDs fail before geometry mutation. Source objects may be locked because they are read only; moving targets must remain unlocked scans. The GUI provides Reference object and Feature / face selectors with paged inspection and cancelled reads on disposal. Choose all requested features before previewing. Responses include resolved constraints in addition to the frame and resulting bounds.
+Origin/reference constraints can bind current CAD faces or fitted features: `{ "kind": "reference", "entityId": "cad-id", "referenceId": "cad-id/face/0", "axis": 2, "flip": false }`. Obtain stable IDs through `alignment_references`; optional `centerAt` is passed to the verified reference conversion. Preview and Apply read those references again at the requested workspace revision. Missing, foreign and unsupported reference IDs fail before geometry mutation. Source objects may be locked because they are read only; moving targets must remain unlocked meshes, point clouds or exact CAD bodies. The GUI provides Reference object and Feature / face selectors with paged inspection and cancelled reads on disposal. Choose all requested features before previewing. Responses include resolved constraints in addition to the frame and resulting bounds.
 
 Canvas CAD-face picking is available in the coordinate-alignment panel. `alignment_references` accepts optional `triangleIndex`, the original CAD render triangle slot returned by `viewport_pick`. It maps half-open tessellation ranges to exactly one face and returns that face's existing stable reference ID. Missing or ambiguous ranges fail; unsupported surface kinds stay explicit. Fitted-only objects cannot resolve a CAD render triangle. The GUI keeps the moving scan selected while picking a source face, reads the same shared operation, and cancels pending reads on panel disposal. Use the returned reference ID with `alignment_preview` or `alignment_apply`.
 
-Coordinate-frame Apply now uses the recovered native source-frame identity predicate at zero tolerance. Mesh/point normal transforms preserve native rotation-only arithmetic and signed zeros; translations never enter normals. These numerical corrections are shared by GUI and MCP alignment preview/apply, with native worker captures and public Apply regression coverage. Exact CAD targets remain unsupported.
+Coordinate-frame Apply uses the recovered native source-frame identity predicate at zero tolerance. Mesh/point normal transforms preserve native rotation-only arithmetic and signed zeros; translations never enter normals. These numerical corrections are shared by GUI and MCP alignment preview/apply, with native worker captures and public Apply regression coverage. Exact CAD uses its separately recovered axis-frame placement.
 
 Spacebar repeats the last repeatable ribbon or keyboard tool/view command with the current selection and settings. File operations, deletion, selection changes, and undo/redo do not replace that command. Text editing, active dialogs/previews, held keys, and busy operations block the shortcut. Parameterized tool commands reopen their normal parameter panel; they do not silently reuse an old mesh or confirm a preview.
 
@@ -420,4 +420,4 @@ Alignment `parallel` defaults to true. Large scan streams (at least 1,048,576 ve
 
 Identity frames take the native early no-op path: no coordinate buffers or CPU workers are created, the model and history remain unchanged, and bounds reporting stays cancellable. The shared result identifies this as `identity transform`.
 
-Coordinate alignment results also return `cadMatrix`, the recovered exact-CAD placement matrix. It can differ slightly from the scan `matrix` because the original CAD path normalizes and orthogonalizes its axis frame. This is a numeric inspection witness from the shared GUI/MCP operation; exact CAD targets remain unsupported until kernel preview/apply integration is verified. It does not change the transform used for mesh or point-cloud targets.
+Coordinate alignment results also return `cadMatrix`, the recovered exact-CAD placement matrix. It can differ slightly from the scan `matrix` because the original CAD path normalizes and orthogonalizes its axis frame. Exact CAD targets use OpenCascade axis-frame placement through the same GUI/MCP Preview and Apply operations, with a byte-exact matrix check before presentation. Scan targets continue to use `matrix`. CAD results retain exact BRep topology and rebuild display geometry; stale fit, authoring recipe and display-facet selections are cleared. Each CAD target reports `execution.backend: "OpenCascade"` and `copyGeometry: false`. Preview replacement, discard, failure and cancellation release temporary CAD handles; Apply preserves both committed source and result for Undo/Redo. Identity alignment produces no new shape or history entry. The broad ribbon Align workflow remains gated independently.

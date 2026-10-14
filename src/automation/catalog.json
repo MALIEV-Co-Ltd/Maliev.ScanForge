@@ -4662,7 +4662,7 @@
   },
   {
     "name": "alignment_preview",
-    "description": "Preview scan coordinate alignment from one to three native plane/direction/point constraints. Scans are meshes or point clouds, exact CAD targets unsupported. Ordered constraints build the reference frame; its rigid inverse transforms scans. Model/history stay unchanged; preview_discard target datum restores the committed scene. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
+    "description": "Preview object coordinate alignment from one to three native plane/direction/point constraints. Targets are unlocked meshes, point clouds or exact CAD bodies. Ordered constraints build the reference frame; its rigid inverse transforms scans. Exact CAD uses verified OpenCascade axis-frame placement and retains exact topology. Model/history stay unchanged; preview_discard target datum restores the committed scene and releases temporary CAD handles. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4865,7 +4865,7 @@
   },
   {
     "name": "alignment_apply",
-    "description": "Apply native coordinate-frame scan alignment to unlocked meshes/point clouds as one history transaction, preserving indexed topology and saved selections. Same constraints as alignment_preview; source geometry is checked before commit. Exact CAD targets unsupported. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
+    "description": "Apply native coordinate-frame object alignment to unlocked meshes, point clouds or exact CAD bodies as one history transaction. Scan indexed topology and saved selections are preserved; exact CAD uses verified OpenCascade axis-frame placement, retains BRep topology and clears stale authoring/fit/display-selection metadata. Same constraints as alignment_preview; source geometry is checked before commit. Cancellation releases temporary CAD outputs; committed source/result handles remain valid for Undo/Redo. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
