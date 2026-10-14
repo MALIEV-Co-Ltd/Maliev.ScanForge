@@ -1089,3 +1089,53 @@ external export comparison is retained for follow-up rather than used as proof.
 Populated facet-table conversion, real engine tessellation, standard per-face
 output and complete GUI/MCP alignment remain outstanding. No application code
 changed; build and application tests are not applicable to this evidence slice.
+
+## Original populated facet-provider conversion
+
+The original alternate wrapper `0x1402d8b30` now has 48 complete executions with
+controlled populated provider tables. Twenty-four deterministic fixtures vary
+coordinate/normal index maps, corner-slot maps, face identifiers and unit
+factors; each is executed with optional vertex attributes disabled and enabled.
+This covers 306 converted vertices and 188 constructed triangles.
+
+The wrapper consumes provider table tags `0x57b2` (ordered facet/corner pairs),
+`0x57b6` (corner-slot mapping), `0x57b7` (coordinate mapping), `0x57b8` (normal
+mapping), `0x57bb` (double coordinates), `0x57bc` (double normals), and `0x57c0`
+(face identifiers). Optional attributes additionally use `0x57b9` and `0x57bd`.
+These descriptions follow observed consumption and supplied table layouts;
+they do not claim official provider schema names.
+
+Consecutive corner pairs with the same facet index are grouped into a triangle
+record. Corner order is preserved after applying the slot map. Vertices are
+created in provider map order, rather than welded or sorted by coordinate.
+Coordinates are multiplied by global factor `0x1415a20b8`, then cast to
+Float32; mapped double normals are cast directly to Float32 without coordinate
+unit scaling. Face identifiers are copied into output triangle offset `0x40`.
+With optional attributes enabled, four source Float32 values are copied into a
+24-byte output record followed by eight zero bytes for each vertex.
+
+The replay uses supplied provider tables, bounded vector storage, mesh container
+adapters, triangle insertion, result-release and final-refresh callbacks. The
+original grouping, indexing, coordinate arithmetic, attribute copying,
+face-identifier writes, provider-release call and final-refresh dispatch execute
+unchanged. Each case returns result byte one, releases provider results once,
+and requests one final refresh for `[0, triangleCount)`.
+
+`docs/evidence/landmark-facet-conversion-native.json` retains inputs, outputs and
+coordinate/normal byte captures. The independent verifier checks the original
+image digest, all Float32 output bits, triangle order, face IDs, optional
+attribute bytes, release count and refresh range: zero differences.
+
+A preliminary storage adapter used a 4 KiB scratch capacity without the
+allocator's large-allocation metadata; native cleanup rejected that layout.
+The final replay uses a 512-byte scratch capacity sufficient for these bounded
+fixtures. The failed external fault record remains retained. The successful
+probe released image/code allocations and exited; no analysis helper remains.
+
+Real engine tessellation, malformed provider tables, polygons with other than
+three corners, populated triangle insertion internals and final refresh
+geometry/normals remain unverified by this replay. In particular, the recorded
+normals are those immediately after provider conversion; they are not proof of
+normals after the final refresh helper. Application integration must preserve
+this boundary. No application code changed; build and application tests are
+not applicable to this evidence slice.
