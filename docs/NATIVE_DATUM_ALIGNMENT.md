@@ -942,3 +942,52 @@ REA server PID 54256 exited. An initial probe used an incomplete tick-import
 binding and exited before explicit cleanup; PID 35692 is confirmed absent and
 its process-owned allocation was reclaimed on exit. No application behavior
 changed in this evidence slice.
+
+## Geometry-allowed prepared Apply execution
+
+The complete original `0x140545220` now executes 36 geometry-allowed cases:
+three integer orthonormal reference frames, three explicit target lists
+(including duplicates), and both values of each saved scope option. Original
+point geometry `0x14041a450`, feature dispatcher `0x140405e40`, dependent
+collector, target-set insertion/destruction and scene refresh execute together.
+The controller transforms each explicit target once; enabling all features
+adds the remaining scene objects once. Its affected vector contains exactly
+the unique transformed objects. Native allocations return to zero.
+
+Direct results correct an earlier decompiler-based inference: targets receive
+the inverse supplied reference frame, while field `0x40a0` retains the supplied
+frame. The prepared frame at `0x4400` resets to identity after Apply. Parent
+notification and camera notification occur once and the parent invalidation
+byte is set. Scope preferences pass through the original registry writer into
+an owned recorder; no Windows registry keys are modified.
+
+This probe supplies scene/iterator, common-feature query, parent/camera and
+progress-provider interfaces. It supplies an already-initialized provider
+record and initialization epoch in the private image, without modifying TLS
+bytes. Localization and the scene RTTI cast use explicit boundary adapters;
+real CRT and Windows imports are rebound. The installed application UI and
+provider construction are not executed. Point objects have empty reference
+trees and no attached property records. Primary scan/CAD selector paths,
+specialized geometry, noninteger rotations, populated controller dependencies
+and complete owner-scan Apply remain outside these captures. The imported-CAD
+option is exercised as a saved setting, with no CAD-class scene objects.
+
+`tests/fixtures/alignment-datum-controller-native.json` retains capture/probe
+hashes, precise scope, native point bits, transformed/affected targets and
+stored-frame bits. `tests/scan-native-datum-controller.test.ts` compares the
+shared GUI/MCP inverse-frame and double-precision primitive kernels against
+these whole-controller point results. It verifies arithmetic and preservation
+of untransformed point inputs; it does not advertise full controller parity or
+enable the gated ribbon command.
+
+External `datum-controller-geometry-*` artifacts retain the native probe,
+capture, independent verifier and cleanup. Successful PID 51320 released its
+mapping and all owned allocations. Earlier harness failures are excluded from
+the capture: the initial expected transform used the wrong frame direction,
+and an object-name callback shared a variable with import parsing. Both were
+corrected before the successful run.
+
+Validation: `npm run build` completed; the three focused alignment files passed
+795 tests. `npm test` passed 21,508 tests with 24 existing skips (328 passing
+files, five skipped files). Touched-file Prettier and whitespace checks passed.
+The independent native verifier matched all 36 prepared-controller captures.
