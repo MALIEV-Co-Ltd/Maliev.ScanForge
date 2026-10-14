@@ -504,6 +504,55 @@ try {
   assert.deepEqual(await geometry(moving.id), afterMoving);
   assert.deepEqual(await geometry(fixed.id), beforeFixed);
   assert.deepEqual(await geometry(fixedExtra.id), beforeExtra);
+  const beforeLandmarks = await geometry(gui.id);
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: gui.id,
+    fixedId: moving.id,
+  });
+  for (let i = 0; i < 3; i++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: gui.id,
+      point: sourceLandmarks.slice(i * 3, i * 3 + 3),
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: moving.id,
+      point: targetLandmarks.slice(i * 3, i * 3 + 3),
+    });
+  }
+  const landmarkDialog = page.getByRole("complementary", {
+    name: "N-points alignment",
+  });
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const locked = (await call("landmark_get")).result;
+  assert.equal(locked.preview, true);
+  assert.equal(locked.picks.length, 6);
+  assert.equal(
+    await landmarkDialog
+      .getByRole("button", { name: "Remove last point", exact: true })
+      .isDisabled(),
+    true,
+  );
+  assert.equal(
+    (await mutate("landmark_edit", { action: "clear" })).result.picks.length,
+    6,
+  );
+  const reset = (await mutate("landmark_edit", { action: "reset" })).result;
+  assert.equal(reset.preview, false);
+  assert.deepEqual(reset.picks, locked.picks);
+  await landmarkDialog
+    .getByRole("button", { name: "Remove last point", exact: true })
+    .click();
+  assert.equal((await call("landmark_get")).result.picks.length, 5);
+  await mutate("preview_discard", { target: "landmarks" });
+  assert.equal((await call("landmark_get")).result.active, false);
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  assert.deepEqual(await geometry(moving.id), afterMoving);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -520,6 +569,7 @@ try {
     guiNativeRefinement: true,
     guiMcpTargetGroupRefinement: true,
     guiMcpPairedTopologyRetention: true,
+    guiMcpLandmarkEditing: true,
     errors,
   };
   console.log(JSON.stringify(ledger.result));

@@ -1397,3 +1397,31 @@ replay processes exited. Allocation and geometry callbacks remain adapters;
 this does not prove real mesh cloning/application, controller numerical output,
 actual dialog disposal, model history or full GUI/MCP point-pair integration.
 No production code changed, so application build/tests are not applicable here.
+
+## Shared application point-pair session lifecycle
+
+The application now uses the verified point-edit guards: picking after preview
+requires Reset; remove-last and clear are no-ops after preview. The dialog locks
+target/pick controls and exposes Reset. Reset drops the transactional preview
+while retaining the original picked coordinates and source/target objects.
+Committed geometry remains unchanged throughout preview, so restoration does
+not require a second geometry clone. Preview markers use the original native
+Y-first double arithmetic, matching all 57 point records in the native capture.
+
+`landmark_get` exposes structured picks, markers, object IDs and preview state.
+`landmark_edit` begins or edits the same editor session through the stable
+React/MCP adapter, with existing revision, retry and operation-admission checks.
+`preview_discard` retains cancellation ownership. This capability edits session
+state; it does not expose numerical solving or acceptance, and the complete
+native point-pair ribbon command remains gated.
+
+Validation: production build and TypeScript passed; 82 focused tests across 15
+files passed; the full suite passed 26,610 tests with 24 existing skips (341
+passed files, five skipped). The browser/MCP round trip opened the session,
+picked three pairs, previewed through the GUI, observed locked controls and
+no-op removal, reset through MCP, resumed removal through the GUI and cancelled
+through MCP. Committed moving/fixed geometry remained unchanged, and the
+existing import, indexed-normal, refinement, persistence and undo checks passed
+with no console errors. Formatting and whitespace checks passed. The browser,
+MCP bridge and temporary HTTP server exited after verification. Build manifest:
+`scanforge-0c7f52cdcfc5edb6`. Port 5173 continues serving the latest bundle.

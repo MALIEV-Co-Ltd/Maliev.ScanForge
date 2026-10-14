@@ -72,6 +72,42 @@ const mutation = (api: ApplicationApi, requestId = "request-1") => ({
   requestId,
 });
 describe("shared application API", () => {
+  it("exposes landmark session edits with revision and retry protection and read-only observation", async () => {
+    const { api, host } = setup();
+    host.inspectLandmarks = () => ({ active: true, preview: false });
+    host.editLandmarks = vi.fn((edit) => ({
+      active: true,
+      action: edit.action,
+    }));
+    const request = { action: "reset", ...mutation(api, "landmark-reset") };
+    expect((await api.invoke("landmark_get", {})).ok).toBe(true);
+    const first = await api.invoke("landmark_edit", request);
+    expect(first.ok).toBe(true);
+    expect(await api.invoke("landmark_edit", request)).toEqual(first);
+    expect(host.editLandmarks).toHaveBeenCalledTimes(1);
+    expect(
+      (await api.invoke("landmark_edit", { ...request, action: "clear" })).ok,
+    ).toBe(false);
+    expect(
+      (
+        await api.invoke("landmark_edit", {
+          ...request,
+          expectedRevision: 999,
+          requestId: "stale",
+        })
+      ).ok,
+    ).toBe(false);
+    expect(
+      (
+        await api.invoke("landmark_edit", {
+          ...request,
+          action: "unknown",
+          requestId: "invalid",
+        })
+      ).ok,
+    ).toBe(false);
+    api.dispose();
+  });
   it("imports every artifact in one batch job without mistaking its own commits for revision conflicts", async () => {
     const { api, host, state } = setup();
     let sequence = 0;

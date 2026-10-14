@@ -16,6 +16,7 @@ import {
 } from "./visual-capture";
 import type { InterfacePatch, ViewportCommand } from "./workflow-operations";
 import type { ObjectSelectionModifiers } from "../object-selection";
+import type { LandmarkEdit } from "../landmark-alignment";
 
 export interface WorkspaceSnapshot {
   projectId?: string;
@@ -32,6 +33,10 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  inspectLandmarks?(): unknown;
+  editLandmarks?(
+    edit: LandmarkEdit | { action: "begin"; movingId: string; fixedId: string },
+  ): unknown;
   inspectCommands?(): unknown;
   launchCommand?(name?: string): unknown;
   snapshot(): WorkspaceSnapshot;

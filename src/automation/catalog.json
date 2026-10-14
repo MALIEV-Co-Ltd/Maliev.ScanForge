@@ -5186,5 +5186,67 @@
       "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
+  },
+  {
+    "name": "landmark_get",
+    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state. Does not mutate geometry or history.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "landmark_edit",
+    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These session edits do not solve or accept alignment and do not create model history. The complete native point-pair workflow remains gated. Use preview_discard to close/cancel.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["begin", "pick", "remove-last", "clear", "reset"]
+        },
+        "movingId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "fixedId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "point": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
   }
 ]

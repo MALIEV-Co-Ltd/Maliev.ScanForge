@@ -570,3 +570,19 @@ scan; metadata changes retain them and invalidated topology is discarded.
 `mesh_transform` preserves normals through rotation, without applying translation
 or uniform scale to the vectors. The GUI and MCP derive display normals from the
 same transformed indexed records. No new operation parameter is required.
+
+# Picked-point alignment session editing
+
+`landmark_get` reads the active session, original world-coordinate picks, preview
+markers and preview lock. `landmark_edit` begins a session with `movingId` and
+`fixedId`, or performs `pick` (with `entityId` and a three-coordinate `point` in
+mm), `remove-last`, `clear`, or `reset`. Supply the current `expectedRevision`
+and a unique `requestId`; retries return their original receipt.
+
+After preview, picking fails and removal/clear leave the points unchanged.
+Reset removes the transactional preview and retains original picks and geometry.
+Cancel with `preview_discard` targeting `landmarks`. These session edits do not
+solve or accept alignment and do not create model-history entries. The complete
+native point-pair command remains gated; this tool does not certify its full
+numerical pipeline or expose acceptance. GUI and agent edits share the same
+state guards and double-precision preview-marker arithmetic.

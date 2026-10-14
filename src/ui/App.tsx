@@ -231,6 +231,7 @@ import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
+import type { WorkspaceHost } from "../automation/api";
 import { pointCloudStats } from "../point-cloud";
 import {
   beginLandmarkAlignment,
@@ -239,6 +240,8 @@ import {
   landmarkSceneUnchanged,
   acceptLandmarkAlignment,
   landmarkMarkers,
+  editLandmarks,
+  landmarkState,
   type LandmarkAlignment,
 } from "../landmark-alignment";
 import { SplitMeshPanel } from "./SplitMeshPanel";
@@ -2534,6 +2537,30 @@ export function App() {
     setNPoints(null);
     setToolPanelOpen(false);
   }
+  function editLandmarkSession(
+    edit: Parameters<NonNullable<WorkspaceHost["editLandmarks"]>>[0],
+  ) {
+    let next: LandmarkAlignment;
+    if (edit.action === "begin") {
+      if (nPointsRef.current)
+        throw new Error("Close the active landmark session first.");
+      const moving = entities.find((e) => e.id === edit.movingId);
+      const fixed = entities.find((e) => e.id === edit.fixedId);
+      if (!moving || !fixed || moving.locked || fixed.locked)
+        throw new Error("Choose existing unlocked moving and fixed objects.");
+      next = beginLandmarkAlignment(moving, fixed);
+      setLandmarkPickSide("moving");
+      setMode("inspect");
+      setToolPanelOpen(true);
+    } else {
+      if (!nPointsRef.current)
+        throw new Error("No active landmark alignment session.");
+      next = editLandmarks(nPointsRef.current, edit);
+    }
+    nPointsRef.current = next;
+    setNPoints(next);
+    return landmarkState(next);
+  }
   function openLandmarks() {
     if (!selected) return;
     const fixed = entities.find(
@@ -2544,10 +2571,11 @@ export function App() {
       return;
     }
     try {
-      setNPoints(beginLandmarkAlignment(selected, fixed));
-      setLandmarkPickSide("moving");
-      setMode("inspect");
-      setToolPanelOpen(true);
+      editLandmarkSession({
+        action: "begin",
+        movingId: selected.id,
+        fixedId: fixed.id,
+      });
     } catch (error) {
       setError(errorText(error));
     }
@@ -3811,6 +3839,8 @@ export function App() {
       else if (target === "landmarks") cancelLandmarks();
       else cancelSketchCreation();
     },
+    inspectLandmarks: () => landmarkState(nPointsRef.current),
+    editLandmarks: editLandmarkSession,
     inspectApplication: (maxControls) => {
       const root = viewportHost.current?.closest<HTMLElement>(".workbench");
       if (!root) throw new Error("Application is not mounted.");
@@ -4784,23 +4814,15 @@ export function App() {
             pickSide={landmarkPickSide}
             onPickSide={(side) => {
               setLandmarkPickSide(side);
-              setNPoints({ ...nPoints, preview: undefined });
             }}
             onTarget={(id) => {
               const fixed = entities.find((e) => e.id === id);
               if (fixed)
                 setNPoints(beginLandmarkAlignment(nPoints.moving, fixed));
             }}
-            onRemoveLast={() =>
-              setNPoints({
-                ...nPoints,
-                picks: nPoints.picks.slice(0, -1),
-                preview: undefined,
-              })
-            }
-            onRemoveAll={() =>
-              setNPoints({ ...nPoints, picks: [], preview: undefined })
-            }
+            onRemoveLast={() => editLandmarkSession({ action: "remove-last" })}
+            onRemoveAll={() => editLandmarkSession({ action: "clear" })}
+            onReset={() => editLandmarkSession({ action: "reset" })}
             onPreview={previewLandmarks}
             onAccept={acceptLandmarks}
             onCancel={cancelLandmarks}

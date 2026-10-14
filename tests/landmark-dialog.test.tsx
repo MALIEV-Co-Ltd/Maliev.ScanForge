@@ -28,6 +28,7 @@ it("keeps preview and accept unavailable until their prerequisites and permits c
       onPreview={noop}
       onAccept={noop}
       onCancel={noop}
+      onReset={noop}
     />,
   );
   expect(markup).toContain(

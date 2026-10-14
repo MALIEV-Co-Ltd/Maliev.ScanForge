@@ -60,6 +60,14 @@ export function createWorkflowOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
   return {
+    landmark_get: () => host.inspectLandmarks?.() ?? unavailable(),
+    landmark_edit: (a, c) => {
+      c.check();
+      if (!host.editLandmarks) return unavailable();
+      return host.editLandmarks(
+        a as Parameters<NonNullable<WorkspaceHost["editLandmarks"]>>[0],
+      );
+    },
     command_get: () => host.inspectCommands?.() ?? unavailable(),
     command_run: (a, c) => {
       c.check();

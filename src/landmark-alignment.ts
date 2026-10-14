@@ -1,6 +1,5 @@
 import type { Entity, Vec3 } from "./types";
 import type { ProcessingResult } from "./processing-client";
-import { transformPoint } from "./registration";
 import { rotatePointNormals } from "./point-cloud";
 import { indexedRenderNormals } from "./indexed-mesh";
 
@@ -29,6 +28,8 @@ export function pickLandmark(
   entityId: string,
   point: Vec3,
 ): LandmarkAlignment {
+  if (session.preview)
+    throw new Error("Reset the alignment preview before picking more points.");
   if (entityId !== session.moving.id && entityId !== session.fixed.id)
     throw new Error("Pick a point on the moving scan or the fixed target.");
   if (point.length !== 3 || !point.every(Number.isFinite))
@@ -114,8 +115,52 @@ export function landmarkMarkers(session: LandmarkAlignment) {
   return session.picks.map((p) => ({
     point:
       p.entityId === session.moving.id && session.preview?.registration
-        ? transformPoint(p.point, session.preview.registration.transform)
+        ? (() => {
+            const { rotation: r, translation: t } =
+              session.preview!.registration!.transform;
+            const [x, y, z] = p.point;
+            return [
+              y * r[1] + x * r[0] + z * r[2] + t[0],
+              y * r[4] + x * r[3] + z * r[5] + t[1],
+              y * r[7] + x * r[6] + z * r[8] + t[2],
+            ] as Vec3;
+          })()
         : p.point,
     label: p.entityId === session.moving.id ? `M${++moving}` : `F${++fixed}`,
   }));
+}
+
+export interface LandmarkEdit {
+  action: "pick" | "remove-last" | "clear" | "reset";
+  entityId?: string;
+  point?: Vec3;
+}
+/** Original preview state guards, shared by the canvas, dialog and agent API. */
+export function editLandmarks(
+  session: LandmarkAlignment,
+  edit: LandmarkEdit,
+): LandmarkAlignment {
+  if (edit.action === "reset") return { ...session, preview: undefined };
+  if (edit.action === "pick") {
+    if (!edit.entityId || !edit.point)
+      throw new Error("Supply entityId and point to pick a landmark.");
+    return pickLandmark(session, edit.entityId, edit.point);
+  }
+  if (session.preview) return session;
+  return {
+    ...session,
+    picks: edit.action === "clear" ? [] : session.picks.slice(0, -1),
+  };
+}
+export function landmarkState(session: LandmarkAlignment | null) {
+  return session
+    ? {
+        active: true,
+        movingId: session.moving.id,
+        fixedId: session.fixed.id,
+        preview: !!session.preview,
+        picks: session.picks,
+        markers: landmarkMarkers(session),
+      }
+    : { active: false };
 }

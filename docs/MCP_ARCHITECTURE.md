@@ -94,3 +94,14 @@ source preparation preserves provided Float32 vectors and falls back to generate
 normals only when absent. Transformed indexed normals are expanded through a
 shared helper for display, keeping GUI and MCP alignment outcomes consistent.
 `object_get` includes indexed normals in its bounded geometry artifact.
+
+# Landmark session edit boundary
+
+`landmark_get` and revision/retry-protected `landmark_edit` call the mounted
+editor adapter. The dialog and agent adapter use `editLandmarks` and
+`landmarkState` from the shared alignment module. Original picks and committed
+entities stay unchanged during preview; Reset drops the preview result, which
+provides the same restoration outcome without cloning the original twice.
+The API's existing admission lane serializes edits, and `preview_discard`
+retains cancellation ownership. Complete native point-pair solving/acceptance
+remains a separate gate.

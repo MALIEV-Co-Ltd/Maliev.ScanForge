@@ -15,6 +15,7 @@ export interface LandmarkAlignmentDialogProps {
   onPreview: () => void;
   onAccept: () => void;
   onCancel: () => void;
+  onReset: () => void;
 }
 export function LandmarkAlignmentDialog({
   session,
@@ -28,6 +29,7 @@ export function LandmarkAlignmentDialog({
   onPreview,
   onAccept,
   onCancel,
+  onReset,
 }: LandmarkAlignmentDialogProps) {
   const pairs = landmarkPairs(session);
   const complete =
@@ -44,7 +46,7 @@ export function LandmarkAlignmentDialog({
           <AppSelect
             aria-label="Fixed alignment target"
             value={session.fixed.id}
-            disabled={busy}
+            disabled={busy || !!session.preview}
             onChange={(e) => onTarget(e.target.value)}
           >
             {targets.map((e) => (
@@ -60,14 +62,14 @@ export function LandmarkAlignmentDialog({
         </p>
         <div className="button-row">
           <button
-            disabled={busy}
+            disabled={busy || !!session.preview}
             aria-pressed={pickSide === "moving"}
             onClick={() => onPickSide("moving")}
           >
             Pick moving points
           </button>
           <button
-            disabled={busy}
+            disabled={busy || !!session.preview}
             aria-pressed={pickSide === "fixed"}
             onClick={() => onPickSide("fixed")}
           >
@@ -94,13 +96,13 @@ export function LandmarkAlignmentDialog({
         </div>
         <div className="button-row">
           <button
-            disabled={busy || !session.picks.length}
+            disabled={busy || !!session.preview || !session.picks.length}
             onClick={onRemoveLast}
           >
             Remove last point
           </button>
           <button
-            disabled={busy || !session.picks.length}
+            disabled={busy || !!session.preview || !session.picks.length}
             onClick={onRemoveAll}
           >
             Remove all points
@@ -114,6 +116,9 @@ export function LandmarkAlignmentDialog({
         )}
       </div>
       <footer className="tool-panel-actions">
+        <button disabled={busy || !session.preview} onClick={onReset}>
+          Reset
+        </button>
         <PreviewButton disabled={busy || !complete} onClick={onPreview} />
         <button disabled={busy || !session.preview} onClick={onAccept}>
           OK

@@ -13,6 +13,13 @@ export function useWorkspaceApi(host: WorkspaceHost) {
   if (!api.current) {
     const mutate = <T>(run: () => T): T => flushSync(run);
     const proxy: WorkspaceHost = {
+      inspectLandmarks: () => current.current.inspectLandmarks?.(),
+      editLandmarks: (edit) =>
+        mutate(() => {
+          if (!current.current.editLandmarks)
+            throw new Error("Landmark editing unavailable");
+          return current.current.editLandmarks(edit);
+        }),
       inspectCommands: () => current.current.inspectCommands?.(),
       launchCommand: (name) =>
         mutate(() => {
