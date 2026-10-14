@@ -991,3 +991,68 @@ Validation: `npm run build` completed; the three focused alignment files passed
 795 tests. `npm test` passed 21,508 tests with 24 existing skips (328 passing
 files, five skipped files). Touched-file Prettier and whitespace checks passed.
 The independent native verifier matched all 36 prepared-controller captures.
+
+## Primary scan Apply and native parallel execution
+
+The original primary scan path now executes through mesh-object dispatcher
+`0x14088b070`, range controller `0x1401de8d0`, both numerical workers, the
+controller target set and complete generic scene refresh. Supplied virtual
+containers provide vertex and triangle records. The native ready-lock branch
+reads a supplied ready record; cached status lookup supplies an existing status
+interface, avoiding construction of installed-application UI properties. The
+status update occurs once. Repeating the primary scan in the explicit target
+list does not transform it twice. The primary-scan changed byte, affected
+vector, prepared-frame reset and final flags match the original controller.
+
+The native concurrency DLL is loaded normally and its captured addresses are
+rebound to matching current export RVAs. Its tracing export at RVA `0x297b0`
+identifies captured base `0x7ffed3430000`; the bound import's export RVA also
+matches. Native parallel dispatch is not replaced by a serial scheduler.
+The current runtime digest is retained externally; the historical runtime DLL
+digest was not captured, so this is not a historical DLL byte-identity claim.
+Main-image geometry and scheduling instructions retain their captured identity.
+
+Twenty-seven cases use six distributed triangles from each owner STL, three
+frames and 1/2/4 logical native lanes. Captures observe one to four native thread
+IDs. `tests/fixtures/alignment-datum-scan-controller-native.json` retains source
+file digests, exact triangle IDs and input/output bits. The corresponding test
+replays positions, vertex normals and triangle normals through the same
+inverse-frame and Float32 kernels used by GUI/MCP alignment and the application
+worker pool.
+
+Three further native executions process the full owner scans with two native
+threads and a noninteger rotation/translation frame:
+
+| Input      | Triangles |  Vertices |
+| ---------- | --------: | --------: |
+| scan-1.stl |   273,139 |   819,417 |
+| scan-2.stl | 2,547,405 | 7,642,215 |
+| scan-3.stl | 3,326,910 | 9,980,730 |
+
+Independent verification first checks source file hashes and every extracted
+source coordinate/normal byte against the binary STL records. It then compares
+all native output fields against the current shared application kernels:
+18,442,362 vertices and 516,386,136 output bytes match exactly across positions,
+vertex normals and triangle normals. Provided record attribute slots remain
+unchanged, duplicate targets are transformed once, and native allocations
+return to zero. This includes original parallel range scheduling, rather than
+serial calls to extracted worker functions.
+
+External `datum-controller-scan-*`, `datum-controller-scan-full-*` and
+`datum-scan-controller-*` artifacts retain probes, captures, binary fields,
+verification digests and runtime binding evidence. Native probe PIDs 45208 and
+46672 released their images and owned allocations; REA PID 37612 exited. Probe
+durations include a Python virtual-container callback for every record and must
+not be used as product or installed-native performance benchmarks.
+
+These are complete native Apply executions with supplied application interfaces,
+not installed-application GUI captures. Ready-lock waiting, missing status
+construction, CAD-primary Apply, ASC/PLY import, populated scan property trees,
+installed UI/history and all-feature specialized branches remain outside this
+coverage. No production application behavior changed in this evidence slice.
+
+Validation: the build completed, 481 focused tests passed, and the full suite
+passed 21,535 tests with 24 existing skips (329 passing files, five skipped
+files). Touched-file formatting, whitespace and prohibited-name checks passed.
+The full-stream verifier compared the current shared kernel source and retained
+its digests with the native capture/probe digests and cleanup receipts.
