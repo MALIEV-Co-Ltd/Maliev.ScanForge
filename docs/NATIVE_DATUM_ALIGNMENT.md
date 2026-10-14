@@ -626,8 +626,9 @@ complete Apply callback has not been replayed.
 
 The collector resets its output-vector end to its begin, requests a scene
 iterator through slot `0x48`, and visits candidates in iterator order. Two
-opaque type queries determine candidate eligibility and an exclusion branch.
-The meaning of those type identifiers in the GUI remains unresolved.
+type queries determine candidate eligibility and an exclusion branch. The
+mesh-interface exclusion is identified below; complete native GUI routing
+remains unresolved.
 Eligible candidates are appended once per visit when any alignment seed
 satisfies the recursive relationship predicate `0x14084b8f0`. Duplicate visits
 remain duplicate output entries: suppression belongs to the later Apply set.
@@ -662,3 +663,42 @@ requires mapping its authoring relationships and native eligibility semantics.
 The external `datum-dependent-*` captures, probes, independent verification,
 image/capture SHA-256 identities and cleanup receipts retain this evidence.
 Both probe processes exited and their mapped images were released.
+
+## Dependent-target mesh-interface exclusion
+
+The collector's excluded identifier at `0x141164ba0` is the mesh interface
+recognized by original query routine `0x140b39b40`. The query returns the mesh
+root by subtracting `0x158` from the adjusted interface pointer. Its vtable
+entry `0x140b39b2c` carries an MSVC complete-object locator naming `cMesh`;
+the corresponding `0x140216f04` entry names `cRenderingMesh` and delegates to
+the same query after adjusting the virtual interface pointer. These names come
+from the mapped image's actual RTTI records, not guesses based on icons.
+
+The eligible identifier at `0x14114bba0` is recognized by primitive feature
+query routines, including `0x140404fc0`, and by wrapper query `0x14088ae10`.
+The latter returns its wrapper root for the eligible identifier. For other
+identifiers it delegates to attached geometry at wrapper offset `0x160`.
+Consequently, its attached rendering mesh can satisfy the excluded identifier
+even though the wrapper itself first satisfies the eligible identifier. An
+empty attachment yields no mesh-interface match. Eligibility therefore cannot
+be reproduced solely from a displayed name or the application's entity kind.
+
+REA query Evidence is
+`ev_6348b032d57255ea9568130ca50d8c25bd3d47b617224ac5081ad5074d0817fc`
+for the mesh root and
+`ev_5c80eb2fcd2cb8612171f90e10bbbdf66d786e1ff40a819c2bfa4f057e1a4c31`
+for wrapper delegation. Direct execution uses 36 real native-constructed
+render meshes and owned wrapper records with attached/empty geometry. All 180
+query assertions match: mesh exclusion returns the actual mesh root, the mesh
+does not answer the eligible identifier, the wrapper answers eligibility,
+delegated exclusion returns its attached mesh, and exclusion fails with no
+attachment. Original constructor and query instructions execute unchanged;
+the wrapper records are supplied layouts, not native-constructed wrappers.
+
+The same run checks 48 primitive numerical results against previous captures
+and releases all 32 populated caches, including nested mesh allocations.
+The external `datum-dependent-native-types-*` artifacts retain captured results,
+verification, SHA-256 identities and cleanup. PID 43336 exited, its mapped image
+was released, and no owned heap allocations remained. This resolves the mesh
+exclusion interface; full wrapper construction, scene acquisition, dependent
+authoring updates and the complete Align controller remain unverified.
