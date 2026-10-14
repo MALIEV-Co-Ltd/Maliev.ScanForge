@@ -40,6 +40,7 @@ export type ShortcutActionId =
   | "selection-through"
   | "clear-selection"
   | "toggle-visibility"
+  | "toggle-selected-visibility"
   | "sketch-line"
   | "sketch-circle"
   | "sketch-arc"

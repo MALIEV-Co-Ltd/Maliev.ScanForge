@@ -43,6 +43,13 @@ export const SHORTCUT_REGISTRY: readonly ShortcutBinding[] = [
   binding("Mod+N", "New project", "new"),
   binding("Mod+O", "Open scan or project", "open"),
   binding("Mod+S", "Save project", "save"),
+  binding(
+    "V",
+    "Toggle selected objects visibility",
+    "toggle-selected-visibility",
+    undefined,
+    true,
+  ),
   ...(["model", "selection", "sketch"] as const).flatMap((owner) => {
     const modes = owner === "model" ? modelModes : [owner];
     return [

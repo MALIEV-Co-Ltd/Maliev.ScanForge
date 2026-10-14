@@ -19,6 +19,40 @@ import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it("toggles every selected object's visibility in one commit without changing geometry or selection", () => {
+  const a = entity({ id: "a", visible: true }),
+    b = entity({ id: "b", visible: false }),
+    unselected = entity({ id: "c" });
+  const { ops, state, context, host } = harness([a, b, unselected]);
+  state.selectedId = "b";
+  state.selectedIds = ["a", "b"];
+  expect(ops.object_visibility_toggle({}, context)).toEqual({
+    objects: [
+      { entityId: "a", visible: false },
+      { entityId: "b", visible: true },
+    ],
+  });
+  expect(state.entities.map((e) => e.visible)).toEqual([false, true, true]);
+  expect(state.entities[0].positions).toBe(a.positions);
+  expect(state.entities[2]).toBe(unselected);
+  expect(state.selectedIds).toEqual(["a", "b"]);
+  expect(host.commit).toHaveBeenCalledTimes(1);
+  ops.object_visibility_toggle({}, context);
+  expect(state.entities.map((e) => e.visible)).toEqual([true, false, true]);
+});
+it("rejects stale or empty visibility targets before any mutation and supports explicit locked display targets", () => {
+  const { ops, state, context } = harness([entity({ id: "a", locked: true })]);
+  state.selectedId = null;
+  state.selectedIds = [];
+  expect(() => ops.object_visibility_toggle({}, context)).toThrow("Select");
+  expect(() =>
+    ops.object_visibility_toggle({ entityIds: ["a", "missing"] }, context),
+  ).toThrow("exist");
+  expect(state.history).toHaveLength(0);
+  ops.object_visibility_toggle({ entityIds: ["a", "a"] }, context);
+  expect(state.entities[0].visible).toBe(false);
+  expect(state.history).toHaveLength(1);
+});
 it("imports a CAD batch through MCP in order, preserving undo steps and waiting for presentation", async () => {
   const { host, state, cad, context, ops } = harness([]);
   const presented: number[] = [];

@@ -1,5 +1,21 @@
 import type { Entity } from "./types";
 
+/** Flip each target once, retaining geometry, selection and unselected identities. */
+export function toggleObjectVisibility(
+  entities: Entity[],
+  entityIds: readonly string[],
+): Entity[] {
+  const ids = new Set(entityIds);
+  if (!ids.size)
+    throw new Error("Select at least one object to toggle visibility.");
+  for (const id of ids)
+    if (!entities.some((entity) => entity.id === id))
+      throw new Error(`Object does not exist: ${id}`);
+  return entities.map((entity) =>
+    ids.has(entity.id) ? { ...entity, visible: !entity.visible } : entity,
+  );
+}
+
 export function objectPickable(
   entity: Pick<Entity, "locked" | "selectable">,
 ): boolean {

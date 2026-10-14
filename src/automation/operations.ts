@@ -19,7 +19,7 @@ import {
   type ParametricRecipe,
   type ParametricFeature,
 } from "../parametric";
-import { duplicateObject } from "../object-operations";
+import { duplicateObject, toggleObjectVisibility } from "../object-operations";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { partitionTriangles, selectionCount } from "../selection";
 import {
@@ -407,6 +407,21 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               ),
             }
           : {}),
+      };
+    },
+    object_visibility_toggle: (a, c) => {
+      const state = host.snapshot();
+      const ids =
+        a.entityIds ??
+        state.selectedIds ??
+        (state.selectedId ? [state.selectedId] : []);
+      const next = toggleObjectVisibility(state.entities, ids);
+      commit(c, next, "Toggle object visibility");
+      const targets = new Set(ids);
+      return {
+        objects: next
+          .filter((entity) => targets.has(entity.id))
+          .map((entity) => ({ entityId: entity.id, visible: entity.visible })),
       };
     },
     object_update: (a, c) => {

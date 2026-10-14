@@ -1591,6 +1591,13 @@ export function App() {
       setDirty(true);
     },
     "toggle-visibility": () => {},
+    "toggle-selected-visibility": selectedIds.length
+      ? () => {
+          void uiCommand("object_visibility_toggle").then((result) => {
+            if (result.ok) setMessage("Selected objects visibility toggled");
+          });
+        }
+      : undefined,
     "clear-selection": () =>
       mode === "brush" ? changeSelection(null) : setSelectedId(null),
     "hide-selected": selected

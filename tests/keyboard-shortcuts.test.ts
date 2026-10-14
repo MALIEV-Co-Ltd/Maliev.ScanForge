@@ -7,6 +7,26 @@ import {
   type ShortcutContext,
 } from "../src/keyboard-shortcuts";
 
+it("V toggles selected-object visibility and respects focus, dialogs, busy state and availability", () => {
+  const context: ShortcutContext = {
+    mode: "main",
+    availableActions: new Set(["toggle-selected-visibility"]),
+    allowExtensions: true,
+  };
+  expect(resolveKeyboardShortcut({ key: "v" }, context)).toEqual({
+    id: "toggle-selected-visibility",
+  });
+  for (const blocked of [
+    { textEditing: true },
+    { modalOpen: true },
+    { busy: true },
+    { availableActions: new Set<ShortcutActionId>() },
+  ])
+    expect(
+      resolveKeyboardShortcut({ key: "v" }, { ...context, ...blocked }),
+    ).toBeNull();
+});
+
 it("hidden settings dialogs do not block workspace shortcuts, visible dialogs do", () => {
   const hidden = { getClientRects: () => [], closest: () => null };
   const visible = { getClientRects: () => [{}], closest: () => null };
@@ -67,6 +87,7 @@ const all = new Set<ShortcutActionId>([
   "selection-through",
   "clear-selection",
   "toggle-visibility",
+  "toggle-selected-visibility",
   "sketch-line",
   "sketch-circle",
   "sketch-arc",

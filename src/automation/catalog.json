@@ -3707,6 +3707,40 @@
     }
   },
   {
+    "name": "object_visibility_toggle",
+    "description": "Toggle each target object visibility atomically, preserving geometry, selection and existing display-history semantics. Omit entityIds to use current object selection. Visibility may change on locked objects.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "entityIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Objects to toggle once each; omit to use current selected objects."
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "history_seek",
     "description": "Seek to a retained modeling timeline index (0 is starting state).",
     "readOnly": false,

@@ -191,6 +191,8 @@ For several scans/CAD files, use `project_import_batch` with `artifactIds` in im
 
 Ctrl+Z/Ctrl+Y use model history in the main workspace. Mesh selection uses its local undo/redo while a local step exists, then falls back to model history. Text fields and modal dialogs keep their native keyboard behavior. MCP retains explicit `history_undo`, `history_redo`, and triangle-selection operations.
 
+Press **V** to toggle each selected object's visibility, retaining the object selection. The entire set changes atomically, using the existing display behavior outside modeling history. Agents use `object_visibility_toggle` with optional `entityIds`; omitting IDs uses the current object selection. Explicit IDs support hidden and locked objects because visibility is a display setting. Empty/stale targets fail before mutation. Geometry and triangle selections remain unchanged. Typing, visible dialogs and busy operations keep V inactive.
+
 PLY mesh imports retain original vertex order and triangle indices. Full-resolution
 binary STL imports retain connectivity reconstructed by the verified native reader
 mapping, including quantized coordinate identities and collapsed-facet rejection.
