@@ -271,6 +271,7 @@ export class ApplicationApi {
         identity(e.positions),
         identity(e.surfacePatch),
         identity(e.parametric),
+        identity(e.authoringLinks),
         identity(e.meshSelection),
         identity(e.planeFrame),
         identity(e.fit),

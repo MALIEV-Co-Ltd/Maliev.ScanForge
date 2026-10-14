@@ -5,6 +5,7 @@ import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
 import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
 import { datumFeatureMetadata } from "../scan-native-datum-primitive";
+import { entityFeatureModel } from "../parametric-entities";
 import {
   datumEntityDependencies,
   nativeDatumDependentCandidates,
@@ -41,6 +42,12 @@ export function createDatumOperations(
     context: Parameters<Handler>[1],
   ) => {
     const snapshot = host.snapshot();
+    const resolvedLinks = new Map(
+      datumEntityDependencies(snapshot.entities).map((item) => [
+        item.id,
+        item.references,
+      ]),
+    );
     if (
       !args.entityIds.length ||
       new Set(args.entityIds).size !== args.entityIds.length
@@ -64,6 +71,11 @@ export function createDatumOperations(
       return entity;
     });
     const references = new Map<string, AlignmentReferencePage>();
+    const bakedTargets = new Set(
+      targets
+        .filter((entity) => entity.kernelId && entity.parametric)
+        .map((entity) => entity.id),
+    );
     const instructions: DatumInstruction[] = [];
     for (const constraint of args.constraints) {
       if (constraint.kind !== "reference") {
@@ -108,6 +120,21 @@ export function createDatumOperations(
     context.check();
     const transformed = new Map<string, Entity>();
     const identity = nativeDatumIsIdentity(frame.state.matrix);
+    if (bakedTargets.size && !identity) {
+      try {
+        entityFeatureModel(
+          snapshot.entities.map((entity) =>
+            bakedTargets.has(entity.id)
+              ? { ...entity, parametric: undefined }
+              : entity,
+          ),
+        );
+      } catch (error) {
+        throw new Error(
+          `Include dependent features and every output of each authoring feature before alignment. ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    }
     const cadMatrix = nativeDatumCadTransform(frame.matrix);
     const kernelIds: string[] = [];
     const diagnostics = new Map<
@@ -197,6 +224,18 @@ export function createDatumOperations(
             ...entity,
             ...geometry,
             parametric: undefined,
+            authoringLinks: entity.parametric
+              ? {
+                  featureId: entity.parametric.feature.id,
+                  output: entity.parametric.output,
+                  references: [...new Set(resolvedLinks.get(entity.id) ?? [])],
+                }
+              : entity.authoringLinks
+                ? {
+                    ...entity.authoringLinks,
+                    references: [...entity.authoringLinks.references],
+                  }
+                : undefined,
             fit: datumFeatureMetadata(entity, cadMatrix).fit,
             surfacePatch: undefined,
             indexedMesh: undefined,
@@ -245,6 +284,7 @@ export function createDatumOperations(
           fit: output.fit,
           planeFrame: output.planeFrame,
           surfaceScanId: output.surfaceScanId,
+          authoringLinks: output.authoringLinks,
           ...diagnostics.get(item.id),
         };
       }),
@@ -261,10 +301,26 @@ export function createDatumOperations(
         if (!byId.has(id))
           throw new Error(`Alignment seed ${id} is not in this project.`);
       const candidates = datumEntityDependencies(entities);
+      const seedFeatures = new Set(
+        seeds.flatMap((id) =>
+          byId.get(id)?.parametric
+            ? [byId.get(id)!.parametric!.feature.id]
+            : [],
+        ),
+      );
+      const groupIds = entities
+        .filter(
+          (entity) =>
+            entity.parametric &&
+            seedFeatures.has(entity.parametric.feature.id) &&
+            !seeds.includes(entity.id),
+        )
+        .map((entity) => entity.id);
+      const grouped = [...seeds, ...groupIds];
       const dependentIds = [
-        ...new Set(nativeDatumDependentCandidates(candidates, seeds)),
-      ].filter((id) => !seeds.includes(id));
-      const entityIds = [...seeds, ...dependentIds];
+        ...new Set(nativeDatumDependentCandidates(candidates, grouped)),
+      ].filter((id) => !grouped.includes(id));
+      const entityIds = [...grouped, ...dependentIds];
       const blocked = entityIds.flatMap((id) => {
         const entity = byId.get(id)!;
         if (entity.locked)
@@ -290,6 +346,7 @@ export function createDatumOperations(
       return {
         entityIds,
         dependentIds,
+        groupIds,
         blocked,
         exceedsTargetLimit: entityIds.length > 32,
         references: candidates

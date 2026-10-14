@@ -49,11 +49,14 @@ export function datumEntityDependencies(
   const key = (featureId: string, output: number) =>
     JSON.stringify([featureId, output]);
   for (const entity of entities) {
-    if (!entity.parametric) continue;
-    const identity = key(
-      entity.parametric.feature.id,
-      entity.parametric.output,
-    );
+    const authoring = entity.parametric
+      ? {
+          featureId: entity.parametric.feature.id,
+          output: entity.parametric.output,
+        }
+      : entity.authoringLinks;
+    if (!authoring) continue;
+    const identity = key(authoring.featureId, authoring.output);
     const ids = outputs.get(identity) ?? [];
     ids.push(entity.id);
     outputs.set(identity, ids);
@@ -68,7 +71,7 @@ export function datumEntityDependencies(
               outputs.get(key(reference.featureId, reference.output ?? 0)) ??
               [],
           )
-        : []),
+        : (entity.authoringLinks?.references ?? [])),
     ],
     eligible:
       !!entity.kernelId || !["mesh", "pointcloud"].includes(entity.kind),

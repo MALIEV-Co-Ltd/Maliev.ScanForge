@@ -247,6 +247,30 @@ export function validateProject(value: unknown): Project {
       typeof entity.surfaceScanId !== "string"
     )
       throw new Error("Invalid surface scan reference.");
+    if (entity.authoringLinks !== undefined) {
+      const links = entity.authoringLinks;
+      if (
+        !links ||
+        typeof links !== "object" ||
+        Array.isArray(links) ||
+        Object.keys(links).some(
+          (key) => !["featureId", "output", "references"].includes(key),
+        ) ||
+        typeof links.featureId !== "string" ||
+        !links.featureId.length ||
+        links.featureId.length > 200 ||
+        !Number.isInteger(links.output) ||
+        links.output < 0 ||
+        links.output > 10000 ||
+        !Array.isArray(links.references) ||
+        links.references.length > 10000 ||
+        links.references.some(
+          (id) => typeof id !== "string" || !id.length || id.length > 200,
+        ) ||
+        new Set(links.references).size !== links.references.length
+      )
+        throw new Error("Invalid retained authoring references.");
+    }
     return {
       id: entity.id,
       name: entity.name,
@@ -284,6 +308,14 @@ export function validateProject(value: unknown): Project {
       brep: entity.brep,
       surfacePatch: entity.surfacePatch,
       surfaceScanId: entity.surfaceScanId,
+      authoringLinks:
+        entity.authoringLinks === undefined
+          ? undefined
+          : {
+              featureId: entity.authoringLinks.featureId,
+              output: entity.authoringLinks.output,
+              references: [...entity.authoringLinks.references],
+            },
       source:
         typeof entity.source === "string"
           ? entity.source.slice(0, 200)

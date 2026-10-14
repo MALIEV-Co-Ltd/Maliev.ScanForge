@@ -18,6 +18,37 @@ const entity: Entity = {
   color: "#00ffaa",
   opacity: 1,
 };
+it("validates and owns retained authoring link metadata", () => {
+  const input = {
+    format: "maliev-scanforge",
+    version: 1,
+    name: "links",
+    units: "mm",
+    entities: [
+      {
+        ...entity,
+        authoringLinks: { featureId: "f", output: 1, references: ["source"] },
+      },
+    ],
+  };
+  const parsed = parseProject(JSON.stringify(input));
+  expect(parsed.entities[0].authoringLinks).toEqual(
+    input.entities[0].authoringLinks,
+  );
+  for (const authoringLinks of [
+    null,
+    { featureId: "", output: 0, references: [] },
+    { featureId: "f", output: -1, references: [] },
+    { featureId: "f", output: 0, references: ["source", "source"] },
+    { featureId: "f", output: 0, references: [null] },
+    { featureId: "f", output: 0, references: [], recipe: {} },
+  ])
+    expect(() =>
+      parseProject(
+        JSON.stringify({ ...input, entities: [{ ...entity, authoringLinks }] }),
+      ),
+    ).toThrow("Invalid retained authoring references");
+});
 describe("file boundaries", () => {
   it("retains CAD edge segments through both project writers and validates them", async () => {
     const cad = {

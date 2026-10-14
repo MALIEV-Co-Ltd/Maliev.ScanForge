@@ -452,5 +452,22 @@ The collector matches all 6,144 captured native cases. Application graph mapping
 and cycle bounds are separate implementation choices; complete native scene
 acquisition, every authoring relationship and the general Align controller are
 still unfinished. CAD placement currently clears stale parametric recipes, so
-recipe-only relationships are unavailable after placement; retained source-scan
-links remain discoverable. This operation does not certify all-feature alignment.
+recipe-only relationships now survive as retained identity/link metadata;
+retained source-scan links remain discoverable. This operation does not certify
+all-feature alignment.
+
+Nonidentity exact CAD placement stores `authoringLinks` when clearing a recipe:
+its `featureId`, output slot, and resolved source entity IDs. Discovery indexes
+that identity after baking and follows its retained links, including after
+Undo/Redo and project save/reopen. Preview/Apply reports the metadata for each
+target; the GUI displays the referenced object names or unresolved identities.
+It preserves references, not an editable recipe or automatic regeneration.
+Project format version 1 accepts this optional metadata with bounded, unique
+reference identities; older projects remain supported.
+
+`alignment_targets` also includes sibling outputs of a selected active
+authoring feature and reports their IDs in `groupIds`. Review these along with
+dependent targets. Placement rejects a target list that would leave an
+incomplete output group or dependent recipe with a missing authoring source,
+before allocating any CAD result. Include the complete discovered group before
+Preview/Apply. Identity placement preserves recipes and needs no baking.

@@ -730,3 +730,23 @@ shows its resolved target list before Preview/Apply; blockers leave that list
 unchanged. No CAD geometry or history is allocated during discovery. Remaining
 requirements include complete authoring-reference retention, every native
 relationship type, and the original general Align controller.
+
+## Retained authoring identities and output integrity
+
+Application CAD placement now stores a cleared recipe's stable feature identity,
+output slot and resolved source entity IDs in optional `authoringLinks` metadata.
+The output index falls back to this identity after baking; dependency discovery
+falls back to its stored references. This keeps both directions of the supported
+application graph available after placement without retaining a stale recipe.
+The metadata is owned by the placed entity and is validated/copied at project
+import. JSON and binary project/history storage retain it; API revision tracking
+observes metadata replacement. GUI referenced-object labels and shared
+Preview/Apply results expose the retained links.
+
+The shared discovery adapter includes sibling outputs of selected active
+authoring features. Nonidentity placement checks the remaining editable model
+before any CAD allocation and rejects incomplete output groups or dependent
+recipes that would lose their source. Identity placement does not bake recipes.
+These are application integrity rules required by its existing feature-model
+contract, not captures of original dialog acceptance. Retained links do not
+make baked features regeneratable or establish every original property type.

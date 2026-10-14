@@ -383,11 +383,24 @@ try {
       },
     }),
   );
+  const authoringDependent = await job(
+    await mutate("cad_create", {
+      name: "Dependent construction plane",
+      recipe: {
+        kind: "transform",
+        source: { featureId: surface.featureId },
+        translation: [1, 0, 0],
+        rotation: [0, 0, 0],
+        scale: 1,
+      },
+    }),
+  );
   const ids = [
       ...sphereSegments.entityIds,
       planeSegments.entityIds[0],
       surface.entityIds[0],
       "linked-cad",
+      authoringDependent.entityIds[0],
     ],
     planeId = planeSegments.entityIds[0],
     surfaceId = surface.entityIds[0],
@@ -404,6 +417,14 @@ try {
   assert.ok(Math.abs(expected.get(ids[0]).fit.radius - 2.25) < 1e-5);
   assert.notDeepEqual(expected.get(planeId).fit.axis, planeFit.axis);
   assert.equal(expected.get("linked-cad").surfaceScanId, sphere.id);
+  assert.deepEqual(
+    expected.get(authoringDependent.entityIds[0]).authoringLinks,
+    {
+      featureId: authoringDependent.featureId,
+      output: 0,
+      references: [surfaceId],
+    },
+  );
   assert.deepEqual(
     (await call("project_get")).result.objects.map((object) => object.fit),
     before.result.objects.map((object) => object.fit),
@@ -529,6 +550,46 @@ try {
     (await call("project_get")).result.objects.map((object) => object.fit),
     placed.result.objects.map((object) => object.fit),
   );
+  const linkedAfterPlacement = await call("alignment_targets", {
+    entityIds: [surfaceId],
+  });
+  assert.deepEqual(linkedAfterPlacement.result.entityIds, [
+    surfaceId,
+    authoringDependent.entityIds[0],
+  ]);
+  const savedLinks = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: savedLinks.artifactId,
+      replace: true,
+    }),
+  );
+  const linkedAfterReopen = await call("alignment_targets", {
+    entityIds: [surfaceId],
+  });
+  assert.deepEqual(
+    linkedAfterReopen.result.entityIds,
+    linkedAfterPlacement.result.entityIds,
+  );
+  assert.deepEqual(linkedAfterReopen.result.blocked, []);
+  await mutate("object_select", { entityId: authoringDependent.entityIds[0] });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  const retainedReferences = page.locator(
+    `[data-authoring-feature-id="${authoringDependent.featureId}"]`,
+  );
+  if (!(await retainedReferences.isVisible()))
+    await page
+      .getByRole("button", {
+        name: "Align object to origin / references",
+        exact: true,
+      })
+      .click();
+  await retainedReferences.waitFor();
+  assert.ok(
+    (await retainedReferences.textContent()).includes("Construction plane"),
+  );
   ledger.steps = [
     "real sphere/plane segmentation retains classified fits through MCP",
     "native nontrivial rotation preserves fitted parameters in Preview",
@@ -537,6 +598,7 @@ try {
     "MCP Undo/Redo restores fitted parameters",
     "Exact CAD alignment retains source-scan dependency through GUI Apply and MCP Preview",
     "GUI dependent-target inclusion equals shared MCP discovery",
+    "Authoring identities and links survive GUI Apply, Undo/Redo and actual BRep project save/reopen",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({

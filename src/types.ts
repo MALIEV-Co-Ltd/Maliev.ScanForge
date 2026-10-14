@@ -51,6 +51,8 @@ export interface Entity {
   planeFrame?: { center: Vec3; normal: Vec3; tangent: Vec3 };
   surfacePatch?: NurbsPatch;
   surfaceScanId?: string;
+  /** Stable authoring identity and resolved links retained after a recipe is baked. */
+  authoringLinks?: { featureId: string; output: number; references: string[] };
   /** Authoring recipe and output slot travel with entity history and project files. */
   parametric?: { feature: ParametricFeature; output: number };
 }

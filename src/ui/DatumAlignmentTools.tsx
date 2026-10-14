@@ -228,6 +228,17 @@ export function DatumAlignmentTools({
             entity.surfaceScanId}
         </p>
       )}
+      {!entity.parametric && entity.authoringLinks && (
+        <p
+          className="muted"
+          data-authoring-feature-id={entity.authoringLinks.featureId}
+        >
+          Referenced objects:{" "}
+          {entity.authoringLinks.references
+            .map((id) => entities.find((item) => item.id === id)?.name ?? id)
+            .join(", ") || "None"}
+        </p>
+      )}
       <fieldset disabled={busy}>
         <button
           type="button"

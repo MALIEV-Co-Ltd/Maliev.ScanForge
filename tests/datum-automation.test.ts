@@ -262,6 +262,171 @@ it("preserves exact CAD source-scan dependencies through Preview, Apply, history
     api.dispose();
   }
 });
+it("retains baked authoring identities and links while rejecting incomplete authoring closure", async () => {
+  const { api, state, transformDatum } = exactSetup();
+  state.entities[0] = {
+    ...state.entities[0],
+    color: "#ffffff",
+    parametric: {
+      output: 0,
+      feature: {
+        id: "root-feature",
+        name: "Root",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "sphere", center: [5, 6, 7], radius: 1 },
+        },
+      },
+    },
+  };
+  state.entities.push({
+    ...state.entities[0],
+    id: "child",
+    kernelId: "child",
+    parametric: {
+      output: 0,
+      feature: {
+        id: "child-feature",
+        name: "Child",
+        recipe: {
+          kind: "offset",
+          source: { featureId: "root-feature" },
+          distance: 1,
+        },
+      },
+    },
+  });
+  try {
+    const partial = await settle(
+      api,
+      await api.invoke("alignment_apply", request(api)),
+    );
+    expect(partial.status).toBe("failed");
+    expect(JSON.stringify(partial)).toContain("Include dependent features");
+    expect(transformDatum).not.toHaveBeenCalled();
+    expect(state.history).toHaveLength(0);
+    const identity = await settle(
+      api,
+      await api.invoke("alignment_preview", {
+        ...request(api),
+        constraints: [{ kind: "point", point: [0, 0, 0], axis: 0 }],
+      }),
+    );
+    expect(identity.status).toBe("succeeded");
+    const discovery = await api.invoke("alignment_targets", {
+      entityIds: ["scan"],
+    });
+    if (!discovery.ok) throw Error(discovery.error.message);
+    const args = {
+      ...request(api),
+      entityIds: (discovery.result as { entityIds: string[] }).entityIds,
+    };
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", args),
+    );
+    expect(preview.status).toBe("succeeded");
+    expect(preview.result.targets[1].authoringLinks).toEqual({
+      featureId: "child-feature",
+      output: 0,
+      references: ["scan"],
+    });
+    expect(state.entities[1].parametric).toBeDefined();
+    const applied = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...args,
+        requestId: crypto.randomUUID(),
+      }),
+    );
+    expect(applied.status).toBe("succeeded");
+    expect(state.entities[0].authoringLinks).toEqual({
+      featureId: "root-feature",
+      output: 0,
+      references: [],
+    });
+    expect(state.entities[1].authoringLinks).toEqual(
+      preview.result.targets[1].authoringLinks,
+    );
+    expect(
+      state.entities.every((entity) => entity.parametric === undefined),
+    ).toBe(true);
+    expect(state.history[0].entities[1].parametric).toBeDefined();
+    const reopened = parseProject(serializeProject("placed", state.entities));
+    expect(reopened.entities[1].authoringLinks?.references).toEqual(["scan"]);
+    const next = await api.invoke("alignment_targets", { entityIds: ["scan"] });
+    if (!next.ok) throw Error(next.error.message);
+    expect(next.result).toMatchObject({ entityIds: ["scan", "child"] });
+  } finally {
+    api.dispose();
+  }
+});
+it("discovers every split output and rejects partial output placement", async () => {
+  const { api, state, transformDatum } = exactSetup();
+  state.entities[0] = {
+    ...state.entities[0],
+    parametric: {
+      output: 0,
+      feature: {
+        id: "root",
+        name: "Root",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "sphere", center: [0, 0, 0], radius: 1 },
+        },
+      },
+    },
+  };
+  const feature = {
+    id: "split",
+    name: "Split",
+    recipe: {
+      kind: "split" as const,
+      source: { featureId: "root" },
+      cutter: { featureId: "root" },
+    },
+  };
+  state.entities.push(
+    ...[0, 1].map((output) => ({
+      ...state.entities[0],
+      id: `piece${output}`,
+      kernelId: `piece${output}`,
+      parametric: { feature, output },
+    })),
+  );
+  try {
+    const discovery = await api.invoke("alignment_targets", {
+      entityIds: ["piece0"],
+    });
+    if (!discovery.ok) throw Error(discovery.error.message);
+    expect(discovery.result).toMatchObject({
+      entityIds: ["piece0", "piece1"],
+      groupIds: ["piece1"],
+    });
+    const partial = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...request(api),
+        entityIds: ["piece0"],
+      }),
+    );
+    expect(partial.status).toBe("failed");
+    expect(transformDatum).not.toHaveBeenCalled();
+    const complete = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...request(api),
+        entityIds: ["piece0", "piece1"],
+      }),
+    );
+    expect(complete.status).toBe("succeeded");
+    expect(state.entities[1].authoringLinks?.output).toBe(0);
+    expect(state.entities[2].authoringLinks?.output).toBe(1);
+    expect(state.entities[1].authoringLinks?.references).toEqual(["scan"]);
+  } finally {
+    api.dispose();
+  }
+});
 it("shares exact CAD Preview/Apply with MCP and releases only temporary handles", async () => {
   const { api, host, state, release, transformDatum } = exactSetup();
   try {

@@ -29,6 +29,23 @@ const session = (): ProjectSession => ({
     { label: "Duplicate", entities: [entity, { ...entity, id: "copy" }] },
   ],
 });
+it("retains baked authoring links in binary current state and history", async () => {
+  const source = session();
+  source.project.entities = [
+    {
+      ...entity,
+      authoringLinks: { featureId: "f", output: 0, references: ["source"] },
+    },
+  ];
+  source.history = [{ label: "Baked", entities: source.project.entities }];
+  const decoded = await decodeProjectFile(await encodeProjectFile(source));
+  expect(decoded.project.entities[0].authoringLinks).toEqual(
+    source.project.entities[0].authoringLinks,
+  );
+  expect(decoded.history[0].entities[0].authoringLinks?.references).toEqual([
+    "source",
+  ]);
+});
 it("round trips current state, Unicode names, undo/redo and shared lossless geometry", async () => {
   const source = session(),
     file = await encodeProjectFile(source),
