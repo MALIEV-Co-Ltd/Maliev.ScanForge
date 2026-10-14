@@ -204,7 +204,7 @@ execution against caller-owned frame storage; it is not a native dialog capture.
 The focused interface cross-reference query alone does not establish native
 class names. The subsequent RTTI and original cast-method trace below resolves
 the native fitted classes. The metadata adapter below covers authored fitting
-conventions; automatic cone-origin derivation remains open.
+conventions; cone-origin semantics are verified below.
 
 ## Verified fitted scene-class resolution
 
@@ -250,25 +250,65 @@ cylinder center is a midpoint; the adapter reconstructs the base as
 `center - axis * height * 0.5`, and the original converter computes its midpoint.
 Missing/nonfinite/negative cylinder heights and zero reference axes are rejected.
 
-The application's cone fitting routine stores a base center. Its relationship
-to the native cone origin has not been established. The adapter therefore
-requires a separate verified native cone origin and rejects calls without it.
-It does not infer the native origin from the application base center.
+The application's cone fitting routine stores a base center and an axis toward
+the smaller end. The native representation stores an apex and an outward axis.
+The adapter now uses the verified cone geometry conversion below. A supplied
+native origin can still override the derived apex when explicit native metadata
+is available.
 
 `alignment-datum-fit-anchor-native.json` contains 156 original converter calls
 through the RTTI-linked query thunks and cast routines. Payloads are constructed
 from authored application fit metadata; twelve plane cases additionally use
 native centering with the plane equation and a supplied reference point. Tests
 compare support, reconstructed payload origin and every returned double byte.
-Additional regressions require cone-origin metadata and demonstrate that an
+Additional regressions reject incomplete cone metadata and demonstrate that an
 explicit native origin remains independent of the application's base center.
 
 These captures verify reference conversion of declared geometry, not recovery
-or parity of the native fitting algorithms. The application cone-origin
-derivation, interactive picking, CAD adapters and geometry publication remain
+or parity of the native fitting algorithms. Interactive picking, CAD adapters and geometry publication remain
 required before the complete origin-alignment workflow can be enabled.
 
+## Verified cone apex, axis and axial range
+
+The native model setter at `0x1404dd080` stores origin at `0x30`, normalized
+axis at `0x48`, opening half-angle at `0x60`, axial start at `0x68` and span
+at `0x70`. Its endpoint routine `0x1404dc670` returns origin plus axis times
+start, origin plus axis times start-plus-span, and the origin itself.
+The signed-distance routine `0x1404dd1c0` measures positive axial coordinates
+away from this origin and uses `cos(angle) * radial - sin(angle) * axial`.
+Thus the origin is the apex and the axis points outward from it.
+
+`src/scan-native-datum-cone.ts` converts authored fit metadata into the same
+geometry. For unit base-to-small-end axis A, base center C, radii R > T >= 0
+and height H, the apex is `C + A * R * H / (R - T)`, outward axis is `-A`,
+start is `T * H / (R - T)` and half-angle is `atan((R - T) / H)`.
+Zero-height, cylindrical and inverted-radius inputs are rejected rather than
+assigned an invented apex. The original endpoint arithmetic is ported directly.
+
+`alignment-datum-cone-native.json` retains 48 original endpoint/distance
+executions covering true cones, truncated cones, oblique axes and the six
+principal directions. Tests restore the original axis bytes because JSON
+module transforms can erase signed zero. All handle and direction bytes must
+match; native handles must also land at the authored small/base centers within
+`1e-12 mm`. Half-angle agreement uses `1e-15` tolerance across math libraries.
+The original distance routine evaluates 228 authored lateral-surface samples;
+maximum absolute residual is `2.220446049250313e-14 mm`. Apex samples are
+excluded from that distance check because the original routine's near-zero
+axial guard returns its invalid-distance sentinel there. The apex remains a
+valid point reference through the original feature converter.
+
+Endpoint static Evidence:
+`ev_23db9d9c317b544e33ddc93e229102c150e2aa3c984fb1676a0497868e296f84`.
+Signed-distance static Evidence:
+`ev_7b2dc1ecc55c80c42118c5e8cc2e5c2bb64f67d909ab79f768a8926592b544f8`.
+Model setter static Evidence:
+`ev_f41cf3b9a28c2bb61b94dcfb49305943b367b39f6477c17012be2941f171ff0b`.
+Runtime captures execute the original routines with caller-owned model storage.
+Square-root, cosine and sine bindings are rebound after checking relative
+export offsets. These captures establish geometry/reference conventions, not
+native fitting-algorithm parity, complete cone editing or native UI behavior.
+
 The numerical helpers are not yet connected to a public application action and
-are not advertised in MCP discovery. Completing primitive reference conversion,
+are not advertised in MCP discovery. Completing CAD-backed reference conversion,
 preview/reset/acceptance and shared GUI/MCP
 operation remains required before enabling coordinate-system alignment.

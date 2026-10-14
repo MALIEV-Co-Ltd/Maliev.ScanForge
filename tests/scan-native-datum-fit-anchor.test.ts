@@ -14,10 +14,7 @@ it.each(native.cases)(
   "maps authored fit anchors through original converter: $name",
   (sample) => {
     const fit = structuredClone(sample.fit) as FitResult;
-    const feature = nativeDatumFitFeature(
-      fit,
-      fit.kind === "cone" ? sample.origin : undefined,
-    );
+    const feature = nativeDatumFitFeature(fit);
     expect(bits(feature.origin)).toBe(bits(sample.origin));
     const result = nativeDatumPickedFeature(
       feature,
@@ -52,7 +49,7 @@ it("rejects incomplete cylinder height and invalid reference axes", () => {
   ).toThrow("zero reference axis");
   expect(() =>
     nativeDatumFitFeature({ ...fit, kind: "cone", height: 1 }),
-  ).toThrow("verified native origin metadata");
+  ).toThrow("base radius");
 });
 
 it("keeps an explicit native cone origin separate from the application base center", () => {

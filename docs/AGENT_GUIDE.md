@@ -236,8 +236,9 @@ plane-reference numerical sequences, point projection and direction construction
 including mixed-reference replay, picked-plane conversion math and Apply frame
 inversion, fitted-feature axis/point payload conversion, and origin-reference
 dispatch with stage-preserving flips and fitted scene-class reference resolution.
-The authored fit-anchor adapter covers planes, cylinders and spheres; cones
-require separate verified native-origin metadata. Primitive picking and the complete shared
+The authored fit-anchor adapter covers planes, cylinders, spheres and cones;
+cones use the native apex/outward-axis convention verified by original endpoint
+and surface-distance routines. Primitive picking and the complete shared
 workflow are not yet available.
 The **Use multiple CPU cores** option selects two logical native lanes. MCP
 accepts `operation.workerCount` (1–16, default 1) and `operation.parallel`

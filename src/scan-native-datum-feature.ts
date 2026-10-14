@@ -1,5 +1,6 @@
 import { nativeDatumPlaneGeometry } from "./scan-native-datum-apply";
 import type { FitResult } from "./types";
+import { nativeDatumConeGeometry } from "./scan-native-datum-cone";
 
 export type NativeDatumAxisPlacement =
   "segmentMidpoint" | "extrusionMidpoint" | "origin";
@@ -99,16 +100,12 @@ export function nativeDatumFitFeature(
       equationOffset: offset,
     };
   }
-  // The application stores a cone base center; do not guess the native cone anchor.
-  if (!nativeConeOrigin)
-    throw new Error(
-      "Cone reference requires its verified native origin metadata.",
-    );
-  finiteVector(nativeConeOrigin);
+  const cone = nativeDatumConeGeometry(fit);
+  if (nativeConeOrigin) finiteVector(nativeConeOrigin);
   return {
     kind: "cone",
-    origin: [...nativeConeOrigin],
-    direction: [...fit.axis],
+    origin: nativeConeOrigin ? [...nativeConeOrigin] : cone.origin,
+    direction: cone.direction,
   };
 }
 
