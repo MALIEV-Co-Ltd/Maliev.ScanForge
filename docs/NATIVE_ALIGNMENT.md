@@ -1240,3 +1240,44 @@ console errors. The temporary browser, MCP bridge and artifact HTTP listener
 closed in `finally`; subsequent observation found no remaining owned processes
 or listeners. Build manifest is `scanforge-16dcadad26643b2e`. Port 5173 remains
 live for user testing; no push or deployment was performed.
+
+## Original landmark refinement apply and selection-state transition
+
+The original reset/seeding/growth prefix of `0x14054d440` has been joined to its
+original post-controller identity check and selection-clear tail in a bounded
+native replay. A controlled 96-byte controller matrix is copied into the native
+stack frame between these sections; scene collection and controller execution
+are skipped. Original identity predicate `0x1401dd330`, face-selection reset
+`0x14031fb60` and the vertex clear loop execute unchanged. The object's transform
+method is an adapter that captures the matrix rather than changing geometry.
+Execution exits through the original register/stack restoration before later
+cleanup/UI callbacks and skips the caller's cookie check.
+
+Eight matrix cases run over all 89 previously verified region fixtures, including
+long-chain stopping, fan overshoot, hidden seed vertices, preselected faces and
+high unsigned vertex flags. This produces 712 cases and 26,808 original growth
+passes. Identity, half-epsilon and exact-epsilon translation changes are not
+applied; a diagonal change of exactly epsilon is also not applied. Translation
+or diagonal changes greater than epsilon, including negative translation, are
+applied once. Epsilon here is double epsilon, `2^-52`.
+
+For all 356 identity cases, the grown vertex and face flags remain unchanged.
+For all 356 applied cases, only selection bit four is cleared from every vertex
+DWORD and face byte. All other bits, including high unsigned vertex bits and
+borrowed scratch bits, remain unchanged. The captured application matrix bytes
+match the supplied controller matrix exactly. This decision depends on the
+matrix's component differences, not whether Float32 coordinate storage would
+visibly change after applying a tiny transform.
+
+`docs/evidence/landmark-refinement-state-native.json` retains unique input matrices,
+per-case flag-buffer digests and captured application matrices, linked to the
+existing preparation corpus by SHA-256. Full raw flags remain in the external
+`landmark-refinement-state-native.json` capture. The independent
+external verifier checks original image identity, unique case coverage,
+component-wise identity tolerance, application counts/bytes, growth pass/seed
+identity and final flags against the independently verified preparation corpus:
+zero differences. The probe's image/code allocations were released and its
+process exited. This does not verify actual object coordinate/normal application,
+scene targets, controller numerical output, UI state or complete preview/cancel.
+No application code changed; build and application tests are not applicable to
+this evidence slice.
