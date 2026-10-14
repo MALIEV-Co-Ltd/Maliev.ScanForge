@@ -732,3 +732,42 @@ application executable source and GUI/MCP contracts did not change, so applicati
 build/test targets are not applicable. Native replay and REA helpers exited;
 user-required live development on port 5173 was preserved. The complete goal
 remains active.
+
+## Original landmark preparation caller prefix
+
+Fresh REA recovered reset `0x1402c2090` and the full refinement handler
+`0x14054d440`. Reset evidence:
+`ev_904b00d9dcdfc7075ee2f2f0ba0020ae2b19b360123948a9ee5ccddca57b48bc`
+and `ev_63cb1dd7641100446bbee1a9d9c75d081c39ab6e22af1015bcd1cdad2945c4d5`.
+Handler evidence:
+`ev_6e6168202012f6f6588dc62feb115f9130fa04ebdf7f7d48142514aedb7e3152`
+and `ev_c18a5f299529e65f9a6568e78dfde8fa0133a97969eb64002dbab3426bb5171b`.
+
+`docs/evidence/landmark-refinement-preparation-native.json` captures 89 executions
+of the original handler's preparation prefix, covering 3,351 original growth
+calls. Entry, vertex reset, supplied nearest-landmark index seeding and the complete
+stopping loop execute unchanged. At `0x14054d525`, execution is redirected to the
+existing register/stack restoration at `0x14054de96`, before scene collection and
+optimization; this also skips the cookie check. Compiled containers and controlled
+scratch allocation/release remain adapters. This is preparation-prefix execution,
+not execution of the complete refinement handler or native GUI.
+
+Reset clears vertex bit 4 only; it does not clear face selection flags. Seeding
+sets bit 4 on supplied indices without discarding other bits. The original loop
+always grows once, then repeats until the returned face count reaches at least
+3,000 or stops changing. Existing selected faces therefore contribute to that
+count, and unchanged face count is the stopping condition rather than equality
+of every vertex flag. The 4,000-face chain stops at 3,000 faces after exactly
+3,000 passes, selecting 6,001 vertices. The 4,001-face fan stops after one pass.
+All final vertex flags, face bytes, counts and call counts match an independent
+UInt32/Uint8 oracle, including high bits and bit-1 seed exclusion.
+
+The handler's later target collection, controller construction, normals/cache
+preconditions and optimization remain outside this prefix capture. Nearest-index
+mapping is independently verified above; these captures supply those indices.
+No application runtime integration or GUI/MCP behavior change is claimed.
+Validation checked the original image identity, buffer/index structure and all
+89 outputs with zero differences, plus formatting/whitespace checks. Native
+replay and REA resources exited and image allocations were released. Application
+build/tests are not applicable to this evidence/documentation-only slice; live
+port 5173 was retained and the complete goal remains active.
