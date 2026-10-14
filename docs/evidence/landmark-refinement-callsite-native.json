@@ -1,0 +1,51 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x14054d440",
+  "callAddress": "0x14054dc74",
+  "callee": "0x140aaa570",
+  "originalCallsiteSha256": "d9255562395b2e4919fbd56fb70fd8ee377fcbbfb5c600d7035779743bb6ee8d",
+  "originalCallsiteBytes": "c685e800000001488b05816f0d014805306000004889442430f30f100516d2d100f30f11442420f30f101d10d8d10041b8ffffff7f488d9580000000488d8de0000000e8f7c85500",
+  "constants": {
+    "distance": 3.0,
+    "sampling": 0.5
+  },
+  "cases": [
+    {
+      "sentinel": "0x0",
+      "controller": "0xc34aade530",
+      "output": "0xc34aade4d0",
+      "sampleBudget": 2147483647,
+      "distanceBits": "0x40400000",
+      "samplingBits": "0x3f000000",
+      "slot6": "0x0",
+      "statusPointer": "0x2e5fa10",
+      "slot8": "0x0",
+      "outputOffset": 96
+    },
+    {
+      "sentinel": "0x1122334455667788",
+      "controller": "0xc34aade530",
+      "output": "0xc34aade4d0",
+      "sampleBudget": 2147483647,
+      "distanceBits": "0x40400000",
+      "samplingBits": "0x3f000000",
+      "slot6": "0x1122334455667788",
+      "statusPointer": "0x2e5fa10",
+      "slot8": "0x1122334455667788",
+      "outputOffset": 96
+    },
+    {
+      "sentinel": "0xffffffffffffffff",
+      "controller": "0xc34aade530",
+      "output": "0xc34aade4d0",
+      "sampleBudget": 2147483647,
+      "distanceBits": "0x40400000",
+      "samplingBits": "0x3f000000",
+      "slot6": "0xffffffffffffffff",
+      "statusPointer": "0x2e5fa10",
+      "slot8": "0xffffffffffffffff",
+      "outputOffset": 96
+    }
+  ],
+  "scope": "Executes original dc31..dc78 call preparation. Callee replaced with ABI capture leaf; controlled caller frame and scratch sentinels. Does not execute controller construction, optimizer, target collection, or installed GUI."
+}

@@ -771,3 +771,38 @@ Validation checked the original image identity, buffer/index structure and all
 replay and REA resources exited and image allocations were released. Application
 build/tests are not applicable to this evidence/documentation-only slice; live
 port 5173 was retained and the complete goal remains active.
+
+## Original landmark refinement call contract
+
+After region growth and scene target assembly, handler `0x14054d440` constructs
+controller `0x140aa8ea0` and invokes `0x140aaa570` at `0x14054dc74`.
+The retained REA assembly evidence is
+`ev_c18a5f299529e65f9a6568e78dfde8fa0133a97969eb64002dbab3426bb5171b`.
+
+A bounded native replay executes the original call preparation from
+`0x14054dc31` through `0x14054dc78`, replacing only the callee with an ABI capture
+leaf and returning through a controlled caller frame. Three distinct scratch
+sentinels confirm these supplied values:
+
+- Third argument: `0x7fffffff` source sample budget.
+- Fourth argument: Float32 `3.0`, promoted to double and stored in each selected
+  source worker record at offset `0x38` by the retained controller.
+- Fifth argument: Float32 `0.5`, passed to target surface preparation
+  `0x140a7f470` through `XMM2`.
+- Seventh argument: the application status object at the global pointer plus
+  `0x6030`.
+
+The caller does not initialize stack argument slots six and eight. The retained
+controller uses those locations as local scratch storage (thread exit code and
+current source vertex). They must not be reconstructed as user-facing options
+merely because the decompiler includes them in its inferred signature.
+Controller and output pointers differ by 96 bytes in the controlled frame.
+
+`docs/evidence/landmark-refinement-callsite-native.json` retains original caller
+bytes, their digest, constant bits and all three captures. The independent
+external verifier checks the original image digest, unchanged callsite bytes,
+consumer offsets and every captured value: three cases, zero differences.
+Both image and executable capture allocations were released and the probe
+process exited. This replay does **not** execute controller construction,
+optimization, scene target collection or the installed GUI. Full point-pair
+workflow readiness remains gated; this evidence closes its caller ABI contract.
