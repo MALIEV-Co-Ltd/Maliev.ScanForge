@@ -849,3 +849,47 @@ not justify evicting every referenced mesh's welded topology on notification.
 The populated update path, full refresh pipeline and geometry-allowed Apply
 controller remain separate requirements. No application behavior changed in
 this evidence slice.
+
+## Linked consumer type and geometry-call boundary
+
+The loaded image binds `0x1404d9cc0` at primary vtable `0x141192d98`
+slot `0x1f8`. The MSVC complete-object locator at `0x141302b30` has
+signature 1, object offset zero and a matching self RVA; its type descriptor
+names `OP_ThickenSubD`. Independent verification checks these original bytes.
+This identifies a subdivision-thickening update, not a universal primitive
+or scan-topology refresh. Its reconstruction steps must not be applied to all
+scan alignment targets merely because they share the change flags.
+
+With populated four-entry trees, 192 direct executions cover all 16
+present/missing-object masks, four first-flag values and three second-flag
+values. Supplied present objects reject the common-feature interface. The
+original consumer resolves missing entries once and present entries twice,
+queries present entries in tree order, and resets the pair only when the first
+flag is nonzero. Every other supplied object byte is preserved. External
+`datum-linked-guard-*` artifacts retain capture, independent verification,
+image/probe hashes and cleanup. PID 11800 exited and its mapping was released.
+Eligible geometry updates are excluded from this execution coverage.
+
+REA recovered the three direct geometry callees:
+
+- `0x140a66b90` clears through virtual slot 8, copies linked topology records
+  and reconnects their references. Evidence:
+  `ev_f6e30de79c934bce8ba304ce256a164c31f7bcb76e34a471edb97dc29cf3ee32`.
+- `0x140a6c3d0` resets and processes geometry vectors, with separate flag and
+  worker-count branches. Evidence:
+  `ev_7667bbb820a574072f49e49cdda201a8f87cb155325f1f772820c341b08bcf03`.
+- `0x140a7a1f0` constructs linked geometry and computes displaced positions.
+  Evidence:
+  `ev_4a0a5404d03aa5e15da97ca9cf7e765e3a664e04ab359a83262405f33f88c66c`.
+
+These are static observations, not verified numerical ports. The consumer's
+assembly corrects its earlier pseudocode: `MOVSS XMM1,[RSI+0x650]` passes a
+float, and `MOVZX R9D,byte ptr [RSI+0x654]` passes a byte option to the last
+helper. Treating offset `0x650` as an integer or omitting the byte option would
+misrepresent the native call. External `datum-linked-geometry-*` artifacts
+retain the complete REA records. Its owned server PID 23336 exited.
+
+This evidence narrows the specialized reconstruction boundary. The full Apply
+controller and scene refresh still require their own scan/CAD execution checks;
+the subdivision-thickening branch is not a substitute for those checks. No
+application behavior changed in this slice.
