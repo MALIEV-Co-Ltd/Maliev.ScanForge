@@ -5,10 +5,23 @@ import {
   type DatumInstruction,
 } from "../datum-alignment";
 import type { Entity } from "../types";
+import {
+  createAlignmentOperations,
+  type AlignmentReferencePage,
+} from "./alignment-operations";
+
+export interface DatumReferenceConstraint {
+  kind: "reference";
+  entityId: string;
+  referenceId: string;
+  axis: 0 | 1 | 2;
+  flip?: boolean;
+  centerAt?: number[];
+}
 
 export interface DatumRequest {
   entityIds: string[];
-  constraints: DatumInstruction[];
+  constraints: (DatumInstruction | DatumReferenceConstraint)[];
   translation?: number[];
 }
 export function createDatumOperations(
@@ -38,7 +51,44 @@ export function createDatumOperations(
         );
       return entity;
     });
-    const frame = buildDatumAlignment(args.constraints, args.translation);
+    const references = new Map<string, AlignmentReferencePage>();
+    const instructions: DatumInstruction[] = [];
+    for (const constraint of args.constraints) {
+      if (constraint.kind !== "reference") {
+        instructions.push(constraint);
+        continue;
+      }
+      const key = JSON.stringify([constraint.entityId, constraint.centerAt]);
+      let page = references.get(key);
+      if (!page) {
+        page = (await createAlignmentOperations(host).alignment_references(
+          {
+            entityId: constraint.entityId,
+            centerAt: constraint.centerAt,
+            offset: 0,
+            limit: 10002,
+          },
+          context,
+        )) as AlignmentReferencePage;
+        references.set(key, page);
+      }
+      context.check();
+      const reference = page.references.find(
+        (item) => item.id === constraint.referenceId,
+      );
+      if (!reference || reference.kind === "unsupported" || !reference.point)
+        throw new Error(
+          "Select a supported reference belonging to the chosen alignment object.",
+        );
+      instructions.push({
+        kind: reference.kind,
+        point: reference.point,
+        direction: reference.direction,
+        axis: constraint.axis,
+        flip: constraint.flip,
+      });
+    }
+    const frame = buildDatumAlignment(instructions, args.translation);
     if (!frame.accepted)
       throw new Error(
         `Reference ${frame.steps.findIndex((step) => !step.accepted) + 1} is incompatible with the preceding frame constraints.`,
@@ -59,6 +109,7 @@ export function createDatumOperations(
     const summary = {
       units: "mm",
       translation: args.translation ?? [0, 0, 0],
+      constraints: instructions,
       matrix: frame.matrix,
       frame: frame.state,
       targets: targets.map((item) => {

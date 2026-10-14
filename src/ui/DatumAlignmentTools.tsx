@@ -3,16 +3,26 @@ import type { ApplicationApi } from "../automation/api";
 import type { DatumInstruction } from "../datum-alignment";
 import type { Entity, Vec3 } from "../types";
 import { Panel, VectorField } from "./controls";
+import { DatumReferencePicker } from "./DatumReferencePicker";
+import type { AlignmentReferencePage } from "../automation/alignment-operations";
 
 export function DatumAlignmentTools({
   api,
   entity,
   center,
+  entities,
+  readReferences,
   onPickPoint,
 }: {
   api: ApplicationApi;
   entity: Entity;
   center: Vec3;
+  entities: Entity[];
+  readReferences: (
+    entityId: string,
+    offset: number,
+    signal: AbortSignal,
+  ) => Promise<AlignmentReferencePage>;
   onPickPoint: (callback: ((point: Vec3) => void) | null) => void;
 }) {
   const [open, setOpen] = useState(false),
@@ -21,6 +31,10 @@ export function DatumAlignmentTools({
   const [error, setError] = useState(""),
     [preview, setPreview] = useState(false);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
+  const [requiredReferences, setRequiredReferences] = useState<boolean[]>([]);
+  const [bindings, setBindings] = useState<
+    ({ entityId: string; referenceId: string } | undefined)[]
+  >([]);
   const [instructions, setInstructions] = useState<DatumInstruction[]>([
     { kind: "point", point: [0, 0, 0], axis: 0 },
     { kind: "plane", point: [0, 0, 0], direction: [0, 0, 1], axis: 2 },
@@ -50,6 +64,10 @@ export function DatumAlignmentTools({
     setPreview(false);
   }, [entity.positions]);
   function update(index: number, patch: Partial<DatumInstruction>) {
+    if (patch.kind || patch.point || patch.direction)
+      setBindings((current) =>
+        current.map((item, i) => (i === index ? undefined : item)),
+      );
     if (heldPreview.current) {
       heldPreview.current = false;
       void discard();
@@ -66,7 +84,16 @@ export function DatumAlignmentTools({
     try {
       const receipt = await api.invoke(command, {
         entityIds: [entity.id],
-        constraints: instructions.slice(0, count),
+        constraints: instructions.slice(0, count).map((item, index) =>
+          bindings[index]
+            ? {
+                kind: "reference",
+                ...bindings[index],
+                axis: item.axis,
+                flip: item.flip,
+              }
+            : item,
+        ),
         translation,
         expectedRevision: api.currentRevision(),
         requestId: crypto.randomUUID(),
@@ -154,6 +181,40 @@ export function DatumAlignmentTools({
         {instructions.slice(0, count).map((item, index) => (
           <fieldset key={index}>
             <legend>{["Primary", "Secondary", "Tertiary"][index]}</legend>
+            <DatumReferencePicker
+              entities={entities}
+              index={index}
+              value={bindings[index]}
+              read={readReferences}
+              onChange={(value, required) => {
+                setRequiredReferences((current) => {
+                  const next = [...current];
+                  next[index] = required;
+                  return next;
+                });
+                if (
+                  value?.reference.point &&
+                  value.reference.kind !== "unsupported"
+                ) {
+                  update(index, {
+                    kind: value.reference.kind,
+                    point: value.reference.point,
+                    direction: value.reference.direction,
+                    flip: false,
+                  });
+                } else update(index, {});
+                setBindings((current) => {
+                  const next = [...current];
+                  next[index] = value
+                    ? {
+                        entityId: value.entityId,
+                        referenceId: value.reference.id,
+                      }
+                    : undefined;
+                  return next;
+                });
+              }}
+            />
             <label className="field">
               <span>Type</span>
               <select
@@ -249,11 +310,27 @@ export function DatumAlignmentTools({
         <p role="status">Alignment preview ready · model unchanged</p>
       )}
       <div className="display-row">
-        <button disabled={busy} onClick={() => void run("alignment_preview")}>
+        <button
+          disabled={
+            busy ||
+            requiredReferences.some(
+              (required, index) =>
+                index < count && required && !bindings[index],
+            )
+          }
+          onClick={() => void run("alignment_preview")}
+        >
           Preview alignment
         </button>
         <button
-          disabled={busy || !preview}
+          disabled={
+            busy ||
+            !preview ||
+            requiredReferences.some(
+              (required, index) =>
+                index < count && required && !bindings[index],
+            )
+          }
           onClick={() => void run("alignment_apply")}
         >
           Apply alignment

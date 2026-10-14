@@ -378,6 +378,68 @@ try {
     await call("mesh_analyze", { entityId: meshId }),
   );
   assert.deepEqual(restoredAnalysis.stats, sourceAnalysis.stats);
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByLabel("Reference 1 object", { exact: true })
+    .selectOption(created.entityIds[0]);
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Preview alignment", exact: true })
+      .isDisabled(),
+    true,
+  );
+  const face = references.references.find(
+    (reference) => reference.kind === "plane",
+  );
+  await page
+    .getByLabel("Reference 1 feature", { exact: true })
+    .selectOption(face.id);
+  const boundConstraints = [
+    {
+      kind: "reference",
+      entityId: created.entityIds[0],
+      referenceId: face.id,
+      axis: 0,
+    },
+  ];
+  const boundPreview = await job(
+    await mutate("alignment_preview", {
+      entityIds: [meshId],
+      constraints: boundConstraints,
+      translation: [1.25, 0, 0],
+    }),
+  );
+  await mutate("preview_discard", { target: "datum" });
+  await page
+    .getByRole("button", { name: "Preview alignment", exact: true })
+    .click();
+  await page
+    .getByText("Alignment preview ready · model unchanged", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Apply alignment", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Align scan to origin / references",
+      exact: true,
+    })
+    .waitFor();
+  const boundAnalysis = await job(
+    await call("mesh_analyze", { entityId: meshId }),
+  );
+  assert.deepEqual(boundAnalysis.stats.min, boundPreview.targets[0].bounds.min);
+  assert.deepEqual(boundAnalysis.stats.max, boundPreview.targets[0].bounds.max);
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    (await job(await call("mesh_analyze", { entityId: meshId }))).stats,
+    sourceAnalysis.stats,
+  );
   const repair = await job(
     await mutate("mesh_process", {
       entityId: meshId,

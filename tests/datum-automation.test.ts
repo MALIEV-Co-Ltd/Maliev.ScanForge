@@ -76,6 +76,159 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("resolves CAD references from current geometry and preserves GUI/MCP manual equivalence", async () => {
+  const { api, host, state } = setup();
+  state.entities.push({
+    ...state.entities[0],
+    id: "cad",
+    kind: "cad",
+    kernelId: "body",
+    locked: true,
+  });
+  const input = {
+    kind: "plane",
+    faceIndex: 0,
+    firstTriangle: 0,
+    triangleCount: 2,
+    evaluatedPoint: [3, 4, 5],
+    derivativeU: [1, 0, 0],
+    derivativeV: [0, 1, 0],
+  };
+  const read = vi.fn(async () => [input]);
+  host.cad = () => ({ alignmentReferences: read }) as unknown as CadClient;
+  const discovered = await settle(
+    api,
+    await api.invoke("alignment_references", { entityId: "cad" }),
+  );
+  const reference = discovered.result.references[0];
+  const bound = [
+    {
+      kind: "reference",
+      entityId: "cad",
+      referenceId: reference.id,
+      axis: 2,
+      flip: true,
+    },
+  ];
+  const preview = await settle(
+    api,
+    await api.invoke("alignment_preview", {
+      entityIds: ["scan"],
+      constraints: bound,
+      expectedRevision: api.currentRevision(),
+      requestId: "bound-preview",
+    }),
+  );
+  const manual = await settle(
+    api,
+    await api.invoke("alignment_preview", {
+      entityIds: ["scan"],
+      constraints: [
+        {
+          kind: reference.kind,
+          point: reference.point,
+          direction: reference.direction,
+          axis: 2,
+          flip: true,
+        },
+      ],
+      expectedRevision: api.currentRevision(),
+      requestId: "manual-preview",
+    }),
+  );
+  expect(preview.status).toBe("succeeded");
+  expect(preview.result.matrix).toEqual(manual.result.matrix);
+  expect(state.history).toHaveLength(0);
+  const applied = await settle(
+    api,
+    await api.invoke("alignment_apply", {
+      entityIds: ["scan"],
+      constraints: bound,
+      expectedRevision: api.currentRevision(),
+      requestId: "bound-apply",
+    }),
+  );
+  expect(applied.status).toBe("succeeded");
+  expect(applied.result.matrix).toEqual(preview.result.matrix);
+  expect(read).toHaveBeenCalledTimes(3);
+  expect(state.entities[1].kernelId).toBe("body");
+});
+it("rejects stale, foreign and unsupported reference identities before committing", async () => {
+  const { api, host, state } = setup();
+  state.entities.push({
+    ...state.entities[0],
+    id: "cad",
+    kind: "cad",
+    kernelId: "body",
+  });
+  host.cad = () =>
+    ({
+      alignmentReferences: async () => [
+        {
+          kind: "unsupported",
+          faceIndex: 0,
+          firstTriangle: 0,
+          triangleCount: 1,
+          surfaceType: 7,
+        },
+      ],
+    }) as unknown as CadClient;
+  for (const referenceId of ["cad/face/0", "cad/face/99", "other/face/0"]) {
+    const result = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        entityIds: ["scan"],
+        constraints: [
+          { kind: "reference", entityId: "cad", referenceId, axis: 2 },
+        ],
+        expectedRevision: api.currentRevision(),
+        requestId: referenceId,
+      }),
+    );
+    expect(result.status).toBe("failed");
+    expect(state.history).toHaveLength(0);
+  }
+});
+it("binds fitted construction feature references without invoking CAD", async () => {
+  const { api, host, state } = setup();
+  state.entities.push({
+    ...state.entities[0],
+    id: "sphere",
+    fit: {
+      kind: "sphere",
+      center: [5, 6, 7],
+      axis: [0, 0, 1],
+      radius: 2,
+      rms: 0,
+      maxError: 0,
+    },
+  });
+  const cad = vi.fn(() => {
+    throw new Error("CAD should not be needed");
+  });
+  host.cad = cad;
+  const result = await settle(
+    api,
+    await api.invoke("alignment_apply", {
+      entityIds: ["scan"],
+      constraints: [
+        {
+          kind: "reference",
+          entityId: "sphere",
+          referenceId: "sphere/fit/point",
+          axis: 0,
+        },
+      ],
+      expectedRevision: api.currentRevision(),
+      requestId: "fitted-point",
+    }),
+  );
+  expect(result.status).toBe("succeeded");
+  expect(state.entities[0].positions.slice(0, 3)).toEqual(
+    new Float32Array([0, 0, 0]),
+  );
+  expect(cad).not.toHaveBeenCalled();
+});
 it("exposes frame-basis translation through preview and apply with matching output", async () => {
   const { api, state } = setup();
   const args = {

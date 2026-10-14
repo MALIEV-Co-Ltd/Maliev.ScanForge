@@ -4997,6 +4997,8 @@ export function App() {
                           api={workspaceApi}
                           entity={selected}
                           center={stats.center}
+                          entities={entities}
+                          readReferences={readAlignmentReferences}
                           onPickPoint={(callback) => {
                             datumPointPick.current = callback;
                             if (callback) setMode("inspect");
