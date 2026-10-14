@@ -1,0 +1,1857 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "execution": "Original RTTI-linked class query thunk, cast method and feature converter; caller-owned object storage and rejecting adapter for unsupported underlying geometry interfaces",
+    "nativeUiCapture": false
+  },
+  "cases": [
+    {
+      "name": "cone-0-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [-65.37622028853053, -49.41961700499136, -38.37160941455233],
+      "direction": [
+        -0.6054588764433877, 0.19897177341499495, 0.3830330199274967
+      ],
+      "length": 3.324409926789837,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-0-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [-65.37622028853053, -49.41961700499136, -38.37160941455233],
+      "direction": [
+        -0.6054588764433877, 0.19897177341499495, 0.3830330199274967
+      ],
+      "length": 3.324409926789837,
+      "accepted": true,
+      "nativePointBits": "24d542fe135850c045a49002b6b548c0a931b5e5902f43c0",
+      "nativeDirectionBits": "50b62c4beb5fe3bfd07fd235e877c93f181c78ed9c83d83f"
+    },
+    {
+      "name": "cone-0-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [-65.37622028853053, -49.41961700499136, -38.37160941455233],
+      "direction": [
+        -0.6054588764433877, 0.19897177341499495, 0.3830330199274967
+      ],
+      "length": 3.324409926789837,
+      "accepted": true,
+      "nativePointBits": "24d542fe135850c045a49002b6b548c0a931b5e5902f43c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-1-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [65.36513784794306, -29.743992803196846, 32.891545105589785],
+      "direction": [
+        0.691971323575004, 0.12481871301867242, -0.7418056675125033
+      ],
+      "length": 82.49544900209368,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-1-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [65.36513784794306, -29.743992803196846, 32.891545105589785],
+      "direction": [
+        0.691971323575004, 0.12481871301867242, -0.7418056675125033
+      ],
+      "length": 82.49544900209368,
+      "accepted": true,
+      "nativePointBits": "a0dc226b5e5750409830f64f76be3dc060b567261e724040",
+      "nativeDirectionBits": "82c8900ba124e63fe01058821ef4bf3f50843e3ddfbce7bf"
+    },
+    {
+      "name": "cone-1-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [65.36513784794306, -29.743992803196846, 32.891545105589785],
+      "direction": [
+        0.691971323575004, 0.12481871301867242, -0.7418056675125033
+      ],
+      "length": 82.49544900209368,
+      "accepted": true,
+      "nativePointBits": "a0dc226b5e5750409830f64f76be3dc060b567261e724040",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-2-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [-86.90877444705738, -93.65010496807227, 6.6912957968248605],
+      "direction": [
+        -0.29575207366075396, 0.8255174042636992, -0.7492783830282086
+      ],
+      "length": 94.18171450020552,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-2-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [-86.90877444705738, -93.65010496807227, 6.6912957968248605],
+      "direction": [
+        -0.29575207366075396, 0.8255174042636992, -0.7492783830282086
+      ],
+      "length": 94.18171450020552,
+      "accepted": true,
+      "nativePointBits": "53634c5c29ba55c09a35de519b6957c070e69c0be3c31a40",
+      "nativeDirectionBits": "3c37061b9aedd2bfbeecb279a36aea3fe096d6a816fae7bf"
+    },
+    {
+      "name": "cone-2-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [-86.90877444705738, -93.65010496807227, 6.6912957968248605],
+      "direction": [
+        -0.29575207366075396, 0.8255174042636992, -0.7492783830282086
+      ],
+      "length": 94.18171450020552,
+      "accepted": true,
+      "nativePointBits": "53634c5c29ba55c09a35de519b6957c070e69c0be3c31a40",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-3-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [28.759990992026218, 60.72414500706526, -0.6801336861257568],
+      "direction": [
+        -0.5614090244809837, 0.4685543488967505, 0.6941280428485168
+      ],
+      "length": 13.166740372711075,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-3-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [28.759990992026218, 60.72414500706526, -0.6801336861257568],
+      "direction": [
+        -0.5614090244809837, 0.4685543488967505, 0.6941280428485168
+      ],
+      "length": 13.166740372711075,
+      "accepted": true,
+      "nativePointBits": "d80108c58ec23c40187499c8b05c4e40802d5ab8a7c3e5bf",
+      "nativeDirectionBits": "2067fa0e10f7e1bf5c3f3a61cbfcdd3ff0aa68034c36e63f"
+    },
+    {
+      "name": "cone-3-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [28.759990992026218, 60.72414500706526, -0.6801336861257568],
+      "direction": [
+        -0.5614090244809837, 0.4685543488967505, 0.6941280428485168
+      ],
+      "length": 13.166740372711075,
+      "accepted": true,
+      "nativePointBits": "d80108c58ec23c40187499c8b05c4e40802d5ab8a7c3e5bf",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-4-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [-74.68005834399803, 54.12280988245965, -23.620346507042626],
+      "direction": [
+        0.4826403253691063, -0.9597652609834115, -0.5116582893579376
+      ],
+      "length": 95.55334548163069,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-4-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [-74.68005834399803, 54.12280988245965, -23.620346507042626],
+      "direction": [
+        0.4826403253691063, -0.9597652609834115, -0.5116582893579376
+      ],
+      "length": 95.55334548163069,
+      "accepted": true,
+      "nativePointBits": "fbb56e1386ab52c01865f63bb80f4b4098ef5707cf9e37c0",
+      "nativeDirectionBits": "283b4c3f94e3de3f4e57f8a265b6eebff2a07034815fe0bf"
+    },
+    {
+      "name": "cone-4-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [-74.68005834399803, 54.12280988245965, -23.620346507042626],
+      "direction": [
+        0.4826403253691063, -0.9597652609834115, -0.5116582893579376
+      ],
+      "length": 95.55334548163069,
+      "accepted": true,
+      "nativePointBits": "fbb56e1386ab52c01865f63bb80f4b4098ef5707cf9e37c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-5-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [-29.334356947340922, 54.93935416085537, -93.4979926291812],
+      "direction": [0.5408861997244927, 0.9174694642692114, 0.7583598809185685],
+      "length": 0.2899512079270086,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-5-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [-29.334356947340922, 54.93935416085537, -93.4979926291812],
+      "direction": [0.5408861997244927, 0.9174694642692114, 0.7583598809185685],
+      "length": 0.2899512079270086,
+      "accepted": true,
+      "nativePointBits": "0805ba6a98553dc0201ed4c13c784b40defe791cdf5f57c0",
+      "nativeDirectionBits": "da945593f04ee13f4aad03ece85bed3f3e99e4f07b44e83f"
+    },
+    {
+      "name": "cone-5-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [-29.334356947340922, 54.93935416085537, -93.4979926291812],
+      "direction": [0.5408861997244927, 0.9174694642692114, 0.7583598809185685],
+      "length": 0.2899512079270086,
+      "accepted": true,
+      "nativePointBits": "0805ba6a98553dc0201ed4c13c784b40defe791cdf5f57c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-6-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [-66.47741624710422, 71.9632673598945, -54.0716692591497],
+      "direction": [
+        0.5233495562360315, -0.043292062002425524, 0.6511836885811857
+      ],
+      "length": 11.268859198960538,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-6-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [-66.47741624710422, 71.9632673598945, -54.0716692591497],
+      "direction": [
+        0.5233495562360315, -0.043292062002425524, 0.6511836885811857
+      ],
+      "length": 11.268859198960538,
+      "accepted": true,
+      "nativePointBits": "11f9dffc8d9e50c04603242ca6fd5140981652752c094bc0",
+      "nativeDirectionBits": "a41d8d9147bfe03f0022f48c602aa6bf8aa2c42c7fd6e43f"
+    },
+    {
+      "name": "cone-6-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [-66.47741624710422, 71.9632673598945, -54.0716692591497],
+      "direction": [
+        0.5233495562360315, -0.043292062002425524, 0.6511836885811857
+      ],
+      "length": 11.268859198960538,
+      "accepted": true,
+      "nativePointBits": "11f9dffc8d9e50c04603242ca6fd5140981652752c094bc0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-7-plane",
+      "kind": "cone",
+      "reference": "plane",
+      "origin": [43.93801704784744, 5.383485314429251, 65.71410057033964],
+      "direction": [
+        -0.09912488270851294, -0.5776493037956156, -0.1715163295329356
+      ],
+      "length": 88.40760340440787,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cone-7-direction",
+      "kind": "cone",
+      "reference": "direction",
+      "origin": [43.93801704784744, 5.383485314429251, 65.71410057033964],
+      "direction": [
+        -0.09912488270851294, -0.5776493037956156, -0.1715163295329356
+      ],
+      "length": 88.40760340440787,
+      "accepted": true,
+      "nativePointBits": "30cc4ff110f8454030e1cf5fb08815407aeae0d2b36d5040",
+      "nativeDirectionBits": "30f173913f60b9bfb27f8b641a7ce2bf207609413ff4c5bf"
+    },
+    {
+      "name": "cone-7-point",
+      "kind": "cone",
+      "reference": "point",
+      "origin": [43.93801704784744, 5.383485314429251, 65.71410057033964],
+      "direction": [
+        -0.09912488270851294, -0.5776493037956156, -0.1715163295329356
+      ],
+      "length": 88.40760340440787,
+      "accepted": true,
+      "nativePointBits": "30cc4ff110f8454030e1cf5fb08815407aeae0d2b36d5040",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-0-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [-78.39014090471375, -88.76394437058525, 78.15644448642468],
+      "direction": [
+        -0.2898162701248348, 0.7832521036114342, 0.10199656769468146
+      ],
+      "length": 88.5538577387331,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-0-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [-78.39014090471375, -88.76394437058525, 78.15644448642468],
+      "direction": [
+        -0.2898162701248348, 0.7832521036114342, 0.10199656769468146
+      ],
+      "length": 88.5538577387331,
+      "accepted": true,
+      "nativePointBits": "40a1e0693ace56c0a6cde4c3be0a4bc003d81ae20aab5440",
+      "nativeDirectionBits": "443b828a598cd2bf181931b76610e93f508b8d72721cba3f"
+    },
+    {
+      "name": "cylinder-0-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [-78.39014090471375, -88.76394437058525, 78.15644448642468],
+      "direction": [
+        -0.2898162701248348, 0.7832521036114342, 0.10199656769468146
+      ],
+      "length": 88.5538577387331,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-1-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [39.45195637510858, 60.32578857657438, -18.995695822822256],
+      "direction": [
+        -0.21598697587370297, 0.15730278609611537, -0.15008492052331923
+      ],
+      "length": 76.96475099052587,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-1-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [39.45195637510858, 60.32578857657438, -18.995695822822256],
+      "direction": [
+        -0.21598697587370297, 0.15730278609611537, -0.15008492052331923
+      ],
+      "length": 76.96475099052587,
+      "accepted": true,
+      "nativePointBits": "937d445fe8233f403ef3bf604498504000c7c33b75c538c0",
+      "nativeDirectionBits": "c8a7de1276a5cbbfb01eed687f22c43ff89ca290fb35c3bf"
+    },
+    {
+      "name": "cylinder-1-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [39.45195637510858, 60.32578857657438, -18.995695822822256],
+      "direction": [
+        -0.21598697587370297, 0.15730278609611537, -0.15008492052331923
+      ],
+      "length": 76.96475099052587,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-2-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [-11.895832837864944, 8.431230767829263, -22.557156881715045],
+      "direction": [
+        0.14265645626478785, -0.42057653043188514, 0.26887660687979564
+      ],
+      "length": 83.42286083948164,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-2-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [-11.895832837864944, 8.431230767829263, -22.557156881715045],
+      "direction": [
+        0.14265645626478785, -0.42057653043188514, 0.26887660687979564
+      ],
+      "length": 83.42286083948164,
+      "accepted": true,
+      "nativePointBits": "29744c461ec817c0bc3ed2fb253922c0b750755111af26c0",
+      "nativeDirectionBits": "f0391c179142c23fd8e2ead2b9eadabfac524d3a4635d13f"
+    },
+    {
+      "name": "cylinder-2-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [-11.895832837864944, 8.431230767829263, -22.557156881715045],
+      "direction": [
+        0.14265645626478785, -0.42057653043188514, 0.26887660687979564
+      ],
+      "length": 83.42286083948164,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-3-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [41.797726619996325, -71.58491725514055, 45.73937665374817],
+      "direction": [
+        -0.3664573041256589, 0.870561598903697, -0.1729635125058815
+      ],
+      "length": 94.80646257722965,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-3-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [41.797726619996325, -71.58491725514055, 45.73937665374817],
+      "direction": [
+        -0.3664573041256589, 0.870561598903697, -0.1729635125058815
+      ],
+      "length": 94.80646257722965,
+      "accepted": true,
+      "nativePointBits": "c182d0e42c6d3840b084e1a846513ec05bd965192ac54240",
+      "nativeDirectionBits": "e86626560974d7bf323c8effa3dbeb3f2099ce1aab23c6bf"
+    },
+    {
+      "name": "cylinder-3-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [41.797726619996325, -71.58491725514055, 45.73937665374817],
+      "direction": [
+        -0.3664573041256589, 0.870561598903697, -0.1729635125058815
+      ],
+      "length": 94.80646257722965,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-4-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [-62.728211493370644, -3.083339319647422, -70.93601755994743],
+      "direction": [
+        0.9510188338844257, 0.3396267110420914, -0.3177796493095424
+      ],
+      "length": 71.18736655084419,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-4-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [-62.728211493370644, -3.083339319647422, -70.93601755994743],
+      "direction": [
+        0.9510188338844257, 0.3396267110420914, -0.3177796493095424
+      ],
+      "length": 71.18736655084419,
+      "accepted": true,
+      "nativePointBits": "d2c4c938c1e03cc065025b04ad022240a4a16d49ce8f54c0",
+      "nativeDirectionBits": "be3cad0cbf6eee3f588631ac71bcd53ff89a47748056d4bf"
+    },
+    {
+      "name": "cylinder-4-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [-62.728211493370644, -3.083339319647422, -70.93601755994743],
+      "direction": [
+        0.9510188338844257, 0.3396267110420914, -0.3177796493095424
+      ],
+      "length": 71.18736655084419,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-5-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [-73.72640071197219, 17.94241243299939, -97.60539820328273],
+      "direction": [
+        -0.5358598995381005, 0.06132500629352311, 0.4161388722010366
+      ],
+      "length": 13.550869740575791,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-5-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [-73.72640071197219, 17.94241243299939, -97.60539820328273],
+      "direction": [
+        -0.5358598995381005, 0.06132500629352311, 0.4161388722010366
+      ],
+      "length": 13.550869740575791,
+      "accepted": true,
+      "nativePointBits": "e7bb3379da5653c008955c62a05b324009386fcc4bb257c0",
+      "nativeDirectionBits": "aa20f8a8c325e1bf8054eac0fd65af3f5ca8acef04a2da3f"
+    },
+    {
+      "name": "cylinder-5-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [-73.72640071197219, 17.94241243299939, -97.60539820328273],
+      "direction": [
+        -0.5358598995381005, 0.06132500629352311, 0.4161388722010366
+      ],
+      "length": 13.550869740575791,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-6-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [-26.07600190819042, 72.03712072718588, -62.92455855680268],
+      "direction": [
+        0.39010166256273116, 0.7422568484480492, 0.4131937226580902
+      ],
+      "length": 11.517557907141763,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-6-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [-26.07600190819042, 72.03712072718588, -62.92455855680268],
+      "direction": [
+        0.39010166256273116, 0.7422568484480492, 0.4131937226580902
+      ],
+      "length": 11.517557907141763,
+      "accepted": true,
+      "nativePointBits": "207598a159d437c0df6c317bf1135340916d6fc3c4454ec0",
+      "nativeDirectionBits": "3c9eb4f66cf7d83ff21f2a6f91c0e73fcca76e15c471da3f"
+    },
+    {
+      "name": "cylinder-6-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [-26.07600190819042, 72.03712072718588, -62.92455855680268],
+      "direction": [
+        0.39010166256273116, 0.7422568484480492, 0.4131937226580902
+      ],
+      "length": 11.517557907141763,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-7-plane",
+      "kind": "cylinder",
+      "reference": "plane",
+      "origin": [12.323559866807159, -46.6459595744106, -62.44056217460812],
+      "direction": [
+        -0.48522695462196674, -0.12382428421516489, -0.5352867145011797
+      ],
+      "length": 99.49950394830388,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "cylinder-7-direction",
+      "kind": "cylinder",
+      "reference": "direction",
+      "origin": [12.323559866807159, -46.6459595744106, -62.44056217460812],
+      "direction": [
+        -0.48522695462196674, -0.12382428421516489, -0.5352867145011797
+      ],
+      "length": 99.49950394830388,
+      "accepted": true,
+      "nativePointBits": "f8422c0afaa127c0e314bd2231674ac047f46b568a4456c0",
+      "nativeDirectionBits": "284c4f5bf50ddfbf309d27c3f2b2bfbfe481989a1121e1bf"
+    },
+    {
+      "name": "cylinder-7-point",
+      "kind": "cylinder",
+      "reference": "point",
+      "origin": [12.323559866807159, -46.6459595744106, -62.44056217460812],
+      "direction": [
+        -0.48522695462196674, -0.12382428421516489, -0.5352867145011797
+      ],
+      "length": 99.49950394830388,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-0-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [39.822336335933244, -71.58955094662514, -16.626585202110107],
+      "direction": [
+        -0.9788534173525434, -0.44886385241438775, -0.4398852663830617
+      ],
+      "length": 21.923627553266215,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-0-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [39.822336335933244, -71.58955094662514, -16.626585202110107],
+      "direction": [
+        -0.9788534173525434, -0.44886385241438775, -0.4398852663830617
+      ],
+      "length": 21.923627553266215,
+      "accepted": true,
+      "nativePointBits": "fe7bbec5a2173d4094c2bf69a22053c0be457592d27235c0",
+      "nativeDirectionBits": "a66ce366c452efbfc87c9e732fbadcbf40e146881427dcbf"
+    },
+    {
+      "name": "referenceLine-0-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [39.822336335933244, -71.58955094662514, -16.626585202110107],
+      "direction": [
+        -0.9788534173525434, -0.44886385241438775, -0.4398852663830617
+      ],
+      "length": 21.923627553266215,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-1-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [14.079219391367474, 22.571625945037766, 15.830805982734347],
+      "direction": [
+        -0.29135114160157083, -0.09547889081242711, -0.44812853609367664
+      ],
+      "length": 16.225015661680175,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-1-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [14.079219391367474, 22.571625945037766, 15.830805982734347],
+      "direction": [
+        -0.29135114160157083, -0.09547889081242711, -0.44812853609367664
+      ],
+      "length": 16.225015661680175,
+      "accepted": true,
+      "nativePointBits": "e33cd72e676e27409df83ca50bcc35400ff3963006642840",
+      "nativeDirectionBits": "4c2f35427fa5d2bf306b7ff94d71b8bf004fbb4f23aedcbf"
+    },
+    {
+      "name": "referenceLine-1-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [14.079219391367474, 22.571625945037766, 15.830805982734347],
+      "direction": [
+        -0.29135114160157083, -0.09547889081242711, -0.44812853609367664
+      ],
+      "length": 16.225015661680175,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-2-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [-3.1357130321416378, -54.94289067387632, -77.78593769146892],
+      "direction": [
+        -0.5438746968367689, -0.5770166357037028, 0.6205770536587691
+      ],
+      "length": 42.770034047114045,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-2-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [-3.1357130321416378, -54.94289067387632, -77.78593769146892],
+      "direction": [
+        -0.5438746968367689, -0.5770166357037028, 0.6205770536587691
+      ],
+      "length": 42.770034047114045,
+      "accepted": true,
+      "nativePointBits": "7d1a0e6b70882dc001a5b2dc12d250c060e1e8e7f32050c0",
+      "nativeDirectionBits": "942581e86b67e1bf1a0d7397eb76e2bf3299c368c4dbe33f"
+    },
+    {
+      "name": "referenceLine-2-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [-3.1357130321416378, -54.94289067387632, -77.78593769146892],
+      "direction": [
+        -0.5438746968367689, -0.5770166357037028, 0.6205770536587691
+      ],
+      "length": 42.770034047114045,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-3-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [-2.5553724892472616, 37.75472632647842, 77.27255613191312],
+      "direction": [
+        -0.3391062838971177, 0.8678604554404887, -0.14123594820923002
+      ],
+      "length": 72.23532030381219,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-3-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [-2.5553724892472616, 37.75472632647842, 77.27255613191312],
+      "direction": [
+        -0.3391062838971177, 0.8678604554404887, -0.14123594820923002
+      ],
+      "length": 72.23532030381219,
+      "accepted": true,
+      "nativePointBits": "261b72a92f9b2dc022c6c65f63465140e1d5e5f0f80a5240",
+      "nativeDirectionBits": "9432cdd7eab3d5bf5c79334a83c5eb3f38024a010514c2bf"
+    },
+    {
+      "name": "referenceLine-3-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [-2.5553724892472616, 37.75472632647842, 77.27255613191312],
+      "direction": [
+        -0.3391062838971177, 0.8678604554404887, -0.14123594820923002
+      ],
+      "length": 72.23532030381219,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-4-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [-16.164244797369733, 41.646534621031236, -2.800941830588812],
+      "direction": [
+        -0.41628984037941774, -0.67003656344728, 0.5053745823492886
+      ],
+      "length": 18.03812284624395,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-4-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [-16.164244797369733, 41.646534621031236, -2.800941830588812],
+      "direction": [
+        -0.41628984037941774, -0.67003656344728, 0.5053745823492886
+      ],
+      "length": 18.03812284624395,
+      "accepted": true,
+      "nativePointBits": "095213b835eb33c08476c2503dcd414030fc02a4ed1cfc3f",
+      "nativeDirectionBits": "d48b85247ea4dabf642be484f070e5bf706fed50072ce03f"
+    },
+    {
+      "name": "referenceLine-4-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [-16.164244797369733, 41.646534621031236, -2.800941830588812],
+      "direction": [
+        -0.41628984037941774, -0.67003656344728, 0.5053745823492886
+      ],
+      "length": 18.03812284624395,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-5-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [-61.327081137556185, -95.45619934035241, 17.4889945858625],
+      "direction": [
+        0.4470946268117826, 0.24911207945264668, 0.49493604576558226
+      ],
+      "length": 50.72900344295456,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-5-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [-61.327081137556185, -95.45619934035241, 17.4889945858625],
+      "direction": [
+        0.4470946268117826, 0.24911207945264668, 0.49493604576558226
+      ],
+      "length": 50.72900344295456,
+      "accepted": true,
+      "nativePointBits": "f21617c84dfe48c0b6b4a85dce4856c0aa6bc6fdf40a3e40",
+      "nativeDirectionBits": "7cee17c8329ddc3f68d22495e7e2cf3fdc2e8b3c08addf3f"
+    },
+    {
+      "name": "referenceLine-5-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [-61.327081137556185, -95.45619934035241, 17.4889945858625],
+      "direction": [
+        0.4470946268117826, 0.24911207945264668, 0.49493604576558226
+      ],
+      "length": 50.72900344295456,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-6-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [-96.83803002765592, 12.510940518788274, 16.76445888054559],
+      "direction": [
+        0.6197206286878283, -0.6228657940731304, -0.26787114220194286
+      ],
+      "length": 83.48512282755004,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-6-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [-96.83803002765592, 12.510940518788274, 16.76445888054559],
+      "direction": [
+        0.6197206286878283, -0.6228657940731304, -0.26787114220194286
+      ],
+      "length": 83.48512282755004,
+      "accepted": true,
+      "nativePointBits": "b89b121209be51c01cc783cb67fa2ac09482d9b8d1541640",
+      "nativeDirectionBits": "72dd1b5bc0d4e33fd4eaea3e84eee3bf2c2bd300cd24d1bf"
+    },
+    {
+      "name": "referenceLine-6-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [-96.83803002765592, 12.510940518788274, 16.76445888054559],
+      "direction": [
+        0.6197206286878283, -0.6228657940731304, -0.26787114220194286
+      ],
+      "length": 83.48512282755004,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-7-plane",
+      "kind": "referenceLine",
+      "reference": "plane",
+      "origin": [59.968179117655495, 47.89537309393876, -70.18004725063614],
+      "direction": [
+        -0.02313241162592594, -0.6388271676489288, 0.6435378967460463
+      ],
+      "length": 73.63346960997686,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referenceLine-7-direction",
+      "kind": "referenceLine",
+      "reference": "direction",
+      "origin": [59.968179117655495, 47.89537309393876, -70.18004725063614],
+      "direction": [
+        -0.02313241162592594, -0.6388271676489288, 0.6435378967460463
+      ],
+      "length": 73.63346960997686,
+      "accepted": true,
+      "nativePointBits": "b467571aea8e4d402685c339376038400206c5bd583e47c0",
+      "nativeDirectionBits": "40d3a4dd05b097bf92261bac4571e4bf3e5988c9dc97e43f"
+    },
+    {
+      "name": "referenceLine-7-point",
+      "kind": "referenceLine",
+      "reference": "point",
+      "origin": [59.968179117655495, 47.89537309393876, -70.18004725063614],
+      "direction": [
+        -0.02313241162592594, -0.6388271676489288, 0.6435378967460463
+      ],
+      "length": 73.63346960997686,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-0-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [-65.97981690709247, -16.030801044315155, 55.92795141115431],
+      "direction": [
+        0.5446330360204845, 0.8487757864516206, 0.41186681176776974
+      ],
+      "length": 86.80125879630631,
+      "accepted": true,
+      "nativePointBits": "ec01f951b57e50c02804c693e20730c0a897a11cc7f64b40",
+      "nativeDirectionBits": "f8eec042a26de13fd4488ed62b29eb3f486cb69d065cda3f"
+    },
+    {
+      "name": "plane-0-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [-65.97981690709247, -16.030801044315155, 55.92795141115431],
+      "direction": [
+        0.5446330360204845, 0.8487757864516206, 0.41186681176776974
+      ],
+      "length": 86.80125879630631,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-0-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [-65.97981690709247, -16.030801044315155, 55.92795141115431],
+      "direction": [
+        0.5446330360204845, 0.8487757864516206, 0.41186681176776974
+      ],
+      "length": 86.80125879630631,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-1-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [-26.947979021815556, 46.35794855571379, 96.0020758000611],
+      "direction": [
+        0.12307706826091125, 0.005353965826423002, 0.6678217949499681
+      ],
+      "length": 39.32966763341013,
+      "accepted": true,
+      "nativePointBits": "ecfdcfc0aef23ac078381e42d12d47400858890222005840",
+      "nativeDirectionBits": "d073118ffa81bf3f00e10d420aee753f58b71bd0cb5ee53f"
+    },
+    {
+      "name": "plane-1-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [-26.947979021815556, 46.35794855571379, 96.0020758000611],
+      "direction": [
+        0.12307706826091125, 0.005353965826423002, 0.6678217949499681
+      ],
+      "length": 39.32966763341013,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-1-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [-26.947979021815556, 46.35794855571379, 96.0020758000611],
+      "direction": [
+        0.12307706826091125, 0.005353965826423002, 0.6678217949499681
+      ],
+      "length": 39.32966763341013,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-2-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [13.663400423470847, -27.98433516214085, 77.16029942610575],
+      "direction": [
+        -0.35831363869973143, 0.07464399867973337, -0.36575102328734177
+      ],
+      "length": 88.81581789711653,
+      "accepted": true,
+      "nativePointBits": "70eb6538a9532b40a4b2a163fdfb3bc0462c8658424a5340",
+      "nativeDirectionBits": "5445fb539ceed6bf30102c7dde1bb33fc8d9dffa7668d7bf"
+    },
+    {
+      "name": "plane-2-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [13.663400423470847, -27.98433516214085, 77.16029942610575],
+      "direction": [
+        -0.35831363869973143, 0.07464399867973337, -0.36575102328734177
+      ],
+      "length": 88.81581789711653,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-2-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [13.663400423470847, -27.98433516214085, 77.16029942610575],
+      "direction": [
+        -0.35831363869973143, 0.07464399867973337, -0.36575102328734177
+      ],
+      "length": 88.81581789711653,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-3-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [-76.24670737660747, -41.74690875241511, 61.32942944565539],
+      "direction": [
+        -0.7255290588816992, 0.5928266534117108, -0.9745828496331537
+      ],
+      "length": 90.92890262790394,
+      "accepted": true,
+      "nativePointBits": "828dbc0dca0f53c00a5cbcb49adf44c0f4b67bbe2aaa4e40",
+      "nativeDirectionBits": "ce3986b78837e7bfae36139a6ff8e23f16574d5fc82fefbf"
+    },
+    {
+      "name": "plane-3-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [-76.24670737660747, -41.74690875241511, 61.32942944565539],
+      "direction": [
+        -0.7255290588816992, 0.5928266534117108, -0.9745828496331537
+      ],
+      "length": 90.92890262790394,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-3-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [-76.24670737660747, -41.74690875241511, 61.32942944565539],
+      "direction": [
+        -0.7255290588816992, 0.5928266534117108, -0.9745828496331537
+      ],
+      "length": 90.92890262790394,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-4-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [-3.95515244517874, -52.92794073032967, -76.35348816492278],
+      "direction": [
+        -0.11918970735747858, 0.5834162967536936, -0.8818410796687401
+      ],
+      "length": 0.4536313528654625,
+      "accepted": true,
+      "nativePointBits": "a0e515f726a40fc036b208c3c6764ac073f7d28c9f1653c0",
+      "nativeDirectionBits": "30c41e773783bebf625650a758abe23f4c4aaec80a38ecbf"
+    },
+    {
+      "name": "plane-4-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [-3.95515244517874, -52.92794073032967, -76.35348816492278],
+      "direction": [
+        -0.11918970735747858, 0.5834162967536936, -0.8818410796687401
+      ],
+      "length": 0.4536313528654625,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-4-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [-3.95515244517874, -52.92794073032967, -76.35348816492278],
+      "direction": [
+        -0.11918970735747858, 0.5834162967536936, -0.8818410796687401
+      ],
+      "length": 0.4536313528654625,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-5-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [51.38385209278144, -43.374595130069935, -94.10427114200456],
+      "direction": [0.895322404255886, 0.1584113637226081, 0.45915140773644714],
+      "length": 80.88431317761409,
+      "accepted": true,
+      "nativePointBits": "ac7fbc1022b149401472b4bbf2af45c0e034de60ac8657c0",
+      "nativeDirectionBits": "c2f6b42b7ba6ec3f306e40d5d246c43f58fc0896bc62dd3f"
+    },
+    {
+      "name": "plane-5-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [51.38385209278144, -43.374595130069935, -94.10427114200456],
+      "direction": [0.895322404255886, 0.1584113637226081, 0.45915140773644714],
+      "length": 80.88431317761409,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-5-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [51.38385209278144, -43.374595130069935, -94.10427114200456],
+      "direction": [0.895322404255886, 0.1584113637226081, 0.45915140773644714],
+      "length": 80.88431317761409,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-6-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [18.426032591718354, 24.14593011954804, -51.18256048166327],
+      "direction": [
+        -0.1190529133200866, -0.9880088237427711, -0.7368086560421121
+      ],
+      "length": 77.57416900916473,
+      "accepted": true,
+      "nativePointBits": "e075d078106d3240d0f522ad5b253840942451245e9749c0",
+      "nativeDirectionBits": "200b3471407abebfe44e44aec49defbfe88923bfef93e7bf"
+    },
+    {
+      "name": "plane-6-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [18.426032591718354, 24.14593011954804, -51.18256048166327],
+      "direction": [
+        -0.1190529133200866, -0.9880088237427711, -0.7368086560421121
+      ],
+      "length": 77.57416900916473,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-6-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [18.426032591718354, 24.14593011954804, -51.18256048166327],
+      "direction": [
+        -0.1190529133200866, -0.9880088237427711, -0.7368086560421121
+      ],
+      "length": 77.57416900916473,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-7-plane",
+      "kind": "plane",
+      "reference": "plane",
+      "origin": [-6.060321530069061, 76.15138311201261, 5.192912986203396],
+      "direction": [
+        0.16230693095323412, -0.04931683397574482, -0.6684660371136866
+      ],
+      "length": 30.108239907558097,
+      "accepted": true,
+      "nativePointBits": "b0905bedc43d18c0b2d0ca42b009534080de5afb8ac51440",
+      "nativeDirectionBits": "d0db2d3879c6c43f20dc225a0e40a9bfee7afce21264e5bf"
+    },
+    {
+      "name": "plane-7-direction",
+      "kind": "plane",
+      "reference": "direction",
+      "origin": [-6.060321530069061, 76.15138311201261, 5.192912986203396],
+      "direction": [
+        0.16230693095323412, -0.04931683397574482, -0.6684660371136866
+      ],
+      "length": 30.108239907558097,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "plane-7-point",
+      "kind": "plane",
+      "reference": "point",
+      "origin": [-6.060321530069061, 76.15138311201261, 5.192912986203396],
+      "direction": [
+        0.16230693095323412, -0.04931683397574482, -0.6684660371136866
+      ],
+      "length": 30.108239907558097,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-0-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [13.896048149126955, 98.91896851583584, -96.17487096157129],
+      "direction": [
+        0.9149835240454463, -0.09751380815547672, -0.7598641885739732
+      ],
+      "length": 77.42865468423116,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-0-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [13.896048149126955, 98.91896851583584, -96.17487096157129],
+      "direction": [
+        0.9149835240454463, -0.09751380815547672, -0.7598641885739732
+      ],
+      "length": 77.42865468423116,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-0-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [13.896048149126955, 98.91896851583584, -96.17487096157129],
+      "direction": [
+        0.9149835240454463, -0.09751380815547672, -0.7598641885739732
+      ],
+      "length": 77.42865468423116,
+      "accepted": true,
+      "nativePointBits": "8048b0d2c6ca2b4064645261d0ba5840003ef915310b58c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-1-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [92.89113634080616, -35.34896934330361, 34.2242295268517],
+      "direction": [
+        -0.05479566007647496, 0.9192274603823456, 0.3687356622650806
+      ],
+      "length": 47.08240432352991,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-1-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [92.89113634080616, -35.34896934330361, 34.2242295268517],
+      "direction": [
+        -0.05479566007647496, 0.9192274603823456, 0.3687356622650806
+      ],
+      "length": 47.08240432352991,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-1-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [92.89113634080616, -35.34896934330361, 34.2242295268517],
+      "direction": [
+        -0.05479566007647496, 0.9192274603823456, 0.3687356622650806
+      ],
+      "length": 47.08240432352991,
+      "accepted": true,
+      "nativePointBits": "8802b86008395740d6650607abac41c014509a8db31c4140",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-2-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [74.82626561605153, 53.47468230916974, -21.753320719572926],
+      "direction": [
+        -0.5848585649270348, 0.16265117593379919, -0.6310171455116897
+      ],
+      "length": 92.18986822416598,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-2-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [74.82626561605153, 53.47468230916974, -21.753320719572926],
+      "direction": [
+        -0.5848585649270348, 0.16265117593379919, -0.6310171455116897
+      ],
+      "length": 92.18986822416598,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-2-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [74.82626561605153, 53.47468230916974, -21.753320719572926],
+      "direction": [
+        -0.5848585649270348, 0.16265117593379919, -0.6310171455116897
+      ],
+      "length": 92.18986822416598,
+      "accepted": true,
+      "nativePointBits": "0ab02d89e1b45240d8efd063c2bc4a4004f76da0d9c035c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-3-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [75.78322101777147, 17.567950181388554, -48.9682802577577],
+      "direction": [0.7642488254927435, 0.2898775907443156, 0.4315504374884105],
+      "length": 83.5419485963017,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-3-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [75.78322101777147, 17.567950181388554, -48.9682802577577],
+      "direction": [0.7642488254927435, 0.2898775907443156, 0.4315504374884105],
+      "length": 83.5419485963017,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-3-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [75.78322101777147, 17.567950181388554, -48.9682802577577],
+      "direction": [0.7642488254927435, 0.2898775907443156, 0.4315504374884105],
+      "length": 83.5419485963017,
+      "accepted": true,
+      "nativePointBits": "92370c4b20f2524034d2de2e659131404437849bf07b48c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-4-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [52.677905686508296, -13.411161207661507, 24.60885406360478],
+      "direction": [
+        -0.026582651784393008, -0.019190276004795503, -0.9641438188255642
+      ],
+      "length": 49.174850141309484,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-4-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [52.677905686508296, -13.411161207661507, 24.60885406360478],
+      "direction": [
+        -0.026582651784393008, -0.019190276004795503, -0.9641438188255642
+      ],
+      "length": 49.174850141309484,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-4-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [52.677905686508296, -13.411161207661507, 24.60885406360478],
+      "direction": [
+        -0.026582651784393008, -0.019190276004795503, -0.9641438188255642
+      ],
+      "length": 49.174850141309484,
+      "accepted": true,
+      "nativePointBits": "aca9109dc5564a408094c8b883d22ac0203823dcdd9b3840",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-5-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [28.53684002985287, 74.74351553693913, 26.960575867058594],
+      "direction": [
+        0.08362444881693842, -0.1958922181745879, -0.20254812941461298
+      ],
+      "length": 88.34861493164674,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-5-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [28.53684002985287, 74.74351553693913, 26.960575867058594],
+      "direction": [
+        0.08362444881693842, -0.1958922181745879, -0.20254812941461298
+      ],
+      "length": 88.34861493164674,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-5-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [28.53684002985287, 74.74351553693913, 26.960575867058594],
+      "direction": [
+        0.08362444881693842, -0.1958922181745879, -0.20254812941461298
+      ],
+      "length": 88.34861493164674,
+      "accepted": true,
+      "nativePointBits": "d86623596e893c402cce30c295af5240f057ce4ce8f53a40",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-6-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [81.74099874672913, 73.06317524806755, -52.02957838634366],
+      "direction": [
+        -0.2040778793769198, -0.15753555642017703, 0.07078115373821925
+      ],
+      "length": 43.014825725784476,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-6-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [81.74099874672913, 73.06317524806755, -52.02957838634366],
+      "direction": [
+        -0.2040778793769198, -0.15753555642017703, 0.07078115373821925
+      ],
+      "length": 43.014825725784476,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-6-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [81.74099874672913, 73.06317524806755, -52.02957838634366],
+      "direction": [
+        -0.2040778793769198, -0.15753555642017703, 0.07078115373821925
+      ],
+      "length": 43.014825725784476,
+      "accepted": true,
+      "nativePointBits": "08e501866c6f54407a1732100b445240da017d39c9034ac0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-7-plane",
+      "kind": "referencePoint",
+      "reference": "plane",
+      "origin": [-18.40092763628853, 80.02936124296752, -86.98189122047606],
+      "direction": [
+        -0.04681424759689268, 0.9101595983870112, -0.9302764631061604
+      ],
+      "length": 18.733885153897248,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-7-direction",
+      "kind": "referencePoint",
+      "reference": "direction",
+      "origin": [-18.40092763628853, 80.02936124296752, -86.98189122047606],
+      "direction": [
+        -0.04681424759689268, 0.9101595983870112, -0.9302764631061604
+      ],
+      "length": 18.733885153897248,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "referencePoint-7-point",
+      "kind": "referencePoint",
+      "reference": "point",
+      "origin": [-18.40092763628853, 80.02936124296752, -86.98189122047606],
+      "direction": [
+        -0.04681424759689268, 0.9101595983870112, -0.9302764631061604
+      ],
+      "length": 18.733885153897248,
+      "accepted": true,
+      "nativePointBits": "fceb8d31a36632c03094fa0de1015440260b464ed7be55c0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-0-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [57.70919663923243, 76.46235846345567, 19.784808916138275],
+      "direction": [
+        -0.5823782806844398, -0.9845297124812344, 0.8563014108680191
+      ],
+      "length": 70.96249770756562,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-0-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [57.70919663923243, 76.46235846345567, 19.784808916138275],
+      "direction": [
+        -0.5823782806844398, -0.9845297124812344, 0.8563014108680191
+      ],
+      "length": 70.96249770756562,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-0-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [57.70919663923243, 76.46235846345567, 19.784808916138275],
+      "direction": [
+        -0.5823782806844398, -0.9845297124812344, 0.8563014108680191
+      ],
+      "length": 70.96249770756562,
+      "accepted": true,
+      "nativePointBits": "dcf799f4c6da4c408ae4f347971d5340506cb43ce9c83340",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-1-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [33.90316345348421, 77.14209110189319, -52.78962602016271],
+      "direction": [
+        -0.7804284270497273, 0.2538456412225376, 0.5530925922968748
+      ],
+      "length": 86.92736883109858,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-1-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [33.90316345348421, 77.14209110189319, -52.78962602016271],
+      "direction": [
+        -0.7804284270497273, 0.2538456412225376, 0.5530925922968748
+      ],
+      "length": 86.92736883109858,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-1-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [33.90316345348421, 77.14209110189319, -52.78962602016271],
+      "direction": [
+        -0.7804284270497273, 0.2538456412225376, 0.5530925922968748
+      ],
+      "length": 86.92736883109858,
+      "accepted": true,
+      "nativePointBits": "1cd42bdc9af34040c4eb460518495340b155267712654ac0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-2-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [-28.96963605333218, 81.14080603633863, -0.9510490825391997],
+      "direction": [
+        -0.4482812591581651, 0.47522318851030243, 0.4258901459284794
+      ],
+      "length": 89.14161121305207,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-2-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [-28.96963605333218, 81.14080603633863, -0.9510490825391997],
+      "direction": [
+        -0.4482812591581651, 0.47522318851030243, 0.4258901459284794
+      ],
+      "length": 89.14161121305207,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-2-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [-28.96963605333218, 81.14080603633863, -0.9510490825391997],
+      "direction": [
+        -0.4482812591581651, 0.47522318851030243, 0.4258901459284794
+      ],
+      "length": 89.14161121305207,
+      "accepted": true,
+      "nativePointBits": "901582113af83cc0d84952f70249544080b14c7cfe6eeebf",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-3-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [-27.029083597539014, -31.884136743943543, 46.21446519749378],
+      "direction": [0.3791208009044724, 0.910674343081459, 0.5401942086398923],
+      "length": 90.58755616946286,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-3-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [-27.029083597539014, -31.884136743943543, 46.21446519749378],
+      "direction": [0.3791208009044724, 0.910674343081459, 0.5401942086398923],
+      "length": 90.58755616946286,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-3-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [-27.029083597539014, -31.884136743943543, 46.21446519749378],
+      "direction": [0.3791208009044724, 0.910674343081459, 0.5401942086398923],
+      "length": 90.58755616946286,
+      "accepted": true,
+      "nativePointBits": "b447cc0572073bc0f06d20c956e23fc0d8ae7898731b4740",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-4-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [85.1610132698695, -38.63495017108865, -0.6184859166043424],
+      "direction": [
+        0.8062566649479033, 0.2018883661331825, -0.19603824484692978
+      ],
+      "length": 39.922062486680325,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-4-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [85.1610132698695, -38.63495017108865, -0.6184859166043424],
+      "direction": [
+        0.8062566649479033, 0.2018883661331825, -0.19603824484692978
+      ],
+      "length": 39.922062486680325,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-4-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [85.1610132698695, -38.63495017108865, -0.6184859166043424],
+      "direction": [
+        0.8062566649479033, 0.2018883661331825, -0.19603824484692978
+      ],
+      "length": 39.922062486680325,
+      "accepted": true,
+      "nativePointBits": "f0139a0a4e4a55402ab5150c465143c080451bfaa2cae3bf",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-5-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [-75.81520827712238, -40.49355675130126, 81.47685525889037],
+      "direction": [
+        -0.21453235619310584, 0.5824878211244657, 0.5031450184833433
+      ],
+      "length": 49.446235345981314,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-5-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [-75.81520827712238, -40.49355675130126, 81.47685525889037],
+      "direction": [
+        -0.21453235619310584, 0.5824878211244657, 0.5031450184833433
+      ],
+      "length": 49.446235345981314,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-5-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [-75.81520827712238, -40.49355675130126, 81.47685525889037],
+      "direction": [
+        -0.21453235619310584, 0.5824878211244657, 0.5031450184833433
+      ],
+      "length": 49.446235345981314,
+      "accepted": true,
+      "nativePointBits": "d36a565f2cf452c08bc71cde2c3f44c00677ebcb845e5440",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-6-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [-50.391858469399686, -79.34013094998447, -15.580233304177256],
+      "direction": [
+        -0.9126762841842848, 0.6025914329106383, 0.5027727467434786
+      ],
+      "length": 10.493809079891765,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-6-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [-50.391858469399686, -79.34013094998447, -15.580233304177256],
+      "direction": [
+        -0.9126762841842848, 0.6025914329106383, 0.5027727467434786
+      ],
+      "length": 10.493809079891765,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-6-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [-50.391858469399686, -79.34013094998447, -15.580233304177256],
+      "direction": [
+        -0.9126762841842848, 0.6025914329106383, 0.5027727467434786
+      ],
+      "length": 10.493809079891765,
+      "accepted": true,
+      "nativePointBits": "bb5d176b283249c09ba29ab4c4d553c090fbf25614292fc0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-7-plane",
+      "kind": "sphere",
+      "reference": "plane",
+      "origin": [-62.060275730080505, 14.555864498914445, -59.917891482082865],
+      "direction": [
+        -0.07401769932037361, -0.5989166214663413, -0.3225758711759643
+      ],
+      "length": 93.24549644402494,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-7-direction",
+      "kind": "sphere",
+      "reference": "direction",
+      "origin": [-62.060275730080505, 14.555864498914445, -59.917891482082865],
+      "direction": [
+        -0.07401769932037361, -0.5989166214663413, -0.3225758711759643
+      ],
+      "length": 93.24549644402494,
+      "accepted": false,
+      "nativePointBits": "000000000000000000000000000000000000000000000000",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "sphere-7-point",
+      "kind": "sphere",
+      "reference": "point",
+      "origin": [-62.060275730080505, 14.555864498914445, -59.917891482082865],
+      "direction": [
+        -0.07401769932037361, -0.5989166214663413, -0.3225758711759643
+      ],
+      "length": 93.24549644402494,
+      "accepted": true,
+      "nativePointBits": "1ab8781db7074fc0a0b087459a1c2d405469d4777df54dc0",
+      "nativeDirectionBits": "000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

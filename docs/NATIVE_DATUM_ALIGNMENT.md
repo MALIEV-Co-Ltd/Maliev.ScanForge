@@ -176,9 +176,10 @@ Axis conversion static Evidence:
 `ev_400cc473de0a1e3d651a031ef8f7115f6aad5c2c70994ede0fcf3055df67c473`.
 Point conversion static Evidence:
 `ev_540f569ca9e16ccf2c1b01d1784440b6874ecca7bea42ac5dd0af2f903301e34`.
-Actual feature classification, native/application class mapping, picking and
-CAD-backed conversion remain unverified. Public integration still requires
-those boundaries and geometry publication to be verified.
+These payload-only captures do not establish class identity. The RTTI-linked
+class captures below establish native fitted-class identity separately.
+Application fitted-metadata anchors, picking, CAD-backed conversion and geometry
+publication still require verification before public integration.
 
 ## Verified origin-reference dispatch and flip behavior
 
@@ -200,8 +201,45 @@ Dispatcher assembly Evidence:
 `ev_3aa14e81b9008b84cda6d6ff3c5ee4fd4f3ab8b5a1ecb2fab5ef63d5d8461860`.
 `alignment-datum-origin-native.json` separately retains original dispatcher
 execution against caller-owned frame storage; it is not a native dialog capture.
-The focused interface cross-reference query does not establish native class
-names or the application-to-native feature mapping. That mapping stays open.
+The focused interface cross-reference query alone does not establish native
+class names. The subsequent RTTI and original cast-method trace below resolves
+the native fitted classes; application metadata mapping still remains open.
+
+## Verified fitted scene-class resolution
+
+The retained image's MSVC type descriptors, complete-object locators and
+virtual interface tables associate six concrete fitted scene classes with
+their query thunks. Those thunks lead to cast routines that compare the
+reference interface identifier and return the scene-object base pointer.
+Destructor thunks in other virtual tables do not establish reference support.
+
+| Native class    | Cast routine  | Reference interface | Supported reference               |
+| --------------- | ------------- | ------------------- | --------------------------------- |
+| Cone            | `0x140404fc0` | `0x14114bbc0`       | Direction at stored origin; point |
+| Cylinder        | `0x1404094e0` | `0x14114bbe0`       | Direction at extrusion midpoint   |
+| Reference line  | `0x14040d0b0` | `0x14117bf40`       | Direction at segment midpoint     |
+| Plane           | `0x140414810` | `0x14114bb80`       | Plane                             |
+| Reference point | `0x14041aa20` | `0x14117ddf0`       | Point                             |
+| Sphere          | `0x14041fbe0` | `0x141176cc8`       | Point at stored center            |
+
+`nativeDatumPickedFeature` implements this resolution using the already
+verified conversion helpers. `alignment-datum-class-native.json` retains
+144 original-code calls covering six classes, eight payloads and three
+reference choices. The capture executes the RTTI-linked query thunk, original
+cast routine and original converter. Caller-owned storage supplies the object
+and payload. A rejecting adapter supplies unsupported underlying geometry
+interfaces; CAD adapters and additional underlying interfaces are not covered.
+Tests compare support and every returned point/direction double byte.
+
+Cast-method static Evidence, in table order:
+`ev_d93fb32e2334e318542bce8450103b3cc5bd548716ff41a52011294df9b3cb95`,
+`ev_19c4593ca53b14c9be6d7602e7a33326a1c6b321192dbdeb431a0a63a67c9811`,
+`ev_687b79ab54168b7f92e77429c9b004cd30c5c841d70ce42b5c2d4219d744b91c`,
+`ev_ac0eb667402f149d14c3313a4c790663d73892e5e10e255d21cc7dd4abd6c59c`,
+`ev_74380d293bc89d2ae2714238dd28a99058896cf512a6ba4393057fab0fbcae97`,
+`ev_4e93ac1843559b3adf1d37971e132ae6192f4aec6104df7d9ee5f5ad0a6a6997`.
+This establishes native fitted-class resolution, not the application's
+`FitResult.center` to native anchor conversion or interactive picking.
 
 The numerical helpers are not yet connected to a public application action and
 are not advertised in MCP discovery. Completing primitive reference conversion,

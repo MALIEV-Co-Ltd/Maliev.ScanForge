@@ -1,3 +1,5 @@
+import { nativeDatumPlaneGeometry } from "./scan-native-datum-apply";
+
 export type NativeDatumAxisPlacement =
   "segmentMidpoint" | "extrusionMidpoint" | "origin";
 
@@ -35,4 +37,70 @@ export function nativeDatumAxisGeometry(
 export function nativeDatumPointGeometry(origin: readonly number[]): number[] {
   finiteVector(origin);
   return [...origin];
+}
+
+export interface NativeDatumFeatureGeometry {
+  kind:
+    | "plane"
+    | "cylinder"
+    | "cone"
+    | "referenceLine"
+    | "sphere"
+    | "referencePoint";
+  origin: readonly number[];
+  direction?: readonly number[];
+  length?: number;
+  equationOffset?: number;
+}
+
+/** RTTI-linked fitted scene classes; CAD-backed adapters are a separate boundary. */
+export function nativeDatumPickedFeature(
+  feature: NativeDatumFeatureGeometry,
+  reference: "plane" | "direction" | "point",
+  referencePoint?: readonly number[],
+): { point: number[]; direction?: number[] } | undefined {
+  finiteVector(feature.origin);
+  if (
+    ![
+      "plane",
+      "cylinder",
+      "cone",
+      "referenceLine",
+      "sphere",
+      "referencePoint",
+    ].includes(feature.kind) ||
+    !["plane", "direction", "point"].includes(reference)
+  )
+    throw new Error("Unsupported fitted feature or reference kind.");
+  if (reference === "point") {
+    return ["cone", "sphere", "referencePoint"].includes(feature.kind)
+      ? { point: nativeDatumPointGeometry(feature.origin) }
+      : undefined;
+  }
+  const supported =
+    reference === "plane"
+      ? feature.kind === "plane"
+      : ["cylinder", "cone", "referenceLine"].includes(feature.kind);
+  if (!supported) return undefined;
+  if (!feature.direction)
+    throw new Error("The fitted feature has no reference direction.");
+  if (reference === "plane") {
+    const plane = nativeDatumPlaneGeometry(
+      feature.origin,
+      feature.direction,
+      feature.equationOffset ?? 0,
+      referencePoint,
+    );
+    return { point: plane.point, direction: plane.normal };
+  }
+  return nativeDatumAxisGeometry(
+    feature.origin,
+    feature.direction,
+    feature.length ?? 0,
+    feature.kind === "referenceLine"
+      ? "segmentMidpoint"
+      : feature.kind === "cylinder"
+        ? "extrusionMidpoint"
+        : "origin",
+  );
 }
