@@ -8,6 +8,7 @@ import { createOperations } from "../src/automation/operations";
 import type { CadClient } from "../src/cad/client";
 import type { Entity } from "../src/types";
 import native from "./fixtures/alignment-datum-plane-native.json";
+import cadTransforms from "./fixtures/alignment-datum-cad-transform-native.json";
 import {
   executeDatumTransform,
   type DatumTransformRequest,
@@ -80,6 +81,52 @@ async function settle(
   throw new Error("Job did not settle");
 }
 const point = [{ kind: "point", point: [5, 6, 7], axis: 0 }];
+it("publishes the original exact-CAD placement matrix through shared Preview and Apply", async () => {
+  const { api, state } = setup(),
+    sample = native.cases[0],
+    expected = cadTransforms.cases.find(
+      (item) =>
+        item.name === "datum-plane-sequence-results.json-" + sample.name,
+    )!;
+  expect(expected).toBeDefined();
+  const constraints = sample.steps.map((step) => ({
+    kind: "plane",
+    point: step.point,
+    direction: step.normal,
+    axis: step.axis,
+  }));
+  try {
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", {
+        entityIds: ["scan"],
+        constraints,
+        expectedRevision: api.currentRevision(),
+        requestId: "cad-witness-preview",
+      }),
+    );
+    expect(preview.status).toBe("succeeded");
+    const output = Buffer.alloc(96);
+    preview.result.cadMatrix.forEach((value: number, i: number) =>
+      output.writeDoubleLE(value, i * 8),
+    );
+    expect(output.toString("hex")).toBe(expected.nativeMatrixBits);
+    expect(state.history).toHaveLength(0);
+    const applied = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        entityIds: ["scan"],
+        constraints,
+        expectedRevision: api.currentRevision(),
+        requestId: "cad-witness-apply",
+      }),
+    );
+    expect(applied.status).toBe("succeeded");
+    expect(applied.result.cadMatrix).toEqual(preview.result.cadMatrix);
+  } finally {
+    api.dispose();
+  }
+});
 it("exposes admitted CPU workers and explicit serial fallback through the shared API", async () => {
   class WorkerAdapter {
     static instances: WorkerAdapter[] = [];

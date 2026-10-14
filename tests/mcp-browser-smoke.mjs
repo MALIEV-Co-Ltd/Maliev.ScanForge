@@ -340,6 +340,7 @@ try {
     }),
   );
   assert.deepEqual(nativePreview.targets[0].bounds.min, [-11.25, -5, -2.5]);
+  assert.deepEqual(nativePreview.cadMatrix, nativePreview.matrix);
   await mutate("preview_discard", { target: "datum" });
   await page
     .getByRole("button", {

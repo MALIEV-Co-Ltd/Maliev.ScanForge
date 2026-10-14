@@ -2,6 +2,7 @@ import type { Handler, WorkspaceHost } from "./api";
 import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
 import type { Entity } from "../types";
 import { nativeDatumIsIdentity } from "../scan-native-datum-apply";
+import { nativeDatumCadTransform } from "../scan-native-datum-cad-transform";
 import { createDatumTransformExecutor } from "../datum-transform-pool";
 import {
   createAlignmentOperations,
@@ -170,6 +171,7 @@ export function createDatumOperations(
       translation: args.translation ?? [0, 0, 0],
       constraints: instructions,
       matrix: frame.matrix,
+      cadMatrix: nativeDatumCadTransform(frame.matrix),
       frame: frame.state,
       targets: targets.map((item) => {
         const output = transformed.get(item.id)!;
