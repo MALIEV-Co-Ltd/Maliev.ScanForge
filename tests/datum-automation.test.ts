@@ -166,6 +166,76 @@ it("releases exact CAD outputs on parity failure without committing", async () =
     api.dispose();
   }
 });
+it("aligns explicit CAD, mesh and point-cloud targets as one shared transaction", async () => {
+  const { api, host, state, release } = exactSetup();
+  const source = state.entities[0];
+  state.entities.push(
+    {
+      ...source,
+      id: "mesh",
+      kind: "mesh",
+      kernelId: undefined,
+      brep: undefined,
+    },
+    {
+      ...source,
+      id: "cloud",
+      kind: "pointcloud",
+      kernelId: undefined,
+      brep: undefined,
+    },
+  );
+  try {
+    const applied = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...request(api),
+        entityIds: ["scan", "mesh", "cloud"],
+      }),
+    );
+    expect(applied.status).toBe("succeeded");
+    expect(
+      applied.result.targets.map((target: { kind: string }) => target.kind),
+    ).toEqual(["cad", "mesh", "pointcloud"]);
+    expect(Array.from(state.entities[1].positions).slice(0, 3)).toEqual([
+      0, 0, 0,
+    ]);
+    expect(Array.from(state.entities[2].positions).slice(0, 3)).toEqual([
+      0, 0, 0,
+    ]);
+    expect(state.history).toHaveLength(1);
+    expect(host.commit).toHaveBeenCalledTimes(1);
+    expect(state.history[0].entities[0].kernelId).toBe("source");
+    expect(release).not.toHaveBeenCalled();
+  } finally {
+    api.dispose();
+  }
+});
+it("rolls back every target and releases CAD output when a later scan fails", async () => {
+  const { api, state, release } = exactSetup();
+  state.entities.push({
+    ...state.entities[0],
+    id: "invalid",
+    kind: "pointcloud",
+    kernelId: undefined,
+    positions: [Infinity, 0, 0],
+  });
+  try {
+    const result = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...request(api),
+        entityIds: ["scan", "invalid"],
+      }),
+    );
+    expect(result.status).toBe("failed");
+    expect(state.history).toHaveLength(0);
+    expect(state.entities[0].kernelId).toBe("source");
+    expect(release).toHaveBeenCalledWith(["placed-1"]);
+  } finally {
+    api.dispose();
+  }
+});
 it("releases exact CAD outputs when cancelled during presentation", async () => {
   const { api, host, state, release } = exactSetup();
   let finish: undefined | (() => void);

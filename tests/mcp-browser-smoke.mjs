@@ -268,6 +268,20 @@ try {
   }
   assert.equal((await call("project_get")).revision, referenceRevision);
   // UI undo and MCP redo exercise the same command/history boundary.
+  const companion = await job(
+    await mutate("cad_create", {
+      name: "CAD alignment companion",
+      recipe: {
+        kind: "primitive",
+        input: { kind: "box", center: [20, 30, 40], size: [2, 4, 6] },
+      },
+    }),
+  );
+  const companionReferences = await job(
+    await call("alignment_references", { entityId: companion.entityIds[0] }),
+  );
+  await mutate("object_select", { entityId: created.entityIds[0] });
+  const groupRevision = (await call("project_get")).revision;
   const exactConstraints = [{ kind: "point", point: [1, 2, 3], axis: 0 }];
   const exactPreview = await job(
     await mutate("alignment_preview", {
@@ -276,7 +290,7 @@ try {
     }),
   );
   assert.equal(exactPreview.targets[0].execution.backend, "OpenCascade");
-  assert.equal((await call("project_get")).revision, referenceRevision);
+  assert.equal((await call("project_get")).revision, groupRevision);
   await mutate("preview_discard", { target: "datum" });
   await page
     .getByRole("button", {
@@ -293,12 +307,18 @@ try {
       .getByLabel(`Reference 1 point (mm) ${axis}`, { exact: true })
       .fill(value);
   await page
+    .getByRole("checkbox", {
+      name: "Move CAD alignment companion",
+      exact: true,
+    })
+    .check();
+  await page
     .getByRole("button", { name: "Preview alignment", exact: true })
     .click();
   await page
     .getByText("Alignment preview ready · model unchanged", { exact: true })
     .waitFor();
-  assert.equal((await call("project_get")).revision, referenceRevision);
+  assert.equal((await call("project_get")).revision, groupRevision);
   await page
     .getByRole("button", { name: "Apply alignment", exact: true })
     .click();
@@ -320,7 +340,27 @@ try {
       ),
     ),
   );
+  const placedCompanion = await job(
+    await call("alignment_references", { entityId: companion.entityIds[0] }),
+  );
+  placedCompanion.references.forEach((reference, i) =>
+    reference.point.forEach((value, axis) =>
+      assert.ok(
+        Math.abs(
+          value -
+            (companionReferences.references[i].point[axis] - [1, 2, 3][axis]),
+        ) < 1e-10,
+      ),
+    ),
+  );
   await mutate("history_undo", {});
+  const originalCompanion = await job(
+    await call("alignment_references", { entityId: companion.entityIds[0] }),
+  );
+  assert.deepEqual(
+    originalCompanion.references,
+    companionReferences.references,
+  );
   assert.deepEqual(
     (
       await job(
@@ -333,6 +373,16 @@ try {
   assert.deepEqual(
     (
       await job(
+        await call("alignment_references", {
+          entityId: companion.entityIds[0],
+        }),
+      )
+    ).references,
+    placedCompanion.references,
+  );
+  assert.deepEqual(
+    (
+      await job(
         await call("alignment_references", { entityId: created.entityIds[0] }),
       )
     ).references,
@@ -340,6 +390,8 @@ try {
   );
   await mutate("history_undo", {});
   await page.getByRole("tab", { name: "Edit / View", exact: true }).click();
+  await mutate("history_undo", {});
+  assert.equal((await call("project_get")).result.objects.length, 1);
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   assert.equal((await call("project_get")).result.objects.length, 0);
   await mutate("history_redo", {});
@@ -653,6 +705,7 @@ try {
     "browser pairing and persisted connection after Settings closes",
     "exact CAD creation rendered in UI",
     "MCP and GUI exact alignment references with identical coordinates and unchanged history",
+    "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
     "native coordinate preview/cancel, GUI apply and MCP undo restore identical scan geometry",
     "UI undo and MCP redo",
     "STEP content and project export artifacts",

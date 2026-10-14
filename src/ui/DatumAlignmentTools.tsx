@@ -37,6 +37,17 @@ export function DatumAlignmentTools({
     [preview, setPreview] = useState(false);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [parallel, setParallel] = useState(true);
+  const [targetIds, setTargetIds] = useState<string[]>([entity.id]);
+  const targets = entities.filter(
+    (item) =>
+      !item.locked &&
+      item.positions.length &&
+      (item.kernelId ||
+        (!item.parametric && ["mesh", "pointcloud"].includes(item.kind))),
+  );
+  const validTargets =
+    targetIds.length > 0 &&
+    targetIds.every((id) => targets.some((item) => item.id === id));
   const [requiredReferences, setRequiredReferences] = useState<boolean[]>([]);
   const [bindings, setBindings] = useState<
     ({ entityId: string; referenceId: string } | undefined)[]
@@ -57,6 +68,7 @@ export function DatumAlignmentTools({
     });
   useEffect(() => {
     disposed.current = false;
+    setTargetIds([entity.id]);
     return () => {
       disposed.current = true;
       onPickPoint(null);
@@ -90,7 +102,7 @@ export function DatumAlignmentTools({
     setError("");
     try {
       const receipt = await api.invoke(command, {
-        entityIds: [entity.id],
+        entityIds: targetIds,
         constraints: instructions.slice(0, count).map((item, index) =>
           bindings[index]
             ? {
@@ -156,7 +168,10 @@ export function DatumAlignmentTools({
       <button
         className="wide"
         disabled={!!entity.locked}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setTargetIds([entity.id]);
+          setOpen(true);
+        }}
       >
         Align object to origin / references
       </button>
@@ -168,6 +183,39 @@ export function DatumAlignmentTools({
         Apply records one history step.
       </p>
       <fieldset disabled={busy}>
+        {targets.length > 1 && (
+          <fieldset>
+            <legend>Objects to move · {targetIds.length} selected</legend>
+            {targets.map((item) => (
+              <label className="check-row" key={item.id}>
+                <input
+                  type="checkbox"
+                  aria-label={`Move ${item.name}`}
+                  checked={targetIds.includes(item.id)}
+                  disabled={
+                    !targetIds.includes(item.id) && targetIds.length >= 32
+                  }
+                  onChange={(event) => {
+                    if (heldPreview.current) void discard();
+                    heldPreview.current = false;
+                    setPreview(false);
+                    setTargetIds((current) =>
+                      event.target.checked
+                        ? [...current, item.id]
+                        : current.filter((id) => id !== item.id),
+                    );
+                  }}
+                />
+                {item.name}
+              </label>
+            ))}
+          </fieldset>
+        )}
+        {!validTargets && (
+          <p role="alert">
+            Choose at least one available, unlocked object to move.
+          </p>
+        )}
         <label className="field">
           <span>References</span>
           <select
@@ -338,6 +386,7 @@ export function DatumAlignmentTools({
         <button
           disabled={
             busy ||
+            !validTargets ||
             requiredReferences.some(
               (required, index) =>
                 index < count && required && !bindings[index],
@@ -350,6 +399,7 @@ export function DatumAlignmentTools({
         <button
           disabled={
             busy ||
+            !validTargets ||
             !preview ||
             requiredReferences.some(
               (required, index) =>
