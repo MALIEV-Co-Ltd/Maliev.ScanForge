@@ -13,6 +13,17 @@ export function useWorkspaceApi(host: WorkspaceHost) {
   if (!api.current) {
     const mutate = <T>(run: () => T): T => flushSync(run);
     const proxy: WorkspaceHost = {
+      previewLandmarks: (options) => {
+        if (!current.current.previewLandmarks)
+          throw new Error("Landmark preview unavailable");
+        return current.current.previewLandmarks(options);
+      },
+      acceptLandmarks: () =>
+        mutate(() => {
+          if (!current.current.acceptLandmarks)
+            throw new Error("Landmark acceptance unavailable");
+          return current.current.acceptLandmarks();
+        }),
       inspectLandmarks: () => current.current.inspectLandmarks?.(),
       editLandmarks: (edit) =>
         mutate(() => {

@@ -9,6 +9,145 @@ import { VisualCaptureError } from "../src/automation/visual-capture";
 import { CommandRepeat } from "../src/command-repeat";
 import { coordinateAlignmentInterface } from "../src/automation/workflow-operations";
 
+it("previews landmarks as a retry-protected cancellable job and accepts through the shared host", async () => {
+  const { api, host, mutate, state } = setup();
+  host.previewLandmarks = vi.fn(async (options) => {
+    options.check?.();
+    options.onProgress?.(0.5, "Refining landmarks");
+    return {
+      active: true,
+      preview: true,
+      diagnostics: { logicalLanes: options.workerCount },
+    };
+  });
+  host.acceptLandmarks = vi.fn(() => ({ active: false, accepted: true }));
+  try {
+    const request = {
+      expectedRevision: api.currentRevision(),
+      requestId: "landmark-preview",
+      workerCount: 4,
+      parallel: false,
+    };
+    const launched = await api.invoke("landmark_preview", request);
+    expect(launched.ok).toBe(true);
+    expect(await api.invoke("landmark_preview", request)).toEqual(launched);
+    if (!launched.ok) throw new Error("Preview launch failed");
+    const jobId = (launched.result as { jobId: string }).jobId;
+    for (let i = 0; i < 20; i++) {
+      const result = await api.invoke("job_get", { jobId });
+      if (
+        result.ok &&
+        (result.result as { status: string }).status === "succeeded"
+      )
+        break;
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    expect(await api.invoke("job_get", { jobId })).toMatchObject({
+      ok: true,
+      result: {
+        status: "succeeded",
+        result: { preview: true, diagnostics: { logicalLanes: 4 } },
+      },
+    });
+    expect(host.previewLandmarks).toHaveBeenCalledTimes(1);
+    expect(host.previewLandmarks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workerCount: 4,
+        parallel: false,
+        signal: expect.any(AbortSignal),
+        check: expect.any(Function),
+      }),
+    );
+    expect(state.history).toHaveLength(1);
+    expect(await mutate("landmark_accept")).toMatchObject({
+      ok: true,
+      result: { accepted: true },
+    });
+    expect(host.acceptLandmarks).toHaveBeenCalledTimes(1);
+  } finally {
+    api.dispose();
+  }
+});
+it("cancels the owning landmark preview job when its preview is discarded", async () => {
+  const { api, host, mutate, state } = setup();
+  host.previewLandmarks = (options) =>
+    new Promise((_resolve, reject) => {
+      options.signal!.addEventListener(
+        "abort",
+        () => reject(options.signal!.reason),
+        { once: true },
+      );
+    });
+  host.discardPreview = vi.fn();
+  try {
+    const launched = await mutate("landmark_preview");
+    if (!launched.ok) throw new Error("Preview launch failed");
+    const jobId = (launched.result as { jobId: string }).jobId;
+    expect((await mutate("preview_discard", { target: "landmarks" })).ok).toBe(
+      true,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(await api.invoke("job_get", { jobId })).toMatchObject({
+      ok: true,
+      result: { status: "cancelled" },
+    });
+    expect(host.discardPreview).toHaveBeenCalledWith("landmarks");
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+  }
+});
+it("rejects a stale asynchronous landmark preview before publication", async () => {
+  const { api, host, mutate, state } = setup();
+  let finish!: () => void;
+  let published = false;
+  host.previewLandmarks = async (options) => {
+    await new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    options.check?.();
+    published = true;
+    return { active: true, preview: true };
+  };
+  try {
+    const launched = await mutate("landmark_preview");
+    if (!launched.ok) throw new Error("Preview launch failed");
+    state.name = "Changed during preview";
+    finish();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(
+      await api.invoke("job_get", {
+        jobId: (launched.result as { jobId: string }).jobId,
+      }),
+    ).toMatchObject({
+      ok: true,
+      result: { status: "failed", error: { code: "REVISION_CONFLICT" } },
+    });
+    expect(published).toBe(false);
+    expect(state.history).toHaveLength(1);
+  } finally {
+    api.dispose();
+  }
+});
+it("reports GUI cancellation of an agent landmark preview as cancelled", async () => {
+  const { api, host, mutate } = setup();
+  host.previewLandmarks = async () => {
+    throw new DOMException("Preview closed from GUI", "AbortError");
+  };
+  try {
+    const launched = await mutate("landmark_preview");
+    if (!launched.ok) throw new Error("Preview launch failed");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(
+      await api.invoke("job_get", {
+        jobId: (launched.result as { jobId: string }).jobId,
+      }),
+    ).toMatchObject({ ok: true, result: { status: "cancelled" } });
+  } finally {
+    api.dispose();
+  }
+});
+
 it("opens coordinate alignment through MCP with the shared ribbon defaults and validates targets", async () => {
   const { api, state, mutate, ui } = setup();
   try {

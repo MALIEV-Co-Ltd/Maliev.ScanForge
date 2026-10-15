@@ -6,6 +6,14 @@ Provide semantic control of supported ScanForge modeling features through a stan
 
 ## Boundaries
 
+`landmark_preview` and `landmark_accept` call the dialog's shared asynchronous
+preview and synchronous commit operations through the stable workspace proxy.
+Preview has API job admission, progress, cancellation and a revision check before
+publishing state; acceptance revalidates geometry references and locks before one
+history commit. Preview metadata is discoverable through `landmark_get` without
+rescanning the selection mask. Discarding landmarks cancels only a matching
+`landmark_preview` job and leaves other job ownership unchanged.
+
 Indexed point-pair previews and paired `mesh_process` with `refineSurface: true`
 share target validation, coarse registration, original-vertex seed mapping,
 region growth and the bounded CPU refinement worker. Results publish coarse

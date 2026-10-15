@@ -1,5 +1,22 @@
 # ScanForge MCP agent guide
 
+Use `landmark_edit` to begin a picked-point session and add corresponding world
+XYZ picks, then call `landmark_preview` with a fresh revision/request ID. Poll its
+job through `job_get`; preview changes no committed geometry or model history.
+`landmark_get` exposes preview markers, coarse registration, surface refinement,
+execution diagnostics and selected-triangle count. Indexed meshes default to two
+logical lanes and bounded CPU parallelism; `workerCount` and `parallel` are
+configurable on the preview tool. Selection counts use cached diagnostics.
+
+Call `landmark_accept` with a fresh revision/request ID after preview succeeds.
+It uses the dialog's commit operation, rechecks source/target geometry and locks,
+adds one history step and closes the session. Retrying an identical request ID
+does not accept twice. `landmark_edit` reset removes a preview but retains picks;
+`preview_discard` targeting `landmarks` closes the session and cancels its owning
+preview job. `job_cancel` cancels computation without accepting geometry. Neither
+path cancels unrelated API jobs. The GUI uses these same preview and commit
+implementations.
+
 For indexed point-pair scan alignment, `mesh_process` accepts
 `operation: { kind: "paired", sourceLandmarks: [...], targetLandmarks: [...],
 refineSurface: true, workerCount: 2, parallel: true }` with a fixed `targetId`.
@@ -20,7 +37,7 @@ physical/logical workers. An identity delta retains the grown face selection;
 an applied delta clears it. Omitting `refineSurface` retains coarse-only compatibility.
 This indexed pipeline does not certify CAD target conversion, point-cloud surface
 refinement or full native scene collection. The ribbon point-pair command remains
-gated pending complete workflow and owner-scan native verification.
+gated pending complete scene-target and CAD/point-cloud workflow integration.
 
 ScanForge exposes its browser-owned workspace through an official-SDK MCP stdio server. Agents and the editor use shared application operations, CAD evaluation, model validation and history. No hosted account, model provider or cloud geometry service is required.
 

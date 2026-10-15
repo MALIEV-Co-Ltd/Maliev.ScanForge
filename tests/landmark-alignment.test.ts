@@ -66,6 +66,21 @@ function previewed() {
   };
 }
 describe("landmark alignment session", () => {
+  it("rejects preview acceptance after lock or indexed geometry metadata changes", () => {
+    const session = previewed();
+    expect(() =>
+      acceptLandmarkAlignment(session, [{ ...moving, locked: true }, fixed]),
+    ).toThrow("changed");
+    expect(() =>
+      acceptLandmarkAlignment(session, [
+        moving,
+        {
+          ...fixed,
+          indexedMesh: { vertices: fixed.positions, triangles: [0, 1, 2] },
+        },
+      ]),
+    ).toThrow("changed");
+  });
   it("uses native seeded refinement for indexed source and fixed meshes", () => {
     const session = picked();
     session.moving = {

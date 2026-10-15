@@ -60,6 +60,22 @@ export function createWorkflowOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
   return {
+    landmark_preview: async (a, c) => {
+      c.check();
+      if (!host.previewLandmarks) return unavailable();
+      return host.previewLandmarks({
+        signal: c.signal,
+        onProgress: c.progress,
+        check: c.check,
+        workerCount: a.workerCount ?? 2,
+        parallel: a.parallel ?? true,
+      });
+    },
+    landmark_accept: (_a, c) => {
+      c.check();
+      if (!host.acceptLandmarks) return unavailable();
+      return host.acceptLandmarks();
+    },
     landmark_get: () => host.inspectLandmarks?.() ?? unavailable(),
     landmark_edit: (a, c) => {
       c.check();

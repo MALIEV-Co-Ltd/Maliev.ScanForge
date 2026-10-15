@@ -5211,8 +5211,53 @@
     }
   },
   {
+    "name": "landmark_preview",
+    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Indexed scan meshes use native coarse registration, seeded region growth and refinement. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Cancel through job_cancel or preview_discard targeting landmarks.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "workerCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16,
+          "default": 2
+        },
+        "parallel": { "type": "boolean", "default": true },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "landmark_accept",
+    "description": "Accept the current picked-point preview through the GUI commit operation. Requires an unchanged, unlocked source and target and a valid preview. Creates one model history step, preserves the fixed target and closes the session. Use a fresh revision and request ID after the preview job completes.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "landmark_get",
-    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state. Does not mutate geometry or history.",
+    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Does not mutate geometry or history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5224,7 +5269,7 @@
   },
   {
     "name": "landmark_edit",
-    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These session edits do not solve or accept alignment and do not create model history. The complete native point-pair workflow remains gated. Use preview_discard to close/cancel.",
+    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Broader native scene-target and CAD/point-cloud workflows remain gated.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

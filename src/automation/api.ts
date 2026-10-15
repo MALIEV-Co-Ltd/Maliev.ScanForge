@@ -16,7 +16,10 @@ import {
 } from "./visual-capture";
 import type { InterfacePatch, ViewportCommand } from "./workflow-operations";
 import type { ObjectSelectionModifiers } from "../object-selection";
-import type { LandmarkEdit } from "../landmark-alignment";
+import type {
+  LandmarkEdit,
+  LandmarkPreviewOptions,
+} from "../landmark-alignment";
 
 export interface WorkspaceSnapshot {
   projectId?: string;
@@ -33,6 +36,8 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  previewLandmarks?(options: LandmarkPreviewOptions): Promise<unknown>;
+  acceptLandmarks?(): unknown;
   inspectLandmarks?(): unknown;
   editLandmarks?(
     edit: LandmarkEdit | { action: "begin"; movingId: string; fixedId: string },
@@ -370,12 +375,20 @@ export class ApplicationApi {
           args.target as
             "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
         );
+        if (
+          args.target === "landmarks" &&
+          this.active?.command === "landmark_preview"
+        )
+          this.active.controller.abort();
         if (args.target === "datum") await releaseDatumPreview(this.host);
         return this.success({
           target: args.target,
           cancellationRequested: true,
           committedGeometryPreserved: true,
-          note: "GUI workers retain their cancellation/cleanup lifecycle. API jobs are cancelled separately through job_cancel.",
+          note:
+            args.target === "landmarks"
+              ? "Any owning landmark preview job is cancelled; unrelated API jobs require job_cancel."
+              : "GUI workers retain their cancellation/cleanup lifecycle. API jobs are cancelled separately through job_cancel.",
         });
       }
       if (command === "tools_search") {
@@ -625,6 +638,12 @@ export class ApplicationApi {
           job.stage = "Completed";
           return this.success(job.result);
         } catch (error) {
+          if (
+            command === "landmark_preview" &&
+            error instanceof DOMException &&
+            error.name === "AbortError"
+          )
+            job.controller.abort(error);
           job.status = job.controller.signal.aborted ? "cancelled" : "failed";
           const failure = this.failure(error);
           job.error = failure.error;

@@ -10,6 +10,13 @@ export interface LandmarkAlignment {
   picks: { entityId: string; point: Vec3 }[];
   preview?: ProcessingResult;
 }
+export interface LandmarkPreviewOptions {
+  signal?: AbortSignal;
+  onProgress?: (fraction: number, stage: string) => void;
+  check?: () => void;
+  workerCount?: number;
+  parallel?: boolean;
+}
 export function beginLandmarkAlignment(
   moving: Entity,
   fixed: Entity,
@@ -51,7 +58,11 @@ export function landmarkPairs(session: LandmarkAlignment) {
       .map((p) => p.point),
   };
 }
-export function landmarkRequest(session: LandmarkAlignment) {
+export function landmarkRequest(
+  session: LandmarkAlignment,
+  workerCount = 2,
+  parallel = true,
+) {
   const pairs = landmarkPairs(session);
   if (pairs.moving.length < 3 || pairs.moving.length !== pairs.fixed.length)
     throw new Error(
@@ -65,7 +76,12 @@ export function landmarkRequest(session: LandmarkAlignment) {
     sourceLandmarks: pairs.moving.flat(),
     targetLandmarks: pairs.fixed.flat(),
     ...(session.moving.indexedMesh && session.fixed.indexedMesh
-      ? landmarkRefinementTargets(session.moving, [session.fixed])
+      ? landmarkRefinementTargets(
+          session.moving,
+          [session.fixed],
+          workerCount,
+          parallel,
+        )
       : {}),
   };
 }
@@ -106,12 +122,20 @@ export function landmarkSceneUnchanged(
   session: LandmarkAlignment,
   entities: Entity[],
 ) {
-  return (
-    entities.find((e) => e.id === session.moving.id)?.positions ===
-      session.moving.positions &&
-    entities.find((e) => e.id === session.fixed.id)?.positions ===
-      session.fixed.positions
-  );
+  return [session.moving, session.fixed].every((original) => {
+    const current = entities.find((entity) => entity.id === original.id);
+    return (
+      current &&
+      !current.locked &&
+      current.positions === original.positions &&
+      current.indexedMesh === original.indexedMesh &&
+      current.normals === original.normals &&
+      current.kind === original.kind &&
+      current.kernelId === original.kernelId &&
+      current.parametric === original.parametric &&
+      current.surfacePatch === original.surfacePatch
+    );
+  });
 }
 export function acceptLandmarkAlignment(
   session: LandmarkAlignment,
@@ -196,8 +220,16 @@ export function landmarkState(session: LandmarkAlignment | null) {
         movingId: session.moving.id,
         fixedId: session.fixed.id,
         preview: !!session.preview,
+        ...(session.preview
+          ? {
+              registration: session.preview.registration,
+              refinement: session.preview.refinement,
+              diagnostics: session.preview.diagnostics,
+              selectedTriangles: session.preview.diagnostics.selectedTriangles,
+            }
+          : {}),
         picks: session.picks,
         markers: landmarkMarkers(session),
       }
-    : { active: false };
+    : { active: false, preview: false };
 }

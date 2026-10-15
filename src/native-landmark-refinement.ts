@@ -78,6 +78,7 @@ export async function refineNativeLandmarkAfterCoarse(
       iterations: result.iterations,
     },
     diagnostics: {
+      selectedTriangles: applied ? 0 : region.count,
       refinementApplied: applied,
       seededFaces: region.count,
       seedGrowthPasses: region.passes,

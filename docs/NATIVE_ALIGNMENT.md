@@ -1672,3 +1672,39 @@ the focused run. Browser/MCP regression passed with two physical workers, matchi
 GUI/MCP geometry, selection state handling, reset/cancel and undo, and no console
 errors. Formatting, whitespace and branding checks passed. Owned native and
 browser/bridge processes exited. Build: `scanforge-548de226b53fc74a`.
+
+## Shared picked-point preview and acceptance through MCP
+
+The dialog's asynchronous solve and synchronous commit are now shared with
+`landmark_preview` and `landmark_accept`. Preview is a cancellable API job and
+publishes no model geometry or history. It checks the job revision and current
+session/geometry before publishing a preview. Acceptance uses the current session
+reference, revalidates source and target geometry/normal references and locks,
+then commits one history step and closes the session. Identical request retries
+do not repeat acceptance.
+
+`landmark_get` exposes coarse registration, refinement, worker diagnostics and
+preview markers. Its selected-triangle count comes from cached region diagnostics,
+not a scan of the full mask. GUI and API use the same preview and commit functions
+through the stable workspace proxy. Discarding landmarks cancels an owning
+`landmark_preview` job only. GUI-triggered AbortErrors from that same command also
+produce cancelled job status; unrelated command failure semantics are unchanged.
+GUI cancellation remains free of failure notifications.
+
+This exposes the verified indexed pipeline's complete session lifecycle to
+agents; it does not certify native all-scene target collection, CAD/point-cloud
+refinement or enable the broader ribbon command. Numeric owner-scan captures and
+their declared scopes remain the evidence for geometry fidelity.
+
+Validation: production build/TypeScript passed without warnings or errors; 115
+focused tests passed. The full suite passed 26,958 tests across 346 files with
+29 skips across six files. All five external owner-scan cases were explicitly
+rerun and passed with unchanged numeric output. Browser/MCP regression passed:
+GUI and MCP preview registration/refinement match, preview preserves geometry and
+history, acceptance adds exactly one undo step, identical acceptance retries do
+not commit twice, and undo restores original indexed geometry and normals. Two
+physical workers were observed and no console errors occurred. A regression first
+reproduced GUI cancellation being reported as failed; the final patch reports it
+as cancelled. Formatting, whitespace and branding checks passed. Test helpers
+exited; the live 5173 server and reused user-facing preview tab remain available.
+Build manifest: `scanforge-d27bc90561ce495a`.

@@ -637,11 +637,24 @@ try {
     entityId: moving.id,
     point: targetLandmarks.slice(6, 9),
   });
-  await landmarkDialog
-    .getByRole("button", { name: "Preview", exact: true })
-    .click();
-  await landmarkDialog.getByText(/Preview RMS:/).waitFor({ timeout: 30000 });
-  await landmarkDialog.getByRole("button", { name: "OK", exact: true }).click();
+  const historyCursor = (await call("history_get")).result.cursor;
+  const agentPreview = await job(
+    await mutate("landmark_preview", { workerCount: 2, parallel: true }),
+  );
+  assert.equal(agentPreview.result.preview, true);
+  assert.equal(agentPreview.result.diagnostics.physicalWorkers, 2);
+  assert.deepEqual(agentPreview.result.registration, locked.registration);
+  assert.deepEqual(agentPreview.result.refinement, locked.refinement);
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  assert.equal((await call("history_get")).result.cursor, historyCursor);
+  const acceptRequest = {
+    expectedRevision: (await call("project_get")).revision,
+    requestId: randomUUID(),
+  };
+  const accepted = await call("landmark_accept", acceptRequest);
+  assert.equal(accepted.result.accepted, true);
+  assert.deepEqual(await call("landmark_accept", acceptRequest), accepted);
+  assert.equal((await call("history_get")).result.cursor, historyCursor + 1);
   await landmarkDialog.waitFor({ state: "hidden" });
   assert.deepEqual(await geometry(gui.id), afterPairedRefinement);
   assert.deepEqual(await geometry(moving.id), afterSeeded);

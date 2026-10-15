@@ -2580,51 +2580,101 @@ export function App() {
       setError(errorText(error));
     }
   }
-  function previewLandmarks() {
+  async function runLandmarkPreview(
+    options: Parameters<NonNullable<WorkspaceHost["previewLandmarks"]>>[0] = {},
+  ) {
     const session = nPointsRef.current;
-    if (!session || busy) return;
-    void action("Previewing landmark alignment…", async () => {
-      const controller = new AbortController();
-      landmarkAbort.current = controller;
-      try {
-        const request = landmarkRequest(session);
-        const result = await processMesh(
-          {
-            ...request,
-            ...(request.refinementTargets
-              ? { sourceTriangleMask: sessionFor(session.moving).state.mask }
-              : {}),
-          },
-          {
-            signal: controller.signal,
-          },
+    if (!session) throw new Error("No active landmark alignment session.");
+    options.signal?.throwIfAborted();
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    options.signal?.addEventListener("abort", abort, { once: true });
+    landmarkAbort.current = controller;
+    try {
+      const request = landmarkRequest(
+        session,
+        options.workerCount ?? 2,
+        options.parallel ?? true,
+      );
+      const result = await processMesh(
+        {
+          ...request,
+          ...(request.refinementTargets
+            ? { sourceTriangleMask: sessionFor(session.moving).state.mask }
+            : {}),
+        },
+        {
+          signal: controller.signal,
+          onProgress: options.onProgress,
+        },
+      );
+      controller.signal.throwIfAborted();
+      options.check?.();
+      if (
+        nPointsRef.current !== session ||
+        !landmarkSceneUnchanged(session, entitiesRef.current)
+      )
+        throw new Error(
+          "The landmark session or geometry changed during preview.",
         );
-        if (!controller.signal.aborted && nPointsRef.current === session)
-          setNPoints({ ...session, preview: result });
+      const next = { ...session, preview: result };
+      flushSync(() => {
+        nPointsRef.current = next;
+        setNPoints(next);
+      });
+      return landmarkState(next);
+    } finally {
+      options.signal?.removeEventListener("abort", abort);
+      if (landmarkAbort.current === controller) landmarkAbort.current = null;
+    }
+  }
+  function previewLandmarks() {
+    if (busy) return;
+    void action("Previewing landmark alignment…", async () => {
+      try {
+        await runLandmarkPreview();
       } catch (error) {
-        if (!controller.signal.aborted) throw error;
-      } finally {
-        if (landmarkAbort.current === controller) landmarkAbort.current = null;
+        if (error instanceof DOMException && error.name === "AbortError") {
+          setMessage("Landmark preview cancelled");
+          return;
+        }
+        throw error;
       }
     });
   }
-  function acceptLandmarks() {
-    if (!nPoints || busy) return;
+  function commitLandmarkPreview() {
+    const alignment = nPointsRef.current;
+    if (!alignment) throw new Error("No active landmark alignment session.");
+    const next = acceptLandmarkAlignment(alignment, entitiesRef.current);
+    const source = next.find((e) => e.id === alignment.moving.id)!;
+    const session = sessionFor(alignment.moving);
+    if (alignment.preview?.selection)
+      session.set({ ...session.state, mask: alignment.preview.selection });
+    selectionSessions.current.set(source.id, {
+      positions: source.positions,
+      session,
+    });
+    operationLabel.current = "Align by corresponding points";
     try {
-      const next = acceptLandmarkAlignment(nPoints, entities);
-      const source = next.find((e) => e.id === nPoints.moving.id)!;
-      const session = sessionFor(nPoints.moving);
-      if (nPoints.preview?.selection)
-        session.set({ ...session.state, mask: nPoints.preview.selection });
-      selectionSessions.current.set(source.id, {
-        positions: source.positions,
-        session,
-      });
-      operationLabel.current = "Align by corresponding points";
       commit(next, source.id);
+    } finally {
       operationLabel.current = null;
-      cancelLandmarks();
-      setMessage("Landmark alignment accepted · fixed target preserved");
+    }
+    cancelLandmarks();
+    setMessage("Landmark alignment accepted · fixed target preserved");
+    return {
+      active: false,
+      accepted: true,
+      entityId: source.id,
+      registration: alignment.preview?.registration,
+      refinement: alignment.preview?.refinement,
+      diagnostics: alignment.preview?.diagnostics,
+    };
+  }
+  function acceptLandmarks() {
+    if (busy) return;
+    try {
+      commitLandmarkPreview();
     } catch (error) {
       operationLabel.current = null;
       setError(errorText(error));
@@ -3852,6 +3902,8 @@ export function App() {
     },
     inspectLandmarks: () => landmarkState(nPointsRef.current),
     editLandmarks: editLandmarkSession,
+    previewLandmarks: runLandmarkPreview,
+    acceptLandmarks: commitLandmarkPreview,
     inspectApplication: (maxControls) => {
       const root = viewportHost.current?.closest<HTMLElement>(".workbench");
       if (!root) throw new Error("Application is not mounted.");
