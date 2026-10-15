@@ -816,6 +816,97 @@ try {
   await mutate("history_undo", {});
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   assert.deepEqual(errors, []);
+  const emptyMoving = imported;
+  const beforeEmptyTarget = await geometry(emptyMoving.id);
+  const cloudPoints = beforeEmptyTarget.indexedMesh.triangles
+    .slice(0, 3)
+    .flatMap((id) =>
+      beforeEmptyTarget.indexedMesh.vertices.slice(id * 3, id * 3 + 3),
+    );
+  const cloudUpload = (
+    await call("artifact_put", {
+      name: "landmark-fixed-cloud.asc",
+      offset: 0,
+      base64: Buffer.from(
+        Array.from({ length: 3 }, (_, i) =>
+          cloudPoints.slice(i * 3, i * 3 + 3).join(" "),
+        ).join("\n"),
+      ).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: cloudUpload.artifactId,
+      unit: "mm",
+    }),
+  );
+  const cloud = (await call("project_get")).result.objects.find(
+    (object) => object.name === "landmark-fixed-cloud.asc",
+  );
+  assert.equal(cloud.kind, "pointcloud");
+  const cloudBefore = (await call("object_get", { entityId: cloud.id })).result;
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: emptyMoving.id,
+    fixedId: cloud.id,
+    targetScope: "fixed",
+  });
+  await landmarkDialog
+    .getByText(
+      "No refinement surfaces. Matching points will determine alignment.",
+    )
+    .waitFor();
+  for (let index = 0; index < 3; index++) {
+    const point = cloudPoints.slice(index * 3, index * 3 + 3);
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: emptyMoving.id,
+      point,
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: cloud.id,
+      point,
+    });
+  }
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const emptyGuiPreview = (await call("landmark_get")).result;
+  assert.equal(emptyGuiPreview.refinement.accepted, true);
+  assert.deepEqual(
+    emptyGuiPreview.refinement.matrix,
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+  );
+  assert.equal(emptyGuiPreview.diagnostics.physicalWorkers, 1);
+  assert.equal(emptyGuiPreview.diagnostics.logicalLanes, 2);
+  assert.equal(
+    emptyGuiPreview.diagnostics.fallbackReason,
+    "no refinement surfaces",
+  );
+  assert.equal(emptyGuiPreview.diagnostics.selectedTriangles, 1);
+  await mutate("landmark_edit", { action: "reset" });
+  const emptyAgentPreview = await job(
+    await mutate("landmark_preview", { workerCount: 2, parallel: true }),
+  );
+  assert.deepEqual(
+    emptyAgentPreview.result.registration,
+    emptyGuiPreview.registration,
+  );
+  assert.deepEqual(
+    emptyAgentPreview.result.refinement,
+    emptyGuiPreview.refinement,
+  );
+  assert.deepEqual(await geometry(emptyMoving.id), beforeEmptyTarget);
+  await mutate("landmark_accept", {});
+  assert.deepEqual(
+    (await call("object_get", { entityId: cloud.id })).result,
+    cloudBefore,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(emptyMoving.id), beforeEmptyTarget);
+  assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
     guiImport: true,
@@ -836,6 +927,7 @@ try {
     guiMcpMulticoreSeededRefinement: true,
     guiMcpCadLandmarkRefinement: true,
     guiMcpVisibleSceneLandmarkRefinement: true,
+    guiMcpEmptyTargetLandmarkRefinement: true,
     cadLandmarkBrepPreserved: true,
     errors,
   };

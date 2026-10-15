@@ -431,7 +431,6 @@ scope.onmessage = async ({ data: incoming }) => {
       if (request.kind === "paired" && request.refinementTargets) {
         if (
           !request.sourceIndexed ||
-          !request.refinementTargets.length ||
           request.refinementTargets.length > 32 ||
           request.refinementTargets.some(
             (target) =>

@@ -2484,3 +2484,48 @@ slice; application builds/tests are not applicable. Validation consists of the
 JSON parsing, scoped formatting and whitespace checks. Original images and
 analysis providers are released after execution; port 5173 retains the latest
 previously validated application.
+
+### Empty refinement surfaces: original controller replay
+
+`docs/evidence/landmark-empty-target-driver-native.json` captures four direct
+executions of the original constructor `0x140aa8ea0`, driver `0x140aaa570` and
+destructor `0x140aa9000`, using a null target mesh and empty evaluator vector.
+The shipped image identity is retained in the fixture. A 24-vertex, 12-triangle
+source is tested with one and two logical lanes, with source flags zero and four.
+All four executions return accepted, the identity matrix, unchanged initial
+six parameters, maximum Float32 error, and cleared working source flags. The
+native driver does not reject an absent refinement surface. The maximum error
+is a sentinel, not a successful numerical correspondence measurement.
+
+The runtime adapter supplies inert progress callbacks and bridges the original
+thread launch to a real UCRT thread and OS handle. Original query, initializer,
+optimizer and result lifecycle code execute; the installed application UI is
+not exercised by this capture. The harness reports zero remaining tracked
+allocations and zero unknown frees. External helper allocation cleanup and
+process exit are recorded separately.
+
+The shared application session now preserves an explicit empty target list,
+runs coarse registration and seeded face growth, and retains that region after
+the identity correction. It avoids starting correspondence workers when there
+are no surfaces, while retaining the requested logical lane count. This path
+does not relax standalone fine alignment's distinct-target requirement, hidden
+source-facet rejection, or the point-pair ribbon verification gate. The dialog
+explains that matching picks determine alignment when no surfaces are present.
+The same preparation and worker serve `landmark_preview` and GUI preview.
+
+`tests/native-landmark-empty-target.test.ts` compares all four original results
+with synchronous and asynchronous controllers, then covers grown selection,
+session request propagation and retained input validation. The indexed-mesh
+browser smoke additionally compares GUI/MCP preview, accept and undo with a
+fixed ASC cloud and no eligible refinement surfaces. Full original scene-root
+projection and point-cloud surface refinement remain separate work.
+
+Validation for this slice: `npm run build` passed with manifest
+`scanforge-53f31663e5ba4ac6`; the focused alignment run passed 130 tests, and
+`npm test` passed 27,043 tests with 31 existing skips. The expanded
+`tests/indexed-mesh-browser-smoke.mjs` passed GUI/MCP preview, accept and undo,
+including existing two-worker scan/CAD cases and empty-surface fixed ASC picks,
+with no page errors. Scoped Prettier, JSON parsing, whitespace and prohibited
+name checks passed. The initial browser fixture's 2 mm picks correctly triggered
+the existing native clustered-pick rejection; the successful fixture uses its
+20 mm imported triangle. Native pick-spread validation was not relaxed.

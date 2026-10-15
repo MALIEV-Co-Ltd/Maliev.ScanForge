@@ -49,7 +49,7 @@ export async function refineNativeLandmarkAfterCoarse(
   const normals = transformDatumCoordinates(originalNormals, coarse, true);
   const result = await nativeRefineAlignmentMeshesAsync(
     [{ vertices, triangles, normals, flags: region.vertices }],
-    [prepareNativeLandmarkTarget(targets, options)],
+    targets.length ? [prepareNativeLandmarkTarget(targets, options)] : [],
     0x7fffffff,
     {
       ...options,

@@ -78,7 +78,11 @@ export function LandmarkAlignmentDialog({
           </AppSelect>
         </label>
         {session.moving.indexedMesh && (
-          <p>{landmarkTargetEntities(session).length} refinement targets</p>
+          <p>
+            {landmarkTargetEntities(session).length
+              ? `${landmarkTargetEntities(session).length} refinement targets`
+              : "No refinement surfaces. Matching points will determine alignment."}
+          </p>
         )}
         <p>
           Click matching points on each object in the same order. Pick at least

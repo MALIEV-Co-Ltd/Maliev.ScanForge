@@ -41,6 +41,7 @@ export function alignmentPoolAdmission(
   parallel = true,
 ) {
   if (!parallel || lanes.length < 2) return "single-core requested";
+  if (!surfaces.length) return "no refinement surfaces";
   if (
     typeof Worker === "undefined" ||
     (globalThis.navigator?.hardwareConcurrency ?? 2) < 2

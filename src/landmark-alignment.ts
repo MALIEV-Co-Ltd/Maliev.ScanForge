@@ -129,7 +129,6 @@ export function landmarkRequest(
     targetLandmarks: pairs.fixed.flat(),
     ...(includeRefinement &&
     session.moving.indexedMesh &&
-    targets.length &&
     targets.every((target) => !!target.indexedMesh && !target.kernelId)
       ? landmarkRefinementTargets(
           session.moving,
@@ -211,7 +210,6 @@ export async function prepareLandmarkRequest(
   const targets = landmarkTargetEntities(session);
   if (
     session.moving.indexedMesh &&
-    targets.length &&
     targets.every((target) => !!target.indexedMesh || !!target.kernelId)
   )
     Object.assign(
@@ -242,6 +240,15 @@ export function landmarkRefinementTargets(
     throw new Error(
       "Point-pair refinement currently requires raw indexed scan meshes.",
     );
+  if (!targets.length) {
+    if (source.kind !== "mesh" || !source.indexedMesh)
+      throw new Error(
+        "Point-pair refinement requires a raw indexed moving scan.",
+      );
+    if (source.meshSelection?.hidden?.length)
+      throw new Error("Reveal hidden triangles before surface refinement.");
+    return { refinementTargets: [], workerCount, parallel };
+  }
   const request = nativeSurfaceRefinementRequest(
     source,
     targets,

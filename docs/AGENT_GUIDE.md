@@ -53,6 +53,18 @@ targets are read-only and may be locked; the moving and picked fixed objects
 must remain unlocked. The dialog's **Refine against** selector exposes the same
 choice as MCP. Set `targetScope: "fixed"` to retain single-target refinement.
 
+If no eligible refinement surface remains (for example, a picked fixed point
+cloud with `targetScope: "fixed"`), an indexed moving scan still runs native
+seeded-region preparation after coarse registration. The refinement result is
+accepted with an identity correction and the native maximum-float error sentinel;
+that sentinel is not a measured fit quality. Grown selected faces are retained.
+Diagnostics report one physical worker; requested logical lanes are preserved
+without starting a pool. Parallel requests with multiple logical lanes report
+`fallbackReason: "no refinement surfaces"`; explicitly serial requests retain
+the usual `single-core requested` reason.
+This behavior is shared by GUI preview and `landmark_preview`. Standalone fine
+alignment still requires distinct usable fixed surfaces.
+
 `landmark_get` reports `targetScope` and ordered `refinementTargetIds`. Change scope
 with `landmark_edit { action: "target-scope", targetScope: "fixed" | "visibleScene" }`;
 this clears the preview and retains the picks. Scene target geometry, visibility,

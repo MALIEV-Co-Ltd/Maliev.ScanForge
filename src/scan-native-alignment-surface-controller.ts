@@ -41,7 +41,6 @@ function prepareRefinementMeshes(
     : prepareNativeAlignmentSources(sources, sampleBudget, options);
   const targets: readonly SourceMesh[] =
     "vertices" in target ? [target] : target;
-  if (!targets.length) throw new Error("Alignment requires a fixed target.");
   const fixed = targets.map((mesh) => {
     const prepared = prepareNativeAlignmentSurface(
       mesh.vertices,
