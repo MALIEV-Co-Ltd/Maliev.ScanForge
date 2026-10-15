@@ -1,5 +1,8 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { prepareNativeAlignmentSources } from "./scan-native-alignment-source";
+import {
+  prepareNativeAlignmentSources,
+  prepareNativeAlignmentSelectedSource,
+} from "./scan-native-alignment-source";
 import { prepareNativeAlignmentSurface } from "./scan-native-alignment-surface";
 import { partitionNativeAlignmentVertices } from "./scan-native-alignment-partition";
 import {
@@ -31,7 +34,11 @@ function prepareRefinementMeshes(
   sampleBudget: number,
   options: RefinementMeshOptions,
 ) {
-  const moving = prepareNativeAlignmentSources(sources, sampleBudget, options);
+  const moving = options.selectionOnly
+    ? sources.map((source) =>
+        prepareNativeAlignmentSelectedSource(source, options),
+      )
+    : prepareNativeAlignmentSources(sources, sampleBudget, options);
   const targets: readonly SourceMesh[] =
     "vertices" in target ? [target] : target;
   if (!targets.length) throw new Error("Alignment requires a fixed target.");

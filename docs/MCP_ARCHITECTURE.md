@@ -118,3 +118,10 @@ visits each eligible incidence at most once. Prepared vertex flags enter the
 existing native controller in selection-only mode, preserving indexed order,
 logical lane partitioning and ordered reduction. The bounded CPU pool is reused;
 region preparation itself is currently serial within the processing worker.
+
+The shared controller uses a compact source constructor for selection-only
+inputs. It retains selected visible records in original indexed order before
+the existing logical-lane partition. No independent agent implementation or
+operation parameter is introduced. Supplied scanner normals are validated and
+read in place; inactive coordinates, normals and flags are still validated.
+Without supplied normals, the previous whole-mesh normal algorithm is retained.

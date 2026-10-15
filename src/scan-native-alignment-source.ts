@@ -98,3 +98,71 @@ export function prepareNativeAlignmentSources(
       result.vertices[id].flags = result.sampling.flags[id];
   return results;
 }
+
+export function prepareNativeAlignmentSelectedSource(
+  mesh: Parameters<typeof prepareNativeAlignmentSource>[0],
+  options: MeshProcessingOptions = {},
+): { vertices: AlignmentQueryVertex[] } {
+  const check = () => {
+    if (options.signal?.aborted)
+      throw new DOMException("Alignment preparation cancelled.", "AbortError");
+  };
+  check();
+  const count = mesh.vertices.length / 3;
+  if (
+    !Number.isInteger(count) ||
+    mesh.triangles.length % 3 ||
+    (mesh.flags && mesh.flags.length !== count) ||
+    (mesh.normals && mesh.normals.length !== mesh.vertices.length)
+  )
+    throw new Error("Invalid alignment source buffers.");
+  // Validate even inactive records. With supplied scanner normals, no full-size
+  // coordinate/normal copy or sampling records are needed for this path.
+  for (let offset = 0; offset < mesh.vertices.length; offset++) {
+    if (!(offset % 4096)) check();
+    if (!Number.isFinite(Math.fround(mesh.vertices[offset])))
+      throw new Error("Alignment source requires finite Float32 coordinates.");
+  }
+  for (let offset = 0; offset < mesh.triangles.length; offset++) {
+    if (!(offset % 4096)) check();
+    const id = mesh.triangles[offset];
+    if (!Number.isSafeInteger(id) || id < 0 || id >= count)
+      throw new Error("Alignment source triangle index is outside the buffer.");
+  }
+  const normals =
+    mesh.normals ??
+    noiseNormals(
+      {
+        vertices: Float64Array.from(mesh.vertices, Math.fround),
+        triangles: Uint32Array.from(mesh.triangles),
+      },
+      options,
+    );
+  const vertices: AlignmentQueryVertex[] = [];
+  for (let id = 0; id < count; id++) {
+    if (!(id % 4096)) check();
+    const offset = id * 3,
+      flag = mesh.flags?.[id] ?? 0;
+    if (!Number.isSafeInteger(flag) || flag < 0 || flag > 0xffffffff)
+      throw new Error("Alignment source flags must be unsigned integers.");
+    const nx = Math.fround(normals[offset]),
+      ny = Math.fround(normals[offset + 1]),
+      nz = Math.fround(normals[offset + 2]);
+    if (!Number.isFinite(nx) || !Number.isFinite(ny) || !Number.isFinite(nz))
+      throw new Error(
+        "Alignment source normals require finite Float32 values.",
+      );
+    if ((flag & 5) === 4)
+      vertices.push({
+        point: [
+          Math.fround(mesh.vertices[offset]),
+          Math.fround(mesh.vertices[offset + 1]),
+          Math.fround(mesh.vertices[offset + 2]),
+        ],
+        normal: [nx, ny, nz],
+        flags: flag,
+      });
+  }
+  check();
+  return { vertices };
+}

@@ -1510,3 +1510,39 @@ passed. The native replay, browser, MCP bridge and test workers exited. Port
 5173 serves the latest kernel; its owned 24-hour lease was refreshed without
 restarting the server, and the temporary inspection listener was closed.
 Build manifest: `scanforge-a1a7453a5a32e816`.
+
+## Compact selection-only source construction
+
+The shared refinement controller now builds query records only for selected
+visible vertices when selection-only mode is active. The previous constructor
+created a record and two coordinate arrays for every mesh vertex before lane
+partitioning. The compact constructor retains original indexed order, unsigned
+flags, Float32 coordinates and supplied normal values. All inactive coordinates,
+normals, flags and triangle indices remain validated. Supplied scanner normals
+are read in place without full-size coordinate/normal copies. Without supplied
+normals, the previous whole-mesh normal computation remains unchanged.
+
+This path applies automatically to GUI and MCP selected/seeded refinement.
+The existing whole-source sampler is unchanged. Logical lane assignment and
+ordered reduction receive the same selected records; internal unused compact
+indices are not published as original vertex IDs. Tests compare all 89 original
+region captures through the verified full constructor and match records and lane
+contents for 1, 2, 4 and 16 lanes, including hidden and high unsigned flags.
+Native controller fixtures and worker transfer/cancellation checks also pass.
+
+Validation: production build/TypeScript passed; 773 focused tests passed; browser
+and MCP checks passed, including two physical CPU workers and identical seeded
+geometry, with no console errors. The initial full suite had one existing
+release-planning timeout at five seconds; its focused rerun passed, and the
+unchanged repeated full suite passed 26,936 tests across 344 files with 24 existing
+skips across five files. Formatting and whitespace checks passed. Owned browser,
+bridge, benchmark and test processes exited. Port 5173 serves the current source.
+Build manifest: `scanforge-995bf2505d27f39c`.
+
+A bounded synthetic Node test with one million vertices, supplied normals and
+three selected vertices produced 3 query records instead of 1,000,000, with
+identical selected values. One measured construction per path took 15.87 ms for
+the compact constructor and 499.40 ms for the full constructor. This is not a
+browser end-to-end benchmark, native timing comparison or repeated statistical
+speedup result. The local receipt is `.resources/selected-source-benchmark.json`.
+Full point-pair coarse/refinement assembly remains a separate pending gate.

@@ -611,3 +611,10 @@ Datum alignment preserves finite, non-unit scanner normal magnitudes, including
 values above the coordinate-size limit. Coordinate limits still apply to
 positions, and nonfinite normal outputs are rejected. GUI and MCP datum
 operations share this correction; no new parameter is required.
+
+Selection-only and seeded `nativeRefine` now prepare query records only for
+selected visible vertices. Indexed order, source flags and scanner normal values
+remain unchanged. Supplied normals avoid full-size coordinate/normal copies;
+when normals are absent, the existing full-mesh normal computation remains.
+Inactive records still undergo validation. This optimization is automatic for
+GUI and MCP; sampling and CPU lane settings are unchanged.
