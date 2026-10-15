@@ -2315,7 +2315,7 @@ initialization algorithm.
 
 Scope remains bounded: these captures do not certify the complete point-picking
 UI, arbitrary target layouts, point-cloud refinement, fresh CAD tessellation or
-the complete controller on the large owner scans. The By N points ribbon gate
+the large owner scans (covered separately below). The By N points ribbon gate
 remains unchanged while those requirements are validated.
 
 Validation of this capture slice: production build passed without warnings or
@@ -2327,3 +2327,60 @@ and limits are retained in `docs/evidence/landmark-full-driver-verification.json
 Native image allocations and browser helpers were released. A later unrelated
 process reused a browser-controller PID and was preserved after identity/start
 comparison. The live source server on port 5173 remains running.
+
+## Complete controller on the owner PLY scans
+
+`docs/evidence/owner-landmark-full-driver-native.json` extends the complete
+constructor/driver/destructor execution to `ply-2.ply` and `ply-3.ply` against
+`ply-1.ply` from the configured alignment example folder. The moving scans have
+1,375,494 and 1,865,848 vertices, respectively. Native growth selects 1,773 and
+1,877 source vertices. The replay uses the independently verified original
+coarse transforms and seed-growth flags without changing the selections.
+
+The target uses the original joined-target mesh constructor `0x140b353e0` and
+explicit `0x1401de640(target,1)` finalization. Its second argument must be supplied:
+it controls adjacency rebuilding. An initial harness call omitted that argument,
+produced no linked edges and yielded different refinement results. That capture
+was rejected. The corrected replay matches the application's entire target
+facet-normal and neighbor-presence buffers exactly. The successful replay runs
+all controller stages, the optimizer on a real OS thread, actual Concurrency
+Runtime dispatch and the complete destructor, with zero tracked allocations or
+unknown frees remaining. Source vertex storage uses indexed getter/count metadata
+adapters; all original PLY records are retained, and selected-mode execution does
+not use source face storage. This is not an installed native UI capture.
+
+`tests/native-owner-landmark-full-driver.test.ts` verifies file digests, complete
+target-cache digests, initial error, accepted flag, best error, six parameters,
+delta matrix and hashes of every final source position and normal. Set
+`SCANFORGE_ALIGNMENT_EXAMPLES` to the supplied scan folder to run those cases.
+The earlier manually prepared-controller results agree with the corrected complete
+controller, so no application arithmetic change is warranted by this comparison.
+The box capture was also replayed with the exact joined-target class and explicit
+adjacency argument; geometric buffers and numerical results are unchanged. An
+unverified auxiliary face field previously labeled `faceIds` is excluded from
+that fixture; ordered `triangleIds` remain verified vertex references.
+
+An isolated browser replay on the live source server runs the shared selected
+refinement function with two physical Web Workers and reproduces both complete
+native outputs exactly, including the final buffer hashes. It records no page
+errors and closes both its browser and file server. The pipeline took about
+5.0 and 4.3 seconds under concurrent regression-test load. Parsing and final hash
+calculation are outside that timing; this is a baseline, not a claim of instant
+interaction or an isolated CPU benchmark. Results and limitations are retained
+in `docs/evidence/owner-landmark-full-driver-verification.json`.
+
+GUI and MCP continue using the same processing-worker refinement path; no tool
+schema or defaults change. This closes the complete selected-controller check on
+these PLY scans. Installed point-picking UI parity, other geometry/reference
+modes and the broader feature goal remain separate requirements. The point-pair
+ribbon gate is unchanged by this evidence-only slice.
+
+Validation: the build passed without warnings/errors, retaining manifest
+`scanforge-abbaa82db3abd10b`. All nine focused cases passed with the owner scan
+folder configured, including both new complete-driver cases. The default full
+suite passed 27,033 tests across 351 files, with 31 skips; the two new owner-file
+cases were run explicitly in the focused lane. Browser results matched exactly
+with two physical workers per case and no page errors. Scoped formatting, JSON
+readback, whitespace and prohibited-brand checks passed. Native and browser
+processes exited, their mappings and file server were released, and port 5173
+returned HTTP 200 with the existing live source server preserved.

@@ -8,7 +8,7 @@
     "remainingTrackedAllocations": 0,
     "unknownFreeCalls": 0,
     "nativeUiCapture": false,
-    "meshContainers": "Original 0x1401ddfb0 constructor and vertex/triangle insertion; complete 0x1401de640 finalizer before controller construction.",
+    "meshContainers": "Original joined-target 0x140b353e0 constructor, native vertex/triangle insertion and explicit 0x1401de640(mesh,1) finalizer including adjacency.",
     "selection": "All 24 indexed source vertices have flag 4; source translated by Float32 additions (0.05, 0.03, -0.04).",
     "physicalOptimizerThreadPerCase": true,
     "reaEvidence": {
@@ -16,7 +16,8 @@
       "driver": "ev_362ae88ea48809978c944772ef29a8aa7662a22ea08f98c578817b3462728d24",
       "initializer": "ev_76426f3d6797d71c412b1192cc78fabbdfad5cda857fc5578617e7f613c49a1b",
       "destructor": "ev_0be3c4e81719df64b9973826484fd28901531ec402a46c73decb847918ccc654"
-    }
+    },
+    "auxiliaryMetadata": "Unverified opaque face field formerly labeled faceIds is excluded; ordered triangleIds refer only to original vertex pointers."
   },
   "cases": [
     {
@@ -29,11 +30,6 @@
         "triangleIds": [
           1, 2, 0, 1, 3, 2, 5, 4, 6, 5, 6, 7, 11, 8, 9, 11, 10, 8, 15, 13, 12,
           15, 12, 14, 19, 16, 17, 19, 18, 16, 23, 21, 20, 23, 20, 22
-        ],
-        "faceIds": [
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143
         ]
       },
       "target": {
@@ -44,11 +40,6 @@
         "triangleIds": [
           1, 2, 0, 1, 3, 2, 5, 4, 6, 5, 6, 7, 11, 8, 9, 11, 10, 8, 15, 13, 12,
           15, 12, 14, 19, 16, 17, 19, 18, 16, 23, 21, 20, 23, 20, 22
-        ],
-        "faceIds": [
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143
         ]
       },
       "matrix": [
@@ -63,7 +54,7 @@
       ],
       "accepted": true,
       "best": 5.875784853805403e-11,
-      "optimizerThreadIds": [52160]
+      "optimizerThreadIds": [28732]
     },
     {
       "logicalLanes": 2,
@@ -75,11 +66,6 @@
         "triangleIds": [
           1, 2, 0, 1, 3, 2, 5, 4, 6, 5, 6, 7, 11, 8, 9, 11, 10, 8, 15, 13, 12,
           15, 12, 14, 19, 16, 17, 19, 18, 16, 23, 21, 20, 23, 20, 22
-        ],
-        "faceIds": [
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143
         ]
       },
       "target": {
@@ -90,11 +76,6 @@
         "triangleIds": [
           1, 2, 0, 1, 3, 2, 5, 4, 6, 5, 6, 7, 11, 8, 9, 11, 10, 8, 15, 13, 12,
           15, 12, 14, 19, 16, 17, 19, 18, 16, 23, 21, 20, 23, 20, 22
-        ],
-        "faceIds": [
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143, 1409286143, 1409286143, 1409286143,
-          1409286143, 1409286143
         ]
       },
       "matrix": [
@@ -109,7 +90,7 @@
       ],
       "accepted": true,
       "best": 7.530933566456958e-12,
-      "optimizerThreadIds": [7236]
+      "optimizerThreadIds": [18612]
     }
   ]
 }

@@ -1,0 +1,91 @@
+{
+  "nativeCleanup": {
+    "pid": 57848,
+    "allocationReleased": true,
+    "finishedUtc": "2026-10-15T05:42:55.619084+00:00"
+  },
+  "targetCache": "SHA-256 of all native facet normals and all neighbor-presence bytes matches application target preparation",
+  "browser": {
+    "results": [
+      {
+        "file": "ply-2.ply",
+        "refinement": {
+          "accepted": true,
+          "matrix": [
+            0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+            0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+            4.550334867358313e-5, 0.012647095906881844, 0.00014992095133797362,
+            -4.490743346345091e-5, 0.9999999877535153, 0.0002494130612475942
+          ],
+          "parameters": [
+            10.007918397145703, 10.012647095906882, 10.000249413061248,
+            1.5707514193609133, 1.570646405842997, 1.566819087757672
+          ],
+          "initialError": 9.766255351717064,
+          "best": 5.984956254000963,
+          "iterations": 192
+        },
+        "diagnostics": {
+          "selectedTriangles": 0,
+          "refinementApplied": true,
+          "seededFaces": 3180,
+          "seedGrowthPasses": 15,
+          "seedFaceReferences": 8954,
+          "physicalWorkers": 2,
+          "logicalLanes": 2,
+          "fallbackReason": ""
+        },
+        "positionHash": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+        "normalHash": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c",
+        "milliseconds": 5027.355000004172
+      },
+      {
+        "file": "ply-3.ply",
+        "refinement": {
+          "accepted": true,
+          "matrix": [
+            0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+            0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+            0.0003411999079247157, -0.00010592356224492505,
+            -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+            -0.001811635245847043
+          ],
+          "parameters": [
+            10.00067147993725, 9.999894076437755, 9.998188364754153,
+            1.5704551466710581, 1.5708958490696991, 1.57099525168068
+          ],
+          "initialError": 16.62046399125353,
+          "best": 8.3123067990079,
+          "iterations": 170
+        },
+        "diagnostics": {
+          "selectedTriangles": 0,
+          "refinementApplied": true,
+          "seededFaces": 3368,
+          "seedGrowthPasses": 18,
+          "seedFaceReferences": 9503,
+          "physicalWorkers": 2,
+          "logicalLanes": 2,
+          "fallbackReason": ""
+        },
+        "positionHash": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+        "normalHash": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b",
+        "milliseconds": 4323.759999990463
+      }
+    ],
+    "errors": [],
+    "closedAt": "2026-10-15T05:45:08.631Z",
+    "passed": true
+  },
+  "assertions": [
+    "Exact initial error, accepted flag, best error, six parameters and delta matrix",
+    "SHA-256 matches for every final source position and normal",
+    "Exactly two physical workers and two logical lanes in each browser replay"
+  ],
+  "limitations": [
+    "Original seed-growth flags and coarse transforms reused from independently verified captures",
+    "Source vertex getter/count metadata adapted; no source face storage required by selected driver",
+    "Installed native UI and point-cloud refinement not captured",
+    "Elapsed browser times include the selected coarse/refinement pipeline but exclude file parsing and final hash calculation; concurrent test load prevents isolated performance claims"
+  ]
+}

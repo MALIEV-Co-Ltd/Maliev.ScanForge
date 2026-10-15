@@ -1,8 +1,8 @@
 {
   "nativeCleanup": {
-    "pid": 44112,
+    "pid": 38900,
     "allocationReleased": true,
-    "finishedUtc": "2026-10-15T05:29:14.447223+00:00"
+    "finishedUtc": "2026-10-15T05:43:23.635774+00:00"
   },
   "browser": {
     "results": [
@@ -52,5 +52,10 @@
     "Synthetic box geometry, not the full owner scans",
     "Installed native UI not captured",
     "Unit async lane comparison can fall back to serial; physical worker counts are from browser"
-  ]
+  ],
+  "explicitAdjacencyReplay": {
+    "meshConstructor": "0x140b353e0",
+    "finalizer": "0x1401de640(mesh,1)",
+    "numericAndGeometryOutputsUnchanged": true
+  }
 }
