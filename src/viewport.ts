@@ -1,3 +1,4 @@
+import { prepareViewportPicking } from "./viewport-picking";
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
 import { SelectionProcessingHighlight } from "./selection-processing-highlight";
@@ -772,9 +773,10 @@ export class Viewport {
       );
     }
     if (
-      !this.brushing ||
-      (event.buttons & 4) !== 0 ||
-      event.pointerType === "touch"
+      (event.buttons !== 0 || event.pointerType === "touch") &&
+      (!this.brushing ||
+        (event.buttons & 4) !== 0 ||
+        event.pointerType === "touch")
     )
       this.invalidate();
     if (
@@ -1816,6 +1818,8 @@ export class Viewport {
           geometry.setDrawRange(0, 0);
         }
         item.mesh.geometry = geometry;
+        if (entity.kind !== "pointcloud")
+          void prepareViewportPicking(item.mesh);
         item.positions = entity.positions;
         item.renderPositions = renderPositions;
         item.mesh.material.vertexColors = false;

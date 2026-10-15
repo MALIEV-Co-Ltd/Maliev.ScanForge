@@ -789,3 +789,5 @@ parameter. Native traversal order, logical lane reduction, results, cancellation
 and diagnostics keep their existing contracts. Full-file native equality and
 timing scope are documented in `docs/ALIGNMENT_PERFORMANCE.md`; two workers do
 not imply a measured speedup for every selected region.
+
+Viewport surface picking is accelerated by the same background-built display index for canvas interactions and `viewport_pick`; no new agent parameters are required. Triangle IDs and clipping semantics are preserved, with ordinary picking available while the index builds. See [viewport performance](VIEWPORT_PERFORMANCE.md).

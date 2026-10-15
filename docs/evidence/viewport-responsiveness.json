@@ -1,0 +1,49 @@
+{
+  "scenario": "owner PLY scans 1 and 2; isolated browser; full resolution",
+  "baseline": {
+    "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "triangles": 2972031,
+    "hoverMs": 474.19999998807907,
+    "hoverRenders": 60,
+    "ray": [
+      165.2000000178814, 166.09999999403954, 180.80000001192093,
+      178.7999999821186, 165.7000000178814
+    ],
+    "frames": [
+      0.5999999940395355, 0.699999988079071, 0.5, 0.5, 0.4000000059604645,
+      0.5999999940395355, 0.4000000059604645, 0.5, 0.5, 0.5
+    ],
+    "info": {
+      "frame": 86,
+      "calls": 2,
+      "triangles": 2972031,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "after": {
+    "comparisons": 9,
+    "indexedMeshes": 2,
+    "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "triangles": 2972031,
+    "hoverMs": 470.40000000596046,
+    "hoverRenders": 0,
+    "ray": [
+      1, 0.20000001788139343, 0.19999998807907104, 0.20000001788139343,
+      0.09999999403953552
+    ],
+    "frames": [
+      1, 1, 0.7999999821186066, 0.7000000178813934, 0.699999988079071, 0.5,
+      0.800000011920929, 0.5999999940395355, 0.699999988079071,
+      0.6000000238418579
+    ],
+    "info": {
+      "frame": 28,
+      "calls": 2,
+      "triangles": 2972031,
+      "points": 0,
+      "lines": 0
+    }
+  },
+  "scope": "Surface picking and passive-pointer redraws; not a frame-rate benchmark"
+}
