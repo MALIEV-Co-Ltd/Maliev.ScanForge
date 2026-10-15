@@ -2720,3 +2720,49 @@ legacy registration regressions. All 18 native insertion cases passed. Native
 mappings, provider processes, browser/MCP children and temporary listeners were
 released; port 5173 continues serving the latest source. Scoped formatting,
 fixture coverage and whitespace/prohibited-name checks passed.
+
+## Verified native point-pair command admission
+
+`docs/evidence/landmark-command-native.json` closes the command-entry and
+enablement trace. The native message map binds command `0x83b5` to execution
+`0x14080a3d0` and update `0x14080a510`. The initial discovery at `0x14080a416`
+was an internal fragment: chained Windows unwind records lead through
+`0x14080a40e` to the actual entry at `0x14080a3d0`. Seeding only the fragment
+omits the entry's prologue and must not be treated as a complete function.
+Execution Evidence: `ev_ad864c8f1406a5f4052d7c04e860e7070a7f01790fe2c16c6dc1dcc28bc53e3f`;
+assembly: `ev_b758c52e1815e498cd776b176c910d6ec7187c105e7179eb4a4855fa7abad565`.
+
+The command obtains its moving scan through original selector `0x1407d68a0`,
+gets the point-pair dialog through navigation service `0x141153230` and factory
+pointer `0x14161e258`, assigns the scan at dialog-interface `+0x50` (complete
+dialog `+0x180`) and document-scene `+0x630`, invokes source virtual slot `0xa0`
+with zero, then activates the first registered `MUM_NPOINTS_ALIGN` mode. The
+slot's display/selection meaning is not inferred from its numeric argument.
+Thirty-two executions of the complete modeling body verify these assignments,
+selected source identity, navigation arguments, registry search and activation.
+Cases cover eight source scenes and four mode registries, including absent,
+nonmatching and duplicate matching entries. Actual UCRT wide-string comparison
+is rebound; source selection and native flag accessors remain original code.
+Controlled scene iteration/type queries, navigation services and UI callbacks
+are declared adapters. The preceding edition guard is excluded, neither
+executed nor changed; licensing behavior is outside the objective.
+
+The complete original enablement callback executes over 1,111 ordered scene
+states and four active-mode chains: 4,444 calls. It enables only when the scan
+selector resolves a mesh, and checks the command if its registered mode occurs
+anywhere in the active-mode chain. It contains no second-object prerequisite.
+CAD-only scenes do not qualify through this mesh selector. Fixture rows refer
+by index to the existing complete scene fixture and retain its SHA-256, rather
+than duplicating its input objects. Update Evidence:
+`ev_68f0e331ea01fa6212969869f613771c57652e4b53af54fdcab08c39d8d1b42a`;
+assembly: `ev_d99a79d1ff228d10ba9cb0f5785c65dde21868c517ea68f0e32e6a6359e3747c`.
+
+This closes native command admission at the controlled-interface boundary. It
+does not certify original ASCII importer construction or installed UI behavior.
+The application still requires a fixed object to begin a session and restricts
+point picks to that object. Source-only admission and general nonmoving point
+references must be integrated together with GUI/MCP state and scene validation.
+Native candidate cycling and split-view workflow verification also remain
+separate requirements. The ribbon command stays gated; these captures do not
+claim full point-pair workflow completion. No application behavior changed in
+this evidence-only slice.
