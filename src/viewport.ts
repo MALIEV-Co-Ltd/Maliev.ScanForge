@@ -1,4 +1,11 @@
 import { prepareViewportPicking } from "./viewport-picking";
+import { InteractiveMirrorController } from "./interactive-mirror-controller";
+import { InteractiveMirrorDisplay } from "./interactive-mirror-display";
+import type { InteractiveMirrorBackend } from "./interactive-mirror-backend";
+import {
+  nativeInteractiveMirrorDirection,
+  nativeInteractiveMirrorPlane,
+} from "./interactive-mirror-view";
 import { InteractiveAlignmentGizmo } from "./interactive-alignment-gizmo";
 import { resetInteractiveCamera } from "./interactive-camera-reset";
 import {
@@ -161,6 +168,14 @@ export class Viewport {
   private readonly observer: ResizeObserver;
   private readonly objects = new Map<string, Item>();
   private interactivePosePreview?: InteractivePosePreview;
+  private interactiveMirror?: InteractiveMirrorController;
+  private interactiveMirrorBackend?: InteractiveMirrorBackend;
+  private interactiveMirrorClipBounds?: THREE.Box3;
+  private interactiveMirrorState?: {
+    poses: readonly InteractiveDisplayPose[];
+    plane: number;
+  };
+  onInteractiveMirrorError?: (error: unknown) => void;
   private interactiveOriginalBounds?: THREE.Box3;
   private interactiveGizmo?: InteractiveAlignmentGizmo;
   private interactiveDrag?: InteractiveGizmoDrag;
@@ -552,13 +567,20 @@ export class Viewport {
 
   inspectAgentView() {
     this.advanceViewTransition(performance.now() + 1000);
-    return inspectCamera(
+    this.updateInteractiveMirror();
+    const view = inspectCamera(
       this.camera,
       this.controls.target,
       this.bounds,
       this.container.clientWidth,
       this.container.clientHeight,
     );
+    return {
+      ...view,
+      ...(this.interactiveMirror
+        ? { interactiveMirror: this.interactiveMirror.inspect() }
+        : {}),
+    };
   }
 
   controlAgentView(command: ViewportCommand, selection?: Uint8Array) {
@@ -608,15 +630,80 @@ export class Viewport {
     );
   }
 
+  /** Borrow the session's source provider; this display never owns or creates a processing pool. */
+  installInteractiveMirror(backend: InteractiveMirrorBackend | null): void {
+    if (this.disposed && backend) throw new Error("The viewport is closed.");
+    if (this.interactiveMirrorBackend === (backend ?? undefined)) return;
+    this.interactiveMirror?.dispose();
+    this.interactiveMirror = undefined;
+    this.interactiveMirrorBackend = backend ?? undefined;
+    this.interactiveMirrorState = undefined;
+    this.interactiveMirrorClipBounds = undefined;
+    if (!backend) return;
+    this.interactiveMirror = new InteractiveMirrorController(backend, {
+      create: (sources) => {
+        const display = new InteractiveMirrorDisplay(sources, this.invalidate);
+        this.scene.add(display.group);
+        return {
+          show: (poses, plane) => display.show(poses, plane),
+          publish: (id, points) => display.publish(id, points),
+          prepare: () => display.prepare(this.renderer, this.camera),
+          dispose: () => {
+            this.scene.remove(display.group);
+            display.dispose();
+          },
+        };
+      },
+      onError: (error) => this.onInteractiveMirrorError?.(error),
+    });
+  }
+  private updateInteractiveMirror(): void {
+    if (!this.interactiveMirrorState || !this.interactiveMirror) return;
+    if (this.container.clientWidth <= 0 || this.container.clientHeight <= 0)
+      return;
+    const view = this.interactiveViewFrame();
+    this.interactiveMirror.update({
+      ...this.interactiveMirrorState,
+      settings: {
+        direction: nativeInteractiveMirrorDirection(view.matrix, view.anchor),
+        stride: 0,
+        onlySelected: false,
+        backfaces: false,
+        baseColor: [0.8, 0.8, 0],
+        // Retain the application's selected-facet tint; native lighting/style parity is separate.
+        selectedColor: new THREE.Color("#e44b5b").toArray(),
+        allowanceMilliseconds: 1000000,
+        elapsedMilliseconds: 0,
+      },
+    });
+  }
+  async settleInteractiveMirror() {
+    this.updateInteractiveMirror();
+    await this.interactiveMirror?.settled();
+    return this.interactiveMirror?.inspect() ?? null;
+  }
+
   /** Shared GUI/agent preview sink. Only display matrices and coarse clipping bounds change. */
   setInteractivePreview(
     state: {
       targets: readonly InteractiveDisplayPose[];
       pivot?: readonly number[];
       bounds?: readonly { min: readonly number[]; max: readonly number[] }[];
+      mirror?: boolean;
+      mirrorPlane?: number;
     } | null,
   ): void {
     if (this.disposed && state) throw new Error("The viewport is closed.");
+    if (state?.mirror) {
+      if (
+        !this.interactiveMirror ||
+        !this.interactiveMirrorBackend?.entityIds.length
+      )
+        throw new Error(
+          "Interactive mirror requires a session source backend.",
+        );
+      nativeInteractiveMirrorPlane(state.mirrorPlane ?? 1);
+    }
     if (
       state?.bounds &&
       (state.bounds.length !== state.targets.length ||
@@ -632,6 +719,9 @@ export class Viewport {
         "Interactive display bounds must cover every target with finite ordered XYZ values.",
       );
     if (!state) {
+      this.interactiveMirrorState = undefined;
+      this.interactiveMirrorClipBounds = undefined;
+      this.interactiveMirror?.update(null);
       this.interactiveGizmo?.show(null);
       this.interactiveDrag?.cancel();
       this.releaseInteractivePointer();
@@ -688,7 +778,43 @@ export class Viewport {
             .applyMatrix4(item.mesh.matrixWorld),
         );
       }
-    updateCameraClipping(this.camera, this.bounds);
+    this.interactiveMirrorState = state.mirror
+      ? {
+          poses: state.targets.filter((p) =>
+            this.interactiveMirrorBackend!.entityIds.includes(p.entityId),
+          ),
+          plane: state.mirrorPlane ?? 1,
+        }
+      : undefined;
+    this.interactiveMirrorClipBounds = undefined;
+    if (this.interactiveMirrorState) {
+      // Reflected display points may lie beyond the ordinary scene depth range. Keep
+      // this render-only union separate from the measured bounds used by native camera math.
+      const reflection = new THREE.Matrix4().fromArray(
+        nativeInteractiveMirrorPlane(this.interactiveMirrorState.plane),
+      );
+      this.interactiveMirrorClipBounds = this.bounds.clone();
+      for (const pose of this.interactiveMirrorState.poses) {
+        const item = this.objects.get(pose.entityId);
+        if (!item?.mesh.visible || !item.mesh.geometry.boundingBox) continue;
+        const exact = measured.get(pose.entityId);
+        const box = exact
+          ? new THREE.Box3(
+              new THREE.Vector3(...(exact.min as [number, number, number])),
+              new THREE.Vector3(...(exact.max as [number, number, number])),
+            )
+          : item.mesh.geometry.boundingBox
+              .clone()
+              .applyMatrix4(item.mesh.matrixWorld);
+        this.interactiveMirrorClipBounds.union(box.applyMatrix4(reflection));
+      }
+    }
+    updateCameraClipping(
+      this.camera,
+      this.interactiveMirrorClipBounds ?? this.bounds,
+    );
+    if (this.interactiveMirrorState) this.updateInteractiveMirror();
+    else this.interactiveMirror?.update(null);
     this.invalidate();
   }
 
@@ -794,6 +920,7 @@ export class Viewport {
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
     this.updateControls();
+    this.updateInteractiveMirror();
     this.interactiveGizmo?.update(this.camera, this.container.clientHeight);
     const selectionAnimating =
       this.triangleSelection.visible &&
@@ -809,7 +936,7 @@ export class Viewport {
       this.scene,
       this.gridScene,
       this.camera,
-      this.bounds,
+      this.interactiveMirrorClipBounds ?? this.bounds,
       this.originGeometry.visible
         ? new THREE.Box3().setFromObject(this.originGeometry)
         : undefined,
@@ -2828,6 +2955,11 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.interactiveMirror?.dispose();
+    this.interactiveMirror = undefined;
+    this.interactiveMirrorBackend = undefined;
+    this.interactiveMirrorState = undefined;
+    this.interactiveMirrorClipBounds = undefined;
     this.interactivePosePreview?.clear();
     this.interactiveDrag?.cancel();
     this.releaseInteractivePointer();

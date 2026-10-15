@@ -4364,7 +4364,7 @@
   },
   {
     "name": "viewport_get",
-    "description": "Read camera projection/position/target/up/zoom, visible scene bounds and CSS viewport dimensions. No model geometry transfer.",
+    "description": "Read camera projection/position/target/up/zoom, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer.",
     "readOnly": true,
     "job": false,
     "inputSchema": {

@@ -488,3 +488,38 @@ it("discovers nested modeling subcommands and parameters without returning their
     api.dispose();
   }
 });
+
+it("returns viewport mirror readiness and failure diagnostics through the existing MCP read operation", async () => {
+  const { api, host } = setup();
+  const mirror = {
+    active: true,
+    pending: true,
+    ready: false,
+    error: null as string | null,
+    sourceCount: 1,
+  };
+  host.inspectViewport = () => ({
+    projection: "orthographic",
+    interactiveMirror: { ...mirror },
+  });
+  try {
+    expect(await api.invoke("viewport_get", {})).toMatchObject({
+      ok: true,
+      result: { interactiveMirror: mirror },
+    });
+    mirror.pending = false;
+    mirror.error = "source expired";
+    expect(await api.invoke("viewport_get", {})).toMatchObject({
+      ok: true,
+      result: {
+        interactiveMirror: {
+          pending: false,
+          ready: false,
+          error: "source expired",
+        },
+      },
+    });
+  } finally {
+    api.dispose();
+  }
+});

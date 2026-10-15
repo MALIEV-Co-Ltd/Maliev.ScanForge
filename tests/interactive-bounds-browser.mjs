@@ -711,6 +711,8 @@ try {
         const { createInteractiveOperations, releaseInteractiveSession } =
           await import("/src/automation/interactive-alignment-operations.ts");
         const { expandPlyTopology } = await import("/src/ply-topology.ts");
+        const { InteractiveMirrorController } =
+          await import("/src/interactive-mirror-controller.ts");
         const entities = ownerFace.vertexState.cases.map((c) => {
           const source = plySources.get(c.name);
           return {
@@ -758,7 +760,8 @@ try {
             );
           let state = null,
             backend = null,
-            currentDisplay;
+            currentDisplay,
+            controller;
           const commits = [];
           const snapshot = () => ({
             entities,
@@ -879,7 +882,145 @@ try {
                 preparations - beforePrepare === 2,
               "Session repeated mesh setup or allocated extra source copies",
             );
+            // Drive the real GPU sink through the production coalescing controller and the SAME session pool.
+            currentDisplay.dispose();
+            scene.remove(currentDisplay.group);
+            let lastPublication,
+              calls = 0,
+              colorCalls = 0,
+              activeCalls = 0,
+              maxActiveCalls = 0;
+            const controllerErrors = [];
+            controller = new InteractiveMirrorController(
+              {
+                entityIds: backend.entityIds,
+                source: (...args) => backend.source(...args),
+                prepare: async (...args) => {
+                  calls++;
+                  if (args[2]) colorCalls++;
+                  activeCalls++;
+                  maxActiveCalls = Math.max(maxActiveCalls, activeCalls);
+                  try {
+                    return await backend.prepare(...args);
+                  } finally {
+                    activeCalls--;
+                  }
+                },
+              },
+              {
+                create: (sources) => {
+                  currentDisplay = new displayModule.InteractiveMirrorDisplay(
+                    sources,
+                    () => {},
+                  );
+                  scene.add(currentDisplay.group);
+                  return {
+                    show: (poses, plane) => currentDisplay.show(poses, plane),
+                    publish: (id, p) => {
+                      lastPublication = p;
+                      currentDisplay.publish(id, p);
+                    },
+                    prepare: () => currentDisplay.prepare(renderer, camera),
+                    dispose: () => {
+                      currentDisplay.dispose();
+                      scene.remove(currentDisplay.group);
+                    },
+                  };
+                },
+                onError: (error) => controllerErrors.push(String(error)),
+              },
+            );
+            const controllerRequest = {
+              poses: state.targets,
+              plane: state.mirrorPlane,
+              settings: expected.settings,
+            };
+            controller.update(controllerRequest);
+            await controller.settled();
+            assert(
+              controller.inspect().ready && !controllerErrors.length,
+              "Controller failed to prepare owner source",
+            );
+            assert(
+              (await digest(lastPublication.indices)) ===
+                expected.indicesSha256 &&
+                (await digest(
+                  compactColors(
+                    lastPublication.colors,
+                    lastPublication.indices,
+                  ),
+                )) === expected.colorsSha256,
+              "Controller publication differs from original owner point output",
+            );
+            renderer.render(scene, camera);
+            gl.finish();
+            assert(
+              renderer.info.render.points === expected.drawn,
+              "Controller GPU point count differs from original",
+            );
+            const gpuObject = currentDisplay.group.children[0],
+              gpuGeometry = gpuObject.geometry,
+              gpuPosition = gpuGeometry.getAttribute("position"),
+              gpuColor = gpuGeometry.getAttribute("color"),
+              colorVersion = gpuColor.version;
+            const beforePoseCalls = calls;
+            for (let i = 0; i < 100; i++)
+              controller.update({
+                ...controllerRequest,
+                poses: state.targets.map((p) => ({
+                  ...p,
+                  matrix: p.matrix.map((v, j) => (j === 3 ? i : v)),
+                })),
+                plane: i % 3,
+              });
+            assert(
+              calls === beforePoseCalls &&
+                gpuObject.geometry === gpuGeometry &&
+                gpuGeometry.getAttribute("position") === gpuPosition &&
+                gpuPosition.array === prepared.positions,
+              "Pose-only controller updates rebuilt source/GPU buffers",
+            );
+            const beforeViews = calls;
+            for (let i = 0; i < 100; i++)
+              controller.update({
+                ...controllerRequest,
+                settings: {
+                  ...expected.settings,
+                  direction: [1 + i / 100, 0, -1],
+                },
+              });
+            controller.update(controllerRequest);
+            await controller.settled();
+            assert(
+              calls - beforeViews <= 2 &&
+                colorCalls === 1 &&
+                maxActiveCalls === 1,
+              "Controller queued redundant parallel/color work during orbit",
+            );
+            assert(
+              gpuGeometry.getAttribute("color") === gpuColor &&
+                gpuColor.version === colorVersion &&
+                !controllerErrors.length,
+              "Controller rebuilt warm colors or failed",
+            );
+            const controllerStatus = controller.inspect();
+            assert(
+              controllerStatus.ready,
+              "Controller did not settle on the latest requested view",
+            );
+            controller.dispose();
+            controller = undefined;
+            assert(
+              renderer.info.memory.geometries === 0,
+              "Controller retained GPU geometry after close",
+            );
             factoryMirrorRows.push({
+              controllerNativeDrawDigestsMatched: true,
+              controllerRequests: calls,
+              controllerColorRequests: colorCalls,
+              controllerMaximumActiveRequests: maxActiveCalls,
+              controllerStatus,
+              controllerSourceBuffersReused: true,
               name: c.name,
               vertices: c.vertices,
               faces: c.faces,
@@ -895,6 +1036,7 @@ try {
               execution: points.execution,
             });
           } finally {
+            controller?.dispose();
             releaseInteractiveSession(host);
             currentDisplay?.dispose();
             if (currentDisplay) scene.remove(currentDisplay.group);
@@ -904,7 +1046,140 @@ try {
             );
           }
         }
+        const { Viewport } = await import("/src/viewport.ts");
+        const { renderSceneWithGrid } = await import("/src/viewport-grid.ts");
+        const clipSource = {
+          positions: new Float32Array([0, 0, 0, 0, 1, 0, 0, 0, 1]),
+          normals: new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0]),
+          flags: new Uint32Array(3),
+        };
+        const clipPool = new InteractiveBoundsPool(
+          new Map([["clip", clipSource]]),
+          { parallel: false },
+        );
+        const clipGeometry = new THREE.BufferGeometry();
+        clipGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(clipSource.positions, 3),
+        );
+        clipGeometry.computeBoundingBox();
+        const clipMesh = new THREE.Mesh(
+          clipGeometry,
+          new THREE.MeshStandardMaterial(),
+        );
+        scene.add(clipMesh);
+        const clipCamera = new THREE.OrthographicCamera(
+          -2,
+          2,
+          2,
+          -2,
+          -10000,
+          10000,
+        );
+        clipCamera.position.set(20010, 0, 0);
+        clipCamera.up.set(0, 0, 1);
+        clipCamera.lookAt(20000, 0, 0);
+        clipCamera.updateMatrixWorld();
+        const view = Object.create(Viewport.prototype);
+        Object.assign(view, {
+          scene,
+          renderer,
+          camera: clipCamera,
+          objects: new Map([["clip", { mesh: clipMesh }]]),
+          bounds: clipGeometry.boundingBox.clone(),
+          controls: { target: new THREE.Vector3(20000, 0, 0) },
+          container: { clientWidth: 920, clientHeight: 720 },
+          invalidate: () => {},
+          advanceViewTransition: () => {},
+        });
+        let viewportClipReplay;
+        try {
+          view.installInteractiveMirror({
+            entityIds: ["clip"],
+            source: (id) => clipPool.preparedSource(id, { normals: true }),
+            prepare: (id, settings, includeColors) =>
+              clipPool.mirror(id, settings, { includeColors }),
+          });
+          view.setInteractivePreview({
+            targets: [
+              {
+                entityId: "clip",
+                matrix: identity.map((v, i) => (i === 3 ? 20000 : v)),
+              },
+            ],
+            bounds: [{ min: [20000, 0, 0], max: [20000, 1, 1] }],
+            mirror: true,
+            mirrorPlane: 1,
+          });
+          const ready = await view.settleInteractiveMirror();
+          assert(
+            ready.ready && !ready.error,
+            "Viewport mirror did not become ready",
+          );
+          const depth = new THREE.Vector3(-20000, 0.5, 0.5).project(
+            clipCamera,
+          ).z;
+          assert(
+            depth >= -1 && depth <= 1,
+            "Reflected scan is outside the viewport depth range",
+          );
+          clipMesh.visible = false;
+          renderSceneWithGrid(
+            renderer,
+            scene,
+            new THREE.Scene(),
+            clipCamera,
+            view.interactiveMirrorClipBounds,
+          );
+          gl.finish();
+          const bytes = new Uint8Array(
+            renderer.domElement.width * renderer.domElement.height * 4,
+          );
+          gl.readPixels(
+            0,
+            0,
+            renderer.domElement.width,
+            renderer.domElement.height,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            bytes,
+          );
+          let pixels = 0;
+          for (let i = 0; i < bytes.length; i += 4)
+            if (bytes[i] || bytes[i + 1] || bytes[i + 2]) pixels++;
+          assert(
+            pixels > 0 && renderer.info.render.points === 3,
+            "Viewport did not rasterize the reflected points",
+          );
+          const observation = view.inspectAgentView();
+          assert(
+            observation.bounds.min[0] === 20000 &&
+              observation.bounds.max[0] === 20000 &&
+              observation.interactiveMirror.ready,
+            "Viewport changed native alignment bounds or omitted agent diagnostics",
+          );
+          viewportClipReplay = {
+            offsetMm: 20000,
+            depth,
+            drawnPoints: renderer.info.render.points,
+            coloredPixels: pixels,
+            nativeBoundsPreserved: true,
+            agentDiagnostics: observation.interactiveMirror,
+          };
+        } finally {
+          view.setInteractivePreview(null);
+          view.installInteractiveMirror(null);
+          clipPool.close();
+          scene.remove(clipMesh);
+          clipGeometry.dispose();
+          clipMesh.material.dispose();
+        }
+        assert(
+          renderer.info.memory.geometries === 0 && live === 0,
+          "Viewport mirror replay cleanup leaked GPU geometry/workers",
+        );
         return {
+          viewportClipReplay,
           mirrorKernelCases: mirrorNative.cases.length,
           ownerMirrorRows,
           warmMirror,

@@ -795,3 +795,5 @@ Viewport surface picking is accelerated by the same background-built display ind
 ### Object selection responsiveness
 
 `object_select` uses the same operation for object-tree clicks and MCP requests. It applies selection without opening/closing the global processing indicator. Revision validation, identical-request replay, the single operation admission lane, selection modifiers and structured selected-ID results are unchanged. Selection does not alter authored geometry or add a modeling-history entry.
+
+When an Interactive mirror display provider is installed, `viewport_get` also returns `interactiveMirror` with `active`, `pending`, `ready`, `error` and `sourceCount`. Pending camera work does not imply a geometry edit. A failed display keeps its failure message and does not retry on every frame. This diagnostic does not advertise an enabled Interactive command: its complete App/dialog and public operation integration remains gated.
