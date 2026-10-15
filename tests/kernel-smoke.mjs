@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
-import { webcrypto } from "node:crypto";
+import { webcrypto, createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
 import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply.ts";
 import { noiseNormals } from "../src/scan-native-noise.ts";
 
@@ -302,6 +303,108 @@ try {
     }
   }
   assert.equal(verifiedCadBoxes, 3);
+  const nativeCacheUV = JSON.parse(
+    readFileSync(
+      new URL("docs/evidence/native-cached-cylinder-uv.json", root),
+      "utf8",
+    ),
+  );
+  assert.equal(
+    createHash("sha256")
+      .update(
+        readFileSync(
+          new URL(
+            "docs/evidence/landmark-original-solid-provider-native.json",
+            root,
+          ),
+        ),
+      )
+      .digest("hex"),
+    nativeCacheUV.provenance.originalProviderCaptureSha256,
+  );
+  let verifiedNativeCachedCylinders = 0;
+  for (const sample of solidProvider.cases.filter(
+    (row) => row.logicalLanes === 1 && row.kind === "cylinder",
+  )) {
+    const handles = [];
+    const own = (value) => (handles.push(value), value);
+    const path = "r.brep";
+    const kernelId = `native-cached-cylinder-${sample.tolerance}`;
+    const shape = own(new oc.TopoDS_Shape());
+    try {
+      const cache = nativeCacheUV.cases.find(
+        (row) => row.tolerance === sample.tolerance,
+      );
+      const input = gunzipSync(
+        readFileSync(new URL(`docs/evidence/${cache.compressedBrep}`, root)),
+      );
+      assert.equal(
+        createHash("sha256").update(input).digest("hex"),
+        cache.brepSha256,
+      );
+      const text = input.toString("utf8").split(/\r?\n/);
+      const triangulations = text.findIndex((line) =>
+        line.startsWith("Triangulations "),
+      );
+      assert.equal(
+        Number(text[triangulations].split(/\s+/)[1]),
+        cache.parts.length,
+      );
+      // Native BRep serialization rounds UVs. Restore captured original doubles,
+      // leaving all surfaces, nodes, triangles and topology untouched.
+      cache.parts.forEach((part, index) => {
+        const header = text[triangulations + 1 + index * 2]
+          .trim()
+          .split(/\s+/)
+          .map(Number);
+        assert.deepEqual(header.slice(0, 3), [
+          part.vertices,
+          part.triangles,
+          1,
+        ]);
+        const line = triangulations + 2 + index * 2;
+        const tokens = text[line].trim().split(/\s+/);
+        assert.equal(tokens.length, part.vertices * 5 + part.triangles * 3);
+        const uv = Buffer.from(part.uvBits, "hex");
+        assert.equal(uv.length, part.vertices * 24);
+        for (let node = 0; node < part.vertices; node++)
+          for (let axis = 0; axis < 2; axis++) {
+            const value = uv.readDoubleLE(node * 24 + axis * 8);
+            tokens[part.vertices * 3 + node * 2 + axis] = Object.is(value, -0)
+              ? "-0"
+              : value.toString();
+          }
+        text[line] = tokens.join(" ");
+      });
+      oc.FS.writeFile(path, new TextEncoder().encode(text.join("\n")));
+      const builder = own(new oc.BRep_Builder());
+      const progress = own(new oc.Handle_Message_ProgressIndicator_1());
+      assert.equal(oc.BRepTools.Read_2(shape, path, builder, progress), true);
+      vm.runInContext("shapes", context).set(kernelId, shape);
+      const before = context.serializeBrep(oc, shape);
+      const mesh = await request("alignmentMesh", { kernelId });
+      const expected = sample.repeats[0].merged;
+      assert.equal(
+        floatBytes(mesh.vertices),
+        expected.positionBits,
+        "Native conversion uses analytic surface positions from D1 at the cached UV nodes",
+      );
+      assert.deepEqual(Array.from(mesh.triangles), expected.triangleIds);
+      const normals = noiseNormals({
+        vertices: Float64Array.from(mesh.vertices),
+        triangles: mesh.triangles,
+      });
+      assert.equal(floatBytes(normals), expected.normalBits);
+      assert.equal(context.serializeBrep(oc, shape), before);
+      verifiedNativeCachedCylinders++;
+    } finally {
+      vm.runInContext("shapes", context).delete(kernelId);
+      context.dropAlignmentMesh(kernelId);
+      context.cleanup(handles);
+      if (oc.FS.analyzePath(path).exists) oc.FS.unlink(path);
+    }
+  }
+  assert.equal(verifiedNativeCachedCylinders, 3);
   const cacheSource = await request("primitive", {
     kind: "box",
     center: [0, 0, 0],
@@ -329,6 +432,7 @@ try {
     JSON.stringify({
       nativeCadAlignmentFaces: verifiedCadAlignmentFaces,
       nativeCadAlignmentBoxes: verifiedCadBoxes,
+      nativeCachedCylinders: verifiedNativeCachedCylinders,
       exactFloat32Normals: true,
       brepPreserved: true,
       cacheReused: true,

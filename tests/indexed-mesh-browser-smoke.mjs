@@ -672,7 +672,13 @@ try {
       name: "Exact CAD landmark target",
       recipe: {
         kind: "primitive",
-        input: { kind: "box", center: [8, 9, 4], size: [20, 20, 2] },
+        input: {
+          kind: "cylinder",
+          center: [8, 9, 4],
+          axis: [0, 0, 1],
+          radius: 20,
+          height: 2,
+        },
       },
     }),
   );

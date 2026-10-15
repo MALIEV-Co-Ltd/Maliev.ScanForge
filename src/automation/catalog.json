@@ -810,7 +810,7 @@
                 "refineSurface": {
                   "type": "boolean",
                   "default": false,
-                  "description": "Refine a raw indexed moving scan after native coarse registration using targetId. The fixed target may be an indexed scan or exact CAD with cached kernel face triangulations. CAD conversion preserves the BRep. Target records are copied without welding and normals regenerated before refinement. Original landmark vertex seeds grow to 3000 faces or stability. Radius 3 mm. Coarse and delta retain separate Float32 stages."
+                  "description": "Refine a raw indexed moving scan after native coarse registration using targetId. The fixed target may be an indexed scan or exact CAD with cached kernel face triangulations. CAD conversion evaluates analytic D1 positions and normals at cached UV nodes and preserves the BRep. Target records are copied without welding and normals regenerated before refinement. Original landmark vertex seeds grow to 3000 faces or stability. Radius 3 mm. Coarse and delta retain separate Float32 stages."
                 },
                 "workerCount": {
                   "type": "integer",
@@ -5212,7 +5212,7 @@
   },
   {
     "name": "landmark_preview",
-    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Cancel through job_cancel or preview_discard targeting landmarks.",
+    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations, evaluates analytic D1 positions and normals at their UV nodes, and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Cancel through job_cancel or preview_discard targeting landmarks.",
     "readOnly": false,
     "job": true,
     "inputSchema": {

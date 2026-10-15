@@ -2043,8 +2043,8 @@ The user-facing development workspace remains on port 5173.
 ## Shared application acquisition of cached CAD targets
 
 The browser-owned CAD worker now exposes internal `alignmentMesh` acquisition.
-It reads each exact face's existing triangulation, applies its world location,
-evaluates analytic D1 derivatives at UV nodes, applies the original `1e-10`
+It reads each exact face's existing triangulation, evaluates analytic D1 surface
+positions and derivatives at UV nodes with world placement, applies the original `1e-10`
 normal-length threshold and reciprocal arithmetic, rounds coordinates/normals
 to Float32, and reverses normals/winding for reversed faces. Face-local vertex
 records are concatenated without welding, with offsets applied to triangle IDs.
@@ -2135,6 +2135,8 @@ cylinder constructors give the same discrepancy. This diagnostic is not an
 exact-parity pass. Full cylinder tessellation parity, populated boundary refresh,
 all-scene controller assembly and installed-UI behavior remain unverified by
 this corpus. The point-pair ribbon gate remains unchanged.
+The position differences in that initial capture are corrected by the D1
+conversion fix below; the fresh cap-connectivity difference remains separate.
 
 The independent verification JSON confirms the image and eight DLL digests,
 serial/parallel equality and zero tracked allocations or unknown frees after
@@ -2152,3 +2154,61 @@ or public contract changed in this evidence/regression slice, so a new browser
 run was not required; the previous integration browser checks apply to the
 unchanged runtime. The user-facing server remains on port 5173. All replay and
 test helpers exited; only the leased development server remains for user testing.
+
+## Correct analytic surface positions in CAD target conversion
+
+Original converter `0x1401ed610` is retained in REA pseudocode evidence
+`ev_092c46d54a779559e9bf1c14e0d4ac9b12954404a5c9516c5dffc5b4282d7aa8`
+and assembly evidence `ev_945d952e2597d665da97f30a413e14ca8e56b2470400d75f662c923244b5b8b1`.
+Its D1 call at adaptor slot `0xc0` writes the analytic surface point into the same
+point record subsequently inserted as the Float32 vertex. The preceding
+triangulation-node read and optional transform do not determine the final
+position: D1 overwrites that record. The previous application converter retained
+the tessellation-node point and used D1 only for derivatives/normals. It now
+inserts D1's world-space point instead, retaining the verified winding and normal
+arithmetic. This also removes unnecessary per-node point/transform handles.
+
+The supplied DLLs report OpenCascade 7.7.0; the pinned WASM package identifies its
+kernel as 7.4.0p1. Kernel versions alone do not establish the cause of a difference.
+To isolate conversion from meshing, six complete native provider calls export
+the actual cached cylinder solids at 0.005/0.05/0.5 mm using native BRepTools Write,
+with triangulations enabled, normals disabled and format V2. All six results
+match the earlier native provider capture. The three original BRep byte streams
+are retained losslessly as `native-cached-cylinder-*.brep.gz`.
+
+The native writer rounds cached UV values to 15 significant digits. The companion
+`native-cached-cylinder-uv.json` therefore retains the original Float64 UV bytes
+from each native converted face, along with image/provider identity and BRep
+digests. Before comparison, the kernel test restores only those UV tokens in the
+decoded BRep table; surfaces, nodes, triangle indices and topology remain as
+exported. Signed zero is preserved. This avoids testing a serialization-induced
+UV change against the original in-memory result.
+
+The same immutable input fails the old worker's exact position comparison and
+passes the corrected worker. All three imported native caches produce exact
+position, normal and ordered triangle bytes, with unchanged BRep after target
+preparation. The original 24 face cases and three complete box cases still pass.
+With fresh solids, all six position and normal buffers now match exactly as well.
+Two freshly meshed cylinder cap-connectivity cases still differ; supplying the
+native cache preserves those original indices exactly. This does not claim that
+fresh native/WASM meshing or the complete all-scene alignment workflow is equal.
+
+The GUI dialog, `landmark_preview` and paired `mesh_process` with surface refinement
+receive the correction through the shared CAD worker. No new arguments or public
+tools are introduced. Agent discovery and documentation describe analytic D1
+positions as well as normals. Browser coverage uses a curved cylinder CAD target
+for GUI/MCP preview agreement, acceptance, undo and fixed-BRep preservation.
+
+Validation: the corrected production build passed without warnings/errors,
+manifest `scanforge-3a58e18cabdf5bc5`. Focused tests passed 40 cases; the full suite
+passed 26,998 tests across 349 files, with 29 existing skips. The actual kernel
+smoke passed all 24 original face cases, three complete boxes, three imported
+native cached cylinders and 338 datum matrices, along with the existing CAD suite.
+The exact-UV regression fails the pre-fix worker and passes the corrected worker.
+The isolated curved-target browser run passed GUI/MCP preview agreement,
+two-worker execution, acceptance, undo and BRep preservation with no errors.
+Formatting, JSON/digest checks, JavaScript syntax, scoped whitespace and brand
+audits passed. Replay and test helpers exited; their process/port cleanup was
+verified. Port 5173 serves the corrected worker without replacing the user's
+workspace. Fresh cylinder cap-connectivity and full all-scene alignment remain
+separate verification work.

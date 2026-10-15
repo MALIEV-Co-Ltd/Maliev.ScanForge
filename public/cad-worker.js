@@ -611,7 +611,6 @@ function alignmentMesh(oc, input) {
           triangles.length / 3 + mesh.NbTriangles() > 20000000
         )
           throw new Error("CAD alignment target exceeds the geometry limit.");
-        const transform = local(location.Transformation());
         const adaptor = local(new oc.BRepAdaptor_Surface_2(face, true));
         const point = local(new oc.gp_Pnt_1()),
           du = local(new oc.gp_Vec_1()),
@@ -621,28 +620,24 @@ function alignmentMesh(oc, input) {
           statusValue(oc.TopAbs_Orientation.TopAbs_REVERSED);
         const offset = vertices.length / 3;
         for (let index = 1; index <= mesh.NbNodes(); index++) {
-          const node = mesh.Node(index),
-            uv = mesh.UVNode(index);
+          const uv = mesh.UVNode(index);
           try {
-            const world = node.Transformed(transform);
-            try {
-              const p = [world.X(), world.Y(), world.Z()];
-              if (
-                !p.every(
-                  (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
-                )
-              )
-                throw new Error(
-                  "CAD alignment coordinates are outside the supported range.",
-                );
-              vertices.push(...p.map(Math.fround));
-            } finally {
-              world.delete();
-            }
             const u = uv.X(),
               v = uv.Y();
             uvs.push(u, v, 0);
             adaptor.D1(u, v, point, du, dv);
+            // The original converter overwrites the node position with D1's
+            // analytic surface point before inserting its Float32 mesh vertex.
+            const p = [point.X(), point.Y(), point.Z()];
+            if (
+              !p.every(
+                (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
+              )
+            )
+              throw new Error(
+                "CAD alignment coordinates are outside the supported range.",
+              );
+            vertices.push(...p.map(Math.fround));
             const normal = [
               du.Y() * dv.Z() - du.Z() * dv.Y(),
               du.Z() * dv.X() - du.X() * dv.Z(),
@@ -663,7 +658,6 @@ function alignmentMesh(oc, input) {
             );
           } finally {
             uv.delete();
-            node.delete();
           }
         }
         const faces = local(mesh.Triangles());

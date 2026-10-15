@@ -23,6 +23,8 @@ registration separately from refinement; geometry retains Float32 storage after
 each applied stage. See the agent guide for supported target types and the native
 alignment evidence for the remaining full-workflow verification gate. CAD fixed
 targets acquire indexed face records through the existing browser-owned kernel.
+Their positions and normals come from analytic D1 evaluation at cached UV nodes,
+matching the original conversion rather than retaining tessellation coordinates.
 The shared asynchronous preparation validates cancellation/revision across that
 boundary and leaves the fixed entity, BRep and history unchanged. Kernel-ID-owned
 records have an eight-entry/64 MiB cache and are removed on handle release.

@@ -31,8 +31,9 @@ Before refinement, fixed target records are copied into one indexed mesh in
 target order without welding coincident vertices. Facet indices receive each
 target's vertex offset and target normals are regenerated on that combined mesh.
 The GUI preview and both MCP entry points use this same preparation. CAD target
-conversion reads existing kernel triangulations, world locations, analytic D1
-normals, UVs and orientation without remeshing or changing the exact BRep. Missing
+conversion reads existing kernel triangulations and evaluates analytic D1 surface
+positions and normals at their UV nodes, with world placement and orientation,
+without remeshing or changing the exact BRep. Missing
 triangulations or expired handles report an error; recreate/reimport that body.
 Prepared CAD records are cached by immutable kernel ID, bounded to eight entries
 and 64 MiB; releasing a kernel handle removes its records. CAD retessellation
