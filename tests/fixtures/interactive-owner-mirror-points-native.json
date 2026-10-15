@@ -1,0 +1,151 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedure": "0x1408c04e0",
+    "execution": "Complete original point loop over full supplied PLY coordinates/normals with the recorded deterministic test flags; controlled GL sinks and performance counters, no real OpenGL context.",
+    "realNativeImportVerified": false,
+    "patches": [
+      {
+        "address": "0x140d5aa00",
+        "original": "483b0d416684"
+      },
+      {
+        "importPointer": "0x7ffdf0024520",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf00374c0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf002a7f0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf0020420",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf0020400",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf00102b0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf002fc80",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7fff1cc616a0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7fff1cc527c0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf00203d0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf0010680",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf0010660",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf00243e0",
+        "locations": 1
+      },
+      {
+        "importPointer": "0x7ffdf001d420",
+        "locations": 1
+      }
+    ]
+  },
+  "flagsPattern": [
+    0, 2, 1, 8, 9, 3, 10, 4, 6, 16, 18, 32, 34, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0,
+    2, 0, 2, 0, 2, 0, 2, 0
+  ],
+  "cases": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "count": 140113,
+      "positionsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c",
+      "flagsSha256": "66d531be8b4fd556118f77456cfaa537984f6c7f97a4b014b1f76c343c441375",
+      "selectedPrefixCount": 70039,
+      "settings": {
+        "direction": [1.0, -0.5, 0.25],
+        "stride": 3,
+        "onlySelected": false,
+        "backfaces": false,
+        "baseColor": [0.8, 0.8, 0],
+        "selectedColor": [0.3, 0.4, 0.5],
+        "allowanceMilliseconds": 1000000,
+        "elapsedMilliseconds": 12
+      },
+      "drawn": 31429,
+      "indicesSha256": "8c3694748dbcc9c433290684f393e59fbff0cc0efc8bcf9cd6546c284a87c845",
+      "colorsSha256": "ccd83707eea334a2a771f6d4257c8c9be9bf35d24f48e38b371dfc7b591c8258",
+      "drawnPositionsSha256": "53ea55a1f126e16b3bb8f92306e7dd455cde71a1a92424c3a7d1d9b414874a76",
+      "complete": true,
+      "primitives": [0]
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "count": 1375494,
+      "positionsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231",
+      "flagsSha256": "be18e635099bd49bee0242f4eefeeec45e00799439bb4693aaf93e190369057e",
+      "selectedPrefixCount": 687730,
+      "settings": {
+        "direction": [1.0, -0.5, 0.25],
+        "stride": 3,
+        "onlySelected": false,
+        "backfaces": false,
+        "baseColor": [0.8, 0.8, 0],
+        "selectedColor": [0.3, 0.4, 0.5],
+        "allowanceMilliseconds": 1000000,
+        "elapsedMilliseconds": 12
+      },
+      "drawn": 103862,
+      "indicesSha256": "9fe60ac5f3dcd6227ab32c600d8903577642fe883935938aa90489f6a96f3f41",
+      "colorsSha256": "de7b9fb921731791e89b6a6443c7bbc4eb6087fb00248673908b6a7033edf48d",
+      "drawnPositionsSha256": "f26ac3b37777609709c05b93c4073c75c6f3666478d65ac02b9f550ac73e2a0a",
+      "complete": true,
+      "primitives": [0]
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "count": 1865848,
+      "positionsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd",
+      "flagsSha256": "e6e516d67f0cee74d178244729e7eabc07a7204a4d6815d57e7de5b3a7e749fb",
+      "selectedPrefixCount": 932907,
+      "settings": {
+        "direction": [1.0, -0.5, 0.25],
+        "stride": 3,
+        "onlySelected": false,
+        "backfaces": false,
+        "baseColor": [0.8, 0.8, 0],
+        "selectedColor": [0.3, 0.4, 0.5],
+        "allowanceMilliseconds": 1000000,
+        "elapsedMilliseconds": 12
+      },
+      "drawn": 194692,
+      "indicesSha256": "643ddce21be351bc49824ab9b7fbb5d3aac4aa7479fb0323ec4fb982bfa7ae7f",
+      "colorsSha256": "ff4e69dc7c37f4f042c35282489792549247b8305261074abe95e46fbb7cfe57",
+      "drawnPositionsSha256": "8d55a2e80268927140aa442cd54390a1cff73e3ba68276a80761d4d8449488e3",
+      "complete": true,
+      "primitives": [0]
+    }
+  ]
+}

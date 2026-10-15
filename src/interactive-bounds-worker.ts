@@ -1,17 +1,48 @@
 import { interactiveBoundsLane } from "./interactive-bounds-kernel";
+import {
+  nativeInteractiveMirrorPoints,
+  firstInteractiveMirrorBasePoint,
+  type InteractiveMirrorPointInput,
+} from "./interactive-mirror-selection";
+export type InteractiveMirrorSettings = Omit<
+  InteractiveMirrorPointInput,
+  "normals" | "flags"
+>;
 export interface BoundsSource {
   positions: Float32Array;
   flags?: Uint32Array;
+  normals?: Float32Array;
+  offset?: number;
   ranges: { index: number; start: number; end: number }[];
 }
 export type BoundsTask =
   | ({ id: number; action: "prepare"; key: string } & BoundsSource)
-  | { id: number; action: "measure"; key: string; matrix: number[] };
+  | { id: number; action: "measure"; key: string; matrix: number[] }
+  | {
+      id: number;
+      action: "mirrorPrefix";
+      key: string;
+      stride: number;
+      onlySelected: boolean;
+    }
+  | {
+      id: number;
+      action: "mirror";
+      key: string;
+      settings: InteractiveMirrorSettings;
+      initialBaseColor: boolean;
+      includeColors: boolean;
+    };
 export interface BoundsTaskResult {
   id: number;
   ready?: boolean;
   error?: string;
   lanes?: { index: number; values: Float32Array }[];
+  firstBasePoint?: number | null;
+  points?: ReturnType<typeof nativeInteractiveMirrorPoints> & {
+    offset: number;
+    count: number;
+  };
 }
 export function executeInteractiveBoundsTask(
   task: BoundsTask,
@@ -22,18 +53,56 @@ export function executeInteractiveBoundsTask(
       if (
         task.positions.length % 3 ||
         task.ranges.length > 8 ||
-        (task.flags && task.flags.length !== task.positions.length / 3)
+        (task.flags && task.flags.length !== task.positions.length / 3) ||
+        (task.normals && task.normals.length !== task.positions.length) ||
+        (task.offset !== undefined &&
+          (!Number.isSafeInteger(task.offset) || task.offset < 0))
       )
         throw new Error("Invalid cached bounds source.");
       cache.set(task.key, {
         positions: task.positions,
         flags: task.flags,
+        normals: task.normals,
+        offset: task.offset ?? 0,
         ranges: task.ranges,
       });
       return { id: task.id, ready: true };
     }
     const source = cache.get(task.key);
     if (!source) throw new Error("Bounds source expired.");
+    if (task.action === "mirrorPrefix")
+      return {
+        id: task.id,
+        firstBasePoint: firstInteractiveMirrorBasePoint(
+          source.flags,
+          source.positions.length / 3,
+          source.offset ?? 0,
+          task.stride,
+          task.onlySelected,
+        ),
+      };
+    if (task.action === "mirror") {
+      if (!source.normals)
+        throw new Error("Mirror point normals are unavailable.");
+      source.flags ??= new Uint32Array(source.positions.length / 3);
+      const points = nativeInteractiveMirrorPoints(
+        { ...task.settings, normals: source.normals, flags: source.flags },
+        {
+          offset: source.offset ?? 0,
+          initialBaseColor: task.initialBaseColor,
+          sourceColors: task.includeColors,
+          indicesOnly: !task.includeColors,
+        },
+      );
+      return {
+        id: task.id,
+        points: {
+          ...points,
+          offset: source.offset ?? 0,
+          count: source.positions.length / 3,
+        },
+      };
+    }
     return {
       id: task.id,
       lanes: source.ranges.map((r) => ({
@@ -73,7 +142,12 @@ if (typeof scope.postMessage === "function" && !scope.document) {
     const result = executeInteractiveBoundsTask(data, cache);
     scope.postMessage!(
       result,
-      result.lanes?.map((l) => l.values.buffer as ArrayBuffer) ?? [],
+      result.points
+        ? [
+            result.points.indices.buffer as ArrayBuffer,
+            result.points.colors.buffer as ArrayBuffer,
+          ]
+        : (result.lanes?.map((l) => l.values.buffer as ArrayBuffer) ?? []),
     );
   };
 }

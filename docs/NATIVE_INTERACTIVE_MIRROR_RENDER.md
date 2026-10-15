@@ -29,6 +29,22 @@ This did not create a real OpenGL context, execute the wrapper's reflection/mode
 
 A local Node CPU benchmark on one million synthetic points retained 909,090 points and prepared their index/color arrays in approximately 29–40 ms over six runs. This measures CPU preparation, not browser rendering or native application speed. The verified loop must not be run synchronously on every viewport frame; cached buffers and off-thread or GPU preparation need their own parity and browser measurements.
 
-## Validation checkpoint
+## Shared background preparation
+
+`InteractiveBoundsPool.mirror` now runs the recovered point loop in the same pool used for measured bounds. A session owns at most two physical workers. Concurrent bounds and mirror requests share one source preparation per worker; original position, normal and flag buffers remain attached. A failed worker generation cannot terminate its replacement through a late error event. Explicit cancellation permanently closes the pool, and idle/request/self leases remain bounded.
+
+Partitioning preserves global stride indices and the original color-state transition across worker boundaries. Each partition receives whether an earlier eligible unselected vertex changed the current color, including candidates rejected by normal culling. The optional source-indexed color output stores candidate colors before normal culling, allowing the renderer to retain colors while view direction changes. Colors must be rebuilt when flags, stride, selected-only mode, RGB values or zero-direction brightness change. An indices-only request returns no color buffer. Worker failure or unavailability uses a cooperative fallback with at most 32,768 points per task, rather than processing the whole scan synchronously.
+
+The [owner-source native capture](../tests/fixtures/interactive-owner-mirror-points-native.json) executes the complete original point loop over all 3,381,455 source vertices from the three supplied PLY scans. It records deterministic test flags, source-file/coordinate/normal/flag hashes, and native index/color/submitted-position hashes. These are the same buffers and recorded test selections supplied to the port; they do not establish native importer parity or the native UI's facet-selection mapping.
+
+The [real-worker browser replay](evidence/interactive-mirror-background-browser.json) matches those three native output digests and all 2,160 smaller native cases. It also retains the 99 bounds-kernel and 18 owner PLY/ASC pose comparisons. Bounds followed by mirror preparation reuses the same cached worker sources. Fifteen warm, changing-direction requests transfer indices only, without new source preparation or color arrays. Those requests measured approximately 3–23 ms, with no observed main-thread long tasks during the short warm-update sample. At most two workers were live, and zero remained after close. These are preparation timings, not complete rendering or native application timings.
+
+This backend remains internal. The public Interactive dialog, mirrored GPU display, GPU integration of the wrapper matrix stack, actual native UI selection mapping and end-to-end GUI/MCP publication are still unfinished. No unsupported public descriptor or enabled ribbon command is introduced by this checkpoint.
+
+### Background preparation validation
+
+The build passed with zero warnings/errors (`scanforge-68f6a51bfa5ad801`). Focused validation passed 2,170 tests across three files. The default suite passed 33,020 tests across 384 files, with 31 optional checks skipped across seven files. The owner-source replay used the production-compiled worker and retained the hashes and timings above. Formatting, whitespace and the repository-wide forbidden-token audit, including decompressed gzip fixtures, passed. The temporary browser, input server and regression-suite processes exited. Port 5173 continues serving the application.
+
+## Earlier point-loop validation checkpoint
 
 The build passed with zero warnings/errors. Focused validation passed 2,860 tests in four files. The default suite passed 32,905 tests in 381 files, with 31 optional owner-data checks skipped in seven files. Formatting, staged whitespace and forbidden-token checks passed. All owned REA processes and native probe processes exited, and the mapped probe image was released. The [CPU preparation measurements](evidence/interactive-mirror-cpu-benchmark.json) are retained separately from the native output captures. Port 5173 remains available; this internal helper does not enable the unfinished Interactive dialog or add an unsupported public MCP command.

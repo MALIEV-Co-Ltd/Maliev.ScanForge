@@ -1,0 +1,325 @@
+{
+  "mirrorKernelCases": 2160,
+  "ownerMirrorRows": [
+    {
+      "name": "ply-1.ply",
+      "points": 140113,
+      "drawn": 31429,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 3.7899999916553497
+      },
+      "nativeDigestsMatched": true
+    },
+    {
+      "name": "ply-2.ply",
+      "points": 1375494,
+      "drawn": 103862,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 14.939999997615814
+      },
+      "nativeDigestsMatched": true
+    },
+    {
+      "name": "ply-3.ply",
+      "points": 1865848,
+      "drawn": 194692,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 29.674999982118607
+      },
+      "nativeDigestsMatched": true
+    }
+  ],
+  "warmMirror": [
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 4.2750000059604645
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 2.8799999952316284
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 3.5
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 2.685000002384186
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 4.429999977350235
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 15.784999996423721
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 22.990000009536743
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 9.439999997615814
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 6.540000021457672
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 5.699999988079071
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 14.784999996423721
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 9.030000001192093
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 10.020000010728836
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 9.16499999165535
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 12.110000014305115
+    }
+  ],
+  "mainFrameIntervals": [
+    16.605000000000473, 16.69499999999971, 16.664999999999964,
+    16.715000000000146, 16.639999999999418, 16.68000000000029,
+    16.734999999999673, 16.69500000000062
+  ],
+  "mainLongTasks": [],
+  "maximumLiveWorkers": 2,
+  "kernelCases": 99,
+  "ownerCases": 18,
+  "rows": [
+    {
+      "name": "ply-1.ply",
+      "pose": 0,
+      "points": 140113,
+      "milliseconds": 12.915000021457672,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-1.ply",
+      "pose": 1,
+      "points": 140113,
+      "milliseconds": 4.044999986886978,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-1.ply",
+      "pose": 2,
+      "points": 140113,
+      "milliseconds": 1.7300000190734863,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 0,
+      "points": 1375494,
+      "milliseconds": 10.66499999165535,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 1,
+      "points": 1375494,
+      "milliseconds": 13.484999984502792,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 2,
+      "points": 1375494,
+      "milliseconds": 18.490000009536743,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 0,
+      "points": 1865848,
+      "milliseconds": 17.730000019073486,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 1,
+      "points": 1865848,
+      "milliseconds": 20.234999984502792,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 2,
+      "points": 1865848,
+      "milliseconds": 14.53999999165535,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 0,
+      "points": 140113,
+      "milliseconds": 2,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 1,
+      "points": 140113,
+      "milliseconds": 1.520000010728836,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 2,
+      "points": 140113,
+      "milliseconds": 2.4000000059604645,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 0,
+      "points": 1375494,
+      "milliseconds": 13.28999999165535,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 1,
+      "points": 1375494,
+      "milliseconds": 19.055000007152557,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 2,
+      "points": 1375494,
+      "milliseconds": 11.969999998807907,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 0,
+      "points": 1865848,
+      "milliseconds": 10.259999990463257,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 1,
+      "points": 1865848,
+      "milliseconds": 24.21000000834465,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 2,
+      "points": 1865848,
+      "milliseconds": 26.59000000357628,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    }
+  ],
+  "createdWorkers": 6,
+  "coldPreparations": 12,
+  "warmMilliseconds": 1.344999998807907,
+  "liveWorkers": 0
+}

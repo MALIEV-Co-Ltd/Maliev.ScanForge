@@ -30,6 +30,17 @@ const kernelFixture = await readFile(
   new URL("tests/fixtures/interactive-world-bounds-native.json", root),
   "utf8",
 );
+const mirrorFixture = await readFile(
+  new URL(
+    "tests/fixtures/interactive-mirror-point-selection-native.json",
+    root,
+  ),
+  "utf8",
+);
+const ownerMirrorFixture = await readFile(
+  new URL("tests/fixtures/interactive-owner-mirror-points-native.json", root),
+  "utf8",
+);
 const ledger = {
   owner: "interactive-bounds-browser",
   pid: process.pid,
@@ -133,15 +144,25 @@ try {
     origin + "/.resources/interactive-bounds-browser/harness.html",
   );
   const result = await page.evaluate(
-    async ({ fixture, kernelFixture, workerUrl, inputOrigin }) => {
+    async ({
+      fixture,
+      kernelFixture,
+      mirrorFixture,
+      ownerMirrorFixture,
+      workerUrl,
+      inputOrigin,
+    }) => {
       const native = JSON.parse(fixture),
-        kernels = JSON.parse(kernelFixture);
+        kernels = JSON.parse(kernelFixture),
+        mirrorNative = JSON.parse(mirrorFixture),
+        ownerMirror = JSON.parse(ownerMirrorFixture);
       const { InteractiveBoundsPool } =
         await import("/src/interactive-bounds-pool.ts");
       const OriginalWorker = globalThis.Worker;
       let created = 0,
         live = 0,
-        preparations = 0;
+        preparations = 0,
+        maximumLive = 0;
       Object.defineProperty(navigator, "hardwareConcurrency", {
         configurable: true,
         value: 8,
@@ -156,6 +177,7 @@ try {
           );
           created++;
           live++;
+          maximumLive = Math.max(maximumLive, live);
           this.released = false;
         }
         postMessage(message, transfer) {
@@ -206,17 +228,76 @@ try {
         }
         pool.close();
         assert(live === 0, "Kernel worker leak");
+        const mirrorSettings = (c) => ({
+          direction: c.direction,
+          stride: c.stride,
+          onlySelected: c.onlySelected,
+          backfaces: c.backfaces,
+          baseColor: [0.8, 0.8, 0],
+          selectedColor: [0.3, 0.4, 0.5],
+          allowanceMilliseconds: c.allowanceMilliseconds,
+          elapsedMilliseconds: c.elapsedMilliseconds,
+        });
+        const compactColors = (colors, indices) => {
+          const out = new Float32Array(indices.length * 3);
+          for (let i = 0; i < indices.length; i++)
+            for (let a = 0; a < 3; a++)
+              out[i * 3 + a] = colors[indices[i] * 3 + a];
+          return out;
+        };
+        pool = new InteractiveBoundsPool(
+          new Map(
+            [0, 16, 32].map((n) => [
+              String(n),
+              {
+                positions: new Float32Array(n * 3),
+                normals: Float32Array.from(
+                  mirrorNative.normals.slice(0, n).flat(),
+                ),
+                flags: Uint32Array.from(mirrorNative.flags.slice(0, n)),
+              },
+            ]),
+          ),
+          { threshold: 0 },
+        );
+        for (const c of mirrorNative.cases) {
+          const r = await pool.mirror(String(c.count), mirrorSettings(c));
+          assert(
+            hex(r.indices) === hex(Uint32Array.from(c.indices)),
+            "Native mirror indices mismatch",
+          );
+          assert(
+            hex(compactColors(r.colors, r.indices)) ===
+              hex(Float32Array.from(c.colors.flat())),
+            "Native mirror color mismatch",
+          );
+          assert(
+            r.complete === c.complete && r.execution.physicalWorkers === 2,
+            "Native mirror completion/worker mismatch",
+          );
+        }
+        pool.close();
+        assert(live === 0, "Mirror kernel worker leak");
         const { parsePlyTopology } = await import("/src/ply-topology.ts");
         const { readAscPointCloud } = await import("/src/asc-import.ts");
-        const sources = new Map();
+        const sources = new Map(),
+          plySources = new Map();
         for (const c of native.cases)
           if (!sources.has(c.pointsFile)) {
             const bytes = await (
               await fetch(inputOrigin + "/" + c.name)
             ).arrayBuffer();
-            const points = c.name.endsWith(".ply")
-              ? parsePlyTopology(bytes).vertices
+            const topology = c.name.endsWith(".ply")
+              ? parsePlyTopology(bytes)
+              : undefined;
+            const points = topology
+              ? topology.vertices
               : (await readAscPointCloud(new Blob([bytes]))).positions;
+            if (topology)
+              plySources.set(c.name, {
+                positions: topology.vertices,
+                normals: topology.normals,
+              });
             assert(points.length === c.count * 3, "Source count mismatch");
             const digest = Array.from(
               new Uint8Array(
@@ -230,6 +311,36 @@ try {
             );
             sources.set(c.pointsFile, { positions: points });
           }
+        const digest = async (a) =>
+          Array.from(
+            new Uint8Array(
+              await crypto.subtle.digest(
+                "SHA-256",
+                new Uint8Array(a.buffer, a.byteOffset, a.byteLength),
+              ),
+            ),
+            (b) => b.toString(16).padStart(2, "0"),
+          ).join("");
+        for (const c of ownerMirror.cases) {
+          const source = plySources.get(c.name);
+          assert(source?.normals, "Owner mirror needs imported normals");
+          const flags = new Uint32Array(c.count);
+          for (let i = 0; i < c.count; i++)
+            flags[i] =
+              i < c.selectedPrefixCount
+                ? 2
+                : ownerMirror.flagsPattern[
+                    (i - c.selectedPrefixCount) %
+                      ownerMirror.flagsPattern.length
+                  ];
+          assert(
+            (await digest(source.positions)) === c.positionsSha256 &&
+              (await digest(source.normals)) === c.normalsSha256 &&
+              (await digest(flags)) === c.flagsSha256,
+            "Owner mirror input digest mismatch",
+          );
+          sources.set("mirror:" + c.name, { ...source, flags });
+        }
         pool = new InteractiveBoundsPool(sources);
         const rows = [];
         const prepareStart = preparations;
@@ -258,9 +369,101 @@ try {
         await pool.measure(native.cases[0].pointsFile, native.transforms[1]);
         const warmMilliseconds = performance.now() - start;
         assert(before === preparations, "Warm query retransferred source");
+        const ownerMirrorRows = [];
+        for (const c of ownerMirror.cases) {
+          const key = "mirror:" + c.name;
+          await pool.measure(key, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]);
+          const before = preparations;
+          const r = await pool.mirror(key, c.settings);
+          assert(
+            preparations === before,
+            "Mirror retransferred cached bounds data",
+          );
+          assert(
+            r.execution.physicalWorkers === 2,
+            "Owner mirror did not share two workers",
+          );
+          assert(
+            r.indices.length === c.drawn &&
+              (await digest(r.indices)) === c.indicesSha256,
+            "Owner native mirror index digest mismatch",
+          );
+          const colors = compactColors(r.colors, r.indices);
+          assert(
+            (await digest(colors)) === c.colorsSha256,
+            "Owner native mirror color digest mismatch",
+          );
+          const positions = new Float32Array(r.indices.length * 3),
+            source = sources.get(key);
+          for (let i = 0; i < r.indices.length; i++)
+            for (let a = 0; a < 3; a++)
+              positions[i * 3 + a] = source.positions[r.indices[i] * 3 + a];
+          assert(
+            (await digest(positions)) === c.drawnPositionsSha256,
+            "Owner native point-submission digest mismatch",
+          );
+          assert(
+            source.positions.length === c.count * 3 &&
+              source.normals.length === c.count * 3,
+            "Owner source buffers detached",
+          );
+          ownerMirrorRows.push({
+            name: c.name,
+            points: c.count,
+            drawn: r.indices.length,
+            execution: r.execution,
+            nativeDigestsMatched: true,
+          });
+        }
+        const warmMirror = [],
+          intervals = [],
+          longTasks = [];
+        let sampling = true,
+          last;
+        const frame = (now) => {
+          if (!sampling) return;
+          if (last !== undefined) intervals.push(now - last);
+          last = now;
+          requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+        const observer = new PerformanceObserver((list) => {
+          for (const e of list.getEntries()) longTasks.push(e.duration);
+        });
+        observer.observe({ type: "longtask" });
+        try {
+          for (const c of ownerMirror.cases)
+            for (let repeat = 0; repeat < 5; repeat++) {
+              const before = preparations;
+              const r = await pool.mirror(
+                "mirror:" + c.name,
+                {
+                  ...c.settings,
+                  stride: 1,
+                  direction: [1 + repeat * 0.01, -0.5, 0.25],
+                },
+                { includeColors: false },
+              );
+              assert(
+                r.colors === undefined && preparations === before,
+                "Warm mirror rebuilt source/color buffers",
+              );
+              warmMirror.push({ name: c.name, ...r.execution });
+            }
+        } finally {
+          sampling = false;
+          for (const e of observer.takeRecords()) longTasks.push(e.duration);
+          observer.disconnect();
+        }
         pool.close();
         assert(live === 0, "Owner worker leak");
         return {
+          mirrorKernelCases: mirrorNative.cases.length,
+          ownerMirrorRows,
+          warmMirror,
+          mainFrameIntervals: intervals,
+          mainLongTasks: longTasks,
+          maximumLiveWorkers: maximumLive,
           kernelCases: kernels.cases.length,
           ownerCases: rows.length,
           rows,
@@ -277,6 +480,8 @@ try {
     {
       fixture,
       kernelFixture,
+      mirrorFixture,
+      ownerMirrorFixture,
       workerUrl: origin + "/interactive-bounds-worker-bundle.mjs",
       inputOrigin: "http://127.0.0.1:" + ledger.inputPort,
     },
