@@ -1883,3 +1883,60 @@ identity, all native assertions, retained JSON, formatting and whitespace passed
 No application source or MCP contract changed, so application build/test targets
 are not applicable to this evidence-only slice. Port 5173 continues serving the
 existing application workspace.
+
+## Native CAD cache-builder settings and replacement
+
+REA extracted complete builder `0x140499b90` with Evidence
+`ev_e29723b3c0c14d9cbf1bfaad7fb48aef5a41fdc9d72741fe8d7a07cf5de3cb38`
+and assembly Evidence
+`ev_7b987f0affd4ce8c544b84058a72ddf99a3c982c0b5c09555a44405da57a09c2`.
+`docs/evidence/landmark-cad-cache-settings-native.json` retains 246 executions of
+that original routine, adapting only bounds extraction and the tessellation
+service, with system UCRT square root. Doubles are stored as little-endian bits
+so NaNs and signed zero do not require nonstandard JSON numbers.
+
+The builder runs only if entry `+0x618` is nonnull or its integer handle at
+`+0x630` is nonzero. It requests bounds using that handle and mode zero, even
+when only the pointer guard caused entry. Reversed bounds or finite-limit
+sentinels substitute extents `[1,1,1]`. Otherwise extents are maximum minus
+minimum. It calculates `d = sqrt((dy*dy + dx*dx) + dz*dz) / 1.9` and substitutes
+one when `d <= 1e-8`. The requested tolerance is exactly
+`((1 - quality) * 0.0004) * (unitScale * d)`, with quality from entry `+0x608`.
+Assembly establishes this multiplication order. All 122 provider-call cases
+match the recovered expression, including the comparison behavior for NaNs.
+
+The angular argument is always the original double representing 28 degrees in
+radians (`2493109cbb46df3f` in little-endian storage). A missing service still
+performs bounds arithmetic but makes no provider call. The builder does not
+test or overwrite entry `+0x600` itself. These results cover ordinary, zero,
+threshold, reversed, sentinel, infinite and NaN bounds; negative, unit and NaN
+quality values; unit scales one and 1000; and pointer/handle/service guards.
+
+The retained palette constructor assigns service pointer `0x1415d3bd8` to global
+`0x141615220`. Its captured vtable is `0x1411582b8`, whose slot `0x10` resolves to
+`0x1402d7030`. The captured lower and upper tolerance fields are zero and
+Float32 maximum; these are snapshot values, not a claim about every setting.
+REA provider Evidence is
+`ev_7f68cafc3a07ac1badf5cecdba0806aefc9c05328b65b0372374140953989d47`,
+with assembly Evidence
+`ev_910e8509e810aaca0ed7a5601bc3415a3688d028efc68ef26ec05715db6d9908`.
+Its fourth argument is a double in XMM3. The decompiler's pointer type for that
+argument is incorrect; the original prologue stores XMM3 directly.
+
+`docs/evidence/landmark-cad-provider-tail-native.json` retains 90 executions of
+the provider's original clamp prefix and cache-replacement tail. A bounded bridge
+supplies the declared tessellation result and skips the intervening engine,
+scheduler and merge body. The original `MAXSD`/`MINSD` clamp executes with normal
+and inverted limits, infinities, NaNs and signed zero. The cache tail calls the
+old cache's deleting destructor interface at `+0xf8` with flag one, while the old
+cache is still installed; then assigns the new pointer to entry `+0x600` and
+notifies through the subobject at `+0x3b8`, slot `0x20`. Notification sees the new
+pointer. A declared null new result still replaces the old cache, notifies and
+returns success. Actual destruction/free is an observation callback, not executed.
+
+All 246 builder assertions and 90 provider-tail assertions passed. Both REA
+sessions closed and owned processes exited; replay allocations were released.
+JSON, numerical parameter bits, formatting and whitespace passed. These captures
+do not execute the CAD engine, populated boundary refresh, complete provider
+scheduling/merging or installed UI. No application source or MCP contract changed;
+application build/test targets are not applicable to this evidence-only slice.

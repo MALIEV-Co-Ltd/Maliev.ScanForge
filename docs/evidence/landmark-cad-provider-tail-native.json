@@ -1,0 +1,1663 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x1402d7030",
+  "ranges": [
+    ["0x1402d7030", "0x1402d708e"],
+    ["0x1402d75a3", "0x1402d7674"]
+  ],
+  "evidence": "ev_7f68cafc3a07ac1badf5cecdba0806aefc9c05328b65b0372374140953989d47",
+  "assemblyEvidence": "ev_910e8509e810aaca0ed7a5601bc3415a3688d028efc68ef26ec05715db6d9908",
+  "scope": "Original clamp, cache release, cache assignment, notification and return. Bounded bridge supplies the declared new mesh result and bypasses tessellation, scheduling and merging. Empty boundary list; no CAD engine, actual destructor/free or UI.",
+  "cases": [
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "0000000000000080",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "0000000000000080",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "0000000000000080",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "0000000000000000",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a743f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a743f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a743f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "0000000000000040",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "0000000000000040",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "0000000000000040",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000e0ffffef47",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000e0ffffef47",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000e0ffffef47",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000000",
+      "upperBits": "000000e0ffffef47",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "7b14ae47e17a843f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "9a9999999999b93f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "7b14ae47e17a843f",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0ff",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f0bf",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000080",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000000",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "7b14ae47e17a743f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "9a9999999999b93f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f03f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "0000000000000040",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f07f",
+      "effectiveBits": "000000000000f03f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": false,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": true,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    },
+    {
+      "lowerBits": "0000000000000840",
+      "upperBits": "000000000000f03f",
+      "requestedBits": "000000000000f87f",
+      "effectiveBits": "000000000000f87f",
+      "oldPresent": true,
+      "newPresent": false,
+      "result": 1,
+      "events": [
+        {
+          "event": "delete",
+          "flag": 1,
+          "oldStillInstalled": true
+        },
+        {
+          "event": "notify",
+          "newInstalled": true
+        }
+      ]
+    }
+  ]
+}

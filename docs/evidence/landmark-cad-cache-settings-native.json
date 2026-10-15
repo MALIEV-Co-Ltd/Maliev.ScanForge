@@ -1,0 +1,4913 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140499b90",
+  "evidence": "ev_e29723b3c0c14d9cbf1bfaad7fb48aef5a41fdc9d72741fe8d7a07cf5de3cb38",
+  "assemblyEvidence": "ev_7b987f0affd4ce8c544b84058a72ddf99a3c982c0b5c09555a44405da57a09c2",
+  "scope": "Complete original cache builder control and floating-point arithmetic; bounds extraction and tessellation service are controlled callbacks, sqrt bound to system UCRT. No CAD engine, cache replacement, scene traversal or UI. Doubles encoded as little-endian bits including NaNs.",
+  "cases": [
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "57026a96e35b833f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "4a86e340bce72240",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "9eacad52e821803f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "26357bc139821f40",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "9eacad52e821703f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "26357bc139820f40",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "d1ade21ddacf49bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "be5d2f01fb34e9bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "box",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000244000000000000034400000000000003e40",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "691d554d10753f3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "b91e85eb51b8de3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "2d431cebe2363a3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "9a9999999999d93f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "2d431cebe2362a3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "9a9999999999c93f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "f668e388b5f804bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "8014ae47e17aa4bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "zero",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e31837ce511c953d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "4ece61e3a79d343e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "12ea2d819997913d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "96d626e80b2e313e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "12ea2d819997813d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "96d626e80b2e213e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "8b764968c2255cbd",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "c4bdd7d9df7cfbbd",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d11eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e41837ce511c953d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "4fce61e3a79d343e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "13ea2d819997913d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "97d626e80b2e313e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "13ea2d819997813d",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "97d626e80b2e213e",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "8c764968c2255cbd",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "c5bdd7d9df7cfbbd",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "above-threshold",
+      "boundsBits": "000000000000000000000000000000000000000000000000d21eae23ae66543e00000000000000000000000000000000",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "a6ccf9f937ad3c3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "d9f11daa2801dc3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5373f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56d73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5273f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56c73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "1e335151251e03bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "eb4b697170aba2bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "reversed",
+      "boundsBits": "000000000000004000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "a6ccf9f937ad3c3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "d9f11daa2801dc3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5373f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56d73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5273f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56c73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "1e335151251e03bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "eb4b697170aba2bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "minimum-sentinel",
+      "boundsBits": "ffffffffffffefff00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "a6ccf9f937ad3c3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "d9f11daa2801dc3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5373f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56d73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5273f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56c73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "1e335151251e03bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "eb4b697170aba2bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "maximum-sentinel",
+      "boundsBits": "000000000000000000000000000000000000000000000000ffffffffffffef7f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-minimum",
+      "boundsBits": "000000000000f87f00000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "nan-maximum",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f87f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "a6ccf9f937ad3c3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999c9bf",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "d9f11daa2801dc3f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5373f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "0000000000000000",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56d73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e07fa5a5aee5273f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "e09ec38d4c56c73f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f03f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "0000000000000000",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "1e335151251e03bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "9a9999999999f13f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "eb4b697170aba2bf",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "infinite",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f07f000000000000f03f000000000000f03f",
+      "qualityBits": "000000000000f87f",
+      "unitScaleBits": "0000000000408f40",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "000000000000f87f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": false,
+      "entityId": 0,
+      "boundsCalls": [],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": false,
+      "entityId": 0,
+      "boundsCalls": [],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": false,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": false,
+      "entityId": 73,
+      "boundsCalls": [
+        {
+          "entityId": 73,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "caade21ddacf393f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": false,
+      "geometryPointerPresent": true,
+      "entityId": 0,
+      "boundsCalls": [
+        {
+          "entityId": 0,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [],
+      "cacheUnchanged": true
+    },
+    {
+      "label": "source-gate",
+      "boundsBits": "000000000000000000000000000000000000000000000000000000000000f03f00000000000000400000000000000840",
+      "qualityBits": "000000000000e03f",
+      "unitScaleBits": "000000000000f03f",
+      "service": true,
+      "geometryPointerPresent": true,
+      "entityId": 0,
+      "boundsCalls": [
+        {
+          "entityId": 0,
+          "mode": 0
+        }
+      ],
+      "providerCalls": [
+        {
+          "toleranceBits": "caade21ddacf393f",
+          "angleBits": "2493109cbb46df3f",
+          "cache": 4660
+        }
+      ],
+      "cacheUnchanged": true
+    }
+  ]
+}
