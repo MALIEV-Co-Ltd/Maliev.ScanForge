@@ -92,6 +92,191 @@ function close(actual, expected, message) {
 }
 try {
   const oc = await vm.runInContext("kernel()", context);
+  const nativeFaces = JSON.parse(
+    readFileSync(
+      new URL(
+        "docs/evidence/landmark-original-face-conversion-native.json",
+        root,
+      ),
+      "utf8",
+    ),
+  ).cases;
+  const floatBytes = (values) =>
+    Buffer.from(values.buffer, values.byteOffset, values.byteLength).toString(
+      "hex",
+    );
+  let verifiedCadAlignmentFaces = 0;
+  for (const sample of nativeFaces.filter((row) => row.seeded)) {
+    const handles = [];
+    const own = (value) => (handles.push(value), value);
+    let kernelId;
+    try {
+      const point = own(new oc.gp_Pnt_3(2, -3, 7)),
+        normal = own(new oc.gp_Dir_4(0, 0, 1));
+      let maker;
+      if (sample.kind === "plane") {
+        const plane = own(new oc.gp_Pln_3(point, normal));
+        maker = own(new oc.BRepBuilderAPI_MakeFace_9(plane, -2, 5, -4, 6));
+      } else {
+        const tangent = own(new oc.gp_Dir_4(1, 0, 0));
+        const axes = own(new oc.gp_Ax3_3(point, normal, tangent));
+        const cylinder = own(new oc.gp_Cylinder_2(axes, 3));
+        maker = own(new oc.BRepBuilderAPI_MakeFace_10(cylinder, 0.1, 2, -1, 4));
+      }
+      const face = own(maker.Face());
+      const mesher = own(
+        new oc.BRepMesh_IncrementalMesh_2(
+          face,
+          0.05,
+          false,
+          0.4886921905584123,
+          false,
+        ),
+      );
+      void mesher;
+      let shape = face;
+      if (sample.placed) {
+        const placement = own(new oc.gp_Trsf_1());
+        placement.SetValues(0, -1, 0, 4, 1, 0, 0, 5, 0, 0, 1, -2);
+        const mover = own(
+          new oc.BRepBuilderAPI_Transform_2(face, placement, false),
+        );
+        shape = own(mover.Shape());
+      }
+      if (sample.reversed) shape.Reverse();
+      kernelId = `native-alignment-plane-${verifiedCadAlignmentFaces}`;
+      vm.runInContext("shapes", context).set(kernelId, shape);
+      const before = context.serializeBrep(oc, shape);
+      const result = await request("alignmentMesh", { kernelId });
+      const again = await request("alignmentMesh", { kernelId });
+      const compact = await request("alignmentMesh", {
+        kernelId,
+        includeUVs: false,
+      });
+      assert.equal("uvs" in compact, false);
+      assert.equal(floatBytes(compact.vertices), floatBytes(result.vertices));
+      assert.equal(floatBytes(compact.normals), floatBytes(result.normals));
+      assert.equal(
+        result,
+        again,
+        "Immutable CAD kernel ID reuses prepared target records",
+      );
+      assert.equal(
+        context.serializeBrep(oc, shape),
+        before,
+        "Alignment preparation must preserve exact BRep",
+      );
+      assert.equal(result.vertices.length, sample.vertices * 3);
+      assert.equal(result.triangles.length, sample.triangles * 3);
+      const expectedPositions = Buffer.from(sample.positionBits, "hex"),
+        expectedNormals = Buffer.from(sample.normalBits, "hex");
+      const expectedUVs = Buffer.from(sample.uvBits, "hex"),
+        nativeNodeIds = [];
+      for (let i = 0; i < sample.vertices; i++) {
+        const actualPosition = floatBytes(
+          result.vertices.subarray(i * 3, i * 3 + 3),
+        );
+        let match = -1;
+        for (let j = 0; j < sample.vertices; j++)
+          if (
+            expectedPositions.subarray(j * 12, j * 12 + 12).toString("hex") ===
+            actualPosition
+          )
+            match = j;
+        assert.ok(
+          match >= 0,
+          "Kernel face coordinates must match original native Float32 records",
+        );
+        nativeNodeIds.push(match);
+        assert.equal(
+          floatBytes(result.normals.subarray(i * 3, i * 3 + 3)),
+          expectedNormals.subarray(match * 12, match * 12 + 12).toString("hex"),
+        );
+        assert.equal(
+          floatBytes(result.uvs.subarray(i * 3, i * 3 + 3)),
+          expectedUVs.subarray(match * 24, match * 24 + 24).toString("hex"),
+        );
+      }
+      assert.deepEqual(
+        nativeNodeIds,
+        Array.from({ length: sample.vertices }, (_, index) => index),
+      );
+      assert.deepEqual(
+        Array.from(result.triangles, (id) => nativeNodeIds[id]),
+        sample.triangleIds,
+      );
+      for (let i = 0; i < result.triangles.length; i += 3) {
+        const ids = Array.from(result.triangles.subarray(i, i + 3));
+        const p = ids.map((id) =>
+          Array.from(result.vertices.subarray(id * 3, id * 3 + 3)),
+        );
+        const u = p[1].map((v, j) => v - p[0][j]),
+          v = p[2].map((v, j) => v - p[0][j]);
+        const n = [
+          u[1] * v[2] - u[2] * v[1],
+          u[2] * v[0] - u[0] * v[2],
+          u[0] * v[1] - u[1] * v[0],
+        ];
+        const expectedNormal = Array.from(
+          result.normals.subarray(ids[0] * 3, ids[0] * 3 + 3),
+        );
+        assert.ok(
+          n.reduce(
+            (sum, value, axis) => sum + value * expectedNormal[axis],
+            0,
+          ) > 0,
+          "Triangle winding agrees with native orientation",
+        );
+      }
+      verifiedCadAlignmentFaces++;
+      handles.splice(handles.indexOf(shape), 1);
+      await request("release", [kernelId]);
+      assert.equal(
+        vm.runInContext("alignmentMeshes", context).has(kernelId),
+        false,
+      );
+      await assert.rejects(request("alignmentMesh", { kernelId }), /expired/);
+      kernelId = undefined;
+    } finally {
+      if (kernelId) {
+        vm.runInContext("shapes", context).delete(kernelId);
+        context.dropAlignmentMesh(kernelId);
+      }
+      context.cleanup(handles);
+    }
+  }
+  assert.equal(verifiedCadAlignmentFaces, 24);
+  const cacheSource = await request("primitive", {
+    kind: "box",
+    center: [0, 0, 0],
+    size: [2, 2, 2],
+  });
+  await request("alignmentMesh", { kernelId: cacheSource.kernelId });
+  assert.equal(
+    vm.runInContext("alignmentMeshes", context).has(cacheSource.kernelId),
+    true,
+  );
+  const cacheCompanion = await request("primitive", {
+    kind: "box",
+    center: [4, 0, 0],
+    size: [2, 2, 2],
+  });
+  assert.equal(
+    vm.runInContext("alignmentMeshes", context).has(cacheSource.kernelId),
+    false,
+    "Kernel retessellation invalidates potentially shared face records",
+  );
+  await request("alignmentMesh", { kernelId: cacheSource.kernelId });
+  await request("release", [cacheSource.kernelId, cacheCompanion.kernelId]);
+  assert.equal(vm.runInContext("alignmentMeshBytes", context), 0);
+  console.log(
+    JSON.stringify({
+      nativeCadAlignmentFaces: verifiedCadAlignmentFaces,
+      exactFloat32Normals: true,
+      brepPreserved: true,
+      cacheReused: true,
+    }),
+  );
   const cadDatumCases = JSON.parse(
     readFileSync(
       new URL("tests/fixtures/alignment-datum-cad-transform-native.json", root),

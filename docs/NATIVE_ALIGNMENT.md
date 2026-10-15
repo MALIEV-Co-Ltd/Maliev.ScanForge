@@ -2039,3 +2039,54 @@ STEP import, singular UV derivatives, arbitrary CAD faces, full provider merge o
 the assembled alignment controller. No application source or MCP contract changed;
 application build/test targets are not applicable to this evidence-only slice.
 The user-facing development workspace remains on port 5173.
+
+## Shared application acquisition of cached CAD targets
+
+The browser-owned CAD worker now exposes internal `alignmentMesh` acquisition.
+It reads each exact face's existing triangulation, applies its world location,
+evaluates analytic D1 derivatives at UV nodes, applies the original `1e-10`
+normal-length threshold and reciprocal arithmetic, rounds coordinates/normals
+to Float32, and reverses normals/winding for reversed faces. Face-local vertex
+records are concatenated without welding, with offsets applied to triangle IDs.
+The operation neither cleans nor retessellates the body and preserves its BRep.
+Expired handles, missing triangulations/UVs and invalid geometry report errors.
+
+Prepared records belong to immutable kernel IDs. The worker retains at most
+eight entries and 64 MiB, removes records when handles are released and invalidates
+them before CAD retessellation because bodies can share face data. Normal client
+requests omit unused UV payloads; full UV records remain covered at the worker
+boundary. Structured cloning protects cached buffers from caller mutation.
+
+`prepareLandmarkRequest` and `prepareLandmarkRefinementTargets` acquire CAD fixed
+targets for the GUI dialog, `landmark_preview` and paired `mesh_process` with
+`refineSurface: true`. The moving object must remain a raw indexed scan. A fixed
+CAD entity is never replaced with its temporary indexed records; acceptance still
+changes only the moving scan through the existing history boundary. Asynchronous
+acquisition checks cancellation and revision before and after the kernel request.
+The existing scene/geometry/lock checks still guard preview publication and accept.
+
+The actual WASM kernel test now runs all 24 seeded plane/cylinder cases from the
+original native conversion capture, including reversed orientation and rigid
+placement. Vertex order, Float32 coordinates/normals, double UV bytes and triangle
+indices match the original outputs exactly. Exact BRep serialization is unchanged.
+The test also verifies cache reuse, handle-release eviction, expired-handle errors,
+retessellation invalidation and compact replies without UV data. The complete CAD
+kernel smoke suite and its 338 native datum matrix comparisons pass.
+
+This ports the verified cached-triangulation path. Fresh-face retessellation,
+point-cloud surface refinement, complete all-scene collection and full provider
+assembly remain separate requirements. The broader ribbon command stays gated;
+this integration does not declare complete native alignment parity.
+
+Validation: the production build completed without warnings or errors (manifest
+`scanforge-fc8b6ade44e4d636`). Focused tests passed 100 cases, including all five
+external owner-scan comparisons; the full suite passed 26,985 tests across 348
+files, with 29 explicitly skipped cases. The actual kernel smoke passed all 24
+native CAD conversion comparisons and 338 datum matrices. The isolated browser
+run passed GUI/MCP CAD-target preview, exact result agreement, acceptance, undo
+and fixed-BRep preservation with no browser errors. Its expanded coverage uses
+a finite six-minute lease; the initial four-minute run expired during final
+geometry checks. The successful run released its browser, MCP bridge and HTTP
+server, and their exact processes and ports were verified absent. Formatting,
+scoped whitespace and prohibited-brand checks passed. The latest source remains
+available on the existing development server at port 5173.

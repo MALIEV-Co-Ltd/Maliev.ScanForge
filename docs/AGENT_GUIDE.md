@@ -21,14 +21,23 @@ For indexed point-pair scan alignment, `mesh_process` accepts
 `operation: { kind: "paired", sourceLandmarks: [...], targetLandmarks: [...],
 refineSurface: true, workerCount: 2, parallel: true }` with a fixed `targetId`.
 Coordinates are world XYZ millimetres, with at least three corresponding points
-per side in matching order. Source and target must be different raw indexed scan
-meshes with hidden triangles revealed; omit `selectionOnly`. The shared worker
+per side in matching order. The moving object must be a raw indexed scan. The
+fixed target may be another indexed scan or an exact CAD body with a live kernel
+handle and cached face triangulations. Reveal hidden triangles and omit
+`selectionOnly`. The shared worker
 solves native coarse registration, maps moving landmarks to original vertex IDs,
 grows a region to 3000 faces or stability, and refines using a 3 mm initial radius.
 Before refinement, fixed target records are copied into one indexed mesh in
 target order without welding coincident vertices. Facet indices receive each
 target's vertex offset and target normals are regenerated on that combined mesh.
-The GUI preview and both MCP entry points use this same preparation.
+The GUI preview and both MCP entry points use this same preparation. CAD target
+conversion reads existing kernel triangulations, world locations, analytic D1
+normals, UVs and orientation without remeshing or changing the exact BRep. Missing
+triangulations or expired handles report an error; recreate/reimport that body.
+Prepared CAD records are cached by immutable kernel ID, bounded to eight entries
+and 64 MiB; releasing a kernel handle removes its records. CAD retessellation
+invalidates prepared records because kernel bodies can share face data. Cancellation and
+revision checks run before and after asynchronous kernel acquisition.
 Logical lanes default to two; the existing bounded CPU pool admits at most two
 physical workers. `parallel: false` keeps the same logical lane reduction serial.
 
@@ -39,8 +48,8 @@ both transforms applied with Float32 storage between stages; replaying a compose
 matrix does not reproduce these bytes. Diagnostics expose seeded region work and
 physical/logical workers. An identity delta retains the grown face selection;
 an applied delta clears it. Omitting `refineSurface` retains coarse-only compatibility.
-This indexed pipeline does not certify CAD target conversion, point-cloud surface
-refinement or full native scene collection. The ribbon point-pair command remains
+This pipeline does not certify point-cloud surface refinement, fresh-face CAD
+retessellation or full native scene collection. The ribbon point-pair command remains
 gated pending complete scene-target and CAD/point-cloud workflow integration.
 
 ScanForge exposes its browser-owned workspace through an official-SDK MCP stdio server. Agents and the editor use shared application operations, CAD evaluation, model validation and history. No hosted account, model provider or cloud geometry service is required.

@@ -236,7 +236,7 @@ import { pointCloudStats } from "../point-cloud";
 import {
   beginLandmarkAlignment,
   pickLandmark,
-  landmarkRequest,
+  prepareLandmarkRequest,
   landmarkSceneUnchanged,
   acceptLandmarkAlignment,
   landmarkMarkers,
@@ -2591,10 +2591,10 @@ export function App() {
     options.signal?.addEventListener("abort", abort, { once: true });
     landmarkAbort.current = controller;
     try {
-      const request = landmarkRequest(
+      const request = await prepareLandmarkRequest(
         session,
-        options.workerCount ?? 2,
-        options.parallel ?? true,
+        (kernelId) => cad.current!.alignmentMesh(kernelId),
+        { ...options, signal: controller.signal },
       );
       const result = await processMesh(
         {

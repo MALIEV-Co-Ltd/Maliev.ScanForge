@@ -17,7 +17,7 @@ const admission = spawnSync(
 if (admission.status !== 0) process.exit(admission.status ?? 1);
 await mkdir(out, { recursive: true });
 const token = randomBytes(32).toString("hex"),
-  browserLeaseMs = 240000,
+  browserLeaseMs = 360000,
   ledger = {
     owner: "indexed-mesh-browser",
     pid: process.pid,
@@ -667,6 +667,85 @@ try {
   });
   await mutate("preview_discard", { target: "landmarks" });
   assert.equal((await call("landmark_get")).result.active, false);
+  const cadTarget = await job(
+    await mutate("cad_create", {
+      name: "Exact CAD landmark target",
+      recipe: {
+        kind: "primitive",
+        input: { kind: "box", center: [8, 9, 4], size: [20, 20, 2] },
+      },
+    }),
+  );
+  const cadId = cadTarget.result.entityIds[0];
+  const fixedCadBefore = (await call("object_get", { entityId: cadId })).result;
+  assert.equal(fixedCadBefore.exactCad, true);
+  assert.equal(fixedCadBefore.hasBrep, true);
+  const cadPaired = await job(
+    await mutate("mesh_process", {
+      entityId: gui.id,
+      targetId: cadId,
+      operation: {
+        kind: "paired",
+        sourceLandmarks,
+        targetLandmarks,
+        refineSurface: true,
+        workerCount: 2,
+        parallel: true,
+      },
+    }),
+  );
+  assert.equal(cadPaired.result.diagnostics.physicalWorkers, 2);
+  const cadAligned = await geometry(gui.id);
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: gui.id,
+    fixedId: cadId,
+  });
+  for (let index = 0; index < 3; index++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: gui.id,
+      point: sourceLandmarks.slice(index * 3, index * 3 + 3),
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: cadId,
+      point: targetLandmarks.slice(index * 3, index * 3 + 3),
+    });
+  }
+  const cadCursor = (await call("history_get")).result.cursor;
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const cadGuiPreview = (await call("landmark_get")).result;
+  assert.equal(cadGuiPreview.diagnostics.physicalWorkers, 2);
+  assert.equal((await call("history_get")).result.cursor, cadCursor);
+  await mutate("landmark_edit", { action: "reset" });
+  const cadAgentPreview = await job(
+    await mutate("landmark_preview", { workerCount: 2, parallel: true }),
+  );
+  assert.deepEqual(
+    cadAgentPreview.result.registration,
+    cadGuiPreview.registration,
+  );
+  assert.deepEqual(cadAgentPreview.result.refinement, cadGuiPreview.refinement);
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  await mutate("landmark_accept", {});
+  assert.deepEqual(await geometry(gui.id), cadAligned);
+  assert.equal((await call("history_get")).result.cursor, cadCursor + 1);
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadId })).result,
+    fixedCadBefore,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadId })).result,
+    fixedCadBefore,
+  );
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -686,6 +765,8 @@ try {
     guiMcpLandmarkEditing: true,
     guiMcpLandmarkRefinement: true,
     guiMcpMulticoreSeededRefinement: true,
+    guiMcpCadLandmarkRefinement: true,
+    cadLandmarkBrepPreserved: true,
     errors,
   };
   console.log(JSON.stringify(ledger.result));

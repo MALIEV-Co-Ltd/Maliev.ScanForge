@@ -1,4 +1,4 @@
-import type { Entity, Vec3 } from "./types";
+import type { Entity, IndexedMesh, Vec3 } from "./types";
 import type { ProcessingResult } from "./processing-client";
 import { rotatePointNormals } from "./point-cloud";
 import { indexedRenderNormals } from "./indexed-mesh";
@@ -62,6 +62,7 @@ export function landmarkRequest(
   session: LandmarkAlignment,
   workerCount = 2,
   parallel = true,
+  includeRefinement = true,
 ) {
   const pairs = landmarkPairs(session);
   if (pairs.moving.length < 3 || pairs.moving.length !== pairs.fixed.length)
@@ -75,7 +76,9 @@ export function landmarkRequest(
       session.moving.kind === "mesh" ? session.moving.indexedMesh : undefined,
     sourceLandmarks: pairs.moving.flat(),
     targetLandmarks: pairs.fixed.flat(),
-    ...(session.moving.indexedMesh && session.fixed.indexedMesh
+    ...(includeRefinement &&
+    session.moving.indexedMesh &&
+    session.fixed.indexedMesh
       ? landmarkRefinementTargets(
           session.moving,
           [session.fixed],
@@ -84,6 +87,91 @@ export function landmarkRequest(
         )
       : {}),
   };
+}
+
+/** Shared GUI/MCP acquisition of immutable CAD-backed fixed target records. */
+export async function prepareLandmarkRefinementTargets(
+  source: Entity,
+  targets: readonly Entity[],
+  acquireCad: (kernelId: string) => Promise<IndexedMesh>,
+  workerCount = 2,
+  parallel = true,
+  options: Pick<LandmarkPreviewOptions, "signal" | "check"> = {},
+) {
+  const check = () => {
+    options.signal?.throwIfAborted();
+    options.check?.();
+  };
+  check();
+  if (
+    source.kind !== "mesh" ||
+    !source.indexedMesh ||
+    source.kernelId ||
+    source.parametric ||
+    source.surfacePatch
+  )
+    throw new Error(
+      "Choose a raw indexed moving scan for point-pair refinement.",
+    );
+  const resolved: Entity[] = [];
+  for (const target of targets) {
+    check();
+    if (!target.kernelId) {
+      resolved.push(target);
+      continue;
+    }
+    const indexedMesh = await acquireCad(target.kernelId);
+    check();
+    const positions = new Float32Array(indexedMesh.triangles.length * 3);
+    for (let index = 0; index < indexedMesh.triangles.length; index++) {
+      if (index % 4096 === 0) check();
+      const id = indexedMesh.triangles[index];
+      if (
+        !Number.isInteger(id) ||
+        id < 0 ||
+        id * 3 + 2 >= indexedMesh.vertices.length
+      )
+        throw new Error("CAD alignment triangle references a missing vertex.");
+      for (let axis = 0; axis < 3; axis++)
+        positions[index * 3 + axis] = indexedMesh.vertices[id * 3 + axis];
+    }
+    resolved.push({
+      ...target,
+      kind: "mesh",
+      kernelId: undefined,
+      parametric: undefined,
+      surfacePatch: undefined,
+      positions,
+      indexedMesh,
+    });
+  }
+  return landmarkRefinementTargets(source, resolved, workerCount, parallel);
+}
+
+export async function prepareLandmarkRequest(
+  session: LandmarkAlignment,
+  acquireCad: (kernelId: string) => Promise<IndexedMesh>,
+  options: LandmarkPreviewOptions = {},
+) {
+  const workers = options.workerCount ?? 2,
+    parallel = options.parallel ?? true;
+  const request = landmarkRequest(session, workers, parallel, false);
+  if (
+    session.moving.indexedMesh &&
+    (session.fixed.indexedMesh || session.fixed.kernelId)
+  )
+    Object.assign(
+      request,
+      await prepareLandmarkRefinementTargets(
+        session.moving,
+        [session.fixed],
+        acquireCad,
+        workers,
+        parallel,
+        options,
+      ),
+    );
+  return request;
 }
 /** Shared GUI/agent indexed target validation for point-pair refinement. */
 export function landmarkRefinementTargets(

@@ -1,6 +1,15 @@
 /* Dedicated CAD worker. All CAD bytes stay in this browser's virtual filesystem. */
 let kernelPromise;
 const shapes = new Map();
+const alignmentMeshes = new Map();
+let alignmentMeshBytes = 0;
+function dropAlignmentMesh(id) {
+  const cached = alignmentMeshes.get(id);
+  if (cached) {
+    alignmentMeshBytes -= cached.bytes;
+    alignmentMeshes.delete(id);
+  }
+}
 let nextShape = 0;
 const sessionId = crypto.randomUUID();
 let sequence = Promise.resolve();
@@ -98,6 +107,10 @@ function ensureDone(oc, status, action) {
 }
 
 function mesh(oc, shape, onProgress = () => {}) {
+  // Kernel bodies can share face data. Retessellation may replace those shared
+  // triangulations, so prepared alignment records must be acquired again.
+  alignmentMeshes.clear();
+  alignmentMeshBytes = 0;
   const handles = [];
   const keep = (handle) => {
     handles.push(handle);
@@ -554,6 +567,157 @@ function getShape(id) {
   return shape;
 }
 
+/** Native per-face conversion of existing kernel triangulations. Never cleans
+ * or remeshes the exact body: acquisition reuses its current triangulations.
+ */
+function alignmentMesh(oc, input) {
+  const shape = getShape(input.kernelId),
+    handles = [];
+  const cached = alignmentMeshes.get(input.kernelId);
+  if (cached) {
+    alignmentMeshes.delete(input.kernelId);
+    alignmentMeshes.set(input.kernelId, cached);
+    return cached.mesh;
+  }
+  const own = (value) => (handles.push(value), value);
+  const vertices = [],
+    normals = [],
+    triangles = [],
+    uvs = [];
+  try {
+    const explorer = own(
+      new oc.TopExp_Explorer_2(
+        shape,
+        oc.TopAbs_ShapeEnum.TopAbs_FACE,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    for (; explorer.More(); explorer.Next()) {
+      const faceHandles = [];
+      const local = (value) => (faceHandles.push(value), value);
+      try {
+        const face = local(oc.TopoDS.Face_1(local(explorer.Current())));
+        const location = local(new oc.TopLoc_Location_1());
+        const handle = local(oc.BRep_Tool.Triangulation(face, location));
+        if (handle.IsNull())
+          throw new Error(
+            "CAD alignment requires cached face triangulations. Recreate or reimport this body.",
+          );
+        const mesh = handle.get();
+        if (!mesh.HasUVNodes())
+          throw new Error("CAD alignment requires face UV coordinates.");
+        if (
+          vertices.length / 3 + mesh.NbNodes() > 10000000 ||
+          triangles.length / 3 + mesh.NbTriangles() > 20000000
+        )
+          throw new Error("CAD alignment target exceeds the geometry limit.");
+        const transform = local(location.Transformation());
+        const adaptor = local(new oc.BRepAdaptor_Surface_2(face, true));
+        const point = local(new oc.gp_Pnt_1()),
+          du = local(new oc.gp_Vec_1()),
+          dv = local(new oc.gp_Vec_1());
+        const reversed =
+          statusValue(face.Orientation_1()) ===
+          statusValue(oc.TopAbs_Orientation.TopAbs_REVERSED);
+        const offset = vertices.length / 3;
+        for (let index = 1; index <= mesh.NbNodes(); index++) {
+          const node = mesh.Node(index),
+            uv = mesh.UVNode(index);
+          try {
+            const world = node.Transformed(transform);
+            try {
+              const p = [world.X(), world.Y(), world.Z()];
+              if (
+                !p.every(
+                  (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
+                )
+              )
+                throw new Error(
+                  "CAD alignment coordinates are outside the supported range.",
+                );
+              vertices.push(...p.map(Math.fround));
+            } finally {
+              world.delete();
+            }
+            const u = uv.X(),
+              v = uv.Y();
+            uvs.push(u, v, 0);
+            adaptor.D1(u, v, point, du, dv);
+            const normal = [
+              du.Y() * dv.Z() - du.Z() * dv.Y(),
+              du.Z() * dv.X() - du.X() * dv.Z(),
+              du.X() * dv.Y() - du.Y() * dv.X(),
+            ];
+            const length = Math.sqrt(
+              normal[1] * normal[1] +
+                normal[0] * normal[0] +
+                normal[2] * normal[2],
+            );
+            const factor = length > 1e-10 ? 1 / length : 1;
+            if (!normal.every(Number.isFinite))
+              throw new Error("CAD face derivatives are not finite.");
+            normals.push(
+              ...normal.map((value) =>
+                Math.fround((reversed ? -1 : 1) * (value * factor)),
+              ),
+            );
+          } finally {
+            uv.delete();
+            node.delete();
+          }
+        }
+        const faces = local(mesh.Triangles());
+        for (let index = 1; index <= mesh.NbTriangles(); index++) {
+          const triangle = faces.Value(index);
+          try {
+            const ids = [
+              triangle.Value(1),
+              triangle.Value(reversed ? 3 : 2),
+              triangle.Value(reversed ? 2 : 3),
+            ];
+            if (
+              ids.some(
+                (id) => !Number.isInteger(id) || id < 1 || id > mesh.NbNodes(),
+              )
+            )
+              throw new Error("CAD face triangle references a missing vertex.");
+            triangles.push(...ids.map((id) => offset + id - 1));
+          } finally {
+            triangle.delete();
+          }
+        }
+      } finally {
+        cleanup(faceHandles);
+      }
+    }
+    if (!triangles.length)
+      throw new Error("CAD alignment target has no triangles.");
+    const result = {
+      vertices: new Float32Array(vertices),
+      triangles: new Uint32Array(triangles),
+      normals: new Float32Array(normals),
+      uvs: new Float64Array(uvs),
+    };
+    const bytes =
+      result.vertices.byteLength +
+      result.triangles.byteLength +
+      result.normals.byteLength +
+      result.uvs.byteLength;
+    if (bytes <= 64 * 1024 * 1024) {
+      while (
+        alignmentMeshes.size >= 8 ||
+        alignmentMeshBytes + bytes > 64 * 1024 * 1024
+      )
+        dropAlignmentMesh(alignmentMeshes.keys().next().value);
+      alignmentMeshes.set(input.kernelId, { mesh: result, bytes });
+      alignmentMeshBytes += bytes;
+    }
+    return result;
+  } finally {
+    cleanup(handles);
+  }
+}
+
 /** Exact face parameters, with triangle slots matching the mesh traversal order. */
 function alignmentReferences(oc, input) {
   const shape = getShape(input.kernelId),
@@ -969,6 +1133,7 @@ function splitShape(oc, input) {
   } catch (error) {
     for (const result of results) {
       shapes.get(result.kernelId)?.delete();
+      dropAlignmentMesh(result.kernelId);
       shapes.delete(result.kernelId);
     }
     throw error;
@@ -1720,6 +1885,7 @@ function closedShellShape(oc, input) {
     cleanup(handles);
     for (const id of temporary) {
       shapes.get(id)?.delete();
+      dropAlignmentMesh(id);
       shapes.delete(id);
     }
   }
@@ -1741,7 +1907,13 @@ self.onmessage = (event) => {
       else if (operation === "primitive") result = primitive(oc, payload);
       else if (operation === "alignmentReferences")
         result = alignmentReferences(oc, payload);
-      else if (operation === "export") result = exportStep(oc, payload);
+      else if (operation === "alignmentMesh") {
+        result = alignmentMesh(oc, payload);
+        if (payload.includeUVs === false) {
+          const { vertices, triangles, normals } = result;
+          result = { vertices, triangles, normals };
+        }
+      } else if (operation === "export") result = exportStep(oc, payload);
       else if (operation === "boolean") result = booleanShape(oc, payload);
       else if (operation === "transform") result = transformShape(oc, payload);
       else if (operation === "datumTransform")
@@ -1768,6 +1940,7 @@ self.onmessage = (event) => {
           throw new Error("CAD release requires handle IDs.");
         for (const kernelId of payload) {
           shapes.get(kernelId)?.delete();
+          dropAlignmentMesh(kernelId);
           shapes.delete(kernelId);
         }
         result = true;

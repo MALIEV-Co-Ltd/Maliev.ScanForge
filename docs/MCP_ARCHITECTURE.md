@@ -21,7 +21,11 @@ worker. Target preparation retains ordered, separate vertex records across
 objects and regenerates normals before query-tree construction. Results publish coarse
 registration separately from refinement; geometry retains Float32 storage after
 each applied stage. See the agent guide for supported target types and the native
-alignment evidence for the remaining full-workflow verification gate.
+alignment evidence for the remaining full-workflow verification gate. CAD fixed
+targets acquire indexed face records through the existing browser-owned kernel.
+The shared asynchronous preparation validates cancellation/revision across that
+boundary and leaves the fixed entity, BRep and history unchanged. Kernel-ID-owned
+records have an eight-entry/64 MiB cache and are removed on handle release.
 
 `src/automation/catalog.json` is the wire-schema registry. The official SDK server reads it for MCP discovery. `ApplicationApi` validates the same schemas before dispatch, tracks workspace revisions/retry receipts and owns transient jobs/artifacts. `operations.ts` resolves explicit workspace objects and executes existing domain algorithms. `use-workspace-api.ts` adapts the current editor state to that gateway and publishes mutations synchronously before returning revision receipts. The editor uses shared CAD creation/rebuild helpers and routes modeling undo/redo through the gateway.
 

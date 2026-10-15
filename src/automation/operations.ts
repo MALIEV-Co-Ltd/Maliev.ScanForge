@@ -45,7 +45,7 @@ import {
   indexedRenderNormals,
 } from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
-import { landmarkRefinementTargets } from "../landmark-alignment";
+import { prepareLandmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
@@ -753,11 +753,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           throw new Error("Point-pair surface refinement requires targetId.");
         Object.assign(
           request,
-          landmarkRefinementTargets(
+          await prepareLandmarkRefinementTargets(
             e,
             [object(s, a.targetId)],
+            (kernelId) => host.cad().alignmentMesh(kernelId),
             op.workerCount ?? 2,
             op.parallel ?? true,
+            { signal: c.signal, check: () => c.check() },
           ),
           { sourceTriangleMask: mask(s, e, false) },
         );

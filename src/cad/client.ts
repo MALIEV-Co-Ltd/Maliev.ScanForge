@@ -1,4 +1,4 @@
-import type { KernelMesh, KernelPrimitive, Vec3 } from "../types";
+import type { IndexedMesh, KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
 import type { CadAlignmentInput } from "./alignment-reference";
@@ -14,7 +14,12 @@ export type CadPattern =
       angleDegrees: number;
     };
 type Result =
-  KernelMesh | KernelMesh[] | Uint8Array | boolean | CadAlignmentInput[];
+  | KernelMesh
+  | KernelMesh[]
+  | Uint8Array
+  | boolean
+  | CadAlignmentInput[]
+  | IndexedMesh;
 type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -58,6 +63,14 @@ export class CadClient {
     return this.request("alignmentReferences", { kernelId }) as Promise<
       CadAlignmentInput[]
     >;
+  }
+
+  /** Acquire the cached exact-face triangulations without changing the BRep. */
+  alignmentMesh(kernelId: string): Promise<IndexedMesh> {
+    return this.request("alignmentMesh", {
+      kernelId,
+      includeUVs: false,
+    }) as Promise<IndexedMesh>;
   }
 
   exportStep(kernelIds: string[]): Promise<Uint8Array> {
