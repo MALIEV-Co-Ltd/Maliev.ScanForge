@@ -1986,3 +1986,56 @@ the assembled CAD-backed alignment controller remain separate verification work.
 No application source or MCP contract changed; application build/test targets
 are not applicable to this evidence-only slice. The live 5173 workspace remains
 available without replacing the user's loaded scan.
+
+## Complete original per-face conversion on native geometry
+
+`docs/evidence/landmark-original-face-conversion-native.json` now retains 48
+executions of complete converter `0x1401ed610` against the same actual supplied
+OpenCascade plane/cylinder faces. The original mesh constructor, mesh containers,
+vertex/UV insertion, triangle insertion, analytic surface derivatives, winding
+handling and final facet-cache refresh execute. No geometry, triangulation,
+normal, mesh-construction or container behavior is substituted. Main-module
+allocation/free interfaces use tracked system UCRT adapters; imported module
+pointers are rebound and original writable PE-section permissions are restored.
+Earlier harness faults and their corrections remain outside the repository in
+the isolated analysis artifacts.
+
+The cases cross two surfaces, fresh/seeded triangulation, three tolerances,
+forward/reversed orientation and unplaced/rigidly placed geometry. Placement
+uses original exact-shape transform `0x1401eb560` with the retained matrix:
+90 degrees about Z, then translation `[4,5,-2]`. Each result retains every
+Float32 vertex/normal byte, double UV record, original vertex ID, ordered triangle
+index and Float32 facet-normal byte. All 48 return bytes are one, confirming the
+success value consumed by the per-face worker rather than only a nonnull output.
+
+Independent verification is retained in
+`docs/evidence/landmark-original-face-conversion-verification.json`. It checks:
+
+- All 48 populated meshes have finite coordinates, normals and UVs, valid triangle
+  indices and sequential vertex IDs; UV records have a zero third component.
+- The 24 orientation pairs retain identical vertex/UV buffers, swap the second
+  and third triangle corners, and toggle every normal component's Float32 sign
+  bit, including signed zero.
+- The 24 placement pairs retain triangle order. Placed coordinates agree with
+  the declared rigid transform within `2e-6` mm when calculated from the already
+  rounded unplaced Float32 buffer; normals agree within `1e-6`.
+- Plane normals and cylinder radial normals agree with their declared geometry,
+  with normal squared lengths within `1e-6` of one. Both surfaces retain the
+  earlier fresh/seeded triangulation behavior.
+- All six loaded DLL digests match their retained identities. Mesh destructors,
+  temporary native storage and face/geometry builders finish with zero tracked
+  allocations and zero unrecognized free calls.
+
+The allocation bug in the initial harness was a subsequently overwritten ctypes
+pointer return type, not native conversion behavior. The second harness issue
+was protecting writable image data as executable/read-only; restoring declared
+PE-section permissions allows original constructor bookkeeping to run unchanged.
+The successful capture retains neither workaround as an algorithm substitution.
+
+All native replay processes exited and the final mapped image was released.
+Retained JSON, independent geometry/orientation/placement checks, formatting and
+whitespace passed. This verifies the declared complete conversion corpus, not
+STEP import, singular UV derivatives, arbitrary CAD faces, full provider merge or
+the assembled alignment controller. No application source or MCP contract changed;
+application build/test targets are not applicable to this evidence-only slice.
+The user-facing development workspace remains on port 5173.

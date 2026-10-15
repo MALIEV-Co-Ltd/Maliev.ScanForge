@@ -1,0 +1,9 @@
+{
+  "cases": 48,
+  "orientationPairs": 24,
+  "placementPairs": 24,
+  "dllDigests": 6,
+  "returnedSuccess": 48,
+  "remainingTrackedAllocations": 0,
+  "unknownFreeCalls": 0
+}
