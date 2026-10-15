@@ -71,6 +71,18 @@ export function setCameraPose(
   camera.updateMatrixWorld(true);
 }
 
+/** Surface hits keep their intersection; cloud hits identify a measured vertex. */
+export function pickedWorldPoint(hit: THREE.Intersection) {
+  if (!(hit.object instanceof THREE.Points) || hit.index === undefined)
+    return hit.point;
+  const attribute = hit.object.geometry.getAttribute("position");
+  return new THREE.Vector3(
+    attribute.getX(hit.index),
+    attribute.getY(hit.index),
+    attribute.getZ(hit.index),
+  ).applyMatrix4(hit.object.matrixWorld);
+}
+
 export function pickCamera(
   camera: NavigationCamera,
   objects: THREE.Mesh[],
@@ -93,16 +105,6 @@ export function pickCamera(
   );
   for (const mesh of eligible) mesh.updateMatrixWorld(true);
   const ray = new THREE.Raycaster();
-  const worldPoint = (hit: THREE.Intersection) => {
-    if (!(hit.object instanceof THREE.Points) || hit.index === undefined)
-      return hit.point;
-    const attribute = hit.object.geometry.getAttribute("position");
-    return new THREE.Vector3(
-      attribute.getX(hit.index),
-      attribute.getY(hit.index),
-      attribute.getZ(hit.index),
-    ).applyMatrix4(hit.object.matrixWorld);
-  };
   const bounds = new THREE.Box3();
   for (const mesh of eligible)
     bounds.union(new THREE.Box3().setFromObject(mesh));
@@ -127,13 +129,14 @@ export function pickCamera(
           ? hit.object.material[hit.face?.materialIndex ?? 0]
           : hit.object.material;
         return (material?.clippingPlanes ?? []).every(
-          (plane: THREE.Plane) => plane.distanceToPoint(worldPoint(hit)) >= 0,
+          (plane: THREE.Plane) =>
+            plane.distanceToPoint(pickedWorldPoint(hit)) >= 0,
         );
       })
       .slice(0, maxHits)
       .map((hit) => ({
         entityId: hit.object.userData.entityId,
-        point: worldPoint(hit).toArray(),
+        point: pickedWorldPoint(hit).toArray(),
         distance: hit.distance,
         triangleIndex: hit.faceIndex ?? null,
         ...(hit.object instanceof THREE.Points

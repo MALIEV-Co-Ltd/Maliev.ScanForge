@@ -2837,3 +2837,40 @@ workflows. All 96 native control cases passed. Native mappings and temporary
 browser/MCP processes/listeners were released; port 5173 retains the live source.
 Scoped formatting, fixture readback and whitespace/prohibited-name checks passed.
 No push or deployment.
+
+## Canvas landmark integration and point-cloud ray projection
+
+A real-browser check now clicks six canvas landmarks on a mesh and six on a
+point cloud, switching moving/fixed pick modes and comparing stored records with
+read-only `viewport_pick` results at the actual pointer-event coordinates. It
+exposed a GUI/MCP mismatch: Three.js point intersections report the projected
+point on the viewing ray. The GUI stored that ray point, while MCP returned the
+measured cloud vertex. One click on `[-18, -15, 0]` stored
+`[-18, -14.999995231628418, -3.7186637769082154e-7]`.
+
+Both paths now use `pickedWorldPoint`: cloud hits read their indexed Float32
+vertex and apply the object's world matrix; mesh hits retain the surface
+intersection. GUI clipping tests use that same world point. Landmark storage
+continues through the shared native-precision conversion. A unit regression
+also covers a translated and rotated cloud and proves the intersection record
+is not mutated. `docs/evidence/landmark-canvas-picking.json` retains all twelve
+successful GUI/MCP comparisons from build `scanforge-33d2be638079729e`.
+
+This is an independently authored application integration fix. The original
+insertion evidence still supplies hit-test callbacks; it verifies coordinate
+storage and side classification, not the original ray/vertex hit algorithm.
+Picking and cancellation preserve history, and this change alone does not
+promote the point-pair ribbon command.
+
+Validation: build `scanforge-33d2be638079729e`, 43 focused tests and the full
+27,097-test suite passed, with 31 existing skips. The isolated browser replay
+passed all twelve actual canvas picks and verified unchanged history after
+picking/cancellation. Formatting and whitespace checks passed. Its browser,
+MCP bridge and random-port listeners were released. Port 5173 serves the updated
+picking helper. No push or deployment.
+
+The next original hit-test trace has concrete entry points: common dispatcher
+`0x1404a05d0` and point-cloud object virtual slot `0x288`, read from vtable
+`0x141248b20` as `0x14088c510`. The vtable read is ordinary static inspection,
+not new REA execution evidence. Focused analysis was not started because its
+3,072 MiB memory admission guard observed 2,936 MiB free.

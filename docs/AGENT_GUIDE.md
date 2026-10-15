@@ -761,3 +761,10 @@ reports `candidateCount`, `candidateIndex`, `canPreview`, `canReset` and
 picks and committed geometry and creates no history. Repeated requests using
 the original request ID retain normal idempotent receipt behavior. A failed
 registration does not publish an empty preview.
+
+Canvas landmark picking uses the same world-point extraction as `viewport_pick`:
+mesh hits retain their surface intersection, while point-cloud hits use the actual
+measured vertex transformed by its world pose. `landmark_get` reports the resulting
+Float32-rounded records. Moving/fixed pick modes filter canvas hits; picking and
+cancel do not create modeling history. This integration check does not certify
+original native hit testing or promote the gated point-pair ribbon entry.

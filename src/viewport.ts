@@ -19,7 +19,12 @@ import * as THREE from "three";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
 import { scanRenderData } from "./scan-render-data";
 import { presentFrame } from "./frame-presentation";
-import { inspectCamera, pickCamera, setCameraPose } from "./viewport-agent";
+import {
+  inspectCamera,
+  pickCamera,
+  pickedWorldPoint,
+  setCameraPose,
+} from "./viewport-agent";
 import type { ViewportCommand } from "./automation/workflow-operations";
 import {
   ScanClipBox,
@@ -1550,7 +1555,9 @@ export class Viewport {
               THREE.MeshStandardMaterial
             >
           ).material.clippingPlanes ?? []
-        ).every((plane) => plane.distanceToPoint(candidate.point) >= 0),
+        ).every(
+          (plane) => plane.distanceToPoint(pickedWorldPoint(candidate)) >= 0,
+        ),
       );
     if (!hit) return;
     const id = hit.object.userData.entityId as string;
@@ -1573,15 +1580,17 @@ export class Viewport {
         mask,
         subtractSelection(this.subtract, event.altKey),
       );
-    } else
+    } else {
+      const point = pickedWorldPoint(hit);
       this.onPick(
-        [hit.point.x, hit.point.y, hit.point.z],
+        [point.x, point.y, point.z],
         id,
         hit.faceIndex == null
           ? undefined
           : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
               hit.faceIndex),
       );
+    }
     return id;
   }
 

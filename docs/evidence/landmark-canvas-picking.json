@@ -1,0 +1,242 @@
+{
+  "scope": "Application canvas-to-landmark integration; not original native hit testing",
+  "nativeStorageEvidence": "docs/evidence/landmark-picking-native.json",
+  "nativeStorageLimit": "Original insertion executes with supplied hit-test callbacks; these app browser cases do not validate original hit testing.",
+  "build": "scanforge-33d2be638079729e",
+  "red": {
+    "kind": "pointcloud",
+    "expected": [-18, -15, 0],
+    "actual": [-18, -14.999995231628418, -3.7186637769082154e-7]
+  },
+  "cases": [
+    {
+      "kind": "mesh",
+      "captures": [
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.4013984809487553,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [
+              -18.000000329316226, -14.99999555318054, 2.842170943040401e-14
+            ],
+            "distance": 161.70652392049868,
+            "triangleIndex": 1
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-18, -14.999995231628418, 2.842170943040401e-14]
+          }
+        },
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.48904429290254237,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [-1.999996889090931, -14.999995553180543, 0],
+            "distance": 160.71403129208045,
+            "triangleIndex": 0
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-1.9999969005584717, -14.999995231628418, 0]
+          }
+        },
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.4452213610632945,
+            "y": 0.3778864478584501
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [-10.000003330453218, 15.000000274430187, 0],
+            "distance": 161.01242211345675,
+            "triangleIndex": 1
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-10.00000286102295, 15, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.6205129849708686,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [22.000003549997363, -14.999995553180543, 0],
+            "distance": 162.20049328776818,
+            "triangleIndex": 1
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [22.000003814697266, -14.999995231628418, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.708158745199947,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [37.99999754772338, -14.999995553180545, 0],
+            "distance": 165.13327853652763,
+            "triangleIndex": 0
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [37.999996185302734, -14.999995231628418, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.6643358133606991,
+            "y": 0.3778864478584501
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [29.999991106361087, 15.000000274430187, 0],
+            "distance": 163.4778256358172,
+            "triangleIndex": 1
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [29.999990463256836, 15, 0]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "pointcloud",
+      "captures": [
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.4013984809487553,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [-18, -15, 0],
+            "distance": 161.70652429633134,
+            "triangleIndex": null,
+            "pointIndex": 0
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-18, -15, 0]
+          }
+        },
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.48904429290254237,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [-2, -15, 0],
+            "distance": 160.71403174583102,
+            "triangleIndex": null,
+            "pointIndex": 1
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-2, -15, 0]
+          }
+        },
+        {
+          "side": "moving",
+          "coordinates": {
+            "x": 0.4452213610632945,
+            "y": 0.3778864478584501
+          },
+          "hit": {
+            "entityId": "moving",
+            "point": [-10, 15, 0],
+            "distance": 161.01242188104615,
+            "triangleIndex": null,
+            "pointIndex": 2
+          },
+          "pick": {
+            "entityId": "moving",
+            "point": [-10, 15, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.6205129849708686,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [22, -15, 0],
+            "distance": 162.20049321749912,
+            "triangleIndex": null,
+            "pointIndex": 0
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [22, -15, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.708158745199947,
+            "y": 0.622113513706313
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [38, -15, 0],
+            "distance": 165.13327950476844,
+            "triangleIndex": null,
+            "pointIndex": 1
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [38, -15, 0]
+          }
+        },
+        {
+          "side": "fixed",
+          "coordinates": {
+            "x": 0.6643358133606991,
+            "y": 0.3778864478584501
+          },
+          "hit": {
+            "entityId": "fixed",
+            "point": [30, 15, 0],
+            "distance": 163.47782724271798,
+            "triangleIndex": null,
+            "pointIndex": 2
+          },
+          "pick": {
+            "entityId": "fixed",
+            "point": [30, 15, 0]
+          }
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "Actual mesh and point-cloud canvas clicks preserve native Float32 pick records",
+    "Moving/fixed pick modes preserve source identity",
+    "Read-only MCP ray queries agree with GUI picks",
+    "Picking and cancel preserve modeling history"
+  ],
+  "passed": true
+}

@@ -3,6 +3,7 @@ import * as THREE from "three";
 import {
   inspectCamera,
   pickCamera,
+  pickedWorldPoint,
   setCameraPose,
 } from "../src/viewport-agent";
 
@@ -112,6 +113,31 @@ it("picks visible point-cloud children without inventing triangle indices", () =
     geometry.dispose();
     pointsGeometry.dispose();
     parentMaterial.dispose();
+    material.dispose();
+  }
+});
+
+it("uses the actual transformed cloud vertex rather than its projection onto the picking ray", () => {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([2, 3, 4], 3),
+  );
+  const material = new THREE.PointsMaterial();
+  const points = new THREE.Points(geometry, material);
+  points.position.set(10, -20, 30);
+  points.rotation.z = Math.PI / 2;
+  points.updateMatrixWorld(true);
+  const rayPoint = new THREE.Vector3(7.01, -17.98, 34.03);
+  const hit = { object: points, index: 0, point: rayPoint, distance: 1 };
+  try {
+    expect(pickedWorldPoint(hit).toArray()).toEqual([7, -18, 34]);
+    expect(rayPoint.toArray()).toEqual([7.01, -17.98, 34.03]);
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
+    expect(pickedWorldPoint({ ...hit, object: mesh })).toBe(rayPoint);
+    mesh.material.dispose();
+  } finally {
+    geometry.dispose();
     material.dispose();
   }
 });
