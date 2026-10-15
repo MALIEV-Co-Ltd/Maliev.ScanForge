@@ -1546,3 +1546,36 @@ the compact constructor and 499.40 ms for the full constructor. This is not a
 browser end-to-end benchmark, native timing comparison or repeated statistical
 speedup result. The local receipt is `.resources/selected-source-benchmark.json`.
 Full point-pair coarse/refinement assembly remains a separate pending gate.
+
+## Combined coarse application and refinement replay
+
+`docs/evidence/landmark-joint-controller-native.json` retains six executions
+against the same mapped-image digest as the preceding native captures. Original
+source normal preparation and target cache construction run first. The original
+vertex and face workers then apply a supplied coarse translation, the original
+refinement thread computes its delta, and the original identity predicate gates
+the final application. Inputs include a pair, a single bucket, same-winding
+faces, a tetrahedron, a random surface and a curved grid.
+
+`tests/native-joint-controller.test.ts` feeds those captured inputs through the
+application's transform kernel and indexed refinement controller. All six cases
+match the native parameters, matrix, initial and final objective values,
+acceptance state, intermediate normal bytes, and final vertex and normal bytes
+exactly. This connects the separately verified transform and refinement stages
+without collapsing their Float32 storage boundary.
+
+The capture uses the existing allocator, storage and query adapters with serial
+scheduling. It supplies the coarse matrix and selects all source vertices; it
+does not execute coarse landmark registration, seed growth, scene collection,
+dialog interaction or physical multicore scheduling. Its search radius is the
+captured controller fixture value, not proof of the point-pair caller's defaults.
+It does not verify the owner's three complete scans or enable the full point-pair
+command. Native allocations were released and the exact replay PID exited.
+
+Validation: the production build and TypeScript check passed without warnings
+or errors; all six focused cases passed. The full suite passed 26,942 tests
+across 345 files, with 24 existing skips across five files. Formatting,
+whitespace, fixture structure and branding checks passed. This change adds
+evidence and regression coverage only; it changes no GUI/MCP operation or
+schema. No new browser workflow was introduced. The existing live server on
+port 5173 returned HTTP 200 for the current alignment source.
