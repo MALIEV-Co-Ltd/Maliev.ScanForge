@@ -2275,3 +2275,55 @@ buffers, iterator destruction and allocation cleanup. Formatting, JSON parsing,
 scoped whitespace and brand checks passed. Original replay, suite, browser and
 MCP helpers exited and test ports were released; an unrelated later process
 reused one recorded PID and was preserved. Port 5173 serves the latest source.
+
+## Complete selected refinement driver and identity initializer
+
+Direct execution now covers the complete original constructor `0x140aa8ea0`,
+selected refinement driver `0x140aaa570` and destructor `0x140aa9000`.
+`docs/evidence/landmark-full-driver-native.json` retains one- and two-lane
+captures on the same 24-vertex box translated in Float32 by
+`(0.05, 0.03, -0.04)`. Both source and target use actual native mesh containers
+and the complete original mesh finalizer before controller construction. The
+original driver builds its target query, collects selected vertices, initializes
+correspondences, initializes parameters, starts the optimizer and returns its
+accepted transform. The original destructor releases its allocations.
+
+The optimizer executes on a real OS thread through a bounded UCRT thread adapter
+for the MFC thread-launch boundary. Progress callbacks are inert and localization
+returns the supplied label. Windows synchronization, timing, thread-status and
+CRT imports are rebound; numerical routines and Concurrency Runtime scheduling
+are not substituted. These are isolated binary executions, not installed-UI
+captures. Every run has a finite process lease. The successful replay releases
+all tracked allocations with zero unknown frees and releases its mapped image.
+
+`tests/landmark-full-driver.test.ts` compares the native accepted flag, best
+score, six parameters and output matrix exactly with the shared application's
+synchronous and asynchronous operations for each logical lane count. This
+covers the operation used by both GUI and MCP, without changing their contract.
+A separate browser check must establish physical Web Worker execution; asynchronous
+unit execution can fall back to a single physical worker.
+
+`docs/evidence/landmark-initializer-native.json` also records complete execution
+of `0x140aaa2b0` on empty, translated, rotated, rounding-sensitive and sentinel
+correspondences. Every returned transform is exactly identity. The helper centers
+temporary source/correspondence records in Float32 but never places their centroids
+in the returned matrix. The enclosing driver discards those temporary records.
+The application's identity six-parameter initialization therefore agrees with
+this helper; introducing a centroid or best-fit warm start would change the
+observed behavior. This confirms the retained static trace rather than a new
+initialization algorithm.
+
+Scope remains bounded: these captures do not certify the complete point-picking
+UI, arbitrary target layouts, point-cloud refinement, fresh CAD tessellation or
+the complete controller on the large owner scans. The By N points ribbon gate
+remains unchanged while those requirements are validated.
+
+Validation of this capture slice: production build passed without warnings or
+errors (`scanforge-abbaa82db3abd10b`); focused alignment tests passed 32 cases;
+the full suite passed 27,033 tests across 351 files, with 29 existing skips.
+The isolated browser compared the complete native captures with exactly one and
+two physical Web Workers, respectively, and reported no page errors. Results
+and limits are retained in `docs/evidence/landmark-full-driver-verification.json`.
+Native image allocations and browser helpers were released. A later unrelated
+process reused a browser-controller PID and was preserved after identity/start
+comparison. The live source server on port 5173 remains running.

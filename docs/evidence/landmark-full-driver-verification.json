@@ -1,0 +1,56 @@
+{
+  "nativeCleanup": {
+    "pid": 44112,
+    "allocationReleased": true,
+    "finishedUtc": "2026-10-15T05:29:14.447223+00:00"
+  },
+  "browser": {
+    "results": [
+      {
+        "accepted": true,
+        "best": 5.875784853805403e-11,
+        "parameters": [
+          9.950004634138804, 9.970004953009298, 10.039999579406405,
+          1.5707960013042623, 1.5707956349893761, 1.5707951761292187
+        ],
+        "matrix": [
+          0.9999999999990987, 1.1506659030273949e-6, -6.918051458937972e-7,
+          -0.04999536586119646, -1.150665677850963e-6, 0.999999999999285,
+          3.2549143025980474e-7, -0.029995046990702434, 6.918055204251932e-7,
+          -3.254906342230742e-7, 0.9999999999997078, 0.03999957940640542
+        ],
+        "physicalWorkers": 1,
+        "logicalLanes": 1,
+        "fallbackReason": "single-core requested"
+      },
+      {
+        "accepted": true,
+        "best": 7.530933566456958e-12,
+        "parameters": [
+          9.94999889734758, 9.970000437812764, 10.04000156760059,
+          1.5707959098978272, 1.5707964513321604, 1.57079594093072
+        ],
+        "matrix": [
+          0.9999999999999178, 3.8586412469153164e-7, 1.2453742470039148e-7,
+          -0.05000110265241986, -3.858641766107825e-7, 0.9999999999998387,
+          4.1689702125629473e-7, -0.02999956218723554, -1.2453726383476717e-7,
+          -4.1689706931079125e-7, 0.9999999999999054, 0.040001567600590704
+        ],
+        "physicalWorkers": 2,
+        "logicalLanes": 2,
+        "fallbackReason": ""
+      }
+    ],
+    "errors": []
+  },
+  "assertions": {
+    "acceptedBestParametersMatrix": "exact equality against complete native driver, sync and async unit operations and actual browser workers",
+    "physicalBrowserWorkers": [1, 2],
+    "pageErrors": []
+  },
+  "limitations": [
+    "Synthetic box geometry, not the full owner scans",
+    "Installed native UI not captured",
+    "Unit async lane comparison can fall back to serial; physical worker counts are from browser"
+  ]
+}
