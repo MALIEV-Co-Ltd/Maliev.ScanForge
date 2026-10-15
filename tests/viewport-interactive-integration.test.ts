@@ -3,6 +3,43 @@ import * as THREE from "three";
 import { Viewport } from "../src/viewport";
 import type { InteractiveAlignmentState } from "../src/interactive-alignment-session";
 const pose = (x: number) => [1, 0, 0, x, 0, 1, 0, 0, 0, 0, 1, 0];
+it("ends a captured gizmo gesture without submitting an extra movement on mouse-up", () => {
+  const view = Object.create(Viewport.prototype) as any;
+  const drag = { move: vi.fn(), end: vi.fn() };
+  Object.assign(view, {
+    interactivePointer: 3,
+    interactiveDrag: drag,
+    releaseInteractivePointer: vi.fn(),
+  });
+  const event = {
+    pointerId: 3,
+    preventDefault: vi.fn(),
+    stopImmediatePropagation: vi.fn(),
+  };
+  view.pointerUp(event);
+  expect(drag.move).not.toHaveBeenCalled();
+  expect(drag.end).toHaveBeenCalledOnce();
+  expect(view.releaseInteractivePointer).toHaveBeenCalledOnce();
+});
+it("only releases cursor and capture owned by Interactive alignment", () => {
+  const view = Object.create(Viewport.prototype) as any;
+  const canvas = {
+    style: { cursor: "crosshair" },
+    hasPointerCapture: vi.fn(() => true),
+    releasePointerCapture: vi.fn(),
+  };
+  view.renderer = { domElement: canvas };
+  view.releaseInteractivePointer();
+  expect(canvas.style.cursor).toBe("crosshair");
+  expect(canvas.releasePointerCapture).not.toHaveBeenCalled();
+  view.interactivePointer = 7;
+  view.interactiveCursor = true;
+  view.releaseInteractivePointer();
+  expect(canvas.releasePointerCapture).toHaveBeenCalledExactlyOnceWith(7);
+  expect(canvas.style.cursor).toBe("");
+  expect(view.interactivePointer).toBeUndefined();
+  expect(view.interactiveCursor).toBe(false);
+});
 it("publishes a pose to canvas and agent picking without rebuilding geometry, and restores bounds on cancel", () => {
   const view = Object.create(Viewport.prototype) as any;
   const geometry = new THREE.BufferGeometry();

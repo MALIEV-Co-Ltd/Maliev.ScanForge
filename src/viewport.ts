@@ -1,4 +1,9 @@
 import { prepareViewportPicking } from "./viewport-picking";
+import { InteractiveAlignmentGizmo } from "./interactive-alignment-gizmo";
+import {
+  InteractiveGizmoDrag,
+  type InteractiveGizmoMovement,
+} from "./interactive-gizmo-drag";
 import {
   InteractivePosePreview,
   type InteractiveDisplayPose,
@@ -156,6 +161,10 @@ export class Viewport {
   private readonly objects = new Map<string, Item>();
   private interactivePosePreview?: InteractivePosePreview;
   private interactiveOriginalBounds?: THREE.Box3;
+  private interactiveGizmo?: InteractiveAlignmentGizmo;
+  private interactiveDrag?: InteractiveGizmoDrag;
+  private interactivePointer?: number;
+  private interactiveCursor = false;
   private readonly raycaster = new THREE.Raycaster();
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
@@ -600,10 +609,16 @@ export class Viewport {
 
   /** Shared GUI/agent preview sink. Only display matrices and coarse clipping bounds change. */
   setInteractivePreview(
-    state: { targets: readonly InteractiveDisplayPose[] } | null,
+    state: {
+      targets: readonly InteractiveDisplayPose[];
+      pivot?: readonly number[];
+    } | null,
   ): void {
     if (this.disposed && state) throw new Error("The viewport is closed.");
     if (!state) {
+      this.interactiveGizmo?.show(null);
+      this.interactiveDrag?.cancel();
+      this.releaseInteractivePointer();
       if (!this.interactivePosePreview) return;
       this.interactivePosePreview.clear();
       this.interactivePosePreview = undefined;
@@ -622,6 +637,13 @@ export class Viewport {
       );
     }
     this.interactivePosePreview.show(state.targets);
+    if (state.pivot && !this.interactiveGizmo) {
+      this.interactiveGizmo = new InteractiveAlignmentGizmo();
+      this.scene.add(this.interactiveGizmo.group);
+    }
+    this.interactiveGizmo?.show(
+      state.pivot ? { pivot: [...state.pivot] } : null,
+    );
     this.bounds.makeEmpty();
     for (const item of this.objects.values())
       if (item.mesh.visible && item.mesh.geometry.boundingBox) {
@@ -634,6 +656,46 @@ export class Viewport {
       }
     updateCameraClipping(this.camera, this.bounds);
     this.invalidate();
+  }
+
+  /** The GUI forwards gestures to the same versioned operations used by MCP. */
+  setInteractiveDragHandler(
+    send:
+      ((movement: InteractiveGizmoMovement) => Promise<boolean>) | undefined,
+    onError: (error: unknown) => void = () => {},
+  ): void {
+    this.interactiveDrag?.cancel();
+    this.releaseInteractivePointer();
+    this.interactiveDrag = send
+      ? new InteractiveGizmoDrag(send, onError)
+      : undefined;
+  }
+
+  private interactiveScreenPoint(event: PointerEvent): [number, number] {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    return [
+      (event.clientX - rect.left) / Math.max(1, rect.width),
+      (event.clientY - rect.top) / Math.max(1, rect.height),
+    ];
+  }
+
+  private releaseInteractivePointer(): void {
+    if (this.interactivePointer === undefined && !this.interactiveCursor)
+      return;
+    const canvas = this.renderer?.domElement;
+    if (!canvas) {
+      this.interactivePointer = undefined;
+      this.interactiveCursor = false;
+      return;
+    }
+    if (
+      this.interactivePointer !== undefined &&
+      canvas.hasPointerCapture?.(this.interactivePointer)
+    )
+      canvas.releasePointerCapture(this.interactivePointer);
+    this.interactivePointer = undefined;
+    this.interactiveCursor = false;
+    canvas.style.cursor = "";
   }
 
   private captureInteractiveCamera() {
@@ -674,6 +736,7 @@ export class Viewport {
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
     this.updateControls();
+    this.interactiveGizmo?.update(this.camera, this.container.clientHeight);
     const selectionAnimating =
       this.triangleSelection.visible &&
       this.triangleSelection.children.length > 0 &&
@@ -755,6 +818,31 @@ export class Viewport {
   }
 
   private pointerDown(event: PointerEvent): void {
+    if (
+      event.button === 0 &&
+      event.isPrimary &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey &&
+      this.interactiveDrag &&
+      this.interactiveGizmo?.group.visible
+    ) {
+      const point = this.interactiveScreenPoint(event);
+      this.interactiveGizmo.update(this.camera, this.container.clientHeight);
+      const handle = this.interactiveGizmo.pick(this.camera, point);
+      if (handle !== undefined) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.cancelViewTransition();
+        this.holdMenu?.close();
+        this.interactivePointer = event.pointerId;
+        this.interactiveDrag.begin(handle, point);
+        this.renderer.domElement.setPointerCapture(event.pointerId);
+        this.renderer.domElement.style.cursor = "grabbing";
+        this.interactiveCursor = true;
+        return;
+      }
+    }
     if (event.pointerType !== "touch")
       this.navigationCursor = {
         clientX: event.clientX,
@@ -826,6 +914,29 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (
+      this.interactivePointer !== undefined &&
+      this.interactivePointer === event.pointerId
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.interactiveDrag?.move(this.interactiveScreenPoint(event));
+      return;
+    }
+    if (
+      !event.buttons &&
+      this.interactiveDrag &&
+      this.interactiveGizmo?.group.visible
+    ) {
+      const handle = this.interactiveGizmo.pick(
+        this.camera,
+        this.interactiveScreenPoint(event),
+      );
+      this.renderer.domElement.style.cursor =
+        handle === undefined ? "" : "grab";
+      this.interactiveCursor = handle !== undefined;
+      if (this.interactiveGizmo.highlight(handle)) this.invalidate();
+    }
     if (event.pointerType !== "touch")
       this.navigationCursor = {
         clientX: event.clientX,
@@ -895,6 +1006,8 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.interactiveDrag?.cancel();
+    this.releaseInteractivePointer();
     this.endMouseOrbit();
     this.holdMenu?.close();
     this.cancelSketchDrag();
@@ -918,6 +1031,16 @@ export class Viewport {
   };
 
   private pointerUp(event: PointerEvent): void {
+    if (
+      this.interactivePointer !== undefined &&
+      this.interactivePointer === event.pointerId
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.interactiveDrag?.end();
+      this.releaseInteractivePointer();
+      return;
+    }
     if (this.mouseOrbitPointer === event.pointerId) this.endMouseOrbit();
     this.holdMenu?.cancelHold();
     if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
@@ -2648,6 +2771,9 @@ export class Viewport {
 
   dispose(): void {
     this.interactivePosePreview?.clear();
+    this.interactiveDrag?.cancel();
+    this.releaseInteractivePointer();
+    this.interactiveGizmo?.dispose();
     this.interactivePosePreview = undefined;
     this.interactiveOriginalBounds = undefined;
     this.setNoiseComparison();
