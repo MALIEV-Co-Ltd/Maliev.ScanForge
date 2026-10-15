@@ -1,0 +1,37 @@
+{
+  "scenario": "All three complete owner PLY scans, 6663164 triangles; isolated Chrome, 1183x944 CSS pixels, device scale 2; twenty alternating left/middle orbits and wheel zooms before index readiness",
+  "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "before": {
+    "medianFrameMs": 16.68499999999767,
+    "p95FrameMs": 16.820000000003347,
+    "maxFrameMs": 400.34500000000116,
+    "longTasks": [
+      {
+        "start": 13821.645000010729,
+        "duration": 409
+      },
+      {
+        "start": 14388.84999999404,
+        "duration": 216
+      }
+    ],
+    "drawCalls": 1104,
+    "browserErrors": []
+  },
+  "after": {
+    "medianFrameMs": 16.68000000000029,
+    "p95FrameMs": 16.840000000000146,
+    "maxFrameMs": 33.39500000000044,
+    "longTasks": [
+      {
+        "start": 14594.180000007153,
+        "duration": 50
+      }
+    ],
+    "drawCalls": 1092,
+    "browserErrors": []
+  },
+  "cause": "Orbit surface-pivot fallback performed ordinary linear triangle intersections while background BVH construction was pending",
+  "fix": "Camera-only query admission defers large unindexed occluders to existing stable pivot/bounds fallback; exact selection and viewport_pick are unchanged",
+  "scope": "Short local hardware replay; cold import and all-operation performance are not certified"
+}

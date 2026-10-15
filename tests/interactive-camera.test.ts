@@ -73,3 +73,30 @@ it("uses the native threshold then produces incremental drag input in both proje
     expect(active!.original).toEqual([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]);
   }
 });
+
+it("preserves captured drag coordinates outside the viewport while enforcing the native signed pixel range", () => {
+  const camera = new THREE.OrthographicCamera(-100, 100, 75, -75);
+  camera.position.z = 20;
+  camera.lookAt(0, 0, 0);
+  const context = captureInteractiveCamera(
+    camera,
+    new THREE.Vector3(),
+    new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1)),
+    800,
+    600,
+  );
+  const input = {
+    handle: 4,
+    from: [0.95, 0.5],
+    to: [1.05, 0.5],
+    pivot: [0, 0, 0],
+    strength: 100,
+  };
+  const result = interactiveDragForCamera(context, input);
+  expect(result).not.toBeNull();
+  expect(result!.screen).toEqual(context.plane([840, 300]));
+  expect(result!.delta[0]).toBeGreaterThan(0);
+  expect(() =>
+    interactiveDragForCamera(context, { ...input, to: [1e30, 0.5] }),
+  ).toThrow(/pixel range/);
+});

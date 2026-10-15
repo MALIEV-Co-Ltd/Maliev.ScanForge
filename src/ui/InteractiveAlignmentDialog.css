@@ -1,0 +1,24 @@
+.interactive-alignment-panel fieldset {
+  margin: 0 0 12px;
+  border: 1px solid var(--border);
+  padding: 10px;
+}
+.interactive-alignment-panel input[type="number"] {
+  width: 100%;
+  min-width: 0;
+}
+.interactive-step-actions {
+  display: flex;
+  gap: 8px;
+}
+.interactive-step-actions > button {
+  flex: 1;
+}
+.interactive-dialog-actions {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.interactive-tool-note {
+  font-size: 11px;
+  color: var(--muted);
+}

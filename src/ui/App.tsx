@@ -5,6 +5,10 @@ import {
   workspaceTitle,
 } from "./tool-panel-scope";
 import { CommandRepeat } from "../command-repeat";
+import { InteractiveAlignmentStore } from "../interactive-alignment-store";
+import { interactiveAlignmentTargetError } from "../interactive-alignment-session";
+import { createInteractiveEditor } from "../automation/interactive-editor";
+import { InteractiveAlignmentDialog } from "./InteractiveAlignmentDialog";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
 import { importBatch, validateImportBatch } from "../import-batch";
@@ -293,13 +297,21 @@ export function App() {
   });
   const selectedId = objectSelection.activeId;
   const selectedIds = objectSelection.ids;
+  const [interactiveStore] = useState(() => new InteractiveAlignmentStore());
+  const [interactiveOpen, setInteractiveOpen] = useState(false);
+  const interactiveTargetError = useMemo(
+    () => interactiveAlignmentTargetError(entities, selectedIds),
+    [entities, selectedIds],
+  );
   function setSelectedId(id: string | null) {
+    if (interactiveStore.getSnapshot()) return;
     setObjectSelection({ ids: id ? [id] : [], activeId: id, anchorId: id });
   }
   function selectObjects(
     id: string | null,
     modifiers: ObjectSelectionModifiers = {},
   ) {
+    if (interactiveStore.getSnapshot()) return;
     if (!id) return setSelectedId(null);
     setObjectSelection((state) =>
       selectObject(
@@ -439,6 +451,7 @@ export function App() {
   const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
   const pickScanReference = useRef<(id: string) => boolean>(() => false);
   const busy = actionBusy || processingBusy;
+  const editingBlocked = busy || interactiveOpen;
   const busyRef = useRef(busy);
   busyRef.current = busy;
   const [message, setMessage] = useState("Ready · open a scan to begin");
@@ -660,7 +673,7 @@ export function App() {
       viewport.current = new Viewport(
         viewportHost.current!,
         (point, id, triangleIndex) => {
-          if (busyRef.current) return;
+          if (busyRef.current || interactiveStore.getSnapshot()) return;
           if (datumFacePick.current) {
             const pick = datumFacePick.current;
             datumFacePick.current = null;
@@ -704,6 +717,7 @@ export function App() {
           if (datumFacePick.current) return;
           if (
             !busyRef.current &&
+            !interactiveStore.getSnapshot() &&
             !nPointsRef.current &&
             !surfaceFitRef.current &&
             !createSketchRef.current
@@ -734,7 +748,7 @@ export function App() {
         },
         (message) => setError(message),
         (x, y) => {
-          if (!busyRef.current) {
+          if (!busyRef.current && !interactiveStore.getSnapshot()) {
             const rect = viewportHost.current!.getBoundingClientRect();
             setContextMenu({ x: x + rect.left, y: y + rect.top });
           }
@@ -754,6 +768,7 @@ export function App() {
         (id) => {
           if (
             busyRef.current ||
+            interactiveStore.getSnapshot() ||
             nPointsRef.current ||
             surfaceFitRef.current ||
             createSketchRef.current
@@ -766,6 +781,20 @@ export function App() {
         },
       );
       viewport.current.setTheme(resolveTheme(theme));
+      viewport.current.setInteractiveDragHandler(
+        async (movement) => {
+          const result = await interactiveEditor.edit({
+            action: "drag",
+            ...movement,
+          });
+          return result.accepted === true;
+        },
+        (error) => setError(errorText(error)),
+      );
+      viewport.current.onInteractiveMirrorError = (error) => {
+        setError(errorText(error));
+        setMessage("Mirror preview failed");
+      };
       viewport.current.onSelectionStatus = (status) =>
         setMessage(
           status === "pending"
@@ -796,6 +825,7 @@ export function App() {
     }
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
+        workspaceApi.dispose();
         datumPreview.current = null;
         datumPointPick.current = null;
         datumFacePick.current = null;
@@ -1722,6 +1752,11 @@ export function App() {
     unroll: () => openScanTool("unroll"),
     fineAlign: () => showTools("fineAlign"),
     alignNPoints: openLandmarks,
+    alignInteractive: () => {
+      void interactiveEditor
+        .edit({ action: "begin" })
+        .catch((error) => setError(errorText(error)));
+    },
     repairMesh: () => showTools("repairMesh"),
     segmentMesh: () => showTools("segmentMesh"),
     splitSolid: () => showTools("splitSolid"),
@@ -1892,6 +1927,7 @@ export function App() {
       hasVisibleKeyboardModal() ||
       !!(
         scanPreview ||
+        interactiveOpen ||
         datumPreview.current ||
         nPoints ||
         surfaceFit ||
@@ -1921,6 +1957,7 @@ export function App() {
     busy,
     modalOpen: !!(
       nPoints ||
+      interactiveOpen ||
       surfaceFit ||
       createSketch ||
       primitiveDialog ||
@@ -2046,6 +2083,10 @@ export function App() {
     });
   }
   function commit(next: Entity[], preserveSelectionFor?: string) {
+    if (interactiveStore.getSnapshot())
+      throw new Error(
+        "Apply or cancel Interactive alignment before editing the model.",
+      );
     next = next.map((entity) => canonicalCloud(retainIndexedMesh(entity)));
     const protectedObject = lockedObjectEdit(entities, next);
     if (protectedObject) {
@@ -2754,6 +2795,10 @@ export function App() {
   }
   async function action(label: string, run: () => Promise<void> | void) {
     if (busy) return;
+    if (interactiveStore.getSnapshot()) {
+      setError("Apply or cancel Interactive alignment first.");
+      return;
+    }
     setBusy(true);
     setError("");
     setMessage(label);
@@ -3873,6 +3918,15 @@ export function App() {
   function setInterface(input: InterfacePatch) {
     const patch = coordinateAlignmentInterface(input, selected);
     if (
+      interactiveStore.getSnapshot() &&
+      (patch.workspace !== undefined ||
+        patch.toolPanelOpen !== undefined ||
+        patch.datumAlignmentOpen !== undefined)
+    )
+      throw new Error(
+        "Apply or cancel Interactive alignment before changing its panel.",
+      );
+    if (
       patch.workspace !== undefined &&
       (nPoints ||
         surfaceFit ||
@@ -3905,6 +3959,38 @@ export function App() {
     if (patch.dismissError) setError("");
   }
   const workspaceApi = useWorkspaceApi({
+    inspectInteractive: interactiveStore.getSnapshot,
+    publishInteractive: (next) => {
+      const changed = !!next !== !!interactiveStore.getSnapshot();
+      viewport.current?.setInteractivePreview(next);
+      interactiveStore.publish(next);
+      if (changed) {
+        setInteractiveOpen(!!next);
+        setToolPanelOpen(!!next);
+        if (next) {
+          setMode("inspect");
+          setScanPanel(null);
+          setMeshClip(null);
+          setScanBoundaryPaths([]);
+          setSplitMeshOpen(false);
+          setQuickToolsPoint(null);
+        }
+      }
+    },
+    installInteractiveMirror: (backend) => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      viewport.current.installInteractiveMirror(backend);
+    },
+    interactiveDragInput: (input) =>
+      viewport.current?.interactiveDragInput(input) ?? null,
+    interactiveViewFrame: () => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      return viewport.current.interactiveViewFrame();
+    },
+    finishInteractiveCurrentView: () => {
+      if (!viewport.current) throw new Error("Viewport is not ready.");
+      viewport.current.finishInteractiveCurrentView();
+    },
     inspectCommands: () => commandRepeat.current.inspect(),
     launchCommand: runRepeatable,
     showDatumPreview: (next) => {
@@ -3943,6 +4029,20 @@ export function App() {
         datumAlignmentOpen,
         settingsOpen,
         previews: {
+          interactive: !!interactiveStore.getSnapshot(),
+          landmarkSession: !!nPoints,
+          sketchSection: !!createSketch,
+          dialog: !!(
+            primitiveDialog ||
+            saveDialogOpen ||
+            newDocumentDialog ||
+            pendingScanImport ||
+            settingsOpen ||
+            planePicking ||
+            contextMenu ||
+            renameObject ||
+            sketchPlaneDialog
+          ),
           datum: !!datumPreview.current,
           scan: !!scanPreview,
           landmarks: !!nPoints?.preview,
@@ -4114,6 +4214,10 @@ export function App() {
       setMessage(label);
     },
   });
+  const interactiveEditor = useMemo(
+    () => createInteractiveEditor(workspaceApi, interactiveStore.getSnapshot),
+    [workspaceApi, interactiveStore],
+  );
   async function uiCommand(
     command: string,
     args: Record<string, unknown> = {},
@@ -4183,7 +4287,7 @@ export function App() {
       data-panel-open={toolPanelOpen}
       onDragOver={(event) => {
         event.preventDefault();
-        if (!busy) setDragging(true);
+        if (!editingBlocked) setDragging(true);
       }}
       onDragLeave={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node))
@@ -4193,7 +4297,7 @@ export function App() {
         event.preventDefault();
         setDragging(false);
         const files = Array.from(event.dataTransfer.files);
-        if (files.length && !busy) void openFiles(files);
+        if (files.length && !editingBlocked) void openFiles(files);
       }}
     >
       <Ribbon
@@ -4239,15 +4343,19 @@ export function App() {
               />
               <HeaderIconButton
                 label="Open scan"
-                disabled={busy}
+                disabled={editingBlocked}
                 onClick={() => fileInput.current?.click()}
               >
                 <FolderOpen size={17} aria-hidden="true" />
               </HeaderIconButton>
-              <SaveProjectButton dirty={dirty} disabled={busy} onSave={save} />
+              <SaveProjectButton
+                dirty={dirty}
+                disabled={editingBlocked}
+                onSave={save}
+              />
               <HeaderIconButton
                 label="Export STEP"
-                disabled={busy}
+                disabled={editingBlocked}
                 onClick={exportStep}
               >
                 <Download size={17} aria-hidden="true" />
@@ -4264,7 +4372,8 @@ export function App() {
         }
         activeTab={ribbonTab}
         onTabChange={setRibbonTab}
-        disabled={busy || !!nPoints || !!surfaceFit || !!createSketch}
+        disabled={editingBlocked || !!nPoints || !!surfaceFit || !!createSketch}
+        interactiveTargetError={interactiveTargetError}
         hasSelection={!!selected}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
@@ -4280,7 +4389,8 @@ export function App() {
         onChange={(e) => {
           const files = Array.from(e.target.files ?? []);
           e.target.value = "";
-          if (files.length) void openFiles(files);
+          if (files.length && !interactiveStore.getSnapshot())
+            void openFiles(files);
         }}
       />
       {pendingScanImport && (
@@ -4591,7 +4701,7 @@ export function App() {
           )}
         <aside
           className="explorer"
-          inert={busy || !!nPoints || !!surfaceFit || !!createSketch}
+          inert={editingBlocked || !!nPoints || !!surfaceFit || !!createSketch}
         >
           <div className="objects-panel">
             <h2>
@@ -4870,6 +4980,25 @@ export function App() {
           )}
           <CanvasError message={error} onDismiss={() => setError("")} />
         </section>
+        {interactiveOpen && (
+          <InteractiveAlignmentDialog
+            store={interactiveStore}
+            busy={busy}
+            mirrorAvailable={
+              !!interactiveStore
+                .getSnapshot()
+                ?.entityIds.some(
+                  (id) => entities.find((e) => e.id === id)?.kind === "mesh",
+                )
+            }
+            onEdit={interactiveEditor.edit}
+            onApply={interactiveEditor.apply}
+            onCancel={async () => {
+              await interactiveEditor.cancel();
+              setMessage("Interactive alignment cancelled");
+            }}
+          />
+        )}
         {createSketch && (
           <CreateSketchDialog
             source={createSketch.source}
@@ -4924,7 +5053,7 @@ export function App() {
           <aside
             className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
             style={
-              nPoints || surfaceFit || createSketch
+              interactiveOpen || nPoints || surfaceFit || createSketch
                 ? { display: "none" }
                 : undefined
             }
@@ -5985,11 +6114,11 @@ export function App() {
       <ModelTimeline
         labels={[...history, ...future].map((revision) => revision.label)}
         cursor={history.length}
-        disabled={busy}
+        disabled={editingBlocked}
         onSeek={restoreRevision}
         onContextMenu={(event, revision) => {
           event.preventDefault();
-          if (!busy)
+          if (!editingBlocked)
             setContextMenu({
               x: event.clientX,
               y: event.clientY,
@@ -6246,6 +6375,7 @@ export function App() {
           <ActiveToolHint
             context={{
               hasSelection: !!selected,
+              interactiveAlignment: interactiveOpen,
               hasCadSelection: !!selected?.kernelId,
               shortcutMode: shortcutContext.mode,
               busy,

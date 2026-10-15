@@ -39,3 +39,5 @@ Existing entries in Edit / View, Scan Data, Freeform, CAD and Analysis were reta
 ## Promotion requirements
 
 A command must have an implemented UI with recovered reference options and behavior, focused regression coverage, executed complete browser workflows, and applicable validation of errors, selection requirements, undo/redo and persistence. Record the actual evidence and remaining limits before explicitly promoting its allowlist entry. Missing evidence keeps it disabled.
+
+Interactive scan alignment is enabled for one to 32 visible, unlocked, selectable raw mesh/point-cloud targets after the public GUI/MCP owner-scan replay. Both Main's Move / rotate scan and Scan Data's Interactive entry share the same operation. Preview, numerical steps, native camera drag/current-view adapters, mesh mirror, Apply, Cancel and Undo have the documented bounded evidence in `NATIVE_INTERACTIVE_ALIGNMENT.md`; this does not establish original-window pixel parity or support for exact-CAD targets.

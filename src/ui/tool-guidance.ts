@@ -4,6 +4,7 @@ export interface ToolGuidanceContext {
   hasSelection?: boolean;
   hasCadSelection?: boolean;
   busy?: boolean;
+  interactiveAlignment?: boolean;
   planePicking?: boolean;
   mode: "inspect" | "measure" | "section" | "brush";
   brushActive?: boolean;
@@ -29,6 +30,7 @@ export function compactToolGuidance(context: ToolGuidanceContext): string {
   if (full.startsWith("Left-click selects ·"))
     return "Select an object · Right-click for tools";
   if (context.busy) return "Processing · Cancel to stop";
+  if (context.interactiveAlignment) return "Left-drag handles · Escape cancels";
   if (context.planePicking) return "Left-click creates sketch · Escape cancels";
   if (context.mode === "section" && full.includes(" section ·"))
     return full.split(" · ").slice(0, 2).join(" · ");
@@ -40,6 +42,8 @@ export function compactToolGuidance(context: ToolGuidanceContext): string {
 export function activeToolGuidance(context: ToolGuidanceContext): string {
   if (context.busy)
     return "Processing · modeling input paused · use the active Cancel button to stop";
+  if (context.interactiveAlignment)
+    return `Left-drag a handle to move or rotate · ${navigation} · Escape cancels`;
   if (context.planePicking)
     return `Hover highlights plane · Left-click creates sketch · Hold left-click selects through · Escape cancels`;
   if (context.reference)

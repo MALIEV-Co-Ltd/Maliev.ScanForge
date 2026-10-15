@@ -1,4 +1,7 @@
-import { prepareViewportPicking } from "./viewport-picking";
+import {
+  canQueryNavigationSurface,
+  prepareViewportPicking,
+} from "./viewport-picking";
 import { InteractiveMirrorController } from "./interactive-mirror-controller";
 import { InteractiveMirrorDisplay } from "./interactive-mirror-display";
 import type { InteractiveMirrorBackend } from "./interactive-mirror-backend";
@@ -538,6 +541,9 @@ export class Viewport {
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
       .map((item) => item.pointCloud ?? item.mesh);
+    // Use the stable existing pivot until every possible occluder can be
+    // queried cheaply. Skipping just one unready object could pick through it.
+    if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) return;
     for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
     return this.raycaster
       .intersectObjects(meshes, false)

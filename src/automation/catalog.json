@@ -4677,7 +4677,14 @@
       "properties": {
         "target": {
           "type": "string",
-          "enum": ["scan", "surface", "landmarks", "sketchSection", "datum"]
+          "enum": [
+            "scan",
+            "surface",
+            "landmarks",
+            "sketchSection",
+            "datum",
+            "interactive"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -5343,6 +5350,337 @@
         }
       },
       "required": ["action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "interactive_alignment_get",
+    "description": "Inspect the active Interactive scan-alignment session: version, Double poses, pivot, measured bounds, drag strength, mirror options, source readiness and worker diagnostics. No geometry transfer.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "interactive_alignment_edit",
+    "description": "Begin or edit Interactive alignment for one to 32 unlocked visible mesh/point-cloud scans. Preview uses display poses and leaves authored geometry/history unchanged. Later edits require the latest sessionId and expectedSessionVersion. Strength is percent; step angles are degrees and translations mm; axes are 0=X/1=Y/2=Z. Drag translation/rotation handles use normalized top-left viewport points, including captured points outside the viewport. Mirror is a mesh-only visual reference across XY/YZ/XZ. Apply separately or cancel with preview_discard target interactive.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "action": {
+              "enum": ["begin"]
+            },
+            "entityIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "parallel": {
+              "type": "boolean"
+            }
+          },
+          "required": ["expectedRevision", "requestId", "action"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "sessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "expectedSessionVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "action": {
+              "enum": ["configure"]
+            },
+            "strength": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "mirror": {
+              "type": "boolean"
+            },
+            "mirrorPlane": {
+              "enum": ["XY", "YZ", "XZ"]
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "sessionId",
+            "expectedSessionVersion"
+          ],
+          "additionalProperties": false,
+          "minProperties": 6
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "sessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "expectedSessionVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "action": {
+              "enum": ["step"]
+            },
+            "kind": {
+              "enum": [
+                "rotateNegative",
+                "rotatePositive",
+                "translateNegative",
+                "translatePositive"
+              ]
+            },
+            "axis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "value": {
+              "type": "number",
+              "description": "Step magnitude rounded to finite Float32; positive/negative control determines sign."
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "sessionId",
+            "expectedSessionVersion",
+            "kind",
+            "axis",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "sessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "expectedSessionVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "action": {
+              "enum": ["reset"]
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "sessionId",
+            "expectedSessionVersion"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "sessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "expectedSessionVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "action": {
+              "enum": ["currentView"]
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "sessionId",
+            "expectedSessionVersion"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Unique retry receipt; reuse only for an identical request."
+            },
+            "sessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "expectedSessionVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "action": {
+              "enum": ["drag"]
+            },
+            "handle": {
+              "type": "integer",
+              "enum": [1, 2, 3, 4, 5, 6, 10, 11, 12],
+              "description": "1/2/3 translate in YZ/XZ/XY planes; 4/5/6 translate on X/Y/Z axes; 10/11/12 rotate about X/Y/Z."
+            },
+            "from": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "to": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "continuation": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "sessionId",
+            "expectedSessionVersion",
+            "handle",
+            "from",
+            "to"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "interactive_alignment_apply",
+    "description": "Apply the active Interactive session once using its latest session/version. Mesh geometry is baked once; point clouds retain their source/Double pose representation. Creates one model-history entry when changed and releases preview resources. Returns a job receipt; inspect job_get. Cancel with preview_discard target interactive.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only for an identical request."
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedSessionVersion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parallel": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "expectedRevision",
+        "requestId",
+        "sessionId",
+        "expectedSessionVersion"
+      ],
       "additionalProperties": false
     }
   }

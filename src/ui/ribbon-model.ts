@@ -55,6 +55,7 @@ export const RIBBON_ACTION_IDS = [
   "unroll",
   "fineAlign",
   "alignNPoints",
+  "alignInteractive",
   "repairMesh",
   "segmentMesh",
   "loft",
@@ -169,7 +170,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("reducePolygons", "Simplify", "cleanup"),
         withOptions(
           tool("align", "Align", "align", true),
-          planned("alignInteractive", "Move / rotate scan", "transform"),
+          tool("alignInteractive", "Move / rotate scan", "transform", true),
           tool("alignNPoints", "Between scans: point pairs", "select"),
           tool("fineAlign", "Between scans: fine alignment", "align"),
         ),
@@ -276,7 +277,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         "Align",
         tool("align", "To origin / references", "align", true),
         planned("alignCoordinates", "By coordinate system", "align"),
-        planned("alignInteractive", "Interactive", "transform"),
+        tool("alignInteractive", "Interactive", "transform", true),
         tool("alignNPoints", "By N points", "select"),
         tool("fineAlign", "Fine align", "align"),
         planned("globalFineAlign", "Global fine align", "align"),
@@ -520,6 +521,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 
 export interface RibbonState {
   landmarkSourceId?: string | null;
+  interactiveTargetError?: string | null;
   disabled: boolean;
   hasSelection: boolean;
   canUndo: boolean;
@@ -556,6 +558,8 @@ export function ribbonToolAvailability(
       available: false,
       reason: "Choose an unlocked visible scan for point-pair alignment",
     };
+  if (tool.action === "alignInteractive" && state.interactiveTargetError)
+    return { available: false, reason: state.interactiveTargetError };
   if (tool.requiresSelection && !state.hasSelection)
     return { available: false, reason: "Select an object first" };
   if (tool.action === "undo" && !state.canUndo)

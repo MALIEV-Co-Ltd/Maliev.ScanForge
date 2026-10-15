@@ -1,0 +1,279 @@
+{
+  "vertexState": {
+    "provenance": {
+      "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+      "procedure": "0x14088aeb0",
+      "evidenceId": "ev_d4a126dea9cad71c3553471d2bc9b0fb4b302ba11fc189d031fb4916a289a551",
+      "execution": "Complete original refresh and cached re-entry over all supplied PLY source vertices/faces. Controlled vertex/face interfaces, no-op notification/query boundaries. Parsing is controlled and does not establish native importer/UI parity.",
+      "patches": [
+        {
+          "address": "0x14088be00",
+          "original": "405556574883"
+        }
+      ]
+    },
+    "selectionRule": "No selected faces",
+    "hiddenRule": "No hidden faces",
+    "cases": [
+      {
+        "name": "ply-1.ply",
+        "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+        "vertices": 140113,
+        "faces": 274154,
+        "positionsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+        "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c",
+        "trianglesSha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674",
+        "flagsSha256": "51147b301cfc750b5747468a11e6e4197a3af2f1eb3bed93cd9bf1bc30b2ebe8",
+        "flagsFile": "interactive-owner-unselected-flags-ply-1.ply.u32",
+        "summary": {
+          "selected": 0,
+          "hidden": 0,
+          "visibleFaces": 274154
+        },
+        "cacheReused": true
+      },
+      {
+        "name": "ply-2.ply",
+        "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+        "vertices": 1375494,
+        "faces": 2697877,
+        "positionsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+        "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231",
+        "trianglesSha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76",
+        "flagsSha256": "c5c65334f61d02ef5b250c04e95eb94d3c50e8cf51468d6d06218f6291f4cb21",
+        "flagsFile": "interactive-owner-unselected-flags-ply-2.ply.u32",
+        "summary": {
+          "selected": 0,
+          "hidden": 0,
+          "visibleFaces": 2697877
+        },
+        "cacheReused": true
+      },
+      {
+        "name": "ply-3.ply",
+        "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "vertices": 1865848,
+        "faces": 3691133,
+        "positionsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+        "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd",
+        "trianglesSha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+        "flagsSha256": "cf94758b0e527e4928acb2ff748d26580c0509f4a1bcc06ed05cf0b15880a816",
+        "flagsFile": "interactive-owner-unselected-flags-ply-3.ply.u32",
+        "summary": {
+          "selected": 0,
+          "hidden": 0,
+          "visibleFaces": 3691133
+        },
+        "cacheReused": true
+      }
+    ]
+  },
+  "bounds": {
+    "provenance": {
+      "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+      "procedures": ["0x140b30100", "0x140b2d870", "0x140b2dbe0"],
+      "execution": "Complete original eight-way partition, lane kernels, masks and ordered reduction; controlled indexed vertex-container and sequential scheduling adapters",
+      "nativeSchedulerVerified": false,
+      "realImportVerified": false,
+      "sourceCoordinates": "GUI-origin-placed source-order Float32 PLY vertices (Double XY center and minimum Z subtraction, Float32 stores), identified by file and point-buffer SHA-256; flags produced by original 88aeb0 with no selected/hidden faces",
+      "vertexStateEvidence": {
+        "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+        "procedure": "0x14088aeb0",
+        "evidenceId": "ev_d4a126dea9cad71c3553471d2bc9b0fb4b302ba11fc189d031fb4916a289a551",
+        "execution": "Complete original refresh and cached re-entry over all supplied PLY source vertices/faces. Controlled vertex/face interfaces, no-op notification/query boundaries. Parsing is controlled and does not establish native importer/UI parity.",
+        "patches": [
+          {
+            "address": "0x14088be00",
+            "original": "405556574883"
+          }
+        ]
+      },
+      "stepSemantics": "X +3.125 mm; Y -2.5 mm; Z +50000 then +Float32(0.1) mm",
+      "patches": [
+        {
+          "binding": "Retained allocation/free import",
+          "originalPointer": "0x7ffe9c9327e0",
+          "locations": 1
+        },
+        {
+          "binding": "Retained allocation/free import",
+          "originalPointer": "0x7ffe9c9327f0",
+          "locations": 1
+        },
+        {
+          "binding": "Retained allocation/free import",
+          "originalPointer": "0x7ffe9c9327c0",
+          "locations": 2
+        },
+        {
+          "address": "0x140d58f36",
+          "original": "ff25f48d1500"
+        },
+        {
+          "address": "0x140d58f30",
+          "original": "ff251a8e1500"
+        },
+        {
+          "address": "0x140d5cf70",
+          "original": "ff25b2181500"
+        },
+        {
+          "address": "0x140d5cf76",
+          "original": "ff25b4181500"
+        },
+        {
+          "address": "0x140d5cf7c",
+          "original": "ff25c6181500"
+        },
+        {
+          "address": "0x140d5cfbe",
+          "original": "ff25f41b1500"
+        },
+        {
+          "address": "0x140d5cfd0",
+          "original": "ff25fa1b1500"
+        },
+        {
+          "address": "0x140d5cfca",
+          "original": "ff25f81b1500"
+        },
+        {
+          "address": "0x140d5cfac",
+          "original": "ff25d61b1500"
+        },
+        {
+          "address": "0x140d5cfee",
+          "original": "ff25041c1500"
+        },
+        {
+          "address": "0x140b2bd50",
+          "original": "405541544155"
+        },
+        {
+          "address": "0x140b2c7d0",
+          "original": "405541544155"
+        }
+      ]
+    },
+    "transforms": [
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      [1, 0, 0, 3.125, 0, 1, 0, -2.5, 0, 0, 1, 50000.10000000149]
+    ],
+    "cases": [
+      {
+        "name": "ply-1.ply",
+        "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+        "pointsFile": "interactive-owner-ply-1-points.f32",
+        "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+        "count": 140113,
+        "importPlacement": [
+          19.9250431060791, 17.17806053161621, -331.615234375
+        ],
+        "placedPointsSha256": "c1d2b06c104502434f5ed8e693e03f0880fcec57c9d5b5d83cda606d9e85548b",
+        "flagsSha256": "51147b301cfc750b5747468a11e6e4197a3af2f1eb3bed93cd9bf1bc30b2ebe8",
+        "transform": 0,
+        "bounds": [
+          -52.79862976074219, -55.676971435546875, 0, 52.79862976074219,
+          55.676971435546875, 69.77410888671875
+        ],
+        "boundsBits": "cc3153c238b55ec200000000cc31534238b55e42588c8b42",
+        "valid": 1
+      },
+      {
+        "name": "ply-1.ply",
+        "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+        "pointsFile": "interactive-owner-ply-1-points.f32",
+        "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+        "count": 140113,
+        "importPlacement": [
+          19.9250431060791, 17.17806053161621, -331.615234375
+        ],
+        "placedPointsSha256": "c1d2b06c104502434f5ed8e693e03f0880fcec57c9d5b5d83cda606d9e85548b",
+        "flagsSha256": "51147b301cfc750b5747468a11e6e4197a3af2f1eb3bed93cd9bf1bc30b2ebe8",
+        "transform": 1,
+        "bounds": [
+          -49.67362976074219, -58.176971435546875, 50000.1015625,
+          55.92362976074219, 53.176971435546875, 50069.875
+        ],
+        "boundsBits": "ccb146c238b568c21a504347ccb15f4238b55442e0954347",
+        "valid": 1
+      },
+      {
+        "name": "ply-2.ply",
+        "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+        "pointsFile": "interactive-owner-ply-2-points.f32",
+        "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+        "count": 1375494,
+        "importPlacement": [
+          19.479591369628906, 17.44415855407715, -330.05120849609375
+        ],
+        "placedPointsSha256": "2e5a6233956f05abf4f9870b02c8dbed8c887c501f0af6b7d861b8283e70ef54",
+        "flagsSha256": "c5c65334f61d02ef5b250c04e95eb94d3c50e8cf51468d6d06218f6291f4cb21",
+        "transform": 0,
+        "bounds": [
+          -52.566123962402344, -55.49761962890625, 0, 52.566123962402344,
+          55.49761962890625, 67.87026977539062
+        ],
+        "boundsBits": "b64352c290fd5dc200000000b643524290fd5d4294bd8742",
+        "valid": 1
+      },
+      {
+        "name": "ply-2.ply",
+        "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+        "pointsFile": "interactive-owner-ply-2-points.f32",
+        "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+        "count": 1375494,
+        "importPlacement": [
+          19.479591369628906, 17.44415855407715, -330.05120849609375
+        ],
+        "placedPointsSha256": "2e5a6233956f05abf4f9870b02c8dbed8c887c501f0af6b7d861b8283e70ef54",
+        "flagsSha256": "c5c65334f61d02ef5b250c04e95eb94d3c50e8cf51468d6d06218f6291f4cb21",
+        "transform": 1,
+        "bounds": [
+          -49.441123962402344, -57.99761962890625, 50000.1015625,
+          55.691123962402344, 52.99761962890625, 50067.96875
+        ],
+        "boundsBits": "b6c345c290fd67c21a504347b6c35e4290fd5342f8934347",
+        "valid": 1
+      },
+      {
+        "name": "ply-3.ply",
+        "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "pointsFile": "interactive-owner-ply-3-points.f32",
+        "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+        "count": 1865848,
+        "importPlacement": [
+          19.332477569580078, 17.474040985107422, -330.2850036621094
+        ],
+        "placedPointsSha256": "bfa560d016daff1917e8c2ea11957c13f987c728ad2eb790d2809a8b0bfc6479",
+        "flagsSha256": "cf94758b0e527e4928acb2ff748d26580c0509f4a1bcc06ed05cf0b15880a816",
+        "transform": 0,
+        "bounds": [
+          -52.5376091003418, -55.48176193237305, 0, 52.5376091003418,
+          55.48176193237305, 68.15463256835938
+        ],
+        "boundsBits": "832652c253ed5dc2000000008326524253ed5d422c4f8842",
+        "valid": 1
+      },
+      {
+        "name": "ply-3.ply",
+        "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "pointsFile": "interactive-owner-ply-3-points.f32",
+        "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+        "count": 1865848,
+        "importPlacement": [
+          19.332477569580078, 17.474040985107422, -330.2850036621094
+        ],
+        "placedPointsSha256": "bfa560d016daff1917e8c2ea11957c13f987c728ad2eb790d2809a8b0bfc6479",
+        "flagsSha256": "cf94758b0e527e4928acb2ff748d26580c0509f4a1bcc06ed05cf0b15880a816",
+        "transform": 1,
+        "bounds": [
+          -49.4126091003418, -57.98176193237305, 50000.1015625,
+          55.6626091003418, 52.98176193237305, 50068.25390625
+        ],
+        "boundsBits": "83a645c253ed67c21a50434783a65e4253ed534241944347",
+        "valid": 1
+      }
+    ]
+  }
+}

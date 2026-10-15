@@ -1,4 +1,4 @@
-import { BufferAttribute, type Mesh } from "three";
+import { BufferAttribute, type Mesh, type Points } from "three";
 import {
   acceleratedRaycast,
   MeshBVH,
@@ -11,6 +11,18 @@ interface Build {
 const queue: Build[] = [];
 let active: Build | undefined;
 const prepared = new WeakMap<object, Promise<void>>();
+
+/** Camera gestures must not wait for a linear scan of an unindexed large scan.
+ * Exact object/facet picking retains its ordinary fallback independently.
+ */
+export function canQueryNavigationSurface(object: Mesh | Points): boolean {
+  const geometry = object.geometry;
+  return (
+    !!geometry.boundsTree ||
+    (geometry.index?.count ?? geometry.getAttribute("position")?.count ?? 0) <
+      30_000
+  );
+}
 function pump(): void {
   if (active) return;
   active = queue.shift();

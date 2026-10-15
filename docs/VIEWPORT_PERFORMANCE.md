@@ -27,3 +27,11 @@ Machine-readable measurements: [viewport responsiveness evidence](evidence/viewp
 - Latest full suite with the owner scans enabled: 29,011 tests passed across 370 files, no skips. An earlier release-history timeout also passed on its focused rerun with the original timeout unchanged.
 - Isolated large-scan browser replay: both indices ready; nine shared picker comparisons matched ordinary queries; passive movement submitted zero scene renders.
 - The broader MCP browser smoke initially compared the native primary-plane GUI default (Z) against an explicitly requested MCP X axis. That test-input mismatch is corrected: the complete built-app smoke now passes, separately verifying both the captured native Z default and an explicit X choice, matching GUI/MCP bounds, Apply and Undo. Application axis behavior was unchanged.
+
+## Camera gestures before picking-index readiness
+
+The three-owner-PLY replay (6,663,164 triangles, 1183 x 944 CSS pixels, device scale 2, Chrome / NVIDIA RTX A4000) exposed a cold-start stall: an orbit gesture performed ordinary Three triangle intersection while a background index was still pending. CPU samples were dominated by `getVertexPosition`, `intersectTriangle` and the ordinary intersection loop. Background construction alone did not prevent this synchronous fallback.
+
+Camera-only surface-pivot queries now defer until every visible large possible occluder has an index. Until then, mouse orbit retains its existing pivot/controls target and SpaceMouse retains its existing bounds-based fallback. Small scans keep ordinary surface pivots. Large point clouds use the same camera fallback instead of a linear measured-point scan. Once mesh indices are ready, exact surface pivots resume on the next gesture. Object/facet selection and MCP `viewport_pick` retain their exact ordinary fallback; no geometry, clipping or selection result changes.
+
+In the same twenty alternating left/middle orbit and wheel gestures, worst measured frame interval dropped from 400.35 ms to 33.40 ms; median was 16.68 ms and p95 16.84 ms after the change. The original 409/216 ms long tasks were absent; one 50 ms task remained. These are short local hardware measurements, not a guarantee for every device or the embedded browser. Full-resolution rendering was retained. See [three-scan camera evidence](evidence/viewport-navigation-cold.json).

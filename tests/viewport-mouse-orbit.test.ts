@@ -103,6 +103,42 @@ it("uses the view-center surface for left-drag starting in empty space", () => {
   expect(view.mouseOrbitPivot.z).toBeCloseTo(0.3);
 });
 
+it("starts camera gestures without a full mesh scan while the surface index is unavailable", () => {
+  const { view, mesh } = fixture();
+  mesh.geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(30_000), 1));
+  const query = vi
+    .spyOn(view.raycaster, "intersectObjects")
+    .mockReturnValue([
+      { point: new THREE.Vector3(1, 0, 1), object: mesh },
+    ] as any);
+  view.pointerDown(down());
+  expect(query).not.toHaveBeenCalled();
+  expect(view.mouseOrbitPointer).toBe(7);
+  expect(view.mouseOrbitPivot).toBeUndefined();
+  // Readiness restores exact surface pivots on the next gesture.
+  mesh.geometry.boundsTree = {} as any;
+  view.pointerDown(down({ pointerId: 8 }));
+  expect(query).toHaveBeenCalledOnce();
+  expect(view.mouseOrbitPivot.toArray()).toEqual([1, 0, 1]);
+});
+
+it("avoids linear point-cloud navigation queries without changing ordinary point picking", () => {
+  const { view, mesh } = fixture();
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(new Float32Array(90_000), 3),
+  );
+  const cloud = new THREE.Points(geometry, new THREE.PointsMaterial());
+  view.objects.set("cloud", { mesh, pointCloud: cloud });
+  const query = vi.spyOn(view.raycaster, "intersectObjects");
+  view.pointerDown(down());
+  expect(query).not.toHaveBeenCalled();
+  expect(view.mouseOrbitPointer).toBe(7);
+  geometry.dispose();
+  cloud.material.dispose();
+});
+
 it.each([{ ctrlKey: true }, { shiftKey: true }, { metaKey: true }])(
   "leaves modified left-drag pan and zoom alone %o",
   (modifiers) => {

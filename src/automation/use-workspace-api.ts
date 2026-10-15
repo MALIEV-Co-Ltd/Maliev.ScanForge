@@ -1,3 +1,4 @@
+import { interactiveHostAdapter } from "./interactive-host-adapter";
 import { useEffect, useRef } from "react";
 import { flushSync } from "react-dom";
 import { ApplicationApi, type WorkspaceHost } from "./api";
@@ -109,6 +110,12 @@ export function useWorkspaceApi(host: WorkspaceHost) {
       activity: (busy, message, selectionMode) =>
         mutate(() => current.current.activity(busy, message, selectionMode)),
     };
+    Object.defineProperties(
+      proxy,
+      Object.getOwnPropertyDescriptors(
+        interactiveHostAdapter(() => current.current, mutate),
+      ),
+    );
     api.current = new ApplicationApi(proxy, {
       ...createOperations(proxy),
       ...createAuthoringOperations(proxy),

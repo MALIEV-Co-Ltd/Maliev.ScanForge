@@ -1,3 +1,4 @@
+import { releaseInteractiveSession } from "./interactive-alignment-operations";
 import type { InteractiveAlignmentState } from "../interactive-alignment-session";
 import type { InteractiveDragInput } from "../interactive-alignment-math";
 import type { InteractivePointerDrag } from "../interactive-camera";
@@ -100,7 +101,13 @@ export interface WorkspaceHost {
   ): Promise<CapturedImage>;
   renameProject?(name: string): void;
   discardPreview?(
-    target: "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
+    target:
+      | "scan"
+      | "surface"
+      | "landmarks"
+      | "sketchSection"
+      | "datum"
+      | "interactive",
   ): void;
 }
 export interface ArtifactInfo {
@@ -192,6 +199,11 @@ export function validateInput(
     if (!value || typeof value !== "object" || Array.isArray(value))
       fail("must be an object");
     const object = value as Record<string, unknown>;
+    if (
+      schema.minProperties !== undefined &&
+      Object.keys(object).length < schema.minProperties
+    )
+      fail("too few fields");
     for (const key of schema.required ?? [])
       if (!(key in object)) fail(`missing ${key}`);
     for (const [key, entry] of Object.entries(object)) {
@@ -386,29 +398,42 @@ export class ApplicationApi {
           "Workspace changed; inspect project_get and use its current revision with a new requestId.",
         );
       if (command === "preview_discard") {
-        if (!this.host.discardPreview)
+        if (args.target !== "interactive" && this.host.inspectInteractive?.())
+          throw new ApiError(
+            "BUSY",
+            "Cancel Interactive alignment before discarding another preview.",
+          );
+        if (args.target !== "interactive" && !this.host.discardPreview)
           throw new ApiError(
             "UNSUPPORTED",
             "GUI preview cancellation is unavailable.",
           );
-        this.host.discardPreview(
-          args.target as
-            "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
-        );
+        if (args.target !== "interactive")
+          this.host.discardPreview!(
+            args.target as
+              "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
+          );
         if (
           args.target === "landmarks" &&
           this.active?.command === "landmark_preview"
         )
           this.active.controller.abort();
         if (args.target === "datum") await releaseDatumPreview(this.host);
+        if (args.target === "interactive") {
+          if (this.active?.command.startsWith("interactive_alignment_"))
+            this.active.controller.abort();
+          releaseInteractiveSession(this.host);
+        }
         return this.success({
           target: args.target,
           cancellationRequested: true,
           committedGeometryPreserved: true,
           note:
-            args.target === "landmarks"
-              ? "Any owning landmark preview job is cancelled; unrelated API jobs require job_cancel."
-              : "GUI workers retain their cancellation/cleanup lifecycle. API jobs are cancelled separately through job_cancel.",
+            args.target === "interactive"
+              ? "Interactive alignment and its owning API job are cancelled; committed geometry is preserved."
+              : args.target === "landmarks"
+                ? "Any owning landmark preview job is cancelled; unrelated API jobs require job_cancel."
+                : "GUI workers retain their cancellation/cleanup lifecycle. API jobs are cancelled separately through job_cancel.",
         });
       }
       if (command === "tools_search") {
@@ -576,6 +601,18 @@ export class ApplicationApi {
         this.artifacts.delete(args.artifactId as string);
         return this.success({ deleted: true });
       }
+      if (
+        !readOnly &&
+        this.host.inspectInteractive?.() &&
+        !command.startsWith("interactive_alignment_") &&
+        !["viewport_control", "view_set", "settings_set", "ui_set"].includes(
+          command,
+        )
+      )
+        throw new ApiError(
+          "BUSY",
+          "Finish or cancel Interactive alignment before editing the project.",
+        );
       const handler = this.handlers[command];
       if (!handler)
         throw new ApiError(
@@ -633,7 +670,9 @@ export class ApplicationApi {
         return this.success(await handler(args, context));
       // A single admission lane also protects native read operations from concurrent edits.
       this.active = job;
-      if (command !== "object_select")
+      const fastInteractive =
+        command === "interactive_alignment_edit" && args.action !== "begin";
+      if (!fastInteractive && command !== "object_select")
         this.host.activity(
           true,
           `Agent/API: ${command}`,
@@ -673,7 +712,7 @@ export class ApplicationApi {
         } finally {
           clearTimeout(job.timer);
           this.active = undefined;
-          if (command !== "object_select")
+          if (!fastInteractive && command !== "object_select")
             this.host.activity(false, `${command}: ${job.status}`);
         }
       };
@@ -755,6 +794,7 @@ export class ApplicationApi {
   dispose() {
     this.disposed = true;
     this.cancelActive();
+    releaseInteractiveSession(this.host);
     void releaseDatumPreview(this.host).catch(() => {});
     this.artifacts.clear();
     this.requests.clear();

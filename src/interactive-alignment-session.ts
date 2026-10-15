@@ -16,6 +16,31 @@ const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
 const finite3 = (a: readonly number[]) =>
   a.length === 3 && a.every(Number.isFinite);
 
+/** Constant-size admission shared by the ribbon and the session constructor. */
+export function interactiveAlignmentTargetError(
+  entities: readonly Entity[],
+  ids: readonly string[],
+): string | null {
+  if (!ids.length || ids.length > 32 || new Set(ids).size !== ids.length)
+    return "Select one to 32 distinct scan targets and a finite pivot.";
+  for (const id of ids) {
+    const e = entities.find((e) => e.id === id);
+    if (
+      !e ||
+      e.locked ||
+      !e.visible ||
+      e.selectable === false ||
+      e.kernelId ||
+      e.parametric ||
+      !["mesh", "pointcloud"].includes(e.kind) ||
+      !e.positions.length ||
+      e.positions.length % (e.kind === "pointcloud" ? 3 : 9)
+    )
+      return "Interactive alignment requires unlocked visible mesh or point-cloud targets.";
+  }
+  return null;
+}
+
 /** Shared transaction state: preview owns only Double poses; source geometry is immutable. */
 export class InteractiveAlignmentSession {
   readonly id = crypto.randomUUID();
@@ -51,23 +76,11 @@ export class InteractiveAlignmentSession {
     this.targetIds = [...ids];
     this.pivot = [...pivot];
     this.originalPivot = [...pivot];
+    const targetError = interactiveAlignmentTargetError(baseEntities, ids);
+    if (targetError) throw new Error(targetError);
     this.initialPoses = new Map(
       ids.map((id) => {
-        const e = baseEntities.find((e) => e.id === id);
-        if (
-          !e ||
-          e.locked ||
-          !e.visible ||
-          e.selectable === false ||
-          e.kernelId ||
-          e.parametric ||
-          !["mesh", "pointcloud"].includes(e.kind) ||
-          !e.positions.length ||
-          e.positions.length % (e.kind === "pointcloud" ? 3 : 9)
-        )
-          throw new Error(
-            "Interactive alignment requires unlocked visible mesh or point-cloud targets.",
-          );
+        const e = baseEntities.find((e) => e.id === id)!;
         const placement = cloudPlacement(e);
         return [
           id,

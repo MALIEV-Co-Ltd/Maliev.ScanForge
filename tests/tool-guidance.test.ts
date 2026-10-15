@@ -146,3 +146,13 @@ it("shows general navigation only without an active command", () => {
   expect(hint).not.toContain("selects object");
   expect(hint).not.toContain("orbits");
 });
+
+it("shows Interactive handle and cancellation guidance instead of ordinary selection instructions", () => {
+  const context = { mode: "inspect" as const, interactiveAlignment: true };
+  expect(activeToolGuidance(context)).toContain("Left-drag a handle");
+  expect(activeToolGuidance(context)).toContain("Escape cancels");
+  expect(activeToolGuidance(context)).not.toContain("Right-click opens tools");
+  expect(compactToolGuidance(context)).toBe(
+    "Left-drag handles · Escape cancels",
+  );
+});

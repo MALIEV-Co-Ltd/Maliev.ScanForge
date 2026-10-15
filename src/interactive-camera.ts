@@ -110,8 +110,7 @@ export function interactiveDragForCamera(
     input.pivot.length !== 3 ||
     !input.pivot.every((n) => Number.isFinite(Math.fround(n))) ||
     [input.from, input.to].some(
-      (p) =>
-        p.length !== 2 || p.some((n) => !Number.isFinite(n) || n < 0 || n > 1),
+      (p) => p.length !== 2 || p.some((n) => !Number.isFinite(n)),
     ) ||
     (input.continuation !== undefined &&
       typeof input.continuation !== "boolean")
@@ -127,6 +126,15 @@ export function interactiveDragForCamera(
       Math.trunc(input.to[0] * context.width),
       Math.trunc(input.to[1] * context.height),
     ];
+  if (
+    [...previousPixel, ...currentPixel].some(
+      (value) =>
+        !Number.isSafeInteger(value) ||
+        value < -2147483648 ||
+        value > 2147483647,
+    )
+  )
+    throw new Error("Interactive drag exceeds the native signed pixel range.");
   const previous = context.plane(previousPixel),
     current = context.plane(currentPixel);
   const move = nativeInteractiveMovement({

@@ -1,3 +1,4 @@
+import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
@@ -325,6 +326,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   const operations: Record<string, Handler> = {
     ...createAlignmentOperations(host),
     ...createDatumOperations(host),
+    ...createInteractiveOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {

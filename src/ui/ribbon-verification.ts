@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  alignInteractive:
+    "docs/NATIVE_INTERACTIVE_ALIGNMENT.md: public GUI/MCP pose preview, native owner-scan bounds, mirror, Apply, Cancel and Undo",
   align:
     "docs/NATIVE_DATUM_ALIGNMENT.md: reference-based coordinate alignment, native owner-scan Apply and GUI/MCP Preview/Apply parity",
   alignNPoints:
