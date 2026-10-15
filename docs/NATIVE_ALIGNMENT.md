@@ -2793,3 +2793,47 @@ binary recovery and undo/redo. Native numerical processing remains unchanged.
 Scoped formatting, contract readback and whitespace/prohibited-name checks
 passed. Temporary browser/MCP processes and listeners were released; the source
 server remains on port 5173. No push or deployment.
+
+## Ordinary preview and latent candidate cycling
+
+The original ordinary builder `0x14054c7a0` clears its matrix vector and publishes
+at most one matrix. Earlier complete builder execution already covered 40 cases,
+with 30 publications and 10 rejections; it does not enumerate alternate point
+permutations. Builder Evidence:
+`ev_454fb0a1977d5398856a37f96d0d2a7ea060b382daaeb788c658ad3f8dc030ec`.
+The dialog's multiple-matrix branch therefore does not establish that the
+ordinary producer generates alternate solutions.
+
+`docs/evidence/landmark-preview-controls-native.json` retains 96 executions of
+the complete original callback `0x14054ca20`. Mapping, candidate construction,
+preview application and refinement are declared event adapters; UI input and
+control callbacks record state. The original admission, call ordering,
+count/index arithmetic, preview flag, labels and enabled states execute unchanged.
+It rebuilds when the existing matrix count is below two and resets the index
+to zero. With preloaded counts of two or three it advances `(index + 1) % count`
+without rebuilding. The capture deliberately supplies those multiple matrices;
+it does not prove an original producer or installed UI supplied them.
+Callback Evidence: `ev_6bcaea44575c46824c38b637a17cd28dfff137cea27adef24486e3c93e4c6d74`;
+assembly: `ev_a790061b70db99648a62b1b602fbce2790398a564db0ba317c19340f7ae0e6a7`.
+
+For the successful ordinary single-matrix result, native Preview is disabled,
+Reset is enabled, and point removal is disabled. The GUI and MCP now share these
+states. A repeat preview requires reset before CAD resolution or worker allocation;
+reset retains picks and restores availability without changing committed geometry
+or history. Read-only state exposes candidate count/index and control availability.
+The independently authored failed-registration safeguard remains: an unsuccessful
+builder does not publish an empty preview. The original zero-builder control-state
+quirk is retained in evidence and is not an application success claim. Native
+numerical registration and refinement code are unchanged. An actual multi-matrix
+producer and split-view workflow still require their own verification.
+
+Validation: build `scanforge-9b9a1d0bb0c87cf4` passed; 74 focused tests and the full
+suite of 27,096 tests passed, with 31 existing skips. The rebuilt cloud-pose
+browser check passed GUI/MCP preview locking, failed repeat-request immutability,
+reset recovery, mixed ASC references, pose/selection/normals preservation and
+undo/redo. The indexed-mesh browser regression also passed, including two-worker
+seeded refinement, exact CAD, visible-scene, empty-target and authoring-root
+workflows. All 96 native control cases passed. Native mappings and temporary
+browser/MCP processes/listeners were released; port 5173 retains the live source.
+Scoped formatting, fixture readback and whitespace/prohibited-name checks passed.
+No push or deployment.

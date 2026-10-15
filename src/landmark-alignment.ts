@@ -142,6 +142,24 @@ export function landmarkPairs(session: LandmarkAlignment) {
       .map((p) => p.point),
   };
 }
+
+/** Ordinary native builder publishes zero or one matrix. A successful single
+ * preview locks Preview until Reset; preloaded multi-matrix producers are separate.
+ */
+export function landmarkPreviewControls(session: LandmarkAlignment) {
+  const pairs = landmarkPairs(session);
+  const candidateCount = session.preview?.registration ? 1 : 0;
+  return {
+    candidateCount,
+    candidateIndex: 0,
+    canPreview:
+      pairs.moving.length >= 3 &&
+      pairs.moving.length === pairs.fixed.length &&
+      candidateCount !== 1,
+    canReset: !!session.preview,
+    canRemove: !session.preview && session.picks.length > 0,
+  };
+}
 export function landmarkRequest(
   session: LandmarkAlignment,
   workerCount = 2,
@@ -238,6 +256,8 @@ export async function prepareLandmarkRequest(
   acquireCad: (kernelId: string) => Promise<IndexedMesh>,
   options: LandmarkPreviewOptions = {},
 ) {
+  if (session.preview)
+    throw new Error("Reset the alignment preview before computing it again.");
   const workers = options.workerCount ?? 2,
     parallel = options.parallel ?? true;
   const request = landmarkRequest(session, workers, parallel, false);
@@ -464,6 +484,7 @@ export function landmarkState(session: LandmarkAlignment | null) {
         active: true,
         movingId: session.moving.id,
         fixedId: session.fixed?.id ?? null,
+        ...landmarkPreviewControls(session),
         referenceIds: landmarkReferenceEntities(session).map(
           (entity) => entity.id,
         ),

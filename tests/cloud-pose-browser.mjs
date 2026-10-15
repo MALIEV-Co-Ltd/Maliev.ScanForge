@@ -510,12 +510,29 @@ try {
   assert(guiPaired.picks.some((pick) => pick.entityId === otherReference.id));
   assert(guiPaired.pointCloudPose);
   assert.equal(guiPaired.diagnostics.localBuffersRetained, true);
+  assert.equal(guiPaired.candidateCount, 1);
+  assert.equal(guiPaired.candidateIndex, 0);
+  assert.equal(guiPaired.canPreview, false);
+  assert.equal(guiPaired.canReset, true);
+  assert.equal(guiPaired.canRemove, false);
+  assert.equal(
+    await landmarkDialog
+      .getByRole("button", { name: "Preview", exact: true })
+      .isDisabled(),
+    true,
+  );
+  const repeatedPreview = await job(
+    await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
+    "failed",
+  );
+  assert.match(repeatedPreview.error.message, /Reset/i);
   assert.equal(
     (await call("object_get", { entityId: "cloud" })).result.pointCloudPose,
     second.targets[0].pointCloudPose,
   );
   assert.deepEqual(await geometry(), beforePaired);
   await mutate("landmark_edit", { action: "reset" });
+  assert.equal((await call("landmark_get")).result.canPreview, true);
   const agentPaired = await job(
     await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
   );
@@ -609,6 +626,7 @@ try {
     "Fixed picks span multiple ASC references without modifying either reference",
     "MCP landmark picks retain native Float32 coordinate precision",
     "Point-pair GUI/MCP preview composes native cloud pose",
+    "Single-result preview locks GUI and MCP until reset",
     "Paired accept and undo preserve point type, normals and selection",
     "mesh_process paired and legacy GUI panel preserve the same native pose",
     "MCP rejects point masks for whole-cloud registration without changing geometry",

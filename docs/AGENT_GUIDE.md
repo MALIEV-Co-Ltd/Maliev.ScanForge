@@ -753,3 +753,11 @@ refinement. Fixed-only refinement requires a bound reference. These session edit
 create no model history. Picks retain each reference identity, and reference
 geometry changes or removal invalidate acceptance. Newly imported references
 require rebinding the filter or restarting the session to capture the new scene.
+
+An ordinary successful point-pair preview has one candidate. `landmark_get`
+reports `candidateCount`, `candidateIndex`, `canPreview`, `canReset` and
+`canRemove`. After preview, use `landmark_accept` or `landmark_edit` action
+`reset`; a new `landmark_preview` request requires reset first. Reset retains
+picks and committed geometry and creates no history. Repeated requests using
+the original request ID retain normal idempotent receipt behavior. A failed
+registration does not publish an empty preview.

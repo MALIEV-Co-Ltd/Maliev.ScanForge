@@ -3,6 +3,7 @@ import { PreviewButton } from "./PreviewButton";
 import type { Entity } from "../types";
 import {
   landmarkPairs,
+  landmarkPreviewControls,
   landmarkTargetEntities,
   type LandmarkAlignment,
   type LandmarkTargetScope,
@@ -39,8 +40,7 @@ export function LandmarkAlignmentDialog({
   onReset,
 }: LandmarkAlignmentDialogProps) {
   const pairs = landmarkPairs(session);
-  const complete =
-    pairs.moving.length >= 3 && pairs.moving.length === pairs.fixed.length;
+  const controls = landmarkPreviewControls(session);
   return (
     <aside className="inspector tool-panel" aria-label="N-points alignment">
       <h2>Align by N points</h2>
@@ -130,16 +130,10 @@ export function LandmarkAlignmentDialog({
           </ol>
         </div>
         <div className="button-row">
-          <button
-            disabled={busy || !!session.preview || !session.picks.length}
-            onClick={onRemoveLast}
-          >
+          <button disabled={busy || !controls.canRemove} onClick={onRemoveLast}>
             Remove last point
           </button>
-          <button
-            disabled={busy || !!session.preview || !session.picks.length}
-            onClick={onRemoveAll}
-          >
+          <button disabled={busy || !controls.canRemove} onClick={onRemoveAll}>
             Remove all points
           </button>
         </div>
@@ -151,10 +145,13 @@ export function LandmarkAlignmentDialog({
         )}
       </div>
       <footer className="tool-panel-actions">
-        <button disabled={busy || !session.preview} onClick={onReset}>
+        <button disabled={busy || !controls.canReset} onClick={onReset}>
           Reset
         </button>
-        <PreviewButton disabled={busy || !complete} onClick={onPreview} />
+        <PreviewButton
+          disabled={busy || !controls.canPreview}
+          onClick={onPreview}
+        />
         <button disabled={busy || !session.preview} onClick={onAccept}>
           OK
         </button>
