@@ -1470,3 +1470,43 @@ benchmark measured a median 0.3151 ms for this synthetic preparation case across
 20 retained samples after five warmups. This is neither browser end-to-end
 latency nor a measured native speedup. The external receipt is retained under
 `.resources/seeded-region-benchmark.json`; the benchmark process exited.
+
+## Native coarse/refinement Float32 stage boundary
+
+The original vertex worker `0x1401deb20`, face-normal worker `0x1401ded20`, and
+identity predicate `0x1401dd330` were replayed for 144 two-stage cases. Eight
+retained original landmark matrices are paired with three captured controller
+matrices and three identity/epsilon cases, each over one, two and four logical
+ranges. Ranges execute serially; this capture does not establish scheduling.
+The first frame always applies. The refinement frame applies only when the
+original predicate finds a component difference greater than double epsilon.
+There are 96 applied and 48 skipped refinement cases. Caller-owned record lookup
+adapters provide positions, vertex normals and face normals, including signed
+zeros and finite non-unit normal components near `1e18`.
+
+`docs/evidence/landmark-two-stage-native.json` retains matrix bits and both stages'
+Float32 field bits under the original image digest. An independent external
+verifier matches all 864 stage-field comparisons. Replacing two applied stages
+with their multiplied matrix produces 240 different final field buffers across
+this corpus. The controller, geometry cloning, scene collection and UI are not
+executed here, so these counts do not certify the complete point-pair pipeline.
+Mapped native memory was released and the replay process exited.
+
+The shared transform kernel now retains Float32 storage between applied stages.
+It also fixes the erroneous application of the coordinate range limit to normal
+vectors: finite vector magnitudes are preserved, while position bounds and
+nonfinite-output rejection remain enforced. Datum GUI/MCP paths use this same
+kernel; no operation schema change is needed. The internal staged helper is
+used by datum scan application and is ready for coarse/refinement assembly.
+Original refinement identity filtering remains the caller's responsibility.
+
+Validation for this slice: production build and TypeScript passed; 2,832 focused
+tests passed; the full suite passed 26,846 tests across 343 files with 24 existing
+skips across five files. The browser/MCP regression used a PLY with a finite
+normal near `1e18` and passed import, origin placement, binary persistence,
+transform/undo, indexed topology and CPU refinement checks without console
+errors. Formatting, whitespace, native evidence structure and branding checks
+passed. The native replay, browser, MCP bridge and test workers exited. Port
+5173 serves the latest kernel; its owned 24-hour lease was refreshed without
+restarting the server, and the temporary inspection listener was closed.
+Build manifest: `scanforge-a1a7453a5a32e816`.

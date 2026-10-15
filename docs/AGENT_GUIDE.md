@@ -606,3 +606,8 @@ diagnostics. IDs and sizes are validated, worker transfer copies seed buffers,
 and preparation allocations are limited to 256 MiB. This is a preparation option
 for verified surface refinement, not certification of the complete point-pair
 coarse/refinement pipeline.
+
+Datum alignment preserves finite, non-unit scanner normal magnitudes, including
+values above the coordinate-size limit. Coordinate limits still apply to
+positions, and nonfinite normal outputs are rejected. GUI and MCP datum
+operations share this correction; no new parameter is required.

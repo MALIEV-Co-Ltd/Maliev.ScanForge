@@ -26,7 +26,7 @@ export function transformDatumCoordinates(
     output[offset + 2] = vector ? c : c + matrix[11];
     for (let axis = 0; axis < 3; axis++) {
       const value = output[offset + axis];
-      if (!Number.isFinite(value) || Math.abs(value) > 1e9)
+      if (!Number.isFinite(value) || (!vector && Math.abs(value) > 1e9))
         throw new Error("Aligned scan coordinates exceed the supported range.");
       if (bounds) {
         bounds.min[axis] = Math.min(bounds.min[axis], value);
@@ -35,4 +35,18 @@ export function transformDatumCoordinates(
     }
   }
   return output;
+}
+
+/** Geometry stores Float32 results after every applied native frame. */
+export function transformDatumCoordinateStages(
+  input: ArrayLike<number>,
+  matrices: readonly (readonly number[])[],
+  vector = false,
+): Float32Array {
+  if (!matrices.length || matrices.length > 16)
+    throw new Error("Alignment requires one to 16 finite transform stages.");
+  let output: ArrayLike<number> = input;
+  for (const matrix of matrices)
+    output = transformDatumCoordinates(output, matrix, vector);
+  return output as Float32Array;
 }

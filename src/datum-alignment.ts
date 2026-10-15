@@ -16,7 +16,10 @@ import { nativeDatumTranslationFromPoint } from "./scan-native-datum-picked-tran
 import { nativeDatumReferenceOptions } from "./scan-native-datum-reference-options";
 import { retainIndexedMesh } from "./indexed-mesh";
 import type { Entity } from "./types";
-import { transformDatumCoordinates } from "./datum-transform-kernel";
+import {
+  transformDatumCoordinates,
+  transformDatumCoordinateStages,
+} from "./datum-transform-kernel";
 import { datumFeatureMetadata } from "./scan-native-datum-primitive";
 export { transformDatumCoordinates } from "./datum-transform-kernel";
 
@@ -145,9 +148,9 @@ export function datumScanTransformPlan(
             triangles: indexed.triangles,
             ...(indexed.normals && matrix
               ? {
-                  normals: transformDatumCoordinates(
+                  normals: transformDatumCoordinateStages(
                     indexed.normals,
-                    matrix,
+                    [matrix],
                     true,
                   ),
                 }
@@ -186,12 +189,12 @@ export function transformDatumScan(
     });
   }
   return plan.assemble(
-    transformDatumCoordinates(entity.positions, matrix),
+    transformDatumCoordinateStages(entity.positions, [matrix]),
     plan.indexed
-      ? transformDatumCoordinates(plan.indexed.vertices, matrix)
+      ? transformDatumCoordinateStages(plan.indexed.vertices, [matrix])
       : undefined,
     entity.normals
-      ? transformDatumCoordinates(entity.normals, matrix, true)
+      ? transformDatumCoordinateStages(entity.normals, [matrix], true)
       : undefined,
   );
 }

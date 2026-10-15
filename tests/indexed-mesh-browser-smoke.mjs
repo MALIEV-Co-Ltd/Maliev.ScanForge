@@ -149,7 +149,7 @@ try {
   };
 
   const ascii =
-    "ply\nformat ascii 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nproperty float nx\nproperty float ny\nproperty float nz\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n99 99 99 2 0 0\n0 0 1 0 3 0\n2 0 1 0 0 4\n0 2 1 -1 -2 -3\n3 1 2 3\n";
+    "ply\nformat ascii 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nproperty float nx\nproperty float ny\nproperty float nz\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n99 99 99 1e18 0 0\n0 0 1 0 3 0\n2 0 1 0 0 4\n0 2 1 -1 -2 -3\n3 1 2 3\n";
   const geometry = async (entityId) => {
     const object = (
       await call("object_get", { entityId, includeGeometry: true })
@@ -195,7 +195,20 @@ try {
   }
   assert(gui);
   const guiGeometry = await geometry(gui.id);
-  const scannerNormals = [2, 0, 0, 0, 3, 0, 0, 0, 4, -1, -2, -3];
+  const scannerNormals = [
+    Math.fround(1e18),
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    4,
+    -1,
+    -2,
+    -3,
+  ];
   assert.deepEqual(guiGeometry.indexedMesh.normals, scannerNormals);
   assertTopology(guiGeometry);
   assert.deepEqual(guiGeometry.positions, [-1, -1, 0, 1, -1, 0, -1, 1, 0]);
