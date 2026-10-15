@@ -2902,3 +2902,56 @@ controller/server processes exited. The original mapped image's full SHA-256,
 cloud vtable pointer and sentinel bytes were independently read back; the
 retained procedure evidence references the expected derived-image SHA-256.
 No original hit-testing function was executed in this trace.
+
+## Verified screen-triangle predicate and ordinary command source integration
+
+REA extracted `0x140422f60` (analysis
+`ev_a93368a83bc607487cf39a0c4d70452e830c3f68d8406b541d0e28954e4fa8f1`,
+assembly `ev_c0b1ec31424d35781d2a46d08eb4ad9459051cfe0299a04a4779965198887f20`).
+The complete original pure function then executed unchanged for 336 cases;
+135 were admitted. No callback, original instruction, import or coordinate
+arithmetic was replaced. The original return and both output double byte
+sequences exactly match an independently decoded determinant/barycentric formula.
+The corpus includes both windings, degenerate and collinear triangles, small
+triangles, translated signed coordinates, nonrepresentable decimals, the
+Float32 integer precision boundary, interior/edge/exterior cursors, and three
+tolerances including the caller's `2^-23`. Degenerate area preserves prior output
+weights; nondegenerate area writes weights even when the cursor is rejected.
+`docs/evidence/landmark-screen-triangle-native.json` retains all cases and limits.
+This closes the pure predicate; it does not execute the viewport frame, triangle
+cache producer, full hit dispatcher or installed UI. The native mapping was freed.
+
+The ordinary point-pair command now resolves its source through shared
+`landmarkCommandSource`, using the original mesh selector policy: preferred active
+scan, uniquely selected scan, or sole scan. Production `nativeLandmarkSourceIndex`
+is checked against all 1,111 original source-selector scene captures; editor
+visibility, lock, pickability and nonempty guards are tested separately.
+Point-cloud command eligibility remains an explicitly authored extension, not a
+claim that native mesh type queries accept clouds. CAD, parametric and fitted
+surfaces cannot become moving scan command sources. A second object is not
+required to open. GUI ribbon state and MCP `command_get`/`command_run` share
+source eligibility; opening enters the existing shared landmark session and
+selects the resolved source. Busy/active-session guards remain intact.
+
+The ordinary command's verification entry covers its implemented normal-view
+workflow. Earlier gate statements in this evidence history describe prior
+captures. Split-view mode, an original multiple-candidate producer, original
+point-cloud hit testing and complete screen projection parity retain their
+separate limits; this entry does not certify the entire alignment subsystem or
+the broader application goal.
+
+Validation: build `scanforge-8d29dfac9968f7b5` passed with no warnings/errors;
+1,208 focused tests and the full 28,212-test suite passed, with 31 existing
+skips. The source-aware ribbon ready fixture now supplies its source context;
+a rendered regression explicitly keeps the verified entry disabled when that
+context is absent. The built browser replay clicks By N points, rejects empty
+and ambiguous source availability, blocks duplicate active-session launch,
+picks twelve actual mesh/cloud canvas landmarks, compares GUI/MCP preview
+registration exactly, accepts into only the moving object, and verifies Undo.
+`docs/evidence/landmark-command-browser.json` retains this integration evidence.
+The 1,111 original source-selection scenes and 336 original pure-predicate
+cases passed. Scoped formatting, JSON/native-byte readback, whitespace and
+prohibited-name checks passed. Native mappings and temporary browser/bridge
+processes/listeners were released. Port 5173 serves the new entry; opening its
+Codex browser panel was queued without changing the existing external browser
+workspace. No push or deployment. The full application goal remains active.

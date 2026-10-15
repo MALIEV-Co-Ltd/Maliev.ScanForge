@@ -1,0 +1,3503 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "entry": "0x140422f60",
+    "reaEvidence": [
+      "ev_a93368a83bc607487cf39a0c4d70452e830c3f68d8406b541d0e28954e4fa8f1",
+      "ev_c0b1ec31424d35781d2a46d08eb4ad9459051cfe0299a04a4779965198887f20"
+    ],
+    "execution": "Complete original pure predicate executes unchanged. No imported function, callback, original instruction or coordinate arithmetic is substituted. An independent decoded formula is compared with the original return and both output double byte sequences.",
+    "limits": [
+      "This verifies screen-triangle admission and barycentric weights only; no viewport projection, triangle-cache production, dispatcher execution or installed UI is executed."
+    ]
+  },
+  "cases": [
+    {
+      "triangle": 0,
+      "input": [2.0, 3.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 0,
+      "input": [2.0, 3.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 0,
+      "input": [2.0, 3.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 0,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 0,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 0,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 10.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 10.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 10.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [0.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [5.0, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [-9.999999747378752e-6, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [-9.999999747378752e-6, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [-9.999999747378752e-6, 5.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.000000953674316, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, 0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.000000953674316, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, 0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [10.000000953674316, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, 0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 0,
+      "input": [-1.0, 4.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 0,
+      "input": [-1.0, 4.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 0,
+      "input": [-1.0, 4.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 0,
+      "input": [9.0, 9.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 0,
+      "input": [9.0, 9.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 0,
+      "input": [9.0, 9.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 0,
+      "input": [2.5, 7.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 0,
+      "input": [2.5, 7.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 0,
+      "input": [2.5, 7.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 0,
+      "input": [7.5, 2.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [7.5, 2.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 0,
+      "input": [7.5, 2.5, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [3.0, 2.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 1,
+      "input": [3.0, 2.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 1,
+      "input": [3.0, 2.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 1,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 1,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 1,
+      "input": [
+        3.3333332538604736, 3.3333332538604736, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.3333333253860474, 0.3333333253860474],
+      "weightDoubleBits": ["cdcccc4c5555d53f", "cdcccc4c5555d53f"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.0, -0.0],
+      "weightDoubleBits": ["0000000000000080", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, -0.0],
+      "weightDoubleBits": ["0000000000000080", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, -0.0],
+      "weightDoubleBits": ["0000000000000080", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 0.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, 5.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, -9.999999747378752e-6, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, -9.999999747378752e-6, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [5.0, -9.999999747378752e-6, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-9.999999747378752e-7, 0.5],
+      "weightDoubleBits": ["9a999999f7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.000000953674316, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, -0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.000000953674316, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, -0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [0.0, 10.000000953674316, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000953674317, -0.0],
+      "weightDoubleBits": ["9a9999190000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 1,
+      "input": [4.0, -1.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 1,
+      "input": [4.0, -1.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 1,
+      "input": [4.0, -1.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 1,
+      "input": [9.0, 9.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 1,
+      "input": [9.0, 9.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 1,
+      "input": [9.0, 9.0, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.9, 0.9],
+      "weightDoubleBits": ["cdccccccccccec3f", "cdccccccccccec3f"]
+    },
+    {
+      "triangle": 1,
+      "input": [7.5, 2.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 1,
+      "input": [7.5, 2.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 1,
+      "input": [7.5, 2.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 1,
+      "input": [2.5, 7.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [2.5, 7.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 1,
+      "input": [2.5, 7.5, 0.0, 0.0, 0.0, 10.0, 10.0, 0.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.25],
+      "weightDoubleBits": ["000000000000d03f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.25],
+      "weightDoubleBits": ["000000000000d03f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.25],
+      "weightDoubleBits": ["000000000000d03f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777222.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.375, 0.375],
+      "weightDoubleBits": ["000000000000d83f", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777222.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.375, 0.375],
+      "weightDoubleBits": ["000000000000d83f", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777222.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.375, 0.375],
+      "weightDoubleBits": ["000000000000d83f", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777232.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777232.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777232.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777224.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777216.0, 16777224.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777232.0, 16777216.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777214.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.125, 0.375],
+      "weightDoubleBits": ["000000000000c0bf", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777214.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.125, 0.375],
+      "weightDoubleBits": ["000000000000c0bf", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777214.0, 16777222.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.125, 0.375],
+      "weightDoubleBits": ["000000000000c0bf", "000000000000d83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777230.0, 16777230.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.875, 0.875],
+      "weightDoubleBits": ["000000000000ec3f", "000000000000ec3f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777230.0, 16777230.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.875, 0.875],
+      "weightDoubleBits": ["000000000000ec3f", "000000000000ec3f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777230.0, 16777230.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.875, 0.875],
+      "weightDoubleBits": ["000000000000ec3f", "000000000000ec3f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777228.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777228.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777220.0, 16777228.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777228.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777228.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 2,
+      "input": [
+        16777228.0, 16777220.0, 16777216.0, 16777216.0, 16777232.0, 16777216.0,
+        16777216.0, 16777232.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        1.9999999494757503e-5, 2.9999999242136255e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2, 0.3],
+      "weightDoubleBits": ["9a9999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        1.9999999494757503e-5, 2.9999999242136255e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        1.9999999494757503e-5, 2.9999999242136255e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        3.333333370392211e-5, 3.333333370392211e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.33333334545992965, 0.33333334545992965],
+      "weightDoubleBits": ["b0aa5a625555d53f", "b0aa5a625555d53f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        3.333333370392211e-5, 3.333333370392211e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        3.333333370392211e-5, 3.333333370392211e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.999999747378752e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.999999747378752e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.999999747378752e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000000"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 4.999999873689376e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.5],
+      "weightDoubleBits": ["0000000000000000", "000000000000e03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 4.999999873689376e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.0, 4.999999873689376e-5, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        4.999999873689376e-5, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -1.000000013351432e-10, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-1.0000000386135577e-6, 0.5],
+      "weightDoubleBits": ["f85394abf7c6b0be", "000000000000e03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -1.000000013351432e-10, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -1.000000013351432e-10, 4.999999873689376e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.00010000001202570274, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.000000145519156, 0.0],
+      "weightDoubleBits": ["110010270000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.00010000001202570274, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        0.00010000001202570274, 0.0, 0.0, 0.0, 9.999999747378752e-5, 0.0, 0.0,
+        9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -9.999999747378752e-6, 3.9999998989515007e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.1, 0.4],
+      "weightDoubleBits": ["9a9999999999b9bf", "9a9999999999d93f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -9.999999747378752e-6, 3.9999998989515007e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        -9.999999747378752e-6, 3.9999998989515007e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.000000136438757e-5, 9.000000136438757e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.900000036379789, 0.900000036379789],
+      "weightDoubleBits": ["d5cc54e0ccccec3f", "d5cc54e0ccccec3f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.000000136438757e-5, 9.000000136438757e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        9.000000136438757e-5, 9.000000136438757e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        2.499999936844688e-5, 7.500000356230885e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.25, 0.7500000545696835],
+      "weightDoubleBits": ["000000000000d03f", "0d004c1d0000e83f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        2.499999936844688e-5, 7.500000356230885e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        2.499999936844688e-5, 7.500000356230885e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        7.500000356230885e-5, 2.499999936844688e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.7500000545696835, 0.25],
+      "weightDoubleBits": ["0d004c1d0000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        7.500000356230885e-5, 2.499999936844688e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 3,
+      "input": [
+        7.500000356230885e-5, 2.499999936844688e-5, 0.0, 0.0,
+        9.999999747378752e-5, 0.0, 0.0, 9.999999747378752e-5
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 4,
+      "input": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.800000011920929, 0.800000011920929, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.800000011920929, 0.800000011920929, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.800000011920929, 0.800000011920929, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [2.0, 2.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [2.0, 2.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [2.0, 2.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.5, 1.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.5, 1.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.5, 1.5, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.9999989867210388, 0.9999989867210388, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.9999989867210388, 0.9999989867210388, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.9999989867210388, 0.9999989867210388, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        1.0000001192092896, 1.0000001192092896, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        1.0000001192092896, 1.0000001192092896, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        1.0000001192092896, 1.0000001192092896, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.699999988079071, 0.699999988079071, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.699999988079071, 0.699999988079071, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        0.699999988079071, 0.699999988079071, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        2.700000047683716, 2.700000047683716, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        2.700000047683716, 2.700000047683716, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [
+        2.700000047683716, 2.700000047683716, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.75, 1.75, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.75, 1.75, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.75, 1.75, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.25, 1.25, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.25, 1.25, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 5,
+      "input": [1.25, 1.25, 0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": false,
+      "weights": [1234.5, -987.125],
+      "weightDoubleBits": ["00000000004a9340", "0000000000d98ec0"]
+    },
+    {
+      "triangle": 6,
+      "input": [0.5, 2.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999999999998, 0.3],
+      "weightDoubleBits": ["999999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 6,
+      "input": [0.5, 2.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999999999998, 0.3],
+      "weightDoubleBits": ["999999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 6,
+      "input": [0.5, 2.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999999999998, 0.3],
+      "weightDoubleBits": ["999999999999c93f", "333333333333d33f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 2.3333332538604736, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.33333332915055125, 0.3333333416988975],
+      "weightDoubleBits": ["3694d7505555d53f", "94d7505e5555d53f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 2.3333332538604736, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.33333332915055125, 0.3333333416988975],
+      "weightDoubleBits": ["3694d7505555d53f", "94d7505e5555d53f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 2.3333332538604736, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.33333332915055125, 0.3333333416988975],
+      "weightDoubleBits": ["3694d7505555d53f", "94d7505e5555d53f"]
+    },
+    {
+      "triangle": 6,
+      "input": [-3.0, 5.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, -0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [-3.0, 5.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, -0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [-3.0, 5.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, -0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.0, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.0, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.0, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, -0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, -4.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, -4.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, -4.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 1.0],
+      "weightDoubleBits": ["0000000000000080", "000000000000f03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 5.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 5.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [2.0, 5.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, -0.0],
+      "weightDoubleBits": ["000000000000e03f", "0000000000000080"]
+    },
+    {
+      "triangle": 6,
+      "input": [-0.5, 0.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [-0.5, 0.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [-0.5, 0.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.0, 0.5],
+      "weightDoubleBits": ["0000000000000080", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [4.5, 1.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [4.5, 1.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [4.5, 1.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.5, 0.5],
+      "weightDoubleBits": ["000000000000e03f", "000000000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [
+        -0.5000100135803223, 0.4999989867210388, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-1.0019854495399877e-6, 0.5000000012548346],
+      "weightDoubleBits": ["f8dc12a77ecfb0be", "9176ac000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [
+        -0.5000100135803223, 0.4999989867210388, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-1.0019854495399877e-6, 0.5000000012548346],
+      "weightDoubleBits": ["f8dc12a77ecfb0be", "9176ac000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [
+        -0.5000100135803223, 0.4999989867210388, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-1.0019854495399877e-6, 0.5000000012548346],
+      "weightDoubleBits": ["f8dc12a77ecfb0be", "9176ac000000e03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.000000953674316, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.000000090348093, 1.0038677014802631e-8],
+      "weightDoubleBits": ["76ac40180000f03f", "ed588130d28e453e"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.000000953674316, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.000000090348093, 1.0038677014802631e-8],
+      "weightDoubleBits": ["76ac40180000f03f", "ed588130d28e453e"]
+    },
+    {
+      "triangle": 6,
+      "input": [7.000000953674316, 6.0, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.000000090348093, 1.0038677014802631e-8],
+      "weightDoubleBits": ["76ac40180000f03f", "ed588130d28e453e"]
+    },
+    {
+      "triangle": 6,
+      "input": [-2.0, 1.2999999523162842, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.10000000250966926, 0.4000000050193385],
+      "weightDoubleBits": ["b20261a49999b9bf", "264efd9e9999d93f"]
+    },
+    {
+      "triangle": 6,
+      "input": [-2.0, 1.2999999523162842, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.10000000250966926, 0.4000000050193385],
+      "weightDoubleBits": ["b20261a49999b9bf", "264efd9e9999d93f"]
+    },
+    {
+      "triangle": 6,
+      "input": [-2.0, 1.2999999523162842, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.10000000250966926, 0.4000000050193385],
+      "weightDoubleBits": ["b20261a49999b9bf", "264efd9e9999d93f"]
+    },
+    {
+      "triangle": 6,
+      "input": [10.5, -2.200000047683716, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.8999999974903308, 0.9000000050193385],
+      "weightDoubleBits": ["aadf73cbccccec3f", "13a77ecfccccec3f"]
+    },
+    {
+      "triangle": 6,
+      "input": [10.5, -2.200000047683716, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.8999999974903308, 0.9000000050193385],
+      "weightDoubleBits": ["aadf73cbccccec3f", "13a77ecfccccec3f"]
+    },
+    {
+      "triangle": 6,
+      "input": [10.5, -2.200000047683716, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.8999999974903308, 0.9000000050193385],
+      "weightDoubleBits": ["aadf73cbccccec3f", "13a77ecfccccec3f"]
+    },
+    {
+      "triangle": 6,
+      "input": [3.25, -1.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 6,
+      "input": [3.25, -1.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 6,
+      "input": [3.25, -1.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.25, 0.75],
+      "weightDoubleBits": ["000000000000d03f", "000000000000e83f"]
+    },
+    {
+      "triangle": 6,
+      "input": [5.75, 3.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [5.75, 3.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 6,
+      "input": [5.75, 3.5, -3.0, 5.0, 7.0, 6.0, 2.0, -4.0],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.75, 0.25],
+      "weightDoubleBits": ["000000000000e83f", "000000000000d03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        1.3799999952316284, 2.369999885559082, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999481525285, 0.2999999880660512],
+      "weightDoubleBits": ["4f41778e9999c93f", "36d262263333d33f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        1.3799999952316284, 2.369999885559082, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999481525285, 0.2999999880660512],
+      "weightDoubleBits": ["4f41778e9999c93f", "36d262263333d33f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        1.3799999952316284, 2.369999885559082, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.19999999481525285, 0.2999999880660512],
+      "weightDoubleBits": ["4f41778e9999c93f", "36d262263333d33f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0999999046325684, 2.6666667461395264, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.333333301295278, 0.3333333522117775],
+      "weightDoubleBits": ["9dc7ee325555d53f", "be999a695555d53f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0999999046325684, 2.6666667461395264, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.333333301295278, 0.3333333522117775],
+      "weightDoubleBits": ["9dc7ee325555d53f", "be999a695555d53f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0999999046325684, 2.6666667461395264, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.333333301295278, 0.3333333522117775],
+      "weightDoubleBits": ["9dc7ee325555d53f", "be999a695555d53f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.10000000149011612, 0.20000000298023224, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.10000000149011612, 0.20000000298023224, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.10000000149011612, 0.20000000298023224, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 0.0],
+      "weightDoubleBits": ["0000000000000000", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.300000190734863, 0.699999988079071, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.300000190734863, 0.699999988079071, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.300000190734863, 0.699999988079071, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0, 0.0],
+      "weightDoubleBits": ["000000000000f03f", "0000000000000000"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.8999999761581421, 7.099999904632568, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.8999999761581421, 7.099999904632568, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.8999999761581421, 7.099999904632568, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.0, 1.0],
+      "weightDoubleBits": ["0000000000000000", "000000000000f03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.700000047683716, 0.44999998807907104, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.4999999907497727, -4.094879921159017e-10],
+      "weightDoubleBits": ["1f5111f6ffffdf3f", "941bfdf7c923fcbd"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.700000047683716, 0.44999998807907104, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.4999999907497727, -4.094879921159017e-10],
+      "weightDoubleBits": ["1f5111f6ffffdf3f", "941bfdf7c923fcbd"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.700000047683716, 0.44999998807907104, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.4999999907497727, -4.094879921159017e-10],
+      "weightDoubleBits": ["1f5111f6ffffdf3f", "941bfdf7c923fcbd"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.5, 3.6500000953674316, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-1.0184699147149641e-9, 0.500000020589894],
+      "weightDoubleBits": ["36149e2e477f11be", "7eda0d0b0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.5, 3.6500000953674316, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-1.0184699147149641e-9, 0.500000020589894],
+      "weightDoubleBits": ["36149e2e477f11be", "7eda0d0b0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.5, 3.6500000953674316, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-1.0184699147149641e-9, 0.500000020589894],
+      "weightDoubleBits": ["36149e2e477f11be", "7eda0d0b0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        3.0999999046325684, 3.9000000953674316, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.4999999618651244, 0.5000000243592828],
+      "weightDoubleBits": ["b2900dd7ffffdf3f", "12ea130d0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        3.0999999046325684, 3.9000000953674316, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.4999999618651244, 0.5000000243592828],
+      "weightDoubleBits": ["b2900dd7ffffdf3f", "12ea130d0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        3.0999999046325684, 3.9000000953674316, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.4999999618651244, 0.5000000243592828],
+      "weightDoubleBits": ["b2900dd7ffffdf3f", "12ea130d0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.49999481439590454, 3.6499996185302734, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.987410521325561e-7, 0.5000000237817952],
+      "weightDoubleBits": ["ac9463668fc1b0be", "888bc40c0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.49999481439590454, 3.6499996185302734, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-9.987410521325561e-7, 0.5000000237817952],
+      "weightDoubleBits": ["ac9463668fc1b0be", "888bc40c0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        0.49999481439590454, 3.6499996185302734, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-9.987410521325561e-7, 0.5000000237817952],
+      "weightDoubleBits": ["ac9463668fc1b0be", "888bc40c0000e03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.3000006675720215, 0.7000000476837158, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [1.0000000913893052, 2.0159411066733705e-9],
+      "weightDoubleBits": ["a93988180000f03f", "eef2bcf31951213e"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.3000006675720215, 0.7000000476837158, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000913893052, 2.0159411066733705e-9],
+      "weightDoubleBits": ["a93988180000f03f", "eef2bcf31951213e"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.3000006675720215, 0.7000000476837158, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [1.0000000913893052, 2.0159411066733705e-9],
+      "weightDoubleBits": ["a93988180000f03f", "eef2bcf31951213e"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        -0.10000000149011612, 2.9100000858306885, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.09999999765016925, 0.40000001732239016],
+      "weightDoubleBits": ["0bef818f9999b9bf", "712433ac9999d93f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        -0.10000000149011612, 2.9100000858306885, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [-0.09999999765016925, 0.40000001732239016],
+      "weightDoubleBits": ["0bef818f9999b9bf", "712433ac9999d93f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        -0.10000000149011612, 2.9100000858306885, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [-0.09999999765016925, 0.40000001732239016],
+      "weightDoubleBits": ["0bef818f9999b9bf", "712433ac9999d93f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.5, 6.860000133514404, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.899999965779409, 0.9000000361693352],
+      "weightDoubleBits": ["cb8e6dbaccccec3f", "26e037e0ccccec3f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.5, 6.860000133514404, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.899999965779409, 0.9000000361693352],
+      "weightDoubleBits": ["cb8e6dbaccccec3f", "26e037e0ccccec3f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        5.5, 6.860000133514404, 0.10000000149011612, 0.20000000298023224,
+        5.300000190734863, 0.699999988079071, 0.8999999761581421,
+        7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.899999965779409, 0.9000000361693352],
+      "weightDoubleBits": ["cb8e6dbaccccec3f", "26e037e0ccccec3f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0, 5.5, 0.10000000149011612, 0.20000000298023224, 5.300000190734863,
+        0.699999988079071, 0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": false,
+      "weightsWritten": true,
+      "weights": [0.2499999925242205, 0.7500000113396662],
+      "weightDoubleBits": ["9225f2efffffcf3f", "098316060000e83f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0, 5.5, 0.10000000149011612, 0.20000000298023224, 5.300000190734863,
+        0.699999988079071, 0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2499999925242205, 0.7500000113396662],
+      "weightDoubleBits": ["9225f2efffffcf3f", "098316060000e83f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        2.0, 5.5, 0.10000000149011612, 0.20000000298023224, 5.300000190734863,
+        0.699999988079071, 0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.2499999925242205, 0.7500000113396662],
+      "weightDoubleBits": ["9225f2efffffcf3f", "098316060000e83f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        4.199999809265137, 2.299999952316284, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.0,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.7499999365818699, 0.250000002435928],
+      "weightDoubleBits": ["eae0f3ddffffe73f", "32959d020000d03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        4.199999809265137, 2.299999952316284, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 1.1920928955078125e-7,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.7499999365818699, 0.250000002435928],
+      "weightDoubleBits": ["eae0f3ddffffe73f", "32959d020000d03f"]
+    },
+    {
+      "triangle": 7,
+      "input": [
+        4.199999809265137, 2.299999952316284, 0.10000000149011612,
+        0.20000000298023224, 5.300000190734863, 0.699999988079071,
+        0.8999999761581421, 7.099999904632568
+      ],
+      "tolerance": 0.25,
+      "accepted": true,
+      "weightsWritten": true,
+      "weights": [0.7499999365818699, 0.250000002435928],
+      "weightDoubleBits": ["eae0f3ddffffe73f", "32959d020000d03f"]
+    }
+  ],
+  "passed": true
+}

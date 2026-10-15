@@ -20,7 +20,7 @@ const token = randomBytes(32).toString("hex");
 const ledger = {
   owner: "scanforge-landmark-canvas-validation",
   startedAt,
-  expiresAt: new Date(Date.now() + 180000).toISOString(),
+  expiresAt: new Date(Date.now() + 240000).toISOString(),
   persistentData: false,
   resources: [],
   cleanup: [],
@@ -81,9 +81,9 @@ ledger.resources.push({
   purpose: "isolated built application",
 });
 const deadline = setTimeout(() => {
-  failed = Error("Browser validation exceeded 3 minute lease");
+  failed = Error("Browser validation exceeded 4 minute lease");
   void cleanup();
-}, 180000);
+}, 240000);
 async function cleanup() {
   clearTimeout(deadline);
   await client?.close().catch(() => {});
@@ -220,6 +220,23 @@ try {
     throw Error("Geometry job failed to settle");
   }
 
+  await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
+  const entry = page.locator('[data-command="alignNPoints"]');
+  assert.equal(await entry.isDisabled(), true);
+  const commandAvailable = async () =>
+    (await call("command_get")).result.commands.find(
+      (command) => command.name === "ribbon:alignNPoints",
+    ).available;
+  assert.equal(await commandAvailable(), false);
+  const geometry = async (entityId) => {
+    const object = (
+      await call("object_get", { entityId, includeGeometry: true })
+    ).result;
+    const data = (
+      await call("artifact_read", { artifactId: object.geometry.artifactId })
+    ).result;
+    return JSON.parse(Buffer.from(data.base64, "base64").toString());
+  };
   const cases = [];
   ledger.cases = cases;
   const rectangle = [
@@ -266,9 +283,26 @@ try {
         replace: true,
       }),
     );
+    await mutate("object_select", {});
+    assert.equal(
+      await entry.isDisabled(),
+      true,
+      "Ambiguous sources must not launch",
+    );
+    assert.equal(await commandAvailable(), false);
     await mutate("object_select", { entityId: "moving" });
+    assert.equal(await entry.isDisabled(), false);
+    assert.equal(await commandAvailable(), true);
     const before = (await call("project_get")).result.undo;
-    await mutate("landmark_edit", { action: "begin", movingId: "moving" });
+    const sourceBefore = await geometry("moving");
+    const fixedBefore = await geometry("fixed");
+    await entry.click();
+    assert.equal((await call("landmark_get")).result.fixedId, null);
+    assert.equal(
+      await commandAvailable(),
+      false,
+      "Active session must block duplicate command launch",
+    );
     const dialog = page.getByRole("complementary", {
       name: "N-points alignment",
     });
@@ -342,16 +376,51 @@ try {
     const state = (await call("landmark_get")).result;
     assert.equal(state.canPreview, true);
     assert.equal((await call("project_get")).result.undo, before);
-    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await dialog.getByText(/Preview RMS:/).waitFor();
+    const gui = (await call("landmark_get")).result;
+    assert(gui.registration.rms < 0.001);
+    assert.deepEqual(await geometry("moving"), sourceBefore);
+    await dialog.getByRole("button", { name: "Reset", exact: true }).click();
+    await job(
+      await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
+    );
+    const agent = (await call("landmark_get")).result;
+    assert.deepEqual(agent.registration, gui.registration);
+    await dialog.getByRole("button", { name: "OK", exact: true }).click();
+    await dialog.waitFor({ state: "hidden" });
     assert.equal((await call("landmark_get")).result.active, false);
+    assert.equal((await call("project_get")).result.undo, before + 1);
+    const accepted = await geometry("moving");
+    accepted.positions.forEach((value, i) =>
+      assert(
+        Math.abs(value - translated[i]) < 0.001,
+        `${kind} accepted coordinate ${i}`,
+      ),
+    );
+    assert.deepEqual(await geometry("fixed"), fixedBefore);
+    await mutate("history_undo", {});
+    assert.deepEqual(await geometry("moving"), sourceBefore);
+    await mutate("command_run", { name: "ribbon:alignNPoints" });
+    assert.equal((await call("landmark_get")).result.movingId, "moving");
+    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     assert.equal((await call("project_get")).result.undo, before);
-    cases.push({ kind, captures });
+    cases.push({
+      kind,
+      captures,
+      registration: gui.registration,
+      commandEntry: true,
+      guiMcpPreviewEqual: true,
+      acceptUndo: true,
+    });
   }
   ledger.steps = [
     "Actual mesh and point-cloud canvas clicks preserve native Float32 pick records",
     "Moving/fixed pick modes preserve source identity",
     "Read-only MCP ray queries agree with GUI picks",
     "Picking and cancel preserve modeling history",
+    "Ribbon and MCP command share source eligibility and active-session admission",
+    "Real canvas picks produce equal GUI/MCP previews; accept translates only the moving scan; undo restores it",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({

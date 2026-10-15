@@ -8,6 +8,8 @@ export interface RibbonVerification {
 const verifiedWorkflows: Record<string, string> = {
   align:
     "docs/NATIVE_DATUM_ALIGNMENT.md: reference-based coordinate alignment, native owner-scan Apply and GUI/MCP Preview/Apply parity",
+  alignNPoints:
+    "docs/NATIVE_ALIGNMENT.md: ordinary point-pair command admission, native registration/refinement, source-only sessions, real mesh/cloud canvas picking and shared GUI/MCP preview/reset/accept",
   fineAlign:
     "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: indexed surface refinement; GUI/shared MCP parity and native owner-scan captures",
   reducePolygons:

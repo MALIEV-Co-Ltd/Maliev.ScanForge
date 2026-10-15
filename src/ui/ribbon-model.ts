@@ -519,6 +519,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 ];
 
 export interface RibbonState {
+  landmarkSourceId?: string | null;
   disabled: boolean;
   hasSelection: boolean;
   canUndo: boolean;
@@ -549,6 +550,11 @@ export function ribbonToolAvailability(
     return {
       available: false,
       reason: "Wait for the current operation to finish",
+    };
+  if (tool.action === "alignNPoints" && !state.landmarkSourceId)
+    return {
+      available: false,
+      reason: "Choose an unlocked visible scan for point-pair alignment",
     };
   if (tool.requiresSelection && !state.hasSelection)
     return { available: false, reason: "Select an object first" };

@@ -9,6 +9,7 @@ import {
 import { ribbonVerification } from "../src/ui/ribbon-verification";
 
 const ready = {
+  landmarkSourceId: "scan",
   disabled: false,
   hasSelection: true,
   canUndo: true,
@@ -48,6 +49,26 @@ describe("ribbon verification gate", () => {
           );
           expect(verification.evidence).not.toBe("");
         }
+  });
+  it("renders the verified point-pair entry disabled without a resolved source", () => {
+    for (const source of [null, undefined]) {
+      const markup = renderToStaticMarkup(
+        <Ribbon
+          {...ready}
+          landmarkSourceId={source}
+          activeTab="scan"
+          onTabChange={() => {}}
+          actions={{ alignNPoints: vi.fn() }}
+        />,
+      );
+      const button = markup.match(
+        /<button[^>]*data-command="alignNPoints"[^>]*>/,
+      )?.[0];
+      expect(button).toBeDefined();
+      expect(button).toContain('data-verification="verified"');
+      expect(button).toContain('disabled=""');
+      expect(button).toContain("Choose an unlocked visible scan");
+    }
   });
   it("never promotes an unknown command just because it has an implementation", () => {
     expect(ribbonVerification("newExperimentalTool", true).status).toBe(

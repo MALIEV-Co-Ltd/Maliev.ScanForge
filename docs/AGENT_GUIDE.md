@@ -766,5 +766,16 @@ Canvas landmark picking uses the same world-point extraction as `viewport_pick`:
 mesh hits retain their surface intersection, while point-cloud hits use the actual
 measured vertex transformed by its world pose. `landmark_get` reports the resulting
 Float32-rounded records. Moving/fixed pick modes filter canvas hits; picking and
-cancel do not create modeling history. This integration check does not certify
-original native hit testing or promote the gated point-pair ribbon entry.
+cancel do not create modeling history. This integration check does not certify original native hit testing. The ordinary
+point-pair entry is available with the source policy below; split view remains separate.
+
+The ordinary point-pair ribbon entry and `command_run` name `ribbon:alignNPoints`
+share source resolution: prefer the active eligible scan, then a uniquely selected
+scan, then the sole eligible scan in the scene. A second object is not required
+to open. `command_get` reports availability. Hidden, locked, unselectable, empty,
+CAD, parametric and fitted-surface objects cannot be moving command sources.
+Point-cloud eligibility is an application extension of the native mesh selector.
+The command opens the same `landmark_edit` session without creating history;
+explicit `landmark_edit` begin continues to accept a caller-specified moving ID.
+Preview/reset/accept, cancellation, revision checks and active-dialog admission
+remain shared with the GUI.

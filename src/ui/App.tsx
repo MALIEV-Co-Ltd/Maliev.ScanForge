@@ -245,6 +245,7 @@ import {
   landmarkState,
   type LandmarkAlignment,
 } from "../landmark-alignment";
+import { landmarkCommandSource } from "../landmark-command";
 import { SplitMeshPanel } from "./SplitMeshPanel";
 import { EditScanDialog } from "./EditScanDialog";
 import { ScanQuickTools } from "./ScanQuickTools";
@@ -1629,6 +1630,11 @@ export function App() {
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
   }, [entities]);
+  const landmarkSource = landmarkCommandSource(
+    entities,
+    selectedId,
+    selectedIds,
+  );
   const commandRepeat = useRef(new CommandRepeat());
   const [, setCommandVersion] = useState(0);
   const ribbonActions = {
@@ -1862,7 +1868,13 @@ export function App() {
       .filter(([name]) => !excludedRepeatCommands.has(name))
       .map(([name, run]) => [
         `ribbon:${name}`,
-        selected || globalRibbonCommands.has(name) ? run : undefined,
+        name === "alignNPoints"
+          ? landmarkSource
+            ? run
+            : undefined
+          : selected || globalRibbonCommands.has(name)
+            ? run
+            : undefined,
       ]),
     ...Object.entries(actions)
       .filter(
@@ -2566,12 +2578,21 @@ export function App() {
     return landmarkState(next);
   }
   function openLandmarks() {
-    if (!selected) return;
     try {
+      const moving = landmarkCommandSource(
+        entitiesRef.current,
+        selectedId,
+        selectedIds,
+      );
+      if (!moving)
+        throw new Error(
+          "Choose an unlocked visible scan for point-pair alignment.",
+        );
       editLandmarkSession({
         action: "begin",
-        movingId: selected.id,
+        movingId: moving.id,
       });
+      setSelectedId(moving.id);
     } catch (error) {
       setError(errorText(error));
     }
@@ -4245,6 +4266,7 @@ export function App() {
         onTabChange={setRibbonTab}
         disabled={busy || !!nPoints || !!surfaceFit || !!createSketch}
         hasSelection={!!selected}
+        landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
         canRedo={!!future.length}
         actions={repeatableRibbonActions}

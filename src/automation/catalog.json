@@ -4215,7 +4215,7 @@
   },
   {
     "name": "command_run",
-    "description": "Launch a discovered repeatable command with the current selection and remember it for Spacebar. Returns launch acknowledgement, not operation completion. Active dialogs and busy operations reject launches.",
+    "description": "Launch a discovered repeatable command with the current selection and remember it for Spacebar. Returns launch acknowledgement, not operation completion. Active dialogs and busy operations reject launches. ribbon:alignNPoints resolves an active eligible scan, a uniquely selected scan, or the sole eligible scan; a fixed target is optional. command_get reports the same eligibility as its GUI entry.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
