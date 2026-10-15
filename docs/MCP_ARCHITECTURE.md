@@ -16,7 +16,9 @@ rescanning the selection mask. Discarding landmarks cancels only a matching
 
 Indexed point-pair previews and paired `mesh_process` with `refineSurface: true`
 share target validation, coarse registration, original-vertex seed mapping,
-region growth and the bounded CPU refinement worker. Results publish coarse
+region growth, combined indexed target preparation and the bounded CPU refinement
+worker. Target preparation retains ordered, separate vertex records across
+objects and regenerates normals before query-tree construction. Results publish coarse
 registration separately from refinement; geometry retains Float32 storage after
 each applied stage. See the agent guide for supported target types and the native
 alignment evidence for the remaining full-workflow verification gate.

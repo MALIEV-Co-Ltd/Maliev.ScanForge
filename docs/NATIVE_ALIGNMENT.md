@@ -1747,3 +1747,46 @@ cleanup receipts were checked directly. The native replay and offline-analysis
 processes exited. No application source or MCP contract changed, so application
 build and test targets are not applicable to this slice. The live development
 server remains on port 5173.
+
+## Combined indexed target preparation in the shared worker
+
+`docs/evidence/landmark-joined-copy-native.json` retains 18 direct executions of
+the original caller's copy loop at `0x14054d90d` through `0x14054daca`. The probe
+supplies controlled mesh collections and enters/exits that loop through a bounded
+ABI wrapper. Original triangle insertion `0x1401de690` executes unchanged.
+The finalizer callback captures the copied records, then executes original facet
+refresh `0x140b35d90` and complete vertex-normal arithmetic `0x140b375e0(mesh, 0)`.
+This isolates numerical preparation from scene traversal and the full finalizer;
+it does not execute the constructor, native scheduler, finalizer adjacency
+rebuild, named evaluator, optimizer or UI.
+
+The corpus includes one through four input meshes, overlapping coordinates,
+collinear facets and varied supplied normals. All 277 copied vertices retain
+source order and sequential destination IDs. Facet indices receive the preceding
+vertex-count offset, without welding across objects. Copied supplied vertex and
+facet normals are retained in the pre-finalizer capture; subsequent vertex normals
+are regenerated from geometry.
+
+`prepareNativeLandmarkTarget` now reproduces that ordered join and normal refresh.
+The shared `refineNativeLandmarkAfterCoarse` worker uses one prepared fixed mesh
+instead of separate target trees. GUI picked-point preview, `landmark_preview`
+and paired `mesh_process` with `refineSurface: true` all reach this same helper.
+Existing fine alignment retains its separately verified target-group behavior.
+This change does not enable the broader ribbon command or establish complete
+all-scene target eligibility, CAD conversion or point-cloud refinement.
+
+All 18 captured joined outputs match vertex coordinates, facet indices and every
+Float32 regenerated vertex-normal byte. Input target buffers remain unchanged;
+coincident vertices remain separate. The five full-resolution owner-scan cases
+also pass after the integration, retaining the previously captured complete
+position/normal hashes and numerical controller results.
+
+Validation: production build and TypeScript passed without warnings or errors;
+65 focused tests passed, including the five external owner-scan cases. The full
+suite passed 26,978 tests across 347 files, with 29 skips across six files.
+Browser/MCP regression passed with GUI/agent preview agreement, two physical
+workers, acceptance/retry protection, cancellation and undo restoration, and no
+console errors. Formatting, whitespace and branding checks passed. Native and
+isolated browser/bridge helpers exited; the live 5173 workspace remains available
+without reloading or replacing the user's imported scan. Final build manifest:
+`scanforge-ec99f3717144570f`.

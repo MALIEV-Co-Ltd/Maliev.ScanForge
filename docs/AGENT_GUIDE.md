@@ -25,6 +25,10 @@ per side in matching order. Source and target must be different raw indexed scan
 meshes with hidden triangles revealed; omit `selectionOnly`. The shared worker
 solves native coarse registration, maps moving landmarks to original vertex IDs,
 grows a region to 3000 faces or stability, and refines using a 3 mm initial radius.
+Before refinement, fixed target records are copied into one indexed mesh in
+target order without welding coincident vertices. Facet indices receive each
+target's vertex offset and target normals are regenerated on that combined mesh.
+The GUI preview and both MCP entry points use this same preparation.
 Logical lanes default to two; the existing bounded CPU pool admits at most two
 physical workers. `parallel: false` keeps the same logical lane reduction serial.
 

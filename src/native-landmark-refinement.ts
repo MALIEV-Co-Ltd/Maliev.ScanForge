@@ -4,6 +4,7 @@ import { nativeDatumIsIdentity } from "./scan-native-datum-apply";
 import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import { nativeRefineAlignmentMeshesAsync } from "./scan-native-alignment-surface-controller";
 import { noiseNormals } from "./scan-native-noise";
+import { prepareNativeLandmarkTarget } from "./native-landmark-target";
 
 /** Native indexed source stages. Coarse registration and scene target collection
  * are performed by the caller; coordinates must retain storage between stages.
@@ -48,7 +49,7 @@ export async function refineNativeLandmarkAfterCoarse(
   const normals = transformDatumCoordinates(originalNormals, coarse, true);
   const result = await nativeRefineAlignmentMeshesAsync(
     [{ vertices, triangles, normals, flags: region.vertices }],
-    targets,
+    [prepareNativeLandmarkTarget(targets, options)],
     0x7fffffff,
     {
       ...options,
