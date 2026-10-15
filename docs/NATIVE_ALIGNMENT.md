@@ -1790,3 +1790,49 @@ console errors. Formatting, whitespace and branding checks passed. Native and
 isolated browser/bridge helpers exited; the live 5173 workspace remains available
 without reloading or replacing the user's imported scan. Final build manifest:
 `scanforge-ec99f3717144570f`.
+
+## Original scan scene traversal
+
+`docs/evidence/landmark-scene-scan-native.json` retains 80 direct executions of
+caller instructions `0x14054d74f` through `0x14054d8b3`, covering 40 scene layouts
+in both values of the captured mode flag. The bounded ABI wrapper supplies the
+scene, iterator, existing CAD-target list, moving-object pointer and controlled
+visibility callbacks. Supported wrappers execute original query `0x14088ae10`;
+the unsupported-query case supplies a null query result. Vector growth uses a
+controlled storage adapter. The original traversal, exclusions, virtual-call
+ordering and append branches execute unchanged.
+
+The verified scan traversal:
+
+- Skips null iterator entries and null scan-query results.
+- Compares the returned wrapper pointer with the moving-object pointer before
+  calling visibility; the moving scan never receives a visibility query.
+- Skips invisible wrappers after querying visibility.
+- In mode zero, appends geometry at wrapper `+0x160` after existing CAD targets.
+- In nonzero mode, appends the wrapper to the separate evaluator-object list.
+- Preserves scene order and duplicate entries in either list.
+- Does not test the geometry pointer for null before appending it in mode zero.
+- Calls iterator destruction exactly once, including for an empty scene.
+
+The corpus checks ordered output lists and visibility-call order for every case.
+It includes the moving object, invisible and unsupported entries, null entries,
+null geometry, repeated objects, empty scenes and seeded mixed layouts. The
+null-geometry result is a native observation, not a recommendation to bypass
+application input validation.
+
+`docs/evidence/landmark-scene-scan-type.json` independently associates the scan
+identifier's query routine with actual MSVC `cMeshObject` complete-object
+locators. The adjusted vtable records occur at offset `0x2e0`; their adjustment
+thunk jumps to `0x14088ae10`. A nearby destructor thunk was excluded after checking
+its actual branch target rather than treating the scanner's proximity match as
+a query binding.
+This is static class evidence paired with the earlier direct query executions;
+it does not establish that point-cloud objects implement this interface.
+
+All 80 native assertions passed, and both executable allocations were released.
+The probe process exited. This evidence isolates the scan half of scene
+collection; it does not execute the preceding CAD collector, named evaluator,
+combined finalizer, optimizer or installed UI. No application source or MCP
+contract changes in this slice. Application build and test targets are therefore
+not applicable; JSON parsing, image identity, native ordered outputs, cleanup,
+formatting and whitespace are the validation boundaries.

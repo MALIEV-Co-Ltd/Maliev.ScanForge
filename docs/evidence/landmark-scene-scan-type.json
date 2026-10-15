@@ -1,0 +1,20 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "identity": "0x14115ca98",
+  "query": "0x14088ae10",
+  "scope": "Static MSVC complete-object locator and vtable association, paired with separately retained matching-query native executions. Does not construct the object or establish point-cloud support.",
+  "bindings": [
+    {
+      "typeName": ".?AVcMeshObject@@",
+      "vtableSlot": "0x141248648",
+      "locator": "0x141321a50",
+      "adjustment": 736
+    },
+    {
+      "typeName": ".?AVcMeshObject@@",
+      "vtableSlot": "0x141248650",
+      "locator": "0x141321a50",
+      "adjustment": 736
+    }
+  ]
+}
