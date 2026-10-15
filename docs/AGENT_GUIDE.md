@@ -735,3 +735,8 @@ per-face callback. Both optimizations are automatic in the shared GUI/MCP
 processing path; agent parameters, CPU lane settings, cancellation and native
 results are unchanged. The measured owner-scan comparison and its limits are in
 `docs/evidence/alignment-preparation-performance.json`.
+
+Point-pair landmark picks (`landmark_edit`, action `pick`) use native Float32
+world-coordinate precision, widened to doubles for storage. GUI and MCP share
+this rounding. Finite doubles outside the Float32 range fail without changing
+the session; inspect `landmark_get` for the stored coordinates.

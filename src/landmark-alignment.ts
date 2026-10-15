@@ -94,10 +94,18 @@ export function pickLandmark(
     throw new Error("Pick a point on the moving scan or the fixed target.");
   if (point.length !== 3 || !point.every(Number.isFinite))
     throw new Error("Landmarks must contain finite world coordinates.");
+  // Native viewport picks arrive as Float32 and are widened into double records.
+  const picked: Vec3 = [
+    Math.fround(point[0]),
+    Math.fround(point[1]),
+    Math.fround(point[2]),
+  ];
+  if (!picked.every(Number.isFinite))
+    throw new Error("Landmarks exceed the native Float32 coordinate range.");
   return {
     ...session,
     preview: undefined,
-    picks: [...session.picks, { entityId, point: [...point] }],
+    picks: [...session.picks, { entityId, point: picked }],
   };
 }
 export function landmarkPairs(session: LandmarkAlignment) {

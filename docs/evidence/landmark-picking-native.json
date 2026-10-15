@@ -1,0 +1,323 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "entry": "0x1406a0000",
+    "execution": "Original complete normal-view point insertion handler. Scene hit testing and common-feature query supplied by callbacks; preallocated point vector; UI refresh and redraw inert with counters. No coordinate widening, active/preview admission or side classification was substituted.",
+    "reboundRedrawSlots": ["0x140eae4f8"],
+    "reaEvidence": [
+      "ev_f33e479649c8937bf1a65ad5002ba40ca5ab96dd3acdd569c890e3a277a35c77",
+      "ev_6f169eeca02113d993f694f5d1e480dc68b05c237b36ad45c4e876257df4cdcb"
+    ]
+  },
+  "cases": [
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": false,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 0,
+      "pickerCalls": 0,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": true,
+        "hit": false,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 1,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": true,
+        "hit": true,
+        "commonFeature": false,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": true,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000000000f43f00000000000004c00000000000000e40",
+      "fixedSide": 0
+    },
+    {
+      "input": {
+        "xyz": [1.25, -2.5, 3.75],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "other"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000000000f43f00000000000004c00000000000000e40",
+      "fixedSide": 1
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": false,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 0,
+      "pickerCalls": 0,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": true,
+        "hit": false,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 1,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": true,
+        "hit": true,
+        "commonFeature": false,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": true,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000e0e2361a3f0000000000007041000000202b1b60be",
+      "fixedSide": 0
+    },
+    {
+      "input": {
+        "xyz": [0.0001, 16777217, -3e-8],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "other"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000e0e2361a3f0000000000007041000000202b1b60be",
+      "fixedSide": 1
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": false,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 0,
+      "pickerCalls": 0,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": true,
+        "hit": false,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 1,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": true,
+        "hit": true,
+        "commonFeature": false,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": true,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 0,
+      "redraws": 0,
+      "appended": false,
+      "pointDoubleBits": null,
+      "fixedSide": null
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "moving"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000c0cc6c5fc000000040331350400000000000000000",
+      "fixedSide": 0
+    },
+    {
+      "input": {
+        "xyz": [-125.7, 64.3, 0.0],
+        "active": true,
+        "hit": true,
+        "commonFeature": true,
+        "preview": false,
+        "side": "other"
+      },
+      "returned": 1,
+      "pickerCalls": 2,
+      "updates": 1,
+      "redraws": 1,
+      "appended": true,
+      "pointDoubleBits": "000000c0cc6c5fc000000040331350400000000000000000",
+      "fixedSide": 1
+    }
+  ],
+  "limitations": [
+    "This does not execute scene hit testing, native constructors, ASCII import, split-view handler or installed GUI."
+  ]
+}

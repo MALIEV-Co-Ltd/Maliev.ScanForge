@@ -2676,3 +2676,47 @@ ASC replay and all 30 original interface queries passed. Native mappings,
 providers, browsers, MCP children and temporary file servers were released;
 the latest source stays on port 5173. Scoped formatting, JSON coverage/identity,
 whitespace and prohibited-name checks passed. No deployment or publication.
+
+## Native point insertion and controller entry trace
+
+Offline RTTI inspection of the same hashed image binds the normal point-pair
+controller to vtable `0x1411d44e0` and the split-view controller to
+`0x1411d4908`. LEA references and PE exception ranges locate their constructors
+at `0x14069f8a0` and `0x1406a27d0`; this inventory alone is not execution evidence.
+REA decompilation and assembly then confirm the normal controller's point
+handler `0x1406a0000` and split-view handler `0x1406a4980`. The normal constructor
+obtains the alignment dialog through navigation service identity `0x141153230`,
+resets its picks/candidates/preview flags, and installs it with that service.
+This does not yet identify the source-object assignment made by command admission.
+Constructor Evidence: `ev_29d243c5f48411a65db5919c70b6661a6d9ca5387646b51b6a51e89df2486245`.
+
+`docs/evidence/landmark-picking-native.json` retains 18 executions of the complete
+original normal-view insertion handler. The harness supplies scene-hit and
+common-feature-query callbacks, preallocates the point vector, and counts inert
+UI refresh/redraw callbacks. The original handler checks active mode and preview
+state, classifies moving versus other common-feature hits, widens the three
+Float32 coordinates into a 32-byte point record, and appends it. No rounding,
+side classification or admission branch in that handler is replaced. These cases
+cover no hit, absent common feature, inactive mode, preview lock, both point sides,
+nonrepresentable decimal coordinates and the Float32 integer precision boundary.
+All point double bytes, side tags, return values and callback counts match.
+Handler Evidence: `ev_f33e479649c8937bf1a65ad5002ba40ca5ab96dd3acdd569c890e3a277a35c77`;
+assembly: `ev_6f169eeca02113d993f694f5d1e480dc68b05c237b36ad45c4e876257df4cdcb`.
+
+This exposed excess precision in the application's shared `pickLandmark` path.
+GUI and MCP now round incoming coordinates to Float32 before storing doubles.
+Finite doubles that overflow Float32 are rejected without session mutation;
+that rejection is an independently authored boundary safeguard. Native captures
+drive the regression tests. Scene hit testing itself, third-object target policy,
+the original ASCII importer, split-view execution and command source admission
+remain separate unverified requirements; this capture does not promote the
+point-pair ribbon command or certify complete workflow parity.
+
+Validation for this precision change: build `scanforge-5ad865eb0fa967ca` passed;
+40 focused tests and the full suite of 27,085 tests passed, with 31 existing
+skips. The rebuilt cloud-pose browser check passed native-precision MCP picks
+and GUI preview/accept/undo, point selection, normals, binary recovery and
+legacy registration regressions. All 18 native insertion cases passed. Native
+mappings, provider processes, browser/MCP children and temporary listeners were
+released; port 5173 continues serving the latest source. Scoped formatting,
+fixture coverage and whitespace/prohibited-name checks passed.

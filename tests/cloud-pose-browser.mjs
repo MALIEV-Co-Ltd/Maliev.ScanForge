@@ -411,6 +411,17 @@ try {
     movingId: "cloud",
     fixedId: fixed.id,
   });
+  const precisionWitness = [0.0001, 16777217, -0.00000003];
+  await mutate("landmark_edit", {
+    action: "pick",
+    entityId: "cloud",
+    point: precisionWitness,
+  });
+  assert.deepEqual(
+    (await call("landmark_get")).result.picks[0].point,
+    precisionWitness.map(Math.fround),
+  );
+  await mutate("landmark_edit", { action: "clear" });
   for (let i = 0; i < 3; i++) {
     await mutate("landmark_edit", {
       action: "pick",
@@ -524,6 +535,7 @@ try {
     "Repeated Apply preserves active point selection",
     "Binary project recovery retains exact pose",
     "World geometry remains available through MCP",
+    "MCP landmark picks retain native Float32 coordinate precision",
     "Point-pair GUI/MCP preview composes native cloud pose",
     "Paired accept and undo preserve point type, normals and selection",
     "mesh_process paired and legacy GUI panel preserve the same native pose",
