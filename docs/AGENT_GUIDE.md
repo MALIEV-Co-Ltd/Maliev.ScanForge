@@ -692,3 +692,11 @@ remain unchanged. Supplied normals avoid full-size coordinate/normal copies;
 when normals are absent, the existing full-mesh normal computation remains.
 Inactive records still undergo validation. This optimization is automatic for
 GUI and MCP; sampling and CPU lane settings are unchanged.
+
+Alignment target preparation uses exact numeric edge keys where the vertex ID
+range permits safe integer packing, with a string-key fallback for larger
+ranges. Successful seeded refinement clears the face selection without a
+per-face callback. Both optimizations are automatic in the shared GUI/MCP
+processing path; agent parameters, CPU lane settings, cancellation and native
+results are unchanged. The measured owner-scan comparison and its limits are in
+`docs/evidence/alignment-preparation-performance.json`.

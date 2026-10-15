@@ -2384,3 +2384,47 @@ with two physical workers per case and no page errors. Scoped formatting, JSON
 readback, whitespace and prohibited-brand checks passed. Native and browser
 processes exited, their mappings and file server were released, and port 5173
 returned HTTP 200 with the existing live source server preserved.
+
+## Alignment preparation performance
+
+A main-thread CPU profile of the owner-scan pipeline identified string-based
+edge lookup and successful-refinement selection clearing as avoidable costs.
+The workers already retain their source and target records between evaluations;
+no additional worker-geometry cache is introduced.
+
+Target adjacency now packs an ordered vertex pair into an exact integer key
+when the vertex count is at most 94,906,265. Larger ranges retain string keys.
+Values store the first directed-edge index and encode whether it has already
+been consumed. Traversal order, duplicate/nonmanifold handling, neighbor-edge
+numbers, flags and cancellation remain unchanged. Native bucket fixtures and the
+complete owner target-cache hashes guard this behavior; sparse-index tests cover
+small, maximum packed and fallback ranges. Applied refinement returns a fresh
+zeroed selection array directly. Identity refinement still maps the grown face
+flags into the retained selection.
+
+A six-page, alternating baseline/optimized browser comparison on `ply-2.ply`
+against `ply-1.ply` measured median pipeline time of 2,164 ms before and 1,783 ms
+after, about 18% lower in this sample. Median sampled edge-linking self CPU time
+fell from 233 ms to 97 ms; the former selection-clearing callback consumed about
+123 ms and no longer scans the applied selection. Each variant has three samples.
+Parsing and final hashing are outside the timing; no regression suite runs
+concurrently with the measurement. This is a measured baseline, not a guarantee
+of instant behavior on other hardware or geometry. All six runs match the full
+native controller's transform, parameters, initial/best scores and every final
+position/normal hash, with two physical workers and no page errors. The replay
+substitutes old modules only inside its disposable baseline pages, preserving the
+latest source server for user testing. Profile digests, samples and limitations
+are in `docs/evidence/alignment-preparation-performance.json`.
+
+Both optimizations reside in the shared processing path used by the GUI and MCP;
+no schema, controls, defaults or numerical algorithm changes. Remaining CPU time,
+other alignment modes and the wider reverse-engineering goal remain active work.
+
+Validation: build passed with no warnings/errors and manifest
+`scanforge-e8918265afe0c721`. The focused lane passed 181 tests, including both
+external owner-file cases. The default suite passed 27,036 tests with 31 skips.
+Both owner browser cases matched complete native output with two workers. The
+production browser passed GUI/MCP import, native refinement, seeded multicore,
+CAD/visible-scene target, history and BRep preservation checks with no page errors.
+Scoped formatting, whitespace and prohibited-brand checks passed. All validation
+helpers exited; the latest live source server on port 5173 is retained.

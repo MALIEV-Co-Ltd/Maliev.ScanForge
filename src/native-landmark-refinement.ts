@@ -96,7 +96,9 @@ export function nativeLandmarkFaceSelection(
   faceFlags: Uint8Array,
   applied: boolean,
 ) {
-  return Uint8Array.from(faceFlags, (flag) =>
-    applied ? 0 : Number(!!(flag & 4)),
-  );
+  const selection = new Uint8Array(faceFlags.length);
+  if (!applied)
+    for (let face = 0; face < faceFlags.length; face++)
+      selection[face] = Number(!!(faceFlags[face] & 4));
+  return selection;
 }

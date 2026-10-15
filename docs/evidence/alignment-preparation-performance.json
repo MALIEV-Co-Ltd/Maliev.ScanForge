@@ -1,0 +1,112 @@
+{
+  "baselineCommit": "8904e5b",
+  "case": "ply-2.ply aligned to ply-1.ply using native saved coarse frame and seed faces",
+  "method": "Six separate owned browser pages in one headless Chrome, alternating baseline/optimized/optimized/baseline/baseline/optimized. Baseline modules compiled from committed source and substituted only inside disposable baseline pages; the live server source stays current. CDP CPU sampling at 1000 microseconds. All six iterations assert complete native parameters, matrix, scores and full position/normal hashes. No suite runs concurrently with this measurement.",
+  "summary": {
+    "baseline": {
+      "pipelineMilliseconds": [
+        2116.625, 2170.1500000059605, 2164.0750000029802
+      ],
+      "medianMilliseconds": 2164.0750000029802,
+      "profiles": [
+        {
+          "repetition": 1,
+          "profileSha256": "2a6684b7653736c1c0cc198473c50e8e42b90ddfecf2fed8864c27018aa4de80",
+          "sampledSelfMilliseconds": {
+            "linkFace": 213.92800000000003,
+            "nativeLandmarkFaceSelection": 122.79700000000001
+          }
+        },
+        {
+          "repetition": 4,
+          "profileSha256": "001668205c558dbec4d99cb4bfb0ee7eb539b25fa26df0c508a290b88def6c33",
+          "sampledSelfMilliseconds": {
+            "linkFace": 233.3249999999999,
+            "nativeLandmarkFaceSelection": 125.23799999999999
+          }
+        },
+        {
+          "repetition": 5,
+          "profileSha256": "08fbb3f09de0c0db398e373a0e1931967bebfdf51c172a1315b958d4f950cfc3",
+          "sampledSelfMilliseconds": {
+            "linkFace": 250.608,
+            "nativeLandmarkFaceSelection": 114.35800000000005
+          }
+        }
+      ]
+    },
+    "optimized": {
+      "pipelineMilliseconds": [
+        1897.7049999982119, 1782.5049999952316, 1779.7950000017881
+      ],
+      "medianMilliseconds": 1782.5049999952316,
+      "profiles": [
+        {
+          "repetition": 2,
+          "profileSha256": "1e178df00ed36149309e7ecaaa10627250f9162115d66b729b9e1a2865ac26cd",
+          "sampledSelfMilliseconds": {
+            "linkFace": 106.01199999999997
+          }
+        },
+        {
+          "repetition": 3,
+          "profileSha256": "fcf4e5830441adbc2f8b5de6a9213de2668a6d688eeaf770c0e4fb8b7b66a78f",
+          "sampledSelfMilliseconds": {
+            "linkFace": 78.961
+          }
+        },
+        {
+          "repetition": 6,
+          "profileSha256": "bc0a46088192ffebd127c6f933b5b18389abf62f528412424bb6cf88c2552187",
+          "sampledSelfMilliseconds": {
+            "linkFace": 97.17499999999997
+          }
+        }
+      ]
+    }
+  },
+  "medianPipelineReductionPercent": 17.632013678233104,
+  "physicalWorkers": 2,
+  "exactNativeOutputs": true,
+  "pageErrors": [],
+  "limitations": [
+    "Three samples per variant on this machine; timings are observations, not a universal speed guarantee",
+    "Timing excludes file parsing and final buffer hashing",
+    "No GPU acceleration introduced; native evaluation order and bounded CPU scheduling preserved"
+  ],
+  "validation": {
+    "build": "scanforge-e8918265afe0c721; zero warnings/errors",
+    "focusedTests": 181,
+    "fullSuite": {
+      "passed": 27036,
+      "skipped": 31
+    },
+    "guiMcpBrowser": {
+      "passed": true,
+      "guiImport": true,
+      "mcpImport": true,
+      "guiMcpNativeStlImport": true,
+      "unitConversion": true,
+      "originPlacement": true,
+      "binaryPersistence": true,
+      "indexedScannerNormals": true,
+      "transformTopologyRetention": true,
+      "undoRestoration": true,
+      "nativeRefinement": true,
+      "guiNativeRefinement": true,
+      "guiMcpTargetGroupRefinement": true,
+      "guiMcpPairedTopologyRetention": true,
+      "guiMcpLandmarkEditing": true,
+      "guiMcpLandmarkRefinement": true,
+      "guiMcpMulticoreSeededRefinement": true,
+      "guiMcpCadLandmarkRefinement": true,
+      "guiMcpVisibleSceneLandmarkRefinement": true,
+      "cadLandmarkBrepPreserved": true,
+      "errors": []
+    },
+    "bothOwnerScans": {
+      "passed": true,
+      "physicalWorkers": [2, 2]
+    }
+  }
+}

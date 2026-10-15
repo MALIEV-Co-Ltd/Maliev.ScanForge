@@ -4,10 +4,11 @@ import {
   nativeAlignmentSpatialBucket,
 } from "./scan-native-alignment-buckets";
 
-type EdgeRecords = Map<
-  string,
-  { face: number; edge: number; consumed: boolean }
->;
+// Nonnegative values identify the first directed edge; -value-1 marks it consumed.
+// Packing the key is exact while vertexCount squared fits a safe integer.
+type EdgeRecords = Map<number | string, number>;
+const edgeStride = (vertexCount: number) =>
+  vertexCount <= 94906265 ? vertexCount : 0;
 
 function linkFace(
   triangles: ArrayLike<number>,
@@ -15,19 +16,21 @@ function linkFace(
   neighbors: Int32Array,
   neighborEdges: Uint8Array,
   first: EdgeRecords,
+  stride: number,
 ) {
   let appended = 0;
   for (let edge = 0; edge < 3; edge++) {
     const from = triangles[face * 3 + edge];
     const to = triangles[face * 3 + ((edge + 1) % 3)];
-    const reverse = first.get(`${to}:${from}`);
-    if (reverse) {
-      if (!reverse.consumed) {
-        neighbors[reverse.face * 3 + reverse.edge] = face;
-        neighborEdges[reverse.face * 3 + reverse.edge] = edge;
-        neighbors[face * 3 + edge] = reverse.face;
-        neighborEdges[face * 3 + edge] = reverse.edge;
-        reverse.consumed = true;
+    const reverseKey = stride ? to * stride + from : `${to}:${from}`;
+    const reverse = first.get(reverseKey);
+    if (reverse !== undefined) {
+      if (reverse >= 0) {
+        neighbors[reverse] = face;
+        neighborEdges[reverse] = edge;
+        neighbors[face * 3 + edge] = Math.floor(reverse / 3);
+        neighborEdges[face * 3 + edge] = reverse % 3;
+        first.set(reverseKey, -reverse - 1);
       } else {
         neighbors[face * 3 + edge] = -1;
         neighborEdges[face * 3 + edge] = 255;
@@ -35,9 +38,9 @@ function linkFace(
       continue;
     }
     appended++;
-    const key = `${from}:${to}`;
+    const key = stride ? from * stride + to : `${from}:${to}`;
     // Reverse lookup stops at the first record, even when a later duplicate is unused.
-    if (!first.has(key)) first.set(key, { face, edge, consumed: false });
+    if (!first.has(key)) first.set(key, face * 3 + edge);
   }
   return appended;
 }
@@ -104,17 +107,32 @@ export function nativeBuildAlignmentAdjacency(
     } else fallback.push(face);
   }
   const first: EdgeRecords = new Map();
+  const stride = edgeStride(vertexBuckets.length);
   let recordCount = 0;
   for (const bucket of Array.from(groups.keys()).sort((a, b) => a - b)) {
     for (const face of groups.get(bucket)!) {
-      recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
+      recordCount += linkFace(
+        triangles,
+        face,
+        neighbors,
+        neighborEdges,
+        first,
+        stride,
+      );
       triangleFlags[face] |= 4;
     }
   }
   for (const face of fallback) {
     if (face % 4096 === 0 && options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
-    recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
+    recordCount += linkFace(
+      triangles,
+      face,
+      neighbors,
+      neighborEdges,
+      first,
+      stride,
+    );
   }
   return {
     bounds,
@@ -140,6 +158,7 @@ export function nativeLinkAlignmentBucket(
   const neighborEdges = new Uint8Array(triangles.length);
   const triangleFlags = new Uint8Array(triangles.length / 3);
   const first: EdgeRecords = new Map();
+  const stride = edgeStride(vertexBuckets.length);
   let recordCount = 0;
   for (let face = 0; face < triangleFlags.length; face++) {
     if (face % 4096 === 0 && options.signal?.aborted)
@@ -154,7 +173,14 @@ export function nativeLinkAlignmentBucket(
       included &&= vertexBuckets[id] === bucket;
     }
     if (!included) continue;
-    recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
+    recordCount += linkFace(
+      triangles,
+      face,
+      neighbors,
+      neighborEdges,
+      first,
+      stride,
+    );
     triangleFlags[face] |= 4;
   }
   return { neighbors, neighborEdges, triangleFlags, recordCount };
