@@ -45,6 +45,8 @@ try {
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
         "Content-Type":
           {
             html: "text/html",
@@ -109,6 +111,7 @@ try {
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
+  assert.equal(await page.evaluate(() => crossOriginIsolated), true);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })

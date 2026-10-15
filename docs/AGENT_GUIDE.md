@@ -779,3 +779,12 @@ The command opens the same `landmark_edit` session without creating history;
 explicit `landmark_edit` begin continues to accept a caller-specified moving ID.
 Preview/reset/accept, cancellation, revision checks and active-dialog admission
 remain shared with the GUI.
+
+Alignment query workers may initialize together on isolated origins when their
+conservative peak tree-copy estimate fits the existing 128 MiB pool cap; other
+admitted pools initialize sequentially. This is automatic for both GUI and MCP
+alignment operations and adds no request parameter. Logical lane reduction,
+results, cancellation and diagnostics keep their existing contracts. Full-file
+serial/two-worker native equality and timing scope are documented in
+`docs/ALIGNMENT_PERFORMANCE.md`; two workers do not imply a measured speedup for
+every selected region.

@@ -51,6 +51,15 @@ export function alignmentPoolAdmission(
     globalThis.navigator as (Navigator & { deviceMemory?: number }) | undefined
   )?.deviceMemory;
   if (memory !== undefined && memory < 4) return "device memory admission";
+  return alignmentPoolBytes(lanes, surfaces, 3) <= 128 * 1024 * 1024
+    ? undefined
+    : "128 MiB pool memory admission";
+}
+function alignmentPoolBytes(
+  lanes: readonly (readonly AlignmentQueryVertex[])[],
+  surfaces: readonly NativeAlignmentQuerySurface[],
+  treeCopies: number,
+) {
   let bytes = lanes.reduce((sum, lane) => sum + lane.length * 512, 0);
   for (const surface of surfaces) {
     bytes +=
@@ -63,16 +72,25 @@ export function alignmentPoolAdmission(
     const nodes = [surface.root];
     while (nodes.length) {
       const node = nodes.pop()!;
-      bytes += 3 * (256 + node.triangles.length * 8);
-      if (bytes > 128 * 1024 * 1024) return "128 MiB pool memory admission";
+      bytes += treeCopies * (256 + node.triangles.length * 8);
+      if (bytes > 128 * 1024 * 1024) return bytes;
       for (const child of Object.values(node.children))
         if (child) nodes.push(child);
     }
   }
-  return bytes <= 128 * 1024 * 1024
-    ? undefined
-    : "128 MiB pool memory admission";
+  return bytes;
 }
+/** Concurrent initialization reserves both resident trees and both in-flight copies. */
+export function alignmentCanInitializeTogether(
+  lanes: readonly (readonly AlignmentQueryVertex[])[],
+  surfaces: readonly NativeAlignmentQuerySurface[],
+) {
+  return (
+    sharedTargetsAvailable() &&
+    alignmentPoolBytes(lanes, surfaces, 5) <= 128 * 1024 * 1024
+  );
+}
+
 /** Two physical workers own immutable targets and persistent logical lane flags.
  * Responses are joined and reordered by lane before native reduction.
  */
@@ -200,27 +218,31 @@ export async function createAlignmentPool(
       worker.onmessageerror = () =>
         fail(new Error("Alignment worker response could not be decoded."));
     }
-    // Initialize sequentially: at most one target serialization is in flight.
-    // Admission accounts for two resident copies plus that transient copy.
-    for (let part = 0; part < 2; part++) {
+    // Overlap startup only when immutable shared buffers and the peak tree-copy
+    // budget permit it; otherwise retain one initialization in flight.
+    const groups = alignmentCanInitializeTogether(lanes, surfaces)
+      ? [[0, 1]]
+      : [[0], [1]];
+    for (const parts of groups) {
       const requests: (((id: number) => AlignmentWorkerRequest) | undefined)[] =
         [undefined, undefined];
-      requests[part] = (id) => ({
-        id,
-        initialize: {
-          lanes: lanes.flatMap((vertices, index) =>
-            index % 2 === part
-              ? [
-                  {
-                    id: index,
-                    vertices: vertices.map((vertex) => ({ ...vertex })),
-                  },
-                ]
-              : [],
-          ),
-          surfaces: immutableTargets,
-        },
-      });
+      for (const part of parts)
+        requests[part] = (id) => ({
+          id,
+          initialize: {
+            lanes: lanes.flatMap((vertices, index) =>
+              index % 2 === part
+                ? [
+                    {
+                      id: index,
+                      vertices: vertices.map((vertex) => ({ ...vertex })),
+                    },
+                  ]
+                : [],
+            ),
+            surfaces: immutableTargets,
+          },
+        });
       const ready = await send(requests);
       if (ready.some((value) => !("ready" in value)))
         throw new Error("Invalid alignment initialization response.");

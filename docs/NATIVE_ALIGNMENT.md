@@ -2955,3 +2955,40 @@ prohibited-name checks passed. Native mappings and temporary browser/bridge
 processes/listeners were released. Port 5173 serves the new entry; opening its
 Codex browser panel was queued without changing the existing external browser
 workspace. No push or deployment. The full application goal remains active.
+
+## Full owner-scan two-worker verification and startup budget
+
+`docs/ALIGNMENT_PERFORMANCE.md` and
+`docs/evidence/owner-multicore-alignment.json` now retain complete PLY 2/3 to
+PLY 1 browser replays using the original captured coarse frames and seed IDs.
+One physical thread and two physical browser workers both match original initial
+errors, accepted parameters/matrices and final position/normal SHA-256 exactly.
+Both retain two logical lanes. All source/target coordinate, triangle and scanner
+normal buffers remain unchanged. The native seeded regions contain 1,773 and
+1,877 query vertices; whole meshes are transformed. This is not a whole-surface
+Fine align latency claim.
+
+Worker initialization can overlap on shared-buffer origins only when the
+conservative five-tree-copy peak fits the existing 128 MiB cap. Larger targets
+retain sequential initialization. The supplied PLY 1 target's 76,761 nodes and
+720,056 memberships require 147,617,870 estimated bytes before lanes for the
+five-copy case, so it retains sequential setup and two-worker query processing.
+Observed two-worker totals remain slower than serial for these selected regions;
+compact immutable target transport and preparation reuse remain performance work.
+No numerical operation, lane reduction order or memory threshold was relaxed.
+
+Enabling all supplied-file tests also exposed six stale adapter assumptions:
+the older generic-refinement probes copied XYZ into zeroed native records and
+rebuilt normals through `0x140b35d90` / `0x140b375e0`, while the newer PLY parser
+also returns scanner normals. The fixture adapter now explicitly matches the
+original regenerated-normal inputs. Expected captures are unchanged. The
+scanner-normal-preserving complete landmark-driver path is verified separately.
+
+Validation: build `scanforge-f9dd583201c63fd8` passed; 42 focused tests and 54
+owner-focused tests passed. The complete supplied-file suite passed 365 files /
+28,245 tests with no skips. The isolated-origin GUI/MCP indexed-mesh replay passed,
+including actual two-worker seeded alignment, CAD, visible/empty/authoring-root
+targets, import/persistence/normal preservation and Undo. The final full-file
+browser benchmark passed exact native comparisons in both modes and verified
+zero remaining alignment workers. All disposable browser/bridge/reader resources
+closed. Port 5173 remains live. No push or deployment; the full goal stays active.

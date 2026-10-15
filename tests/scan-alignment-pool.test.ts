@@ -7,7 +7,11 @@ import {
 import { nativeRefineAlignmentSurfaceAsync } from "../src/scan-native-alignment-surface-search";
 import { prepareNativeAlignmentSurface } from "../src/scan-native-alignment-surface";
 import { nativeAlignmentSixTransform } from "../src/scan-native-alignment-transform";
-import { createAlignmentPool } from "../src/scan-alignment-pool";
+import {
+  createAlignmentPool,
+  alignmentCanInitializeTogether,
+  alignmentPoolAdmission,
+} from "../src/scan-alignment-pool";
 import { nativeRefinementSimplexAsync } from "../src/scan-native-refinement-simplex";
 
 class TestWorker {
@@ -173,4 +177,60 @@ it("checks cancellation after an asynchronous objective before another evaluatio
     ),
   ).rejects.toThrow("cancelled");
   expect(calls).toBe(1);
+});
+
+it("initializes both isolated workers before waiting for either target acknowledgement", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const held: (() => void)[] = [];
+  class BarrierWorker extends TestWorker {
+    postMessage(message: AlignmentWorkerRequest) {
+      if (!("initialize" in message)) return super.postMessage(message);
+      this.initializations++;
+      this.state = createAlignmentWorkerState(
+        structuredClone(message.initialize),
+      );
+      held.push(() =>
+        this.onmessage?.({ data: { id: message.id, ready: true } }),
+      );
+    }
+  }
+  vi.stubGlobal("Worker", BarrierWorker);
+  const { surfaces, lanes } = input(
+    captured.samples.find((sample) => sample.lanes.length > 1)!,
+  );
+  const abort = new AbortController();
+  const pending = createAlignmentPool(lanes, surfaces, {
+    signal: abort.signal,
+  });
+  const settled = pending.catch(() => undefined);
+  try {
+    expect(TestWorker.instances).toHaveLength(2);
+    expect(
+      TestWorker.instances.map((worker) => worker.initializations),
+    ).toEqual([1, 1]);
+    for (const ready of held) ready();
+    const pool = await pending;
+    pool.close();
+    expect(TestWorker.instances.every((worker) => worker.terminated)).toBe(
+      true,
+    );
+  } finally {
+    abort.abort();
+    await settled;
+  }
+});
+it("retains sequential initialization when overlapping tree copies exceed the unchanged memory cap", () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { surfaces, lanes } = input(
+    captured.samples.find((sample) => sample.lanes.length > 1)!,
+  );
+  const tree = { ...surfaces[0].root, triangles: new Array<number>(3_400_000) };
+  const large = [{ ...surfaces[0], root: tree }];
+  expect(alignmentPoolAdmission(lanes, large)).toBeUndefined();
+  expect(alignmentCanInitializeTogether(lanes, large)).toBe(false);
+  expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(true);
+  vi.stubGlobal("crossOriginIsolated", false);
+  expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(false);
 });

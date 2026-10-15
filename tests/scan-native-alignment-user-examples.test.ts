@@ -94,7 +94,11 @@ function readExample(expected: {
   );
   expect(topology.vertices.length).toBe(expected.vertices * 3);
   expect(topology.triangles.length).toBe(expected.triangles * 3);
-  return topology;
+  // These original probes copied only PLY XYZ into zeroed native vertex records,
+  // then ran 0x140b35d90 / 0x140b375e0 to rebuild geometry-derived normals.
+  // Match that input contract. Scanner-normal preservation is independently
+  // covered by the complete owner landmark driver and multicore browser replay.
+  return { vertices: topology.vertices, triangles: topology.triangles };
 }
 
 it.skipIf(!folder).each([first, second, third])(
