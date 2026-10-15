@@ -1,0 +1,36 @@
+{
+  "count": 1000000,
+  "measurements": [
+    {
+      "milliseconds": 33.84299999999999,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    },
+    {
+      "milliseconds": 33.806200000000004,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    },
+    {
+      "milliseconds": 35.70740000000001,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    },
+    {
+      "milliseconds": 39.64750000000001,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    },
+    {
+      "milliseconds": 29.62129999999999,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    },
+    {
+      "milliseconds": 29.053600000000017,
+      "drawn": 909090,
+      "outputBytes": 14545440
+    }
+  ],
+  "scope": "Node CPU point-filter and color preparation, not browser rendering"
+}

@@ -1,0 +1,57 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "derivedImageSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273",
+  "records": [
+    {
+      "procedure": "0x14069e900",
+      "evidenceId": "ev_1387ced708531249dbbb9427e18ac8642f632406a481a2a58d724cf5012e082c"
+    },
+    {
+      "procedure": "0x140836100",
+      "evidenceId": "ev_44b2d2c145082087f6e62e38147b17b3d733b821297c27e3ef96c4126b57cc82"
+    },
+    {
+      "procedure": "0x1408c00f0",
+      "evidenceId": "ev_1163084f7bc2740b563dc11ba2d40531b11e5ffbfd625d86d33830056f3b9ac6"
+    },
+    {
+      "procedure": "0x1408c04e0",
+      "evidenceId": "ev_2305bda4376b20aba4455c7c79a2bfc49ba209e0ba1372d769cb213f4a240830"
+    },
+    {
+      "procedure": "0x140833b60",
+      "evidenceId": "ev_394111878d94666435321baeefce08265f2347666732f4add2522ff0c53bcd02"
+    },
+    {
+      "procedure": "0x140ac9070",
+      "evidenceId": "ev_e2c0a398918b01494cef2a11aad03698a7f068ebec906029dc66444d1c3e7127"
+    }
+  ],
+  "dispatch": {
+    "rendererVtable": "0x1411ed858",
+    "embeddedOffset": "0x280",
+    "embeddedVtable": "0x141269518",
+    "embeddedClass": "cM2SMeshGLRenderer",
+    "drawSlot": "0x8",
+    "drawProcedure": "0x1408c00f0",
+    "pointSlot": "0x18",
+    "pointProcedure": "0x1408c04e0"
+  },
+  "runtime": {
+    "cases": 2160,
+    "procedure": "0x1408c04e0",
+    "scope": "Complete original point submission loop with controlled vertex provider, GL state/draw sinks and performance counters",
+    "realOpenGlContext": false,
+    "realOwnerScans": false
+  },
+  "allowance": {
+    "value": 1000000,
+    "unit": "milliseconds",
+    "pointCountLimit": false
+  },
+  "limitations": [
+    "The wrapper pose/reflection GL matrices were not executed by this point-loop probe.",
+    "Application facet-mask to native per-vertex flags mapping remains separate.",
+    "No pixel-identical rendering or complete Interactive GUI/MCP workflow is established by these captures."
+  ]
+}
