@@ -1,0 +1,180 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "registration": "0x140aacbc0",
+    "pose": "0x14089f5b0",
+    "bounds": "0x14089fd50",
+    "execution": "Original complete paired-point registration, original point-cloud pose composer and complete world bounds on all records from the three owner ASC files. Controlled three-landmark mesh accessors and cloud storage; original numerical code and real concurrency runtime. Source auxiliary UI reset is inert. Original ASCII importer, source dialog admission, rendering and cross-scan correspondence generation not executed.",
+    "remainingTrackedAllocations": 0,
+    "unknownFreeCalls": 0,
+    "correspondences": "Actual ASC witness coordinates with two successive known 90-degree rotations/translations as targets; component composition is verified, not natural cross-scan correspondence generation.",
+    "backendMode": 0,
+    "argumentOrder": "Fixed target landmarks first, moving source landmarks second; native wrapper publishes moving-to-fixed matrix."
+  },
+  "cases": [
+    {
+      "file": "asc-1.asc",
+      "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+      "points": 140113,
+      "stage": 0,
+      "sourceLandmarks": [
+        3.5715699195861816, -37.267398834228516, -286.1600036621094,
+        69.03150177001953, 60.70389938354492, -290.7229919433594,
+        -3.966749906539917, 65.71150207519531, -328.5719909667969
+      ],
+      "targetLandmarks": [
+        62.267398834228516, -11.428430557250977, -278.1600036621094,
+        -35.70389938354492, 54.03150177001953, -282.7229919433594,
+        -40.71150207519531, -18.96674919128418, -320.5719909667969
+      ],
+      "coarseMatrixBits": "000000c82af7413e010000000000f0bf8f6ed41da75340be18d0e7cfffff3840010000000000f03f000000c82af7413eac112f2ade6039be679d603f00002ec0d357c42ede60393e197f0c1ca75340be000000000000f03f15edfe6e00002040",
+      "rms": 0.0,
+      "poseBits": "000000c82af7413e010000000000f0bf8f6ed41da75340be18d0e7cfffff3840010000000000f03f000000c82af7413eac112f2ade6039be679d603f00002ec0d357c42ede60393e197f0c1ca75340be000000000000f03f15edfe6e00002040",
+      "worldBoundsBits": "866b3fc2917e3fc2b8cea1c3e0fe7d4212e566424cd77dc3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+      "sourceNormalSha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+    },
+    {
+      "file": "asc-1.asc",
+      "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+      "points": 140113,
+      "stage": 1,
+      "sourceLandmarks": [
+        62.267398834228516, -11.428430557250977, -278.1600036621094,
+        -35.70389938354492, 54.03150177001953, -282.7229919433594,
+        -40.71150207519531, -18.96674919128418, -320.5719909667969
+      ],
+      "targetLandmarks": [
+        36.428428649902344, 47.267398834228516, -270.1600036621094,
+        -29.03150177001953, -50.70389938354492, -274.7229919433594,
+        43.96675109863281, -55.71150207519531, -312.5719909667969
+      ],
+      "coarseMatrixBits": "0000001494e261befbffffffffffefbfa2e45747fb22453edcfe772e00003940f9ffffffffffef3f0000001294e261bee4037dc6e6e6573ec7968c0cffff2dc0b3e494c0e6e657be81b40f62fb22453efdffffffffffef3fe6d8cb3700002040",
+      "rms": 0.0,
+      "poseBits": "ffffffffffffefbf2ce8a6c292c95a3e4cbcc732b5e9503edbbcc020000044402568a1bd92c95abe000000000000f0bf082d3d76267a4f3e2f2e01aa00002440011e5e39b5e9503e45c01468267a4f3efeffffffffffef3f7017954700003040",
+      "worldBoundsBits": "12e502c2866b7bc2b8ce9dc348bf9142e0fe41424cd775c3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+      "sourceNormalSha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+    },
+    {
+      "file": "asc-2.asc",
+      "sourceSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+      "points": 1375494,
+      "stage": 0,
+      "sourceLandmarks": [
+        3.087510108947754, -36.95090103149414, -284.6549987792969,
+        68.31950378417969, 61.28559875488281, -289.1960144042969,
+        -3.251610040664673, 66.0167007446289, -330.0509948730469
+      ],
+      "targetLandmarks": [
+        61.95090103149414, -11.912489891052246, -276.6549987792969,
+        -36.28559875488281, 53.31950378417969, -281.1960144042969,
+        -41.016700744628906, -18.251609802246094, -322.0509948730469
+      ],
+      "coarseMatrixBits": "00000020fc90353efdffffffffffefbf10b38f21de0a5bbedb1f2089ffff3840ffffffffffffef3f00000018fc90353e84fc67c65e68353eff80b7c9ffff2dc0a6284bbd5e6835bef51e0322de0a5bbefdffffffffffef3ff9c1fb4f00002040",
+      "rms": 0.0,
+      "poseBits": "00000020fc90353efdffffffffffefbf10b38f21de0a5bbedb1f2089ffff3840ffffffffffffef3f00000018fc90353e84fc67c65e68353eff80b7c9ffff2dc0a6284bbd5e6835bef51e0322de0a5bbefdffffffffffef3ff9c1fb4f00002040",
+      "worldBoundsBits": "68c43fc2935840c28706a1c3c9367c42cc2e6442562e7ec3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+      "sourceNormalSha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+    },
+    {
+      "file": "asc-2.asc",
+      "sourceSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+      "points": 1375494,
+      "stage": 1,
+      "sourceLandmarks": [
+        61.95090103149414, -11.912489891052246, -276.6549987792969,
+        -36.28559875488281, 53.31950378417969, -281.1960144042969,
+        -41.016700744628906, -18.251609802246094, -322.0509948730469
+      ],
+      "targetLandmarks": [
+        36.91249084472656, 46.95090103149414, -268.6549987792969,
+        -28.319503784179688, -51.28559875488281, -273.1960144042969,
+        43.251609802246094, -56.016700744628906, -314.0509948730469
+      ],
+      "coarseMatrixBits": "00000010a5d9233e010000000000f0bfe8df6ee139930ebea339a60800003940010000000000f03f00000010a5d9233e816838bb0a47453e600ae2a7ffff2dc0227125bb0a4745bed0c5a1ee39930ebe000000000000f03f1410671900002040",
+      "rms": 0.0,
+      "poseBits": "000000000000f0bf4f96629ece7d3fbec770c706c63a39bebac32df7ffff4340c5fe70a4ce7d3f3e010000000000f0bf8860bec3586750be1456dd6bffff2340f822b5fec53a39be8a0185c4586750beffffffffffffef3f0eddc23000003040",
+      "worldBoundsBits": "cc2e00c268c47bc287069dc34a2c9242c9364042562e76c3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+      "sourceNormalSha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+    },
+    {
+      "file": "asc-3.asc",
+      "sourceSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+      "points": 1865848,
+      "stage": 0,
+      "sourceLandmarks": [
+        -4.489480018615723, 64.720703125, -329.71600341796875,
+        2.4670701026916504, -36.581298828125, -284.3919982910156,
+        68.09819793701172, 61.222801208496094, -288.6579895019531
+      ],
+      "targetLandmarks": [
+        -39.720703125, -19.489479064941406, -321.71600341796875,
+        61.581298828125, -12.532930374145508, -276.3919982910156,
+        -36.222801208496094, 53.09819793701172, -280.6579895019531
+      ],
+      "coarseMatrixBits": "00000030647c41be010000000000f0bfecf410b8a4e9343e1ac6fd1a00003940f5ffffffffffef3f00000038647c41be40c7bf8024f66bbed2b8ee0902002ec092321b8124f66b3e7c0b8299a4e9343ef4ffffffffffef3fbc53e6a7ffff1f40",
+      "rms": 0.0,
+      "poseBits": "00000030647c41be010000000000f0bfecf410b8a4e9343e1ac6fd1a00003940f5ffffffffffef3f00000038647c41be40c7bf8024f66bbed2b8ee0902002ec092321b8124f66b3e7c0b8299a4e9343ef4ffffffffffef3fbc53e6a7ffff1f40",
+      "worldBoundsBits": "bed23fc206d240c27b24a1c3e3077c42fc7a634248217ec3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+      "sourceNormalSha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053"
+    },
+    {
+      "file": "asc-3.asc",
+      "sourceSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+      "points": 1865848,
+      "stage": 1,
+      "sourceLandmarks": [
+        -39.720703125, -19.489479064941406, -321.71600341796875,
+        61.581298828125, -12.532930374145508, -276.3919982910156,
+        -36.222801208496094, 53.09819793701172, -280.6579895019531
+      ],
+      "targetLandmarks": [
+        44.489479064941406, -54.720703125, -313.71600341796875,
+        37.532928466796875, 46.581298828125, -268.3919982910156,
+        -28.09819793701172, -51.222801208496094, -272.6579895019531
+      ],
+      "coarseMatrixBits": "000000f2289861bef81865ffffffefbf06012d37ecbe643e9a5a67b500003940fe1865ffffffef3f000000f2289861be0011f70cc7111f3eaa28cbd5ffff2dc090216793c5111fbea15dba37ecbe643ef9ffffffffffef3f786accc6ffff1f40",
+      "rms": 0.0,
+      "poseBits": "d91865ffffffefbf59b09c0142f7653ee6bdfa5a885a783ed37ac3d800004440e3a611fd41f765befe1865ffffffefbf8f40e7f516ae3c3e32493970000024404ac27b5c885a783e48afafe715ae3c3edbffffffffffef3f280262a2ffff2f40",
+      "worldBoundsBits": "f7f5fec1bed27bc27b249dc303699242e3074042482176c3",
+      "sourceRecordsPreserved": true,
+      "sourcePositionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+      "sourceNormalSha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053"
+    }
+  ],
+  "applicationMeasurements": [
+    {
+      "file": "asc-1.asc",
+      "points": 140113,
+      "sourcePositionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+      "sourceNormalSha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825",
+      "milliseconds": [161.6550000011921, 167.59000000357628],
+      "physicalWorkers": [1, 1]
+    },
+    {
+      "file": "asc-2.asc",
+      "points": 1375494,
+      "sourcePositionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+      "sourceNormalSha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c",
+      "milliseconds": [311.8400000035763, 306.065000012517],
+      "physicalWorkers": [2, 2]
+    },
+    {
+      "file": "asc-3.asc",
+      "points": 1865848,
+      "sourcePositionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+      "sourceNormalSha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053",
+      "milliseconds": [365.07500000298023, 541.7600000053644],
+      "physicalWorkers": [2, 2]
+    }
+  ]
+}

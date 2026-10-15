@@ -21,7 +21,7 @@ const token = randomBytes(32).toString("hex");
 const ledger = {
   owner: "scanforge-cloud-pose-validation",
   startedAt,
-  expiresAt: new Date(Date.now() + 180000).toISOString(),
+  expiresAt: new Date(Date.now() + 240000).toISOString(),
   persistentData: false,
   resources: [],
   cleanup: [],
@@ -82,9 +82,9 @@ ledger.resources.push({
   purpose: "isolated built application",
 });
 const deadline = setTimeout(() => {
-  failed = Error("Browser validation exceeded3minute lease");
+  failed = Error("Browser validation exceeded 4 minute lease");
   void cleanup();
-}, 180000);
+}, 240000);
 async function cleanup() {
   clearTimeout(deadline);
   await client?.close().catch(() => {});
@@ -208,13 +208,13 @@ try {
       requestId: randomUUID(),
     });
   }
-  async function job(receipt) {
+  async function job(receipt, expected = "succeeded") {
     const id = receipt.result.jobId;
     for (let i = 0; i < 120; i++) {
       const result = await call("job_get", { jobId: id });
       if (result.result.status !== "running") {
-        assert.equal(result.result.status, "succeeded", JSON.stringify(result));
-        return result.result.result;
+        assert.equal(result.result.status, expected, JSON.stringify(result));
+        return expected === "succeeded" ? result.result.result : result.result;
       }
       await new Promise((r) => setTimeout(r, 250));
     }
@@ -369,6 +369,152 @@ try {
     geo.result.geometryArtifact || geo.result.geometry || geo.result.artifactId,
     JSON.stringify(geo),
   );
+  const geometry = async () => {
+    const object = (
+      await call("object_get", { entityId: "cloud", includeGeometry: true })
+    ).result;
+    const data = (
+      await call("artifact_read", { artifactId: object.geometry.artifactId })
+    ).result;
+    return JSON.parse(Buffer.from(data.base64, "base64").toString());
+  };
+  const beforePaired = await geometry();
+  const sourceLandmarks = [0, 3, 7].flatMap((i) =>
+    beforePaired.positions.slice(i * 3, i * 3 + 3),
+  );
+  const targetLandmarks = sourceLandmarks.map(
+    (v, i) => v + [25, -15, 8][i % 3],
+  );
+  const targetUpload = await call("artifact_put", {
+    name: "fixed-paired.asc",
+    offset: 0,
+    base64: Buffer.from(
+      [0, 1, 2]
+        .map((i) => targetLandmarks.slice(i * 3, i * 3 + 3).join(" "))
+        .join("\n"),
+    ).toString("base64"),
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: targetUpload.result.artifactId,
+      unit: "mm",
+    }),
+  );
+  const fixed = (await call("project_get")).result.objects.find(
+    (o) => o.name === "fixed-paired.asc",
+  );
+  assert.equal(fixed.kind, "pointcloud");
+  const fixedBefore = (await call("object_get", { entityId: fixed.id })).result;
+  await mutate("selection_set", { entityId: "cloud", points: [1, 3] });
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: "cloud",
+    fixedId: fixed.id,
+  });
+  for (let i = 0; i < 3; i++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: "cloud",
+      point: sourceLandmarks.slice(i * 3, i * 3 + 3),
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: fixed.id,
+      point: targetLandmarks.slice(i * 3, i * 3 + 3),
+    });
+  }
+  const landmarkDialog = page.getByRole("complementary", {
+    name: "N-points alignment",
+  });
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const guiPaired = (await call("landmark_get")).result;
+  assert(guiPaired.pointCloudPose);
+  assert.equal(guiPaired.diagnostics.localBuffersRetained, true);
+  assert.equal(
+    (await call("object_get", { entityId: "cloud" })).result.pointCloudPose,
+    second.targets[0].pointCloudPose,
+  );
+  assert.deepEqual(await geometry(), beforePaired);
+  await mutate("landmark_edit", { action: "reset" });
+  const agentPaired = await job(
+    await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
+  );
+  assert.deepEqual(agentPaired.registration, guiPaired.registration);
+  assert.equal(agentPaired.pointCloudPose, guiPaired.pointCloudPose);
+  await mutate("landmark_accept", {});
+  const paired = (await call("object_get", { entityId: "cloud" })).result;
+  assert.equal(paired.kind, "pointcloud");
+  assert.equal(paired.pointCloudPose, guiPaired.pointCloudPose);
+  assert.equal(
+    (await call("selection_get", { entityId: "cloud" })).result.count,
+    2,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: fixed.id })).result,
+    fixedBefore,
+  );
+  const afterPaired = await geometry();
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(), beforePaired);
+  await mutate("history_redo", {});
+  assert.deepEqual(await geometry(), afterPaired);
+  const selectionFailure = await job(
+    await mutate("mesh_process", {
+      entityId: "cloud",
+      selectionOnly: true,
+      createNew: true,
+      operation: { kind: "paired", sourceLandmarks, targetLandmarks },
+    }),
+    "failed",
+  );
+  assert.match(selectionFailure.error.message, /omit selectionOnly/);
+  assert.deepEqual(await geometry(), afterPaired);
+  await mutate("history_undo", {});
+  const processed = await job(
+    await mutate("mesh_process", {
+      entityId: "cloud",
+      operation: {
+        kind: "paired",
+        sourceLandmarks,
+        targetLandmarks,
+        parallel: true,
+        workerCount: 2,
+      },
+    }),
+  );
+  assert.equal(processed.diagnostics.pointCloudPose, guiPaired.pointCloudPose);
+  assert.deepEqual(await geometry(), afterPaired);
+  await mutate("history_undo", {});
+  await mutate("object_select", { entityId: "cloud" });
+  await mutate("ui_set", {
+    workspace: "landmarkAlignment",
+    toolPanelOpen: true,
+    mode: "inspect",
+  });
+  const lines = (points) =>
+    [0, 1, 2].map((i) => points.slice(i * 3, i * 3 + 3).join(",")).join("\n");
+  await page
+    .getByLabel("Source registration landmarks", { exact: true })
+    .fill(lines(sourceLandmarks));
+  await page
+    .getByLabel("Target registration landmarks", { exact: true })
+    .fill(lines(targetLandmarks));
+  await page
+    .getByRole("button", { name: "Align paired landmarks", exact: true })
+    .click();
+  await page.getByRole("status", { name: "Mesh operation result" }).waitFor();
+  assert.equal(
+    (await call("object_get", { entityId: "cloud" })).result.kind,
+    "pointcloud",
+  );
+  assert.equal(
+    (await call("object_get", { entityId: "cloud" })).result.pointCloudPose,
+    guiPaired.pointCloudPose,
+  );
+  assert.deepEqual(await geometry(), afterPaired);
   ledger.steps = [
     "GUI Apply equals shared MCP pose",
     "First GUI Apply preserves legacy JSON point selection",
@@ -378,6 +524,10 @@ try {
     "Repeated Apply preserves active point selection",
     "Binary project recovery retains exact pose",
     "World geometry remains available through MCP",
+    "Point-pair GUI/MCP preview composes native cloud pose",
+    "Paired accept and undo preserve point type, normals and selection",
+    "mesh_process paired and legacy GUI panel preserve the same native pose",
+    "MCP rejects point masks for whole-cloud registration without changing geometry",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({

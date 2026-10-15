@@ -377,7 +377,10 @@ scope.onmessage = async ({ data: incoming }) => {
                   progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
               },
             );
-      if (!(request.kind === "paired" && request.refinementTargets))
+      if (
+        !request.deferCloudTransform &&
+        !(request.kind === "paired" && request.refinementTargets)
+      )
         result.positions = applyRigidTransform(
           request.positions,
           registration.transform,

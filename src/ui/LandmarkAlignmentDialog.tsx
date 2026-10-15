@@ -84,6 +84,9 @@ export function LandmarkAlignmentDialog({
               : "No refinement surfaces. Matching points will determine alignment."}
           </p>
         )}
+        {session.moving.kind === "pointcloud" && (
+          <p>Matching points determine point-cloud alignment.</p>
+        )}
         <p>
           Click matching points on each object in the same order. Pick at least
           three pairs, spread across the objects.

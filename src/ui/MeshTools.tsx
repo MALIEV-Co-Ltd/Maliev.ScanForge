@@ -1,16 +1,13 @@
 import { AppSelect } from "./AppSelect";
 import { useEffect, useRef, useState } from "react";
-import {
-  processMesh,
-  type ProcessingRequest,
-  type ProcessingResult,
-} from "../processing-client";
+import type { ProcessingRequest, ProcessingResult } from "../processing-client";
 import type { Entity } from "../types";
 import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { parseLandmarkSeedVertices } from "../native-landmark-region";
+import { processScanRegistration } from "../scan-registration";
 
 export type MeshTool =
   | "fineAlign"
@@ -30,6 +27,7 @@ export interface MeshToolsProps {
     positions: Float32Array,
     label: string,
     indexedMesh?: Entity["indexedMesh"],
+    cloudPreview?: Entity,
   ) => void;
   onCreateSegments: (
     positions: Float32Array[],
@@ -60,7 +58,7 @@ function parseLandmarks(text: string): number[] {
   }
   return positions;
 }
-/** All processing executes in a cancellable worker; the original object is preserved until a result is accepted. */
+/** Heavy processing uses cancellable workers; cloud registration retains native local buffers and pose. */
 export function MeshTools({
   tool = "fineAlign",
   entities,
@@ -122,7 +120,7 @@ export function MeshTools({
       .map((id) => targets.find((entity) => entity.id === id)),
   ].filter((entity): entity is Entity => !!entity);
   async function run(request: ProcessingRequest, label: string) {
-    if (controller.current) return;
+    if (controller.current || !selected) return;
     const cancellation = new AbortController();
     controller.current = cancellation;
     setWorking(true);
@@ -139,14 +137,19 @@ export function MeshTools({
         request.positions === selected.positions
       )
         request = { ...request, sourceIndexed: selected.indexedMesh };
-      const outcome = await processMesh(request, {
+      const outcome = await processScanRegistration(selected, request, {
         signal: cancellation.signal,
         onProgress: (fraction, stage) =>
           setProgress(`${stage} · ${Math.round(fraction * 100)}%`),
       });
       if (cancellation.signal.aborted) return;
       if (outcome.positions)
-        onReplace(outcome.positions, label, outcome.indexedMesh);
+        onReplace(
+          outcome.positions,
+          label,
+          outcome.indexedMesh,
+          outcome.cloudPreview,
+        );
       if (outcome.segments)
         onCreateSegments(
           outcome.segments,
@@ -569,11 +572,14 @@ export function MeshTools({
                     {
                       kind: "icp",
                       positions: selected.positions,
-                      sourceTriangleMask: alignmentTriangleMask(
-                        selected.positions.length / 9,
-                        triangleSelection,
-                        selected.meshSelection?.hidden,
-                      ),
+                      sourceTriangleMask:
+                        selected.kind === "pointcloud"
+                          ? undefined
+                          : alignmentTriangleMask(
+                              selected.positions.length / 9,
+                              triangleSelection,
+                              selected.meshSelection?.hidden,
+                            ),
                       target: target.positions,
                       maxDistance: distance,
                       maxIterations: icpIterations,
@@ -589,9 +595,11 @@ export function MeshTools({
               Fine align with sampled ICP
             </button>
             <p className="muted">
-              {triangleSelection?.some((value) => value !== 0)
-                ? "Selected visible triangles drive fine alignment; the whole scan moves. "
-                : "Visible triangles drive fine alignment; the whole scan moves. "}
+              {selected?.kind === "pointcloud"
+                ? "All points drive alignment; the whole cloud moves. "
+                : triangleSelection?.some((value) => value !== 0)
+                  ? "Selected visible triangles drive fine alignment; the whole scan moves. "
+                  : "Visible triangles drive fine alignment; the whole scan moves. "}
               ICP uses up to 4,000 source and 20,000 target samples. Start from
               approximate alignment; symmetric geometry can settle into an
               incorrect local match.
@@ -675,11 +683,16 @@ export function MeshTools({
               ))}
             </dl>
           )}
-          {Object.entries(result.diagnostics).map(([key, value]) => (
-            <p key={key}>
-              {key.replace(/([A-Z])/g, " $1")}: {String(value)}
-            </p>
-          ))}
+          {Object.entries(result.diagnostics)
+            .filter(
+              ([key]) =>
+                !["pointCloudPose", "localBuffersRetained"].includes(key),
+            )
+            .map(([key, value]) => (
+              <p key={key}>
+                {key.replace(/([A-Z])/g, " $1")}: {String(value)}
+              </p>
+            ))}
           {result.segmentClassifications?.map((classification, index) => (
             <p key={index}>
               Region {index + 1}:{" "}

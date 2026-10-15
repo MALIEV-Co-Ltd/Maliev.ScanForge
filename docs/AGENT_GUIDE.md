@@ -8,6 +8,23 @@ execution diagnostics and selected-triangle count. Indexed meshes default to two
 logical lanes and bounded CPU parallelism; `workerCount` and `parallel` are
 configurable on the preview tool. Selection counts use cached diagnostics.
 
+Moving point clouds use the same paired solver followed by native double-pose
+composition over retained local buffers. `landmark_get` reports `pointCloudPose`
+for a cloud preview; `object_get` reports the committed pose. Normals, point type,
+saved/active point selection and local point identities are preserved through
+accept and undo. Preview does not change the source. A paired cloud solve sends
+only picked coordinates to its processing worker; it does not transfer the full
+cloud just to solve three point pairs. World views at or above 1,048,576 points
+use the existing bounded transform pool when admitted, with at most two physical
+workers. `parallel: false` or one logical lane uses the serial path.
+Diagnostics expose `localBuffersRetained`, `pointCloudPose`, `points`,
+`physicalWorkers`, `transformWorkers` (zero for the host serial path), and serial
+fallback reasons. The same shared operation serves the legacy GUI processing
+panel and `mesh_process` paired/ICP/global registration. Omit `selectionOnly` for
+point-cloud registration; the whole cloud moves. ICP correspondence policy and
+the original installed point-cloud dialog admission are separate verification
+questions; retained-pose parity does not certify those workflows.
+
 Call `landmark_accept` with a fresh revision/request ID after preview succeeds.
 It uses the dialog's commit operation, rechecks source/target geometry and locks,
 adds one history step and closes the session. Retrying an identical request ID

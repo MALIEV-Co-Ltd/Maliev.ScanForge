@@ -321,7 +321,7 @@ export function acceptLandmarkAlignment(
     throw new Error("Alignment preview does not match the moving scan.");
   return entities.map((e) =>
     e.id === session.moving.id
-      ? {
+      ? (session.preview!.cloudPreview ?? {
           ...e,
           positions: session.preview!.positions!,
           indexedMesh: session.preview!.indexedMesh,
@@ -334,7 +334,7 @@ export function acceptLandmarkAlignment(
                 )
               : undefined,
           fit: undefined,
-        }
+        })
       : e,
   );
 }
@@ -410,6 +410,13 @@ export function landmarkState(session: LandmarkAlignment | null) {
               registration: session.preview.registration,
               refinement: session.preview.refinement,
               diagnostics: session.preview.diagnostics,
+              ...(session.preview.cloudPreview
+                ? {
+                    pointCloudPose:
+                      session.preview.cloudPreview.pointCloudPlacement
+                        ?.matrixBits,
+                  }
+                : {}),
               selectedTriangles: session.preview.diagnostics.selectedTriangles,
             }
           : {}),

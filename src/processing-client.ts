@@ -72,6 +72,8 @@ export type ProcessingRequest =
     }
   | {
       kind: "paired";
+      /** Internal host route: native cloud placement is applied after solving. */
+      deferCloudTransform?: true;
       sourceIndexed?: import("./types").IndexedMesh;
       refinementTargets?: {
         positions: Positions;
@@ -86,6 +88,7 @@ export type ProcessingRequest =
     }
   | {
       kind: "icp" | "global";
+      deferCloudTransform?: true;
       sourceIndexed?: import("./types").IndexedMesh;
       sourceTriangleMask?: Uint8Array;
       positions: Positions;
@@ -111,6 +114,8 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  /** Host-owned native cloud pose; never serialized from the processing worker. */
+  cloudPreview?: import("./types").Entity;
   indexedMesh?: import("./types").IndexedMesh;
   refinement?: ReturnType<
     typeof import("./native-surface-refinement").refineNativeSurface

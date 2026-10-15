@@ -479,7 +479,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5215,7 +5215,7 @@
   },
   {
     "name": "landmark_preview",
-    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations, evaluates analytic D1 positions and normals at their UV nodes, and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Cancel through job_cancel or preview_discard targeting landmarks. Refinement uses the session targetScope; visibleScene orders visible evaluated CAD roots before visible indexed scans, excludes superseded CAD inputs using authoring dependency update order, excludes the moving scan, and preserves the fixed geometry. Hidden evaluated consumers still suppress their CAD inputs; exempt construction primitives alone do not. Cyclic authoring dependencies are rejected. With no eligible refinement surfaces, an indexed moving scan retains coarse alignment and native grown selection, reports an accepted identity refinement with the native maximum-float error sentinel, and uses one physical worker without creating a correspondence pool.",
+    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations, evaluates analytic D1 positions and normals at their UV nodes, and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Moving point clouds retain their point type, immutable local buffers, normals and composed native double pose; large world-view transforms use at most two CPU workers. Their paired solve sends only picked coordinates to its worker. Cancel through job_cancel or preview_discard targeting landmarks. Refinement uses the session targetScope; visibleScene orders visible evaluated CAD roots before visible indexed scans, excludes superseded CAD inputs using authoring dependency update order, excludes the moving scan, and preserves the fixed geometry. Hidden evaluated consumers still suppress their CAD inputs; exempt construction primitives alone do not. Cyclic authoring dependencies are rejected. With no eligible refinement surfaces, an indexed moving scan retains coarse alignment and native grown selection, reports an accepted identity refinement with the native maximum-float error sentinel, and uses one physical worker without creating a correspondence pool.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5271,7 +5271,7 @@
   },
   {
     "name": "landmark_get",
-    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Does not mutate geometry or history.",
+    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Point-cloud previews also expose pointCloudPose as a little-endian Float64 frame. Does not mutate geometry or history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5283,7 +5283,7 @@
   },
   {
     "name": "landmark_edit",
-    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId still identifies the object used for matching point picks. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope and refinementTargetIds. Scene geometry/order/visibility changes invalidate a scene-target preview. Point-cloud surface refinement and complete native controller parity remain gated.",
+    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId still identifies the object used for matching point picks. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope and refinementTargetIds. Scene geometry/order/visibility changes invalidate a scene-target preview. Point clouds are not mesh-facet refinement targets. Moving clouds use coarse registration and retained native poses. Complete original point-cloud dialog admission and workflow parity remain unverified.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

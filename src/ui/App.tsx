@@ -144,6 +144,7 @@ import {
 } from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
 import { processMesh } from "../processing-client";
+import { processScanRegistration } from "../scan-registration";
 import { CadClient } from "../cad/client";
 import {
   SelectionSession,
@@ -2599,7 +2600,8 @@ export function App() {
         (kernelId) => cad.current!.alignmentMesh(kernelId),
         { ...options, signal: controller.signal },
       );
-      const result = await processMesh(
+      const result = await processScanRegistration(
+        session.moving,
         {
           ...request,
           ...(request.refinementTargets
@@ -2609,6 +2611,9 @@ export function App() {
         {
           signal: controller.signal,
           onProgress: options.onProgress,
+          parallel: options.parallel,
+          workerCount: options.workerCount,
+          check: options.check,
         },
       );
       controller.signal.throwIfAborted();
@@ -2654,7 +2659,7 @@ export function App() {
     if (alignment.preview?.selection)
       session.set({ ...session.state, mask: alignment.preview.selection });
     selectionSessions.current.set(source.id, {
-      positions: source.positions,
+      positions: cloudSelectionSource(source),
       session,
     });
     operationLabel.current = "Align by corresponding points";
@@ -5719,7 +5724,29 @@ export function App() {
                       triangleSelection={triangleMask}
                       disabled={busy}
                       onBusyChange={setProcessingBusy}
-                      onReplace={(positions, label, indexedMesh) => {
+                      onReplace={(
+                        positions,
+                        label,
+                        indexedMesh,
+                        cloudPreview,
+                      ) => {
+                        if (cloudPreview) {
+                          operationLabel.current = label;
+                          try {
+                            commit(
+                              entitiesRef.current.map((entity) =>
+                                entity.id === cloudPreview.id
+                                  ? cloudPreview
+                                  : entity,
+                              ),
+                              cloudPreview.id,
+                            );
+                          } finally {
+                            operationLabel.current = null;
+                          }
+                          setMessage(label);
+                          return;
+                        }
                         if (selected?.parametric) {
                           createSegments([positions], label);
                           return;

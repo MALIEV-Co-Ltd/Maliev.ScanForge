@@ -34,6 +34,7 @@ import {
   sectionMesh,
 } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
+import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
@@ -679,10 +680,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "targetIndexed" in op ||
         "additionalTargets" in op ||
         "refinementTargets" in op ||
+        "deferCloudTransform" in op ||
         "seeds" in op
       )
         throw new Error(
           "Geometry and selection must refer to workspace objects.",
+        );
+      if (
+        e.kind === "pointcloud" &&
+        ["paired", "icp", "global"].includes(kind) &&
+        a.selectionOnly
+      )
+        throw new Error(
+          "Point-cloud registration moves the whole source; omit selectionOnly.",
         );
       const selection = a.selectionOnly ? mask(s, e) : undefined;
       if (a.targetIds !== undefined && kind !== "nativeRefine")
@@ -820,9 +830,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         if (selection && op.operation.kind !== "reduceNoise")
           throw new Error("This scan tool does not support selectionOnly.");
       }
-      const result = await processMesh(request, {
+      const result = await processScanRegistration(e, request, {
         signal: c.signal,
         onProgress: c.progress,
+        check: () => c.check(),
       });
       c.check();
       const edit = result.scanEdit;
@@ -836,7 +847,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const created: Entity[] = [];
       if (positions) {
         const updated =
-          e.kind === "pointcloud"
+          result.cloudPreview ??
+          (e.kind === "pointcloud"
             ? {
                 ...e,
                 positions,
@@ -860,7 +872,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       normals: indexedRenderNormals(result.indexedMesh),
                     }
                   : {}),
-              };
+              });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (a.createNew) {

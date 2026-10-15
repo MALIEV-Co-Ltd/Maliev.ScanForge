@@ -1,0 +1,296 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "execution": "Original cVectorPointCloudObject virtual QueryInterface entry through its actual vtordisp thunk, including delegation to the original cVectorPointCloud virtual QueryInterface. Controlled object storage and virtual-base offsets; no query substitution. No constructors or installed UI executed.",
+    "wrapperVtable": "0x141248e08",
+    "wrapperThunk": "0x14089b324",
+    "wrapperQuery": "0x14088d330",
+    "dataVtable": "0x141249088",
+    "dataThunk": "0x1408a65d4",
+    "dataQuery": "0x14089eb70",
+    "remainingTrackedAllocations": 0,
+    "unknownFreeCalls": 0,
+    "wrapperBindings": {
+      "typeName": ".?AVcVectorPointCloudObject@@",
+      "typeDescriptor": "0x141600248",
+      "bindings": [
+        {
+          "vtable": "0x141248de8",
+          "offset": 4680,
+          "locator": "0x141322610",
+          "methods": ["0x14089b33c", "0x14089b348"],
+          "bytes": [
+            "486341fc482bc8e9b81effff486341fc482bc848",
+            "486341fc482bc84881e930120000e985128affcc"
+          ]
+        },
+        {
+          "vtable": "0x141248e08",
+          "offset": 4696,
+          "locator": "0x141322638",
+          "methods": ["0x14089b324", "0x14089b324"],
+          "bytes": [
+            "486341fc482bc8e90020ffff486341fc482bc8e9",
+            "486341fc482bc8e90020ffff486341fc482bc8e9"
+          ]
+        },
+        {
+          "vtable": "0x141248b20",
+          "offset": 0,
+          "locator": "0x141322908",
+          "methods": ["0x14088b170", "0x14088b530"],
+          "bytes": [
+            "40535657415441574881ec90010000488b05c25e",
+            "48895c241848897c242055488dac24b0feffff48"
+          ]
+        }
+      ]
+    },
+    "reaEvidence": {
+      "0x14088d330": "ev_7f1f3c7de1d65cf76b2e9be6d2f7c16eb688a0b2692faacb459f313d454e56fa",
+      "0x14089b324": "ev_42460a6ad8dc5c730d7f92c6d1d6c0996fbdac53997aef73610f7b0cc44804c1"
+    }
+  },
+  "cases": [
+    {
+      "payload": false,
+      "vtordisp": 0,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": 0,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": 0,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": 0,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": 0,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": 16,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": 16,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": 16,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": 16,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": 16,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": -16,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": -16,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": false,
+      "vtordisp": -16,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": -16,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "null"
+    },
+    {
+      "payload": false,
+      "vtordisp": -16,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": 0,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": 0,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": 0,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": 0,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "data"
+    },
+    {
+      "payload": true,
+      "vtordisp": 0,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": 16,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": 16,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": 16,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": 16,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "data"
+    },
+    {
+      "payload": true,
+      "vtordisp": 16,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": -16,
+      "identity": "wrapper",
+      "identifier": "0x1411626a0",
+      "guidBytes": "bebbdda525f8704593fcfd7ed0d9992f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": -16,
+      "identity": "commonFeature",
+      "identifier": "0x14114bba0",
+      "guidBytes": "dc3a5d1437b9cb4ab0400ca0b291833f",
+      "returned": "wrapper"
+    },
+    {
+      "payload": true,
+      "vtordisp": -16,
+      "identity": "meshScan",
+      "identifier": "0x14115ca98",
+      "guidBytes": "858715a962e0ac498d9b587accff0670",
+      "returned": "null"
+    },
+    {
+      "payload": true,
+      "vtordisp": -16,
+      "identity": "cloudData",
+      "identifier": "0x14115c770",
+      "guidBytes": "28038ddb75cf0a4388cc299f9ceec364",
+      "returned": "data"
+    },
+    {
+      "payload": true,
+      "vtordisp": -16,
+      "identity": "meshData",
+      "identifier": "0x141164ba0",
+      "guidBytes": "0b9693df78d456409eb12fd5564c089d",
+      "returned": "null"
+    }
+  ]
+}

@@ -2594,3 +2594,85 @@ workers (about 1.9 seconds per replay). Temporary native mappings, providers,
 browser/MCP processes and local file servers were released; port 5173 retains
 the current application. Formatting, JSON coverage/identity, whitespace and the
 repository prohibited-name audit passed. No publishing or deployment occurred.
+
+### Point-cloud wrapper eligibility and registration pose retention
+
+`docs/evidence/landmark-cloud-query-native.json` records 30 executions through
+the original `cVectorPointCloudObject` query vtable `0x141248e08`, adjustment
+thunk `0x14089b324` and query `0x14088d330`. Cases cover absent/present payload
+and zero, positive and negative vtordisp. Its own identity `0x1411626a0` and
+common-feature identity `0x14114bba0` return the wrapper. With a payload, the
+original delegation reaches the actual `cVectorPointCloud` vtable
+`0x141249088`/thunk `0x1408a65d4`/query `0x14089eb70`, returning the data root
+for `0x14115c770`. The mesh-scan identity `0x14115ca98` and raw mesh identity
+`0x141164ba0` return null in all cases. These calls execute original query code
+over controlled object storage; constructors and the installed GUI are outside
+the capture. Native allocations and the mapped image are released.
+
+This resolves target eligibility for these wrappers in caller `0x14054d440`:
+the first collector excludes the point-cloud data interface, and the later scan
+pass requires the mesh-wrapper identity that the point-cloud wrapper does not
+provide. A point-cloud anchor does not become a mesh-facet refinement target.
+The alternate `PointEvaluator` property is a separate mode of the mesh wrapper;
+its name is not evidence of point-cloud eligibility or GPU computation.
+REA evidence and RTTI/vtable bindings are retained with the fixture. The original
+ASCII importer, its object construction, and source admission to the installed
+N-points dialog remain separate work.
+
+Application testing exposed a distinct integration defect: point-cloud
+registration materialized and transformed the old world view, lost valid
+retained-pose metadata on acceptance, and the legacy processing GUI replaced
+the cloud with a mesh. `scan-registration.ts` now shares the existing verified
+native cloud-pose composer and bounded coordinate executor across landmark
+preview, the processing GUI and MCP `mesh_process`. Paired cloud solving omits
+the cloud geometry payload; pose application uses incoming * stored in Double
+precision and materializes once from immutable local Float32 coordinates.
+Large views use at most two CPU workers; cancellation and revision checks span
+both solving and pose preparation. This reuses the native ASC pose/world-bounds
+captures in `tests/fixtures/alignment-cloud-pose-native.json`, rather than
+substituting repeated transforms of rounded world coordinates. The source,
+fixed target and model history stay unchanged until acceptance.
+
+The result carries a host-owned placed-cloud entity; it is not a processing
+worker wire payload. Both acceptance paths retain the point-cloud kind,
+placement and local normal buffers. Agents can inspect preview and committed
+pose bits. Whole-cloud registration rejects `selectionOnly` so point masks are
+not interpreted as triangle masks. The original three ASC witness cases first
+reproduced pose loss before this change. Complete point-cloud UI workflow
+parity, ICP correspondence policy and additional native evaluator modes are
+not certified by this pose integration.
+
+`docs/evidence/landmark-owner-cloud-registration-native.json` adds six assembled
+numerical executions using all points from the three supplied ASC files
+(140,113 / 1,375,494 / 1,865,848 points). Source-file hashes and the complete
+converted Float32 position/normal hashes agree between the application importer
+and the native replay's supplied records. Each file receives two successive
+paired registrations. The original `0x140aacbc0` registration, `0x14089f5b0`
+pose update and complete `0x14089fd50` world-bounds calculation match the
+application's matrix bits, RMS, accumulated pose bits and bounds bits exactly.
+The original records remain byte-identical. The runtime uses backend selector
+zero and two native bounds lanes; supplied landmark accessors and inert source
+auxiliary UI reset are declared in the capture. These are known rigid target
+transforms of actual source witness points, not inferred matches between the
+three separate scans. This verifies component composition on full supplied data;
+it does not certify original ASCII import, dialog admission, rendering or natural
+cross-scan correspondence generation.
+
+The two larger clouds use two application transform workers; measured registration
+and pose stages were approximately 0.30–0.54 seconds, excluding import. The smaller
+cloud uses the serial transform path. Timings are validation observations under
+other test load, not an original-UI performance comparison. Browser regression
+first exposed loss of active point selection during landmark acceptance: its
+cache record used the new world view instead of `cloudSelectionSource`. Acceptance
+now retains the native local point-identity key; mesh behavior is unchanged.
+
+Validation: build passed with `scanforge-d23ded91b7d0b655`; focused tests passed
+1,180, and the final full run passed 27,078 with 31 existing skips. Both
+`tests/cloud-pose-browser.mjs` and `tests/indexed-mesh-browser-smoke.mjs` passed,
+covering point-pair GUI/MCP preview/accept/undo, the legacy processing panel,
+active point selection, normals, point type, whole-cloud validation failures,
+binary recovery, and existing indexed scan/CAD two-worker workflows. The full
+ASC replay and all 30 original interface queries passed. Native mappings,
+providers, browsers, MCP children and temporary file servers were released;
+the latest source stays on port 5173. Scoped formatting, JSON coverage/identity,
+whitespace and prohibited-name checks passed. No deployment or publication.
