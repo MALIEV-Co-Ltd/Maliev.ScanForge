@@ -1,0 +1,772 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedure": "0x14084be50",
+    "childPolicy": "0x140822300",
+    "callerArguments": "source exclusion pointer null, visibleOnly true as in 0x14054d440",
+    "execution": "Complete original collector and child-interface predicate. Controlled scene iterator, object GUID queries, visibility/suppression flags, rank, dependency sets, object lookup and consuming relationship metadata. No collector-policy substitution.",
+    "remainingTrackedAllocations": 0,
+    "unknownFreeCalls": 0,
+    "nativeUiCapture": false,
+    "excludedInterfaceGuids": [
+      "0b9693df78d456409eb12fd5564c089d",
+      "c4ae09a32c05e24d9a822eef627a5351",
+      "28038ddb75cf0a4388cc299f9ceec364"
+    ],
+    "specialChildInterfaceGuids": [
+      "60660c24904cf04b9967d05753d7ae00",
+      "fff9a7fefc49fa42843471b8325eb7af",
+      "d7b92a4121f4534da98fca550a1df7f1",
+      "25f6b49d6789f24ca081cc7d7f282e17",
+      "b805ff3cdc9ffb4cb4210e2096e89af9",
+      "60242eae7fb3f043aeed4195614b4476"
+    ],
+    "typeNamesVerified": true,
+    "reaEvidence": {
+      "collector": "ev_6370dce497d87829f14446d4469bbb88eed4aa11d10bee77e2e0b153bf68e105",
+      "childPolicy": "ev_95a86dc79d8cd6a5381660cf393f0d73ad15d8ad3097db52a0489d12d220e6b3"
+    },
+    "metadataLabels": "visible/excluded/enabled/rank/consumes name controlled protocol inputs, not a verified mapping to application UI properties. consumes is the Boolean returned by virtual slot 0x1b8.",
+    "typeNameVerification": "Separate original vtable/vtordisp/GUID execution in landmark-root-interface-types-native.json; app entity projection remains unverified."
+  },
+  "cases": [
+    {
+      "name": "visible order and duplicates",
+      "visibleOnly": true,
+      "roots": ["plain", "hidden", "blocked", "unsupported", null, "plain"],
+      "objects": [
+        {
+          "id": "plain",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        },
+        {
+          "id": "hidden",
+          "visible": false,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        },
+        {
+          "id": "blocked",
+          "visible": true,
+          "excluded": true,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        },
+        {
+          "id": "unsupported",
+          "visible": true,
+          "excluded": false,
+          "supported": false,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": ["plain", "plain"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "visibility filter disabled",
+      "visibleOnly": false,
+      "roots": ["hidden", "plain"],
+      "objects": [
+        {
+          "id": "hidden",
+          "visible": false,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        },
+        {
+          "id": "plain",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": ["hidden", "plain"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "excluded interface 0",
+      "visibleOnly": true,
+      "roots": ["excluded-0"],
+      "objects": [
+        {
+          "id": "excluded-0",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": 0,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": [],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "excluded interface 1",
+      "visibleOnly": true,
+      "roots": ["excluded-1"],
+      "objects": [
+        {
+          "id": "excluded-1",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": 1,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": [],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "excluded interface 2",
+      "visibleOnly": true,
+      "roots": ["excluded-2"],
+      "objects": [
+        {
+          "id": "excluded-2",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": 2,
+          "specialKind": null,
+          "rank": 0,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": [],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "no dependencies",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "later consuming child",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["higher"]
+        },
+        {
+          "id": "higher",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": [],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "earlier consuming child",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["lower"]
+        },
+        {
+          "id": "lower",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 4,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "same rank child",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["tie"]
+        },
+        {
+          "id": "tie",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "later nonconsuming child",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["higher-unrelated"]
+        },
+        {
+          "id": "higher-unrelated",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "split conditions across children",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["higher-unrelated", "lower"]
+        },
+        {
+          "id": "higher-unrelated",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": []
+        },
+        {
+          "id": "lower",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 4,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": [],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "disabled first",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["disabled", "higher"]
+        },
+        {
+          "id": "disabled",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 8,
+          "enabled": false,
+          "consumes": ["parent"],
+          "dependencies": []
+        },
+        {
+          "id": "higher",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "disabled last",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["higher", "disabled"]
+        },
+        {
+          "id": "higher",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        },
+        {
+          "id": "disabled",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 8,
+          "enabled": false,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "suppressed child",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["suppressed-child"]
+        },
+        {
+          "id": "suppressed-child",
+          "visible": true,
+          "excluded": true,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 8,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "missing child first",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": [null, "higher"]
+        },
+        {
+          "id": "higher",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "missing child last",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["higher", null]
+        },
+        {
+          "id": "higher",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 6,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 0",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-0"]
+        },
+        {
+          "id": "special-0",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 0,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 1",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-1"]
+        },
+        {
+          "id": "special-1",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 1,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 2",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-2"]
+        },
+        {
+          "id": "special-2",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 2,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 3",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-3"]
+        },
+        {
+          "id": "special-3",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 3,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 4",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-4"]
+        },
+        {
+          "id": "special-4",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 4,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    },
+    {
+      "name": "special child interface 5",
+      "visibleOnly": true,
+      "roots": ["parent"],
+      "objects": [
+        {
+          "id": "parent",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": null,
+          "rank": 5,
+          "enabled": true,
+          "consumes": [],
+          "dependencies": ["special-5"]
+        },
+        {
+          "id": "special-5",
+          "visible": true,
+          "excluded": false,
+          "supported": true,
+          "excludeKind": null,
+          "specialKind": 5,
+          "rank": 9,
+          "enabled": true,
+          "consumes": ["parent"],
+          "dependencies": []
+        }
+      ],
+      "result": ["parent"],
+      "iteratorDestroyed": 1
+    }
+  ]
+}

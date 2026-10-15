@@ -2428,3 +2428,59 @@ production browser passed GUI/MCP import, native refinement, seeded multicore,
 CAD/visible-scene target, history and BRep preservation checks with no page errors.
 Scoped formatting, whitespace and prohibited-brand checks passed. All validation
 helpers exited; the latest live source server on port 5173 is retained.
+
+## Complete first-stage root collector
+
+`docs/evidence/landmark-root-collector-native.json` records complete execution of
+`0x14084be50` and its child-interface helper `0x140822300` in 22 controlled scene
+cases. The original point-pair caller passes a null source-exclusion pointer
+and enables visibility filtering. The replay also checks the separate
+visibility-filter-disabled branch. Object GUID queries, iterator, lookup,
+dependency sets and virtual-property values are controlled inputs; the collector
+and its branching are original machine code. Every case destroys its iterator
+once, frees its output storage and leaves zero tracked allocations/unknown frees.
+
+A candidate needs the base feature interface, a false `+0x238` exclusion result,
+and (when requested) a true `+0x230` visibility result. Three additional interface
+queries exclude it from this first stage. Empty dependency sets retain a root.
+For a nonempty set, any missing dependency or dependency with false `+0x208` or
+true `+0x238` retains the root immediately. Otherwise two conditions accumulate
+across dependencies: a non-exempt dependency with a greater `+0x88` integer, and
+a dependency whose `+0x1b8(root identity)` predicate is true. Both conditions
+exclude the root; they may come from different dependencies. An exempt primitive
+interface prevents that dependency from setting the greater-integer condition,
+but does not prevent its relationship predicate from contributing. Scene order
+and repeated occurrences are retained. The protocol labels `rank`, `enabled`,
+`excluded` and `consumes` in the fixture are neutral names for these virtual
+results; they do not establish their application UI or authoring-field mapping.
+
+`docs/evidence/landmark-root-interface-types-native.json` binds those GUIDs to
+nine original RTTI classes. The first-stage exclusions are `cMesh`,
+`cMeshStatusObject` and `cVectorPointCloud`. The six child-policy exemptions are
+the native plane, cylinder, cone, reference-line, reference-point and sphere
+interfaces. The file retains exact GUID bytes, original virtual table, slot,
+complete-object locator, type descriptor, adjustment thunk and comparator
+addresses. Twenty-seven direct calls go through the original virtual entry and
+its vtordisp adjustment, covering zero, positive and negative displacements for
+each interface; every positive own-interface query returns the expected root.
+Constructors, fallback queries and the installed UI are outside this capture.
+These are first-stage exclusions; later scan collection is a distinct pass, so
+they must not be used to remove all mesh targets from the combined pipeline.
+
+The REA records retain each exact leaf GUID comparator. These leaf functions
+have no unwind entries; selecting the nearest preceding runtime-function entry
+can resolve to an adjacent constructor or destructor instead. The verified
+bindings follow the virtual entry through its vtordisp thunk to the GUID
+comparator, and tie that entry to its original complete-object locator and RTTI.
+This avoids treating adjacent code as the queried method.
+
+This evidence closes the native first-stage predicate and its nine interface
+identities. Mapping the status integer, dependency-enabled state and relationship
+predicate to the application's authoring graph still requires verification.
+`visibleLandmarkTargets` and the ribbon gate therefore remain unchanged here.
+No application source, GUI/MCP behavior or schema changes in this evidence-only
+slice; application builds/tests are not applicable. Validation consists of the
+49 direct native cases, shipped-image/GUID/RTTI readback, REA evidence identity,
+JSON parsing, scoped formatting and whitespace checks. Original images and
+analysis providers are released after execution; port 5173 retains the latest
+previously validated application.
