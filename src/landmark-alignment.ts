@@ -3,6 +3,7 @@ import type { ProcessingResult } from "./processing-client";
 import { rotatePointNormals } from "./point-cloud";
 import { indexedRenderNormals } from "./indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "./native-surface-refinement";
+import { publishedLandmarkRoots } from "./native-landmark-roots";
 
 export interface LandmarkAlignment {
   moving: Entity;
@@ -19,11 +20,12 @@ export function visibleLandmarkTargets(
   moving: Entity,
   scene: readonly Entity[],
 ) {
+  const roots = new Set(publishedLandmarkRoots(scene));
   const visible = scene.filter(
     (entity) => entity.id !== moving.id && entity.visible,
   );
   return [
-    ...visible.filter((entity) => !!entity.kernelId),
+    ...visible.filter((entity) => !!entity.kernelId && roots.has(entity.id)),
     ...visible.filter(
       (entity) =>
         entity.kind === "mesh" &&
@@ -77,7 +79,7 @@ export function beginLandmarkAlignment(
     targetScope,
     refinementScene:
       options.scene && targetScope === "visibleScene"
-        ? visibleLandmarkTargets(moving, options.scene)
+        ? [...options.scene]
         : undefined,
   };
 }

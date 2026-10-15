@@ -17,7 +17,7 @@ const admission = spawnSync(
 if (admission.status !== 0) process.exit(admission.status ?? 1);
 await mkdir(out, { recursive: true });
 const token = randomBytes(32).toString("hex"),
-  browserLeaseMs = 360000,
+  browserLeaseMs = 420000,
   ledger = {
     owner: "indexed-mesh-browser",
     pid: process.pid,
@@ -907,6 +907,66 @@ try {
   await mutate("history_undo", {});
   assert.deepEqual(await geometry(emptyMoving.id), beforeEmptyTarget);
   assert.deepEqual(errors, []);
+  const derived = await job(
+    await mutate("cad_create", {
+      name: "Derived alignment root",
+      hideInputs: false,
+      recipe: {
+        kind: "transform",
+        source: { featureId: cadTarget.result.featureId },
+        translation: [0, 0, 0],
+        rotation: [0, 0, 0],
+        scale: 1,
+      },
+    }),
+  );
+  const derivedId = derived.result.entityIds[0];
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: gui.id,
+    fixedId: derivedId,
+  });
+  const roots = (await call("landmark_get")).result;
+  assert.ok(roots.refinementTargetIds.includes(derivedId));
+  assert.ok(!roots.refinementTargetIds.includes(cadId));
+  await landmarkDialog
+    .getByText(`${roots.refinementTargetIds.length} refinement targets`, {
+      exact: true,
+    })
+    .waitFor();
+  for (let i = 0; i < 3; i++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: gui.id,
+      point: sourceLandmarks.slice(i * 3, i * 3 + 3),
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: derivedId,
+      point: targetLandmarks.slice(i * 3, i * 3 + 3),
+    });
+  }
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const rootGui = (await call("landmark_get")).result;
+  assert.equal(rootGui.diagnostics.physicalWorkers, 2);
+  await mutate("landmark_edit", { action: "reset" });
+  const rootAgent = await job(
+    await mutate("landmark_preview", { workerCount: 2, parallel: true }),
+  );
+  assert.deepEqual(rootAgent.result.registration, rootGui.registration);
+  assert.deepEqual(rootAgent.result.refinement, rootGui.refinement);
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  await mutate("landmark_accept", {});
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadId })).result,
+    fixedCadBefore,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
     guiImport: true,
@@ -928,6 +988,7 @@ try {
     guiMcpCadLandmarkRefinement: true,
     guiMcpVisibleSceneLandmarkRefinement: true,
     guiMcpEmptyTargetLandmarkRefinement: true,
+    guiMcpAuthoringRootLandmarkRefinement: true,
     cadLandmarkBrepPreserved: true,
     errors,
   };

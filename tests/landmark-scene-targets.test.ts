@@ -78,11 +78,9 @@ it("prepares visible CAD before visible scans and excludes moving/unsupported ob
   };
   const scene = [other, moving, hidden, fixed, cad, cloud];
   const session = picked(scene);
-  expect(session.refinementScene?.map((entity) => entity.id)).toEqual([
-    cad.id,
-    other.id,
-    fixed.id,
-  ]);
+  // Hidden consumers and construction references are needed by root filtering.
+  expect(session.refinementScene).toEqual(scene);
+  expect(session.refinementScene).not.toBe(scene);
   expect(landmarkState(session)).toHaveProperty("refinementTargetIds", [
     cad.id,
     other.id,

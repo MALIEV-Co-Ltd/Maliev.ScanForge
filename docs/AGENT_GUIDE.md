@@ -44,8 +44,14 @@ physical workers. `parallel: false` keeps the same logical lane reduction serial
 
 The shared picked-point session (`landmark_edit` with `action: "begin"`) defaults
 to `targetScope: "visibleScene"`. `fixedId` still identifies the object used for
-matching point picks. Refinement collects visible exact CAD first, then visible
-raw indexed scans in scene order, excluding the moving scan. Point clouds,
+matching point picks. Refinement collects visible evaluated exact CAD roots first,
+then visible raw indexed scans in scene order, excluding the moving scan. A CAD
+input consumed by a later evaluated authoring result is omitted even if that
+consumer is hidden. Construction planes, cylinders, cones and spheres alone do
+not supersede the input. Priority follows authoring dependency order, independently
+of the browser's display order. Original imported CAD without dependencies remains
+eligible. Raw scan collection remains a separate pass. Cyclic authoring metadata
+is rejected rather than assigning invented native update levels. Point clouds,
 unindexed scans and construction displays are not surface-refinement targets.
 At most 32 distinct published targets are admitted; reveal hidden triangles on
 contributing meshes or hide the entire object before refinement. Additional

@@ -2529,3 +2529,68 @@ with no page errors. Scoped Prettier, JSON parsing, whitespace and prohibited
 name checks passed. The initial browser fixture's 2 mm picks correctly triggered
 the existing native clustered-pick rejection; the successful fixture uses its
 20 mm imported triangle. Native pick-spread validation was not relaxed.
+
+### Published authoring roots
+
+The collector's integer at common-feature offset `0x16c` is an update level,
+read/written by `0x140406560`/`0x140406550`. Original scene refresh `0x140827ea0`
+propagates through tree slot `0x190` and raises each direct dependent to at least
+its input's level plus one (6,144 retained DAG executions documented in
+`NATIVE_DATUM_ALIGNMENT.md`). This establishes edge direction and the relative
+level comparison for published evaluated DAGs; object-browser order does not
+define priority.
+
+New focused REA evidence confirms the reference storage operations:
+`0x140406f60` inserts into tree `+0x288`, `0x140406f90` into `+0x298`, and
+`0x1404064c0`/`0x140406480` replace those trees. Slots `0x188`/`0x190` expose
+the respective trees. `0x140406530`/`0x140406520` clear them, and
+`0x140406fc0`/`0x140407000` remove an entry. CAD body/model slot `0x208`
+uses `0x140406440` (inverse dirty flag at `+0x2b1`), while scan wrappers use
+constant true `0x140166530`. Their slot `0x1b8` relationship method is also
+constant true. External `landmark-reference-links-*` retains pseudocode,
+assembly, provider evidence and closed-session receipts. These observations
+apply to the identified common-feature vtables, not every specialized feature.
+
+`docs/evidence/landmark-authoring-roots-native.json` records 2,048 executions of
+the complete original collector and child-type predicate: every four-node
+forward DAG, all 16 exempt-interface masks and two visibility masks. Update
+levels follow the longest input path; generic CAD/scan relationship metadata is
+true. Scene iterators, object metadata and GUID queries are controlled adapters;
+the collector, tree traversal and child-policy code execute unchanged. Each
+iterator is destroyed once, with zero tracked allocations or unknown frees left.
+This is a direct native replay, not an installed-UI scene capture.
+
+`native-landmark-roots.ts` reproduces the full predicate against the existing
+22 existing native protocol cases and two additional original null-child-query
+cases, including early retention after missing, suppressed or
+unready children and conditions accumulated across different children. Its
+child exemption flag includes the original policy's true result for a null
+type query; this is distinct from a missing scene object, which retains the
+parent immediately. Its
+published-workspace projection uses resolved parametric output identities,
+retained authoring links and source-scan links. Published geometry is already
+evaluated; dependency levels are derived independently of browser order. Cyclic
+metadata is rejected because this projection has no valid published DAG update
+order for it. Construction primitive exemptions retain the original input; raw
+indexed scans are still collected separately.
+
+Both GUI and MCP now use that root-filtered CAD list. A session retains the
+full immutable scene snapshot so hidden consumers and construction references
+remain available to the predicate. `landmark_get` exposes the actual target IDs;
+scene changes that alter that list invalidate the preview. Standalone fixed-target
+scope continues to use the selected target explicitly. The point-pair ribbon
+gate remains in place pending the remaining native workflow verification.
+
+Validation: `npm run build` passed with bundle
+`scanforge-fc0a140876e66950`, using a bounded 1,792 MiB TypeScript heap after a
+3,072 MiB free-memory admission check. The focused run passed 104 tests;
+`npm test` passed 27,071 with 31 existing skips. The expanded indexed-mesh browser
+smoke passed real CAD creation with a visible consumed input, GUI/MCP target
+reporting, two-worker preview parity, accept and undo, with no page errors.
+That browser run uses the same final production bundle hash. The large owner
+PLY-2/PLY-3 replays against PLY-1 also matched original accepted state, errors,
+parameters, matrices and final position/normal hashes exactly, using two physical
+workers (about 1.9 seconds per replay). Temporary native mappings, providers,
+browser/MCP processes and local file servers were released; port 5173 retains
+the current application. Formatting, JSON coverage/identity, whitespace and the
+repository prohibited-name audit passed. No publishing or deployment occurred.
