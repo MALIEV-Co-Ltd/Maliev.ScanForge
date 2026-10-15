@@ -1703,3 +1703,9 @@ The prior principal-axis placeholder is no longer a Main command; a verified
 principal-axis workflow remains separate unfinished work rather than assumed
 parity. The complete goal remains active. Temporary browser/bridge resources
 were closed; live development on port 5173 was retained.
+
+## Primary-plane GUI/MCP browser parity
+
+The broad MCP browser smoke previously requested target axis X through MCP immediately after the GUI picked a primary plane. The GUI correctly selected Z, matching all stage-zero plane captures of original resolver `0x140541770` in `alignment-reference-options-native.json`. Those were different instructions, so the differing bounds did not establish an application parity defect.
+
+The browser test now asserts the GUI default against the original capture radio selection (plane radio order Z/X/Y), compares GUI Preview/Apply against MCP using that same axis, then repeats with an explicit GUI and MCP X assignment. Both cases compare accepted bounds and restore the complete original mesh statistics through Undo. The complete SDK/browser smoke passes, including subsequent viewport picking, exact CAD references, project export, backup recovery and disconnect handling. The native resolver/frame/shared-operation focused suite passes 4,123 tests. The application and public MCP schema are unchanged by this correction.

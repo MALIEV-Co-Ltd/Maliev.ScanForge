@@ -20,7 +20,7 @@ const token = randomBytes(32).toString("hex");
 const ledger = {
   owner: "scanforge-mcp-browser-validation",
   startedAt,
-  expiresAt: new Date(Date.now() + 180000).toISOString(),
+  expiresAt: new Date(Date.now() + 240000).toISOString(),
   persistentData: false,
   resources: [],
   cleanup: [],
@@ -81,9 +81,9 @@ ledger.resources.push({
   purpose: "isolated built application",
 });
 const deadline = setTimeout(() => {
-  failed = Error("Browser validation exceeded3minute lease");
+  failed = Error("Browser validation exceeded4minute lease");
   void cleanup();
-}, 180000);
+}, 240000);
 async function cleanup() {
   clearTimeout(deadline);
   await client?.close().catch(() => {});
@@ -523,47 +523,87 @@ try {
   await page
     .getByLabel("Reference 1 feature", { exact: true })
     .selectOption(face.id);
-  const boundConstraints = [
-    {
-      kind: "reference",
-      entityId: created.entityIds[0],
-      referenceId: face.id,
-      axis: 0,
-    },
-  ];
-  const boundPreview = await job(
-    await mutate("alignment_preview", {
-      entityIds: [meshId],
-      constraints: boundConstraints,
-      translation: [1.25, 0, 0],
-    }),
+  // Original resolver 0x140541770 uses plane radio order Z/X/Y and
+  // selects radio zero for every newly chosen primary plane.
+  const nativeOptions = JSON.parse(
+    await readFile(
+      new URL("tests/fixtures/alignment-reference-options-native.json", root),
+      "utf8",
+    ),
   );
-  await mutate("preview_discard", { target: "datum" });
-  await page
-    .getByRole("button", { name: "Preview alignment", exact: true })
-    .click();
-  await page
-    .getByText("Alignment preview ready · model unchanged", { exact: true })
-    .waitFor();
-  await page
-    .getByRole("button", { name: "Apply alignment", exact: true })
-    .click();
-  await page
-    .getByRole("button", {
-      name: "Align object to origin / references",
-      exact: true,
-    })
-    .waitFor();
-  const boundAnalysis = await job(
-    await call("mesh_analyze", { entityId: meshId }),
+  const primaryPlanes = nativeOptions.cases.filter(
+    (sample) => sample.stage === 0 && sample.kind === "plane",
   );
-  assert.deepEqual(boundAnalysis.stats.min, boundPreview.targets[0].bounds.min);
-  assert.deepEqual(boundAnalysis.stats.max, boundPreview.targets[0].bounds.max);
-  await mutate("history_undo", {});
-  assert.deepEqual(
-    (await job(await call("mesh_analyze", { entityId: meshId }))).stats,
-    sourceAnalysis.stats,
+  assert(primaryPlanes.length > 0);
+  assert(primaryPlanes.every((sample) => sample.selectionCode === 0));
+  const defaultAxis = [2, 0, 1][primaryPlanes[0].selectionCode];
+  assert.equal(
+    Number(
+      await page
+        .getByLabel("Reference 1 target axis", { exact: true })
+        .inputValue(),
+    ),
+    defaultAxis,
   );
+  for (const axis of [defaultAxis, 0]) {
+    if (axis !== defaultAxis) {
+      await page
+        .getByRole("button", {
+          name: "Align object to origin / references",
+          exact: true,
+        })
+        .click();
+      await page
+        .getByLabel("Reference 1 target axis", { exact: true })
+        .selectOption(String(axis));
+    }
+    const boundPreview = await job(
+      await mutate("alignment_preview", {
+        entityIds: [meshId],
+        constraints: [
+          {
+            kind: "reference",
+            entityId: created.entityIds[0],
+            referenceId: face.id,
+            axis,
+          },
+        ],
+        translation: [1.25, 0, 0],
+      }),
+    );
+    await mutate("preview_discard", { target: "datum" });
+    await page
+      .getByRole("button", { name: "Preview alignment", exact: true })
+      .click();
+    await page
+      .getByText("Alignment preview ready · model unchanged", { exact: true })
+      .waitFor();
+    await page
+      .getByRole("button", { name: "Apply alignment", exact: true })
+      .click();
+    await page
+      .getByRole("button", {
+        name: "Align object to origin / references",
+        exact: true,
+      })
+      .waitFor();
+    const boundAnalysis = await job(
+      await call("mesh_analyze", { entityId: meshId }),
+    );
+    assert.deepEqual(
+      boundAnalysis.stats.min,
+      boundPreview.targets[0].bounds.min,
+    );
+    assert.deepEqual(
+      boundAnalysis.stats.max,
+      boundPreview.targets[0].bounds.max,
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      (await job(await call("mesh_analyze", { entityId: meshId }))).stats,
+      sourceAnalysis.stats,
+    );
+  }
   await mutate("object_update", {
     entityId: meshId,
     patch: { visible: false },
@@ -706,7 +746,7 @@ try {
     "exact CAD creation rendered in UI",
     "MCP and GUI exact alignment references with identical coordinates and unchanged history",
     "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
-    "native coordinate preview/cancel, GUI apply and MCP undo restore identical scan geometry",
+    "native coordinate preview/cancel, primary-plane Z default and explicit X, GUI/MCP Apply and Undo restore identical scan geometry",
     "UI undo and MCP redo",
     "STEP content and project export artifacts",
     "mesh copy/transform/winding worker/topology",
