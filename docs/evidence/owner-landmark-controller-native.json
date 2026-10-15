@@ -1,0 +1,267 @@
+{
+  "provenance": {
+    "procedures": [
+      "0x140b38e30",
+      "0x140b35d90",
+      "0x140a7f470",
+      "0x140213e90",
+      "0x140b375e0",
+      "0x140aaa020",
+      "0x140aaa250",
+      "0x140b25b80",
+      "0x140aaa0a0"
+    ],
+    "sourceSamplingFromRetainedOriginalCaptures": false,
+    "sourceRegionFromRetainedOriginalPrefix": true,
+    "coarseMatrixFromRetainedOriginalCandidate": true,
+    "sourceNormals": "Provided binary PLY Float32 normals",
+    "vertexApplicationProcedure": "0x1401deb20",
+    "identityProcedure": "0x1401dd330",
+    "fullConstructorExecuted": false,
+    "originalTargetBuilderExecuted": true,
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "originalGlobalRebuildExecuted": true,
+    "serialSchedulingAdapter": false,
+    "logicalLanes": 2,
+    "originalConcrtImportsRebound": [
+      {
+        "name": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ",
+        "rva": "0xe420",
+        "locations": ["0xeaa0e8", "0x85690e0"]
+      },
+      {
+        "name": "??0SchedulerPolicy@Concurrency@@QEAA@_KZZ",
+        "rva": "0x21010",
+        "locations": ["0xeaa0f0"]
+      },
+      {
+        "name": "??1SchedulerPolicy@Concurrency@@QEAA@XZ",
+        "rva": "0x21100",
+        "locations": ["0xeaa0f8"]
+      },
+      {
+        "name": "?GetPolicy@CurrentScheduler@Concurrency@@SA?AVSchedulerPolicy@2@XZ",
+        "rva": "0xe710",
+        "locations": ["0xeaa100"]
+      },
+      {
+        "name": "?Create@CurrentScheduler@Concurrency@@SAXAEBVSchedulerPolicy@2@@Z",
+        "rva": "0xe600",
+        "locations": ["0xeaa108"]
+      },
+      {
+        "name": "?Detach@CurrentScheduler@Concurrency@@SAXXZ",
+        "rva": "0xe690",
+        "locations": ["0xeaa110"]
+      },
+      {
+        "name": "?Alloc@Concurrency@@YAPEAX_K@Z",
+        "rva": "0x25810",
+        "locations": ["0xeaa118"]
+      },
+      {
+        "name": "?PPLParallelForeachEventGuid@Concurrency@@3U_GUID@@B",
+        "rva": "0x31f20",
+        "locations": ["0xeaa120"]
+      },
+      {
+        "name": "??0_TaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x25e30",
+        "locations": ["0xeaa128"]
+      },
+      {
+        "name": "??1_TaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x26030",
+        "locations": ["0xeaa130"]
+      },
+      {
+        "name": "?_Schedule@_TaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27d00",
+        "locations": ["0xeaa138"]
+      },
+      {
+        "name": "?_RunAndWait@_TaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+        "rva": "0x276d0",
+        "locations": ["0xeaa140"]
+      },
+      {
+        "name": "?_CurrentContext@_Context@details@Concurrency@@SA?AV123@XZ",
+        "rva": "0xbe40",
+        "locations": ["0xeaa148"]
+      },
+      {
+        "name": "?_SpinOnce@?$_SpinWait@$00@details@Concurrency@@QEAA_NXZ",
+        "rva": "0x11a0",
+        "locations": ["0xeaa150"]
+      },
+      {
+        "name": "?_Trace_ppl_function@Concurrency@@YAXAEBU_GUID@@EW4ConcRT_EventType@1@@Z",
+        "rva": "0x297b0",
+        "locations": ["0xeaa158"]
+      },
+      {
+        "name": "?Free@Concurrency@@YAXPEAX@Z",
+        "rva": "0x25930",
+        "locations": ["0xeaa160"]
+      },
+      {
+        "name": "?PPLParallelForEventGuid@Concurrency@@3U_GUID@@B",
+        "rva": "0x31f10",
+        "locations": ["0xeaa168"]
+      },
+      {
+        "name": "??1_StructuredTaskCollection@details@Concurrency@@QEAA@XZ",
+        "rva": "0x25fb0",
+        "locations": ["0xeaa170"]
+      },
+      {
+        "name": "?_Schedule@_StructuredTaskCollection@details@Concurrency@@QEAAXPEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27bd0",
+        "locations": ["0xeaa178"]
+      },
+      {
+        "name": "?_RunAndWait@_StructuredTaskCollection@details@Concurrency@@QEAA?AW4_TaskCollectionStatus@23@PEAV_UnrealizedChore@23@@Z",
+        "rva": "0x27390",
+        "locations": ["0xeaa180"]
+      },
+      {
+        "name": "?_GetNumberOfVirtualProcessors@_CurrentScheduler@details@Concurrency@@SAIXZ",
+        "rva": "0xe8a0",
+        "locations": ["0xeaa188"]
+      },
+      {
+        "name": "?_CheckTaskCollection@_UnrealizedChore@details@Concurrency@@IEAAXXZ",
+        "rva": "0x9650",
+        "locations": ["0xeaa190"]
+      },
+      {
+        "name": "??1_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+        "rva": "0xc1d0",
+        "locations": ["0xeaa198"]
+      },
+      {
+        "name": "?_Yield@_Context@details@Concurrency@@SAXXZ",
+        "rva": "0xbe00",
+        "locations": ["0xeaa1a0"]
+      },
+      {
+        "name": "?_Reference@_Scheduler@details@Concurrency@@QEAAIXZ",
+        "rva": "0xbe80",
+        "locations": ["0xeaa1a8"]
+      },
+      {
+        "name": "?_UnderlyingYield@details@Concurrency@@YAXXZ",
+        "rva": "0x2b6c0",
+        "locations": ["0xeaa1b0"]
+      },
+      {
+        "name": "??0_Cancellation_beacon@details@Concurrency@@QEAA@XZ",
+        "rva": "0xc030",
+        "locations": ["0xeaa1b8"]
+      }
+    ],
+    "crtArrayLifecycleAdapter": true,
+    "stackProbeAdapter": true,
+    "nativeUiCapture": false,
+    "bucketTolerance": 1.1920928955078125e-7
+  },
+  "cases": [
+    {
+      "targetFile": "ply-1.ply",
+      "targetSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "triangles": 274154,
+      "minimumExtent": 0.5,
+      "nodes": 76760,
+      "registrations": [
+        {
+          "sourceFile": "ply-2.ply",
+          "sourceSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+          "vertices": 1375494,
+          "triangles": 2697877,
+          "seeds": [1196039, 1324839, 94028],
+          "movingLandmarks": [
+            [-33.08653259277344, 10.659506797790527, -323.0971984863281],
+            [72.04571533203125, 4.899905204772949, -264.339599609375],
+            [8.556455612182617, 72.86515045166016, -326.3150634765625]
+          ],
+          "fixedLandmarks": [
+            [-32.799110412597656, 10.577631950378418, -323.2360534667969],
+            [72.02129364013672, 4.966979026794434, -264.3550720214844],
+            [8.400469779968262, 72.80936431884766, -326.2918701171875]
+          ],
+          "coarseMatrix": [
+            0.9999920211511758, -0.0035146533574512973, -0.001898643137438972,
+            -0.5075018236833239, 0.0035101806841947754, 0.9999910687613404,
+            -0.0023539390638908126, -0.8081406224061014, 0.0019068994600381216,
+            0.0023472557016996627, 0.9999954270521041, -0.1655773200147146
+          ],
+          "sampleBudget": 2147483647,
+          "initialRadius": 3,
+          "step": 0.00019999999494757503,
+          "parameters": [
+            10.007918397145703, 10.012647095906882, 10.000249413061248,
+            1.5707514193609133, 1.570646405842997, 1.566819087757672
+          ],
+          "accepted": true,
+          "matrix": [
+            0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+            0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+            4.550334867358313e-5, 0.012647095906881844, 0.00014992095133797362,
+            -4.490743346345091e-5, 0.9999999877535153, 0.0002494130612475942
+          ],
+          "best": 5.984956254000963,
+          "initialError": 9.766255351717064,
+          "selectedVertices": 1773,
+          "refinementApplied": true,
+          "finalPositionsSha256": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+          "finalNormalsSha256": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c"
+        },
+        {
+          "sourceFile": "ply-3.ply",
+          "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+          "vertices": 1865848,
+          "triangles": 3691133,
+          "seeds": [242141, 1833505, 1839376],
+          "movingLandmarks": [
+            [-33.20513153076172, 6.811855792999268, -321.596435546875],
+            [71.87008666992188, 5.0090789794921875, -264.02032470703125],
+            [8.181851387023926, 72.8617172241211, -326.6084899902344]
+          ],
+          "fixedLandmarks": [
+            [-32.555580139160156, 6.60361909866333, -322.1988525390625],
+            [71.76634979248047, 5.0657477378845215, -263.95880126953125],
+            [8.147298812866211, 72.78314971923828, -326.4633483886719]
+          ],
+          "coarseMatrix": [
+            0.9999467250979499, -0.006766551751753935, -0.007794917785062931,
+            -2.088199466926042, 0.006707134676260902, 0.9999484459903143,
+            -0.007623628138230514, -2.4381934537876555, 0.007846101600129404,
+            0.007570940426813385, 0.9999405580086919, -0.4887047113587967
+          ],
+          "sampleBudget": 2147483647,
+          "initialRadius": 3,
+          "step": 0.00019999999494757503,
+          "parameters": [
+            10.00067147993725, 9.999894076437755, 9.998188364754153,
+            1.5704551466710581, 1.5708958490696991, 1.57099525168068
+          ],
+          "accepted": true,
+          "matrix": [
+            0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+            0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+            0.0003411999079247157, -0.00010592356224492505,
+            -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+            -0.001811635245847043
+          ],
+          "best": 8.3123067990079,
+          "initialError": 16.62046399125353,
+          "selectedVertices": 1877,
+          "refinementApplied": true,
+          "finalPositionsSha256": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+          "finalNormalsSha256": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b"
+        }
+      ]
+    }
+  ]
+}

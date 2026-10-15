@@ -59,6 +59,7 @@ export async function refineNativeLandmarkAfterCoarse(
   );
   const applied = !nativeDatumIsIdentity(result.matrix, Number.EPSILON);
   return {
+    selection: nativeLandmarkFaceSelection(region.faceFlags, applied),
     indexedMesh: {
       vertices: applied
         ? transformDatumCoordinates(vertices, result.matrix)
@@ -86,4 +87,14 @@ export async function refineNativeLandmarkAfterCoarse(
       fallbackReason: result.fallbackReason,
     },
   };
+}
+
+/** Original identity tail retains the grown region; applied refinement clears it. */
+export function nativeLandmarkFaceSelection(
+  faceFlags: Uint8Array,
+  applied: boolean,
+) {
+  return Uint8Array.from(faceFlags, (flag) =>
+    applied ? 0 : Number(!!(flag & 4)),
+  );
 }

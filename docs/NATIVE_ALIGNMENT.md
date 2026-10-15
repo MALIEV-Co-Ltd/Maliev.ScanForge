@@ -1594,7 +1594,8 @@ minimum extent and the recovered refinement controller. The existing bounded CPU
 pool uses two logical lanes by default. The delta is applied only when the native
 double-epsilon identity predicate requires it. Final output moves the entire scan,
 including orphan vertices, and retains original triangle connectivity. Applied
-refinement clears the input face-selection mask; identity keeps it. The fixed
+refinement clears the grown face-selection mask; identity retains that grown
+selection. The fixed
 target is unchanged. Marker placement and `registration` retain the coarse frame;
 the separate `refinement` reports the surface stage.
 
@@ -1624,3 +1625,50 @@ lease after geometry checks; its finite lease is now four minutes, with operatio
 timeouts and memory admission unchanged. The complete rerun passed and cleaned its
 owned browser, bridge and HTTP server. Formatting and branding audits passed.
 Build manifest: `scanforge-b352e1e7a449b440`. Port 5173 serves the new module.
+
+## Full-resolution owner landmark and refinement captures
+
+`docs/evidence/owner-landmark-preparation-native.json` retains original coarse
+candidate and complete region-growth prefix executions for the three PLY scans
+in the owner-supplied alignment folder. Their indexed counts are 140,113,
+1,375,494 and 1,865,848 vertices, with 274,154, 2,697,877 and 3,691,133 triangles.
+Three deterministic, spread source vertices supply moving landmarks; nearest
+vertices on scan 1 supply fixed landmarks. This is a declared numeric capture
+input policy, not a recovered automatic correspondence algorithm or observed UI
+point-picking session. Native coarse matrix bits match the application exactly.
+All vertex/face flag buffer hashes match after 14, 15 and 18 growth passes,
+selecting 3,204, 3,180 and 3,368 faces.
+
+`docs/evidence/owner-landmark-controller-native.json` retains a second native
+replay on complete scans 2 and 3 against complete scan 1. It uses the preceding
+captured coarse matrices and grown vertex sets, raw supplied PLY normals, the
+original target builder, two-lane ConCRT refinement, original epsilon identity
+test and original vertex/normal application worker. Entire resulting position
+and normal buffer hashes match the application: 3,241,342 vertices and their
+normals, totaling 77,792,208 bytes. Refinement parameters, matrices, initial and
+best objectives also match exactly. The application comparison uses the same
+two logical lanes with serial scheduling; physical browser-worker scheduling is
+verified separately. These captures do not execute complete native UI, scene
+collection or CAD/point-cloud paths, and do not measure native performance.
+
+The owner tests are opt-in because scan files remain outside Git. Set
+`SCANFORGE_ALIGNMENT_EXAMPLES` to the supplied folder and run
+`tests/native-owner-landmark-preparation.test.ts`. All five owner cases passed.
+The additional helper checks, including all 712 original tail transitions, also
+passed: 14 focused tests total. Native replay allocations were released and the
+recorded processes exited. Full output buffers and replay source/cleanup receipts
+remain in the external analysis directory.
+
+This verification also corrected the identity-delta selection result: it must
+publish the grown region, rather than the old pre-growth input mask. Applied
+refinement clears the selection. GUI acceptance and MCP now consume the same
+returned mask; scene and undo buffers remain immutable.
+
+Final validation for this change: production build/TypeScript passed without
+warnings or errors; all 14 focused tests passed with owner files enabled. The
+default full suite passed 26,953 tests across 346 files, with 29 skips across six
+files; five of those skips are the new external-file cases explicitly passed in
+the focused run. Browser/MCP regression passed with two physical workers, matching
+GUI/MCP geometry, selection state handling, reset/cancel and undo, and no console
+errors. Formatting, whitespace and branding checks passed. Owned native and
+browser/bridge processes exited. Build: `scanforge-548de226b53fc74a`.

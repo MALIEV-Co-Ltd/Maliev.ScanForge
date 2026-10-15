@@ -1,6 +1,12 @@
 import { expect, it } from "vitest";
 import captures from "../docs/evidence/landmark-joint-controller-native.json";
-import { refineNativeLandmarkAfterCoarse } from "../src/native-landmark-refinement";
+import transitions from "../docs/evidence/landmark-refinement-state-native.json";
+import regions from "../docs/evidence/landmark-refinement-preparation-native.json";
+import { nativeDatumIsIdentity } from "../src/scan-native-datum-apply";
+import {
+  refineNativeLandmarkAfterCoarse,
+  nativeLandmarkFaceSelection,
+} from "../src/native-landmark-refinement";
 
 const decode = (hex: string) =>
   new Float32Array(
@@ -68,4 +74,29 @@ it("rejects cancellation before region construction", async () => {
       { signal: AbortSignal.abort() },
     ),
   ).rejects.toThrow("cancelled");
+});
+it("retains grown selected faces for an identity delta and clears them only on application", () => {
+  const flags = new Uint8Array([0, 1, 4, 128, 132, 255]);
+  expect(nativeLandmarkFaceSelection(flags, false)).toEqual(
+    new Uint8Array([0, 0, 1, 0, 1, 1]),
+  );
+  expect(nativeLandmarkFaceSelection(flags, true)).toEqual(new Uint8Array(6));
+  expect(flags).toEqual(new Uint8Array([0, 1, 4, 128, 132, 255]));
+});
+it("matches selected face counts in all 712 original refinement tail transitions", () => {
+  for (const row of transitions.cases) {
+    const region = regions.cases.find((item) => item.name === row.region)!;
+    const matrix = transitions.matrices.find(
+      (item) => item.name === row.matrix,
+    )!.values;
+    const applied = !nativeDatumIsIdentity(matrix, Number.EPSILON);
+    expect(applied).toBe(!!row.appliedMatrices.length);
+    const selection = nativeLandmarkFaceSelection(
+      Uint8Array.from(region.faceFlags),
+      applied,
+    );
+    expect(selection.reduce((sum, flag) => sum + flag, 0)).toBe(
+      row.selectedFaces,
+    );
+  }
 });

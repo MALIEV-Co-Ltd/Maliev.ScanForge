@@ -497,10 +497,7 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = refined.indexedMesh;
         result.positions = expandPlyTopology(refined.indexedMesh);
         result.refinement = refined.refinement;
-        if (mask)
-          result.selection = refined.diagnostics.refinementApplied
-            ? new Uint8Array(mask.length)
-            : new Uint8Array(mask);
+        result.selection = refined.selection;
         Object.assign(result.diagnostics, refined.diagnostics, {
           algorithm: "native-landmark-registration-and-refinement",
           seedVertices: seeds.length,

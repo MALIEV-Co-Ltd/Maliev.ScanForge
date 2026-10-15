@@ -1,0 +1,101 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x14054d440",
+  "exitRedirect": { "fromAddress": "0x14054d525", "toAddress": "0x14054de96" },
+  "coarseRegistrationProcedure": "0x14054c7a0",
+  "targetFile": "ply-1.ply",
+  "landmarkPolicy": "Source min/max X and farthest off-axis vertex; nearest fixed vertices chosen deterministically. Numeric core capture, not a manual landmark UI run.",
+  "scope": "Original native coarse candidate plus caller prefix: vertex reset, supplied landmark-index seeding and complete native growth stopping loop. Exit redirected to existing register/stack restoration before scene collection; skips cookie check and all later dispatch/optimization. Original reset/grow/clear unchanged; compiled containers and scratch allocator/release adapters. Not full preview or target-controller execution.",
+  "cases": [
+    {
+      "file": "ply-1.ply",
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "triangles": 274154,
+      "seeds": [131186, 2658, 136920],
+      "movingLandmarks": [
+        [-32.87358474731445, 11.26235580444336, -323.35345458984375],
+        [72.72367095947266, 4.4990153312683105, -265.9581604003906],
+        [9.716108322143555, 72.2729263305664, -327.3228759765625]
+      ],
+      "fixedLandmarks": [
+        [-32.87358474731445, 11.26235580444336, -323.35345458984375],
+        [72.72367095947266, 4.4990153312683105, -265.9581604003906],
+        [9.716108322143555, 72.2729263305664, -327.3228759765625]
+      ],
+      "coarseMatrix": [
+        1.0, -6.324663514098765e-9, -4.451767453123546e-9,
+        -9.400782251713243e-7, 6.324663486637727e-9, 1.0, -6.168569810510036e-9,
+        -1.9060091113008908e-6, 4.451767492137673e-9, 6.168569782354105e-9, 1.0,
+        -9.78188585141962e-7
+      ],
+      "coarseMatrixBits": "000000000000f03f8ee8ec830a2a3bbe9970e323c51e33be0a9512e1358bafbe7857f2810a2a3b3e000000000000f03f274a330b6a7e3abe1eb6362e3ffabfbe9b1fb326c51e333e87e72b096a7e3a3e000000000000f03fd2b138b94969b0be",
+      "passes": 14,
+      "selectedVertices": 1739,
+      "selectedFaces": 3204,
+      "vertexFlagsSha256": "2fc804a4c6dbe61c8aeee36f4f18dedfce0c224e1af427348cc853d66854346a",
+      "faceFlagsSha256": "24dd9cbd10ccb8c3ee81339e3d51e5c37277350fded8099ebd8cfdf4b3246c1d",
+      "captureSeconds": 0.9874799999961397
+    },
+    {
+      "file": "ply-2.ply",
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "vertices": 1375494,
+      "triangles": 2697877,
+      "seeds": [1196039, 1324839, 94028],
+      "movingLandmarks": [
+        [-33.08653259277344, 10.659506797790527, -323.0971984863281],
+        [72.04571533203125, 4.899905204772949, -264.339599609375],
+        [8.556455612182617, 72.86515045166016, -326.3150634765625]
+      ],
+      "fixedLandmarks": [
+        [-32.799110412597656, 10.577631950378418, -323.2360534667969],
+        [72.02129364013672, 4.966979026794434, -264.3550720214844],
+        [8.400469779968262, 72.80936431884766, -326.2918701171875]
+      ],
+      "coarseMatrix": [
+        0.9999920211511758, -0.0035146533574512973, -0.001898643137438972,
+        -0.5075018236833239, 0.0035101806841947754, 0.9999910687613404,
+        -0.0023539390638908126, -0.8081406224061014, 0.0019068994600381216,
+        0.0023472557016996627, 0.9999954270521041, -0.1655773200147146
+      ],
+      "coarseMatrixBits": "215e6344efffef3f40d44327c3ca6cbfd11ea78b7c1b5fbfe12aec76743de0bf68bdbbe761c16c3fc9e71345edffef3f095f7a69914863bf8eb4f9b849dce9bfbdf253b41d3e5f3fbf3b2c4f8d3a633fb0d3ea68f6ffef3f5015363ba331c5bf",
+      "passes": 15,
+      "selectedVertices": 1773,
+      "selectedFaces": 3180,
+      "vertexFlagsSha256": "7bde87ddc144483da01b5e14a87803ff808a8b81a17239773fcae237849c2c3a",
+      "faceFlagsSha256": "03086b31725b21e0b63f084cacba6a12e1e5a59c84e2f11b13be9c198a544cfb",
+      "captureSeconds": 6.9587559000065085
+    },
+    {
+      "file": "ply-3.ply",
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "vertices": 1865848,
+      "triangles": 3691133,
+      "seeds": [242141, 1833505, 1839376],
+      "movingLandmarks": [
+        [-33.20513153076172, 6.811855792999268, -321.596435546875],
+        [71.87008666992188, 5.0090789794921875, -264.02032470703125],
+        [8.181851387023926, 72.8617172241211, -326.6084899902344]
+      ],
+      "fixedLandmarks": [
+        [-32.555580139160156, 6.60361909866333, -322.1988525390625],
+        [71.76634979248047, 5.0657477378845215, -263.95880126953125],
+        [8.147298812866211, 72.78314971923828, -326.4633483886719]
+      ],
+      "coarseMatrix": [
+        0.9999467250979499, -0.006766551751753935, -0.007794917785062931,
+        -2.088199466926042, 0.006707134676260902, 0.9999484459903143,
+        -0.007623628138230514, -2.4381934537876555, 0.007846101600129404,
+        0.007570940426813385, 0.9999405580086919, -0.4887047113587967
+      ],
+      "coarseMatrixBits": "4637414690ffef3f3306b0673eb77bbf11c1634f90ed7fbfa0c60feca1b400c055bc59c1f0787b3f8cdc26e293ffef3f2c327d18f4397fbfd2b6ca916b8103c0eb6e30ee9d11803ffcb087d8b4027f3f1dec525783ffef3f4afa2b20f046dfbf",
+      "passes": 18,
+      "selectedVertices": 1877,
+      "selectedFaces": 3368,
+      "vertexFlagsSha256": "8b2f13f4b8028db2b8cf74153a2bdc02a6d3c1c3d4f44144076ed5e2786cc000",
+      "faceFlagsSha256": "821e7a7773498927f386f90bd9b6ddefa41ba83559459c403e24ba12c1522b13",
+      "captureSeconds": 9.513631300011184
+    }
+  ]
+}

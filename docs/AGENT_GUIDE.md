@@ -16,7 +16,8 @@ marker placement, and reports the separate surface `refinement` matrix, objectiv
 values, acceptance and iterations. Replacement indexed vertices and normals have
 both transforms applied with Float32 storage between stages; replaying a composed
 matrix does not reproduce these bytes. Diagnostics expose seeded region work and
-physical/logical workers. Omitting `refineSurface` retains coarse-only compatibility.
+physical/logical workers. An identity delta retains the grown face selection;
+an applied delta clears it. Omitting `refineSurface` retains coarse-only compatibility.
 This indexed pipeline does not certify CAD target conversion, point-cloud surface
 refinement or full native scene collection. The ribbon point-pair command remains
 gated pending complete workflow and owner-scan native verification.
