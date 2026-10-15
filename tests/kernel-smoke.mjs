@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
 import { webcrypto } from "node:crypto";
 import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply.ts";
+import { noiseNormals } from "../src/scan-native-noise.ts";
 
 // Exercise the actual classic-worker protocol without a server or detached worker.
 // Run only after resource admission: WASM initialization requires substantial RAM.
@@ -246,6 +247,61 @@ try {
     }
   }
   assert.equal(verifiedCadAlignmentFaces, 24);
+  const solidProvider = JSON.parse(
+    readFileSync(
+      new URL(
+        "docs/evidence/landmark-original-solid-provider-native.json",
+        root,
+      ),
+      "utf8",
+    ),
+  );
+  let verifiedCadBoxes = 0;
+  for (const sample of solidProvider.cases.filter(
+    (row) => row.logicalLanes === 1 && row.kind === "box",
+  )) {
+    const handles = [];
+    const own = (value) => (handles.push(value), value);
+    let kernelId;
+    try {
+      const origin = own(new oc.gp_Pnt_3(0, 0, 0));
+      const maker = own(new oc.BRepPrimAPI_MakeBox_2(origin, 7, 10, 4));
+      const shape = own(maker.Shape());
+      own(
+        new oc.BRepMesh_IncrementalMesh_2(
+          shape,
+          sample.tolerance,
+          false,
+          0.4886921905584123,
+          false,
+        ),
+      );
+      kernelId = "native-alignment-box-" + verifiedCadBoxes;
+      vm.runInContext("shapes", context).set(kernelId, shape);
+      const before = context.serializeBrep(oc, shape);
+      const mesh = await request("alignmentMesh", { kernelId });
+      const expected = sample.repeats[0].merged;
+      assert.equal(floatBytes(mesh.vertices), expected.positionBits);
+      assert.deepEqual(Array.from(mesh.triangles), expected.triangleIds);
+      const normals = noiseNormals({
+        vertices: Float64Array.from(mesh.vertices),
+        triangles: mesh.triangles,
+      });
+      assert.equal(floatBytes(normals), expected.normalBits);
+      assert.equal(context.serializeBrep(oc, shape), before);
+      verifiedCadBoxes++;
+      handles.splice(handles.indexOf(shape), 1);
+      await request("release", [kernelId]);
+      kernelId = undefined;
+    } finally {
+      if (kernelId) {
+        vm.runInContext("shapes", context).delete(kernelId);
+        context.dropAlignmentMesh(kernelId);
+      }
+      context.cleanup(handles);
+    }
+  }
+  assert.equal(verifiedCadBoxes, 3);
   const cacheSource = await request("primitive", {
     kind: "box",
     center: [0, 0, 0],
@@ -272,6 +328,7 @@ try {
   console.log(
     JSON.stringify({
       nativeCadAlignmentFaces: verifiedCadAlignmentFaces,
+      nativeCadAlignmentBoxes: verifiedCadBoxes,
       exactFloat32Normals: true,
       brepPreserved: true,
       cacheReused: true,

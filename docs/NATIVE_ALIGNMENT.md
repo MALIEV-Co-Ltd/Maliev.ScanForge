@@ -2090,3 +2090,65 @@ geometry checks. The successful run released its browser, MCP bridge and HTTP
 server, and their exact processes and ports were verified absent. Formatting,
 scoped whitespace and prohibited-brand checks passed. The latest source remains
 available on the existing development server at port 5173.
+
+## Complete native CAD provider and real face-lane scheduling
+
+`docs/evidence/landmark-original-solid-provider-native.json` retains 24 complete
+executions of original provider `0x1402d7030`: box/cylinder solids, tolerances
+0.005/0.05/0.5 mm, one/two logical face lanes, and two calls per case. This extends
+the provider REA evidence `ev_7f68cafc3a07ac1badf5cecdba0806aefc9c05328b65b0372374140953989d47`
+and assembly evidence `ev_910e8509e810aaca0ed7a5601bc3415a3688d028efc68ef26ec05715db6d9908`.
+Actual supplied OpenCascade creates each complete solid and enumerates all its
+faces. Controlled feature metadata points to that exact root and face list.
+The original whole-body mesher, lane distribution, worker `0x1402d6f50`, face
+conversion, merge `0x140b36ea0`, cache destruction/replacement and notification
+execute. The actual Concurrency Runtime supplies native task scheduling;
+allocation callbacks record one thread in serial cases and two in every
+two-lane case. Runtime copy functions are rebound, main-module allocations use
+tracked UCRT adapters, and an unused timing import returns zero. Geometry,
+merging and scheduling are not substituted.
+
+The six serial results and their six two-lane counterparts have identical
+position, normal and ordered triangle buffers, including both repeated calls.
+Each merged vertex buffer concatenates its face buffers without welding; triangle
+indices receive face-local vertex offsets. Each triangle's original face ID is
+its face-list index. Notifications observe the new complete cache. Boxes retain
+24 vertices/12 triangles, with separate records at shared corners. Cylinders
+produce 310/304 at 0.005 mm and 106/100 at 0.05/0.5 mm. Curved merged normals differ
+from the analytic per-face buffers: concatenating analytic normals is insufficient.
+The application's existing shared `prepareNativeLandmarkTarget` matches all 24
+complete native outputs byte-for-byte from identical per-face inputs, including
+its normal refresh. No processing implementation correction was necessary.
+
+`tests/native-cad-provider.test.ts` freezes these comparisons, repeat/notification
+results, face IDs and native lane consistency. The actual WASM kernel smoke also
+verifies three complete box targets against the native provider, with exact
+position/normal/index bytes and unchanged BRep. These tests exercise the shared
+target preparation already used by GUI and MCP; no public contract changed.
+
+The broader whole-cylinder comparison exposed a separate tessellation gap,
+retained in `landmark-original-solid-provider-wasm-comparison.json`. All six
+WASM solids have exact native normal buffers. Cylinder coordinates differ by at
+most `7.347880586115415e-16` mm, and cap triangulation connectivity differs at
+0.05/0.5 mm; the 0.005 mm ordered indices match. Explicit-axis and canonical
+cylinder constructors give the same discrepancy. This diagnostic is not an
+exact-parity pass. Full cylinder tessellation parity, populated boundary refresh,
+all-scene controller assembly and installed-UI behavior remain unverified by
+this corpus. The point-pair ribbon gate remains unchanged.
+
+The independent verification JSON confirms the image and eight DLL digests,
+serial/parallel equality and zero tracked allocations or unknown frees after
+cleanup. Faulted preliminary harness attempts, fixes and bounded replay ledgers
+remain in the isolated external analysis folder. Successful replay processes
+exited and executable image storage was released.
+
+Validation: the production build passed without warnings/errors, retaining
+manifest `scanforge-fc8b6ade44e4d636`. Focused provider/target tests passed 33 cases;
+the full suite passed 26,998 tests across 349 files, with 29 explicitly skipped
+cases. The actual kernel smoke passed 24 face conversions, three complete box
+targets, 338 datum matrices and its existing CAD suite. Formatting, JSON parsing,
+scoped whitespace and prohibited-brand checks passed. No GUI/MCP processing code
+or public contract changed in this evidence/regression slice, so a new browser
+run was not required; the previous integration browser checks apply to the
+unchanged runtime. The user-facing server remains on port 5173. All replay and
+test helpers exited; only the leased development server remains for user testing.
