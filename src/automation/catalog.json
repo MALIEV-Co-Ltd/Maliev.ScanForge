@@ -807,6 +807,18 @@
                   "type": "string",
                   "enum": ["paired"]
                 },
+                "refineSurface": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Refine an indexed mesh after native coarse registration using targetId. Original landmark vertex seeds grow to 3000 faces or stability. Radius 3 mm. Coarse and delta retain separate Float32 stages."
+                },
+                "workerCount": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16,
+                  "default": 2
+                },
+                "parallel": { "type": "boolean", "default": true },
                 "sourceLandmarks": {
                   "type": "array",
                   "items": {

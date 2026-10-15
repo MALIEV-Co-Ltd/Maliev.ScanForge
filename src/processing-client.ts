@@ -73,6 +73,13 @@ export type ProcessingRequest =
   | {
       kind: "paired";
       sourceIndexed?: import("./types").IndexedMesh;
+      refinementTargets?: {
+        positions: Positions;
+        indexedMesh: import("./types").IndexedMesh;
+      }[];
+      sourceTriangleMask?: Uint8Array;
+      workerCount?: number;
+      parallel?: boolean;
       positions: Positions;
       sourceLandmarks: number[];
       targetLandmarks: number[];
@@ -297,6 +304,22 @@ export function processMesh(
           };
         }
       }
+      if (copied.kind === "paired" && copied.refinementTargets) {
+        copied.refinementTargets = copied.refinementTargets.map((target) => {
+          const triangles = Uint32Array.from(target.indexedMesh.triangles);
+          transfers.push(triangles.buffer);
+          return {
+            positions: clone(target.positions),
+            indexedMesh: {
+              vertices: clone(target.indexedMesh.vertices),
+              triangles,
+              ...(target.indexedMesh.normals
+                ? { normals: clone(target.indexedMesh.normals) }
+                : {}),
+            },
+          };
+        });
+      }
       if (
         (copied.kind === "paired" ||
           copied.kind === "icp" ||
@@ -347,7 +370,8 @@ export function processMesh(
         transfers.push(copied.seeds.buffer);
       }
       if (
-        (copied.kind === "icp" ||
+        (copied.kind === "paired" ||
+          copied.kind === "icp" ||
           copied.kind === "global" ||
           copied.kind === "nativeRefine") &&
         copied.sourceTriangleMask

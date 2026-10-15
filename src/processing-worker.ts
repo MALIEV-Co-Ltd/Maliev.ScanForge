@@ -31,6 +31,9 @@ import {
   registerGlobal,
 } from "./registration";
 import { registerNativeLandmarks } from "./native-landmark-registration";
+import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
+import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
+import { expandPlyTopology } from "./ply-topology";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -374,16 +377,20 @@ scope.onmessage = async ({ data: incoming }) => {
                   progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
               },
             );
-      result.positions = applyRigidTransform(
-        request.positions,
-        registration.transform,
-        {
-          onProgress: (fraction) =>
-            progress(fraction, "Applying rigid alignment"),
-        },
-      );
+      if (!(request.kind === "paired" && request.refinementTargets))
+        result.positions = applyRigidTransform(
+          request.positions,
+          registration.transform,
+          {
+            onProgress: (fraction) =>
+              progress(fraction, "Applying rigid alignment"),
+          },
+        );
       result.registration = registration;
-      if (request.sourceIndexed) {
+      if (
+        request.sourceIndexed &&
+        !(request.kind === "paired" && request.refinementTargets)
+      ) {
         const source = request.sourceIndexed.vertices;
         const vertices = new Float32Array(source.length);
         for (let offset = 0; offset < source.length; offset += 3)
@@ -421,6 +428,86 @@ scope.onmessage = async ({ data: incoming }) => {
         iterations: registration.iterations,
         pairs: registration.pairs,
       };
+      if (request.kind === "paired" && request.refinementTargets) {
+        if (
+          !request.sourceIndexed ||
+          !request.refinementTargets.length ||
+          request.refinementTargets.length > 32 ||
+          request.refinementTargets.some(
+            (target) =>
+              !indexedMeshMatches(target.indexedMesh, target.positions),
+          ) ||
+          !Number.isInteger(request.workerCount ?? 2) ||
+          (request.workerCount ?? 2) < 1 ||
+          (request.workerCount ?? 2) > 16 ||
+          (request.parallel !== undefined &&
+            typeof request.parallel !== "boolean")
+        )
+          throw new Error(
+            "Invalid indexed landmark refinement targets or workers.",
+          );
+        const mask = request.sourceTriangleMask;
+        if (mask && mask.length !== request.sourceIndexed.triangles.length / 3)
+          throw new Error(
+            "Landmark selection does not match source triangles.",
+          );
+        const { rotation: r, translation: t } = registration.transform;
+        const coarse = [
+          r[0],
+          r[1],
+          r[2],
+          t[0],
+          r[3],
+          r[4],
+          r[5],
+          t[1],
+          r[6],
+          r[7],
+          r[8],
+          t[2],
+        ];
+        const seeds = nativeAlignmentOriginalVertexIndices(
+          Float32Array.from(request.sourceIndexed.vertices),
+          Array.from(
+            { length: request.sourceLandmarks.length / 3 },
+            (_, id) => ({
+              fixed: false,
+              point: request.sourceLandmarks.slice(id * 3, id * 3 + 3) as [
+                number,
+                number,
+                number,
+              ],
+            }),
+          ),
+        );
+        const refined = await refineNativeLandmarkAfterCoarse(
+          request.sourceIndexed,
+          request.refinementTargets.map((target) => target.indexedMesh),
+          coarse,
+          seeds,
+          {
+            workerCount: request.workerCount ?? 2,
+            parallel: request.parallel ?? true,
+            faceFlags: mask
+              ? Uint8Array.from(mask, (value) => (value ? 4 : 0))
+              : undefined,
+            onProgress: progress,
+          },
+        );
+        result.indexedMesh = refined.indexedMesh;
+        result.positions = expandPlyTopology(refined.indexedMesh);
+        result.refinement = refined.refinement;
+        if (mask)
+          result.selection = refined.diagnostics.refinementApplied
+            ? new Uint8Array(mask.length)
+            : new Uint8Array(mask);
+        Object.assign(result.diagnostics, refined.diagnostics, {
+          algorithm: "native-landmark-registration-and-refinement",
+          seedVertices: seeds.length,
+          initialRadius: 3,
+          coarseRms: registration.rms,
+        });
+      }
       if (registration.globalCandidates !== undefined) {
         result.diagnostics.globalCandidates = registration.globalCandidates;
         result.diagnostics.coarseRms = registration.coarseRms ?? 0;

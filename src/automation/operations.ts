@@ -45,6 +45,7 @@ import {
   indexedRenderNormals,
 } from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { landmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
@@ -677,6 +678,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "sourceIndexed" in op ||
         "targetIndexed" in op ||
         "additionalTargets" in op ||
+        "refinementTargets" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -741,6 +743,24 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           target: object(s, a.targetId).positions,
           sourceTriangleMask: selection,
         });
+      }
+      if (kind === "paired" && op.refineSurface) {
+        if (selection)
+          throw new Error(
+            "Point-pair refinement moves the whole source; omit selectionOnly.",
+          );
+        if (!a.targetId)
+          throw new Error("Point-pair surface refinement requires targetId.");
+        Object.assign(
+          request,
+          landmarkRefinementTargets(
+            e,
+            [object(s, a.targetId)],
+            op.workerCount ?? 2,
+            op.parallel ?? true,
+          ),
+          { sourceTriangleMask: mask(s, e, false) },
+        );
       }
       if (kind === "nativeRefine") {
         if (a.targetId && a.targetIds)

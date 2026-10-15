@@ -2587,9 +2587,18 @@ export function App() {
       const controller = new AbortController();
       landmarkAbort.current = controller;
       try {
-        const result = await processMesh(landmarkRequest(session), {
-          signal: controller.signal,
-        });
+        const request = landmarkRequest(session);
+        const result = await processMesh(
+          {
+            ...request,
+            ...(request.refinementTargets
+              ? { sourceTriangleMask: sessionFor(session.moving).state.mask }
+              : {}),
+          },
+          {
+            signal: controller.signal,
+          },
+        );
         if (!controller.signal.aborted && nPointsRef.current === session)
           setNPoints({ ...session, preview: result });
       } catch (error) {
@@ -2605,6 +2614,8 @@ export function App() {
       const next = acceptLandmarkAlignment(nPoints, entities);
       const source = next.find((e) => e.id === nPoints.moving.id)!;
       const session = sessionFor(nPoints.moving);
+      if (nPoints.preview?.selection)
+        session.set({ ...session.state, mask: nPoints.preview.selection });
       selectionSessions.current.set(source.id, {
         positions: source.positions,
         session,

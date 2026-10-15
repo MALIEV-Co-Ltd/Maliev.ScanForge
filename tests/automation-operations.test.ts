@@ -19,6 +19,73 @@ import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it("shares indexed point-pair refinement target validation and worker controls", async () => {
+  const indexedMesh = {
+    vertices: Float32Array.from(triangle),
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  const source = entity({ positions: indexedMesh.vertices, indexedMesh });
+  const target = entity({
+    id: "fixed",
+    positions: indexedMesh.vertices,
+    indexedMesh,
+  });
+  const h = harness([source, target]);
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "paired",
+    diagnostics: {},
+  } as never);
+  await h.ops.mesh_process(
+    {
+      entityId: source.id,
+      targetId: target.id,
+      operation: {
+        kind: "paired",
+        refineSurface: true,
+        sourceLandmarks: triangle,
+        targetLandmarks: triangle,
+        workerCount: 4,
+        parallel: false,
+      },
+    },
+    h.context,
+  );
+  expect(vi.mocked(processMesh).mock.calls.at(-1)![0]).toMatchObject({
+    sourceIndexed: indexedMesh,
+    refinementTargets: [{ positions: target.positions, indexedMesh }],
+    workerCount: 4,
+    parallel: false,
+  });
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: source.id,
+        operation: {
+          kind: "paired",
+          refineSurface: true,
+          sourceLandmarks: triangle,
+          targetLandmarks: triangle,
+        },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow("targetId");
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: source.id,
+        targetId: source.id,
+        operation: {
+          kind: "paired",
+          refineSurface: true,
+          sourceLandmarks: triangle,
+          targetLandmarks: triangle,
+        },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow("different objects");
+});
 it("toggles every selected object's visibility in one commit without changing geometry or selection", () => {
   const a = entity({ id: "a", visible: true }),
     b = entity({ id: "b", visible: false }),

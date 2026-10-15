@@ -17,12 +17,13 @@ const admission = spawnSync(
 if (admission.status !== 0) process.exit(admission.status ?? 1);
 await mkdir(out, { recursive: true });
 const token = randomBytes(32).toString("hex"),
+  browserLeaseMs = 240000,
   ledger = {
     owner: "indexed-mesh-browser",
     pid: process.pid,
     executable: process.execPath,
     startedAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 180000).toISOString(),
+    expiresAt: new Date(Date.now() + browserLeaseMs).toISOString(),
     persistentData: false,
     resources: [],
   };
@@ -30,7 +31,7 @@ let server, reserve, browserServer, browser, client, transport, failed;
 const deadline = setTimeout(() => {
   failed = Error("Browser validation lease expired");
   void browserServer?.close();
-}, 180000);
+}, browserLeaseMs);
 try {
   server = http.createServer(async (req, res) => {
     try {
@@ -562,6 +563,29 @@ try {
   assert.deepEqual(await geometry(fixed.id), beforeFixed);
   assert.deepEqual(await geometry(fixedExtra.id), beforeExtra);
   const beforeLandmarks = await geometry(gui.id);
+  const pairedRefinement = await job(
+    await mutate("mesh_process", {
+      entityId: gui.id,
+      targetId: moving.id,
+      operation: {
+        kind: "paired",
+        sourceLandmarks,
+        targetLandmarks,
+        refineSurface: true,
+        workerCount: 2,
+        parallel: true,
+      },
+    }),
+  );
+  assert.equal(
+    pairedRefinement.result.diagnostics.algorithm,
+    "native-landmark-registration-and-refinement",
+  );
+  assert.equal(pairedRefinement.result.diagnostics.logicalLanes, 2);
+  assert.equal(pairedRefinement.result.diagnostics.physicalWorkers, 2);
+  const afterPairedRefinement = await geometry(gui.id);
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   await mutate("landmark_edit", {
     action: "begin",
     movingId: gui.id,
@@ -606,10 +630,30 @@ try {
     .getByRole("button", { name: "Remove last point", exact: true })
     .click();
   assert.equal((await call("landmark_get")).result.picks.length, 5);
-  await mutate("preview_discard", { target: "landmarks" });
-  assert.equal((await call("landmark_get")).result.active, false);
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   assert.deepEqual(await geometry(moving.id), afterSeeded);
+  await mutate("landmark_edit", {
+    action: "pick",
+    entityId: moving.id,
+    point: targetLandmarks.slice(6, 9),
+  });
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor({ timeout: 30000 });
+  await landmarkDialog.getByRole("button", { name: "OK", exact: true }).click();
+  await landmarkDialog.waitFor({ state: "hidden" });
+  assert.deepEqual(await geometry(gui.id), afterPairedRefinement);
+  assert.deepEqual(await geometry(moving.id), afterSeeded);
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: gui.id,
+    fixedId: moving.id,
+  });
+  await mutate("preview_discard", { target: "landmarks" });
+  assert.equal((await call("landmark_get")).result.active, false);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -627,6 +671,7 @@ try {
     guiMcpTargetGroupRefinement: true,
     guiMcpPairedTopologyRetention: true,
     guiMcpLandmarkEditing: true,
+    guiMcpLandmarkRefinement: true,
     guiMcpMulticoreSeededRefinement: true,
     errors,
   };

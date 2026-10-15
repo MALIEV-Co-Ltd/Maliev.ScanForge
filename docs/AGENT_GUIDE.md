@@ -1,5 +1,26 @@
 # ScanForge MCP agent guide
 
+For indexed point-pair scan alignment, `mesh_process` accepts
+`operation: { kind: "paired", sourceLandmarks: [...], targetLandmarks: [...],
+refineSurface: true, workerCount: 2, parallel: true }` with a fixed `targetId`.
+Coordinates are world XYZ millimetres, with at least three corresponding points
+per side in matching order. Source and target must be different raw indexed scan
+meshes with hidden triangles revealed; omit `selectionOnly`. The shared worker
+solves native coarse registration, maps moving landmarks to original vertex IDs,
+grows a region to 3000 faces or stability, and refines using a 3 mm initial radius.
+Logical lanes default to two; the existing bounded CPU pool admits at most two
+physical workers. `parallel: false` keeps the same logical lane reduction serial.
+
+The output retains the coarse `registration` and its landmark residual for
+marker placement, and reports the separate surface `refinement` matrix, objective
+values, acceptance and iterations. Replacement indexed vertices and normals have
+both transforms applied with Float32 storage between stages; replaying a composed
+matrix does not reproduce these bytes. Diagnostics expose seeded region work and
+physical/logical workers. Omitting `refineSurface` retains coarse-only compatibility.
+This indexed pipeline does not certify CAD target conversion, point-cloud surface
+refinement or full native scene collection. The ribbon point-pair command remains
+gated pending complete workflow and owner-scan native verification.
+
 ScanForge exposes its browser-owned workspace through an official-SDK MCP stdio server. Agents and the editor use shared application operations, CAD evaluation, model validation and history. No hosted account, model provider or cloud geometry service is required.
 
 Read this guide through the MCP resource `scanforge://agent-guide`. Discover exact input schemas through `tools/list` or `capabilities_get`. Read live state through `project_get` or `scanforge://project`. The application API version is **1.0**; the saved project version and MCP protocol version are separate contracts.

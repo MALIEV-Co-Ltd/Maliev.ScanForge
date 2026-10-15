@@ -6,6 +6,13 @@ Provide semantic control of supported ScanForge modeling features through a stan
 
 ## Boundaries
 
+Indexed point-pair previews and paired `mesh_process` with `refineSurface: true`
+share target validation, coarse registration, original-vertex seed mapping,
+region growth and the bounded CPU refinement worker. Results publish coarse
+registration separately from refinement; geometry retains Float32 storage after
+each applied stage. See the agent guide for supported target types and the native
+alignment evidence for the remaining full-workflow verification gate.
+
 `src/automation/catalog.json` is the wire-schema registry. The official SDK server reads it for MCP discovery. `ApplicationApi` validates the same schemas before dispatch, tracks workspace revisions/retry receipts and owns transient jobs/artifacts. `operations.ts` resolves explicit workspace objects and executes existing domain algorithms. `use-workspace-api.ts` adapts the current editor state to that gateway and publishes mutations synchronously before returning revision receipts. The editor uses shared CAD creation/rebuild helpers and routes modeling undo/redo through the gateway.
 
 `scripts/mcp-server.mjs` implements MCP stdio using the official TypeScript SDK, plus the authenticated loopback HTTP queue. It never runs geometry or accesses arbitrary user files. `browser-bridge.ts` pairs explicitly, fetches command envelopes and posts structured results. `AgentConnection` owns connection controls with credentials held only in memory. The connection remains mounted while Settings closes.

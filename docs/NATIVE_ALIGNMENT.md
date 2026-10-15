@@ -1579,3 +1579,48 @@ whitespace, fixture structure and branding checks passed. This change adds
 evidence and regression coverage only; it changes no GUI/MCP operation or
 schema. No new browser workflow was introduced. The existing live server on
 port 5173 returned HTTP 200 for the current alignment source.
+
+## Shared indexed point-pair coarse/refinement assembly
+
+The indexed point-pair preview now calls the shared processing worker's assembled
+path. Original moving landmarks map to original indexed vertex IDs before any
+transform. The source region uses the verified ring-growth routine, preserving
+existing face-selection flags in its stopping count. Missing scanner normals are
+computed on original geometry. Supplied normals retain their magnitudes.
+
+The worker applies coarse registration first, retaining Float32 coordinates and
+normals, then refines the selected visible region with a 3 mm radius, 0.5 mm target
+minimum extent and the recovered refinement controller. The existing bounded CPU
+pool uses two logical lanes by default. The delta is applied only when the native
+double-epsilon identity predicate requires it. Final output moves the entire scan,
+including orphan vertices, and retains original triangle connectivity. Applied
+refinement clears the input face-selection mask; identity keeps it. The fixed
+target is unchanged. Marker placement and `registration` retain the coarse frame;
+the separate `refinement` reports the surface stage.
+
+The GUI session and MCP `mesh_process` operation use the same target validation
+and worker. MCP enables this path with paired `refineSurface: true` and `targetId`;
+coarse-only calls remain compatible. Dedicated transfer copies preserve scene
+and undo buffers. The worker avoids constructing an unused coarse render/indexed
+replacement before the refinement path, and reuses immutable Float32 source
+buffers while constructing stage output.
+
+`tests/native-landmark-refinement.test.ts` runs the assembled helper against all
+six retained combined native captures and compares exact final vertex and normal
+bytes, parameters and objective values. These fixtures select all source vertices
+and supply a coarse matrix; their captured search radius is explicitly retained.
+They do not execute complete landmark registration, scene collection or native
+physical multicore scheduling. The ribbon remains gated pending complete native
+workflow comparison on the owner's scans and CAD/point-cloud target integration.
+
+Validation: production build/TypeScript passed without warnings or errors; 336
+focused tests passed, including exact native output with supplied and generated
+source normals. The full suite passed 26,951 tests across 346 files, with 24
+existing skips across five files. Browser/MCP checks passed with two physical
+workers, matching GUI Preview/OK and MCP replacement geometry, unchanged fixed
+geometry, reset/cancel, indexed topology and undo restoration, with no console
+errors. The expanded browser sequence initially exceeded its three-minute helper
+lease after geometry checks; its finite lease is now four minutes, with operation
+timeouts and memory admission unchanged. The complete rerun passed and cleaned its
+owned browser, bridge and HTTP server. Formatting and branding audits passed.
+Build manifest: `scanforge-b352e1e7a449b440`. Port 5173 serves the new module.

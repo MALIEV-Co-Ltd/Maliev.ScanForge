@@ -66,6 +66,32 @@ function previewed() {
   };
 }
 describe("landmark alignment session", () => {
+  it("uses native seeded refinement for indexed source and fixed meshes", () => {
+    const session = picked();
+    session.moving = {
+      ...session.moving,
+      indexedMesh: { vertices: session.moving.positions, triangles: [0, 1, 2] },
+    };
+    session.fixed = {
+      ...session.fixed,
+      indexedMesh: { vertices: session.fixed.positions, triangles: [0, 1, 2] },
+    };
+    expect(landmarkRequest(session)).toMatchObject({
+      refinementTargets: [
+        {
+          positions: session.fixed.positions,
+          indexedMesh: session.fixed.indexedMesh,
+        },
+      ],
+      workerCount: 2,
+      parallel: true,
+    });
+    session.fixed = {
+      ...session.fixed,
+      meshSelection: { hidden: [0], saved: [] },
+    };
+    expect(() => landmarkRequest(session)).toThrow("Reveal hidden triangles");
+  });
   it("matches every original preview point record without compounding transforms", () => {
     for (const capture of nativePreview.cases) {
       if (capture.operation !== "preview") continue;

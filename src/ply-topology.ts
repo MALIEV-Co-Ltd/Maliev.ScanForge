@@ -43,9 +43,10 @@ export function parsePlyTopology(
   }
 }
 
-export function expandPlyTopology(
-  topology: ReturnType<typeof parsePlyTopology>,
-) {
+export function expandPlyTopology(topology: {
+  vertices: ArrayLike<number>;
+  triangles: ArrayLike<number>;
+}) {
   const positions = new Float32Array(topology.triangles.length * 3);
   for (let slot = 0; slot < topology.triangles.length; slot++) {
     const offset = topology.triangles[slot] * 3;

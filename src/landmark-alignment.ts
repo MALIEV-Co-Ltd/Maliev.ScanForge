@@ -2,6 +2,7 @@ import type { Entity, Vec3 } from "./types";
 import type { ProcessingResult } from "./processing-client";
 import { rotatePointNormals } from "./point-cloud";
 import { indexedRenderNormals } from "./indexed-mesh";
+import { nativeSurfaceRefinementRequest } from "./native-surface-refinement";
 
 export interface LandmarkAlignment {
   moving: Entity;
@@ -63,6 +64,42 @@ export function landmarkRequest(session: LandmarkAlignment) {
       session.moving.kind === "mesh" ? session.moving.indexedMesh : undefined,
     sourceLandmarks: pairs.moving.flat(),
     targetLandmarks: pairs.fixed.flat(),
+    ...(session.moving.indexedMesh && session.fixed.indexedMesh
+      ? landmarkRefinementTargets(session.moving, [session.fixed])
+      : {}),
+  };
+}
+/** Shared GUI/agent indexed target validation for point-pair refinement. */
+export function landmarkRefinementTargets(
+  source: Entity,
+  targets: readonly Entity[],
+  workerCount = 2,
+  parallel = true,
+) {
+  if (
+    [source, ...targets].some(
+      (entity) => entity.kernelId || entity.parametric || entity.surfacePatch,
+    )
+  )
+    throw new Error(
+      "Point-pair refinement currently requires raw indexed scan meshes.",
+    );
+  const request = nativeSurfaceRefinementRequest(
+    source,
+    targets,
+    1,
+    3,
+    undefined,
+    workerCount,
+    parallel,
+  );
+  return {
+    refinementTargets: targets.map((target) => ({
+      positions: target.positions,
+      indexedMesh: target.indexedMesh!,
+    })),
+    workerCount: request.workerCount,
+    parallel: request.parallel,
   };
 }
 export function landmarkSceneUnchanged(
