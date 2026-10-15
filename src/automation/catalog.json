@@ -1133,6 +1133,17 @@
                   "type": "string",
                   "enum": ["nativeRefine"]
                 },
+                "seedVertices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4294967295
+                  },
+                  "minItems": 1,
+                  "maxItems": 10000,
+                  "description": "Optional original indexed source vertex IDs. Grow a native one-ring region until at least 3000 faces or unchanged count; refine all selected visible region vertices without sampling. Existing selected face flags participate in the stopping count. Whole scan moves."
+                },
                 "workerCount": {
                   "type": "integer",
                   "minimum": 1,

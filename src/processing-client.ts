@@ -355,6 +355,10 @@ export function processMesh(
         copied.sourceTriangleMask = new Uint8Array(copied.sourceTriangleMask);
         transfers.push(copied.sourceTriangleMask.buffer);
       }
+      if (copied.kind === "nativeRefine" && copied.sourceSeedVertices) {
+        copied.sourceSeedVertices = new Uint32Array(copied.sourceSeedVertices);
+        transfers.push(copied.sourceSeedVertices.buffer);
+      }
       worker.postMessage(
         session ? { ...copied, geometryKey: session.key } : copied,
         transfers,

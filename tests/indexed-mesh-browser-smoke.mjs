@@ -504,6 +504,50 @@ try {
   assert.deepEqual(await geometry(moving.id), afterMoving);
   assert.deepEqual(await geometry(fixed.id), beforeFixed);
   assert.deepEqual(await geometry(fixedExtra.id), beforeExtra);
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(moving.id), beforeMoving);
+  const seeded = await job(
+    await mutate("mesh_process", {
+      entityId: moving.id,
+      targetIds: [fixed.id, fixedExtra.id],
+      operation: {
+        kind: "nativeRefine",
+        sampleBudget: 1,
+        initialRadius: fixture.search.initialRadius,
+        seedVertices: [0],
+        workerCount: 2,
+        parallel: true,
+      },
+    }),
+  );
+  assert.equal(seeded.result.refinement.accepted, true);
+  assert.equal(seeded.result.diagnostics.seededFaces, 2);
+  assert.equal(seeded.result.diagnostics.seedGrowthPasses, 2);
+  assert.equal(seeded.result.diagnostics.physicalWorkers, 2);
+  const afterSeeded = await geometry(moving.id);
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(moving.id), beforeMoving);
+  await mutate("ui_set", {
+    workspace: "fineAlign",
+    mode: "inspect",
+    toolPanelOpen: true,
+  });
+  await page.getByText("Landmark refinement region", { exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Source seed vertex IDs", exact: true })
+    .fill("0");
+  await page
+    .getByRole("checkbox", { name: "Use multiple CPU cores", exact: true })
+    .check();
+  await page
+    .getByRole("button", { name: "Refine indexed mesh surfaces", exact: true })
+    .click();
+  await page
+    .getByText("Surface refinement complete", { exact: true })
+    .waitFor({ timeout: 30000 });
+  assert.deepEqual(await geometry(moving.id), afterSeeded);
+  assert.deepEqual(await geometry(fixed.id), beforeFixed);
+  assert.deepEqual(await geometry(fixedExtra.id), beforeExtra);
   const beforeLandmarks = await geometry(gui.id);
   await mutate("landmark_edit", {
     action: "begin",
@@ -552,7 +596,7 @@ try {
   await mutate("preview_discard", { target: "landmarks" });
   assert.equal((await call("landmark_get")).result.active, false);
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
-  assert.deepEqual(await geometry(moving.id), afterMoving);
+  assert.deepEqual(await geometry(moving.id), afterSeeded);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -570,6 +614,7 @@ try {
     guiMcpTargetGroupRefinement: true,
     guiMcpPairedTopologyRetention: true,
     guiMcpLandmarkEditing: true,
+    guiMcpMulticoreSeededRefinement: true,
     errors,
   };
   console.log(JSON.stringify(ledger.result));

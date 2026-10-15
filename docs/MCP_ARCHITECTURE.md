@@ -105,3 +105,16 @@ provides the same restoration outcome without cloning the original twice.
 The API's existing admission lane serializes edits, and `preview_discard`
 retains cancellation ownership. Complete native point-pair solving/acceptance
 remains a separate gate.
+
+## Native seeded region preparation
+
+GUI Fine align and `mesh_process/nativeRefine` pass optional seed vertex IDs
+through `nativeSurfaceRefinementRequest` to the shared processing worker. The
+processing client clones/transfers the seed buffer without detaching scene or
+caller data. `prepareNativeLandmarkRegion` uses indexed vertex/face incidence and
+two reusable typed frontiers to reproduce the original reset, one-ring snapshots,
+face-count stopping and flag preservation. It performs no vertex welding and
+visits each eligible incidence at most once. Prepared vertex flags enter the
+existing native controller in selection-only mode, preserving indexed order,
+logical lane partitioning and ordered reduction. The bounded CPU pool is reused;
+region preparation itself is currently serial within the processing worker.

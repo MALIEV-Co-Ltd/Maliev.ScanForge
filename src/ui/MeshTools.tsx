@@ -10,6 +10,7 @@ import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { parseLandmarkSeedVertices } from "../native-landmark-region";
 
 export type MeshTool =
   | "fineAlign"
@@ -87,6 +88,7 @@ export function MeshTools({
     [icpIterations, setIcpIterations] = useState(40);
   const [additionalTargetIds, setAdditionalTargetIds] = useState<string[]>([]);
   const [parallelRefinement, setParallelRefinement] = useState(false);
+  const [landmarkSeeds, setLandmarkSeeds] = useState("");
   const [sourceLandmarks, setSourceLandmarks] = useState(""),
     [targetLandmarks, setTargetLandmarks] = useState("");
   const [working, setWorking] = useState(false),
@@ -479,13 +481,31 @@ export function MeshTools({
               />
               Use multiple CPU cores
             </label>
-            <Field
-              label="Surface refinement samples"
-              value={surfaceSamples}
-              onChange={setSurfaceSamples}
-              min={1}
-              step={1}
-            />
+            <details>
+              <summary>Landmark refinement region</summary>
+              <label>
+                Source seed vertex IDs
+                <input
+                  value={landmarkSeeds}
+                  disabled={blocked}
+                  onChange={(event) => setLandmarkSeeds(event.target.value)}
+                  placeholder="Optional, e.g. 0, 15, 42"
+                />
+              </label>
+              <p>
+                Refine around these indexed vertices using the grown region. All
+                region vertices participate; the whole scan moves.
+              </p>
+            </details>
+            {!landmarkSeeds.trim() && (
+              <Field
+                label="Surface refinement samples"
+                value={surfaceSamples}
+                onChange={setSurfaceSamples}
+                min={1}
+                step={1}
+              />
+            )}
             <Field
               label="ICP maximum iterations"
               value={icpIterations}
@@ -510,20 +530,27 @@ export function MeshTools({
               onClick={() => {
                 const target = targets.find((entity) => entity.id === targetId);
                 if (selected && target)
-                  void run(
-                    nativeSurfaceRefinementRequest(
-                      selected,
-                      fixedTargets,
-                      surfaceSamples,
-                      distance,
-                      triangleSelection?.some(Boolean)
-                        ? triangleSelection
-                        : undefined,
-                      parallelRefinement ? 2 : 1,
-                      true,
-                    ),
-                    "Surface refinement",
-                  );
+                  try {
+                    void run(
+                      nativeSurfaceRefinementRequest(
+                        selected,
+                        fixedTargets,
+                        surfaceSamples,
+                        distance,
+                        triangleSelection?.some(Boolean)
+                          ? triangleSelection
+                          : undefined,
+                        parallelRefinement ? 2 : 1,
+                        true,
+                        parseLandmarkSeedVertices(landmarkSeeds),
+                      ),
+                      "Surface refinement",
+                    );
+                  } catch (error) {
+                    onError(
+                      error instanceof Error ? error.message : String(error),
+                    );
+                  }
               }}
             >
               Refine indexed mesh surfaces

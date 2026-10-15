@@ -9,6 +9,7 @@ import {
 import type { ProcessingResult } from "../src/processing-client";
 import { processMesh } from "../src/processing-client";
 import * as nativeController from "../src/scan-native-alignment-surface-controller";
+import { prepareNativeLandmarkRegion } from "../src/native-landmark-region";
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -41,7 +42,11 @@ it("copies indexed buffers into the client worker and releases cancellation with
     positions: input.target,
     indexedMesh: input.targetIndexed,
   };
-  const grouped = { ...input, additionalTargets: [additional] };
+  const grouped = {
+    ...input,
+    additionalTargets: [additional],
+    sourceSeedVertices: new Uint32Array([0]),
+  };
   let sent: typeof input | undefined;
   let terminated = false;
   vi.stubGlobal(
@@ -70,10 +75,33 @@ it("copies indexed buffers into the client worker and releases cancellation with
   expect(sent!.sourceIndexed.vertices).not.toBe(input.sourceIndexed.vertices);
   expect(sent!.targetIndexed.triangles).not.toBe(input.targetIndexed.triangles);
   expect(sent!.sourceTriangleMask).not.toBe(input.sourceTriangleMask);
+  expect(groupSent.sourceSeedVertices).not.toBe(grouped.sourceSeedVertices);
+  expect(Array.from(groupSent.sourceSeedVertices)).toEqual([0]);
   controller.abort();
   await expect(pending).rejects.toMatchObject({ name: "AbortError" });
   expect(terminated).toBe(true);
   expect(input.sourceIndexed.vertices.byteLength).toBeGreaterThan(0);
+});
+it("passes the verified grown vertex flags to the controller without sampling the region", () => {
+  const input = {
+    ...request(native.cases[0]),
+    sourceTriangleMask: undefined,
+    sourceSeedVertices: new Uint32Array([0]),
+  };
+  const expected = prepareNativeLandmarkRegion(
+    input.sourceIndexed.vertices.length / 3,
+    input.sourceIndexed.triangles,
+    [0],
+  );
+  const spy = vi.spyOn(nativeController, "nativeRefineAlignmentMeshes");
+  const result = refineNativeSurface(input, vi.fn());
+  expect(spy.mock.calls[0][0][0].flags).toEqual(expected.vertices);
+  expect(spy.mock.calls[0][3]?.selectionOnly).toBe(true);
+  expect(result.region).toMatchObject({
+    faces: expected.count,
+    passes: expected.passes,
+    seeds: 1,
+  });
 });
 function request(sample: (typeof native.cases)[number]) {
   const sourceIndexed = {

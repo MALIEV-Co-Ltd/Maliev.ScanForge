@@ -1425,3 +1425,48 @@ existing import, indexed-normal, refinement, persistence and undo checks passed
 with no console errors. Formatting and whitespace checks passed. The browser,
 MCP bridge and temporary HTTP server exited after verification. Build manifest:
 `scanforge-0c7f52cdcfc5edb6`. Port 5173 continues serving the latest bundle.
+
+## Native seeded region integration and bounded frontier traversal
+
+`prepareNativeLandmarkRegion` now reproduces the complete original preparation
+prefix: clear vertex bit 4, preserve other vertex bits, seed original indexed
+vertex IDs, clear borrowed face bit 128, and execute snapshot growth until the
+selected face count reaches 3,000 or stops changing. Existing face bit 4 remains
+part of the stopping count. Hidden vertices can receive bit 4 but cannot seed
+further growth. Empty/stable cases still perform the original second pass below
+the threshold, and a first pass may overshoot the threshold.
+
+The implementation builds indexed incidence once and uses two reusable typed
+frontiers. Eligibility only accumulates during this prefix, so previously reached
+faces remain eligible; each incidence is visited at most once. Final flags and
+pass counts are independent of traversal order because marking precedes vertex
+promotion. All owned typed buffers are included in a 256 MiB allocation budget.
+No vertex welding is performed. All 89 original preparation captures match every
+vertex flag, face flag, selected count and stopping pass without input mutation.
+
+GUI Fine align and MCP `mesh_process/nativeRefine` accept optional source seed
+vertex IDs. The client copies/transfers the seed buffer; the shared worker passes
+the grown vertex flags to the existing controller in selection-only mode. That
+mode skips sampling and preserves original indexed order and logical CPU lanes.
+The existing bounded CPU pool is reused. Preparation itself runs serially inside
+the processing worker. Full point-pair coarse/refinement assembly, scene target
+collection and CAD integration remain separate gates; the ribbon command is not
+enabled by this preparation slice.
+
+Validation: production build/TypeScript passed, 164 focused tests passed, and the
+full suite passed 26,701 tests (342 files) with 24 existing skips (five files).
+The browser/MCP check exercised seeded refinement with two physical workers,
+matched GUI and MCP geometry exactly, verified region diagnostics and retained
+fixed targets. Existing indexed-normal, import, persistence, undo, native surface
+and landmark lifecycle checks also passed with no console errors. Formatting,
+whitespace and worker-buffer ownership checks passed. Owned browser/MCP/HTTP
+helpers exited; port 5173 serves the current source. Build manifest is
+`scanforge-7a04a88a1bd86ebf`.
+
+The original chain-4000 capture takes 3,000 passes. Its two full face loops imply
+24,000,000 face visits; the port performs 8,998 incidence visits plus its initial
+linear topology construction, with identical output flags. A bounded warm Node
+benchmark measured a median 0.3151 ms for this synthetic preparation case across
+20 retained samples after five warmups. This is neither browser end-to-end
+latency nor a measured native speedup. The external receipt is retained under
+`.resources/seeded-region-benchmark.json`; the benchmark process exited.

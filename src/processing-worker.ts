@@ -99,6 +99,14 @@ scope.onmessage = async ({ data: incoming }) => {
         bestSquaredError: refined.refinement.best,
         iterations: refined.refinement.iterations,
         evaluationBudget: 1000,
+        ...(refined.region
+          ? {
+              seedVertices: refined.region.seeds,
+              seededFaces: refined.region.faces,
+              seedGrowthPasses: refined.region.passes,
+              seedFaceReferences: refined.region.faceReferences,
+            }
+          : {}),
       };
     } else if (request.kind === "pointCloudEdit") {
       result.pointCloudEdit = editPointCloud(request, progress);

@@ -763,6 +763,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             selection,
             op.workerCount ?? 1,
             op.parallel ?? true,
+            op.seedVertices,
           ),
         );
       }

@@ -586,3 +586,23 @@ solve or accept alignment and do not create model-history entries. The complete
 native point-pair command remains gated; this tool does not certify its full
 numerical pipeline or expose acceptance. GUI and agent edits share the same
 state guards and double-precision preview-marker arithmetic.
+
+## Seeded surface refinement
+
+`mesh_process` with `operation.kind:"nativeRefine"` accepts optional
+`seedVertices:[0,15,42]`: zero-based IDs in the current original indexed source
+buffer, obtainable through `object_get` geometry. Use fresh IDs after topology
+edits. GUI Fine align exposes the same option under Landmark refinement region.
+The shared worker resets vertex selection and grows snapshot rings until the
+selected face count reaches 3,000 or stops changing. All selected visible region
+vertices participate; `sampleBudget` is ignored for this seeded mode, and the
+whole scan moves. Radius and logical worker count retain their existing meanings.
+
+Omit `selectionOnly` when supplying seeds alone. With `selectionOnly:true`, a
+nonempty existing triangle selection is still required; its face flags contribute
+to the native stopping count. Diagnostics include `seedVertices`, `seededFaces`,
+`seedGrowthPasses` and `seedFaceReferences`, plus the existing CPU execution
+diagnostics. IDs and sizes are validated, worker transfer copies seed buffers,
+and preparation allocations are limited to 256 MiB. This is a preparation option
+for verified surface refinement, not certification of the complete point-pair
+coarse/refinement pipeline.

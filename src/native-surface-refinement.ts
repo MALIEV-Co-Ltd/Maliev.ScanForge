@@ -1,5 +1,6 @@
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
+import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import {
   nativeRefineAlignmentMeshes,
   nativeRefineAlignmentMeshesAsync,
@@ -12,6 +13,7 @@ export interface NativeSurfaceRefinementRequest {
   targetIndexed: IndexedMesh;
   additionalTargets?: { positions: Positions; indexedMesh: IndexedMesh }[];
   sourceTriangleMask?: Uint8Array;
+  sourceSeedVertices?: Uint32Array;
   sampleBudget: number;
   initialRadius: number;
   workerCount?: number;
@@ -25,6 +27,7 @@ export function nativeSurfaceRefinementRequest(
   sourceTriangleMask?: Uint8Array,
   workerCount = 1,
   parallel = true,
+  seedVertices?: ArrayLike<number>,
 ): NativeSurfaceRefinementRequest {
   const targets: readonly Entity[] = Array.isArray(target)
     ? target
@@ -36,6 +39,18 @@ export function nativeSurfaceRefinementRequest(
   )
     throw new Error("Alignment requires distinct fixed targets.");
   const first = targets[0];
+  if (
+    seedVertices &&
+    (!seedVertices.length ||
+      seedVertices.length > 10000 ||
+      Array.from(seedVertices).some(
+        (id) =>
+          !Number.isSafeInteger(id) ||
+          id < 0 ||
+          id >= (source.indexedMesh?.vertices.length ?? 0) / 3,
+      ))
+  )
+    throw new Error("Supply one to 10,000 valid source seed vertex IDs.");
   for (const target of targets) {
     if (source.id === target.id)
       throw new Error("Alignment requires two different objects.");
@@ -73,6 +88,9 @@ export function nativeSurfaceRefinementRequest(
     workerCount,
     parallel,
     sourceTriangleMask,
+    ...(seedVertices
+      ? { sourceSeedVertices: Uint32Array.from(seedVertices) }
+      : {}),
   };
 }
 function prepareRequest(
@@ -110,6 +128,12 @@ function prepareRequest(
     );
   const mask = request.sourceTriangleMask;
   if (
+    request.sourceSeedVertices &&
+    (!request.sourceSeedVertices.length ||
+      request.sourceSeedVertices.length > 10000)
+  )
+    throw new Error("Supply one to 10,000 source seed vertex IDs.");
+  if (
     mask &&
     (mask.length !== request.sourceIndexed.triangles.length / 3 ||
       !mask.some(Boolean))
@@ -117,24 +141,46 @@ function prepareRequest(
     throw new Error(
       "Surface refinement requires a nonempty triangle selection of the correct size.",
     );
-  const flags = mask
-    ? new Uint32Array(request.sourceIndexed.vertices.length / 3)
-    : undefined;
+  let flags =
+    mask && !request.sourceSeedVertices
+      ? new Uint32Array(request.sourceIndexed.vertices.length / 3)
+      : undefined;
   if (flags && mask)
     for (let face = 0; face < mask.length; face++)
       if (mask[face])
         for (let corner = 0; corner < 3; corner++)
           flags[request.sourceIndexed.triangles[face * 3 + corner]] = 4;
+  const region = request.sourceSeedVertices
+    ? prepareNativeLandmarkRegion(
+        request.sourceIndexed.vertices.length / 3,
+        request.sourceIndexed.triangles,
+        request.sourceSeedVertices,
+        undefined,
+        mask ? Uint8Array.from(mask, (value) => (value ? 4 : 0)) : undefined,
+      )
+    : undefined;
+  if (region) flags = region.vertices;
   progress(0, "Preparing native surface refinement");
-  return { flags, mask };
+  return {
+    flags,
+    mask,
+    region: region
+      ? {
+          faces: region.count,
+          passes: region.passes,
+          faceReferences: region.visitedFaceReferences,
+          seeds: request.sourceSeedVertices!.length,
+        }
+      : undefined,
+  };
 }
 export function refineNativeSurface(
   request: NativeSurfaceRefinementRequest,
   progress: (fraction: number, stage: string) => void,
 ) {
-  const { flags, mask } = prepareRequest(request, progress);
+  const { flags, mask, region } = prepareRequest(request, progress);
   const result = runRefinement(request, progress, flags, mask);
-  return finishRefinement(request, progress, result);
+  return { ...finishRefinement(request, progress, result), region };
 }
 function runRefinement(
   request: NativeSurfaceRefinementRequest,
@@ -152,7 +198,7 @@ function runRefinement(
       : request.targetIndexed,
     request.sampleBudget,
     {
-      selectionOnly: !!mask,
+      selectionOnly: !!mask || !!request.sourceSeedVertices,
       workerCount: request.workerCount ?? 1,
       parallel: request.parallel ?? true,
       initialRadius: request.initialRadius,
@@ -164,7 +210,7 @@ export async function refineNativeSurfaceAsync(
   request: NativeSurfaceRefinementRequest,
   progress: (fraction: number, stage: string) => void,
 ) {
-  const { flags, mask } = prepareRequest(request, progress);
+  const { flags, mask, region } = prepareRequest(request, progress);
   const result = await nativeRefineAlignmentMeshesAsync(
     [{ ...request.sourceIndexed, flags }],
     request.additionalTargets?.length
@@ -175,7 +221,7 @@ export async function refineNativeSurfaceAsync(
       : request.targetIndexed,
     request.sampleBudget,
     {
-      selectionOnly: !!mask,
+      selectionOnly: !!mask || !!request.sourceSeedVertices,
       workerCount: request.workerCount ?? 1,
       parallel: request.parallel ?? true,
       initialRadius: request.initialRadius,
@@ -184,6 +230,7 @@ export async function refineNativeSurfaceAsync(
   );
   return {
     ...finishRefinement(request, progress, result),
+    region,
     execution: {
       physicalWorkers: result.physicalWorkers,
       logicalLanes: result.logicalLanes,
