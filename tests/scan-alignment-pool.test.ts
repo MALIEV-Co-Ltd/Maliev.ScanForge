@@ -76,10 +76,15 @@ function input(sample: (typeof captured.samples)[number]) {
   );
   return { surfaces, lanes };
 }
-it.each(captured.samples)(
-  "preserves native concurrent dispatch output and flags: $name",
+it.each(
+  captured.samples.flatMap((sample) =>
+    [false, true].map((isolated) => ({ ...sample, isolated })),
+  ),
+)(
+  "preserves native concurrent dispatch output and flags: $name isolated=$isolated",
   async (sample) => {
     install();
+    vi.stubGlobal("crossOriginIsolated", sample.isolated);
     const { surfaces, lanes } = input(sample);
     const result = await nativeRefineAlignmentSurfaceAsync(
       sample.search.initial,
@@ -220,7 +225,7 @@ it("initializes both isolated workers before waiting for either target acknowled
     await settled;
   }
 });
-it("retains sequential initialization when overlapping tree copies exceed the unchanged memory cap", () => {
+it("admits shared compact trees under the unchanged cap and rejects oversized targets", () => {
   install();
   vi.stubGlobal("crossOriginIsolated", true);
   const { surfaces, lanes } = input(
@@ -229,7 +234,17 @@ it("retains sequential initialization when overlapping tree copies exceed the un
   const tree = { ...surfaces[0].root, triangles: new Array<number>(3_400_000) };
   const large = [{ ...surfaces[0], root: tree }];
   expect(alignmentPoolAdmission(lanes, large)).toBeUndefined();
-  expect(alignmentCanInitializeTogether(lanes, large)).toBe(false);
+  expect(alignmentCanInitializeTogether(lanes, large)).toBe(true);
+  const oversized = [
+    {
+      ...surfaces[0],
+      root: { ...tree, triangles: new Array<number>(12_000_000) },
+    },
+  ];
+  expect(alignmentPoolAdmission(lanes, oversized)).toBe(
+    "128 MiB pool memory admission",
+  );
+  expect(alignmentCanInitializeTogether(lanes, oversized)).toBe(false);
   expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(true);
   vi.stubGlobal("crossOriginIsolated", false);
   expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(false);

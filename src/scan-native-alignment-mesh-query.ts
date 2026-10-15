@@ -7,6 +7,10 @@ import {
   queryNoiseOctree,
   type NoiseQueryNode,
 } from "./scan-noise-octree-query";
+import {
+  queryAlignmentPackedTree,
+  type AlignmentPackedTree,
+} from "./scan-alignment-packed-tree";
 
 export interface NativeAlignmentQuerySurface {
   root: NoiseQueryNode;
@@ -18,10 +22,16 @@ export interface NativeAlignmentQuerySurface {
   triangleFlags?: Uint8Array;
   filterHidden?: boolean;
 }
+export type AlignmentWorkerSurface = Omit<
+  NativeAlignmentQuerySurface,
+  "root"
+> & {
+  root: NoiseQueryNode | AlignmentPackedTree;
+};
 
 /** Query an already prepared target. Construction and native vertex ordering remain separate gates. */
 export function createNativeAlignmentSurfaceQuery(
-  surface: NativeAlignmentQuerySurface,
+  surface: AlignmentWorkerSurface,
 ) {
   const count = surface.points.length / 9;
   if (
@@ -41,48 +51,65 @@ export function createNativeAlignmentSurfaceQuery(
     region = [0];
   const normal = [0, 0, 0];
   const scratch = createNoiseTriangleScratch();
+  const root = surface.root;
+  const query =
+    "format" in root
+      ? (
+          point: readonly number[],
+          radius: number,
+          evaluate: (triangle: number, radius: number) => number,
+        ) =>
+          queryAlignmentPackedTree(
+            root,
+            point,
+            radius,
+            surface.triangleBounds,
+            evaluate,
+          )
+      : (
+          point: readonly number[],
+          radius: number,
+          evaluate: (triangle: number, radius: number) => number,
+        ) =>
+          queryNoiseOctree(
+            root,
+            point,
+            radius,
+            surface.triangleBounds,
+            evaluate,
+          );
   return (
     point: readonly number[],
     radius: number,
   ): AlignmentQueryHit | undefined => {
     let bestRegion = 0;
     const bestClosest = [0, 0, 0];
-    const hit = queryNoiseOctree(
-      surface.root,
-      point,
-      radius,
-      surface.triangleBounds,
-      (triangle, searchRadius) => {
-        if (
-          surface.filterHidden &&
-          (surface.triangleFlags?.[triangle] ?? 0) & 1
-        )
-          return Infinity;
-        for (let axis = 0; axis < 3; axis++) {
-          a[axis] = surface.points[triangle * 9 + axis];
-          b[axis] = surface.points[triangle * 9 + 3 + axis];
-          c[axis] = surface.points[triangle * 9 + 6 + axis];
-          normal[axis] = surface.normals[triangle * 3 + axis];
-        }
-        const distance = noiseTriangleDistance(
-          point,
-          a,
-          b,
-          c,
-          searchRadius,
-          closest,
-          region,
-          normal,
-          scratch,
-        );
-        if (Math.abs(distance) < searchRadius) {
-          bestRegion = region[0];
-          for (let axis = 0; axis < 3; axis++)
-            bestClosest[axis] = closest[axis];
-        }
-        return distance;
-      },
-    );
+    const hit = query(point, radius, (triangle, searchRadius) => {
+      if (surface.filterHidden && (surface.triangleFlags?.[triangle] ?? 0) & 1)
+        return Infinity;
+      for (let axis = 0; axis < 3; axis++) {
+        a[axis] = surface.points[triangle * 9 + axis];
+        b[axis] = surface.points[triangle * 9 + 3 + axis];
+        c[axis] = surface.points[triangle * 9 + 6 + axis];
+        normal[axis] = surface.normals[triangle * 3 + axis];
+      }
+      const distance = noiseTriangleDistance(
+        point,
+        a,
+        b,
+        c,
+        searchRadius,
+        closest,
+        region,
+        normal,
+        scratch,
+      );
+      if (Math.abs(distance) < searchRadius) {
+        bestRegion = region[0];
+        for (let axis = 0; axis < 3; axis++) bestClosest[axis] = closest[axis];
+      }
+      return distance;
+    });
     if (!hit) return undefined;
     const offset = hit.triangle * 3;
     return {

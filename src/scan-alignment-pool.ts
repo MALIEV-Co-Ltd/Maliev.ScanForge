@@ -7,6 +7,10 @@ import type { AlignmentQueryVertex } from "./scan-native-alignment-query";
 import type { NativeAlignmentQuerySurface } from "./scan-native-alignment-mesh-query";
 import { createNativeAlignmentSurfaceQuery } from "./scan-native-alignment-mesh-query";
 import { nativeAlignmentTargetGroupQuery } from "./scan-native-alignment-target-group";
+import {
+  alignmentTreeSize,
+  packAlignmentTree,
+} from "./scan-alignment-packed-tree";
 import type {
   AlignmentWorkerRequest,
   AlignmentWorkerResponse,
@@ -25,6 +29,7 @@ function shareTargets(surfaces: readonly NativeAlignmentQuerySurface[]) {
     };
     return {
       ...surface,
+      root: packAlignmentTree(surface.root),
       points: share(surface.points),
       triangleBounds: share(surface.triangleBounds),
       normals: share(surface.normals),
@@ -69,6 +74,13 @@ function alignmentPoolBytes(
         surface.normals.byteLength +
         surface.neighbors.byteLength +
         (surface.triangleFlags?.byteLength ?? 0));
+    if (sharedTargetsAvailable()) {
+      const { nodes, entries } = alignmentTreeSize(surface.root);
+      // Retain the parent object tree, plus one shared packed tree. Both workers
+      // read the same buffers; no resident or in-flight object graphs are cloned.
+      bytes += nodes * (256 + 116) + entries * (8 + 4);
+      continue;
+    }
     const nodes = [surface.root];
     while (nodes.length) {
       const node = nodes.pop()!;
@@ -80,7 +92,7 @@ function alignmentPoolBytes(
   }
   return bytes;
 }
-/** Concurrent initialization reserves both resident trees and both in-flight copies. */
+/** Shared packed trees have no additional in-flight or per-worker tree copies. */
 export function alignmentCanInitializeTogether(
   lanes: readonly (readonly AlignmentQueryVertex[])[],
   surfaces: readonly NativeAlignmentQuerySurface[],
@@ -218,8 +230,7 @@ export async function createAlignmentPool(
       worker.onmessageerror = () =>
         fail(new Error("Alignment worker response could not be decoded."));
     }
-    // Overlap startup only when immutable shared buffers and the peak tree-copy
-    // budget permit it; otherwise retain one initialization in flight.
+    // Shared packed targets have one admitted allocation, independent of workers.
     const groups = alignmentCanInitializeTogether(lanes, surfaces)
       ? [[0, 1]]
       : [[0], [1]];

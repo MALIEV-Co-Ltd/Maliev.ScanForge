@@ -1,0 +1,656 @@
+{
+  "scope": "Shared packed worker query transport; seeded point-pair refinement on full supplied PLY scans",
+  "nativeCapture": {
+    "path": "docs/evidence/owner-landmark-full-driver-native.json",
+    "sha256": "f8befd72f2e88a5811604a5afcef0366f12d1a305a085ddb539b5ef91fbd2283",
+    "provenance": {
+      "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+      "constructor": "0x140aa8ea0",
+      "driver": "0x140aaa570",
+      "destructor": "0x140aa9000",
+      "target": "Original joined-target 0x140b353e0 mesh constructor and complete 0x1401de640(target,1) finalizer with adjacency",
+      "source": "Complete PLY vertex records and retained original seed-growth vertex flags; controlled indexed vertex getter/count adapters; no source face storage used in selected driver mode.",
+      "uiRuntimeAdapter": "Localization, progress and MFC thread boundary adapters as in verified box replay; actual OS optimizer thread and actual Concurrency Runtime.",
+      "nativeUiCapture": false,
+      "remainingTrackedAllocations": 0,
+      "unknownFreeCalls": 0
+    }
+  },
+  "queryCapture": {
+    "procedure": "0x140213e90",
+    "triangleProcedure": "0x140214b40",
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "execution": "Original isolated x64 query and leaf instructions on caller-built bounded nodes; CRT sqrt thunk resolved",
+    "constructionParity": false,
+    "applicationUiParity": false
+  },
+  "method": {
+    "before": "Previous validated object-tree worker transport, same three files and capture",
+    "after": "Current shared kernel and production worker bundle on disposable isolated Chrome page",
+    "memoryCapBytes": 134217728,
+    "packedBytesPerNode": 116,
+    "packedBytesPerMembership": 4,
+    "nativeRerun": false,
+    "limits": [
+      "Retained original execution outputs, not a new installed application UI capture",
+      "One diagnostic observation per mode; no statistical end-to-end speedup claim",
+      "Small seeded query regions; full source coordinate and normal buffers transformed and hashed",
+      "Times exclude fetch, parse, hashes and user interface interactions"
+    ]
+  },
+  "cases": [
+    {
+      "sourceFile": "ply-2.ply",
+      "sourceSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "targetSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 1375494,
+      "triangles": 2697877,
+      "before": [
+        {
+          "parallel": false,
+          "elapsedMs": 1527.3199999928474,
+          "workerStats": [],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 659.6450000107288,
+              "lastMs": 1500.9850000143051,
+              "events": 424
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+              0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+              4.550334867358313e-5, 0.012647095906881844,
+              0.00014992095133797362, -4.490743346345091e-5, 0.9999999877535153,
+              0.0002494130612475942
+            ],
+            "parameters": [
+              10.007918397145703, 10.012647095906882, 10.000249413061248,
+              1.5707514193609133, 1.570646405842997, 1.566819087757672
+            ],
+            "initialError": 9.766255351717064,
+            "best": 5.984956254000963,
+            "iterations": 192
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3180,
+            "seedGrowthPasses": 15,
+            "seedFaceReferences": 8954,
+            "physicalWorkers": 1,
+            "logicalLanes": 2,
+            "fallbackReason": "single-core requested"
+          },
+          "finalPositionsSha256": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+          "finalNormalsSha256": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 282933698
+        },
+        {
+          "parallel": true,
+          "elapsedMs": 1643.6500000059605,
+          "workerStats": [
+            {
+              "createdAt": 3319.675000011921,
+              "initializationPostMs": 67.66999998688698,
+              "otherPostMs": 3.6149998605251312,
+              "otherPosts": 426,
+              "initializationStartedAfterMs": 4.280000001192093,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 156.72999998927116,
+              "lifetimeMs": 886.9899999797344
+            },
+            {
+              "createdAt": 3319.8250000178814,
+              "initializationPostMs": 74.77500000596046,
+              "otherPostMs": 2.390000104904175,
+              "otherPosts": 426,
+              "initializationStartedAfterMs": 156.71499997377396,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 312.1599999964237,
+              "lifetimeMs": 886.8549999892712
+            }
+          ],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 1065.1299999952316,
+              "lastMs": 1612.919999986887,
+              "events": 424
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+              0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+              4.550334867358313e-5, 0.012647095906881844,
+              0.00014992095133797362, -4.490743346345091e-5, 0.9999999877535153,
+              0.0002494130612475942
+            ],
+            "parameters": [
+              10.007918397145703, 10.012647095906882, 10.000249413061248,
+              1.5707514193609133, 1.570646405842997, 1.566819087757672
+            ],
+            "initialError": 9.766255351717064,
+            "best": 5.984956254000963,
+            "iterations": 192
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3180,
+            "seedGrowthPasses": 15,
+            "seedFaceReferences": 8954,
+            "physicalWorkers": 2,
+            "logicalLanes": 2,
+            "fallbackReason": ""
+          },
+          "finalPositionsSha256": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+          "finalNormalsSha256": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 347169301
+        }
+      ],
+      "packed": [
+        {
+          "parallel": false,
+          "elapsedMs": 1542.9900000095367,
+          "workerStats": [],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 675.2849999964237,
+              "lastMs": 1513.6150000095367,
+              "events": 424
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+              0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+              4.550334867358313e-5, 0.012647095906881844,
+              0.00014992095133797362, -4.490743346345091e-5, 0.9999999877535153,
+              0.0002494130612475942
+            ],
+            "parameters": [
+              10.007918397145703, 10.012647095906882, 10.000249413061248,
+              1.5707514193609133, 1.570646405842997, 1.566819087757672
+            ],
+            "initialError": 9.766255351717064,
+            "best": 5.984956254000963,
+            "iterations": 192
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3180,
+            "seedGrowthPasses": 15,
+            "seedFaceReferences": 8954,
+            "physicalWorkers": 1,
+            "logicalLanes": 2,
+            "fallbackReason": "single-core requested"
+          },
+          "finalPositionsSha256": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+          "finalNormalsSha256": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 284692528
+        },
+        {
+          "parallel": true,
+          "elapsedMs": 1708,
+          "workerStats": [
+            {
+              "createdAt": 3379.655000001192,
+              "initializationPostMs": 0.26999998092651367,
+              "otherPostMs": 4.660000264644623,
+              "otherPosts": 426,
+              "initializationStartedAfterMs": 3.2000000178813934,
+              "packedTreeBytes": 11784500,
+              "sharedPackedTree": true,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 12.4200000166893,
+              "lifetimeMs": 866.2000000178814
+            },
+            {
+              "createdAt": 3379.8850000202656,
+              "initializationPostMs": 0.19999998807907104,
+              "otherPostMs": 3.2399997115135193,
+              "otherPosts": 426,
+              "initializationStartedAfterMs": 3.2899999916553497,
+              "packedTreeBytes": 11784500,
+              "sharedPackedTree": true,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 12.144999980926514,
+              "lifetimeMs": 865.9899999797344
+            }
+          ],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 849.5699999928474,
+              "lastMs": 1680.7100000083447,
+              "events": 424
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999920795571893, 0.00397723528012133, -0.00014974115830274467,
+              0.007918397145703082, -0.003977228506923076, 0.9999920897601386,
+              4.550334867358313e-5, 0.012647095906881844,
+              0.00014992095133797362, -4.490743346345091e-5, 0.9999999877535153,
+              0.0002494130612475942
+            ],
+            "parameters": [
+              10.007918397145703, 10.012647095906882, 10.000249413061248,
+              1.5707514193609133, 1.570646405842997, 1.566819087757672
+            ],
+            "initialError": 9.766255351717064,
+            "best": 5.984956254000963,
+            "iterations": 192
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3180,
+            "seedGrowthPasses": 15,
+            "seedFaceReferences": 8954,
+            "physicalWorkers": 2,
+            "logicalLanes": 2,
+            "fallbackReason": ""
+          },
+          "finalPositionsSha256": "cedb177f9e6b0b3c79344b68cf00f41022e7b9d279beee65d53d7b9741f91339",
+          "finalNormalsSha256": "04fbb0b7dfaaa26658150fe9af8e9b89baeba98c415f105a86a8d11d35a5c32c",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 333746719
+        }
+      ],
+      "nativeExact": true
+    },
+    {
+      "sourceFile": "ply-3.ply",
+      "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "targetSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 1865848,
+      "triangles": 3691133,
+      "before": [
+        {
+          "parallel": false,
+          "elapsedMs": 1882.300000011921,
+          "workerStats": [],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 936.5749999880791,
+              "lastMs": 1843.4399999976158,
+              "events": 405
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+              0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+              0.0003411999079247157, -0.00010592356224492505,
+              -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+              -0.001811635245847043
+            ],
+            "parameters": [
+              10.00067147993725, 9.999894076437755, 9.998188364754153,
+              1.5704551466710581, 1.5708958490696991, 1.57099525168068
+            ],
+            "initialError": 16.62046399125353,
+            "best": 8.3123067990079,
+            "iterations": 170
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3368,
+            "seedGrowthPasses": 18,
+            "seedFaceReferences": 9503,
+            "physicalWorkers": 1,
+            "logicalLanes": 2,
+            "fallbackReason": "single-core requested"
+          },
+          "finalPositionsSha256": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+          "finalNormalsSha256": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 343457656
+        },
+        {
+          "parallel": true,
+          "elapsedMs": 2147.405000001192,
+          "workerStats": [
+            {
+              "createdAt": 8679.069999992847,
+              "initializationPostMs": 71.2199999988079,
+              "otherPostMs": 3.500000238418579,
+              "otherPosts": 407,
+              "initializationStartedAfterMs": 3.130000025033951,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 154.71000000834465,
+              "lifetimeMs": 877.380000025034
+            },
+            {
+              "createdAt": 8679.175000011921,
+              "initializationPostMs": 68.25499999523163,
+              "otherPostMs": 2.045000195503235,
+              "otherPosts": 407,
+              "initializationStartedAfterMs": 154.80500000715256,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 293.9050000011921,
+              "lifetimeMs": 877.294999986887
+            }
+          ],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 1559.3400000035763,
+              "lastMs": 2112.9599999785423,
+              "events": 405
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+              0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+              0.0003411999079247157, -0.00010592356224492505,
+              -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+              -0.001811635245847043
+            ],
+            "parameters": [
+              10.00067147993725, 9.999894076437755, 9.998188364754153,
+              1.5704551466710581, 1.5708958490696991, 1.57099525168068
+            ],
+            "initialError": 16.62046399125353,
+            "best": 8.3123067990079,
+            "iterations": 170
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3368,
+            "seedGrowthPasses": 18,
+            "seedFaceReferences": 9503,
+            "physicalWorkers": 2,
+            "logicalLanes": 2,
+            "fallbackReason": ""
+          },
+          "finalPositionsSha256": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+          "finalNormalsSha256": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 415426135
+        }
+      ],
+      "packed": [
+        {
+          "parallel": false,
+          "elapsedMs": 2072.7899999916553,
+          "workerStats": [],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 992.5900000035763,
+              "lastMs": 2028.6749999821186,
+              "events": 405
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+              0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+              0.0003411999079247157, -0.00010592356224492505,
+              -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+              -0.001811635245847043
+            ],
+            "parameters": [
+              10.00067147993725, 9.999894076437755, 9.998188364754153,
+              1.5704551466710581, 1.5708958490696991, 1.57099525168068
+            ],
+            "initialError": 16.62046399125353,
+            "best": 8.3123067990079,
+            "iterations": 170
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3368,
+            "seedGrowthPasses": 18,
+            "seedFaceReferences": 9503,
+            "physicalWorkers": 1,
+            "logicalLanes": 2,
+            "fallbackReason": "single-core requested"
+          },
+          "finalPositionsSha256": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+          "finalNormalsSha256": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 354270890
+        },
+        {
+          "parallel": true,
+          "elapsedMs": 1858.6700000166893,
+          "workerStats": [
+            {
+              "createdAt": 8665.620000004768,
+              "initializationPostMs": 0.3799999952316284,
+              "otherPostMs": 5.129999995231628,
+              "otherPosts": 407,
+              "initializationStartedAfterMs": 4.015000015497208,
+              "packedTreeBytes": 11784500,
+              "sharedPackedTree": true,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 12.245000004768372,
+              "lifetimeMs": 823.6850000023842
+            },
+            {
+              "createdAt": 8665.740000009537,
+              "initializationPostMs": 0.23499998450279236,
+              "otherPostMs": 2.954999566078186,
+              "otherPosts": 407,
+              "initializationStartedAfterMs": 4.365000009536743,
+              "packedTreeBytes": 11784500,
+              "sharedPackedTree": true,
+              "targetNodes": 76761,
+              "targetMemberships": 720056,
+              "fiveTreeBytesExcludingLanes": 147617870,
+              "createdToReadyMs": 12.159999996423721,
+              "lifetimeMs": 823.5850000083447
+            }
+          ],
+          "stages": [
+            {
+              "stage": "Refining surface alignment",
+              "firstMs": 1011.4099999964237,
+              "lastMs": 1800.655000001192,
+              "events": 405
+            }
+          ],
+          "refinement": {
+            "accepted": true,
+            "matrix": [
+              0.9999999752621034, -0.00019895882791433084, 9.945439766140428e-5,
+              0.0006714799372495861, 0.0001989248834863454, 0.9999999220057537,
+              0.0003411999079247157, -0.00010592356224492505,
+              -9.952227463829869e-5, -0.0003411801155296807, 0.9999999368457209,
+              -0.001811635245847043
+            ],
+            "parameters": [
+              10.00067147993725, 9.999894076437755, 9.998188364754153,
+              1.5704551466710581, 1.5708958490696991, 1.57099525168068
+            ],
+            "initialError": 16.62046399125353,
+            "best": 8.3123067990079,
+            "iterations": 170
+          },
+          "diagnostics": {
+            "selectedTriangles": 0,
+            "refinementApplied": true,
+            "seededFaces": 3368,
+            "seedGrowthPasses": 18,
+            "seedFaceReferences": 9503,
+            "physicalWorkers": 2,
+            "logicalLanes": 2,
+            "fallbackReason": ""
+          },
+          "finalPositionsSha256": "5e799337cb18fa25bf9d5d33dd9c9e11ae4e1aff56e0b4639347d083985de6c2",
+          "finalNormalsSha256": "9166cddd3518fc193f0f5bd22ca999b8081d51f2a57eed8c93764e88a1cd3d3b",
+          "sourceUnchanged": true,
+          "targetUnchanged": true,
+          "observedUsedJsHeapBytes": 411742961
+        }
+      ],
+      "nativeExact": true
+    }
+  ],
+  "cleanup": [
+    {
+      "remainingWorkers": 0,
+      "browserExited": true,
+      "inputServerClosed": true
+    }
+  ],
+  "repeat": [
+    {
+      "sourceFile": "ply-2.ply",
+      "nativeExact": true,
+      "serialMs": 1706.1500000059605,
+      "twoWorkerMs": 2234.469999998808,
+      "workerStats": [
+        {
+          "createdAt": 4150.784999996424,
+          "initializationPostMs": 0.4750000238418579,
+          "otherPostMs": 5.414999723434448,
+          "otherPosts": 426,
+          "initializationStartedAfterMs": 3.854999989271164,
+          "packedTreeBytes": 11784500,
+          "sharedPackedTree": true,
+          "targetNodes": 76761,
+          "targetMemberships": 720056,
+          "fiveTreeBytesExcludingLanes": 147617870,
+          "sharedPoolBytesExcludingLanes": 57757314,
+          "createdToReadyMs": 10.064999997615814,
+          "lifetimeMs": 890.6100000143051
+        },
+        {
+          "createdAt": 4151.009999990463,
+          "initializationPostMs": 0.4099999964237213,
+          "otherPostMs": 3.659999966621399,
+          "otherPosts": 426,
+          "initializationStartedAfterMs": 4.185000002384186,
+          "packedTreeBytes": 11784500,
+          "sharedPackedTree": true,
+          "targetNodes": 76761,
+          "targetMemberships": 720056,
+          "fiveTreeBytesExcludingLanes": 147617870,
+          "sharedPoolBytesExcludingLanes": 57757314,
+          "createdToReadyMs": 10.550000011920929,
+          "lifetimeMs": 890.4099999964237
+        }
+      ]
+    },
+    {
+      "sourceFile": "ply-3.ply",
+      "nativeExact": true,
+      "serialMs": 2206.649999976158,
+      "twoWorkerMs": 2370.625,
+      "workerStats": [
+        {
+          "createdAt": 10696.930000007153,
+          "initializationPostMs": 0.38499999046325684,
+          "otherPostMs": 6.535000056028366,
+          "otherPosts": 407,
+          "initializationStartedAfterMs": 4.875,
+          "packedTreeBytes": 11784500,
+          "sharedPackedTree": true,
+          "targetNodes": 76761,
+          "targetMemberships": 720056,
+          "fiveTreeBytesExcludingLanes": 147617870,
+          "sharedPoolBytesExcludingLanes": 57757314,
+          "createdToReadyMs": 13.444999992847443,
+          "lifetimeMs": 874.8449999988079
+        },
+        {
+          "createdAt": 10697.090000003576,
+          "initializationPostMs": 0.36500000953674316,
+          "otherPostMs": 3.364999830722809,
+          "otherPosts": 407,
+          "initializationStartedAfterMs": 5.199999988079071,
+          "packedTreeBytes": 11784500,
+          "sharedPackedTree": true,
+          "targetNodes": 76761,
+          "targetMemberships": 720056,
+          "fiveTreeBytesExcludingLanes": 147617870,
+          "sharedPoolBytesExcludingLanes": 57757314,
+          "createdToReadyMs": 13.025000005960464,
+          "lifetimeMs": 874.6949999928474
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "build": "scanforge-4fd227083888fd39",
+    "focusedPassed": 54,
+    "guiMcp": {
+      "passed": true,
+      "guiImport": true,
+      "mcpImport": true,
+      "guiMcpNativeStlImport": true,
+      "unitConversion": true,
+      "originPlacement": true,
+      "binaryPersistence": true,
+      "indexedScannerNormals": true,
+      "transformTopologyRetention": true,
+      "undoRestoration": true,
+      "nativeRefinement": true,
+      "guiNativeRefinement": true,
+      "guiMcpTargetGroupRefinement": true,
+      "guiMcpPairedTopologyRetention": true,
+      "guiMcpLandmarkEditing": true,
+      "guiMcpLandmarkRefinement": true,
+      "guiMcpMulticoreSeededRefinement": true,
+      "guiMcpCadLandmarkRefinement": true,
+      "guiMcpVisibleSceneLandmarkRefinement": true,
+      "guiMcpEmptyTargetLandmarkRefinement": true,
+      "guiMcpAuthoringRootLandmarkRefinement": true,
+      "cadLandmarkBrepPreserved": true,
+      "errors": []
+    },
+    "ownerBenchmarkRuns": 2,
+    "fullSuite": {
+      "passed": 28257,
+      "files": 366,
+      "skipped": 0,
+      "exitCode": 0
+    }
+  }
+}

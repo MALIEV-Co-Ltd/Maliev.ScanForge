@@ -2992,3 +2992,22 @@ targets, import/persistence/normal preservation and Undo. The final full-file
 browser benchmark passed exact native comparisons in both modes and verified
 zero remaining alignment workers. All disposable browser/bridge/reader resources
 closed. Port 5173 remains live. No push or deployment; the full goal stays active.
+
+## Compact shared query transport
+
+The subsequent packed-tree implementation supersedes the object-copy startup
+budget above on isolated origins. Query workers now share Float64 node bounds
+and centers plus Uint32 links and ordered memberships, querying directly without
+reconstructing object nodes. The parent object tree and one packed tree remain
+included in the unchanged 128 MiB admission. Nonisolated transport is unchanged.
+This is an independently authored transport optimization, not a claim that the
+original binary uses this layout.
+
+`docs/evidence/alignment-packed-tree-transport.json` binds the new full-scan
+replay to the retained original image and owner capture. Both supplied PLY
+registrations retain exact native matrices and final coordinate/normal hashes.
+The 33 original query cases retain signed winners; packed and decoded object
+queries also agree on complete callback order. Pool objective fixtures cover
+both transports. Measurements and scope limits are in
+`docs/ALIGNMENT_PERFORMANCE.md`; no GPU or installed-native UI timing claim is
+made.

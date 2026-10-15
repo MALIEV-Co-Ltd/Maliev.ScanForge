@@ -780,11 +780,12 @@ explicit `landmark_edit` begin continues to accept a caller-specified moving ID.
 Preview/reset/accept, cancellation, revision checks and active-dialog admission
 remain shared with the GUI.
 
-Alignment query workers may initialize together on isolated origins when their
-conservative peak tree-copy estimate fits the existing 128 MiB pool cap; other
-admitted pools initialize sequentially. This is automatic for both GUI and MCP
-alignment operations and adds no request parameter. Logical lane reduction,
-results, cancellation and diagnostics keep their existing contracts. Full-file
-serial/two-worker native equality and timing scope are documented in
-`docs/ALIGNMENT_PERFORMANCE.md`; two workers do not imply a measured speedup for
-every selected region.
+Alignment query workers on isolated origins read one shared packed target tree
+directly and initialize together when the parent tree, packed buffers, target
+arrays and source lanes fit the existing 128 MiB pool cap. Nonisolated pools
+retain object-tree transport and sequential startup. Oversized targets retain
+serial fallback. This is automatic for GUI and MCP alignment and adds no request
+parameter. Native traversal order, logical lane reduction, results, cancellation
+and diagnostics keep their existing contracts. Full-file native equality and
+timing scope are documented in `docs/ALIGNMENT_PERFORMANCE.md`; two workers do
+not imply a measured speedup for every selected region.

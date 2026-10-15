@@ -6,12 +6,12 @@ import { runAlignmentBatch } from "./scan-native-alignment-objective";
 import type { AlignmentQueryVertex } from "./scan-native-alignment-query";
 import {
   createNativeAlignmentSurfaceQuery,
-  type NativeAlignmentQuerySurface,
+  type AlignmentWorkerSurface,
 } from "./scan-native-alignment-mesh-query";
 import { nativeAlignmentTargetGroupQuery } from "./scan-native-alignment-target-group";
 export interface AlignmentWorkerInit {
   lanes: { id: number; vertices: AlignmentQueryVertex[] }[];
-  surfaces: NativeAlignmentQuerySurface[];
+  surfaces: AlignmentWorkerSurface[];
 }
 export type AlignmentWorkerRequest =
   | { id: number; initialize: AlignmentWorkerInit }

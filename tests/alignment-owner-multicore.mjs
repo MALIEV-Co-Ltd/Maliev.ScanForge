@@ -269,6 +269,20 @@ try {
                   surface.neighbors.byteLength +
                   (surface.triangleFlags?.byteLength ?? 0);
                 const pending = [surface.root];
+                if (surface.root.format === "alignment-tree-v1") {
+                  nodes += surface.root.links.length / 11;
+                  entries += surface.root.triangles.length;
+                  this.stats.packedTreeBytes =
+                    (this.stats.packedTreeBytes ?? 0) +
+                    surface.root.geometry.byteLength +
+                    surface.root.links.byteLength +
+                    surface.root.triangles.byteLength;
+                  this.stats.sharedPackedTree =
+                    surface.root.geometry.buffer instanceof SharedArrayBuffer &&
+                    surface.root.links.buffer instanceof SharedArrayBuffer &&
+                    surface.root.triangles.buffer instanceof SharedArrayBuffer;
+                  continue;
+                }
                 while (pending.length) {
                   const node = pending.pop();
                   nodes++;
@@ -281,6 +295,12 @@ try {
               this.stats.targetMemberships = entries;
               this.stats.fiveTreeBytesExcludingLanes =
                 sharedBytes + 5 * (nodes * 256 + entries * 8);
+              if (this.stats.sharedPackedTree)
+                this.stats.sharedPoolBytesExcludingLanes =
+                  sharedBytes +
+                  nodes * 256 +
+                  entries * 8 +
+                  this.stats.packedTreeBytes;
             } else {
               this.stats.otherPostMs += elapsed;
               this.stats.otherPosts++;
@@ -379,6 +399,17 @@ try {
       assert.equal(mode.targetUnchanged, true);
       assert.equal(mode.diagnostics.physicalWorkers, mode.parallel ? 2 : 1);
       assert.equal(mode.diagnostics.logicalLanes, 2);
+      if (mode.parallel) {
+        assert.equal(mode.workerStats.length, 2);
+        for (const worker of mode.workerStats) {
+          assert.equal(worker.sharedPackedTree, true);
+          assert(worker.sharedPoolBytesExcludingLanes < 128 * 1024 * 1024);
+          assert.equal(
+            worker.packedTreeBytes,
+            worker.targetNodes * 116 + worker.targetMemberships * 4,
+          );
+        }
+      }
     }
     assert.equal(
       workerStarts - starts,
