@@ -1,0 +1,21 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "evidenceIds": [
+    "ev_d417b571c8f58a9ba5096de43e189d1f441a263309696795f418d3472ccfc1b8",
+    "ev_44b2d2c145082087f6e62e38147b17b3d733b821297c27e3ef96c4126b57cc82"
+  ],
+  "unprojectProcedure": "0x140833570",
+  "rendererProcedure": "0x140836100",
+  "wrapperProcedure": "0x14069e900",
+  "pointCases": 48,
+  "rendererCases": 288,
+  "wrapperCases": 24,
+  "rawSha256": "8eecc1f9bb2ef5b83ba42155278509fecd56b052a06a3d994d163fc54c20f33e",
+  "compressedSha256": "fa9886ada0568a887c543c63bf4c5d9d7e1230824d1a53bcebd5cabe5a66df2d",
+  "scope": "Complete original unprojection and mesh renderer, with controlled camera/model/style interfaces, initialized epoch, GL state/matrix sinks and embedded point-draw boundary. No real OpenGL context or native window.",
+  "limitations": [
+    "Controlled renderer/style/camera/GL interfaces; no native window or real OpenGL context.",
+    "Point-loop submission, native UI selection mapping and actual GPU pixels are separate checks.",
+    "The wrapper capture was retained from the earlier complete callback probe."
+  ]
+}

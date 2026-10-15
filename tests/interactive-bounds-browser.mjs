@@ -200,7 +200,7 @@ try {
       const assert = (condition, message) => {
         if (!condition) throw Error(message);
       };
-      let pool;
+      let pool, display, renderer;
       try {
         pool = new InteractiveBoundsPool(
           new Map(
@@ -369,10 +369,34 @@ try {
         await pool.measure(native.cases[0].pointsFile, native.transforms[1]);
         const warmMilliseconds = performance.now() - start;
         assert(before === preparations, "Warm query retransferred source");
+        const displayModule =
+          await import("/src/interactive-mirror-display.ts");
+        const displaySource = await (
+          await fetch("/src/interactive-mirror-display.ts")
+        ).text();
+        const threePath = /import \* as THREE from "([^"]+)"/.exec(
+          displaySource,
+        );
+        assert(threePath, "Unable to resolve the application's Three runtime");
+        const THREE = await import(threePath[1]);
+        display = new displayModule.InteractiveMirrorDisplay(sources, () => {});
+        const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+        const displayPoses = ownerMirror.cases.map((c) => ({
+          entityId: "mirror:" + c.name,
+          matrix: identity,
+        }));
+        display.show(displayPoses, 1);
+        const displayBounds = new THREE.Box3();
         const ownerMirrorRows = [];
         for (const c of ownerMirror.cases) {
           const key = "mirror:" + c.name;
-          await pool.measure(key, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]);
+          const measured = await pool.measure(key, identity);
+          displayBounds.union(
+            new THREE.Box3(
+              new THREE.Vector3(...measured.values.slice(0, 3)),
+              new THREE.Vector3(...measured.values.slice(3, 6)),
+            ),
+          );
           const before = preparations;
           const r = await pool.mirror(key, c.settings);
           assert(
@@ -407,6 +431,32 @@ try {
               source.normals.length === c.count * 3,
             "Owner source buffers detached",
           );
+          display.publish(key, r);
+          const object = display.group.children.find((o) => o.name === key);
+          assert(
+            object.geometry.getAttribute("position").array ===
+              source.positions &&
+              object.geometry.getAttribute("normal").array === source.normals,
+            "GPU presenter copied or replaced source buffers",
+          );
+          assert(
+            (await digest(
+              object.geometry.index.array.subarray(
+                0,
+                object.geometry.drawRange.count,
+              ),
+            )) === c.indicesSha256,
+            "GPU index digest differs from native submission",
+          );
+          assert(
+            (await digest(
+              compactColors(
+                object.geometry.getAttribute("color").array,
+                r.indices,
+              ),
+            )) === c.colorsSha256,
+            "GPU color attribute differs from native color bytes",
+          );
           ownerMirrorRows.push({
             name: c.name,
             points: c.count,
@@ -415,6 +465,179 @@ try {
             nativeDigestsMatched: true,
           });
         }
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const coldLongTasks = [];
+        const coldObserver = new PerformanceObserver((list) => {
+          for (const e of list.getEntries()) coldLongTasks.push(e.duration);
+        });
+        coldObserver.observe({ type: "longtask" });
+        renderer = new THREE.WebGLRenderer({
+          antialias: false,
+          preserveDrawingBuffer: true,
+        });
+        renderer.setSize(920, 720);
+        renderer.setClearColor(0x000000);
+        document.body.append(renderer.domElement);
+        const scene = new THREE.Scene();
+        scene.add(display.group);
+        displayBounds.applyMatrix4(display.group.matrix);
+        const center = displayBounds.getCenter(new THREE.Vector3());
+        const radius = Math.max(
+          1,
+          displayBounds.getSize(new THREE.Vector3()).length() * 0.6,
+        );
+        const camera = new THREE.OrthographicCamera(
+          (-radius * 920) / 720,
+          (radius * 920) / 720,
+          radius,
+          -radius,
+          0.1,
+          radius * 100,
+        );
+        const gl = renderer.getContext();
+        camera.position.copy(center).add(new THREE.Vector3(0, 0, radius * 3));
+        camera.lookAt(center);
+        camera.updateMatrixWorld(true);
+        const previousTarget = new THREE.WebGLRenderTarget(8, 8);
+        previousTarget.texture.colorSpace = renderer.outputColorSpace;
+        previousTarget.viewport.set(1, 2, 5, 6);
+        previousTarget.scissor.set(2, 1, 3, 4);
+        previousTarget.scissorTest = true;
+        renderer.setRenderTarget(previousTarget);
+        const shaderStart = performance.now();
+        assert(
+          await display.prepare(renderer, camera),
+          "GPU mirror shader preparation was cancelled",
+        );
+        assert(
+          renderer.getRenderTarget() === previousTarget &&
+            renderer
+              .getCurrentViewport(new THREE.Vector4())
+              .equals(previousTarget.viewport),
+          "Mirror preparation changed the active offscreen viewport",
+        );
+        assert(
+          gl.isEnabled(gl.SCISSOR_TEST) &&
+            Array.from(gl.getParameter(gl.SCISSOR_BOX)).join(",") === "2,1,3,4",
+          "Mirror preparation changed offscreen scissor state",
+        );
+        renderer.setRenderTarget(null);
+        previousTarget.dispose();
+        const shaderPreparationMilliseconds = performance.now() - shaderStart;
+        const firstFrameStart = performance.now();
+        renderer.render(scene, camera);
+        gl.finish();
+        const firstFrameMilliseconds = performance.now() - firstFrameStart;
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        for (const entry of coldObserver.takeRecords())
+          coldLongTasks.push(entry.duration);
+        coldObserver.disconnect();
+        const objects = display.group.children.map((object) => ({
+          object,
+          geometry: object.geometry,
+          position: object.geometry.getAttribute("position"),
+          normal: object.geometry.getAttribute("normal"),
+          color: object.geometry.getAttribute("color"),
+          colorVersion: object.geometry.getAttribute("color").version,
+          index: object.geometry.index,
+        }));
+        const expectedPoints = ownerMirror.cases.reduce(
+            (n, c) => n + c.drawn,
+            0,
+          ),
+          gpuFrames = [];
+        for (let frame = 0; frame < 20; frame++) {
+          display.show(
+            displayPoses.map((p) => ({
+              ...p,
+              matrix: identity.map((v, i) => (i === 3 ? frame * 0.01 : v)),
+            })),
+            1,
+          );
+          camera.position.x = center.x + Math.sin(frame * 0.03) * radius;
+          camera.lookAt(center);
+          camera.updateMatrixWorld(true);
+          const start = performance.now();
+          renderer.render(scene, camera);
+          gl.finish();
+          gpuFrames.push(performance.now() - start);
+          assert(
+            renderer.info.render.points === expectedPoints,
+            "GPU submitted the wrong number of native-filtered points",
+          );
+        }
+        const pixels = new Uint8Array(920 * 720 * 4);
+        const readbackStart = performance.now();
+        gl.readPixels(0, 0, 920, 720, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const pixelReadbackMilliseconds = performance.now() - readbackStart;
+        let coloredPixels = 0;
+        for (let i = 0; i < pixels.length; i += 4)
+          if (pixels[i] || pixels[i + 1] || pixels[i + 2]) coloredPixels++;
+        assert(
+          coloredPixels > 0,
+          "GPU mirror frame contains no visible points",
+        );
+        const extension = gl.getExtension("WEBGL_debug_renderer_info");
+        const gpuDisplay = {
+          offscreenStateRestored: true,
+          shaderPreparationMilliseconds,
+          firstFrameMilliseconds,
+          pixelReadbackMilliseconds,
+          coldLongTasks,
+          parallelShaderCompile: !!gl.getExtension(
+            "KHR_parallel_shader_compile",
+          ),
+          points: expectedPoints,
+          objects: objects.length,
+          geometryCount: renderer.info.memory.geometries,
+          coloredPixels,
+          gpu: extension
+            ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL)
+            : gl.getParameter(gl.RENDERER),
+          frames: gpuFrames,
+        };
+        // Hold the actual Three program's readiness poll across Cancel, independently of driver timing.
+        const cancelledDisplay = new displayModule.InteractiveMirrorDisplay(
+          sources,
+          () => {},
+        );
+        cancelledDisplay.show([displayPoses[0]], 1);
+        cancelledDisplay.publish(displayPoses[0].entityId, {
+          indices: new Uint32Array([0]),
+          colors: objects[0].color.array,
+        });
+        const cancelledMaterial = cancelledDisplay.group.children[0].material;
+        renderer.compile(cancelledDisplay.group, camera);
+        const program =
+          renderer.properties.get(cancelledMaterial).currentProgram;
+        const originalReady = program.isReady;
+        let ready = false,
+          releasedMaterial = 0;
+        cancelledMaterial.addEventListener("dispose", () => releasedMaterial++);
+        program.isReady = () => ready;
+        try {
+          const pending = cancelledDisplay.prepare(renderer, camera);
+          cancelledDisplay.clear();
+          assert(
+            releasedMaterial === 0,
+            "Cancelled shader material was released while Three still reads it",
+          );
+          await new Promise((resolve) => setTimeout(resolve, 20));
+          ready = true;
+          assert(
+            (await pending) === false &&
+              !cancelledDisplay.group.visible &&
+              releasedMaterial === 1,
+            "Shader cancellation leaked or revealed the old display",
+          );
+          gpuDisplay.shaderCancelReleased = true;
+        } finally {
+          ready = true;
+          program.isReady = originalReady;
+          cancelledDisplay.dispose();
+        }
+        // End GPU setup/readback's task before sampling warm worker publication.
+        await new Promise((resolve) => setTimeout(resolve, 0));
         const warmMirror = [],
           intervals = [],
           longTasks = [];
@@ -448,6 +671,7 @@ try {
                 r.colors === undefined && preparations === before,
                 "Warm mirror rebuilt source/color buffers",
               );
+              display.publish("mirror:" + c.name, r);
               warmMirror.push({ name: c.name, ...r.execution });
             }
         } finally {
@@ -455,12 +679,31 @@ try {
           for (const e of observer.takeRecords()) longTasks.push(e.duration);
           observer.disconnect();
         }
+        for (const saved of objects)
+          assert(
+            saved.object.geometry === saved.geometry &&
+              saved.geometry.index === saved.index &&
+              saved.geometry.getAttribute("position") === saved.position &&
+              saved.position.version === 0 &&
+              saved.geometry.getAttribute("normal") === saved.normal &&
+              saved.normal.version === 0 &&
+              saved.geometry.getAttribute("color") === saved.color &&
+              saved.color.version === saved.colorVersion,
+            "Warm/pose updates rebuilt GPU source or color attributes",
+          );
+        display.clear();
+        assert(
+          renderer.info.memory.geometries === 0,
+          "GPU geometry leak after mirror close",
+        );
+        gpuDisplay.geometryCountAfterClear = renderer.info.memory.geometries;
         pool.close();
         assert(live === 0, "Owner worker leak");
         return {
           mirrorKernelCases: mirrorNative.cases.length,
           ownerMirrorRows,
           warmMirror,
+          gpuDisplay,
           mainFrameIntervals: intervals,
           mainLongTasks: longTasks,
           maximumLiveWorkers: maximumLive,
@@ -473,6 +716,10 @@ try {
           liveWorkers: live,
         };
       } finally {
+        display?.dispose();
+        renderer?.dispose();
+        renderer?.forceContextLoss();
+        renderer?.domElement.remove();
         pool?.close();
         globalThis.Worker = OriginalWorker;
       }

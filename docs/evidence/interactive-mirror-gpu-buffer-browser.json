@@ -1,0 +1,349 @@
+{
+  "mirrorKernelCases": 2160,
+  "ownerMirrorRows": [
+    {
+      "name": "ply-1.ply",
+      "points": 140113,
+      "drawn": 31429,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 3.975000023841858
+      },
+      "nativeDigestsMatched": true
+    },
+    {
+      "name": "ply-2.ply",
+      "points": 1375494,
+      "drawn": 103862,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 15.034999996423721
+      },
+      "nativeDigestsMatched": true
+    },
+    {
+      "name": "ply-3.ply",
+      "points": 1865848,
+      "drawn": 194692,
+      "execution": {
+        "physicalWorkers": 2,
+        "partitions": 2,
+        "preparationMilliseconds": 27.30000001192093
+      },
+      "nativeDigestsMatched": true
+    }
+  ],
+  "warmMirror": [
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 3.520000010728836
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 3.384999990463257
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 3.165000021457672
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 2.604999989271164
+    },
+    {
+      "name": "ply-1.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 4.604999989271164
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 13.430000007152557
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 25.25
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 9.384999990463257
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 6.040000021457672
+    },
+    {
+      "name": "ply-2.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 9.580000013113022
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 13.234999984502792
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 8.525000005960464
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 8.645000010728836
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 10.150000005960464
+    },
+    {
+      "name": "ply-3.ply",
+      "physicalWorkers": 2,
+      "partitions": 2,
+      "preparationMilliseconds": 8.474999994039536
+    }
+  ],
+  "gpuDisplay": {
+    "offscreenStateRestored": true,
+    "shaderPreparationMilliseconds": 125.23500001430511,
+    "firstFrameMilliseconds": 7.395000010728836,
+    "pixelReadbackMilliseconds": 145.73999997973442,
+    "coldLongTasks": [65],
+    "parallelShaderCompile": true,
+    "points": 329983,
+    "objects": 3,
+    "geometryCount": 3,
+    "coloredPixels": 45170,
+    "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "frames": [
+      0.3499999940395355, 0.30000001192092896, 0.09500002861022949,
+      0.09000000357627869, 0.10499998927116394, 0.125, 0.0899999737739563,
+      0.06000000238418579, 0.05500000715255737, 0.05500000715255737,
+      0.05500000715255737, 0.05500000715255737, 0.05500000715255737,
+      0.06499999761581421, 0.06000000238418579, 0.06000000238418579,
+      0.05500000715255737, 0.06000000238418579, 0.04999998211860657,
+      0.06000000238418579
+    ],
+    "shaderCancelReleased": true,
+    "geometryCountAfterClear": 0
+  },
+  "mainFrameIntervals": [
+    16.51000000000022, 16.704999999999927, 16.715000000000146,
+    16.704999999999927, 16.649999999999636, 16.645000000000437,
+    16.69000000000051, 16.664999999999054
+  ],
+  "mainLongTasks": [],
+  "maximumLiveWorkers": 2,
+  "kernelCases": 99,
+  "ownerCases": 18,
+  "rows": [
+    {
+      "name": "ply-1.ply",
+      "pose": 0,
+      "points": 140113,
+      "milliseconds": 22.90999999642372,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-1.ply",
+      "pose": 1,
+      "points": 140113,
+      "milliseconds": 4.2950000166893005,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-1.ply",
+      "pose": 2,
+      "points": 140113,
+      "milliseconds": 2.530000001192093,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 0,
+      "points": 1375494,
+      "milliseconds": 12.409999996423721,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 1,
+      "points": 1375494,
+      "milliseconds": 11.159999996423721,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "pose": 2,
+      "points": 1375494,
+      "milliseconds": 11.485000014305115,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 0,
+      "points": 1865848,
+      "milliseconds": 11.46000000834465,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 1,
+      "points": 1865848,
+      "milliseconds": 23.169999986886978,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "pose": 2,
+      "points": 1865848,
+      "milliseconds": 24.40999999642372,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 0,
+      "points": 140113,
+      "milliseconds": 1.8850000202655792,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 1,
+      "points": 140113,
+      "milliseconds": 1.5599999725818634,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-1.asc",
+      "pose": 2,
+      "points": 140113,
+      "milliseconds": 2.5950000286102295,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 0,
+      "points": 1375494,
+      "milliseconds": 8.41499999165535,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 1,
+      "points": 1375494,
+      "milliseconds": 19.194999992847443,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-2.asc",
+      "pose": 2,
+      "points": 1375494,
+      "milliseconds": 13.400000005960464,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 0,
+      "points": 1865848,
+      "milliseconds": 12.394999980926514,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 1,
+      "points": 1865848,
+      "milliseconds": 23.55000001192093,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    },
+    {
+      "name": "asc-3.asc",
+      "pose": 2,
+      "points": 1865848,
+      "milliseconds": 28.830000013113022,
+      "execution": {
+        "physicalWorkers": 2,
+        "logicalLanes": 8
+      }
+    }
+  ],
+  "createdWorkers": 6,
+  "coldPreparations": 12,
+  "warmMilliseconds": 2.2349999845027924,
+  "liveWorkers": 0
+}
