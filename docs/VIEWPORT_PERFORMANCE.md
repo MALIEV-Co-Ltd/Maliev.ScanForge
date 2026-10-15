@@ -24,6 +24,6 @@ Machine-readable measurements: [viewport responsiveness evidence](evidence/viewp
 
 - Build passed with no warnings or errors.
 - Focused viewport/navigation tests: 139 passed.
-- Full suite with the owner scans enabled: 29,009 passed, one existing release-history test exceeded its unchanged 5-second timeout. Rerun: 20 release-related tests passed.
+- Latest full suite with the owner scans enabled: 29,011 tests passed across 370 files, no skips. An earlier release-history timeout also passed on its focused rerun with the original timeout unchanged.
 - Isolated large-scan browser replay: both indices ready; nine shared picker comparisons matched ordinary queries; passive movement submitted zero scene renders.
 - The broader MCP browser smoke initially compared the native primary-plane GUI default (Z) against an explicitly requested MCP X axis. That test-input mismatch is corrected: the complete built-app smoke now passes, separately verifying both the captured native Z default and an explicit X choice, matching GUI/MCP bounds, Apply and Undo. Application axis behavior was unchanged.

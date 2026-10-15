@@ -1,0 +1,16 @@
+{
+  "captureSha256": "fd5444252d7542b6b775c13cb2c9ebc8bdcfa5c04dc3579954c0005dbf31baf0",
+  "gzipSha256": "aedb2352e826ed157bd3d7f9d1c305bdf398ea79ff4b0c2fe2273de74708447a",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140aa75a0",
+  "evidenceId": "ev_a2ece8bdaa4f70d432851e8d5466d5492147e44fc3bda02c6ea604bd319ae5dc",
+  "cases": 46368,
+  "accepted": 36288,
+  "frames": 3,
+  "originals": 3,
+  "views": 3,
+  "rawBytes": 28380624,
+  "gzipBytes": 293777,
+  "priorExpandedCasesPreserved": 34272,
+  "scope": "Complete original manipulator update with camera adapters; not complete Interactive UI or geometry application"
+}

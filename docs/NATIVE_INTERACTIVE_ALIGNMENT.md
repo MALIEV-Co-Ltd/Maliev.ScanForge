@@ -114,3 +114,27 @@ Scoped formatting, JSON identity/readback, whitespace and prohibited-name
 checks passed. Native mappings and analysis helpers were released. This
 evidence-only checkpoint changes no GUI behavior or MCP capability, so a new
 GUI/MCP browser replay is not applicable. Port 5173 retains the current app.
+
+## Recovered drag and current-view numerical kernels
+
+The internal Interactive math module reconstructs the complete original `0x140aa75a0` update. A compact gzip fixture retains all 28,380,624 original capture bytes: 46,368 inputs across three frames, three original poses, three camera orientations, plane/axis translation, signed rotations, generic scale handles and rejected modes. All return values and both Double output matrices match byte for byte; 36,288 inputs are accepted. The manifest pins the original image, raw and compressed SHA-256 identities. Scale branches are a generic manipulator contract, not evidence that Interactive alignment exposes scaling handles.
+
+Expanded native inputs exposed two errors in the first reconstruction: rotation must begin with an identity delta rather than the old pivot translation, and projected-axis/cross-product sign selects the angular direction. The Ghidra pseudocode omitted that SSE sign branch. Original assembly and runtime outputs determine the implemented behavior.
+
+The complete original As Current View callback `0x140549cf0` supplied 104 matrix/event captures. Its view-point input is rounded to Float32 before composing the negative-anchor translation. The renderer getters and bound-setting procedure identify that point as the view bounds midpoint, distinct from a camera eye. Camera pan remains part of the returned view frame. The numerical composition is verified; an end-to-end application camera adapter is still pending.
+
+Additional direct native probes executed 51 standard-view mode/frame combinations in `0x1408a9740` and 34 base-frame/reset combinations through `0x1408a9ac0` plus its original virtual mode method. The retained `interactive-reset-view-native.json` preserves the latter original outputs, including signed zero and Double matrix bits. Static assembly evidence for the mode method is `ev_0801ac48f8b94a09faed41913c41b6a099ad40843eb4560ad837f964a34dea8f`.
+
+The ordinary As Current View reset uses mode 2 and returns identity. The alternate up-axis path uses mode 4 and retains off-diagonal magnitude `4.371139000186241e-8`: its right-angle rotation constant is a Float32-rounded angle promoted to Double. The implementation composes the original base, rigid inversions and corrected rotation instead of replacing the result with identity. Both paths match all 96 output bytes. These probes use private renderer storage and the original numerical callees; they do not execute a native window, complete viewport publication or geometry Apply/Accept.
+
+The exported rotation helper shares the already-verified Fine Align arithmetic; its operation order is unchanged. The new module is internal and not registered as a user command or an MCP math tool. It does not enable Interactive alignment. Full GUI/MCP preview ownership, native handle eligibility, immutable GPU pose updates, one-time Accept publication, mirrored display and Cancel/Undo behavior still require integration and verification.
+
+## Mesh pose-controller fast path
+
+A further 72 direct executions of original `0x1405490c0` cover zero, one and two mesh targets; drag and step refresh flags; identity, translation and two rotation deltas; and three existing stored poses. Static trace evidence is `ev_5bc4fef47e867bad0cd57e5f4c1e16e8ea5be0741051d985410bd639a9183366`. The retained [controller capture](evidence/interactive-pose-controller-native.json) records every stored pose, pivot, dirty flag and adapter call.
+
+The complete mesh-only controller executes original matrix/pivot arithmetic with controlled interface resolution, world-bounds getters and redraw callbacks. All captured stored poses match the application's existing shared `composeCloudPose(delta, previous)` byte for byte. Drag mode makes zero bounds-getter calls. Step mode makes 36 across the captured target combinations, one per target per call. No local-bounds rebuild callback is reached, and the separate sentinel payload is preserved. These observations verify the controller's branch and pose contract; the bounds values are adapters, not native bounds computed from real scan geometry. CAD branches, Accept geometry baking, rendering and history remain outside this probe.
+
+### Kernel checkpoint validation
+
+`npm run build` passed with no warnings/errors and retained application fingerprint `scanforge-704dc834947a5bb2`; the unused internal kernel adds no active UI behavior. Focused kernel/control/refinement validation passed 922 tests. The complete suite with `SCANFORGE_ALIGNMENT_EXAMPLES` set to the supplied folder passed 29,011 tests across 370 files, with no skips. The command allowed one retry while retaining the existing test timeouts; no failing or retrying cases were reported. The full official-SDK/browser smoke passed against this same application build, including GUI/MCP axis parity, viewport picks and history. A source-derived bundled check additionally matches all 72 native pose-controller cases. Scoped formatting, UTF-8, JSON readback and compressed-fixture digests passed. Native probe mappings, disposable browsers and bridge processes exited; port 5173 remains available for the owner. Interactive itself remains gated until the complete shared session is integrated.

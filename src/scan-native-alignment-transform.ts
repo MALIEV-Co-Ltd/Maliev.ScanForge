@@ -178,7 +178,7 @@ export function nativeCorrectAlignmentRotation(
   return result;
 }
 
-function rotate(
+export function nativeRotateAlignmentFrame(
   matrix: readonly number[],
   angle: number,
   axis: readonly number[],
@@ -246,7 +246,15 @@ export function nativeAlignmentSixTransform(
   const angles = translationOnly
     ? [0, 0, 0]
     : parameters.slice(3).map((value) => value - Math.PI / 2);
-  matrix = rotate(matrix, angles[2], [0, 0, 1]);
-  matrix = rotate(matrix, angles[1], [matrix[1], matrix[5], matrix[9]]);
-  return rotate(matrix, angles[0], [matrix[0], matrix[4], matrix[8]]);
+  matrix = nativeRotateAlignmentFrame(matrix, angles[2], [0, 0, 1]);
+  matrix = nativeRotateAlignmentFrame(matrix, angles[1], [
+    matrix[1],
+    matrix[5],
+    matrix[9],
+  ]);
+  return nativeRotateAlignmentFrame(matrix, angles[0], [
+    matrix[0],
+    matrix[4],
+    matrix[8],
+  ]);
 }
