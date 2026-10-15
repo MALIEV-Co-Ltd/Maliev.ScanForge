@@ -42,6 +42,87 @@ export interface InteractiveDragInput {
   view?: readonly number[];
 }
 const f = Math.fround;
+/** Original 20FC50: Float32 length, Double reciprocal/product, Float32 stores. */
+export function nativeInteractiveNormalizeMovement(
+  values: readonly number[],
+): number[] {
+  if (
+    values.length !== 3 ||
+    !values.every((value) => Number.isFinite(f(value)))
+  )
+    throw new Error(
+      "Interactive movement requires three finite Float32 values.",
+    );
+  const [x, y, z] = values.map(f);
+  const length = f(Math.sqrt(f(f(f(x * x) + f(y * y)) + f(z * z))));
+  if (length >= Number.EPSILON) {
+    const reciprocal = 1 / length;
+    return [f(x * reciprocal), f(y * reciprocal), f(z * reciprocal)];
+  }
+  return [x, y, z];
+}
+/** Original 69E220 before the manipulator call. Pixel-to-plane conversion belongs to the renderer. */
+export function nativeInteractiveMovement(input: {
+  mode: number;
+  strength: number;
+  previousPixel: readonly number[];
+  currentPixel: readonly number[];
+  waiting: boolean;
+  previousPlane?: readonly number[];
+  currentPlane?: readonly number[];
+  view: readonly number[];
+}): { waiting: boolean; movement: number[] | null } {
+  for (const point of [input.previousPixel, input.currentPixel])
+    if (
+      point.length !== 2 ||
+      point.some(
+        (v) => !Number.isInteger(v) || v < -2147483648 || v > 2147483647,
+      )
+    )
+      throw new Error(
+        "Interactive pointer coordinates must be signed integer pixels.",
+      );
+  if (
+    !Number.isInteger(input.mode) ||
+    !Number.isInteger(input.strength) ||
+    input.strength < 0 ||
+    input.strength > 100 ||
+    typeof input.waiting !== "boolean"
+  )
+    throw new Error(
+      "Interactive movement requires an integer handle and drag strength from zero to 100.",
+    );
+  const waiting =
+    input.waiting &&
+    ![0, 1].some(
+      (a) => Math.abs((input.previousPixel[a] - input.currentPixel[a]) | 0) > 7,
+    );
+  if (waiting || input.mode < 1 || input.mode > 15)
+    return { waiting, movement: null };
+  const { previousPlane: previous, currentPlane: current, view } = input;
+  if (
+    !previous ||
+    !current ||
+    previous.length !== 2 ||
+    current.length !== 2 ||
+    ![...previous, ...current].every((v) => Number.isFinite(f(v))) ||
+    view.length !== 12 ||
+    !view.every(Number.isFinite)
+  )
+    throw new Error(
+      "Interactive movement requires finite renderer plane coordinates and a view frame.",
+    );
+  const x = f(f(current[0]) - f(previous[0])) - 0,
+    y = f(f(current[1]) - f(previous[1])) - 0;
+  let movement = [
+    f(y * view[4] + x * view[0] + view[8] * 0),
+    f(y * view[5] + x * view[1] + view[9] * 0),
+    f(y * view[6] + x * view[2] + view[10] * 0),
+  ];
+  if (input.mode > 6) movement = nativeInteractiveNormalizeMovement(movement);
+  const strength = f(f(input.strength) / 100);
+  return { waiting: false, movement: movement.map((v) => f(v * strength)) };
+}
 function screenDirection(x: number, y: number, z: number) {
   const length = f(Math.sqrt(f(f(f(y * y) + f(x * x)) + f(z * z))));
   if (length >= Number.EPSILON) {
@@ -200,4 +281,81 @@ export function nativeInteractiveResetView(alternateUpAxis: boolean): number[] {
   frame = nativeDatumInverseFrame(frame);
   frame[3] = frame[7] = frame[11] = 0;
   return frame;
+}
+
+/** Four original step callbacks; unlike gizmo rotations these act about world origin. */
+export function nativeInteractiveStep(
+  kind:
+    | "rotatePositive"
+    | "rotateNegative"
+    | "translatePositive"
+    | "translateNegative",
+  axis: number,
+  value: number,
+  unitScale = 1,
+): number[] {
+  if (
+    ![
+      "rotatePositive",
+      "rotateNegative",
+      "translatePositive",
+      "translateNegative",
+    ].includes(kind) ||
+    !Number.isInteger(axis) ||
+    !Number.isFinite(Math.fround(value)) ||
+    !Number.isFinite(unitScale) ||
+    !Number.isFinite(Math.fround(Math.fround(value) * unitScale))
+  )
+    throw new Error(
+      "Interactive step requires a supported control and finite Float32 values.",
+    );
+  const m = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+  const sign = kind.endsWith("Negative") ? -1 : 1;
+  const step = sign * Math.abs(Math.fround(value));
+  if (kind.startsWith("translate")) {
+    const value = Math.fround(step * unitScale);
+    if (axis >= 0 && axis <= 2) {
+      const p = [0, 0, 0];
+      p[axis] = value;
+      for (let r = 0; r < 3; r++)
+        m[r * 4 + 3] +=
+          m[r * 4] * p[0] + m[r * 4 + 1] * p[1] + m[r * 4 + 2] * p[2];
+    }
+    return m;
+  }
+  const angle = step * 0.017453292519943295;
+  const cosine = Math.cos(angle),
+    sine = Math.sin(angle);
+  if (axis === 0) {
+    const b = m[1],
+      f = m[6],
+      k = m[10];
+    m[1] = b * cosine + m[2] * sine;
+    m[6] = f * cosine - m[5] * sine;
+    m[5] = m[5] * cosine + f * sine;
+    m[10] = k * cosine - m[9] * sine;
+    m[2] = m[2] * cosine - b * sine;
+    m[9] = m[9] * cosine + k * sine;
+  } else if (axis === 1) {
+    const f = m[6],
+      k = m[10],
+      a = m[0];
+    m[6] = f * cosine + m[4] * sine;
+    m[0] = a * cosine - m[2] * sine;
+    m[10] = k * cosine + m[8] * sine;
+    m[4] = m[4] * cosine - f * sine;
+    m[2] = a * sine + m[2] * cosine;
+    m[8] = m[8] * cosine - k * sine;
+  } else if (axis === 2 && Math.abs(angle) >= 1e-5) {
+    const f = m[5],
+      j = m[9],
+      a = m[0];
+    m[5] = f * cosine - m[4] * sine;
+    m[9] = j * cosine - m[8] * sine;
+    m[8] = m[8] * cosine + j * sine;
+    m[0] = a * cosine + m[1] * sine;
+    m[4] = m[4] * cosine + f * sine;
+    m[1] = m[1] * cosine - a * sine;
+  }
+  return m;
 }

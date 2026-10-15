@@ -1,58 +1,19 @@
 import { expect, it } from "vitest";
 import native from "./fixtures/interactive-alignment-native.json";
 
-// Independent decoding of the captured callbacks. This is a verification adapter,
-// not a public Interactive operation or a replacement for the native fixture.
+// Exercise the production callback math against the retained native outputs.
+import { nativeInteractiveStep } from "../src/interactive-alignment-math";
 function decodedStep(sample: (typeof native.cases)[number]) {
-  const m = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
-  const sign = sample.kind.endsWith("Negative") ? -1 : 1;
-  const step = sign * Math.abs(Math.fround(sample.input));
-  if (sample.kind.startsWith("translate")) {
-    const value = Math.fround(step * sample.unitScale);
-    if (sample.axis >= 0 && sample.axis <= 2) {
-      const p = [0, 0, 0];
-      p[sample.axis] = value;
-      for (let r = 0; r < 3; r++)
-        m[r * 4 + 3] +=
-          m[r * 4] * p[0] + m[r * 4 + 1] * p[1] + m[r * 4 + 2] * p[2];
-    }
-    return m;
-  }
-  const angle = step * 0.017453292519943295;
-  const cosine = Math.cos(angle),
-    sine = Math.sin(angle);
-  if (sample.axis === 0) {
-    const b = m[1],
-      f = m[6],
-      k = m[10];
-    m[1] = b * cosine + m[2] * sine;
-    m[6] = f * cosine - m[5] * sine;
-    m[5] = m[5] * cosine + f * sine;
-    m[10] = k * cosine - m[9] * sine;
-    m[2] = m[2] * cosine - b * sine;
-    m[9] = m[9] * cosine + k * sine;
-  } else if (sample.axis === 1) {
-    const f = m[6],
-      k = m[10],
-      a = m[0];
-    m[6] = f * cosine + m[4] * sine;
-    m[0] = a * cosine - m[2] * sine;
-    m[10] = k * cosine + m[8] * sine;
-    m[4] = m[4] * cosine - f * sine;
-    m[2] = a * sine + m[2] * cosine;
-    m[8] = m[8] * cosine - k * sine;
-  } else if (sample.axis === 2 && Math.abs(angle) >= 1e-5) {
-    const f = m[5],
-      j = m[9],
-      a = m[0];
-    m[5] = f * cosine - m[4] * sine;
-    m[9] = j * cosine - m[8] * sine;
-    m[8] = m[8] * cosine + j * sine;
-    m[0] = a * cosine + m[1] * sine;
-    m[4] = m[4] * cosine + f * sine;
-    m[1] = m[1] * cosine - a * sine;
-  }
-  return m;
+  return nativeInteractiveStep(
+    sample.kind as
+      | "rotatePositive"
+      | "rotateNegative"
+      | "translatePositive"
+      | "translateNegative",
+    sample.axis,
+    sample.input,
+    sample.unitScale,
+  );
 }
 const bytes = (matrix: number[]) =>
   Buffer.from(new Float64Array(matrix).buffer);
