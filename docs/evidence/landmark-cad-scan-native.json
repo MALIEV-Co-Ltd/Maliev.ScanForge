@@ -1,0 +1,461 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedureRange": ["0x14054d56d", "0x14054d8b3"],
+  "matchingQuery": "0x14088ae10",
+  "cadConfigurations": [
+    {},
+    {
+      "meshes": 2
+    },
+    {
+      "facets": 2
+    },
+    {
+      "meshes": 2,
+      "facets": 2
+    },
+    {
+      "facets": 2,
+      "enabled": false
+    },
+    {
+      "meshes": 2,
+      "facets": 1,
+      "visible": false
+    },
+    {
+      "facets": 2,
+      "repeat": true
+    },
+    {
+      "facets": 1,
+      "fail": true
+    }
+  ],
+  "scope": "Original CAD target expansion followed by scan scene traversal. Controlled CAD query/provider collections, lazy tessellation storage adapter, scene/iterator containers, visibility values, unsupported query result and vector growth. Original mesh wrapper query executes. Eligible CAD roots supplied after the separately verified collector; no tessellation engine, evaluator, combined finalizer, optimizer or UI.",
+  "cases": [
+    {
+      "case": 0,
+      "mode": 0,
+      "cad": [],
+      "scanScene": [],
+      "lazyBuilds": [],
+      "visibilityCalls": [],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": []
+    },
+    {
+      "case": 0,
+      "mode": 1,
+      "cad": [],
+      "scanScene": [],
+      "lazyBuilds": [],
+      "visibilityCalls": [],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": []
+    },
+    {
+      "case": 1,
+      "mode": 0,
+      "cad": [null],
+      "scanScene": [0],
+      "lazyBuilds": [],
+      "visibilityCalls": [],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": []
+    },
+    {
+      "case": 1,
+      "mode": 1,
+      "cad": [null],
+      "scanScene": [0],
+      "lazyBuilds": [],
+      "visibilityCalls": [],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": []
+    },
+    {
+      "case": 2,
+      "mode": 0,
+      "cad": [0],
+      "scanScene": [1],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-0", "object-1"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "geometry-1"],
+      "evaluators": []
+    },
+    {
+      "case": 2,
+      "mode": 1,
+      "cad": [0],
+      "scanScene": [1],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-0", "object-1"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": ["object-1"]
+    },
+    {
+      "case": 3,
+      "mode": 0,
+      "cad": [1],
+      "scanScene": [3],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-1", "object-3"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "listed-1", "null-geometry", "listed-1"],
+      "evaluators": []
+    },
+    {
+      "case": 3,
+      "mode": 1,
+      "cad": [1],
+      "scanScene": [3],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-1", "object-3"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "listed-1", "null-geometry", "listed-1"],
+      "evaluators": []
+    },
+    {
+      "case": 4,
+      "mode": 0,
+      "cad": [2],
+      "scanScene": [4],
+      "lazyBuilds": ["entry-2-0"],
+      "visibilityCalls": ["cad-2"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "facet-2-0", "facet-2-1"],
+      "evaluators": []
+    },
+    {
+      "case": 4,
+      "mode": 1,
+      "cad": [2],
+      "scanScene": [4],
+      "lazyBuilds": ["entry-2-0"],
+      "visibilityCalls": ["cad-2"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "facet-2-0", "facet-2-1"],
+      "evaluators": []
+    },
+    {
+      "case": 5,
+      "mode": 0,
+      "cad": [3],
+      "scanScene": [null],
+      "lazyBuilds": ["entry-3-0"],
+      "visibilityCalls": ["cad-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 5,
+      "mode": 1,
+      "cad": [3],
+      "scanScene": [null],
+      "lazyBuilds": ["entry-3-0"],
+      "visibilityCalls": ["cad-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 6,
+      "mode": 0,
+      "cad": [4],
+      "scanScene": [5],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-4", "object-5"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "null-geometry"],
+      "evaluators": []
+    },
+    {
+      "case": 6,
+      "mode": 1,
+      "cad": [4],
+      "scanScene": [5],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-4", "object-5"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": ["object-5"]
+    },
+    {
+      "case": 7,
+      "mode": 0,
+      "cad": [5],
+      "scanScene": [1, 1, 0, 3, 4, null, 2, 5],
+      "lazyBuilds": [],
+      "visibilityCalls": [
+        "cad-5",
+        "object-1",
+        "object-1",
+        "object-3",
+        "object-2",
+        "object-5"
+      ],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "geometry-1",
+        "geometry-1",
+        "geometry-2",
+        "null-geometry"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 7,
+      "mode": 1,
+      "cad": [5],
+      "scanScene": [1, 1, 0, 3, 4, null, 2, 5],
+      "lazyBuilds": [],
+      "visibilityCalls": [
+        "cad-5",
+        "object-1",
+        "object-1",
+        "object-3",
+        "object-2",
+        "object-5"
+      ],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target"],
+      "evaluators": ["object-1", "object-1", "object-2", "object-5"]
+    },
+    {
+      "case": 8,
+      "mode": 0,
+      "cad": [6],
+      "scanScene": [],
+      "lazyBuilds": ["entry-6-0"],
+      "visibilityCalls": ["cad-6"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "facet-6-0", "facet-6-1", "facet-6-0"],
+      "evaluators": []
+    },
+    {
+      "case": 8,
+      "mode": 1,
+      "cad": [6],
+      "scanScene": [],
+      "lazyBuilds": ["entry-6-0"],
+      "visibilityCalls": ["cad-6"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "facet-6-0", "facet-6-1", "facet-6-0"],
+      "evaluators": []
+    },
+    {
+      "case": 9,
+      "mode": 0,
+      "cad": [7],
+      "scanScene": [0],
+      "lazyBuilds": ["entry-7-0"],
+      "visibilityCalls": ["cad-7"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "null-geometry"],
+      "evaluators": []
+    },
+    {
+      "case": 9,
+      "mode": 1,
+      "cad": [7],
+      "scanScene": [0],
+      "lazyBuilds": ["entry-7-0"],
+      "visibilityCalls": ["cad-7"],
+      "iteratorDestroyed": 1,
+      "geometry": ["prior-cad-target", "null-geometry"],
+      "evaluators": []
+    },
+    {
+      "case": 10,
+      "mode": 0,
+      "cad": [1, 1],
+      "scanScene": [1],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-1", "cad-1", "object-1"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-1",
+        "null-geometry",
+        "listed-1",
+        "listed-1",
+        "null-geometry",
+        "listed-1",
+        "geometry-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 10,
+      "mode": 1,
+      "cad": [1, 1],
+      "scanScene": [1],
+      "lazyBuilds": [],
+      "visibilityCalls": ["cad-1", "cad-1", "object-1"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-1",
+        "null-geometry",
+        "listed-1",
+        "listed-1",
+        "null-geometry",
+        "listed-1"
+      ],
+      "evaluators": ["object-1"]
+    },
+    {
+      "case": 11,
+      "mode": 0,
+      "cad": [2, 2],
+      "scanScene": [3],
+      "lazyBuilds": ["entry-2-0"],
+      "visibilityCalls": ["cad-2", "cad-2", "object-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "facet-2-0",
+        "facet-2-1",
+        "facet-2-0",
+        "facet-2-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 11,
+      "mode": 1,
+      "cad": [2, 2],
+      "scanScene": [3],
+      "lazyBuilds": ["entry-2-0"],
+      "visibilityCalls": ["cad-2", "cad-2", "object-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "facet-2-0",
+        "facet-2-1",
+        "facet-2-0",
+        "facet-2-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 12,
+      "mode": 0,
+      "cad": [3, 1, 5, null, 6, 7],
+      "scanScene": [4],
+      "lazyBuilds": ["entry-3-0", "entry-6-0", "entry-7-0"],
+      "visibilityCalls": ["cad-3", "cad-1", "cad-5", "cad-6", "cad-7"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1",
+        "listed-1",
+        "null-geometry",
+        "listed-1",
+        "facet-6-0",
+        "facet-6-1",
+        "facet-6-0",
+        "null-geometry"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 12,
+      "mode": 1,
+      "cad": [3, 1, 5, null, 6, 7],
+      "scanScene": [4],
+      "lazyBuilds": ["entry-3-0", "entry-6-0", "entry-7-0"],
+      "visibilityCalls": ["cad-3", "cad-1", "cad-5", "cad-6", "cad-7"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1",
+        "listed-1",
+        "null-geometry",
+        "listed-1",
+        "facet-6-0",
+        "facet-6-1",
+        "facet-6-0",
+        "null-geometry"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 13,
+      "mode": 0,
+      "cad": [7, 7, 6, 3],
+      "scanScene": [null],
+      "lazyBuilds": ["entry-7-0", "entry-7-0", "entry-6-0", "entry-3-0"],
+      "visibilityCalls": ["cad-7", "cad-7", "cad-6", "cad-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "null-geometry",
+        "null-geometry",
+        "facet-6-0",
+        "facet-6-1",
+        "facet-6-0",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1"
+      ],
+      "evaluators": []
+    },
+    {
+      "case": 13,
+      "mode": 1,
+      "cad": [7, 7, 6, 3],
+      "scanScene": [null],
+      "lazyBuilds": ["entry-7-0", "entry-7-0", "entry-6-0", "entry-3-0"],
+      "visibilityCalls": ["cad-7", "cad-7", "cad-6", "cad-3"],
+      "iteratorDestroyed": 1,
+      "geometry": [
+        "prior-cad-target",
+        "null-geometry",
+        "null-geometry",
+        "facet-6-0",
+        "facet-6-1",
+        "facet-6-0",
+        "listed-3",
+        "null-geometry",
+        "listed-3",
+        "facet-3-0",
+        "facet-3-1"
+      ],
+      "evaluators": []
+    }
+  ]
+}

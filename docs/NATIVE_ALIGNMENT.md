@@ -1836,3 +1836,50 @@ combined finalizer, optimizer or installed UI. No application source or MCP
 contract changes in this slice. Application build and test targets are therefore
 not applicable; JSON parsing, image identity, native ordered outputs, cleanup,
 formatting and whitespace are the validation boundaries.
+
+## CAD expansion assembled with scan traversal
+
+`docs/evidence/landmark-cad-scan-native.json` extends the native execution range
+back to `0x14054d56d`. Twenty-eight cases execute original CAD expansion and then
+the original scan traversal in one call. The supplied CAD-root list represents
+the output of the separately verified eligibility collector; this capture does
+not replace or re-execute that collector. Scene iteration also includes the CAD
+roots, whose controlled queries reject the scan interface.
+
+For each visible CAD root, the caller independently queries two interfaces:
+
+- `0x141155aa8`: virtual slot `0x28` supplies a geometry-pointer vector. Every
+  entry is appended in vector order, including duplicates and null entries.
+- `0x14114bbf0`: virtual slot `0x208` gates a per-entry vector at `+0x2d8` through
+  `+0x2e0`. For each entry, the caller reads its cached geometry at `+0x600`.
+  A nonzero cache is reused. A zero cache calls `0x140499b90`, then the caller
+  reads `+0x600` again and appends that result without a null test.
+
+Both interfaces can contribute geometry for the same root. The geometry-pointer
+vector contributes first, followed by per-entry cached geometry. CAD order and
+duplicates are preserved, and the subsequent mode-zero scan geometry is appended
+after those CAD contributions. The alternate scan mode changes only the scan
+list; CAD contributions still enter the combined geometry list.
+
+The lazy-builder adapter records calls and writes declared cache results; the
+tessellation engine itself is not executed. Repeating a successfully built entry
+does not rebuild it. A builder that leaves the cache zero is called again for a
+repeated entry, and null results remain in the collected list. Hidden roots skip
+both providers, and a false per-entry gate skips its cache reads/builds. These
+observations establish reuse and retry conditions, but not invalidation after
+editing a CAD face or an application-level failure policy.
+
+All 28 executions assert geometry order, alternate-object order, visibility-call
+order, lazy-build call order and single iterator destruction. The corpus covers
+empty/null/unsupported roots, each provider separately, both providers together,
+hidden roots, disabled per-entry providers, populated caches, duplicate entries,
+failed cache builds and repeated CAD roots. Original instructions execute with
+controlled query/provider containers, visibility callbacks, vector growth and
+lazy-build storage. The named evaluator, combined finalizer, optimizer, CAD
+tessellation engine and installed UI remain outside this capture.
+
+Both executable allocations were released and the replay process exited. Image
+identity, all native assertions, retained JSON, formatting and whitespace passed.
+No application source or MCP contract changed, so application build/test targets
+are not applicable to this evidence-only slice. Port 5173 continues serving the
+existing application workspace.
