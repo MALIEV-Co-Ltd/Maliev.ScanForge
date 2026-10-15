@@ -1,7 +1,10 @@
 /** Three-dimensional specialization of the original registration eigen solver.
- * Matrices are row-major; eigenvectors occupy columns, sorted by descending value.
+ * Matrices are row-major; eigenvectors occupy columns. Sorting is optional.
  */
-export function nativeAlignmentEigen3(matrix: readonly number[]) {
+export function nativeAlignmentEigen3(
+  matrix: readonly number[],
+  sortDescending = true,
+) {
   if (matrix.length !== 9 || !matrix.every(Number.isFinite))
     throw new Error("Alignment eigen solver requires a finite 3x3 matrix.");
   const a = matrix.slice();
@@ -109,7 +112,7 @@ export function nativeAlignmentEigen3(matrix: readonly number[]) {
       }
     }
   }
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; sortDescending && i < 2; i++) {
     let best = i;
     let value = d[i];
     for (let j = i + 1; j < 3; j++)

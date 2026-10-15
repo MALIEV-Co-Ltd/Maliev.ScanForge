@@ -1,0 +1,5551 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedures": [
+      "0x1405eb330",
+      "0x1405eb790",
+      "0x1405eb930",
+      "0x140aef5a0",
+      "0x140aef7b0"
+    ],
+    "execution": "Complete original point tree and queries over all owner PLY vertex coordinates; controlled 48-byte point carrier with XYZ and zero side fields; no application importer, global controller or UI execution",
+    "treeHashEncoding": "Each allocation-order node: little endian <iiib3xd6dI parent/high/low/axis/split/minXYZ/maxXYZ/pointCount, followed by point IDs as uint32; excludes mutable query visit flags",
+    "patches": [
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327e0",
+        "locations": 1
+      },
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327f0",
+        "locations": 1
+      },
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327c0",
+        "locations": 2
+      },
+      {
+        "address": "0x140d58f36",
+        "original": "ff25f48d1500"
+      },
+      {
+        "address": "0x140143510",
+        "original": "48895c240848"
+      },
+      {
+        "address": "0x14016b1f0",
+        "original": "48895c240848"
+      },
+      {
+        "address": "0x140d5b0f0",
+        "original": "e92fdeffffcc"
+      },
+      {
+        "address": "0x140d58f30",
+        "original": "ff251a8e1500"
+      },
+      {
+        "address": "0x140d5cf70",
+        "original": "ff25b2181500"
+      },
+      {
+        "address": "0x140d5cf76",
+        "original": "ff25b4181500"
+      },
+      {
+        "address": "0x140d5cf7c",
+        "original": "ff25c6181500"
+      },
+      {
+        "address": "0x140d5cfac",
+        "original": "ff25d61b1500"
+      },
+      {
+        "address": "0x140d5cfee",
+        "original": "ff25041c1500"
+      },
+      {
+        "binding": "Identified sqrtf import; six adjacent exports match one ucrtbase ASLR delta",
+        "identification": "global-fine-point-tree-crt-identification.json"
+      },
+      {
+        "address": "0x1401a76d0",
+        "original": "48894c240848"
+      },
+      {
+        "address": "0x140eb1d70",
+        "original": "f027939cfe7f0000",
+        "binding": "Raw retained allocation import; original alignment/header logic preserved"
+      },
+      {
+        "address": "0x14054df00",
+        "original": "40574883ec30"
+      },
+      {
+        "address": "0x140eb2060",
+        "original": "e0c5134001000000",
+        "binding": "Rebase retained same-image CFG check/dispatch pointer; original target body preserved"
+      },
+      {
+        "address": "0x140eb2068",
+        "original": "401ad64001000000",
+        "binding": "Rebase retained same-image CFG check/dispatch pointer; original target body preserved"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "count": 140113,
+      "capacity": 48,
+      "depth": 17,
+      "nodes": 8639,
+      "treeSha256": "b6fff153bc8911bcbee68ea3d0f8c65c7e8feec27d0335bb0748fb41097374f7",
+      "queries": [
+        {
+          "point": [42.50501251220703, 20.050968170166016, -291.4580078125],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [42.50501251220703, 20.050968170166016, -291.4580078125],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "97a9e73a"
+            }
+          ]
+        },
+        {
+          "point": [42.50501251220703, 20.050968170166016, -291.4580078125],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "97a9e73a"
+            },
+            {
+              "id": 371,
+              "distanceBits": "2b713c3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "f8fb873c"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "095fdb3c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "64a17e3d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "d1918d3d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "cec1d93d"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "943a0e3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "4e3f193e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "fe13563e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "fdd9613e"
+            },
+            {
+              "id": 47333,
+              "distanceBits": "a0576d3e"
+            }
+          ]
+        },
+        {
+          "point": [42.50501251220703, 20.050968170166016, -291.4580078125],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "97a9e73a"
+            },
+            {
+              "id": 371,
+              "distanceBits": "2b713c3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "f8fb873c"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "095fdb3c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "64a17e3d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "d1918d3d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "cec1d93d"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "943a0e3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "4e3f193e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "fe13563e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "fdd9613e"
+            },
+            {
+              "id": 47333,
+              "distanceBits": "a0576d3e"
+            },
+            {
+              "id": 46533,
+              "distanceBits": "32e0933e"
+            },
+            {
+              "id": 47195,
+              "distanceBits": "4e629d3e"
+            },
+            {
+              "id": 87192,
+              "distanceBits": "315da63e"
+            },
+            {
+              "id": 48026,
+              "distanceBits": "074ec03e"
+            },
+            {
+              "id": 140053,
+              "distanceBits": "8c8fca3e"
+            },
+            {
+              "id": 47918,
+              "distanceBits": "070acc3e"
+            },
+            {
+              "id": 48028,
+              "distanceBits": "2ccada3e"
+            },
+            {
+              "id": 46148,
+              "distanceBits": "ba36e23e"
+            },
+            {
+              "id": 87190,
+              "distanceBits": "a4c3e23e"
+            },
+            {
+              "id": 46275,
+              "distanceBits": "5dc9e33e"
+            },
+            {
+              "id": 47335,
+              "distanceBits": "187be73e"
+            },
+            {
+              "id": 140054,
+              "distanceBits": "d902f33e"
+            }
+          ]
+        },
+        {
+          "point": [42.50501251220703, 20.050968170166016, -291.4580078125],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "97a9e73a"
+            },
+            {
+              "id": 371,
+              "distanceBits": "2b713c3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "f8fb873c"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "095fdb3c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "64a17e3d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "d1918d3d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "cec1d93d"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "943a0e3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "4e3f193e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "fe13563e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "fdd9613e"
+            },
+            {
+              "id": 47333,
+              "distanceBits": "a0576d3e"
+            },
+            {
+              "id": 46533,
+              "distanceBits": "32e0933e"
+            },
+            {
+              "id": 47195,
+              "distanceBits": "4e629d3e"
+            },
+            {
+              "id": 87192,
+              "distanceBits": "315da63e"
+            },
+            {
+              "id": 48026,
+              "distanceBits": "074ec03e"
+            },
+            {
+              "id": 140053,
+              "distanceBits": "8c8fca3e"
+            },
+            {
+              "id": 47918,
+              "distanceBits": "070acc3e"
+            },
+            {
+              "id": 48028,
+              "distanceBits": "2ccada3e"
+            },
+            {
+              "id": 46148,
+              "distanceBits": "ba36e23e"
+            },
+            {
+              "id": 87190,
+              "distanceBits": "a4c3e23e"
+            },
+            {
+              "id": 46275,
+              "distanceBits": "5dc9e33e"
+            },
+            {
+              "id": 47335,
+              "distanceBits": "187be73e"
+            },
+            {
+              "id": 140054,
+              "distanceBits": "d902f33e"
+            }
+          ]
+        },
+        {
+          "point": [15.769049644470215, 56.65023422241211, -314.66650390625],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [15.769049644470215, 56.65023422241211, -314.66650390625],
+          "radius": 0.05,
+          "nearest": 70056,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 70056,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [15.769049644470215, 56.65023422241211, -314.66650390625],
+          "radius": 0.5,
+          "nearest": 70056,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 70056,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 118496,
+              "distanceBits": "6c30123c"
+            },
+            {
+              "id": 70057,
+              "distanceBits": "456aaa3c"
+            },
+            {
+              "id": 52026,
+              "distanceBits": "d2c6c13c"
+            },
+            {
+              "id": 118823,
+              "distanceBits": "93ef833d"
+            },
+            {
+              "id": 52028,
+              "distanceBits": "c046883d"
+            },
+            {
+              "id": 70002,
+              "distanceBits": "f6c28b3d"
+            },
+            {
+              "id": 118163,
+              "distanceBits": "688f9d3d"
+            },
+            {
+              "id": 9894,
+              "distanceBits": "495fc13d"
+            },
+            {
+              "id": 118495,
+              "distanceBits": "b6b9ed3d"
+            },
+            {
+              "id": 70054,
+              "distanceBits": "1a3f2d3e"
+            },
+            {
+              "id": 118822,
+              "distanceBits": "93613c3e"
+            },
+            {
+              "id": 118162,
+              "distanceBits": "3187473e"
+            },
+            {
+              "id": 70358,
+              "distanceBits": "08b06c3e"
+            },
+            {
+              "id": 70055,
+              "distanceBits": "95037c3e"
+            }
+          ]
+        },
+        {
+          "point": [15.769049644470215, 56.65023422241211, -314.66650390625],
+          "radius": 5,
+          "nearest": 70056,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 70056,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 118496,
+              "distanceBits": "6c30123c"
+            },
+            {
+              "id": 70057,
+              "distanceBits": "456aaa3c"
+            },
+            {
+              "id": 52026,
+              "distanceBits": "d2c6c13c"
+            },
+            {
+              "id": 118823,
+              "distanceBits": "93ef833d"
+            },
+            {
+              "id": 52028,
+              "distanceBits": "c046883d"
+            },
+            {
+              "id": 70002,
+              "distanceBits": "f6c28b3d"
+            },
+            {
+              "id": 118163,
+              "distanceBits": "688f9d3d"
+            },
+            {
+              "id": 9894,
+              "distanceBits": "495fc13d"
+            },
+            {
+              "id": 118495,
+              "distanceBits": "b6b9ed3d"
+            },
+            {
+              "id": 70054,
+              "distanceBits": "1a3f2d3e"
+            },
+            {
+              "id": 118822,
+              "distanceBits": "93613c3e"
+            },
+            {
+              "id": 118162,
+              "distanceBits": "3187473e"
+            },
+            {
+              "id": 70358,
+              "distanceBits": "08b06c3e"
+            },
+            {
+              "id": 70055,
+              "distanceBits": "95037c3e"
+            },
+            {
+              "id": 117830,
+              "distanceBits": "9370853e"
+            },
+            {
+              "id": 9925,
+              "distanceBits": "abcd9d3e"
+            },
+            {
+              "id": 119042,
+              "distanceBits": "846cb73e"
+            },
+            {
+              "id": 117829,
+              "distanceBits": "95bec23e"
+            },
+            {
+              "id": 118161,
+              "distanceBits": "e159e73e"
+            },
+            {
+              "id": 70357,
+              "distanceBits": "7216093f"
+            },
+            {
+              "id": 117485,
+              "distanceBits": "a3060c3f"
+            },
+            {
+              "id": 9843,
+              "distanceBits": "8c560e3f"
+            },
+            {
+              "id": 117486,
+              "distanceBits": "00980e3f"
+            },
+            {
+              "id": 505,
+              "distanceBits": "9859133f"
+            }
+          ]
+        },
+        {
+          "point": [15.769049644470215, 56.65023422241211, -314.66650390625],
+          "radius": 100,
+          "nearest": 70056,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 70056,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 118496,
+              "distanceBits": "6c30123c"
+            },
+            {
+              "id": 70057,
+              "distanceBits": "456aaa3c"
+            },
+            {
+              "id": 52026,
+              "distanceBits": "d2c6c13c"
+            },
+            {
+              "id": 118823,
+              "distanceBits": "93ef833d"
+            },
+            {
+              "id": 52028,
+              "distanceBits": "c046883d"
+            },
+            {
+              "id": 70002,
+              "distanceBits": "f6c28b3d"
+            },
+            {
+              "id": 118163,
+              "distanceBits": "688f9d3d"
+            },
+            {
+              "id": 9894,
+              "distanceBits": "495fc13d"
+            },
+            {
+              "id": 118495,
+              "distanceBits": "b6b9ed3d"
+            },
+            {
+              "id": 70054,
+              "distanceBits": "1a3f2d3e"
+            },
+            {
+              "id": 118822,
+              "distanceBits": "93613c3e"
+            },
+            {
+              "id": 118162,
+              "distanceBits": "3187473e"
+            },
+            {
+              "id": 70358,
+              "distanceBits": "08b06c3e"
+            },
+            {
+              "id": 70055,
+              "distanceBits": "95037c3e"
+            },
+            {
+              "id": 117830,
+              "distanceBits": "9370853e"
+            },
+            {
+              "id": 9925,
+              "distanceBits": "abcd9d3e"
+            },
+            {
+              "id": 119042,
+              "distanceBits": "846cb73e"
+            },
+            {
+              "id": 117829,
+              "distanceBits": "95bec23e"
+            },
+            {
+              "id": 118161,
+              "distanceBits": "e159e73e"
+            },
+            {
+              "id": 70357,
+              "distanceBits": "7216093f"
+            },
+            {
+              "id": 117485,
+              "distanceBits": "a3060c3f"
+            },
+            {
+              "id": 9843,
+              "distanceBits": "8c560e3f"
+            },
+            {
+              "id": 117486,
+              "distanceBits": "00980e3f"
+            },
+            {
+              "id": 505,
+              "distanceBits": "9859133f"
+            }
+          ]
+        },
+        {
+          "point": [30.595556259155273, -1.680546760559082, -283.273681640625],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [30.595556259155273, -1.680546760559082, -283.273681640625],
+          "radius": 0.05,
+          "nearest": 140112,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 140112,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 141,
+              "distanceBits": "cc03403a"
+            },
+            {
+              "id": 32245,
+              "distanceBits": "fe159f3a"
+            }
+          ]
+        },
+        {
+          "point": [30.595556259155273, -1.680546760559082, -283.273681640625],
+          "radius": 0.5,
+          "nearest": 140112,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 140112,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 141,
+              "distanceBits": "cc03403a"
+            },
+            {
+              "id": 32245,
+              "distanceBits": "fe159f3a"
+            },
+            {
+              "id": 142,
+              "distanceBits": "c08d783b"
+            },
+            {
+              "id": 31971,
+              "distanceBits": "7199443d"
+            },
+            {
+              "id": 140111,
+              "distanceBits": "00a14c3d"
+            },
+            {
+              "id": 32448,
+              "distanceBits": "2f86983d"
+            },
+            {
+              "id": 32444,
+              "distanceBits": "147bc23d"
+            },
+            {
+              "id": 140,
+              "distanceBits": "3f59c43d"
+            },
+            {
+              "id": 31968,
+              "distanceBits": "bf86f43d"
+            },
+            {
+              "id": 140109,
+              "distanceBits": "e2890f3e"
+            },
+            {
+              "id": 32443,
+              "distanceBits": "f21e2b3e"
+            }
+          ]
+        },
+        {
+          "point": [30.595556259155273, -1.680546760559082, -283.273681640625],
+          "radius": 5,
+          "nearest": 140112,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 140112,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 141,
+              "distanceBits": "cc03403a"
+            },
+            {
+              "id": 32245,
+              "distanceBits": "fe159f3a"
+            },
+            {
+              "id": 142,
+              "distanceBits": "c08d783b"
+            },
+            {
+              "id": 31971,
+              "distanceBits": "7199443d"
+            },
+            {
+              "id": 140111,
+              "distanceBits": "00a14c3d"
+            },
+            {
+              "id": 32448,
+              "distanceBits": "2f86983d"
+            },
+            {
+              "id": 32444,
+              "distanceBits": "147bc23d"
+            },
+            {
+              "id": 140,
+              "distanceBits": "3f59c43d"
+            },
+            {
+              "id": 31968,
+              "distanceBits": "bf86f43d"
+            },
+            {
+              "id": 140109,
+              "distanceBits": "e2890f3e"
+            },
+            {
+              "id": 32443,
+              "distanceBits": "f21e2b3e"
+            },
+            {
+              "id": 143,
+              "distanceBits": "41e5813e"
+            },
+            {
+              "id": 32381,
+              "distanceBits": "dbed833e"
+            },
+            {
+              "id": 140110,
+              "distanceBits": "5d0a8e3e"
+            },
+            {
+              "id": 31908,
+              "distanceBits": "88f09d3e"
+            },
+            {
+              "id": 31722,
+              "distanceBits": "bb0ea23e"
+            },
+            {
+              "id": 144,
+              "distanceBits": "644ea43e"
+            },
+            {
+              "id": 32382,
+              "distanceBits": "e6c8b23e"
+            },
+            {
+              "id": 32446,
+              "distanceBits": "800bc53e"
+            },
+            {
+              "id": 139,
+              "distanceBits": "d48df13e"
+            },
+            {
+              "id": 314,
+              "distanceBits": "9010f93e"
+            },
+            {
+              "id": 131582,
+              "distanceBits": "2da8013f"
+            },
+            {
+              "id": 31446,
+              "distanceBits": "eeb7023f"
+            },
+            {
+              "id": 32379,
+              "distanceBits": "67290f3f"
+            }
+          ]
+        },
+        {
+          "point": [30.595556259155273, -1.680546760559082, -283.273681640625],
+          "radius": 100,
+          "nearest": 140112,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 140112,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 141,
+              "distanceBits": "cc03403a"
+            },
+            {
+              "id": 32245,
+              "distanceBits": "fe159f3a"
+            },
+            {
+              "id": 142,
+              "distanceBits": "c08d783b"
+            },
+            {
+              "id": 31971,
+              "distanceBits": "7199443d"
+            },
+            {
+              "id": 140111,
+              "distanceBits": "00a14c3d"
+            },
+            {
+              "id": 32448,
+              "distanceBits": "2f86983d"
+            },
+            {
+              "id": 32444,
+              "distanceBits": "147bc23d"
+            },
+            {
+              "id": 140,
+              "distanceBits": "3f59c43d"
+            },
+            {
+              "id": 31968,
+              "distanceBits": "bf86f43d"
+            },
+            {
+              "id": 140109,
+              "distanceBits": "e2890f3e"
+            },
+            {
+              "id": 32443,
+              "distanceBits": "f21e2b3e"
+            },
+            {
+              "id": 143,
+              "distanceBits": "41e5813e"
+            },
+            {
+              "id": 32381,
+              "distanceBits": "dbed833e"
+            },
+            {
+              "id": 140110,
+              "distanceBits": "5d0a8e3e"
+            },
+            {
+              "id": 31908,
+              "distanceBits": "88f09d3e"
+            },
+            {
+              "id": 31722,
+              "distanceBits": "bb0ea23e"
+            },
+            {
+              "id": 144,
+              "distanceBits": "644ea43e"
+            },
+            {
+              "id": 32382,
+              "distanceBits": "e6c8b23e"
+            },
+            {
+              "id": 32446,
+              "distanceBits": "800bc53e"
+            },
+            {
+              "id": 139,
+              "distanceBits": "d48df13e"
+            },
+            {
+              "id": 314,
+              "distanceBits": "9010f93e"
+            },
+            {
+              "id": 131582,
+              "distanceBits": "2da8013f"
+            },
+            {
+              "id": 31446,
+              "distanceBits": "eeb7023f"
+            },
+            {
+              "id": 32379,
+              "distanceBits": "67290f3f"
+            }
+          ]
+        },
+        {
+          "point": [-17.10873794555664, 7.068721294403076, -312.3108215332031],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [-17.10873794555664, 7.068721294403076, -312.3108215332031],
+          "radius": 0.05,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [-17.10873794555664, 7.068721294403076, -312.3108215332031],
+          "radius": 0.5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104830,
+              "distanceBits": "3417773d"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "7f6f783d"
+            },
+            {
+              "id": 104456,
+              "distanceBits": "53a5783d"
+            },
+            {
+              "id": 104458,
+              "distanceBits": "c739e43d"
+            },
+            {
+              "id": 105184,
+              "distanceBits": "f3f5f23d"
+            },
+            {
+              "id": 105182,
+              "distanceBits": "26ff173e"
+            },
+            {
+              "id": 105090,
+              "distanceBits": "a419363e"
+            },
+            {
+              "id": 104395,
+              "distanceBits": "3233503e"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "faf7703e"
+            },
+            {
+              "id": 104799,
+              "distanceBits": "97d6733e"
+            },
+            {
+              "id": 104828,
+              "distanceBits": "b9a27d3e"
+            }
+          ]
+        },
+        {
+          "point": [-17.10873794555664, 7.068721294403076, -312.3108215332031],
+          "radius": 5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104830,
+              "distanceBits": "3417773d"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "7f6f783d"
+            },
+            {
+              "id": 104456,
+              "distanceBits": "53a5783d"
+            },
+            {
+              "id": 104458,
+              "distanceBits": "c739e43d"
+            },
+            {
+              "id": 105184,
+              "distanceBits": "f3f5f23d"
+            },
+            {
+              "id": 105182,
+              "distanceBits": "26ff173e"
+            },
+            {
+              "id": 105090,
+              "distanceBits": "a419363e"
+            },
+            {
+              "id": 104395,
+              "distanceBits": "3233503e"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "faf7703e"
+            },
+            {
+              "id": 104799,
+              "distanceBits": "97d6733e"
+            },
+            {
+              "id": 104828,
+              "distanceBits": "b9a27d3e"
+            },
+            {
+              "id": 104119,
+              "distanceBits": "4e78913e"
+            },
+            {
+              "id": 104459,
+              "distanceBits": "8f07923e"
+            },
+            {
+              "id": 104739,
+              "distanceBits": "f4929e3e"
+            },
+            {
+              "id": 105168,
+              "distanceBits": "5f07a53e"
+            },
+            {
+              "id": 104120,
+              "distanceBits": "1aefa83e"
+            },
+            {
+              "id": 105091,
+              "distanceBits": "d01cb43e"
+            },
+            {
+              "id": 104139,
+              "distanceBits": "bc0cbe3e"
+            },
+            {
+              "id": 105540,
+              "distanceBits": "1310d03e"
+            },
+            {
+              "id": 105537,
+              "distanceBits": "d135d13e"
+            },
+            {
+              "id": 104389,
+              "distanceBits": "e03de13e"
+            },
+            {
+              "id": 105543,
+              "distanceBits": "e4bd003f"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "8a7b053f"
+            },
+            {
+              "id": 104460,
+              "distanceBits": "0d1a143f"
+            },
+            {
+              "id": 105797,
+              "distanceBits": "8751193f"
+            }
+          ]
+        },
+        {
+          "point": [-17.10873794555664, 7.068721294403076, -312.3108215332031],
+          "radius": 100,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104830,
+              "distanceBits": "3417773d"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "7f6f783d"
+            },
+            {
+              "id": 104456,
+              "distanceBits": "53a5783d"
+            },
+            {
+              "id": 104458,
+              "distanceBits": "c739e43d"
+            },
+            {
+              "id": 105184,
+              "distanceBits": "f3f5f23d"
+            },
+            {
+              "id": 105182,
+              "distanceBits": "26ff173e"
+            },
+            {
+              "id": 105090,
+              "distanceBits": "a419363e"
+            },
+            {
+              "id": 104395,
+              "distanceBits": "3233503e"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "faf7703e"
+            },
+            {
+              "id": 104799,
+              "distanceBits": "97d6733e"
+            },
+            {
+              "id": 104828,
+              "distanceBits": "b9a27d3e"
+            },
+            {
+              "id": 104119,
+              "distanceBits": "4e78913e"
+            },
+            {
+              "id": 104459,
+              "distanceBits": "8f07923e"
+            },
+            {
+              "id": 104739,
+              "distanceBits": "f4929e3e"
+            },
+            {
+              "id": 105168,
+              "distanceBits": "5f07a53e"
+            },
+            {
+              "id": 104120,
+              "distanceBits": "1aefa83e"
+            },
+            {
+              "id": 105091,
+              "distanceBits": "d01cb43e"
+            },
+            {
+              "id": 104139,
+              "distanceBits": "bc0cbe3e"
+            },
+            {
+              "id": 105540,
+              "distanceBits": "1310d03e"
+            },
+            {
+              "id": 105537,
+              "distanceBits": "d135d13e"
+            },
+            {
+              "id": 104389,
+              "distanceBits": "e03de13e"
+            },
+            {
+              "id": 105543,
+              "distanceBits": "e4bd003f"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "8a7b053f"
+            },
+            {
+              "id": 104460,
+              "distanceBits": "0d1a143f"
+            },
+            {
+              "id": 105797,
+              "distanceBits": "8751193f"
+            }
+          ]
+        },
+        {
+          "point": [19.9250431060791, 17.17806053161621, -296.7281799316406],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [19.9250431060791, 17.17806053161621, -296.7281799316406],
+          "radius": 0.05,
+          "nearest": -1,
+          "distanceBits": "9a9999999999a93f",
+          "neighbours": []
+        },
+        {
+          "point": [19.9250431060791, 17.17806053161621, -296.7281799316406],
+          "radius": 0.5,
+          "nearest": -1,
+          "distanceBits": "000000000000e03f",
+          "neighbours": []
+        },
+        {
+          "point": [19.9250431060791, 17.17806053161621, -296.7281799316406],
+          "radius": 5,
+          "nearest": -1,
+          "distanceBits": "0000000000001440",
+          "neighbours": []
+        },
+        {
+          "point": [19.9250431060791, 17.17806053161621, -296.7281799316406],
+          "radius": 100,
+          "nearest": 73505,
+          "distanceBits": "dc5f2822c70d2d40",
+          "neighbours": [
+            {
+              "id": 73505,
+              "distanceBits": "f6075343"
+            },
+            {
+              "id": 73813,
+              "distanceBits": "76705343"
+            },
+            {
+              "id": 73510,
+              "distanceBits": "d8bf5343"
+            },
+            {
+              "id": 73504,
+              "distanceBits": "c7015443"
+            },
+            {
+              "id": 73208,
+              "distanceBits": "ff015443"
+            },
+            {
+              "id": 73201,
+              "distanceBits": "b8705443"
+            },
+            {
+              "id": 73814,
+              "distanceBits": "02805443"
+            },
+            {
+              "id": 73811,
+              "distanceBits": "cf475543"
+            },
+            {
+              "id": 72888,
+              "distanceBits": "fc8a5543"
+            },
+            {
+              "id": 73211,
+              "distanceBits": "9bcc5543"
+            },
+            {
+              "id": 73513,
+              "distanceBits": "e2e25543"
+            },
+            {
+              "id": 73203,
+              "distanceBits": "f8f85543"
+            },
+            {
+              "id": 74130,
+              "distanceBits": "1b1a5643"
+            },
+            {
+              "id": 72695,
+              "distanceBits": "d21a5643"
+            },
+            {
+              "id": 73503,
+              "distanceBits": "7b335643"
+            },
+            {
+              "id": 74133,
+              "distanceBits": "3b615643"
+            },
+            {
+              "id": 73766,
+              "distanceBits": "a2e25643"
+            },
+            {
+              "id": 72891,
+              "distanceBits": "daf75643"
+            },
+            {
+              "id": 73809,
+              "distanceBits": "d1205743"
+            },
+            {
+              "id": 72464,
+              "distanceBits": "5bc25743"
+            },
+            {
+              "id": 74129,
+              "distanceBits": "86c85743"
+            },
+            {
+              "id": 74403,
+              "distanceBits": "5df45743"
+            },
+            {
+              "id": 72456,
+              "distanceBits": "1a0d5843"
+            },
+            {
+              "id": 73515,
+              "distanceBits": "f53b5843"
+            },
+            {
+              "id": 73214,
+              "distanceBits": "123f5843"
+            }
+          ]
+        },
+        {
+          "point": [42.51501251220703, 20.030968170166016, -291.4280078125],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [42.51501251220703, 20.030968170166016, -291.4280078125],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "3e302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "3c7db73a"
+            }
+          ]
+        },
+        {
+          "point": [42.51501251220703, 20.030968170166016, -291.4280078125],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "3e302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "3c7db73a"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "1abcc43b"
+            },
+            {
+              "id": 371,
+              "distanceBits": "6577f23b"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "6a6bbc3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "3353d33c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "7fdf473d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "2ad9b23d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "75f0013e"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "8f921a3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "c759333e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "9684473e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "8c92753e"
+            }
+          ]
+        },
+        {
+          "point": [42.51501251220703, 20.030968170166016, -291.4280078125],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "3e302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "3c7db73a"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "1abcc43b"
+            },
+            {
+              "id": 371,
+              "distanceBits": "6577f23b"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "6a6bbc3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "3353d33c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "7fdf473d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "2ad9b23d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "75f0013e"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "8f921a3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "c759333e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "9684473e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "8c92753e"
+            },
+            {
+              "id": 47333,
+              "distanceBits": "5f75813e"
+            },
+            {
+              "id": 46533,
+              "distanceBits": "d2bc893e"
+            },
+            {
+              "id": 47195,
+              "distanceBits": "28fe9c3e"
+            },
+            {
+              "id": 140053,
+              "distanceBits": "fcbdb73e"
+            },
+            {
+              "id": 87192,
+              "distanceBits": "cf46b93e"
+            },
+            {
+              "id": 46148,
+              "distanceBits": "88c5ce3e"
+            },
+            {
+              "id": 48026,
+              "distanceBits": "2f70d63e"
+            },
+            {
+              "id": 46275,
+              "distanceBits": "c7b8d63e"
+            },
+            {
+              "id": 47918,
+              "distanceBits": "2158dc3e"
+            },
+            {
+              "id": 140054,
+              "distanceBits": "ce5ede3e"
+            },
+            {
+              "id": 48028,
+              "distanceBits": "f835f13e"
+            },
+            {
+              "id": 47335,
+              "distanceBits": "b12bf33e"
+            },
+            {
+              "id": 87190,
+              "distanceBits": "77d1f83e"
+            }
+          ]
+        },
+        {
+          "point": [42.51501251220703, 20.030968170166016, -291.4280078125],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "3e302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "3c7db73a"
+            },
+            {
+              "id": 47184,
+              "distanceBits": "1abcc43b"
+            },
+            {
+              "id": 371,
+              "distanceBits": "6577f23b"
+            },
+            {
+              "id": 46637,
+              "distanceBits": "6a6bbc3c"
+            },
+            {
+              "id": 1993,
+              "distanceBits": "3353d33c"
+            },
+            {
+              "id": 373,
+              "distanceBits": "7fdf473d"
+            },
+            {
+              "id": 1984,
+              "distanceBits": "2ad9b23d"
+            },
+            {
+              "id": 47332,
+              "distanceBits": "75f0013e"
+            },
+            {
+              "id": 47192,
+              "distanceBits": "8f921a3e"
+            },
+            {
+              "id": 1954,
+              "distanceBits": "c759333e"
+            },
+            {
+              "id": 372,
+              "distanceBits": "9684473e"
+            },
+            {
+              "id": 47784,
+              "distanceBits": "8c92753e"
+            },
+            {
+              "id": 47333,
+              "distanceBits": "5f75813e"
+            },
+            {
+              "id": 46533,
+              "distanceBits": "d2bc893e"
+            },
+            {
+              "id": 47195,
+              "distanceBits": "28fe9c3e"
+            },
+            {
+              "id": 140053,
+              "distanceBits": "fcbdb73e"
+            },
+            {
+              "id": 87192,
+              "distanceBits": "cf46b93e"
+            },
+            {
+              "id": 46148,
+              "distanceBits": "88c5ce3e"
+            },
+            {
+              "id": 48026,
+              "distanceBits": "2f70d63e"
+            },
+            {
+              "id": 46275,
+              "distanceBits": "c7b8d63e"
+            },
+            {
+              "id": 47918,
+              "distanceBits": "2158dc3e"
+            },
+            {
+              "id": 140054,
+              "distanceBits": "ce5ede3e"
+            },
+            {
+              "id": 48028,
+              "distanceBits": "f835f13e"
+            },
+            {
+              "id": 47335,
+              "distanceBits": "b12bf33e"
+            },
+            {
+              "id": 87190,
+              "distanceBits": "77d1f83e"
+            }
+          ]
+        }
+      ],
+      "buildSeconds": 0.11071619999711402,
+      "querySeconds": 0.0017707000079099089
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "count": 1375494,
+      "capacity": 48,
+      "depth": 21,
+      "nodes": 84531,
+      "treeSha256": "e6e4f2f6a41de602e750b6ee8958f60ca17e5f0215b6613ea0d0e2da21c54827",
+      "queries": [
+        {
+          "point": [53.7694091796875, 0.5034375786781311, -277.1621398925781],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [53.7694091796875, 0.5034375786781311, -277.1621398925781],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "39ca723a"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "91c6023b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "ff9a163b"
+            }
+          ]
+        },
+        {
+          "point": [53.7694091796875, 0.5034375786781311, -277.1621398925781],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "39ca723a"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "91c6023b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "ff9a163b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "2b0a743b"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "7ba6a13b"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "cd71b73b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "9f47ec3b"
+            },
+            {
+              "id": 28,
+              "distanceBits": "67ed013c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "70c1163c"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "7a151a3c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "a0dd293c"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "0c88533c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "b74e823c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "5500833c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "d9f58f3c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "2bd5973c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "2921983c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "5c739f3c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "c1d6b13c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "4759bf3c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "4992d03c"
+            },
+            {
+              "id": 1118237,
+              "distanceBits": "66b8d13c"
+            },
+            {
+              "id": 1079499,
+              "distanceBits": "5dd6d63c"
+            },
+            {
+              "id": 1079652,
+              "distanceBits": "9231da3c"
+            }
+          ]
+        },
+        {
+          "point": [53.7694091796875, 0.5034375786781311, -277.1621398925781],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "39ca723a"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "91c6023b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "ff9a163b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "2b0a743b"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "7ba6a13b"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "cd71b73b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "9f47ec3b"
+            },
+            {
+              "id": 28,
+              "distanceBits": "67ed013c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "70c1163c"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "7a151a3c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "a0dd293c"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "0c88533c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "b74e823c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "5500833c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "d9f58f3c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "2bd5973c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "2921983c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "5c739f3c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "c1d6b13c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "4759bf3c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "4992d03c"
+            },
+            {
+              "id": 1118237,
+              "distanceBits": "66b8d13c"
+            },
+            {
+              "id": 1079499,
+              "distanceBits": "5dd6d63c"
+            },
+            {
+              "id": 1079652,
+              "distanceBits": "9231da3c"
+            }
+          ]
+        },
+        {
+          "point": [53.7694091796875, 0.5034375786781311, -277.1621398925781],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "39ca723a"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "91c6023b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "ff9a163b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "2b0a743b"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "7ba6a13b"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "cd71b73b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "9f47ec3b"
+            },
+            {
+              "id": 28,
+              "distanceBits": "67ed013c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "70c1163c"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "7a151a3c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "a0dd293c"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "0c88533c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "b74e823c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "5500833c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "d9f58f3c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "2bd5973c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "2921983c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "5c739f3c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "c1d6b13c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "4759bf3c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "4992d03c"
+            },
+            {
+              "id": 1118237,
+              "distanceBits": "66b8d13c"
+            },
+            {
+              "id": 1079499,
+              "distanceBits": "5dd6d63c"
+            },
+            {
+              "id": 1079652,
+              "distanceBits": "9231da3c"
+            }
+          ]
+        },
+        {
+          "point": [52.458927154541016, 17.7865047454834, -280.05792236328125],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [52.458927154541016, 17.7865047454834, -280.05792236328125],
+          "radius": 0.05,
+          "nearest": 687747,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 687747,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [52.458927154541016, 17.7865047454834, -280.05792236328125],
+          "radius": 0.5,
+          "nearest": 687747,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 687747,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 687392,
+              "distanceBits": "279b2b3b"
+            },
+            {
+              "id": 687746,
+              "distanceBits": "d15dae3b"
+            },
+            {
+              "id": 687744,
+              "distanceBits": "bf15c53b"
+            },
+            {
+              "id": 258682,
+              "distanceBits": "2a62c53b"
+            },
+            {
+              "id": 687741,
+              "distanceBits": "6d75ce3b"
+            },
+            {
+              "id": 687393,
+              "distanceBits": "285ad53b"
+            },
+            {
+              "id": 687390,
+              "distanceBits": "308f093c"
+            },
+            {
+              "id": 256609,
+              "distanceBits": "3638383c"
+            },
+            {
+              "id": 258679,
+              "distanceBits": "27c7383c"
+            },
+            {
+              "id": 687748,
+              "distanceBits": "c2a23c3c"
+            },
+            {
+              "id": 256608,
+              "distanceBits": "4865443c"
+            },
+            {
+              "id": 258680,
+              "distanceBits": "bf894c3c"
+            },
+            {
+              "id": 1340829,
+              "distanceBits": "bdff773c"
+            },
+            {
+              "id": 1370542,
+              "distanceBits": "76707b3c"
+            },
+            {
+              "id": 1340830,
+              "distanceBits": "b939823c"
+            },
+            {
+              "id": 687402,
+              "distanceBits": "ee4b8d3c"
+            },
+            {
+              "id": 1370541,
+              "distanceBits": "5671ab3c"
+            },
+            {
+              "id": 687388,
+              "distanceBits": "5b0fb13c"
+            },
+            {
+              "id": 687745,
+              "distanceBits": "7a7eb43c"
+            },
+            {
+              "id": 1370515,
+              "distanceBits": "00c5ba3c"
+            },
+            {
+              "id": 687389,
+              "distanceBits": "8673cb3c"
+            },
+            {
+              "id": 687742,
+              "distanceBits": "d5b8cc3c"
+            },
+            {
+              "id": 687398,
+              "distanceBits": "bf88ce3c"
+            },
+            {
+              "id": 687739,
+              "distanceBits": "ca27da3c"
+            }
+          ]
+        },
+        {
+          "point": [52.458927154541016, 17.7865047454834, -280.05792236328125],
+          "radius": 5,
+          "nearest": 687747,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 687747,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 687392,
+              "distanceBits": "279b2b3b"
+            },
+            {
+              "id": 687746,
+              "distanceBits": "d15dae3b"
+            },
+            {
+              "id": 687744,
+              "distanceBits": "bf15c53b"
+            },
+            {
+              "id": 258682,
+              "distanceBits": "2a62c53b"
+            },
+            {
+              "id": 687741,
+              "distanceBits": "6d75ce3b"
+            },
+            {
+              "id": 687393,
+              "distanceBits": "285ad53b"
+            },
+            {
+              "id": 687390,
+              "distanceBits": "308f093c"
+            },
+            {
+              "id": 256609,
+              "distanceBits": "3638383c"
+            },
+            {
+              "id": 258679,
+              "distanceBits": "27c7383c"
+            },
+            {
+              "id": 687748,
+              "distanceBits": "c2a23c3c"
+            },
+            {
+              "id": 256608,
+              "distanceBits": "4865443c"
+            },
+            {
+              "id": 258680,
+              "distanceBits": "bf894c3c"
+            },
+            {
+              "id": 1340829,
+              "distanceBits": "bdff773c"
+            },
+            {
+              "id": 1370542,
+              "distanceBits": "76707b3c"
+            },
+            {
+              "id": 1340830,
+              "distanceBits": "b939823c"
+            },
+            {
+              "id": 687402,
+              "distanceBits": "ee4b8d3c"
+            },
+            {
+              "id": 1370541,
+              "distanceBits": "5671ab3c"
+            },
+            {
+              "id": 687388,
+              "distanceBits": "5b0fb13c"
+            },
+            {
+              "id": 687745,
+              "distanceBits": "7a7eb43c"
+            },
+            {
+              "id": 1370515,
+              "distanceBits": "00c5ba3c"
+            },
+            {
+              "id": 687389,
+              "distanceBits": "8673cb3c"
+            },
+            {
+              "id": 687742,
+              "distanceBits": "d5b8cc3c"
+            },
+            {
+              "id": 687398,
+              "distanceBits": "bf88ce3c"
+            },
+            {
+              "id": 687739,
+              "distanceBits": "ca27da3c"
+            }
+          ]
+        },
+        {
+          "point": [52.458927154541016, 17.7865047454834, -280.05792236328125],
+          "radius": 100,
+          "nearest": 687747,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 687747,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 687392,
+              "distanceBits": "279b2b3b"
+            },
+            {
+              "id": 687746,
+              "distanceBits": "d15dae3b"
+            },
+            {
+              "id": 687744,
+              "distanceBits": "bf15c53b"
+            },
+            {
+              "id": 258682,
+              "distanceBits": "2a62c53b"
+            },
+            {
+              "id": 687741,
+              "distanceBits": "6d75ce3b"
+            },
+            {
+              "id": 687393,
+              "distanceBits": "285ad53b"
+            },
+            {
+              "id": 687390,
+              "distanceBits": "308f093c"
+            },
+            {
+              "id": 256609,
+              "distanceBits": "3638383c"
+            },
+            {
+              "id": 258679,
+              "distanceBits": "27c7383c"
+            },
+            {
+              "id": 687748,
+              "distanceBits": "c2a23c3c"
+            },
+            {
+              "id": 256608,
+              "distanceBits": "4865443c"
+            },
+            {
+              "id": 258680,
+              "distanceBits": "bf894c3c"
+            },
+            {
+              "id": 1340829,
+              "distanceBits": "bdff773c"
+            },
+            {
+              "id": 1370542,
+              "distanceBits": "76707b3c"
+            },
+            {
+              "id": 1340830,
+              "distanceBits": "b939823c"
+            },
+            {
+              "id": 687402,
+              "distanceBits": "ee4b8d3c"
+            },
+            {
+              "id": 1370541,
+              "distanceBits": "5671ab3c"
+            },
+            {
+              "id": 687388,
+              "distanceBits": "5b0fb13c"
+            },
+            {
+              "id": 687745,
+              "distanceBits": "7a7eb43c"
+            },
+            {
+              "id": 1370515,
+              "distanceBits": "00c5ba3c"
+            },
+            {
+              "id": 687389,
+              "distanceBits": "8673cb3c"
+            },
+            {
+              "id": 687742,
+              "distanceBits": "d5b8cc3c"
+            },
+            {
+              "id": 687398,
+              "distanceBits": "bf88ce3c"
+            },
+            {
+              "id": 687739,
+              "distanceBits": "ca27da3c"
+            }
+          ]
+        },
+        {
+          "point": [13.517096519470215, 38.78413391113281, -315.838134765625],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [13.517096519470215, 38.78413391113281, -315.838134765625],
+          "radius": 0.05,
+          "nearest": 1375493,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1375493,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1371738,
+              "distanceBits": "1c4d963a"
+            },
+            {
+              "id": 1276671,
+              "distanceBits": "f3d2033b"
+            },
+            {
+              "id": 1346295,
+              "distanceBits": "91f9033b"
+            }
+          ]
+        },
+        {
+          "point": [13.517096519470215, 38.78413391113281, -315.838134765625],
+          "radius": 0.5,
+          "nearest": 1375493,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1375493,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1371738,
+              "distanceBits": "1c4d963a"
+            },
+            {
+              "id": 1276671,
+              "distanceBits": "f3d2033b"
+            },
+            {
+              "id": 1346295,
+              "distanceBits": "91f9033b"
+            },
+            {
+              "id": 875555,
+              "distanceBits": "abee313b"
+            },
+            {
+              "id": 1371739,
+              "distanceBits": "28818e3b"
+            },
+            {
+              "id": 1342138,
+              "distanceBits": "2a65383c"
+            },
+            {
+              "id": 732615,
+              "distanceBits": "9700433c"
+            },
+            {
+              "id": 732616,
+              "distanceBits": "a845453c"
+            },
+            {
+              "id": 1346294,
+              "distanceBits": "77fb4b3c"
+            },
+            {
+              "id": 974062,
+              "distanceBits": "1559503c"
+            },
+            {
+              "id": 1238902,
+              "distanceBits": "5afc653c"
+            },
+            {
+              "id": 360020,
+              "distanceBits": "7f72723c"
+            },
+            {
+              "id": 1361940,
+              "distanceBits": "cc7b773c"
+            },
+            {
+              "id": 1332427,
+              "distanceBits": "c659893c"
+            },
+            {
+              "id": 732617,
+              "distanceBits": "7070b33c"
+            },
+            {
+              "id": 733095,
+              "distanceBits": "77a2c43c"
+            },
+            {
+              "id": 1342139,
+              "distanceBits": "4d6de53c"
+            },
+            {
+              "id": 1359207,
+              "distanceBits": "d457043d"
+            },
+            {
+              "id": 1141474,
+              "distanceBits": "5a9e043d"
+            },
+            {
+              "id": 1276672,
+              "distanceBits": "a64c063d"
+            },
+            {
+              "id": 974061,
+              "distanceBits": "97c8083d"
+            },
+            {
+              "id": 1332426,
+              "distanceBits": "79930f3d"
+            },
+            {
+              "id": 360019,
+              "distanceBits": "b63c133d"
+            },
+            {
+              "id": 133016,
+              "distanceBits": "d6642d3d"
+            }
+          ]
+        },
+        {
+          "point": [13.517096519470215, 38.78413391113281, -315.838134765625],
+          "radius": 5,
+          "nearest": 1375493,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1375493,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1371738,
+              "distanceBits": "1c4d963a"
+            },
+            {
+              "id": 1276671,
+              "distanceBits": "f3d2033b"
+            },
+            {
+              "id": 1346295,
+              "distanceBits": "91f9033b"
+            },
+            {
+              "id": 875555,
+              "distanceBits": "abee313b"
+            },
+            {
+              "id": 1371739,
+              "distanceBits": "28818e3b"
+            },
+            {
+              "id": 1342138,
+              "distanceBits": "2a65383c"
+            },
+            {
+              "id": 732615,
+              "distanceBits": "9700433c"
+            },
+            {
+              "id": 732616,
+              "distanceBits": "a845453c"
+            },
+            {
+              "id": 1346294,
+              "distanceBits": "77fb4b3c"
+            },
+            {
+              "id": 974062,
+              "distanceBits": "1559503c"
+            },
+            {
+              "id": 1238902,
+              "distanceBits": "5afc653c"
+            },
+            {
+              "id": 360020,
+              "distanceBits": "7f72723c"
+            },
+            {
+              "id": 1361940,
+              "distanceBits": "cc7b773c"
+            },
+            {
+              "id": 1332427,
+              "distanceBits": "c659893c"
+            },
+            {
+              "id": 732617,
+              "distanceBits": "7070b33c"
+            },
+            {
+              "id": 733095,
+              "distanceBits": "77a2c43c"
+            },
+            {
+              "id": 1342139,
+              "distanceBits": "4d6de53c"
+            },
+            {
+              "id": 1359207,
+              "distanceBits": "d457043d"
+            },
+            {
+              "id": 1141474,
+              "distanceBits": "5a9e043d"
+            },
+            {
+              "id": 1276672,
+              "distanceBits": "a64c063d"
+            },
+            {
+              "id": 974061,
+              "distanceBits": "97c8083d"
+            },
+            {
+              "id": 1332426,
+              "distanceBits": "79930f3d"
+            },
+            {
+              "id": 360019,
+              "distanceBits": "b63c133d"
+            },
+            {
+              "id": 133016,
+              "distanceBits": "d6642d3d"
+            }
+          ]
+        },
+        {
+          "point": [13.517096519470215, 38.78413391113281, -315.838134765625],
+          "radius": 100,
+          "nearest": 1375493,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1375493,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1371738,
+              "distanceBits": "1c4d963a"
+            },
+            {
+              "id": 1276671,
+              "distanceBits": "f3d2033b"
+            },
+            {
+              "id": 1346295,
+              "distanceBits": "91f9033b"
+            },
+            {
+              "id": 875555,
+              "distanceBits": "abee313b"
+            },
+            {
+              "id": 1371739,
+              "distanceBits": "28818e3b"
+            },
+            {
+              "id": 1342138,
+              "distanceBits": "2a65383c"
+            },
+            {
+              "id": 732615,
+              "distanceBits": "9700433c"
+            },
+            {
+              "id": 732616,
+              "distanceBits": "a845453c"
+            },
+            {
+              "id": 1346294,
+              "distanceBits": "77fb4b3c"
+            },
+            {
+              "id": 974062,
+              "distanceBits": "1559503c"
+            },
+            {
+              "id": 1238902,
+              "distanceBits": "5afc653c"
+            },
+            {
+              "id": 360020,
+              "distanceBits": "7f72723c"
+            },
+            {
+              "id": 1361940,
+              "distanceBits": "cc7b773c"
+            },
+            {
+              "id": 1332427,
+              "distanceBits": "c659893c"
+            },
+            {
+              "id": 732617,
+              "distanceBits": "7070b33c"
+            },
+            {
+              "id": 733095,
+              "distanceBits": "77a2c43c"
+            },
+            {
+              "id": 1342139,
+              "distanceBits": "4d6de53c"
+            },
+            {
+              "id": 1359207,
+              "distanceBits": "d457043d"
+            },
+            {
+              "id": 1141474,
+              "distanceBits": "5a9e043d"
+            },
+            {
+              "id": 1276672,
+              "distanceBits": "a64c063d"
+            },
+            {
+              "id": 974061,
+              "distanceBits": "97c8083d"
+            },
+            {
+              "id": 1332426,
+              "distanceBits": "79930f3d"
+            },
+            {
+              "id": 360019,
+              "distanceBits": "b63c133d"
+            },
+            {
+              "id": 133016,
+              "distanceBits": "d6642d3d"
+            }
+          ]
+        },
+        {
+          "point": [21.880701065063477, 45.86664962768555, -312.9971923828125],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [21.880701065063477, 45.86664962768555, -312.9971923828125],
+          "radius": 0.05,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [21.880701065063477, 45.86664962768555, -312.9971923828125],
+          "radius": 0.5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "afbcad3b"
+            },
+            {
+              "id": 1128281,
+              "distanceBits": "6c42ae3b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "5a76ae3b"
+            },
+            {
+              "id": 1128282,
+              "distanceBits": "3cb3ae3b"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "b5ac2d3c"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "3ed42d3c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "9fac2e3c"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "933a2f3c"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "9e73ad3c"
+            },
+            {
+              "id": 716135,
+              "distanceBits": "b9a6ad3c"
+            },
+            {
+              "id": 436607,
+              "distanceBits": "9e57ae3c"
+            },
+            {
+              "id": 104725,
+              "distanceBits": "509dae3c"
+            },
+            {
+              "id": 1128284,
+              "distanceBits": "1cccd83c"
+            },
+            {
+              "id": 436606,
+              "distanceBits": "d97dd93c"
+            },
+            {
+              "id": 1128283,
+              "distanceBits": "4491d93c"
+            },
+            {
+              "id": 1128280,
+              "distanceBits": "7499d93c"
+            },
+            {
+              "id": 716134,
+              "distanceBits": "22a4d93c"
+            },
+            {
+              "id": 436614,
+              "distanceBits": "20a3da3c"
+            },
+            {
+              "id": 1128279,
+              "distanceBits": "e4d2da3c"
+            },
+            {
+              "id": 716137,
+              "distanceBits": "2456db3c"
+            },
+            {
+              "id": 436605,
+              "distanceBits": "e6a62d3d"
+            },
+            {
+              "id": 716132,
+              "distanceBits": "e7c62d3d"
+            },
+            {
+              "id": 716139,
+              "distanceBits": "d3d92e3d"
+            },
+            {
+              "id": 436615,
+              "distanceBits": "32d52f3d"
+            }
+          ]
+        },
+        {
+          "point": [21.880701065063477, 45.86664962768555, -312.9971923828125],
+          "radius": 5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "afbcad3b"
+            },
+            {
+              "id": 1128281,
+              "distanceBits": "6c42ae3b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "5a76ae3b"
+            },
+            {
+              "id": 1128282,
+              "distanceBits": "3cb3ae3b"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "b5ac2d3c"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "3ed42d3c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "9fac2e3c"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "933a2f3c"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "9e73ad3c"
+            },
+            {
+              "id": 716135,
+              "distanceBits": "b9a6ad3c"
+            },
+            {
+              "id": 436607,
+              "distanceBits": "9e57ae3c"
+            },
+            {
+              "id": 104725,
+              "distanceBits": "509dae3c"
+            },
+            {
+              "id": 1128284,
+              "distanceBits": "1cccd83c"
+            },
+            {
+              "id": 436606,
+              "distanceBits": "d97dd93c"
+            },
+            {
+              "id": 1128283,
+              "distanceBits": "4491d93c"
+            },
+            {
+              "id": 1128280,
+              "distanceBits": "7499d93c"
+            },
+            {
+              "id": 716134,
+              "distanceBits": "22a4d93c"
+            },
+            {
+              "id": 436614,
+              "distanceBits": "20a3da3c"
+            },
+            {
+              "id": 1128279,
+              "distanceBits": "e4d2da3c"
+            },
+            {
+              "id": 716137,
+              "distanceBits": "2456db3c"
+            },
+            {
+              "id": 436605,
+              "distanceBits": "e6a62d3d"
+            },
+            {
+              "id": 716132,
+              "distanceBits": "e7c62d3d"
+            },
+            {
+              "id": 716139,
+              "distanceBits": "d3d92e3d"
+            },
+            {
+              "id": 436615,
+              "distanceBits": "32d52f3d"
+            }
+          ]
+        },
+        {
+          "point": [21.880701065063477, 45.86664962768555, -312.9971923828125],
+          "radius": 100,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "afbcad3b"
+            },
+            {
+              "id": 1128281,
+              "distanceBits": "6c42ae3b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "5a76ae3b"
+            },
+            {
+              "id": 1128282,
+              "distanceBits": "3cb3ae3b"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "b5ac2d3c"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "3ed42d3c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "9fac2e3c"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "933a2f3c"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "9e73ad3c"
+            },
+            {
+              "id": 716135,
+              "distanceBits": "b9a6ad3c"
+            },
+            {
+              "id": 436607,
+              "distanceBits": "9e57ae3c"
+            },
+            {
+              "id": 104725,
+              "distanceBits": "509dae3c"
+            },
+            {
+              "id": 1128284,
+              "distanceBits": "1cccd83c"
+            },
+            {
+              "id": 436606,
+              "distanceBits": "d97dd93c"
+            },
+            {
+              "id": 1128283,
+              "distanceBits": "4491d93c"
+            },
+            {
+              "id": 1128280,
+              "distanceBits": "7499d93c"
+            },
+            {
+              "id": 716134,
+              "distanceBits": "22a4d93c"
+            },
+            {
+              "id": 436614,
+              "distanceBits": "20a3da3c"
+            },
+            {
+              "id": 1128279,
+              "distanceBits": "e4d2da3c"
+            },
+            {
+              "id": 716137,
+              "distanceBits": "2456db3c"
+            },
+            {
+              "id": 436605,
+              "distanceBits": "e6a62d3d"
+            },
+            {
+              "id": 716132,
+              "distanceBits": "e7c62d3d"
+            },
+            {
+              "id": 716139,
+              "distanceBits": "d3d92e3d"
+            },
+            {
+              "id": 436615,
+              "distanceBits": "32d52f3d"
+            }
+          ]
+        },
+        {
+          "point": [19.479591369628906, 17.44415855407715, -296.11607360839844],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [19.479591369628906, 17.44415855407715, -296.11607360839844],
+          "radius": 0.05,
+          "nearest": -1,
+          "distanceBits": "9a9999999999a93f",
+          "neighbours": []
+        },
+        {
+          "point": [19.479591369628906, 17.44415855407715, -296.11607360839844],
+          "radius": 0.5,
+          "nearest": -1,
+          "distanceBits": "000000000000e03f",
+          "neighbours": []
+        },
+        {
+          "point": [19.479591369628906, 17.44415855407715, -296.11607360839844],
+          "radius": 5,
+          "nearest": -1,
+          "distanceBits": "0000000000001440",
+          "neighbours": []
+        },
+        {
+          "point": [19.479591369628906, 17.44415855407715, -296.11607360839844],
+          "radius": 100,
+          "nearest": 895958,
+          "distanceBits": "532cbdf575bd2d40",
+          "neighbours": [
+            {
+              "id": 895958,
+              "distanceBits": "321e5d43"
+            },
+            {
+              "id": 895957,
+              "distanceBits": "18225d43"
+            },
+            {
+              "id": 475653,
+              "distanceBits": "85285d43"
+            },
+            {
+              "id": 895952,
+              "distanceBits": "423f5d43"
+            },
+            {
+              "id": 895959,
+              "distanceBits": "4f425d43"
+            },
+            {
+              "id": 895978,
+              "distanceBits": "905c5d43"
+            },
+            {
+              "id": 475655,
+              "distanceBits": "d5615d43"
+            },
+            {
+              "id": 1256043,
+              "distanceBits": "7a645d43"
+            },
+            {
+              "id": 404668,
+              "distanceBits": "68655d43"
+            },
+            {
+              "id": 895950,
+              "distanceBits": "51715d43"
+            },
+            {
+              "id": 404676,
+              "distanceBits": "5e715d43"
+            },
+            {
+              "id": 1323102,
+              "distanceBits": "257b5d43"
+            },
+            {
+              "id": 404667,
+              "distanceBits": "05825d43"
+            },
+            {
+              "id": 895977,
+              "distanceBits": "e98b5d43"
+            },
+            {
+              "id": 895980,
+              "distanceBits": "de915d43"
+            },
+            {
+              "id": 596251,
+              "distanceBits": "9b955d43"
+            },
+            {
+              "id": 1256044,
+              "distanceBits": "28a35d43"
+            },
+            {
+              "id": 404679,
+              "distanceBits": "8ca85d43"
+            },
+            {
+              "id": 404666,
+              "distanceBits": "8da95d43"
+            },
+            {
+              "id": 1256048,
+              "distanceBits": "58ab5d43"
+            },
+            {
+              "id": 404680,
+              "distanceBits": "f1b05d43"
+            },
+            {
+              "id": 596250,
+              "distanceBits": "35b15d43"
+            },
+            {
+              "id": 404670,
+              "distanceBits": "eeb45d43"
+            },
+            {
+              "id": 596256,
+              "distanceBits": "1ab85d43"
+            },
+            {
+              "id": 895951,
+              "distanceBits": "c2bd5d43"
+            }
+          ]
+        },
+        {
+          "point": [53.7794091796875, 0.4834375786781311, -277.13213989257815],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [53.7794091796875, 0.4834375786781311, -277.13213989257815],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "60302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "a37cb73a"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "38a3d53a"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "cdae1b3b"
+            }
+          ]
+        },
+        {
+          "point": [53.7794091796875, 0.4834375786781311, -277.13213989257815],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "60302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "a37cb73a"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "38a3d53a"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "cdae1b3b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "8214503b"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "e0735d3b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "0e9dab3b"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "6c74b63b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "d99dd83b"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "5fb60f3c"
+            },
+            {
+              "id": 28,
+              "distanceBits": "1082173c"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "96b2173c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "8a4f4c3c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "ec5b863c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "405a883c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "ec82933c"
+            },
+            {
+              "id": 659384,
+              "distanceBits": "9c1e9e3c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "70d9a13c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "04faa43c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "6a7ac33c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "cbb7ce3c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "7d1bd43c"
+            },
+            {
+              "id": 1079505,
+              "distanceBits": "8436d93c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "819bd93c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "d0b9e83c"
+            },
+            {
+              "id": 1079502,
+              "distanceBits": "76c9ea3c"
+            }
+          ]
+        },
+        {
+          "point": [53.7794091796875, 0.4834375786781311, -277.13213989257815],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "60302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "a37cb73a"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "38a3d53a"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "cdae1b3b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "8214503b"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "e0735d3b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "0e9dab3b"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "6c74b63b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "d99dd83b"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "5fb60f3c"
+            },
+            {
+              "id": 28,
+              "distanceBits": "1082173c"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "96b2173c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "8a4f4c3c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "ec5b863c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "405a883c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "ec82933c"
+            },
+            {
+              "id": 659384,
+              "distanceBits": "9c1e9e3c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "70d9a13c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "04faa43c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "6a7ac33c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "cbb7ce3c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "7d1bd43c"
+            },
+            {
+              "id": 1079505,
+              "distanceBits": "8436d93c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "819bd93c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "d0b9e83c"
+            },
+            {
+              "id": 1079502,
+              "distanceBits": "76c9ea3c"
+            }
+          ]
+        },
+        {
+          "point": [53.7794091796875, 0.4834375786781311, -277.13213989257815],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "60302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "a37cb73a"
+            },
+            {
+              "id": 1079660,
+              "distanceBits": "38a3d53a"
+            },
+            {
+              "id": 1079659,
+              "distanceBits": "cdae1b3b"
+            },
+            {
+              "id": 1079644,
+              "distanceBits": "8214503b"
+            },
+            {
+              "id": 1079645,
+              "distanceBits": "e0735d3b"
+            },
+            {
+              "id": 1303671,
+              "distanceBits": "0e9dab3b"
+            },
+            {
+              "id": 536917,
+              "distanceBits": "6c74b63b"
+            },
+            {
+              "id": 1079648,
+              "distanceBits": "d99dd83b"
+            },
+            {
+              "id": 1079506,
+              "distanceBits": "5fb60f3c"
+            },
+            {
+              "id": 28,
+              "distanceBits": "1082173c"
+            },
+            {
+              "id": 536914,
+              "distanceBits": "96b2173c"
+            },
+            {
+              "id": 848143,
+              "distanceBits": "8a4f4c3c"
+            },
+            {
+              "id": 1118236,
+              "distanceBits": "ec5b863c"
+            },
+            {
+              "id": 1118241,
+              "distanceBits": "405a883c"
+            },
+            {
+              "id": 1079646,
+              "distanceBits": "ec82933c"
+            },
+            {
+              "id": 659384,
+              "distanceBits": "9c1e9e3c"
+            },
+            {
+              "id": 536916,
+              "distanceBits": "70d9a13c"
+            },
+            {
+              "id": 536913,
+              "distanceBits": "04faa43c"
+            },
+            {
+              "id": 536912,
+              "distanceBits": "6a7ac33c"
+            },
+            {
+              "id": 1079500,
+              "distanceBits": "cbb7ce3c"
+            },
+            {
+              "id": 83318,
+              "distanceBits": "7d1bd43c"
+            },
+            {
+              "id": 1079505,
+              "distanceBits": "8436d93c"
+            },
+            {
+              "id": 1079647,
+              "distanceBits": "819bd93c"
+            },
+            {
+              "id": 83317,
+              "distanceBits": "d0b9e83c"
+            },
+            {
+              "id": 1079502,
+              "distanceBits": "76c9ea3c"
+            }
+          ]
+        }
+      ],
+      "buildSeconds": 1.0299761999922339,
+      "querySeconds": 0.006568300013896078
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "count": 1865848,
+      "capacity": 48,
+      "depth": 22,
+      "nodes": 113735,
+      "treeSha256": "6413b9c682cd42810fb1d1792cd14c3a582c9c6e2eb55a02da440838558ac635",
+      "queries": [
+        {
+          "point": [
+            -0.31488993763923645, 2.855929136276245, -306.1559753417969
+          ],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [
+            -0.31488993763923645, 2.855929136276245, -306.1559753417969
+          ],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.31488993763923645, 2.855929136276245, -306.1559753417969
+          ],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "ef8e953b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7fb953b"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "61bda63b"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "f06ba93b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "3c03183c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "07351b3c"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "092b203c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4641233c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "cb6e953c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "f3e3953c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "30aea63c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "afa5a93c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "04e4ba3c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "7e18bb3c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "ecb0c13c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "fb58c23c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "498dc53c"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "6f5bc83c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "ba94ce3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "2776cf3c"
+            },
+            {
+              "id": 1525221,
+              "distanceBits": "1f43f73c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "bffff73c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "24a70a3d"
+            },
+            {
+              "id": 1525321,
+              "distanceBits": "db210b3d"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.31488993763923645, 2.855929136276245, -306.1559753417969
+          ],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "ef8e953b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7fb953b"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "61bda63b"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "f06ba93b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "3c03183c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "07351b3c"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "092b203c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4641233c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "cb6e953c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "f3e3953c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "30aea63c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "afa5a93c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "04e4ba3c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "7e18bb3c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "ecb0c13c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "fb58c23c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "498dc53c"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "6f5bc83c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "ba94ce3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "2776cf3c"
+            },
+            {
+              "id": 1525221,
+              "distanceBits": "1f43f73c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "bffff73c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "24a70a3d"
+            },
+            {
+              "id": 1525321,
+              "distanceBits": "db210b3d"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.31488993763923645, 2.855929136276245, -306.1559753417969
+          ],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "ef8e953b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7fb953b"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "61bda63b"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "f06ba93b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "3c03183c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "07351b3c"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "092b203c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4641233c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "cb6e953c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "f3e3953c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "30aea63c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "afa5a93c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "04e4ba3c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "7e18bb3c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "ecb0c13c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "fb58c23c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "498dc53c"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "6f5bc83c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "ba94ce3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "2776cf3c"
+            },
+            {
+              "id": 1525221,
+              "distanceBits": "1f43f73c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "bffff73c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "24a70a3d"
+            },
+            {
+              "id": 1525321,
+              "distanceBits": "db210b3d"
+            }
+          ]
+        },
+        {
+          "point": [67.98561096191406, -3.5703375339508057, -262.8069152832031],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [67.98561096191406, -3.5703375339508057, -262.8069152832031],
+          "radius": 0.05,
+          "nearest": 932924,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 932924,
+              "distanceBits": "00000000"
+            }
+          ]
+        },
+        {
+          "point": [67.98561096191406, -3.5703375339508057, -262.8069152832031],
+          "radius": 0.5,
+          "nearest": 932924,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 932924,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 932926,
+              "distanceBits": "eb51b03b"
+            },
+            {
+              "id": 932923,
+              "distanceBits": "eb0eb13b"
+            },
+            {
+              "id": 932918,
+              "distanceBits": "d21fc83b"
+            },
+            {
+              "id": 932925,
+              "distanceBits": "a633da3b"
+            },
+            {
+              "id": 1797444,
+              "distanceBits": "b250193c"
+            },
+            {
+              "id": 1797441,
+              "distanceBits": "b0a3193c"
+            },
+            {
+              "id": 932929,
+              "distanceBits": "eea14b3c"
+            },
+            {
+              "id": 1797446,
+              "distanceBits": "13fe5f3c"
+            },
+            {
+              "id": 932928,
+              "distanceBits": "43f4633c"
+            },
+            {
+              "id": 1797440,
+              "distanceBits": "9654703c"
+            },
+            {
+              "id": 932914,
+              "distanceBits": "54a5773c"
+            },
+            {
+              "id": 932919,
+              "distanceBits": "8ff48a3c"
+            },
+            {
+              "id": 1797439,
+              "distanceBits": "d2fca53c"
+            },
+            {
+              "id": 1444897,
+              "distanceBits": "dfe3ac3c"
+            },
+            {
+              "id": 1446745,
+              "distanceBits": "c091b63c"
+            },
+            {
+              "id": 1446726,
+              "distanceBits": "7073ba3c"
+            },
+            {
+              "id": 1444896,
+              "distanceBits": "9e71bb3c"
+            },
+            {
+              "id": 1444904,
+              "distanceBits": "bbdac53c"
+            },
+            {
+              "id": 1446746,
+              "distanceBits": "b682de3c"
+            },
+            {
+              "id": 1797448,
+              "distanceBits": "572fea3c"
+            },
+            {
+              "id": 932932,
+              "distanceBits": "379cf43c"
+            },
+            {
+              "id": 1444907,
+              "distanceBits": "f1440c3d"
+            },
+            {
+              "id": 1446724,
+              "distanceBits": "74cc143d"
+            },
+            {
+              "id": 932913,
+              "distanceBits": "8c4b1b3d"
+            }
+          ]
+        },
+        {
+          "point": [67.98561096191406, -3.5703375339508057, -262.8069152832031],
+          "radius": 5,
+          "nearest": 932924,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 932924,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 932926,
+              "distanceBits": "eb51b03b"
+            },
+            {
+              "id": 932923,
+              "distanceBits": "eb0eb13b"
+            },
+            {
+              "id": 932918,
+              "distanceBits": "d21fc83b"
+            },
+            {
+              "id": 932925,
+              "distanceBits": "a633da3b"
+            },
+            {
+              "id": 1797444,
+              "distanceBits": "b250193c"
+            },
+            {
+              "id": 1797441,
+              "distanceBits": "b0a3193c"
+            },
+            {
+              "id": 932929,
+              "distanceBits": "eea14b3c"
+            },
+            {
+              "id": 1797446,
+              "distanceBits": "13fe5f3c"
+            },
+            {
+              "id": 932928,
+              "distanceBits": "43f4633c"
+            },
+            {
+              "id": 1797440,
+              "distanceBits": "9654703c"
+            },
+            {
+              "id": 932914,
+              "distanceBits": "54a5773c"
+            },
+            {
+              "id": 932919,
+              "distanceBits": "8ff48a3c"
+            },
+            {
+              "id": 1797439,
+              "distanceBits": "d2fca53c"
+            },
+            {
+              "id": 1444897,
+              "distanceBits": "dfe3ac3c"
+            },
+            {
+              "id": 1446745,
+              "distanceBits": "c091b63c"
+            },
+            {
+              "id": 1446726,
+              "distanceBits": "7073ba3c"
+            },
+            {
+              "id": 1444896,
+              "distanceBits": "9e71bb3c"
+            },
+            {
+              "id": 1444904,
+              "distanceBits": "bbdac53c"
+            },
+            {
+              "id": 1446746,
+              "distanceBits": "b682de3c"
+            },
+            {
+              "id": 1797448,
+              "distanceBits": "572fea3c"
+            },
+            {
+              "id": 932932,
+              "distanceBits": "379cf43c"
+            },
+            {
+              "id": 1444907,
+              "distanceBits": "f1440c3d"
+            },
+            {
+              "id": 1446724,
+              "distanceBits": "74cc143d"
+            },
+            {
+              "id": 932913,
+              "distanceBits": "8c4b1b3d"
+            }
+          ]
+        },
+        {
+          "point": [67.98561096191406, -3.5703375339508057, -262.8069152832031],
+          "radius": 100,
+          "nearest": 932924,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 932924,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 932926,
+              "distanceBits": "eb51b03b"
+            },
+            {
+              "id": 932923,
+              "distanceBits": "eb0eb13b"
+            },
+            {
+              "id": 932918,
+              "distanceBits": "d21fc83b"
+            },
+            {
+              "id": 932925,
+              "distanceBits": "a633da3b"
+            },
+            {
+              "id": 1797444,
+              "distanceBits": "b250193c"
+            },
+            {
+              "id": 1797441,
+              "distanceBits": "b0a3193c"
+            },
+            {
+              "id": 932929,
+              "distanceBits": "eea14b3c"
+            },
+            {
+              "id": 1797446,
+              "distanceBits": "13fe5f3c"
+            },
+            {
+              "id": 932928,
+              "distanceBits": "43f4633c"
+            },
+            {
+              "id": 1797440,
+              "distanceBits": "9654703c"
+            },
+            {
+              "id": 932914,
+              "distanceBits": "54a5773c"
+            },
+            {
+              "id": 932919,
+              "distanceBits": "8ff48a3c"
+            },
+            {
+              "id": 1797439,
+              "distanceBits": "d2fca53c"
+            },
+            {
+              "id": 1444897,
+              "distanceBits": "dfe3ac3c"
+            },
+            {
+              "id": 1446745,
+              "distanceBits": "c091b63c"
+            },
+            {
+              "id": 1446726,
+              "distanceBits": "7073ba3c"
+            },
+            {
+              "id": 1444896,
+              "distanceBits": "9e71bb3c"
+            },
+            {
+              "id": 1444904,
+              "distanceBits": "bbdac53c"
+            },
+            {
+              "id": 1446746,
+              "distanceBits": "b682de3c"
+            },
+            {
+              "id": 1797448,
+              "distanceBits": "572fea3c"
+            },
+            {
+              "id": 932932,
+              "distanceBits": "379cf43c"
+            },
+            {
+              "id": 1444907,
+              "distanceBits": "f1440c3d"
+            },
+            {
+              "id": 1446724,
+              "distanceBits": "74cc143d"
+            },
+            {
+              "id": 932913,
+              "distanceBits": "8c4b1b3d"
+            }
+          ]
+        },
+        {
+          "point": [8.674612045288086, 66.06685638427734, -323.31787109375],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [8.674612045288086, 66.06685638427734, -323.31787109375],
+          "radius": 0.05,
+          "nearest": 1865847,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1865847,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 391543,
+              "distanceBits": "745ee538"
+            },
+            {
+              "id": 1865846,
+              "distanceBits": "affad639"
+            },
+            {
+              "id": 1861718,
+              "distanceBits": "fc43773a"
+            }
+          ]
+        },
+        {
+          "point": [8.674612045288086, 66.06685638427734, -323.31787109375],
+          "radius": 0.5,
+          "nearest": 1865847,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1865847,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 391543,
+              "distanceBits": "745ee538"
+            },
+            {
+              "id": 1865846,
+              "distanceBits": "affad639"
+            },
+            {
+              "id": 1861718,
+              "distanceBits": "fc43773a"
+            },
+            {
+              "id": 1330658,
+              "distanceBits": "df5e593b"
+            },
+            {
+              "id": 1330910,
+              "distanceBits": "261c9e3b"
+            },
+            {
+              "id": 1846744,
+              "distanceBits": "47c4c23b"
+            },
+            {
+              "id": 1846739,
+              "distanceBits": "79f8f73b"
+            },
+            {
+              "id": 1330926,
+              "distanceBits": "01d0203c"
+            },
+            {
+              "id": 1846745,
+              "distanceBits": "1f612e3c"
+            },
+            {
+              "id": 391546,
+              "distanceBits": "df15393c"
+            },
+            {
+              "id": 1330659,
+              "distanceBits": "c4e8483c"
+            },
+            {
+              "id": 391493,
+              "distanceBits": "27cb973c"
+            },
+            {
+              "id": 1330909,
+              "distanceBits": "3acc9a3c"
+            },
+            {
+              "id": 1330911,
+              "distanceBits": "36d3aa3c"
+            },
+            {
+              "id": 1330635,
+              "distanceBits": "61caab3c"
+            },
+            {
+              "id": 1846738,
+              "distanceBits": "25e8b53c"
+            },
+            {
+              "id": 1330636,
+              "distanceBits": "49ecbb3c"
+            },
+            {
+              "id": 1330928,
+              "distanceBits": "8c2fc03c"
+            },
+            {
+              "id": 1865837,
+              "distanceBits": "8630cc3c"
+            },
+            {
+              "id": 1330101,
+              "distanceBits": "4255d53c"
+            },
+            {
+              "id": 1863417,
+              "distanceBits": "4f8fdb3c"
+            },
+            {
+              "id": 1330908,
+              "distanceBits": "3b8deb3c"
+            },
+            {
+              "id": 1865836,
+              "distanceBits": "4f50ee3c"
+            },
+            {
+              "id": 1330102,
+              "distanceBits": "6cad033d"
+            }
+          ]
+        },
+        {
+          "point": [8.674612045288086, 66.06685638427734, -323.31787109375],
+          "radius": 5,
+          "nearest": 1865847,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1865847,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 391543,
+              "distanceBits": "745ee538"
+            },
+            {
+              "id": 1865846,
+              "distanceBits": "affad639"
+            },
+            {
+              "id": 1861718,
+              "distanceBits": "fc43773a"
+            },
+            {
+              "id": 1330658,
+              "distanceBits": "df5e593b"
+            },
+            {
+              "id": 1330910,
+              "distanceBits": "261c9e3b"
+            },
+            {
+              "id": 1846744,
+              "distanceBits": "47c4c23b"
+            },
+            {
+              "id": 1846739,
+              "distanceBits": "79f8f73b"
+            },
+            {
+              "id": 1330926,
+              "distanceBits": "01d0203c"
+            },
+            {
+              "id": 1846745,
+              "distanceBits": "1f612e3c"
+            },
+            {
+              "id": 391546,
+              "distanceBits": "df15393c"
+            },
+            {
+              "id": 1330659,
+              "distanceBits": "c4e8483c"
+            },
+            {
+              "id": 391493,
+              "distanceBits": "27cb973c"
+            },
+            {
+              "id": 1330909,
+              "distanceBits": "3acc9a3c"
+            },
+            {
+              "id": 1330911,
+              "distanceBits": "36d3aa3c"
+            },
+            {
+              "id": 1330635,
+              "distanceBits": "61caab3c"
+            },
+            {
+              "id": 1846738,
+              "distanceBits": "25e8b53c"
+            },
+            {
+              "id": 1330636,
+              "distanceBits": "49ecbb3c"
+            },
+            {
+              "id": 1330928,
+              "distanceBits": "8c2fc03c"
+            },
+            {
+              "id": 1865837,
+              "distanceBits": "8630cc3c"
+            },
+            {
+              "id": 1330101,
+              "distanceBits": "4255d53c"
+            },
+            {
+              "id": 1863417,
+              "distanceBits": "4f8fdb3c"
+            },
+            {
+              "id": 1330908,
+              "distanceBits": "3b8deb3c"
+            },
+            {
+              "id": 1865836,
+              "distanceBits": "4f50ee3c"
+            },
+            {
+              "id": 1330102,
+              "distanceBits": "6cad033d"
+            }
+          ]
+        },
+        {
+          "point": [8.674612045288086, 66.06685638427734, -323.31787109375],
+          "radius": 100,
+          "nearest": 1865847,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 1865847,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 391543,
+              "distanceBits": "745ee538"
+            },
+            {
+              "id": 1865846,
+              "distanceBits": "affad639"
+            },
+            {
+              "id": 1861718,
+              "distanceBits": "fc43773a"
+            },
+            {
+              "id": 1330658,
+              "distanceBits": "df5e593b"
+            },
+            {
+              "id": 1330910,
+              "distanceBits": "261c9e3b"
+            },
+            {
+              "id": 1846744,
+              "distanceBits": "47c4c23b"
+            },
+            {
+              "id": 1846739,
+              "distanceBits": "79f8f73b"
+            },
+            {
+              "id": 1330926,
+              "distanceBits": "01d0203c"
+            },
+            {
+              "id": 1846745,
+              "distanceBits": "1f612e3c"
+            },
+            {
+              "id": 391546,
+              "distanceBits": "df15393c"
+            },
+            {
+              "id": 1330659,
+              "distanceBits": "c4e8483c"
+            },
+            {
+              "id": 391493,
+              "distanceBits": "27cb973c"
+            },
+            {
+              "id": 1330909,
+              "distanceBits": "3acc9a3c"
+            },
+            {
+              "id": 1330911,
+              "distanceBits": "36d3aa3c"
+            },
+            {
+              "id": 1330635,
+              "distanceBits": "61caab3c"
+            },
+            {
+              "id": 1846738,
+              "distanceBits": "25e8b53c"
+            },
+            {
+              "id": 1330636,
+              "distanceBits": "49ecbb3c"
+            },
+            {
+              "id": 1330928,
+              "distanceBits": "8c2fc03c"
+            },
+            {
+              "id": 1865837,
+              "distanceBits": "8630cc3c"
+            },
+            {
+              "id": 1330101,
+              "distanceBits": "4255d53c"
+            },
+            {
+              "id": 1863417,
+              "distanceBits": "4f8fdb3c"
+            },
+            {
+              "id": 1330908,
+              "distanceBits": "3b8deb3c"
+            },
+            {
+              "id": 1865836,
+              "distanceBits": "4f50ee3c"
+            },
+            {
+              "id": 1330102,
+              "distanceBits": "6cad033d"
+            }
+          ]
+        },
+        {
+          "point": [41.738739013671875, 44.263946533203125, -301.6735534667969],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [41.738739013671875, 44.263946533203125, -301.6735534667969],
+          "radius": 0.05,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "a546443a"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "131ef03a"
+            },
+            {
+              "id": 1573624,
+              "distanceBits": "dea1053b"
+            },
+            {
+              "id": 1573623,
+              "distanceBits": "5fad063b"
+            }
+          ]
+        },
+        {
+          "point": [41.738739013671875, 44.263946533203125, -301.6735534667969],
+          "radius": 0.5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "a546443a"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "131ef03a"
+            },
+            {
+              "id": 1573624,
+              "distanceBits": "dea1053b"
+            },
+            {
+              "id": 1573623,
+              "distanceBits": "5fad063b"
+            },
+            {
+              "id": 1573626,
+              "distanceBits": "d09c4c3b"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "1d08a93b"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "9354be3b"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "8e58d43b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "857cf03b"
+            },
+            {
+              "id": 1043750,
+              "distanceBits": "35a90a3c"
+            },
+            {
+              "id": 1573621,
+              "distanceBits": "dafc1f3c"
+            },
+            {
+              "id": 104722,
+              "distanceBits": "1004473c"
+            },
+            {
+              "id": 1043751,
+              "distanceBits": "64744e3c"
+            },
+            {
+              "id": 1043748,
+              "distanceBits": "046d703c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "f9b7763c"
+            },
+            {
+              "id": 104738,
+              "distanceBits": "7ac07a3c"
+            },
+            {
+              "id": 1043747,
+              "distanceBits": "5fd17a3c"
+            },
+            {
+              "id": 1573625,
+              "distanceBits": "a09e803c"
+            },
+            {
+              "id": 104735,
+              "distanceBits": "8d05833c"
+            },
+            {
+              "id": 104737,
+              "distanceBits": "3439953c"
+            },
+            {
+              "id": 1043744,
+              "distanceBits": "ecf19d3c"
+            },
+            {
+              "id": 1573622,
+              "distanceBits": "a6f7c13c"
+            },
+            {
+              "id": 104736,
+              "distanceBits": "7138c53c"
+            },
+            {
+              "id": 104720,
+              "distanceBits": "554cd93c"
+            }
+          ]
+        },
+        {
+          "point": [41.738739013671875, 44.263946533203125, -301.6735534667969],
+          "radius": 5,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "a546443a"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "131ef03a"
+            },
+            {
+              "id": 1573624,
+              "distanceBits": "dea1053b"
+            },
+            {
+              "id": 1573623,
+              "distanceBits": "5fad063b"
+            },
+            {
+              "id": 1573626,
+              "distanceBits": "d09c4c3b"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "1d08a93b"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "9354be3b"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "8e58d43b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "857cf03b"
+            },
+            {
+              "id": 1043750,
+              "distanceBits": "35a90a3c"
+            },
+            {
+              "id": 1573621,
+              "distanceBits": "dafc1f3c"
+            },
+            {
+              "id": 104722,
+              "distanceBits": "1004473c"
+            },
+            {
+              "id": 1043751,
+              "distanceBits": "64744e3c"
+            },
+            {
+              "id": 1043748,
+              "distanceBits": "046d703c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "f9b7763c"
+            },
+            {
+              "id": 104738,
+              "distanceBits": "7ac07a3c"
+            },
+            {
+              "id": 1043747,
+              "distanceBits": "5fd17a3c"
+            },
+            {
+              "id": 1573625,
+              "distanceBits": "a09e803c"
+            },
+            {
+              "id": 104735,
+              "distanceBits": "8d05833c"
+            },
+            {
+              "id": 104737,
+              "distanceBits": "3439953c"
+            },
+            {
+              "id": 1043744,
+              "distanceBits": "ecf19d3c"
+            },
+            {
+              "id": 1573622,
+              "distanceBits": "a6f7c13c"
+            },
+            {
+              "id": 104736,
+              "distanceBits": "7138c53c"
+            },
+            {
+              "id": 104720,
+              "distanceBits": "554cd93c"
+            }
+          ]
+        },
+        {
+          "point": [41.738739013671875, 44.263946533203125, -301.6735534667969],
+          "radius": 100,
+          "nearest": 104729,
+          "distanceBits": "0000000000000000",
+          "neighbours": [
+            {
+              "id": 104729,
+              "distanceBits": "00000000"
+            },
+            {
+              "id": 104733,
+              "distanceBits": "a546443a"
+            },
+            {
+              "id": 104734,
+              "distanceBits": "131ef03a"
+            },
+            {
+              "id": 1573624,
+              "distanceBits": "dea1053b"
+            },
+            {
+              "id": 1573623,
+              "distanceBits": "5fad063b"
+            },
+            {
+              "id": 1573626,
+              "distanceBits": "d09c4c3b"
+            },
+            {
+              "id": 104727,
+              "distanceBits": "1d08a93b"
+            },
+            {
+              "id": 104730,
+              "distanceBits": "9354be3b"
+            },
+            {
+              "id": 104731,
+              "distanceBits": "8e58d43b"
+            },
+            {
+              "id": 104728,
+              "distanceBits": "857cf03b"
+            },
+            {
+              "id": 1043750,
+              "distanceBits": "35a90a3c"
+            },
+            {
+              "id": 1573621,
+              "distanceBits": "dafc1f3c"
+            },
+            {
+              "id": 104722,
+              "distanceBits": "1004473c"
+            },
+            {
+              "id": 1043751,
+              "distanceBits": "64744e3c"
+            },
+            {
+              "id": 1043748,
+              "distanceBits": "046d703c"
+            },
+            {
+              "id": 104732,
+              "distanceBits": "f9b7763c"
+            },
+            {
+              "id": 104738,
+              "distanceBits": "7ac07a3c"
+            },
+            {
+              "id": 1043747,
+              "distanceBits": "5fd17a3c"
+            },
+            {
+              "id": 1573625,
+              "distanceBits": "a09e803c"
+            },
+            {
+              "id": 104735,
+              "distanceBits": "8d05833c"
+            },
+            {
+              "id": 104737,
+              "distanceBits": "3439953c"
+            },
+            {
+              "id": 1043744,
+              "distanceBits": "ecf19d3c"
+            },
+            {
+              "id": 1573622,
+              "distanceBits": "a6f7c13c"
+            },
+            {
+              "id": 104736,
+              "distanceBits": "7138c53c"
+            },
+            {
+              "id": 104720,
+              "distanceBits": "554cd93c"
+            }
+          ]
+        },
+        {
+          "point": [19.332477569580078, 17.474040985107422, -296.2076873779297],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [19.332477569580078, 17.474040985107422, -296.2076873779297],
+          "radius": 0.05,
+          "nearest": -1,
+          "distanceBits": "9a9999999999a93f",
+          "neighbours": []
+        },
+        {
+          "point": [19.332477569580078, 17.474040985107422, -296.2076873779297],
+          "radius": 0.5,
+          "nearest": -1,
+          "distanceBits": "000000000000e03f",
+          "neighbours": []
+        },
+        {
+          "point": [19.332477569580078, 17.474040985107422, -296.2076873779297],
+          "radius": 5,
+          "nearest": -1,
+          "distanceBits": "0000000000001440",
+          "neighbours": []
+        },
+        {
+          "point": [19.332477569580078, 17.474040985107422, -296.2076873779297],
+          "radius": 100,
+          "nearest": 1359172,
+          "distanceBits": "44e61db0600f3240",
+          "neighbours": [
+            {
+              "id": 1359172,
+              "distanceBits": "4715a343"
+            },
+            {
+              "id": 349070,
+              "distanceBits": "1726a343"
+            },
+            {
+              "id": 1359183,
+              "distanceBits": "4e49a343"
+            },
+            {
+              "id": 1359175,
+              "distanceBits": "e1b3a343"
+            },
+            {
+              "id": 218496,
+              "distanceBits": "94b8a343"
+            },
+            {
+              "id": 349066,
+              "distanceBits": "b5baa343"
+            },
+            {
+              "id": 1359171,
+              "distanceBits": "5ac3a343"
+            },
+            {
+              "id": 1359182,
+              "distanceBits": "77f9a343"
+            },
+            {
+              "id": 1359173,
+              "distanceBits": "781fa443"
+            },
+            {
+              "id": 218497,
+              "distanceBits": "3a22a443"
+            },
+            {
+              "id": 349069,
+              "distanceBits": "925ea443"
+            },
+            {
+              "id": 1359203,
+              "distanceBits": "af83a443"
+            },
+            {
+              "id": 1626877,
+              "distanceBits": "6195a443"
+            },
+            {
+              "id": 1359174,
+              "distanceBits": "e3c3a443"
+            },
+            {
+              "id": 1359202,
+              "distanceBits": "8ec4a443"
+            },
+            {
+              "id": 218495,
+              "distanceBits": "36c6a443"
+            },
+            {
+              "id": 218478,
+              "distanceBits": "9fdaa443"
+            },
+            {
+              "id": 218263,
+              "distanceBits": "851da543"
+            },
+            {
+              "id": 1359198,
+              "distanceBits": "5021a543"
+            },
+            {
+              "id": 218479,
+              "distanceBits": "c136a543"
+            },
+            {
+              "id": 1626792,
+              "distanceBits": "b743a543"
+            },
+            {
+              "id": 1626886,
+              "distanceBits": "0d49a543"
+            },
+            {
+              "id": 1626773,
+              "distanceBits": "965fa543"
+            },
+            {
+              "id": 218304,
+              "distanceBits": "917da543"
+            },
+            {
+              "id": 218306,
+              "distanceBits": "ce90a543"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.30488993763923644, 2.835929136276245, -306.1259753417969
+          ],
+          "radius": 0,
+          "nearest": -1,
+          "distanceBits": "0000000000000000",
+          "neighbours": []
+        },
+        {
+          "point": [
+            -0.30488993763923644, 2.835929136276245, -306.1259753417969
+          ],
+          "radius": 0.05,
+          "nearest": 0,
+          "distanceBits": "ad302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "b77db73a"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.30488993763923644, 2.835929136276245, -306.1259753417969
+          ],
+          "radius": 0.5,
+          "nearest": 0,
+          "distanceBits": "ad302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "b77db73a"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "f41b593b"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "05268f3b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "d28bc03b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7bdfb3b"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "f68c1c3c"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "838c1f3c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4714553c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "9c7f773c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "7dc4803c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "b58e863c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "49118f3c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "f8b9923c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "cc50b23c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "da5abd3c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "d340c13c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "7c2fce3c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "d9e4ce3c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "c646d33c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "a71ae83c"
+            },
+            {
+              "id": 1,
+              "distanceBits": "7ca7ed3c"
+            },
+            {
+              "id": 608222,
+              "distanceBits": "e39ff73c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "da56fc3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "7603013d"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "24390a3d"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.30488993763923644, 2.835929136276245, -306.1259753417969
+          ],
+          "radius": 5,
+          "nearest": 0,
+          "distanceBits": "ad302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "b77db73a"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "f41b593b"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "05268f3b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "d28bc03b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7bdfb3b"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "f68c1c3c"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "838c1f3c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4714553c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "9c7f773c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "7dc4803c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "b58e863c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "49118f3c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "f8b9923c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "cc50b23c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "da5abd3c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "d340c13c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "7c2fce3c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "d9e4ce3c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "c646d33c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "a71ae83c"
+            },
+            {
+              "id": 1,
+              "distanceBits": "7ca7ed3c"
+            },
+            {
+              "id": 608222,
+              "distanceBits": "e39ff73c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "da56fc3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "7603013d"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "24390a3d"
+            }
+          ]
+        },
+        {
+          "point": [
+            -0.30488993763923644, 2.835929136276245, -306.1259753417969
+          ],
+          "radius": 100,
+          "nearest": 0,
+          "distanceBits": "ad302ee24328a33f",
+          "neighbours": [
+            {
+              "id": 0,
+              "distanceBits": "b77db73a"
+            },
+            {
+              "id": 1525335,
+              "distanceBits": "f41b593b"
+            },
+            {
+              "id": 1525340,
+              "distanceBits": "05268f3b"
+            },
+            {
+              "id": 1525339,
+              "distanceBits": "d28bc03b"
+            },
+            {
+              "id": 1525336,
+              "distanceBits": "e7bdfb3b"
+            },
+            {
+              "id": 1525334,
+              "distanceBits": "f68c1c3c"
+            },
+            {
+              "id": 1525338,
+              "distanceBits": "838c1f3c"
+            },
+            {
+              "id": 1525341,
+              "distanceBits": "4714553c"
+            },
+            {
+              "id": 2,
+              "distanceBits": "9c7f773c"
+            },
+            {
+              "id": 1525337,
+              "distanceBits": "7dc4803c"
+            },
+            {
+              "id": 5,
+              "distanceBits": "b58e863c"
+            },
+            {
+              "id": 1525333,
+              "distanceBits": "49118f3c"
+            },
+            {
+              "id": 1525329,
+              "distanceBits": "f8b9923c"
+            },
+            {
+              "id": 1525328,
+              "distanceBits": "cc50b23c"
+            },
+            {
+              "id": 3,
+              "distanceBits": "da5abd3c"
+            },
+            {
+              "id": 1525327,
+              "distanceBits": "d340c13c"
+            },
+            {
+              "id": 1525312,
+              "distanceBits": "7c2fce3c"
+            },
+            {
+              "id": 1525322,
+              "distanceBits": "d9e4ce3c"
+            },
+            {
+              "id": 1525332,
+              "distanceBits": "c646d33c"
+            },
+            {
+              "id": 19,
+              "distanceBits": "a71ae83c"
+            },
+            {
+              "id": 1,
+              "distanceBits": "7ca7ed3c"
+            },
+            {
+              "id": 608222,
+              "distanceBits": "e39ff73c"
+            },
+            {
+              "id": 1525326,
+              "distanceBits": "da56fc3c"
+            },
+            {
+              "id": 1525222,
+              "distanceBits": "7603013d"
+            },
+            {
+              "id": 1525229,
+              "distanceBits": "24390a3d"
+            }
+          ]
+        }
+      ],
+      "buildSeconds": 1.4161946999956854,
+      "querySeconds": 0.008355900004971772
+    }
+  ]
+}
