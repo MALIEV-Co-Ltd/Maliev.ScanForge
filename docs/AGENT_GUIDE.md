@@ -740,3 +740,16 @@ Point-pair landmark picks (`landmark_edit`, action `pick`) use native Float32
 world-coordinate precision, widened to doubles for storage. GUI and MCP share
 this rounding. Finite doubles outside the Float32 range fail without changing
 the session; inspect `landmark_get` for the stored coordinates.
+
+Point-pair sessions can begin with only `movingId`; `fixedId` is optional.
+`landmark_get` returns `fixedId: null` for the all-reference picking filter and
+`referenceIds` for the captured visible, selectable, unlocked reference objects.
+Points on the moving scan form M; points on any captured nonmoving reference
+form F, in insertion order. A bound fixed target filters GUI picking, while
+refinement scope remains independent. Use `landmark_edit` with action
+`reference-target` and `fixedId` to bind a filter, or omit `fixedId` to clear it.
+Changing that filter clears picks and preview; clearing also selects visibleScene
+refinement. Fixed-only refinement requires a bound reference. These session edits
+create no model history. Picks retain each reference identity, and reference
+geometry changes or removal invalidate acceptance. Newly imported references
+require rebinding the filter or restarting the session to capture the new scene.

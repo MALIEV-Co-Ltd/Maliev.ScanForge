@@ -46,7 +46,7 @@ export interface WorkspaceHost {
       | {
           action: "begin";
           movingId: string;
-          fixedId: string;
+          fixedId?: string;
           targetScope?: LandmarkTargetScope;
         },
   ): unknown;

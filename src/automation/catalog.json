@@ -5271,7 +5271,7 @@
   },
   {
     "name": "landmark_get",
-    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Point-cloud previews also expose pointCloudPose as a little-endian Float64 frame. Does not mutate geometry or history.",
+    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Point-cloud previews also expose pointCloudPose as a little-endian Float64 frame. Also reports optional fixedId (null for all references) and captured referenceIds. Does not mutate geometry or history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5283,7 +5283,7 @@
   },
   {
     "name": "landmark_edit",
-    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId and fixedId; pick requires entityId and a world-coordinate point in mm. Picked coordinates are rounded to native Float32 precision and stored as doubles; values outside the finite Float32 range are rejected. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId still identifies the object used for matching point picks. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope and refinementTargetIds. Scene geometry/order/visibility changes invalidate a scene-target preview. Point clouds are not mesh-facet refinement targets. Moving clouds use coarse registration and retained native poses. Complete original point-cloud dialog admission and workflow parity remain unverified.",
+    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId; fixedId is optional and filters reference picking. With no fixedId, fixed points may come from any visible selectable unlocked reference in the captured scene. reference-target binds fixedId or clears it when omitted, resets picks and preview, and defaults cleared binding to visibleScene. pick requires entityId and a world-coordinate point in mm. Picked coordinates are rounded to native Float32 precision and stored as doubles; values outside the finite Float32 range are rejected. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId is an optional canvas picking filter. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope and refinementTargetIds. Scene geometry/order/visibility changes invalidate a scene-target preview. Point clouds are not mesh-facet refinement targets. Moving clouds use coarse registration and retained native poses. Complete original point-cloud dialog admission and workflow parity remain unverified.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5297,7 +5297,8 @@
             "remove-last",
             "clear",
             "reset",
-            "target-scope"
+            "target-scope",
+            "reference-target"
           ]
         },
         "movingId": {
@@ -5308,7 +5309,8 @@
         "fixedId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 200
+          "maxLength": 200,
+          "description": "Optional reference picking filter. Omit at begin for all captured visible references. With action reference-target, omission clears the filter and resets picks and preview."
         },
         "entityId": {
           "type": "string",

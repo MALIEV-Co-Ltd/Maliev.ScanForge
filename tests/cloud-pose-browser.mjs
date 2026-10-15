@@ -267,6 +267,30 @@ try {
   const constraints = [
     { kind: "plane", point: [3, 4, 5], direction: [0, 1, 0], axis: 2 },
   ];
+  const beforeSourceOnly = (await call("project_get")).result.undo;
+  await mutate("landmark_edit", { action: "begin", movingId: "cloud" });
+  assert.equal((await call("landmark_get")).result.fixedId, null);
+  assert.deepEqual((await call("landmark_get")).result.referenceIds, []);
+  const sourceOnlyDialog = page.getByRole("complementary", {
+    name: "N-points alignment",
+  });
+  assert.match(
+    await sourceOnlyDialog
+      .getByRole("button", { name: "Fixed alignment target", exact: true })
+      .innerText(),
+    /All visible references/,
+  );
+  assert.equal(
+    await sourceOnlyDialog
+      .getByRole("button", { name: "Preview", exact: true })
+      .isDisabled(),
+    true,
+  );
+  await sourceOnlyDialog
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
+  assert.equal((await call("landmark_get")).result.active, false);
+  assert.equal((await call("project_get")).result.undo, beforeSourceOnly);
   await mutate("object_select", { entityId: "cloud" });
   await mutate("selection_set", { entityId: "cloud", points: [1, 3] });
   const preview = await job(
@@ -405,6 +429,26 @@ try {
   );
   assert.equal(fixed.kind, "pointcloud");
   const fixedBefore = (await call("object_get", { entityId: fixed.id })).result;
+  const otherUpload = await call("artifact_put", {
+    name: "other-reference.asc",
+    offset: 0,
+    base64: Buffer.from(targetLandmarks.slice(6, 9).join(" ")).toString(
+      "base64",
+    ),
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: otherUpload.result.artifactId,
+      unit: "mm",
+    }),
+  );
+  const otherReference = (await call("project_get")).result.objects.find(
+    (object) => object.name === "other-reference.asc",
+  );
+  assert.equal(otherReference.kind, "pointcloud");
+  const otherBefore = (
+    await call("object_get", { entityId: otherReference.id })
+  ).result;
   await mutate("selection_set", { entityId: "cloud", points: [1, 3] });
   await mutate("landmark_edit", {
     action: "begin",
@@ -412,6 +456,25 @@ try {
     fixedId: fixed.id,
   });
   const precisionWitness = [0.0001, 16777217, -0.00000003];
+  await page
+    .getByRole("button", { name: "Fixed alignment target", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "All visible references", exact: true })
+    .click();
+  assert.equal((await call("landmark_get")).result.fixedId, null);
+  assert((await call("landmark_get")).result.referenceIds.includes(fixed.id));
+  await mutate("landmark_edit", {
+    action: "reference-target",
+    fixedId: fixed.id,
+  });
+  assert(
+    (
+      await page
+        .getByRole("button", { name: "Fixed alignment target", exact: true })
+        .innerText()
+    ).includes(fixed.name),
+  );
   await mutate("landmark_edit", {
     action: "pick",
     entityId: "cloud",
@@ -422,6 +485,7 @@ try {
     precisionWitness.map(Math.fround),
   );
   await mutate("landmark_edit", { action: "clear" });
+  await mutate("landmark_edit", { action: "reference-target" });
   for (let i = 0; i < 3; i++) {
     await mutate("landmark_edit", {
       action: "pick",
@@ -430,7 +494,7 @@ try {
     });
     await mutate("landmark_edit", {
       action: "pick",
-      entityId: fixed.id,
+      entityId: i === 2 ? otherReference.id : fixed.id,
       point: targetLandmarks.slice(i * 3, i * 3 + 3),
     });
   }
@@ -442,6 +506,8 @@ try {
     .click();
   await landmarkDialog.getByText(/Preview RMS:/).waitFor();
   const guiPaired = (await call("landmark_get")).result;
+  assert.equal(guiPaired.fixedId, null);
+  assert(guiPaired.picks.some((pick) => pick.entityId === otherReference.id));
   assert(guiPaired.pointCloudPose);
   assert.equal(guiPaired.diagnostics.localBuffersRetained, true);
   assert.equal(
@@ -466,6 +532,10 @@ try {
   assert.deepEqual(
     (await call("object_get", { entityId: fixed.id })).result,
     fixedBefore,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: otherReference.id })).result,
+    otherBefore,
   );
   const afterPaired = await geometry();
   await mutate("history_undo", {});
@@ -535,6 +605,8 @@ try {
     "Repeated Apply preserves active point selection",
     "Binary project recovery retains exact pose",
     "World geometry remains available through MCP",
+    "Source-only GUI/MCP admission and optional reference filters preserve history",
+    "Fixed picks span multiple ASC references without modifying either reference",
     "MCP landmark picks retain native Float32 coordinate precision",
     "Point-pair GUI/MCP preview composes native cloud pose",
     "Paired accept and undo preserve point type, normals and selection",

@@ -860,7 +860,7 @@ export function App() {
       nPoints
         ? landmarkPickSide === "moving"
           ? nPoints.moving.id
-          : nPoints.fixed.id
+          : (nPoints.fixed?.id ?? null)
         : null,
     );
     if (pendingImportFit.current !== undefined) {
@@ -2547,7 +2547,7 @@ export function App() {
         throw new Error("Close the active landmark session first.");
       const moving = entities.find((e) => e.id === edit.movingId);
       const fixed = entities.find((e) => e.id === edit.fixedId);
-      if (!moving || !fixed || moving.locked || fixed.locked)
+      if (!moving || (edit.fixedId && !fixed) || moving.locked || fixed?.locked)
         throw new Error("Choose existing unlocked moving and fixed objects.");
       next = beginLandmarkAlignment(moving, fixed, {
         targetScope: edit.targetScope,
@@ -2567,18 +2567,10 @@ export function App() {
   }
   function openLandmarks() {
     if (!selected) return;
-    const fixed = entities.find(
-      (e) => e.id !== selected.id && e.positions.length >= 9,
-    );
-    if (!fixed) {
-      setError("Import a second scan or CAD target before aligning by points.");
-      return;
-    }
     try {
       editLandmarkSession({
         action: "begin",
         movingId: selected.id,
-        fixedId: fixed.id,
       });
     } catch (error) {
       setError(errorText(error));
@@ -4879,7 +4871,10 @@ export function App() {
           <LandmarkAlignmentDialog
             session={nPoints}
             targets={entities.filter(
-              (e) => e.id !== nPoints.moving.id && e.positions.length >= 9,
+              (e) =>
+                e.id !== nPoints.moving.id &&
+                objectPickable(e) &&
+                e.positions.length >= 3,
             )}
             busy={busy}
             pickSide={landmarkPickSide}
@@ -4887,14 +4882,10 @@ export function App() {
               setLandmarkPickSide(side);
             }}
             onTarget={(id) => {
-              const fixed = entities.find((e) => e.id === id);
-              if (fixed)
-                setNPoints(
-                  beginLandmarkAlignment(nPoints.moving, fixed, {
-                    targetScope: nPoints.targetScope,
-                    scene: entitiesRef.current,
-                  }),
-                );
+              editLandmarkSession({
+                action: "reference-target",
+                fixedId: id || undefined,
+              });
             }}
             onTargetScope={(targetScope) =>
               editLandmarkSession({ action: "target-scope", targetScope })

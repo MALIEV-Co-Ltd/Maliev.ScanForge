@@ -49,13 +49,14 @@ export function LandmarkAlignmentDialog({
           Moving scan: <strong>{session.moving.name}</strong>
         </p>
         <label className="select-field">
-          Fixed target
+          Fixed target (optional)
           <AppSelect
             aria-label="Fixed alignment target"
-            value={session.fixed.id}
+            value={session.fixed?.id ?? ""}
             disabled={busy || !!session.preview}
             onChange={(e) => onTarget(e.target.value)}
           >
+            <option value="">All visible references</option>
             {targets.map((e) => (
               <option key={e.id} value={e.id}>
                 {e.name}
@@ -74,7 +75,9 @@ export function LandmarkAlignmentDialog({
             }
           >
             <option value="visibleScene">Visible scans and CAD</option>
-            <option value="fixed">Fixed target only</option>
+            <option value="fixed" disabled={!session.fixed}>
+              Fixed target only
+            </option>
           </AppSelect>
         </label>
         {session.moving.indexedMesh && (
@@ -88,8 +91,9 @@ export function LandmarkAlignmentDialog({
           <p>Matching points determine point-cloud alignment.</p>
         )}
         <p>
-          Click matching points on each object in the same order. Pick at least
-          three pairs, spread across the objects.
+          Pick at least three matching pairs, spread across the scans. Fixed
+          points can come from any visible reference. Choose a fixed target to
+          filter canvas picking to that object.
         </p>
         <div className="button-row">
           <button

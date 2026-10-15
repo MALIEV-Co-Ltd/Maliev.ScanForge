@@ -83,6 +83,8 @@ describe("landmark alignment session", () => {
   });
   it("uses native seeded refinement for indexed source and fixed meshes", () => {
     const session = picked();
+    if (!session.fixed)
+      throw new Error("The paired fixture requires a fixed target.");
     session.moving = {
       ...session.moving,
       indexedMesh: { vertices: session.moving.positions, triangles: [0, 1, 2] },

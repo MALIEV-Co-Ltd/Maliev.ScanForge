@@ -2766,3 +2766,30 @@ Native candidate cycling and split-view workflow verification also remain
 separate requirements. The ribbon command stays gated; these captures do not
 claim full point-pair workflow completion. No application behavior changed in
 this evidence-only slice.
+
+## Source-only session integration
+
+The shared GUI/MCP begin operation now accepts a moving scan without a fixed
+object, matching the verified native admission precondition. `fixedId` is an
+optional canvas filter. Every admitted nonmoving reference point contributes to
+the fixed point group, preserving original side classification and Float32
+storage precision. Sessions capture reference identities; changes to any picked
+reference geometry invalidate acceptance. Existing explicit fixed-target calls
+remain supported, and fixed-only refinement requires a bound target.
+
+The dialog opens without a second target, offers all visible references, and
+uses shared action `reference-target` to change or clear its optional filter.
+Those edits reset picks and preview without creating model history. MCP exposes
+the bound `fixedId` (null when unbound) and captured `referenceIds`. This change
+does not certify original ASCII importer construction, candidate cycling or the
+split-view workflow, and does not promote the complete point-pair ribbon gate.
+
+Validation: build `scanforge-db2beece616401ad` passed; 78 focused tests and the
+full suite of 27,093 tests passed, with 31 existing skips. The rebuilt browser
+check passed source-only begin/cancel with no history change, GUI/MCP filter
+binding and clearing, fixed picks across two ASC references, identical preview
+and committed poses, unchanged reference objects, selection/normals retention,
+binary recovery and undo/redo. Native numerical processing remains unchanged.
+Scoped formatting, contract readback and whitespace/prohibited-name checks
+passed. Temporary browser/MCP processes and listeners were released; the source
+server remains on port 5173. No push or deployment.
