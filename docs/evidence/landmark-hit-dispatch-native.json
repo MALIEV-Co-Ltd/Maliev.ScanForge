@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "derivedImageSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273",
+    "provider": "Ghidra 12.1.4 through REA",
+    "mode": "static decompilation and complete listing; no target function execution",
+    "procedures": [
+      {
+        "entry": "0x1404a05d0",
+        "analysisEvidence": "ev_2d323eaf1dc2df96f3bd5edc9833e154569fc50209205bbad88dea9654f02d07",
+        "assemblyEvidence": "ev_3877cee321151323f0ba5dba6dda034504a76732a35ff4620c36b10852333c7d",
+        "subjectSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273"
+      },
+      {
+        "entry": "0x14088c510",
+        "analysisEvidence": "ev_13bf6256b6398c5182a0e728c7e7e55305944ee0c200b7b2a8662dda168d5644",
+        "assemblyEvidence": "ev_cc8b3419d46dcd551ad53051346a014603d86f8a981a449c1beb653b2a9918b7",
+        "subjectSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273"
+      }
+    ]
+  },
+  "meshDispatcher": {
+    "entry": "0x1404a05d0",
+    "observed": [
+      "Iterates eligible cached triangle providers; lazily builds missing cache through 0x140499b90.",
+      "Projects triangle vertices using the supplied view frame.",
+      "Calls 0x140422f60 for screen-triangle admission and interpolation parameters.",
+      "Interpolates world Float32 triangle coordinates and chooses the greatest transformed depth.",
+      "Returns maximum-Float32 sentinel with cleared object/reference outputs for no hit."
+    ],
+    "limits": [
+      "Interpretation of supplied view-frame fields and exact screen-triangle routine need separate verification.",
+      "No runtime replay of dispatcher, triangle cache producer or installed UI is claimed."
+    ]
+  },
+  "cloudDirectSlot": {
+    "typeName": "cVectorPointCloudObject",
+    "vtable": "0x141248b20",
+    "slot": "0x288",
+    "entry": "0x14088c510",
+    "constantAddress": "0x1415d4410",
+    "constantBits": "ffff7f7fffff7f7fffff7f7f",
+    "assembly": "0x14088c510: PUSH RBX\n0x14088c512: SUB RSP, 0x20\n0x14088c516: MOV RAX, qword ptr [RCX]\n0x14088c519: MOV RBX, RDX\n0x14088c51c: CALL qword ptr [RAX + 0x20]\n0x14088c51f: MOVSD XMM0, qword ptr [0x1415d4410]\n0x14088c527: MOV RCX, 0x47efffffe0000000\n0x14088c531: MOVSD qword ptr [RBX], XMM0\n0x14088c535: TEST AL, AL\n0x14088c537: MOV EAX, dword ptr [0x1415d4418]\n0x14088c53d: MOV dword ptr [RBX + 0x8], EAX\n0x14088c540: XOR EAX, EAX\n0x14088c542: MOV qword ptr [RBX + 0xc], RAX\n0x14088c546: MOV qword ptr [RBX + 0x14], RAX\n0x14088c54a: MOV dword ptr [RBX + 0x1c], EAX\n0x14088c54d: MOV dword ptr [RBX + 0x28], EAX\n0x14088c550: MOV RAX, RBX\n0x14088c553: MOV qword ptr [RBX + 0x20], RCX\n0x14088c557: ADD RSP, 0x20\n0x14088c55b: POP RBX\n0x14088c55c: RET",
+    "observed": [
+      "Invokes object virtual slot 0x20, then overwrites the output with a fixed record.",
+      "All three world-coordinate lanes are maximum Float32.",
+      "Remaining fields are zeros except fixed qword 0x47efffffe0000000 at offset 0x20.",
+      "The callback return is tested but no conditional jump uses it."
+    ],
+    "limits": [
+      "This one direct virtual slot does not establish that the installed application has no other point-cloud picking route.",
+      "No original cloud hit-testing runtime execution is claimed.",
+      "Application measured-vertex picking remains an independently authored GUI/MCP integration feature."
+    ]
+  }
+}

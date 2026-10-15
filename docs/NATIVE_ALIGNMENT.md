@@ -2874,3 +2874,31 @@ The next original hit-test trace has concrete entry points: common dispatcher
 `0x141248b20` as `0x14088c510`. The vtable read is ordinary static inspection,
 not new REA execution evidence. Focused analysis was not started because its
 3,072 MiB memory admission guard observed 2,936 MiB free.
+
+## Original triangle dispatcher and direct cloud hit slot
+
+The focused REA trace subsequently ran after memory admission recovered. It
+returned static decompilation and complete assembly for `0x1404a05d0` and
+`0x14088c510`; `docs/evidence/landmark-hit-dispatch-native.json` preserves their
+REA identities and exact scope. The mesh dispatcher iterates eligible cached
+triangle providers, constructs missing caches through `0x140499b90`, projects
+triangles through the supplied view frame, and calls `0x140422f60` for screen
+admission/interpolation. It interpolates world Float32 coordinates, retains the
+greatest transformed depth, and returns a maximum-Float32 no-hit sentinel.
+View-frame semantics, the screen-triangle routine and runtime replay remain
+separate verification work.
+
+The direct `cVectorPointCloudObject` slot `0x288` calls virtual slot `0x20`, then
+unconditionally returns a fixed record: all three coordinate lanes contain
+`0x7f7fffff`. The tested callback return does not control a branch. This narrow
+static finding does not rule out another installed point-cloud picking route.
+It also does not establish runtime cloud picking parity. Our measured-vertex
+picking is an independently authored feature required by the requested
+point-cloud workflow. The native insertion handler's Float32 storage remains
+independently verified by its existing original-instruction captures.
+
+Both REA analyses completed, the ephemeral binary session closed, and the owned
+controller/server processes exited. The original mapped image's full SHA-256,
+cloud vtable pointer and sentinel bytes were independently read back; the
+retained procedure evidence references the expected derived-image SHA-256.
+No original hit-testing function was executed in this trace.
