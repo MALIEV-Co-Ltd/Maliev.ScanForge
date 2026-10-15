@@ -1,0 +1,78 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "scope": "Direct original matching-query execution plus mapped-data inspection. Does not execute scene traversal, joined mesh finalization, evaluator construction, CAD conversion or native UI.",
+  "queryEvidence": "ev_5c80eb2fcd2cb8612171f90e10bbbdf66d786e1ff40a819c2bfa4f057e1a4c31",
+  "callerEvidence": "ev_b6196e69bd8d18053bac243aad9c3c7f72cfe3d1aef54bf228977a28d788e20b",
+  "cases": [
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14115ca98",
+      "kind": "scene-scan-wrapper",
+      "inputOffset": 2048,
+      "resultOffset": 1312,
+      "delta": -736
+    },
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14115ca98",
+      "kind": "scene-scan-wrapper",
+      "inputOffset": 4096,
+      "resultOffset": 3360,
+      "delta": -736
+    },
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14115ca98",
+      "kind": "scene-scan-wrapper",
+      "inputOffset": 8192,
+      "resultOffset": 7456,
+      "delta": -736
+    },
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14114bba0",
+      "kind": "eligible-feature-wrapper",
+      "inputOffset": 2048,
+      "resultOffset": 1312,
+      "delta": -736
+    },
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14114bba0",
+      "kind": "eligible-feature-wrapper",
+      "inputOffset": 4096,
+      "resultOffset": 3360,
+      "delta": -736
+    },
+    {
+      "procedure": "0x14088ae10",
+      "identity": "0x14114bba0",
+      "kind": "eligible-feature-wrapper",
+      "inputOffset": 8192,
+      "resultOffset": 7456,
+      "delta": -736
+    }
+  ],
+  "alternateProperty": {
+    "address": "0x141165580",
+    "encoding": "UTF-16LE",
+    "value": "PointEvaluator",
+    "lookupSlot": "0x298",
+    "dataOffset": "0x60",
+    "readyOffset": "0x90"
+  },
+  "combinedMeshFinalizer": {
+    "vtable": "0x140ebfcf0",
+    "slot": "0x58",
+    "procedure": "0x1401de640"
+  },
+  "capturedMode": {
+    "address": "0x14764d891",
+    "value": 0,
+    "limitation": "Captured byte only; application default and settings path not established."
+  },
+  "cleanup": {
+    "nativeAllocationsReleased": true,
+    "executablePageReleased": true
+  }
+}

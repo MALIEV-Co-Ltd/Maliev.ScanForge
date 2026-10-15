@@ -1708,3 +1708,42 @@ reproduced GUI cancellation being reported as failed; the final patch reports it
 as cancelled. Formatting, whitespace and branding checks passed. Test helpers
 exited; the live 5173 server and reused user-facing preview tab remain available.
 Build manifest: `scanforge-d27bc90561ce495a`.
+
+## Original scene wrapper and named evaluator contract
+
+`docs/evidence/landmark-scene-contract-native.json` retains six new direct
+executions of original query `0x14088ae10`. Both the scene-scan identifier
+`0x14115ca98` and eligible-feature identifier `0x14114bba0` return the same
+wrapper root, subtracting `0x2e0` from the supplied adjusted interface pointer.
+Three independent input offsets reproduce that adjustment for each identifier.
+These calls execute the original machine code; they do not construct a scene or
+exercise delegated query failures.
+
+The alternate target lookup in original caller `0x14054d440` uses virtual slot
+`0x298` with UTF-16LE **`PointEvaluator`** at `0x141165580`. This address contains
+a property name, not another two-qword interface identifier. The caller waits
+for the returned object's readiness field at `+0x90` and passes its `+0x60`
+member to the refinement constructor. This establishes the property contract;
+it does not establish GPU execution or the contents of that member.
+
+The other target path copies original vertices and stored normals in order into
+one combined mesh, offsets facet vertex IDs by the preceding vertex counts,
+and copies stored facet normals. Its final virtual call at slot `0x58` resolves
+through mapped vtable `0x140ebfcf0` to `0x1401de640`. That finalizer invokes
+`0x140b375e0(mesh, 1)`: facet-normal refresh and angle-weighted vertex-normal
+regeneration precede refinement. Independent target query trees therefore do
+not, by themselves, prove parity with this caller's combined-mesh path.
+
+The captured mode byte at `0x14764d891` is zero. That observation is specific to
+the retained mapped image; the application's default and settings path remain
+unestablished. The scene traversal, combined finalizer and named evaluator still
+need an assembled execution before their complete behavior is ported. The
+existing indexed numerical pipeline and its verified GUI/MCP lifecycle remain
+available without claiming this broader scene-collection parity.
+
+Validation for this evidence-only slice: all six native matching-query cases
+passed; the image digest, UTF-16 property bytes, finalizer pointer and allocation
+cleanup receipts were checked directly. The native replay and offline-analysis
+processes exited. No application source or MCP contract changed, so application
+build and test targets are not applicable to this slice. The live development
+server remains on port 5173.
