@@ -19,6 +19,7 @@ import type { ObjectSelectionModifiers } from "../object-selection";
 import type {
   LandmarkEdit,
   LandmarkPreviewOptions,
+  LandmarkTargetScope,
 } from "../landmark-alignment";
 
 export interface WorkspaceSnapshot {
@@ -40,7 +41,14 @@ export interface WorkspaceHost {
   acceptLandmarks?(): unknown;
   inspectLandmarks?(): unknown;
   editLandmarks?(
-    edit: LandmarkEdit | { action: "begin"; movingId: string; fixedId: string },
+    edit:
+      | LandmarkEdit
+      | {
+          action: "begin";
+          movingId: string;
+          fixedId: string;
+          targetScope?: LandmarkTargetScope;
+        },
   ): unknown;
   inspectCommands?(): unknown;
   launchCommand?(name?: string): unknown;

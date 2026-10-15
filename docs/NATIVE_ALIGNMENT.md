@@ -2212,3 +2212,66 @@ audits passed. Replay and test helpers exited; their process/port cleanup was
 verified. Port 5173 serves the corrected worker without replacing the user's
 workspace. Fresh cylinder cap-connectivity and full all-scene alignment remain
 separate verification work.
+
+## Assembled native target collection and visible-scene sessions
+
+`landmark-assembled-target-native.json` retains 24 executions of original range
+`0x14054d56d` through `0x14054daca`, including its empty-target exit at
+`0x14054de1c`. This combines CAD provider expansion, original scan wrapper query,
+scene iteration, the actual joined mesh constructor, original vertex/triangle
+copy and complete target finalizer in one execution. Unlike the earlier separate
+collector/copy captures, mesh containers and the finalizer/scheduler are not
+substituted. The native Concurrency Runtime and tracked UCRT allocation adapters
+are reused. Existing native CAD-provider position, normal and index buffers are
+reconstructed into actual native mesh containers as cached targets; the CAD
+mesher is not rerun. Auxiliary source facet tags are not reconstructed; the
+joined-copy range does not copy them into its new target.
+
+The twelve layouts each run with one/two logical lanes. They cover empty scenes,
+moving-scan exclusion, hidden roots, unsupported/null scan roots, disabled CAD
+providers, both CAD providers, duplicate cached geometry and changing scan order.
+The original instructions retain CAD-before-scan order and duplicates, destroy
+the iterator once, and copy without welding. Complete finalization refreshes
+normals and adjacency. All recorded position, normal and ordered index buffers
+match the application's shared target preparation, including an unused source
+vertex. All tracked allocations are released, with no unknown frees; image and
+entry/exit storage are released and the replay exits successfully.
+
+Eligible CAD roots are supplied to this range after the separately studied
+collector. Query/provider metadata, visibility and the scene iterator are bounded
+adapters. This capture excludes source seed growth, lazy CAD generation, alternate
+named evaluators, optimizer/controller completion and the installed UI. The
+captured evaluator mode is zero; it is not asserted to be a factory default.
+
+The shared application session now defaults to `targetScope: "visibleScene"`.
+It snapshots supported visible exact-CAD entities first, then visible raw indexed
+scans in workspace order, excluding the moving entity. Only eligible targets are
+retained; unrelated hidden/unsupported buffers are not kept by the session.
+The selected fixed object remains the point-picking anchor. Both the GUI and MCP
+can choose `fixed` scope; direct paired `mesh_process` retains its explicit target.
+The GUI selector and `landmark_edit` scope action discard a preview while keeping
+picks. State inspection reports scope and ordered target IDs. Target membership,
+order, visibility or geometry changes invalidate the visible-scene preview;
+appearance changes do not. Additional locked targets are read only. Acceptance
+changes only the moving scan through the existing single history transaction.
+
+`tests/landmark-scene-targets.test.ts` compares the assembled native records and
+target order with application requests, plus scope changes and stale-target
+checks. Native duplicate cache occurrences are represented as distinct published
+workspace objects sharing the same geometry; workspace IDs remain unique.
+The existing 32-target, source-type and hidden-triangle preconditions remain in
+force. Point-cloud surface refinement, complete original root-policy projection,
+fresh CAD tessellation parity and full controller execution remain unfinished;
+the broader point-pair ribbon gate is unchanged.
+
+Validation: the production build passed without warnings/errors, manifest
+`scanforge-abbaa82db3abd10b`. Focused tests passed 70 cases; the full suite passed
+27,031 tests across 350 files, with 29 existing skips. The isolated browser passed
+default visible-scene target inspection, CAD-first ordering, GUI scope selection
+and pick retention, GUI/MCP preview agreement, two-worker execution, acceptance,
+undo and CAD preservation with no errors. Existing fixed-only workflows remain
+covered explicitly. The native verification JSON confirms all 24 serial/parallel
+buffers, iterator destruction and allocation cleanup. Formatting, JSON parsing,
+scoped whitespace and brand checks passed. Original replay, suite, browser and
+MCP helpers exited and test ports were released; an unrelated later process
+reused one recorded PID and was preserved. Port 5173 serves the latest source.

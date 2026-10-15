@@ -1,7 +1,12 @@
 import { AppSelect } from "./AppSelect";
 import { PreviewButton } from "./PreviewButton";
 import type { Entity } from "../types";
-import { landmarkPairs, type LandmarkAlignment } from "../landmark-alignment";
+import {
+  landmarkPairs,
+  landmarkTargetEntities,
+  type LandmarkAlignment,
+  type LandmarkTargetScope,
+} from "../landmark-alignment";
 
 export interface LandmarkAlignmentDialogProps {
   session: LandmarkAlignment;
@@ -10,6 +15,7 @@ export interface LandmarkAlignmentDialogProps {
   pickSide: "moving" | "fixed";
   onPickSide: (side: "moving" | "fixed") => void;
   onTarget: (id: string) => void;
+  onTargetScope: (scope: LandmarkTargetScope) => void;
   onRemoveLast: () => void;
   onRemoveAll: () => void;
   onPreview: () => void;
@@ -24,6 +30,7 @@ export function LandmarkAlignmentDialog({
   pickSide,
   onPickSide,
   onTarget,
+  onTargetScope,
   onRemoveLast,
   onRemoveAll,
   onPreview,
@@ -56,6 +63,23 @@ export function LandmarkAlignmentDialog({
             ))}
           </AppSelect>
         </label>
+        <label className="select-field">
+          Refine against
+          <AppSelect
+            aria-label="Alignment refinement targets"
+            value={session.targetScope ?? "fixed"}
+            disabled={busy}
+            onChange={(event) =>
+              onTargetScope(event.target.value as LandmarkTargetScope)
+            }
+          >
+            <option value="visibleScene">Visible scans and CAD</option>
+            <option value="fixed">Fixed target only</option>
+          </AppSelect>
+        </label>
+        {session.moving.indexedMesh && (
+          <p>{landmarkTargetEntities(session).length} refinement targets</p>
+        )}
         <p>
           Click matching points on each object in the same order. Pick at least
           three pairs, spread across the objects.

@@ -2548,14 +2548,17 @@ export function App() {
       const fixed = entities.find((e) => e.id === edit.fixedId);
       if (!moving || !fixed || moving.locked || fixed.locked)
         throw new Error("Choose existing unlocked moving and fixed objects.");
-      next = beginLandmarkAlignment(moving, fixed);
+      next = beginLandmarkAlignment(moving, fixed, {
+        targetScope: edit.targetScope,
+        scene: entitiesRef.current,
+      });
       setLandmarkPickSide("moving");
       setMode("inspect");
       setToolPanelOpen(true);
     } else {
       if (!nPointsRef.current)
         throw new Error("No active landmark alignment session.");
-      next = editLandmarks(nPointsRef.current, edit);
+      next = editLandmarks(nPointsRef.current, edit, entitiesRef.current);
     }
     nPointsRef.current = next;
     setNPoints(next);
@@ -4881,8 +4884,16 @@ export function App() {
             onTarget={(id) => {
               const fixed = entities.find((e) => e.id === id);
               if (fixed)
-                setNPoints(beginLandmarkAlignment(nPoints.moving, fixed));
+                setNPoints(
+                  beginLandmarkAlignment(nPoints.moving, fixed, {
+                    targetScope: nPoints.targetScope,
+                    scene: entitiesRef.current,
+                  }),
+                );
             }}
+            onTargetScope={(targetScope) =>
+              editLandmarkSession({ action: "target-scope", targetScope })
+            }
             onRemoveLast={() => editLandmarkSession({ action: "remove-last" })}
             onRemoveAll={() => editLandmarkSession({ action: "clear" })}
             onReset={() => editLandmarkSession({ action: "reset" })}

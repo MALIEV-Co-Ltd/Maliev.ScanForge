@@ -28,6 +28,14 @@ matching the original conversion rather than retaining tessellation coordinates.
 The shared asynchronous preparation validates cancellation/revision across that
 boundary and leaves the fixed entity, BRep and history unchanged. Kernel-ID-owned
 records have an eight-entry/64 MiB cache and are removed on handle release.
+The picked-point session owns a snapshot of its eligible scene targets rather
+than unrelated hidden/unsupported geometry. GUI and `landmark_edit` begin default
+to `visibleScene`; CAD precedes raw indexed scans, with stable scene order within
+each category and the moving scan excluded. `fixedId` remains the point-picking
+anchor. `targetScope: "fixed"` preserves explicit single-target refinement.
+Scope edits invalidate preview without losing picks. Preview publication and
+acceptance compare current eligible membership/order, visibility and geometry
+against that snapshot. `landmark_get` exposes the effective ordered target IDs.
 
 `src/automation/catalog.json` is the wire-schema registry. The official SDK server reads it for MCP discovery. `ApplicationApi` validates the same schemas before dispatch, tracks workspace revisions/retry receipts and owns transient jobs/artifacts. `operations.ts` resolves explicit workspace objects and executes existing domain algorithms. `use-workspace-api.ts` adapts the current editor state to that gateway and publishes mutations synchronously before returning revision receipts. The editor uses shared CAD creation/rebuild helpers and routes modeling undo/redo through the gateway.
 

@@ -23,6 +23,7 @@ it("keeps preview and accept unavailable until their prerequisites and permits c
       pickSide="moving"
       onPickSide={noop}
       onTarget={noop}
+      onTargetScope={noop}
       onRemoveLast={noop}
       onRemoveAll={noop}
       onPreview={noop}

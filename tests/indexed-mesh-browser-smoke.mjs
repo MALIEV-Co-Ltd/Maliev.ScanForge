@@ -588,6 +588,7 @@ try {
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   await mutate("landmark_edit", {
     action: "begin",
+    targetScope: "fixed",
     movingId: gui.id,
     fixedId: moving.id,
   });
@@ -662,6 +663,7 @@ try {
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   await mutate("landmark_edit", {
     action: "begin",
+    targetScope: "fixed",
     movingId: gui.id,
     fixedId: moving.id,
   });
@@ -706,6 +708,7 @@ try {
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   await mutate("landmark_edit", {
     action: "begin",
+    targetScope: "fixed",
     movingId: gui.id,
     fixedId: cadId,
   });
@@ -752,6 +755,66 @@ try {
     (await call("object_get", { entityId: cadId })).result,
     fixedCadBefore,
   );
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: gui.id,
+    fixedId: cadId,
+  });
+  const sceneSession = (await call("landmark_get")).result;
+  assert.equal(sceneSession.targetScope, "visibleScene");
+  assert.ok(sceneSession.refinementTargetIds.length > 1);
+  assert.equal(sceneSession.refinementTargetIds[0], cadId);
+  assert.ok(!sceneSession.refinementTargetIds.includes(gui.id));
+  for (let index = 0; index < 3; index++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: gui.id,
+      point: sourceLandmarks.slice(index * 3, index * 3 + 3),
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: cadId,
+      point: targetLandmarks.slice(index * 3, index * 3 + 3),
+    });
+  }
+  await landmarkDialog
+    .getByRole("button", { name: "Alignment refinement targets", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "Fixed target only", exact: true })
+    .click();
+  assert.equal((await call("landmark_get")).result.targetScope, "fixed");
+  assert.equal((await call("landmark_get")).result.picks.length, 6);
+  await mutate("landmark_edit", {
+    action: "target-scope",
+    targetScope: "visibleScene",
+  });
+  await landmarkDialog
+    .getByRole("button", { name: "Preview", exact: true })
+    .click();
+  await landmarkDialog.getByText(/Preview RMS:/).waitFor();
+  const sceneGuiPreview = (await call("landmark_get")).result;
+  assert.equal(sceneGuiPreview.diagnostics.physicalWorkers, 2);
+  await mutate("landmark_edit", { action: "reset" });
+  const sceneAgentPreview = await job(
+    await mutate("landmark_preview", { workerCount: 2, parallel: true }),
+  );
+  assert.deepEqual(
+    sceneAgentPreview.result.registration,
+    sceneGuiPreview.registration,
+  );
+  assert.deepEqual(
+    sceneAgentPreview.result.refinement,
+    sceneGuiPreview.refinement,
+  );
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
+  await mutate("landmark_accept", {});
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadId })).result,
+    fixedCadBefore,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -772,6 +835,7 @@ try {
     guiMcpLandmarkRefinement: true,
     guiMcpMulticoreSeededRefinement: true,
     guiMcpCadLandmarkRefinement: true,
+    guiMcpVisibleSceneLandmarkRefinement: true,
     cadLandmarkBrepPreserved: true,
     errors,
   };

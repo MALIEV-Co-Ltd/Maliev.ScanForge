@@ -42,6 +42,27 @@ revision checks run before and after asynchronous kernel acquisition.
 Logical lanes default to two; the existing bounded CPU pool admits at most two
 physical workers. `parallel: false` keeps the same logical lane reduction serial.
 
+The shared picked-point session (`landmark_edit` with `action: "begin"`) defaults
+to `targetScope: "visibleScene"`. `fixedId` still identifies the object used for
+matching point picks. Refinement collects visible exact CAD first, then visible
+raw indexed scans in scene order, excluding the moving scan. Point clouds,
+unindexed scans and construction displays are not surface-refinement targets.
+At most 32 distinct published targets are admitted; reveal hidden triangles on
+contributing meshes or hide the entire object before refinement. Additional
+targets are read-only and may be locked; the moving and picked fixed objects
+must remain unlocked. The dialog's **Refine against** selector exposes the same
+choice as MCP. Set `targetScope: "fixed"` to retain single-target refinement.
+
+`landmark_get` reports `targetScope` and ordered `refinementTargetIds`. Change scope
+with `landmark_edit { action: "target-scope", targetScope: "fixed" | "visibleScene" }`;
+this clears the preview and retains the picks. Scene target geometry, visibility,
+membership or order changes invalidate a visible-scene preview. Appearance-only
+changes do not. Preview/accept preserve every target and commit only the moving
+scan. Direct paired `mesh_process` with `targetId` continues to use that explicit
+fixed target; use the session tools for visible-scene refinement. Point-cloud
+surface refinement and complete native all-scene controller parity remain under
+verification; this does not change the broader ribbon verification gate.
+
 The output retains the coarse `registration` and its landmark residual for
 marker placement, and reports the separate surface `refinement` matrix, objective
 values, acceptance and iterations. Replacement indexed vertices and normals have

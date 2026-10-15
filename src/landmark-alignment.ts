@@ -9,6 +9,40 @@ export interface LandmarkAlignment {
   fixed: Entity;
   picks: { entityId: string; point: Vec3 }[];
   preview?: ProcessingResult;
+  targetScope?: LandmarkTargetScope;
+  refinementScene?: readonly Entity[];
+}
+export type LandmarkTargetScope = "visibleScene" | "fixed";
+
+/** Original CPU target order: visible CAD providers before other visible scans. */
+export function visibleLandmarkTargets(
+  moving: Entity,
+  scene: readonly Entity[],
+) {
+  const visible = scene.filter(
+    (entity) => entity.id !== moving.id && entity.visible,
+  );
+  return [
+    ...visible.filter((entity) => !!entity.kernelId),
+    ...visible.filter(
+      (entity) =>
+        entity.kind === "mesh" &&
+        !!entity.indexedMesh &&
+        !entity.kernelId &&
+        !entity.parametric &&
+        !entity.surfacePatch,
+    ),
+  ];
+}
+export function landmarkTargetEntities(session: LandmarkAlignment) {
+  return session.targetScope === "visibleScene"
+    ? visibleLandmarkTargets(
+        session.moving,
+        session.refinementScene ?? [session.fixed],
+      )
+    : session.fixed.indexedMesh || session.fixed.kernelId
+      ? [session.fixed]
+      : [];
 }
 export interface LandmarkPreviewOptions {
   signal?: AbortSignal;
@@ -20,6 +54,10 @@ export interface LandmarkPreviewOptions {
 export function beginLandmarkAlignment(
   moving: Entity,
   fixed: Entity,
+  options: {
+    targetScope?: LandmarkTargetScope;
+    scene?: readonly Entity[];
+  } = {},
 ): LandmarkAlignment {
   if (
     moving.id === fixed.id ||
@@ -29,7 +67,19 @@ export function beginLandmarkAlignment(
     moving.surfacePatch
   )
     throw new Error("Choose a moving scan and a different fixed object.");
-  return { moving, fixed, picks: [] };
+  const targetScope = options.targetScope ?? "visibleScene";
+  if (targetScope !== "visibleScene" && targetScope !== "fixed")
+    throw new Error("Choose visibleScene or fixed target scope.");
+  return {
+    moving,
+    fixed,
+    picks: [],
+    targetScope,
+    refinementScene:
+      options.scene && targetScope === "visibleScene"
+        ? visibleLandmarkTargets(moving, options.scene)
+        : undefined,
+  };
 }
 export function pickLandmark(
   session: LandmarkAlignment,
@@ -65,6 +115,7 @@ export function landmarkRequest(
   includeRefinement = true,
 ) {
   const pairs = landmarkPairs(session);
+  const targets = landmarkTargetEntities(session);
   if (pairs.moving.length < 3 || pairs.moving.length !== pairs.fixed.length)
     throw new Error(
       "Pick at least three corresponding points on each object in the same order.",
@@ -78,10 +129,11 @@ export function landmarkRequest(
     targetLandmarks: pairs.fixed.flat(),
     ...(includeRefinement &&
     session.moving.indexedMesh &&
-    session.fixed.indexedMesh
+    targets.length &&
+    targets.every((target) => !!target.indexedMesh && !target.kernelId)
       ? landmarkRefinementTargets(
           session.moving,
-          [session.fixed],
+          targets,
           workerCount,
           parallel,
         )
@@ -156,15 +208,17 @@ export async function prepareLandmarkRequest(
   const workers = options.workerCount ?? 2,
     parallel = options.parallel ?? true;
   const request = landmarkRequest(session, workers, parallel, false);
+  const targets = landmarkTargetEntities(session);
   if (
     session.moving.indexedMesh &&
-    (session.fixed.indexedMesh || session.fixed.kernelId)
+    targets.length &&
+    targets.every((target) => !!target.indexedMesh || !!target.kernelId)
   )
     Object.assign(
       request,
       await prepareLandmarkRefinementTargets(
         session.moving,
-        [session.fixed],
+        targets,
         acquireCad,
         workers,
         parallel,
@@ -210,19 +264,36 @@ export function landmarkSceneUnchanged(
   session: LandmarkAlignment,
   entities: Entity[],
 ) {
+  const sameGeometry = (original: Entity, current: Entity | undefined) =>
+    !!current &&
+    current.positions === original.positions &&
+    current.indexedMesh === original.indexedMesh &&
+    current.normals === original.normals &&
+    current.kind === original.kind &&
+    current.kernelId === original.kernelId &&
+    current.parametric === original.parametric &&
+    current.surfacePatch === original.surfacePatch &&
+    current.visible === original.visible &&
+    current.meshSelection === original.meshSelection;
+  if (
+    session.targetScope === "visibleScene" &&
+    session.refinementScene &&
+    session.moving.indexedMesh
+  ) {
+    const before = landmarkTargetEntities(session),
+      after = visibleLandmarkTargets(session.moving, entities);
+    if (
+      before.length !== after.length ||
+      before.some(
+        (entity, index) =>
+          entity.id !== after[index].id || !sameGeometry(entity, after[index]),
+      )
+    )
+      return false;
+  }
   return [session.moving, session.fixed].every((original) => {
     const current = entities.find((entity) => entity.id === original.id);
-    return (
-      current &&
-      !current.locked &&
-      current.positions === original.positions &&
-      current.indexedMesh === original.indexedMesh &&
-      current.normals === original.normals &&
-      current.kind === original.kind &&
-      current.kernelId === original.kernelId &&
-      current.parametric === original.parametric &&
-      current.surfacePatch === original.surfacePatch
-    );
+    return current && !current.locked && sameGeometry(original, current);
   });
 }
 export function acceptLandmarkAlignment(
@@ -280,15 +351,28 @@ export function landmarkMarkers(session: LandmarkAlignment) {
 }
 
 export interface LandmarkEdit {
-  action: "pick" | "remove-last" | "clear" | "reset";
+  action: "pick" | "remove-last" | "clear" | "reset" | "target-scope";
   entityId?: string;
   point?: Vec3;
+  targetScope?: LandmarkTargetScope;
 }
 /** Original preview state guards, shared by the canvas, dialog and agent API. */
 export function editLandmarks(
   session: LandmarkAlignment,
   edit: LandmarkEdit,
+  scene?: readonly Entity[],
 ): LandmarkAlignment {
+  if (edit.action === "target-scope") {
+    if (!edit.targetScope)
+      throw new Error("Supply targetScope to change refinement targets.");
+    return {
+      ...beginLandmarkAlignment(session.moving, session.fixed, {
+        targetScope: edit.targetScope,
+        scene: scene ?? session.refinementScene,
+      }),
+      picks: session.picks,
+    };
+  }
   if (edit.action === "reset") return { ...session, preview: undefined };
   if (edit.action === "pick") {
     if (!edit.entityId || !edit.point)
@@ -307,6 +391,10 @@ export function landmarkState(session: LandmarkAlignment | null) {
         active: true,
         movingId: session.moving.id,
         fixedId: session.fixed.id,
+        targetScope: session.targetScope ?? "fixed",
+        refinementTargetIds: session.moving.indexedMesh
+          ? landmarkTargetEntities(session).map((entity) => entity.id)
+          : [],
         preview: !!session.preview,
         ...(session.preview
           ? {
