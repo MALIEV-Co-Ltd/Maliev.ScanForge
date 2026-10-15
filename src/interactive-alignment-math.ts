@@ -42,6 +42,104 @@ export interface InteractiveDragInput {
   view?: readonly number[];
 }
 const f = Math.fround;
+/** Original renderer 832BC0. pixelMode is its independent screen-coordinate flag. */
+export function nativeInteractivePixelPlane(input: {
+  rectangle: readonly number[];
+  bounds: readonly number[];
+  point: readonly number[];
+  pixelMode: boolean;
+}): number[] {
+  const { rectangle: r, bounds: b, point: p, pixelMode } = input;
+  if (
+    r.length !== 4 ||
+    p.length !== 2 ||
+    [...r, ...p].some(
+      (v) => !Number.isInteger(v) || v < -2147483648 || v > 2147483647,
+    ) ||
+    b.length !== 6 ||
+    !b.every(Number.isFinite) ||
+    typeof pixelMode !== "boolean"
+  )
+    throw new Error(
+      "Interactive pixel conversion requires an integer viewport and point, finite view bounds and a screen-coordinate flag.",
+    );
+  const y = (((r[3] - p[1]) | 0) - r[1]) | 0;
+  if (pixelMode) return [f(p[0]), f(y)];
+  const width = f((r[2] - r[0]) | 0),
+    height = f((r[3] - r[1]) | 0),
+    epsilon = 1.1920928955078125e-7;
+  const x =
+    Math.abs(width) <= epsilon
+      ? 0
+      : f(f(f(f(p[0]) - f(width * 0.5)) * f(b[3] - b[0])) / width);
+  const vertical =
+    Math.abs(height) <= epsilon
+      ? 0
+      : f(f(f(b[4] - b[1]) * f(f(y) - f(height * 0.5))) / height);
+  return [x, vertical];
+}
+/** Original 8332C0: preserve affine depth even when XY uses GLU screen projection. */
+export function nativeInteractiveProjectPoint(input: {
+  frame: readonly number[];
+  anchor: readonly number[];
+  point: readonly number[];
+  pixelMode: boolean;
+  model?: readonly number[];
+  projection?: readonly number[];
+  viewport?: readonly number[];
+}): number[] {
+  const { frame: m, anchor: a, point: p } = input;
+  if (
+    m.length !== 12 ||
+    a.length !== 3 ||
+    p.length !== 3 ||
+    ![...m, ...a, ...p].every(Number.isFinite) ||
+    typeof input.pixelMode !== "boolean"
+  )
+    throw new Error(
+      "Interactive projection requires a finite view frame, anchor and point.",
+    );
+  const x = p[0] - a[0],
+    y = p[1] - a[1],
+    z = p[2] - a[2];
+  const output = [
+    y * m[1] + x * m[0] + z * m[2] + m[3],
+    y * m[5] + x * m[4] + z * m[6] + m[7],
+    y * m[9] + x * m[8] + z * m[10] + m[11],
+  ];
+  if (input.pixelMode) {
+    const { model, projection, viewport: v } = input;
+    if (
+      !model ||
+      !projection ||
+      !v ||
+      model.length !== 16 ||
+      projection.length !== 16 ||
+      v.length !== 4 ||
+      ![...model, ...projection, ...v].every(Number.isFinite)
+    )
+      throw new Error(
+        "Screen projection requires model/projection matrices and a viewport.",
+      );
+    const multiply = (matrix: readonly number[], vector: readonly number[]) =>
+      [0, 1, 2, 3].map(
+        (row) =>
+          vector[0] * matrix[row] +
+          vector[1] * matrix[row + 4] +
+          vector[2] * matrix[row + 8] +
+          vector[3] * matrix[row + 12],
+      );
+    const clip = multiply(projection, multiply(model, [...p, 1]));
+    if (clip[3] === 0)
+      throw new Error(
+        "Interactive screen projection has zero homogeneous weight.",
+      );
+    const reciprocal = 1 / clip[3];
+    output[0] = f((clip[0] * reciprocal * 0.5 + 0.5) * v[2] + v[0]);
+    output[1] = f((clip[1] * reciprocal * 0.5 + 0.5) * v[3] + v[1]);
+  }
+  return output;
+}
 /** Original 20FC50: Float32 length, Double reciprocal/product, Float32 stores. */
 export function nativeInteractiveNormalizeMovement(
   values: readonly number[],

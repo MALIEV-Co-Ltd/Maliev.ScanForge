@@ -1,0 +1,61 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "derivedArtifactSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273",
+  "procedures": [
+    {
+      "procedure": "0x140832bc0",
+      "evidenceId": "ev_edd23b21559f00528102faadee0e80d23755cc80b30734e225bfd8b77c68afc6"
+    },
+    {
+      "procedure": "0x140833140",
+      "evidenceId": "ev_645d4e441c9ff3c5561617d0f9dece700aa2f28ffa1c6744dcff0042d77de4b4"
+    },
+    {
+      "procedure": "0x140833230",
+      "evidenceId": "ev_c5a1dc1befc41825eaf8751e959d15044a400578967badd0a37dba5d7cd1369b"
+    },
+    {
+      "procedure": "0x1408332c0",
+      "evidenceId": "ev_dc3df945f00a34dad6380ba258a8a3fe21a4593edcf057c80dbc2821b2c25f19"
+    },
+    {
+      "procedure": "0x1408ae510",
+      "evidenceId": "ev_9fdf1c675b0aab375ed35d2a23ccaa32199013f816987aefba15c98bfb70b6b7"
+    },
+    {
+      "procedure": "0x140832930",
+      "evidenceId": "ev_18784548c16268549e6e6636d07dd223aec41de7467feb00cb43d2ba7f42af4f"
+    },
+    {
+      "procedure": "0x140832680",
+      "evidenceId": "ev_c09f1a0226a17b0bc7be2aba1235b86e691c3b3bb4517dabf008607980534aae"
+    },
+    {
+      "procedure": "0x140832980",
+      "evidenceId": "ev_079ca44dbf58164d2442906fecbba81ee18325bd7ed2336f2605a110f3b99b91"
+    },
+    {
+      "procedure": "0x1408458c0",
+      "evidenceId": "ev_38e8e924d124c1b4fa8a676df224273651ed4c0a09673670e61e91e8e2707d55"
+    },
+    {
+      "procedure": "0x1408a6e40",
+      "evidenceId": "ev_178a781471670a5f9593022a8296350aee671c3a7dd3f48c7bedf8e14f8fa4a0"
+    },
+    {
+      "procedure": "0x1408a8e20",
+      "evidenceId": "ev_691f71c16f7e178ac5606229936db721b15836f7fe9545d050aefeb5ad79e9d6"
+    }
+  ],
+  "coverage": {
+    "pixelPlaneCases": 150,
+    "worldProjectionCases": 192,
+    "viewFitPublicationCases": 24,
+    "aspectCases": 80
+  },
+  "limits": [
+    "OpenGL matrix/viewport getters and scene bounds use controlled adapters.",
+    "Projection binds the system GLU32 numerical routine; no live OpenGL window is captured.",
+    "Viewport integration and native numerical callbacks are verified separately; the complete Interactive GUI/MCP workflow remains gated."
+  ]
+}

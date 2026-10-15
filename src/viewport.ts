@@ -1,4 +1,13 @@
 import { prepareViewportPicking } from "./viewport-picking";
+import {
+  InteractivePosePreview,
+  type InteractiveDisplayPose,
+} from "./viewport-interactive-preview";
+import {
+  captureInteractiveCamera,
+  interactiveDragForCamera,
+  type InteractivePointerDrag,
+} from "./interactive-camera";
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
 import { SelectionProcessingHighlight } from "./selection-processing-highlight";
@@ -145,6 +154,8 @@ export class Viewport {
   private readonly controls: TrackballControls;
   private readonly observer: ResizeObserver;
   private readonly objects = new Map<string, Item>();
+  private interactivePosePreview?: InteractivePosePreview;
+  private interactiveOriginalBounds?: THREE.Box3;
   private readonly raycaster = new THREE.Raycaster();
   private readonly section = new THREE.Group();
   private readonly measurement = new THREE.Group();
@@ -585,6 +596,61 @@ export class Viewport {
       y,
       maxHits,
     );
+  }
+
+  /** Shared GUI/agent preview sink. Only display matrices and coarse clipping bounds change. */
+  setInteractivePreview(
+    state: { targets: readonly InteractiveDisplayPose[] } | null,
+  ): void {
+    if (this.disposed && state) throw new Error("The viewport is closed.");
+    if (!state) {
+      if (!this.interactivePosePreview) return;
+      this.interactivePosePreview.clear();
+      this.interactivePosePreview = undefined;
+      if (this.interactiveOriginalBounds)
+        this.bounds.copy(this.interactiveOriginalBounds);
+      this.interactiveOriginalBounds = undefined;
+      updateCameraClipping(this.camera, this.bounds);
+      this.invalidate();
+      return;
+    }
+    if (!this.interactivePosePreview) {
+      this.interactiveOriginalBounds = this.bounds.clone();
+      this.interactivePosePreview = new InteractivePosePreview(
+        new Map([...this.objects].map(([id, item]) => [id, item.mesh])),
+        this.invalidate,
+      );
+    }
+    this.interactivePosePreview.show(state.targets);
+    this.bounds.makeEmpty();
+    for (const item of this.objects.values())
+      if (item.mesh.visible && item.mesh.geometry.boundingBox) {
+        item.mesh.updateMatrixWorld(true);
+        this.bounds.union(
+          item.mesh.geometry.boundingBox
+            .clone()
+            .applyMatrix4(item.mesh.matrixWorld),
+        );
+      }
+    updateCameraClipping(this.camera, this.bounds);
+    this.invalidate();
+  }
+
+  private captureInteractiveCamera() {
+    return captureInteractiveCamera(
+      this.camera,
+      this.controls.target,
+      this.bounds,
+      this.container.clientWidth,
+      this.container.clientHeight,
+    );
+  }
+  interactiveViewFrame() {
+    const context = this.captureInteractiveCamera();
+    return { matrix: context.matrix, anchor: context.anchor };
+  }
+  interactiveDragInput(input: InteractivePointerDrag) {
+    return interactiveDragForCamera(this.captureInteractiveCamera(), input);
   }
 
   async captureThumbnail(): Promise<Blob | null> {
@@ -1669,6 +1735,7 @@ export class Viewport {
     selectedId: string | null,
     selectedIds: readonly string[] = selectedId ? [selectedId] : [],
   ): void {
+    if (this.interactivePosePreview) this.setInteractivePreview(null);
     this.setNoiseComparison();
     this.holdMenu?.close();
     if (selectedId !== this.selectedId) this.clearDeviations();
@@ -2580,6 +2647,9 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.interactivePosePreview?.clear();
+    this.interactivePosePreview = undefined;
+    this.interactiveOriginalBounds = undefined;
     this.setNoiseComparison();
     this.clipBox?.dispose();
     this.holdMenu?.dispose();
