@@ -1,0 +1,133 @@
+{
+  "scenario": "All three full owner PLY position/normal buffers, unchanged 1000-source-vertex selections per case, every other full scan as target; original serial branch and original multicore numeric callback with ordered cell merge.",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "sources": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c",
+      "count": 140113
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231",
+      "count": 1375494
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd",
+      "count": 1865848
+    }
+  ],
+  "controlledNativeCases": 116,
+  "ownerCases": 8,
+  "acceptedNativeCorrespondences": 2653,
+  "allNumericBytesMatched": true,
+  "originalIndexesBuilt": 3,
+  "originalIndexesReused": true,
+  "browser": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "Two physical workers match every original owner correspondence byte across both numeric modes and changed poses.",
+      "Each worker initializes three geometry indexes once; later queries reuse them.",
+      "Both worker handles terminate and no browser errors occur.",
+      "A single physical worker preserves the UI-selected numeric mode; cancellation releases both initializing workers."
+    ],
+    "passed": true,
+    "physicalWorkers": 2,
+    "initializedMs": 1549.4000000059605,
+    "sharedGeometry": true,
+    "initializationFrames": {
+      "count": 94,
+      "medianMs": 16.679999999999836,
+      "maximumMs": 16.76000000000022
+    },
+    "queries": [
+      {
+        "source": 0,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 447,
+        "queryMs": 65.53499999642372
+      },
+      {
+        "source": 0,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 461,
+        "queryMs": 31.58500000834465
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 332,
+        "queryMs": 24.349999994039536
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 204,
+        "queryMs": 7.6549999713897705
+      },
+      {
+        "source": 2,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 388,
+        "queryMs": 31.064999997615814
+      },
+      {
+        "source": 2,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 284,
+        "queryMs": 3.925000011920929
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": true,
+        "count": 333,
+        "queryMs": 24.104999989271164
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": true,
+        "count": 204,
+        "queryMs": 5.159999996423721
+      }
+    ],
+    "workers": [
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Private global correspondence stage, not complete scene sampling/overlap/outer registration or public GUI/MCP Global Fine Align. Original per-cell numerical callback executed directly; native OS scheduling and importer were not executed. CAD target lists were empty. Timings are local browser measurements, not native-vs-JS speedup claims."
+}
