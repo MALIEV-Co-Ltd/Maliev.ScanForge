@@ -3011,3 +3011,7 @@ queries also agree on complete callback order. Pool objective fixtures cover
 both transports. Measurements and scope limits are in
 `docs/ALIGNMENT_PERFORMANCE.md`; no GPU or installed-native UI timing claim is
 made.
+
+## Global Fine Align reconstruction
+
+The distinct multi-scan solver is being reconstructed separately from coarse registration and two-scan Fine align. Its rigid fit, four-dimensional eigen kernel and local iteration now have direct native execution and byte-level regression coverage. See [the native Global Fine Align evidence](NATIVE_GLOBAL_FINE_ALIGNMENT.md) for the verified scope, native control-flow details and remaining scene-query/publication gates. Its public ribbon entry remains planned.
