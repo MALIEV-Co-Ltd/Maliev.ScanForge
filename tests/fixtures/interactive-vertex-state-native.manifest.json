@@ -1,0 +1,17 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedure": "0x14088aeb0",
+    "evidenceId": "ev_d4a126dea9cad71c3553471d2bc9b0fb4b302ba11fc189d031fb4916a289a551",
+    "execution": "Complete original vertex flag refresh and cache guard with controlled native vertex/face interfaces and notification/query boundaries. No native UI or normals generation.",
+    "patches": [
+      {
+        "address": "0x14088be00",
+        "original": "405556574883"
+      }
+    ]
+  },
+  "cases": 4100,
+  "rawSha256": "f37c49571b1c436b1226c70157563aea2697f0eb1847cb2b09396b12ab11bf3d",
+  "compressedSha256": "a927de770d6f6fd9b3905c3e1f2df592109103d5605483d643d67ded43463fe0"
+}

@@ -4,6 +4,15 @@ export function interactiveHostAdapter(
   flush: (write: () => void) => void,
 ) {
   return {
+    get installInteractiveMirror(): WorkspaceHost["installInteractiveMirror"] {
+      if (!current().installInteractiveMirror) return undefined;
+      return (backend) => {
+        const host = current();
+        if (!host.installInteractiveMirror)
+          throw new Error("Interactive mirror display is unavailable.");
+        host.installInteractiveMirror(backend);
+      };
+    },
     get publishInteractive(): WorkspaceHost["publishInteractive"] {
       if (!current().publishInteractive) return undefined;
       return (state) => {

@@ -35,6 +35,199 @@ const selectedColors = (colors: Float32Array, indices: Uint32Array) =>
       Array.from(colors.subarray(i * 3, i * 3 + 3)),
     ),
   );
+
+const meshSource = () => ({
+  positions: new Float32Array([
+    0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 2, 0, 3, 3, 0, 999, 999, 999,
+  ]),
+  mesh: {
+    triangles: new Uint32Array([0, 1, 2, 2, 3, 4]),
+    selection: new Uint8Array([1, 0]),
+    hidden: new Uint32Array([1]),
+  },
+});
+it("derives native face visibility once, adds missing normals in the same pool, and never retransfers positions", async () => {
+  FakeWorker.created = [];
+  vi.stubGlobal("Worker", FakeWorker);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8 });
+  const source = meshSource(),
+    pool = new InteractiveBoundsPool(new Map([["scan", source]]), {
+      threshold: 0,
+    });
+  const frame = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+  try {
+    expect(Array.from((await pool.measure("scan", frame)).values)).toEqual([
+      0, 0, 0, 2, 2, 0,
+    ]);
+    const prepared = await pool.preparedSource("scan", { normals: true });
+    expect(Array.from(prepared.flags!)).toEqual([2, 2, 2, 8, 8, 8]);
+    expect(Array.from(prepared.normals!)).toEqual([
+      0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+    ]);
+    const mirror = await pool.mirror("scan", {
+      direction: [0, 0, 1],
+      stride: 0,
+      baseColor: [0.8, 0.8, 0],
+      selectedColor: [0.3, 0.4, 0.5],
+      allowanceMilliseconds: 1000000,
+      elapsedMilliseconds: 0,
+    });
+    expect(Array.from(mirror.indices)).toEqual([0, 1, 2]);
+    await pool.measure("scan", frame);
+    await pool.preparedSource("scan", { normals: true });
+    const messages = FakeWorker.created.flatMap((w) => w.messages);
+    expect(FakeWorker.created).toHaveLength(2);
+    expect(messages.filter((m) => m.action === "deriveMesh")).toHaveLength(2);
+    expect(messages.filter((m) => m.action === "prepare")).toHaveLength(2);
+    expect(messages.filter((m) => m.action === "normals")).toHaveLength(2);
+    expect(source.positions.byteLength).toBe(72);
+    expect(source.mesh.triangles.byteLength).toBe(24);
+  } finally {
+    pool.close();
+    vi.unstubAllGlobals();
+  }
+});
+it("shares one mesh-state derivation when bounds and mirror preparation begin concurrently", async () => {
+  FakeWorker.created = [];
+  vi.stubGlobal("Worker", FakeWorker);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8 });
+  const source = {
+    ...meshSource(),
+    normals: Float32Array.from({ length: 18 }, (_, i) => (i % 3 === 2 ? 1 : 0)),
+  };
+  const pool = new InteractiveBoundsPool(new Map([["scan", source]]), {
+    threshold: 0,
+  });
+  try {
+    const [bounds, mirror] = await Promise.all([
+      pool.measure("scan", [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]),
+      pool.mirror("scan", {
+        direction: [0, 0, 1],
+        stride: 0,
+        baseColor: [0.8, 0.8, 0],
+        selectedColor: [0.3, 0.4, 0.5],
+        allowanceMilliseconds: 1000000,
+        elapsedMilliseconds: 0,
+      }),
+    ]);
+    expect(bounds.values[3]).toBe(2);
+    expect(Array.from(mirror.indices)).toEqual([0, 1, 2]);
+    expect(
+      FakeWorker.created
+        .flatMap((w) => w.messages)
+        .filter((m) => m.action === "deriveMesh"),
+    ).toHaveLength(1);
+  } finally {
+    pool.close();
+    vi.unstubAllGlobals();
+  }
+});
+it("cannot start workers after a close wins the asynchronous source-preparation boundary", async () => {
+  FakeWorker.created = [];
+  vi.stubGlobal("Worker", FakeWorker);
+  vi.stubGlobal("navigator", { hardwareConcurrency: 8 });
+  try {
+    for (const operation of ["bounds", "mirror"]) {
+      const pool = new InteractiveBoundsPool(
+        new Map([
+          [
+            "scan",
+            { positions: new Float32Array(96), normals: new Float32Array(96) },
+          ],
+        ]),
+        { threshold: 0 },
+      );
+      const pending =
+        operation === "bounds"
+          ? pool.measure("scan", [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0])
+          : pool.mirror("scan", {
+              direction: [0, 0, 1],
+              stride: 0,
+              baseColor: [0.8, 0.8, 0],
+              selectedColor: [0.3, 0.4, 0.5],
+              allowanceMilliseconds: 1000000,
+              elapsedMilliseconds: 0,
+            });
+      pool.close();
+      await expect(pending).rejects.toThrow();
+      expect(FakeWorker.created).toHaveLength(0);
+    }
+  } finally {
+    for (const worker of FakeWorker.created) worker.terminate();
+    vi.unstubAllGlobals();
+  }
+});
+it("preserves native source preparation in the cooperative small-scan fallback", async () => {
+  const source = meshSource(),
+    pool = new InteractiveBoundsPool(new Map([["scan", source]]), {
+      parallel: false,
+    });
+  try {
+    const prepared = await pool.preparedSource("scan", { normals: true });
+    expect(Array.from(prepared.flags!)).toEqual([2, 2, 2, 8, 8, 8]);
+    expect(Array.from(prepared.normals!)).toEqual([
+      0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+    ]);
+    expect((await pool.preparedSource("scan", { normals: true })).flags).toBe(
+      prepared.flags,
+    );
+  } finally {
+    pool.close();
+  }
+});
+it("keeps large fallback bounds usable while refusing synchronous whole-scan normal processing", async () => {
+  const source = { positions: new Float32Array(100002 * 3), mesh: {} };
+  const pool = new InteractiveBoundsPool(new Map([["scan", source]]), {
+    parallel: false,
+  });
+  try {
+    const prepared = await pool.preparedSource("scan");
+    expect(pool.sourceSummary("scan")).toMatchObject({
+      ready: true,
+      visibleFaces: 33334,
+      normalsAvailable: false,
+    });
+    await expect(
+      pool.preparedSource("scan", { normals: true }),
+    ).rejects.toThrow("background worker");
+    expect((await pool.preparedSource("scan")).flags).toBe(prepared.flags);
+    expect(
+      (await pool.measure("scan", [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0])).valid,
+    ).toBe(true);
+  } finally {
+    pool.close();
+  }
+});
+it("cancels cooperative mesh preparation without publishing partial flags", async () => {
+  const pool = new InteractiveBoundsPool(
+    new Map([["scan", { positions: new Float32Array(100002 * 3), mesh: {} }]]),
+    { parallel: false },
+  );
+  const pending = pool.preparedSource("scan");
+  pool.close();
+  await expect(pending).rejects.toThrow();
+  expect(pool.sourceSummary("scan")).toMatchObject({ unavailable: true });
+});
+it("rejects misaligned source normals before advertising a ready mirror source", async () => {
+  const pool = new InteractiveBoundsPool(
+    new Map([
+      [
+        "scan",
+        { positions: new Float32Array(9), normals: new Float32Array(0) },
+      ],
+    ]),
+  );
+  try {
+    await expect(
+      pool.preparedSource("scan", { normals: true }),
+    ).rejects.toThrow("normals");
+    expect(pool.sourceSummary("scan")).toMatchObject({
+      normalsAvailable: false,
+    });
+  } finally {
+    pool.close();
+  }
+});
 it("shares two cached workers with bounds and preserves every captured native point/color submission", async () => {
   FakeWorker.created = [];
   vi.stubGlobal("Worker", FakeWorker);

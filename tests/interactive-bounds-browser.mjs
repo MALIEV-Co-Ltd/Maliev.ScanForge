@@ -41,6 +41,10 @@ const ownerMirrorFixture = await readFile(
   new URL("tests/fixtures/interactive-owner-mirror-points-native.json", root),
   "utf8",
 );
+const ownerFaceFixture = await readFile(
+  new URL("tests/fixtures/interactive-owner-face-state-native.json", root),
+  "utf8",
+);
 const ledger = {
   owner: "interactive-bounds-browser",
   pid: process.pid,
@@ -149,20 +153,23 @@ try {
       kernelFixture,
       mirrorFixture,
       ownerMirrorFixture,
+      ownerFaceFixture,
       workerUrl,
       inputOrigin,
     }) => {
       const native = JSON.parse(fixture),
         kernels = JSON.parse(kernelFixture),
         mirrorNative = JSON.parse(mirrorFixture),
-        ownerMirror = JSON.parse(ownerMirrorFixture);
+        ownerMirror = JSON.parse(ownerMirrorFixture),
+        ownerFace = JSON.parse(ownerFaceFixture);
       const { InteractiveBoundsPool } =
         await import("/src/interactive-bounds-pool.ts");
       const OriginalWorker = globalThis.Worker;
       let created = 0,
         live = 0,
         preparations = 0,
-        maximumLive = 0;
+        maximumLive = 0,
+        sourceDerivations = 0;
       Object.defineProperty(navigator, "hardwareConcurrency", {
         configurable: true,
         value: 8,
@@ -182,6 +189,7 @@ try {
         }
         postMessage(message, transfer) {
           if (message.action === "prepare") preparations++;
+          if (message.action === "deriveMesh") sourceDerivations++;
           super.postMessage(message, transfer);
         }
         terminate() {
@@ -297,6 +305,7 @@ try {
               plySources.set(c.name, {
                 positions: topology.vertices,
                 normals: topology.normals,
+                triangles: topology.triangles,
               });
             assert(points.length === c.count * 3, "Source count mismatch");
             const digest = Array.from(
@@ -699,11 +708,209 @@ try {
         gpuDisplay.geometryCountAfterClear = renderer.info.memory.geometries;
         pool.close();
         assert(live === 0, "Owner worker leak");
+        const { createInteractiveOperations, releaseInteractiveSession } =
+          await import("/src/automation/interactive-alignment-operations.ts");
+        const { expandPlyTopology } = await import("/src/ply-topology.ts");
+        const entities = ownerFace.vertexState.cases.map((c) => {
+          const source = plySources.get(c.name);
+          return {
+            id: c.name,
+            name: c.name,
+            kind: "mesh",
+            color: "#aaa",
+            opacity: 1,
+            visible: true,
+            positions: expandPlyTopology({
+              vertices: source.positions,
+              triangles: source.triangles,
+            }),
+            indexedMesh: {
+              vertices: source.positions,
+              triangles: source.triangles,
+              normals: source.normals,
+            },
+            meshSelection: {
+              hidden: Array.from(
+                {
+                  length: Math.ceil(
+                    c.faces / ownerFace.vertexState.hiddenRule.modulus,
+                  ),
+                },
+                (_, i) => i * ownerFace.vertexState.hiddenRule.modulus,
+              ),
+              saved: [],
+            },
+          };
+        });
+        const factoryMirrorRows = [];
+        for (const c of ownerFace.vertexState.cases) {
+          const source = plySources.get(c.name),
+            expected = ownerFace.mirror.cases.find((r) => r.name === c.name);
+          assert(
+            (await digest(source.triangles)) === c.trianglesSha256,
+            "Owner face-order hash mismatch",
+          );
+          const selection = new Uint8Array(c.faces);
+          for (let i = 0; i < selection.length; i++)
+            selection[i] = +(
+              i % ownerFace.vertexState.selectionRule.modulus <
+              ownerFace.vertexState.selectionRule.lessThan
+            );
+          let state = null,
+            backend = null,
+            currentDisplay;
+          const commits = [];
+          const snapshot = () => ({
+            entities,
+            selectedId: c.name,
+            selectedIds: [c.name],
+            selection,
+            history: [],
+            future: [],
+            name: "owner",
+            authoring: [],
+            settings: {},
+          });
+          const host = {
+            snapshot,
+            commit: (...args) => commits.push(args),
+            inspectApplication: () => ({ previews: {} }),
+            publishInteractive: (next) => {
+              state = next;
+            },
+            inspectInteractive: () => state,
+            installInteractiveMirror: (next) => {
+              backend = next;
+              if (!next) currentDisplay?.clear();
+            },
+          };
+          const operations = createInteractiveOperations(host),
+            abort = new AbortController();
+          const context = {
+            signal: abort.signal,
+            check: () => abort.signal.throwIfAborted(),
+            progress: () => {},
+            mutate: (write) => write(),
+          };
+          const beforeDerive = sourceDerivations,
+            beforePrepare = preparations;
+          try {
+            const start = performance.now();
+            const begun = await operations.interactive_alignment_edit(
+              { action: "begin", parallel: true },
+              context,
+            );
+            const configure = await operations.interactive_alignment_edit(
+              {
+                action: "configure",
+                sessionId: state.sessionId,
+                expectedSessionVersion: state.version,
+                mirror: true,
+              },
+              context,
+            );
+            const prepared = await backend.source(c.name);
+            assert(
+              (await digest(prepared.flags)) === c.flagsSha256,
+              "Session provider vertex flags differ from original owner refresh",
+            );
+            const summary = configure.displaySources[0];
+            assert(
+              summary.selected === c.summary.selected &&
+                summary.hidden === c.summary.hidden &&
+                summary.visibleFaces === c.summary.visibleFaces,
+              "Session source summary differs from original",
+            );
+            const points = await backend.prepare(c.name, expected.settings);
+            assert(
+              (await digest(points.indices)) === expected.indicesSha256 &&
+                (await digest(compactColors(points.colors, points.indices))) ===
+                  expected.colorsSha256,
+              "Session provider mirror output differs from original owner draw loop",
+            );
+            const submitted = new Float32Array(points.indices.length * 3);
+            for (let i = 0; i < points.indices.length; i++)
+              for (let a = 0; a < 3; a++)
+                submitted[i * 3 + a] =
+                  prepared.positions[points.indices[i] * 3 + a];
+            assert(
+              (await digest(submitted)) === expected.drawnPositionsSha256,
+              "Session provider submitted points differ from original",
+            );
+            currentDisplay = new displayModule.InteractiveMirrorDisplay(
+              new Map([[c.name, prepared]]),
+              () => {},
+            );
+            scene.add(currentDisplay.group);
+            currentDisplay.show(state.targets, state.mirrorPlane);
+            currentDisplay.publish(c.name, points);
+            assert(
+              await currentDisplay.prepare(renderer, camera),
+              "Session mirror GPU preparation cancelled",
+            );
+            renderer.render(scene, camera);
+            gl.finish();
+            assert(
+              renderer.info.render.points === expected.drawn,
+              "Session provider GPU point count mismatch",
+            );
+            const positions = source.positions,
+              normals = source.normals;
+            await operations.interactive_alignment_edit(
+              {
+                action: "step",
+                sessionId: state.sessionId,
+                expectedSessionVersion: state.version,
+                kind: "translatePositive",
+                axis: 0,
+                value: 1,
+              },
+              context,
+            );
+            currentDisplay.show(state.targets, state.mirrorPlane);
+            assert(
+              source.positions === positions &&
+                source.normals === normals &&
+                commits.length === 0,
+              "Session preview changed source geometry/history",
+            );
+            assert(
+              sourceDerivations - beforeDerive === 1 &&
+                preparations - beforePrepare === 2,
+              "Session repeated mesh setup or allocated extra source copies",
+            );
+            factoryMirrorRows.push({
+              name: c.name,
+              vertices: c.vertices,
+              faces: c.faces,
+              points: expected.drawn,
+              nativeFlagsMatched: true,
+              nativeDrawDigestsMatched: true,
+              sourceDerivations: sourceDerivations - beforeDerive,
+              sourcePreparations: preparations - beforePrepare,
+              verticesAttached: positions.length === c.vertices * 3,
+              normalsAttached: normals.length === c.vertices * 3,
+              beginPivot: begun.pivot,
+              milliseconds: performance.now() - start,
+              execution: points.execution,
+            });
+          } finally {
+            releaseInteractiveSession(host);
+            currentDisplay?.dispose();
+            if (currentDisplay) scene.remove(currentDisplay.group);
+            assert(
+              live === 0 && renderer.info.memory.geometries === 0,
+              "Shared session cleanup left workers or GPU geometries",
+            );
+          }
+        }
         return {
           mirrorKernelCases: mirrorNative.cases.length,
           ownerMirrorRows,
           warmMirror,
           gpuDisplay,
+          factoryMirrorRows,
+          sourceDerivations,
           mainFrameIntervals: intervals,
           mainLongTasks: longTasks,
           maximumLiveWorkers: maximumLive,
@@ -729,6 +936,7 @@ try {
       kernelFixture,
       mirrorFixture,
       ownerMirrorFixture,
+      ownerFaceFixture,
       workerUrl: origin + "/interactive-bounds-worker-bundle.mjs",
       inputOrigin: "http://127.0.0.1:" + ledger.inputPort,
     },

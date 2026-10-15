@@ -1,6 +1,9 @@
 import type { WorkspaceHost, Handler, CommandContext } from "./api";
 import { InteractiveAlignmentSession } from "../interactive-alignment-session";
-import { InteractiveBoundsPool } from "../interactive-bounds-pool";
+import {
+  InteractiveBoundsPool,
+  type InteractiveBoundsSource,
+} from "../interactive-bounds-pool";
 import { cloudPlacement, composeCloudPose } from "../point-cloud-placement";
 import {
   nativeInteractiveStep,
@@ -8,10 +11,12 @@ import {
   nativeInteractiveCurrentView,
 } from "../interactive-alignment-math";
 import { nativeDatumInverseFrame } from "../scan-native-datum-apply";
+import type { InteractiveMirrorBackend } from "../interactive-mirror-backend";
 interface SessionBox {
   session?: InteractiveAlignmentSession;
   pool?: InteractiveBoundsPool;
   execution?: unknown;
+  mirror?: InteractiveMirrorBackend;
 }
 const boxes = new WeakMap<WorkspaceHost, SessionBox>();
 const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
@@ -22,18 +27,41 @@ export function releaseInteractiveSession(host: WorkspaceHost) {
   box.pool = undefined;
   box.session = undefined;
   box.execution = undefined;
-  host.publishInteractive?.(null);
+  box.mirror = undefined;
+  const errors: unknown[] = [];
+  try {
+    host.installInteractiveMirror?.(null);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    host.publishInteractive?.(null);
+  } catch (error) {
+    errors.push(error);
+  }
+  if (errors.length)
+    throw new AggregateError(errors, "Interactive display cleanup failed.");
 }
 export function createInteractiveOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
   const box: SessionBox = {};
   boxes.set(host, box);
+  const displaySources = () =>
+    box.session?.targetIds.map((entityId) => ({
+      entityId,
+      ...box.pool!.sourceSummary(entityId),
+    }));
   const publish = () => {
     const state = box.session?.inspect() ?? null;
     host.publishInteractive?.(state);
     return state
-      ? { active: true, ...state, boundsExecution: box.execution }
+      ? {
+          active: true,
+          ...state,
+          boundsExecution: box.execution,
+          displaySources: displaySources(),
+        }
       : { active: false };
   };
   const change = (
@@ -117,6 +145,7 @@ export function createInteractiveOperations(
         ...s.inspect(),
         stale: host.snapshot().entities !== s.baseEntities,
         boundsExecution: box.execution,
+        displaySources: displaySources(),
       };
     },
     interactive_alignment_edit: async (args, context) => {
@@ -145,13 +174,17 @@ export function createInteractiveOperations(
           ids,
           [0, 0, 0],
         );
-        const sources = new Map(
-          ids.map((id) => {
+        const sources = new Map<string, InteractiveBoundsSource>(
+          ids.map((id): [string, InteractiveBoundsSource] => {
             const e = snapshot.entities.find((e) => e.id === id)!;
+            const placement = cloudPlacement(e);
             const positions =
-              cloudPlacement(e)?.sourcePositions ??
+              placement?.sourcePositions ??
               e.indexedMesh?.vertices ??
               e.positions;
+            const normals =
+              placement?.sourceNormals ??
+              (e.indexedMesh ? e.indexedMesh.normals : e.normals);
             return [
               id,
               {
@@ -159,6 +192,28 @@ export function createInteractiveOperations(
                   positions instanceof Float32Array
                     ? positions
                     : Float32Array.from(positions),
+                normals: normals
+                  ? normals instanceof Float32Array
+                    ? normals
+                    : Float32Array.from(normals)
+                  : undefined,
+                mesh:
+                  e.kind === "mesh"
+                    ? {
+                        triangles: e.indexedMesh
+                          ? e.indexedMesh.triangles instanceof Uint32Array
+                            ? e.indexedMesh.triangles
+                            : Uint32Array.from(e.indexedMesh.triangles)
+                          : undefined,
+                        hidden: e.meshSelection?.hidden.length
+                          ? Uint32Array.from(e.meshSelection.hidden)
+                          : undefined,
+                        selection:
+                          snapshot.selectedId === id
+                            ? (snapshot.selection ?? undefined)
+                            : undefined,
+                      }
+                    : undefined,
               },
             ];
           }),
@@ -176,14 +231,49 @@ export function createInteractiveOperations(
             ids,
             center(values),
           );
+          const session = box.session;
+          const meshIds = ids.filter(
+            (id) => snapshot.entities.find((e) => e.id === id)!.kind === "mesh",
+          );
+          const requireSource = (entityId: string) => {
+            if (box.session !== session)
+              throw new DOMException(
+                "Interactive mirror session expired.",
+                "AbortError",
+              );
+            session.validate(host.snapshot().entities);
+            if (!meshIds.includes(entityId))
+              throw new Error(
+                "Mirror preview supports selected mesh scans only.",
+              );
+          };
+          box.mirror = {
+            entityIds: meshIds,
+            source: async (entityId, signal) => {
+              requireSource(entityId);
+              const value = await pool.preparedSource(entityId, {
+                normals: true,
+                signal,
+              });
+              requireSource(entityId);
+              return value;
+            },
+            prepare: async (entityId, settings, includeColors) => {
+              requireSource(entityId);
+              const value = await pool.mirror(entityId, settings, {
+                includeColors,
+              });
+              requireSource(entityId);
+              return value;
+            },
+          };
+          host.installInteractiveMirror?.(box.mirror);
           return publish();
         } catch (error) {
           pool.close();
           if (box.pool === pool) {
-            box.pool = undefined;
-            box.session = undefined;
             try {
-              host.publishInteractive?.(null);
+              releaseInteractiveSession(host);
             } catch (cleanup) {
               throw new AggregateError(
                 [error, cleanup],
@@ -213,6 +303,18 @@ export function createInteractiveOperations(
         }
         if (!Object.keys(patch).length)
           throw new Error("Choose a drag-strength or mirror-preview setting.");
+        if (patch.mirror) {
+          if (!host.installInteractiveMirror || !box.mirror?.entityIds.length)
+            throw new Error(
+              "Mirror preview requires an available mesh display adapter.",
+            );
+          for (const entityId of box.mirror.entityIds) {
+            context.check();
+            await box.mirror.source(entityId, context.signal);
+          }
+          context.check();
+          requireSession(args);
+        }
         return change(s, () => s.configure(patch));
       }
       if (args.action === "reset") {

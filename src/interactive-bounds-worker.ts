@@ -1,5 +1,10 @@
 import { interactiveBoundsLane } from "./interactive-bounds-kernel";
 import {
+  deriveInteractiveMeshSource,
+  type InteractiveMeshDerivation,
+  type NativeVertexState,
+} from "./interactive-mesh-source";
+import {
   nativeInteractiveMirrorPoints,
   firstInteractiveMirrorBasePoint,
   type InteractiveMirrorPointInput,
@@ -16,6 +21,8 @@ export interface BoundsSource {
   ranges: { index: number; start: number; end: number }[];
 }
 export type BoundsTask =
+  | ({ id: number; action: "deriveMesh" } & InteractiveMeshDerivation)
+  | { id: number; action: "normals"; key: string; normals: Float32Array }
   | ({ id: number; action: "prepare"; key: string } & BoundsSource)
   | { id: number; action: "measure"; key: string; matrix: number[] }
   | {
@@ -39,6 +46,8 @@ export interface BoundsTaskResult {
   error?: string;
   lanes?: { index: number; values: Float32Array }[];
   firstBasePoint?: number | null;
+  meshState?: NativeVertexState;
+  normals?: Float32Array;
   points?: ReturnType<typeof nativeInteractiveMirrorPoints> & {
     offset: number;
     count: number;
@@ -49,6 +58,14 @@ export function executeInteractiveBoundsTask(
   cache: Map<string, BoundsSource>,
 ): BoundsTaskResult {
   try {
+    if (task.action === "deriveMesh") {
+      const derived = deriveInteractiveMeshSource(task);
+      return {
+        id: task.id,
+        meshState: derived.state,
+        normals: derived.normals,
+      };
+    }
     if (task.action === "prepare") {
       if (
         task.positions.length % 3 ||
@@ -70,6 +87,12 @@ export function executeInteractiveBoundsTask(
     }
     const source = cache.get(task.key);
     if (!source) throw new Error("Bounds source expired.");
+    if (task.action === "normals") {
+      if (task.normals.length !== source.positions.length)
+        throw new Error("Cached mirror normals are misaligned.");
+      source.normals = task.normals;
+      return { id: task.id, ready: true };
+    }
     if (task.action === "mirrorPrefix")
       return {
         id: task.id,
@@ -142,12 +165,19 @@ if (typeof scope.postMessage === "function" && !scope.document) {
     const result = executeInteractiveBoundsTask(data, cache);
     scope.postMessage!(
       result,
-      result.points
+      result.meshState || result.normals
         ? [
-            result.points.indices.buffer as ArrayBuffer,
-            result.points.colors.buffer as ArrayBuffer,
+            ...(result.meshState
+              ? [result.meshState.flags.buffer as ArrayBuffer]
+              : []),
+            ...(result.normals ? [result.normals.buffer as ArrayBuffer] : []),
           ]
-        : (result.lanes?.map((l) => l.values.buffer as ArrayBuffer) ?? []),
+        : result.points
+          ? [
+              result.points.indices.buffer as ArrayBuffer,
+              result.points.colors.buffer as ArrayBuffer,
+            ]
+          : (result.lanes?.map((l) => l.values.buffer as ArrayBuffer) ?? []),
     );
   };
 }

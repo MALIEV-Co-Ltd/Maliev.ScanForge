@@ -47,3 +47,18 @@ it("reports unavailable callbacks accurately and forwards native inputs and null
   expect(adapter.interactiveDragInput!(input)).toBe(null);
   expect(drag).toHaveBeenCalledWith(input);
 });
+it("forwards session-owned mirror providers through the latest host without a React flush", () => {
+  let host = {} as WorkspaceHost;
+  const flush = vi.fn((write: () => void) => write());
+  const adapter = interactiveHostAdapter(() => host, flush);
+  expect(adapter.installInteractiveMirror).toBeUndefined();
+  const first = vi.fn();
+  host = { ...host, installInteractiveMirror: first };
+  const install = adapter.installInteractiveMirror!;
+  const next = vi.fn();
+  host = { ...host, installInteractiveMirror: next };
+  install(null);
+  expect(next).toHaveBeenCalledWith(null);
+  expect(first).not.toHaveBeenCalled();
+  expect(flush).not.toHaveBeenCalled();
+});

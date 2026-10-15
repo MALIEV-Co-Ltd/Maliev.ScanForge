@@ -1,6 +1,7 @@
 import type { InteractiveAlignmentState } from "../interactive-alignment-session";
 import type { InteractiveDragInput } from "../interactive-alignment-math";
 import type { InteractivePointerDrag } from "../interactive-camera";
+import type { InteractiveMirrorBackend } from "../interactive-mirror-backend";
 import catalog from "./catalog.json";
 import { cloudPlacement } from "../point-cloud-placement";
 import { releaseDatumPreview } from "./datum-preview-resources";
@@ -40,6 +41,7 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  installInteractiveMirror?(backend: InteractiveMirrorBackend | null): void;
   publishInteractive?(state: InteractiveAlignmentState | null): void;
   inspectInteractive?(): InteractiveAlignmentState | null;
   interactiveDragInput?(

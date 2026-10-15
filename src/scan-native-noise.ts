@@ -10,7 +10,7 @@ function check(options: MeshProcessingOptions, index = 0) {
 
 /** Angle-weighted normals with the original single-precision accumulation. */
 export function noiseNormals(
-  t: Pick<MeshTopology, "vertices" | "triangles">,
+  t: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
   options: MeshProcessingOptions = {},
 ) {
   const out = new Float32Array(t.vertices.length);

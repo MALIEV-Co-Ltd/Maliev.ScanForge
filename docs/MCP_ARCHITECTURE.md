@@ -156,3 +156,7 @@ the existing logical-lane partition. No independent agent implementation or
 operation parameter is introduced. Supplied scanner normals are validated and
 read in place; inactive coordinates, normals and flags are still validated.
 Without supplied normals, the previous whole-mesh normal algorithm is retained.
+
+### Internal Interactive display-source provider
+
+The shared Interactive operation factory owns one bounded source/bounds/mirror pool per session. Its optional `installInteractiveMirror` host hook lends a session-bound backend to a display consumer; the consumer must not create another pool or detach author buffers. Source readiness and selected/hidden/visible-face summaries are available in the internal session result. Preparation validates session identity and unchanged author state before and after asynchronous work. Release invalidates borrowed providers and closes workers before clearing the host display. This remains internal integration groundwork: no public catalog operation or enabled GUI command is advertised until the complete shared workflow is connected and verified.

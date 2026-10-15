@@ -12,13 +12,25 @@ import type {
   BoundsTaskResult,
   InteractiveMirrorSettings,
 } from "./interactive-bounds-worker";
+import {
+  interactiveMeshSourceSteps,
+  type InteractiveMeshSource,
+  type NativeVertexState,
+} from "./interactive-mesh-source";
 export interface InteractiveBoundsSource {
   positions: Float32Array;
   flags?: Uint32Array;
   normals?: Float32Array;
+  mesh?: InteractiveMeshSource;
 }
 /** One session owns at most two workers; sources transfer once, pose updates stay tiny. */
 export class InteractiveBoundsPool {
+  private readonly sources: Map<string, InteractiveBoundsSource>;
+  private readonly meshReady = new Map<
+    string,
+    Omit<NativeVertexState, "flags">
+  >();
+  private readonly meshPreparing = new Map<string, Promise<void>>();
   private workers: Worker[] = [];
   private closed: Error | undefined;
   private prepared = new Set<string>();
@@ -36,16 +48,27 @@ export class InteractiveBoundsPool {
   private lease?: ReturnType<typeof setTimeout>;
   private fallbackReason: string | undefined;
   constructor(
-    private readonly sources: ReadonlyMap<string, InteractiveBoundsSource>,
+    sources: ReadonlyMap<string, InteractiveBoundsSource>,
     private readonly options: { parallel?: boolean; threshold?: number } = {},
   ) {
+    this.sources = new Map(
+      [...sources].map(([key, source]) => [
+        key,
+        { ...source, mesh: source.mesh ? { ...source.mesh } : undefined },
+      ]),
+    );
     const bytes = [...sources.values()].reduce(
       (sum, s) =>
         sum +
         s.positions.byteLength +
         (s.flags?.byteLength ??
-          (s.normals ? (s.positions.length / 3) * 4 : 0)) +
-        (s.normals?.byteLength ?? 0),
+          (s.normals || s.mesh ? (s.positions.length / 3) * 4 : 0)) +
+        (s.normals?.byteLength ?? (s.mesh ? s.positions.byteLength : 0)) +
+        (s.mesh
+          ? (s.mesh.triangles?.byteLength ?? (s.positions.length / 3) * 4) +
+            (s.mesh.hidden?.byteLength ?? 0) +
+            (s.mesh.selection?.byteLength ?? 0)
+          : 0),
       0,
     );
     if (bytes > 512 * 1024 * 1024)
@@ -62,6 +85,8 @@ export class InteractiveBoundsPool {
   ) {
     this.closed = reason;
     this.releaseWorkers(reason);
+    this.meshReady.clear();
+    this.sources.clear();
   }
   private ensureOpen() {
     if (this.closed) throw this.closed;
@@ -82,6 +107,7 @@ export class InteractiveBoundsPool {
     this.mirrorPrefixes.clear();
   }
   private start() {
+    this.ensureOpen();
     if (this.workers.length) return;
     if (this.options.parallel === false || typeof Worker === "undefined")
       return;
@@ -196,6 +222,206 @@ export class InteractiveBoundsPool {
       if (this.preparing.get(key) === prepare) this.preparing.delete(key);
     }
   }
+  sourceSummary(key: string) {
+    if (this.closed) return { unavailable: true, reason: this.closed.message };
+    const source = this.sources.get(key);
+    if (!source) throw new Error("Interactive source is unavailable.");
+    return {
+      vertices: source.positions.length / 3,
+      normalsAvailable:
+        !!source.normals && source.normals.length === source.positions.length,
+      ...this.meshReady.get(key),
+    };
+  }
+  async preparedSource(
+    key: string,
+    options: { normals?: boolean; signal?: AbortSignal } = {},
+  ) {
+    this.ensureOpen();
+    options.signal?.throwIfAborted();
+    const source = this.sources.get(key);
+    if (!source) throw new Error("Interactive source is unavailable.");
+    if (
+      options.normals &&
+      source.normals &&
+      source.normals.length !== source.positions.length
+    )
+      throw new Error("Interactive source normals are misaligned.");
+    const abort = () =>
+      this.close(
+        new DOMException(
+          "Interactive source preparation cancelled.",
+          "AbortError",
+        ),
+      );
+    options.signal?.addEventListener("abort", abort, { once: true });
+    try {
+      await this.ensureMeshSource(
+        key,
+        source,
+        !!options.normals,
+        options.signal,
+      );
+      if (options.normals && !source.normals)
+        throw new Error("Interactive source normals are unavailable.");
+      this.ensureOpen();
+      options.signal?.throwIfAborted();
+      return source as Readonly<InteractiveBoundsSource>;
+    } finally {
+      options.signal?.removeEventListener("abort", abort);
+    }
+  }
+  private async ensureMeshSource(
+    key: string,
+    source: InteractiveBoundsSource,
+    wantNormals: boolean,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    if (!source.mesh) return;
+    const existing = this.meshPreparing.get(key);
+    if (existing) {
+      await existing;
+      this.ensureOpen();
+      signal?.throwIfAborted();
+      return this.ensureMeshSource(key, source, wantNormals, signal);
+    }
+    const deriveFlags = !this.meshReady.has(key),
+      deriveNormals = wantNormals && !source.normals;
+    if (!deriveFlags && !deriveNormals) return;
+    const count = source.positions.length / 3;
+    if (
+      Math.max(count, (source.mesh.triangles?.length ?? count) / 3) >=
+      (this.options.threshold ?? 100000)
+    )
+      this.start();
+    const job = (async () => {
+      let result: Pick<BoundsTaskResult, "meshState" | "normals"> | undefined;
+      if (this.workers.length) {
+        try {
+          const triangles = source.mesh!.triangles?.slice(),
+            positions = deriveNormals ? source.positions.slice() : undefined;
+          const flags = deriveFlags ? source.flags?.slice() : undefined;
+          const hidden = deriveFlags ? source.mesh!.hidden?.slice() : undefined,
+            selection = deriveFlags
+              ? source.mesh!.selection?.slice()
+              : undefined;
+          const transfer: Transferable[] = triangles ? [triangles.buffer] : [];
+          for (const array of [positions, flags, hidden, selection])
+            if (array) transfer.push(array.buffer);
+          result = await this.send(
+            this.workers[0],
+            {
+              id: ++this.sequence,
+              action: "deriveMesh",
+              vertexCount: count,
+              positions,
+              flags,
+              triangles,
+              hidden,
+              selection,
+              deriveFlags,
+              deriveNormals,
+            },
+            transfer,
+          );
+        } catch (error) {
+          this.ensureOpen();
+          signal?.throwIfAborted();
+          this.fallbackReason =
+            error instanceof Error ? error.message : String(error);
+          this.releaseWorkers(new Error(this.fallbackReason));
+        }
+      }
+      if (!result) {
+        if (
+          deriveNormals &&
+          Math.max(count, (source.mesh!.triangles?.length ?? count) / 3) >=
+            100000
+        )
+          throw new Error(
+            "Preparing mirror normals for a large scan requires an available background worker.",
+          );
+        const steps = interactiveMeshSourceSteps({
+          vertexCount: count,
+          positions: source.positions,
+          flags: deriveFlags ? source.flags?.slice() : undefined,
+          ...source.mesh!,
+          deriveFlags,
+          deriveNormals,
+        });
+        for (;;) {
+          this.ensureOpen();
+          signal?.throwIfAborted();
+          const step = steps.next();
+          if (step.done) {
+            result = {
+              meshState: step.value.state,
+              normals: step.value.normals,
+            };
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+      this.ensureOpen();
+      signal?.throwIfAborted();
+      if (deriveFlags) {
+        const state = result.meshState;
+        if (
+          !state?.ready ||
+          !(state.flags instanceof Uint32Array) ||
+          state.flags.length !== count ||
+          !Number.isSafeInteger(state.visibleFaces) ||
+          state.visibleFaces < 0 ||
+          state.visibleFaces > (source.mesh!.triangles?.length ?? count) / 3 ||
+          ![0, 1].includes(state.selected) ||
+          ![0, 1].includes(state.hidden)
+        )
+          throw new Error("Mesh worker returned invalid native vertex state.");
+        source.flags = state.flags;
+        this.meshReady.set(key, {
+          ready: true,
+          selected: state.selected,
+          hidden: state.hidden,
+          visibleFaces: state.visibleFaces,
+        });
+      }
+      if (deriveNormals) {
+        if (
+          !(result.normals instanceof Float32Array) ||
+          result.normals.length !== source.positions.length
+        )
+          throw new Error("Mesh worker returned misaligned normals.");
+        source.normals = result.normals;
+        await this.preparing.get(key);
+        this.ensureOpen();
+        signal?.throwIfAborted();
+        if (this.prepared.has(key)) {
+          const ranges = interactiveBoundsRanges(count);
+          await Promise.all(
+            this.workers.map((worker, i) => {
+              const start = ranges[i * (8 / this.workers.length)][0],
+                end = ranges[(i + 1) * (8 / this.workers.length) - 1][1];
+              const normals = source.normals!.slice(start * 3, end * 3);
+              return this.send(
+                worker,
+                { id: ++this.sequence, action: "normals", key, normals },
+                [normals.buffer],
+              );
+            }),
+          );
+        }
+      }
+      this.ensureOpen();
+      signal?.throwIfAborted();
+    })();
+    this.meshPreparing.set(key, job);
+    try {
+      await job;
+    } finally {
+      if (this.meshPreparing.get(key) === job) this.meshPreparing.delete(key);
+    }
+  }
   async mirror(
     key: string,
     settings: InteractiveMirrorSettings,
@@ -204,7 +430,11 @@ export class InteractiveBoundsPool {
     this.ensureOpen();
     options.signal?.throwIfAborted();
     const source = this.sources.get(key);
-    if (!source?.normals || source.normals.length !== source.positions.length)
+    if (
+      !source ||
+      (!source.normals && !source.mesh) ||
+      (source.normals && source.normals.length !== source.positions.length)
+    )
       throw new Error(
         "Interactive mirror normals are unavailable or misaligned.",
       );
@@ -256,6 +486,11 @@ export class InteractiveBoundsPool {
       };
     };
     try {
+      await this.ensureMeshSource(key, source, true, options.signal);
+      this.ensureOpen();
+      options.signal?.throwIfAborted();
+      if (!source.normals)
+        throw new Error("Interactive mirror normals are unavailable.");
       if (count >= (this.options.threshold ?? 100000)) this.start();
       if (this.workers.length) {
         try {
@@ -409,6 +644,9 @@ export class InteractiveBoundsPool {
       this.close(new DOMException("Bounds query cancelled.", "AbortError"));
     signal?.addEventListener("abort", abort, { once: true });
     try {
+      await this.ensureMeshSource(key, source, false, signal);
+      this.ensureOpen();
+      signal?.throwIfAborted();
       if (source.positions.length / 3 >= (this.options.threshold ?? 100000))
         this.start();
       if (this.workers.length) {
