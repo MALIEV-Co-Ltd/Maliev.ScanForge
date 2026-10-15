@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
 import type { NativeSurfaceRefinementRequest } from "./native-surface-refinement";
 import type {
   PointCloudEditRequest,
@@ -114,6 +115,8 @@ export interface TopologySummary {
   duplicateTriangles: number;
 }
 export interface ProcessingResult {
+  /** Disposable viewport data prepared alongside mesh alignment, never authored. */
+  renderData?: ScanRenderData;
   /** Host-owned native cloud pose; never serialized from the processing worker. */
   cloudPreview?: import("./types").Entity;
   indexedMesh?: import("./types").IndexedMesh;
@@ -239,6 +242,11 @@ export function processMesh(
         return;
       }
       settled = true;
+      if (event.data.result.positions && event.data.result.renderData)
+        cacheScanRenderData(
+          event.data.result.positions,
+          event.data.result.renderData,
+        );
       cleanup(
         true,
         request.kind === "scanPreview"

@@ -12,7 +12,7 @@ import { InteractiveAlignmentDialog } from "./InteractiveAlignmentDialog";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
 import { importBatch, validateImportBatch } from "../import-batch";
-import { scanRenderData } from "../scan-render-data";
+import { displayMeshStats } from "../scan-render-data";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -186,7 +186,6 @@ import {
   fitCone,
   fitPlane,
   fitSphere,
-  meshStats,
   sectionMesh,
 } from "../geometry";
 import {
@@ -641,8 +640,7 @@ export function App() {
       selected
         ? selected.kind === "pointcloud"
           ? pointCloudStats(selected.positions)
-          : (scanRenderData(selected.positions)?.stats ??
-            meshStats(selected.positions))
+          : displayMeshStats(selected.positions)
         : null,
     [selected?.positions],
   );

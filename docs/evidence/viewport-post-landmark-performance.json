@@ -1,0 +1,68 @@
+{
+  "scenario": "All three complete owner PLY scans, 6663164 triangles; accept picked-point alignment of scan 2 against scan 1, select scan 2, then twenty alternating left/middle orbits with wheel zooms",
+  "environment": {
+    "viewport": [1183, 944],
+    "deviceScaleFactor": 2,
+    "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+  },
+  "sources": [
+    {
+      "name": "ply-1.ply",
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "triangles": 274154
+    },
+    {
+      "name": "ply-2.ply",
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "vertices": 1375494,
+      "triangles": 2697877
+    },
+    {
+      "name": "ply-3.ply",
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "vertices": 1865848,
+      "triangles": 3691133
+    }
+  ],
+  "before": {
+    "medianFrameMs": 16.68499999999767,
+    "p95FrameMs": 16.875,
+    "maxFrameMs": 617.2249999999985,
+    "longTasks": [80, 560, 355, 184, 607],
+    "frameCount": 356
+  },
+  "after": {
+    "medianFrameMs": 16.68000000000029,
+    "p95FrameMs": 16.75,
+    "maxFrameMs": 33.36000000000058,
+    "longTasks": [50],
+    "frameCount": 208
+  },
+  "causes": [
+    "Periodic project encoding validated topology and packed geometry on the main thread",
+    "First selection of aligned geometry computed display statistics on the main thread"
+  ],
+  "changes": [
+    "Serial bounded project encoding worker shared by backup, GUI Save and MCP project_export",
+    "Aligned scan render preparation runs inside the processing worker and is cached by immutable geometry identity",
+    "Display statistics reuse cached data across object switches"
+  ],
+  "encoding": {
+    "byteExact": true,
+    "bytes": 1454,
+    "authoredBuffersIntact": true,
+    "cloudPoseRetained": true,
+    "invalidGeometryRejected": true,
+    "queueRecovered": true,
+    "cancellationReleased": true,
+    "errors": [],
+    "workersReleased": true
+  },
+  "browserErrors": [],
+  "publicMcpChecks": [
+    "Public MCP project_export completed through the shared background encoder",
+    "Accepted public landmark preview before viewport replay"
+  ],
+  "scope": "Short local isolated-browser replay on the recorded GPU. Backup timing varies between runs. No claim of native rendering parity or universal operation latency."
+}

@@ -1372,19 +1372,22 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             : s.entities.filter((e) => e.visible);
       let data: Blob | Uint8Array, name: string, mime: string;
       if (a.format === "project") {
-        data = await encodeProjectFile({
-          projectId: s.projectId,
-          project: {
-            format: "maliev-scanforge",
-            version: 1,
-            name: s.name,
-            units: "mm",
-            entities: s.entities,
-            authoring: s.authoring,
+        data = await encodeProjectFile(
+          {
+            projectId: s.projectId,
+            project: {
+              format: "maliev-scanforge",
+              version: 1,
+              name: s.name,
+              units: "mm",
+              entities: s.entities,
+              authoring: s.authoring,
+            },
+            history: s.history,
+            future: s.future,
           },
-          history: s.history,
-          future: s.future,
-        });
+          c.signal,
+        );
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {

@@ -35,3 +35,22 @@ The three-owner-PLY replay (6,663,164 triangles, 1183 x 944 CSS pixels, device s
 Camera-only surface-pivot queries now defer until every visible large possible occluder has an index. Until then, mouse orbit retains its existing pivot/controls target and SpaceMouse retains its existing bounds-based fallback. Small scans keep ordinary surface pivots. Large point clouds use the same camera fallback instead of a linear measured-point scan. Once mesh indices are ready, exact surface pivots resume on the next gesture. Object/facet selection and MCP `viewport_pick` retain their exact ordinary fallback; no geometry, clipping or selection result changes.
 
 In the same twenty alternating left/middle orbit and wheel gestures, worst measured frame interval dropped from 400.35 ms to 33.40 ms; median was 16.68 ms and p95 16.84 ms after the change. The original 409/216 ms long tasks were absent; one 50 ms task remained. These are short local hardware measurements, not a guarantee for every device or the embedded browser. Full-resolution rendering was retained. See [three-scan camera evidence](evidence/viewport-navigation-cold.json).
+
+## Viewport responsiveness after alignment
+
+The full-scan replay exposed UI-thread stalls after accepting landmark alignment. Periodic backup encoding revalidated indexed topology and packed every current/history geometry buffer on the main thread. Selecting newly aligned geometry also calculated full mesh statistics. Rendering itself stayed near 60 FPS between these stalls.
+
+Project backup, GUI Save and MCP `project_export` now share a serial background encoding lane. It uses the same lossless encoder, never transfers authored/history buffers, preserves native cloud placement across structured cloning, and releases each worker on success, failure, page exit or its two-minute lease. Errors reject the operation without replacing an existing successful backup. Non-browser hosts retain the local encoder. Structured cloning still copies the snapshot; this change does not promise zero-copy storage.
+
+Indexed mesh landmark alignment prepares its existing weld-based display normals, bounds and statistics in the processing worker. The main thread caches the transferred display data against the exact output buffer identity. Metadata and selection changes reuse it; replacement geometry receives a different cache entry. Numerical registration, authored normals, topology and saved geometry are unchanged.
+
+[Recorded replay](evidence/viewport-post-landmark-performance.json): all three complete owner scans, 6,663,164 triangles, isolated Chrome, 1183 x 944 CSS pixels, DPR 2, NVIDIA RTX A4000. After accepting landmark alignment, the profiled worst frame dropped from 617.225 ms to 33.360 ms; the final replay recorded one 50 ms long task. Median frame time remained 16.68 ms. A separate unprofiled baseline caught a 183.485 ms frame. These are short local measurements with independently timed backup intervals, not a universal performance guarantee.
+
+Validation:
+
+- `npm run build` builds the browser worker and offline manifest.
+- Focused project encoding, recovery, cloud placement, processing-client and display-cache tests cover byte parity, shared history, lazy cloud coordinates, failures, cancellation, finite leases and cache replacement.
+- `node tests/project-encoding-browser.mjs` compares worker/local file bytes, checks cloud poses and attached authored buffers, rejects invalid geometry, verifies queue recovery and worker release.
+- Set `SCANFORGE_ALIGNMENT_EXAMPLES=B:/temp/alignment-example-files`, then run `node tests/viewport-post-landmark-browser.mjs`. This optional real-data test verifies source hashes/counts, public MCP export, public landmark preview/accept, camera gestures, browser errors and a 100 ms maximum-frame budget on the test machine. CPU profiles, screenshots and resource ledgers remain in ignored `.resources/`.
+
+This fixes the measured post-alignment viewport stalls. Full import, modeling and native algorithm verification remain separate workstreams.

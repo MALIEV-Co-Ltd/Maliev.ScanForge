@@ -158,6 +158,8 @@ A hosted HTTPS page may be subject to browser local-network permission or connec
 
 ### Browser project backups
 
+Project backup and `.scanforge` export encoding share one serial background worker lane in supported browsers, keeping validation, geometry packing and compression off the viewport thread. GUI Save and MCP `project_export` use the same lossless encoder. Each encoder has a two-minute lease, releases on success/failure/MCP job cancellation/page exit, and does not transfer authored or history buffers. Encoder errors reject the operation; an existing successful backup remains intact.
+
 `backup_list` reports the browser-origin backups, project identities, save times, file sizes, and the 30-second changed-project-only interval. Set `includeThumbnails:true` to receive WebP thumbnail artifacts; retrieve them using the artifact tools. Old backups can lack thumbnails. `project_get` includes the current `projectId`, and project exports retain it when reopened.
 
 Use `backup_restore` with `backupId`, `replace:true`, `expectedRevision`, and a fresh `requestId`. It returns a job: poll until completion, then verify the current project and full undo/redo history. Restoration continues the same backup entry, including when selecting an old `:previous` snapshot. GUI Restore invokes this same operation. GUI file opening and MCP project import also retain a file's identity.

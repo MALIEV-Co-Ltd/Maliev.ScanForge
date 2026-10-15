@@ -13,6 +13,17 @@ export interface ScanRenderData {
 }
 
 const prepared = new WeakMap<Positions, ScanRenderData>();
+const displayStats = new WeakMap<Positions, MeshStats>();
+
+/** Scene geometry is immutable; selection changes must not rescan every facet. */
+export function displayMeshStats(positions: Positions): MeshStats {
+  const existing =
+    prepared.get(positions)?.stats ?? displayStats.get(positions);
+  if (existing) return existing;
+  const stats = meshStats(positions);
+  displayStats.set(positions, stats);
+  return stats;
+}
 
 /** Buffers are immutable after import; a geometry edit receives a new identity. */
 export function cacheScanRenderData(

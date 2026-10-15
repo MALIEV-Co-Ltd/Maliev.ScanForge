@@ -2,6 +2,19 @@ import { expect, it } from "vitest";
 import { expandPlyTopology } from "../src/ply-topology";
 import { meshStats } from "../src/geometry";
 import { smoothDisplayNormals } from "../src/viewport-display";
+import { displayMeshStats } from "../src/scan-render-data";
+
+it("reuses display statistics across object switches but invalidates on geometry replacement", () => {
+  const positions = expandPlyTopology(topology);
+  const first = displayMeshStats(positions);
+  expect(displayMeshStats(positions)).toBe(first);
+  const replaced = positions.map((n) => n * 2);
+  expect(displayMeshStats(replaced)).not.toBe(first);
+  expect(displayMeshStats(replaced)).toEqual(meshStats(replaced));
+  const prepared = prepareScanRenderData(positions, topology);
+  cacheScanRenderData(positions, prepared);
+  expect(displayMeshStats(positions)).toBe(prepared.stats);
+});
 import {
   prepareScanRenderData,
   cacheScanRenderData,

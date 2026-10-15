@@ -3,6 +3,7 @@ import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import { encodeProjectInBackground } from "./project-encoding-client";
 
 export interface ProjectSession {
   projectId?: string;
@@ -57,6 +58,18 @@ async function compress(
 }
 /** Portable, lossless binary container. Identical revision payloads are stored once. */
 export async function encodeProjectFile(
+  session: ProjectSession,
+  signal?: AbortSignal,
+): Promise<Blob> {
+  if (signal?.aborted)
+    throw new DOMException("Project encoding cancelled.", "AbortError");
+  return typeof document !== "undefined" && typeof Worker !== "undefined"
+    ? encodeProjectInBackground(session, signal)
+    : encodeProjectFileLocally(session);
+}
+
+/** Same lossless encoder used inside the bounded worker and non-browser hosts. */
+export async function encodeProjectFileLocally(
   session: ProjectSession,
 ): Promise<Blob> {
   const chunks: Chunk[] = [],

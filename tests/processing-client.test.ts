@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { scanRenderData, prepareScanRenderData } from "../src/scan-render-data";
 import {
   releaseProcessingSession,
   retainProcessingGeometry,
@@ -50,6 +51,28 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("publishes prepared aligned display buffers before the GUI or agent consumes the result", async () => {
+    const output = positions.slice(),
+      renderData = prepareScanRenderData(output);
+    const pending = processMesh({
+      kind: "paired",
+      positions,
+      sourceLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      targetLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    });
+    ProcessingWorkerDouble.latest.reply({
+      result: {
+        kind: "paired",
+        positions: output,
+        renderData,
+        diagnostics: {},
+      },
+    });
+    const result = await pending;
+    expect(scanRenderData(result.positions!)).toBe(renderData);
+    expect(scanRenderData(positions)).toBeUndefined();
+    expect(result.positions).toBe(output);
+  });
   it("retains the original source after a disposable preview result", async () => {
     const preview = processMesh(
       {

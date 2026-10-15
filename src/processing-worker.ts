@@ -34,6 +34,7 @@ import { registerNativeLandmarks } from "./native-landmark-registration";
 import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
+import { prepareScanRenderData } from "./scan-render-data";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -551,6 +552,18 @@ scope.onmessage = async ({ data: incoming }) => {
     for (const segment of result.scanEdit?.segments ?? [])
       transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
+    // Preserve the existing weld-based display normals, but never perform their
+    // welding/statistics on the UI thread when the aligned mesh is displayed.
+    if (
+      request.kind === "paired" &&
+      request.sourceIndexed &&
+      result.positions
+    ) {
+      progress(0.99, "Preparing aligned mesh display");
+      result.renderData = prepareScanRenderData(result.positions);
+      if (result.renderData.normals)
+        transfers.push(result.renderData.normals.buffer as ArrayBuffer);
+    }
     if (result.positions) transfers.push(result.positions.buffer);
     if (result.indexedMesh?.vertices instanceof Float32Array)
       transfers.push(result.indexedMesh.vertices.buffer);
