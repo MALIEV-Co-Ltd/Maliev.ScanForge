@@ -1940,3 +1940,49 @@ JSON, numerical parameter bits, formatting and whitespace passed. These captures
 do not execute the CAD engine, populated boundary refresh, complete provider
 scheduling/merging or installed UI. No application source or MCP contract changed;
 application build/test targets are not applicable to this evidence-only slice.
+
+## Actual OpenCascade triangulation acquisition
+
+The per-face worker `0x1402d6f50` invokes `0x1401ed610`, which obtains a native
+triangulation through `0x1401ed160`. REA worker Evidence is
+`ev_205d30c75d26a952ad9f4a62eb019a12f486edb6e1dc41500a82c9d22355637b`.
+Triangulation-acquisition Evidence is
+`ev_89690df5471638cb3e3dc6fbcf9545bd4e6e7e5a9a7084711913a03eafaea14d`,
+with assembly Evidence
+`ev_3e646c292603a6a347a70d35921cf88d1d2c4787eb506f09ca40c72304189d78`.
+This is the standard OpenCascade path; alternate facet-table provider captures
+do not substitute for this path's output conversion.
+
+`docs/evidence/landmark-original-occt-native.json` now retains 12 executions of
+the original triangulation-acquisition routine with actual supplied OpenCascade
+DLLs, actual trimmed plane/cylinder faces and the actual native mesher. Captured
+module pointers are rebound to the loaded DLLs; geometry and tessellation calls
+are not adapters. All six directly loaded DLL digests match their retained
+identities. Original node accessor `0x1401e8160` extracts all resulting double
+coordinates, and the original triangle-array layout supplies ordered indices.
+
+Fresh faces are tested at linear tolerances 0.005, 0.05 and 0.5, with angular
+tolerance 28 degrees. The trimmed plane produces four vertices and two triangles
+in each case. The fresh trimmed cylinder produces 50 vertices / 48 triangles at
+0.005, and 18 vertices / 16 triangles at 0.05 and 0.5. The bounded cylinder spans
+U `[0.1, 2]`, V `[-1, 4]`, with radius three and axis through `[2, -3, 7]`.
+
+For a second pass, the actual native mesher first triangulates each input face
+at 0.05. Original acquisition then returns the same pre-existing triangulation
+for all three requested tolerances. The first returned triangulation is retained
+across calls, preventing allocator-address reuse from masquerading as cache reuse.
+The seeded cylinder keeps its 18 vertices and 16 triangles even when acquisition
+requests 0.005. Thus this routine is an acquisition/reuse path, not an unconditional
+retessellation command. The native fresh-face branch constructs a bounded face
+from its underlying surface before meshing; it does not establish a persistent
+new triangulation on the original fresh face.
+
+All 12 native geometry cases and DLL identity checks passed. Native shape builders,
+geometry objects, triangulation/location handles and mapped-image storage were
+released, and the replay and REA processes exited. These results close the actual
+engine-execution gap for the declared trimmed-face acquisition corpus. Full
+`0x1401ed610` mesh/normal conversion, STEP import, populated boundary refresh and
+the assembled CAD-backed alignment controller remain separate verification work.
+No application source or MCP contract changed; application build/test targets
+are not applicable to this evidence-only slice. The live 5173 workspace remains
+available without replacing the user's loaded scan.
