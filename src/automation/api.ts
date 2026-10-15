@@ -633,13 +633,14 @@ export class ApplicationApi {
         return this.success(await handler(args, context));
       // A single admission lane also protects native read operations from concurrent edits.
       this.active = job;
-      this.host.activity(
-        true,
-        `Agent/API: ${command}`,
-        command === "mesh_process"
-          ? selectionProcessingMode(args.operation)
-          : "boundary",
-      );
+      if (command !== "object_select")
+        this.host.activity(
+          true,
+          `Agent/API: ${command}`,
+          command === "mesh_process"
+            ? selectionProcessingMode(args.operation)
+            : "boundary",
+        );
       job.timer = setTimeout(
         () =>
           job.controller.abort(
@@ -672,7 +673,8 @@ export class ApplicationApi {
         } finally {
           clearTimeout(job.timer);
           this.active = undefined;
-          this.host.activity(false, `${command}: ${job.status}`);
+          if (command !== "object_select")
+            this.host.activity(false, `${command}: ${job.status}`);
         }
       };
       if (asynchronous) {

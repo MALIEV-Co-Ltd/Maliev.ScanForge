@@ -1,0 +1,28 @@
+{
+  "scenario": "Isolated Chrome; 1183x944 CSS pixels; device scale 2; owner PLY scans 1 and 2; object-tree selection followed by 20 alternating left/middle orbit starts and wheel zooms",
+  "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "before": {
+    "medianFrameMs": 16.68000000000029,
+    "p95FrameMs": 16.845000000000255,
+    "maxFrameMs": 49.969999999999345,
+    "longTasks": [
+      {
+        "start": 7440.7750000059605,
+        "duration": 71
+      }
+    ],
+    "drawCalls": 900,
+    "browserErrors": []
+  },
+  "after": {
+    "medianFrameMs": 16.68499999999949,
+    "p95FrameMs": 16.81999999999971,
+    "maxFrameMs": 16.86499999999978,
+    "longTasks": [],
+    "drawCalls": 900,
+    "browserErrors": []
+  },
+  "scope": "Short local browser replay, not embedded-browser or all-operation performance parity",
+  "cause": "Shared object_select called React flushSync activity on/off around the actual selection, adding two unnecessary full UI commits",
+  "fix": "Keep API admission, revision/retry and selection semantics; omit global processing activity only for object_select"
+}

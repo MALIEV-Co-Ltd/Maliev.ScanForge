@@ -467,3 +467,53 @@ describe("shared application API", () => {
     });
   });
 });
+
+it("selects through the shared operation without busy UI commits and keeps revision/retry checks", async () => {
+  const { api, host, state } = setup();
+  state.selectedId = "previous";
+  const activity = vi.spyOn(host, "activity");
+  const select = vi.spyOn(host, "select");
+  const request = mutation(api, "quiet-selection");
+  const first = await api.invoke("object_select", request);
+  expect(first).toMatchObject({
+    ok: true,
+    result: { entityId: null, selectedIds: [] },
+  });
+  expect(await api.invoke("object_select", request)).toEqual(first);
+  expect(select).toHaveBeenCalledTimes(1);
+  expect(activity).not.toHaveBeenCalled();
+  expect(
+    await api.invoke("object_select", {
+      ...mutation(api, "stale-selection"),
+      expectedRevision: 999,
+    }),
+  ).toMatchObject({ ok: false });
+  expect(select).toHaveBeenCalledTimes(1);
+  api.dispose();
+});
+
+it("keeps selection inside the admission lane even without host busy toggles", async () => {
+  let finish!: () => void;
+  const held = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  const { api, host } = setup({
+    object_select: () => held,
+    settings_set: () => ({ changed: true }),
+  });
+  const activity = vi.spyOn(host, "activity");
+  const selecting = api.invoke(
+    "object_select",
+    mutation(api, "held-selection"),
+  );
+  expect(
+    await api.invoke("settings_set", {
+      ...mutation(api, "blocked-setting"),
+      patch: {},
+    }),
+  ).toMatchObject({ ok: false, error: { code: "BUSY" } });
+  expect(activity).not.toHaveBeenCalled();
+  finish();
+  expect((await selecting).ok).toBe(true);
+  api.dispose();
+});

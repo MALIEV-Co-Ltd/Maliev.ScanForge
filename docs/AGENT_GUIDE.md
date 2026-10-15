@@ -791,3 +791,7 @@ timing scope are documented in `docs/ALIGNMENT_PERFORMANCE.md`; two workers do
 not imply a measured speedup for every selected region.
 
 Viewport surface picking is accelerated by the same background-built display index for canvas interactions and `viewport_pick`; no new agent parameters are required. Triangle IDs and clipping semantics are preserved, with ordinary picking available while the index builds. See [viewport performance](VIEWPORT_PERFORMANCE.md).
+
+### Object selection responsiveness
+
+`object_select` uses the same operation for object-tree clicks and MCP requests. It applies selection without opening/closing the global processing indicator. Revision validation, identical-request replay, the single operation admission lane, selection modifiers and structured selected-ID results are unchanged. Selection does not alter authored geometry or add a modeling-history entry.

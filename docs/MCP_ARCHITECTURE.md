@@ -160,3 +160,13 @@ Without supplied normals, the previous whole-mesh normal algorithm is retained.
 ### Internal Interactive display-source provider
 
 The shared Interactive operation factory owns one bounded source/bounds/mirror pool per session. Its optional `installInteractiveMirror` host hook lends a session-bound backend to a display consumer; the consumer must not create another pool or detach author buffers. Source readiness and selected/hidden/visible-face summaries are available in the internal session result. Preparation validates session identity and unchanged author state before and after asynchronous work. Release invalidates borrowed providers and closes workers before clearing the host display. This remains internal integration groundwork: no public catalog operation or enabled GUI command is advertised until the complete shared workflow is connected and verified.
+
+### Selection and processing activity
+
+Synchronous `object_select` retains API admission ownership and retry/revision checks but does not call the host's processing activity hook. The React host flushes that hook synchronously; toggling it around selection caused two additional full UI commits per click. Geometry operations retain their processing indicator and cancellation behavior. GUI object-tree clicks and MCP selection share this change.
+
+### Selection latency measurement
+
+The [owner-scan browser replay](evidence/viewport-selection-performance.json) loads PLY scans 1 and 2, selects the second scan, and performs 20 alternating left/middle orbit starts with wheel zoom. Both runs use isolated Chrome at 1183x944 CSS pixels, device scale 2, and the same RTX A4000 renderer. Removing the two processing-activity commits eliminated the observed 71 ms long task; maximum measured frame interval decreased from 49.97 to 16.86 ms. Median and p95 remained approximately 16.7/16.8 ms. No browser errors occurred. This short replay establishes the selection improvement on this renderer; it does not establish the embedded browser's GPU configuration or all-operation responsiveness.
+
+Validation for this slice: build completed with zero warnings/errors (`scanforge-2511c1d7efd74e46`); focused API/authoring/selection checks passed 97 tests in 11 files; the default suite passed 37,478 tests in 387 files, with 31 optional checks skipped across seven files. The focused checks cover unchanged revision/retry behavior and admission ownership without processing activity. Formatting, whitespace and the repository token audit passed. Temporary browser processes exited, and port 5173 continues serving the application.
