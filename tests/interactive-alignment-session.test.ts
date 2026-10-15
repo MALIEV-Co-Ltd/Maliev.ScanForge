@@ -122,3 +122,57 @@ it("returns the original entities for a no-op and discards cancelled baking with
   expect(s.inspect().applying).toBe(false);
   expect(s.baseEntities).toBe(base);
 });
+
+it("retains measured target bounds by value and invalidates them on a fast drag or reset", () => {
+  const base = entities(1, native.poses[0]);
+  const s = new InteractiveAlignmentSession(base, ["0"], pivot);
+  const bounds = [{ min: [1, 2, 3], max: [4, 5, 6] }];
+  s.advance(native.transforms[0], bounds);
+  expect(s.inspect().bounds).toEqual(bounds);
+  bounds[0].min[0] = -999;
+  expect(s.inspect().bounds![0].min[0]).toBe(1);
+  s.inspect().bounds![0].max[0] = 999;
+  expect(s.inspect().bounds![0].max[0]).toBe(4);
+  s.advance(native.transforms[0]);
+  expect(s.inspect().bounds).toBeUndefined();
+  s.advance(native.transforms[0], [{ min: [1, 2, 3], max: [4, 5, 6] }]);
+  s.reset();
+  expect(s.inspect().bounds).toBeUndefined();
+});
+
+it("rolls back one pose publication without changing source geometry and refuses a stale checkpoint", () => {
+  const base = entities(1, native.poses[0]);
+  const s = new InteractiveAlignmentSession(base, ["0"], pivot);
+  const before = s.inspect();
+  const rollback = s.checkpoint();
+  s.advance(native.transforms[1]);
+  rollback();
+  rollback();
+  expect(s.inspect()).toEqual(before);
+  expect(s.baseEntities).toBe(base);
+  const stale = s.checkpoint();
+  s.advance(native.transforms[1]);
+  s.advance(native.transforms[1]);
+  const current = s.inspect();
+  expect(stale).toThrow("stale");
+  expect(s.inspect()).toEqual(current);
+});
+
+it("ignores absent configuration fields without replacing existing native defaults", () => {
+  const s = new InteractiveAlignmentSession(
+    entities(1, native.poses[0]),
+    ["0"],
+    pivot,
+  );
+  s.configure({ strength: 0, mirror: false, mirrorPlane: 0 });
+  s.configure({
+    strength: undefined,
+    mirror: undefined,
+    mirrorPlane: undefined,
+  });
+  expect(s.inspect()).toMatchObject({
+    strength: 0,
+    mirror: false,
+    mirrorPlane: 0,
+  });
+});

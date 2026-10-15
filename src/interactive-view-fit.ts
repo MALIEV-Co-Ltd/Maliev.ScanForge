@@ -1,4 +1,42 @@
 const f = Math.fround;
+/** Original 8A8E20 perspective branch: Double radius/tan, then Float32 eye stores. */
+export function nativeInteractivePerspectiveSetup(
+  bounds: readonly number[],
+  anchor: readonly number[],
+  fieldOfView: number,
+  aspect: number,
+  clipping: readonly number[],
+) {
+  const b = bounds.map(f),
+    a = anchor.map(f),
+    fov = f(fieldOfView),
+    ratio = f(aspect),
+    clip = clipping.map(f);
+  if (
+    b.length !== 6 ||
+    a.length !== 3 ||
+    clip.length !== 2 ||
+    ![...b, ...a, fov, ratio, ...clip].every(Number.isFinite) ||
+    b.some((v, i) => i < 3 && v > b[i + 3]) ||
+    fov <= 0 ||
+    fov >= 180 ||
+    ratio <= 0 ||
+    clip[0] <= 0 ||
+    clip[1] <= clip[0]
+  )
+    throw new Error(
+      "Interactive perspective setup requires finite ordered bounds, XYZ anchor, field of view, aspect and positive clipping range.",
+    );
+  const half = [0, 1, 2].map((i) => f(f(f(b[i + 3] + b[i]) * 0.5) - b[i]));
+  const radius = Math.sqrt(
+    half[0] * half[0] + half[1] * half[1] + half[2] * half[2],
+  );
+  const distance = f(radius / Math.tan(fov * 0.5 * 0.017453292519943295));
+  return {
+    perspective: [fov, ratio, ...clip],
+    lookAt: [a[0], a[1], f(distance + a[2]), ...a, 0, 1, 0],
+  };
+}
 /** Original 832930/832980/8458C0/8A96B0/8A9500 publication chain; no renderer calls. */
 export function nativeInteractiveFitView(
   frame: readonly number[],

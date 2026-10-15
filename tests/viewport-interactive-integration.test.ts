@@ -144,3 +144,47 @@ it("restores exact cached cloud bounds instead of expanding them from transforme
     mesh.material.dispose();
   }
 });
+
+it("uses measured target bounds instead of rotating their local boxes and preserves static cloud bounds", () => {
+  const view = Object.create(Viewport.prototype) as any;
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([0, 0, 0, 1, 0, 0, 0, 1, 0], 3),
+  );
+  geometry.computeBoundingBox();
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
+  mesh.userData.entityId = "scan";
+  const cloud = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
+  cloud.userData.entityId = "cloud";
+  cloud.rotation.z = Math.PI / 4;
+  cloud.updateMatrixWorld();
+  const cloudBounds = new THREE.Box3(
+    new THREE.Vector3(-0.7071068, 0, 0),
+    new THREE.Vector3(0.7071068, 0.7071068, 0),
+  );
+  const camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 10);
+  camera.position.z = 2;
+  camera.updateMatrixWorld();
+  Object.assign(view, {
+    objects: new Map([
+      ["scan", { mesh }],
+      ["cloud", { mesh: cloud, worldBounds: cloudBounds }],
+    ]),
+    bounds: new THREE.Box3(),
+    camera,
+    invalidate: vi.fn(),
+  });
+  try {
+    view.setInteractivePreview({
+      targets: [{ entityId: "scan", matrix: pose(2) }],
+      bounds: [{ min: [2, 0, 0], max: [3, 1, 0] }],
+    });
+    expect(view.bounds.min.toArray()).toEqual([-0.7071068, 0, 0]);
+    expect(view.bounds.max.toArray()).toEqual([3, 1, 0]);
+  } finally {
+    geometry.dispose();
+    mesh.material.dispose();
+    cloud.material.dispose();
+  }
+});

@@ -1,5 +1,6 @@
 import { prepareViewportPicking } from "./viewport-picking";
 import { InteractiveAlignmentGizmo } from "./interactive-alignment-gizmo";
+import { resetInteractiveCamera } from "./interactive-camera-reset";
 import {
   InteractiveGizmoDrag,
   type InteractiveGizmoMovement,
@@ -612,9 +613,24 @@ export class Viewport {
     state: {
       targets: readonly InteractiveDisplayPose[];
       pivot?: readonly number[];
+      bounds?: readonly { min: readonly number[]; max: readonly number[] }[];
     } | null,
   ): void {
     if (this.disposed && state) throw new Error("The viewport is closed.");
+    if (
+      state?.bounds &&
+      (state.bounds.length !== state.targets.length ||
+        state.bounds.some(
+          (b) =>
+            b.min.length !== 3 ||
+            b.max.length !== 3 ||
+            ![...b.min, ...b.max].every(Number.isFinite) ||
+            b.min.some((v, i) => v > b.max[i]),
+        ))
+    )
+      throw new Error(
+        "Interactive display bounds must cover every target with finite ordered XYZ values.",
+      );
     if (!state) {
       this.interactiveGizmo?.show(null);
       this.interactiveDrag?.cancel();
@@ -645,8 +661,26 @@ export class Viewport {
       state.pivot ? { pivot: [...state.pivot] } : null,
     );
     this.bounds.makeEmpty();
-    for (const item of this.objects.values())
+    const targets = new Set(state.targets.map((t) => t.entityId));
+    const measured = new Map(
+      state.targets.map((t, i) => [t.entityId, state.bounds?.[i]]),
+    );
+    for (const [id, item] of this.objects)
       if (item.mesh.visible && item.mesh.geometry.boundingBox) {
+        const exact = measured.get(id);
+        if (exact) {
+          this.bounds.union(
+            new THREE.Box3(
+              new THREE.Vector3(...(exact.min as [number, number, number])),
+              new THREE.Vector3(...(exact.max as [number, number, number])),
+            ),
+          );
+          continue;
+        }
+        if (!targets.has(id) && item.worldBounds) {
+          this.bounds.union(item.worldBounds);
+          continue;
+        }
         item.mesh.updateMatrixWorld(true);
         this.bounds.union(
           item.mesh.geometry.boundingBox
@@ -710,6 +744,30 @@ export class Viewport {
   interactiveViewFrame() {
     const context = this.captureInteractiveCamera();
     return { matrix: context.matrix, anchor: context.anchor };
+  }
+  finishInteractiveCurrentView(alternateUpAxis = false) {
+    const result = resetInteractiveCamera(
+      this.camera,
+      this.controls.target,
+      this.bounds,
+      this.container.clientWidth,
+      this.container.clientHeight,
+      alternateUpAxis,
+    );
+    this.cancelViewTransition();
+    this.mouseOrbitPointer = undefined;
+    this.mouseOrbitPivot = undefined;
+    this.navigationPivot?.point.copy(this.controls.target);
+    updateCameraClipping(this.camera, this.bounds);
+    this.controls.update();
+    configureNavigationSensitivity(
+      this.camera,
+      this.controls,
+      this.container.clientWidth,
+      this.container.clientHeight,
+    );
+    this.invalidate();
+    return result;
   }
   interactiveDragInput(input: InteractivePointerDrag) {
     return interactiveDragForCamera(this.captureInteractiveCamera(), input);

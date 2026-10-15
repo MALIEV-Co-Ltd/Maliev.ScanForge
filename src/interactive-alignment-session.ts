@@ -28,6 +28,7 @@ export class InteractiveAlignmentSession {
   private version = 0;
   private applying = false;
   private boundsFresh = false;
+  private measuredBounds?: InteractiveBounds[];
   private options = {
     strength: 100,
     mirror: false,
@@ -86,6 +87,36 @@ export class InteractiveAlignmentSession {
     if (this.applying)
       throw new Error("Interactive alignment is publishing geometry.");
   }
+  /** One synchronous publication may roll back without copying or baking source geometry. */
+  checkpoint() {
+    this.writable();
+    const saved = {
+      matrix: this.matrix,
+      poses: this.poses,
+      pivot: this.pivot,
+      boundsFresh: this.boundsFresh,
+      bounds: this.measuredBounds,
+      options: this.options,
+      version: this.version,
+    };
+    let used = false;
+    return () => {
+      if (used) return;
+      this.writable();
+      if (this.version !== saved.version && this.version !== saved.version + 1)
+        throw new Error(
+          "Cannot restore a stale Interactive publication checkpoint.",
+        );
+      used = true;
+      this.matrix = saved.matrix;
+      this.poses = saved.poses;
+      this.pivot = saved.pivot;
+      this.boundsFresh = saved.boundsFresh;
+      this.measuredBounds = saved.bounds;
+      this.options = saved.options;
+      this.version = saved.version;
+    };
+  }
   advance(delta: readonly number[], bounds?: readonly InteractiveBounds[]) {
     this.writable();
     if (delta.length !== 12 || !delta.every(Number.isFinite))
@@ -136,6 +167,10 @@ export class InteractiveAlignmentSession {
     this.matrix = matrix;
     this.pivot = pivot;
     this.boundsFresh = !!bounds;
+    this.measuredBounds = bounds?.map((b) => ({
+      min: [...b.min],
+      max: [...b.max],
+    }));
     this.version++;
   }
   configure(
@@ -160,7 +195,11 @@ export class InteractiveAlignmentSession {
       throw new Error("Mirror preview plane must be XY, YZ or XZ.");
     if (patch.mirror !== undefined && typeof patch.mirror !== "boolean")
       throw new Error("Mirror preview must be a boolean.");
-    this.options = { ...this.options, ...patch };
+    this.options = {
+      strength: patch.strength ?? this.options.strength,
+      mirror: patch.mirror ?? this.options.mirror,
+      mirrorPlane: patch.mirrorPlane ?? this.options.mirrorPlane,
+    };
     this.version++;
   }
   reset() {
@@ -169,6 +208,7 @@ export class InteractiveAlignmentSession {
     this.poses = new Map([...this.initialPoses].map(([id, p]) => [id, [...p]]));
     this.pivot = [...this.originalPivot];
     this.boundsFresh = false;
+    this.measuredBounds = undefined;
     this.version++;
   }
   inspect() {
@@ -180,6 +220,14 @@ export class InteractiveAlignmentSession {
       matrixBits: cloudPoseBits(this.matrix),
       pivot: [...this.pivot],
       boundsFresh: this.boundsFresh,
+      ...(this.measuredBounds
+        ? {
+            bounds: this.measuredBounds.map((b) => ({
+              min: [...b.min],
+              max: [...b.max],
+            })),
+          }
+        : {}),
       applying: this.applying,
       ...this.options,
       changed: [...this.poses].some(([id, p]) =>
