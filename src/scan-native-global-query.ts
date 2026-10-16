@@ -1,5 +1,6 @@
 import { nativeGlobalPointIndex } from "./scan-native-global-point-index";
 import { nativeGlobalRawTargetIds } from "./scan-native-global-target-records";
+import { nativeGlobalRawTargetMatches } from "./scan-native-global-target";
 import { nativeGlobalPlane } from "./scan-native-global-plane";
 import type { GlobalCorrespondence } from "./scan-native-global-local";
 
@@ -187,7 +188,14 @@ export function nativeGlobalQuery(input: NativeGlobalQueryInput) {
           g = scan.geometry;
         const targetLabel = g.labels?.[closestId] ?? 0;
         // Both original branches compare the record's 32-bit label words.
-        if ((g.flags?.[closestId] ?? 0) & mask || label !== targetLabel)
+        if (
+          !nativeGlobalRawTargetMatches(
+            label,
+            targetLabel,
+            g.flags?.[closestId] ?? 0,
+            mask,
+          )
+        )
           continue;
         if (mode === "pooled-plane") {
           const p = Array.from(
