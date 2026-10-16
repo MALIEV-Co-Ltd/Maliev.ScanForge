@@ -59,6 +59,98 @@ export interface PackedNoiseTree {
   triangleBounds: Float32Array;
 }
 
+export interface IndexedNoiseTreeInput {
+  coordinates: Float32Array;
+  indices: Uint32Array;
+  triangleBounds: Float32Array;
+  /** Optional original face IDs when the admitted triangle list is compacted. */
+  boundsIds?: Uint32Array;
+}
+/** Retain immutable indexed geometry and already computed bounds. This carrier
+ * deliberately has no `points` field: expanded-triangle consumers cannot accept it.
+ */
+export function prepareIndexedNoiseOctree(
+  input: IndexedNoiseTreeInput,
+  minimumExtent = 0.5,
+  maximumDepth = 10,
+  options: MeshProcessingOptions = {},
+  sourceBounds?: NoiseBounds,
+) {
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  const { coordinates, indices, triangleBounds, boundsIds } = input;
+  const count = indices.length / 3;
+  if (
+    !(coordinates instanceof Float32Array) ||
+    coordinates.length % 3 ||
+    !(indices instanceof Uint32Array) ||
+    !Number.isInteger(count) ||
+    count < 1 ||
+    !(triangleBounds instanceof Float32Array) ||
+    triangleBounds.length % 6 ||
+    (boundsIds !== undefined
+      ? !(boundsIds instanceof Uint32Array) || boundsIds.length !== count
+      : triangleBounds.length !== count * 6) ||
+    !Number.isFinite(minimumExtent) ||
+    minimumExtent < 0 ||
+    !Number.isInteger(maximumDepth) ||
+    maximumDepth < 1 ||
+    maximumDepth > 10
+  )
+    throw new RangeError(
+      "Indexed noise geometry or subdivision limits are invalid",
+    );
+  const b = [Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity];
+  for (let id = 0; id < count; id++) {
+    if (id % 1024 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const t = (boundsIds?.[id] ?? id) * 6;
+    if (t + 5 >= triangleBounds.length)
+      throw new RangeError("Indexed noise bounds reference is invalid");
+    const a = indices[id * 3] * 3,
+      c = indices[id * 3 + 1] * 3,
+      d = indices[id * 3 + 2] * 3;
+    if (
+      a + 2 >= coordinates.length ||
+      c + 2 >= coordinates.length ||
+      d + 2 >= coordinates.length
+    )
+      throw new RangeError("Noise triangle index is outside the vertex buffer");
+    for (let axis = 0; axis < 3; axis++) {
+      const x = coordinates[a + axis],
+        y = coordinates[c + axis],
+        z = coordinates[d + axis];
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z))
+        throw new RangeError(
+          "Noise triangles require finite Float32 coordinates",
+        );
+      const lo = Math.min(x, y, z),
+        hi = Math.max(x, y, z);
+      if (
+        triangleBounds[t + axis] !== lo ||
+        triangleBounds[t + axis + 3] !== hi
+      )
+        throw new RangeError(
+          "Indexed noise bounds do not match triangle geometry",
+        );
+      b[axis] = Math.min(b[axis], lo);
+      b[axis + 3] = Math.max(b[axis + 3], hi);
+    }
+  }
+  const prepared = { ...input, root: noiseRoot(count, b, sourceBounds) };
+  splitNoiseNode(
+    prepared.root,
+    prepared,
+    minimumExtent,
+    maximumDepth,
+    { nodes: 0 },
+    options,
+    true,
+    true,
+  );
+  return prepared;
+}
+
 /** Pack once before transferring immutable triangle data to construction workers. */
 export function packNoiseOctree(
   triangles: readonly NoiseTreeTriangle[] | NoiseIndexedSurface,
@@ -130,6 +222,14 @@ export function packNoiseOctree(
       b[axis + 3] = Math.max(b[axis + 3], triangleBounds[t + 3]);
     }
   }
+  return { root: noiseRoot(count, b, sourceBounds), points, triangleBounds };
+}
+
+function noiseRoot(
+  count: number,
+  b: number[],
+  sourceBounds?: NoiseBounds,
+): NoiseTreeNode {
   const padding = 0.009999999776482582;
   if (sourceBounds) {
     if (
@@ -183,12 +283,12 @@ export function packNoiseOctree(
     triangles: Array.from({ length: count }, (_, id) => id),
     children: {},
   };
-  return { root, points, triangleBounds };
+  return root;
 }
 
 function splitNoiseNode(
   start: NoiseTreeNode,
-  prepared: PackedNoiseTree,
+  prepared: PackedNoiseTree | (IndexedNoiseTreeInput & { root: NoiseTreeNode }),
   minimumExtent: number,
   maximumDepth: number,
   budget: {
@@ -201,7 +301,11 @@ function splitNoiseNode(
   eager: boolean,
   recursive: boolean,
 ) {
-  const { points, triangleBounds } = prepared;
+  const { triangleBounds } = prepared;
+  const indexed = "coordinates" in prepared ? prepared : undefined;
+  const points = indexed
+    ? indexed.coordinates
+    : (prepared as PackedNoiseTree).points;
   const check = () => {
     if (options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
@@ -217,7 +321,10 @@ function splitNoiseNode(
     const memberships = Array.from({ length: 8 }, () => [] as number[]);
     for (const id of node.triangles) {
       if (id % 1024 === 0) check();
-      const t = id * 6;
+      const t = (indexed?.boundsIds?.[id] ?? id) * 6;
+      const aOffset = indexed ? indexed.indices[id * 3] * 3 : id * 9;
+      const cOffset = indexed ? indexed.indices[id * 3 + 1] * 3 : id * 9 + 3;
+      const dOffset = indexed ? indexed.indices[id * 3 + 2] * 3 : id * 9 + 6;
       for (let child = 0; child < 8; child++) {
         const box = boxes[child],
           b = box.bounds;
@@ -232,11 +339,11 @@ function splitNoiseNode(
           continue;
         for (let axis = 0; axis < 3; axis++) {
           a[axis] =
-            (points[id * 9 + axis] - box.center[axis]) * box.inverse[axis];
+            (points[aOffset + axis] - box.center[axis]) * box.inverse[axis];
           c[axis] =
-            (points[id * 9 + 3 + axis] - box.center[axis]) * box.inverse[axis];
+            (points[cOffset + axis] - box.center[axis]) * box.inverse[axis];
           d[axis] =
-            (points[id * 9 + 6 + axis] - box.center[axis]) * box.inverse[axis];
+            (points[dOffset + axis] - box.center[axis]) * box.inverse[axis];
         }
         if (noiseTriangleCubeOverlap(a, c, d)) {
           budget.entries = (budget.entries ?? 0) + 1;

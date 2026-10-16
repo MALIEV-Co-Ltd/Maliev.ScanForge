@@ -1,5 +1,8 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { prepareNoiseOctree, type NoiseTreeNode } from "./scan-noise-octree";
+import {
+  prepareIndexedNoiseOctree,
+  type NoiseTreeNode,
+} from "./scan-noise-octree";
 import type { NoiseBounds } from "./scan-noise-octree-query";
 import { nativeGlobalEvaluatorExtent } from "./scan-native-global-evaluator-policy";
 import type {
@@ -200,8 +203,13 @@ function prepare(
         slot++;
       }
     }
-    const tree = prepareNoiseOctree(
-      { coordinates: vertices, indices },
+    const tree = prepareIndexedNoiseOctree(
+      {
+        coordinates: vertices,
+        indices,
+        triangleBounds: bounds,
+        boundsIds: ids,
+      },
       minimumExtent,
       maximumDepth,
       options,
