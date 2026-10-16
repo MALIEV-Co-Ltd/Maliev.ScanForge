@@ -352,6 +352,82 @@ it("highlights an entire hole under the pointer and selects it directly", () => 
   expect(view.controls.enabled).toBe(true);
 });
 
+it("double-clicks the visible hole once without reopening the scan editor", () => {
+  const view = viewport(),
+    onFillBoundary = vi.fn();
+  view.onEditScan = vi.fn();
+  view.pickAt = vi.fn(() => "source");
+  view.setScanBridge({
+    mode: "holes",
+    boundaries: [rim],
+    onGesture: vi.fn(),
+    onFillBoundary,
+  });
+  view.doubleClick(event(100, 100));
+  expect(onFillBoundary).toHaveBeenCalledExactlyOnceWith(0);
+  expect(view.onEditScan).not.toHaveBeenCalled();
+  expect(view.pickAt).not.toHaveBeenCalled();
+});
+
+it.each([
+  { clientX: 190 },
+  { ctrlKey: true },
+  { shiftKey: true },
+  { altKey: true },
+  { metaKey: true },
+  { button: 2 },
+])(
+  "does not fill a hole for an outside or modified double-click: %j",
+  (override) => {
+    const view = viewport(),
+      onFillBoundary = vi.fn();
+    view.setScanBridge({
+      mode: "holes",
+      boundaries: [rim],
+      onGesture: vi.fn(),
+      onFillBoundary,
+    });
+    view.doubleClick({ ...event(100, 100), ...override });
+    expect(onFillBoundary).not.toHaveBeenCalled();
+  },
+);
+
+it("does not fill clipped, occluded or open boundaries on double-click", () => {
+  for (const kind of ["clipped", "occluded", "open"]) {
+    const view = viewport(),
+      onFillBoundary = vi.fn();
+    const material = new THREE.MeshBasicMaterial({
+      clippingPlanes:
+        kind === "clipped"
+          ? [new THREE.Plane(new THREE.Vector3(0, 0, 1), -1)]
+          : [],
+    });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), material);
+    mesh.position.z = kind === "occluded" ? 1 : -1;
+    mesh.updateMatrixWorld();
+    view.selectedId = "source";
+    view.objects.set("source", { mesh });
+    view.setScanBridge({
+      mode: "holes",
+      boundaries: [{ ...rim, closed: kind !== "open" }],
+      onGesture: vi.fn(),
+      onFillBoundary,
+    });
+    view.doubleClick(event(100, 100));
+    expect(onFillBoundary).not.toHaveBeenCalled();
+    mesh.geometry.dispose();
+    material.dispose();
+  }
+});
+
+it("preserves ordinary scan-editor double-click outside the hole picker", () => {
+  const view = viewport();
+  view.pickAt = vi.fn(() => "source");
+  view.onEditScan = vi.fn();
+  view.doubleClick(event(100, 100));
+  expect(view.onEditScan).toHaveBeenCalledExactlyOnceWith("source");
+});
+
 it.each([0, 1])(
   "does not pick a hole through a retained surface at z=%s",
   (z) => {

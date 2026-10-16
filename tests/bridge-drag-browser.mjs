@@ -471,6 +471,55 @@ try {
         ).startsWith("Hole " + (hole + 1)),
       );
       if (scenario === "flat") {
+        const beforeFill = await geometry(),
+          beforeFillHistory = await history();
+        const mcpFill = await runEdit({
+          kind: "scanEdit",
+          action: "fillHoles",
+          mode: "entire",
+          indices: [hole],
+          algorithm: "automatic",
+        });
+        assert.equal(mcpFill.diagnostics.filledHoles, 1);
+        const expectedFill = await geometry();
+        await mutate("history_undo", {});
+        assert.deepEqual((await geometry()).positions, beforeFill.positions);
+        await page.waitForFunction(() =>
+          document.querySelector('.scan-topology-panel[aria-busy="false"]'),
+        );
+        await page.mouse.dblclick(
+          box.x + box.width / 2,
+          box.y + box.height / 2,
+        );
+        for (
+          let attempt = 0;
+          attempt < 80 && (await history()) === beforeFillHistory;
+          attempt++
+        )
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        assert.equal(
+          await history(),
+          beforeFillHistory + 1,
+          "hole double-click must create exactly one fill history step",
+        );
+        assert.deepEqual(
+          (await geometry()).positions,
+          expectedFill.positions,
+          "GUI double-click and MCP fill must produce identical geometry",
+        );
+        await page.screenshot({
+          path: fileURLToPath(new URL("double-click-hole-filled.png", out)),
+        });
+        await mutate("history_undo", {});
+        assert.deepEqual((await geometry()).positions, beforeFill.positions);
+        await mutate("history_redo", {});
+        assert.deepEqual((await geometry()).positions, expectedFill.positions);
+        await mutate("history_undo", {});
+        console.log(
+          "PASS: highlighted hole double-click matches MCP, with one history step and Undo/Redo",
+        );
+      }
+      if (scenario === "flat") {
         const unit = box.height / (2 * 22 * Math.tan((21 * Math.PI) / 180));
         await page.mouse.move(
           box.x + box.width / 2 + 4.5 * unit,

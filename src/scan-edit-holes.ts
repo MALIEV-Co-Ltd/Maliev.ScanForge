@@ -14,6 +14,7 @@ import {
   repatchSpatialBoundary,
 } from "./scan-defeature-repatch";
 import {
+  HoleRefinementError,
   holeSurface,
   refineHolePatch,
   validHolePatch,
@@ -42,6 +43,7 @@ export function runHoleFill(
     ? [...t.boundaryLoops, ...t.boundaryChains]
     : t.boundaryLoops;
   const ids = r.indices ?? (bridging ? [0] : t.boundaryLoops.map((_, i) => i));
+  const selected = [...new Set(ids)];
   if (bridging && ids.length !== 1)
     throw new Error("A bridge needs exactly one start boundary.");
   if (ids.some((i) => !Number.isInteger(i) || i < 0 || i >= boundaries.length))
@@ -76,7 +78,7 @@ export function runHoleFill(
   const vertexNormals = bridging
     ? new Float64Array(0)
     : computeAngleWeightedNormals(t);
-  for (const index of [...new Set(ids)]) {
+  for (const index of selected) {
     checkProgress(
       o,
       filledHoles / Math.max(1, ids.length),
@@ -400,15 +402,28 @@ export function runHoleFill(
     }
     // Partial arcs retain their chord contract; bridge rails are refined separately.
     if ((r.mode ?? "entire") === "entire") {
-      const refined = refineHolePatch(
-        points,
-        projected,
-        triangles,
-        rimCount,
-        surface,
-        o,
-      );
-      triangles = refined.triangles;
+      try {
+        const refined = refineHolePatch(
+          points,
+          projected,
+          triangles,
+          rimCount,
+          surface,
+          o,
+        );
+        triangles = refined.triangles;
+      } catch (error) {
+        if (
+          selected.length <= 1 ||
+          o.signal?.aborted ||
+          !(error instanceof HoleRefinementError)
+        )
+          throw error;
+        // Refinement changes only this hole's local patch. Nothing has been
+        // appended to output or the successor topology until it succeeds.
+        skippedHoles++;
+        continue;
+      }
     }
     if (
       !(splitBridgeRails

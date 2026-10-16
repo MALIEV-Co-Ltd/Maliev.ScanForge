@@ -7,6 +7,9 @@ type Face = [number, number, number];
 const orient = (a: Vector2, b: Vector2, c: Vector2) =>
   (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 
+/** A bounded refinement failure leaves this hole unchanged. */
+export class HoleRefinementError extends Error {}
+
 /** Conforming interior refinement. Rim edges are constraints: neither endpoint
  * moves and no midpoint is inserted on an edge shared with the retained mesh. */
 export function refineHolePatch(
@@ -100,12 +103,12 @@ export function refineHolePatch(
       else next.push([a, b, c]);
     }
     if (next.length > cap)
-      throw new Error(
+      throw new HoleRefinementError(
         "Hole refinement exceeded the safe patch size; the hole was left unchanged.",
       );
     triangles = next;
   }
-  throw new Error(
+  throw new HoleRefinementError(
     "Hole refinement did not converge; the hole was left unchanged.",
   );
 }

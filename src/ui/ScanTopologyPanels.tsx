@@ -280,6 +280,20 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
           const index = items.findIndex((item) => item.index === boundary);
           if (index >= 0) choose(index);
         },
+        onFillBoundary: (boundary) => {
+          const index = items.findIndex((item) => item.index === boundary);
+          if (index < 0) return;
+          choose(index);
+          run(
+            {
+              action: "fillHoles",
+              indices: [boundary],
+              algorithm,
+              mode: "entire",
+            },
+            "Fill selected hole",
+          );
+        },
       });
       return () => props.onBridgeSession?.(null);
     }
@@ -567,7 +581,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
               {mode !== "bridge" && (
                 <p className="scan-topology-summary">
                   Hover a hole to highlight its boundary, then click it to
-                  select it for filling.
+                  select it. Double-click a highlighted hole to fill it.
                 </p>
               )}
               {mode === "partial" && (

@@ -9,6 +9,8 @@ export interface ScanBridgeEndpoint {
 export interface ScanBridgeSession {
   mode?: "bridge" | "holes";
   onSelectBoundary?(boundary: number): void;
+  /** Attempt an entire-hole fill using the picked inventory boundary. */
+  onFillBoundary?(boundary: number): void;
   boundaries: readonly ScanBoundaryPath[];
   onGesture(
     phase: "preview" | "commit" | "cancel",

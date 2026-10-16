@@ -433,6 +433,7 @@ export class Viewport {
     this.paintCursor.setAttribute("fill", "#c83244");
     this.paintOverlay.append(this.paintTrail, this.paintCursor);
     container.appendChild(this.paintOverlay);
+    this.doubleClick = this.doubleClick.bind(this);
     this.renderer.domElement.addEventListener("dblclick", this.doubleClick);
     this.renderer.domElement.addEventListener(
       "pointerdown",
@@ -1941,11 +1942,29 @@ export class Viewport {
         radius: this.brushPixels,
       });
   }
-  private doubleClick = (event: MouseEvent): void => {
-    if (this.brushing || this.sketchEditor || this.pickTargetId) return;
+  private doubleClick(event: MouseEvent): void {
+    if (this.brushing || this.sketchEditor) return;
+    if (this.bridgeSession?.mode === "holes") {
+      if (
+        event.button === 0 &&
+        !event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey &&
+        !event.metaKey
+      ) {
+        const boundary = this.holeBoundaryAt(event);
+        if (boundary !== null) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          this.bridgeSession.onFillBoundary?.(boundary);
+        }
+      }
+      return;
+    }
+    if (this.pickTargetId) return;
     const id = this.pickAt(event as PointerEvent);
     if (id) this.onEditScan?.(id);
-  };
+  }
   private applyScreenRegion(event: PointerEvent, region: ScreenRegion): void {
     const id = this.selectedId,
       item = id ? this.objects.get(id) : undefined;

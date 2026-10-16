@@ -1,16 +1,24 @@
-import { expect, it, vi } from "vitest";
+import { beforeEach, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   ScanTopologyControls,
   type ScanTopologyControlsProps,
 } from "../src/ui/ScanTopologyPanels";
 import type { ReactElement, ReactNode } from "react";
+import type { ScanBridgeSession } from "../src/scan-bridge-gesture";
+
+const effects = vi.hoisted(() => [] as (() => unknown)[]);
+beforeEach(() => {
+  effects.length = 0;
+});
 
 vi.mock("react", async () => {
   const actual = await vi.importActual<typeof import("react")>("react");
   return {
     ...actual,
-    useEffect: () => {},
+    useEffect: (effect: () => unknown) => {
+      effects.push(effect);
+    },
     useState: (value: unknown) => [value, vi.fn()],
   };
 });
@@ -67,6 +75,33 @@ function click(tree: ReactNode, label: string) {
   expect(button).toBeDefined();
   (button!.props.onClick as () => void)();
 }
+it("fills the double-clicked hole by its topology index rather than the selected list row", () => {
+  const props = { ...defaults(), section: "holes" as const };
+  const small = props.inventory.boundaries[0];
+  props.inventory.boundaries = [small, { ...small, length: 12 }];
+  let session: ScanBridgeSession | null = null;
+  props.onBridgeSession = (value) => {
+    session = value;
+  };
+  ScanTopologyControls(props);
+  effects.forEach((effect) => effect());
+  const active = session as ScanBridgeSession | null;
+  expect(active?.mode).toBe("holes");
+  expect(active).toHaveProperty("onFillBoundary", expect.any(Function));
+  active!.onFillBoundary!(99);
+  expect(props.onOperation).not.toHaveBeenCalled();
+  active!.onFillBoundary!(0);
+  expect(props.onOperation).toHaveBeenCalledExactlyOnceWith(
+    {
+      action: "fillHoles",
+      indices: [0],
+      algorithm: "automatic",
+      mode: "entire",
+    },
+    "Fill selected hole",
+  );
+});
+
 it("selects the triangles of an individual connected mesh and extracts that component", () => {
   const props = defaults(),
     tree = ScanTopologyControls(props);

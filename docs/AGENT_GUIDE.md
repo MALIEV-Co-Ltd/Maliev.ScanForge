@@ -102,6 +102,20 @@ same inventory indices through `mesh_process`; `viewport_get.bridge.mode` is
 `holes` during this picker and `bridge` during a bridge gesture. Hole refinement
 grades interior size around long fixed rim edges (including bridge rails) while
 preserving those constraints and validating the resulting disk.
+Batch hole filling (`action: "fillHoles"`, entire mode, multiple distinct
+boundary indices or omitted `indices`) retains successful patches when another
+hole exceeds refinement limits or does not converge. Failed holes remain unchanged
+and count toward `diagnostics.skippedHoles`; `filledHoles` counts accepted patches.
+This behavior is shared by the GUI and MCP. Cancellation, invalid requests and
+unexpected errors still stop the operation. A single selected hole retains its
+refinement error. Reinspect inventory after a batch to find remaining holes.
+In the GUI hole picker, double-click a visible highlighted hole to attempt an
+entire-hole fill with the current algorithm, independent of the selected list
+row. Agents use the same operation through `mesh_process` with
+`operation: {kind: "scanEdit", action: "fillHoles", mode: "entire", indices:
+[boundaryIndex], algorithm: "automatic"}` (or the desired algorithm). Use the
+original inventory boundary index. Busy or locked scans disable the picker;
+clipped, occluded and open boundaries cannot be filled with this gesture.
 While the GUI hole/bridge tool is open, `viewport_get.bridge` reports the hovered
 `{boundary, edge}`, active drag source, picking readiness and preview triangle
 count. Hovering does not run mesh generation. Picking uses the existing display
