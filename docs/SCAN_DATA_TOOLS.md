@@ -46,8 +46,9 @@ indices and scan-source metadata. Exact CAD bodies require an explicit separate
 mesh copy and retain their kernel body.
 
 Smoothing accepts up to 500,000 faces. Reduction uses bounded spatial patches above that size instead of an input-count cap; reduction also has a finite
-collapse work budget. Reconstruction accepts up to 1,000,000 voxel samples and
-3,000,000 output faces. Transforms accept up to 3,000,000 faces; averaging bounds
+collapse work budget. Reconstruction accepts up to 128,000,000 lattice points using compact bitsets,
+3,000,000 aggregate input faces and 8,000,000 output faces. Surface-local sampling
+and typed topology verification support finer spacing without sampling all empty space. Transforms accept up to 3,000,000 faces; averaging bounds
 both reference count and aggregate input. Oversized work fails with a message,
 without silently lowering the user's requested resolution.
 

@@ -559,7 +559,9 @@ export function ScanToolsPanel({
                 by about 0.75 times point resolution. Results are checked for
                 closed, manifold topology; separated regions can remain separate
                 closed components. Self-intersections are not checked. Undo
-                restores the original.
+                restores the original. Finer spacing retains smaller details; it
+                is not a maximum-deviation tolerance. Reconstruction supports up
+                to 128 million grid points and eight million output triangles.
               </p>
             </>
           )}

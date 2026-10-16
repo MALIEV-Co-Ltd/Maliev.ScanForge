@@ -246,4 +246,6 @@ it("offers additional reconstruction meshes with measured closure and shape-chan
   expect(html).toContain("Aligned scan");
   expect(html).toContain("retained unchanged");
   expect(html).toContain("separate closed components");
+  expect(html).toContain("128 million grid points");
+  expect(html).toContain("not a maximum-deviation tolerance");
 });

@@ -609,7 +609,8 @@
                         },
                         "resolution": {
                           "type": "number",
-                          "exclusiveMinimum": 0
+                          "exclusiveMinimum": 0,
+                          "description": "Sampling spacing in mm, default 0.5. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Surface-local sampling admits up to 128 million grid points and eight million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
                         }
                       },
                       "required": ["kind"],

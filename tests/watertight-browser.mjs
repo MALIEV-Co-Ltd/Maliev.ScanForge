@@ -9,8 +9,13 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { chromium } from "playwright";
 // Optional extracted single-hole component: positions, rim, center and radius.
 
+const fine = process.env.SCANFORGE_FINE_RECONSTRUCTION === "1";
+const resolution = fine ? 1 : 0.5;
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/watertight-browser/", import.meta.url);
+  out = new URL(
+    fine ? "../.resources/fine-browser/" : "../.resources/watertight-browser/",
+    import.meta.url,
+  );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -199,7 +204,7 @@ try {
     const p = Array.from(g.getAttribute("position").array);
     // Deliberately remove one triangle from each input.
     p.splice(0, 9);
-    for (let i = 0; i < p.length; i += 3) p[i] += offset;
+    for (let i = 0; i < p.length; i += fine ? 1 : 3) p[i] += offset;
     indexed.dispose();
     g.dispose();
     return {
@@ -217,7 +222,7 @@ try {
     version: 1,
     name: "Watertight reconstruction parity",
     units: "mm",
-    entities: [cube("panel", 0), cube("Aligned reference", 1)],
+    entities: [cube("panel", 0), cube("Aligned reference", fine ? 120 : 1)],
   };
   const bytes = Buffer.from(JSON.stringify(project));
   let upload;
@@ -256,6 +261,7 @@ try {
   await controls
     .getByRole("checkbox", { name: "Aligned reference", exact: true })
     .check();
+  await controls.getByRole("spinbutton").fill(String(resolution));
   await controls.getByRole("button", { name: "Apply", exact: true }).click();
   await page
     .getByText(/Verified watertight voxel surface/)
@@ -289,7 +295,7 @@ try {
     "duplicateTriangles",
   ])
     assert.equal(topology[key], 0, key);
-  assert.equal(topology.components, 1);
+  assert.equal(topology.components, fine ? 2 : 1);
   await mutate("history_undo", {});
   assert.deepEqual((await geometry("panel")).positions, before.positions);
   await mutate("history_redo", {});
@@ -301,12 +307,13 @@ try {
       targetIds: ["Aligned reference"],
       operation: {
         kind: "scanTools",
-        operation: { kind: "repolygonize", resolution: 0.5 },
+        operation: { kind: "repolygonize", resolution },
       },
     }),
   );
   assert.equal(mcp.result.diagnostics.watertight, true);
   assert.equal(mcp.result.diagnostics.inputMeshes, 2);
+  if (fine) assert(mcp.result.diagnostics.gridPoints > 1_000_000);
   assert.deepEqual(mcp.result.topology, { ...topology, watertight: true });
   assert.deepEqual((await geometry("panel")).positions, gui.positions);
   assert.deepEqual(
