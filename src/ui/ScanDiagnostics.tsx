@@ -1,6 +1,8 @@
 import { ScanToolIcon } from "./ScanToolIcon";
 import type { Positions } from "../types";
 import { useEffect, useState } from "react";
+import { cachedTopologySummary } from "../scan-topology-summary";
+import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import {
   observeScanDiagnostics,
   type ScanDiagnostics as DiagnosticState,
@@ -17,21 +19,27 @@ export function ScanDiagnostics({
     positions: Positions;
     state: DiagnosticState;
   }>();
+  const [requested, setRequested] = useState<{ positions: Positions }>();
   useEffect(
     () =>
-      observeScanDiagnostics(positions, (state) =>
-        setResult({ positions, state }),
-      ),
-    [positions],
+      requested?.positions === positions
+        ? observeScanDiagnostics(positions, (state) =>
+            setResult({ positions, state }),
+          )
+        : undefined,
+    [positions, requested],
   );
   const state = result?.positions === positions ? result.state : undefined;
-  const topology = state?.phase === "ready" ? state.topology : undefined;
+  const topology =
+    state?.phase === "ready"
+      ? state.topology
+      : cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
   return (
     <div
       className="scan-diagnostics"
       role="group"
       aria-label="Mesh editing"
-      aria-busy={!state || state.phase === "pending"}
+      aria-busy={state?.phase === "pending"}
     >
       {[
         {
@@ -62,10 +70,14 @@ export function ScanDiagnostics({
           </span>
           <output aria-label={`${label} count`} title={help}>
             {value?.toLocaleString() ??
-              (state?.phase === "error" ? "Unavailable" : "Calculating…")}
+              (state?.phase === "error"
+                ? "Unavailable"
+                : state?.phase === "pending"
+                  ? "Calculating…"
+                  : "Not calculated")}
           </output>
           <button
-            disabled={!topology || !onEdit}
+            disabled={!onEdit}
             title={`Edit ${label.toLowerCase()}`}
             onClick={() => onEdit?.(section)}
             aria-label={`Edit ${label.toLowerCase()}`}
@@ -74,7 +86,12 @@ export function ScanDiagnostics({
           </button>
         </div>
       ))}
-      {state?.phase !== "ready" && (
+      {!topology && state?.phase !== "pending" && (
+        <button type="button" onClick={() => setRequested({ positions })}>
+          Calculate mesh information
+        </button>
+      )}
+      {state && state.phase !== "ready" && (
         <small role="status">
           {state?.phase === "error"
             ? state.message

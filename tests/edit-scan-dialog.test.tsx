@@ -46,6 +46,18 @@ function button(markup: string, label: string) {
   )?.[0];
 }
 describe("dedicated scan edit dialog", () => {
+  it("defers mesh information and allows opening topology tools before counts are calculated", () => {
+    const html = render({ onTopology: noop });
+    expect(html).toContain("Calculate mesh information");
+    expect(html).not.toContain("Calculating");
+    expect(html).not.toContain('aria-busy="true"');
+    for (const label of [
+      "Edit individual meshes",
+      "Edit holes",
+      "Edit boundaries",
+    ])
+      expect(button(html, label)).not.toContain("disabled");
+  });
   it("labels selection buttons visibly and groups secondary operations in closed disclosures", () => {
     const html = render({ selectedCount: 12 });
     for (const [label, text] of [

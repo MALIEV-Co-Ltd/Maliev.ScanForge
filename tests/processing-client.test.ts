@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { scanRenderData, prepareScanRenderData } from "../src/scan-render-data";
+import { observeScanDiagnostics } from "../src/scan-diagnostics";
 import {
   releaseProcessingSession,
   retainProcessingGeometry,
@@ -51,6 +52,65 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it("stops an orphaned diagnostics handoff when the queued tool is cancelled", async () => {
+    const source = positions.slice(),
+      controller = new AbortController();
+    const leave = observeScanDiagnostics(source, () => {});
+    const owned = ProcessingWorkerDouble.latest;
+    leave();
+    const inventory = processMesh(
+      { kind: "scanEdit", action: "inventory", positions: source },
+      { reuseTopology: true, signal: controller.signal },
+    );
+    await Promise.resolve();
+    expect(owned.terminated).toBe(false);
+    controller.abort();
+    await expect(inventory).rejects.toMatchObject({ name: "AbortError" });
+    await Promise.resolve();
+    expect(owned.terminated).toBe(true);
+  });
+  it("hands a pending diagnostics worker to a tool mounted in the same panel transition", async () => {
+    const source = positions.slice();
+    const leaveDiagnostics = observeScanDiagnostics(source, () => {});
+    const owned = ProcessingWorkerDouble.latest;
+    leaveDiagnostics();
+    const inventory = processMesh(
+      {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: source,
+        tolerance: 0.001,
+      },
+      { reuseTopology: true },
+    );
+    await Promise.resolve();
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+    expect(owned.terminated).toBe(false);
+    owned.reply({
+      result: {
+        kind: "report",
+        diagnostics: {},
+        topology: {
+          vertices: 3,
+          triangles: 1,
+          components: 1,
+          boundaryLoops: 1,
+          boundaryChains: 0,
+          boundaryEdges: 3,
+          nonManifoldEdges: 0,
+          nonManifoldVertices: 0,
+          inconsistentEdges: 0,
+          degenerateTriangles: 0,
+          duplicateTriangles: 0,
+        },
+      },
+    });
+    await Promise.resolve();
+    expect(owned.sent!.kind).toBe("scanEdit");
+    owned.reply({ result: { kind: "scanEdit", diagnostics: {} } });
+    await inventory;
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+  });
   it("publishes prepared aligned display buffers before the GUI or agent consumes the result", async () => {
     const output = positions.slice(),
       renderData = prepareScanRenderData(output);
@@ -111,7 +171,7 @@ describe("processing worker resource ownership", () => {
     expect(ProcessingWorkerDouble.creates).toBe(1);
     expect(positions).toHaveLength(9);
   });
-  it("terminates a cached worker on cancellation and isolates concurrent requests", async () => {
+  it("queues requests for the same geometry and cancels without duplicating topology workers", async () => {
     const controller = new AbortController();
     const first = processMesh(request, {
       reuseTopology: true,
@@ -119,15 +179,48 @@ describe("processing worker resource ownership", () => {
     });
     const owned = ProcessingWorkerDouble.latest;
     const second = processMesh(request, { reuseTopology: true });
-    const concurrent = ProcessingWorkerDouble.latest;
-    expect(concurrent).not.toBe(owned);
-    concurrent.reply({ result: { kind: "report", diagnostics: {} } });
-    await second;
-    expect(concurrent.terminated).toBe(true);
+    expect(ProcessingWorkerDouble.creates).toBe(1);
     controller.abort();
     await expect(first).rejects.toThrow("cancelled");
     expect(owned.terminated).toBe(true);
+    const successor = ProcessingWorkerDouble.latest;
+    expect(successor).not.toBe(owned);
+    successor.reply({ result: { kind: "report", diagnostics: {} } });
+    await second;
+    retainProcessingGeometry(undefined);
     expect(vi.getTimerCount()).toBe(0);
+  });
+  it("reuses the prepared source for a queued inventory without transferring or welding it again", async () => {
+    const first = processMesh(request, { reuseTopology: true });
+    const owned = ProcessingWorkerDouble.latest;
+    const second = processMesh(
+      { kind: "scanEdit", action: "inventory", positions },
+      { reuseTopology: true },
+    );
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+    expect(owned.sent!.kind).toBe("report");
+    owned.reply({ result: { kind: "report", diagnostics: {} } });
+    await first;
+    expect(owned.sent!.kind).toBe("scanEdit");
+    expect(owned.sent!.positions).toHaveLength(0);
+    owned.reply({ result: { kind: "scanEdit", diagnostics: {} } });
+    await second;
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+  });
+  it("cancels a queued request immediately without starting another worker", async () => {
+    const first = processMesh(request, { reuseTopology: true });
+    const owned = ProcessingWorkerDouble.latest,
+      controller = new AbortController();
+    const queued = processMesh(request, {
+      reuseTopology: true,
+      signal: controller.signal,
+    });
+    controller.abort();
+    await expect(queued).rejects.toThrow("cancelled");
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+    owned.reply({ result: { kind: "report", diagnostics: {} } });
+    await first;
+    expect(ProcessingWorkerDouble.creates).toBe(1);
   });
   it("keeps active geometry topology through idle time and domain errors, disposing changed geometry", async () => {
     const first = processMesh(request, { reuseTopology: true });

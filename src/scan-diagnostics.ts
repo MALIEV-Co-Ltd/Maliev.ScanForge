@@ -1,5 +1,10 @@
 import type { Positions } from "./types";
+import { hasQueuedProcessing, watchQueuedProcessing } from "./processing-queue";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
+import {
+  cachedTopologySummary,
+  cacheTopologySummary,
+} from "./scan-topology-summary";
 import {
   processMesh,
   type ProcessingOptions,
@@ -12,7 +17,15 @@ export type ScanDiagnostics =
   | { phase: "pending"; progress: string }
   | { phase: "ready"; topology: TopologySummary }
   | { phase: "error"; message: string };
-const cache = new WeakMap<Positions, TopologySummary>();
+const pending = new WeakMap<
+  Positions,
+  {
+    controller: AbortController;
+    listeners: Set<(state: ScanDiagnostics) => void>;
+    state: ScanDiagnostics;
+    stopWatching?: () => void;
+  }
+>();
 
 /** Geometry identity invalidates counts; cancellation releases the owned worker. */
 export function observeScanDiagnostics(
@@ -23,13 +36,54 @@ export function observeScanDiagnostics(
     options: ProcessingOptions,
   ) => Promise<ProcessingResult> = processMesh,
 ): () => void {
-  const cached = cache.get(positions);
+  const listener = (state: ScanDiagnostics) => update(state);
+  const cached = cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
   if (cached) {
     update({ phase: "ready", topology: cached });
     return () => {};
   }
+  const existing = pending.get(positions);
+  if (existing) {
+    existing.stopWatching?.();
+    existing.stopWatching = undefined;
+    existing.listeners.add(listener);
+    update(existing.state);
+    return () => unsubscribe(existing);
+  }
+  function unsubscribe(entry: NonNullable<ReturnType<typeof pending.get>>) {
+    entry.listeners.delete(listener);
+    // React removes the old panel before mounting its replacement. Give that
+    // same transition one microtask to queue a topology consumer, without
+    // retaining an abandoned background analysis or restarting its worker.
+    queueMicrotask(() => {
+      if (entry.listeners.size || pending.get(positions) !== entry) return;
+      const releaseIfUnused = () => {
+        if (!hasQueuedProcessing(positions)) {
+          entry.stopWatching?.();
+          entry.stopWatching = undefined;
+          if (pending.get(positions) === entry) pending.delete(positions);
+          entry.controller.abort();
+        }
+      };
+      entry.stopWatching ??= watchQueuedProcessing(positions, releaseIfUnused);
+      releaseIfUnused();
+    });
+  }
   const controller = new AbortController();
-  update({ phase: "pending", progress: "Calculating mesh topology…" });
+  const entry: NonNullable<ReturnType<typeof pending.get>> = {
+    controller,
+    listeners: new Set([listener]),
+    state: {
+      phase: "pending",
+      progress: "Calculating mesh topology…",
+    } as ScanDiagnostics,
+  };
+  pending.set(positions, entry);
+  const publish = (state: ScanDiagnostics) => {
+    entry.state = state;
+    for (const listener of entry.listeners) listener(state);
+  };
+  publish(entry.state);
   void run(
     { kind: "report", positions, tolerance: SCAN_TOPOLOGY_TOLERANCE },
     {
@@ -37,7 +91,7 @@ export function observeScanDiagnostics(
       reuseTopology: true,
       onProgress: (fraction, stage) => {
         if (!controller.signal.aborted)
-          update({
+          publish({
             phase: "pending",
             progress: `${stage} · ${Math.round(fraction * 100)}%`,
           });
@@ -48,15 +102,19 @@ export function observeScanDiagnostics(
       if (controller.signal.aborted) return;
       if (!result.topology)
         throw new Error("Mesh diagnostics returned no topology.");
-      cache.set(positions, result.topology);
-      update({ phase: "ready", topology: result.topology });
+      cacheTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE, result.topology);
+      entry.stopWatching?.();
+      pending.delete(positions);
+      publish({ phase: "ready", topology: result.topology });
     })
     .catch((error) => {
+      entry.stopWatching?.();
       if (!controller.signal.aborted)
-        update({
+        publish({
           phase: "error",
           message: error instanceof Error ? error.message : String(error),
         });
+      if (pending.get(positions) === entry) pending.delete(positions);
     });
-  return () => controller.abort();
+  return () => unsubscribe(entry);
 }

@@ -1,5 +1,25 @@
 # ScanForge MCP agent guide
 
+## Mesh preparation on demand
+
+Opening a scan or **Edit Scan** does not start full topology diagnostics. Basic
+selection and display tools remain available. **Calculate mesh information**
+requests counts explicitly; opening Individual meshes, Holes, or Boundaries
+prepares the topology needed by that tool and displays preparation progress.
+Pending counts are never presented as zero.
+
+Agents use `mesh_analyze` for diagnostics or `mesh_process` with
+`operation: {kind: "scanEdit", action: "inventory", tolerance: 0.001}` for
+the GUI's inventory. Use `tolerance: 0.001` with `mesh_analyze` to share the GUI's
+millimetre weld tolerance; the existing API default remains `0.000001`.
+Reusable operations on the same immutable geometry queue behind one another,
+sharing the prepared topology. Shared diagnostics stop only when their last
+observer leaves; cancellation of queued work starts no worker. Geometry edits,
+replacement, or a different tolerance invalidate reuse. Compact cached counts
+may be reused on Undo; the worker index belongs to the selected geometry.
+These caches are session-local, so reopening a file can still require one
+analysis when a topology-dependent tool is first requested.
+
 ## Drag bridges and automatic continuity
 
 In **Fill holes → Bridge**, hover any exposed edge of the selected scan for a

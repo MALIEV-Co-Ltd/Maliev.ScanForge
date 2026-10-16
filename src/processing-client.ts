@@ -7,6 +7,8 @@ import type {
 } from "./point-cloud-processing";
 import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
+import { queueProcessing } from "./processing-queue";
+import { cacheTopologySummary } from "./scan-topology-summary";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
@@ -160,6 +162,17 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  return options.reuseTopology
+    ? queueProcessing(request.positions, options.signal, () =>
+        runProcessingRequest(request, options),
+      )
+    : runProcessingRequest(request, options);
+}
+
+function runProcessingRequest(
+  request: ProcessingRequest,
+  options: ProcessingOptions,
+): Promise<ProcessingResult> {
   if (options.signal?.aborted)
     return Promise.reject(
       new DOMException("Processing cancelled.", "AbortError"),
@@ -242,6 +255,16 @@ export function processMesh(
         return;
       }
       settled = true;
+      if (
+        event.data.result.topology &&
+        (request.kind === "report" ||
+          (request.kind === "scanEdit" && request.action === "inventory"))
+      )
+        cacheTopologySummary(
+          request.positions,
+          request.tolerance ?? 1e-6,
+          event.data.result.topology,
+        );
       if (event.data.result.positions && event.data.result.renderData)
         cacheScanRenderData(
           event.data.result.positions,

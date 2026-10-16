@@ -637,7 +637,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           positions: e.positions,
           tolerance: a.tolerance ?? 1e-6,
         },
-        { signal: c.signal, onProgress: c.progress },
+        { signal: c.signal, onProgress: c.progress, reuseTopology: true },
       );
       c.check();
       return {
@@ -836,6 +836,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       }
       const result = await processScanRegistration(e, request, {
         signal: c.signal,
+        reuseTopology: kind === "scanEdit" && !bridgePreview && !selection,
         onProgress: c.progress,
         check: () => c.check(),
       });

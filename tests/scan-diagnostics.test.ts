@@ -40,6 +40,41 @@ const flush = async () => {
   await Promise.resolve();
 };
 describe("current geometry diagnostics", () => {
+  it("shares pending analysis and releases it only after the last observer leaves", async () => {
+    const positions = tetrahedron(),
+      first: ScanDiagnostics[] = [],
+      second: ScanDiagnostics[] = [];
+    let options!: ProcessingOptions,
+      resolve!: (result: ProcessingResult) => void;
+    const run = vi.fn(
+      (_request: ProcessingRequest, supplied: ProcessingOptions) => {
+        options = supplied;
+        return new Promise<ProcessingResult>((done) => {
+          resolve = done;
+        });
+      },
+    );
+    const unsubscribeFirst = observeScanDiagnostics(
+      positions,
+      (state) => first.push(state),
+      run,
+    );
+    const unsubscribeSecond = observeScanDiagnostics(
+      positions,
+      (state) => second.push(state),
+      run,
+    );
+    expect(run).toHaveBeenCalledTimes(1);
+    options.onProgress?.(0.5, "Building topology");
+    expect(second.at(-1)).toEqual(first.at(-1));
+    unsubscribeFirst();
+    expect(options.signal?.aborted).toBe(false);
+    resolve(await report({ kind: "report", positions, tolerance: 0.001 }));
+    await flush();
+    expect(second.at(-1)?.phase).toBe("ready");
+    expect(first.at(-1)?.phase).toBe("pending");
+    unsubscribeSecond();
+  });
   it("recalculates boundaries after deletion and reuses the restored geometry on undo", async () => {
     const positions = tetrahedron(),
       updates: ScanDiagnostics[] = [],
@@ -99,6 +134,7 @@ describe("current geometry diagnostics", () => {
       },
     );
     cleanup();
+    await flush();
     expect(options.signal?.aborted).toBe(true);
     options.onProgress?.(0.5, "Obsolete");
     resolve(await report({ kind: "report", positions, tolerance: 0.001 }));

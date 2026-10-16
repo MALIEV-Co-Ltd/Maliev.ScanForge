@@ -19,6 +19,38 @@ import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it("uses reusable geometry processing for MCP analysis and inventory", async () => {
+  const h = harness();
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "report",
+    diagnostics: {},
+  });
+  await h.ops.mesh_analyze({ entityId: "mesh", tolerance: 0.001 }, h.context);
+  expect(vi.mocked(processMesh).mock.lastCall?.[1]).toMatchObject({
+    reuseTopology: true,
+    signal: h.context.signal,
+  });
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    diagnostics: {},
+    scanEdit: {
+      inventory: { components: [], boundaries: [] },
+      diagnostics: {},
+    },
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "scanEdit", action: "inventory", tolerance: 0.001 },
+    },
+    h.context,
+  );
+  expect(vi.mocked(processMesh).mock.lastCall?.[1]).toMatchObject({
+    reuseTopology: true,
+    signal: h.context.signal,
+  });
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
 it("shares indexed point-pair refinement target validation and worker controls", async () => {
   const indexedMesh = {
     vertices: Float32Array.from(triangle),

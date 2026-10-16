@@ -179,6 +179,8 @@ scope.onmessage = async ({ data: incoming }) => {
           : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
+      if (request.action === "inventory" && topologyCache.topology)
+        result.topology = summarize(topologyCache.topology);
     } else if (request.kind === "selectionMorphology") {
       result.selection = morphTriangleSelection(
         request.positions,
