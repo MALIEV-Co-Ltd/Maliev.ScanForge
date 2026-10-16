@@ -115,6 +115,10 @@ export function PointerJobStatus({ message }: { message: string }) {
     };
   }, [message]);
   if (!message) return null;
+  // Shared job status remains unchanged for the status bar and MCP inspection.
+  const progress = / · (\d+(?:\.\d+)?)%$/.exec(message);
+  const stage = progress ? message.slice(0, progress.index) : message;
+  const percent = progress ? Math.min(100, Number(progress[1])) : undefined;
   const content = (
     <span
       ref={label}
@@ -122,7 +126,18 @@ export function PointerJobStatus({ message }: { message: string }) {
       role="status"
       aria-live="polite"
     >
-      {message}
+      <span className="pointer-job-stage">{stage}</span>
+      <span
+        className="pointer-job-track"
+        role="progressbar"
+        aria-label={stage}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent}
+        data-indeterminate={percent === undefined ? "true" : undefined}
+      >
+        <span style={{ width: `${percent ?? 30}%` }} />
+      </span>
     </span>
   );
   return typeof document === "undefined"

@@ -279,9 +279,37 @@ try {
   const text = await label.textContent();
   const inspection = (await call("application_inspect")).result;
   assert(
-    inspection.statuses.includes(text),
+    inspection.statuses.some(
+      (status) => status.replace(/ · \d+%$/, "") === text,
+    ),
     JSON.stringify(inspection.statuses),
   );
+  assert(!/ · \d+%$/.test(text), "Pointer should not display numeric progress");
+  const track = label.getByRole("progressbar");
+  assert.equal(await track.getAttribute("aria-label"), text);
+  const percent = / · (\d+)%$/.exec(inspection.progress.working);
+  if (percent) {
+    assert.equal(await track.getAttribute("aria-valuenow"), percent[1]);
+    const fill = await track.locator("span").evaluate((el) => ({
+      width: el.getBoundingClientRect().width,
+      trackWidth: el.parentElement.getBoundingClientRect().width,
+    }));
+    assert(
+      Math.abs(fill.width / fill.trackWidth - Number(percent[1]) / 100) < 0.01,
+    );
+  }
+  const appearance = await label.evaluate((el) => ({
+    width: el.getBoundingClientRect().width,
+    font: getComputedStyle(el).fontSize,
+    height: el.querySelector(".pointer-job-track").getBoundingClientRect()
+      .height,
+    animation: getComputedStyle(el.querySelector(".pointer-job-track > span"))
+      .animationName,
+  }));
+  assert(appearance.width <= 184);
+  assert.equal(appearance.font, "11px");
+  assert.equal(appearance.height, 2);
+  assert.equal(appearance.animation, "none");
   await page.screenshot({
     path: fileURLToPath(new URL("pointer-status.png", out)),
   });
@@ -294,7 +322,7 @@ try {
     await label.waitFor({ state: "hidden" });
     assert.equal(
       (await call("application_inspect")).result.progress.working,
-      text,
+      inspection.progress.working,
     );
   }
   await page.mouse.move(900, 450);
@@ -367,7 +395,9 @@ try {
   );
   const smoothText = await label.textContent();
   assert(
-    (await call("application_inspect")).result.statuses.includes(smoothText),
+    (await call("application_inspect")).result.statuses.some(
+      (status) => status.replace(/ · \d+%$/, "") === smoothText,
+    ),
   );
   await page.evaluate(() => {
     window.__holdResult = false;
@@ -378,6 +408,8 @@ try {
   assert.deepEqual(errors, []);
   ledger.result = {
     pointerOffset: true,
+    subtleLinearProgress: true,
+    numericProgressRetainedInMcp: true,
     edgeClamping: true,
     hiddenOverRibbonObjectListAndPanels: true,
     stationaryPointerOcclusion: true,

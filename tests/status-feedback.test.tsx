@@ -18,7 +18,7 @@ it.each(["Importing mesh.stl · 50%", "Creating exact CAD body…"])(
       jobMessage: message,
     };
     expect(renderToStaticMarkup(<StatusBar {...props} busy />)).toContain(
-      message,
+      message.replace(/ · \d+%$/, ""),
     );
     expect(
       renderToStaticMarkup(<StatusBar {...props} busy={false} />),

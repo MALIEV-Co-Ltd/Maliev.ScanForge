@@ -63,6 +63,29 @@ it("exposes the working text as an observable accessible status and hides idle t
   );
   expect(html).toContain('role="status"');
   expect(html).toContain('class="pointer-job-status"');
-  expect(html).toContain("Building topology · 65%");
+  expect(html).toContain("Building topology");
+  expect(html).not.toContain("65%</");
+  expect(html).toContain('role="progressbar"');
+  expect(html).toContain('aria-valuenow="65"');
+  expect(html).toContain("width:65%");
   expect(renderToStaticMarkup(<PointerJobStatus message="" />)).toBe("");
+});
+
+it("keeps unknown progress quiet and exposes a labelled indeterminate bar", () => {
+  const html = renderToStaticMarkup(
+    <PointerJobStatus message="Preparing mesh…" />,
+  );
+  expect(html).toContain('role="progressbar"');
+  expect(html).toContain('aria-label="Preparing mesh…"');
+  expect(html).not.toContain("aria-valuenow");
+  expect(html).toContain('data-indeterminate="true"');
+});
+
+it("clamps progress and preserves percentages inside phase descriptions", () => {
+  const html = renderToStaticMarkup(
+    <PointerJobStatus message="Reducing to 50% · 120%" />,
+  );
+  expect(html).toContain("Reducing to 50%");
+  expect(html).not.toContain("120%");
+  expect(html).toContain('aria-valuenow="100"');
 });

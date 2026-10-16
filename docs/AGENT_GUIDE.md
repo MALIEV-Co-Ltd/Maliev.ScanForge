@@ -974,8 +974,10 @@ semantics are unchanged. See
 ### Working job status at the pointer
 
 All shared mesh/scan worker jobs, including Defeature, publish their current stage
-and percentage to one app-level pointer label. CAD and import operations use the
-app's existing busy message, with import percentage when available. The label
+and progress to one app-level pointer label. It displays the stage with a muted
+2-pixel linear bar instead of numeric percentage text. Unknown progress uses a
+static, dim segment without pulsing or sweeping animation. CAD and import
+operations use the app's existing busy message and available import progress. The label
 appears only when the pointer is directly over the exposed 3D canvas. The ribbon,
 object list, floating tool panels, dialogs and leaving the app hide it. A panel
 covering a stationary pointer also hides it. There is no center-screen fallback
@@ -985,6 +987,7 @@ the label never intercepts input.
 Success, failure and cancellation release each worker's status through its
 existing cleanup path, preserving queue timing and ownership. Existing Cancel
 controls remain available. `application_inspect.progress.working` exposes the
-current job text even while the pointer label is hidden. When visible, the same
-text also appears in `application_inspect.statuses`. MCP `job_get` progress,
+full job text, including numeric percentage, even while the pointer label is
+hidden. This full text remains in `application_inspect.statuses`; the visible
+label exposes its stage and an accessible progressbar value. MCP `job_get` progress,
 request schemas, model/history semantics and geometry behavior are unchanged.
