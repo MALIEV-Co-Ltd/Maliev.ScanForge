@@ -61,6 +61,7 @@ export interface ScanPanelOperation {
   mode?: "entire" | "partial" | "bridge";
   start?: number;
   end?: number;
+  endBoundary?: number;
   diameter?: number;
   strength?: number;
   iterations?: number;
@@ -269,14 +270,13 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       section !== "holes" ||
       mode !== "bridge" ||
       blocked ||
-      !boundary ||
-      !current
+      !inventory.boundaries.length
     ) {
       props.onBridgeSession?.(null);
       return;
     }
     props.onBridgeSession?.({
-      boundary,
+      boundaries: inventory.boundaries,
       onGesture: (phase, start, end) => {
         if (phase === "cancel" || end === null)
           props.onBridgePreview?.(null, false);
@@ -285,15 +285,19 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
             {
               action: "fillHoles",
               mode: "bridge",
-              indices: [current.index],
+              indices: [start.boundary],
+              endBoundary: end.boundary,
               algorithm,
-              start,
-              end,
+              start: start.edge,
+              end: end.edge,
             },
             phase === "commit",
           );
       },
     });
+    props.onStatus(
+      "Hover any exposed boundary edge, then drag to another boundary edge.",
+    );
     return () => {
       props.onBridgeSession?.(null);
       props.onBridgePreview?.(null, false);
@@ -302,8 +306,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     section,
     mode,
     blocked,
-    boundary,
-    current?.index,
+    inventory.boundaries,
     algorithm,
     props.positions,
     props.selectedId,
@@ -326,8 +329,12 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.onSelection(mask);
   }
   useEffect(() => {
-    if (!props.busy) highlight(Math.min(selected, items.length - 1));
-  }, [inventory, section, selected, props.positions, props.busy]);
+    if (!props.busy) {
+      if (section === "holes" && mode === "bridge")
+        props.onBoundaryHighlight?.(inventory.boundaries);
+      else highlight(Math.min(selected, items.length - 1));
+    }
+  }, [inventory, section, mode, selected, props.positions, props.busy]);
   useEffect(() => () => props.onBoundaryHighlight?.([]), []);
   const plane =
     planeId === "XY"
@@ -380,7 +387,11 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     >
       <h3>
         {title}
-        <span>{items.length}</span>
+        <span>
+          {section === "holes" && mode === "bridge"
+            ? inventory.boundaries.length
+            : items.length}
+        </span>
       </h3>
       <div className="tool-panel-content">
         <p className="scan-topology-summary">
@@ -389,46 +400,50 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
           {inventory.boundaries.length} boundaries
         </p>
         <fieldset disabled={blocked}>
-          <div className="scan-topology-cycle">
-            <button
-              disabled={!items.length}
-              onClick={() =>
-                choose((selected + items.length - 1) % items.length)
-              }
-              aria-label="Previous item"
-            >
-              ‹
-            </button>
-            <span>
-              {items.length
-                ? `${Math.min(selected + 1, items.length)} / ${items.length}`
-                : "No items"}
-            </span>
-            <button
-              disabled={!items.length}
-              onClick={() => choose((selected + 1) % items.length)}
-              aria-label="Next item"
-            >
-              ›
-            </button>
-          </div>
-          <div
-            className="scan-topology-list"
-            role="group"
-            aria-label={`${title} items`}
-          >
-            {items.map((item, index) => (
-              <button
-                key={item.index}
-                aria-pressed={current?.index === item.index}
-                onClick={() => choose(index)}
-                onMouseEnter={() => highlight(index)}
-                onMouseLeave={() => highlight(selected)}
+          {!(section === "holes" && mode === "bridge") && (
+            <>
+              <div className="scan-topology-cycle">
+                <button
+                  disabled={!items.length}
+                  onClick={() =>
+                    choose((selected + items.length - 1) % items.length)
+                  }
+                  aria-label="Previous item"
+                >
+                  ‹
+                </button>
+                <span>
+                  {items.length
+                    ? `${Math.min(selected + 1, items.length)} / ${items.length}`
+                    : "No items"}
+                </span>
+                <button
+                  disabled={!items.length}
+                  onClick={() => choose((selected + 1) % items.length)}
+                  aria-label="Next item"
+                >
+                  ›
+                </button>
+              </div>
+              <div
+                className="scan-topology-list"
+                role="group"
+                aria-label={`${title} items`}
               >
-                {item.label}
-              </button>
-            ))}
-          </div>
+                {items.map((item, index) => (
+                  <button
+                    key={item.index}
+                    aria-pressed={current?.index === item.index}
+                    onClick={() => choose(index)}
+                    onMouseEnter={() => highlight(index)}
+                    onMouseLeave={() => highlight(selected)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
           {section === "components" ? (
             <>
               <div className="scan-topology-actions">
@@ -535,7 +550,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   className="scan-topology-summary"
                 >
                   {props.bridgeStatus ||
-                    "Drag from a highlighted edge across the hole to another edge. Release to create the bridge. Esc cancels; Undo removes the last bridge."}
+                    "Hover any exposed boundary edge for a green highlight, then drag to another edge. Edges can be on separate boundaries; no hole selection is needed. Release creates the bridge. Esc cancels; Undo removes it."}
                 </p>
               )}
               {mode === "partial" && (
@@ -574,40 +589,44 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   Fill selected hole
                 </button>
               )}
-              <label>
-                Maximum hole diameter (mm)
-                <input
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  value={diameter}
-                  onChange={(event) =>
-                    setDiameter(Math.max(0, Number(event.target.value)))
-                  }
-                />
-              </label>
-              <p className="scan-topology-summary">
-                0 includes every closed boundary.
-              </p>
-              <div className="scan-topology-actions">
-                <button
-                  disabled={!boundary}
-                  onClick={() => {
-                    setDiameter(boundary!.diameter);
-                    props.onStatus(
-                      `Hole diameter: ${boundary!.diameter.toFixed(3)} mm`,
-                    );
-                  }}
-                >
-                  Measure hole
-                </button>
-                <button
-                  disabled={!items.length || mode !== "entire"}
-                  onClick={() => fill(true)}
-                >
-                  Fill multiple holes
-                </button>
-              </div>
+              {mode !== "bridge" && (
+                <>
+                  <label>
+                    Maximum hole diameter (mm)
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={diameter}
+                      onChange={(event) =>
+                        setDiameter(Math.max(0, Number(event.target.value)))
+                      }
+                    />
+                  </label>
+                  <p className="scan-topology-summary">
+                    0 includes every closed boundary.
+                  </p>
+                  <div className="scan-topology-actions">
+                    <button
+                      disabled={!boundary}
+                      onClick={() => {
+                        setDiameter(boundary!.diameter);
+                        props.onStatus(
+                          `Hole diameter: ${boundary!.diameter.toFixed(3)} mm`,
+                        );
+                      }}
+                    >
+                      Measure hole
+                    </button>
+                    <button
+                      disabled={!items.length || mode !== "entire"}
+                      onClick={() => fill(true)}
+                    >
+                      Fill multiple holes
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <>

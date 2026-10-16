@@ -20,13 +20,15 @@ export function validateBridgePreview(args: Record<string, unknown>): boolean {
     !index(op.indices[0]) ||
     !index(op.start) ||
     !index(op.end) ||
-    op.start === op.end ||
+    (op.endBoundary !== undefined && !index(op.endBoundary)) ||
+    ((op.endBoundary ?? op.indices[0]) === op.indices[0] &&
+      op.start === op.end) ||
     ["createNew", "selectionOnly", "targetId", "targetIds"].some(
       (key) => args[key] !== undefined,
     )
   )
     throw new Error(
-      "Bridge preview requires one boundary index and explicit distinct start/end edges; omit createNew, selectionOnly and targets.",
+      "Bridge preview requires one start boundary and explicit distinct exposed edge references; endBoundary may select another boundary. Omit createNew, selectionOnly and targets.",
     );
   return true;
 }

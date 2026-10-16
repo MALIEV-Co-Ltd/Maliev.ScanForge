@@ -2,25 +2,36 @@
 
 ## Drag bridges and automatic continuity
 
-In **Fill holes → Bridge**, drag from an exposed highlighted edge across the
-selected opening to a separate edge. The live facet preview snaps to both edges;
+In **Fill holes → Bridge**, hover any exposed edge of the selected scan for a
+green edge highlight and crosshair, then drag to another exposed edge. No hole
+selection is required: the two edges can lie on one closed loop, on separate
+loops, or on independent open boundary chains of the same scan. The live facet preview snaps to both edges;
 release accepts one bridge as one history step. Escape, a release away from the
 rim, changing tools, or replacing the source cancels the preview. Undo/Redo uses
 the normal model history. Repeat a drag on a remaining opening to add a bridge.
 Automatic continuity uses the adjacent attachment facets: coplanar facets select
 flat; curved attachment tangents select a shaped tangent strip. Flat, tangent,
 and curvature remain explicit overrides. Existing attachment edges stay intact.
-Invalid adjacent edges, crossing rails and nonmanifold input are rejected.
+Invalid adjacent edges, crossing rails, overlapping patches and nonmanifold
+attachment edges are rejected. Unrelated defects elsewhere on a fragmented
+scan do not disable valid attachments. Camera navigation remains available away
+from boundary edges. If display picking is still preparing, the canvas reports
+that state instead of scanning every facet during hover.
 
 The GUI and MCP use the same `scanEdit` hole-fill geometry. First call
 `mesh_process` with `operation: {kind: "scanEdit", action: "inventory"}` and
-read its report artifact. Closed boundaries provide ordered world-mm `points`;
+read its report artifact. Closed loops followed by open chains provide ordered world-mm `points`;
 `start` and `end` identify **edges** beginning at those zero-based point indices,
-including the last-to-first closing edge. Choose exactly one closed boundary.
+including the last-to-first edge only for closed loops. An open chain has
+`pointCount - 1` edges. Put the start boundary index in `indices: [startBoundary]`
+and set `endBoundary` to the destination boundary index. Omit `endBoundary` for
+the legacy same-boundary operation. Local start/end edge indices may be equal
+when the boundaries differ. Bridges stay within one selected scan object.
 
 Preview with `mesh_process {entityId, previewOnly: true, operation: {kind:
-"scanEdit", action: "fillHoles", mode: "bridge", indices: [boundaryIndex],
-start: 0, end: 16, algorithm: "automatic"}, expectedRevision, requestId}`.
+"scanEdit", action: "fillHoles", mode: "bridge", indices: [startBoundary],
+endBoundary: destinationBoundary, start: 0, end: 0, algorithm: "automatic",
+tolerance: 0.001}, expectedRevision, requestId}`.
 Use actual indices from the current inventory. Poll `job_get`; its result returns
 `preview: true`, `sourceTriangleCount`, continuity `diagnostics` (`method`,
 `addedTriangles`, `filledHoles`) and a JSON artifact containing only the added
@@ -33,6 +44,10 @@ request ID. The normal processing response reports the chosen method; one model
 history step is added. `history_undo` / `history_redo` restore/reapply the bridge.
 Reinspect boundaries after each edit, Undo or Redo; their indices may change.
 Geometry locks, cancellation, revision checks and retry receipts remain active.
+While the GUI bridge tool is open, `viewport_get.bridge` reports the hovered
+`{boundary, edge}`, active drag source, picking readiness and preview triangle
+count. Hovering does not run mesh generation. Picking uses the existing display
+index for large scans; source clipping and occluding surfaces still apply.
 
 Use `landmark_edit` to begin a picked-point session and add corresponding world
 XYZ picks, then call `landmark_preview` with a fresh revision/request ID. Poll its

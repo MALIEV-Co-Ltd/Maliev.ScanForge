@@ -43,6 +43,22 @@ it("accepts only explicit, single-boundary bridge previews", () => {
     ).toThrow(/preview/i);
 });
 
+it("accepts equal local edge indices on different boundaries and rejects malformed destination boundaries", () => {
+  expect(
+    validateBridgePreview({
+      previewOnly: true,
+      operation: { ...operation, endBoundary: 1, end: 0 },
+    }),
+  ).toBe(true);
+  for (const endBoundary of [-1, 0.5, Infinity, "1"])
+    expect(() =>
+      validateBridgePreview({
+        previewOnly: true,
+        operation: { ...operation, endBoundary },
+      }),
+    ).toThrow(/preview/i);
+});
+
 const vertices = [
   [0, 0, 0],
   [1, 0, 0],

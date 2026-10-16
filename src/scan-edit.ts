@@ -40,6 +40,8 @@ export interface ScanEditRequest {
   mode?: "entire" | "partial" | "bridge";
   start?: number;
   end?: number;
+  /** Destination inventory boundary for a bridge; defaults to the start boundary. */
+  endBoundary?: number;
   diameter?: number;
   strength?: number;
   iterations?: number;

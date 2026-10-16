@@ -1,11 +1,16 @@
 import type { ScanBoundaryPath } from "./scan-boundary-edges";
 
+/** Inventory references stay stable for both open paths and closed holes. */
+export interface ScanBridgeEndpoint {
+  boundary: number;
+  edge: number;
+}
 /** A bridge owns only an edge drag; camera navigation remains available elsewhere. */
 export interface ScanBridgeSession {
-  boundary: ScanBoundaryPath;
+  boundaries: readonly ScanBoundaryPath[];
   onGesture(
     phase: "preview" | "commit" | "cancel",
-    start: number,
-    end: number | null,
+    start: ScanBridgeEndpoint,
+    end: ScanBridgeEndpoint | null,
   ): void;
 }

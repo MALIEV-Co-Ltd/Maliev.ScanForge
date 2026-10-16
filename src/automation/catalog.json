@@ -1037,6 +1037,11 @@
                   "type": "integer",
                   "minimum": 0
                 },
+                "endBoundary": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Bridge destination boundary index from inventory, including closed loops and open chains. The indices array identifies exactly one start boundary. Omit to bridge within that same boundary; start/end identify local edge indices. Open paths have pointCount-1 edges."
+                },
                 "diameter": {
                   "type": "number",
                   "exclusiveMinimum": 0
@@ -1212,7 +1217,7 @@
         },
         "previewOnly": {
           "type": "boolean",
-          "description": "For scanEdit fillHoles mode bridge only: return the generated facet strip as a JSON artifact and continuity diagnostics without changing geometry or history. Requires exactly one indices boundary, explicit start/end edge indices; omit selectionOnly, createNew and targets."
+          "description": "For scanEdit fillHoles mode bridge only: return the generated facet strip as a JSON artifact and continuity diagnostics without changing geometry or history. Requires one start boundary in indices and explicit start/end edge indices; endBoundary optionally selects a different closed loop or open chain. Omit selectionOnly, createNew and targets."
         },
         "expectedRevision": {
           "type": "integer",

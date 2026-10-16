@@ -1,4 +1,5 @@
-import { Vector2 } from "three";
+import { Box3, Line3, Plane, Vector2, Vector3 } from "three";
+import { ExtendedTriangle } from "three-mesh-bvh";
 import type { Vec3 } from "./types";
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
 import {
@@ -11,10 +12,187 @@ import {
 } from "./scan-edit";
 import { validHolePatch } from "./scan-hole-refine";
 
-/** Free rails must remain inside the selected opening, including concave rims. */
+/** Validate the final Float32 strip against retained facets, including transverse walls. */
+export function bridgeIntersectsMesh(
+  topology: MeshTopology,
+  points: Vec3[],
+  triangles: number[][],
+  attachments: number[],
+  options: MeshProcessingOptions,
+): boolean {
+  const tolerance = options.tolerance ?? 1e-6;
+  const vertices = points.map(
+    (p) => new Vector3(...(p.map(Math.fround) as Vec3)),
+  );
+  const bounds = new Box3().setFromPoints(vertices).expandByScalar(tolerance);
+  const patches = triangles.map((ids) => {
+    const triangle = new ExtendedTriangle();
+    triangle.set(vertices[ids[0]], vertices[ids[1]], vertices[ids[2]]);
+    triangle.needsUpdate = true;
+    return {
+      ids,
+      triangle,
+      bounds: new Box3()
+        .setFromPoints(ids.map((id) => vertices[id]))
+        .expandByScalar(tolerance),
+      plane: triangle.getPlane(new Plane()),
+    };
+  });
+  const source = new ExtendedTriangle(),
+    sourceBounds = new Box3(),
+    intersection = new Line3();
+  const sharedEdge = new Line3(),
+    closest = new Vector3();
+  const sourcePoints = [source.a, source.b, source.c];
+  const toleranceSq = tolerance * tolerance;
+  for (let face = 0; face < topology.triangles.length / 3; face++) {
+    if (face % 1024 === 0)
+      checkProgress(
+        options,
+        face / Math.max(1, topology.triangles.length / 3),
+        "Checking bridge surface intersections",
+      );
+    const sourceIds = [
+      topology.triangles[face * 3],
+      topology.triangles[face * 3 + 1],
+      topology.triangles[face * 3 + 2],
+    ];
+    sourceBounds.makeEmpty();
+    for (let corner = 0; corner < 3; corner++) {
+      const id = sourceIds[corner];
+      sourcePoints[corner].set(
+        Math.fround(topology.vertices[id * 3]),
+        Math.fround(topology.vertices[id * 3 + 1]),
+        Math.fround(topology.vertices[id * 3 + 2]),
+      );
+      sourceBounds.expandByPoint(sourcePoints[corner]);
+    }
+    if (!bounds.intersectsBox(sourceBounds)) continue;
+    source.needsUpdate = true;
+    for (const patch of patches) {
+      if (!patch.bounds.intersectsBox(sourceBounds)) continue;
+      const shared = patch.ids
+        .filter(
+          (id) =>
+            id < attachments.length && sourceIds.includes(attachments[id]),
+        )
+        .map((id) => vertices[id]);
+      const allowedContact = (p: Vector3) => {
+        if (shared.length === 1)
+          return p.distanceToSquared(shared[0]) <= toleranceSq;
+        if (shared.length === 2) {
+          sharedEdge.set(shared[0], shared[1]);
+          return (
+            sharedEdge
+              .closestPointToPoint(p, true, closest)
+              .distanceToSquared(p) <= toleranceSq
+          );
+        }
+        return false;
+      };
+      if (
+        sourcePoints.every(
+          (p) => Math.abs(patch.plane.distanceToPoint(p)) <= tolerance,
+        )
+      ) {
+        const normal = patch.plane.normal;
+        const drop =
+          Math.abs(normal.x) > Math.abs(normal.y)
+            ? Math.abs(normal.x) > Math.abs(normal.z)
+              ? 0
+              : 2
+            : Math.abs(normal.y) > Math.abs(normal.z)
+              ? 1
+              : 2;
+        const project = (p: Vector3) =>
+          drop === 0
+            ? new Vector2(p.y, p.z)
+            : drop === 1
+              ? new Vector2(p.x, p.z)
+              : new Vector2(p.x, p.y);
+        if (
+          bridgeOverlapsTriangle(
+            patch.ids.map((id) => project(vertices[id])),
+            [[0, 1, 2]],
+            sourcePoints.map(project),
+            toleranceSq,
+          )
+        )
+          return true;
+        // A zero-area contact can still pinch a free rail or create a T-junction.
+        // For coplanar convex triangles, every such contact has an endpoint
+        // among the vertices contained in (or on an edge of) the other triangle.
+        if (
+          sourcePoints.some(
+            (p) =>
+              patch.triangle
+                .closestPointToPoint(p, closest)
+                .distanceToSquared(p) <= toleranceSq && !allowedContact(p),
+          ) ||
+          patch.ids.some((id) => {
+            const p = vertices[id];
+            return (
+              source.closestPointToPoint(p, closest).distanceToSquared(p) <=
+                toleranceSq && !allowedContact(p)
+            );
+          })
+        )
+          return true;
+        continue;
+      }
+      if (!patch.triangle.intersectsTriangle(source, intersection)) continue;
+      if (
+        allowedContact(intersection.start) &&
+        allowedContact(intersection.end)
+      )
+        continue;
+      return true;
+    }
+  }
+  checkProgress(options, 1, "Bridge surface intersections checked");
+  return false;
+}
+
+/** Positive-area intersection excludes the shared attachment edges themselves. */
+export function bridgeOverlapsTriangle(
+  projected: Vector2[],
+  triangles: number[][],
+  source: Vector2[],
+  epsilon: number,
+): boolean {
+  const orient = (a: Vector2, b: Vector2, c: Vector2) =>
+    b.clone().sub(a).cross(c.clone().sub(a));
+  const direction = Math.sign(orient(source[0], source[1], source[2]));
+  if (!direction) return false;
+  return triangles.some((face) => {
+    let polygon = face.map((id) => projected[id]);
+    for (let i = 0; i < 3 && polygon.length; i++) {
+      const a = source[i],
+        b = source[(i + 1) % 3];
+      const clipped: Vector2[] = [];
+      for (let j = 0; j < polygon.length; j++) {
+        const p = polygon[j],
+          q = polygon[(j + 1) % polygon.length];
+        const dp = direction * orient(a, b, p),
+          dq = direction * orient(a, b, q);
+        if (dp >= 0) clipped.push(p);
+        if (dp < 0 !== dq < 0) clipped.push(p.clone().lerp(q, dp / (dp - dq)));
+      }
+      polygon = clipped;
+    }
+    const area = polygon.reduce(
+      (sum, p, i) => sum + p.cross(polygon[(i + 1) % polygon.length]),
+      0,
+    );
+    return Math.abs(area) > epsilon * 2;
+  });
+}
+
+/** Reject rails crossing a rim; optional containment applies to hole-only callers. */
 export function bridgeInsideBoundary(
   boundary: Vector2[],
   corners: number[],
+  requireInside = true,
 ): boolean {
   const orient = (a: Vector2, b: Vector2, c: Vector2) =>
     b.clone().sub(a).cross(c.clone().sub(a));
@@ -45,6 +223,7 @@ export function bridgeInsideBoundary(
       (to + 1) % boundary.length === from
     )
       continue;
+    if (!requireInside) continue;
     const midpoint = a.clone().add(b).multiplyScalar(0.5);
     let inside = false;
     for (let i = 0, j = boundary.length - 1; i < boundary.length; j = i++) {

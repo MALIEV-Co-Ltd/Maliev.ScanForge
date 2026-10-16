@@ -5,6 +5,7 @@ import { analyzeIndexedMesh } from "./mesh-processing";
 import {
   bridgeAttachmentNormals,
   bridgeInsideBoundary,
+  bridgeIntersectsMesh,
   refineBridgeStrip,
   validBridgePatch,
 } from "./scan-bridge-geometry";
@@ -36,17 +37,31 @@ export function runHoleFill(
   t: MeshTopology,
   o: MeshProcessingOptions,
 ): ScanEditResult {
-  const ids = r.indices ?? t.boundaryLoops.map((_, i) => i);
+  const bridging = r.mode === "bridge";
+  const boundaries = bridging
+    ? [...t.boundaryLoops, ...t.boundaryChains]
+    : t.boundaryLoops;
+  const ids = r.indices ?? (bridging ? [0] : t.boundaryLoops.map((_, i) => i));
+  if (bridging && ids.length !== 1)
+    throw new Error("A bridge needs exactly one start boundary.");
+  if (ids.some((i) => !Number.isInteger(i) || i < 0 || i >= boundaries.length))
+    throw new Error(
+      bridging
+        ? "Choose an exposed start boundary."
+        : "Choose closed hole boundaries.",
+    );
+  const destination = r.endBoundary ?? ids[0];
   if (
-    ids.some(
-      (i) => !Number.isInteger(i) || i < 0 || i >= t.boundaryLoops.length,
-    )
+    bridging &&
+    (!Number.isInteger(destination) ||
+      destination < 0 ||
+      destination >= boundaries.length)
   )
-    throw new Error("Choose closed hole boundaries.");
-  const diameter = r.diameter ?? 0;
+    throw new Error("Choose an exposed destination boundary.");
+  const diameter = bridging ? 0 : (r.diameter ?? 0);
   if (!Number.isFinite(diameter) || diameter < 0)
     throw new Error("Hole diameter must be finite and nonnegative.");
-  if (t.nonManifoldEdges || t.inconsistentEdges)
+  if (!bridging && (t.nonManifoldEdges || t.inconsistentEdges))
     throw new Error(
       "Repair nonmanifold edges and inconsistent winding before filling holes.",
     );
@@ -58,7 +73,9 @@ export function runHoleFill(
     skippedHoles = 0;
   const methods = new Set<string>();
   checkProgress(o, 0, "Estimating boundary tangents");
-  const vertexNormals = computeAngleWeightedNormals(t);
+  const vertexNormals = bridging
+    ? new Float64Array(0)
+    : computeAngleWeightedNormals(t);
   for (const index of [...new Set(ids)]) {
     checkProgress(
       o,
@@ -69,9 +86,43 @@ export function runHoleFill(
       skippedHoles++;
       continue;
     }
-    const original = t.boundaryLoops[index];
+    const original = boundaries[index];
     let loop = [...original];
-    if (r.mode === "partial" || r.mode === "bridge") {
+    if (bridging) {
+      const target = boundaries[destination];
+      const start = r.start ?? 0,
+        end = r.end ?? Math.floor(target.length / 2);
+      const startCount =
+        original.length - (index < t.boundaryLoops.length ? 0 : 1);
+      const endCount =
+        target.length - (destination < t.boundaryLoops.length ? 0 : 1);
+      if (
+        !Number.isInteger(start) ||
+        !Number.isInteger(end) ||
+        start < 0 ||
+        end < 0 ||
+        start >= startCount ||
+        end >= endCount
+      )
+        throw new Error("Choose a valid exposed edge index on each boundary.");
+      const firstUses = t.edges.get(
+        edgeId(original[start], original[(start + 1) % original.length]),
+      );
+      const secondUses = t.edges.get(
+        edgeId(target[end], target[(end + 1) % target.length]),
+      );
+      if (firstUses?.length !== 1 || secondUses?.length !== 1)
+        throw new Error(
+          "Bridge attachments must each be exposed manifold edges.",
+        );
+      const a = firstUses[0],
+        b = secondUses[0];
+      loop = [a.to, a.from, b.to, b.from];
+      if (new Set(loop).size !== 4)
+        throw new Error(
+          "Bridge edges must be separate and cannot share a vertex.",
+        );
+    } else if (r.mode === "partial") {
       const start = r.start ?? 0,
         end = r.end ?? Math.floor(original.length / 2);
       if (
@@ -86,27 +137,13 @@ export function runHoleFill(
         throw new Error(
           "Partial filling needs two different boundary vertex indices.",
         );
-      if (r.mode === "partial") {
-        loop = [];
-        let i = start;
-        while (i !== end) {
-          loop.push(original[i]);
-          i = (i + 1) % original.length;
-        }
-        loop.push(original[end]);
-      } else {
-        const nextStart = (start + 1) % original.length,
-          nextEnd = (end + 1) % original.length;
-        if (new Set([start, nextStart, end, nextEnd]).size !== 4)
-          throw new Error("Bridge edges must be separate.");
-        // Follow boundary order to create a strip connecting the chosen edge pair.
-        loop = [
-          original[start],
-          original[nextStart],
-          original[end],
-          original[nextEnd],
-        ];
+      loop = [];
+      let i = start;
+      while (i !== end) {
+        loop.push(original[i]);
+        i = (i + 1) % original.length;
       }
+      loop.push(original[end]);
     }
     if (loop.length < 3) {
       skippedHoles++;
@@ -124,6 +161,8 @@ export function runHoleFill(
     });
     const norm = Math.hypot(...n);
     if (norm < (o.tolerance ?? 1e-6) ** 2) {
+      if (bridging)
+        throw new Error("Bridge edges form a degenerate or crossing strip.");
       skippedHoles++;
       continue;
     }
@@ -148,24 +187,30 @@ export function runHoleFill(
       ![1, 3].some((i) =>
         t.edges.has(edgeId(loop[i], loop[(i + 1) % loop.length])),
       );
-    if (r.mode === "bridge") {
+    if (bridging) {
       const boundary = original.map((id) => {
         const delta = subtract(pointAt(t.vertices, id), points[0]);
         return new Vector2(dotProduct(delta, u), dotProduct(delta, v));
       });
       if (
-        !bridgeInsideBoundary(
-          boundary,
-          loop.map((id) => original.indexOf(id)),
-        ) ||
+        (index === destination &&
+          index < t.boundaryLoops.length &&
+          !bridgeInsideBoundary(
+            boundary,
+            loop.map((id) => original.indexOf(id)),
+            false,
+          )) ||
         loop.some(
           (id, i) =>
             (t.edges.get(edgeId(id, loop[(i + 1) % loop.length]))?.length ??
-              0) > 1,
+              0) > 1 ||
+            t.edges.get(edgeId(id, loop[(i + 1) % loop.length]))?.[0]?.from ===
+              id,
         )
       ) {
-        skippedHoles++;
-        continue;
+        throw new Error(
+          "Bridge crosses the boundary or would create a nonmanifold edge.",
+        );
       }
     }
     const orient = (a: Vector2, b: Vector2, c: Vector2) =>
@@ -190,6 +235,7 @@ export function runHoleFill(
           unsafe = true;
       }
     if (unsafe) {
+      if (bridging) throw new Error("Bridge edges form a self-crossing strip.");
       skippedHoles++;
       continue;
     }
@@ -215,16 +261,19 @@ export function runHoleFill(
           : "tangent"
         : r.algorithm;
     if (method === "flat" && !planar) {
+      if (bridging)
+        throw new Error("A flat bridge requires coplanar attachment edges.");
       skippedHoles++;
       continue;
     }
     let triangles = ShapeUtils.triangulateShape(projected, []);
     if (triangles.length !== points.length - 2) {
+      if (bridging) throw new Error("Bridge edges cannot form a valid strip.");
       skippedHoles++;
       continue;
     }
     // A complete flat patch must not double an existing flat surface.
-    if (planar) {
+    if (planar && !bridging) {
       let overlap = false;
       for (let face = 0; face < t.triangles.length / 3; face++) {
         if (face % 4096 === 0) checkProgress(o, 0, "Checking cap overlap");
@@ -321,6 +370,7 @@ export function runHoleFill(
         ? validBridgePatch(projected, triangles)
         : validHolePatch(projected, triangles, rimCount))
     ) {
+      if (bridging) throw new Error("Bridge strip triangulation is invalid.");
       skippedHoles++;
       continue;
     }
@@ -365,6 +415,8 @@ export function runHoleFill(
         ? validBridgePatch(projected, triangles)
         : validHolePatch(projected, triangles, rimCount))
     ) {
+      if (bridging)
+        throw new Error("Bridge refinement creates an invalid strip.");
       skippedHoles++;
       continue;
     }
@@ -376,9 +428,13 @@ export function runHoleFill(
         );
       })
     ) {
+      if (bridging)
+        throw new Error("Bridge creates degenerate or inverted facets.");
       skippedHoles++;
       continue;
     }
+    if (bridging && bridgeIntersectsMesh(t, points, triangles, loop, o))
+      throw new Error("Bridge intersects the retained scan surface.");
     for (let tri of triangles) {
       if (orient(projected[tri[0]], projected[tri[1]], projected[tri[2]]) < 0)
         tri = [tri[0], tri[2], tri[1]];

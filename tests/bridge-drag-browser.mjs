@@ -8,7 +8,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/bridge-drag/", import.meta.url);
+  out = new URL("../.resources/bridge-v2/", import.meta.url);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -22,7 +22,7 @@ const token = randomBytes(32).toString("hex"),
     pid: process.pid,
     executable: process.execPath,
     startedAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 180000).toISOString(),
+    expiresAt: new Date(Date.now() + 360000).toISOString(),
     persistentData: false,
     resources: [],
   };
@@ -44,7 +44,7 @@ Object.assign(ledger, identity(process.pid));
 const deadline = setTimeout(() => {
   failed = Error("Browser validation lease expired");
   void browserServer?.close();
-}, 180000);
+}, 360000);
 try {
   server = http.createServer(async (req, res) => {
     try {
@@ -172,10 +172,22 @@ try {
   };
 
   const artifactJson = async (artifact) => {
-    const wire = (
-      await call("artifact_read", { artifactId: artifact.artifactId })
-    ).result;
-    return JSON.parse(Buffer.from(wire.base64, "base64").toString());
+    const chunks = [];
+    let offset = 0;
+    do {
+      const wire = (
+        await call("artifact_read", {
+          artifactId: artifact.artifactId,
+          offset,
+          length: 262144,
+        })
+      ).result;
+      const bytes = Buffer.from(wire.base64, "base64");
+      assert(bytes.length > 0);
+      chunks.push(bytes);
+      offset += bytes.length;
+    } while (offset < artifact.bytes);
+    return JSON.parse(Buffer.concat(chunks).toString());
   };
   const runEdit = async (operation, previewOnly) =>
     (
@@ -195,13 +207,42 @@ try {
   const history = async () => (await call("history_get")).result.cursor;
   const canvas = page.locator(".viewport canvas").first();
   const reports = [];
-  for (const curved of [false, true]) {
+  const requestedCases = process.env.SCANFORGE_BRIDGE_CASES?.split(",");
+  const cases = [
+    { curved: false },
+    { curved: true },
+    { curved: false, separate: true },
+    { curved: false, separate: true, fragmented: true },
+  ].filter(
+    ({ curved, separate, fragmented }) =>
+      !requestedCases ||
+      requestedCases.includes(
+        fragmented
+          ? "fragmented-open"
+          : separate
+            ? "independent-boundaries"
+            : curved
+              ? "tangent"
+              : "flat",
+      ),
+  );
+  assert(cases.length > 0, "No requested bridge browser cases matched");
+  for (const { curved, separate, fragmented } of cases) {
+    const scenario = fragmented
+      ? "fragmented-open"
+      : separate
+        ? "independent-boundaries"
+        : curved
+          ? "tangent"
+          : "flat";
     const positions = [];
     const point = (i, r) => {
       const a = (i * Math.PI) / 16,
         x = r * Math.cos(a),
         y = r * Math.sin(a);
-      return [x, y, curved ? 0.025 * (x * x + y * y) : 0];
+      return separate
+        ? [x * 0.2 - 10, y * 0.2, 0]
+        : [x, y, curved ? 0.025 * (x * x + y * y) : 0];
     };
     for (let i = 0; i < 32; i++) {
       const a = point(i, 4),
@@ -209,6 +250,66 @@ try {
         c = point(i + 1, 5),
         d = point(i + 1, 4);
       positions.push(...a, ...b, ...c, ...a, ...c, ...d);
+    }
+    if (separate) {
+      const squares = [0, 3].flatMap((x) => [
+        x,
+        0,
+        0,
+        x + 1,
+        0,
+        0,
+        x + 1,
+        1,
+        0,
+        x,
+        0,
+        0,
+        x + 1,
+        1,
+        0,
+        x,
+        1,
+        0,
+      ]);
+      if (fragmented)
+        squares.push(
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0.5,
+          -1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0.5,
+          -2,
+          0,
+        );
+      for (let i = 0; i < squares.length; i += 3)
+        positions.push(
+          squares[i] * 2 - 4,
+          squares[i + 1] * 2 - 1,
+          squares[i + 2],
+        );
+      if (fragmented) {
+        // Large enough to exercise the real asynchronous display BVH before hover.
+        for (let y = 0; y < 100; y++)
+          for (let x = 0; x < 60; x++) {
+            const a = [100 + x, 100 + y, 0],
+              b = [101 + x, 100 + y, 0],
+              c = [101 + x, 101 + y, 0],
+              d = [100 + x, 101 + y, 0];
+            positions.push(...a, ...b, ...c, ...a, ...c, ...d);
+          }
+      }
     }
     const project = {
       format: "maliev-scanforge",
@@ -256,13 +357,29 @@ try {
     );
     assert(hole >= 0);
     const boundary = inventory.inventory.boundaries[hole];
+    const findEdge = (x) => {
+      for (const [boundary, path] of inventory.inventory.boundaries.entries()) {
+        const n = path.points.length / 3,
+          count = n - (path.closed ? 0 : 1);
+        for (let edge = 0; edge < count; edge++)
+          if (
+            Math.abs(path.points[edge * 3] - x) < 1e-5 &&
+            Math.abs(path.points[((edge + 1) % n) * 3] - x) < 1e-5
+          )
+            return { boundary, edge };
+      }
+      throw Error(`Missing facing edge ${x}`);
+    };
+    const source = separate ? findEdge(-2) : { boundary: hole, edge: 0 };
+    const destination = separate ? findEdge(2) : { boundary: hole, edge: 16 };
     const operation = {
       kind: "scanEdit",
       action: "fillHoles",
       mode: "bridge",
-      indices: [hole],
-      start: 0,
-      end: 16,
+      indices: [source.boundary],
+      ...(separate ? { endBoundary: destination.boundary } : {}),
+      start: source.edge,
+      end: destination.edge,
       algorithm: "automatic",
       tolerance: 0.001,
     };
@@ -275,14 +392,13 @@ try {
     assert.deepEqual((await geometry()).positions, original.positions);
 
     await page.getByRole("button", { name: "Edit holes", exact: true }).click();
-    console.log("Bridge model ready", { curved, hole });
+    console.log("Bridge model ready", { scenario, source, destination });
     // The panel is a labelled section; use its CSS scope where browsers expose no region role.
     const controls = page.locator(".scan-topology-panel");
-    await controls
-      .getByRole("button", { name: new RegExp(`^Hole ${hole + 1} `) })
-      .click();
+    // Leave the default, unrelated hole selected. Bridge must ignore that selection.
     await controls.locator(".app-select > button").first().click();
     await page.getByRole("option", { name: "Bridge", exact: true }).click();
+    assert.equal(await controls.locator(".scan-topology-list").count(), 0);
     assert.equal(
       await controls.getByRole("spinbutton", { name: "Start vertex" }).count(),
       0,
@@ -298,11 +414,12 @@ try {
       up: [0, 1, 0],
       zoom: 1,
     });
-    await call("viewport_get");
+    const beforeView = (await call("viewport_get")).result;
     console.log("Bridge mode and camera ready");
     const box = await canvas.boundingBox();
     assert(box);
-    const screen = (edge) => {
+    const screen = ({ boundary: boundaryIndex, edge }) => {
+      const boundary = inventory.inventory.boundaries[boundaryIndex];
       const count = boundary.points.length / 3,
         j = (edge + 1) % count;
       const p = [0, 1, 2].map(
@@ -315,9 +432,21 @@ try {
         y: box.y + box.height / 2 - p[1] * unit,
       };
     };
-    const a = screen(0),
-      b = screen(16);
+    const a = screen(source),
+      b = screen(destination);
     await page.mouse.move(a.x, a.y);
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".viewport canvas")?.style.cursor ===
+        "crosshair",
+    );
+    assert.deepEqual(
+      (await call("viewport_get")).result.bridge.hovered,
+      source,
+    );
+    await page.screenshot({
+      path: fileURLToPath(new URL(`${scenario}-hover.png`, out)),
+    });
     await page.mouse.down();
     await page.mouse.move(b.x, b.y, { steps: 12 });
     await page.waitForFunction(
@@ -332,10 +461,13 @@ try {
       ),
     );
     assert.equal(await history(), beforeHistory);
+    const dragView = (await call("viewport_get")).result;
+    assert.deepEqual(dragView.position, beforeView.position);
+    assert.deepEqual(dragView.target, beforeView.target);
+    assert.deepEqual(dragView.bridge.dragStart, source);
+    assert.deepEqual(dragView.bridge.hovered, destination);
     await page.screenshot({
-      path: fileURLToPath(
-        new URL(curved ? "tangent-preview.png" : "flat-preview.png", out),
-      ),
+      path: fileURLToPath(new URL(`${scenario}-preview.png`, out)),
     });
     // Esc cancels preview and capture, without creating history.
     await page.keyboard.press("Escape");
@@ -379,12 +511,13 @@ try {
     assert.deepEqual((await geometry()).positions, gui.positions);
     assert.equal(await history(), beforeHistory + 1);
     await page.screenshot({
-      path: fileURLToPath(
-        new URL(curved ? "tangent-bridge.png" : "flat-bridge.png", out),
-      ),
+      path: fileURLToPath(new URL(`${scenario}-bridge.png`, out)),
     });
     reports.push({
       method: preview.diagnostics.method,
+      scenario,
+      hover: true,
+      cameraUnchanged: true,
       triangles: patch.positions.length / 9,
       guiMcpEqual: true,
       undoRedo: true,
