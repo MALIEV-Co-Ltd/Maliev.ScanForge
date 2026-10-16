@@ -1,0 +1,45 @@
+{
+  "scope": "Original full canonical three-scan controller; revised private probe allocation and scratch lifetime only",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "control": {
+    "artifact": "global-fine-canonical-early-demand-zero-20261017-native-results.json",
+    "sha256": "5b7c5ee2eb8b19599fb752d14b4344d1994e4b4444072c52a60f842c99b2a396",
+    "probeSha256": "76e67b9eba0d28642199a4ceae35beeebac8c71cbc1cb68a397c7b9b435b4418",
+    "fixture": "tests/fixtures/global-fine-canonical-controller-native.json",
+    "fixtureSha256": "f59bf3f6c5394ed6916e3e5a2f513c4e8383221ac20c47f138bbe617a36a40ed",
+    "exactComparedFields": [
+      "scene",
+      "builds",
+      "passes",
+      "passSnapshots",
+      "final",
+      "applications",
+      "returned",
+      "clockInputs"
+    ],
+    "passes": 19,
+    "peakTrackedRawBytes": 1544046562,
+    "outerSeconds": 84.24691760001588,
+    "commonScratchEarlyReleased": true
+  },
+  "limits": {
+    "hostAdmissionMiB": 4096,
+    "runtimeFreeMiB": 1024,
+    "trackedRawMiB": 1536,
+    "leaseSeconds": 240
+  },
+  "cleanup": {
+    "pid": 63740,
+    "allocationReleased": true,
+    "exceptionHandlerRemoved": true,
+    "helperMappingsReleased": true,
+    "trackedAllocationsReleased": true,
+    "retainedBytesAfterCleanup": 0
+  },
+  "limitsUnchanged": true,
+  "seededNativeComparisonComplete": false,
+  "nativeUiCapture": false,
+  "actualOsSchedulerCaptured": false,
+  "geometrySetterOutputCaptured": false,
+  "applicationSourceChanged": false
+}

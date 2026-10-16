@@ -65,3 +65,59 @@ Further acceptance still requires the seeded native controller comparison, usefu
 alignment, GUI/MCP preview and Apply parity, cancellation and history checks,
 actual STL/PLY/ASC imports, combining the scans, and navigation measurements.
 The global controller remains private while these requirements are open.
+
+## Native probe lifetime control
+
+A complete original-procedure control now verifies the revised private probe's
+allocation and scratch lifetimes against the committed canonical oracle. Large
+allocations use zero-initialized private Windows virtual memory rather than
+eagerly zeroed Python buffers. Smaller allocations retain their previous backing.
+All source angular layouts are copied and checked for independent empty
+containers and identical scalar contents before the common scratch pool is
+retired through its original destructor.
+
+The complete scene preparation, evaluator controls, 19 pass snapshots, final
+states, six setter commands, return value and clock stream match exactly. A
+separate readback compared all eight corresponding output fields against the
+committed fixture. The outer loop took 84.25 seconds. Tracked raw allocations
+peaked at 1,544,046,562 bytes under the unchanged 1,610,612,736-byte ceiling.
+The 4 GiB host admission, 1 GiB runtime free-memory guard and 240-second lease
+also remain unchanged. The cleanup receipt confirms zero tracked bytes and
+release of the executable mappings and exception handler; the owned process
+exited.
+
+The [control receipt](evidence/native-global-probe-lifetime-control.json) pins
+the probe, result and committed fixture hashes. This is controlled shell runtime
+evidence from retained original procedures, not a new REA Evidence ID or a native
+UI capture. The original scheduler and full geometry setter outputs are outside
+this capture. No application algorithm or public GUI/MCP contract changed.
+
+This control does not close the seeded comparison. Its first revised capture
+exited at the memory guard while checking the third target, without producing
+a complete controller result. That attempt is retained separately and is not
+reported as a successful comparison.
+
+An additional attempt retires the image-file copy after mapping/patching and
+the source arrays after checking their native copies. It reached outer pass 15
+before the runtime memory guard stopped it. Full equivalence for those further
+lifetime changes is unproven; the prepared seeded probe requires that control
+to pass before it can run. Neither incomplete attempt changes the completed
+control receipt above.
+
+## Supplied merged reference diagnostic
+
+The example folder also contains `final-aligned-and-merged-mesh.stl`, with
+3,709,989 triangles and SHA-256
+`a26aa1e3e9f572292fc40ba48074f1a9e736f7df9cee87ab4367bde5da8e91d5`.
+A bounded streaming read verified the complete file and retained 20,054 uniformly
+spaced triangle centroids for diagnostics. Its bounds closely resemble the
+third scan's bounds, but the file's creation workflow and intended reference
+frame have not been independently verified.
+
+The existing coarse heuristic, searching all 24 candidates against that sample,
+returned RMS values of 0.722, 0.260 and 0.270 mm for the three scans. It also
+chose a large rotation for the third scan. This is a candidate ambiguity signal,
+not proof of a correct pose or native coarse behavior. The sampled metric is
+tessellation weighted and measures distances to sampled centroids; it cannot
+certify a 0.05 mm surface tolerance. Future quality checks must resolve the
+reference provenance and use adequate surface and orientation evidence.
