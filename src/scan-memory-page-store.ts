@@ -16,6 +16,7 @@ export function createMemoryPageStore(
     string,
     { ref: ScanPageRef; bytes: Uint8Array; lease: ScanBudgetLease }
   >();
+  let retainedAndPending = 0;
   const find = (ref: ScanPageRef) => {
     const page = pages.get(ref.id);
     if (!page) throw new Error("Scan page missing.");
@@ -26,8 +27,17 @@ export function createMemoryPageStore(
   return {
     async append(bytes, signal) {
       checkScanAbort(signal);
-      const lease = await budget.reserve(owner, bytes.byteLength, signal);
+      if (
+        bytes.byteLength >
+        budget.snapshot().capacityBytes - retainedAndPending
+      )
+        throw new RangeError(
+          "Resident scan pages require disk storage for this job.",
+        );
+      retainedAndPending += bytes.byteLength;
+      let lease: ScanBudgetLease | undefined;
       try {
+        lease = await budget.reserve(owner, bytes.byteLength, signal);
         checkScanAbort(signal);
         const copy = new Uint8Array(bytes);
         const ref = Object.freeze({
@@ -39,7 +49,8 @@ export function createMemoryPageStore(
         pages.set(ref.id, { bytes: copy, ref, lease });
         return ref;
       } catch (error) {
-        lease.release();
+        retainedAndPending -= bytes.byteLength;
+        lease?.release();
         throw error;
       }
     },
@@ -63,6 +74,7 @@ export function createMemoryPageStore(
       checkScanAbort(signal);
       const page = find(ref);
       pages.delete(ref.id);
+      retainedAndPending -= page.bytes.byteLength;
       page.lease.release();
     },
   };

@@ -76,6 +76,17 @@ it("cancels queued page reads without leaking reservations", async () => {
   expect(budget.snapshot().reservedBytes).toBe(0);
 });
 
+it("requests disk storage rather than deadlocking on retained memory pages", async () => {
+  const budget = createScanBudget(100, 0);
+  const store = createMemoryPageStore(budget, "full");
+  const first = await store.append(new Uint8Array(40));
+  await expect(store.append(new Uint8Array(61))).rejects.toThrow(
+    /disk storage/,
+  );
+  await store.remove(first);
+  expect(budget.snapshot().reservedBytes).toBe(0);
+});
+
 it("memory pages own immutable bytes, validate checksums and release readers", async () => {
   const budget = createScanBudget(65_536, 0);
   const store = createMemoryPageStore(budget, "job");
