@@ -1,5 +1,5 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { nativeBuildAlignmentAdjacency } from "./scan-native-alignment-adjacency";
+import { nativeBuildAlignmentNeighbourMasks } from "./scan-native-alignment-adjacency";
 import {
   prepareNativeGlobalMeshEvaluator,
   type NativeGlobalEvaluatorMesh,
@@ -57,12 +57,13 @@ function prepare(
   options: MeshProcessingOptions,
 ) {
   const evaluator = prepareNativeGlobalMeshEvaluator(input, options);
-  const adjacency = input.vertices.length
-    ? nativeBuildAlignmentAdjacency(input.vertices, input.triangles, options)
-    : undefined;
-  const neighbours = nativeGlobalNeighbourMasks(
-    adjacency?.neighbors ?? new Int32Array(),
-  );
+  const neighbours = input.vertices.length
+    ? nativeBuildAlignmentNeighbourMasks(
+        input.vertices,
+        input.triangles,
+        options,
+      )
+    : new Uint8Array();
   const scratch: NativeGlobalEvaluatorSearchScratch<number> = {
     stack: [],
     projection: new Float64Array(3),

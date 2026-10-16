@@ -17,6 +17,7 @@ function linkFace(
   neighborEdges: Uint8Array,
   first: EdgeRecords,
   stride: number,
+  masks?: Uint8Array,
 ) {
   let appended = 0;
   for (let edge = 0; edge < 3; edge++) {
@@ -26,12 +27,17 @@ function linkFace(
     const reverse = first.get(reverseKey);
     if (reverse !== undefined) {
       if (reverse >= 0) {
-        neighbors[reverse] = face;
-        neighborEdges[reverse] = edge;
-        neighbors[face * 3 + edge] = Math.floor(reverse / 3);
-        neighborEdges[face * 3 + edge] = reverse % 3;
+        if (masks) {
+          masks[Math.floor(reverse / 3)] |= 1 << (reverse % 3);
+          masks[face] |= 1 << edge;
+        } else {
+          neighbors[reverse] = face;
+          neighborEdges[reverse] = edge;
+          neighbors[face * 3 + edge] = Math.floor(reverse / 3);
+          neighborEdges[face * 3 + edge] = reverse % 3;
+        }
         first.set(reverseKey, -reverse - 1);
-      } else {
+      } else if (!masks) {
         neighbors[face * 3 + edge] = -1;
         neighborEdges[face * 3 + edge] = 255;
       }
@@ -50,6 +56,32 @@ export function nativeBuildAlignmentAdjacency(
   vertices: ArrayLike<number>,
   triangles: ArrayLike<number>,
   options: MeshProcessingOptions = {},
+) {
+  return buildAlignmentAdjacency(vertices, triangles, options);
+}
+
+/** Query arbitration needs pointer presence only, not neighbor IDs/edge metadata.
+ * Keep original bucket traversal and first-directed-edge consumption ordering.
+ */
+export function nativeBuildAlignmentNeighbourMasks(
+  vertices: ArrayLike<number>,
+  triangles: ArrayLike<number>,
+  options: MeshProcessingOptions = {},
+): Uint8Array {
+  if (vertices.length % 3 || !vertices.length || triangles.length % 3)
+    throw new Error("Invalid alignment adjacency geometry.");
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  const masks = new Uint8Array(triangles.length / 3);
+  buildAlignmentAdjacency(vertices, triangles, options, masks);
+  return masks;
+}
+
+function buildAlignmentAdjacency(
+  vertices: ArrayLike<number>,
+  triangles: ArrayLike<number>,
+  options: MeshProcessingOptions,
+  masks?: Uint8Array,
 ) {
   if (vertices.length % 3 || !vertices.length || triangles.length % 3)
     throw new Error("Invalid alignment adjacency geometry.");
@@ -83,12 +115,12 @@ export function nativeBuildAlignmentAdjacency(
       1.1920928955078125e-7,
     );
   }
-  const neighbors = new Int32Array(triangles.length).fill(-1);
-  const neighborEdges = new Uint8Array(triangles.length);
-  const triangleFlags = new Uint8Array(triangles.length / 3);
+  const neighbors = new Int32Array(masks ? 0 : triangles.length).fill(-1);
+  const neighborEdges = new Uint8Array(masks ? 0 : triangles.length);
+  const triangleFlags = new Uint8Array(masks ? 0 : triangles.length / 3);
   const groups = new Map<number, number[]>();
   const fallback: number[] = [];
-  for (let face = 0; face < triangleFlags.length; face++) {
+  for (let face = 0; face < triangles.length / 3; face++) {
     for (let edge = 0; edge < 3; edge++) {
       const id = triangles[face * 3 + edge];
       if (!Number.isSafeInteger(id) || id < 0 || id >= vertexBuckets.length)
@@ -118,8 +150,9 @@ export function nativeBuildAlignmentAdjacency(
         neighborEdges,
         first,
         stride,
+        masks,
       );
-      triangleFlags[face] |= 4;
+      if (!masks) triangleFlags[face] |= 4;
     }
   }
   for (const face of fallback) {
@@ -132,6 +165,7 @@ export function nativeBuildAlignmentAdjacency(
       neighborEdges,
       first,
       stride,
+      masks,
     );
   }
   return {
