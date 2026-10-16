@@ -1,0 +1,71 @@
+{
+  "scope": "Internal packed indexed-buffer evaluator provider and shared native traversal. No public alignment capability enabled.",
+  "originalFixture": "tests/fixtures/global-fine-evaluator-query-native.json",
+  "originalEvidence": "ev_f2112094d9953e5686915740fa79d70d8a10dd8cdc3c28fc72c51d9d9e88fca5",
+  "nativeCases": 392,
+  "storage": {
+    "carrierCopies": false,
+    "perTriangleRecords": false,
+    "coordinateScratchBytesPerProvider": 48,
+    "identityCache": "WeakMap keyed by immutable surface object; each worker owns its provider.",
+    "sharedCarrierTest": "SharedArrayBuffer-backed vertices retained by identity, attached and unchanged."
+  },
+  "firstSnapshot": {
+    "baseline": "070482badbef3b520cac9b26b78fc0d596eaf6ef",
+    "build": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "fingerprint": "scanforge-4217090dbf44de18"
+    },
+    "focused": {
+      "passed": 1667,
+      "failed": 0,
+      "skipped": 0
+    },
+    "suite": {
+      "passed": 45020,
+      "failed": 0,
+      "optionalSkipped": 40
+    }
+  },
+  "integrationBaseline": "bfe1abe2b7a99858bd1a214816eb29033b9ce3d6",
+  "integrationStatus": "Passed against the updated committed parent plus only the owned packed-provider changes.",
+  "mcp": "No public GUI/MCP capability, schema, command discovery or history/cancellation publication changes.",
+  "remaining": [
+    "Native index construction using packed triangle memberships",
+    "Face-normal and neighbour production on owner scans",
+    "Ready-index routing and full evaluator-enabled registration",
+    "Shared GUI/MCP preview, Apply, cancellation and history verification"
+  ],
+  "performanceLimit": "No measured large-scan speedup or heap reduction claim. The supplied fixture adapter is not the application index builder.",
+  "cleanup": "Existing validation snapshot reused after its earlier cleanup rejection; no removal retried.",
+  "integration": {
+    "build": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "fingerprint": "scanforge-4359c16c791e6359"
+    },
+    "focused": {
+      "passed": 1667,
+      "failed": 0,
+      "skipped": 0
+    },
+    "suite": {
+      "passed": 45035,
+      "failed": 0,
+      "optionalSkipped": 40
+    }
+  },
+  "browserWorker": {
+    "cases": 392,
+    "comparisons": 784,
+    "packedComparisons": 784,
+    "extentCases": 12,
+    "stackEmpty": true,
+    "workerTerminated": true,
+    "errors": [],
+    "scope": "Original supplied-tree record/packed queries and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification."
+  }
+}

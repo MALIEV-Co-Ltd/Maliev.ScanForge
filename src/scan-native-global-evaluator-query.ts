@@ -8,20 +8,62 @@ export interface NativeGlobalEvaluatorTriangle {
   bounds: ArrayLike<number>;
   flags: number;
 }
-export interface NativeGlobalEvaluatorNode {
+export interface NativeGlobalEvaluatorSearchNode<T> {
   /** Original Double node bounds and center. */
   bounds: ArrayLike<number>;
   center: ArrayLike<number>;
   flat: boolean;
+  children: {
+    readonly [index: number]: NativeGlobalEvaluatorSearchNode<T> | undefined;
+  };
+  triangles: ArrayLike<T>;
+}
+export interface NativeGlobalEvaluatorNode extends NativeGlobalEvaluatorSearchNode<NativeGlobalEvaluatorTriangle> {
   children: readonly (NativeGlobalEvaluatorNode | undefined)[];
   triangles: readonly NativeGlobalEvaluatorTriangle[];
 }
-export interface NativeGlobalEvaluatorScratch {
-  stack: NativeGlobalEvaluatorNode[];
+export interface NativeGlobalEvaluatorSearchScratch<T> {
+  stack: NativeGlobalEvaluatorSearchNode<T>[];
   projection: Float64Array;
   edgeFlags: Uint8Array;
 }
+export type NativeGlobalEvaluatorScratch =
+  NativeGlobalEvaluatorSearchScratch<NativeGlobalEvaluatorTriangle>;
+export type NativeGlobalEvaluatorDistance<T> = (
+  triangle: T,
+  point: ArrayLike<number>,
+  radius: number,
+  projection: Float64Array,
+  edgeFlags: Uint8Array,
+  filterHidden: boolean,
+) => number;
 const maximum = Math.fround(3.4028234663852886e38);
+
+const recordDistance: NativeGlobalEvaluatorDistance<
+  NativeGlobalEvaluatorTriangle
+> = (triangle, point, radius, projection, flags, filterHidden) => {
+  if (filterHidden && triangle.flags & 2) return NaN;
+  const box = triangle.bounds;
+  if (!(
+    box[0] - radius <= point[0] &&
+    box[1] - radius <= point[1] &&
+    box[2] - radius <= point[2] &&
+    point[0] <= box[3] + radius &&
+    point[1] <= box[4] + radius &&
+    point[2] <= box[5] + radius
+  ))
+    return NaN;
+  return nativeGlobalTriangleDistance(
+    point,
+    triangle.vertices[0],
+    triangle.vertices[1],
+    triangle.vertices[2],
+    triangle.normal,
+    radius,
+    projection,
+    flags,
+  );
+};
 
 /** Original recursive search ordering, using a reusable explicit stack. Prepared
  * immutable node/triangle records are validated by the index builder. The initial
@@ -37,10 +79,35 @@ export function nativeGlobalEvaluatorQuery(
   filterHidden: boolean,
   scratch: NativeGlobalEvaluatorScratch,
 ): NativeGlobalEvaluatorTriangle | undefined {
+  return nativeGlobalEvaluatorSearch(
+    root,
+    point,
+    distance,
+    projection,
+    edgeFlags,
+    filterHidden,
+    scratch,
+    recordDistance,
+  );
+}
+
+/** Shared native traversal for record fixtures and packed production carriers.
+ * The prepared evaluator callback is retained once, not created per query.
+ */
+export function nativeGlobalEvaluatorSearch<T>(
+  root: NativeGlobalEvaluatorSearchNode<T>,
+  point: ArrayLike<number>,
+  distance: Float64Array,
+  projection: Float64Array,
+  edgeFlags: Uint8Array,
+  filterHidden: boolean,
+  scratch: NativeGlobalEvaluatorSearchScratch<T>,
+  evaluate: NativeGlobalEvaluatorDistance<T>,
+): T | undefined {
   const { stack } = scratch;
   stack.length = 0;
   stack.push(root);
-  let best: NativeGlobalEvaluatorTriangle | undefined;
+  let best: T | undefined;
   while (stack.length) {
     const node = stack.pop()!;
     let radius = Math.abs(distance[0]);
@@ -69,28 +136,16 @@ export function nativeGlobalEvaluatorQuery(
       if (near) stack.push(near);
       continue;
     }
-    for (const triangle of node.triangles) {
-      if (filterHidden && triangle.flags & 2) continue;
+    for (let slot = 0; slot < node.triangles.length; slot++) {
+      const triangle = node.triangles[slot];
       radius = Math.abs(distance[0]);
-      const box = triangle.bounds;
-      if (!(
-        box[0] - radius <= point[0] &&
-        box[1] - radius <= point[1] &&
-        box[2] - radius <= point[2] &&
-        point[0] <= box[3] + radius &&
-        point[1] <= box[4] + radius &&
-        point[2] <= box[5] + radius
-      ))
-        continue;
-      const candidate = nativeGlobalTriangleDistance(
+      const candidate = evaluate(
+        triangle,
         point,
-        triangle.vertices[0],
-        triangle.vertices[1],
-        triangle.vertices[2],
-        triangle.normal,
         radius,
         scratch.projection,
         scratch.edgeFlags,
+        filterHidden,
       );
       if (Math.abs(candidate) < radius) {
         distance[0] = candidate;

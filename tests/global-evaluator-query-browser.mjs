@@ -58,6 +58,8 @@ try {
     const code = `
       import {nativeGlobalEvaluatorQuery} from '${origin}/src/scan-native-global-evaluator-query.ts';
       import {nativeGlobalEvaluatorExtent} from '${origin}/src/scan-native-global-evaluator-policy.ts';
+      import {nativeGlobalPackedEvaluator} from '${origin}/src/scan-native-global-packed-evaluator.ts';
+      import {packGlobalEvaluatorFixture} from '${origin}/tests/helpers/global-evaluator-packed-fixture.ts';
       const fixture=await fetch('${origin}/tests/fixtures/global-fine-evaluator-query-native.json').then(r=>r.json());
       const policy=await fetch('${origin}/tests/fixtures/global-fine-evaluator-preparation-native.json').then(r=>r.json());
       function prepare(s){return {
@@ -70,7 +72,7 @@ try {
       const bits=v=>Array.from(new Uint8Array(v.buffer,v.byteOffset,v.byteLength),x=>x.toString(16).padStart(2,'0')).join('');
       const scratch={stack:[],projection:new Float64Array(3),edgeFlags:new Uint8Array(1)};
       const distance=new Float64Array(1),projection=new Float64Array(3),flags=new Uint8Array(1);
-      let comparisons=0;
+      let comparisons=0,packedComparisons=0;
       for(const c of fixture.cases){const tree=prepare(c.tree);
         for(let repeat=0;repeat<2;repeat++){
           distance[0]=c.radius;projection.set([11,12,13]);flags[0]=255;
@@ -79,12 +81,22 @@ try {
             throw Error('Original query mismatch: '+c.name+' repeat '+repeat);
           comparisons++;
         }
+        const packed=packGlobalEvaluatorFixture(c.tree),provider=nativeGlobalPackedEvaluator(packed.surface);
+        if(provider.surface!==packed.surface||nativeGlobalPackedEvaluator(packed.surface)!==provider)
+          throw Error('Packed provider copied or rebuilt immutable carriers');
+        for(let repeat=0;repeat<2;repeat++){
+          distance[0]=c.radius;projection.set([11,12,13]);flags[0]=255;
+          const hit=provider.query(packed.root,c.point,distance,projection,flags,!!c.mode,scratch);
+          if((hit??null)!==c.target||bits(distance)!==c.distanceBits||bits(projection)!==c.projectionBits||flags[0]!==c.edgeFlags||scratch.stack.length)
+            throw Error('Original packed query mismatch: '+c.name+' repeat '+repeat);
+          packedComparisons++;
+        }
       }
       for(const c of policy.cases){
         if(bits(Float32Array.of(nativeGlobalEvaluatorExtent(Float32Array.from(c.bounds))))!==c.extentBits)
           throw Error('Original extent mismatch: '+c.name);
       }
-      self.postMessage({cases:fixture.cases.length,comparisons,extentCases:policy.cases.length,stackEmpty:scratch.stack.length===0});
+      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,stackEmpty:scratch.stack.length===0});
     `;
     const url = URL.createObjectURL(
       new Blob([code], { type: "text/javascript" }),
@@ -103,12 +115,13 @@ try {
   }, origin);
   assert.equal(report.cases, 392);
   assert.equal(report.comparisons, 784);
+  assert.equal(report.packedComparisons, 784);
   assert.equal(report.extentCases, 12);
   assert.equal(report.stackEmpty, true);
   assert.equal(errors.length, 0);
   report.errors = errors;
   report.scope =
-    "Original supplied-tree query and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification.";
+    "Original supplied-tree record/packed queries and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification.";
   await writeFile(
     new URL("results.json", out),
     JSON.stringify(report, null, 2),
