@@ -1,0 +1,152 @@
+{
+  "scenario": "Connected original scan-only angular/spatial preparation, packed labels, complete sampler and full-index correspondence queries; all three full owner scans.",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "sources": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "count": 140113,
+      "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "count": 1375494,
+      "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "count": 1865848,
+      "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+    }
+  ],
+  "nativeCases": 8,
+  "acceptedCorrespondences": 4926,
+  "preparedSamples": [1352, 1518, 1620],
+  "allNumericBytesMatched": true,
+  "browser": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "Two physical workers match every original owner correspondence byte across both numeric modes and changed poses.",
+      "Native preparation labels/sample IDs feed persistent query workers unchanged across all eight queries; indexes initialize once.",
+      "All four preparation and three query worker handles terminate; no authored buffers detach and no browser errors occur.",
+      "A single physical worker preserves native-prepared query bytes; cancelling preparation releases its worker."
+    ],
+    "passed": true,
+    "physicalWorkers": 2,
+    "preparedMs": 3430.7599999904633,
+    "initializedMs": 5185.924999982119,
+    "sharedGeometry": true,
+    "initializationFrames": {
+      "count": 517,
+      "medianMs": 16.68000000000029,
+      "maximumMs": 33.36999999999989
+    },
+    "queries": [
+      {
+        "source": 0,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 298,
+        "queryMs": 69.00499999523163
+      },
+      {
+        "source": 0,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 300,
+        "queryMs": 57.685000002384186
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 742,
+        "queryMs": 19.895000010728836
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 793,
+        "queryMs": 6.9000000059604645
+      },
+      {
+        "source": 2,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 609,
+        "queryMs": 22.459999978542328
+      },
+      {
+        "source": 2,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 649,
+        "queryMs": 9.519999980926514
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": true,
+        "count": 742,
+        "queryMs": 20.37999999523163
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": true,
+        "count": 793,
+        "queryMs": 9.094999998807907
+      }
+    ],
+    "workers": [
+      {
+        "kind": "preparation",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "preparation",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "query",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "query",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "preparation",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "query",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "preparation",
+        "initialized": 1,
+        "terminated": true
+      }
+    ],
+    "browserErrors": []
+  },
+  "resourceChecks": {
+    "nativeAllocationReleased": true,
+    "nativeExceptionHandlerRemoved": true,
+    "ownedBrowserAndSourceServersExited": true
+  },
+  "scope": "Original GUI/importer, CAD references, outer refinement and OS scheduler were not executed by the native probe. Browser frame sampling covers preparation/index initialization with an otherwise empty application viewport, not concurrent full-scan rendering or whole-registration latency. Explicit original clock streams reproduce native sample IDs; normal use reads the preparation worker's monotonic clock. No public GUI/MCP global-registration capability is promoted by this private dependency slice."
+}

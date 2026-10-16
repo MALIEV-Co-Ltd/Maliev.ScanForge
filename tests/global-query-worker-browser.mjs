@@ -171,6 +171,7 @@ try {
             previous = await new Promise(requestAnimationFrame);
           const frames = [];
           const tick = (time) => {
+            if (!sampling) return;
             frames.push(time - previous);
             previous = time;
             if (sampling) requestAnimationFrame(tick);

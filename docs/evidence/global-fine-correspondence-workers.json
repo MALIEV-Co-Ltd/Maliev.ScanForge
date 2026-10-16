@@ -40,12 +40,12 @@
     ],
     "passed": true,
     "physicalWorkers": 2,
-    "initializedMs": 1549.4000000059605,
+    "initializedMs": 1567.5699999928474,
     "sharedGeometry": true,
     "initializationFrames": {
       "count": 94,
       "medianMs": 16.679999999999836,
-      "maximumMs": 16.76000000000022
+      "maximumMs": 16.745000000000346
     },
     "queries": [
       {
@@ -53,56 +53,56 @@
         "mode": "pooled-plane",
         "transformed": false,
         "count": 447,
-        "queryMs": 65.53499999642372
+        "queryMs": 74.27499997615814
       },
       {
         "source": 0,
         "mode": "target-average",
         "transformed": false,
         "count": 461,
-        "queryMs": 31.58500000834465
+        "queryMs": 34.025000005960464
       },
       {
         "source": 1,
         "mode": "pooled-plane",
         "transformed": false,
         "count": 332,
-        "queryMs": 24.349999994039536
+        "queryMs": 27.805000007152557
       },
       {
         "source": 1,
         "mode": "target-average",
         "transformed": false,
         "count": 204,
-        "queryMs": 7.6549999713897705
+        "queryMs": 5.370000004768372
       },
       {
         "source": 2,
         "mode": "pooled-plane",
         "transformed": false,
         "count": 388,
-        "queryMs": 31.064999997615814
+        "queryMs": 33.05500000715256
       },
       {
         "source": 2,
         "mode": "target-average",
         "transformed": false,
         "count": 284,
-        "queryMs": 3.925000011920929
+        "queryMs": 4.860000014305115
       },
       {
         "source": 1,
         "mode": "pooled-plane",
         "transformed": true,
         "count": 333,
-        "queryMs": 24.104999989271164
+        "queryMs": 24.30000001192093
       },
       {
         "source": 1,
         "mode": "target-average",
         "transformed": true,
         "count": 204,
-        "queryMs": 5.159999996423721
+        "queryMs": 5.359999984502792
       }
     ],
     "workers": [
@@ -129,5 +129,6 @@
     ],
     "browserErrors": []
   },
-  "scope": "Private global correspondence stage, not complete scene sampling/overlap/outer registration or public GUI/MCP Global Fine Align. Original per-cell numerical callback executed directly; native OS scheduling and importer were not executed. CAD target lists were empty. Timings are local browser measurements, not native-vs-JS speedup claims."
+  "scope": "Private global correspondence stage, not complete scene sampling/overlap/outer registration or public GUI/MCP Global Fine Align. Original per-cell numerical callback executed directly; native OS scheduling and importer were not executed. CAD target lists were empty. Timings are local browser measurements, not native-vs-JS speedup claims.",
+  "frameSampler": "Corrected to ignore already-scheduled callbacks after sampling stops; fresh query-only replay supersedes the earlier maximum-frame observation."
 }
