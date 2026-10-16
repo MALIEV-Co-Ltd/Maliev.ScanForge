@@ -53,21 +53,25 @@ export interface CurvatureRepatchResult {
   fitRms?: number;
 }
 
-/** Recover a local panel from retained facets only. No surviving vertex moves.
- * Unsupported collars retain the caller's existing spatial-fill behavior.
- * Work is bounded to 8192 support faces, 2048 rim vertices and 4096 new vertices.
- */
-export function repatchCurvatureSurface(
+export interface FittedScanSurface {
+  project(point: Vec3): Vec3;
+  evaluate(point: Vec3): Vec3;
+  rim: Vec3[];
+  fitRms: number;
+}
+
+/** Fit only retained, connected collar geometry; reject creases and underdetermined support. */
+export function fitCurvatureSurface(
   topology: MeshTopology,
   ids: readonly number[],
   options: SpatialRepatchOptions = {},
-): CurvatureRepatchResult {
+): { surface?: FittedScanSurface; reason?: string } {
   const cancel = () => {
     if (options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
   };
   cancel();
-  const reject = (reason: string): CurvatureRepatchResult => ({ reason });
+  const reject = (reason: string) => ({ reason });
   if (ids.length < 4 || ids.length > 2048)
     return reject("unsupported rim size");
   const point = (id: number): Vec3 => [
@@ -145,6 +149,47 @@ export function repatchCurvatureSurface(
   const rim = ids.map((id) => local(point(id)));
   if (rms > 0.01 || rim.some(([x, y, z]) => Math.abs(z - height(x, y)) > 0.02))
     return reject("surrounding surface is not a smooth local quadratic");
+  const residuals = rim.map(([x, y, z]) => z - height(x, y));
+  const evaluate = ([x, y]: Vec3): Vec3 => {
+    let weighted = 0,
+      weights = 0;
+    for (let i = 0; i < rim.length; i++) {
+      const d = (x - rim[i][0]) ** 2 + (y - rim[i][1]) ** 2,
+        w = 1 / Math.max(d * d, 1e-16);
+      weighted += w * residuals[i];
+      weights += w;
+    }
+    const z = height(x, y) + weighted / weights;
+    return origin.map(
+      (v, k) => v + radius * (axis[k] * x + second[k] * y + normal[k] * z),
+    ) as Vec3;
+  };
+  return { surface: { project: local, evaluate, rim, fitRms: rms * radius } };
+}
+
+/** Recover a local panel from retained facets only. No surviving vertex moves.
+ * Unsupported collars retain the caller's existing spatial-fill behavior.
+ * Work is bounded to 8192 support faces, 2048 rim vertices and 4096 new vertices.
+ */
+export function repatchCurvatureSurface(
+  topology: MeshTopology,
+  ids: readonly number[],
+  options: SpatialRepatchOptions = {},
+): CurvatureRepatchResult {
+  const cancel = () => {
+    if (options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+  };
+  const reject = (reason: string): CurvatureRepatchResult => ({ reason });
+  const fitted = fitCurvatureSurface(topology, ids, options);
+  if (!fitted.surface) return { reason: fitted.reason };
+  const surface = fitted.surface,
+    rim = surface.rim;
+  const point = (id: number): Vec3 => [
+    topology.vertices[id * 3],
+    topology.vertices[id * 3 + 1],
+    topology.vertices[id * 3 + 2],
+  ];
   const count = topology.vertices.length / 3;
   const coords = new Map<number, Vec3>(ids.map((id, i) => [id, rim[i]]));
   let triangles: number[][] = [];
@@ -314,26 +359,10 @@ export function repatchCurvatureSurface(
     legalize();
     if (pass === 11) return reject("patch refinement iteration limit");
   }
-  // Interpolate small rim residuals smoothly, keeping the exact existing seam.
-  const residuals = rim.map(([x, y, z]) => z - height(x, y));
   const inserted: number[] = [];
   for (let id = count; id < nextId; id++) {
     if ((id - count) % 128 === 0) cancel();
-    const [x, y] = coords.get(id)!;
-    let weighted = 0,
-      weights = 0;
-    for (let i = 0; i < rim.length; i++) {
-      const d = (x - rim[i][0]) ** 2 + (y - rim[i][1]) ** 2,
-        w = 1 / Math.max(d * d, 1e-16);
-      weighted += w * residuals[i];
-      weights += w;
-    }
-    const z = height(x, y) + weighted / weights;
-    inserted.push(
-      ...origin.map(
-        (v, k) => v + radius * (axis[k] * x + second[k] * y + normal[k] * z),
-      ),
-    );
+    inserted.push(...surface.evaluate(coords.get(id)!));
   }
   const insertedNormals = new Float64Array(inserted.length);
   const finalPoint = (id: number): Vec3 =>
@@ -356,7 +385,7 @@ export function repatchCurvatureSurface(
       i,
     );
   return {
-    fitRms: rms * radius,
+    fitRms: surface.fitRms,
     patch: {
       completed: true,
       remainingLoop: [],

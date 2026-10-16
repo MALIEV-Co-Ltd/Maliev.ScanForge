@@ -238,7 +238,14 @@ it("automatically follows curved tangents even when the rim itself is planar", (
   });
   expect(result.diagnostics.method).toBe("tangent");
   expect(result.diagnostics.filledHoles).toBe(1);
+  expect(result.diagnostics.surfaceFitHoles).toBe(1);
+  expect(result.diagnostics.boundedFallbackHoles).toBe(0);
+  expect(result.diagnostics.surfaceFitMaxRms).toBeLessThan(1e-6);
   const patch = result.positions!.slice(positions.length);
+  for (let i = 0; i < patch.length; i += 3)
+    expect(
+      Math.abs(patch[i + 2] - 0.025 * (patch[i] ** 2 + patch[i + 1] ** 2)),
+    ).toBeLessThan(0.001);
   expect(
     Math.min(...Array.from(patch).filter((_, i) => i % 3 === 2)),
   ).toBeLessThan(0.1);

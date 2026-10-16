@@ -10,6 +10,60 @@ const orient = (a: Vector2, b: Vector2, c: Vector2) =>
 /** A bounded refinement failure leaves this hole unchanged. */
 export class HoleRefinementError extends Error {}
 
+/** Positive boundary-edge interpolation never extrapolates beyond rim heights.
+ * Used when the scan collar cannot justify a smooth continuing surface. */
+export function boundedHoleSurface(
+  points: readonly Vec3[],
+  projected: readonly Vector2[],
+  origin: Vec3,
+  u: Vec3,
+  v: Vec3,
+  normal: Vec3,
+): (p: Vector2) => Vec3 {
+  const boundary = projected.map((p) => p.clone());
+  const heights = points.map((p) =>
+    p.reduce((sum, value, k) => sum + (value - origin[k]) * normal[k], 0),
+  );
+  const scale = boundary.reduce(
+    (value, p) => Math.max(value, p.length()),
+    1e-9,
+  );
+  return (p) => {
+    let value = 0,
+      weights = 0;
+    for (let i = 0; i < boundary.length; i++) {
+      const j = (i + 1) % boundary.length,
+        a = boundary[i],
+        b = boundary[j];
+      const dx = b.x - a.x,
+        dy = b.y - a.y;
+      const t = Math.max(
+        0,
+        Math.min(
+          1,
+          ((p.x - a.x) * dx + (p.y - a.y) * dy) /
+            Math.max(dx * dx + dy * dy, 1e-20),
+        ),
+      );
+      const d2 =
+        ((p.x - a.x - dx * t) / scale) ** 2 +
+        ((p.y - a.y - dy * t) / scale) ** 2;
+      const height = (1 - t) * heights[i] + t * heights[j];
+      if (d2 < 1e-20)
+        return origin.map(
+          (x, k) => x + u[k] * p.x + v[k] * p.y + normal[k] * height,
+        ) as Vec3;
+      const weight = 1 / d2;
+      value += weight * height;
+      weights += weight;
+    }
+    const height = value / weights;
+    return origin.map(
+      (x, k) => x + u[k] * p.x + v[k] * p.y + normal[k] * height,
+    ) as Vec3;
+  };
+}
+
 /** Conforming interior refinement. Rim edges are constraints: neither endpoint
  * moves and no midpoint is inserted on an edge shared with the retained mesh. */
 export function refineHolePatch(

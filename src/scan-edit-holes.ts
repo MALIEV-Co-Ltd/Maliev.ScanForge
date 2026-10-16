@@ -2,6 +2,7 @@ import { ShapeUtils, Vector2 } from "three";
 import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
+import { fitCurvatureSurface } from "./scan-defeature-surface";
 import {
   bridgeAttachmentNormals,
   bridgeInsideBoundary,
@@ -15,6 +16,7 @@ import {
 } from "./scan-defeature-repatch";
 import {
   HoleRefinementError,
+  boundedHoleSurface,
   holeSurface,
   refineHolePatch,
   validHolePatch,
@@ -72,7 +74,11 @@ export function runHoleFill(
   const cachedVertices = o.topologyCache ? Array.from(t.vertices) : undefined;
   const cachedTriangles = o.topologyCache ? Array.from(t.triangles) : undefined;
   let filledHoles = 0,
-    skippedHoles = 0;
+    skippedHoles = 0,
+    surfaceFitHoles = 0,
+    boundedFallbackHoles = 0,
+    surfaceFitMaxRms = 0;
+  const surfaceFallbackReasons = new Set<string>();
   const methods = new Set<string>();
   checkProgress(o, 0, "Estimating boundary tangents");
   const vertexNormals = bridging
@@ -319,7 +325,7 @@ export function runHoleFill(
       }
     }
     const rimCount = points.length;
-    const surface = holeSurface(
+    let surface = holeSurface(
       points,
       projected,
       boundaryNormals,
@@ -329,9 +335,36 @@ export function runHoleFill(
       unit,
       method,
     );
+    let fittedRms: number | undefined,
+      fallbackReason = "";
+    if (
+      !bridging &&
+      (r.mode ?? "entire") === "entire" &&
+      method !== "flat" &&
+      (!r.algorithm || r.algorithm === "automatic")
+    ) {
+      const fitted = fitCurvatureSurface(t, original, { signal: o.signal });
+      if (fitted.surface) {
+        const model = fitted.surface;
+        surface = (p) => {
+          const world = points[0].map(
+            (value, k) => value + u[k] * p.x + v[k] * p.y,
+          ) as Vec3;
+          return model.evaluate(model.project(world));
+        };
+        fittedRms = model.fitRms;
+      } else {
+        surface = boundedHoleSurface(points, projected, points[0], u, v, unit);
+        fallbackReason = fitted.reason ?? "unsupported surrounding surface";
+      }
+    }
     // The native spatial routine expects the retained rim direction, unlike
     // the positive projected orientation used by our constrained refinement.
-    if (method !== "flat" && (r.mode ?? "entire") === "entire") {
+    if (
+      method !== "flat" &&
+      !fallbackReason &&
+      (r.mode ?? "entire") === "entire"
+    ) {
       const patch = repatchSpatialBoundary(t, original, {
         vertexNormals,
         maxIterations: Math.min(10000, Math.max(64, original.length * 8)),
@@ -468,6 +501,14 @@ export function runHoleFill(
         }
     }
     methods.add(method);
+    if (fittedRms !== undefined) {
+      surfaceFitHoles++;
+      surfaceFitMaxRms = Math.max(surfaceFitMaxRms, fittedRms);
+    }
+    if (fallbackReason) {
+      boundedFallbackHoles++;
+      surfaceFallbackReasons.add(fallbackReason);
+    }
     filledHoles++;
   }
   const positions = finiteOutput([...r.positions, ...output]);
@@ -511,6 +552,10 @@ export function runHoleFill(
       filledHoles,
       skippedHoles,
       addedTriangles: output.length / 9,
+      surfaceFitHoles,
+      surfaceFitMaxRms,
+      boundedFallbackHoles,
+      surfaceFallbackReasons: [...surfaceFallbackReasons].join("; "),
       method: [...methods].join(", ") || "none",
       mode: r.mode ?? "entire",
     },

@@ -122,7 +122,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       if (operation.action !== "inventory")
         props.onStatus(
           operation.action === "fillHoles"
-            ? `${outcome.diagnostics.filledHoles ?? 0} holes filled · ${outcome.diagnostics.skippedHoles ?? 0} skipped`
+            ? `${outcome.diagnostics.filledHoles ?? 0} holes filled · ${outcome.diagnostics.skippedHoles ?? 0} skipped${Number(outcome.diagnostics.boundedFallbackHoles) > 0 ? ` · ${outcome.diagnostics.boundedFallbackHoles} filled from boundary` : ""}`
             : `${label} complete.`,
         );
     } catch (error) {

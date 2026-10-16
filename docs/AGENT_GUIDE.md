@@ -991,3 +991,20 @@ full job text, including numeric percentage, even while the pointer label is
 hidden. This full text remains in `application_inspect.statuses`; the visible
 label exposes its stage and an accessible progressbar value. MCP `job_get` progress,
 request schemas, model/history semantics and geometry behavior are unchanged.
+
+## Automatic hole surface recovery
+
+Automatic entire-hole filling (`algorithm: "automatic"`, `mode: "entire"`)
+fits a local quadratic to retained, connected scan faces when the collar is
+smooth and sufficiently supported. Steep, creased, underdetermined or poorly
+fitted collars use positive boundary-edge height interpolation instead of
+extrapolating scan normals into a pit. The fallback stays within the rim's
+height range in the cap frame; it cannot reconstruct missing curvature without
+reliable support. Existing rim and retained vertices stay fixed. Explicit flat,
+tangent and curvature algorithms, partial fills and bridges keep their behavior.
+Both GUI and MCP use the same `mesh_process` scan-edit operation. Successful
+results expose `diagnostics.surfaceFitHoles`, `surfaceFitMaxRms` (model units),
+`boundedFallbackHoles` and `surfaceFallbackReasons`. These count accepted patches;
+`method` retains the selected algorithm category. The GUI reports how many holes
+were filled from the boundary. Unsupported or invalid disks still remain unchanged
+and count as skipped.
