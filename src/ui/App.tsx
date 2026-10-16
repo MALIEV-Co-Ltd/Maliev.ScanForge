@@ -3044,13 +3044,13 @@ export function App() {
         };
       } else {
         let positions;
-        let pointNormals: number[] | undefined;
+        let pointNormals: Entity["normals"];
         let scanSource: ScanSource | undefined;
         let indexedMesh: Entity["indexedMesh"];
         {
           positions = await importScan(file, {
             onMeshNormals: (normals) => {
-              pointNormals = Array.from(normals);
+              pointNormals = normals;
             },
             onIndexedMesh: (mesh) => {
               indexedMesh = mesh;
@@ -3062,9 +3062,7 @@ export function App() {
               scanSource = source;
             },
             onPointCloud: (cloud) => {
-              pointNormals = cloud.normals
-                ? Array.from(cloud.normals)
-                : undefined;
+              pointNormals = cloud.normals;
             },
             signal,
             onProgress: (progress) => {

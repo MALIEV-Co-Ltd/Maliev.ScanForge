@@ -421,7 +421,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                           : {}),
                       }
                     : undefined,
-                  normals: e.normals,
+                  normals: e.normals ? Array.from(e.normals) : undefined,
                   edgePositions: e.edgePositions,
                 },
                 "geometry.json",
@@ -1279,11 +1279,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           throw error;
         }
       } else {
-        let pointNormals: number[] | undefined;
+        let pointNormals: Entity["normals"];
         let indexedMesh: Entity["indexedMesh"];
         const positions = await importScan(new File([blob], name), {
           onMeshNormals: (normals) => {
-            pointNormals = Array.from(normals);
+            pointNormals = normals;
           },
           onIndexedMesh: (mesh) => {
             indexedMesh = mesh;
@@ -1292,9 +1292,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           signal: c.signal,
           onProgress: (f) => c.progress(f, "Importing scan"),
           onPointCloud: (cloud) => {
-            pointNormals = cloud.normals
-              ? Array.from(cloud.normals)
-              : undefined;
+            pointNormals = cloud.normals;
           },
         });
         entity = {

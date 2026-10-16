@@ -31,7 +31,7 @@ it("preserves PLY normals through MCP import, geometry readback and project reco
   const operations = createOperations(host);
   await operations.project_import({ artifactId: "scan" }, context);
   const expected = [1, 0, 0, 0, 0, 1, 0, 1, 0];
-  expect(entities[0].normals).toEqual(expected);
+  expect(entities[0].normals).toEqual(new Float32Array(expected));
   const readback = await operations.object_get(
     { entityId: entities[0].id, includeGeometry: true },
     context,

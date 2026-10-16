@@ -36,8 +36,9 @@ it("imports point clouds through the automation boundary with normals and point 
   expect(entities[0]).toMatchObject({
     kind: "pointcloud",
     positions,
-    normals: Array.from(normals),
+    normals,
   });
+  expect(entities[0].normals).toBe(normals);
   await expect(
     createOperations(host).mesh_analyze({ entityId: entities[0].id }, context),
   ).rejects.toThrow("do not have triangle topology");
