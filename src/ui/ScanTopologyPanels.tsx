@@ -147,7 +147,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
             tolerance: SCAN_TOPOLOGY_TOLERANCE,
             ...operation,
           },
-          { signal },
+          { signal, reuseTopology: true },
         );
         if (!result.scanEdit)
           throw new Error("Bridge worker returned no result.");
@@ -266,18 +266,28 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.positions.length < 9 ||
     !!props.entities.find((e) => e.id === props.selectedId)?.locked;
   useEffect(() => {
-    if (
-      section !== "holes" ||
-      mode !== "bridge" ||
-      blocked ||
-      !inventory.boundaries.length
-    ) {
+    if (section !== "holes" || blocked || !inventory.boundaries.length) {
       props.onBridgeSession?.(null);
       return;
+    }
+    if (mode !== "bridge") {
+      props.onBridgeSession?.({
+        mode: "holes",
+        boundaries: inventory.boundaries,
+        onGesture: () => {},
+        onSelectBoundary: (boundary) => {
+          const index = items.findIndex((item) => item.index === boundary);
+          if (index >= 0) choose(index);
+        },
+      });
+      return () => props.onBridgeSession?.(null);
     }
     props.onBridgeSession?.({
       boundaries: inventory.boundaries,
       onGesture: (phase, start, end) => {
+        // Pointer movement draws a lightweight provisional surface in the viewport.
+        // Only release runs the shared validated edit and adopts its topology.
+        if (phase === "preview") return;
         if (phase === "cancel" || end === null)
           props.onBridgePreview?.(null, false);
         else
@@ -550,7 +560,13 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   className="scan-topology-summary"
                 >
                   {props.bridgeStatus ||
-                    "Hover any exposed boundary edge for a green highlight, then drag to another edge. Edges can be on separate boundaries; no hole selection is needed. Release creates the bridge. Esc cancels; Undo removes it."}
+                    "Hover an exposed edge, then drag to see a live provisional bridge. Release on another edge to validate and create it with the chosen continuity. Edges may be on separate boundaries. Esc cancels; Undo removes it."}
+                </p>
+              )}
+              {mode !== "bridge" && (
+                <p className="scan-topology-summary">
+                  Hover a hole to highlight its boundary, then click it to
+                  select it for filling.
                 </p>
               )}
               {mode === "partial" && (

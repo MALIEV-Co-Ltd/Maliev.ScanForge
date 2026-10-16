@@ -719,6 +719,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         );
       const request = {
         ...op,
+        ...(bridgePreview ? { previewOnly: true } : {}),
         positions:
           selection &&
           ![
@@ -836,7 +837,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       }
       const result = await processScanRegistration(e, request, {
         signal: c.signal,
-        reuseTopology: kind === "scanEdit" && !bridgePreview && !selection,
+        reuseTopology: kind === "scanEdit" && !selection,
         onProgress: c.progress,
         check: () => c.check(),
       });

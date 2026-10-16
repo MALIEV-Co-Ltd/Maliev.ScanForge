@@ -8,7 +8,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/bridge-v2/", import.meta.url);
+  out = new URL("../.resources/bridge-response-browser/", import.meta.url);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -130,6 +130,25 @@ try {
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.setDefaultTimeout(15000);
+  await page.addInitScript(() => {
+    window.__bridgeRequests = [];
+    window.__bridgeStages = [];
+    const Original = window.Worker;
+    window.Worker = class extends Original {
+      constructor(url, options) {
+        super(url, options);
+        this.processing = String(url).includes("processing-worker");
+        if (this.processing)
+          this.addEventListener("message", (e) => {
+            if (e.data.stage) window.__bridgeStages.push(e.data.stage);
+          });
+      }
+      postMessage(data, ...args) {
+        if (this.processing) window.__bridgeRequests.push(data.kind);
+        return super.postMessage(data, ...args);
+      }
+    };
+  });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
@@ -434,6 +453,39 @@ try {
     };
     const a = screen(source),
       b = screen(destination);
+    if (scenario === "flat" || scenario === "tangent") {
+      await controls.locator(".app-select > button").first().click();
+      await page
+        .getByRole("option", { name: "Entire hole", exact: true })
+        .click();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      const holeView = (await call("viewport_get")).result;
+      assert.equal(holeView.bridge.mode, "holes");
+      assert.equal(holeView.bridge.hovered.boundary, hole);
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+      assert(
+        (
+          await controls
+            .locator('.scan-topology-list button[aria-pressed="true"]')
+            .innerText()
+        ).startsWith("Hole " + (hole + 1)),
+      );
+      if (scenario === "flat") {
+        const unit = box.height / (2 * 22 * Math.tan((21 * Math.PI) / 180));
+        await page.mouse.move(
+          box.x + box.width / 2 + 4.5 * unit,
+          box.y + box.height / 2,
+        );
+        assert.equal(
+          (await call("viewport_get")).result.bridge.hovered,
+          null,
+          "solid surface is not a hole",
+        );
+      }
+      await controls.locator(".app-select > button").first().click();
+      await page.getByRole("option", { name: "Bridge", exact: true }).click();
+    }
+
     await page.mouse.move(a.x, a.y);
     await page.waitForFunction(
       () =>
@@ -447,7 +499,15 @@ try {
     await page.screenshot({
       path: fileURLToPath(new URL(`${scenario}-hover.png`, out)),
     });
+    const requestsBeforeDrag = await page.evaluate(
+      () => window.__bridgeRequests.length,
+    );
     await page.mouse.down();
+    await page.mouse.move((a.x + b.x) / 2, (a.y + b.y) / 2);
+    assert(
+      Number(await canvas.getAttribute("data-bridge-preview")) > 0,
+      "empty-space preview is immediate",
+    );
     await page.mouse.move(b.x, b.y, { steps: 12 });
     await page.waitForFunction(
       () =>
@@ -456,9 +516,12 @@ try {
         ) > 0,
     );
     assert(
-      (await controls.getByRole("status").innerText()).includes(
-        curved ? "tangent" : "flat",
-      ),
+      (await controls.getByRole("status").innerText()).includes("provisional"),
+    );
+    assert.equal(
+      await page.evaluate(() => window.__bridgeRequests.length),
+      requestsBeforeDrag,
+      "dragging must not create geometry requests",
     );
     assert.equal(await history(), beforeHistory);
     const dragView = (await call("viewport_get")).result;
@@ -480,7 +543,7 @@ try {
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.up();
     assert.equal(await history(), beforeHistory);
-    // A valid release accepts the exact generated mesh, in a single Undo step.
+    // Release validates the same mesh as MCP, in one Undo step, using retained topology.
     await page.mouse.move(a.x, a.y);
     await page.mouse.down();
     await page.mouse.move(b.x, b.y, { steps: 8 });
@@ -490,13 +553,28 @@ try {
           document.querySelector(".viewport canvas")?.dataset.bridgePreview,
         ) > 0,
     );
+    const stageCount = await page.evaluate(() => window.__bridgeStages.length);
     await page.mouse.up();
-    await page.waitForFunction(
-      () =>
-        document.querySelector(".viewport canvas")?.dataset.bridgePreview ===
-        "0",
-    );
+    for (
+      let attempt = 0;
+      attempt < 80 && (await history()) === beforeHistory;
+      attempt++
+    )
+      await new Promise((resolve) => setTimeout(resolve, 100));
     assert.equal(await history(), beforeHistory + 1);
+    await controls.getByRole("button", { name: "Back", exact: true }).waitFor();
+    assert(
+      !(
+        await page.evaluate(
+          (start) => window.__bridgeStages.slice(start),
+          stageCount,
+        )
+      ).some(
+        (stage) =>
+          stage === "Welding vertices" || stage === "Building topology",
+      ),
+      "bridge commit and inventory must reuse topology",
+    );
     const gui = await geometry();
     assert.deepEqual(
       gui.positions.slice(original.positions.length),

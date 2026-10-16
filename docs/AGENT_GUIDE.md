@@ -44,8 +44,11 @@ lock and cancellation checks are unchanged by cache hits.
 In **Fill holes → Bridge**, hover any exposed edge of the selected scan for a
 green edge highlight and crosshair, then drag to another exposed edge. No hole
 selection is required: the two edges can lie on one closed loop, on separate
-loops, or on independent open boundary chains of the same scan. The live facet preview snaps to both edges;
-release accepts one bridge as one history step. Escape, a release away from the
+loops, or on independent open boundary chains of the same scan. A provisional
+surface follows every pointer movement, including across empty space, and snaps
+to the destination edge. Pointer movement starts no geometry worker. Release
+validates and constructs the chosen flat/tangent/curvature surface and adds one
+history step. Escape, a release away from the
 rim, changing tools, or replacing the source cancels the preview. Undo/Redo uses
 the normal model history. Repeat a drag on a remaining opening to add a bridge.
 Automatic continuity uses the adjacent attachment facets: coplanar facets select
@@ -76,14 +79,26 @@ Use actual indices from the current inventory. Poll `job_get`; its result return
 `addedTriangles`, `filledHoles`) and a JSON artifact containing only the added
 triangle `positions` in world millimetres, with the same diagnostics. Preview
 does not edit geometry or add history and does not display an agent overlay.
-Omit `selectionOnly`, `createNew` and target fields for previews.
+Omit `selectionOnly`, `createNew` and target fields for previews. Read-only MCP
+previews reuse prepared topology without adopting their output as source geometry.
+Committed bridges retain their successor index so the next inventory/edit does
+not repeat welding and topology construction. Patch append shares untouched edge
+records and copies affected edge uses; output-precision changes force a full
+refresh instead of retaining stale adjacency.
 
 To commit, repeat the operation with `previewOnly` omitted, a fresh revision and
 request ID. The normal processing response reports the chosen method; one model
 history step is added. `history_undo` / `history_redo` restore/reapply the bridge.
 Reinspect boundaries after each edit, Undo or Redo; their indices may change.
 Geometry locks, cancellation, revision checks and retry receipts remain active.
-While the GUI bridge tool is open, `viewport_get.bridge` reports the hovered
+In Entire/Semi hole mode, hovering inside a visible closed boundary highlights
+its full rim; clicking selects that hole in the list. Picking respects clipping
+and occlusion and requires no cycling through the inventory. Agents select the
+same inventory indices through `mesh_process`; `viewport_get.bridge.mode` is
+`holes` during this picker and `bridge` during a bridge gesture. Hole refinement
+grades interior size around long fixed rim edges (including bridge rails) while
+preserving those constraints and validating the resulting disk.
+While the GUI hole/bridge tool is open, `viewport_get.bridge` reports the hovered
 `{boundary, edge}`, active drag source, picking readiness and preview triangle
 count. Hovering does not run mesh generation. Picking uses the existing display
 index for large scans; source clipping and occluding surfaces still apply.

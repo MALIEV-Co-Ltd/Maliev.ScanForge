@@ -612,6 +612,7 @@ export class Viewport {
       ...(this.bridgeSession
         ? {
             bridge: {
+              mode: this.bridgeSession.mode ?? "bridge",
               hovered: this.bridgeHovered ? { ...this.bridgeHovered } : null,
               dragStart: this.bridgeDrag ? { ...this.bridgeDrag.start } : null,
               picking:
@@ -1056,6 +1057,21 @@ export class Viewport {
   }
 
   private pointerDown(event: PointerEvent): void {
+    if (
+      this.bridgeSession?.mode === "holes" &&
+      event.button === 0 &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    ) {
+      const boundary = this.holeBoundaryAt(event);
+      if (boundary !== null) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.bridgeSession.onSelectBoundary?.(boundary);
+        return;
+      }
+    }
     if (this.beginBridgeDrag(event)) return;
     if (
       event.button === 0 &&
@@ -1158,6 +1174,7 @@ export class Viewport {
       event.stopImmediatePropagation();
       const end = this.bridgeEdgeAt(event);
       this.highlightBridgeEdge(end);
+      this.drawBridgeDrag(event, end);
       if (!this.sameBridgeEdge(end, this.bridgeDrag.end)) {
         this.bridgeDrag.end = end;
         this.bridgeSession?.onGesture("preview", this.bridgeDrag.start, end);
@@ -1165,7 +1182,14 @@ export class Viewport {
       return;
     }
     if (this.bridgeSession && !event.buttons) {
-      this.highlightBridgeEdge(this.bridgeEdgeAt(event));
+      this.highlightBridgeEdge(
+        this.bridgeSession.mode === "holes"
+          ? (() => {
+              const boundary = this.holeBoundaryAt(event);
+              return boundary === null ? null : { boundary, edge: 0 };
+            })()
+          : this.bridgeEdgeAt(event),
+      );
       return;
     }
     if (
@@ -2812,14 +2836,19 @@ export class Viewport {
       const path = this.bridgeSession?.boundaries[endpoint.boundary];
       if (path) {
         const n = path.points.length / 3;
-        const points = [
-          ...path.points.slice(endpoint.edge * 3, endpoint.edge * 3 + 3),
-          ...path.points.slice(
-            ((endpoint.edge + 1) % n) * 3,
-            ((endpoint.edge + 1) % n) * 3 + 3,
-          ),
-        ];
-        const overlay = createScanBoundaryEdges([{ points, closed: false }]);
+        const points =
+          this.bridgeSession?.mode === "holes"
+            ? [...path.points]
+            : [
+                ...path.points.slice(endpoint.edge * 3, endpoint.edge * 3 + 3),
+                ...path.points.slice(
+                  ((endpoint.edge + 1) % n) * 3,
+                  ((endpoint.edge + 1) % n) * 3 + 3,
+                ),
+              ];
+        const overlay = createScanBoundaryEdges([
+          { points, closed: this.bridgeSession?.mode === "holes" },
+        ]);
         for (const child of [...overlay.children]) {
           const material = (child as THREE.Mesh).material as THREE.Material & {
             color: THREE.Color;
@@ -2990,9 +3019,167 @@ export class Viewport {
     }
   }
 
+  /** Provisional geometry follows every pointer sample; validation runs on release. */
+  private drawBridgeDrag(
+    event: Pick<PointerEvent, "clientX" | "clientY">,
+    end: ScanBridgeEndpoint | null,
+  ): void {
+    const start = this.bridgeDrag?.start,
+      paths = this.bridgeSession?.boundaries;
+    if (!start || !paths) return;
+    const edge = (ref: ScanBridgeEndpoint) => {
+      const points = paths[ref.boundary].points,
+        n = points.length / 3;
+      return [
+        new THREE.Vector3().fromArray(points, ref.edge * 3),
+        new THREE.Vector3().fromArray(points, ((ref.edge + 1) % n) * 3),
+      ];
+    };
+    const [a, b] = edge(start);
+    let c: THREE.Vector3, d: THREE.Vector3;
+    if (end && !this.sameBridgeEdge(start, end)) {
+      [c, d] = edge(end);
+      if (
+        a.distanceToSquared(c) + b.distanceToSquared(d) <
+        a.distanceToSquared(d) + b.distanceToSquared(c)
+      )
+        [c, d] = [d, c];
+    } else {
+      const rect = this.renderer.domElement.getBoundingClientRect();
+      this.raycaster.setFromCamera(
+        new THREE.Vector2(
+          ((event.clientX - rect.left) / rect.width) * 2 - 1,
+          1 - ((event.clientY - rect.top) / rect.height) * 2,
+        ),
+        this.camera,
+      );
+      const center = a.clone().add(b).multiplyScalar(0.5),
+        point = new THREE.Vector3();
+      const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+        this.camera.getWorldDirection(new THREE.Vector3()),
+        center,
+      );
+      if (!this.raycaster.ray.intersectPlane(plane, point)) return;
+      const half = b.clone().sub(a).multiplyScalar(0.5);
+      c = point.clone().add(half);
+      d = point.clone().sub(half);
+    }
+    this.setBridgePreview(
+      new Float32Array([
+        ...a.toArray(),
+        ...b.toArray(),
+        ...c.toArray(),
+        ...a.toArray(),
+        ...c.toArray(),
+        ...d.toArray(),
+      ]),
+    );
+  }
+
+  /** Projected closed rims are pickable over empty space, with BVH occlusion. */
+  private holeBoundaryAt(
+    event: Pick<PointerEvent, "clientX" | "clientY">,
+  ): number | null {
+    const session = this.bridgeSession,
+      rect = this.renderer.domElement.getBoundingClientRect();
+    if (!session || !rect.width || !rect.height) return null;
+    const candidates: { boundary: number; depth: number; area: number }[] = [];
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        1 - ((event.clientY - rect.top) / rect.height) * 2,
+      ),
+      this.camera,
+    );
+    session.boundaries.forEach((path, boundary) => {
+      if (!path.closed || path.points.length < 9) return;
+      const points: THREE.Vector3[] = [];
+      for (let i = 0; i < path.points.length; i += 3)
+        points.push(new THREE.Vector3().fromArray(path.points, i));
+      const screen = points.map((p) => p.clone().project(this.camera));
+      if (screen.some((p) => !Number.isFinite(p.x) || p.z < -1 || p.z > 1))
+        return;
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        y = 1 - ((event.clientY - rect.top) / rect.height) * 2;
+      let inside = false,
+        area = 0;
+      const normal = new THREE.Vector3();
+      for (let i = 0, j = screen.length - 1; i < screen.length; j = i++) {
+        const a = screen[i],
+          b = screen[j];
+        if (
+          a.y > y !== b.y > y &&
+          x < ((b.x - a.x) * (y - a.y)) / (b.y - a.y) + a.x
+        )
+          inside = !inside;
+        area += a.x * b.y - b.x * a.y;
+        normal.add(new THREE.Vector3().crossVectors(points[j], points[i]));
+      }
+      if (!inside || normal.lengthSq() < 1e-20) return;
+      const world = new THREE.Vector3();
+      if (
+        !this.raycaster.ray.intersectPlane(
+          new THREE.Plane().setFromNormalAndCoplanarPoint(
+            normal.normalize(),
+            points[0],
+          ),
+          world,
+        )
+      )
+        return;
+      const source = this.objects.get(this.selectedId ?? "")?.mesh;
+      if (
+        source &&
+        (!source.visible ||
+          (source.material.clippingPlanes ?? []).some(
+            (p) => p.distanceToPoint(world) < 0,
+          ))
+      )
+        return;
+      candidates.push({
+        boundary,
+        depth: this.raycaster.ray.origin.distanceTo(world),
+        area: Math.abs(area),
+      });
+    });
+    if (!candidates.length) return null;
+    const meshes = [...this.objects.values()]
+      .filter((item) => item.mesh.visible)
+      .map((item) => item.mesh);
+    if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) return null;
+    const previous = this.raycaster.firstHitOnly;
+    try {
+      this.raycaster.firstHitOnly = !meshes.some(
+        (mesh) => mesh.material.clippingPlanes?.length,
+      );
+      const hit = this.raycaster
+        .intersectObjects(meshes, false)
+        .find((hit) =>
+          (
+            (
+              hit.object as THREE.Mesh<
+                THREE.BufferGeometry,
+                THREE.MeshStandardMaterial
+              >
+            ).material.clippingPlanes ?? []
+          ).every((p) => p.distanceToPoint(hit.point) >= 0),
+        );
+      candidates.sort((a, b) => a.area - b.area || a.depth - b.depth);
+      return (
+        candidates.find(
+          (c) =>
+            !hit || hit.distance > c.depth + Math.max(1e-5, c.depth * 1e-5),
+        )?.boundary ?? null
+      );
+    } finally {
+      this.raycaster.firstHitOnly = previous;
+    }
+  }
+
   private beginBridgeDrag(event: PointerEvent): boolean {
     if (
       !this.bridgeSession ||
+      this.bridgeSession.mode === "holes" ||
       event.button !== 0 ||
       !event.isPrimary ||
       event.ctrlKey ||
@@ -3024,6 +3211,7 @@ export class Viewport {
     const drag = this.bridgeDrag;
     this.bridgeDrag = undefined;
     if (!drag) return;
+    this.setBridgePreview();
     this.controls.enabled = drag.controlsEnabled;
     if (this.renderer.domElement.hasPointerCapture(drag.id))
       this.renderer.domElement.releasePointerCapture(drag.id);

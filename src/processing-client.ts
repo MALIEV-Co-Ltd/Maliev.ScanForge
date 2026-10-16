@@ -272,7 +272,8 @@ function runProcessingRequest(
         );
       cleanup(
         true,
-        request.kind === "scanPreview"
+        request.kind === "scanPreview" ||
+          (request.kind === "scanEdit" && request.previewOnly)
           ? undefined
           : (event.data.result.pointCloudEdit?.positions ??
               event.data.result.scanEdit?.positions ??

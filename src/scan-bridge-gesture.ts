@@ -7,6 +7,8 @@ export interface ScanBridgeEndpoint {
 }
 /** A bridge owns only an edge drag; camera navigation remains available elsewhere. */
 export interface ScanBridgeSession {
+  mode?: "bridge" | "holes";
+  onSelectBoundary?(boundary: number): void;
   boundaries: readonly ScanBoundaryPath[];
   onGesture(
     phase: "preview" | "commit" | "cancel",

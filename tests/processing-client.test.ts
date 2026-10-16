@@ -844,3 +844,77 @@ it("copies and transfers indexed normals without detaching source or history buf
   });
   await promise;
 });
+
+it("retains source topology through read-only bridge previews and adopts it only on commit", async () => {
+  const replies: any[] = [];
+  const scope = {
+    onmessage: null as any,
+    postMessage: (message: unknown) => replies.push(message),
+  };
+  vi.stubGlobal("self", scope);
+  vi.resetModules();
+  await import("../src/processing-worker");
+  // A square annulus with one inner and one outer boundary.
+  const p = (i: number, r: number) => [
+    Math.cos((i * Math.PI) / 2) * r,
+    Math.sin((i * Math.PI) / 2) * r,
+    0,
+  ];
+  const coordinates: number[] = [];
+  for (let i = 0; i < 4; i++)
+    coordinates.push(
+      ...p(i, 1),
+      ...p(i, 2),
+      ...p(i + 1, 2),
+      ...p(i, 1),
+      ...p(i + 1, 2),
+      ...p(i + 1, 1),
+    );
+  const source = Float32Array.from(coordinates),
+    base = {
+      kind: "scanEdit",
+      positions: source,
+      geometryKey: 9123,
+      tolerance: 0.001,
+    };
+  await scope.onmessage({ data: { ...base, action: "inventory" } });
+  const before = replies.at(-1).result.scanEdit.inventory;
+  const bridge = {
+    ...base,
+    action: "fillHoles",
+    mode: "bridge",
+    indices: [0],
+    start: 0,
+    end: 2,
+    algorithm: "flat",
+  };
+  // Pick the smaller inner rim regardless of inventory ordering.
+  bridge.indices = [before.boundaries.findIndex((b: any) => b.diameter < 3)];
+  replies.length = 0;
+  await scope.onmessage({ data: { ...bridge, previewOnly: true } });
+  expect(replies.at(-1).result?.scanEdit.diagnostics.filledHoles).toBe(1);
+  replies.length = 0;
+  await scope.onmessage({ data: { ...base, action: "inventory" } });
+  expect(replies.at(-1).result.scanEdit.inventory).toEqual(before);
+  expect(
+    replies.some(
+      (r) => r.stage === "Welding vertices" || r.stage === "Building topology",
+    ),
+  ).toBe(false);
+  replies.length = 0;
+  await scope.onmessage({ data: bridge });
+  const committed = replies.at(-1).result.scanEdit.positions;
+  expect(committed.length).toBeGreaterThan(source.length);
+  replies.length = 0;
+  await scope.onmessage({
+    data: { ...base, action: "inventory", positions: committed },
+  });
+  expect(replies.at(-1).result.scanEdit.inventory.boundaries).toHaveLength(
+    before.boundaries.length - 1,
+  );
+  expect(
+    replies.some(
+      (r) => r.stage === "Welding vertices" || r.stage === "Building topology",
+    ),
+  ).toBe(false);
+});

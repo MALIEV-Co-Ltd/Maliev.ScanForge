@@ -205,7 +205,9 @@ scope.onmessage = async ({ data: incoming }) => {
       }
       result.scanEdit = runScanEdit(request, {
         onProgress: progress,
-        topologyCache,
+        topologyCache: request.previewOnly
+          ? { ...topologyCache }
+          : topologyCache,
         selectedSmoothing: selectedVertices
           ? () => selectedVertices!
           : undefined,
@@ -558,7 +560,8 @@ scope.onmessage = async ({ data: incoming }) => {
     if (
       geometryKey !== undefined &&
       successor &&
-      request.kind !== "scanPreview"
+      request.kind !== "scanPreview" &&
+      !(request.kind === "scanEdit" && request.previewOnly)
     ) {
       // Keep the worker's canonical geometry and any already-built adjacency.
       // Transferring that buffer would detach the successor cache; only the

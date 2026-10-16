@@ -457,10 +457,33 @@ export function runHoleFill(
   }
   const positions = finiteOutput([...r.positions, ...output]);
   if (o.topologyCache && cachedVertices && cachedTriangles) {
+    // Appending a patch preserves every existing edge use. Copy the map, sharing
+    // untouched immutable records, and copy only arrays receiving a new face.
+    // If Float32 output changes old coordinates, refresh from scratch so newly
+    // degenerate facets cannot retain stale adjacency.
+    const edges = t.vertices.every((value) => Math.fround(value) === value)
+      ? new Map(t.edges)
+      : undefined;
+    if (edges) {
+      for (
+        let corner = t.triangles.length;
+        corner < cachedTriangles.length;
+        corner += 3
+      ) {
+        for (let k = 0; k < 3; k++) {
+          const from = cachedTriangles[corner + k],
+            to = cachedTriangles[corner + ((k + 1) % 3)];
+          const key = edgeId(from, to),
+            uses = edges.get(key) ?? [];
+          edges.set(key, [...uses, { face: corner / 3, from, to }]);
+        }
+      }
+    }
     const topology = analyzeIndexedMesh(
       Float64Array.from(cachedVertices, Math.fround),
       new Uint32Array(cachedTriangles),
       { ...o, onProgress: undefined },
+      edges,
     );
     o.topologyCache.positions = positions;
     o.topologyCache.tolerance = o.tolerance ?? 1e-6;

@@ -243,6 +243,7 @@ it("exposes hovered edge, active drag, and preview state through the agent viewp
   view.setScanBridge({ boundaries: [rim], onGesture: vi.fn() });
   view.pointerMove({ ...event(100, 150), buttons: 0 });
   expect(view.inspectAgentView().bridge).toEqual({
+    mode: "bridge",
     hovered: { boundary: 0, edge: 0 },
     dragStart: null,
     picking: "ready",
@@ -317,4 +318,74 @@ it("reuses an occlusion ray for duplicated hidden layers while searching another
   expect(rays).toHaveBeenCalledTimes(2);
   blocker.geometry.dispose();
   blocker.material.dispose();
+});
+
+it("draws a bridge immediately while dragging through empty space, without a worker result", () => {
+  const view = viewport(),
+    onGesture = vi.fn();
+  view.setScanBridge({ boundaries: [rim], onGesture });
+  view.pointerDown(event(100, 150));
+  view.pointerMove(event(100, 100));
+  expect(
+    Number(view.renderer.domElement.dataset.bridgePreview),
+  ).toBeGreaterThan(0);
+  view.pointerMove(event(100, 50));
+  expect(
+    Number(view.renderer.domElement.dataset.bridgePreview),
+  ).toBeGreaterThan(0);
+  view.pointerUp(event(100, 50));
+  expect(Number(view.renderer.domElement.dataset.bridgePreview)).toBe(0);
+});
+it("highlights an entire hole under the pointer and selects it directly", () => {
+  const view = viewport(),
+    onSelectBoundary = vi.fn();
+  view.setScanBridge({
+    mode: "holes",
+    boundaries: [rim],
+    onGesture: vi.fn(),
+    onSelectBoundary,
+  });
+  view.pointerMove({ ...event(100, 100), buttons: 0 });
+  expect(view.bridgeHover.children.length).toBeGreaterThan(0);
+  view.pointerDown(event(100, 100));
+  expect(onSelectBoundary).toHaveBeenCalledExactlyOnceWith(0);
+  expect(view.controls.enabled).toBe(true);
+});
+
+it.each([0, 1])(
+  "does not pick a hole through a retained surface at z=%s",
+  (z) => {
+    const view = viewport(),
+      onSelectBoundary = vi.fn();
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(4, 4),
+      new THREE.MeshBasicMaterial(),
+    );
+    mesh.position.z = z;
+    mesh.updateMatrixWorld();
+    view.objects.set("blocker", { mesh });
+    view.setScanBridge({
+      mode: "holes",
+      boundaries: [rim],
+      onGesture: vi.fn(),
+      onSelectBoundary,
+    });
+    expect(view.holeBoundaryAt(event(100, 100))).toBeNull();
+    mesh.geometry.dispose();
+    mesh.material.dispose();
+  },
+);
+
+it("picks the innermost visible rim on a curved surface instead of its enclosing outer boundary", () => {
+  const view = viewport();
+  const outer = {
+    closed: true,
+    points: rim.points.map((v, i) => (i % 3 === 2 ? 1 : v * 1.5)),
+  };
+  view.setScanBridge({
+    mode: "holes",
+    boundaries: [outer, rim],
+    onGesture: vi.fn(),
+  });
+  expect(view.holeBoundaryAt(event(100, 100))).toBe(1);
 });

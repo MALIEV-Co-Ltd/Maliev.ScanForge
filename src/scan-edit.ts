@@ -21,6 +21,8 @@ export interface ScanEditOptions extends MeshProcessingOptions {
 
 export interface ScanEditRequest {
   kind: "scanEdit";
+  /** Internal read-only worker request; never adopts preview geometry. */
+  previewOnly?: boolean;
   positions: Positions;
   action:
     | "inventory"

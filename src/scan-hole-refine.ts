@@ -28,6 +28,30 @@ export function refineHolePatch(
   // Median is insensitive to a few long gaps in a scanned boundary.
   const spacing = Math.max(lengths[Math.floor(lengths.length / 2)], 1e-9);
   const limit = spacing * Math.SQRT2;
+  // A long fixed rim (often a bridge rail) cannot be surrounded by uniformly
+  // tiny edges. Grade the target size away from those constraints instead of
+  // repeatedly bisecting triangles whose unsplittable rim prevents convergence.
+  const coarseRim = projected.slice(0, rimCount).flatMap((a, i) => {
+    const b = projected[(i + 1) % rimCount],
+      length = a.distanceTo(b);
+    return length > 2 * limit ? [{ a, b, length }] : [];
+  });
+  const targetSize = (a: Vector2, b: Vector2) => {
+    const center = a.clone().add(b).multiplyScalar(0.5);
+    let target = limit;
+    for (const edge of coarseRim) {
+      const delta = edge.b.clone().sub(edge.a);
+      const t = Math.max(
+        0,
+        Math.min(1, center.clone().sub(edge.a).dot(delta) / delta.lengthSq()),
+      );
+      const distance = center.distanceTo(
+        edge.a.clone().addScaledVector(delta, t),
+      );
+      target = Math.max(target, edge.length * 0.75 - distance);
+    }
+    return target;
+  };
   let triangles = seed.map((f) => [...f] as Face);
   const cap = 100000;
   for (let pass = 0; pass < 32; pass++) {
@@ -43,7 +67,11 @@ export function refineHolePatch(
           b = face[(k + 1) % 3],
           key = edgeId(a, b);
         if (rim.has(key) || splits.has(key)) continue;
-        if (projected[a].distanceTo(projected[b]) <= limit) continue;
+        if (
+          projected[a].distanceTo(projected[b]) <=
+          targetSize(projected[a], projected[b])
+        )
+          continue;
         const p = projected[a].clone().add(projected[b]).multiplyScalar(0.5);
         splits.set(key, points.length);
         projected.push(p);
