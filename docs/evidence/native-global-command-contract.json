@@ -1,0 +1,158 @@
+{
+  "scope": "Global Fine Align command admission and parameter contract from retained native evidence",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "sources": [
+    {
+      "artifact": "global-fine-controller-0x14080bd60.c.txt",
+      "sha256": "b8715031a8ec55778990a7db459991d7976bde2a468e67db15d5d7914e67e840",
+      "reaEvidenceId": "ev_f90aeabdfb7e084d53598fefb744a5b9dc32a60bee05505cd86a18eaf7b75425",
+      "retainedReaPseudocodeMatches": true
+    },
+    {
+      "artifact": "global-fine-core-0x140af88b0.c.txt",
+      "sha256": "81bd89143b0e5e6fc70dee754380ca7a6541bb6171a0694b8883a9f8b8078b85",
+      "reaEvidenceId": "ev_39a99ac36893f07863dbc95753663246e9ab5be6fa81ce4c2b1b4bec56a90371",
+      "retainedReaPseudocodeMatches": true
+    }
+  ],
+  "strings": [
+    {
+      "address": "0x1411ebfc0",
+      "text": "Search tolerance",
+      "bytes": "530065006100720063006800200074006f006c006500720061006e00630065000000"
+    },
+    {
+      "address": "0x141165fb8",
+      "text": "Global Fine Align",
+      "bytes": "47006c006f00620061006c002000460069006e006500200041006c00690067006e000000"
+    },
+    {
+      "address": "0x14118a0a0",
+      "text": "%.3f",
+      "bytes": "25002e00330066000000"
+    },
+    {
+      "address": "0x14126a0d8",
+      "text": "Fine-aligning...",
+      "bytes": "460069006e0065002d0061006c00690067006e0069006e0067002e002e002e000000"
+    }
+  ],
+  "observedSearchTolerance": {
+    "address": "0x1415d87dc",
+    "bytes": "0000003f",
+    "value": 0.5,
+    "interpretation": "Persisted value in retained loaded image; factory default not established"
+  },
+  "command": {
+    "handler": "0x14080bd60",
+    "id": 33762,
+    "requiredInterface": "0x14115ca98",
+    "visibilityVirtualOffset": "0x230",
+    "minimumEligibleObjects": 2,
+    "admissionBasis": "Scene enumeration, mesh-wrapper query and visibility predicate; independent of selected-object count",
+    "solverEntry": "0x140af89d0",
+    "solverReturnTestedByHandler": false
+  },
+  "parameters": {
+    "handler": {
+      "parallel": true,
+      "evaluatorEnabled": true,
+      "budget": 1000,
+      "spacing": 12,
+      "localToleranceFloat32Bits": "0x3a83126f",
+      "searchRadius": "Absolute unit-converted Float32 user entry widened to double",
+      "sourceMask": 1
+    },
+    "constructor": {
+      "parallel": true,
+      "evaluatorEnabled": true,
+      "budget": 1000,
+      "spacing": 12,
+      "localToleranceFloat32Bits": "0x3d4ccccd",
+      "searchRadius": 5,
+      "sourceMask": 6,
+      "coverageToleranceFloat32Bits": "0x3d4ccccd"
+    }
+  },
+  "pointCloudAdmission": {
+    "artifact": "docs/evidence/landmark-cloud-query-native.json",
+    "sha256": "f243daa7a4980d161fa50ee2a19feffa765970534c6ec3cf38a87655483b623b",
+    "wrapper": "cVectorPointCloudObject",
+    "vtable": "0x141248e08",
+    "query": "0x14088d330",
+    "evidence": {
+      "0x14088d330": "ev_7f1f3c7de1d65cf76b2e9be6d2f7c16eb688a0b2692faacb459f313d454e56fa",
+      "0x14089b324": "ev_42460a6ad8dc5c730d7f92c6d1d6c0996fbdac53997aef73610f7b0cc44804c1"
+    },
+    "requiredInterfaceCases": [
+      {
+        "payload": false,
+        "vtordisp": 0,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      },
+      {
+        "payload": false,
+        "vtordisp": 16,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      },
+      {
+        "payload": false,
+        "vtordisp": -16,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      },
+      {
+        "payload": true,
+        "vtordisp": 0,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      },
+      {
+        "payload": true,
+        "vtordisp": 16,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      },
+      {
+        "payload": true,
+        "vtordisp": -16,
+        "identity": "meshScan",
+        "identifier": "0x14115ca98",
+        "guidBytes": "858715a962e0ac498d9b587accff0670",
+        "returned": "null"
+      }
+    ],
+    "conclusion": "Tested wrapper returns null for the command-required interface",
+    "actualAscImporterClassVerified": false
+  },
+  "nonConvergence": {
+    "artifact": "tests/fixtures/global-fine-canonical-controller-native.json",
+    "sha256": "f59bf3f6c5394ed6916e3e5a2f513c4e8383221ac20c47f138bbe617a36a40ed",
+    "passes": 19,
+    "states": 3,
+    "convergedStates": 0,
+    "recordedTransformCommands": 6,
+    "actualNativeGeometrySetterOutputCaptured": false,
+    "interpretation": "Recording adapters received transform commands; this does not establish original UI or full geometry setter output"
+  },
+  "remaining": [
+    "Seeded full native three-scan comparison",
+    "Hidden triangle to native vertex-flag mapping",
+    "Actual ASC importer class admission",
+    "Public GUI/MCP preview, Apply, cancellation and history verification"
+  ],
+  "targetCodeExecutedInThisCapture": false,
+  "applicationSourceChanged": false
+}
