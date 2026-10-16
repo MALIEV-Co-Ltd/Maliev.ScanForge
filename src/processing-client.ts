@@ -403,8 +403,11 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
-        if (copied.operation.kind === "averageMesh")
-          copied.operation.targets = copied.operation.targets.map(clone);
+        if (
+          copied.operation.kind === "averageMesh" ||
+          copied.operation.kind === "repolygonize"
+        )
+          copied.operation.targets = copied.operation.targets?.map(clone);
         if (
           copied.operation.kind === "reduceNoise" &&
           copied.operation.selection

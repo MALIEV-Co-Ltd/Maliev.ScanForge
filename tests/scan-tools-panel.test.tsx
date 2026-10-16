@@ -236,3 +236,14 @@ it("reports a clear triangle count without repeating the selected filename and g
   );
   expect(comparison).toContain("Comparison tolerance (mm)");
 });
+
+it("offers additional reconstruction meshes with measured closure and shape-change guidance", () => {
+  const html = render("repolygonize", mesh, [
+    mesh,
+    { ...mesh, id: "second", name: "Aligned scan" },
+  ]);
+  expect(html).toContain('aria-label="Additional reconstruction meshes"');
+  expect(html).toContain("Aligned scan");
+  expect(html).toContain("retained unchanged");
+  expect(html).toContain("separate closed components");
+});

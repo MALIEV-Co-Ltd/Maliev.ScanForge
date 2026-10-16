@@ -1,13 +1,19 @@
 import { BufferAttribute, BufferGeometry, Vector3 } from "three";
 import { MeshBVH } from "three-mesh-bvh";
-import type { MeshProcessingOptions } from "./mesh-processing";
+import {
+  analyzeMesh,
+  sheetSummary,
+  type MeshProcessingOptions,
+} from "./mesh-processing";
+import { RECONSTRUCTION_MAX_COORDINATES } from "./scan-reconstruction-targets";
 import type { Positions } from "./types";
 
 type Options = Pick<MeshProcessingOptions, "signal" | "onProgress"> & {
   resolution?: number;
+  targets?: Positions[];
 };
 const MAX_CELLS = 1_000_000;
-const MAX_OUTPUT = 27_000_000;
+const MAX_OUTPUT = RECONSTRUCTION_MAX_COORDINATES;
 const corners = [
   [0, 0, 0],
   [1, 0, 0],
@@ -48,17 +54,27 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
     positions.length > MAX_OUTPUT
   )
     throw new Error("Expected complete triangles within the processing limit.");
+  const inputs = [positions, ...(o.targets ?? [])];
+  if (
+    inputs.length > 33 ||
+    inputs.some((p) => !p.length || p.length % 9) ||
+    inputs.reduce((n, p) => n + p.length, 0) > MAX_OUTPUT
+  )
+    throw new Error(
+      "Expected complete triangles within the combined reconstruction processing limit (up to 32 additional meshes).",
+    );
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
-  for (let i = 0; i < positions.length; i++) {
-    if (i % 8192 === 0) checkpoint(o, 0, "Validating reconstruction");
-    const value = positions[i],
-      axis = i % 3;
-    if (!Number.isFinite(value) || !Number.isFinite(Math.fround(value)))
-      throw new Error("Mesh coordinates must fit finite Float32 values.");
-    min[axis] = Math.min(min[axis], value);
-    max[axis] = Math.max(max[axis], value);
-  }
+  for (const input of inputs)
+    for (let i = 0; i < input.length; i++) {
+      if (i % 8192 === 0) checkpoint(o, 0, "Validating reconstruction");
+      const value = input[i],
+        axis = i % 3;
+      if (!Number.isFinite(value) || !Number.isFinite(Math.fround(value)))
+        throw new Error("Mesh coordinates must fit finite Float32 values.");
+      min[axis] = Math.min(min[axis], value);
+      max[axis] = Math.max(max[axis], value);
+    }
   const start = min.map((v) => v - 3 * resolution);
   const dimensions = max.map(
     (v, i) => Math.ceil((v - min[i]) / resolution) + 7,
@@ -80,10 +96,21 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
     queue = new Uint32Array(total);
   const geometry = new BufferGeometry();
   try {
-    geometry.setAttribute(
-      "position",
-      new BufferAttribute(new Float32Array(positions), 3),
-    );
+    const combined = new Float32Array(inputs.reduce((n, p) => n + p.length, 0));
+    let offset = 0;
+    for (const input of inputs) {
+      for (let i = 0; i < input.length; i += 8192) {
+        checkpoint(o, 0.01, "Combining reconstruction meshes");
+        combined.set(
+          ArrayBuffer.isView(input)
+            ? (input as Float32Array).subarray(i, i + 8192)
+            : input.slice(i, i + 8192),
+          offset + i,
+        );
+      }
+      offset += input.length;
+    }
+    geometry.setAttribute("position", new BufferAttribute(combined, 3));
     checkpoint(o, 0.02, "Indexing scan surface");
     const tree = new MeshBVH(geometry),
       point = new Vector3(),
@@ -182,7 +209,7 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
           if (id % 2048 === 0)
             checkpoint(
               o,
-              0.7 + (0.29 * id) / total,
+              0.7 + (0.2 * id) / total,
               "Extracting watertight surface",
             );
           const ids = corners.map(
@@ -247,7 +274,7 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
       c = new Vector3();
     for (let i = 0; i < result.length; i += 9) {
       if (i % 9216 === 0)
-        checkpoint(o, 0.99, "Checking reconstructed triangles");
+        checkpoint(o, 0.91, "Checking reconstructed triangles");
       a.fromArray(result, i);
       b.fromArray(result, i + 3).sub(a);
       c.fromArray(result, i + 6).sub(a);
@@ -256,10 +283,32 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
           "Reconstruction collapses at Float32 precision; increase point resolution or move the mesh nearer the origin.",
         );
     }
+    checkpoint(o, 0.92, "Verifying reconstructed topology");
+    const tolerance = Math.min(1e-6, resolution / 1000);
+    const topology = sheetSummary(
+      analyzeMesh(result, {
+        tolerance,
+        signal: o.signal,
+        onProgress: (f) =>
+          checkpoint(o, 0.92 + 0.08 * f, "Verifying reconstructed topology"),
+      }),
+    );
+    if (!topology.watertight)
+      throw new Error(
+        "Reconstructed surface failed watertight topology verification; increase point resolution or move the mesh nearer the origin.",
+      );
     checkpoint(o, 1, "Complete");
     return {
       positions: result,
-      summary: `Reconstructed watertight voxel surface at ${resolution} mm point resolution; ${filled} enclosed samples filled. Surface offset approximately ${shellRadius} mm. ${filled ? "Enclosed regions fused and filled." : "Open regions reconstructed as closed thick shells."}`,
+      topology,
+      diagnostics: {
+        watertight: topology.watertight,
+        inputMeshes: inputs.length,
+        resolution,
+        weldTolerance: tolerance,
+        selfIntersectionsChecked: false,
+      },
+      summary: `Verified watertight voxel surface: ${topology.components} closed component${topology.components === 1 ? "" : "s"} at ${resolution} mm point resolution; ${filled} enclosed samples filled. Surface offset approximately ${shellRadius} mm. ${filled ? "Enclosed regions fused and filled." : "Open regions reconstructed as closed thick shells."}`,
     };
   } finally {
     geometry.dispose();

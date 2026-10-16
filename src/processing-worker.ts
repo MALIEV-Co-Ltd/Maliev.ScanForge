@@ -186,7 +186,10 @@ scope.onmessage = async ({ data: incoming }) => {
       result.positions = outcome.positions;
       if ("noiseComparison" in outcome)
         result.noiseComparison = outcome.noiseComparison;
-      result.diagnostics.summary = outcome.summary;
+      result.topology = outcome.topology;
+      Object.assign(result.diagnostics, outcome.diagnostics, {
+        summary: outcome.summary,
+      });
     } else if (request.kind === "scanEdit") {
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
       if (request.action === "smoothSelected") {

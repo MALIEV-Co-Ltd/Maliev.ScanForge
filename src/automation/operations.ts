@@ -1,3 +1,4 @@
+import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
@@ -703,8 +704,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           "Point-cloud registration moves the whole source; omit selectionOnly.",
         );
       const selection = a.selectionOnly ? mask(s, e) : undefined;
-      if (a.targetIds !== undefined && kind !== "nativeRefine")
-        throw new Error("targetIds is supported only for surface refinement.");
+      if (
+        a.targetIds !== undefined &&
+        kind !== "nativeRefine" &&
+        !(kind === "scanTools" && op.operation.kind === "repolygonize")
+      )
+        throw new Error(
+          "targetIds is supported only for surface refinement or re-polygonize.",
+        );
       if (
         selection &&
         !readonly &&
@@ -830,6 +837,24 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanTools") {
         if ("targets" in op.operation || "selection" in op.operation)
           throw new Error("Inner geometry must refer to workspace objects.");
+        if (op.operation.kind === "repolygonize") {
+          if (a.targetId)
+            throw new Error("Reconstruction uses targetIds, not targetId.");
+          if (
+            a.targetIds !== undefined &&
+            (!Array.isArray(a.targetIds) ||
+              a.targetIds.length < 1 ||
+              a.targetIds.length > 32 ||
+              a.targetIds.some((id: unknown) => typeof id !== "string"))
+          )
+            throw new Error(
+              "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
+            );
+          op.operation.targets = reconstructionTargets(
+            e,
+            (a.targetIds ?? []).map((id: string) => object(s, id)),
+          );
+        }
         if (op.operation.kind === "averageMesh") {
           if (!a.targetId) throw new Error("Average mesh requires targetId.");
           op.operation.targets = [object(s, a.targetId).positions];

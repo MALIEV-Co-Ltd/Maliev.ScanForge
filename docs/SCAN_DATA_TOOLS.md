@@ -27,6 +27,8 @@ from original provenance; it is not a certified Hausdorff distance measurement.
 Exactly planar patches can collapse without changing their surface perimeter.
 Noise deviation is a comparison threshold, not a displacement limit. Original vertices are compared against the smoothed surface; samples beyond five times the threshold are unmatched.
 
+Re-polygonize accepts optional additional aligned raw mesh objects and verifies closed manifold output, reporting separate component counts through GUI status and MCP diagnostics. See [watertight workflows and native evidence](WATERTIGHT_MESH.md). Additional inputs remain unchanged.
+
 Reconstruction can move the surface by approximately 0.75 times the point
 resolution, fills enclosed cavities, and gives open scans a closed thick shell.
 These consequences appear in the panel before Apply. It is unsuitable when an

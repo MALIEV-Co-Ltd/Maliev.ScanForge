@@ -38,7 +38,7 @@ export type ScanToolOperation =
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
   | { kind: "flipNormals" }
-  | { kind: "repolygonize"; resolution?: number }
+  | { kind: "repolygonize"; resolution?: number; targets?: Positions[] }
   | { kind: "averageMesh"; targets: Positions[]; tolerance?: number }
   | { kind: "mirrorMesh"; center: Vec3; normal: Vec3; tangent?: Vec3 }
   | {

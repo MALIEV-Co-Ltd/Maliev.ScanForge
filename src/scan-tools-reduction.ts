@@ -27,6 +27,8 @@ export { repolygonizeScanMesh } from "./scan-tools-remesh";
 export interface ScanToolResult {
   positions: Float32Array;
   summary: string;
+  topology?: import("./processing-client").TopologySummary;
+  diagnostics?: Record<string, number | string | boolean>;
   /** RGB bytes at original facet corners; render on the pre-edit surface. */
   noiseComparison?: {
     rgb: Uint8Array;

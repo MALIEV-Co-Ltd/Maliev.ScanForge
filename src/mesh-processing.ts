@@ -1129,7 +1129,7 @@ export interface MeshSheetDiagnostics {
   duplicateTriangles: number;
   watertight: boolean;
 }
-function sheetSummary(topology: MeshTopology): MeshSheetDiagnostics {
+export function sheetSummary(topology: MeshTopology): MeshSheetDiagnostics {
   return {
     vertices: topology.vertices.length / 3,
     triangles: topology.triangles.length / 3,

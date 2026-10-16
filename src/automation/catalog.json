@@ -1207,7 +1207,7 @@
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "Ordered fixed indexed mesh targets for nativeRefine only; mutually exclusive with targetId. Distance ties retain the first target."
+          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize: optional additional aligned raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"

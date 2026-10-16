@@ -1,3 +1,4 @@
+import { reconstructionTargets } from "../scan-reconstruction-targets";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
 import type { ScanToolParameters } from "./ScanToolsPanel";
@@ -16,6 +17,20 @@ export function scanToolRequest(
     );
   let operation: ScanToolOperation;
   switch (parameters.kind) {
+    case "repolygonize": {
+      const targets = (parameters.targetIds ?? []).map((id) => {
+        const entity = entities.find((e) => e.id === id);
+        if (!entity)
+          throw new Error("Reconstruction reference no longer exists.");
+        return entity;
+      });
+      operation = {
+        kind: parameters.kind,
+        resolution: parameters.resolution,
+        targets: reconstructionTargets(source, targets),
+      };
+      break;
+    }
     case "averageMesh": {
       const ids = new Set(parameters.targetIds);
       const targets = entities.filter(

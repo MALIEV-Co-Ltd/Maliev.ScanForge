@@ -1025,3 +1025,7 @@ The 100,000-triangle patch limit, refinement limits and single-hole/batch failur
 semantics remain enforced; genuinely oversized patches still fail safely.
 Surface estimation, model history, undo/redo and cancellation use the existing
 shared operations.
+
+### Verified watertight reconstruction
+
+`mesh_process` with `operation:{kind:"scanTools",operation:{kind:"repolygonize",resolution:0.5}}` accepts optional top-level `targetIds` for up to 32 additional aligned raw meshes, excluding the source. Additional inputs remain unchanged; the source is replaced unless `createNew:true`. GUI and MCP share reference validation, reconstruction and topology verification. Successful jobs report topology counts plus `diagnostics.watertight`, `inputMeshes`, `resolution`, `weldTolerance` and `selfIntersectionsChecked:false`. Closed disconnected components are reported separately. Increase resolution if the one-million-point grid or three-million-triangle aggregate input/output limit is exceeded. Use revision/request guards and poll `job_get`; errors and cancellation preserve inputs. See [workflow, limits and native evidence](WATERTIGHT_MESH.md). Existing `scanEdit/fillHoles` with omitted indices fills all valid closed boundaries without reconstructing the whole surface.

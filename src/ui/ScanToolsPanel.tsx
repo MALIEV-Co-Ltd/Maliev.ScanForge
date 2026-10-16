@@ -39,7 +39,7 @@ export type ScanToolParameters =
     }
   | { kind: "scaleMesh"; factor: number; center: Vec3 }
   | { kind: "flipNormals" }
-  | { kind: "repolygonize"; resolution: number }
+  | { kind: "repolygonize"; resolution: number; targetIds?: string[] }
   | { kind: "averageMesh"; targetIds: string[]; tolerance: number }
   | {
       kind: "mirrorMesh";
@@ -335,7 +335,7 @@ export function ScanToolsPanel({
         onApply({ kind: tool });
         break;
       case "repolygonize":
-        onApply({ kind: tool, resolution });
+        onApply({ kind: tool, resolution, targetIds });
         break;
       case "averageMesh":
         onApply({
@@ -531,10 +531,35 @@ export function ScanToolsPanel({
                 step={0.1}
                 onChange={setResolution}
               />
+              <p>Additional aligned meshes (optional; retained unchanged)</p>
+              <div
+                className="scan-tools-references"
+                aria-label="Additional reconstruction meshes"
+              >
+                {targets.map((e) => (
+                  <label className="scan-tools-check" key={e.id}>
+                    <input
+                      type="checkbox"
+                      checked={targetIds.includes(e.id)}
+                      onChange={(event) =>
+                        setTargetIds((current) =>
+                          event.target.checked
+                            ? [...current, e.id]
+                            : current.filter((id) => id !== e.id),
+                        )
+                      }
+                    />
+                    {e.name}
+                  </label>
+                ))}
+              </div>
               <p className="muted">
                 Voxel reconstruction closes small gaps and fills enclosed
                 cavities. Open scans become thick shells; the surface can move
-                by about 0.75 × point resolution. Undo restores the original.
+                by about 0.75 times point resolution. Results are checked for
+                closed, manifold topology; separated regions can remain separate
+                closed components. Self-intersections are not checked. Undo
+                restores the original.
               </p>
             </>
           )}
