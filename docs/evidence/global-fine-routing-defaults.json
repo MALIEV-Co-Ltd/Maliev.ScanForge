@@ -1,0 +1,82 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "authority": "Retained REA decompilation and loaded-image UTF-16 strings; static observation only",
+  "references": [
+    {
+      "procedure": "0x14080bd60",
+      "evidence": "ev_f90aeabdfb7e084d53598fefb744a5b9dc32a60bee05505cd86a18eaf7b75425",
+      "retainedExtractSha256": "b8715031a8ec55778990a7db459991d7976bde2a468e67db15d5d7914e67e840"
+    },
+    {
+      "procedure": "0x140af88b0",
+      "evidence": "ev_39a99ac36893f07863dbc95753663246e9ab5be6fa81ce4c2b1b4bec56a90371",
+      "retainedExtractSha256": "81bd89143b0e5e6fc70dee754380ca7a6541bb6171a0694b8883a9f8b8078b85"
+    },
+    {
+      "procedure": "0x140af89d0",
+      "evidence": "ev_9ff81a1902377bf60182319b6adab1f5569c4c28ac6c70a3cb30a570e69da51f",
+      "retainedExtractSha256": "d9a2b9e0fb7d3a1f1aef03de9dd82c41cb14b2f2acb0bebb7159408f8a200c7d"
+    },
+    {
+      "procedure": "0x140aeb530",
+      "evidence": "ev_9190b16ed86e7687193aee1abd54a984eed738df445179b2d039f2f7fc7446ec",
+      "retainedExtractSha256": "38730f40a0a3232177232c479da2c46ea412e082cc757d0d0f2582ca33bbb292"
+    },
+    {
+      "procedure": "0x140aec260",
+      "evidence": "ev_7e484b0f8dcae63b2a5f7f99d982e26b6fb1c1c1d008115161ea70ac8d4c1e6c",
+      "retainedExtractSha256": "a7bf5b0b6c396fe4cd298340923f10d3bb57365829090c66287536bf76d98f81"
+    }
+  ],
+  "strings": [
+    {
+      "address": "0x1411587a8",
+      "value": "Preferences"
+    },
+    {
+      "address": "0x1411e9570",
+      "value": "ICPUseMeshTrees"
+    },
+    {
+      "address": "0x1411e9590",
+      "value": "ICPDiagnostics"
+    }
+  ],
+  "fields": [
+    {
+      "byteOffset": 13,
+      "preference": "ICPUseMeshTrees",
+      "constructorDefault": 1,
+      "missingPreferenceDefault": 1,
+      "role": "Target preparation consults evaluator properties when nonzero"
+    },
+    {
+      "byteOffset": 12,
+      "preference": "ICPDiagnostics",
+      "constructorDefault": 0,
+      "missingPreferenceDefault": 0,
+      "role": "Diagnostic progress output"
+    },
+    {
+      "byteOffset": 104,
+      "guiValue": 1,
+      "role": "Parallel target preparation branch; separate from byte offset 13"
+    },
+    {
+      "byteOffset": 105,
+      "guiValue": 1,
+      "role": "Separate fixed configuration byte; semantic role not established here"
+    }
+  ],
+  "flow": [
+    "GUI constructs the controller, reads the two preferences, writes booleans at byte offsets 13 and 12, and passes a separate 32-byte configuration to the outer call.",
+    "Outer call copies that configuration only into byte offsets 104 through 135; it preserves the earlier preference bytes.",
+    "Target preparation receives the same controller and branches on byte offset 13. Disabled or absent evaluator property takes raw records; an available property waits on its completion flag and enters the evaluator vector.",
+    "The parallel/serial target preparation decision reads byte offset 104, not byte offset 13. Pointer arithmetic in the decompilation must be interpreted using each procedure's parameter type."
+  ],
+  "limits": [
+    "No fresh native GUI preference or built-index pointer observation was performed in this slice.",
+    "Default mesh routing requires the evaluator path; prior raw-only captures do not establish default mesh alignment parity.",
+    "Property completion does not independently prove a constructed index; preparation, adjacency, correspondence output and full alignment remain separate validation gates."
+  ]
+}

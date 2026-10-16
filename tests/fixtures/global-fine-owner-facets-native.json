@@ -1,0 +1,48 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "procedure": "0x140b35d90",
+  "adapterSelfChecks": 42,
+  "adapterSelfCheckQualification": "41 nonempty retained cases execute; the zero-face case is skipped by the bulk adapter. The separate application fixture covers all 42 cases.",
+  "cases": [
+    {
+      "originalFile": "scan-1.stl",
+      "originalFileSha256Recorded": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "originalFileIdentityRechecked": false,
+      "positions": "datum-controller-full-scan-1-source-positions.f32",
+      "positionsSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+      "faces": 273139,
+      "normals": "scan-1-normals.f32",
+      "normalsSha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+      "degenerate": "scan-1-degenerate.u8",
+      "degenerateSha256": "2e11c7dd6a9d28fd3a4267b3ff4285ca526baee204996592db23bfd7d16af573",
+      "degenerateFaces": 0
+    },
+    {
+      "originalFile": "scan-2.stl",
+      "originalFileSha256Recorded": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "originalFileIdentityRechecked": false,
+      "positions": "datum-controller-full-scan-2-source-positions.f32",
+      "positionsSha256": "4833a3b7dc5950d7046e4f95405cb045a90d3b11cfe4cde403cdd72ea195be62",
+      "faces": 2547405,
+      "normals": "scan-2-normals.f32",
+      "normalsSha256": "807584aa7d9402945dbcdf2cda3b00a3bff1824efcbef1b0170b8c5163d7d224",
+      "degenerate": "scan-2-degenerate.u8",
+      "degenerateSha256": "39a7d6ebf1fe8791e3a9de519fdbcb31db28223acbc36916c5263d9355b0589d",
+      "degenerateFaces": 1
+    },
+    {
+      "originalFile": "scan-3.stl",
+      "originalFileSha256Recorded": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "originalFileIdentityRechecked": false,
+      "positions": "datum-controller-full-scan-3-source-positions.f32",
+      "positionsSha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c",
+      "faces": 3326910,
+      "normals": "scan-3-normals.f32",
+      "normalsSha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118",
+      "degenerate": "scan-3-degenerate.u8",
+      "degenerateSha256": "a4e9aab739e1d7631094c5c7c24ec3a1c94f64fe8269189fc2dfce4bed4d16f5",
+      "degenerateFaces": 0
+    }
+  ],
+  "scope": "Original serial facet task executes every face in the three retained owner STL-derived triangle-soup coordinate carriers, in bounded chunks. Only system CRT sqrt rebound; supplied face collection/count/ranges. Fresh original file identity, import canonicalization, normal smoothing, native threading, index construction and full alignment are not verified."
+}
