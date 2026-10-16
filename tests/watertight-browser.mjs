@@ -9,11 +9,16 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { chromium } from "playwright";
 // Optional extracted single-hole component: positions, rim, center and radius.
 
-const fine = process.env.SCANFORGE_FINE_RECONSTRUCTION === "1";
-const resolution = fine ? 1 : 0.5;
+const half = process.env.SCANFORGE_HALF_RECONSTRUCTION === "1";
+const fine = half || process.env.SCANFORGE_FINE_RECONSTRUCTION === "1";
+const resolution = half ? 0.5 : fine ? 1 : 0.5;
 const root = new URL("../", import.meta.url),
   out = new URL(
-    fine ? "../.resources/fine-browser/" : "../.resources/watertight-browser/",
+    half
+      ? "../.resources/half-browser/"
+      : fine
+        ? "../.resources/fine-browser/"
+        : "../.resources/watertight-browser/",
     import.meta.url,
   );
 const admission = spawnSync(
@@ -222,7 +227,10 @@ try {
     version: 1,
     name: "Watertight reconstruction parity",
     units: "mm",
-    entities: [cube("panel", 0), cube("Aligned reference", fine ? 120 : 1)],
+    entities: [
+      cube("panel", 0),
+      cube("Aligned reference", half ? 260 : fine ? 120 : 1),
+    ],
   };
   const bytes = Buffer.from(JSON.stringify(project));
   let upload;
@@ -313,7 +321,10 @@ try {
   );
   assert.equal(mcp.result.diagnostics.watertight, true);
   assert.equal(mcp.result.diagnostics.inputMeshes, 2);
-  if (fine) assert(mcp.result.diagnostics.gridPoints > 1_000_000);
+  if (fine)
+    assert(
+      mcp.result.diagnostics.gridPoints > (half ? 128_000_000 : 1_000_000),
+    );
   assert.deepEqual(mcp.result.topology, { ...topology, watertight: true });
   assert.deepEqual((await geometry("panel")).positions, gui.positions);
   assert.deepEqual(

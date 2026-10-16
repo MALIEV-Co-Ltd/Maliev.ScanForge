@@ -561,7 +561,7 @@ export function ScanToolsPanel({
                 closed components. Self-intersections are not checked. Undo
                 restores the original. Finer spacing retains smaller details; it
                 is not a maximum-deviation tolerance. Reconstruction supports up
-                to 128 million grid points and eight million output triangles.
+                to one billion grid points and sixteen million output triangles.
               </p>
             </>
           )}

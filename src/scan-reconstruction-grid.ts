@@ -247,6 +247,26 @@ export function closeReconstructionGrid(
     }
     push(a, b);
   };
+  const drain = () => {
+    while (pending) {
+      const a = queue[head],
+        b = queue[(head + 1) % queue.length];
+      head = (head + 2) % queue.length;
+      pending -= 2;
+      const y = Math.floor(a / nx) % ny,
+        z = Math.floor(a / slice);
+      for (let i = a; i <= b; i++) {
+        if (y > 0) visit(i - nx);
+        if (y < ny - 1) visit(i + nx);
+        if (z > 0) visit(i - slice);
+        if (z < nz - 1) visit(i + slice);
+      }
+    }
+  };
+  // Padding is exterior-connected. Drain from one corner before sweeping the
+  // remaining boundary seeds, avoiding a queue entry for every boundary row.
+  visit(0);
+  drain();
   for (let z = 0; z < nz; z++)
     for (let y = 0; y < ny; y++) {
       visit(y * nx + z * slice);
@@ -262,31 +282,23 @@ export function closeReconstructionGrid(
       visit(x + y * nx);
       visit(x + y * nx + (nz - 1) * slice);
     }
-  while (pending) {
-    const a = queue[head],
-      b = queue[(head + 1) % queue.length];
-    head = (head + 2) % queue.length;
-    pending -= 2;
-    const y = Math.floor(a / nx) % ny,
-      z = Math.floor(a / slice);
-    for (let i = a; i <= b; i++) {
-      if (y > 0) visit(i - nx);
-      if (y < ny - 1) visit(i + nx);
-      if (z > 0) visit(i - slice);
-      if (z < nz - 1) visit(i + slice);
-    }
-  }
+  drain();
   let filled = 0;
-  for (let i = 0; i < total; i++) {
-    if (i % 65536 === 0)
+  for (let i = 0; i < occupancy.words.length; i++) {
+    if (i % 2048 === 0)
       progress(
-        0.69 + (0.01 * i) / total,
+        0.69 + (0.01 * i) / occupancy.words.length,
         "Closing enclosed holes and fusing regions",
       );
-    if (!outside.get(i) && !occupancy.get(i)) {
-      occupancy.set(i);
-      filled++;
-    }
+    const valid =
+      i === occupancy.words.length - 1 && total & 31
+        ? 0xffffffff >>> (32 - (total & 31))
+        : 0xffffffff;
+    let added = (~outside.words[i] & ~occupancy.words[i] & valid) >>> 0;
+    occupancy.words[i] |= added;
+    added -= (added >>> 1) & 0x55555555;
+    added = (added & 0x33333333) + ((added >>> 2) & 0x33333333);
+    filled += (((added + (added >>> 4)) & 0x0f0f0f0f) * 0x01010101) >>> 24;
   }
   return filled;
 }

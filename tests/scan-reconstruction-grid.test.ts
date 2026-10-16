@@ -6,7 +6,7 @@ import {
   triangleDistanceSquared,
 } from "../src/scan-reconstruction-grid";
 import { analyzeMesh, sheetSummary } from "../src/mesh-processing";
-import { verifyReconstructionTopology } from "../src/scan-reconstruction-topology";
+import { ReconstructionTopology } from "../src/scan-reconstruction-topology";
 import { repolygonizeScanMesh } from "../src/scan-tools-remesh";
 it("matches independent closest-triangle distance including collapsed facets", () => {
   let seed = 31;
@@ -103,14 +103,17 @@ it("rejects winding errors, duplicates, open edges and disconnected vertex fans"
     0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
     1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
   ];
-  const verify = (p: number[]) =>
-    verifyReconstructionTopology(
-      Float32Array.from(p),
-      [-2, -2, -2],
-      [6, 6, 6],
-      1,
-      () => {},
-    );
+  const verify = (p: number[]) => {
+    const topology = new ReconstructionTopology();
+    topology.advance(0);
+    for (let i = 0; i < p.length; i += 9) {
+      const keys = [0, 3, 6].map(
+        (j) => p[i + j] + 2 + (p[i + j + 1] + 2) * 6 + (p[i + j + 2] + 2) * 36,
+      );
+      topology.addTriangle(keys, [0, 0, 0], p.slice(i, i + 9));
+    }
+    return topology.finish();
+  };
   expect(verify(tetra).watertight).toBe(true);
   expect(() => verify(tetra.slice(9))).toThrow(/boundary/);
   expect(() => verify([...tetra, ...tetra.slice(0, 9)])).toThrow(/nonmanifold/);

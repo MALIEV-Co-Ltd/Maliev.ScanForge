@@ -1,214 +1,253 @@
 import type { MeshSheetDiagnostics } from "./mesh-processing";
-import type { GridProgress } from "./scan-reconstruction-grid";
-const STRIDE = 33_554_432,
-  PAIRED = 0x80000000,
-  AMBIGUOUS = 0x40000000,
-  INDEX = 0x3fffffff;
-function capacity(n: number) {
-  let c = 16;
-  while (c < n) c *= 2;
-  return c;
-}
-function hash(a: number, b = 0) {
-  return (
-    (Math.imul(a ^ (a >>> 16), 0x85ebca6b) ^
-      Math.imul(b ^ (b >>> 16), 0xc2b2ae35)) >>>
-    0
-  );
-}
-function find(p: Uint32Array, a: number) {
-  let root = a;
-  while (p[root] !== root) root = p[root];
-  while (p[a] !== a) {
-    const next = p[a];
-    p[a] = root;
-    a = next;
+const MAX_FACES = 16_000_000,
+  STRIDE = 67_108_864;
+class UnionFind {
+  private chunks: Uint32Array[] = [];
+  length = 0;
+  add() {
+    const id = this.length++;
+    if ((id & 65535) === 0) this.chunks.push(new Uint32Array(65536));
+    this.set(id, id);
+    return id;
   }
-  return root;
+  private get(i: number) {
+    return this.chunks[i >>> 16][i & 65535];
+  }
+  private set(i: number, v: number) {
+    this.chunks[i >>> 16][i & 65535] = v;
+  }
+  find(i: number) {
+    let root = i;
+    while (this.get(root) !== root) root = this.get(root);
+    while (this.get(i) !== i) {
+      const n = this.get(i);
+      this.set(i, root);
+      i = n;
+    }
+    return root;
+  }
+  union(a: number, b: number) {
+    a = this.find(a);
+    b = this.find(b);
+    if (a === b) return false;
+    this.set(Math.max(a, b), Math.min(a, b));
+    return true;
+  }
 }
-function unite(p: Uint32Array, a: number, b: number) {
-  a = find(p, a);
-  b = find(p, b);
-  if (a === b) return false;
-  p[Math.max(a, b)] = Math.min(a, b);
-  return true;
-}
-const nextCorner = (c: number) => c - (c % 3) + ((c + 1) % 3);
-/** Verify emitted half-grid Float32 geometry with typed hash tables, edge pairings,
- * connected vertex fans and face components. No per-edge JS objects or adjacency lists.
- * Only the reconstruction lattice is admitted; this is not a general mesh analyzer.
+type Vertex = {
+  id: number;
+  expires: number;
+  corners: number[];
+  edges: Set<number>;
+};
+type Edge = {
+  from: number;
+  to: number;
+  third: number;
+  corner: number;
+  face: number;
+  uses: number;
+};
+/** Ordered extraction retires topology after each vertex's last possible incident cell.
+ * Chunked disjoint sets retain compact connectivity; maps retain only the frontier.
  */
-export function verifyReconstructionTopology(
-  positions: Float32Array,
-  start: number[],
-  dimensions: number[],
-  resolution: number,
-  progress: GridProgress,
-): MeshSheetDiagnostics {
-  const faces = positions.length / 9,
-    corners = faces * 3;
-  if (!faces || !Number.isInteger(faces) || faces > 8_000_000)
-    throw Error(
-      "Reconstruction verification exceeds its eight-million-triangle limit.",
-    );
-  const vertexCapacity = capacity(faces * 2),
-    vertexKeys = new Uint32Array(vertexCapacity),
-    vertexIds = new Uint32Array(vertexCapacity),
-    triangles = new Uint32Array(corners);
-  const fanParents = new Uint32Array(corners),
-    faceParents = new Uint32Array(faces);
-  const edgeCapacity = capacity(faces * 3),
-    edgeKeys = new Float64Array(edgeCapacity),
-    edgeCorners = new Uint32Array(edgeCapacity);
-  const dims = dimensions.map((n) => 2 * n + 1);
-  let vertices = 0,
-    components = faces,
-    boundaryEdges = 0,
-    nonManifoldEdges = 0,
-    inconsistentEdges = 0,
-    duplicateTriangles = 0,
-    degenerateTriangles = 0;
-  for (let c = 0; c < corners; c++) {
-    if (c % 32768 === 0)
-      progress((0.35 * c) / corners, "Verifying reconstructed topology");
-    let key = 0,
-      multiplier = 1;
-    for (let k = 0; k < 3; k++) {
-      const q = ((positions[c * 3 + k] - start[k]) * 2) / resolution,
-        r = Math.round(q);
-      if (
-        !Number.isFinite(q) ||
-        r < 0 ||
-        r >= dims[k] ||
-        Math.abs(q - r) > 0.125
-      )
-        throw Error(
-          "Reconstructed coordinates no longer resolve the half-grid lattice.",
-        );
-      key += r * multiplier;
-      multiplier *= dims[k];
+export class ReconstructionTopology {
+  private vertices = new Map<number, Vertex>();
+  private edges = new Map<number, Edge>();
+  private heap: { key: number; expires: number }[] = [];
+  private fans = new UnionFind();
+  private faces = new UnionFind();
+  private vertexCount = 0;
+  private components = 0;
+  private cell = -1;
+  private nonManifoldVertices = 0;
+  private nonManifoldEdges = 0;
+  private boundaryEdges = 0;
+  private inconsistentEdges = 0;
+  private duplicateTriangles = 0;
+  private degenerateTriangles = 0;
+  peakFrontierEdges = 0;
+  private schedule(key: number, expires: number) {
+    const entry = { key, expires };
+    let i = this.heap.length;
+    this.heap.push(entry);
+    while (i) {
+      const p = (i - 1) >>> 1;
+      if (this.heap[p].expires <= expires) break;
+      this.heap[i] = this.heap[p];
+      i = p;
     }
-    key++;
-    if (key > 0xffffffff)
-      throw Error("Reconstruction lattice exceeds topology key precision.");
-    let slot = hash(key) & (vertexCapacity - 1);
-    while (vertexKeys[slot] && vertexKeys[slot] !== key)
-      slot = (slot + 1) & (vertexCapacity - 1);
-    if (!vertexKeys[slot]) {
-      if (vertices >= vertexCapacity * 0.75)
-        throw Error(
-          "Reconstruction has too many unmatched lattice vertices for closed topology verification.",
-        );
-      vertexKeys[slot] = key;
-      vertexIds[slot] = vertices++;
-    }
-    triangles[c] = vertexIds[slot];
-    fanParents[c] = c;
+    this.heap[i] = entry;
   }
-  for (let f = 0; f < faces; f++) faceParents[f] = f;
-  for (let f = 0; f < faces; f++) {
-    if (f % 8192 === 0)
-      progress(0.35 + (0.5 * f) / faces, "Verifying reconstructed topology");
-    const base = f * 3,
-      a = triangles[base],
-      b = triangles[base + 1],
-      c = triangles[base + 2];
-    const p = f * 9,
-      ux = positions[p + 3] - positions[p],
-      uy = positions[p + 4] - positions[p + 1],
-      uz = positions[p + 5] - positions[p + 2],
-      vx = positions[p + 6] - positions[p],
-      vy = positions[p + 7] - positions[p + 1],
-      vz = positions[p + 8] - positions[p + 2];
+  private pop() {
+    const first = this.heap[0],
+      last = this.heap.pop()!;
+    if (this.heap.length) {
+      let i = 0;
+      while (i * 2 + 1 < this.heap.length) {
+        let c = i * 2 + 1;
+        if (
+          c + 1 < this.heap.length &&
+          this.heap[c + 1].expires < this.heap[c].expires
+        )
+          c++;
+        if (this.heap[c].expires >= last.expires) break;
+        this.heap[i] = this.heap[c];
+        i = c;
+      }
+      this.heap[i] = last;
+    }
+    return first;
+  }
+  advance(cell: number) {
+    if (cell < this.cell)
+      throw Error("Reconstruction cells must be verified in extraction order.");
+    this.cell = cell;
+    while (this.heap.length && this.heap[0].expires < cell) {
+      const { key } = this.pop(),
+        vertex = this.vertices.get(key)!;
+      let root = -1;
+      for (const c of vertex.corners) {
+        const next = this.fans.find(c);
+        if (root < 0) root = next;
+        else if (root !== next) {
+          this.nonManifoldVertices++;
+          break;
+        }
+      }
+      for (const edgeKey of vertex.edges) {
+        const edge = this.edges.get(edgeKey);
+        if (!edge) continue;
+        if (edge.uses === 1) this.boundaryEdges++;
+        this.edges.delete(edgeKey);
+        // The other endpoint may outlive this vertex. Its edge set keeps a
+        // retired key until then; the missing-map-entry check above handles it.
+      }
+      this.vertices.delete(key);
+    }
+  }
+  addTriangle(
+    keys: ArrayLike<number>,
+    expires: ArrayLike<number>,
+    p: ArrayLike<number>,
+  ) {
+    if (this.faces.length === MAX_FACES)
+      throw Error(
+        "Reconstruction exceeds the sixteen-million-triangle processing limit; increase point resolution.",
+      );
+    const f = this.faces.add();
+    this.components++;
+    const base = this.fans.length;
+    const ids: number[] = [];
+    for (let j = 0; j < 3; j++) {
+      const c = this.fans.add(),
+        key = keys[j];
+      if (expires[j] < this.cell)
+        throw Error(
+          "Reconstruction vertex arrived after its final incident cell.",
+        );
+      let v = this.vertices.get(key);
+      if (!v) {
+        v = {
+          id: this.vertexCount++,
+          expires: expires[j],
+          corners: [],
+          edges: new Set(),
+        };
+        this.vertices.set(key, v);
+        this.schedule(key, v.expires);
+      } else if (v.expires !== expires[j])
+        throw Error("Shared reconstruction vertex has inconsistent lifetime.");
+      v.corners.push(c);
+      ids.push(v.id);
+    }
+    const ux = p[3] - p[0],
+      uy = p[4] - p[1],
+      uz = p[5] - p[2],
+      vx = p[6] - p[0],
+      vy = p[7] - p[1],
+      vz = p[8] - p[2];
     if (
-      a === b ||
-      a === c ||
-      b === c ||
+      Array.from(p).some((v) => !Number.isFinite(v)) ||
       (uy * vz - uz * vy) ** 2 +
         (uz * vx - ux * vz) ** 2 +
         (ux * vy - uy * vx) ** 2 ===
         0
     )
-      degenerateTriangles++;
+      this.degenerateTriangles++;
     for (let j = 0; j < 3; j++) {
-      const corner = base + j,
-        other = nextCorner(corner),
-        from = triangles[corner],
-        to = triangles[other],
+      const from = ids[j],
+        to = ids[(j + 1) % 3],
         low = Math.min(from, to),
-        high = Math.max(from, to),
-        key = low * STRIDE + high + 1;
-      let slot = hash(low, high) & (edgeCapacity - 1);
-      while (edgeKeys[slot] && edgeKeys[slot] !== key)
-        slot = (slot + 1) & (edgeCapacity - 1);
-      if (!edgeKeys[slot]) {
-        edgeKeys[slot] = key;
-        edgeCorners[slot] = corner + 1;
-        boundaryEdges++;
+        high = Math.max(from, to);
+      if (high >= STRIDE)
+        throw Error(
+          "Reconstruction vertex identity exceeds exact numeric key precision.",
+        );
+      const key = low * STRIDE + high,
+        previous = this.edges.get(key);
+      if (!previous) {
+        this.edges.set(key, {
+          from,
+          to,
+          third: ids[(j + 2) % 3],
+          corner: base + j,
+          face: f,
+          uses: 1,
+        });
+        this.vertices.get(keys[j])!.edges.add(key);
+        this.vertices.get(keys[(j + 1) % 3])!.edges.add(key);
         continue;
       }
-      const value = edgeCorners[slot];
-      if (value & PAIRED) {
-        if (!(value & AMBIGUOUS)) {
-          nonManifoldEdges++;
-          edgeCorners[slot] = value | AMBIGUOUS;
-        }
+      previous.uses++;
+      if (previous.uses > 2) {
+        if (previous.uses === 3) this.nonManifoldEdges++;
         continue;
       }
-      const previous = (value & INDEX) - 1,
-        previousOther = nextCorner(previous),
-        previousFace = Math.floor(previous / 3),
-        same = triangles[previous] === from;
-      if (same) inconsistentEdges++;
-      boundaryEdges--;
-      edgeCorners[slot] = value | PAIRED;
-      if (unite(faceParents, f, previousFace)) components--;
-      unite(fanParents, corner, same ? previous : previousOther);
-      unite(fanParents, other, same ? previousOther : previous);
-      if (j === 0) {
-        const third = triangles[nextCorner(previousOther)];
-        if (third === c) duplicateTriangles++;
-      }
+      const same = previous.from === from;
+      if (same) this.inconsistentEdges++;
+      if (j === 0 && previous.third === ids[2]) this.duplicateTriangles++;
+      if (this.faces.union(f, previous.face)) this.components--;
+      const a = base + j,
+        b = base + ((j + 1) % 3),
+        c = previous.corner,
+        d = previous.face * 3 + ((previous.corner + 1) % 3);
+      this.fans.union(a, same ? c : d);
+      this.fans.union(b, same ? d : c);
     }
+    this.peakFrontierEdges = Math.max(this.peakFrontierEdges, this.edges.size);
+    if (this.edges.size > 2_000_000)
+      throw Error(
+        "Reconstruction topology frontier exceeds its bounded memory limit; increase point resolution.",
+      );
   }
-  const fanRoots = new Uint32Array(vertices);
-  let nonManifoldVertices = 0;
-  for (let c = 0; c < corners; c++) {
-    if (c % 32768 === 0)
-      progress(0.85 + (0.15 * c) / corners, "Verifying reconstructed topology");
-    const vertex = triangles[c],
-      root = find(fanParents, c) + 1,
-      previous = fanRoots[vertex];
-    if (!previous) fanRoots[vertex] = root;
-    else if (!(previous & PAIRED) && previous !== root) {
-      nonManifoldVertices++;
-      fanRoots[vertex] = previous | PAIRED;
-    }
+  finish(): MeshSheetDiagnostics {
+    this.advance(Infinity);
+    const watertight =
+      this.faces.length > 0 &&
+      this.boundaryEdges === 0 &&
+      this.nonManifoldEdges === 0 &&
+      this.nonManifoldVertices === 0 &&
+      this.inconsistentEdges === 0 &&
+      this.duplicateTriangles === 0 &&
+      this.degenerateTriangles === 0;
+    if (!watertight)
+      throw Error(
+        `Reconstructed surface failed watertight topology verification (boundary=${this.boundaryEdges}, nonmanifold edges=${this.nonManifoldEdges}, vertices=${this.nonManifoldVertices}, winding=${this.inconsistentEdges}, duplicates=${this.duplicateTriangles}, degenerate=${this.degenerateTriangles}); increase point resolution.`,
+      );
+    return {
+      vertices: this.vertexCount,
+      triangles: this.faces.length,
+      components: this.components,
+      boundaryLoops: 0,
+      boundaryChains: 0,
+      boundaryEdges: 0,
+      nonManifoldEdges: 0,
+      nonManifoldVertices: 0,
+      inconsistentEdges: 0,
+      duplicateTriangles: 0,
+      degenerateTriangles: 0,
+      watertight,
+    };
   }
-  const watertight =
-    boundaryEdges === 0 &&
-    nonManifoldEdges === 0 &&
-    nonManifoldVertices === 0 &&
-    inconsistentEdges === 0 &&
-    duplicateTriangles === 0 &&
-    degenerateTriangles === 0;
-  // Boundary walks are not retained: only verified closed outputs may be published.
-  if (!watertight)
-    throw Error(
-      `Reconstructed surface failed watertight topology verification (boundary=${boundaryEdges}, nonmanifold edges=${nonManifoldEdges}, vertices=${nonManifoldVertices}, winding=${inconsistentEdges}, duplicates=${duplicateTriangles}, degenerate=${degenerateTriangles}); increase point resolution or move the mesh nearer the origin.`,
-    );
-  return {
-    vertices,
-    triangles: faces,
-    components,
-    boundaryLoops: 0,
-    boundaryChains: 0,
-    boundaryEdges,
-    nonManifoldEdges,
-    nonManifoldVertices,
-    inconsistentEdges,
-    duplicateTriangles,
-    degenerateTriangles,
-    watertight,
-  };
 }

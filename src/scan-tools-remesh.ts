@@ -1,38 +1,24 @@
-import { Vector3 } from "three";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { RECONSTRUCTION_MAX_COORDINATES } from "./scan-reconstruction-targets";
 import {
   sampleReconstructionGrid,
   closeReconstructionGrid,
 } from "./scan-reconstruction-grid";
-import { verifyReconstructionTopology } from "./scan-reconstruction-topology";
+import { ReconstructionTopology } from "./scan-reconstruction-topology";
+import {
+  cubeContours,
+  cubeContourSeparation,
+  cubeCorners,
+  cubeEdges,
+} from "./scan-reconstruction-cubes";
 import type { Positions } from "./types";
 
 type Options = Pick<MeshProcessingOptions, "signal" | "onProgress"> & {
   resolution?: number;
   targets?: Positions[];
 };
-const MAX_CELLS = 128_000_000;
-const MAX_OUTPUT = 8_000_000 * 9;
-const corners = [
-  [0, 0, 0],
-  [1, 0, 0],
-  [1, 1, 0],
-  [0, 1, 0],
-  [0, 0, 1],
-  [1, 0, 1],
-  [1, 1, 1],
-  [0, 1, 1],
-];
-// Every cube uses the same body diagonal, including matching diagonals on shared faces.
-const tetrahedra = [
-  [0, 1, 2, 6],
-  [0, 2, 3, 6],
-  [0, 3, 7, 6],
-  [0, 7, 4, 6],
-  [0, 4, 5, 6],
-  [0, 5, 1, 6],
-];
+const MAX_CELLS = 1_000_000_000;
+const MAX_OUTPUT = 16_000_000 * 9;
 function checkpoint(o: Options, fraction: number, stage: string) {
   if (o.signal?.aborted)
     throw new DOMException("Mesh operation cancelled.", "AbortError");
@@ -82,7 +68,7 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   const total = dimensions[0] * dimensions[1] * dimensions[2];
   if (!Number.isSafeInteger(total) || total > MAX_CELLS)
     throw new Error(
-      "Reconstruction grid exceeds 128 million points; increase point resolution.",
+      "Reconstruction grid exceeds 1000 million points; increase point resolution.",
     );
   for (let i = 0; i < 3; i++) {
     const magnitude = Math.max(
@@ -93,7 +79,7 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
       2 ** -149,
       2 ** (Math.floor(Math.log2(magnitude)) - 23),
     );
-    if (resolution / 2 < 2 * ulp)
+    if (resolution * cubeContourSeparation < 4 * ulp)
       throw new Error(
         "Point resolution is too fine for the mesh coordinate magnitude; move the mesh nearer the origin.",
       );
@@ -115,7 +101,7 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   const append = (value: number) => {
     if (length === MAX_OUTPUT)
       throw new Error(
-        "Reconstructed mesh exceeds the eight-million-triangle processing limit; increase resolution.",
+        "Reconstructed mesh exceeds the sixteen-million-triangle processing limit; increase resolution.",
       );
     if (used === current.length) {
       chunks.push(current);
@@ -126,18 +112,21 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
     length++;
   };
 
-  const emit = (a: Vector3, b: Vector3, c: Vector3, direction: Vector3) => {
-    if (
-      new Vector3()
-        .crossVectors(b.clone().sub(a), c.clone().sub(a))
-        .dot(direction) < 0
-    )
-      [b, c] = [c, b];
-    for (const p of [a, b, c]) {
-      append(p.x);
-      append(p.y);
-      append(p.z);
-    }
+  const verification = new ReconstructionTopology();
+  const actual = new Float32Array(48),
+    keys = new Float64Array(16),
+    expires = new Float64Array(16);
+  const triangle = new Float32Array(9),
+    triangleKeys = new Float64Array(3),
+    triangleExpires = new Float64Array(3);
+  const window = (i: number) => {
+    const shift = i & 31,
+      word = i >>> 5;
+    return shift
+      ? ((occupancy.words[word] >>> shift) |
+          (occupancy.words[word + 1] << (32 - shift))) >>>
+          0
+      : occupancy.words[word];
   };
   for (let z = 0; z < nz - 1; z++)
     for (let y = 0; y < ny - 1; y++)
@@ -149,69 +138,65 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
             0.7 + (0.2 * id) / total,
             "Extracting watertight surface",
           );
-        const first = occupancy.get(id);
-        if (
-          occupancy.get(id + 1) === first &&
-          occupancy.get(id + nx) === first &&
-          occupancy.get(id + nx + 1) === first &&
-          occupancy.get(id + slice) === first &&
-          occupancy.get(id + slice + 1) === first &&
-          occupancy.get(id + slice + nx) === first &&
-          occupancy.get(id + slice + nx + 1) === first
-        )
-          continue;
-        const ids = corners.map(
-          ([dx, dy, dz]) => id + dx + dy * nx + dz * slice,
-        );
-        const states = ids.map((i) => occupancy.get(i));
-        if (states.every((v) => v === states[0])) continue;
-        const vertices = corners.map(
-          ([dx, dy, dz]) =>
-            new Vector3(
-              start[0] + (x + dx) * resolution,
-              start[1] + (y + dy) * resolution,
-              start[2] + (z + dz) * resolution,
-            ),
-        );
-        for (const tetra of tetrahedra) {
-          const inside = tetra.filter((i) => states[i]),
-            outsideIds = tetra.filter((i) => !states[i]);
-          if (!inside.length || !outsideIds.length) continue;
-          const direction = new Vector3();
-          outsideIds.forEach((i) =>
-            direction.addScaledVector(vertices[i], 1 / outsideIds.length),
-          );
-          inside.forEach((i) =>
-            direction.addScaledVector(vertices[i], -1 / inside.length),
-          );
-          const midpoint = (a: number, b: number) =>
-            vertices[a].clone().add(vertices[b]).multiplyScalar(0.5);
-          if (inside.length === 1) {
-            const a = inside[0];
-            emit(
-              midpoint(a, outsideIds[0]),
-              midpoint(a, outsideIds[1]),
-              midpoint(a, outsideIds[2]),
-              direction,
-            );
-          } else if (inside.length === 3) {
-            const a = outsideIds[0];
-            emit(
-              midpoint(a, inside[0]),
-              midpoint(a, inside[1]),
-              midpoint(a, inside[2]),
-              direction,
-            );
-          } else {
-            const [a, b] = inside,
-              [c, d] = outsideIds,
-              p = midpoint(a, c),
-              q = midpoint(a, d),
-              r = midpoint(b, d),
-              s = midpoint(b, c);
-            emit(p, q, r, direction);
-            emit(p, r, s, direction);
+        if (x + 32 < nx) {
+          const a = window(id),
+            b = window(id + nx),
+            c = window(id + slice),
+            d = window(id + slice + nx);
+          if (a === b && a === c && a === d && (a === 0 || a === 0xffffffff)) {
+            const last = occupancy.get(id + 32);
+            if (
+              last === (a & 1) &&
+              occupancy.get(id + nx + 32) === last &&
+              occupancy.get(id + slice + 32) === last &&
+              occupancy.get(id + slice + nx + 32) === last
+            ) {
+              x += 31;
+              continue;
+            }
           }
+        }
+        let mask = 0;
+        for (let k = 0; k < 8; k++) {
+          const [dx, dy, dz] = cubeCorners[k];
+          mask |= occupancy.get(id + dx + dy * nx + dz * slice) << k;
+        }
+        if (mask === 0 || mask === 255) continue;
+        const template = cubeContours[mask];
+        verification.advance(id);
+        for (let v = 0; v < template.points.length; v++) {
+          const p = template.points[v];
+          for (let k = 0; k < 3; k++)
+            actual[v * 3 + k] = start[k] + ([x, y, z][k] + p[k]) * resolution;
+          if (v < 12) {
+            const [a, b] = cubeEdges[v],
+              u = cubeCorners[a],
+              w = cubeCorners[b],
+              axis = u.findIndex((c, k) => c !== w[k]);
+            const gx = x + Math.min(u[0], w[0]),
+              gy = y + Math.min(u[1], w[1]),
+              gz = z + Math.min(u[2], w[2]);
+            keys[v] = (gx + gy * nx + gz * slice) * 3 + axis + 1;
+            expires[v] =
+              Math.min(gx, nx - 2) +
+              Math.min(gy, ny - 2) * nx +
+              Math.min(gz, nz - 2) * slice;
+          } else {
+            keys[v] = -(id * 4 + v - 11);
+            expires[v] = id;
+          }
+        }
+        for (const t of template.triangles) {
+          for (let j = 0; j < 3; j++) {
+            triangleKeys[j] = keys[t[j]];
+            triangleExpires[j] = expires[t[j]];
+            for (let k = 0; k < 3; k++) {
+              const value = actual[t[j] * 3 + k];
+              triangle[j * 3 + k] = value;
+              append(value);
+            }
+          }
+          verification.addTriangle(triangleKeys, triangleExpires, triangle);
         }
       }
   const result = new Float32Array(length);
@@ -226,28 +211,9 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   current = new Float32Array(0);
   if (!result.length || result.some((v) => !Number.isFinite(v)))
     throw new Error("Reconstruction produced invalid geometry.");
-  const a = new Vector3(),
-    b = new Vector3(),
-    c = new Vector3();
-  for (let i = 0; i < result.length; i += 9) {
-    if (i % 9216 === 0) checkpoint(o, 0.91, "Checking reconstructed triangles");
-    a.fromArray(result, i);
-    b.fromArray(result, i + 3).sub(a);
-    c.fromArray(result, i + 6).sub(a);
-    if (new Vector3().crossVectors(b, c).lengthSq() === 0)
-      throw new Error(
-        "Reconstruction collapses at Float32 precision; increase point resolution or move the mesh nearer the origin.",
-      );
-  }
   checkpoint(o, 0.92, "Verifying reconstructed topology");
   const tolerance = Math.min(1e-6, resolution / 1000);
-  const topology = verifyReconstructionTopology(
-    result,
-    start,
-    dimensions,
-    resolution,
-    (f, stage) => checkpoint(o, 0.92 + 0.08 * f, stage),
-  );
+  const topology = verification.finish();
   if (!topology.watertight)
     throw new Error(
       "Reconstructed surface failed watertight topology verification; increase point resolution or move the mesh nearer the origin.",
@@ -263,7 +229,9 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
       gridPoints: total,
       distanceTests,
       samplingCandidates: candidates,
-      verification: "typed-edge-pairing-and-vertex-fans",
+      verification: "streamed-edge-pairing-and-vertex-fans",
+      extraction: "face-consistent-cube-contours",
+      peakTopologyFrontierEdges: verification.peakFrontierEdges,
       weldTolerance: tolerance,
       selfIntersectionsChecked: false,
     },

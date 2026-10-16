@@ -102,6 +102,10 @@ scope.onmessage = async ({ data: incoming }) => {
   } else if (canonicalPositions)
     request = { ...incoming, positions: canonicalPositions };
   geometryKey = key;
+  // Reconstruction replaces connectivity and does not consume retained adjacency.
+  // Drop it before taking a rollback snapshot; the canonical source remains intact.
+  if (request.kind === "scanTools" && request.operation.kind === "repolygonize")
+    topologyCache = {};
   const previousCache = { ...topologyCache };
   let lastProgress = -Infinity;
   let lastStage = "";
