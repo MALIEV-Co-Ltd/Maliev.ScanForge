@@ -1,5 +1,39 @@
 # ScanForge MCP agent guide
 
+## Drag bridges and automatic continuity
+
+In **Fill holes → Bridge**, drag from an exposed highlighted edge across the
+selected opening to a separate edge. The live facet preview snaps to both edges;
+release accepts one bridge as one history step. Escape, a release away from the
+rim, changing tools, or replacing the source cancels the preview. Undo/Redo uses
+the normal model history. Repeat a drag on a remaining opening to add a bridge.
+Automatic continuity uses the adjacent attachment facets: coplanar facets select
+flat; curved attachment tangents select a shaped tangent strip. Flat, tangent,
+and curvature remain explicit overrides. Existing attachment edges stay intact.
+Invalid adjacent edges, crossing rails and nonmanifold input are rejected.
+
+The GUI and MCP use the same `scanEdit` hole-fill geometry. First call
+`mesh_process` with `operation: {kind: "scanEdit", action: "inventory"}` and
+read its report artifact. Closed boundaries provide ordered world-mm `points`;
+`start` and `end` identify **edges** beginning at those zero-based point indices,
+including the last-to-first closing edge. Choose exactly one closed boundary.
+
+Preview with `mesh_process {entityId, previewOnly: true, operation: {kind:
+"scanEdit", action: "fillHoles", mode: "bridge", indices: [boundaryIndex],
+start: 0, end: 16, algorithm: "automatic"}, expectedRevision, requestId}`.
+Use actual indices from the current inventory. Poll `job_get`; its result returns
+`preview: true`, `sourceTriangleCount`, continuity `diagnostics` (`method`,
+`addedTriangles`, `filledHoles`) and a JSON artifact containing only the added
+triangle `positions` in world millimetres, with the same diagnostics. Preview
+does not edit geometry or add history and does not display an agent overlay.
+Omit `selectionOnly`, `createNew` and target fields for previews.
+
+To commit, repeat the operation with `previewOnly` omitted, a fresh revision and
+request ID. The normal processing response reports the chosen method; one model
+history step is added. `history_undo` / `history_redo` restore/reapply the bridge.
+Reinspect boundaries after each edit, Undo or Redo; their indices may change.
+Geometry locks, cancellation, revision checks and retry receipts remain active.
+
 Use `landmark_edit` to begin a picked-point session and add corresponding world
 XYZ picks, then call `landmark_preview` with a fresh revision/request ID. Poll its
 job through `job_get`; preview changes no committed geometry or model history.

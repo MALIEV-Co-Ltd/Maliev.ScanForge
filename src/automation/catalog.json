@@ -1210,6 +1210,10 @@
         "createNew": {
           "type": "boolean"
         },
+        "previewOnly": {
+          "type": "boolean",
+          "description": "For scanEdit fillHoles mode bridge only: return the generated facet strip as a JSON artifact and continuity diagnostics without changing geometry or history. Requires exactly one indices boundary, explicit start/end edge indices; omit selectionOnly, createNew and targets."
+        },
         "expectedRevision": {
           "type": "integer",
           "minimum": 0

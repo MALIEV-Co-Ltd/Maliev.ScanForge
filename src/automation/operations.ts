@@ -4,6 +4,7 @@ import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
 import { cloudPlacement } from "../point-cloud-placement";
+import { validateBridgePreview, bridgePreviewResponse } from "./bridge-preview";
 import {
   listBackups,
   backupProjectId,
@@ -646,6 +647,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       };
     },
     mesh_process: async (a, c) => {
+      const bridgePreview = validateBridgePreview(a);
       const s = host.snapshot(),
         e = object(s, a.entityId);
       const op = structuredClone(a.operation);
@@ -839,6 +841,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       });
       c.check();
       const edit = result.scanEdit;
+      if (bridgePreview) return bridgePreviewResponse(e.positions, result, c);
       const pointEdit = result.pointCloudEdit;
       const positions =
         pointEdit?.positions ?? edit?.positions ?? result.positions;
@@ -901,7 +904,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : positions?.length
             ? [e.id]
             : [],
-        diagnostics: result.diagnostics,
+        diagnostics: edit?.diagnostics ?? result.diagnostics,
         segmentClassifications: result.segmentClassifications,
         topology: result.topology,
         registration: result.registration,

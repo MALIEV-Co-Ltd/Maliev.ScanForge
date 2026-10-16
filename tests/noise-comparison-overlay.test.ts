@@ -138,6 +138,13 @@ it("dispose releases original comparison geometry and restores underlying mesh",
   const disposed = vi.spyOn(overlay.geometry, "dispose");
   const disposable = { remove: vi.fn() };
   const canvas = { removeEventListener: vi.fn(), remove: vi.fn() };
+  const bridgePreview = new THREE.Group();
+  const bridgeMesh = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    new THREE.MeshBasicMaterial(),
+  );
+  bridgePreview.add(bridgeMesh);
+  const bridgeDisposed = vi.spyOn(bridgeMesh.geometry, "dispose");
   Object.assign(view, {
     frame: null,
     observer: { disconnect: vi.fn() },
@@ -160,6 +167,7 @@ it("dispose releases original comparison geometry and restores underlying mesh",
     section: new THREE.Group(),
     measurement: new THREE.Group(),
     boundaryEdges: new THREE.Group(),
+    bridgePreview,
     sketchGeometry: new THREE.Group(),
     sketchPreview: new THREE.Group(),
     originGeometry: new THREE.Group(),
@@ -167,6 +175,7 @@ it("dispose releases original comparison geometry and restores underlying mesh",
   vi.stubGlobal("window", { removeEventListener: vi.fn() });
   view.dispose();
   expect(disposed).toHaveBeenCalledOnce();
+  expect(bridgeDisposed).toHaveBeenCalledOnce();
   expect(mesh.visible).toBe(true);
   expect(scene.children).toHaveLength(0);
 });

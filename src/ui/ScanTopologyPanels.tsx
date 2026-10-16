@@ -2,6 +2,8 @@ import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useEffect, useRef, useState } from "react";
+import type { ScanBridgeSession } from "../scan-bridge-gesture";
+import { BridgePreviewController } from "../scan-bridge-preview";
 import { processMesh } from "../processing-client";
 import type { ScanEditRequest } from "../scan-edit";
 import type { Entity, Positions, Vec3 } from "../types";
@@ -28,6 +30,8 @@ export interface ScanTopologyPanelsProps {
   onCreate: (segments: Float32Array[], label: string) => void;
   onSelection: (mask: Uint8Array) => void;
   onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
+  onBridgeSession?: (session: ScanBridgeSession | null) => void;
+  onBridgeDisplay?: (positions?: Float32Array) => void;
   onProject: (
     curves: number[][],
     plane: { origin: Vec3; normal: Vec3 },
@@ -71,10 +75,13 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
   const [inventory, setInventory] = useState<ScanInventory>(empty);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
+  const [bridgeStatus, setBridgeStatus] = useState("");
+  const bridgeOwner = useRef<BridgePreviewController | null>(null);
   const owner = useRef<AbortController | null>(null);
   const callbacks = useRef(props);
   callbacks.current = props;
   function cancel() {
+    bridgeOwner.current?.cancel();
     owner.current?.abort();
     owner.current = null;
     callbacks.current.onBusyChange?.(false);
@@ -129,6 +136,45 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
     }
   }
   useEffect(() => {
+    const bridge = new BridgePreviewController(
+      props.positions,
+      async (operation, signal) => {
+        const result = await processMesh(
+          {
+            kind: "scanEdit",
+            positions: props.positions,
+            tolerance: SCAN_TOPOLOGY_TOLERANCE,
+            ...operation,
+          },
+          { signal },
+        );
+        if (!result.scanEdit)
+          throw new Error("Bridge worker returned no result.");
+        return result.scanEdit;
+      },
+      {
+        display: (positions) => callbacks.current.onBridgeDisplay?.(positions),
+        status: setBridgeStatus,
+        error: (message) => callbacks.current.onError(message),
+        commit: (positions, label) => {
+          const current = callbacks.current;
+          if (
+            current.selectedId !== props.selectedId ||
+            current.positions !== props.positions ||
+            current.entities.find((e) => e.id === current.selectedId)?.locked
+          )
+            throw new Error("The source mesh changed; draw the bridge again.");
+          current.onReplace(positions, label);
+        },
+      },
+    );
+    bridgeOwner.current = bridge;
+    return () => {
+      bridge.dispose();
+      if (bridgeOwner.current === bridge) bridgeOwner.current = null;
+    };
+  }, [props.positions, props.selectedId]);
+  useEffect(() => {
     cancel();
     setInventory(empty);
     setBusy(false);
@@ -141,6 +187,10 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       inventory={inventory}
       busy={busy}
       progress={progress}
+      bridgeStatus={bridgeStatus}
+      onBridgePreview={(operation, accept) =>
+        bridgeOwner.current?.request(operation, accept)
+      }
       onOperation={(operation, label) => {
         void run(operation, label);
       }}
@@ -153,6 +203,11 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
 }
 
 export interface ScanTopologyControlsProps extends ScanTopologyPanelsProps {
+  bridgeStatus?: string;
+  onBridgePreview?: (
+    operation: ScanPanelOperation | null,
+    accept: boolean,
+  ) => void;
   inventory: ScanInventory;
   busy: boolean;
   progress: string;
@@ -205,7 +260,54 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     setStart(0);
     setEnd(Math.max(2, Math.floor((boundary?.points.length ?? 0) / 6)));
   }, [boundary?.points]);
-  const blocked = props.busy || props.positions.length < 9;
+  const blocked =
+    props.busy ||
+    props.positions.length < 9 ||
+    !!props.entities.find((e) => e.id === props.selectedId)?.locked;
+  useEffect(() => {
+    if (
+      section !== "holes" ||
+      mode !== "bridge" ||
+      blocked ||
+      !boundary ||
+      !current
+    ) {
+      props.onBridgeSession?.(null);
+      return;
+    }
+    props.onBridgeSession?.({
+      boundary,
+      onGesture: (phase, start, end) => {
+        if (phase === "cancel" || end === null)
+          props.onBridgePreview?.(null, false);
+        else
+          props.onBridgePreview?.(
+            {
+              action: "fillHoles",
+              mode: "bridge",
+              indices: [current.index],
+              algorithm,
+              start,
+              end,
+            },
+            phase === "commit",
+          );
+      },
+    });
+    return () => {
+      props.onBridgeSession?.(null);
+      props.onBridgePreview?.(null, false);
+    };
+  }, [
+    section,
+    mode,
+    blocked,
+    boundary,
+    current?.index,
+    algorithm,
+    props.positions,
+    props.selectedId,
+  ]);
   const run = (operation: ScanPanelOperation, label: string) =>
     props.onOperation(operation, label);
   function choose(index: number) {
@@ -426,7 +528,17 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   <option value="curvature">Curvature</option>
                 </AppSelect>
               </label>
-              {mode !== "entire" && (
+              {mode === "bridge" && (
+                <p
+                  role="status"
+                  aria-live="polite"
+                  className="scan-topology-summary"
+                >
+                  {props.bridgeStatus ||
+                    "Drag from a highlighted edge across the hole to another edge. Release to create the bridge. Esc cancels; Undo removes the last bridge."}
+                </p>
+              )}
+              {mode === "partial" && (
                 <div className="scan-topology-actions">
                   <label>
                     Start vertex
@@ -454,12 +566,14 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   </label>
                 </div>
               )}
-              <button
-                disabled={!current || (mode !== "entire" && start === end)}
-                onClick={() => fill(false)}
-              >
-                Fill selected hole
-              </button>
+              {mode !== "bridge" && (
+                <button
+                  disabled={!current || (mode !== "entire" && start === end)}
+                  onClick={() => fill(false)}
+                >
+                  Fill selected hole
+                </button>
+              )}
               <label>
                 Maximum hole diameter (mm)
                 <input

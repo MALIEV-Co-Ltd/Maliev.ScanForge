@@ -42,6 +42,7 @@ import {
   type ScanBoundaryPath,
 } from "./scan-boundary-edges";
 import * as THREE from "three";
+import type { ScanBridgeSession } from "./scan-bridge-gesture";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
 import { scanRenderData } from "./scan-render-data";
 import { presentFrame } from "./frame-presentation";
@@ -271,6 +272,14 @@ export class Viewport {
   private pointer: { x: number; y: number; id: number; moved: boolean } | null =
     null;
   private bounds = new THREE.Box3();
+  private bridgeSession: ScanBridgeSession | null = null;
+  private bridgeDrag?: {
+    id: number;
+    start: number;
+    end: number | null;
+    controlsEnabled: boolean;
+  };
+  private readonly bridgePreview = new THREE.Group();
   private extent = EMPTY_SCENE_EXTENT;
 
   constructor(
@@ -1009,6 +1018,7 @@ export class Viewport {
   }
 
   private pointerDown(event: PointerEvent): void {
+    if (this.beginBridgeDrag(event)) return;
     if (
       event.button === 0 &&
       event.isPrimary &&
@@ -1105,6 +1115,16 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (this.bridgeDrag && this.bridgeDrag.id === event.pointerId) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const end = this.bridgeEdgeAt(event);
+      if (end !== this.bridgeDrag.end) {
+        this.bridgeDrag.end = end;
+        this.bridgeSession?.onGesture("preview", this.bridgeDrag.start, end);
+      }
+      return;
+    }
     if (
       this.interactivePointer !== undefined &&
       this.interactivePointer === event.pointerId
@@ -1197,6 +1217,7 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.cancelBridgeDrag();
     this.interactiveDrag?.cancel();
     this.releaseInteractivePointer();
     this.endMouseOrbit();
@@ -1222,6 +1243,16 @@ export class Viewport {
   };
 
   private pointerUp(event: PointerEvent): void {
+    if (this.bridgeDrag && this.bridgeDrag.id === event.pointerId) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const drag = this.bridgeDrag,
+        session = this.bridgeSession;
+      const end = this.bridgeEdgeAt(event);
+      this.releaseBridgeDrag();
+      session?.onGesture(end === null ? "cancel" : "commit", drag.start, end);
+      return;
+    }
     if (
       this.interactivePointer !== undefined &&
       this.interactivePointer === event.pointerId
@@ -1747,6 +1778,12 @@ export class Viewport {
     this.invalidate();
   }
   private sketchKeyDown(event: KeyboardEvent): void {
+    if (matchesLocalShortcut(event, "cancel") && this.bridgeSession) {
+      this.cancelBridgeDrag();
+      this.bridgeSession.onGesture("cancel", 0, null);
+      event.preventDefault();
+      return;
+    }
     if (
       matchesLocalShortcut(event, "cancel") &&
       (this.sketchDrag || this.sketchCurvePoints.length)
@@ -2589,6 +2626,7 @@ export class Viewport {
     for (const child of [
       ...(this.triangleSelection?.children ?? []),
       ...(this.boundaryEdges?.children ?? []),
+      ...(this.bridgePreview?.children ?? []),
     ]) {
       const material = (child as THREE.Mesh).material as THREE.Material & {
         clippingPlanes?: THREE.Plane[];
@@ -2652,6 +2690,175 @@ export class Viewport {
     for (const child of [...overlay.children]) this.boundaryEdges.add(child);
     this.applyClipPlanes();
     this.invalidate();
+  }
+
+  setScanBridge(session: ScanBridgeSession | null): void {
+    if (session !== this.bridgeSession) this.cancelBridgeDrag();
+    this.bridgeSession = session;
+    if (!session) this.setBridgePreview();
+  }
+
+  setBridgePreview(positions?: Float32Array): void {
+    this.clearGroup(this.bridgePreview);
+    if (positions?.length) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3),
+      );
+      geometry.computeVertexNormals();
+      const mesh = new THREE.Mesh(
+        geometry,
+        new THREE.MeshStandardMaterial({
+          color: "#55dfbb",
+          transparent: true,
+          opacity: 0.75,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: -1,
+          polygonOffsetUnits: -1,
+          clippingPlanes:
+            this.objects.get(this.selectedId ?? "")?.mesh.material
+              .clippingPlanes ?? [],
+        }),
+      );
+      mesh.raycast = () => {};
+      this.bridgePreview.add(mesh);
+      if (!this.bridgePreview.parent) this.scene.add(this.bridgePreview);
+    }
+    this.renderer.domElement.dataset.bridgePreview = String(
+      (positions?.length ?? 0) / 9,
+    );
+    this.invalidate();
+  }
+
+  private bridgeEdgeAt(
+    event: Pick<PointerEvent, "clientX" | "clientY">,
+  ): number | null {
+    const rim = this.bridgeSession?.boundary;
+    if (!rim?.closed) return null;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    let closest = 12 * 12,
+      picked: number | null = null;
+    const count = rim.points.length / 3;
+    for (let i = 0; i < count; i++) {
+      const a = new THREE.Vector3().fromArray(rim.points, i * 3);
+      const b = new THREE.Vector3().fromArray(
+        rim.points,
+        ((i + 1) % count) * 3,
+      );
+      const pa = a.clone().project(this.camera),
+        pb = b.clone().project(this.camera);
+      if (pa.z < -1 || pa.z > 1 || pb.z < -1 || pb.z > 1) continue;
+      const ax = rect.left + ((pa.x + 1) * rect.width) / 2;
+      const ay = rect.top + ((1 - pa.y) * rect.height) / 2;
+      const dx = ((pb.x - pa.x) * rect.width) / 2;
+      const dy = (-(pb.y - pa.y) * rect.height) / 2;
+      const t = Math.max(
+        0,
+        Math.min(
+          1,
+          ((event.clientX - ax) * dx + (event.clientY - ay) * dy) /
+            (dx * dx + dy * dy || 1),
+        ),
+      );
+      const distance =
+        (event.clientX - ax - t * dx) ** 2 + (event.clientY - ay - t * dy) ** 2;
+      if (distance > closest) continue;
+      // Recover the world point at the projected segment hit, including perspective.
+      this.raycaster.setFromCamera(
+        new THREE.Vector2(
+          ((ax + t * dx - rect.left) / rect.width) * 2 - 1,
+          -((ay + t * dy - rect.top) / rect.height) * 2 + 1,
+        ),
+        this.camera,
+      );
+      const world = new THREE.Vector3();
+      this.raycaster.ray.distanceSqToSegment(a, b, new THREE.Vector3(), world);
+      const source = this.objects.get(this.selectedId ?? "")?.mesh;
+      if (
+        source &&
+        (!source.visible ||
+          (source.material.clippingPlanes ?? []).some(
+            (plane) => plane.distanceToPoint(world) < 0,
+          ))
+      )
+        continue;
+      const targetDistance = this.raycaster.ray.origin.distanceTo(world);
+      const hit = this.raycaster
+        .intersectObjects(
+          [...this.objects.values()]
+            .filter((item) => item.mesh.visible)
+            .map((item) => item.mesh),
+          false,
+        )
+        .find((hit) =>
+          (
+            (
+              hit.object as THREE.Mesh<
+                THREE.BufferGeometry,
+                THREE.MeshStandardMaterial
+              >
+            ).material.clippingPlanes ?? []
+          ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
+        );
+      if (
+        hit &&
+        hit.distance < targetDistance - Math.max(1e-5, targetDistance * 1e-5)
+      )
+        continue;
+      closest = distance;
+      picked = i;
+    }
+    return picked;
+  }
+
+  private beginBridgeDrag(event: PointerEvent): boolean {
+    if (
+      !this.bridgeSession ||
+      event.button !== 0 ||
+      !event.isPrimary ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return false;
+    const start = this.bridgeEdgeAt(event);
+    if (start === null) return false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.cancelViewTransition();
+    this.holdMenu?.close();
+    this.bridgeDrag = {
+      id: event.pointerId,
+      start,
+      end: null,
+      controlsEnabled: this.controls.enabled,
+    };
+    this.controls.enabled = false;
+    this.renderer.domElement.setPointerCapture(event.pointerId);
+    this.renderer.domElement.style.cursor = "crosshair";
+    this.bridgeSession.onGesture("preview", start, null);
+    return true;
+  }
+
+  private releaseBridgeDrag(): void {
+    const drag = this.bridgeDrag;
+    this.bridgeDrag = undefined;
+    if (!drag) return;
+    this.controls.enabled = drag.controlsEnabled;
+    if (this.renderer.domElement.hasPointerCapture(drag.id))
+      this.renderer.domElement.releasePointerCapture(drag.id);
+    this.renderer.domElement.style.cursor = "";
+  }
+
+  private cancelBridgeDrag(): void {
+    const start = this.bridgeDrag?.start;
+    this.releaseBridgeDrag();
+    if (start !== undefined)
+      this.bridgeSession?.onGesture("cancel", start, null);
   }
 
   /** Display native deviation colors on original coordinates, never preview geometry. */
@@ -2961,6 +3168,9 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.cancelBridgeDrag();
+    this.bridgeSession = null;
+    this.clearGroup(this.bridgePreview);
     this.interactiveMirror?.dispose();
     this.interactiveMirror = undefined;
     this.interactiveMirrorBackend = undefined;

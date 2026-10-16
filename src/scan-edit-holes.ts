@@ -3,6 +3,12 @@ import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
 import {
+  bridgeAttachmentNormals,
+  bridgeInsideBoundary,
+  refineBridgeStrip,
+  validBridgePatch,
+} from "./scan-bridge-geometry";
+import {
   computeAngleWeightedNormals,
   repatchSpatialBoundary,
 } from "./scan-defeature-repatch";
@@ -136,6 +142,32 @@ export function runHoleFill(
           dotProduct(subtract(p, points[0]), v),
         ),
     );
+    // Preserve any rail already attached to the retained mesh.
+    const splitBridgeRails =
+      r.mode === "bridge" &&
+      ![1, 3].some((i) =>
+        t.edges.has(edgeId(loop[i], loop[(i + 1) % loop.length])),
+      );
+    if (r.mode === "bridge") {
+      const boundary = original.map((id) => {
+        const delta = subtract(pointAt(t.vertices, id), points[0]);
+        return new Vector2(dotProduct(delta, u), dotProduct(delta, v));
+      });
+      if (
+        !bridgeInsideBoundary(
+          boundary,
+          loop.map((id) => original.indexOf(id)),
+        ) ||
+        loop.some(
+          (id, i) =>
+            (t.edges.get(edgeId(id, loop[(i + 1) % loop.length]))?.length ??
+              0) > 1,
+        )
+      ) {
+        skippedHoles++;
+        continue;
+      }
+    }
     const orient = (a: Vector2, b: Vector2, c: Vector2) =>
       (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
     const eps = (o.tolerance ?? 1e-6) ** 2;
@@ -168,8 +200,12 @@ export function runHoleFill(
     );
     // A planar rim may surround a curved surface (for example a circular hole
     // in a dome). Coplanar rim coordinates alone must not force a flat cap.
-    const curvedTangents = loop.some((id) => {
-      const alignment = dotProduct(pointAt(vertexNormals, id), unit);
+    const boundaryNormals =
+      r.mode === "bridge"
+        ? bridgeAttachmentNormals(t, loop)
+        : loop.map((id) => pointAt(vertexNormals, id));
+    const curvedTangents = boundaryNormals.some((normal) => {
+      const alignment = dotProduct(normal, unit);
       return alignment > 0.2 && alignment < Math.cos((5 * Math.PI) / 180);
     });
     const method =
@@ -232,7 +268,6 @@ export function runHoleFill(
       }
     }
     const rimCount = points.length;
-    const boundaryNormals = loop.map((id) => pointAt(vertexNormals, id));
     const surface = holeSurface(
       points,
       projected,
@@ -281,11 +316,39 @@ export function runHoleFill(
         ? [tri[0], tri[2], tri[1]]
         : tri,
     );
-    if (!validHolePatch(projected, triangles, rimCount)) {
+    if (
+      !(splitBridgeRails
+        ? validBridgePatch(projected, triangles)
+        : validHolePatch(projected, triangles, rimCount))
+    ) {
       skippedHoles++;
       continue;
     }
-    // Partial arcs and bridges keep their explicit chord/strip contract.
+    if (r.mode === "bridge" && method !== "flat") {
+      if (splitBridgeRails)
+        triangles = refineBridgeStrip(
+          points,
+          projected,
+          boundaryNormals,
+          unit,
+          o,
+          method,
+        );
+      else {
+        const center = projected
+          .reduce((sum, p) => sum.add(p), new Vector2())
+          .multiplyScalar(0.25);
+        projected.push(center);
+        points.push(surface(center));
+        triangles = [
+          [0, 1, 4],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 0, 4],
+        ];
+      }
+    }
+    // Partial arcs retain their chord contract; bridge rails are refined separately.
     if ((r.mode ?? "entire") === "entire") {
       const refined = refineHolePatch(
         points,
@@ -297,7 +360,11 @@ export function runHoleFill(
       );
       triangles = refined.triangles;
     }
-    if (!validHolePatch(projected, triangles, rimCount)) {
+    if (
+      !(splitBridgeRails
+        ? validBridgePatch(projected, triangles)
+        : validHolePatch(projected, triangles, rimCount))
+    ) {
       skippedHoles++;
       continue;
     }

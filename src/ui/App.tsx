@@ -113,6 +113,7 @@ import type { ScanEditRequest } from "../scan-edit";
 import { boundarySketches } from "../scan-boundary-sketch";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { ScanTopologyPanels } from "./ScanTopologyPanels";
+import type { ScanBridgeSession } from "../scan-bridge-gesture";
 import {
   coordinateSketchFrame,
   validateSketchFrame,
@@ -586,6 +587,15 @@ export function App() {
   const operationLabel = useRef<string | null>(null);
   const viewportHost = useRef<HTMLDivElement>(null);
   const viewport = useRef<Viewport | null>(null);
+  const setScanBridgeSession = useCallback(
+    (session: ScanBridgeSession | null) => {
+      viewport.current?.setScanBridge(session);
+    },
+    [],
+  );
+  const displayScanBridge = useCallback((positions?: Float32Array) => {
+    viewport.current?.setBridgePreview(positions);
+  }, []);
   // Consume after geometry upload, avoiding animation-frame races on import.
   const pendingImportFit = useRef<string | null | undefined>(undefined);
   const [surfaceFit, setSurfaceFit] = useState<SurfaceFitSession | null>(null);
@@ -5239,6 +5249,8 @@ export function App() {
                 onCreate={createSegments}
                 onSelection={changeSelection}
                 onBoundaryHighlight={setScanBoundaryPaths}
+                onBridgeSession={setScanBridgeSession}
+                onBridgeDisplay={displayScanBridge}
                 onProject={projectScanBoundaries}
                 onStatus={setMessage}
                 onError={setError}
