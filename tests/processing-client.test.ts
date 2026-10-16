@@ -1,3 +1,7 @@
+import {
+  prepareMeshInBackground,
+  stopBackgroundMeshPreparation,
+} from "../src/scan-background-preparation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { scanRenderData, prepareScanRenderData } from "../src/scan-render-data";
 import { observeScanDiagnostics } from "../src/scan-diagnostics";
@@ -47,6 +51,7 @@ beforeEach(() => {
   ProcessingWorkerDouble.creates = 0;
 });
 afterEach(() => {
+  stopBackgroundMeshPreparation();
   releaseProcessingSession();
   vi.unstubAllGlobals();
   vi.useRealTimers();
@@ -917,4 +922,55 @@ it("retains source topology through read-only bridge previews and adopts it only
       (r) => r.stage === "Welding vertices" || r.stage === "Building topology",
     ),
   ).toBe(false);
+});
+
+it("hands background preparation to a selected-facet edit without restarting the worker", async () => {
+  const source = positions.slice();
+  prepareMeshInBackground(source);
+  await vi.advanceTimersByTimeAsync(500);
+  const owned = ProcessingWorkerDouble.latest;
+  expect(owned.sent?.kind).toBe("report");
+  const editing = processMesh(
+    {
+      kind: "scanEdit",
+      action: "defeature",
+      positions: source,
+      selection: new Uint8Array([1]),
+      tolerance: 0.001,
+    },
+    { reuseTopology: true },
+  );
+  expect(ProcessingWorkerDouble.creates).toBe(1);
+  owned.reply({
+    result: {
+      kind: "report",
+      diagnostics: {},
+      topology: {
+        vertices: 3,
+        triangles: 1,
+        components: 1,
+        boundaryLoops: 1,
+        boundaryChains: 0,
+        boundaryEdges: 3,
+        nonManifoldEdges: 0,
+        nonManifoldVertices: 0,
+        inconsistentEdges: 0,
+        degenerateTriangles: 0,
+        duplicateTriangles: 0,
+      },
+    },
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(ProcessingWorkerDouble.latest).toBe(owned);
+  expect(owned.sent?.kind).toBe("scanEdit");
+  expect(owned.sent?.positions.length).toBe(0);
+  owned.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+    },
+  });
+  await editing;
 });

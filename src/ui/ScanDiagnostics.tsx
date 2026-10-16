@@ -5,6 +5,7 @@ import { cachedTopologySummary } from "../scan-topology-summary";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import {
   observeScanDiagnostics,
+  watchScanDiagnostics,
   type ScanDiagnostics as DiagnosticState,
 } from "../scan-diagnostics";
 
@@ -20,6 +21,14 @@ export function ScanDiagnostics({
     state: DiagnosticState;
   }>();
   const [requested, setRequested] = useState<{ positions: Positions }>();
+  useEffect(
+    () =>
+      watchScanDiagnostics(positions, (state) =>
+        setResult(state ? { positions, state } : undefined),
+      ),
+    [positions],
+  );
+
   useEffect(
     () =>
       requested?.positions === positions
@@ -87,7 +96,11 @@ export function ScanDiagnostics({
         </div>
       ))}
       {!topology && state?.phase !== "pending" && (
-        <button type="button" onClick={() => setRequested({ positions })}>
+        <button
+          className="scan-diagnostics-calculate"
+          type="button"
+          onClick={() => setRequested({ positions })}
+        >
           Calculate mesh information
         </button>
       )}

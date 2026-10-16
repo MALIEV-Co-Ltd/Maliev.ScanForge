@@ -4,6 +4,10 @@ interface Turn {
   start(): void;
   running: boolean;
 }
+let pendingTurns = 0;
+export function hasProcessingWork(): boolean {
+  return pendingTurns > 0;
+}
 const queues = new WeakMap<Positions, Turn[]>();
 const watchers = new WeakMap<Positions, Set<() => void>>();
 export function hasQueuedProcessing(positions: Positions): boolean {
@@ -43,6 +47,7 @@ export function queueProcessing<T>(
       signal?.removeEventListener("abort", abort);
       globalThis.removeEventListener?.("pagehide", abort);
       queue.shift();
+      pendingTurns--;
       notify(positions);
       if (queue.length) queue[0].start();
       else queues.delete(positions);
@@ -50,6 +55,7 @@ export function queueProcessing<T>(
     const abort = () => {
       if (turn.running) return; // The active worker owns its cancellation.
       queue.splice(queue.indexOf(turn), 1);
+      pendingTurns--;
       notify(positions);
       signal?.removeEventListener("abort", abort);
       globalThis.removeEventListener?.("pagehide", abort);
@@ -80,6 +86,7 @@ export function queueProcessing<T>(
       },
     };
     queue.push(turn);
+    pendingTurns++;
     signal?.addEventListener("abort", abort, { once: true });
     globalThis.addEventListener?.("pagehide", abort, { once: true });
     if (queue.length === 1) turn.start();

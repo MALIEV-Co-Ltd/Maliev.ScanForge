@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Indexed scanner normals, when available, are included in original vertex order.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Indexed scanner normals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -456,7 +456,7 @@
   },
   {
     "name": "mesh_analyze",
-    "description": "Explicitly compute mesh topology diagnostics in a cancellable worker. Unchanged geometry reuses memory or a persistent content-, tolerance- and algorithm-version-keyed full topology cache across reopening. Result diagnostics.topologyCache reports persistent-hit, memory-hit, stored, unavailable or oversize, with topologyCacheBytes on persistent hits/writes. Opening Edit Scan alone does not run analysis; invalid or unavailable cached data falls back to analysis.",
+    "description": "Explicitly compute mesh topology diagnostics in a cancellable worker. Unchanged geometry reuses memory or a persistent content-, tolerance- and algorithm-version-keyed full topology cache across reopening. Result diagnostics.topologyCache reports persistent-hit, memory-hit, stored, unavailable or oversize, with topologyCacheBytes on persistent hits/writes. Selected raw scans prepare after render/idle in the background, sharing the GUI 0.001 tolerance index with queued mesh tools; invalid or unavailable cached data falls back to analysis.",
     "readOnly": true,
     "job": true,
     "inputSchema": {

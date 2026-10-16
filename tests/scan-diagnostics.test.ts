@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   observeScanDiagnostics,
+  watchScanDiagnostics,
   type ScanDiagnostics,
 } from "../src/scan-diagnostics";
 import { analyzeMesh } from "../src/mesh-processing";
@@ -156,4 +157,30 @@ describe("current geometry diagnostics", () => {
       message: "Worker unavailable",
     });
   });
+});
+
+it("allows passive progress observers and prepares a full index even when compact counts are cached", async () => {
+  const positions = tetrahedron(),
+    updates: (ScanDiagnostics | undefined)[] = [];
+  const stopWatch = watchScanDiagnostics(positions, (state) =>
+    updates.push(state),
+  );
+  expect(updates).toEqual([undefined]);
+  const result = await report({ kind: "report", positions, tolerance: 0.001 });
+  const { cacheTopologySummary } = await import("../src/scan-topology-summary");
+  cacheTopologySummary(positions, 0.001, result.topology!);
+  let resolve!: (value: ProcessingResult) => void;
+  const run = vi.fn(
+    () => new Promise<ProcessingResult>((done) => (resolve = done)),
+  );
+  const stop = observeScanDiagnostics(positions, () => {}, run, {
+    prepareTopology: true,
+  });
+  expect(run).toHaveBeenCalledOnce();
+  expect(updates.at(-1)?.phase).toBe("pending");
+  resolve(result);
+  await flush();
+  expect(updates.at(-1)?.phase).toBe("ready");
+  stop();
+  stopWatch();
 });

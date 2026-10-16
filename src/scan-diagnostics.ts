@@ -27,6 +27,32 @@ const pending = new WeakMap<
   }
 >();
 
+const watchers = new WeakMap<
+  Positions,
+  Set<(state: ScanDiagnostics | undefined) => void>
+>();
+function notifyWatchers(positions: Positions, state?: ScanDiagnostics) {
+  for (const listener of watchers.get(positions) ?? []) listener(state);
+}
+/** Observe preparation without starting work or owning its cancellation. */
+export function watchScanDiagnostics(
+  positions: Positions,
+  update: (state: ScanDiagnostics | undefined) => void,
+) {
+  const listeners = watchers.get(positions) ?? new Set();
+  watchers.set(positions, listeners);
+  listeners.add(update);
+  const cached = cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
+  update(
+    pending.get(positions)?.state ??
+      (cached ? { phase: "ready", topology: cached } : undefined),
+  );
+  return () => {
+    listeners.delete(update);
+    if (!listeners.size) watchers.delete(positions);
+  };
+}
+
 /** Geometry identity invalidates counts; cancellation releases the owned worker. */
 export function observeScanDiagnostics(
   positions: Positions,
@@ -35,14 +61,15 @@ export function observeScanDiagnostics(
     request: ProcessingRequest,
     options: ProcessingOptions,
   ) => Promise<ProcessingResult> = processMesh,
+  options: { prepareTopology?: boolean } = {},
 ): () => void {
   const listener = (state: ScanDiagnostics) => update(state);
   const cached = cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
-  if (cached) {
+  const existing = pending.get(positions);
+  if (cached && !existing && !options.prepareTopology) {
     update({ phase: "ready", topology: cached });
     return () => {};
   }
-  const existing = pending.get(positions);
   if (existing) {
     existing.stopWatching?.();
     existing.stopWatching = undefined;
@@ -63,6 +90,7 @@ export function observeScanDiagnostics(
           entry.stopWatching = undefined;
           if (pending.get(positions) === entry) pending.delete(positions);
           entry.controller.abort();
+          notifyWatchers(positions);
         }
       };
       entry.stopWatching ??= watchQueuedProcessing(positions, releaseIfUnused);
@@ -82,6 +110,7 @@ export function observeScanDiagnostics(
   const publish = (state: ScanDiagnostics) => {
     entry.state = state;
     for (const listener of entry.listeners) listener(state);
+    notifyWatchers(positions, state);
   };
   publish(entry.state);
   void run(

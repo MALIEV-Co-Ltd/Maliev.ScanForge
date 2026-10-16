@@ -204,3 +204,11 @@ section.edit-scan-dialog .edit-scan-create [data-scan-raster] {
   height: 40px;
   margin-right: 0;
 }
+
+section.edit-scan-dialog .scan-diagnostics > .scan-diagnostics-calculate {
+  display: block;
+  width: 100%;
+  min-height: 30px;
+  margin: 8px 0 4px;
+  padding: 6px 10px;
+}

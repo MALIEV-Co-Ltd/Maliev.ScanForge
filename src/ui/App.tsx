@@ -1,3 +1,4 @@
+import { prepareMeshInBackground } from "../scan-background-preparation";
 import {
   ToolWorkspace,
   ToolSection,
@@ -632,7 +633,18 @@ export function App() {
       : null;
   useEffect(() => {
     retainProcessingGeometry(selected?.positions);
-  }, [selected?.positions]);
+    return prepareMeshInBackground(
+      selected?.kind === "mesh" && !selected.kernelId && !selected.parametric
+        ? selected.positions
+        : undefined,
+      { canStart: () => !busyRef.current },
+    );
+  }, [
+    selected?.positions,
+    selected?.kind,
+    selected?.kernelId,
+    selected?.parametric,
+  ]);
   brushRef.current = {
     entity: selected,
     radius: brushRadius,

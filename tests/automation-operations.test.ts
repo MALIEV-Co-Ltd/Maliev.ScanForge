@@ -698,3 +698,43 @@ it("keeps the dedicated mesh split available through MCP processing with workspa
   expect(h.host.commit).toHaveBeenCalledOnce();
   expect(h.state.entities.length).toBeGreaterThan(2);
 });
+
+it("reuses prepared source topology for MCP edits on selected facets", async () => {
+  const h = harness();
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    scanEdit: { diagnostics: {} },
+    diagnostics: {},
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      selectionOnly: true,
+      operation: { kind: "scanEdit", action: "defeature", tolerance: 0.001 },
+    },
+    h.context,
+  );
+  expect(vi.mocked(processMesh).mock.lastCall?.[1]).toMatchObject({
+    reuseTopology: true,
+  });
+  expect(vi.mocked(processMesh).mock.lastCall?.[0].positions).toBe(
+    h.state.entities[0].positions,
+  );
+});
+
+it("exposes automatic mesh preparation through MCP object inspection without model writes", async () => {
+  const h = harness(),
+    { prepareMeshInBackground } =
+      await import("../src/scan-background-preparation");
+  const stop = prepareMeshInBackground(h.state.entities[0].positions, {
+    canStart: () => false,
+  });
+  try {
+    expect(h.ops.object_get({ entityId: "mesh" }, h.context)).toMatchObject({
+      meshPreparation: { phase: "scheduled" },
+    });
+    expect(h.host.commit).not.toHaveBeenCalled();
+  } finally {
+    stop();
+  }
+});

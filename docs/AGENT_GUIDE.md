@@ -1,12 +1,21 @@
 # ScanForge MCP agent guide
 
-## Mesh preparation on demand
+## Background mesh preparation
 
-Opening a scan or **Edit Scan** does not start full topology diagnostics. Basic
-selection and display tools remain available. **Calculate mesh information**
-requests counts explicitly; opening Individual meshes, Holes, or Boundaries
-prepares the topology needed by that tool and displays preparation progress.
-Pending counts are never presented as zero.
+Loading or selecting a raw triangle scan schedules topology preparation after
+rendering/idle. Navigation and facet selection remain available; this read-only
+work does not mark the project dirty or add history. One selected source is
+prepared at a time, after existing foreground geometry jobs. Switching source,
+editing geometry, or closing the page cancels obsolete preparation. A mesh tool
+started before preparation finishes queues behind the same worker and reuses its
+index; it can still wait for the unfinished prerequisites, but does not restart
+them. Point clouds and exact CAD bodies are excluded.
+
+**Edit Scan** observes background progress and completed counts.
+**Calculate mesh information** remains a manual/retry action; topology tools
+also request any missing prerequisites. Pending counts are never shown as zero.
+Compact cached counts do not suppress full-index preparation after a source is
+selected again. Preparation never starts a competing foreground geometry job.
 
 Agents use `mesh_analyze` for diagnostics or `mesh_process` with
 `operation: {kind: "scanEdit", action: "inventory", tolerance: 0.001}` for
@@ -29,7 +38,10 @@ snapshots use the canonical source-coordinate analysis.
 `topologyCache` (`persistent-hit`, `memory-hit`, `stored`, `unavailable`, or
 `oversize`) and `topologyCacheBytes` when a snapshot was stored/restored. Poll
 `job_get` for the result and progress such as "Restoring saved mesh topology".
-Opening Edit Scan remains lazy; first use requests the stored index.
+Edit Scan observes this preparation without starting duplicate work.
+`object_get.meshPreparation` exposes `scheduled`, `pending` (with progress),
+`ready` (with counts), `error`, or `inactive` for raw meshes. Use GUI tolerance
+`0.001` for MCP selected-facet edits to reuse the prepared index.
 
 The derived cache is separate from project/recovery data and project files.
 It retains at most eight entries, 256 MiB total, 128 MiB per snapshot, with

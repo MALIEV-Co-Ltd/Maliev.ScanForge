@@ -1,3 +1,4 @@
+import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
 import { createAlignmentOperations } from "./alignment-operations";
@@ -257,6 +258,9 @@ function summary(e: Entity) {
     ...(e.kind === "pointcloud"
       ? { points: positions.length / 3 }
       : { triangles: positions.length / 9 }),
+    ...(e.kind === "mesh" && !e.kernelId && !e.parametric
+      ? { meshPreparation: backgroundMeshPreparation(e.positions) }
+      : {}),
     exactCad: !!e.kernelId,
     hasBrep: !!e.brep,
   };
@@ -837,7 +841,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       }
       const result = await processScanRegistration(e, request, {
         signal: c.signal,
-        reuseTopology: kind === "scanEdit" && !selection,
+        reuseTopology: kind === "scanEdit",
         onProgress: c.progress,
         check: () => c.check(),
       });
