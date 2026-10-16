@@ -30,6 +30,7 @@ function shared(
       ...m,
       vertices: copy(m.vertices),
       triangles: copy(m.triangles),
+      compactBounds: true,
       flags: m.flags && copy(m.flags),
     })),
   };

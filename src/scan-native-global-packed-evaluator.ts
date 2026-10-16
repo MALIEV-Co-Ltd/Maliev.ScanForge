@@ -12,6 +12,9 @@ export interface NativeGlobalPackedEvaluatorSurface {
   normals: Float32Array;
   /** Six Float32 bounds per triangle: min XYZ then max XYZ. */
   bounds: Float32Array;
+  /** An empty cache with this flag derives the same tight Float32 bounds from
+   * immutable vertices, using worker-local scratch rather than 24 bytes/face. */
+  deriveBounds?: boolean;
   flags?: Uint8Array;
 }
 const prepared = new WeakMap<
@@ -35,6 +38,7 @@ export function nativeGlobalPackedEvaluator(
 
 function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
   const { vertices, triangles, normals, bounds, flags } = surface;
+  const derived = surface.deriveBounds === true;
   const count = triangles.length / 3;
   if (
     !(vertices instanceof Float32Array) ||
@@ -44,7 +48,9 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
     !(normals instanceof Float32Array) ||
     normals.length !== triangles.length ||
     !(bounds instanceof Float32Array) ||
-    bounds.length !== count * 6 ||
+    bounds.length !== (derived ? 0 : count * 6) ||
+    (surface.deriveBounds !== undefined &&
+      typeof surface.deriveBounds !== "boolean") ||
     (flags !== undefined &&
       (!(flags instanceof Uint8Array) || flags.length !== count)) ||
     !vertices.every(Number.isFinite) ||
@@ -55,7 +61,7 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
   for (const vertex of triangles)
     if (vertex >= vertices.length / 3)
       throw Error("Evaluator triangle references an invalid vertex.");
-  for (let id = 0; id < count; id++)
+  for (let id = 0; !derived && id < count; id++)
     for (let axis = 0; axis < 3; axis++) {
       const lo = bounds[id * 6 + axis],
         hi = bounds[id * 6 + axis + 3];
@@ -70,6 +76,18 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
     b = new Float32Array(3),
     c = new Float32Array(3),
     normal = new Float32Array(3);
+  const read = (id: number) => {
+    const face = id * 3,
+      ia = triangles[face] * 3,
+      ib = triangles[face + 1] * 3,
+      ic = triangles[face + 2] * 3;
+    for (let axis = 0; axis < 3; axis++) {
+      a[axis] = vertices[ia + axis];
+      b[axis] = vertices[ib + axis];
+      c[axis] = vertices[ic + axis];
+      normal[axis] = normals[face + axis];
+    }
+  };
   // One closure and 48 bytes of coordinate scratch per immutable surface, rather
   // than per-triangle objects/views or per-query arrays. Synchronous, non-reentrant.
   const evaluate = (
@@ -83,26 +101,38 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
     if (!Number.isInteger(id) || id < 0 || id >= count)
       throw Error("Invalid evaluator leaf triangle ID.");
     if (filterHidden && flags && flags[id] & 2) return NaN;
-    const box = id * 6;
-    if (!(
-      bounds[box] - radius <= point[0] &&
-      bounds[box + 1] - radius <= point[1] &&
-      bounds[box + 2] - radius <= point[2] &&
-      point[0] <= bounds[box + 3] + radius &&
-      point[1] <= bounds[box + 4] + radius &&
-      point[2] <= bounds[box + 5] + radius
-    ))
-      return NaN;
-    const face = id * 3,
-      ia = triangles[face] * 3,
-      ib = triangles[face + 1] * 3,
-      ic = triangles[face + 2] * 3;
-    for (let axis = 0; axis < 3; axis++) {
-      a[axis] = vertices[ia + axis];
-      b[axis] = vertices[ib + axis];
-      c[axis] = vertices[ic + axis];
-      normal[axis] = normals[face + axis];
+    if (derived) {
+      const face = id * 3,
+        ia = triangles[face] * 3,
+        ib = triangles[face + 1] * 3,
+        ic = triangles[face + 2] * 3;
+      // Input coordinates are already Float32. Choosing their extrema requires
+      // no rounding or temporary vector writes. Rejected boxes never load normals.
+      for (let axis = 0; axis < 3; axis++) {
+        let lo = vertices[ia + axis],
+          hi = lo;
+        const b = vertices[ib + axis],
+          c = vertices[ic + axis];
+        if (b < lo) lo = b;
+        if (hi < b) hi = b;
+        if (c < lo) lo = c;
+        if (hi < c) hi = c;
+        if (!(lo - radius <= point[axis] && point[axis] <= hi + radius))
+          return NaN;
+      }
+    } else {
+      const box = id * 6;
+      if (!(
+        bounds[box] - radius <= point[0] &&
+        bounds[box + 1] - radius <= point[1] &&
+        bounds[box + 2] - radius <= point[2] &&
+        point[0] <= bounds[box + 3] + radius &&
+        point[1] <= bounds[box + 4] + radius &&
+        point[2] <= bounds[box + 5] + radius
+      ))
+        return NaN;
     }
+    read(id);
     return nativeGlobalTriangleDistance(
       point,
       a,

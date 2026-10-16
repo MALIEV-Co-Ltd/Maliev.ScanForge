@@ -35,6 +35,7 @@ it.skipIf(!directory).each(
       vertices: new Float32Array(vb.buffer, vb.byteOffset, vb.length / 4),
       triangles: new Uint32Array(tb.buffer, tb.byteOffset, tb.length / 4),
       minimumExtent: c.minimumExtent,
+      compactBounds: shared,
     };
     if (shared) {
       const vertices = new Float32Array(
@@ -86,6 +87,7 @@ it.skipIf(!directory).each(
     expect(root).toBeDefined();
     const digest = createHash("sha256"),
       pending = [root!];
+    const membershipBuffers = new Set<ArrayBufferLike>();
     let nodes = 0,
       memberships = 0;
     while (pending.length) {
@@ -113,6 +115,7 @@ it.skipIf(!directory).each(
       );
       nodes++;
       memberships += node.triangles.length;
+      if (node.triangles.length) membershipBuffers.add(node.triangles.buffer);
       for (let i = 7; i >= 0; i--) if (children[i]) pending.push(children[i]!);
     }
     expect(nodes).toBe(c.nodes);
@@ -167,6 +170,8 @@ it.skipIf(!directory).each(
             boundaryMaskHashMatched: true,
             reused: true,
             sharedPreparedRestore: shared,
+            boundCacheBytes: target.evaluator.surface.bounds.byteLength,
+            membershipBuffers: membershipBuffers.size,
             originalSourceIdentityRechecked: false,
           },
           null,

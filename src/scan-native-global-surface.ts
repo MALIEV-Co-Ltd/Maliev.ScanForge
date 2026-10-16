@@ -88,6 +88,8 @@ export interface NativeGlobalEvaluatorMesh {
   minimumExtent?: number;
   maximumDepth?: number;
   filterHidden?: boolean;
+  /** Internal storage policy; source geometry and query arithmetic are unchanged. */
+  compactBounds?: boolean;
 }
 export interface NativeGlobalEvaluatorIndexNode extends NativeGlobalEvaluatorSearchNode<number> {
   inverse: readonly [number, number, number];
@@ -127,6 +129,14 @@ function prepare(
   options: MeshProcessingOptions,
 ) {
   const { vertices, triangles, flags } = input;
+  if (
+    input.compactBounds !== undefined &&
+    typeof input.compactBounds !== "boolean"
+  )
+    throw Error("Invalid evaluator bound storage policy.");
+  // Cached queries remain the fast default. A memory-admitted caller may opt
+  // into compact bounds; deriving them trades throughput for retained storage.
+  const compactBounds = input.compactBounds ?? false;
   const filterHidden = !!input.filterHidden;
   if (
     flags &&
@@ -172,85 +182,125 @@ function prepare(
   )
     throw Error("Invalid evaluator subdivision limits.");
   const bounds = new Float32Array(
-    nativeTargetStorage(vertices, triangles.length * 8),
+    compactBounds
+      ? new ArrayBuffer(triangles.length * 8)
+      : nativeTargetStorage(vertices, triangles.length * 8),
   );
-  let admitted = 0;
-  for (let face = 0; face < triangles.length / 3; face++) {
-    if (face % 4096 === 0) check(options);
-    if (!filterHidden || !flags || !(flags[face] & 2)) admitted++;
-    for (let axis = 0; axis < 3; axis++) {
-      let lo = vertices[triangles[face * 3] * 3 + axis],
-        hi = lo;
-      for (let corner = 1; corner < 3; corner++) {
-        const v = vertices[triangles[face * 3 + corner] * 3 + axis];
-        if (v < lo) lo = v;
-        if (hi < v) hi = v;
-      }
-      bounds[face * 6 + axis] = lo;
-      bounds[face * 6 + axis + 3] = hi;
-    }
-  }
-  const surface = { vertices, triangles, normals, bounds, flags };
   let root: NativeGlobalEvaluatorIndexNode | undefined;
-  if (
-    admitted &&
-    (filterHidden ||
-      (meshBounds.every(Number.isFinite) &&
-        [0, 1, 2].every(
-          (axis) =>
-            -maximum < meshBounds[axis] &&
-            meshBounds[axis] <= meshBounds[axis + 3] &&
-            meshBounds[axis + 3] < maximum,
-        )))
-  ) {
-    let indices = triangles,
-      ids: Uint32Array | undefined;
-    if (admitted !== triangles.length / 3) {
-      ids = new Uint32Array(admitted);
-      indices = new Uint32Array(admitted * 3);
-      let slot = 0;
-      for (let face = 0; face < triangles.length / 3; face++) {
-        if (face % 4096 === 0) check(options);
-        if (flags![face] & 2) continue;
-        ids[slot] = face;
-        for (let corner = 0; corner < 3; corner++)
-          indices[slot * 3 + corner] = triangles[face * 3 + corner];
-        slot++;
+  try {
+    let admitted = 0;
+    for (let face = 0; face < triangles.length / 3; face++) {
+      if (face % 4096 === 0) check(options);
+      if (!filterHidden || !flags || !(flags[face] & 2)) admitted++;
+      for (let axis = 0; axis < 3; axis++) {
+        let lo = vertices[triangles[face * 3] * 3 + axis],
+          hi = lo;
+        for (let corner = 1; corner < 3; corner++) {
+          const v = vertices[triangles[face * 3 + corner] * 3 + axis];
+          if (v < lo) lo = v;
+          if (hi < v) hi = v;
+        }
+        bounds[face * 6 + axis] = lo;
+        bounds[face * 6 + axis + 3] = hi;
       }
     }
-    const tree = prepareIndexedNoiseOctree(
-      {
-        coordinates: vertices,
-        indices,
-        triangleBounds: bounds,
-        boundsIds: ids,
-      },
-      minimumExtent,
-      maximumDepth,
-      options,
-      filterHidden ? undefined : (meshBounds as unknown as NoiseBounds),
-    );
-    const originalId = (id: number) => (ids ? ids[id] : id);
-    const convert = (node: NoiseTreeNode): NativeGlobalEvaluatorIndexNode => {
-      check(options);
-      // This newly built tree is exclusively owned here. Promote its leaf lists
-      // in place instead of duplicating the complete node graph for the query.
-      const result = node as unknown as NativeGlobalEvaluatorIndexNode;
-      result.flat = !!node.mode;
-      const sourceIds = node.triangles;
-      result.triangles = sourceIds.length
-        ? new Uint32Array(nativeTargetStorage(vertices, sourceIds.length * 4))
-        : emptyIds;
-      for (let slot = 0; slot < sourceIds.length; slot++)
-        result.triangles[slot] = originalId(sourceIds[slot]);
-      for (let id = 0; id < 8; id++) {
-        const child = node.children[id];
-        if (child) result.children[id] = convert(child);
+    if (
+      admitted &&
+      (filterHidden ||
+        (meshBounds.every(Number.isFinite) &&
+          [0, 1, 2].every(
+            (axis) =>
+              -maximum < meshBounds[axis] &&
+              meshBounds[axis] <= meshBounds[axis + 3] &&
+              meshBounds[axis + 3] < maximum,
+          )))
+    ) {
+      let indices = triangles,
+        ids: Uint32Array | undefined;
+      if (admitted !== triangles.length / 3) {
+        ids = new Uint32Array(admitted);
+        indices = new Uint32Array(admitted * 3);
+        let slot = 0;
+        for (let face = 0; face < triangles.length / 3; face++) {
+          if (face % 4096 === 0) check(options);
+          if (flags![face] & 2) continue;
+          ids[slot] = face;
+          for (let corner = 0; corner < 3; corner++)
+            indices[slot * 3 + corner] = triangles[face * 3 + corner];
+          slot++;
+        }
       }
-      return result;
-    };
-    root = convert(tree.root);
+      const tree = prepareIndexedNoiseOctree(
+        {
+          coordinates: vertices,
+          indices,
+          triangleBounds: bounds,
+          boundsIds: ids,
+        },
+        minimumExtent,
+        maximumDepth,
+        options,
+        filterHidden ? undefined : (meshBounds as unknown as NoiseBounds),
+      );
+      const originalId = (id: number) => (ids ? ids[id] : id);
+      const countMembers = (node: NoiseTreeNode): number => {
+        check(options);
+        let count = node.triangles.length;
+        for (let id = 0; id < 8; id++)
+          if (node.children[id]) count += countMembers(node.children[id]!);
+        return count;
+      };
+      const count = countMembers(tree.root);
+      if (!Number.isSafeInteger(count) || count > 0xffffffff)
+        throw RangeError("Evaluator membership capacity exceeded.");
+      const memberships = new Uint32Array(
+        nativeTargetStorage(vertices, count * 4),
+      );
+      let cursor = 0;
+      const convert = (node: NoiseTreeNode): NativeGlobalEvaluatorIndexNode => {
+        check(options);
+        // This newly built tree is exclusively owned here. Promote its leaf lists
+        // in place instead of duplicating the complete node graph for the query.
+        const result = node as unknown as NativeGlobalEvaluatorIndexNode;
+        result.flat = !!node.mode;
+        const sourceIds = node.triangles;
+        result.triangles = sourceIds.length
+          ? memberships.subarray(cursor, cursor + sourceIds.length)
+          : emptyIds;
+        cursor += sourceIds.length;
+        for (let slot = 0; slot < sourceIds.length; slot++)
+          result.triangles[slot] = originalId(sourceIds[slot]);
+        for (let id = 0; id < 8; id++) {
+          const child = node.children[id];
+          if (child) result.children[id] = convert(child);
+        }
+        return result;
+      };
+      root = convert(tree.root);
+    }
+  } finally {
+    if (compactBounds) {
+      try {
+        (
+          bounds.buffer as ArrayBuffer & {
+            transfer?: (size: number) => ArrayBuffer;
+          }
+        ).transfer?.(0);
+      } catch {
+        /* Older runtimes collect this private temporary normally. */
+      }
+    }
   }
+  const surface = {
+    vertices,
+    triangles,
+    normals,
+    bounds: compactBounds
+      ? new Float32Array(nativeTargetStorage(vertices, 0))
+      : bounds,
+    deriveBounds: compactBounds,
+    flags,
+  };
   check(options);
   return attachPreparedEvaluator(input, {
     root,

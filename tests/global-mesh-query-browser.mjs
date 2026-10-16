@@ -58,6 +58,7 @@ try {
           sharedPreparedBuffers: true,
           evaluatorOnlyInputs: 0,
           queryWorker: String(url).includes("scan-global-query-worker"),
+          compactTargets: 0,
         };
         window.__meshWorkers.push(this.record);
       }
@@ -74,7 +75,8 @@ try {
             this.record.preparedInitializations++;
             for (const target of value.initialize.preparedMeshes.flatMap(
               (s) => s.targets,
-            ))
+            )) {
+              if (target.surface.deriveBounds) this.record.compactTargets++;
               for (const array of [
                 target.surface.normals,
                 target.surface.bounds,
@@ -83,6 +85,7 @@ try {
               ])
                 this.record.sharedPreparedBuffers &&=
                   array.buffer instanceof SharedArrayBuffer;
+            }
           }
         }
         return super.postMessage(value, ...rest);
@@ -140,6 +143,9 @@ try {
     for (const c of fixture.cases) {
       const { scans, job } = meshCorrespondenceFixture(c),
         source = scans[0].geometry;
+      for (const scan of scans)
+        for (const mesh of scan.geometry.targetMeshes ?? [])
+          mesh.compactBounds = true;
       for (const scan of scans.slice(1))
         if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
           Object.assign(scan.geometry, {
@@ -196,6 +202,9 @@ try {
       );
       const { scans, job } = meshCorrespondenceFixture(c),
         source = scans[0].geometry;
+      for (const scan of scans)
+        for (const mesh of scan.geometry.targetMeshes ?? [])
+          mesh.compactBounds = true;
       for (const scan of scans.slice(1))
         if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
           Object.assign(scan.geometry, {
@@ -255,7 +264,7 @@ try {
         geometry: {
           points,
           normals,
-          targetMeshes: [{ vertices: points, triangles }],
+          targetMeshes: [{ vertices: points, triangles, compactBounds: true }],
         },
       });
     }
@@ -315,6 +324,7 @@ try {
   );
   assert(result.workers.every((w) => w.sharedPreparedBuffers));
   assert(result.workers.some((w) => w.evaluatorOnlyInputs > 0));
+  assert(result.workers.some((w) => w.compactTargets > 0));
   assert.deepEqual(errors, []);
   await writeFile(
     new URL("results.json", out),
