@@ -1,12 +1,68 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { createGlobalQueryPool } from "../src/scan-global-query-pool";
+import {
+  createGlobalQueryPool,
+  globalQueryPoolAdmission,
+} from "../src/scan-global-query-pool";
 import {
   createGlobalQueryWorkerState,
   type GlobalQueryRequest,
   type GlobalQueryResponse,
 } from "../src/scan-global-query-worker";
 import fixture from "./fixtures/global-fine-correspondence-native.json";
+import meshFixture from "./fixtures/global-fine-mesh-correspondence-native.json";
+import { meshCorrespondenceFixture } from "./helpers/global-mesh-correspondence-fixture";
 const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+it("shares mesh carriers and preserves aliases while preparing each worker once", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { scans } = meshCorrespondenceFixture(
+    meshFixture.cases.find((c) => c.name === "hidden-raw-False")!,
+  );
+  const geometry = scans[1].geometry;
+  if (!geometry.targetMeshes) throw Error("Missing mesh fixture");
+  const mesh = geometry.targetMeshes[0];
+  geometry.points = mesh.vertices;
+  geometry.normals = new Float32Array(mesh.vertices.length);
+  geometry.labels = new Uint32Array(mesh.vertices.length / 3);
+  const pool = await createGlobalQueryPool({ scans });
+  try {
+    expect(pool.physicalWorkers).toBe(2);
+    for (const worker of FakeWorker.instances) {
+      const g = worker.transport!.scans[1].geometry;
+      expect(g.targetMeshes![0].vertices.buffer).toBeInstanceOf(
+        SharedArrayBuffer,
+      );
+      expect(g.targetMeshes![0].flags!.buffer).toBeInstanceOf(
+        SharedArrayBuffer,
+      );
+      expect(g.targetMeshes![0].vertices).toBe(g.points);
+      expect(worker.initialized).toBe(1);
+    }
+    expect(mesh.vertices.buffer).toBeInstanceOf(ArrayBuffer);
+  } finally {
+    pool.close();
+  }
+});
+it("includes mesh preparation in the existing worker memory admission", () => {
+  install();
+  const geometry = {
+    points: new Float32Array(),
+    normals: new Float32Array(),
+    targetMeshes: [
+      {
+        vertices: Float32Array.of(0, 0, 0),
+        triangles: new Uint32Array(3000000),
+      },
+    ],
+  };
+  expect(globalQueryPoolAdmission({ scans: [{ id: "mesh", geometry }] })).toBe(
+    1,
+  );
+  geometry.targetMeshes[0].triangles = new Uint32Array(6000000);
+  expect(() =>
+    globalQueryPoolAdmission({ scans: [{ id: "mesh", geometry }] }),
+  ).toThrow(/memory admission/);
+});
 class FakeWorker {
   static instances: FakeWorker[] = [];
   static hold = false;

@@ -2,6 +2,8 @@ import { nativeGlobalPointIndex } from "./scan-native-global-point-index";
 import { nativeGlobalRawTargetIds } from "./scan-native-global-target-records";
 import { nativeGlobalRawTargetMatches } from "./scan-native-global-target";
 import { nativeGlobalPlane } from "./scan-native-global-plane";
+import { prepareNativeGlobalMeshTargetSet } from "./scan-native-global-mesh-target";
+import type { NativeGlobalEvaluatorMesh } from "./scan-native-global-surface";
 import type { GlobalCorrespondence } from "./scan-native-global-local";
 
 /** Prepared Float32 vertex records. Every sidecar is immutable for this identity. */
@@ -10,6 +12,8 @@ export interface NativeGlobalQueryGeometry {
   normals: Float32Array;
   labels?: Uint32Array;
   flags?: Uint32Array;
+  /** Native group children routed to mesh evaluators, separate from raw records. */
+  targetMeshes?: readonly NativeGlobalEvaluatorMesh[];
 }
 export interface NativeGlobalQueryScan {
   id: string;
@@ -67,7 +71,14 @@ function build(geometry: NativeGlobalQueryGeometry) {
       carrier[to + 1] = points[from + 1];
       carrier[to + 2] = points[from + 2];
     }
-  return { tree: nativeGlobalPointIndex(carrier), ids };
+  return {
+    tree: nativeGlobalPointIndex(carrier),
+    ids,
+    meshes: geometry.targetMeshes?.length
+      ? prepareNativeGlobalMeshTargetSet(geometry.targetMeshes)
+      : undefined,
+    raw: { point: [0, 0, 0], normal: [0, 0, 0], flags: 0, labelWord: 0 },
+  };
 }
 export function prepareNativeGlobalQueryGeometry(
   geometry: NativeGlobalQueryGeometry,
@@ -180,9 +191,45 @@ export function nativeGlobalQuery(input: NativeGlobalQueryInput) {
         center = [0, 0, 0];
       for (const target of ready) {
         const { scan, tree, ids } = target;
-        if (scan.id === source.id || !ids.length) continue;
+        if (
+          scan.id === source.id ||
+          (!ids.length && (mode === "pooled-plane" || !target.meshes))
+        )
+          continue;
         const local = localPoint(world, scan.matrix),
           nearest = tree.closest(local, radius);
+        if (mode === "target-average" && target.meshes) {
+          let raw;
+          if (nearest.id >= 0) {
+            const id = ids[nearest.id],
+              offset = id * 3,
+              g = scan.geometry;
+            raw = target.raw;
+            for (let axis = 0; axis < 3; axis++) {
+              raw.point[axis] = g.points[offset + axis];
+              raw.normal[axis] = g.normals[offset + axis];
+            }
+            raw.flags = g.flags?.[id] ?? 0;
+            raw.labelWord = g.labels?.[id] ?? 0;
+          }
+          const hit = target.meshes.query(local, radius, raw, label, mask);
+          if (
+            !hit ||
+            Math.abs(Math.fround(hit.point[0] - maximumFloat)) < 2 ** -23
+          )
+            continue;
+          const m = scan.matrix,
+            p = hit.point,
+            n = hit.normal;
+          matches++;
+          center[0] += p[0] * m[0] + p[1] * m[1] + p[2] * m[2] + m[3];
+          center[1] += p[0] * m[4] + p[1] * m[5] + p[2] * m[6] + m[7];
+          center[2] += p[0] * m[8] + p[1] * m[9] + p[2] * m[10] + m[11];
+          normal[0] += n[0] * m[0] + n[1] * m[1] + n[2] * m[2];
+          normal[1] += n[0] * m[4] + n[1] * m[5] + n[2] * m[6];
+          normal[2] += n[0] * m[8] + n[1] * m[9] + n[2] * m[10];
+          continue;
+        }
         if (nearest.id < 0) continue;
         const closestId = ids[nearest.id],
           g = scan.geometry;

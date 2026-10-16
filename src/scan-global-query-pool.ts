@@ -20,12 +20,21 @@ function immutableInput(input: GlobalQueryWorkerInit): GlobalQueryWorkerInit {
     scans: input.scans.map((scan) => {
       let geometry = sharedGeometry.get(scan.geometry);
       if (!geometry) {
-        const share = <T extends Float32Array | Uint32Array>(value: T): T => {
+        const copies = new Map<
+          object,
+          Float32Array | Uint32Array | Uint8Array
+        >();
+        const share = <T extends Float32Array | Uint32Array | Uint8Array>(
+          value: T,
+        ): T => {
           if (value.buffer instanceof SharedArrayBuffer) return value;
+          const existing = copies.get(value);
+          if (existing) return existing as T;
           const copy = new (
             value.constructor as { new (buffer: ArrayBufferLike): T }
           )(new SharedArrayBuffer(value.byteLength));
           copy.set(value);
+          copies.set(value, copy);
           return copy;
         };
         geometry = {
@@ -34,6 +43,16 @@ function immutableInput(input: GlobalQueryWorkerInit): GlobalQueryWorkerInit {
           ...(scan.geometry.flags ? { flags: share(scan.geometry.flags) } : {}),
           ...(scan.geometry.labels
             ? { labels: share(scan.geometry.labels) }
+            : {}),
+          ...(scan.geometry.targetMeshes
+            ? {
+                targetMeshes: scan.geometry.targetMeshes.map((mesh) => ({
+                  ...mesh,
+                  vertices: share(mesh.vertices),
+                  triangles: share(mesh.triangles),
+                  ...(mesh.flags ? { flags: share(mesh.flags) } : {}),
+                })),
+              }
             : {}),
         };
         sharedGeometry.set(scan.geometry, geometry);
@@ -50,7 +69,20 @@ function bytes(input: GlobalQueryWorkerInit, copies: number) {
         (g.points.byteLength +
           g.normals.byteLength +
           (g.labels?.byteLength ?? 0) +
-          (g.flags?.byteLength ?? 0)) +
+          (g.flags?.byteLength ?? 0) +
+          (g.targetMeshes ?? []).reduce(
+            (n, m) =>
+              n +
+              m.vertices.byteLength +
+              m.triangles.byteLength +
+              (m.flags?.byteLength ?? 0),
+            0,
+          )) +
+      (g.targetMeshes ?? []).reduce(
+        (n, m) => n + (m.triangles.length / 3) * 384,
+        0,
+      ) *
+        (copies - 1) +
       (g.points.length / 3) * 32 * (copies - 1),
     0,
   );
