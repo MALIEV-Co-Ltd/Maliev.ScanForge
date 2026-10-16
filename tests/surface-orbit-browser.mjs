@@ -292,10 +292,30 @@ try {
       const afterDown = await view();
       assert.deepEqual(afterDown.position, before.position);
       assert.deepEqual(afterDown.target, before.target);
+      const dot = page.getByRole("img", {
+        name: "Rotation center",
+        exact: true,
+      });
+      await dot.waitFor({ state: "visible" });
+      assert.equal(afterDown.orbitCenter.source, "mouse");
+      assert.equal(afterDown.orbitCenter.markerVisible, true);
+      const dotBox = await dot.boundingBox();
+      assert(Math.abs(dotBox.x + dotBox.width / 2 - px) < 1);
+      assert(Math.abs(dotBox.y + dotBox.height / 2 - py) < 1);
+      if (projection === "orthographic" && x === 0.62) {
+        await page.screenshot({
+          path: fileURLToPath(new URL("orbit-dot.png", out)),
+        });
+      }
       for (let i = 1; i <= 12; i++) {
         await page.mouse.move(px + (65 * i) / 12, py + (32 * i) / 12);
         await page.waitForTimeout(20);
         const current = await view();
+        assert.equal(current.orbitCenter.markerVisible, true);
+        assert.deepEqual(
+          current.orbitCenter.point,
+          afterDown.orbitCenter.point,
+        );
         const drift = cameraPoint(hit.point, current).distanceTo(fixed);
         assert(
           drift < 0.0001,
@@ -304,6 +324,8 @@ try {
       }
       await page.mouse.up({ button: "middle" });
       await page.waitForTimeout(50);
+      await dot.waitFor({ state: "hidden" });
+      assert.equal((await view()).orbitCenter.markerVisible, false);
       const guiDrift = cameraPoint(hit.point, await view()).distanceTo(fixed);
       assert(guiDrift < 0.0001, "release changed pivot");
       // Same surface selection is accessible without pointer synthesis through MCP.

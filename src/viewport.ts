@@ -231,6 +231,7 @@ export class Viewport {
   private releaseSpaceMouseWheel?: () => void;
   private mouseOrbitPivot?: THREE.Vector3;
   private mouseOrbitPointer?: number;
+  private mouseOrbitButton?: number;
   private readonly pivotMarker = document.createElement("div");
   private landmarkLabels: { point: Vec3; element: HTMLSpanElement }[] = [];
   private brushing = false;
@@ -331,11 +332,11 @@ export class Viewport {
     this.landmarkOverlay.style.cssText =
       "position:absolute;inset:0;pointer-events:none;overflow:hidden";
     container.appendChild(this.landmarkOverlay);
-    this.pivotMarker.setAttribute("aria-label", "SpaceMouse rotation center");
+    this.pivotMarker.setAttribute("aria-label", "Rotation center");
     this.pivotMarker.setAttribute("role", "img");
     this.pivotMarker.hidden = true;
     this.pivotMarker.style.cssText =
-      "position:absolute;width:6px;height:6px;border:1px solid rgba(136,220,157,0.4);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:rgba(80,190,110,0.55)";
+      "position:absolute;width:6px;height:6px;border:1px solid rgba(255,255,255,0.9);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:#63d889;box-shadow:0 0 0 1px rgba(0,0,0,0.45)";
     container.appendChild(this.pivotMarker);
     this.controls = new TrackballControls(
       this.camera,
@@ -606,6 +607,7 @@ export class Viewport {
     );
     return {
       ...view,
+      orbitCenter: this.orbitCenterState(performance.now()),
       ...(this.interactiveMirror
         ? { interactiveMirror: this.interactiveMirror.inspect() }
         : {}),
@@ -936,6 +938,7 @@ export class Viewport {
     );
     this.cancelViewTransition();
     this.mouseOrbitPointer = undefined;
+    this.mouseOrbitButton = undefined;
     this.mouseOrbitPivot = undefined;
     this.navigationPivot?.point.copy(this.controls.target);
     updateCameraClipping(this.camera, this.bounds);
@@ -1013,19 +1016,37 @@ export class Viewport {
       this.invalidate();
   };
 
+  private orbitCenterState(now: number) {
+    const mouseOrbit = this.mouseOrbitPointer !== undefined;
+    const middleOrbit = mouseOrbit && this.mouseOrbitButton === 1;
+    const spaceMouse = !mouseOrbit && !!this.navigationPivot?.active(now);
+    const point = middleOrbit
+      ? (this.mouseOrbitPivot ?? this.controls.target)
+      : spaceMouse
+        ? this.navigationPivot.point
+        : undefined;
+    const projected = point?.clone().project(this.camera);
+    return {
+      source: middleOrbit ? "mouse" : spaceMouse ? "spacemouse" : null,
+      point: point?.toArray() ?? null,
+      markerVisible:
+        !!projected &&
+        projected.toArray().every(Number.isFinite) &&
+        projected.z >= -1 &&
+        projected.z <= 1 &&
+        Math.abs(projected.x) <= 1 &&
+        Math.abs(projected.y) <= 1,
+    };
+  }
+
   private updateNavigationPivotMarker(now: number): boolean {
-    const navigating = this.navigationPivot.active(now);
-    const pivot = this.navigationPivot.point.clone().project(this.camera);
-    this.pivotMarker.hidden =
-      this.mouseOrbitPointer !== undefined ||
-      !navigating ||
-      pivot.z < -1 ||
-      pivot.z > 1 ||
-      Math.abs(pivot.x) > 1 ||
-      Math.abs(pivot.y) > 1;
+    const state = this.orbitCenterState(now);
+    this.pivotMarker.hidden = !state.markerVisible;
+    if (!state.point) return false;
+    const pivot = new THREE.Vector3(...state.point).project(this.camera);
     this.pivotMarker.style.left = `${((pivot.x + 1) * this.container.clientWidth) / 2}px`;
     this.pivotMarker.style.top = `${((1 - pivot.y) * this.container.clientHeight) / 2}px`;
-    return navigating;
+    return !!this.navigationPivot?.active(now);
   }
 
   private resize = (): void => {
@@ -1053,6 +1074,7 @@ export class Viewport {
     // Consume the last queued trackball movement before releasing its pivot.
     this.updateControls();
     this.mouseOrbitPointer = undefined;
+    this.mouseOrbitButton = undefined;
     this.invalidate();
   }
 
@@ -1123,6 +1145,8 @@ export class Viewport {
         this.navigationSurfacePoint() ?? this.navigationSurfacePoint(true);
       if (surface) this.mouseOrbitPivot = surface.clone();
       this.mouseOrbitPointer = event.pointerId;
+      this.mouseOrbitButton = event.button;
+      this.invalidate();
     }
     if (!this.brushing || event.button === 1) {
       const bounds = this.renderer.domElement.getBoundingClientRect();

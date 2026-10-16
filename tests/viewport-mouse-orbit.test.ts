@@ -47,6 +47,9 @@ function fixture(orthographic = false) {
     invalidate: vi.fn(),
     pointer: null,
     navigationDepthPoint: vi.fn(),
+    navigationPivot: { active: () => false, point: new THREE.Vector3() },
+    pivotMarker: { hidden: true, style: {} },
+    container: { clientWidth: 200, clientHeight: 200 },
   });
   return { view, camera, target, controls, mesh };
 }
@@ -192,6 +195,64 @@ it("hides the SpaceMouse marker during mouse orbit, even if its gesture is still
   view.pointerDown(down({ button: 0 }));
   view.updateNavigationPivotMarker(0);
   expect(view.pivotMarker.hidden).toBe(true);
+});
+
+it.each([false, true])(
+  "shows the actual middle-button pivot and hides it on release (ortho: %s)",
+  (ortho) => {
+    const { view } = fixture(ortho);
+    view.pointerDown(down());
+    view.updateNavigationPivotMarker(0);
+    expect(view.pivotMarker.hidden).toBe(false);
+    expect(parseFloat(view.pivotMarker.style.left)).toBeCloseTo(140);
+    expect(parseFloat(view.pivotMarker.style.top)).toBeCloseTo(100);
+    expect(view.orbitCenterState(0)).toMatchObject({
+      source: "mouse",
+      point: view.mouseOrbitPivot.toArray(),
+      markerVisible: true,
+    });
+    view.navigationCursor = { clientX: 20, clientY: 30 };
+    view.updateNavigationPivotMarker(0);
+    expect(parseFloat(view.pivotMarker.style.left)).toBeCloseTo(140);
+    view.pointerUp({ pointerId: 7 });
+    view.updateNavigationPivotMarker(0);
+    expect(view.pivotMarker.hidden).toBe(true);
+    expect(view.orbitCenterState(0)).toMatchObject({
+      source: null,
+      point: null,
+      markerVisible: false,
+    });
+  },
+);
+
+it("marks the actual target fallback, and hides an off-screen pivot", () => {
+  const { view, mesh } = fixture();
+  mesh.visible = false;
+  view.pointerDown(down());
+  view.updateNavigationPivotMarker(0);
+  expect(view.pivotMarker.hidden).toBe(false);
+  expect(view.orbitCenterState(0).point).toEqual([0, 0, 0]);
+  view.mouseOrbitPivot = new THREE.Vector3(100, 0, 0);
+  view.updateNavigationPivotMarker(0);
+  expect(view.pivotMarker.hidden).toBe(true);
+});
+
+it("hides the middle-button marker on pointer cancellation", () => {
+  const { view } = fixture();
+  Object.assign(view, {
+    cancelBridgeDrag: vi.fn(),
+    releaseInteractivePointer: vi.fn(),
+    cancelSketchDrag: vi.fn(),
+    paintTrail: { setAttribute: vi.fn() },
+    selectionOverlay: { hidden: false },
+  });
+  view.pointerDown(down());
+  view.updateNavigationPivotMarker(0);
+  expect(view.pivotMarker.hidden).toBe(false);
+  view.pointerCancel();
+  view.updateNavigationPivotMarker(0);
+  expect(view.pivotMarker.hidden).toBe(true);
+  expect(view.mouseOrbitButton).toBeUndefined();
 });
 
 it.each([false, true])(

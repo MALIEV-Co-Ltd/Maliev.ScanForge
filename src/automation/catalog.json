@@ -4373,7 +4373,7 @@
   },
   {
     "name": "viewport_get",
-    "description": "Read camera projection/position/target/up/zoom, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
+    "description": "Read camera projection/position/target/up/zoom, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
