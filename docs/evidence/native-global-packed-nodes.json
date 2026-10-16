@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T12:30:50.568Z",
+  "parent": "cfa525c",
+  "runtime": "v24.13.1",
+  "evaluatorFixtureSha256": "a8dc27127860527533fd34349545b8deaa54e71ecedc4be102900a31b62a43b2",
+  "ownerFixtureSha256": "43fa5df7fed3960199135e6c42ff3dae10dc02ea933fc5d51cb5706cf4508eb5",
+  "residentProbeSha256": "350c7fe405cd0e639a9ca34bdbd1509bf4b9aab3dde5d06cd56810f970b7ad8f",
+  "queryProbeSha256": "17a772965fda063a00df246d04182e62760655bec082e1d9d161f1773ff41a07",
+  "modes": [
+    {
+      "mode": "cached",
+      "nativeComparisons": 198,
+      "nodeCount": 192462,
+      "metadataBytes": 27714528,
+      "beforeRetainedTypedBytes": 490910800,
+      "afterRetainedTypedBytes": 518625328,
+      "beforeRestored": {
+        "phase": "restored",
+        "ms": 14155.3828,
+        "rss": 1015947264,
+        "heapTotal": 461352960,
+        "heapUsed": 299627216,
+        "external": 113728113,
+        "arrayBuffers": 490936212,
+        "freeBytes": 5373804544
+      },
+      "afterRestored": {
+        "phase": "restored",
+        "ms": 11022.710000000001,
+        "rss": 813207552,
+        "heapTotal": 147042304,
+        "heapUsed": 46597200,
+        "external": 113728118,
+        "arrayBuffers": 518650745,
+        "freeBytes": 4511272960
+      },
+      "beforeSampledPreparationPeaks": {
+        "rss": 1030324224,
+        "heapUsed": 309113840,
+        "external": 221342282,
+        "arrayBuffers": 598544380
+      },
+      "afterSampledPreparationPeaks": {
+        "rss": 968626176,
+        "heapUsed": 206381456,
+        "external": 221336286,
+        "arrayBuffers": 626258913
+      }
+    },
+    {
+      "mode": "compact",
+      "nativeComparisons": 198,
+      "nodeCount": 192462,
+      "metadataBytes": 27714528,
+      "beforeRetainedTypedBytes": 343371952,
+      "afterRetainedTypedBytes": 371086480,
+      "beforeRestored": {
+        "phase": "restored",
+        "ms": 11977.3884,
+        "rss": 866570240,
+        "heapTotal": 459657216,
+        "heapUsed": 317523344,
+        "external": 113728113,
+        "arrayBuffers": 343397364,
+        "freeBytes": 4940701696
+      },
+      "afterRestored": {
+        "phase": "restored",
+        "ms": 10139.0837,
+        "rss": 662761472,
+        "heapTotal": 147304448,
+        "heapUsed": 55866816,
+        "external": 113728118,
+        "arrayBuffers": 371111897,
+        "freeBytes": 4318158848
+      },
+      "beforeSampledPreparationPeaks": {
+        "rss": 884506624,
+        "heapUsed": 317523344,
+        "external": 221336281,
+        "arrayBuffers": 451005532
+      },
+      "afterSampledPreparationPeaks": {
+        "rss": 817442816,
+        "heapUsed": 215815272,
+        "external": 221336286,
+        "arrayBuffers": 478720065
+      }
+    }
+  ],
+  "queryTiming": {
+    "scan": 3,
+    "queriesPerSample": 825,
+    "samples": {
+      "graph": [
+        11.985999999999876, 7.197999999999865, 5.260199999999713,
+        10.56439999999975, 8.588999999999942, 9.68179999999984
+      ],
+      "packed": [
+        7.08159999999998, 7.193199999999706, 4.5528000000003885,
+        7.65520000000015, 7.8081999999999425, 7.782600000000002
+      ]
+    },
+    "graphMedianMs": 9.13539999999989,
+    "packedMedianMs": 7.424199999999928,
+    "packedToGraphRatio": 0.8126847209755476,
+    "metadataBytes": 11444688,
+    "originalSourceIdentityRechecked": false
+  },
+  "scope": "Single Node process, all three retained indexed targets, authored and shared input buffers, original and restored descriptors. Shared storage counted once. No forced collection.",
+  "exclusions": [
+    "source sampling normals",
+    "expanded render positions and normals",
+    "project history and decoding intermediates",
+    "raw point indexes",
+    "browser and physical worker process overhead",
+    "GPU"
+  ],
+  "guards": {
+    "startMiB": 4096,
+    "runtimeFreeMiB": 1024,
+    "deadlineSeconds": 90
+  },
+  "originalSourceIdentityRechecked": false,
+  "graphRemainsDefault": true,
+  "productionAdmissionChanged": false,
+  "fullOwnerRegistrationVerified": false,
+  "validation": {
+    "buildFingerprint": "scanforge-23b3c6a650634d47",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "redFailures": 393,
+    "focusedPassed": 1395,
+    "fullPassed": 46373,
+    "fullSkipped": 49,
+    "fullFailures": 0,
+    "residentNativeComparisons": 396,
+    "browserNativeComparisons": 64,
+    "browserPoseComparisons": 2,
+    "browserFallbackComparisons": 2,
+    "browserPreparedHandoffs": 33,
+    "browserWorkersTerminated": 71
+  }
+}

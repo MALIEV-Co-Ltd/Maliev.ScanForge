@@ -75,8 +75,8 @@ export function nativeGlobalMeshTargetData(
   input: NativeGlobalEvaluatorMesh,
 ): NativeGlobalMeshTargetData {
   const { evaluator, neighbours } = prepareNativeGlobalMeshTarget(input);
-  const { root, surface, degenerate, minimumExtent } = evaluator;
-  return { root, surface, degenerate, minimumExtent, neighbours };
+  const { root, packedIndex, surface, degenerate, minimumExtent } = evaluator;
+  return { root, packedIndex, surface, degenerate, minimumExtent, neighbours };
 }
 /** Internal worker initialization only; install complete prepared state atomically. */
 export function installNativeGlobalMeshTarget(

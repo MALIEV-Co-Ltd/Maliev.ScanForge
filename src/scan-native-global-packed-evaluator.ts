@@ -1,5 +1,11 @@
 import { nativeGlobalTriangleDistance } from "./scan-native-global-triangle";
 import {
+  queryNativeGlobalPackedIndex,
+  type NativeGlobalPackedIndex,
+  type NativeGlobalPackedIndexScratch,
+} from "./scan-native-global-packed-index";
+export { packNativeGlobalEvaluatorIndex } from "./scan-native-global-packed-index";
+import {
   nativeGlobalEvaluatorSearch,
   type NativeGlobalEvaluatorSearchNode,
   type NativeGlobalEvaluatorSearchScratch,
@@ -146,6 +152,26 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
   };
   return {
     surface,
+    queryPacked(
+      index: NativeGlobalPackedIndex,
+      point: ArrayLike<number>,
+      distance: Float64Array,
+      projection: Float64Array,
+      edgeFlags: Uint8Array,
+      filterHidden: boolean,
+      scratch: NativeGlobalPackedIndexScratch,
+    ) {
+      return queryNativeGlobalPackedIndex(
+        index,
+        point,
+        distance,
+        projection,
+        edgeFlags,
+        filterHidden,
+        scratch,
+        evaluate,
+      );
+    },
     query(
       root: NativeGlobalEvaluatorSearchNode<number>,
       point: ArrayLike<number>,

@@ -14,6 +14,12 @@ import {
   type NativeGlobalPackedEvaluatorSurface,
 } from "./scan-native-global-packed-evaluator";
 import { nativeTargetStorage } from "./scan-native-target-storage";
+import {
+  packNativeGlobalEvaluatorIndex,
+  validateNativeGlobalPackedIndex,
+  type NativeGlobalPackedIndex,
+  type NativeGlobalPackedIndexScratch,
+} from "./scan-native-global-packed-index";
 
 function check(options: MeshProcessingOptions) {
   if (options.signal?.aborted)
@@ -90,6 +96,8 @@ export interface NativeGlobalEvaluatorMesh {
   filterHidden?: boolean;
   /** Internal storage policy; source geometry and query arithmetic are unchanged. */
   compactBounds?: boolean;
+  /** Internal shared metadata policy; native graph ordering remains unchanged. */
+  packedNodes?: boolean;
 }
 export interface NativeGlobalEvaluatorIndexNode extends NativeGlobalEvaluatorSearchNode<number> {
   inverse: readonly [number, number, number];
@@ -99,6 +107,7 @@ export interface NativeGlobalEvaluatorIndexNode extends NativeGlobalEvaluatorSea
 }
 export interface NativeGlobalMeshEvaluatorData {
   root?: NativeGlobalEvaluatorIndexNode;
+  packedIndex?: NativeGlobalPackedIndex;
   surface: NativeGlobalPackedEvaluatorSurface;
   degenerate: Uint8Array;
   minimumExtent: number;
@@ -129,6 +138,8 @@ function prepare(
   options: MeshProcessingOptions,
 ) {
   const { vertices, triangles, flags } = input;
+  if (input.packedNodes !== undefined && typeof input.packedNodes !== "boolean")
+    throw Error("Invalid evaluator node storage policy.");
   if (
     input.compactBounds !== undefined &&
     typeof input.compactBounds !== "boolean"
@@ -302,8 +313,13 @@ function prepare(
     flags,
   };
   check(options);
+  const packedIndex = input.packedNodes
+    ? packNativeGlobalEvaluatorIndex(root, vertices, options)
+    : undefined;
+  if (packedIndex) root = undefined;
   return attachPreparedEvaluator(input, {
     root,
+    packedIndex,
     surface,
     degenerate,
     minimumExtent,
@@ -316,6 +332,15 @@ export function resumeNativeGlobalMeshEvaluator(
   data: NativeGlobalMeshEvaluatorData,
 ) {
   const { root, surface, degenerate, minimumExtent } = data;
+  if (input.packedNodes !== undefined && typeof input.packedNodes !== "boolean")
+    throw Error("Invalid evaluator node storage policy.");
+  if (!!data.packedIndex !== !!input.packedNodes || (root && data.packedIndex))
+    throw Error("Prepared evaluator node policy mismatch.");
+  if (data.packedIndex)
+    validateNativeGlobalPackedIndex(
+      data.packedIndex,
+      input.triangles.length / 3,
+    );
   if (
     surface.vertices !== input.vertices ||
     surface.triangles !== input.triangles ||
@@ -371,9 +396,18 @@ function attachPreparedEvaluator(
 ) {
   const { root, surface, degenerate, minimumExtent } = data;
   const provider = nativeGlobalPackedEvaluator(surface);
+  const packedIndex = data.packedIndex;
+  const packedScratch: NativeGlobalPackedIndexScratch | undefined = packedIndex
+    ? {
+        stack: [] as number[],
+        projection: new Float64Array(0),
+        edgeFlags: new Uint8Array(0),
+      }
+    : undefined;
   const filterHidden = !!input.filterHidden;
   return {
     root,
+    packedIndex,
     surface,
     degenerate,
     minimumExtent,
@@ -384,6 +418,23 @@ function attachPreparedEvaluator(
       edgeFlags: Uint8Array,
       scratch: NativeGlobalEvaluatorSearchScratch<number>,
     ) {
+      if (packedIndex && packedScratch) {
+        packedScratch.projection = scratch.projection;
+        packedScratch.edgeFlags = scratch.edgeFlags;
+        try {
+          return provider.queryPacked(
+            packedIndex,
+            point,
+            distance,
+            projection,
+            edgeFlags,
+            filterHidden,
+            packedScratch,
+          );
+        } finally {
+          scratch.stack.length = 0;
+        }
+      }
       if (!root) {
         scratch.stack.length = 0;
         return undefined;

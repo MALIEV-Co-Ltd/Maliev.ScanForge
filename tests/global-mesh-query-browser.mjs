@@ -59,6 +59,7 @@ try {
           evaluatorOnlyInputs: 0,
           queryWorker: String(url).includes("scan-global-query-worker"),
           compactTargets: 0,
+          packedTargets: 0,
         };
         window.__meshWorkers.push(this.record);
       }
@@ -77,6 +78,18 @@ try {
               (s) => s.targets,
             )) {
               if (target.surface.deriveBounds) this.record.compactTargets++;
+              if (target.packedIndex) {
+                this.record.packedTargets++;
+                if (target.root)
+                  throw Error("Packed handoff retained the node graph");
+                for (const array of [
+                  target.packedIndex.values,
+                  target.packedIndex.links,
+                  target.packedIndex.memberships,
+                ])
+                  this.record.sharedPreparedBuffers &&=
+                    array.buffer instanceof SharedArrayBuffer;
+              }
               for (const array of [
                 target.surface.normals,
                 target.surface.bounds,
@@ -144,8 +157,10 @@ try {
       const { scans, job } = meshCorrespondenceFixture(c),
         source = scans[0].geometry;
       for (const scan of scans)
-        for (const mesh of scan.geometry.targetMeshes ?? [])
+        for (const mesh of scan.geometry.targetMeshes ?? []) {
           mesh.compactBounds = true;
+          mesh.packedNodes = true;
+        }
       for (const scan of scans.slice(1))
         if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
           Object.assign(scan.geometry, {
@@ -203,8 +218,10 @@ try {
       const { scans, job } = meshCorrespondenceFixture(c),
         source = scans[0].geometry;
       for (const scan of scans)
-        for (const mesh of scan.geometry.targetMeshes ?? [])
+        for (const mesh of scan.geometry.targetMeshes ?? []) {
           mesh.compactBounds = true;
+          mesh.packedNodes = true;
+        }
       for (const scan of scans.slice(1))
         if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
           Object.assign(scan.geometry, {
@@ -264,7 +281,14 @@ try {
         geometry: {
           points,
           normals,
-          targetMeshes: [{ vertices: points, triangles, compactBounds: true }],
+          targetMeshes: [
+            {
+              vertices: points,
+              triangles,
+              compactBounds: true,
+              packedNodes: true,
+            },
+          ],
         },
       });
     }
@@ -325,6 +349,7 @@ try {
   assert(result.workers.every((w) => w.sharedPreparedBuffers));
   assert(result.workers.some((w) => w.evaluatorOnlyInputs > 0));
   assert(result.workers.some((w) => w.compactTargets > 0));
+  assert(result.workers.some((w) => w.packedTargets > 0));
   assert.deepEqual(errors, []);
   await writeFile(
     new URL("results.json", out),
