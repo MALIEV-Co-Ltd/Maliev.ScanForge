@@ -58,7 +58,7 @@ function prepare(
   input: NativeGlobalEvaluatorMesh,
   options: MeshProcessingOptions,
 ) {
-  const evaluator = prepareNativeGlobalMeshEvaluator(input, options);
+  // Finish and release adjacency scratch before the evaluator occupies memory.
   const neighbours = input.vertices.length
     ? nativeBuildAlignmentNeighbourMasks(
         input.vertices,
@@ -66,6 +66,7 @@ function prepare(
         options,
       )
     : new Uint8Array();
+  const evaluator = prepareNativeGlobalMeshEvaluator(input, options);
   return attach(evaluator, neighbours);
 }
 export interface NativeGlobalMeshTargetData extends NativeGlobalMeshEvaluatorData {

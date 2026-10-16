@@ -46,6 +46,37 @@ scratch retirement, not resolution of the separate project-load heap spike.
 The production 512 MiB admission remains unchanged; full large-scan registration
 and its public workflow gate remain unverified.
 
+## Target preparation order
+
+Target preparation now finishes adjacency before constructing the evaluator.
+The retained controlled native mesh harness calls adjacency (`0x140b38e30`), facet normals
+(`0x140b35d90`), then the target builder (`0x140a7f470`) in that order. The
+sequence is established for that harness; it does not prove the original GUI's
+complete preparation sequence. Offline image inspection also resolves the
+conditional virtual call in evaluator lifecycle `0x1407b9950`: base mesh table
+`0x140ebfcf0` slot `+0x68` points to adjacency `0x140b38e30`. The lifecycle checks
+an interface predicate and conditionally invokes this slot before its evaluator
+builder. The interface table at `mesh +0xf8` resolves its predicate slot `+0x10`
+to `0x1401ddb90`, which returns the byte at `interface +0x10` (`mesh +0x108`).
+The base constructor clears that byte; adjacency construction sets it to one.
+This statically establishes the readiness guard used to skip repeated adjacency
+construction. Geometry-edit invalidation paths have not all been traced here.
+Derived table `0x141155e60` instead points to `0x140166530`, whose body
+returns success without work. Thus the original lifecycle supports conditional
+preparation, not an unconditional adjacency rebuild for every mesh. The concrete
+class and live readiness state used by the original GUI remain unobserved. The
+previous application order constructed the evaluator before adjacency. As a
+result, the current target's completed tree could coexist with the temporary
+edge directory. The directory's existing `finally` disposal now runs before
+the evaluator starts. Previously prepared targets remain resident.
+
+Both GUI and MCP alignment use this shared target-preparation path. This changes
+neither correspondence arithmetic nor the public schema or memory admission.
+Only fully prepared targets enter the identity cache; a failed preparation can
+be retried. Preparation-order regressions exercise the real builders and cache,
+with injected adjacency/evaluator failures. A measured reduction of the complete
+three-scan registration peak remains unverified.
+
 ## Validation
 
 Seven new lifetime regressions failed before the change. The final build passed
@@ -61,3 +92,16 @@ plus this slice's source and tests. Its full suite passed 45,973 tests with 49
 optional tests skipped and no failures. The resident comparisons were enabled
 separately; their native oracle checks passed in both bound modes. Formatting,
 whitespace and source/snapshot identity checks passed for this slice.
+
+The subsequent preparation-order change passed an isolated production build
+(`scanforge-cd1e69942faa6828`), 277 focused tests, and the full isolated suite:
+46,382 passed, 52 optional tests skipped, zero failures. Its three new
+regressions cover adjacency completion before evaluator construction, identity
+cache reuse, and retries after adjacency or evaluator failure. These checks do
+not measure the complete owner-scan memory peak or establish full registration
+parity. The snapshot uses committed base `fa3810d` plus this change's source and
+test, excluding unrelated working-tree changes.
+The physical browser replay was not rerun for this slice: available host memory
+remained below its unchanged 3,072 MiB admission guard. The complete native
+controller capture also remains pending its 4,096 MiB guard. Neither prior
+browser results nor the passing fixture suite establish those missing runs.
