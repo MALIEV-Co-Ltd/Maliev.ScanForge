@@ -1,0 +1,65 @@
+{
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "cases": [
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164ba0",
+      "kind": "raw-mesh",
+      "inputOffset": 2048,
+      "resultOffset": 1704,
+      "delta": -344
+    },
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164ba0",
+      "kind": "raw-mesh",
+      "inputOffset": 4096,
+      "resultOffset": 3752,
+      "delta": -344
+    },
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164ba0",
+      "kind": "raw-mesh",
+      "inputOffset": 8192,
+      "resultOffset": 7848,
+      "delta": -344
+    },
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164be0",
+      "kind": "raw-child-payload",
+      "inputOffset": 2048,
+      "resultOffset": 1704,
+      "delta": -344
+    },
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164be0",
+      "kind": "raw-child-payload",
+      "inputOffset": 4096,
+      "resultOffset": 3752,
+      "delta": -344
+    },
+    {
+      "procedure": "0x140b39b40",
+      "identity": "0x141164be0",
+      "kind": "raw-child-payload",
+      "inputOffset": 8192,
+      "resultOffset": 7848,
+      "delta": -344
+    }
+  ],
+  "scope": "Original query routines execute against their matching two-qword interface identifier and supplied this-pointer storage. Matching identifiers only; no native object construction, delegated query failure, scene traversal, combined target finalization, evaluator execution or GUI.",
+  "queryEvidence": "ev_6348b032d57255ea9568130ca50d8c25bd3d47b617224ac5081ad5074d0817fc",
+  "childCountEvidence": {
+    "address": "0x140d574b0",
+    "evidenceId": "ev_9c0de4bce8be7ccf890ecf52ae0aba85cd8b04c07be3c80c73e1baea357af783",
+    "observation": "Iterates ordered children, queries 0x141164be0, and sums the count returned by virtual slot +0x18 on the vertex container at payload +0x48."
+  },
+  "interpretation": "For the concrete cMesh query, raw-mesh identity 0x141164ba0 and alignment child-payload identity 0x141164be0 are aliases returning the same payload root. This does not establish support or exclusion for other concrete classes.",
+  "cleanup": {
+    "allocationReleased": true,
+    "codeReleased": true
+  }
+}
