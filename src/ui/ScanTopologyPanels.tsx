@@ -1,3 +1,4 @@
+import { holeListOrder } from "../scan-hole-order";
 import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
@@ -241,17 +242,17 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
           triangles: component.triangles,
           label: `Mesh ${index + 1} · ${component.triangles.length} triangles · ${component.area.toFixed(2)} mm²`,
         }))
-      : inventory.boundaries.flatMap((boundary, index) =>
-          section === "holes" && !boundary.closed
-            ? []
-            : [
-                {
-                  index,
-                  triangles: boundary.triangles,
-                  label: `${section === "holes" ? "Hole" : "Boundary"} ${index + 1} · ${boundary.closed ? "closed" : "open"} · ${boundary.length.toFixed(2)} mm`,
-                },
-              ],
-        );
+      : (section === "holes"
+          ? holeListOrder(inventory.boundaries)
+          : inventory.boundaries.map((_, index) => index)
+        ).map((index) => {
+          const boundary = inventory.boundaries[index];
+          return {
+            index,
+            triangles: boundary.triangles,
+            label: `${section === "holes" ? "Hole" : "Boundary"} ${index + 1} · ${boundary.closed ? "closed" : "open"} · ${boundary.length.toFixed(2)} mm`,
+          };
+        });
   const current = items[Math.min(selected, Math.max(0, items.length - 1))];
   const boundary =
     current && section !== "components"

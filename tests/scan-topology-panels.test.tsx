@@ -161,3 +161,27 @@ it("highlights boundary and hole edges without selecting their incident faces", 
     expect(props.onSelection).not.toHaveBeenCalled();
   }
 });
+
+it("lists holes largest first and fills the original boundary reference", () => {
+  const props = defaults();
+  props.section = "holes";
+  const small = props.inventory.boundaries[0];
+  props.inventory.boundaries = [
+    small,
+    { ...small, diameter: 8, length: 12, triangles: [1] },
+    { ...small, closed: false, diameter: 100 },
+  ];
+  const tree = ScanTopologyControls(props);
+  const rows = elements(tree).filter(
+    (e) => e.type === "button" && typeof e.props["aria-pressed"] === "boolean",
+  );
+  expect(rows.map((e) => e.props.children)).toEqual([
+    "Hole 2 · closed · 12.00 mm",
+    "Hole 1 · closed · 3.00 mm",
+  ]);
+  click(tree, "Fill selected hole");
+  expect(props.onOperation).toHaveBeenLastCalledWith(
+    expect.objectContaining({ action: "fillHoles", indices: [1] }),
+    "Fill selected hole",
+  );
+});

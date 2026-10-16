@@ -93,7 +93,11 @@ Reinspect boundaries after each edit, Undo or Redo; their indices may change.
 Geometry locks, cancellation, revision checks and retry receipts remain active.
 In Entire/Semi hole mode, hovering inside a visible closed boundary highlights
 its full rim; clicking selects that hole in the list. Picking respects clipping
-and occlusion and requires no cycling through the inventory. Agents select the
+and occlusion and requires no cycling through the inventory. The hole list sorts by descending boundary length (the size shown in mm),
+with stable ordering for equal sizes. The shared inventory report exposes
+`holeOrder`, an ordered array of original closed-boundary indices; the
+`boundaries` array and fill/picking references retain their original order.
+Agents select the
 same inventory indices through `mesh_process`; `viewport_get.bridge.mode` is
 `holes` during this picker and `bridge` during a bridge gesture. Hole refinement
 grades interior size around long fixed rim edges (including bridge rails) while

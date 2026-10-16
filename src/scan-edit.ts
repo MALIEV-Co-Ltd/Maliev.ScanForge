@@ -1,3 +1,4 @@
+import { holeListOrder } from "./scan-hole-order";
 import type { Positions, Vec3 } from "./types";
 import {
   analyzeMesh,
@@ -53,6 +54,8 @@ export interface ScanEditRequest {
   fitTolerance?: number;
 }
 export interface ScanEditInventory {
+  /** Closed boundary indices in descending displayed-size order. */
+  holeOrder?: number[];
   components: { triangles: number[]; area: number }[];
   boundaries: {
     points: number[];
@@ -308,6 +311,7 @@ export function runScanEdit(
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t);
+    inventory.holeOrder = holeListOrder(inventory.boundaries);
     return {
       inventory,
       diagnostics: {
