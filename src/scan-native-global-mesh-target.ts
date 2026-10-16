@@ -5,7 +5,11 @@ import {
   type NativeGlobalEvaluatorMesh,
 } from "./scan-native-global-surface";
 import type { NativeGlobalEvaluatorSearchScratch } from "./scan-native-global-evaluator-query";
-import type { EvaluatedGlobalTarget } from "./scan-native-global-target";
+import {
+  nativeGlobalTargetChoice,
+  type EvaluatedGlobalTarget,
+  type RawGlobalTarget,
+} from "./scan-native-global-target";
 
 /** Native target arbitration checks only pointer presence at triangle +28/+30/+38.
  * Hidden neighbours still exist; eligibility filtering belongs to the index.
@@ -112,6 +116,42 @@ function prepare(
       result.edgeFlags = edgeFlags[0];
       result.neighbours = neighbours[face];
       return result;
+    },
+  };
+}
+
+/** Original evaluator order and radius are preserved for every query. The raw
+ * record is the separately searched nearest candidate, before mask/label checks.
+ * Results borrow a target's storage; consume before the next query on this set.
+ */
+export function prepareNativeGlobalMeshTargetSet(
+  inputs: readonly NativeGlobalEvaluatorMesh[],
+  options: MeshProcessingOptions = {},
+) {
+  check(options);
+  const targets = inputs.map((input) =>
+    prepareNativeGlobalMeshTarget(input, options),
+  );
+  const candidates = new Array<EvaluatedGlobalTarget>(targets.length);
+  check(options);
+  return {
+    targets,
+    query(
+      point: readonly number[],
+      radius: number,
+      raw?: RawGlobalTarget,
+      sourceLabelWord = 0,
+      mask = 0,
+    ) {
+      for (let i = 0; i < targets.length; i++)
+        candidates[i] = targets[i].query(point, radius);
+      return nativeGlobalTargetChoice(
+        point,
+        raw,
+        candidates,
+        sourceLabelWord,
+        mask,
+      );
     },
   };
 }

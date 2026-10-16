@@ -61,12 +61,13 @@ try {
       import {nativeGlobalPackedEvaluator} from '${origin}/src/scan-native-global-packed-evaluator.ts';
       import {packGlobalEvaluatorFixture} from '${origin}/tests/helpers/global-evaluator-packed-fixture.ts';
       import {nativeGlobalFacetNormals,prepareNativeGlobalMeshEvaluator} from '${origin}/src/scan-native-global-surface.ts';
-      import {prepareNativeGlobalMeshTarget} from '${origin}/src/scan-native-global-mesh-target.ts';
+      import {prepareNativeGlobalMeshTarget,prepareNativeGlobalMeshTargetSet} from '${origin}/src/scan-native-global-mesh-target.ts';
       import {nativeGlobalTargetChoice} from '${origin}/src/scan-native-global-target.ts';
       const fixture=await fetch('${origin}/tests/fixtures/global-fine-evaluator-query-native.json').then(r=>r.json());
       const policy=await fetch('${origin}/tests/fixtures/global-fine-evaluator-preparation-native.json').then(r=>r.json());
       const facets=await fetch('${origin}/tests/fixtures/global-fine-facet-normals-native.json').then(r=>r.json());
       const construction=await fetch('${origin}/tests/fixtures/alignment-target-builder.json').then(r=>r.json());
+      const pipeline=await fetch('${origin}/tests/fixtures/global-fine-mesh-target-pipeline-native.json').then(r=>r.json());
       function prepare(s){return {
         bounds:s.bounds??[-10,-10,-10,10,10,10],center:s.center??[0,0,0],flat:!!s.flat,
         children:(s.children??[]).map(c=>c?prepare(c):undefined),
@@ -121,7 +122,19 @@ try {
         const hit=target.query(point,5),choice=nativeGlobalTargetChoice(point,raw,[hit]);
         if(!hit.found||choice!==(point[1]<0?raw:hit))throw Error('Integrated boundary fallback mismatch');
       }
-      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,facetCases:facets.cases.length,builtIndexCases:construction.cases.length,meshTargetCases:3,stackEmpty:scratch.stack.length===0});
+      let meshTargetComparisons=0;
+      const doubleBits=values=>bits(Float64Array.from(values));
+      for(const c of pipeline.cases){
+        const set=prepareNativeGlobalMeshTargetSet(c.meshes.map(m=>({vertices:Float32Array.from(m.vertices),triangles:Uint32Array.from(m.triangles),flags:m.flags?Uint8Array.from(m.flags):undefined,filterHidden:!!m.filterHidden})));
+        const raw=c.raw?{...c.raw,point:c.raw.point.map(Math.fround),normal:c.raw.normal.map(Math.fround)}:undefined;
+        for(let repeat=0;repeat<2;repeat++){
+          const hit=set.query(c.point,c.radius,raw);
+          if(doubleBits(hit?.point??[Math.fround(3.4028234663852886e38),0,0])!==c.outputBits||doubleBits(hit?.normal??[91,92,93])!==c.normalBits)
+            throw Error('Original mesh target pipeline mismatch: '+c.name);
+          meshTargetComparisons++;
+        }
+      }
+      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,facetCases:facets.cases.length,builtIndexCases:construction.cases.length,meshTargetCases:3,meshTargetComparisons,stackEmpty:scratch.stack.length===0});
     `;
     const url = URL.createObjectURL(
       new Blob([code], { type: "text/javascript" }),
@@ -145,11 +158,12 @@ try {
   assert.equal(report.facetCases, 42);
   assert.equal(report.builtIndexCases, 5);
   assert.equal(report.meshTargetCases, 3);
+  assert.equal(report.meshTargetComparisons, 240);
   assert.equal(report.stackEmpty, true);
   assert.equal(errors.length, 0);
   report.errors = errors;
   report.scope =
-    "Original facet caches, constructed indexes, supplied-tree queries and extent cases in an isolated browser Worker; not owner-scan or full alignment verification.";
+    "Original composed mesh-target queries, facet caches, constructed indexes, supplied-tree queries and extent cases in an isolated browser Worker; not owner-scan or full alignment verification.";
   await writeFile(
     new URL("results.json", out),
     JSON.stringify(report, null, 2),
