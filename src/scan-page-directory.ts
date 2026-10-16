@@ -118,53 +118,89 @@ export async function* scanDirectoryEntries(
   first = 0,
   end = Infinity,
 ): AsyncGenerator<ScanDirectoryEntry> {
-  async function* read(
-    ref: ScanPageRef,
-    depth: number,
-  ): AsyncGenerator<ScanDirectoryEntry> {
-    checkScanAbort(signal);
-    if (!Number.isInteger(depth) || depth < 1 || depth > 54)
-      throw new Error("Invalid scan directory depth.");
-    const scratch = await budget.reserve(
-      "directory decoding",
-      Math.max(1024, ref.bytes * 8),
-      signal,
-    );
-    try {
-      const page = await store.read(ref, signal);
-      let entries: ScanDirectoryEntry[];
+  if (
+    !Number.isInteger(directory.levels) ||
+    directory.levels < 1 ||
+    directory.levels > 54
+  )
+    throw new Error("Invalid scan directory depth.");
+  type Frame = {
+    ref: ScanPageRef;
+    depth: number;
+    index: number;
+    lease: ScanBudgetLease;
+  };
+  const stack: Frame[] = [];
+  const push = async (ref: ScanPageRef, depth: number) => {
+    const lease = await budget.reserve("directory traversal", 512, signal);
+    stack.push({ ref, depth, index: 0, lease });
+  };
+  try {
+    await push(directory.root, directory.levels);
+    while (stack.length) {
+      checkScanAbort(signal);
+      const frame = stack[stack.length - 1];
+      const scratch = await budget.reserve(
+        "directory decoding",
+        Math.max(1024, frame.ref.bytes * 8),
+        signal,
+      );
+      let selected: ScanDirectoryEntry | undefined;
+      let exhausted = false;
       try {
-        const parsed: unknown = JSON.parse(
-          new TextDecoder().decode(page.bytes),
-        );
-        if (!Array.isArray(parsed) || parsed.length > FANOUT || !parsed.length)
-          throw new Error("Invalid scan directory page.");
-        entries = parsed.map((entry) => {
+        const page = await store.read(frame.ref, signal);
+        try {
+          const parsed: unknown = JSON.parse(
+            new TextDecoder().decode(page.bytes),
+          );
           if (
-            !entry ||
-            !Number.isSafeInteger(entry.first) ||
-            !Number.isSafeInteger(entry.count) ||
-            entry.first < 0 ||
-            entry.count <= 0 ||
-            typeof entry.page?.id !== "string" ||
-            typeof entry.page.sha256 !== "string" ||
-            !Number.isSafeInteger(entry.page.bytes) ||
-            entry.page.bytes < 0
+            !Array.isArray(parsed) ||
+            !parsed.length ||
+            parsed.length > FANOUT
           )
-            throw new Error("Invalid scan directory entry.");
-          return entry;
-        });
+            throw new Error("Invalid scan directory page.");
+          let previousEnd = -1;
+          for (const entry of parsed) {
+            if (
+              !entry ||
+              !Number.isSafeInteger(entry.first) ||
+              !Number.isSafeInteger(entry.count) ||
+              entry.first < 0 ||
+              entry.count <= 0 ||
+              !Number.isSafeInteger(entry.first + entry.count) ||
+              entry.first < previousEnd ||
+              typeof entry.page?.id !== "string" ||
+              typeof entry.page.sha256 !== "string" ||
+              !Number.isSafeInteger(entry.page.bytes) ||
+              entry.page.bytes < 0
+            )
+              throw new Error("Invalid scan directory entry.");
+            previousEnd = entry.first + entry.count;
+          }
+          if (frame.index >= parsed.length) exhausted = true;
+          else selected = parsed[frame.index++];
+        } finally {
+          page.release();
+        }
       } finally {
-        page.release();
+        scratch.release();
       }
-      for (const entry of entries) {
-        if (entry.first >= end || entry.first + entry.count <= first) continue;
-        if (depth === 1) yield entry;
-        else yield* read(entry.page, depth - 1);
+      if (exhausted) {
+        stack.pop()!.lease.release();
+        continue;
       }
-    } finally {
-      scratch.release();
+      if (
+        !selected ||
+        selected.first >= end ||
+        selected.first + selected.count <= first
+      )
+        continue;
+      // Retain only a small frame, then re-read its next sibling after descent.
+      // Decoded ancestor arrays never pin the full page cache during a long seek.
+      if (frame.depth === 1) yield selected;
+      else await push(selected.page, frame.depth - 1);
     }
+  } finally {
+    stack.forEach((frame) => frame.lease.release());
   }
-  yield* read(directory.root, directory.levels);
 }
