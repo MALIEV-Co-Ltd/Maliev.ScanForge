@@ -1,7 +1,7 @@
 # Bounded-memory polygon reduction and disk-backed scans
 
 Date: 2026-10-16
-Status: Owner approved on 2026-10-16. Implementation plan review remains pending.
+Status: Owner approved on 2026-10-16. Plan execution approved; implementation is in progress.
 
 ## Outcome
 
@@ -229,7 +229,7 @@ Each phase needs a separate buildable, validated commit boundary.
 ## Approval record
 
 The owner approved this design and its resident-first, browser-local OPFS direction
-on 2026-10-16. Next: review the implementation plan for direct execution in this
+on 2026-10-16. The owner also approved the implementation plan for direct execution in this
 session; subagents are prohibited by the side-conversation boundary.
 No backend deployment, production publication or unbounded resource use is
 included in this proposal.
