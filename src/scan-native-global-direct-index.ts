@@ -238,28 +238,41 @@ export function buildNativeGlobalPackedIndex(
       initial[i] = i;
     }
     visit(root, initial, 0, true);
-    const output: NativeGlobalPackedIndex = {
-      kind: "native-global-index-v1",
-      values: new Float64Array(allocate(nodeCount * 96, true)),
-      links: new Uint32Array(allocate(nodeCount * 48, true)),
-      memberships: new Uint32Array(allocate(memberCount * 4, true)),
-    };
+    // Retire each staging family as soon as its immutable handoff is filled.
+    // Earlier targets stay live in the scene budget; allocating all three
+    // handoff buffers before retiring any staging blocks creates a needless peak.
+    const packedValues = new Float64Array(allocate(nodeCount * 96, true));
     for (let block = 0; block < values.length; block++) {
       check();
       const n = Math.min(nodeBlock, nodeCount - block * nodeBlock) * 12;
-      output.values.set(values[block].subarray(0, n), block * nodeBlock * 12);
-      output.links.set(links[block].subarray(0, n), block * nodeBlock * 12);
+      packedValues.set(values[block].subarray(0, n), block * nodeBlock * 12);
+      release(values[block].buffer);
     }
+    const packedLinks = new Uint32Array(allocate(nodeCount * 48, true));
+    for (let block = 0; block < links.length; block++) {
+      check();
+      const n = Math.min(nodeBlock, nodeCount - block * nodeBlock) * 12;
+      packedLinks.set(links[block].subarray(0, n), block * nodeBlock * 12);
+      release(links[block].buffer);
+    }
+    const packedMembers = new Uint32Array(allocate(memberCount * 4, true));
     for (let block = 0; block < members.length; block++) {
       check();
-      output.memberships.set(
+      packedMembers.set(
         members[block].subarray(
           0,
           Math.min(memberBlock, memberCount - block * memberBlock),
         ),
         block * memberBlock,
       );
+      release(members[block].buffer);
     }
+    const output: NativeGlobalPackedIndex = {
+      kind: "native-global-index-v1",
+      values: packedValues,
+      links: packedLinks,
+      memberships: packedMembers,
+    };
     const validationScratch = new Uint8Array(allocate(nodeCount));
     validateNativeGlobalPackedIndex(output, 0xffffffff, validationScratch);
     release(validationScratch.buffer);

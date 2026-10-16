@@ -4,6 +4,22 @@ import * as octree from "../src/scan-noise-octree";
 import { prepareNativeGlobalMeshEvaluator } from "../src/scan-native-global-surface";
 import { packNativeGlobalEvaluatorIndex } from "../src/scan-native-global-packed-index";
 
+it("finishes within a handoff budget that cannot hold all staging and output families together", () => {
+  const input = small();
+  const expected = buildNativeGlobalPackedIndex(input, 0.5, 10).index;
+  const result = buildNativeGlobalPackedIndex(
+    input,
+    0.5,
+    10,
+    {},
+    undefined,
+    undefined,
+    1442800,
+  );
+  expect(result.index).toEqual(expected);
+  expect(result.construction.peakTypedBytes).toBeLessThanOrEqual(1442800);
+});
+
 it.each(
   native.cases.flatMap((c) =>
     [false, true].map((compactBounds) => ({ ...c, compactBounds })),
