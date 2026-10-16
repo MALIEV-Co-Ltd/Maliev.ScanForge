@@ -12,8 +12,14 @@ if (freemem() < 3072 * 1048576)
   throw Error(
     "Owner worker replay requires 3072 MiB free; do not lower admission.",
   );
+const entityMode = process.env.SCANFORGE_ENTITY_APPLY === "1";
 const origin = "http://127.0.0.1:5173",
-  out = new URL("../.resources/global-apply-worker-browser/", import.meta.url);
+  out = new URL(
+    entityMode
+      ? "../.resources/global-entity-worker-browser/"
+      : "../.resources/global-apply-worker-browser/",
+    import.meta.url,
+  );
 await mkdir(out, { recursive: true });
 const oraclePath = new URL(
   "./fixtures/global-fine-apply-stages-native.json",
@@ -22,7 +28,9 @@ const oraclePath = new URL(
 const oracle = JSON.parse(await readFile(oraclePath, "utf8")),
   prefix = "/" + randomUUID() + "/";
 const ledger = {
-  owner: "global-apply-native-worker-parity",
+  owner: entityMode
+    ? "global-entity-native-worker-parity"
+    : "global-apply-native-worker-parity",
   pid: process.pid,
   startedAt: new Date(performance.timeOrigin).toISOString(),
   expiry: new Date(Date.now() + 360_000).toISOString(),
@@ -151,8 +159,16 @@ try {
       assert.equal(new URL(page.url()).port, "5173");
       assert(await page.title());
       assert(await page.locator("#root").innerText());
+      const profiler = entityMode
+        ? await page.context().newCDPSession(page)
+        : undefined;
+      if (profiler) {
+        await profiler.send("Profiler.enable");
+        await profiler.send("Profiler.setSamplingInterval", { interval: 1000 });
+        await profiler.send("Profiler.start");
+      }
       const result = await page.evaluate(
-        async ({ oracle, base }) => {
+        async ({ oracle, base, entityMode }) => {
           const { parsePlyTopology } = await import("/src/ply-topology.ts");
           const { createDatumTransformExecutor } =
             await import("/src/datum-transform-pool.ts");
@@ -197,7 +213,7 @@ try {
           }
           const pool = createDatumTransformExecutor({ threshold: 0 }),
             results = [];
-          let sampling = true,
+          let sampling = !entityMode,
             previous = await new Promise(requestAnimationFrame);
           const frames = [];
           const tick = (time) => {
@@ -206,12 +222,128 @@ try {
             previous = time;
             requestAnimationFrame(tick);
           };
-          requestAnimationFrame(tick);
+          if (!entityMode) requestAnimationFrame(tick);
           try {
             for (const c of oracle.meshCases) {
               const scan = scans[c.source],
                 matrices = c.matrices.map(decode),
                 before = performance.now();
+              if (entityMode) {
+                const positions = new Float32Array(scan.triangles.length * 3);
+                const renderNormals = new Array(positions.length);
+                for (let i = 0; i < scan.triangles.length; i++) {
+                  for (let a = 0; a < 3; a++) {
+                    positions[i * 3 + a] =
+                      scan.vertices[scan.triangles[i] * 3 + a];
+                    renderNormals[i * 3 + a] =
+                      scan.normals[scan.triangles[i] * 3 + a];
+                  }
+                  if (i % 65536 === 65535)
+                    await new Promise((r) => setTimeout(r, 0));
+                }
+                const saved = {
+                  hidden: [0],
+                  saved: [{ id: "saved", name: "Saved", triangles: [0] }],
+                };
+                const entity = {
+                  id: String(c.source),
+                  name: "Owner scan",
+                  kind: "mesh",
+                  positions,
+                  normals: renderNormals,
+                  indexedMesh: scan,
+                  meshSelection: saved,
+                  visible: true,
+                  color: "#aaa",
+                  opacity: 1,
+                };
+                // PLY carrier fields use vertices/triangles/normals, identical to IndexedMesh.
+                previous = await new Promise(requestAnimationFrame);
+                sampling = true;
+                requestAnimationFrame(tick);
+                const started = performance.now();
+                const result = await pool.transformScanStages(entity, matrices);
+                const mesh = result.entity;
+                const elapsedMs = performance.now() - started;
+                await new Promise(requestAnimationFrame);
+                sampling = false;
+                if (
+                  mesh.meshSelection !== saved ||
+                  mesh.indexedMesh.triangles !== scan.triangles
+                )
+                  throw Error("Scan identity was lost");
+                for (let i = 0; i < scan.triangles.length; i++) {
+                  for (let a = 0; a < 3; a++) {
+                    if (
+                      mesh.positions[i * 3 + a] !==
+                        mesh.indexedMesh.vertices[scan.triangles[i] * 3 + a] ||
+                      mesh.normals[i * 3 + a] !==
+                        mesh.indexedMesh.normals[scan.triangles[i] * 3 + a]
+                    )
+                      throw Error(
+                        "Expanded geometry diverged from native indexed streams",
+                      );
+                  }
+                  if (i % 65536 === 65535)
+                    await new Promise((r) => setTimeout(r, 0));
+                }
+                const cloudInput = {
+                  ...entity,
+                  kind: "pointcloud",
+                  positions: scan.vertices,
+                  normals: Array.from(scan.normals),
+                  indexedMesh: undefined,
+                };
+                const cloud = await pool.transformScanStages(
+                  cloudInput,
+                  matrices,
+                );
+                const nativeCloud = oracle.cloudCases.find(
+                  (v) =>
+                    v.source === c.source &&
+                    v.name === oracle.sources[c.source].name + "-" + c.mode,
+                );
+                if (
+                  cloud.entity.pointCloudPlacement.matrixBits !==
+                    nativeCloud.poseBits.at(-1) ||
+                  cloud.entity.pointCloudPlacement.sourcePositions !==
+                    scan.vertices
+                )
+                  throw Error("Cloud placement or selection source diverged");
+                const boundBits = Array.from(
+                  new Uint8Array(
+                    Float32Array.from([
+                      ...cloud.bounds.min,
+                      ...cloud.bounds.max,
+                    ]).buffer,
+                  ),
+                  (b) => b.toString(16).padStart(2, "0"),
+                ).join("");
+                if (boundBits !== nativeCloud.worldBoundsBits)
+                  throw Error("Cloud world bounds diverged");
+                if (
+                  (await hash(scan.vertices)) !==
+                    oracle.sources[c.source].pointsSha256 ||
+                  (await hash(scan.normals)) !==
+                    oracle.sources[c.source].normalsSha256 ||
+                  (await hash(scan.triangles)) !== scan.indexHash
+                )
+                  throw Error("Authored scan changed");
+                results.push({
+                  source: c.source,
+                  mode: c.mode,
+                  positionsSha256: await hash(mesh.indexedMesh.vertices),
+                  normalsSha256: await hash(mesh.indexedMesh.normals),
+                  physicalWorkers: result.execution.physicalWorkers,
+                  elapsedMs,
+                  expandedTriangles: scan.triangles.length / 3,
+                  expandedStreamsMatched: true,
+                  savedSelectionsRetained: true,
+                  cloudPoseAndBoundsMatched: true,
+                  authoredBuffersIntact: true,
+                });
+                continue;
+              }
               const coordinates = await pool.transformStages(
                   scan.vertices,
                   matrices,
@@ -260,8 +392,16 @@ try {
             },
           };
         },
-        { oracle, base: `http://127.0.0.1:${port}${prefix}` },
+        { oracle, base: `http://127.0.0.1:${port}${prefix}`, entityMode },
       );
+      if (profiler) {
+        const { profile } = await profiler.send("Profiler.stop");
+        await writeFile(
+          new URL("assembly.cpuprofile", out),
+          JSON.stringify(profile),
+        );
+        await profiler.detach();
+      }
       await writeFile(
         new URL("numeric-results.json", out),
         JSON.stringify(result, null, 2),
@@ -273,23 +413,30 @@ try {
         assert.equal(actual.physicalWorkers, 2);
         assert.equal(actual.positionsSha256, expected.positionsSha256);
         assert.equal(actual.normalsSha256, expected.normalsSha256);
-        assert.equal(actual.faceNormalsSha256, expected.faceNormalsSha256);
+        if (!entityMode)
+          assert.equal(actual.faceNormalsSha256, expected.faceNormalsSha256);
       }
       const workers = await page.evaluate(() => window.__datumStageWorkers);
       assert.equal(workers.length, 2);
       assert(
         workers.every(
-          (w) => w.messages > 0 && w.messages === w.staged && w.terminated,
+          (w) =>
+            w.messages > 0 &&
+            (entityMode ? w.staged > 0 : w.messages === w.staged) &&
+            w.terminated,
         ),
       );
       assert.deepEqual(errors, []);
+      report.entityMode = entityMode;
       report.results = result.results;
       report.frames = result.frames;
       report.workers = workers;
       report.browserErrors = errors;
       report.frameBudgetPassed = result.frames.maximumMs < 100;
       report.checks.push(
-        "All six complete-owner two-stage coordinate, vertex-normal and controlled face-normal outputs match original native hashes.",
+        entityMode
+          ? "All six full expanded mesh objects retain native indexed coordinates/normals, matching expanded geometry, saved selections and source buffers; cloud placements and world bounds match native."
+          : "All six complete-owner two-stage coordinate, vertex-normal and controlled face-normal outputs match original native hashes.",
         "Two physical workers retain intermediate Float32 rounding within each chunk, consume staged messages, preserve authored coordinates/normals/indices and terminate.",
       );
       assert(

@@ -142,6 +142,28 @@ export function canonicalCloud(entity: Entity): Entity {
   return ordinary;
 }
 
+/** Compose native setters in order without baking world views or precomposing deltas. */
+export function nextCloudPlacementStages(
+  entity: Entity,
+  matrices: readonly (readonly number[])[],
+): Placement {
+  if (
+    !matrices.length ||
+    matrices.length > 16 ||
+    matrices.some(
+      (matrix) => matrix.length !== 12 || !matrix.every(Number.isFinite),
+    )
+  )
+    throw new Error("Cloud poses require one to 16 finite 3x4 frames.");
+  const first = nextCloudPlacement(entity, matrices[0]);
+  let pose = cloudPoseMatrix(first.matrixBits);
+  for (let i = 1; i < matrices.length; i++)
+    pose = composeCloudPose(matrices[i], pose);
+  const result = { ...first, matrixBits: cloudPoseBits(pose) };
+  selectionSources.set(result, selectionSources.get(first)!);
+  return result;
+}
+
 export function nextCloudPlacement(
   entity: Entity,
   matrix: readonly number[],

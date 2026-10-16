@@ -230,6 +230,21 @@ async function run() {
   }
   await mutate("landmark_accept");
   check("Accepted public landmark preview before viewport replay");
+  await mutate("settings_set", { patch: { theme: "dark" } });
+  await mutate("viewport_set", { view: "top" });
+  await mutate("viewport_set", { view: "fit" });
+  await page.waitForTimeout(600);
+  report.viewportSetup = {
+    theme: "dark",
+    view: "top",
+    fit: "visible scene",
+    deviceScaleFactor: 2,
+    width: 1183,
+    height: 944,
+  };
+  await page.screenshot({
+    path: fileURLToPath(new URL("navigation-start.png", out)),
+  });
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("Profiler.enable");
   await cdp.send("Profiler.start");
@@ -260,17 +275,31 @@ async function run() {
   await page.getByRole("button", { name: "ply-2.ply", exact: true }).click();
   const canvas = await page.locator(".viewport canvas").first().boundingBox();
   assert(canvas);
+  const gestureCounts = { orbit: 0, pan: 0, dragZoom: 0, wheelZoom: 0 };
   for (let gesture = 0; gesture < 20; gesture++) {
     const x = canvas.x + canvas.width * (0.3 + (gesture % 4) * 0.12);
     const y = canvas.y + canvas.height * (0.35 + (gesture % 3) * 0.12);
-    const button = gesture % 2 ? "middle" : "left";
+    const modifier =
+      gesture % 5 === 2 ? "Control" : gesture % 5 === 3 ? "Shift" : undefined;
+    const button = modifier ? "left" : gesture % 2 ? "middle" : "left";
+    gestureCounts[
+      modifier === "Control"
+        ? "pan"
+        : modifier === "Shift"
+          ? "dragZoom"
+          : "orbit"
+    ]++;
+    if (modifier) await page.keyboard.down(modifier);
     await page.mouse.move(x, y);
     await page.mouse.down({ button });
     for (let step = 1; step <= 6; step++)
       await page.mouse.move(x + step * 4, y + step * 3);
     await page.mouse.up({ button });
+    if (modifier) await page.keyboard.up(modifier);
+    gestureCounts.wheelZoom++;
     await page.mouse.wheel(0, gesture % 2 ? 60 : -60);
   }
+  report.gestureCounts = gestureCounts;
   const { profile } = await cdp.send("Profiler.stop");
   await writeFile(new URL("profile.cpuprofile", out), JSON.stringify(profile));
   report.viewportPerformance = await page.evaluate(() => {

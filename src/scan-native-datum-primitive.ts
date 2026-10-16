@@ -76,7 +76,7 @@ export function nativeDatumTransformPrimitive(
 
 /** Rigid movement preserves scalar fit parameters and residuals, with owned frames. */
 export function datumFeatureMetadata(
-  entity: Entity,
+  entity: Pick<Entity, "fit" | "planeFrame">,
   matrix: readonly number[],
 ) {
   let fit = entity.fit,

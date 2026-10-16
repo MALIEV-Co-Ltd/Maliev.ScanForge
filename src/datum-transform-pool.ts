@@ -1,10 +1,6 @@
+import { yieldScanTask } from "./scan-task";
 import type { Entity, Positions } from "./types";
-import {
-  nextCloudPlacement,
-  placedCloud,
-  cloudPoseMatrix,
-} from "./point-cloud-placement";
-import { datumScanTransformPlan } from "./datum-alignment";
+import { transformDatumScanStages } from "./datum-staged-scan";
 import {
   executeDatumTransform,
   type DatumTransformRequest,
@@ -193,7 +189,7 @@ export function createDatumTransformExecutor(
           max[axis] = Math.max(max[axis], result.max[axis]);
         }
       });
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await yieldScanTask();
       check();
     }
     return {
@@ -233,50 +229,11 @@ export function createDatumTransformExecutor(
     close,
     transform,
     transformStages,
-    transformScan: async (entity: Entity, matrix: readonly number[]) => {
-      check();
-      const plan = datumScanTransformPlan(entity, matrix);
-      if (entity.kind === "pointcloud") {
-        const placement = nextCloudPlacement(entity, matrix);
-        const pose = cloudPoseMatrix(placement.matrixBits);
-        const positions = await transform(placement.sourcePositions, pose);
-        const normals = placement.sourceNormals
-          ? await transform(placement.sourceNormals, pose, true)
-          : undefined;
-        const output = plan.assemble(
-          positions.output,
-          undefined,
-          normals?.output,
-        );
-        return {
-          entity: placedCloud(output, placement, {
-            positions: positions.output,
-            normals: output.normals,
-          }),
-          bounds: positions.bounds,
-          execution: {
-            ...positions.execution,
-            localBuffersRetained: true,
-            poseBits: placement.matrixBits,
-          },
-        };
-      }
-      const positions = await transform(entity.positions, matrix);
-      const vertices = plan.indexed
-        ? await transform(plan.indexed.vertices, matrix)
-        : undefined;
-      const normals = entity.normals
-        ? await transform(entity.normals, matrix, true)
-        : undefined;
-      return {
-        entity: plan.assemble(
-          positions.output,
-          vertices?.output,
-          normals?.output,
-        ),
-        bounds: positions.bounds,
-        execution: positions.execution,
-      };
-    },
+    transformScanStages: (
+      entity: Entity,
+      matrices: readonly (readonly number[])[],
+    ) => transformDatumScanStages(entity, matrices, transformStages, check),
+    transformScan: (entity: Entity, matrix: readonly number[]) =>
+      transformDatumScanStages(entity, [matrix], transformStages, check),
   };
 }

@@ -1,0 +1,223 @@
+{
+  "scope": "Complete scan-object assembly through the shared bounded alignment executor; public complete Global Fine Align publication remains gated.",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "nativeFixture": "tests/fixtures/global-fine-apply-stages-native.json",
+  "browser": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "All six full expanded mesh objects retain native indexed coordinates/normals, matching expanded geometry, saved selections and source buffers; cloud placements and world bounds match native.",
+      "Two physical workers retain intermediate Float32 rounding within each chunk, consume staged messages, preserve authored coordinates/normals/indices and terminate."
+    ],
+    "passed": true,
+    "entityMode": true,
+    "results": [
+      {
+        "source": 0,
+        "mode": "pooled-plane",
+        "positionsSha256": "9c2459fe597d76fef65b3a7f1030576e12b23010b1566964b1ad692d852ff5f5",
+        "normalsSha256": "74ed745504d6716c531f1373fec068eb0480d90c445f0d72d31f63a298bc0dec",
+        "physicalWorkers": 2,
+        "elapsedMs": 120.39499998092651,
+        "expandedTriangles": 274154,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      },
+      {
+        "source": 0,
+        "mode": "target-average",
+        "positionsSha256": "2ea5ad8e1503356ac58b7c09ea7fe24ce9b5c56839d9fe2509f6d88b93a25f24",
+        "normalsSha256": "e7dd7c45ff342a9ac3402f19c444dcbfd6987995b032353a8193f884aef40413",
+        "physicalWorkers": 2,
+        "elapsedMs": 107.98999997973442,
+        "expandedTriangles": 274154,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "positionsSha256": "6a0a59586b78f40d9d43546f645e581274e424aabf8b75f679f8fa52840642a0",
+        "normalsSha256": "09171b5d5d37b08b430b2db9ef8110a3875f1864b68243fb8fbc01335c7c0e9f",
+        "physicalWorkers": 2,
+        "elapsedMs": 653.9249999821186,
+        "expandedTriangles": 2697877,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "positionsSha256": "1ad7f31b54f66318163b19ca7a33e8a40f56512487ef5b52cba74c3ecdf63178",
+        "normalsSha256": "e8c2e97e4d0dad24dd6c6633abe4606178c7af2fb27b8c84b81916635b784dd5",
+        "physicalWorkers": 2,
+        "elapsedMs": 741.9600000083447,
+        "expandedTriangles": 2697877,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      },
+      {
+        "source": 2,
+        "mode": "pooled-plane",
+        "positionsSha256": "4bd03f7fb1d901feb7c714da8456f1a9bf92149fb7415d1dd5d0179a40019829",
+        "normalsSha256": "ce87e02357215c65fc4c40e2404b2ed2c8f3cebb4f69ea7e6d0bcbb485dd9e42",
+        "physicalWorkers": 2,
+        "elapsedMs": 863.125,
+        "expandedTriangles": 3691133,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      },
+      {
+        "source": 2,
+        "mode": "target-average",
+        "positionsSha256": "865a15f9f8a068b7d9030d3054093465cea17859eecb2330dbeed7f0bf5b32a1",
+        "normalsSha256": "10b49ff649cf50badf2d292fc4b2aef9fa17984b4fea135127c9f0e93f494170",
+        "physicalWorkers": 2,
+        "elapsedMs": 882.0399999916553,
+        "expandedTriangles": 3691133,
+        "expandedStreamsMatched": true,
+        "savedSelectionsRetained": true,
+        "cloudPoseAndBoundsMatched": true,
+        "authoredBuffersIntact": true
+      }
+    ],
+    "frames": {
+      "count": 176,
+      "medianMs": 16.68000000000029,
+      "maximumMs": 83.42499999999927
+    },
+    "workers": [
+      {
+        "messages": 224,
+        "staged": 192,
+        "terminated": true
+      },
+      {
+        "messages": 208,
+        "staged": 180,
+        "terminated": true
+      }
+    ],
+    "browserErrors": [],
+    "frameBudgetPassed": true
+  },
+  "comparison": {
+    "sameMachine": "Isolated Chrome, 1792 MiB JavaScript heap, profiler enabled in both measured runs.",
+    "beforeYieldMs": [
+      382.17500001192093, 329.47499999403954, 3590.6050000190735,
+      3669.9149999916553, 4867.390000015497, 4919.75
+    ],
+    "afterYieldMs": [
+      120.39499998092651, 107.98999997973442, 653.9249999821186,
+      741.9600000083447, 863.125, 882.0399999916553
+    ],
+    "limitation": "Local repeated workload measurements, not native speed comparisons or an end-to-end registration benchmark."
+  },
+  "coverage": [
+    "Full expanded render coordinates and normals checked against native-hash-matched indexed streams for all 6,663,164 source triangles in both numeric modes.",
+    "Original indexed triangle buffers and saved selection records retained by identity.",
+    "Cloud Double pose and full-point bounds match native for six cases; immutable source buffers retained.",
+    "Two real physical transform workers terminate; source inputs remain intact."
+  ],
+  "exclusions": [
+    "No complete Global Fine Align GUI/MCP workflow is advertised by this internal staged-object path.",
+    "This benchmark uses an otherwise empty viewport; import, final full-scene rendering, history and numeric registration are outside timed object assembly.",
+    "Controlled native face-normal carrier results are retained in the earlier stage fixture; this test expands native per-vertex normals instead of claiming native importer generation."
+  ],
+  "validation": {
+    "build": "passed without warnings or errors",
+    "fingerprint": "scanforge-1fe723a6ad773a28",
+    "focused": {
+      "passed": 2247,
+      "failed": 0,
+      "skipped": 0,
+      "files": 7,
+      "includesCompleteOwnerReplay": true
+    },
+    "guiMcp": {
+      "passed": true,
+      "steps": [
+        "official SDK stdio initialize/tools/resources",
+        "browser pairing and persisted connection after Settings closes",
+        "exact CAD creation rendered in UI",
+        "MCP and GUI exact alignment references with identical coordinates and unchanged history",
+        "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
+        "native coordinate preview/cancel, primary-plane Z default and explicit X, GUI/MCP Apply and Undo restore identical scan geometry",
+        "UI undo and MCP redo",
+        "STEP content and project export artifacts",
+        "mesh copy/transform/winding worker/topology",
+        "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
+        "disconnect rejects calls"
+      ]
+    },
+    "suite": {
+      "passed": 43292,
+      "skipped": 40,
+      "filesPassed": 411,
+      "filesSkipped": 13
+    },
+    "staticChecks": [
+      "Formatting passed for all eleven staged files",
+      "Staged whitespace check passed",
+      "Repository prohibited-name audit passed"
+    ]
+  },
+  "navigationReplay": {
+    "scope": "Actual rendered dark-mode, top-view fitted viewport after public landmark acceptance; fresh isolated profile, not the user browser session.",
+    "passed": true,
+    "sourceFiles": [
+      {
+        "name": "ply-1.ply",
+        "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+        "vertices": 140113,
+        "triangles": 274154
+      },
+      {
+        "name": "ply-2.ply",
+        "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+        "vertices": 1375494,
+        "triangles": 2697877
+      },
+      {
+        "name": "ply-3.ply",
+        "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "vertices": 1865848,
+        "triangles": 3691133
+      }
+    ],
+    "setup": {
+      "theme": "dark",
+      "view": "top",
+      "fit": "visible scene",
+      "deviceScaleFactor": 2,
+      "width": 1183,
+      "height": 944
+    },
+    "gestureCounts": {
+      "orbit": 12,
+      "pan": 4,
+      "dragZoom": 4,
+      "wheelZoom": 20
+    },
+    "performance": {
+      "gpu": "ANGLE (NVIDIA, NVIDIA RTX A4000 (0x000024B0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "medianFrameMs": 16.68000000000029,
+      "p95FrameMs": 16.75,
+      "maxFrameMs": 33.11499999999796,
+      "longTasks": [51],
+      "drawCalls": 1086,
+      "frameCount": 207
+    },
+    "browserErrors": [],
+    "conclusion": "No persistent navigation stall reproduced; one 51 ms long task was observed."
+  }
+}
