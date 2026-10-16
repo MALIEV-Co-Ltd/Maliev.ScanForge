@@ -8,6 +8,10 @@ import { runScanTool, type ScanToolOperation } from "./scan-tools";
 import { reduceScanNoiseAsync } from "./scan-tools-reduction";
 import { prepareNoiseOctree, type PackedNoiseTree } from "./scan-noise-octree";
 import { comparePreparedNoiseSurface } from "./scan-noise-deviation";
+import {
+  prepareReductionSurface,
+  type ReductionComparisonSurface,
+} from "./scan-reduction-surface";
 import { comparePreparedReductionSurface } from "./scan-reduction-comparison";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { linearProgress, type ReductionStatistics } from "./reduction-report";
@@ -30,6 +34,7 @@ export type ScanPreviewRequest = {
 /** An immutable original and one disposable preview; comparison never runs an edit. */
 export class ScanPreviewSession {
   private prepared?: PackedNoiseTree;
+  private reductionPrepared?: ReductionComparisonSurface;
   private constructor(
     readonly id: string,
     readonly kind:
@@ -120,20 +125,25 @@ export class ScanPreviewSession {
       throw new DOMException("Mesh operation cancelled.", "AbortError");
     const progress = linearProgress(options.onProgress);
     progress(0, 0.25)(0, "Indexing reduced surface for comparison");
-    if (!this.prepared) {
-      // Packed preview facets already preserve source corner order. No weld or adjacency rebuild.
-      this.prepared = prepareNoiseOctree(
-        {
-          coordinates: this.output,
-          indices: Uint32Array.from(
-            { length: this.output.length / 3 },
-            (_, id) => id,
-          ),
-        },
-        0.5,
-        10,
-        { ...options, onProgress: progress(0, 0.25) },
-      );
+    if (
+      this.kind === "reducePolygons" ? !this.reductionPrepared : !this.prepared
+    ) {
+      // Packed preview facets preserve source corner order without another weld.
+      const surface = {
+        coordinates: this.output,
+        indices: Uint32Array.from(
+          { length: this.output.length / 3 },
+          (_, id) => id,
+        ),
+      };
+      const indexingOptions = { ...options, onProgress: progress(0, 0.25) };
+      if (this.kind === "reducePolygons")
+        this.reductionPrepared = prepareReductionSurface(
+          surface,
+          indexingOptions,
+        );
+      else
+        this.prepared = prepareNoiseOctree(surface, 0.5, 10, indexingOptions);
     }
     let rgb: Uint8Array;
     let statistics: ReductionStatistics | undefined;
@@ -142,7 +152,7 @@ export class ScanPreviewSession {
     if (this.kind === "reduceNoise") {
       const measured = comparePreparedNoiseSurface(
         this.original,
-        this.prepared,
+        this.prepared!,
         deviation,
         { ...options, onProgress: progress(0.25, 0.95) },
       );
@@ -159,7 +169,7 @@ export class ScanPreviewSession {
     } else {
       const measured = comparePreparedReductionSurface(
         this.original.vertices,
-        this.prepared,
+        this.reductionPrepared!,
         deviation,
         paletteThreshold,
         { ...options, onProgress: progress(0.25, 0.95) },

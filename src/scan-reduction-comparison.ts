@@ -1,10 +1,11 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { nativeNoiseColor } from "./scan-noise-color";
+import { type NoiseIndexedSurface } from "./scan-noise-octree";
 import {
-  prepareNoiseOctree,
-  type NoiseIndexedSurface,
-  type PackedNoiseTree,
-} from "./scan-noise-octree";
+  prepareReductionSurface,
+  ReductionSurfaceBVH,
+  type ReductionComparisonSurface,
+} from "./scan-reduction-surface";
 import { queryNoiseOctree } from "./scan-noise-octree-query";
 import { noiseTriangleDistance } from "./scan-noise-deviation";
 import { linearProgress, type ReductionStatistics } from "./reduction-report";
@@ -33,7 +34,7 @@ export function compareReductionSurface(
       "Reduction comparison thresholds must be positive finite Float32 values.",
     );
   const progress = linearProgress(options.onProgress);
-  const prepared = prepareNoiseOctree(reduced, 0.5, 10, {
+  const prepared = prepareReductionSurface(reduced, {
     ...options,
     onProgress: progress(0, 0.25),
   });
@@ -48,11 +49,19 @@ export function compareReductionSurface(
 
 export function comparePreparedReductionSurface(
   originalCoordinates: ArrayLike<number>,
-  prepared: PackedNoiseTree,
+  prepared: ReductionComparisonSurface,
   tolerance: number,
   paletteThreshold: number,
   options: MeshProcessingOptions = {},
 ) {
+  if (prepared instanceof ReductionSurfaceBVH)
+    return compareReductionSamples(
+      originalCoordinates,
+      tolerance,
+      paletteThreshold,
+      prepared.createQuery(),
+      options,
+    );
   const a = [0, 0, 0],
     b = [0, 0, 0],
     c = [0, 0, 0];
