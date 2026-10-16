@@ -49,7 +49,7 @@ it("shares mesh carriers and preserves aliases while preparing each worker once"
 it("accounts for admitted raw target IDs without changing the pool memory ceiling", () => {
   install();
   vi.stubGlobal("crossOriginIsolated", true);
-  const points = new Float32Array(15000000);
+  const points = new Float32Array(20000000);
   const geometry = {
     points,
     normals: points,
@@ -61,6 +61,29 @@ it("accounts for admitted raw target IDs without changing the pool memory ceilin
   expect(globalQueryPoolAdmission(input)).toBe(2);
   geometry.rawTargetIds = [] as unknown as Uint32Array;
   expect(() => globalQueryPoolAdmission(input)).toThrow(/raw target/i);
+});
+it("releases pool ownership instead of caching shared copies for a later pool", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { scans, job } = setup(fixture.cases[1]);
+  const first = await createGlobalQueryPool({ scans });
+  const backing =
+    FakeWorker.instances[0].transport!.scans[0].geometry.points.buffer;
+  const expected = await first.execute(job);
+  first.close();
+  expect(FakeWorker.instances.every((worker) => worker.terminated)).toBe(true);
+  expect(
+    FakeWorker.instances.every((worker) => worker.onmessage === null),
+  ).toBe(true);
+  const second = await createGlobalQueryPool({ scans });
+  try {
+    expect(
+      FakeWorker.instances[2].transport!.scans[0].geometry.points.buffer,
+    ).not.toBe(backing);
+    expect(await second.execute(job)).toEqual(expected);
+  } finally {
+    second.close();
+  }
 });
 it("includes mesh preparation in the existing worker memory admission", () => {
   install();

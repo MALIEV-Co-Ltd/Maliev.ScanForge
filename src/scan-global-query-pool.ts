@@ -7,63 +7,13 @@ import {
 } from "./scan-global-query-worker";
 import type { nativeGlobalQuery } from "./scan-native-global-query";
 import type { NativeGlobalQueryGeometry } from "./scan-native-global-query";
-const sharedGeometry = new WeakMap<
-  NativeGlobalQueryGeometry,
-  NativeGlobalQueryGeometry
->();
+import {
+  globalQueryInputBytes,
+  shareGlobalQueryInput,
+} from "./scan-global-query-storage";
 const sharingAvailable = () =>
   globalThis.crossOriginIsolated === true &&
   typeof SharedArrayBuffer !== "undefined";
-function immutableInput(input: GlobalQueryWorkerInit): GlobalQueryWorkerInit {
-  if (!sharingAvailable()) return input;
-  return {
-    scans: input.scans.map((scan) => {
-      let geometry = sharedGeometry.get(scan.geometry);
-      if (!geometry) {
-        const copies = new Map<
-          object,
-          Float32Array | Uint32Array | Uint8Array
-        >();
-        const share = <T extends Float32Array | Uint32Array | Uint8Array>(
-          value: T,
-        ): T => {
-          if (value.buffer instanceof SharedArrayBuffer) return value;
-          const existing = copies.get(value);
-          if (existing) return existing as T;
-          const copy = new (
-            value.constructor as { new (buffer: ArrayBufferLike): T }
-          )(new SharedArrayBuffer(value.byteLength));
-          copy.set(value);
-          copies.set(value, copy);
-          return copy;
-        };
-        geometry = {
-          points: share(scan.geometry.points),
-          normals: share(scan.geometry.normals),
-          ...(scan.geometry.flags ? { flags: share(scan.geometry.flags) } : {}),
-          ...(scan.geometry.labels
-            ? { labels: share(scan.geometry.labels) }
-            : {}),
-          ...(scan.geometry.rawTargetIds
-            ? { rawTargetIds: share(scan.geometry.rawTargetIds) }
-            : {}),
-          ...(scan.geometry.targetMeshes
-            ? {
-                targetMeshes: scan.geometry.targetMeshes.map((mesh) => ({
-                  ...mesh,
-                  vertices: share(mesh.vertices),
-                  triangles: share(mesh.triangles),
-                  ...(mesh.flags ? { flags: share(mesh.flags) } : {}),
-                })),
-              }
-            : {}),
-        };
-        sharedGeometry.set(scan.geometry, geometry);
-      }
-      return { id: scan.id, geometry };
-    }),
-  };
-}
 function rawCount(geometry: NativeGlobalQueryGeometry) {
   const ids = geometry.rawTargetIds;
   if (
@@ -74,23 +24,9 @@ function rawCount(geometry: NativeGlobalQueryGeometry) {
   return ids?.length ?? geometry.points.length / 3;
 }
 function bytes(input: GlobalQueryWorkerInit, copies: number) {
-  return input.scans.reduce(
+  const preparation = input.scans.reduce(
     (sum, { geometry: g }) =>
       sum +
-      (sharingAvailable() ? 2 : copies) *
-        (g.points.byteLength +
-          g.normals.byteLength +
-          (g.labels?.byteLength ?? 0) +
-          (g.flags?.byteLength ?? 0) +
-          (g.rawTargetIds?.byteLength ?? 0) +
-          (g.targetMeshes ?? []).reduce(
-            (n, m) =>
-              n +
-              m.vertices.byteLength +
-              m.triangles.byteLength +
-              (m.flags?.byteLength ?? 0),
-            0,
-          )) +
       (g.targetMeshes ?? []).reduce(
         (n, m) => n + (m.triangles.length / 3) * 384,
         0,
@@ -98,6 +34,9 @@ function bytes(input: GlobalQueryWorkerInit, copies: number) {
         (copies - 1) +
       rawCount(g) * 32 * (copies - 1),
     0,
+  );
+  return (
+    preparation + globalQueryInputBytes(input, copies - 1, sharingAvailable())
   );
 }
 export function globalQueryPoolAdmission(
@@ -147,7 +86,9 @@ export async function createGlobalQueryPool(
     };
   }
   const workers: Worker[] = [];
-  const initialization = immutableInput(input);
+  let initialization: GlobalQueryWorkerInit | undefined = sharingAvailable()
+    ? shareGlobalQueryInput(input)
+    : input;
   let stopped = false,
     sequence = 0;
   let pending:
@@ -172,7 +113,12 @@ export async function createGlobalQueryPool(
       clearTimeout(current.timer);
       current.reject(error);
     }
-    for (const worker of workers) worker.terminate();
+    for (const worker of workers) {
+      worker.onmessage = worker.onerror = worker.onmessageerror = null;
+      worker.terminate();
+    }
+    workers.length = 0;
+    initialization = undefined;
     clearTimeout(lease);
     clearTimeout(idle);
     options.signal?.removeEventListener("abort", abort);
@@ -272,7 +218,7 @@ export async function createGlobalQueryPool(
         [
           (id) => ({
             id,
-            initialize: { ...initialization, exportPreparedMeshes: true },
+            initialize: { ...initialization!, exportPreparedMeshes: true },
           }),
         ],
         [0],
@@ -285,7 +231,7 @@ export async function createGlobalQueryPool(
       ];
     } else {
       responses = await send(
-        workers.map(() => (id) => ({ id, initialize: initialization })),
+        workers.map(() => (id) => ({ id, initialize: initialization! })),
       );
     }
     for (const response of responses) {
@@ -293,6 +239,8 @@ export async function createGlobalQueryPool(
         throw new Error("Invalid global worker initialization response.");
       indexes.push(response.indexes);
     }
+    initialization = undefined;
+    responses.length = 0;
     return {
       physicalWorkers: count,
       indexesPerWorker: indexes,

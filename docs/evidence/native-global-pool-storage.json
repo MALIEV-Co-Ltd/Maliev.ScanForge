@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T17:16:04.7932212Z",
+  "sourceFiles": {
+    "src/scan-global-query-storage.ts": "107ba5c37f6882207ab4d77e02aec3004fcf188d296a612499bcbbb6c98e3c78",
+    "src/scan-global-query-pool.ts": "7760dc50355f2b1131ec584dccc836f632811540619c53ecf1b9f5a6571265b1",
+    "tests/scan-global-query-storage.test.ts": "1a3ad97c92da7bf2b8477e4660df93e9059715b144c5ffb564750e421ea0d2dc",
+    "tests/scan-global-query-pool.test.ts": "f9185606b7bef4877366ee1b91f8ed4e230be42756dbbaf183b9abb5c071619a"
+  },
+  "validation": {
+    "build": {
+      "exitCode": 0,
+      "command": "npm run build",
+      "isolatedSnapshot": "B:/temp/scanforge-target-order-20261016",
+      "errors": 0,
+      "fingerprint": "scanforge-4cfd5eaea0a6d8a9",
+      "warnings": 0
+    },
+    "focused": {
+      "files": 4,
+      "command": "vitest run --maxWorkers=1 (alignment storage, pool, registration, scene client)",
+      "passed": 153
+    },
+    "suite": {
+      "durationSeconds": 230.13,
+      "failed": 0,
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 46420,
+      "skippedFiles": 15,
+      "passedFiles": 468,
+      "skipped": 53
+    },
+    "browser": {
+      "cases": 32,
+      "comparisons": 64,
+      "poseComparisons": 2,
+      "fallbackComparisons": 2,
+      "fallbackWorkers": [1],
+      "physicalWorkers": [2],
+      "shared": true,
+      "workers": 71,
+      "registration": {
+        "gap": 0,
+        "queries": 5,
+        "queryWorkers": 2
+      },
+      "errors": []
+    }
+  },
+  "cleanup": [
+    {
+      "pid": 20888,
+      "absent": true
+    },
+    {
+      "pid": 33688,
+      "absent": true
+    },
+    {
+      "pid": 40132,
+      "absent": true
+    },
+    {
+      "pid": 47076,
+      "absent": true
+    },
+    {
+      "pid": 54256,
+      "absent": true
+    },
+    {
+      "pid": 59556,
+      "absent": true
+    },
+    {
+      "pid": 69824,
+      "absent": true
+    },
+    {
+      "pid": 72032,
+      "absent": true
+    },
+    {
+      "pid": 73008,
+      "absent": true
+    }
+  ],
+  "scope": {
+    "memoryCeilingMiB": 512,
+    "nativeQueryFixturesCompared": true,
+    "largeScanProductionAdmissionChanged": false,
+    "publicSchemaChanged": false,
+    "pushOrDeploy": false,
+    "nativeThreeScanControllerRerun": false,
+    "memoryPeakMeasured": false,
+    "inputBackingAccountingChanged": true,
+    "guiMcpSeparateImplementation": false,
+    "forcedGarbageCollection": false
+  }
+}
