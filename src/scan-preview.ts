@@ -16,6 +16,7 @@ import { comparePreparedReductionSurface } from "./scan-reduction-comparison";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { linearProgress, type ReductionStatistics } from "./reduction-report";
 import { reductionDisplayColor } from "./reduction-display";
+import { weldScanSamples } from "./scan-resident-samples";
 
 export type ScanPreviewRequest = {
   kind: "scanPreview";
@@ -39,7 +40,7 @@ export class ScanPreviewSession {
     readonly id: string,
     readonly kind:
       "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh",
-    readonly original: MeshTopology | undefined,
+    readonly original: Pick<MeshTopology, "vertices" | "triangles"> | undefined,
     readonly output: Float32Array,
     readonly summary: string,
   ) {}
@@ -56,16 +57,19 @@ export class ScanPreviewSession {
       operation.kind !== "mirrorMesh"
     )
       throw new Error("This tool does not support mesh preview.");
-    // Transforms read the original coordinates directly and need no welding or
-    // adjacency. Only the two comparison tools retain indexed source topology.
+    // Polygon comparison needs unique samples and corner IDs, never adjacency.
+    // Noise retains the topology required by its smoothing operation.
     const original =
       operation.kind === "scaleMesh" || operation.kind === "mirrorMesh"
         ? undefined
-        : analyzeMesh(request.positions, {
-            ...options,
-            tolerance: 1e-6,
-            onProgress: progress(0, 0.2),
-          });
+        : (operation.kind === "reducePolygons" ? weldScanSamples : analyzeMesh)(
+            request.positions,
+            {
+              ...options,
+              tolerance: 1e-6,
+              onProgress: progress(0, 0.2),
+            },
+          );
     // Edit successor adoption must not replace the original's retained topology.
     const editOptions = {
       ...options,

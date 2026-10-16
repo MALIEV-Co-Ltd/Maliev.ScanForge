@@ -209,7 +209,7 @@ export async function compareNoiseSurfaceAsync(
 }
 
 export function comparePreparedNoiseSurface(
-  original: MeshTopology,
+  original: Pick<MeshTopology, "vertices" | "triangles">,
   prepared: PackedNoiseTree,
   threshold: number,
   options: MeshProcessingOptions,

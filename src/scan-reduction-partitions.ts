@@ -4,6 +4,10 @@ import {
   type MeshTopology,
 } from "./mesh-processing";
 import type { Positions } from "./types";
+import {
+  normalizeCutFans,
+  residentSourceFanQuery,
+} from "./scan-edge-directory";
 
 // This is a working-set size, not an input-size limit. Borders stay fixed.
 export const REDUCTION_PATCH_TRIANGLES = 8192;
@@ -118,6 +122,7 @@ export function reduceSpatialMesh(
   order.sort((a, b) => codes[a] - codes[b] || a - b);
   checkpoint(options, 0.1, "Reducing spatial patches");
   const output = new Float32Array(positions.length);
+  const sourceFanValid = residentSourceFanQuery(positions, options);
   let written = 0,
     protectedPatches = 0;
   for (let start = 0; start < original; start += REDUCTION_PATCH_TRIANGLES) {
@@ -133,18 +138,18 @@ export function reduceSpatialMesh(
         "Reducing spatial patches",
       );
     report(0);
-    const topology = patchTopology(patch, { signal: options.signal });
+    const initial = patchTopology(patch, { signal: options.signal });
+    const topology =
+      initial.nonManifoldEdges ||
+      initial.inconsistentEdges ||
+      initial.duplicateTriangles ||
+      initial.degenerateTriangles
+        ? undefined
+        : normalizeCutFans(initial, sourceFanValid, options);
     let result: Float32Array = patch;
     // Spatial cuts can create disconnected fans at a vertex. Preserve these
     // patches, and any invalid original patches, rather than changing seams.
-    if (
-      topology.nonManifoldVertices ||
-      topology.nonManifoldEdges ||
-      topology.inconsistentEdges ||
-      topology.duplicateTriangles ||
-      topology.degenerateTriangles
-    )
-      protectedPatches++;
+    if (!topology) protectedPatches++;
     else
       result = reduce(
         patch,

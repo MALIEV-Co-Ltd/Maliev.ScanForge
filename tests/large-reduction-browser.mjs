@@ -1,29 +1,38 @@
 import assert from "node:assert/strict";
-import { freemem } from "node:os";
+import { freemem, cpus, totalmem } from "node:os";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+const residentFixture = process.argv.includes("--resident");
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/large-reduction/", import.meta.url);
+  out = new URL(
+    residentFixture
+      ? "../.resources/resident-reduction/"
+      : "../.resources/large-reduction/",
+    import.meta.url,
+  );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
   { stdio: "inherit" },
 );
 if (admission.status !== 0) process.exit(admission.status ?? 1);
-if (freemem() < 6144 * 1048576)
+const requiredMiB = residentFixture ? 3072 : 6144;
+if (freemem() < requiredMiB * 1048576)
   throw Error(
-    "Large reduction replay requires 6144 MiB free; do not lower the guard",
+    `Reduction replay requires ${requiredMiB} MiB free; do not lower the guard`,
   );
 await mkdir(out, { recursive: true });
 const token = randomBytes(32).toString("hex"),
   ledger = {
-    owner: "large-reduction-browser",
+    owner: residentFixture
+      ? "resident-reduction-browser"
+      : "large-reduction-browser",
     pid: process.pid,
     executable: process.execPath,
     startedAt: new Date().toISOString(),
@@ -180,8 +189,8 @@ try {
     throw Error("Geometry job timeout");
   };
 
-  const nx = 750,
-    ny = 768,
+  const nx = residentFixture ? 300 : 750,
+    ny = residentFixture ? 192 : 768,
     inputTriangles = nx * ny * 2;
   const bytes = Buffer.alloc(84 + inputTriangles * 50);
   bytes.writeUInt32LE(inputTriangles, 80);
@@ -212,6 +221,7 @@ try {
     }
   const file = fixturePath;
   await writeFile(file, bytes);
+  const inputSha256 = createHash("sha256").update(bytes).digest("hex");
   console.log(
     `Importing ${inputTriangles} triangles; 600 x 300 mm curved panel`,
   );
@@ -272,7 +282,14 @@ try {
   const outputTriangles = accepted.objects.find(
     (o) => o.id === object.id,
   ).triangles;
-  assert(outputTriangles < inputTriangles && outputTriangles > 100000);
+  assert(
+    outputTriangles < inputTriangles &&
+      outputTriangles > (residentFixture ? 1000 : 100000),
+  );
+  assert(
+    outputTriangles <= Math.ceil(inputTriangles / 2),
+    "Healthy panel missed its requested 50% target",
+  );
   console.log(
     `GUI accepted ${outputTriangles} triangles; preview + comparison ${Math.round(previewMs)} ms`,
   );
@@ -301,6 +318,11 @@ try {
   ledger.result = {
     passed: true,
     inputTriangles,
+    inputSha256,
+    cpu: cpus()[0]?.model,
+    logicalProcessors: cpus().length,
+    systemBytes: totalmem(),
+    renderer: "isolated headless browser, software GPU",
     outputTriangles,
     mcpTriangles,
     previewMs,
