@@ -24,6 +24,7 @@ it("shares mesh carriers and preserves aliases while preparing each worker once"
   geometry.points = mesh.vertices;
   geometry.normals = new Float32Array(mesh.vertices.length);
   geometry.labels = new Uint32Array(mesh.vertices.length / 3);
+  geometry.rawTargetIds = new Uint32Array();
   const pool = await createGlobalQueryPool({ scans });
   try {
     expect(pool.physicalWorkers).toBe(2);
@@ -36,12 +37,30 @@ it("shares mesh carriers and preserves aliases while preparing each worker once"
         SharedArrayBuffer,
       );
       expect(g.targetMeshes![0].vertices).toBe(g.points);
+      expect(g.rawTargetIds?.length).toBe(0);
+      expect(g.rawTargetIds?.buffer).toBeInstanceOf(SharedArrayBuffer);
       expect(worker.initialized).toBe(1);
     }
     expect(mesh.vertices.buffer).toBeInstanceOf(ArrayBuffer);
   } finally {
     pool.close();
   }
+});
+it("accounts for admitted raw target IDs without changing the pool memory ceiling", () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const points = new Float32Array(15000000);
+  const geometry = {
+    points,
+    normals: points,
+    rawTargetIds: undefined as Uint32Array | undefined,
+  };
+  const input = { scans: [{ id: "source", geometry }] };
+  expect(globalQueryPoolAdmission(input)).toBe(1);
+  geometry.rawTargetIds = new Uint32Array();
+  expect(globalQueryPoolAdmission(input)).toBe(2);
+  geometry.rawTargetIds = [] as unknown as Uint32Array;
+  expect(() => globalQueryPoolAdmission(input)).toThrow(/raw target/i);
 });
 it("includes mesh preparation in the existing worker memory admission", () => {
   install();

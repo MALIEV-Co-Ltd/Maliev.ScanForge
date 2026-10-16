@@ -71,7 +71,23 @@ export async function refineGlobalScanSet(
   )
     throw Error("Invalid global registration query settings.");
   options.onProgress?.(0, "Preparing global scan overlap");
-  const pool = await createPreparedGlobalQueryPool(input, options);
+  // Native evaluator-enabled preparation appends the mesh evaluator instead of
+  // inserting that child's source vertices into the raw target tree. Explicit
+  // IDs retain mixed-child routing supplied by a caller; source samples stay intact.
+  const routedInput: GlobalSceneInput = {
+    ...input,
+    scans: input.scans.map((scan) =>
+      originals.get(scan.id)!.kind === "mesh" &&
+      scan.geometry.targetMeshes?.length &&
+      scan.geometry.rawTargetIds === undefined
+        ? {
+            ...scan,
+            geometry: { ...scan.geometry, rawTargetIds: new Uint32Array() },
+          }
+        : scan,
+    ),
+  };
+  const pool = await createPreparedGlobalQueryPool(routedInput, options);
   let outer: Awaited<ReturnType<typeof nativeGlobalRefineOuter>>;
   let queries = 0;
   const localResults: {

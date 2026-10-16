@@ -15,6 +15,14 @@ The existing 512 MiB admission, cancellation, leases and native-workflow gate
 remain unchanged. This private worker protocol changes no advertised GUI/MCP
 operation or schema. See [shared target evidence](NATIVE_GLOBAL_SHARED_TARGETS.md).
 
+Source records and raw target membership are separate in that private alignment
+protocol. The registration driver routes ordinary mesh evaluator children with
+an empty raw-target ID list while retaining their complete source samples and
+normals. Explicit ordered raw IDs preserve mixed-child inputs; point-cloud raw
+routing is unchanged. Workers validate IDs and retain source identity through
+raw-index mapping. The existing shared GUI/MCP kernel and feature gates remain
+in place. See [native routing evidence](NATIVE_GLOBAL_RAW_TARGET_ROUTING.md).
+
 `landmark_preview` and `landmark_accept` call the dialog's shared asynchronous
 preview and synchronous commit operations through the stable workspace proxy.
 Preview has API job admission, progress, cancellation and a revision check before

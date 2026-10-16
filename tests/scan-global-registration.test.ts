@@ -148,6 +148,28 @@ it("closes the query pool and never creates application workers after a query fa
   );
   expect(mock.events).toEqual(["query:a", "query-close"]);
 });
+it("routes ordinary mesh evaluator children without indexing their source samples as raw targets", async () => {
+  const entities = sources();
+  const scene = input(entities);
+  for (const scan of scene.scans)
+    Object.assign(scan.geometry, {
+      targetMeshes: [
+        { vertices: scan.geometry.points, triangles: Uint32Array.of(0, 1, 2) },
+      ],
+    });
+  await refineGlobalScanSet(scene, entities, { clock: () => 17 });
+  const passed = vi.mocked(createPreparedGlobalQueryPool).mock.calls[0][0];
+  for (let index = 0; index < passed.scans.length; index++) {
+    const geometry = passed.scans[index]
+      .geometry as (typeof passed.scans)[number]["geometry"] & {
+      rawTargetIds?: Uint32Array;
+    };
+    expect(geometry.rawTargetIds).toEqual(new Uint32Array());
+    expect(geometry.points).toBe(scene.scans[index].geometry.points);
+    expect(geometry.normals).toBe(scene.scans[index].geometry.normals);
+    expect("rawTargetIds" in scene.scans[index].geometry).toBe(false);
+  }
+});
 it("releases application resources if object assembly fails", async () => {
   mock.failApply = true;
   const entities = sources();
@@ -156,6 +178,26 @@ it("releases application resources if object assembly fails", async () => {
   ).rejects.toThrow("application failed");
   expect(mock.events.at(-1)).toBe("application-close");
   expect(mock.close).toHaveBeenCalledTimes(1);
+});
+it("preserves explicit mixed-child raw IDs and leaves raw cloud routing unchanged", async () => {
+  const entities = sources();
+  entities[1].kind = "pointcloud";
+  const scene = input(entities),
+    ids = Uint32Array.of(0, 2);
+  Object.assign(scene.scans[0].geometry, {
+    rawTargetIds: ids,
+    targetMeshes: [
+      {
+        vertices: scene.scans[0].geometry.points,
+        triangles: Uint32Array.of(0, 1, 2),
+      },
+    ],
+  });
+  await refineGlobalScanSet(scene, entities, { clock: () => 17 });
+  const passed = vi.mocked(createPreparedGlobalQueryPool).mock.calls[0][0];
+  expect(passed.scans[0].geometry.rawTargetIds).toBe(ids);
+  expect(passed.scans[1].geometry.rawTargetIds).toBeUndefined();
+  expect(passed.scans[1].geometry.points).toBe(scene.scans[1].geometry.points);
 });
 it("cancels between a query and geometry application", async () => {
   mock.abort = new AbortController();

@@ -44,6 +44,9 @@ function immutableInput(input: GlobalQueryWorkerInit): GlobalQueryWorkerInit {
           ...(scan.geometry.labels
             ? { labels: share(scan.geometry.labels) }
             : {}),
+          ...(scan.geometry.rawTargetIds
+            ? { rawTargetIds: share(scan.geometry.rawTargetIds) }
+            : {}),
           ...(scan.geometry.targetMeshes
             ? {
                 targetMeshes: scan.geometry.targetMeshes.map((mesh) => ({
@@ -61,6 +64,15 @@ function immutableInput(input: GlobalQueryWorkerInit): GlobalQueryWorkerInit {
     }),
   };
 }
+function rawCount(geometry: NativeGlobalQueryGeometry) {
+  const ids = geometry.rawTargetIds;
+  if (
+    ids !== undefined &&
+    (!(ids instanceof Uint32Array) || ids.length > geometry.points.length / 3)
+  )
+    throw Error("Invalid raw target record IDs for worker admission.");
+  return ids?.length ?? geometry.points.length / 3;
+}
 function bytes(input: GlobalQueryWorkerInit, copies: number) {
   return input.scans.reduce(
     (sum, { geometry: g }) =>
@@ -70,6 +82,7 @@ function bytes(input: GlobalQueryWorkerInit, copies: number) {
           g.normals.byteLength +
           (g.labels?.byteLength ?? 0) +
           (g.flags?.byteLength ?? 0) +
+          (g.rawTargetIds?.byteLength ?? 0) +
           (g.targetMeshes ?? []).reduce(
             (n, m) =>
               n +
@@ -83,7 +96,7 @@ function bytes(input: GlobalQueryWorkerInit, copies: number) {
         0,
       ) *
         (copies - 1) +
-      (g.points.length / 3) * 32 * (copies - 1),
+      rawCount(g) * 32 * (copies - 1),
     0,
   );
 }

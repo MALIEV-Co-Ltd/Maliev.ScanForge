@@ -12,6 +12,9 @@ export interface NativeGlobalQueryGeometry {
   normals: Float32Array;
   labels?: Uint32Array;
   flags?: Uint32Array;
+  /** Native target routing may exclude these source records, or retain an
+   * ordered subset. Undefined preserves the ordinary raw-child visibility loop. */
+  rawTargetIds?: Uint32Array;
   /** Native group children routed to mesh evaluators, separate from raw records. */
   targetMeshes?: readonly NativeGlobalEvaluatorMesh[];
 }
@@ -54,13 +57,26 @@ function validateGeometry(geometry: NativeGlobalQueryGeometry) {
     throw new Error(
       "Global query geometry requires finite Float32 XYZ/normals and matching uint32 sidecars.",
     );
+  if (geometry.rawTargetIds !== undefined) {
+    const ids = geometry.rawTargetIds;
+    if (!(ids instanceof Uint32Array) || ids.length > count)
+      throw Error("Invalid raw target record IDs.");
+    let previous = -1;
+    for (const id of ids) {
+      if (id <= previous || id >= count || (flags?.[id] ?? 0) & 1)
+        throw Error(
+          "Raw target IDs must be increasing visible source records.",
+        );
+      previous = id;
+    }
+  }
   validated.add(geometry);
 }
 function build(geometry: NativeGlobalQueryGeometry) {
   validateGeometry(geometry);
   const { points, flags } = geometry,
     count = points.length / 3;
-  const ids = nativeGlobalRawTargetIds(count, flags);
+  const ids = geometry.rawTargetIds ?? nativeGlobalRawTargetIds(count, flags);
   const carrier =
     ids.length === count ? points : new Float32Array(ids.length * 3);
   if (carrier !== points)

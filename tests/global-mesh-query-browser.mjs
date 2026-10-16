@@ -56,12 +56,20 @@ try {
           initializations: 0,
           preparedInitializations: 0,
           sharedPreparedBuffers: true,
+          evaluatorOnlyInputs: 0,
+          queryWorker: String(url).includes("scan-global-query-worker"),
         };
         window.__meshWorkers.push(this.record);
       }
       postMessage(value, ...rest) {
         if (value.initialize) {
           this.record.initializations++;
+          for (const scan of value.initialize.scans)
+            if (
+              scan.geometry.points.length &&
+              scan.geometry.rawTargetIds?.length === 0
+            )
+              this.record.evaluatorOnlyInputs++;
           if (value.initialize.preparedMeshes) {
             this.record.preparedInitializations++;
             for (const target of value.initialize.preparedMeshes.flatMap(
@@ -131,7 +139,17 @@ try {
     const physical = new Set();
     for (const c of fixture.cases) {
       const { scans, job } = meshCorrespondenceFixture(c),
-        pool = await createGlobalQueryPool({ scans });
+        source = scans[0].geometry;
+      for (const scan of scans.slice(1))
+        if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
+          Object.assign(scan.geometry, {
+            points: source.points,
+            normals: source.normals,
+            labels: undefined,
+            flags: undefined,
+            rawTargetIds: new Uint32Array(),
+          });
+      const pool = await createGlobalQueryPool({ scans });
       try {
         physical.add(pool.physicalWorkers);
         for (let repeat = 0; repeat < 2; repeat++) {
@@ -177,7 +195,17 @@ try {
         (c) => c.name === "shared-raw-False" && c.mode === mode,
       );
       const { scans, job } = meshCorrespondenceFixture(c),
-        pool = await createGlobalQueryPool({ scans }, { parallel: false });
+        source = scans[0].geometry;
+      for (const scan of scans.slice(1))
+        if (!scan.geometry.points.length && scan.geometry.targetMeshes?.length)
+          Object.assign(scan.geometry, {
+            points: source.points,
+            normals: source.normals,
+            labels: undefined,
+            flags: undefined,
+            rawTargetIds: new Uint32Array(),
+          });
+      const pool = await createGlobalQueryPool({ scans }, { parallel: false });
       try {
         fallbackWorkers.add(pool.physicalWorkers);
         verify(await pool.execute(job), c);
@@ -186,7 +214,80 @@ try {
         pool.close();
       }
     }
+    const { refineGlobalScanSet } =
+      await import("/src/scan-global-registration.ts");
+    const scans = [],
+      entities = [];
+    for (let index = 0; index < 2; index++) {
+      const side = 12;
+      const points = new Float32Array(side * side * 3),
+        normals = new Float32Array(points.length),
+        ids = [];
+      for (let y = 0; y < side; y++)
+        for (let x = 0; x < side; x++) {
+          const id = (y * side + x) * 3;
+          points.set([x, y, index * 0.05], id);
+          normals[id + 2] = 1;
+          if (x < side - 1 && y < side - 1) {
+            const a = y * side + x;
+            ids.push(a, a + 1, a + side, a + side, a + 1, a + side + 1);
+          }
+        }
+      const triangles = Uint32Array.from(ids),
+        positions = new Float32Array(triangles.length * 3);
+      for (let slot = 0; slot < triangles.length; slot++)
+        positions.set(
+          points.subarray(triangles[slot] * 3, triangles[slot] * 3 + 3),
+          slot * 3,
+        );
+      const id = "grid-" + index;
+      entities.push({
+        id,
+        name: id,
+        kind: "mesh",
+        positions,
+        visible: true,
+        color: "#aaa",
+        opacity: 1,
+      });
+      scans.push({
+        id,
+        geometry: {
+          points,
+          normals,
+          targetMeshes: [{ vertices: points, triangles }],
+        },
+      });
+    }
+    const initial = entities.map((e) => e.positions.slice());
+    const registered = await refineGlobalScanSet({ scans }, entities, {
+      clock: () => 17,
+      mode: "target-average",
+    });
+    const gap = Math.abs(
+      registered.entities[0].positions[2] - registered.entities[1].positions[2],
+    );
+    if (
+      !(gap < 1e-5) ||
+      registered.diagnostics.queryWorkers !== 2 ||
+      !registered.diagnostics.queries
+    )
+      throw Error(
+        "Evaluator-only full registration did not align the offset mesh planes.",
+      );
+    if (
+      entities.some((e, i) =>
+        e.positions.some((v, j) => v !== initial[i][j]),
+      ) ||
+      scans.some((s) => s.geometry.rawTargetIds !== undefined)
+    )
+      throw Error("Registration mutated authored source records.");
     return {
+      registration: {
+        gap,
+        queries: registered.diagnostics.queries,
+        queryWorkers: registered.diagnostics.queryWorkers,
+      },
       cases: fixture.cases.length,
       comparisons,
       poseComparisons,
@@ -203,12 +304,17 @@ try {
   assert.deepEqual(result.fallbackWorkers, [1]);
   assert.deepEqual(result.physicalWorkers, [2]);
   assert.equal(result.shared, true);
-  assert(result.workers.every((w) => w.terminated && w.initializations === 1));
+  assert(
+    result.workers.every(
+      (w) => w.terminated && (!w.queryWorker || w.initializations === 1),
+    ),
+  );
   assert.equal(
     result.workers.reduce((n, w) => n + w.preparedInitializations, 0),
-    32,
+    33,
   );
   assert(result.workers.every((w) => w.sharedPreparedBuffers));
+  assert(result.workers.some((w) => w.evaluatorOnlyInputs > 0));
   assert.deepEqual(errors, []);
   await writeFile(
     new URL("results.json", out),
@@ -224,6 +330,7 @@ try {
       physicalWorkers: result.physicalWorkers,
       shared: result.shared,
       workers: result.workers.length,
+      registration: result.registration,
       errors,
     }),
   );
