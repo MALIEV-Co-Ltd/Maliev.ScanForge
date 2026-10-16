@@ -1,0 +1,120 @@
+{
+  "scope": "Raw-target index preparation only. Full public alignment admission, evaluator production and editor publication remain unverified.",
+  "nativePreparationFixture": "global-fine-target-preparation-native.json",
+  "ownerOracle": "tests/fixtures/global-fine-correspondence-owner-native.json",
+  "build": {
+    "passed": true,
+    "fingerprint": "scanforge-d1f29b0c17f9d5b8",
+    "warnings": 0,
+    "errors": 0,
+    "initialAttempts": "Compiler exhausted manually imposed 768 MiB and 1536 MiB caps. Fresh 4096 MiB host admission preceded the successful 2560 MiB compiler lane."
+  },
+  "focused": {
+    "passed": 322,
+    "failed": 0
+  },
+  "suite": {
+    "passed": 43488,
+    "failed": 0,
+    "optionalSkipped": 40
+  },
+  "workerReplay": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "Two physical workers match every original owner correspondence byte across both numeric modes and changed poses.",
+      "Each worker initializes three geometry indexes once; later queries reuse them.",
+      "Both worker handles terminate and no browser errors occur.",
+      "A single physical worker preserves the UI-selected numeric mode; cancellation releases both initializing workers."
+    ],
+    "passed": true,
+    "physicalWorkers": 2,
+    "initializedMs": 1856.0200000107288,
+    "sharedGeometry": true,
+    "initializationFrames": {
+      "count": 112,
+      "medianMs": 16.68000000000029,
+      "maximumMs": 17.464999999999236
+    },
+    "queries": [
+      {
+        "source": 0,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 447,
+        "queryMs": 80.7800000011921
+      },
+      {
+        "source": 0,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 461,
+        "queryMs": 39.18000000715256
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 332,
+        "queryMs": 27.055000007152557
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 204,
+        "queryMs": 7.709999978542328
+      },
+      {
+        "source": 2,
+        "mode": "pooled-plane",
+        "transformed": false,
+        "count": 388,
+        "queryMs": 32.28999999165535
+      },
+      {
+        "source": 2,
+        "mode": "target-average",
+        "transformed": false,
+        "count": 284,
+        "queryMs": 7.910000026226044
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "transformed": true,
+        "count": 333,
+        "queryMs": 23.67500001192093
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "transformed": true,
+        "count": 204,
+        "queryMs": 4.33500000834465
+      }
+    ],
+    "workers": [
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "initialized": 1,
+        "terminated": true
+      }
+    ],
+    "browserErrors": []
+  }
+}

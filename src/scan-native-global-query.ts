@@ -1,4 +1,5 @@
 import { nativeGlobalPointIndex } from "./scan-native-global-point-index";
+import { nativeGlobalRawTargetIds } from "./scan-native-global-target-records";
 import { nativeGlobalPlane } from "./scan-native-global-plane";
 import type { GlobalCorrespondence } from "./scan-native-global-local";
 
@@ -54,14 +55,18 @@ function build(geometry: NativeGlobalQueryGeometry) {
   validateGeometry(geometry);
   const { points, flags } = geometry,
     count = points.length / 3;
-  const ids: number[] = [];
-  for (let i = 0; i < count; i++) if (!((flags?.[i] ?? 0) & 1)) ids.push(i);
+  const ids = nativeGlobalRawTargetIds(count, flags);
   const carrier =
     ids.length === count ? points : new Float32Array(ids.length * 3);
   if (carrier !== points)
-    for (let i = 0; i < ids.length; i++)
-      carrier.set(points.subarray(ids[i] * 3, ids[i] * 3 + 3), i * 3);
-  return { tree: nativeGlobalPointIndex(carrier), ids: Uint32Array.from(ids) };
+    for (let i = 0; i < ids.length; i++) {
+      const from = ids[i] * 3,
+        to = i * 3;
+      carrier[to] = points[from];
+      carrier[to + 1] = points[from + 1];
+      carrier[to + 2] = points[from + 2];
+    }
+  return { tree: nativeGlobalPointIndex(carrier), ids };
 }
 export function prepareNativeGlobalQueryGeometry(
   geometry: NativeGlobalQueryGeometry,
