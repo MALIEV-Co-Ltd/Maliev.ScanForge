@@ -3,7 +3,11 @@ import type {
   NativeGlobalEvaluatorSearchNode,
   NativeGlobalEvaluatorDistance,
 } from "./scan-native-global-evaluator-query";
-import { nativeTargetStorage } from "./scan-native-target-storage";
+import {
+  nativeTargetStorage,
+  nativeScratchStorage,
+  releaseNativeScratch,
+} from "./scan-native-target-storage";
 
 /** Immutable shared node metadata. Twelve Doubles preserve bounds, center and
  * inverse; twelve uints hold eight child IDs+1, member offset/count, depth/flat. */
@@ -135,44 +139,48 @@ export function validateNativeGlobalPackedIndex(
       throw Error("Invalid packed evaluator coordinates.");
   for (const face of memberships)
     if (face >= faces) throw Error("Invalid packed evaluator face.");
-  const seen = scratch ?? new Uint8Array(count),
+  const seen = scratch ?? new Uint8Array(nativeScratchStorage(count)),
     pending = count ? [0] : [];
-  if (
-    !(seen instanceof Uint8Array) ||
-    seen.length !== count ||
-    !(seen.buffer instanceof ArrayBuffer) ||
-    seen.buffer === values.buffer ||
-    seen.buffer === links.buffer ||
-    seen.buffer === memberships.buffer
-  )
-    throw Error("Invalid packed evaluator validation scratch.");
-  seen.fill(0);
-  let visited = 0;
-  while (pending.length) {
-    const id = pending.pop()!,
-      base = id * 12;
+  try {
     if (
-      seen[id] ||
-      links[base + 10] > 10 ||
-      links[base + 11] > 1 ||
-      links[base + 8] + links[base + 9] > memberships.length
+      !(seen instanceof Uint8Array) ||
+      seen.length !== count ||
+      !(seen.buffer instanceof ArrayBuffer) ||
+      seen.buffer === values.buffer ||
+      seen.buffer === links.buffer ||
+      seen.buffer === memberships.buffer
     )
-      throw Error("Invalid packed evaluator node.");
-    seen[id] = 1;
-    visited++;
-    if (id === 0 && links[base + 10] !== 0)
-      throw Error("Invalid packed evaluator root.");
-    for (let child = 0; child < 8; child++) {
-      const encoded = links[base + child];
-      if (!encoded) continue;
-      const next = encoded - 1;
-      if (next >= count || links[next * 12 + 10] !== links[base + 10] + 1)
-        throw Error("Invalid packed evaluator child.");
-      pending.push(next);
+      throw Error("Invalid packed evaluator validation scratch.");
+    seen.fill(0);
+    let visited = 0;
+    while (pending.length) {
+      const id = pending.pop()!,
+        base = id * 12;
+      if (
+        seen[id] ||
+        links[base + 10] > 10 ||
+        links[base + 11] > 1 ||
+        links[base + 8] + links[base + 9] > memberships.length
+      )
+        throw Error("Invalid packed evaluator node.");
+      seen[id] = 1;
+      visited++;
+      if (id === 0 && links[base + 10] !== 0)
+        throw Error("Invalid packed evaluator root.");
+      for (let child = 0; child < 8; child++) {
+        const encoded = links[base + child];
+        if (!encoded) continue;
+        const next = encoded - 1;
+        if (next >= count || links[next * 12 + 10] !== links[base + 10] + 1)
+          throw Error("Invalid packed evaluator child.");
+        pending.push(next);
+      }
     }
+    if (visited !== count || (!count && memberships.length))
+      throw Error("Unreachable packed evaluator metadata.");
+  } finally {
+    if (!scratch) releaseNativeScratch(seen.buffer);
   }
-  if (visited !== count || (!count && memberships.length))
-    throw Error("Unreachable packed evaluator metadata.");
 }
 export interface NativeGlobalPackedIndexScratch {
   stack: number[];

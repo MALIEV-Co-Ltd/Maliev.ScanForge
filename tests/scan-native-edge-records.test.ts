@@ -1,6 +1,34 @@
 import { expect, it } from "vitest";
 import { createNativeAlignmentEdgeRecords } from "../src/scan-native-edge-records";
 
+it("keeps dense lookup records identical through high occupancy, consumption and growth", () => {
+  const ordinary = createNativeAlignmentEdgeRecords(8192, 8192, {
+    expectedEntries: 3800,
+  });
+  const dense = createNativeAlignmentEdgeRecords(8192, 8192, {
+    expectedEntries: 3800,
+    dense: true,
+  });
+  try {
+    expect(dense.byteLength).toBe(ordinary.byteLength! / 2);
+    for (let i = 0; i < 7500; i++) {
+      for (const directory of [ordinary, dense]) {
+        directory.remember(i, (i * 13) % 8192, i);
+        if (i % 3 === 0) directory.set(i, (i * 13) % 8192, -i - 1);
+        directory.remember(i, (i * 13) % 8192, 7);
+      }
+    }
+    for (let i = 0; i < 8192; i++)
+      expect(dense.get(i, (i * 13) % 8192)).toBe(
+        ordinary.get(i, (i * 13) % 8192),
+      );
+    expect(dense.size).toBe(ordinary.size);
+  } finally {
+    ordinary.dispose();
+    dense.dispose();
+  }
+});
+
 it("preserves first records, zero slots and consumed markers through collisions and growth", () => {
   const directory = createNativeAlignmentEdgeRecords(100003, 50000);
   const reference = new Map<string, number>();

@@ -1,6 +1,6 @@
 # Watertight meshes and native reference evidence
 
-QUICKSURFACE's shipped `QSHelp.pdf` documents **Reference Mesh > Edit > Fill holes > Fill multiple holes** for boundary repair, and **Reference Mesh > Re-polygonize** for creating a single mesh from aligned, overlapping scans (PDF pages 13 and 243). Its Search tolerance controls the reconstruction density. These are distinct workflows: repairing existing boundaries preserves more of the scan; reconstruction can close gaps by changing the surface.
+The reference application's shipped `QSHelp.pdf` documents **Reference Mesh > Edit > Fill holes > Fill multiple holes** for boundary repair, and **Reference Mesh > Re-polygonize** for creating a single mesh from aligned, overlapping scans (PDF pages 13 and 243). Its Search tolerance controls the reconstruction density. These are distinct workflows: repairing existing boundaries preserves more of the scan; reconstruction can close gaps by changing the surface.
 
 ## ScanForge workflow
 
@@ -27,7 +27,7 @@ Use normal `expectedRevision` and unique `requestId`, then poll `job_get`. Omit 
 
 ## Native investigation, 2026-10-16
 
-Installed `B:/QUICKSURFACE2026/QuickSurface.exe`, file version 8.0.123.0, SHA-256 `0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`. Directory naming alone does not establish a different binary version. REA 6.4.0 PE-resource Evidence `ev_023ef9c9c1c3f76257418c68a0f481b9a7c202c04c03f8a3571f304bcfbdc526` identifies this protected executable; no dialog resources are exposed in its on-disk tree.
+Installed reference executable, file version 8.0.123.0, SHA-256 `0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`. Directory naming alone does not establish a different binary version. REA 6.4.0 PE-resource Evidence `ev_023ef9c9c1c3f76257418c68a0f481b9a7c202c04c03f8a3571f304bcfbdc526` identifies this protected executable; no dialog resources are exposed in its on-disk tree.
 
 Authenticated retained mapped image SHA-256 `e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1`, derived PE SHA-256 `f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273`. Static resource parsing finds Fill multiple holes in dialog528 and command33760 string "Creates single mesh from multiple overlapping meshes / Re-polygonize". The MFC command map binds33760 to handler `0x14080b320` and enable handler `0x14080bc60`.
 

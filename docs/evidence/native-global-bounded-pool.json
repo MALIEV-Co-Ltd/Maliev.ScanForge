@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T18:01:28.833Z",
+  "sourceFiles": {
+    "src/scan-native-target-storage.ts": "e8c703b6670e23b9cf32014a407ba7e64f1d57f1ac3a6c48acea176b8c6e156e",
+    "src/scan-native-global-direct-index.ts": "4a5ac147eaabee88312f99ec0f12e172805e49ec860ec498e72e2bff5fff392c",
+    "src/scan-native-edge-records.ts": "7c5a9475a78e89c9b99e02cf615bf02f9e1826cf651d5a664bd6ef7f6f6f7313",
+    "src/scan-native-alignment-adjacency.ts": "83e43f9377d79cd6d696e9804f13ae310ac0a925fe8feebf5840d0bf7c75e1d4",
+    "src/scan-native-global-packed-index.ts": "f6976f8267b54050bd00640299a69089bd28ede824032588a8bce08467d28b71",
+    "src/scan-global-query-worker.ts": "59cf29617ac71e1d56506be8b33ed4541946a5823afcf47e23dbab4d9fbbbaba",
+    "src/scan-global-query-pool.ts": "55ae5ff9bc6e919a3af7a1cc4597f8bf4211e805dc819fc7702e1fa330572de2",
+    "tests/scan-native-target-storage.test.ts": "3a58e31ec22e9e9592a462f98392ab2e69436350ac8c00198a0ed454fade70c2",
+    "tests/scan-native-edge-records.test.ts": "e26d3287af0fc2c9e9ba48a129564132ae4d9e9927cc591abfe4467be18494eb",
+    "tests/scan-global-query-pool.test.ts": "97e56d5fa016695af5fa7c4941b276dc49ef5faeae41eaf915222780fa6ab2c9",
+    "tests/scan-global-bounded-owner.test.ts": "24b687873710401ccb88fa8342ed8a8b92032f752289f1b05c17703662d9e0fd"
+  },
+  "browserReplaySourceFiles": {
+    "src/scan-native-target-storage.ts": "e8c703b6670e23b9cf32014a407ba7e64f1d57f1ac3a6c48acea176b8c6e156e",
+    "src/scan-native-global-direct-index.ts": "4a5ac147eaabee88312f99ec0f12e172805e49ec860ec498e72e2bff5fff392c",
+    "src/scan-native-edge-records.ts": "7c5a9475a78e89c9b99e02cf615bf02f9e1826cf651d5a664bd6ef7f6f6f7313",
+    "src/scan-native-alignment-adjacency.ts": "83e43f9377d79cd6d696e9804f13ae310ac0a925fe8feebf5840d0bf7c75e1d4",
+    "src/scan-native-global-packed-index.ts": "f6976f8267b54050bd00640299a69089bd28ede824032588a8bce08467d28b71",
+    "src/scan-global-query-worker.ts": "59cf29617ac71e1d56506be8b33ed4541946a5823afcf47e23dbab4d9fbbbaba",
+    "src/scan-global-query-pool.ts": "55ae5ff9bc6e919a3af7a1cc4597f8bf4211e805dc819fc7702e1fa330572de2",
+    "src/scan-global-registration.ts": "bb3db88fa41e81dae8e3772fddd05b559b28bcd096378c9fd2cdf3084365db08",
+    "src/scan-global-scene-client.ts": "5f301d04616c244b98c63c1e56035f9b6186c7ffb0bd4957d757d49a704b5fae"
+  },
+  "fixtures": {
+    "tests/fixtures/global-fine-canonical-controller-native.json": "f59bf3f6c5394ed6916e3e5a2f513c4e8383221ac20c47f138bbe617a36a40ed",
+    "tests/fixtures/global-fine-retained-owner-mesh-native.json": "43fa5df7fed3960199135e6c42ff3dae10dc02ea933fc5d51cb5706cf4508eb5",
+    "tests/fixtures/alignment-adjacency-global.json": "95ac892b05f1cd43b0578091e3b2793a9adbd8fbc9d4eedb976737d7ce5919fa"
+  },
+  "validation": {
+    "build": {
+      "command": "npm run build",
+      "isolatedSnapshot": "B:/temp/scanforge-target-order-20261016",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "fingerprint": "scanforge-8a48b496b670cec4"
+    },
+    "focused": {
+      "passed": 701,
+      "files": 13,
+      "command": "vitest run --maxWorkers=1 (bounded pool, storage, adjacency, lifetime, native targets, packed indexes, registration and scene client)"
+    },
+    "optionalOwnerTargets": {
+      "passed": 1,
+      "command": "vitest run --maxWorkers=1 tests/scan-global-bounded-owner.test.ts",
+      "elapsedMs": 17649.8334,
+      "before": {
+        "rss": 223199232,
+        "heapTotal": 31436800,
+        "heapUsed": 11971328,
+        "external": 163685699,
+        "arrayBuffers": 161210171
+      },
+      "after": {
+        "rss": 585777152,
+        "heapTotal": 52932608,
+        "heapUsed": 27041168,
+        "external": 164005418,
+        "arrayBuffers": 471340811
+      },
+      "storage": {
+        "limit": 536870912,
+        "reserved": 372701152,
+        "live": 521321360,
+        "peak": 533440547
+      },
+      "comparisons": [
+        {
+          "scan": "scan-1.stl",
+          "nodes": 60539,
+          "memberships": 639591
+        },
+        {
+          "scan": "scan-2.stl",
+          "nodes": 52446,
+          "memberships": 3452946
+        },
+        {
+          "scan": "scan-3.stl",
+          "nodes": 79477,
+          "memberships": 4617801
+        }
+      ],
+      "originalSourceIdentityRechecked": false,
+      "physicalWorkerVerified": false
+    },
+    "suite": {
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 46438,
+      "skipped": 54,
+      "failed": 0,
+      "passedFiles": 469,
+      "skippedFiles": 16,
+      "durationSeconds": 257.2
+    },
+    "smallPhysicalBrowser": {
+      "cases": 32,
+      "comparisons": 64,
+      "poseComparisons": 2,
+      "fallbackComparisons": 2,
+      "fallbackWorkers": [1],
+      "physicalWorkers": [2],
+      "shared": true,
+      "workers": 71,
+      "registration": {
+        "gap": 0,
+        "queries": 5,
+        "queryWorkers": 2
+      },
+      "errors": []
+    },
+    "fullController": {
+      "helperSha256": "b922acd58cab0059b35cb3042ae1169777987dd6ade89a9344b6c77b3fb038db",
+      "elapsedMs": 171322.7800000012,
+      "loadingAndExpansionMs": 7339.310000002384,
+      "passes": 19,
+      "queries": 439,
+      "localRefinements": 57,
+      "queryWorkers": 2,
+      "passSnapshotsMatched": true,
+      "finalStatesMatched": true,
+      "applicationsMatched": true,
+      "finalStates": {
+        "order": [1, 0, 2],
+        "states": [
+          {
+            "matrixBits": "9c4775fc6593e13fb6fd216c4c5be03f840f67e6ca27e5bff5f52165697069c0c3571c0ea1a7d03fc2b38a878eb5e43f6420890612eee63f0f4a240e92586c404c5f45e75a69e93fb01266167419e2bf3fe7c6fdb478cc3fef32ca61b6676dc0",
+            "meanBits": "d08b0379a658f93f",
+            "coverageBits": "0000000000000000",
+            "converged": false,
+            "stable": false
+          },
+          {
+            "matrixBits": "e64cd712c818e13f8cc613c00b1de03fb862526712bae5bf06ffa092139b6ac00cc836c0d359d53f6b3b9072db98e33f65646d9837efe63f984f36c68aa86d40ecdf77c6b0dae83f66f97c056580e3bf18a54ac3f060c43f86cfbed1032470c0",
+            "meanBits": "c647cbf7e597f33f",
+            "coverageBits": "000000000000f03f",
+            "converged": false,
+            "stable": false
+          },
+          {
+            "matrixBits": "2402ef874efddd3f3c99acb6b5d8e03f7808db588db3e6bfc7d43e02f4066bc0396935d436dfc7bf821fe11c2601eb3f168a58cb0c19e03f3cce0ffd348a62405ec5b6cedaa1eb3f14feae1eb579babfaf8d87ba7097df3f3871d17a101365c0",
+            "meanBits": "66549efd7ecff53f",
+            "coverageBits": "0000000000000040",
+            "converged": false,
+            "stable": false
+          }
+        ]
+      },
+      "application": [
+        {
+          "id": "1",
+          "bounds": {
+            "min": [-76.72122192382812, -67.45751953125, -334.2947692871094],
+            "max": [39.46452713012695, 44.40945816040039, -282.1020812988281]
+          },
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "id": "0",
+          "bounds": {
+            "min": [
+              -43.12655258178711, -39.35004425048828, -339.72857666015625
+            ],
+            "max": [69.6063461303711, 71.2488784790039, -279.09051513671875]
+          },
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "id": "2",
+          "bounds": {
+            "min": [-33.77329635620117, -37.777496337890625, -329.6728515625],
+            "max": [71.86052703857422, 73.18508911132812, -262.1337585449219]
+          },
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "0",
+          "values": 2458251,
+          "indexedVertices": 418014
+        },
+        {
+          "id": "1",
+          "values": 22926627,
+          "indexedVertices": 3897099
+        },
+        {
+          "id": "2",
+          "values": 29942190,
+          "indexedVertices": 5050815
+        }
+      ],
+      "workers": [
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-scene-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 0
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 1,
+          "storage": {
+            "limit": 536870912,
+            "reserved": 372701152,
+            "live": 521321360,
+            "peak": 533440547
+          }
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 1,
+          "storage": {
+            "limit": 536870912,
+            "reserved": 521321360,
+            "live": 521321360,
+            "peak": 521400837
+          }
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/datum-transform-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 0
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/datum-transform-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 0
+        }
+      ],
+      "checkedCarriers": [
+        "stl-owner-scan1-vertices.bin",
+        "global-fine-source-normal-owner-scan1-normals.f32",
+        "stl-owner-scan1-triangles.bin",
+        "stl-owner-scan2-vertices.bin",
+        "global-fine-source-normal-owner-scan2-normals.f32",
+        "stl-owner-scan2-triangles.bin",
+        "stl-owner-scan3-vertices.bin",
+        "global-fine-source-normal-owner-scan3-normals.f32",
+        "stl-owner-scan3-triangles.bin"
+      ],
+      "errors": [],
+      "sampledMainHeapMaxBytes": 23210924,
+      "heapSampleCount": 57
+    },
+    "cancellation": {
+      "elapsedMs": 38598.65000000596,
+      "afterPass": 1,
+      "cancelled": true,
+      "allDisplayedValuesUnchanged": true,
+      "displayedCoordinateValues": 55327068,
+      "workers": [
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-scene-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 0
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 1,
+          "storage": {
+            "limit": 536870912,
+            "reserved": 372701152,
+            "live": 521321360,
+            "peak": 533440547
+          }
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+          "terminated": true,
+          "ready": 1,
+          "storage": {
+            "limit": 536870912,
+            "reserved": 521321360,
+            "live": 521321360,
+            "peak": 521400837
+          }
+        }
+      ],
+      "errors": []
+    }
+  },
+  "cleanup": [
+    {
+      "pid": 3704,
+      "expectedStartUtc": "2026-10-16T17:52:33.2273047Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "suite",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 6420,
+      "expectedStartUtc": "2026-10-16T17:57:01.7113805Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "small-browser-host",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 23524,
+      "expectedStartUtc": "2026-10-16T17:54:32.9430230Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "observed-suite-child",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 30204,
+      "expectedStartUtc": "2026-10-16T17:46:23.2757475Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "focused",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 39096,
+      "expectedStartUtc": "2026-10-16T17:45:43.7072423Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "build",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 40540,
+      "expectedStartUtc": "2026-10-16T17:46:27.4272906Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "owner",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 41144,
+      "expectedStartUtc": "2026-10-16T17:47:28.8036126Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "bounded-owner-browser-host",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 45656,
+      "expectedStartUtc": "2026-10-16T17:57:02.459205Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "purpose": "small-browser",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 52244,
+      "expectedStartUtc": "2026-10-16T17:51:32.0568264Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "purpose": "bounded-owner-cancellation-host",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 56932,
+      "expectedStartUtc": "2026-10-16T17:51:32.8878564Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "purpose": "bounded-owner-cancellation-browser",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 67520,
+      "expectedStartUtc": "2026-10-16T17:47:29.4588945Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "purpose": "bounded-owner-browser-browser",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    },
+    {
+      "pid": 70724,
+      "expectedStartUtc": "2026-10-16T17:52:33.6056130Z",
+      "executable": "B:\\maliev-legacy\\reverse-engineering-online\\node_modules\\@esbuild\\win32-x64\\esbuild.exe",
+      "purpose": "observed-suite-child",
+      "ownedIdentityAbsent": true,
+      "pidReused": false
+    }
+  ],
+  "scope": {
+    "unchangedPoolCeilingMiB": 512,
+    "typedLedgerIncludesRuntimeAllowances": true,
+    "processRssCap": false,
+    "originalSourceIdentityRechecked": false,
+    "nativeIdentityStartConverged": false,
+    "originalNativeReaderUiSchedulerExecuted": false,
+    "originalFullEntitySetterOutputRecaptured": false,
+    "guiMcpGlobalControllerPublished": false,
+    "realStlPlyAscImportCoverageVerified": false,
+    "viewportNavigationBenchmarked": false,
+    "successfulRegistrationWithinToleranceVerified": false,
+    "publicSchemaChanged": false,
+    "pushReleaseOrDeployment": false
+  },
+  "failedExperimentsRetained": [
+    "adjacency table allocation exceeded the unchanged live budget before dense storage",
+    "first full suite exposed throwing-transfer cleanup; final focused/full/native/browser checks passed after the fix"
+  ]
+}

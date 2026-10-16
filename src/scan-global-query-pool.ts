@@ -43,6 +43,9 @@ export function globalQueryPoolAdmission(
   input: GlobalQueryWorkerInit,
   parallel = true,
 ) {
+  return queryPlan(input, parallel).count;
+}
+function queryPlan(input: GlobalQueryWorkerInit, parallel = true) {
   const memory = (globalThis.navigator as Navigator & { deviceMemory?: number })
     ?.deviceMemory;
   const candidate =
@@ -52,9 +55,58 @@ export function globalQueryPoolAdmission(
     (memory === undefined || memory >= 4)
       ? 2
       : 1;
+  const limit = 512 * 1048576;
+  if (
+    sharingAvailable() &&
+    typeof Worker !== "undefined" &&
+    input.scans.length >= 2 &&
+    input.scans.length <= 32 &&
+    input.scans.reduce(
+      (count, scan) => count + (scan.geometry.targetMeshes?.length ?? 0),
+      0,
+    ) <= 64 &&
+    input.scans.every(
+      ({ geometry: g }) =>
+        g.points instanceof Float32Array &&
+        g.points.length > 0 &&
+        g.normals instanceof Float32Array &&
+        g.normals.length === g.points.length &&
+        g.rawTargetIds instanceof Uint32Array &&
+        rawCount(g) === 0 &&
+        !!g.targetMeshes?.length &&
+        g.targetMeshes.every(
+          (m) =>
+            m.vertices instanceof Float32Array &&
+            m.triangles instanceof Uint32Array &&
+            !m.filterHidden &&
+            m.vertices.length / 3 <= 0x100000000 &&
+            m.triangles.length <= 0x7fffffff,
+        ),
+    )
+  ) {
+    const inputBytes = globalQueryInputBytes(input, candidate, true);
+    const minimum = input.scans.reduce(
+      (sum, s) =>
+        sum +
+        s.geometry.targetMeshes!.reduce(
+          (n, m) => n + (m.triangles.length / 3) * 14,
+          0,
+        ),
+      0,
+    );
+    for (const count of candidate === 2 ? [2, 1] : [1]) {
+      const reserved = inputBytes + (count + 1) * 16 * 1048576;
+      if (reserved + minimum <= limit)
+        return { count, storageBudget: { limit, reserved } };
+    }
+    throw Error("Global query pool exceeds its 512 MiB memory admission.");
+  }
   if (bytes(input, 2) > 512 * 1048576)
     throw new Error("Global query pool exceeds its 512 MiB memory admission.");
-  return candidate === 2 && bytes(input, 3) <= 512 * 1048576 ? 2 : 1;
+  return {
+    count: candidate === 2 && bytes(input, 3) <= 512 * 1048576 ? 2 : 1,
+    storageBudget: undefined,
+  };
 }
 /** One or two persistent physical CPU workers, same numeric mode in either case.
  * Only independent source queries run concurrently; pose updates stay sequential.
@@ -63,7 +115,7 @@ export async function createGlobalQueryPool(
   input: GlobalQueryWorkerInit,
   options: { parallel?: boolean; signal?: AbortSignal } = {},
 ) {
-  const count = globalQueryPoolAdmission(input, options.parallel);
+  const { count, storageBudget } = queryPlan(input, options.parallel);
   if (options.signal?.aborted)
     throw new DOMException("Global alignment cancelled.", "AbortError");
   if (typeof Worker === "undefined") {
@@ -73,6 +125,7 @@ export async function createGlobalQueryPool(
     let closed = false;
     return {
       physicalWorkers: 0,
+      storage: undefined,
       indexesPerWorker: [indexes],
       close: () => {
         closed = true;
@@ -89,6 +142,21 @@ export async function createGlobalQueryPool(
   let initialization: GlobalQueryWorkerInit | undefined = sharingAvailable()
     ? shareGlobalQueryInput(input)
     : input;
+  if (storageBudget)
+    initialization = {
+      storageBudget,
+      scans: initialization.scans.map((scan) => ({
+        ...scan,
+        geometry: {
+          ...scan.geometry,
+          targetMeshes: scan.geometry.targetMeshes!.map((mesh) => ({
+            ...mesh,
+            packedNodes: true,
+            compactBounds: true,
+          })),
+        },
+      })),
+    };
   let stopped = false,
     sequence = 0;
   let pending:
@@ -208,6 +276,23 @@ export async function createGlobalQueryPool(
     // Shared immutable mesh preparation is produced by the first worker only.
     // The existing conservative admission still covers preparation and metadata.
     const indexes: number[] = [];
+    const expectedReserves = [storageBudget?.reserved];
+    const validStorage = (
+      response: GlobalQueryResponse,
+      reserved: number | undefined,
+    ) => {
+      if (!("ready" in response) || !response.storage || !storageBudget)
+        return false;
+      const s = response.storage;
+      return (
+        [s.limit, s.reserved, s.live, s.peak].every(Number.isSafeInteger) &&
+        s.limit === storageBudget.limit &&
+        s.reserved === reserved &&
+        s.live >= s.reserved &&
+        s.peak >= s.live &&
+        s.peak <= s.limit
+      );
+    };
     let responses: GlobalQueryResponse[];
     if (
       count > 1 &&
@@ -225,6 +310,15 @@ export async function createGlobalQueryPool(
       );
       if (!("ready" in first) || !first.prepared?.preparedMeshes)
         throw Error("Missing shared prepared targets from the first worker.");
+      if (storageBudget) {
+        if (!validStorage(first, storageBudget.reserved))
+          throw Error("Invalid bounded alignment storage report.");
+        expectedReserves[1] = first.storage!.live;
+        first.prepared.storageBudget = {
+          limit: storageBudget.limit,
+          reserved: first.storage!.live,
+        };
+      }
       responses = [
         first,
         ...(await send([(id) => ({ id, initialize: first.prepared! })], [1])),
@@ -234,21 +328,36 @@ export async function createGlobalQueryPool(
         workers.map(() => (id) => ({ id, initialize: initialization! })),
       );
     }
-    for (const response of responses) {
+    for (const [part, response] of responses.entries()) {
       if (!("ready" in response) || response.indexes !== input.scans.length)
         throw new Error("Invalid global worker initialization response.");
       indexes.push(response.indexes);
+      if (storageBudget && !validStorage(response, expectedReserves[part]))
+        throw Error("Invalid bounded alignment storage report.");
     }
+    const storage = storageBudget
+      ? responses.map((response) =>
+          "ready" in response ? response.storage : undefined,
+        )
+      : undefined;
     initialization = undefined;
     responses.length = 0;
     return {
       physicalWorkers: count,
       indexesPerWorker: indexes,
+      storage,
       close: () => close(),
       execute: async (
         job: GlobalQueryJob,
       ): Promise<ReturnType<typeof nativeGlobalQuery>> => {
         try {
+          if (
+            storageBudget &&
+            job.cells.reduce((sum, cell) => sum + cell.length, 0) > 16384
+          )
+            throw Error(
+              "Bounded global alignment supports at most 16384 query samples per pose.",
+            );
           const samples = job.cells.flat(),
             midpoint = Math.ceil(samples.length / count);
           const responses = await send(

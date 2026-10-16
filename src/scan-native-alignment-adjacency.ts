@@ -1,5 +1,9 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { nativeTargetStorage } from "./scan-native-target-storage";
+import {
+  nativeTargetStorage,
+  nativeScratchStorage,
+  releaseNativeScratch,
+} from "./scan-native-target-storage";
 import {
   createNativeAlignmentEdgeRecords,
   type NativeAlignmentEdgeRecords,
@@ -71,8 +75,125 @@ export function nativeBuildAlignmentNeighbourMasks(
   const masks = new Uint8Array(
     nativeTargetStorage(vertices, triangles.length / 3),
   );
-  buildAlignmentAdjacency(vertices, triangles, options, masks);
+  buildMaskAdjacency(vertices, triangles, options, masks);
   return masks;
+}
+
+/** Same ascending bucket/face order and final cross-bucket pass as the native
+ * linker. A counting partition replaces per-face JavaScript group arrays. */
+function buildMaskAdjacency(
+  vertices: ArrayLike<number>,
+  triangles: ArrayLike<number>,
+  options: MeshProcessingOptions,
+  masks: Uint8Array,
+) {
+  const buffers: ArrayBuffer[] = [];
+  let first: NativeAlignmentEdgeRecords | undefined;
+  const storage = (bytes: number) => {
+    const buffer = nativeScratchStorage(bytes);
+    buffers.push(buffer);
+    return buffer;
+  };
+  const check = () => {
+    if (options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+  };
+  try {
+    const bounds = [
+      Infinity,
+      Infinity,
+      Infinity,
+      -Infinity,
+      -Infinity,
+      -Infinity,
+    ];
+    for (let i = 0; i < vertices.length; i++) {
+      if (i % 12288 === 0) check();
+      const value = Math.fround(vertices[i]);
+      if (!Number.isFinite(value)) throw Error("Invalid alignment vertex.");
+      bounds[i % 3] = Math.min(bounds[i % 3], value);
+      bounds[(i % 3) + 3] = Math.max(bounds[(i % 3) + 3], value);
+    }
+    const tree = nativeAlignmentBucketTree(bounds);
+    const buckets = new Uint32Array(storage((vertices.length / 3) * 4));
+    const used = new Uint32Array(storage(Math.ceil(buckets.length / 32) * 4));
+    const point = new Float32Array(storage(12));
+    for (let vertex = 0; vertex < buckets.length; vertex++) {
+      if (vertex % 4096 === 0) check();
+      for (let axis = 0; axis < 3; axis++)
+        point[axis] = vertices[vertex * 3 + axis];
+      buckets[vertex] = nativeAlignmentSpatialBucket(
+        point,
+        tree.centers,
+        tree.children,
+        1.1920928955078125e-7,
+      );
+      if (buckets[vertex] >= 512)
+        throw Error("Invalid alignment spatial bucket.");
+    }
+    const counts = new Uint32Array(storage(513 * 4));
+    const offsets = new Uint32Array(storage(514 * 4));
+    const cursors = new Uint32Array(storage(513 * 4));
+    const faceBuckets = new Uint16Array(storage(masks.length * 2));
+    let usedVertices = 0;
+    for (let face = 0; face < masks.length; face++) {
+      if (face % 4096 === 0) check();
+      for (let edge = 0; edge < 3; edge++) {
+        const id = triangles[face * 3 + edge];
+        if (!Number.isSafeInteger(id) || id < 0 || id >= buckets.length)
+          throw Error("Adjacency triangle index is outside the vertex buffer.");
+        const word = Math.floor(id / 32),
+          bit = 1 << (id & 31);
+        if (!(used[word] & bit)) {
+          used[word] |= bit;
+          usedVertices++;
+        }
+      }
+      const a = buckets[triangles[face * 3]],
+        b = buckets[triangles[face * 3 + 1]],
+        c = buckets[triangles[face * 3 + 2]];
+      const bucket = a === b && a === c ? a : 512;
+      faceBuckets[face] = bucket;
+      counts[bucket]++;
+    }
+    for (let bucket = 0; bucket < 513; bucket++)
+      offsets[bucket + 1] = offsets[bucket] + counts[bucket];
+    cursors.set(offsets.subarray(0, 513));
+    const order = new Uint32Array(storage(masks.length * 4));
+    for (let face = 0; face < masks.length; face++) {
+      if (face % 4096 === 0) check();
+      order[cursors[faceBuckets[face]]++] = face;
+    }
+    // Retire partition-only storage before reserving the directed-edge table.
+    for (const value of [
+      used,
+      counts,
+      cursors,
+      faceBuckets,
+      point,
+      offsets,
+      buckets,
+    ])
+      releaseNativeScratch(value.buffer);
+    first = createNativeAlignmentEdgeRecords(
+      vertices.length / 3,
+      triangles.length,
+      {
+        signal: options.signal,
+        expectedEntries: Math.min(triangles.length, usedVertices * 3),
+        dense: true,
+      },
+    );
+    const neighbors = new Int32Array(),
+      neighborEdges = new Uint8Array();
+    for (let slot = 0; slot < order.length; slot++) {
+      if (slot % 4096 === 0) check();
+      linkFace(triangles, order[slot], neighbors, neighborEdges, first, masks);
+    }
+  } finally {
+    first?.dispose();
+    for (const buffer of buffers) releaseNativeScratch(buffer);
+  }
 }
 
 function buildAlignmentAdjacency(

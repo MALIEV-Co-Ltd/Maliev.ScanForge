@@ -7,8 +7,13 @@ import {
 import {
   nativeGlobalMeshTargetData,
   installNativeGlobalMeshTarget,
+  prepareNativeGlobalMeshTarget,
   type NativeGlobalMeshTargetData,
 } from "./scan-native-global-mesh-target";
+import {
+  createNativeTargetStorageBudget,
+  withNativeTargetStorageBudget,
+} from "./scan-native-target-storage";
 export type GlobalPreparedMeshes = {
   id: string;
   targets: NativeGlobalMeshTargetData[];
@@ -17,6 +22,7 @@ export interface GlobalQueryWorkerInit {
   scans: { id: string; geometry: NativeGlobalQueryGeometry }[];
   preparedMeshes?: GlobalPreparedMeshes;
   exportPreparedMeshes?: boolean;
+  storageBudget?: { limit: number; reserved: number };
 }
 export interface GlobalQueryJob extends Pick<
   NativeGlobalQueryInput,
@@ -34,10 +40,23 @@ export type GlobalQueryResponse =
       ready: true;
       indexes: number;
       prepared?: GlobalQueryWorkerInit;
+      storage?: { limit: number; reserved: number; live: number; peak: number };
     }
   | { id: number; result: ReturnType<typeof nativeGlobalQuery> }
   | { id: number; error: string };
 export function createGlobalQueryWorkerState(input: GlobalQueryWorkerInit) {
+  const budget =
+    input.storageBudget &&
+    createNativeTargetStorageBudget(
+      input.storageBudget.limit,
+      input.storageBudget.reserved,
+    );
+  const state = budget
+    ? withNativeTargetStorageBudget(budget, () => prepareState(input))
+    : prepareState(input);
+  return { ...state, storage: budget?.snapshot() };
+}
+function prepareState(input: GlobalQueryWorkerInit) {
   const geometries = new Map<string, NativeGlobalQueryGeometry>();
   if (
     input.preparedMeshes &&
@@ -50,6 +69,41 @@ export function createGlobalQueryWorkerState(input: GlobalQueryWorkerInit) {
       ))
   )
     throw Error("Prepared targets do not match worker scan IDs.");
+  if (input.storageBudget) {
+    if (
+      input.scans.length > 32 ||
+      input.scans.reduce(
+        (count, scan) => count + (scan.geometry.targetMeshes?.length ?? 0),
+        0,
+      ) > 64
+    )
+      throw Error(
+        "Bounded alignment supports at most 32 scans and 64 mesh targets.",
+      );
+    // This bounded route has no raw tree, hidden-face copies or object graph.
+    for (const { geometry: g } of input.scans)
+      if (
+        !g.rawTargetIds ||
+        g.rawTargetIds.length ||
+        !g.targetMeshes?.length ||
+        g.targetMeshes.some(
+          (m) =>
+            !m.packedNodes ||
+            !m.compactBounds ||
+            m.filterHidden ||
+            m.vertices.length / 3 > 0x100000000 ||
+            m.triangles.length > 0x7fffffff,
+        )
+      )
+        throw Error(
+          "Bounded alignment requires evaluator-only packed mesh targets.",
+        );
+    if (!input.preparedMeshes)
+      for (const mesh of input.scans
+        .flatMap((scan) => [...scan.geometry.targetMeshes!])
+        .sort((a, b) => b.triangles.length - a.triangles.length))
+        prepareNativeGlobalMeshTarget(mesh);
+  }
   for (const [index, scan] of input.scans.entries()) {
     if (!scan.id || geometries.has(scan.id))
       throw new Error("Global worker scan IDs must be unique.");
@@ -74,6 +128,13 @@ export function createGlobalQueryWorkerState(input: GlobalQueryWorkerInit) {
         }
       : undefined,
     execute(job: GlobalQueryJob) {
+      if (
+        input.storageBudget &&
+        job.cells.reduce((sum, cell) => sum + cell.length, 0) > 16384
+      )
+        throw Error(
+          "Bounded global alignment supports at most 16384 query samples per pose.",
+        );
       const seen = new Set<string>();
       const scans = job.poses.map((pose) => {
         const geometry = geometries.get(pose.id);
@@ -118,6 +179,7 @@ if (
           ready: true,
           indexes: state.indexes,
           prepared: state.prepared,
+          storage: state.storage,
         });
       } else {
         if (!state) throw new Error("Global query worker is not initialized.");

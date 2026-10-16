@@ -6,7 +6,11 @@ import {
 import { noiseOctantBox } from "./scan-noise-octree-bounds";
 import { noiseTriangleCubeOverlap } from "./scan-noise-overlap";
 import type { NoiseBounds } from "./scan-noise-octree-query";
-import { nativeTargetStorage } from "./scan-native-target-storage";
+import {
+  nativeTargetStorage,
+  nativeScratchStorage,
+  releaseNativeScratch,
+} from "./scan-native-target-storage";
 import {
   validateNativeGlobalPackedIndex,
   type NativeGlobalPackedIndex,
@@ -65,7 +69,7 @@ export function buildNativeGlobalPackedIndex(
       );
     const buffer = output
       ? nativeTargetStorage(input.coordinates, bytes)
-      : new ArrayBuffer(bytes);
+      : nativeScratchStorage(bytes);
     owned.set(buffer, { bytes, output });
     liveBytes += bytes;
     peakBytes = Math.max(peakBytes, liveBytes);
@@ -77,11 +81,7 @@ export function buildNativeGlobalPackedIndex(
     // Charge unreleased backing storage on older runtimes until construction ends.
     // This may reject a case conservatively; it never lowers the live-byte guard.
     if (!(buffer instanceof ArrayBuffer)) return;
-    const transfer = (
-      buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
-    ).transfer;
-    if (!transfer) return;
-    transfer.call(buffer, 0);
+    if (!releaseNativeScratch(buffer)) return;
     liveBytes -= entry.bytes;
     owned.delete(buffer);
   };

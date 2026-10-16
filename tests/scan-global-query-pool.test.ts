@@ -9,9 +9,114 @@ import {
   type GlobalQueryResponse,
 } from "../src/scan-global-query-worker";
 import fixture from "./fixtures/global-fine-correspondence-native.json";
+import { nativeGlobalQuery } from "../src/scan-native-global-query";
 import meshFixture from "./fixtures/global-fine-mesh-correspondence-native.json";
 import { meshCorrespondenceFixture } from "./helpers/global-mesh-correspondence-fixture";
 const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+function boundedScene() {
+  return {
+    scans: [0, 1].map((i) => {
+      const points = Float32Array.of(
+        0,
+        0,
+        i * 0.1,
+        1,
+        0,
+        i * 0.1,
+        0,
+        1,
+        i * 0.1,
+      );
+      return {
+        id: String(i),
+        geometry: {
+          points,
+          normals: Float32Array.of(0, 0, -1, 0, 0, -1, 0, 0, -1),
+          rawTargetIds: new Uint32Array(),
+          targetMeshes: [
+            { vertices: points, triangles: Uint32Array.of(0, 1, 2) },
+          ],
+        },
+      };
+    }),
+  };
+}
+it("enforces one scene budget across packed preparation and the shared secondary worker", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const input = boundedScene(),
+    pool = await createGlobalQueryPool(input);
+  try {
+    expect(pool.physicalWorkers).toBe(2);
+    expect(pool.storage).toHaveLength(2);
+    expect(pool.storage![0]!.peak).toBeGreaterThan(pool.storage![0]!.reserved);
+    expect(pool.storage![1]!.reserved).toBe(pool.storage![0]!.live);
+    expect(pool.storage!.every((s) => s!.peak <= 512 * 1048576)).toBe(true);
+    const prepared = FakeWorker.instances[1].transport!.preparedMeshes!;
+    expect(
+      prepared.every((p) =>
+        p.targets.every(
+          (t) =>
+            !t.root &&
+            t.surface.deriveBounds &&
+            t.packedIndex?.values.buffer instanceof SharedArrayBuffer,
+        ),
+      ),
+    ).toBe(true);
+    const job = {
+      sourceId: "0",
+      poses: input.scans.map((s) => ({ id: s.id, matrix: identity })),
+      cells: [[0, 1, 2]],
+      radius: 1,
+      mode: "target-average" as const,
+    };
+    const scans = input.scans.map((s) => ({ ...s, matrix: identity }));
+    expect(await pool.execute(job)).toEqual(
+      nativeGlobalQuery({ ...job, source: scans[0], targets: scans }),
+    );
+    expect(input.scans[0].geometry.targetMeshes[0]).not.toHaveProperty(
+      "packedNodes",
+    );
+  } finally {
+    pool.close();
+  }
+});
+it("closes bounded workers before accepting an oversized sample batch", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const input = boundedScene(),
+    pool = await createGlobalQueryPool(input);
+  await expect(
+    pool.execute({
+      sourceId: "0",
+      poses: input.scans.map((s) => ({ id: s.id, matrix: identity })),
+      cells: [Array(16385).fill(0)],
+      radius: 1,
+    }),
+  ).rejects.toThrow(/16384/);
+  expect(FakeWorker.instances.every((w) => w.terminated)).toBe(true);
+});
+it("terminates the entire bounded pool when preparation exhausts its live allocation budget", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  FakeWorker.exhaustBudget = true;
+  await expect(createGlobalQueryPool(boundedScene())).rejects.toThrow(
+    /whole-scene/,
+  );
+  expect(FakeWorker.instances.every((w) => w.terminated)).toBe(true);
+});
+it.each([NaN, Infinity, -1, 513 * 1048576])(
+  "rejects an invalid bounded worker peak report %s and releases both workers",
+  async (peak) => {
+    install();
+    vi.stubGlobal("crossOriginIsolated", true);
+    FakeWorker.badPeak = peak;
+    await expect(createGlobalQueryPool(boundedScene())).rejects.toThrow(
+      /storage report/,
+    );
+    expect(FakeWorker.instances.every((w) => w.terminated)).toBe(true);
+  },
+);
 it("shares mesh carriers and preserves aliases while preparing each worker once", async () => {
   install();
   vi.stubGlobal("crossOriginIsolated", true);
@@ -121,6 +226,8 @@ class FakeWorker {
   static hold = false;
   static fail = false;
   static omitPrepared = false;
+  static exhaustBudget = false;
+  static badPeak: number | undefined;
   onmessage?: (e: { data: GlobalQueryResponse }) => void;
   onerror?: (e: { message: string }) => void;
   onmessageerror?: () => void;
@@ -149,6 +256,9 @@ class FakeWorker {
       }
       try {
         if ("initialize" in data) {
+          if (FakeWorker.exhaustBudget && data.initialize.storageBudget)
+            data.initialize.storageBudget.reserved =
+              data.initialize.storageBudget.limit - 1;
           this.state = createGlobalQueryWorkerState(data.initialize);
           this.initialized++;
           this.onmessage?.({
@@ -156,6 +266,10 @@ class FakeWorker {
               id: data.id,
               ready: true,
               indexes: this.state.indexes,
+              storage: this.state.storage && {
+                ...this.state.storage,
+                peak: FakeWorker.badPeak ?? this.state.storage.peak,
+              },
               prepared: FakeWorker.omitPrepared
                 ? undefined
                 : this.state.prepared,
@@ -181,6 +295,8 @@ afterEach(() => {
   FakeWorker.instances = [];
   FakeWorker.hold = FakeWorker.fail = false;
   FakeWorker.omitPrepared = false;
+  FakeWorker.exhaustBudget = false;
+  FakeWorker.badPeak = undefined;
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });

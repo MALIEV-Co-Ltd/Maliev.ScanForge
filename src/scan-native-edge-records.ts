@@ -1,3 +1,7 @@
+import {
+  nativeScratchStorage,
+  releaseNativeScratch,
+} from "./scan-native-target-storage";
 /** Private directed-edge lookup. Callers validate geometry before linking. */
 export interface NativeAlignmentEdgeRecords {
   get(from: number, to: number): number | undefined;
@@ -21,6 +25,7 @@ function hash(from: number, to: number) {
 /** These buffers are created and owned exclusively by this directory. Detaching
  * retired storage never touches authored geometry. Older runtimes use GC. */
 function release(buffer: ArrayBufferLike) {
+  if (releaseNativeScratch(buffer)) return;
   const owned = buffer as ArrayBuffer & {
     transfer?: (size: number) => ArrayBuffer;
   };
@@ -34,7 +39,11 @@ function release(buffer: ArrayBufferLike) {
 export function createNativeAlignmentEdgeRecords(
   vertexCount: number,
   edgeSlots: number,
-  options: { signal?: AbortSignal; expectedEntries?: number } = {},
+  options: {
+    signal?: AbortSignal;
+    expectedEntries?: number;
+    dense?: boolean;
+  } = {},
 ): NativeAlignmentEdgeRecords {
   let disposed = false;
   const active = () => {
@@ -105,6 +114,11 @@ export function createNativeAlignmentEdgeRecords(
     };
   }
   let capacity = 8;
+  // Mask preparation retains no edge IDs after this directory closes. A denser
+  // private lookup avoids power-of-two reserve jumps; record semantics are the
+  // same. The ordinary adjacency directory keeps its existing load policy.
+  const denominator = options.dense ? 19 : 7;
+  const numerator = options.dense ? 20 : 10;
   // Without observed topology, cap the hint so unused vertices cannot reserve a
   // large table. An explicit hint comes from vertices referenced by faces.
   const hint =
@@ -112,16 +126,25 @@ export function createNativeAlignmentEdgeRecords(
       ? Math.min(
           65536,
           Math.ceil(
-            (Math.min(edgeSlots / 2, vertexCount * vertexCount) * 10) / 7,
+            (Math.min(edgeSlots / 2, vertexCount * vertexCount) * numerator) /
+              denominator,
           ),
         )
-      : Math.ceil((options.expectedEntries * 10) / 7);
+      : Math.ceil((options.expectedEntries * numerator) / denominator);
   if (hint > 0x40000000)
     throw RangeError("Directed-edge directory capacity exceeded.");
   while (capacity < hint) capacity *= 2;
-  let keys = new Uint32Array(capacity * 2),
-    values = new Int32Array(capacity),
-    count = 0;
+  const pair = (size: number) => {
+    const values = new Int32Array(nativeScratchStorage(size * 4));
+    try {
+      return { keys: new Uint32Array(nativeScratchStorage(size * 8)), values };
+    } catch (error) {
+      release(values.buffer);
+      throw error;
+    }
+  };
+  let { keys, values } = pair(capacity);
+  let count = 0;
   const locate = (from: number, to: number) => {
     const mask = values.length - 1;
     let slot = hash(from, to) & mask;
@@ -136,8 +159,7 @@ export function createNativeAlignmentEdgeRecords(
     check();
     if (values.length >= 0x40000000)
       throw RangeError("Directed-edge directory capacity exceeded.");
-    const nextValues = new Int32Array(values.length * 2);
-    const nextKeys = new Uint32Array(nextValues.length * 2);
+    const { values: nextValues, keys: nextKeys } = pair(values.length * 2);
     try {
       const mask = nextValues.length - 1;
       for (let old = 0; old < values.length; old++) {
@@ -171,7 +193,7 @@ export function createNativeAlignmentEdgeRecords(
       if (!firstOnly) values[slot] = value >= 0 ? value + 1 : value;
       return;
     }
-    if ((count + 1) * 10 > values.length * 7) {
+    if ((count + 1) * numerator > values.length * denominator) {
       grow();
       slot = locate(from, to);
     }
