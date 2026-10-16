@@ -116,6 +116,7 @@ export function packNativeGlobalEvaluatorIndex(
 export function validateNativeGlobalPackedIndex(
   index: NativeGlobalPackedIndex,
   faces = 0xffffffff,
+  scratch?: Uint8Array,
 ) {
   if (
     !index ||
@@ -134,8 +135,18 @@ export function validateNativeGlobalPackedIndex(
       throw Error("Invalid packed evaluator coordinates.");
   for (const face of memberships)
     if (face >= faces) throw Error("Invalid packed evaluator face.");
-  const seen = new Uint8Array(count),
+  const seen = scratch ?? new Uint8Array(count),
     pending = count ? [0] : [];
+  if (
+    !(seen instanceof Uint8Array) ||
+    seen.length !== count ||
+    !(seen.buffer instanceof ArrayBuffer) ||
+    seen.buffer === values.buffer ||
+    seen.buffer === links.buffer ||
+    seen.buffer === memberships.buffer
+  )
+    throw Error("Invalid packed evaluator validation scratch.");
+  seen.fill(0);
   let visited = 0;
   while (pending.length) {
     const id = pending.pop()!,

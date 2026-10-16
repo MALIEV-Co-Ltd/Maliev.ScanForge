@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T16:55:38.097Z",
+  "parent": "8b51fd4",
+  "parentSurfaceBlob": "26c7834031402619d0f20650e570ababdd1f3683",
+  "sourceFiles": {
+    "src/scan-native-global-direct-index.ts": "97ad9bf52883d63da7dcb798b844e099af01f5d44c82600682811352ecfa1293",
+    "src/scan-native-global-surface.ts": "cc57aaf70dd858a9d77b823c374d6d12e1ef209aec5ec2f6efc0c8e29d57ce95",
+    "src/scan-noise-octree.ts": "f4d0dee39bbecd31f771f1916af35908f0f4e1462c217f73cb911bef58e6610b",
+    "src/scan-native-global-packed-index.ts": "a6cdc54d3fd7851359a2f090e143251588a45bc91d9241236b01e6d00db2c72f",
+    "tests/scan-native-global-direct-index.test.ts": "dcea1a79af7a4c20399babf587a163725e9b7a248eff3297b53744ceb8da32d4",
+    "tests/scan-global-packed-index.test.ts": "81a001ae64a8d050ad94ca79739f8db5d18c686df45335e8ad92c285035762d6"
+  },
+  "nativeFixtureSha256": "43fa5df7fed3960199135e6c42ff3dae10dc02ea933fc5d51cb5706cf4508eb5",
+  "benchmarkSourceSha256": "879af3a1269e1f270a188f1b5ccf0d630bd02573f440b7c4e5a8c4e607dc796b",
+  "parentSurfaceAdapterSha256": "299d8c63fe3ea21e2d428b2b5e43c541fa3845346a1cadea3541ac03e1fa6855",
+  "measurements": [
+    {
+      "name": "parent-cached",
+      "comparisons": 198,
+      "retainedDataBytes": 512477876,
+      "sampledMaxBytes": {
+        "rss": 854933504,
+        "heapUsed": 220509648,
+        "arrayBuffers": 512505653
+      },
+      "elapsedVerificationMs": 12784.1676,
+      "sharedRestorationAliasesExcluded": true,
+      "summaries": [
+        {
+          "scan": "scan-1.stl",
+          "nodes": 60539,
+          "memberships": 639591,
+          "preparedAndVerifiedMs": 777.5396000000001
+        },
+        {
+          "scan": "scan-2.stl",
+          "nodes": 52446,
+          "memberships": 3452946,
+          "preparedAndVerifiedMs": 4527.2573
+        },
+        {
+          "scan": "scan-3.stl",
+          "nodes": 79477,
+          "memberships": 4617801,
+          "preparedAndVerifiedMs": 7100.3545
+        }
+      ]
+    },
+    {
+      "name": "direct-cached",
+      "comparisons": 198,
+      "retainedDataBytes": 512477876,
+      "sampledMaxBytes": {
+        "rss": 624300032,
+        "heapUsed": 26209016,
+        "arrayBuffers": 513739779
+      },
+      "elapsedVerificationMs": 12265.7065,
+      "sharedRestorationAliasesExcluded": true,
+      "summaries": [
+        {
+          "scan": "scan-1.stl",
+          "nodes": 60539,
+          "memberships": 639591,
+          "preparedAndVerifiedMs": 861.8327999999999
+        },
+        {
+          "scan": "scan-2.stl",
+          "nodes": 52446,
+          "memberships": 3452946,
+          "preparedAndVerifiedMs": 4256.9763
+        },
+        {
+          "scan": "scan-3.stl",
+          "nodes": 79477,
+          "memberships": 4617801,
+          "preparedAndVerifiedMs": 7030.3267000000005
+        }
+      ]
+    },
+    {
+      "name": "direct-compact",
+      "comparisons": 198,
+      "retainedDataBytes": 364939028,
+      "sampledMaxBytes": {
+        "rss": 473948160,
+        "heapUsed": 26785280,
+        "arrayBuffers": 366200931
+      },
+      "elapsedVerificationMs": 12490.7608,
+      "sharedRestorationAliasesExcluded": true,
+      "summaries": [
+        {
+          "scan": "scan-1.stl",
+          "nodes": 60539,
+          "memberships": 639591,
+          "preparedAndVerifiedMs": 873.8876999999999
+        },
+        {
+          "scan": "scan-2.stl",
+          "nodes": 52446,
+          "memberships": 3452946,
+          "preparedAndVerifiedMs": 4706.1289
+        },
+        {
+          "scan": "scan-3.stl",
+          "nodes": 79477,
+          "memberships": 4617801,
+          "preparedAndVerifiedMs": 6802.1464
+        }
+      ]
+    }
+  ],
+  "controller": {
+    "cachedBounds": true,
+    "passes": 19,
+    "queries": 439,
+    "localCalls": 57,
+    "applicationMatrices": 6,
+    "initializedMs": 5556.579,
+    "elapsedMs": 243639.3505,
+    "allNativePassSnapshotsFinalStatesAndCommandsMatched": true,
+    "productionPoolUsed": false,
+    "successfulRegistrationWithinTolerance": false
+  },
+  "browser": {
+    "comparisons": 64,
+    "poseComparisons": 2,
+    "fallbackComparisons": 2,
+    "physicalWorkers": [2],
+    "workers": 71,
+    "allWorkersTerminated": true,
+    "registration": {
+      "gap": 0,
+      "queries": 5,
+      "queryWorkers": 2
+    },
+    "errors": []
+  },
+  "originalSourceIdentityRechecked": false,
+  "scope": "Internal packed construction only; parent surface module with current common validation/query helpers. Sampled memory excludes source scene/sampling, adjacency, worker/browser/GPU and rendering. No forced collection. Public defaults and whole-scene admission unchanged.",
+  "validation": {
+    "buildPassed": true,
+    "buildFingerprint": "scanforge-4cfd5eaea0a6d8a9",
+    "focusedPassed": 492,
+    "controllerPassed": 2,
+    "ownerMeasurementRunsPassed": 3,
+    "ownerQueryComparisons": 594,
+    "suitePassed": 46416,
+    "suiteSkipped": 53,
+    "suiteFailed": 0,
+    "suiteSeconds": 232.71,
+    "publicAdmissionUnchanged": true,
+    "guiMcpSchemasUnchanged": true,
+    "scopedFormatPassed": true,
+    "sourceSnapshotIdentityPassed": true,
+    "ownedObservedHelpersExited": true,
+    "appPort": 5173,
+    "appHttp": 200,
+    "latestAccountedSourceServed": true
+  }
+}

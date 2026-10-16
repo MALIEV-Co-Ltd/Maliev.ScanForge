@@ -94,3 +94,21 @@ it("validates empty indexes, ranges, reachability and child cycles", () => {
     expect(() => validateNativeGlobalPackedIndex(bad)).toThrow();
   }
 });
+it("uses caller-owned validation scratch without corrupting immutable index buffers", () => {
+  const { root } = packGlobalEvaluatorFixture(fixture.cases[0].tree);
+  const index = evaluator.packNativeGlobalEvaluatorIndex(root);
+  const count = index.links.length / 12;
+  const scratch = new Uint8Array(count).fill(255);
+  expect(() =>
+    validateNativeGlobalPackedIndex(index, 0xffffffff, scratch),
+  ).not.toThrow();
+  expect([...scratch].every((v) => v === 1)).toBe(true);
+  for (const invalid of [
+    new Uint8Array(count + 1),
+    new Uint8Array(new SharedArrayBuffer(count)),
+    new Uint8Array(index.values.buffer, 0, count),
+  ])
+    expect(() =>
+      validateNativeGlobalPackedIndex(index, 0xffffffff, invalid),
+    ).toThrow(/scratch/);
+});

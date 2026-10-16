@@ -77,6 +77,40 @@ export function prepareIndexedNoiseOctree<T extends IndexedNoiseTreeInput>(
   options: MeshProcessingOptions = {},
   sourceBounds?: NoiseBounds,
 ) {
+  const root = indexedNoiseRoot(
+    input,
+    minimumExtent,
+    maximumDepth,
+    options,
+    sourceBounds,
+  );
+  root.triangles = Array.from(
+    { length: input.indices.length / 3 },
+    (_, id) => id,
+  );
+  const prepared = { ...input, root };
+  splitNoiseNode(
+    root,
+    prepared,
+    minimumExtent,
+    maximumDepth,
+    { nodes: 0 },
+    options,
+    true,
+    true,
+  );
+  return prepared;
+}
+
+/** Validate indexed input and create only the native root metadata, without a
+ * triangle-ID list or descendant graph. Both construction policies use this. */
+export function indexedNoiseRoot(
+  input: IndexedNoiseTreeInput,
+  minimumExtent = 0.5,
+  maximumDepth = 10,
+  options: MeshProcessingOptions = {},
+  sourceBounds?: NoiseBounds,
+) {
   if (options.signal?.aborted)
     throw new DOMException("Mesh operation cancelled.", "AbortError");
   const { coordinates, indices, triangleBounds, boundsIds } = input;
@@ -141,18 +175,7 @@ export function prepareIndexedNoiseOctree<T extends IndexedNoiseTreeInput>(
       b[axis + 3] = Math.max(b[axis + 3], hi);
     }
   }
-  const prepared = { ...input, root: noiseRoot(count, b, sourceBounds) };
-  splitNoiseNode(
-    prepared.root,
-    prepared,
-    minimumExtent,
-    maximumDepth,
-    { nodes: 0 },
-    options,
-    true,
-    true,
-  );
-  return prepared;
+  return noiseRoot(0, b, sourceBounds);
 }
 
 /** Pack once before transferring immutable triangle data to construction workers. */

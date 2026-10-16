@@ -1,3 +1,4 @@
+import { buildNativeGlobalPackedIndex } from "./scan-native-global-direct-index";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import {
   prepareIndexedNoiseOctree,
@@ -196,6 +197,7 @@ function prepare(
     ? undefined
     : new Float32Array(nativeTargetStorage(vertices, triangles.length * 8));
   let root: NativeGlobalEvaluatorIndexNode | undefined;
+  let packedIndex: NativeGlobalPackedIndex | undefined;
   {
     let admitted = 0;
     for (let face = 0; face < triangles.length / 3; face++) {
@@ -240,53 +242,70 @@ function prepare(
           slot++;
         }
       }
-      const tree = prepareIndexedNoiseOctree(
-        {
-          coordinates: vertices,
-          indices,
-          triangleBounds: bounds,
-          boundsIds: bounds ? ids : undefined,
-        },
-        minimumExtent,
-        maximumDepth,
-        options,
-        filterHidden ? undefined : (meshBounds as unknown as NoiseBounds),
-      );
-      const originalId = (id: number) => (ids ? ids[id] : id);
-      const countMembers = (node: NoiseTreeNode): number => {
-        check(options);
-        let count = node.triangles.length;
-        for (let id = 0; id < 8; id++)
-          if (node.children[id]) count += countMembers(node.children[id]!);
-        return count;
+      const treeInput = {
+        coordinates: vertices,
+        indices,
+        triangleBounds: bounds,
+        boundsIds: bounds ? ids : undefined,
       };
-      const count = countMembers(tree.root);
-      if (!Number.isSafeInteger(count) || count > 0xffffffff)
-        throw RangeError("Evaluator membership capacity exceeded.");
-      const memberships = new Uint32Array(
-        nativeTargetStorage(vertices, count * 4),
-      );
-      let cursor = 0;
-      const convert = (node: NoiseTreeNode): NativeGlobalEvaluatorIndexNode => {
-        check(options);
-        // This newly built tree is exclusively owned here. Promote its leaf lists
-        // in place instead of duplicating the complete node graph for the query.
-        const result = node as unknown as NativeGlobalEvaluatorIndexNode;
-        result.flat = !!node.mode;
-        const sourceIds = node.triangles;
-        result.triangles = sourceIds.length
-          ? memberships.subarray(cursor, cursor + sourceIds.length)
-          : emptyIds;
-        cursor += sourceIds.length;
-        for (let slot = 0; slot < sourceIds.length; slot++)
-          result.triangles[slot] = originalId(sourceIds[slot]);
-        for (let id = 0; id < 8; id++) {
-          const child = node.children[id];
-          if (child) result.children[id] = convert(child);
-        }
-        return result;
-      };
-      root = convert(tree.root);
+      const sourceBounds = filterHidden
+        ? undefined
+        : (meshBounds as unknown as NoiseBounds);
+      if (input.packedNodes) {
+        packedIndex = buildNativeGlobalPackedIndex(
+          treeInput,
+          minimumExtent,
+          maximumDepth,
+          options,
+          sourceBounds,
+          ids,
+        ).index;
+      } else {
+        const tree = prepareIndexedNoiseOctree(
+          treeInput,
+          minimumExtent,
+          maximumDepth,
+          options,
+          sourceBounds,
+        );
+        const originalId = (id: number) => (ids ? ids[id] : id);
+        const countMembers = (node: NoiseTreeNode): number => {
+          check(options);
+          let count = node.triangles.length;
+          for (let id = 0; id < 8; id++)
+            if (node.children[id]) count += countMembers(node.children[id]!);
+          return count;
+        };
+        const count = countMembers(tree.root);
+        if (!Number.isSafeInteger(count) || count > 0xffffffff)
+          throw RangeError("Evaluator membership capacity exceeded.");
+        const memberships = new Uint32Array(
+          nativeTargetStorage(vertices, count * 4),
+        );
+        let cursor = 0;
+        const convert = (
+          node: NoiseTreeNode,
+        ): NativeGlobalEvaluatorIndexNode => {
+          check(options);
+          // This newly built tree is exclusively owned here. Promote its leaf lists
+          // in place instead of duplicating the complete node graph for the query.
+          const result = node as unknown as NativeGlobalEvaluatorIndexNode;
+          result.flat = !!node.mode;
+          const sourceIds = node.triangles;
+          result.triangles = sourceIds.length
+            ? memberships.subarray(cursor, cursor + sourceIds.length)
+            : emptyIds;
+          cursor += sourceIds.length;
+          for (let slot = 0; slot < sourceIds.length; slot++)
+            result.triangles[slot] = originalId(sourceIds[slot]);
+          for (let id = 0; id < 8; id++) {
+            const child = node.children[id];
+            if (child) result.children[id] = convert(child);
+          }
+          return result;
+        };
+        root = convert(tree.root);
+      }
     }
   }
   const surface = {
@@ -298,9 +317,8 @@ function prepare(
     flags,
   };
   check(options);
-  const packedIndex = input.packedNodes
-    ? packNativeGlobalEvaluatorIndex(root, vertices, options)
-    : undefined;
+  if (input.packedNodes && !packedIndex)
+    packedIndex = packNativeGlobalEvaluatorIndex(undefined, vertices, options);
   if (packedIndex) root = undefined;
   return attachPreparedEvaluator(input, {
     root,
