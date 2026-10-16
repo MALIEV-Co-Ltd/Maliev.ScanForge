@@ -1,0 +1,40 @@
+{
+  "scope": "Original recursive triangle query on supplied prepared layouts, including connection to the verified signed triangle leaf. Public evaluator-enabled alignment remains incomplete.",
+  "originalFixture": "tests/fixtures/global-fine-evaluator-query-native.json",
+  "originalProcedure": "0x1403999e0",
+  "evidenceId": "ev_f2112094d9953e5686915740fa79d70d8a10dd8cdc3c28fc72c51d9d9e88fca5",
+  "nativeCases": 392,
+  "nativeHits": 253,
+  "comparison": "Exact triangle ID, Float64 distance/projection bytes, region flags, retained record identity and empty reusable traversal stack.",
+  "build": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0,
+    "fingerprint": "scanforge-b7a8559deb3a7d9c"
+  },
+  "focused": {
+    "passed": 1259,
+    "failed": 0,
+    "skipped": 0
+  },
+  "suite": {
+    "passed": 44665,
+    "failed": 0,
+    "optionalSkipped": 40
+  },
+  "browserWorker": {
+    "cases": 392,
+    "comparisons": 784,
+    "stackEmpty": true,
+    "workerTerminated": true,
+    "errors": [],
+    "scope": "Original supplied-tree query cases in an isolated browser Worker; not owner-scan alignment or index-builder verification."
+  },
+  "mcp": "No public capability, contract or command discovery changes. Complete worker evaluator-provider and shared GUI/MCP workflow remain gated.",
+  "remaining": [
+    "Native index-builder integration and routing options",
+    "Prepared normals and triangle-neighbour carriers",
+    "Packed large-scan storage without duplicated object graphs",
+    "Complete owner-scan alignment comparison and public GUI/MCP preview/apply/cancel/history validation"
+  ]
+}
