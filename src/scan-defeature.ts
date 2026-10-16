@@ -1,4 +1,5 @@
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
+import { repatchCurvatureSurface } from "./scan-defeature-surface";
 import {
   repatchSpatialBoundary,
   computeAngleWeightedNormals,
@@ -79,7 +80,10 @@ export function runDefeature(
   }
   let attempts = 0,
     filled = 0,
-    inserted = 0;
+    inserted = 0,
+    curvaturePatches = 0,
+    fitRms = 0;
+  const fallbacks: string[] = [];
   while (attempts < 2) {
     const loop = topology.boundaryLoops.find((ids) => {
       const rim = ids.map(
@@ -95,19 +99,26 @@ export function runDefeature(
     if (!loop) break;
     attempts++;
     checkProgress(options, 0.2 + attempts * 0.1, "Repatching selected seam");
-    const patch = repatchSpatialBoundary(topology, loop, {
+    const patchOptions = {
       signal: options.signal,
       vertexNormals,
-      onProgress: (_, remaining) =>
+      onProgress: (_: number, remaining: number) =>
         checkProgress(
           options,
           0.3 + 0.4 * (1 - remaining / loop.length),
           "Advancing spatial seam",
         ),
-    });
+    };
+    const surface = repatchCurvatureSurface(topology, loop, patchOptions);
+    const patch =
+      surface.patch ?? repatchSpatialBoundary(topology, loop, patchOptions);
+    if (surface.patch) {
+      curvaturePatches++;
+      fitRms = Math.max(fitRms, surface.fitRms ?? 0);
+    } else fallbacks.push(surface.reason ?? "unsupported surface");
     if (!patch.completed)
       throw new Error(
-        `Defeature could not close the selected seam (${patch.reason}); the original mesh is retained.`,
+        `Defeature could not close the selected seam (${patch.reason}; curvature reconstruction: ${surface.reason ?? "unavailable"}); the original mesh is retained.`,
       );
     const vertices = new Float64Array(
       topology.vertices.length + patch.insertedVertices.length,
@@ -156,8 +167,12 @@ export function runDefeature(
       filledHoles: filled,
       fillAttempts: attempts,
       insertedVertices: inserted,
-      method:
-        "Spatial advancing-corner repatching with retained indexed adjacency",
+      curvaturePatches,
+      curvatureFitRms: fitRms,
+      curvatureFallback: fallbacks.join("; "),
+      method: curvaturePatches
+        ? "Curvature-fitted surface reconstruction with retained indexed adjacency"
+        : "Spatial advancing-corner repatching with retained indexed adjacency",
     },
   };
 }

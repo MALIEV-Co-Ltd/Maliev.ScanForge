@@ -955,3 +955,14 @@ Camera navigation picks the surface under the pointer once at orbit start and ke
 MCP `viewport_control` with `action: "rotate"` accepts optional paired `x`/`y` coordinates in normalized top-left `[0,1]` space. Supply them to rotate around that visible surface using the same surface picker and orbit correction as mouse navigation; a missing surface returns an error without moving the camera. Omit both for the existing target-centered rotation. Read `viewport_get` before/after to inspect the camera result.
 
 A small green rotation-center dot appears while middle-button orbit is held, at the fixed world-space pivot (or actual target fallback), and hides on release/cancellation. It is clipped outside the view and does not intercept pointer input. `viewport_get.orbitCenter` reports `source` (`mouse`, `spacemouse`, or null), world-mm `point` (or null), and `markerVisible`; this is the same state used to draw the dot.
+
+### Curvature-aware Defeature
+
+`mesh_process` with `selectionOnly: true` and
+`operation: {kind: "scanEdit", action: "defeature"}` uses the same
+surrounding-curvature reconstruction as the GUI. Select the entire feature and
+leave a clean surrounding collar. Job diagnostics expose `curvaturePatches`,
+`curvatureFitRms` (model units) and `curvatureFallback`; unsupported collars retain
+the spatial-fill fallback. Requests, cancellation, revision checks and history
+semantics are unchanged. See
+[Defeature reconstruction and limits](DEFEATURE_CURVATURE.md).
