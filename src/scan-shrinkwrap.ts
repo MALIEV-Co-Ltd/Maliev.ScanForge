@@ -1,3 +1,4 @@
+import { verifyMeshSelfIntersections } from "./scan-self-intersections";
 import { shiftShrinkwrapTriangles } from "./scan-shrinkwrap-field";
 import type { Positions } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
@@ -178,6 +179,18 @@ export function shrinkwrapScanMesh(
       throw Error(
         "ShrinkWrap found no captured source support; decrease sample interval.",
       );
+    const intersections = verifyMeshSelfIntersections(result.positions, {
+      signal: options.signal,
+      onProgress: (fraction, stage) => {
+        check();
+        options.onProgress?.(0.94 + 0.06 * fraction, stage);
+        check();
+      },
+    });
+    if (intersections.selfIntersectionPairs)
+      throw Error(
+        `ShrinkWrap produced ${intersections.selfIntersectionPairs} intersecting triangle pair(s), including faces ${intersections.selfIntersectionExamples[0].join(" and ")}; decrease sample interval, gap fill or extra thickness. Original geometry retained.`,
+      );
     options.onProgress?.(1, "ShrinkWrap complete");
     check();
     return {
@@ -212,9 +225,12 @@ export function shrinkwrapScanMesh(
         coverageCertified: false,
         generatedBacking: true,
         sourceNormalsUsed: true,
-        selfIntersectionsChecked: false,
+        ...intersections,
+        selfIntersectionExamples: JSON.stringify(
+          intersections.selfIntersectionExamples,
+        ),
       },
-      summary: `ShrinkWrap: ${result.positions.length / 9} triangles at ${sampleInterval} mm; ${result.topology?.components ?? 0} closed components; sampled source maximum ${coverage.sourceCoverageMaxDeviation.toPrecision(4)} mm. Captured front with inferred ${2 * inwardShift} mm backing depth. Global self-intersections are not certified.`,
+      summary: `ShrinkWrap: ${result.positions.length / 9} triangles at ${sampleInterval} mm; ${result.topology?.components ?? 0} closed components; sampled source maximum ${coverage.sourceCoverageMaxDeviation.toPrecision(4)} mm. Captured front with inferred ${2 * inwardShift} mm backing depth. Exhaustive Float32 triangle self-intersection check passed.`,
     };
   } finally {
     supportFrontier.clear();

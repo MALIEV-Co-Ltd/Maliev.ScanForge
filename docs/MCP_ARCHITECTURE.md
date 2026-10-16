@@ -227,3 +227,10 @@ Complete original vertex-normal captures now bind all three canonical owner STL 
 `scanTools/shrinkwrap` uses one geometry kernel for `mesh_process` and preview jobs. `bindShrinkwrap` resolves source/reference objects and visible selected or isolated triangle masks; public requests never supply internal geometry arrays. Re-polygonize retains its existing behavior. ShrinkWrap controls sampling, gap fill, organic continuation and additional offset independently, with source-fit and topology diagnostics.
 
 The panel and MCP both invoke `scan_preview` create/compare/accept/cancel through `ApplicationApi`. One controller owns the disposable source/output pair; GUI cancellation, expiry, source/reference invalidation and API disposal release the same controller and the matching worker preview. Preview creation/comparison leave authored geometry and history intact; accept performs one guarded history write, optionally creating a new object. Comparison borrows source corners and indexes only the wrapped output, avoiding dense source adjacency. See [controls, lifecycle and validation](SHRINKWRAP.md).
+
+ShrinkWrap self-intersection verification runs in the shared worker kernel before
+a direct result or preview can be returned. Whole results audit all triangle
+pairs; local results audit changed facets against the parent and expose that
+restricted scope. Exact Float32 predicates, index-integrity checks, bounded
+candidate work and cancellation apply identically through GUI and MCP. Audit
+counts and scope travel through the existing processing diagnostics contract.

@@ -1,0 +1,79 @@
+{
+  "sourceStlSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+  "sourceUnchanged": true,
+  "outputGeometrySha256": "b36a68868f6aa5ac5e3d765b46f450da194412f4f07a772368949b345bb04926",
+  "reconstructionSettings": {
+    "sampleInterval": 0.5,
+    "gapFill": 0.5,
+    "organicShape": false,
+    "extraThickness": 0,
+    "maxDeviation": 0.3,
+    "scope": "whole"
+  },
+  "whole": {
+    "triangles": 8319632,
+    "complete": true,
+    "indexFaces": 8319632,
+    "intersectingPairs": 0,
+    "candidatePairs": 313378562,
+    "testedPairs": 62045824,
+    "method": "exhaustive BVH broad phase with exact Float32 orientation predicates",
+    "seconds": 316.86418790000005,
+    "maxRSSKiB": 1460412,
+    "examples": [],
+    "topology": {
+      "vertices": 4159424,
+      "triangles": 8319632,
+      "components": 46,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    }
+  },
+  "local": {
+    "selectedSourceTriangles": 32,
+    "outsideTrianglesPreserved": 1998312,
+    "unselectedBitwiseEqual": true,
+    "completeChangedRegionCheck": true,
+    "wholeParentChecked": false,
+    "intersectingPairs": 0,
+    "candidatePairs": 4882,
+    "testedPairs": 1054,
+    "indexFaces": 1998408,
+    "scope": "changed facets against whole parent"
+  },
+  "limits": {
+    "maxTriangles": 16000000,
+    "maxCandidatePairs": 500000000
+  },
+  "interpretation": "Exact intersection check of represented Float32 triangles, permitting only common vertices and edges. Topology and sampled source-fit evidence remain separate; this does not assert one connected solid or intended nested-cavity orientation.",
+  "validation": {
+    "build": "npm run build: TypeScript and production bundle passed",
+    "focused": {
+      "files": 13,
+      "passed": 118
+    },
+    "suite": {
+      "filesPassed": 480,
+      "filesSkipped": 15,
+      "testsPassed": 46537,
+      "testsSkipped": 53
+    },
+    "browser": {
+      "wholeAndLocalGuiMcpParity": true,
+      "intersectionRefusalPreservesSourceAndHistory": true,
+      "previewLifecycleAndUndoRedo": true,
+      "pageErrors": 0,
+      "helpersExitedAndPortsClosed": true,
+      "cleanedAt": "2026-10-16T17:26:04.532Z"
+    },
+    "checkedAt": "2026-10-16T17:26:54.985Z",
+    "baseHead": "a2d6c901c764d92eb0c3ef313db9920cbcaa754b"
+  }
+}

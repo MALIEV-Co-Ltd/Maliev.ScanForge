@@ -228,6 +228,13 @@ try {
     units: "mm",
     entities: [
       cube("panel"),
+      {
+        ...cube("crossing"),
+        positions: [
+          30, 0, 0, 32, 0, 0, 30, 2, 0, 30.5, 0.5, -1, 30.5, 0.5, 1, 31.5, 0.5,
+          0,
+        ],
+      },
       cube("reference", 5),
       cube("isolated", 10, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     ],
@@ -371,6 +378,12 @@ try {
     "GUI/MCP whole mismatch",
   );
   assert.equal(mcp.result.diagnostics.watertight, true);
+  assert.equal(mcp.result.diagnostics.selfIntersectionsChecked, true);
+  assert.equal(mcp.result.diagnostics.selfIntersectionPairs, 0);
+  assert.equal(
+    mcp.result.diagnostics.selfIntersectionTriangles,
+    gui.positions.length / 9,
+  );
   await mutate("history_undo", {});
   const previewJob = await job(
     await mutate("scan_preview", {
@@ -480,6 +493,12 @@ try {
     guiLocal.positions,
     "GUI/MCP local mismatch",
   );
+  assert.equal(
+    localJob.result.diagnostics.changedRegionSelfIntersectionsChecked,
+    true,
+  );
+  assert.equal(localJob.result.diagnostics.selfIntersectionsChecked, false);
+  assert.equal(localJob.result.diagnostics.selfIntersectionPairs, 0);
   const isolatedBefore = await geometry("isolated");
   const isolatedJob = await job(
     await mutate("mesh_process", {
@@ -490,6 +509,11 @@ try {
       },
     }),
   );
+  assert.equal(
+    isolatedJob.result.diagnostics.changedRegionSelfIntersectionsChecked,
+    true,
+  );
+  assert.equal(isolatedJob.result.diagnostics.selfIntersectionPairs, 0);
   assert.deepEqual(
     (await geometry("isolated")).positions.slice(0, 10 * 9),
     isolatedBefore.positions.slice(2 * 9),
@@ -499,6 +523,63 @@ try {
     (await geometry("reference")).positions,
     reference.positions,
   );
+  await mutate("object_select", { entityId: "crossing" });
+  await mutate("selection_set", { entityId: "crossing", triangles: [0] });
+  await page.getByRole("button", { name: "ShrinkWrap", exact: true }).click();
+  await controls
+    .getByRole("spinbutton", { name: "Sample interval (mm)", exact: true })
+    .fill("0.25");
+  await controls
+    .getByRole("spinbutton", { name: "Gap fill (mm)", exact: true })
+    .fill("0");
+  await controls
+    .getByRole("checkbox", { name: "Organic shape", exact: true })
+    .uncheck();
+  await controls
+    .getByRole("spinbutton", { name: "Add extra thickness (mm)", exact: true })
+    .fill("0");
+  await controls
+    .getByRole("spinbutton", {
+      name: "Maximum surface deviation (mm)",
+      exact: true,
+    })
+    .fill("0.3");
+  await controls.getByRole("button", { name: "Scope", exact: true }).click();
+  await page
+    .getByRole("option", { name: "Selected triangles", exact: true })
+    .click();
+  const crossingBefore = await geometry("crossing"),
+    crossingCursor = await history();
+  await controls
+    .getByRole("button", { name: "Preview", exact: true })
+    .last()
+    .click();
+  const crossingAlert = page
+    .getByRole("alert")
+    .filter({ hasText: "Local ShrinkWrap intersects the parent or itself" });
+  await crossingAlert.waitFor();
+  const intersectionRefusal = (await crossingAlert.innerText())
+    .replace(/^Error:\s*/, "")
+    .trim();
+  const crossingMcp = await job(
+    await mutate("scan_preview", {
+      action: "create",
+      entityId: "crossing",
+      operation: localOptions,
+    }),
+    "failed",
+  );
+  assert.equal(crossingMcp.error.message, intersectionRefusal);
+  assert.deepEqual(
+    (await geometry("crossing")).positions,
+    crossingBefore.positions,
+  );
+  assert.equal(await history(), crossingCursor);
+  assert.equal(
+    await controls.getByRole("button", { name: "Accept", exact: true }).count(),
+    0,
+  );
+  console.log("GUI/MCP intersection refusal preserves source and history");
   const finalSession = (await call("session_get")).result;
   assert.equal(
     finalSession.jobs.filter(
@@ -515,7 +596,8 @@ try {
       entry.status === "cancelled" ||
       (entry.status === "failed" &&
         (entry.command !== "scan_preview" ||
-          entry.error?.message !== precisionRefusal)),
+          (entry.error?.message !== precisionRefusal &&
+            entry.error?.message !== intersectionRefusal))),
   );
   assert.deepEqual(
     unexpectedJobs,
@@ -525,6 +607,7 @@ try {
   assert.deepEqual(errors, []);
   ledger.result = {
     guiMcpPrecisionRefusalPreservesSourceAndHistory: true,
+    guiMcpIntersectionRefusalPreservesSourceAndHistory: true,
     guiMcpWholeEqual: true,
     guiMcpLocalEqual: true,
     guiPreviewPreservesSource: true,

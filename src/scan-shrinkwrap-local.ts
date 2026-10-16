@@ -1,3 +1,4 @@
+import { verifyMeshSelfIntersections } from "./scan-self-intersections";
 import { analyzeMesh, type MeshTopology } from "./mesh-processing";
 import { Vector2 } from "three";
 import { holeSurface } from "./scan-hole-refine";
@@ -514,6 +515,16 @@ export function shrinkwrapLocalMesh(
       for (let k = 0; k < 9; k++) output[cursor++] = positions[f * 9 + k];
     }
   output.set(localOutput, cursor);
+  const intersections = verifyMeshSelfIntersections(output, {
+    signal: options.signal,
+    firstChangedFace: outsideCount,
+    onProgress: (fraction, stage) =>
+      checkProgress(options, 0.92 + 0.08 * fraction, stage),
+  });
+  if (intersections.selfIntersectionPairs)
+    throw Error(
+      `Local ShrinkWrap intersects the parent or itself (${intersections.selfIntersectionPairs} triangle pair(s), including output faces ${intersections.selfIntersectionExamples[0].join(" and ")}); grow the selection or reduce thickness/gap fill. Original geometry retained.`,
+    );
   checkProgress(options, 1, "Local ShrinkWrap complete");
   return {
     positions: output,
@@ -551,7 +562,13 @@ export function shrinkwrapLocalMesh(
       selectedPatchTopologyVerified: true,
       selectedPatchBoundaryEdges: verified.boundaryEdges,
       selectedPatchNonManifoldEdges: verified.nonManifoldEdges,
-      selfIntersectionsVerified: false,
+      ...intersections,
+      selfIntersectionExamples: JSON.stringify(
+        intersections.selfIntersectionExamples,
+      ),
+      selfIntersectionsChecked: outsideCount === 0,
+      changedRegionSelfIntersectionsChecked: true,
+      selfIntersectionsVerified: outsideCount === 0,
       organicMethod: options.organicShape
         ? "fitted-curvature or tangent-constrained generated hole continuation"
         : "planar generated hole continuation",

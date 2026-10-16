@@ -128,8 +128,7 @@ The accepted geometry has 8,319,632 triangles and 46 closed components. Streamed
 topology verification and a separate exact-Float32-coordinate welding pass both
 reported zero boundary edges, nonmanifold edges or vertices, inconsistent winding,
 duplicate triangles and degenerate triangles. This is a collection of closed
-components, not a claim of one connected solid. Global self-intersections remain
-uncertified.
+components, not a claim of one connected solid. The subsequent exhaustive self-intersection audit below found zero intersecting triangle pairs.
 
 | Sampled source-to-result error | ShrinkWrap  | Earlier voxel result |
 | ------------------------------ | ----------- | -------------------- |
@@ -161,3 +160,44 @@ cancellation through the GUI shared Cancel operation also passed focused tests.
 Browser parity used synthetic fixtures; the full exported STL used the kernel,
 independent raw-coordinate topology verification and rendered comparisons above.
 All owned browser/MCP helpers exited and their loopback ports closed.
+
+## Self-intersection verification
+
+Whole ShrinkWrap now checks every spatially overlapping triangle pair before
+returning an accepted result or retained preview. A conservative BVH broad phase
+is followed by adaptive orientation tests with exact BigInt fallback for the
+represented Float32 coordinates. Only intersection confined to an exact shared
+vertex or edge is permitted; coplanar overlap and crossings are rejected.
+Topology checks remain separate: a valid welded vertex fan is still required.
+This verifies the represented surface, not source-fit accuracy, one connected
+solid, or the intended orientation of nested cavities.
+
+The BVH must have finite bounds and complete, contiguous leaf coverage. Packed
+leaf overflow and extreme-coordinate bounds overflow fail explicitly. Processing
+is cancellable and bounded to 16 million triangles and 500 million broad-phase
+candidate pairs. An interrupted or limited audit never reports a verified zero.
+
+Local wrapping checks all changed-facet pairs and every changed facet against
+the unchanged parent. Outside-only pairs are excluded; those results explicitly
+report the changed-region scope rather than asserting a globally clean parent.
+If all facets are selected, the pair check covers the whole output. Outside
+triangles remain bit-for-bit unchanged.
+
+The saved 0.5 mm scan result was audited without changing geometry: 8,319,632
+triangles, 313,378,562 broad-phase candidate pairs, 62,045,824 exact narrow-phase
+pairs and **zero self-intersections**. Geometry SHA-256:
+`b36a68868f6aa5ac5e3d765b46f450da194412f4f07a772368949b345bb04926`.
+See [the bounded audit evidence](evidence/shrinkwrap-self-intersections.json).
+The final guarded audit completed in 316.86 seconds with a 1,460,412 KiB peak
+resident set. It accounted for all 8,319,632 indexed faces. The updated local
+STL run tested 1,054 changed-region triangle pairs, found zero intersections,
+and preserved all 1,998,312 outside triangles bit-for-bit.
+
+The validation change passed production build, 118 focused tests in 13 files,
+and the full suite (46,537 passed, 53 existing skips; 480 files passed and 15
+skipped). All 13 changed files pass formatting and scoped whitespace checks.
+Browser tests verified whole/local/isolated GUI-MCP parity, verification
+diagnostics, preview lifecycle and undo/redo. An intentionally intersecting
+local patch produced the same GUI and MCP refusal without changing source or
+history. There were no unexpected failed jobs or page errors; all owned
+browser/MCP helpers exited and their loopback ports closed.
