@@ -102,6 +102,10 @@ export function encodeProjectInBackground(
         }
       }),
   );
-  pending = result.catch(() => {});
+  // The queue owns completion only, never the saved file returned to its caller.
+  pending = result.then(
+    () => undefined,
+    () => undefined,
+  );
   return result;
 }

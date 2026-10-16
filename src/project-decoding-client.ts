@@ -122,6 +122,10 @@ export function decodeProjectInBackground(
         }
       }),
   );
-  pending = result.catch(() => {});
+  // Do not keep the decoded project/history alive after the caller releases it.
+  pending = result.then(
+    () => undefined,
+    () => undefined,
+  );
   return result;
 }

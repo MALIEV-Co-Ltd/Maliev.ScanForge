@@ -25,14 +25,24 @@ try {
   await writeFile(new URL("ledger.json", out), JSON.stringify(ledger, null, 2));
   browser = await chromium.connect(server.wsEndpoint());
   const page = await browser.newPage();
+  await page.route("**/project-encoding-regression", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: "<title>Project encoding regression</title>",
+    }),
+  );
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("http://127.0.0.1:5173/");
+  await page.goto("http://127.0.0.1:5173/project-encoding-regression");
   const result = await page.evaluate(async () => {
-    const { encodeProjectFile, encodeProjectFileLocally, decodeProjectFile } =
-      await import("/src/project-file.ts");
-    const { placedCloud, cloudPoseBits, cloudPlacement } =
-      await import("/src/point-cloud-placement.ts");
+    const {
+      encodeProjectFile,
+      encodeProjectFileLocally,
+      decodeProjectFile,
+      placedCloud,
+      cloudPoseBits,
+      cloudPlacement,
+    } = await import("/tests/helpers/project-worker-browser.ts");
     const mesh = {
       id: "mesh",
       name: "Mesh",
