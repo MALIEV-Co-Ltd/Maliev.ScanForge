@@ -101,7 +101,12 @@ cache reuse, and retries after adjacency or evaluator failure. These checks do
 not measure the complete owner-scan memory peak or establish full registration
 parity. The snapshot uses committed base `fa3810d` plus this change's source and
 test, excluding unrelated working-tree changes.
-The physical browser replay was not rerun for this slice: available host memory
-remained below its unchanged 3,072 MiB admission guard. The complete native
-controller capture also remains pending its 4,096 MiB guard. Neither prior
-browser results nor the passing fixture suite establish those missing runs.
+After host capacity recovered, the physical browser replay passed all 64 native
+correspondence comparisons, two pose and two fallback comparisons, with two
+physical query workers and shared packed preparation. All 71 worker handles were
+terminated; the owned browser and runner processes exited. The synthetic
+registration retained zero plane gap after five query batches. No browser errors
+were recorded. This replay used the live kernel on port 5173 and retained its
+results/cleanup ledger in the isolated snapshot's
+`.resources/global-mesh-query-browser/` directory. It does not establish full
+three-scan native controller parity or the owner scans' peak memory reduction.
