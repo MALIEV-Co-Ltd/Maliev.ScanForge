@@ -177,6 +177,8 @@ Backups are local to the paired browser origin and save changed data at 30-secon
 
 Never infer that an operation succeeded from a status message or transport success. Check `ok`, the job's terminal status and its result. Read the model state after modeling changes.
 
+Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Binary format 2/3, source geometry, scanner normals, selections and undo/redo history remain unchanged. Derived display normals preserve previous restore shading. See `docs/PROJECT_LOAD_PERFORMANCE.md` for measurements and limits.
+
 ### Response contract
 
 Successful tools return MCP `structuredContent` and equivalent JSON text. `screenshot_capture` additionally returns native MCP image content; its structured metadata omits the base64 image to avoid duplicating it:

@@ -2923,7 +2923,7 @@ export function App() {
     });
     const extension = file.name.split(".").pop()!.toLowerCase();
     if (extension === "scanforge" || extension === "json") {
-      const session = await decodeProjectFile(file);
+      const session = await decodeProjectFile(file, signal);
       signal?.throwIfAborted();
       const project = session.project;
       if (

@@ -1,3 +1,7 @@
+import {
+  containsLargeNumericArrays,
+  packProjectTransport,
+} from "./project-transport";
 import type { ProjectSession } from "./project-file";
 import { projectEncodingSnapshot } from "./project-encoding-snapshot";
 
@@ -68,8 +72,31 @@ export function encodeProjectInBackground(
               ),
             120_000,
           );
-          // No transfer list: authored geometry and Undo/Redo buffers remain attached.
-          worker.postMessage(projectEncodingSnapshot(session));
+          const snapshot = projectEncodingSnapshot(session);
+          if (!containsLargeNumericArrays(snapshot))
+            worker.postMessage(snapshot);
+          else
+            void packProjectTransport(snapshot, {
+              check: () => {
+                if (
+                  finished ||
+                  signal?.aborted ||
+                  generation !== pageGeneration
+                )
+                  throw new DOMException(
+                    "Project encoding cancelled.",
+                    "AbortError",
+                  );
+              },
+            })
+              .then(({ packet, transfers }) => {
+                if (!finished) worker!.postMessage(packet, transfers);
+              })
+              .catch((error) =>
+                finish(
+                  error instanceof Error ? error : new Error(String(error)),
+                ),
+              );
         } catch (error) {
           finish(error instanceof Error ? error : new Error(String(error)));
         }

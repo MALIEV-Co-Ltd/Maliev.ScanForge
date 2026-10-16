@@ -1,13 +1,25 @@
-import { encodeProjectFileLocally } from "./project-file";
+import {
+  unpackProjectTransport,
+  type ProjectTransport,
+} from "./project-transport";
+import { encodeProjectFileLocally } from "./project-file-codec";
 import {
   restoreEncodingSnapshot,
   type ProjectEncodingSnapshot,
 } from "./project-encoding-snapshot";
 
-self.onmessage = async ({ data }: MessageEvent<ProjectEncodingSnapshot>) => {
+self.onmessage = async ({
+  data,
+}: MessageEvent<ProjectEncodingSnapshot | ProjectTransport>) => {
   try {
+    const snapshot =
+      "kind" in data
+        ? await unpackProjectTransport<ProjectEncodingSnapshot>(data, {
+            cooperative: false,
+          })
+        : data;
     self.postMessage({
-      file: await encodeProjectFileLocally(restoreEncodingSnapshot(data)),
+      file: await encodeProjectFileLocally(restoreEncodingSnapshot(snapshot)),
     });
   } catch (error) {
     self.postMessage({

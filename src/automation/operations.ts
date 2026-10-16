@@ -1197,8 +1197,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (extension === "scanforge" || extension === "json") {
         if (!a.replace)
           throw new Error("Project import requires replace:true.");
-        const session = await decodeProjectFile(blob),
-          project = validateProject(session.project),
+        const session = await decodeProjectFile(blob, c.signal),
+          project = session.project,
           cad = new CadClient();
         let transferred = false;
         try {
