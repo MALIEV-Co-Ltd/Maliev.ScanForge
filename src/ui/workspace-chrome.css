@@ -145,6 +145,7 @@
   animation: save-reminder-pulse 3s ease-in-out infinite;
 }
 .save-reminder {
+  visibility: hidden;
   position: absolute;
   right: 0;
   top: calc(100% + 6px);
@@ -159,10 +160,11 @@
   pointer-events: none;
 }
 .save-project-action:hover .save-reminder,
-.save-project-action:focus-within .save-reminder,
-.header-actions:has(button:hover) .save-reminder,
-.header-actions:has(button:focus-visible) .save-reminder {
-  visibility: hidden;
+.save-project-action:has(button:focus-visible) .save-reminder {
+  visibility: visible;
+}
+.header-actions .save-project-action.needs-save .header-tooltip {
+  display: none;
 }
 @keyframes save-reminder-pulse {
   0%,
