@@ -971,12 +971,20 @@ the spatial-fill fallback. Requests, cancellation, revision checks and history
 semantics are unchanged. See
 [Defeature reconstruction and limits](DEFEATURE_CURVATURE.md).
 
-### Scan job status at the pointer
+### Working job status at the pointer
 
-Running component, hole and boundary operations display their current stage and
-percentage just below and to the right of the pointer. The label flips above or
-to the left near a window edge and never intercepts pointer input. With no known
-pointer position, it starts at the window center. Completion, cancellation and
-panel closure remove the label; the existing Cancel control remains in the panel.
-MCP `application_inspect.statuses` retains the same live status text. MCP job
-progress, request schemas and geometry behavior are unchanged.
+All shared mesh/scan worker jobs, including Defeature, publish their current stage
+and percentage to one app-level pointer label. CAD and import operations use the
+app's existing busy message, with import percentage when available. The label
+appears only when the pointer is directly over the exposed 3D canvas. The ribbon,
+object list, floating tool panels, dialogs and leaving the app hide it. A panel
+covering a stationary pointer also hides it. There is no center-screen fallback
+before a pointer position is known. Placement flips and clamps within the canvas;
+the label never intercepts input.
+
+Success, failure and cancellation release each worker's status through its
+existing cleanup path, preserving queue timing and ownership. Existing Cancel
+controls remain available. `application_inspect.progress.working` exposes the
+current job text even while the pointer label is hidden. When visible, the same
+text also appears in `application_inspect.statuses`. MCP `job_get` progress,
+request schemas, model/history semantics and geometry behavior are unchanged.

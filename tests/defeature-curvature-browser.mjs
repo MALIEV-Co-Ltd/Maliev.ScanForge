@@ -141,6 +141,16 @@ try {
         if (this.processing)
           this.addEventListener("message", (e) => {
             if (e.data.stage) window.__defeatureStages.push(e.data.stage);
+            if (window.__holdResult && (e.data.result || e.data.stage)) {
+              if (e.data.result) {
+                e.stopImmediatePropagation();
+                window.__pendingResult = () =>
+                  this.dispatchEvent(
+                    new MessageEvent("message", { data: e.data }),
+                  );
+              } else if (window.__sawProgress) e.stopImmediatePropagation();
+              else window.__sawProgress = true;
+            }
           });
       }
       postMessage(data, ...args) {
@@ -294,7 +304,26 @@ try {
     (await call("selection_get", { entityId: "panel" })).result.artifact,
   );
   assert.deepEqual(guiSelection, selected);
+  await page.evaluate(() => {
+    window.__holdResult = true;
+    window.__sawProgress = false;
+  });
   await page.getByRole("button", { name: "Defeature", exact: true }).click();
+  await page.mouse.move(1000, 450);
+  const pointerStatus = page.locator(".pointer-job-status");
+  await pointerStatus.waitFor({ state: "visible" });
+  assert.equal(await pointerStatus.count(), 1);
+  await page.mouse.move(900, 80);
+  await pointerStatus.waitFor({ state: "hidden" });
+  await page.mouse.move(1000, 450);
+  await pointerStatus.waitFor({ state: "visible" });
+  await page.waitForFunction(() => !!window.__pendingResult);
+  await page.evaluate(() => {
+    window.__holdResult = false;
+    window.__pendingResult();
+  });
+  await pointerStatus.waitFor({ state: "detached" });
+
   for (let i = 0; i < 150 && (await history()) === beforeHistory; i++)
     await new Promise((resolve) => setTimeout(resolve, 100));
   assert.equal(await history(), beforeHistory + 1);
@@ -333,6 +362,7 @@ try {
   assert.equal(await history(), beforeHistory + 1);
   assert.deepEqual(errors, []);
   ledger.result = {
+    defeatureCanvasOnlyStatus: true,
     guiMcpEqual: true,
     undoRedo: true,
     sourcePreserved: true,

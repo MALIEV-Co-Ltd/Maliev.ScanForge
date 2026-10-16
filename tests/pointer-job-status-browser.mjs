@@ -257,8 +257,8 @@ try {
   await page.getByRole("button", { name: "Edit scan", exact: true }).click();
   await page.getByRole("button", { name: "Edit holes", exact: true }).click();
   const label = page.locator(".pointer-job-status");
-  await label.waitFor({ state: "visible" });
   await page.mouse.move(900, 450);
+  await label.waitFor({ state: "visible" });
   await page.waitForFunction(
     () =>
       Math.abs(
@@ -285,32 +285,108 @@ try {
   await page.screenshot({
     path: fileURLToPath(new URL("pointer-status.png", out)),
   });
-  await page.mouse.move(1395, 895);
+  for (const [x, y] of [
+    [900, 80],
+    [100, 450],
+    [400, 300],
+  ]) {
+    await page.mouse.move(x, y);
+    await label.waitFor({ state: "hidden" });
+    assert.equal(
+      (await call("application_inspect")).result.progress.working,
+      text,
+    );
+  }
+  await page.mouse.move(900, 450);
+  await label.waitFor({ state: "visible" });
+  await page.evaluate(() => {
+    const overlay = document.createElement("div");
+    overlay.id = "stationary-pointer-test-overlay";
+    Object.assign(overlay.style, {
+      position: "fixed",
+      left: "880px",
+      top: "430px",
+      width: "160px",
+      height: "100px",
+      zIndex: "9000",
+    });
+    document.body.append(overlay);
+  });
+  await label.waitFor({ state: "hidden", timeout: 1000 });
+  await page.evaluate(() =>
+    document.getElementById("stationary-pointer-test-overlay").remove(),
+  );
+  await label.waitFor({ state: "visible" });
+  const canvasBounds = await page
+    .locator(".viewport canvas")
+    .first()
+    .boundingBox();
+  const edgeX = canvasBounds.x + canvasBounds.width - 5,
+    edgeY = canvasBounds.y + canvasBounds.height - 5;
+  await page.mouse.move(edgeX, edgeY);
   await page.waitForFunction(
     () =>
       document.querySelector(".pointer-job-status").getBoundingClientRect()
-        .right < 1395,
+        .right <
+      window.innerWidth - 5,
   );
   const edge = await label.boundingBox();
   assert(
-    edge.x >= 8 &&
-      edge.y >= 8 &&
-      edge.x + edge.width <= 1392 &&
-      edge.y + edge.height <= 892,
+    edge.x >= canvasBounds.x + 8 &&
+      edge.y >= canvasBounds.y + 8 &&
+      edge.x + edge.width <= canvasBounds.x + canvasBounds.width - 8 &&
+      edge.y + edge.height <= canvasBounds.y + canvasBounds.height - 8,
   );
   await page.evaluate(() => {
     window.__holdResult = false;
     window.__pendingResult?.();
   });
   await label.waitFor({ state: "detached" });
+  // The shared worker route also supplies status for an agent-triggered operation.
+  await page.evaluate(() => {
+    window.__holdResult = true;
+    window.__sawProgress = false;
+    window.__pendingResult = undefined;
+  });
+  const smoothReceipt = await mutate("mesh_process", {
+    entityId: "mesh",
+    operation: {
+      kind: "smooth",
+      tolerance: 0.001,
+      iterations: 1,
+      strength: 0.2,
+    },
+  });
+  await page.mouse.move(900, 450);
+  await label.waitFor({ state: "visible" });
+  await page.waitForFunction(() => !!window.__pendingResult);
+  assert.equal(
+    (await call("job_get", { jobId: smoothReceipt.result.jobId })).result
+      .status,
+    "running",
+  );
+  const smoothText = await label.textContent();
+  assert(
+    (await call("application_inspect")).result.statuses.includes(smoothText),
+  );
+  await page.evaluate(() => {
+    window.__holdResult = false;
+    window.__pendingResult();
+  });
+  await job(smoothReceipt);
+  await label.waitFor({ state: "detached" });
   assert.deepEqual(errors, []);
   ledger.result = {
     pointerOffset: true,
     edgeClamping: true,
+    hiddenOverRibbonObjectListAndPanels: true,
+    stationaryPointerOcclusion: true,
+    hiddenStatusStillAvailableToMcp: true,
     pointerEventsNone: true,
     removedFromPanel: true,
     mcpStatusObservable: true,
     completionHidesStatus: true,
+    mcpProcessingJobStatus: true,
     pageErrors: errors,
   };
   console.log(JSON.stringify(ledger.result));

@@ -14,6 +14,7 @@ import {
   type ProcessingRequest,
   type ProcessingResult,
 } from "../src/processing-client";
+import { getWorkingJobStatus } from "../src/working-job-status";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -57,6 +58,33 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("processing worker resource ownership", () => {
+  it.each(["complete", "error", "cancel"])(
+    "publishes shared job progress and clears it on %s",
+    async (end) => {
+      const controller = new AbortController(),
+        onProgress = vi.fn();
+      const pending = processMesh(
+        { kind: "scanEdit", action: "defeature", positions },
+        { signal: controller.signal, onProgress },
+      );
+      const owned = ProcessingWorkerDouble.latest;
+      expect(getWorkingJobStatus()).toBe("Defeature…");
+      owned.reply({ progress: 0.65, stage: "Reconstructing surface" });
+      expect(getWorkingJobStatus()).toBe("Reconstructing surface · 65%");
+      expect(onProgress).toHaveBeenCalledWith(0.65, "Reconstructing surface");
+      if (end === "complete") {
+        owned.reply({ result: { kind: "scanEdit", diagnostics: {} } });
+        await pending;
+      } else if (end === "error") {
+        owned.reply({ error: "test failure" });
+        await expect(pending).rejects.toThrow("test failure");
+      } else {
+        controller.abort();
+        await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+      }
+      expect(getWorkingJobStatus()).toBe("");
+    },
+  );
   it("stops an orphaned diagnostics handoff when the queued tool is cancelled", async () => {
     const source = positions.slice(),
       controller = new AbortController();

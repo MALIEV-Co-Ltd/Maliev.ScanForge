@@ -8,6 +8,23 @@ import {
   completedStatusTimeout,
 } from "../src/ui/StatusFeedback";
 import { ImportProgress } from "../src/ui/ImportProgress";
+it.each(["Importing mesh.stl · 50%", "Creating exact CAD body…"])(
+  "provides pointer feedback for non-mesh jobs: %s",
+  (message) => {
+    const props = {
+      shortcuts: { mode: "main" as const, availableActions: new Set<never>() },
+      operation: <span />,
+      hint: <span />,
+      jobMessage: message,
+    };
+    expect(renderToStaticMarkup(<StatusBar {...props} busy />)).toContain(
+      message,
+    );
+    expect(
+      renderToStaticMarkup(<StatusBar {...props} busy={false} />),
+    ).not.toContain('class="pointer-job-status"');
+  },
+);
 it("renders operation progress separately from scrolling text, including completed progress", () => {
   for (const fraction of [0, 0.5, 1]) {
     const html = renderToStaticMarkup(

@@ -40,6 +40,8 @@ it("releases shared pointer listeners when their last owner unmounts", () => {
     expect(addEventListener.mock.calls.map(([name]) => name)).toEqual([
       "pointermove",
       "pointerdown",
+      "pointerout",
+      "blur",
     ]);
     stopLabel();
     expect(removeEventListener).not.toHaveBeenCalled();
@@ -47,6 +49,8 @@ it("releases shared pointer listeners when their last owner unmounts", () => {
     expect(removeEventListener.mock.calls.map(([name]) => name)).toEqual([
       "pointermove",
       "pointerdown",
+      "pointerout",
+      "blur",
     ]);
   } finally {
     vi.unstubAllGlobals();

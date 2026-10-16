@@ -1,4 +1,9 @@
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import { Keyboard } from "lucide-react";
 import {
   activeToolGuidance,
@@ -11,7 +16,11 @@ import { shortcutReference } from "./shortcut-reference";
 import type { ShortcutContext } from "../keyboard-shortcuts";
 import { StatusMetrics } from "./StatusMetrics";
 import { OverflowStatusText } from "./OverflowStatusText";
-import { trackJobPointer } from "./PointerJobStatus";
+import { PointerJobStatus, trackJobPointer } from "./PointerJobStatus";
+import {
+  getWorkingJobStatus,
+  watchWorkingJobStatus,
+} from "../working-job-status";
 export function completedStatusTimeout(callback: () => void) {
   const timer = setTimeout(callback, 5000);
   return () => clearTimeout(timer);
@@ -167,6 +176,7 @@ export function StatusBar({
   facets,
   points,
   shortcuts,
+  jobMessage,
 }: {
   busy: boolean;
   operation: ReactNode;
@@ -174,10 +184,19 @@ export function StatusBar({
   facets?: number;
   points?: number;
   shortcuts: ShortcutContext;
+  jobMessage?: string;
 }) {
   useEffect(trackJobPointer, []);
+  const runningJob = useSyncExternalStore(
+    watchWorkingJobStatus,
+    getWorkingJobStatus,
+    () => "",
+  );
   return (
     <footer className="statusbar">
+      <PointerJobStatus
+        message={runningJob || (busy ? jobMessage || "Processing…" : "")}
+      />
       <div
         className="status-operation"
         role="group"

@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { beginWorkingJob } from "./working-job-status";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
 import type { NativeSurfaceRefinementRequest } from "./native-surface-refinement";
 import type {
@@ -169,6 +170,22 @@ export function processMesh(
     : runProcessingRequest(request, options);
 }
 
+function processingJobLabel(request: ProcessingRequest) {
+  const operation =
+    request.kind === "scanEdit" || request.kind === "pointCloudEdit"
+      ? request.action
+      : request.kind === "scanTools"
+        ? request.operation.kind
+        : request.kind;
+  const label =
+    operation === "report"
+      ? "Inspect mesh"
+      : operation
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (c) => c.toUpperCase());
+  return label;
+}
+
 function runProcessingRequest(
   request: ProcessingRequest,
   options: ProcessingOptions,
@@ -186,6 +203,7 @@ function runProcessingRequest(
       ? acquireProcessingSession(request.positions, createWorker)
       : undefined;
     const worker = session?.worker ?? createWorker();
+    const job = beginWorkingJob(processingJobLabel(request));
     let settled = false,
       inactivity: ReturnType<typeof setTimeout>;
     const scope = globalThis as typeof globalThis & {
@@ -193,6 +211,7 @@ function runProcessingRequest(
       removeEventListener?: (type: string, listener: () => void) => void;
     };
     const cleanup = (usable = false, successor?: Positions) => {
+      job.finish();
       clearTimeout(inactivity);
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
@@ -240,6 +259,7 @@ function runProcessingRequest(
       if ("progress" in event.data) {
         renewLease();
         try {
+          job.progress(event.data.progress, event.data.stage);
           options.onProgress?.(event.data.progress, event.data.stage);
         } catch (error) {
           fail(error);

@@ -1,4 +1,5 @@
 import { prepareMeshInBackground } from "../scan-background-preparation";
+import { getWorkingJobStatus } from "../working-job-status";
 import {
   ToolWorkspace,
   ToolSection,
@@ -4068,6 +4069,7 @@ export function App() {
         },
         progress: {
           import: importProgress,
+          working: getWorkingJobStatus() || (busy ? message : ""),
           scan: { fraction: scanToolFraction, stage: scanToolProgress },
         },
         ...inspectApplicationDom(root, maxControls),
@@ -6354,6 +6356,11 @@ export function App() {
       )}
       <StatusBar
         busy={busy}
+        jobMessage={
+          importProgress
+            ? `Importing ${importProgress.name}${importProgress.fraction === null ? "…" : ` · ${Math.round(importProgress.fraction * 100)}%`}`
+            : message
+        }
         facets={
           selected && selected.kind !== "pointcloud"
             ? selected.positions.length / 9

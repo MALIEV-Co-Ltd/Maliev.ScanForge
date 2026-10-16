@@ -11,12 +11,21 @@ const rememberPointer = (event: PointerEvent) => {
   lastPointer = { x: event.clientX, y: event.clientY };
   for (const observer of observers) observer();
 };
+const leaveWindow = () => {
+  lastPointer = undefined;
+  for (const observer of observers) observer();
+};
+const pointerOut = (event: PointerEvent) => {
+  if (event.relatedTarget === null) leaveWindow();
+};
 
 /** Keep the last pointer even before a job starts. Each caller owns its lease. */
 export function trackJobPointer(observer: () => void = () => {}) {
   if (!observers.size) {
     window.addEventListener("pointermove", rememberPointer, { passive: true });
     window.addEventListener("pointerdown", rememberPointer, { passive: true });
+    window.addEventListener("pointerout", pointerOut, { passive: true });
+    window.addEventListener("blur", leaveWindow);
   }
   observers.add(observer);
   return () => {
@@ -24,6 +33,8 @@ export function trackJobPointer(observer: () => void = () => {}) {
     if (!observers.size) {
       window.removeEventListener("pointermove", rememberPointer);
       window.removeEventListener("pointerdown", rememberPointer);
+      window.removeEventListener("pointerout", pointerOut);
+      window.removeEventListener("blur", leaveWindow);
       lastPointer = undefined;
     }
   };
@@ -54,28 +65,52 @@ export function PointerJobStatus({ message }: { message: string }) {
   useLayoutEffect(() => {
     const element = label.current;
     if (!message || !element) return;
-    let size = element.getBoundingClientRect();
     const update = () => {
+      const canvas =
+        lastPointer && document.elementFromPoint(lastPointer.x, lastPointer.y);
+      if (!lastPointer || !canvas?.matches(".viewport canvas")) {
+        element.style.visibility = "hidden";
+        return;
+      }
+      const bounds = canvas.getBoundingClientRect();
+      element.style.maxWidth = `${Math.min(320, Math.max(0, bounds.width - 16))}px`;
       const point = positionJobStatus(
-        lastPointer ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-        size,
-        { width: window.innerWidth, height: window.innerHeight },
+        { x: lastPointer.x - bounds.left, y: lastPointer.y - bounds.top },
+        element.getBoundingClientRect(),
+        bounds,
       );
-      element.style.transform = `translate(${point.x}px, ${point.y}px)`;
+      element.style.transform = `translate(${point.x + bounds.left}px, ${point.y + bounds.top}px)`;
       element.style.visibility = "visible";
     };
     const measure = () => {
-      size = element.getBoundingClientRect();
       update();
     };
     const stop = trackJobPointer(update);
     const observer = new ResizeObserver(measure);
     observer.observe(element);
+    // A dialog can cover a stationary pointer without a pointermove event.
+    // Ignore this label's own style writes to avoid an observation loop.
+    const occlusion = new MutationObserver((changes) => {
+      if (
+        changes.some(
+          (change) =>
+            change.target !== element && !element.contains(change.target),
+        )
+      )
+        update();
+    });
+    occlusion.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class", "hidden", "open"],
+    });
     window.addEventListener("resize", measure);
     update();
     return () => {
       stop();
       observer.disconnect();
+      occlusion.disconnect();
       window.removeEventListener("resize", measure);
     };
   }, [message]);
