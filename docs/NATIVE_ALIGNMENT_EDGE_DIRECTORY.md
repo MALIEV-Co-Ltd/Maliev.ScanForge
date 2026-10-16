@@ -34,6 +34,10 @@ scan-1 index, normal, mask and Double-query capture. Larger scan replays compare
 application baselines and resource capacity; they do not establish full native
 registration parity without corresponding original evaluator captures.
 
+[Later full owner captures](NATIVE_GLOBAL_LARGE_OWNER_EVALUATORS.md) supply the
+original evaluator evidence for scans 2 and 3 and supersede the earlier
+application-baseline-only classification for their preparation hashes.
+
 The retained scan-1 replay preserved all three original hashes, 60539 nodes,
 639591 memberships and 66 repeated Double queries. The 392 focused tests and
 the browser replay (64 case comparisons, two pose checks and two fallback

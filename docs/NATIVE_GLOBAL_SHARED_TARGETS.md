@@ -64,3 +64,8 @@ membership count and cache reuse. These diagnostic replays use the unchanged
 host-memory/deadline guards and exercise target preparation and restoration
 directly. They do not demonstrate production pool admission or complete native
 multi-scan registration.
+
+[Subsequent full owner captures](NATIVE_GLOBAL_LARGE_OWNER_EVALUATORS.md) now
+provide original evaluator oracles for scans 2 and 3. The extended retained-owner
+test compares every scan through ordinary and shared restoration; complete
+multi-scan registration and production pool admission remain separate gates.

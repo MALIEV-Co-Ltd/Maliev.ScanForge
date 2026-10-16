@@ -47,11 +47,11 @@ previously. These phase samples exclude loading/hashing and are not a controlled
 latency comparison or whole-process memory accounting.
 
 The 3326910-face scan completed with 79477 nodes, 4617801 memberships and cache
-reuse under the unchanged limits. That is a capacity result: the larger scans do
-not yet have full original evaluator captures, and original source-file
-identities were not freshly rehashed. Only the retained canonical carriers were
-hash-checked. Do not describe these larger-scale results as complete native
-registration parity.
+reuse under the unchanged limits. That initial replay was a capacity result.
+[Subsequent original evaluator captures](NATIVE_GLOBAL_LARGE_OWNER_EVALUATORS.md)
+now verify the larger index, normal and boundary hashes. Original source-file
+identities were not freshly rehashed; only the retained canonical carriers were
+hash-checked. These results do not establish complete native registration parity.
 
 This is internal preparation for the existing shared alignment implementation;
 it adds no GUI-only action, new public tool or capability advertisement. Existing

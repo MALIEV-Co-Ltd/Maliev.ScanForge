@@ -17,12 +17,16 @@ const hash = (bytes: ArrayBufferView) =>
     .digest("hex");
 const bits = (v: ArrayLike<number>) =>
   Buffer.from(Float64Array.from(v).buffer).toString("hex");
-it.skipIf(!directory).each([false, true])(
-  "matches full original retained-owner mesh index, normals, boundaries and Double queries; shared restore=%s",
-  (shared) => {
+it.skipIf(!directory).each(
+  fixture.cases.flatMap((c) => [
+    { c, shared: false },
+    { c, shared: true },
+  ]),
+)(
+  "matches original $c.sourceFile index, normals, boundaries and Double queries; shared restore=$shared",
+  ({ c, shared }) => {
     if (freemem() < 3072 * 1048576)
       throw Error("Retained owner mesh replay requires 3072 MiB free.");
-    const c = fixture.cases[0];
     const vb = readFileSync(resolve(directory!, c.verticesCarrier)),
       tb = readFileSync(resolve(directory!, c.trianglesCarrier));
     expect(hash(vb)).toBe(c.verticesSha256);
