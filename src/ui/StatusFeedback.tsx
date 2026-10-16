@@ -11,6 +11,7 @@ import { shortcutReference } from "./shortcut-reference";
 import type { ShortcutContext } from "../keyboard-shortcuts";
 import { StatusMetrics } from "./StatusMetrics";
 import { OverflowStatusText } from "./OverflowStatusText";
+import { trackJobPointer } from "./PointerJobStatus";
 export function completedStatusTimeout(callback: () => void) {
   const timer = setTimeout(callback, 5000);
   return () => clearTimeout(timer);
@@ -174,6 +175,7 @@ export function StatusBar({
   points?: number;
   shortcuts: ShortcutContext;
 }) {
+  useEffect(trackJobPointer, []);
   return (
     <footer className="statusbar">
       <div

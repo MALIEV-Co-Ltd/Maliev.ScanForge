@@ -1,5 +1,6 @@
 import { holeListOrder } from "../scan-hole-order";
 import { AppSelect } from "./AppSelect";
+import { PointerJobStatus } from "./PointerJobStatus";
 import "./ToolPanel.css";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useEffect, useRef, useState } from "react";
@@ -794,7 +795,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
             Show mesh wireframe
           </label>
         </fieldset>
-        {props.progress && <p role="status">{props.progress}</p>}
+        <PointerJobStatus message={props.busy ? props.progress : ""} />
       </div>
       <footer className="tool-panel-actions">
         <button className="scan-topology-back" onClick={props.onBack}>

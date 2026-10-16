@@ -970,3 +970,13 @@ leave a clean surrounding collar. Job diagnostics expose `curvaturePatches`,
 the spatial-fill fallback. Requests, cancellation, revision checks and history
 semantics are unchanged. See
 [Defeature reconstruction and limits](DEFEATURE_CURVATURE.md).
+
+### Scan job status at the pointer
+
+Running component, hole and boundary operations display their current stage and
+percentage just below and to the right of the pointer. The label flips above or
+to the left near a window edge and never intercepts pointer input. With no known
+pointer position, it starts at the window center. Completion, cancellation and
+panel closure remove the label; the existing Cancel control remains in the panel.
+MCP `application_inspect.statuses` retains the same live status text. MCP job
+progress, request schemas and geometry behavior are unchanged.
