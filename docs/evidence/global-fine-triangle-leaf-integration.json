@@ -1,0 +1,32 @@
+{
+  "scope": "Verified internal signed triangle-distance leaf; no public alignment capability enabled. Recursive query application port and evaluator-enabled GUI/MCP registration remain required.",
+  "originalFixture": "tests/fixtures/global-fine-evaluator-leaf-native.json",
+  "nativeCases": 613,
+  "comparison": "Exact Float64 distance/projection bytes and region flags, including native negative-NaN outputs.",
+  "allocationContract": "Caller-owned Float64 projection and Uint8 region buffers; no per-query arrays, records or closures.",
+  "build": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0,
+    "fingerprint": "scanforge-b7a8559deb3a7d9c"
+  },
+  "focused": {
+    "passed": 867,
+    "failed": 0,
+    "skipped": 0
+  },
+  "suite": {
+    "passed": 44273,
+    "failed": 0,
+    "optionalSkipped": 40
+  },
+  "browser": "Not run for the unconnected internal leaf. Existing raw-query browser results do not verify this evaluator path.",
+  "mcp": "No capability or contract changed; Global Fine Align stays gated on complete evaluator-enabled integration.",
+  "nextNativeQueryCapture": {
+    "procedure": "0x1403999e0",
+    "cases": 392,
+    "hits": 253,
+    "evidenceId": "ev_f2112094d9953e5686915740fa79d70d8a10dd8cdc3c28fc72c51d9d9e88fca5",
+    "scope": "Original recursion/triangle leaf on supplied layouts. Index construction, normals, actual routing and full alignment remain unverified."
+  }
+}
