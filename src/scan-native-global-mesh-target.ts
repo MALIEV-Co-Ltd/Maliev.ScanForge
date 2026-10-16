@@ -1,0 +1,117 @@
+import type { MeshProcessingOptions } from "./mesh-processing";
+import { nativeBuildAlignmentAdjacency } from "./scan-native-alignment-adjacency";
+import {
+  prepareNativeGlobalMeshEvaluator,
+  type NativeGlobalEvaluatorMesh,
+} from "./scan-native-global-surface";
+import type { NativeGlobalEvaluatorSearchScratch } from "./scan-native-global-evaluator-query";
+import type { EvaluatedGlobalTarget } from "./scan-native-global-target";
+
+/** Native target arbitration checks only pointer presence at triangle +28/+30/+38.
+ * Hidden neighbours still exist; eligibility filtering belongs to the index.
+ */
+export function nativeGlobalNeighbourMasks(neighbors: Int32Array): Uint8Array {
+  if (!(neighbors instanceof Int32Array) || neighbors.length % 3)
+    throw Error("Invalid evaluator adjacency dimensions.");
+  const masks = new Uint8Array(neighbors.length / 3);
+  for (let face = 0; face < masks.length; face++)
+    for (let edge = 0; edge < 3; edge++) {
+      const other = neighbors[face * 3 + edge];
+      if (other < -1 || other >= masks.length)
+        throw Error("Invalid evaluator neighbor reference.");
+      if (other >= 0) masks[face] |= 1 << edge;
+    }
+  return masks;
+}
+
+const prepared = new WeakMap<
+  NativeGlobalEvaluatorMesh,
+  ReturnType<typeof prepare>
+>();
+function check(options: MeshProcessingOptions) {
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh target preparation cancelled.", "AbortError");
+}
+/** Immutable local geometry owns its index, native adjacency and reusable query
+ * result. Pose changes reuse this object. Each physical worker owns one cache.
+ * The returned query record is borrowed until the next call on this target.
+ */
+export function prepareNativeGlobalMeshTarget(
+  input: NativeGlobalEvaluatorMesh,
+  options: MeshProcessingOptions = {},
+) {
+  check(options);
+  const existing = prepared.get(input);
+  if (existing) return existing;
+  const result = prepare(input, options);
+  check(options);
+  prepared.set(input, result);
+  return result;
+}
+function prepare(
+  input: NativeGlobalEvaluatorMesh,
+  options: MeshProcessingOptions,
+) {
+  const evaluator = prepareNativeGlobalMeshEvaluator(input, options);
+  const adjacency = input.vertices.length
+    ? nativeBuildAlignmentAdjacency(input.vertices, input.triangles, options)
+    : undefined;
+  const neighbours = nativeGlobalNeighbourMasks(
+    adjacency?.neighbors ?? new Int32Array(),
+  );
+  const scratch: NativeGlobalEvaluatorSearchScratch<number> = {
+    stack: [],
+    projection: new Float64Array(3),
+    edgeFlags: new Uint8Array(1),
+  };
+  const distance = new Float64Array(1),
+    projection = new Float64Array(3),
+    edgeFlags = new Uint8Array(1);
+  const result: EvaluatedGlobalTarget = {
+    point: [0, 0, 0],
+    normal: [0, 0, 0],
+    signedDistance: 0,
+    edgeFlags: 0,
+    neighbours: 0,
+    found: false,
+  };
+  const point = result.point as number[],
+    normal = result.normal as number[];
+  return {
+    evaluator,
+    neighbours,
+    query(query: ArrayLike<number>, radius: number): EvaluatedGlobalTarget {
+      if (
+        query.length !== 3 ||
+        !Number.isFinite(query[0]) ||
+        !Number.isFinite(query[1]) ||
+        !Number.isFinite(query[2]) ||
+        !Number.isFinite(radius) ||
+        radius < 0
+      )
+        throw Error("Invalid mesh target query.");
+      distance[0] = radius;
+      result.found = false;
+      result.signedDistance = radius;
+      result.edgeFlags = 0;
+      result.neighbours = 0;
+      const face = evaluator.query(
+        query,
+        distance,
+        projection,
+        edgeFlags,
+        scratch,
+      );
+      if (face === undefined) return result;
+      for (let axis = 0; axis < 3; axis++) {
+        point[axis] = projection[axis];
+        normal[axis] = evaluator.surface.normals[face * 3 + axis];
+      }
+      result.found = true;
+      result.signedDistance = distance[0];
+      result.edgeFlags = edgeFlags[0];
+      result.neighbours = neighbours[face];
+      return result;
+    },
+  };
+}

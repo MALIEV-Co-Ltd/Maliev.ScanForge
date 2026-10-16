@@ -61,6 +61,8 @@ try {
       import {nativeGlobalPackedEvaluator} from '${origin}/src/scan-native-global-packed-evaluator.ts';
       import {packGlobalEvaluatorFixture} from '${origin}/tests/helpers/global-evaluator-packed-fixture.ts';
       import {nativeGlobalFacetNormals,prepareNativeGlobalMeshEvaluator} from '${origin}/src/scan-native-global-surface.ts';
+      import {prepareNativeGlobalMeshTarget} from '${origin}/src/scan-native-global-mesh-target.ts';
+      import {nativeGlobalTargetChoice} from '${origin}/src/scan-native-global-target.ts';
       const fixture=await fetch('${origin}/tests/fixtures/global-fine-evaluator-query-native.json').then(r=>r.json());
       const policy=await fetch('${origin}/tests/fixtures/global-fine-evaluator-preparation-native.json').then(r=>r.json());
       const facets=await fetch('${origin}/tests/fixtures/global-fine-facet-normals-native.json').then(r=>r.json());
@@ -111,7 +113,15 @@ try {
         if(JSON.stringify(canonical(out.root))!==JSON.stringify(c.root))throw Error('Original constructed index mismatch: '+c.name);
         if(prepareNativeGlobalMeshEvaluator(input)!==out)throw Error('Constructed index was rebuilt');
       }
-      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,facetCases:facets.cases.length,builtIndexCases:construction.cases.length,stackEmpty:scratch.stack.length===0});
+      const mesh={vertices:Float32Array.of(0,0,0,1,0,0,0,1,0,1,1,0),triangles:Uint32Array.of(0,1,2,2,1,3)};
+      const target=prepareNativeGlobalMeshTarget(mesh);
+      if(prepareNativeGlobalMeshTarget(mesh)!==target)throw Error('Mesh target cache was rebuilt');
+      const raw={point:[0,0,1],normal:[0,0,1],flags:0,labelWord:0};
+      for(const point of [[0.25,0.25,0.1],[0.5,0.5,0.1],[0.5,-0.1,0.1]]){
+        const hit=target.query(point,5),choice=nativeGlobalTargetChoice(point,raw,[hit]);
+        if(!hit.found||choice!==(point[1]<0?raw:hit))throw Error('Integrated boundary fallback mismatch');
+      }
+      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,facetCases:facets.cases.length,builtIndexCases:construction.cases.length,meshTargetCases:3,stackEmpty:scratch.stack.length===0});
     `;
     const url = URL.createObjectURL(
       new Blob([code], { type: "text/javascript" }),
@@ -134,6 +144,7 @@ try {
   assert.equal(report.extentCases, 12);
   assert.equal(report.facetCases, 42);
   assert.equal(report.builtIndexCases, 5);
+  assert.equal(report.meshTargetCases, 3);
   assert.equal(report.stackEmpty, true);
   assert.equal(errors.length, 0);
   report.errors = errors;
