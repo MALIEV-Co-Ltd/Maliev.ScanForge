@@ -24,7 +24,7 @@ async function createCanonicalCoreReplay(
       if (!scene) throw Error("Core replay is closed");
       if (freemem() < 1024 * 1048576)
         throw Error("Runtime memory guard reached");
-      if (performance.now() - started > 300000)
+      if (performance.now() - started > (compactBounds ? 600000 : 300000))
         throw Error("Core replay deadline reached");
       const targets = job.poses.map((pose) => ({
         ...pose,
@@ -50,6 +50,8 @@ import {
   type GlobalOuterState,
 } from "../src/scan-native-global-outer";
 const directory = process.env.SCANFORGE_NATIVE_CANONICAL_CONTROLLER;
+const compactBounds =
+  process.env.SCANFORGE_NATIVE_CANONICAL_STORAGE === "compact";
 const oracles = [oracle];
 const hash = (v: ArrayBufferView) =>
   createHash("sha256")
@@ -119,6 +121,7 @@ it.skipIf(!directory).each(oracles)(
               vertices: topology.vertices,
               triangles: topology.triangles,
               packedNodes: true,
+              compactBounds,
             },
           ],
         },
@@ -134,6 +137,9 @@ it.skipIf(!directory).each(oracles)(
     const initializedMs = performance.now() - start,
       passSnapshots: unknown[] = [],
       localCalls: unknown[] = [];
+    const memorySamples = [
+      { phase: "prepared-scene", ...process.memoryUsage() },
+    ];
     let queries = 0;
     try {
       const result = await nativeGlobalRefineOuter(
@@ -169,6 +175,21 @@ it.skipIf(!directory).each(oracles)(
             status: local.status,
             iterations: local.iterations,
           });
+          memorySamples.push({
+            phase: `pass-${pass}-source-${source.id}`,
+            ...process.memoryUsage(),
+          });
+          writeFileSync(
+            `.resources/canonical-controller-${compactBounds ? "compact" : "cached"}-progress.json`,
+            JSON.stringify({
+              elapsedMs: performance.now() - start,
+              queries,
+              localCalls: localCalls.length,
+              pass,
+              source: source.id,
+              memory: memorySamples.at(-1),
+            }),
+          );
           return local;
         },
         {
@@ -186,10 +207,12 @@ it.skipIf(!directory).each(oracles)(
         },
       );
       writeFileSync(
-        `.resources/global-fine-canonical-controller-${oracle.mode}-replay.json`,
+        `.resources/global-fine-canonical-controller-${oracle.mode}${compactBounds ? "-compact" : ""}-replay.json`,
         JSON.stringify(
           {
             initializedMs,
+            compactBounds,
+            memorySamples,
             elapsedMs: performance.now() - start,
             queries,
             localCalls,
@@ -224,5 +247,5 @@ it.skipIf(!directory).each(oracles)(
       pool.close();
     }
   },
-  360000,
+  compactBounds ? 660000 : 360000,
 );

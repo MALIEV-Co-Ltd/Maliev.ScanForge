@@ -27,26 +27,29 @@ const canonical = (node: any): any =>
       Object.entries(node.children).map(([id, c]) => [id, canonical(c)]),
     ),
   };
-it.each(construction.cases)(
-  "builds the original evaluator index: $name",
-  (c) => {
-    const vertices = Float32Array.from(c.points.flat(2));
-    const input = {
-      vertices,
-      triangles: Uint32Array.from({ length: c.points.length * 3 }, (_, i) => i),
-      flags: Uint8Array.from(c.flags),
-      cachedBounds: c.cachedBounds ?? undefined,
-      minimumExtent: c.minextent,
-      maximumDepth: c.maxdepth,
-      filterHidden: c.filterHidden,
-    };
-    const result = prepareNativeGlobalMeshEvaluator(input);
-    expect(canonical(result.root)).toEqual(c.root);
-    expect(result.surface.vertices).toBe(vertices);
-    expect(result.surface.triangles).toBe(input.triangles);
-    expect(prepareNativeGlobalMeshEvaluator(input)).toBe(result);
-  },
-);
+it.each(
+  construction.cases.flatMap((c) =>
+    [false, true].map((compactBounds) => ({ ...c, compactBounds })),
+  ),
+)("builds the original evaluator index: $name, compact=$compactBounds", (c) => {
+  const vertices = Float32Array.from(c.points.flat(2));
+  const input = {
+    vertices,
+    triangles: Uint32Array.from({ length: c.points.length * 3 }, (_, i) => i),
+    flags: Uint8Array.from(c.flags),
+    cachedBounds: c.cachedBounds ?? undefined,
+    minimumExtent: c.minextent,
+    maximumDepth: c.maxdepth,
+    filterHidden: c.filterHidden,
+    compactBounds: c.compactBounds,
+  };
+  const result = prepareNativeGlobalMeshEvaluator(input);
+  expect(canonical(result.root)).toEqual(c.root);
+  expect(result.surface.vertices).toBe(vertices);
+  expect(result.surface.triangles).toBe(input.triangles);
+  if (c.compactBounds) expect(result.surface.bounds.byteLength).toBe(0);
+  expect(prepareNativeGlobalMeshEvaluator(input)).toBe(result);
+});
 it("queries a generated surface and preserves outputs on an empty index", () => {
   const input = {
     vertices: Float32Array.of(0, 0, 0, 1, 0, 0, 0, 1, 0),

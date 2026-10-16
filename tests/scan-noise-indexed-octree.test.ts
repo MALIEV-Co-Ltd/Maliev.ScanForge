@@ -37,6 +37,28 @@ const surface = () => ({
   indices: Uint32Array.of(0, 1, 2, 2, 1, 3),
   triangleBounds: Float32Array.of(0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0),
 });
+it.each(native.cases)(
+  "derives bounds without a per-face buffer with identical subdivision: $name",
+  (c) => {
+    const packed = packNoiseOctree(c.points, c.minextent, c.maxdepth);
+    const input = {
+      coordinates: packed.points,
+      indices: Uint32Array.from(
+        { length: packed.points.length / 3 },
+        (_, i) => i,
+      ),
+      triangleBounds: undefined,
+    };
+    const before = input.coordinates.slice();
+    const result = prepareIndexedNoiseOctree(input, c.minextent, c.maxdepth);
+    expect(result.root).toEqual(
+      prepareNoiseOctree(c.points, c.minextent, c.maxdepth).root,
+    );
+    expect(result.triangleBounds).toBeUndefined();
+    expect(result.coordinates).toBe(input.coordinates);
+    expect(result.coordinates).toEqual(before);
+  },
+);
 it("borrows bounds through original face IDs without compacting the bounds buffer", () => {
   const s = surface(),
     boundsIds = Uint32Array.of(1),
@@ -47,6 +69,19 @@ it("borrows bounds through original face IDs without compacting the bounds buffe
   expect(result.root).toEqual(
     prepareNoiseOctree({ coordinates: s.coordinates, indices }).root,
   );
+});
+it("validates derived geometry and rejects bounds remapping without stored bounds", () => {
+  const s = surface();
+  for (const input of [
+    { ...s, triangleBounds: undefined, boundsIds: Uint32Array.of(0, 1) },
+    { ...s, triangleBounds: undefined, indices: Uint32Array.of(0, 1, 99) },
+    {
+      ...s,
+      triangleBounds: undefined,
+      coordinates: Float32Array.of(NaN, 0, 0),
+    },
+  ])
+    expect(() => prepareIndexedNoiseOctree(input)).toThrow();
 });
 it("accepts shared immutable carriers and validates borrowed geometry", () => {
   const s = surface(),

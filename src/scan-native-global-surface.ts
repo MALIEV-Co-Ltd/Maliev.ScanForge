@@ -192,28 +192,27 @@ function prepare(
     maximumDepth > 10
   )
     throw Error("Invalid evaluator subdivision limits.");
-  const bounds = new Float32Array(
-    compactBounds
-      ? new ArrayBuffer(triangles.length * 8)
-      : nativeTargetStorage(vertices, triangles.length * 8),
-  );
+  const bounds = compactBounds
+    ? undefined
+    : new Float32Array(nativeTargetStorage(vertices, triangles.length * 8));
   let root: NativeGlobalEvaluatorIndexNode | undefined;
-  try {
+  {
     let admitted = 0;
     for (let face = 0; face < triangles.length / 3; face++) {
       if (face % 4096 === 0) check(options);
       if (!filterHidden || !flags || !(flags[face] & 2)) admitted++;
-      for (let axis = 0; axis < 3; axis++) {
-        let lo = vertices[triangles[face * 3] * 3 + axis],
-          hi = lo;
-        for (let corner = 1; corner < 3; corner++) {
-          const v = vertices[triangles[face * 3 + corner] * 3 + axis];
-          if (v < lo) lo = v;
-          if (hi < v) hi = v;
+      if (bounds)
+        for (let axis = 0; axis < 3; axis++) {
+          let lo = vertices[triangles[face * 3] * 3 + axis],
+            hi = lo;
+          for (let corner = 1; corner < 3; corner++) {
+            const v = vertices[triangles[face * 3 + corner] * 3 + axis];
+            if (v < lo) lo = v;
+            if (hi < v) hi = v;
+          }
+          bounds[face * 6 + axis] = lo;
+          bounds[face * 6 + axis + 3] = hi;
         }
-        bounds[face * 6 + axis] = lo;
-        bounds[face * 6 + axis + 3] = hi;
-      }
     }
     if (
       admitted &&
@@ -246,7 +245,7 @@ function prepare(
           coordinates: vertices,
           indices,
           triangleBounds: bounds,
-          boundsIds: ids,
+          boundsIds: bounds ? ids : undefined,
         },
         minimumExtent,
         maximumDepth,
@@ -289,26 +288,12 @@ function prepare(
       };
       root = convert(tree.root);
     }
-  } finally {
-    if (compactBounds) {
-      try {
-        (
-          bounds.buffer as ArrayBuffer & {
-            transfer?: (size: number) => ArrayBuffer;
-          }
-        ).transfer?.(0);
-      } catch {
-        /* Older runtimes collect this private temporary normally. */
-      }
-    }
   }
   const surface = {
     vertices,
     triangles,
     normals,
-    bounds: compactBounds
-      ? new Float32Array(nativeTargetStorage(vertices, 0))
-      : bounds,
+    bounds: bounds ?? new Float32Array(nativeTargetStorage(vertices, 0)),
     deriveBounds: compactBounds,
     flags,
   };

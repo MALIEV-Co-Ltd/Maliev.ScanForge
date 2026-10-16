@@ -62,15 +62,16 @@ export interface PackedNoiseTree {
 export interface IndexedNoiseTreeInput {
   coordinates: Float32Array;
   indices: Uint32Array;
-  triangleBounds: Float32Array;
+  /** Omit to derive bounds from immutable coordinates during subdivision. */
+  triangleBounds?: Float32Array;
   /** Optional original face IDs when the admitted triangle list is compacted. */
   boundsIds?: Uint32Array;
 }
 /** Retain immutable indexed geometry and already computed bounds. This carrier
  * deliberately has no `points` field: expanded-triangle consumers cannot accept it.
  */
-export function prepareIndexedNoiseOctree(
-  input: IndexedNoiseTreeInput,
+export function prepareIndexedNoiseOctree<T extends IndexedNoiseTreeInput>(
+  input: T,
   minimumExtent = 0.5,
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
@@ -86,11 +87,14 @@ export function prepareIndexedNoiseOctree(
     !(indices instanceof Uint32Array) ||
     !Number.isInteger(count) ||
     count < 1 ||
-    !(triangleBounds instanceof Float32Array) ||
-    triangleBounds.length % 6 ||
-    (boundsIds !== undefined
-      ? !(boundsIds instanceof Uint32Array) || boundsIds.length !== count
-      : triangleBounds.length !== count * 6) ||
+    (triangleBounds !== undefined &&
+      (!(triangleBounds instanceof Float32Array) ||
+        triangleBounds.length % 6 ||
+        (boundsIds === undefined && triangleBounds.length !== count * 6))) ||
+    (boundsIds !== undefined &&
+      (!triangleBounds ||
+        !(boundsIds instanceof Uint32Array) ||
+        boundsIds.length !== count)) ||
     !Number.isFinite(minimumExtent) ||
     minimumExtent < 0 ||
     !Number.isInteger(maximumDepth) ||
@@ -105,7 +109,7 @@ export function prepareIndexedNoiseOctree(
     if (id % 1024 === 0 && options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
     const t = (boundsIds?.[id] ?? id) * 6;
-    if (t + 5 >= triangleBounds.length)
+    if (triangleBounds && t + 5 >= triangleBounds.length)
       throw new RangeError("Indexed noise bounds reference is invalid");
     const a = indices[id * 3] * 3,
       c = indices[id * 3 + 1] * 3,
@@ -127,8 +131,8 @@ export function prepareIndexedNoiseOctree(
       const lo = Math.min(x, y, z),
         hi = Math.max(x, y, z);
       if (
-        triangleBounds[t + axis] !== lo ||
-        triangleBounds[t + axis + 3] !== hi
+        triangleBounds &&
+        (triangleBounds[t + axis] !== lo || triangleBounds[t + axis + 3] !== hi)
       )
         throw new RangeError(
           "Indexed noise bounds do not match triangle geometry",
@@ -312,7 +316,8 @@ function splitNoiseNode(
   };
   const a = [0, 0, 0],
     c = [0, 0, 0],
-    d = [0, 0, 0];
+    d = [0, 0, 0],
+    derivedBounds = new Float32Array(6);
   const split = (node: NoiseTreeNode, eager: boolean) => {
     check();
     const boxes = Array.from({ length: 8 }, (_, child) =>
@@ -321,20 +326,29 @@ function splitNoiseNode(
     const memberships = Array.from({ length: 8 }, () => [] as number[]);
     for (const id of node.triangles) {
       if (id % 1024 === 0) check();
-      const t = (indexed?.boundsIds?.[id] ?? id) * 6;
+      const t = triangleBounds ? (indexed?.boundsIds?.[id] ?? id) * 6 : 0;
       const aOffset = indexed ? indexed.indices[id * 3] * 3 : id * 9;
       const cOffset = indexed ? indexed.indices[id * 3 + 1] * 3 : id * 9 + 3;
       const dOffset = indexed ? indexed.indices[id * 3 + 2] * 3 : id * 9 + 6;
+      if (!triangleBounds)
+        for (let axis = 0; axis < 3; axis++) {
+          const x = points[aOffset + axis],
+            y = points[cOffset + axis],
+            z = points[dOffset + axis];
+          derivedBounds[axis] = Math.min(x, y, z);
+          derivedBounds[axis + 3] = Math.max(x, y, z);
+        }
+      const bounds = triangleBounds ?? derivedBounds;
       for (let child = 0; child < 8; child++) {
         const box = boxes[child],
           b = box.bounds;
         if (
-          triangleBounds[t + 3] < b[0] ||
-          triangleBounds[t + 4] < b[1] ||
-          triangleBounds[t + 5] < b[2] ||
-          triangleBounds[t] > b[3] ||
-          triangleBounds[t + 1] > b[4] ||
-          triangleBounds[t + 2] > b[5]
+          bounds[t + 3] < b[0] ||
+          bounds[t + 4] < b[1] ||
+          bounds[t + 5] < b[2] ||
+          bounds[t] > b[3] ||
+          bounds[t + 1] > b[4] ||
+          bounds[t + 2] > b[5]
         )
           continue;
         for (let axis = 0; axis < 3; axis++) {

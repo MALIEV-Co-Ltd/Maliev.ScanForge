@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T16:19:56.843Z",
+  "parent": "7ee6796",
+  "build": "scanforge-4cfd5eaea0a6d8a9",
+  "inputFixtureSha256": "f59bf3f6c5394ed6916e3e5a2f513c4e8383221ac20c47f138bbe617a36a40ed",
+  "sourceFiles": {
+    "src/scan-noise-octree.ts": "3529a8b899e1f96635fb03061afa7d736543e35d4de9de810993bb8dc2897a3a",
+    "src/scan-native-global-surface.ts": "ef0a6c7fa5ec2e603f3f89c48e62e8e660f5e913861b848e07aeb048596aa437",
+    "tests/scan-native-global-canonical-controller.test.ts": "444b074c1ce7da9c82011006fc412b76e02f0457ee6ed732c64702e3ae735205"
+  },
+  "removedBoundsAllocation": {
+    "faces": 6147452,
+    "bytesPerFace": 24,
+    "totalBytes": 147538848,
+    "simultaneousProcessPeakReductionVerified": false
+  },
+  "controller": {
+    "compactBounds": true,
+    "passes": 19,
+    "queries": 439,
+    "localCalls": 57,
+    "applications": 6,
+    "allNativeSnapshotsAndMatrixBitsMatched": true,
+    "initializedMs": 6805.2945,
+    "elapsedMs": 300947.3844,
+    "memoryCheckpoints": 58,
+    "sampledMaxBytes": {
+      "rss": 725729280,
+      "heapUsed": 280052752,
+      "arrayBuffers": 309831373
+    },
+    "includesConstructionPeak": false,
+    "productionPoolUsed": false,
+    "ownerGuiMcpWorkflowVerified": false
+  },
+  "browser": {
+    "registration": {
+      "gap": 0,
+      "queries": 5,
+      "queryWorkers": 2
+    },
+    "cases": 32,
+    "comparisons": 64,
+    "poseComparisons": 2,
+    "fallbackComparisons": 2,
+    "fallbackWorkers": [1],
+    "physicalWorkers": [2],
+    "shared": true,
+    "workers": {
+      "count": 71,
+      "allTerminated": true,
+      "preparedHandoffs": 33
+    },
+    "errors": []
+  },
+  "browserCleanup": {
+    "browserClosed": true,
+    "pid": 65224
+  },
+  "firstCompactDiagnostic": {
+    "outcome": "Core replay deadline reached",
+    "durationMs": 307670,
+    "queryDeadlineSeconds": 300,
+    "processesExited": true
+  },
+  "finalCompactDiagnostic": {
+    "queryDeadlineSeconds": 600,
+    "testDeadlineSeconds": 660,
+    "startGuardMiB": 4096,
+    "runtimeGuardMiB": 1024,
+    "heapLimitMiB": 1536
+  },
+  "scope": "Complete retained canonical core case; browser uses independent small fixtures. Cached storage remains default. Production 512 MiB admission unchanged.",
+  "validation": {
+    "buildPassed": true,
+    "focusedPassed": 872,
+    "compactControllerPassed": 2,
+    "suitePassed": 46400,
+    "suiteSkipped": 53,
+    "suiteFailed": 0,
+    "suiteSeconds": 223.51,
+    "scopedFormatPassed": true,
+    "ownedObservedHelpersExited": true,
+    "appPort": 5173,
+    "appHttp": 200,
+    "latestDerivedBoundsSourceServed": true
+  }
+}
