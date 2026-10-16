@@ -1,4 +1,5 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
+import { nativeTargetStorage } from "./scan-native-target-storage";
 import {
   createNativeAlignmentEdgeRecords,
   type NativeAlignmentEdgeRecords,
@@ -67,7 +68,9 @@ export function nativeBuildAlignmentNeighbourMasks(
     throw new Error("Invalid alignment adjacency geometry.");
   if (options.signal?.aborted)
     throw new DOMException("Mesh operation cancelled.", "AbortError");
-  const masks = new Uint8Array(triangles.length / 3);
+  const masks = new Uint8Array(
+    nativeTargetStorage(vertices, triangles.length / 3),
+  );
   buildAlignmentAdjacency(vertices, triangles, options, masks);
   return masks;
 }

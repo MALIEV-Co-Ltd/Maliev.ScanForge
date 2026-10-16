@@ -2,6 +2,8 @@ import type { MeshProcessingOptions } from "./mesh-processing";
 import { nativeBuildAlignmentNeighbourMasks } from "./scan-native-alignment-adjacency";
 import {
   prepareNativeGlobalMeshEvaluator,
+  resumeNativeGlobalMeshEvaluator,
+  type NativeGlobalMeshEvaluatorData,
   type NativeGlobalEvaluatorMesh,
 } from "./scan-native-global-surface";
 import type { NativeGlobalEvaluatorSearchScratch } from "./scan-native-global-evaluator-query";
@@ -64,6 +66,38 @@ function prepare(
         options,
       )
     : new Uint8Array();
+  return attach(evaluator, neighbours);
+}
+export interface NativeGlobalMeshTargetData extends NativeGlobalMeshEvaluatorData {
+  neighbours: Uint8Array;
+}
+export function nativeGlobalMeshTargetData(
+  input: NativeGlobalEvaluatorMesh,
+): NativeGlobalMeshTargetData {
+  const { evaluator, neighbours } = prepareNativeGlobalMeshTarget(input);
+  const { root, surface, degenerate, minimumExtent } = evaluator;
+  return { root, surface, degenerate, minimumExtent, neighbours };
+}
+/** Internal worker initialization only; install complete prepared state atomically. */
+export function installNativeGlobalMeshTarget(
+  input: NativeGlobalEvaluatorMesh,
+  data: NativeGlobalMeshTargetData,
+) {
+  if (
+    !(data.neighbours instanceof Uint8Array) ||
+    data.neighbours.length !== input.triangles.length / 3 ||
+    !data.neighbours.every((v) => v <= 7)
+  )
+    throw Error("Invalid prepared target boundary masks.");
+  const evaluator = resumeNativeGlobalMeshEvaluator(input, data);
+  const result = attach(evaluator, data.neighbours);
+  prepared.set(input, result);
+  return result;
+}
+function attach(
+  evaluator: ReturnType<typeof prepareNativeGlobalMeshEvaluator>,
+  neighbours: Uint8Array,
+) {
   const scratch: NativeGlobalEvaluatorSearchScratch<number> = {
     stack: [],
     projection: new Float64Array(3),

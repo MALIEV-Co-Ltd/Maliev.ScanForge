@@ -6,6 +6,15 @@ Provide semantic control of supported ScanForge modeling features through a stan
 
 ## Boundaries
 
+The internal global-alignment query pool prepares immutable mesh targets once
+when cross-origin isolation permits shared buffers and two CPU workers are
+admitted. The first worker publishes prepared target carriers; the second
+validates them and attaches local query scratch without rebuilding normals,
+adjacency or the mesh index. Raw point indexes and query scratch remain local.
+The existing 512 MiB admission, cancellation, leases and native-workflow gate
+remain unchanged. This private worker protocol changes no advertised GUI/MCP
+operation or schema. See [shared target evidence](NATIVE_GLOBAL_SHARED_TARGETS.md).
+
 `landmark_preview` and `landmark_accept` call the dialog's shared asynchronous
 preview and synchronous commit operations through the stable workspace proxy.
 Preview has API job admission, progress, cancellation and a revision check before

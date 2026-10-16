@@ -4,7 +4,12 @@ import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { freemem } from "node:os";
 import fixture from "./fixtures/global-fine-retained-owner-mesh-native.json";
-import { prepareNativeGlobalMeshTargetSet } from "../src/scan-native-global-mesh-target";
+import type { NativeGlobalEvaluatorMesh } from "../src/scan-native-global-surface";
+import {
+  prepareNativeGlobalMeshTargetSet,
+  nativeGlobalMeshTargetData,
+  installNativeGlobalMeshTarget,
+} from "../src/scan-native-global-mesh-target";
 const directory = process.env.SCANFORGE_NATIVE_OWNER_MESH;
 const hash = (bytes: ArrayBufferView) =>
   createHash("sha256")
@@ -12,9 +17,9 @@ const hash = (bytes: ArrayBufferView) =>
     .digest("hex");
 const bits = (v: ArrayLike<number>) =>
   Buffer.from(Float64Array.from(v).buffer).toString("hex");
-it.skipIf(!directory)(
-  "matches full original retained-owner mesh index, normals, boundaries and Double queries",
-  () => {
+it.skipIf(!directory).each([false, true])(
+  "matches full original retained-owner mesh index, normals, boundaries and Double queries; shared restore=%s",
+  (shared) => {
     if (freemem() < 3072 * 1048576)
       throw Error("Retained owner mesh replay requires 3072 MiB free.");
     const c = fixture.cases[0];
@@ -22,11 +27,22 @@ it.skipIf(!directory)(
       tb = readFileSync(resolve(directory!, c.trianglesCarrier));
     expect(hash(vb)).toBe(c.verticesSha256);
     expect(hash(tb)).toBe(c.trianglesSha256);
-    const input = {
+    let input: NativeGlobalEvaluatorMesh = {
       vertices: new Float32Array(vb.buffer, vb.byteOffset, vb.length / 4),
       triangles: new Uint32Array(tb.buffer, tb.byteOffset, tb.length / 4),
       minimumExtent: c.minimumExtent,
     };
+    if (shared) {
+      const vertices = new Float32Array(
+        new SharedArrayBuffer(input.vertices.byteLength),
+      );
+      const triangles = new Uint32Array(
+        new SharedArrayBuffer(input.triangles.byteLength),
+      );
+      vertices.set(input.vertices);
+      triangles.set(input.triangles);
+      input = { ...input, vertices, triangles };
+    }
     expect(input.vertices.length / 3).toBe(c.vertices);
     expect(input.triangles.length / 3).toBe(c.triangles);
     const started = performance.now(),
@@ -48,6 +64,15 @@ it.skipIf(!directory)(
         return now > deadline || lowMemory;
       },
     } as AbortSignal;
+    if (shared) {
+      prepareNativeGlobalMeshTargetSet([input], { signal });
+      const packet = structuredClone({
+        input,
+        data: nativeGlobalMeshTargetData(input),
+      });
+      installNativeGlobalMeshTarget(packet.input, packet.data);
+      input = packet.input;
+    }
     const set = prepareNativeGlobalMeshTargetSet([input], { signal }),
       target = set.targets[0];
     const preparedMs = performance.now() - started;
@@ -137,6 +162,7 @@ it.skipIf(!directory)(
             normalsHashMatched: true,
             boundaryMaskHashMatched: true,
             reused: true,
+            sharedPreparedRestore: shared,
             originalSourceIdentityRechecked: false,
           },
           null,

@@ -140,6 +140,7 @@ export async function createGlobalQueryPool(
   let pending:
     | {
         id: number;
+        parts: number[];
         values: (GlobalQueryResponse | undefined)[];
         resolve(values: GlobalQueryResponse[]): void;
         reject(error: Error): void;
@@ -173,7 +174,10 @@ export async function createGlobalQueryPool(
       if (!pending) close(new Error("Global query pool idle lease expired."));
     }, 30_000);
   };
-  const send = (requests: ((id: number) => GlobalQueryRequest)[]) =>
+  const send = (
+    requests: ((id: number) => GlobalQueryRequest)[],
+    parts = workers.map((_, i) => i),
+  ) =>
     new Promise<GlobalQueryResponse[]>((resolve, reject) => {
       if (stopped || options.signal?.aborted) {
         reject(new DOMException("Global alignment cancelled.", "AbortError"));
@@ -187,6 +191,7 @@ export async function createGlobalQueryPool(
       const id = ++sequence;
       pending = {
         id,
+        parts,
         values: Array(workers.length).fill(undefined),
         resolve,
         reject,
@@ -196,8 +201,8 @@ export async function createGlobalQueryPool(
         ),
       };
       try {
-        workers.forEach((worker, part) =>
-          worker.postMessage(requests[part](id)),
+        parts.forEach((part, index) =>
+          workers[part].postMessage(requests[index](id)),
         );
       } catch (error) {
         close(error instanceof Error ? error : new Error(String(error)));
@@ -212,18 +217,28 @@ export async function createGlobalQueryPool(
       );
       workers.push(worker);
       worker.onmessage = ({ data }: MessageEvent<GlobalQueryResponse>) => {
-        if (!pending || data.id !== pending.id || pending.values[part]) return;
+        if (
+          !pending ||
+          !pending.parts.includes(part) ||
+          data.id !== pending.id ||
+          pending.values[part]
+        )
+          return;
         if ("error" in data) {
           close(new Error(data.error));
           return;
         }
         pending.values[part] = data;
         renew();
-        if (pending.values.every(Boolean)) {
+        if (pending.parts.every((part) => !!pending!.values[part])) {
           const current = pending;
           pending = undefined;
           clearTimeout(current.timer);
-          current.resolve(current.values as GlobalQueryResponse[]);
+          current.resolve(
+            current.parts.map(
+              (part) => current.values[part]!,
+            ) as GlobalQueryResponse[],
+          );
         }
       };
       worker.onerror = (event) =>
@@ -231,12 +246,35 @@ export async function createGlobalQueryPool(
       worker.onmessageerror = () =>
         close(new Error("Global query worker response could not be decoded."));
     }
-    // Initialization is admitted with both resident geometry/index copies.
-    // Subsequent requests contain poses and source samples only.
+    // Shared immutable mesh preparation is produced by the first worker only.
+    // The existing conservative admission still covers preparation and metadata.
     const indexes: number[] = [];
-    const responses = await send(
-      workers.map(() => (id) => ({ id, initialize: initialization })),
-    );
+    let responses: GlobalQueryResponse[];
+    if (
+      count > 1 &&
+      sharingAvailable() &&
+      input.scans.some((s) => s.geometry.targetMeshes?.length)
+    ) {
+      const [first] = await send(
+        [
+          (id) => ({
+            id,
+            initialize: { ...initialization, exportPreparedMeshes: true },
+          }),
+        ],
+        [0],
+      );
+      if (!("ready" in first) || !first.prepared?.preparedMeshes)
+        throw Error("Missing shared prepared targets from the first worker.");
+      responses = [
+        first,
+        ...(await send([(id) => ({ id, initialize: first.prepared! })], [1])),
+      ];
+    } else {
+      responses = await send(
+        workers.map(() => (id) => ({ id, initialize: initialization })),
+      );
+    }
     for (const response of responses) {
       if (!("ready" in response) || response.indexes !== input.scans.length)
         throw new Error("Invalid global worker initialization response.");

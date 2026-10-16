@@ -63,10 +63,22 @@ it("includes mesh preparation in the existing worker memory admission", () => {
     globalQueryPoolAdmission({ scans: [{ id: "mesh", geometry }] }),
   ).toThrow(/memory admission/);
 });
+it("closes both workers if the producer omits prepared targets", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  FakeWorker.omitPrepared = true;
+  const { scans } = meshCorrespondenceFixture(meshFixture.cases[0]);
+  await expect(createGlobalQueryPool({ scans })).rejects.toThrow(
+    /Missing shared prepared targets/,
+  );
+  expect(FakeWorker.instances).toHaveLength(2);
+  expect(FakeWorker.instances.every((w) => w.terminated)).toBe(true);
+});
 class FakeWorker {
   static instances: FakeWorker[] = [];
   static hold = false;
   static fail = false;
+  static omitPrepared = false;
   onmessage?: (e: { data: GlobalQueryResponse }) => void;
   onerror?: (e: { message: string }) => void;
   onmessageerror?: () => void;
@@ -98,7 +110,14 @@ class FakeWorker {
           this.state = createGlobalQueryWorkerState(data.initialize);
           this.initialized++;
           this.onmessage?.({
-            data: { id: data.id, ready: true, indexes: this.state.indexes },
+            data: {
+              id: data.id,
+              ready: true,
+              indexes: this.state.indexes,
+              prepared: FakeWorker.omitPrepared
+                ? undefined
+                : this.state.prepared,
+            },
           });
         } else {
           if (!this.state) throw Error("not initialized");
@@ -119,6 +138,7 @@ function install() {
 afterEach(() => {
   FakeWorker.instances = [];
   FakeWorker.hold = FakeWorker.fail = false;
+  FakeWorker.omitPrepared = false;
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });

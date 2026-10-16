@@ -9,7 +9,11 @@ import type {
   NativeGlobalEvaluatorSearchNode,
   NativeGlobalEvaluatorSearchScratch,
 } from "./scan-native-global-evaluator-query";
-import { nativeGlobalPackedEvaluator } from "./scan-native-global-packed-evaluator";
+import {
+  nativeGlobalPackedEvaluator,
+  type NativeGlobalPackedEvaluatorSurface,
+} from "./scan-native-global-packed-evaluator";
+import { nativeTargetStorage } from "./scan-native-target-storage";
 
 function check(options: MeshProcessingOptions) {
   if (options.signal?.aborted)
@@ -39,8 +43,12 @@ export function nativeGlobalFacetNormals(
     if (triangles[i] >= vertices.length / 3)
       throw Error("Evaluator triangle references an invalid vertex.");
   }
-  const normals = new Float32Array(triangles.length),
-    degenerate = new Uint8Array(triangles.length / 3);
+  const normals = new Float32Array(
+      nativeTargetStorage(vertices, triangles.length * 4),
+    ),
+    degenerate = new Uint8Array(
+      nativeTargetStorage(vertices, triangles.length / 3),
+    );
   for (let face = 0; face < degenerate.length; face++) {
     if (face % 4096 === 0) check(options);
     const slot = face * 3,
@@ -86,6 +94,12 @@ export interface NativeGlobalEvaluatorIndexNode extends NativeGlobalEvaluatorSea
   depth: number;
   triangles: Uint32Array;
   children: Partial<Record<number, NativeGlobalEvaluatorIndexNode>>;
+}
+export interface NativeGlobalMeshEvaluatorData {
+  root?: NativeGlobalEvaluatorIndexNode;
+  surface: NativeGlobalPackedEvaluatorSurface;
+  degenerate: Uint8Array;
+  minimumExtent: number;
 }
 const prepared = new WeakMap<
   NativeGlobalEvaluatorMesh,
@@ -157,7 +171,9 @@ function prepare(
     maximumDepth > 10
   )
     throw Error("Invalid evaluator subdivision limits.");
-  const bounds = new Float32Array(triangles.length * 2);
+  const bounds = new Float32Array(
+    nativeTargetStorage(vertices, triangles.length * 8),
+  );
   let admitted = 0;
   for (let face = 0; face < triangles.length / 3; face++) {
     if (face % 4096 === 0) check(options);
@@ -175,7 +191,6 @@ function prepare(
     }
   }
   const surface = { vertices, triangles, normals, bounds, flags };
-  const provider = nativeGlobalPackedEvaluator(surface);
   let root: NativeGlobalEvaluatorIndexNode | undefined;
   if (
     admitted &&
@@ -222,9 +237,12 @@ function prepare(
       // in place instead of duplicating the complete node graph for the query.
       const result = node as unknown as NativeGlobalEvaluatorIndexNode;
       result.flat = !!node.mode;
-      result.triangles = node.triangles.length
-        ? Uint32Array.from(node.triangles, originalId)
+      const sourceIds = node.triangles;
+      result.triangles = sourceIds.length
+        ? new Uint32Array(nativeTargetStorage(vertices, sourceIds.length * 4))
         : emptyIds;
+      for (let slot = 0; slot < sourceIds.length; slot++)
+        result.triangles[slot] = originalId(sourceIds[slot]);
       for (let id = 0; id < 8; id++) {
         const child = node.children[id];
         if (child) result.children[id] = convert(child);
@@ -234,6 +252,76 @@ function prepare(
     root = convert(tree.root);
   }
   check(options);
+  return attachPreparedEvaluator(input, {
+    root,
+    surface,
+    degenerate,
+    minimumExtent,
+  });
+}
+
+/** Reattach worker-local query scratch to a trusted prepared target carrier. */
+export function resumeNativeGlobalMeshEvaluator(
+  input: NativeGlobalEvaluatorMesh,
+  data: NativeGlobalMeshEvaluatorData,
+) {
+  const { root, surface, degenerate, minimumExtent } = data;
+  if (
+    surface.vertices !== input.vertices ||
+    surface.triangles !== input.triangles ||
+    surface.flags !== input.flags ||
+    !(degenerate instanceof Uint8Array) ||
+    degenerate.length !== input.triangles.length / 3 ||
+    !Number.isFinite(minimumExtent) ||
+    minimumExtent < 0
+  )
+    throw Error("Prepared evaluator does not match its geometry.");
+  const seen = new Set<NativeGlobalEvaluatorIndexNode>(),
+    pending = root ? [root] : [];
+  while (pending.length) {
+    const node = pending.pop()!;
+    if (
+      seen.has(node) ||
+      !Number.isInteger(node.depth) ||
+      node.depth < 0 ||
+      node.depth > 10 ||
+      typeof node.flat !== "boolean" ||
+      !(node.triangles instanceof Uint32Array) ||
+      node.bounds.length !== 6 ||
+      node.center.length !== 3 ||
+      node.inverse.length !== 3 ||
+      !Array.prototype.every.call(node.bounds, Number.isFinite) ||
+      !Array.prototype.every.call(node.center, Number.isFinite) ||
+      !node.inverse.every((v) => typeof v === "number" && !Number.isNaN(v))
+    )
+      throw Error("Invalid prepared evaluator node.");
+    seen.add(node);
+    for (const face of node.triangles)
+      if (face >= input.triangles.length / 3)
+        throw Error("Invalid prepared evaluator face.");
+    for (const key of Object.keys(node.children)) {
+      const id = Number(key),
+        child = node.children[id];
+      if (
+        !Number.isInteger(id) ||
+        id < 0 ||
+        id > 7 ||
+        !child ||
+        child.depth !== node.depth + 1
+      )
+        throw Error("Invalid prepared evaluator child.");
+      pending.push(child);
+    }
+  }
+  return attachPreparedEvaluator(input, data);
+}
+function attachPreparedEvaluator(
+  input: NativeGlobalEvaluatorMesh,
+  data: NativeGlobalMeshEvaluatorData,
+) {
+  const { root, surface, degenerate, minimumExtent } = data;
+  const provider = nativeGlobalPackedEvaluator(surface);
+  const filterHidden = !!input.filterHidden;
   return {
     root,
     surface,

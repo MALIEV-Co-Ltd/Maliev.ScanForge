@@ -4,8 +4,19 @@ import {
   type NativeGlobalQueryGeometry,
   type NativeGlobalQueryInput,
 } from "./scan-native-global-query";
+import {
+  nativeGlobalMeshTargetData,
+  installNativeGlobalMeshTarget,
+  type NativeGlobalMeshTargetData,
+} from "./scan-native-global-mesh-target";
+export type GlobalPreparedMeshes = {
+  id: string;
+  targets: NativeGlobalMeshTargetData[];
+}[];
 export interface GlobalQueryWorkerInit {
   scans: { id: string; geometry: NativeGlobalQueryGeometry }[];
+  preparedMeshes?: GlobalPreparedMeshes;
+  exportPreparedMeshes?: boolean;
 }
 export interface GlobalQueryJob extends Pick<
   NativeGlobalQueryInput,
@@ -18,19 +29,50 @@ export type GlobalQueryRequest =
   | { id: number; initialize: GlobalQueryWorkerInit }
   | { id: number; job: GlobalQueryJob };
 export type GlobalQueryResponse =
-  | { id: number; ready: true; indexes: number }
+  | {
+      id: number;
+      ready: true;
+      indexes: number;
+      prepared?: GlobalQueryWorkerInit;
+    }
   | { id: number; result: ReturnType<typeof nativeGlobalQuery> }
   | { id: number; error: string };
 export function createGlobalQueryWorkerState(input: GlobalQueryWorkerInit) {
   const geometries = new Map<string, NativeGlobalQueryGeometry>();
-  for (const scan of input.scans) {
+  if (
+    input.preparedMeshes &&
+    (input.preparedMeshes.length !== input.scans.length ||
+      input.preparedMeshes.some(
+        (p, i) =>
+          p.id !== input.scans[i].id ||
+          p.targets.length !==
+            (input.scans[i].geometry.targetMeshes?.length ?? 0),
+      ))
+  )
+    throw Error("Prepared targets do not match worker scan IDs.");
+  for (const [index, scan] of input.scans.entries()) {
     if (!scan.id || geometries.has(scan.id))
       throw new Error("Global worker scan IDs must be unique.");
+    for (const [part, mesh] of (scan.geometry.targetMeshes ?? []).entries()) {
+      const data = input.preparedMeshes?.[index].targets[part];
+      if (data) installNativeGlobalMeshTarget(mesh, data);
+    }
     prepareNativeGlobalQueryGeometry(scan.geometry);
     geometries.set(scan.id, scan.geometry);
   }
   return {
     indexes: geometries.size,
+    prepared: input.exportPreparedMeshes
+      ? {
+          scans: input.scans,
+          preparedMeshes: input.scans.map((scan) => ({
+            id: scan.id,
+            targets: (scan.geometry.targetMeshes ?? []).map(
+              nativeGlobalMeshTargetData,
+            ),
+          })),
+        }
+      : undefined,
     execute(job: GlobalQueryJob) {
       const seen = new Set<string>();
       const scans = job.poses.map((pose) => {
@@ -71,7 +113,12 @@ if (
     try {
       if ("initialize" in data) {
         state = createGlobalQueryWorkerState(data.initialize);
-        scope.postMessage({ id: data.id, ready: true, indexes: state.indexes });
+        scope.postMessage({
+          id: data.id,
+          ready: true,
+          indexes: state.indexes,
+          prepared: state.prepared,
+        });
       } else {
         if (!state) throw new Error("Global query worker is not initialized.");
         scope.postMessage({ id: data.id, result: state.execute(data.job) });

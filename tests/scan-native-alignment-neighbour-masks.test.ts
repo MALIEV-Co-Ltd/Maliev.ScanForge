@@ -23,13 +23,13 @@ it("does not allocate full neighbor, edge or triangle-flag arrays for query mask
   class TrackedInt32 extends I32 {
     constructor(size: number) {
       super(size);
-      ints.push(size);
+      ints.push(this.length);
     }
   }
   class TrackedUint8 extends U8 {
     constructor(size: number) {
       super(size);
-      bytes.push(size);
+      bytes.push(this.length);
     }
   }
   const faces = 37;

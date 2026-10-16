@@ -51,11 +51,32 @@ try {
     window.Worker = class extends Original {
       constructor(url, options) {
         super(url, options);
-        this.record = { terminated: false, initializations: 0 };
+        this.record = {
+          terminated: false,
+          initializations: 0,
+          preparedInitializations: 0,
+          sharedPreparedBuffers: true,
+        };
         window.__meshWorkers.push(this.record);
       }
       postMessage(value, ...rest) {
-        if (value.initialize) this.record.initializations++;
+        if (value.initialize) {
+          this.record.initializations++;
+          if (value.initialize.preparedMeshes) {
+            this.record.preparedInitializations++;
+            for (const target of value.initialize.preparedMeshes.flatMap(
+              (s) => s.targets,
+            ))
+              for (const array of [
+                target.surface.normals,
+                target.surface.bounds,
+                target.neighbours,
+                target.degenerate,
+              ])
+                this.record.sharedPreparedBuffers &&=
+                  array.buffer instanceof SharedArrayBuffer;
+          }
+        }
         return super.postMessage(value, ...rest);
       }
       terminate() {
@@ -183,6 +204,11 @@ try {
   assert.deepEqual(result.physicalWorkers, [2]);
   assert.equal(result.shared, true);
   assert(result.workers.every((w) => w.terminated && w.initializations === 1));
+  assert.equal(
+    result.workers.reduce((n, w) => n + w.preparedInitializations, 0),
+    32,
+  );
+  assert(result.workers.every((w) => w.sharedPreparedBuffers));
   assert.deepEqual(errors, []);
   await writeFile(
     new URL("results.json", out),
