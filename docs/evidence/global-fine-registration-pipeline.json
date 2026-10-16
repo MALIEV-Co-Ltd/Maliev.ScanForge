@@ -1,0 +1,384 @@
+{
+  "nativeImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "scope": "Connected private scan-set preparation, native outer/local/query refinement and complete scan-object assembly, using the same full owner PLY vertex/normal carriers as retained original native executions. Meshes cover 6,663,164 triangles; point-cloud carriers cover 3,381,455 points. This is not native ASC importer verification.",
+  "cases": [
+    {
+      "mode": "target-average",
+      "carrier": "mesh",
+      "nativeOuterFixture": "tests/fixtures/global-fine-multicore-outer-owner-native.json",
+      "nativeSetterFixture": "tests/fixtures/global-fine-apply-stages-native.json",
+      "elapsedMs": 8545.47499999404,
+      "frames": {
+        "count": 508,
+        "medianMs": 16.68000000000029,
+        "maximumMs": 66.72999999999956
+      },
+      "queries": 76,
+      "passes": 4,
+      "physicalQueryWorkers": 2,
+      "objects": [
+        {
+          "name": "ply-1.ply",
+          "triangles": 274154,
+          "positionsSha256": "2ea5ad8e1503356ac58b7c09ea7fe24ce9b5c56839d9fe2509f6d88b93a25f24",
+          "normalsSha256": "e7dd7c45ff342a9ac3402f19c444dcbfd6987995b032353a8193f884aef40413",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "name": "ply-2.ply",
+          "triangles": 2697877,
+          "positionsSha256": "1ad7f31b54f66318163b19ca7a33e8a40f56512487ef5b52cba74c3ecdf63178",
+          "normalsSha256": "e8c2e97e4d0dad24dd6c6633abe4606178c7af2fb27b8c84b81916635b784dd5",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "name": "ply-3.ply",
+          "triangles": 3691133,
+          "positionsSha256": "865a15f9f8a068b7d9030d3054093465cea17859eecb2330dbeed7f0bf5b32a1",
+          "normalsSha256": "10b49ff649cf50badf2d292fc4b2aef9fa17984b4fea135127c9f0e93f494170",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        }
+      ],
+      "compactNormalsVerified": true,
+      "workers": [
+        {
+          "kind": "preparation",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        }
+      ],
+      "browserErrors": []
+    },
+    {
+      "mode": "target-average",
+      "carrier": "cloud",
+      "nativeOuterFixture": "tests/fixtures/global-fine-multicore-outer-owner-native.json",
+      "nativeSetterFixture": "tests/fixtures/global-fine-apply-stages-native.json",
+      "elapsedMs": 6275.524999976158,
+      "frames": {
+        "count": 377,
+        "medianMs": 16.68000000000029,
+        "maximumMs": 16.80500000000029
+      },
+      "queries": 76,
+      "passes": 4,
+      "physicalQueryWorkers": 2,
+      "objects": [
+        {
+          "name": "ply-1.ply",
+          "points": 140113,
+          "poseBits": "b3c7a2c0ffffef3ff0ba6e6eee6823bf46a0409c58533e3ff2c061b76773d03fb29d625cc966233fe271fef4ffffef3f500fca80251c223f10fde809cefe9dbf0bf29772b0533ebf889a4a00d91922bfd6df65c1ffffef3f79647c0dde61c7bf",
+          "boundsBits": "421203c2db421ac227e7a5c3c5b6914261909142d20683c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "b3c7a2c0ffffef3ff0ba6e6eee6823bf46a0409c58533e3ff2c061b76773d03fb29d625cc966233fe271fef4ffffef3f500fca80251c223f10fde809cefe9dbf0bf29772b0533ebf889a4a00d91922bfd6df65c1ffffef3f79647c0dde61c7bf"
+          }
+        },
+        {
+          "name": "ply-2.ply",
+          "points": 1375494,
+          "poseBits": "4e35757fffffef3f2732d41e7ac145bfa5e369c73291293fa9a9a31b0ceeb13f8a29d91efac0453fd6e1a470ffffef3f0cec6e05fe04343f881f4bc43ec3af3f70357b7d009829bf14cef885d10234bf39cabcdcffffef3f30f7805ef63e7e3f",
+          "boundsBits": "aa5804c2e44518c21b08a5c3311f9042f0d19142a01783c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "4e35757fffffef3f2732d41e7ac145bfa5e369c73291293fa9a9a31b0ceeb13f8a29d91efac0453fd6e1a470ffffef3f0cec6e05fe04343f881f4bc43ec3af3f70357b7d009829bf14cef885d10234bf39cabcdcffffef3f30f7805ef63e7e3f"
+          }
+        },
+        {
+          "name": "ply-3.ply",
+          "points": 1865848,
+          "poseBits": "000000000000f03f000000000030cbbb000000000000e03b0000000000000000000000000030cbbb000000000000f03f00000000000000000000000000000000000000000000e03b0000000000000000ffffffffffffef3f0000000000000000",
+          "boundsBits": "0ed204c2e80718c27b24a5c37cbd8f425fe99142b01083c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "000000000000f03f000000000030cbbb000000000000e03b0000000000000000000000000030cbbb000000000000f03f00000000000000000000000000000000000000000000e03b0000000000000000ffffffffffffef3f0000000000000000"
+          }
+        }
+      ],
+      "compactNormalsVerified": true,
+      "workers": [
+        {
+          "kind": "preparation",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        }
+      ],
+      "browserErrors": []
+    },
+    {
+      "mode": "pooled-plane",
+      "carrier": "mesh",
+      "nativeOuterFixture": "tests/fixtures/global-fine-full-outer-owner-native.json",
+      "nativeSetterFixture": "tests/fixtures/global-fine-apply-stages-native.json",
+      "elapsedMs": 11889.789999991655,
+      "frames": {
+        "count": 707,
+        "medianMs": 16.68000000000029,
+        "maximumMs": 83.40500000000065
+      },
+      "queries": 121,
+      "passes": 6,
+      "physicalQueryWorkers": 2,
+      "objects": [
+        {
+          "name": "ply-1.ply",
+          "triangles": 274154,
+          "positionsSha256": "9c2459fe597d76fef65b3a7f1030576e12b23010b1566964b1ad692d852ff5f5",
+          "normalsSha256": "74ed745504d6716c531f1373fec068eb0480d90c445f0d72d31f63a298bc0dec",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "name": "ply-2.ply",
+          "triangles": 2697877,
+          "positionsSha256": "6a0a59586b78f40d9d43546f645e581274e424aabf8b75f679f8fa52840642a0",
+          "normalsSha256": "09171b5d5d37b08b430b2db9ef8110a3875f1864b68243fb8fbc01335c7c0e9f",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        },
+        {
+          "name": "ply-3.ply",
+          "triangles": 3691133,
+          "positionsSha256": "4bd03f7fb1d901feb7c714da8456f1a9bf92149fb7415d1dd5d0179a40019829",
+          "normalsSha256": "ce87e02357215c65fc4c40e2404b2ed2c8f3cebb4f69ea7e6d0bcbb485dd9e42",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144
+          }
+        }
+      ],
+      "compactNormalsVerified": true,
+      "workers": [
+        {
+          "kind": "preparation",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        }
+      ],
+      "browserErrors": []
+    },
+    {
+      "mode": "pooled-plane",
+      "carrier": "cloud",
+      "nativeOuterFixture": "tests/fixtures/global-fine-full-outer-owner-native.json",
+      "nativeSetterFixture": "tests/fixtures/global-fine-apply-stages-native.json",
+      "elapsedMs": 9764.34500002861,
+      "frames": {
+        "count": 586,
+        "medianMs": 16.68000000000029,
+        "maximumMs": 16.899999999999636
+      },
+      "queries": 121,
+      "passes": 6,
+      "physicalQueryWorkers": 2,
+      "objects": [
+        {
+          "name": "ply-1.ply",
+          "points": 140113,
+          "poseBits": "cbc6b67affffef3f92a9c3d3478b43bf7cd1b0322d9738bff820c4d7feb4aa3f636f92f5698b433ff8ec05a0ffffef3f70fa7ab17c26063f0070d3f9e206b5bfb05fd8aec096383fc0b3161f864406bf1e3bbad9ffffef3f2b50a4c090b8d1bf",
+          "boundsBits": "c4d302c2e6571ac2a4f2a5c3f0be91423f879142ed0b83c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "cbc6b67affffef3f92a9c3d3478b43bf7cd1b0322d9738bff820c4d7feb4aa3f636f92f5698b433ff8ec05a0ffffef3f70fa7ab17c26063f0070d3f9e206b5bfb05fd8aec096383fc0b3161f864406bf1e3bbad9ffffef3f2b50a4c090b8d1bf"
+          }
+        },
+        {
+          "name": "ply-2.ply",
+          "points": 1375494,
+          "poseBits": "f63889deffffef3f70f64fe0718136bf885423a7c182153f285a97e5f7c89d3fe9479fbb3881363ff2e24ad9ffffef3f54498415233f253f208ef6887515943f8056aee37d8615bfee2726f3303e25bf219c23f7ffffef3f0078b1c7fa9f40bf",
+          "boundsBits": "b85904c2874c18c2f407a5c3541a9042b7d29142cb1783c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "f63889deffffef3f70f64fe0718136bf885423a7c182153f285a97e5f7c89d3fe9479fbb3881363ff2e24ad9ffffef3f54498415233f253f208ef6887515943f8056aee37d8615bfee2726f3303e25bf219c23f7ffffef3f0078b1c7fa9f40bf"
+          }
+        },
+        {
+          "name": "ply-3.ply",
+          "points": 1865848,
+          "poseBits": "feffffffffffef3f0000000000b8fb3b000000000000103c00000000000000000000000000b8fb3b010000000000f03f000000000000f0bb0000000000000000000000000000103c000000000000f0bb000000000000f03f0000000000000000",
+          "boundsBits": "0ed204c2e80718c27b24a5c37cbd8f425fe99142b01083c3",
+          "execution": {
+            "physicalWorkers": 2,
+            "chunkVertices": 262144,
+            "localBuffersRetained": true,
+            "poseBits": "feffffffffffef3f0000000000b8fb3b000000000000103c00000000000000000000000000b8fb3b010000000000f03f000000000000f0bb0000000000000000000000000000103c000000000000f0bb000000000000f03f0000000000000000"
+          }
+        }
+      ],
+      "compactNormalsVerified": true,
+      "workers": [
+        {
+          "kind": "preparation",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "query",
+          "initialized": 1,
+          "terminated": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        },
+        {
+          "kind": "application",
+          "initialized": 0,
+          "terminated": true,
+          "queryPoolReleased": true
+        }
+      ],
+      "browserErrors": []
+    }
+  ],
+  "validation": {
+    "build": "Passed without warnings/errors; scanforge-d1f29b0c17f9d5b8",
+    "fullSuite": {
+      "passed": 43437,
+      "failed": 0,
+      "optionalSkipped": 40
+    },
+    "guiMcpTypedNormals": {
+      "passed": true,
+      "steps": [
+        "official SDK stdio initialize/tools/resources",
+        "browser pairing and persisted connection after Settings closes",
+        "exact CAD creation rendered in UI",
+        "MCP and GUI exact alignment references with identical coordinates and unchanged history",
+        "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
+        "native coordinate preview/cancel, primary-plane Z default and explicit X, GUI/MCP Apply and Undo restore identical scan geometry",
+        "UI undo and MCP redo",
+        "STEP content and project export artifacts",
+        "mesh copy/transform/winding worker/topology",
+        "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
+        "GUI and MCP import the independent v2 typed-normal fixture and export identical Float32 bytes including signed zero",
+        "disconnect rejects calls"
+      ],
+      "cleanup": [
+        {
+          "port": 59468,
+          "closed": true
+        },
+        {
+          "port": 59469,
+          "closed": true
+        },
+        {
+          "pid": 4364,
+          "exited": true
+        },
+        {
+          "pid": 49208,
+          "exited": true
+        }
+      ]
+    },
+    "isolatedStagedPatch": {
+      "build": "Passed without warnings/errors; scanforge-4217090dbf44de18",
+      "focusedPassed": 1304,
+      "focusedFailed": 0
+    }
+  },
+  "limits": [
+    "Timing excludes source parsing/expansion, final whole-project validation, rendering, editor publication and history.",
+    "Original native GUI, importer, attachments/notifications and OS scheduling are outside the retained native probes.",
+    "Recorded clocks are replay inputs, not fixed production seeds.",
+    "Global Fine Align admission, CAD/reference preparation and public GUI/MCP operation remain gated."
+  ]
+}

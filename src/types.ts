@@ -33,12 +33,12 @@ export interface Entity {
   pointCloudPlacement?: {
     matrixBits: string;
     sourcePositions: Positions;
-    sourceNormals?: number[];
+    sourceNormals?: Positions;
   };
   /** Original indexed import topology, valid only while it matches render positions. */
   indexedMesh?: IndexedMesh;
   /** CAD display normals or imported scanner normals, aligned to XYZ positions. */
-  normals?: number[];
+  normals?: Positions;
   /** Paired world-space points sampled from exact CAD topological edges. */
   edgePositions?: number[];
   color: string;

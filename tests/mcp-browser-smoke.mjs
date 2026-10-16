@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID, createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -728,6 +729,116 @@ try {
     recovered.result.objects.length,
   );
   await recovery.getByRole("button", { name: "Close", exact: true }).click();
+  // Frozen v2 wire fixture: independent producer, compact normals including -0.
+  const typedPositions = Buffer.from(
+    new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]).buffer,
+  );
+  const typedNormals = Buffer.from(
+    new Float32Array([-0, 0, 2, -0, 0, 2, -0, 0, 2]).buffer,
+  );
+  const payloads = [typedPositions, typedNormals];
+  const typedManifest = Buffer.from(
+    JSON.stringify({
+      format: "scanforge-binary",
+      version: 2,
+      units: "mm",
+      name: "Typed normals",
+      current: [0],
+      history: [],
+      future: [],
+      records: [
+        {
+          id: "typed-mesh",
+          name: "Typed scanner normals",
+          kind: "mesh",
+          visible: true,
+          color: "#aaaaaa",
+          opacity: 1,
+          positions: { chunk: 0, type: "f32" },
+          normals: { chunk: 1, type: "f32" },
+        },
+      ],
+      chunks: payloads.map((data, index) => ({
+        offset: index * 36,
+        bytes: data.length,
+        rawBytes: data.length,
+        codec: "raw",
+        sha256: createHash("sha256").update(data).digest("hex"),
+      })),
+    }),
+  );
+  const typedHeader = Buffer.alloc(16);
+  typedHeader.write("SCANFRG2");
+  typedHeader.writeUInt32LE(typedManifest.length, 8);
+  typedHeader.writeUInt32LE(72, 12);
+  const typedFile = Buffer.concat([typedHeader, typedManifest, ...payloads]);
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "typed-normals.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: typedFile,
+    });
+  await page
+    .getByRole("button", { name: "Typed scanner normals", exact: true })
+    .waitFor();
+  const typedGui = (await call("project_get")).result.objects;
+  assert.equal(typedGui.length, 1);
+  assert.equal(typedGui[0].triangles, 1);
+  async function exportedTypedNormals() {
+    const artifact = await job(
+        await call("project_export", { format: "project" }),
+      ),
+      wire = await call("artifact_read", { artifactId: artifact.artifactId });
+    const bytes = Buffer.from(wire.result.base64, "base64"),
+      length = bytes.readUInt32LE(8),
+      manifest = JSON.parse(bytes.subarray(16, 16 + length).toString()),
+      ref = manifest.records[manifest.current[0]].normals,
+      chunk = manifest.chunks[ref.chunk];
+    assert.equal(ref.type, "f32");
+    const stored = bytes.subarray(
+        16 + length + chunk.offset,
+        16 + length + chunk.offset + chunk.bytes,
+      ),
+      raw = chunk.codec === "gzip" ? gunzipSync(stored) : stored;
+    assert(
+      raw.equals(typedNormals),
+      "Normal bytes changed at GUI/MCP project boundaries",
+    );
+    return raw;
+  }
+  const guiNormalBytes = await exportedTypedNormals();
+  const typedUpload = await call("artifact_put", {
+    name: "typed-normals.scanforge",
+    offset: 0,
+    base64: typedFile.toString("base64"),
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: typedUpload.result.artifactId,
+      replace: true,
+    }),
+  );
+  const typedMcp = (await call("project_get")).result.objects;
+  assert.deepEqual(
+    typedMcp.map(({ id, name, kind, triangles }) => ({
+      id,
+      name,
+      kind,
+      triangles,
+    })),
+    typedGui.map(({ id, name, kind, triangles }) => ({
+      id,
+      name,
+      kind,
+      triangles,
+    })),
+  );
+  assert((await exportedTypedNormals()).equals(guiNormalBytes));
+  await page
+    .getByRole("button", { name: "Typed scanner normals", exact: true })
+    .waitFor();
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByRole("button", { name: "Disconnect agent", exact: true })
@@ -751,6 +862,7 @@ try {
     "STEP content and project export artifacts",
     "mesh copy/transform/winding worker/topology",
     "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
+    "GUI and MCP import the independent v2 typed-normal fixture and export identical Float32 bytes including signed zero",
     "disconnect rejects calls",
   ];
   await page.screenshot({

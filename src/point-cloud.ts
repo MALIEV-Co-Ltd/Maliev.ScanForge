@@ -22,7 +22,7 @@ export function pointCloudStats(positions: Positions): MeshStats {
 
 /** Imported scanner normals are directions: rigid alignment never translates them. */
 export function rotatePointNormals(
-  normals: readonly number[],
+  normals: ArrayLike<number>,
   rotation: readonly number[],
 ): number[] {
   const result = new Array<number>(normals.length);

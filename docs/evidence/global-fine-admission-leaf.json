@@ -1,0 +1,35 @@
+{
+  "evidenceId": "ev_e49ad48bb9653b84544e601cc00e7a60094c4699ae6bcb57347d5f64eac77943",
+  "provider": {
+    "id": "ghidra",
+    "version": "12.1.4"
+  },
+  "derivedImageSha256": "f605d0e24564021d939ba8bfe458b91b498af420baed341f724ca3ed2be8a273",
+  "loadedImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "getter": {
+    "address": "0x140405fa0",
+    "assembly": [
+      "0x140405fa0: MOVZX EAX, byte ptr [RCX + 0x168]",
+      "0x140405fa7: AND AL, 0x1",
+      "0x140405fa9: RET"
+    ],
+    "bytes": "0fb681680100002401c3",
+    "sha256": "135c85103d03720503eef64aedce9d25865ac6e817ed38b76536915efcf798e7",
+    "meaning": "Bit zero of the byte at interface-relative offset 0x168."
+  },
+  "slotObservations": [
+    {
+      "vtable": "0x141248370",
+      "rtti": "cMeshObject",
+      "slot": "0x230",
+      "method": "0x140405fa0"
+    },
+    {
+      "vtable": "0x141248070",
+      "rtti": "tSceneObject<cMesh>",
+      "slot": "0x230",
+      "method": "0x140405fa0"
+    }
+  ],
+  "scope": "Static REA getter analysis plus retained-image vtable reads. This capture does not execute the original GUI visibility toggle or independently bind the Global Fine Align interface query to these concrete tables. Public admission must not infer the UI meaning from this leaf alone."
+}

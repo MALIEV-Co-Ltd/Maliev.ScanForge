@@ -2,14 +2,14 @@ import type { Entity } from "./types";
 import { transformDatumCoordinates } from "./datum-transform-kernel";
 
 type Placement = NonNullable<Entity["pointCloudPlacement"]>;
-type World = { positions: Float32Array; normals?: number[] };
+type World = { positions: Float32Array; normals?: Entity["normals"] };
 const nativeEntities = new WeakSet<Entity>();
 const views = new WeakMap<object, Placement>();
 const weakCache = new WeakMap<
   Placement,
   {
     positions: WeakRef<Float32Array>;
-    normals?: WeakRef<number[]>;
+    normals?: WeakRef<NonNullable<Entity["normals"]>>;
   }
 >();
 const latest = new WeakMap<object, World>();
@@ -206,7 +206,10 @@ export function cloudPlacementJson(entity: Entity) {
     ? {
         matrixBits: p.matrixBits,
         sourcePositions: Array.from(p.sourcePositions),
-        sourceNormals: p.sourceNormals,
+        sourceNormals:
+          p.sourceNormals instanceof Float32Array
+            ? Array.from(p.sourceNormals)
+            : p.sourceNormals,
       }
     : undefined;
 }

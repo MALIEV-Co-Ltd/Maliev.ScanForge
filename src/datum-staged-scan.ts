@@ -102,6 +102,7 @@ export async function transformDatumScanStages(
   matrices: readonly (readonly number[])[],
   transform: Transform,
   check: () => void,
+  options: { typedNormals?: boolean } = {},
 ) {
   check();
   if (
@@ -149,7 +150,9 @@ export async function transformDatumScanStages(
     ? await transform(sourceNormals, coordinateFrames, true)
     : undefined;
   const normalValues = normals
-    ? await normalArray(normals.output, check)
+    ? options.typedNormals
+      ? normals.output
+      : await normalArray(normals.output, check)
     : undefined;
   check();
   const output: Entity = {

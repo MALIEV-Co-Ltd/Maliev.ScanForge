@@ -12,6 +12,7 @@ export function createDatumTransformExecutor(
     parallel?: boolean;
     signal?: AbortSignal;
     threshold?: number;
+    typedNormals?: boolean;
   } = {},
 ) {
   const workers: Worker[] = [];
@@ -232,8 +233,21 @@ export function createDatumTransformExecutor(
     transformScanStages: (
       entity: Entity,
       matrices: readonly (readonly number[])[],
-    ) => transformDatumScanStages(entity, matrices, transformStages, check),
+    ) =>
+      transformDatumScanStages(
+        entity,
+        matrices,
+        transformStages,
+        check,
+        options,
+      ),
     transformScan: (entity: Entity, matrix: readonly number[]) =>
-      transformDatumScanStages(entity, [matrix], transformStages, check),
+      transformDatumScanStages(
+        entity,
+        [matrix],
+        transformStages,
+        check,
+        options,
+      ),
   };
 }

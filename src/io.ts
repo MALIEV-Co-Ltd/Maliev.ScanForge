@@ -243,7 +243,9 @@ export function validateProject(value: unknown): Project {
     if (entity.surfacePatch !== undefined) validatePatch(entity.surfacePatch);
     if (
       entity.normals !== undefined &&
-      (!Array.isArray(entity.normals) ||
+      (!(
+        Array.isArray(entity.normals) || entity.normals instanceof Float32Array
+      ) ||
         entity.normals.length !== entity.positions.length ||
         !entity.normals.every(Number.isFinite))
     )
@@ -346,7 +348,10 @@ export function validateProject(value: unknown): Project {
       if (
         p.sourcePositions.length !== entity.positions.length ||
         (p.sourceNormals !== undefined &&
-          (!Array.isArray(p.sourceNormals) ||
+          (!(
+            Array.isArray(p.sourceNormals) ||
+            p.sourceNormals instanceof Float32Array
+          ) ||
             p.sourceNormals.length !== p.sourcePositions.length ||
             !p.sourceNormals.every(Number.isFinite)))
       )
@@ -449,6 +454,9 @@ export function serializeProject(
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
       positions: Array.from(entity.positions),
+      ...(entity.normals instanceof Float32Array
+        ? { normals: Array.from(entity.normals) }
+        : {}),
       pointCloudPlacement: cloudPlacementJson(entity as Entity),
       indexedMesh: entity.indexedMesh
         ? {
@@ -477,6 +485,7 @@ export async function serializeProjectBlob(
       kernelId: _kernelId,
       fit: _fit,
       positions,
+      normals,
       indexedMesh,
       pointCloudPlacement: _placement,
       ...metadata
@@ -507,6 +516,27 @@ export async function serializeProjectBlob(
       await new Promise<void>((resolve) => setTimeout(resolve, 0));
     }
     parts.push("]");
+    if (normals) {
+      if (
+        normals.length !== positions.length ||
+        !normals.every(Number.isFinite)
+      )
+        throw new Error("Invalid project normals.");
+      parts.push(',"normals":[');
+      for (let first = 0; first < normals.length; first += 65536) {
+        parts.push(
+          first ? "," : "",
+          new Blob([
+            Array.from(
+              normals.slice(first, Math.min(normals.length, first + 65536)),
+              String,
+            ).join(","),
+          ]),
+        );
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      }
+      parts.push("]");
+    }
     if (indexedMesh) {
       parts.push(',"indexedMesh":{');
       for (const [field, values] of [

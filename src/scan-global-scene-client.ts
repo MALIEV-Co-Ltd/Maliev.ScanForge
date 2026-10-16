@@ -1,3 +1,4 @@
+import { copyGlobalSceneForTransfer } from "./scan-global-scene-transport";
 import {
   executeGlobalScenePreparation,
   type GlobalSceneInput,
@@ -96,7 +97,33 @@ export async function prepareGlobalScene(
             Error("Global scene preparation response could not be decoded."),
           );
         if (signal?.aborted) abort();
-        else worker.postMessage(input);
+        else if (
+          input.scans.reduce(
+            (sum, { geometry: g }) =>
+              sum +
+              g.points.byteLength +
+              g.normals.byteLength +
+              (g.flags?.byteLength ?? 0) +
+              (g.labels?.byteLength ?? 0),
+            0,
+          ) <=
+          4 * 1048576
+        )
+          worker.postMessage(input);
+        else
+          void copyGlobalSceneForTransfer(input, () => {
+            if (settled || signal?.aborted)
+              throw new DOMException(
+                "Global preparation cancelled.",
+                "AbortError",
+              );
+          })
+            .then((packet) => {
+              if (!settled) worker!.postMessage(packet.input, packet.transfer);
+            })
+            .catch((error) =>
+              finish(error instanceof Error ? error : Error(String(error))),
+            );
       } catch (error) {
         finish(error instanceof Error ? error : Error(String(error)));
       }
