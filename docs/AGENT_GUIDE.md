@@ -114,6 +114,10 @@ same inventory indices through `mesh_process`; `viewport_get.bridge.mode` is
 `holes` during this picker and `bridge` during a bridge gesture. Hole refinement
 grades interior size around long fixed rim edges (including bridge rails) while
 preserving those constraints and validating the resulting disk.
+Refinement activates rim-size grading whenever a fixed boundary edge can raise
+the local target size, including moderately uneven sampling. This avoids repeated
+bisection failing to converge beside a valid unsplit rim; boundary vertices,
+patch-size limits and disk validation remain enforced in the shared GUI/MCP path.
 Batch hole filling (`action: "fillHoles"`, entire mode, multiple distinct
 boundary indices or omitted `indices`) retains successful patches when another
 hole exceeds refinement limits or does not converge. Failed holes remain unchanged

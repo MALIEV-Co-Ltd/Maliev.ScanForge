@@ -245,7 +245,141 @@ try {
               : "flat",
       ),
   );
-  assert(cases.length > 0, "No requested bridge browser cases matched");
+  const convergenceCase = process.env.SCANFORGE_HOLE_CONVERGENCE === "1";
+  assert(
+    cases.length > 0 || convergenceCase,
+    "No requested browser cases matched",
+  );
+  if (convergenceCase) {
+    // This six-edge, planar rim previously failed to converge in curvature mode.
+    const rim = [
+      [0, 0],
+      [2.5, 0],
+      [2.5, 1],
+      [1.5, 1],
+      [0.5, 1],
+      [0, 1],
+    ];
+    const inner = rim.map(([x, y]) => [x, y, 0]);
+    const outer = rim.map(([x, y]) => [
+      1.25 + (x - 1.25) * 2,
+      0.5 + (y - 0.5) * 2,
+      0,
+    ]);
+    const positions = [];
+    for (let i = 0; i < rim.length; i++) {
+      const j = (i + 1) % rim.length;
+      positions.push(
+        ...outer[i],
+        ...outer[j],
+        ...inner[j],
+        ...outer[i],
+        ...inner[j],
+        ...inner[i],
+      );
+    }
+    const project = {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Uneven hole convergence",
+      units: "mm",
+      entities: [
+        {
+          id: "rim",
+          name: "Uneven rim",
+          kind: "mesh",
+          positions,
+          visible: true,
+          color: "#b4bec4",
+          opacity: 1,
+        },
+      ],
+    };
+    const upload = (
+      await call("artifact_put", {
+        name: "uneven-rim.json",
+        offset: 0,
+        base64: Buffer.from(JSON.stringify(project)).toString("base64"),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: upload.artifactId,
+        replace: true,
+      }),
+    );
+    await mutate("object_select", { entityId: "rim" });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    const before = await geometry(),
+      beforeHistory = await history();
+    const inventory = await artifactJson(
+      (await runEdit({ kind: "scanEdit", action: "inventory" })).artifact,
+    );
+    const hole = inventory.inventory.boundaries.findIndex(
+      (b) =>
+        b.closed &&
+        b.points.every((v, i) => i % 3 !== 0 || (v >= 0 && v <= 2.5)),
+    );
+    assert(hole >= 0);
+    const result = await runEdit({
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "entire",
+      indices: [hole],
+      algorithm: "curvature",
+    });
+    assert.equal(result.diagnostics.filledHoles, 1);
+    assert.equal(result.diagnostics.skippedHoles, 0);
+    const expected = await geometry();
+    assert.deepEqual(
+      expected.positions.slice(0, before.positions.length),
+      before.positions,
+    );
+    const after = await artifactJson(
+      (await runEdit({ kind: "scanEdit", action: "inventory" })).artifact,
+    );
+    assert.equal(after.inventory.boundaries.length, 1);
+    await mutate("history_undo", {});
+    await page.getByRole("button", { name: "Edit holes", exact: true }).click();
+    const controls = page.locator(".scan-topology-panel");
+    await controls.locator(".app-select > button").nth(1).click();
+    await page.getByRole("option", { name: "Curvature", exact: true }).click();
+    await mutate("viewport_control", {
+      action: "camera",
+      position: [1.25, 0.5, 8],
+      target: [1.25, 0.5, 0],
+      up: [0, 1, 0],
+      zoom: 1,
+    });
+    const box = await canvas.boundingBox();
+    assert(box);
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    assert.equal(
+      (await call("viewport_get")).result.bridge.hovered.boundary,
+      hole,
+    );
+    await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2);
+    for (let i = 0; i < 80 && (await history()) === beforeHistory; i++)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    assert.equal(await history(), beforeHistory + 1);
+    assert.deepEqual((await geometry()).positions, expected.positions);
+    await page.screenshot({
+      path: fileURLToPath(new URL("uneven-rim-filled.png", out)),
+    });
+    await mutate("history_undo", {});
+    assert.deepEqual((await geometry()).positions, before.positions);
+    await mutate("history_redo", {});
+    assert.deepEqual((await geometry()).positions, expected.positions);
+    reports.push({
+      scenario: "uneven-rim-convergence",
+      method: "curvature",
+      filledHoles: 1,
+      skippedHoles: 0,
+      guiMcpEqual: true,
+      sourceUnchanged: true,
+      undoRedo: true,
+    });
+  }
   for (const { curved, separate, fragmented } of cases) {
     const scenario = fragmented
       ? "fragmented-open"

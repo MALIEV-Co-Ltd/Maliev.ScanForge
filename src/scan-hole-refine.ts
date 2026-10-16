@@ -34,10 +34,13 @@ export function refineHolePatch(
   // A long fixed rim (often a bridge rail) cannot be surrounded by uniformly
   // tiny edges. Grade the target size away from those constraints instead of
   // repeatedly bisecting triangles whose unsplittable rim prevents convergence.
+  const rimGrading = 0.75;
   const coarseRim = projected.slice(0, rimCount).flatMap((a, i) => {
     const b = projected[(i + 1) % rimCount],
       length = a.distanceTo(b);
-    return length > 2 * limit ? [{ a, b, length }] : [];
+    // Include every constraint that can raise the target. A higher cutoff leaves
+    // a gap where repeated bisection cannot meet the uniform interior limit.
+    return length * rimGrading > limit ? [{ a, b, length }] : [];
   });
   const targetSize = (a: Vector2, b: Vector2) => {
     const center = a.clone().add(b).multiplyScalar(0.5);
@@ -51,7 +54,7 @@ export function refineHolePatch(
       const distance = center.distanceTo(
         edge.a.clone().addScaledVector(delta, t),
       );
-      target = Math.max(target, edge.length * 0.75 - distance);
+      target = Math.max(target, edge.length * rimGrading - distance);
     }
     return target;
   };
