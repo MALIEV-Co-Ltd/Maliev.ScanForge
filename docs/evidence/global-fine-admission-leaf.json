@@ -31,5 +31,6 @@
       "method": "0x140405fa0"
     }
   ],
-  "scope": "Static REA getter analysis plus retained-image vtable reads. This capture does not execute the original GUI visibility toggle or independently bind the Global Fine Align interface query to these concrete tables. Public admission must not infer the UI meaning from this leaf alone."
+  "scope": "Static REA getter analysis plus retained-image vtable reads. This capture does not execute the original GUI visibility toggle or independently bind the Global Fine Align interface query to these concrete tables. Public admission must not infer the UI meaning from this leaf alone.",
+  "followUpRuntimeEvidence": "global-fine-native-visibility.json"
 }

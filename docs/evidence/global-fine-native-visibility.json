@@ -1,0 +1,103 @@
+{
+  "observation": "Original object-browser mesh checkbox correlates with bit zero read by the alignment admission getter.",
+  "input": {
+    "name": "ply-1.ply",
+    "triangles": 274154,
+    "units": "mm",
+    "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  },
+  "uiSequence": [
+    {
+      "checkbox": "checked",
+      "meshRendered": true,
+      "flags": 81
+    },
+    {
+      "checkbox": "unchecked",
+      "meshRendered": false,
+      "flags": 80
+    },
+    {
+      "checkbox": "checked",
+      "meshRendered": true,
+      "flags": 81
+    }
+  ],
+  "objectIdentity": {
+    "sameObjectAndPayload": true,
+    "vtable": "0x141248370",
+    "secondaryVtable": "0x141248648",
+    "rtti": "cMeshObject"
+  },
+  "access": "PROCESS_QUERY_INFORMATION | PROCESS_VM_READ only",
+  "scope": "Direct UI observation and independent read-only runtime object capture in an owned native instance. No remote calls, hooks, memory writes or licensing changes. Bounded private-region scan found one matching constructed object; this is not an exhaustive process inventory. Other object classes and full registration output are not verified by this capture.",
+  "staticEvidence": {
+    "handler": "ev_f90aeabdfb7e084d53598fefb744a5b9dc32a60bee05505cd86a18eaf7b75425",
+    "getter": "ev_e49ad48bb9653b84544e601cc00e7a60094c4699ae6bcb57347d5f64eac77943",
+    "enable": "ev_8a4effcccda2dfa0e846b8fef1406d96d5ffef96a5810affa3cd5ddd2ad8bfa6",
+    "disable": "ev_dc738ff7891c61783c36c6c70745d8fbfc45ac30c5fb9e3b4af0eff07a27df3a"
+  },
+  "evaluatorObservation": {
+    "inputs": ["ply-1.ply", "ply-2.ply"],
+    "triangles": [274154, 2697877],
+    "runtimeObjects": [
+      {
+        "flags": 81,
+        "propertyCount": 2,
+        "pointEvaluator": {
+          "name": "PointEvaluator",
+          "hasValue": true,
+          "types": [
+            {
+              "adjustment": -8,
+              "vtable": "0x1411a07e8",
+              "rtti": ".?AV?$cRCObject@VcPointEvaluator@@@@"
+            },
+            {
+              "adjustment": 0,
+              "vtable": "0x1411a0680",
+              "rtti": ".?AV?$cRCObject@VcPointEvaluator@@@@"
+            }
+          ],
+          "readyWord": 1
+        }
+      },
+      {
+        "flags": 81,
+        "propertyCount": 2,
+        "pointEvaluator": {
+          "name": "PointEvaluator",
+          "hasValue": true,
+          "types": [
+            {
+              "adjustment": -8,
+              "vtable": "0x1411a07e8",
+              "rtti": ".?AV?$cRCObject@VcPointEvaluator@@@@"
+            },
+            {
+              "adjustment": 0,
+              "vtable": "0x1411a0680",
+              "rtti": ".?AV?$cRCObject@VcPointEvaluator@@@@"
+            }
+          ],
+          "readyWord": 1
+        }
+      }
+    ],
+    "meaning": "Both imported raw PLY mesh objects carry ready PointEvaluator properties. The prior empty-evaluator raw-point replays do not verify this prepared evaluator route."
+  },
+  "staticPropertyLookup": {
+    "mesh": "ev_fbc1dc2d8bccf4d4127a14940990866d23d8affe4ae8c7db70c2a644357660ac",
+    "group": "ev_75aacff941bf4cce8bab38c8d386e64e025cbb5aeefe3e7dfd573c996a5831d2"
+  },
+  "nextRequiredTrace": [
+    "Concrete cPointEvaluator preparation and use during original global correspondence queries.",
+    "Exact native scene/GUI admission and full output through evaluator-enabled cases.",
+    "Shared GUI/MCP preview, Apply, cancellation and history publication."
+  ],
+  "cleanup": {
+    "ownedNativeProcessExited": true,
+    "sourcesSaved": false,
+    "originalAppWasStoppedBeforeLaunch": true
+  }
+}
