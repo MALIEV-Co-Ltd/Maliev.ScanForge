@@ -6,6 +6,7 @@ import {
   type DatumTransformRequest,
 } from "../src/datum-transform-worker";
 import { transformDatumCoordinates } from "../src/datum-alignment";
+import { transformDatumCoordinateStages } from "../src/datum-transform-kernel";
 class TestWorker {
   static instances: TestWorker[] = [];
   static fail = false;
@@ -150,4 +151,79 @@ it("fails closed on worker errors and releases the pool", async () => {
     pool.close();
   }
   expect(TestWorker.instances.every((worker) => worker.terminated)).toBe(true);
+});
+it("keeps native stage rounding and snapshots frames across batches and a partial tail", async () => {
+  install();
+  const pool = createDatumTransformExecutor({ threshold: 0 });
+  const input = new Float32Array(2 * 262144 * 3 + 3);
+  for (let i = 0; i < input.length; i += 3) {
+    input[i] = 1e8;
+    input[i + 1] = 1;
+    input[i + 2] = -2;
+  }
+  const before = input.slice(),
+    frames = [[...identity], [...identity]];
+  frames[0][3] = 3;
+  frames[1][3] = 3;
+  const expected = transformDatumCoordinateStages(before, frames);
+  try {
+    const pending = pool.transformStages(input, frames);
+    frames[0][3] = 999;
+    frames[1][3] = 999;
+    const result = await pending;
+    expect(
+      Buffer.compare(
+        Buffer.from(result.output.buffer),
+        Buffer.from(expected.buffer),
+      ),
+    ).toBe(0);
+    expect(result.output.at(-3)).toBe(1e8);
+    expect(result.execution.physicalWorkers).toBe(2);
+    expect(
+      Buffer.compare(Buffer.from(input.buffer), Buffer.from(before.buffer)),
+    ).toBe(0);
+  } finally {
+    pool.close();
+  }
+  expect(TestWorker.instances.every((worker) => worker.terminated)).toBe(true);
+});
+it("collects final-stage bounds and never translates normal streams", async () => {
+  install();
+  const pool = createDatumTransformExecutor({ threshold: 0 });
+  const a = [...identity],
+    b = [...identity];
+  a[3] = 10;
+  b[3] = -10;
+  try {
+    const result = await pool.transformStages(new Float32Array([1, 2, 3]), [
+      a,
+      b,
+    ]);
+    expect(result.output).toEqual(new Float32Array([1, 2, 3]));
+    expect(result.bounds).toEqual({ min: [1, 2, 3], max: [1, 2, 3] });
+    const normals = await pool.transformStages(
+      new Float32Array([2, 0, 0]),
+      [a, a],
+      true,
+    );
+    expect(normals.output).toEqual(new Float32Array([2, 0, 0]));
+  } finally {
+    pool.close();
+  }
+});
+it("rejects invalid stage sequences before creating workers", async () => {
+  install();
+  const pool = createDatumTransformExecutor({ threshold: 0 });
+  try {
+    await expect(pool.transformStages([0, 0, 0], [])).rejects.toThrow();
+    await expect(
+      pool.transformStages([0, 0, 0], Array(17).fill(identity)),
+    ).rejects.toThrow();
+    await expect(
+      pool.transformStages([0, 0, 0], [identity, [NaN]]),
+    ).rejects.toThrow();
+    expect(TestWorker.instances).toHaveLength(0);
+  } finally {
+    pool.close();
+  }
 });

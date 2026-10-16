@@ -1,10 +1,14 @@
-import { transformDatumCoordinates } from "./datum-transform-kernel";
-export interface DatumTransformRequest {
+import { transformDatumCoordinateStages } from "./datum-transform-kernel";
+interface DatumTransformInput {
   id: number;
   input: Float32Array | Float64Array;
-  matrix: number[];
   vector: boolean;
 }
+export type DatumTransformRequest = DatumTransformInput &
+  (
+    | { matrix: number[]; matrices?: never }
+    | { matrices: number[][]; matrix?: never }
+  );
 export type DatumTransformResponse =
   | { id: number; output: Float32Array; min: number[]; max: number[] }
   | { id: number; error: string };
@@ -13,9 +17,13 @@ export function executeDatumTransform(
 ): DatumTransformResponse {
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
-  const output = transformDatumCoordinates(
+  if (Boolean(input.matrix) === Boolean(input.matrices))
+    throw new Error(
+      "Alignment worker requires either one matrix or a matrix sequence.",
+    );
+  const output = transformDatumCoordinateStages(
     input.input,
-    input.matrix,
+    input.matrices ?? [input.matrix!],
     input.vector,
     { min, max },
   );

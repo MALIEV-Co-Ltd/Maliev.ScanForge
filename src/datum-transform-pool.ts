@@ -113,20 +113,24 @@ export function createDatumTransformExecutor(
         reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
-  const transform = async (
+  const transformStages = async (
     input: Positions,
-    matrix: readonly number[],
+    matrices: readonly (readonly number[])[],
     vector = false,
   ) => {
     check();
     if (
       input.length % 3 ||
-      matrix.length !== 12 ||
-      !matrix.every(Number.isFinite)
+      !matrices.length ||
+      matrices.length > 16 ||
+      matrices.some(
+        (matrix) => matrix.length !== 12 || !matrix.every(Number.isFinite),
+      )
     )
       throw new Error(
-        "Alignment transform requires XYZ coordinates and a finite 3x4 matrix.",
+        "Alignment transform requires XYZ coordinates and one to 16 finite 3x4 matrices.",
       );
+    const frames = matrices.map((matrix) => Array.from(matrix));
     const usePool =
       options.parallel !== false &&
       input.length / 3 >= (options.threshold ?? 1_048_576);
@@ -162,7 +166,9 @@ export function createDatumTransformExecutor(
           request: {
             id: ++sequence,
             input: values,
-            matrix: Array.from(matrix),
+            ...(frames.length === 1
+              ? { matrix: frames[0] }
+              : { matrices: frames }),
             vector,
           },
         });
@@ -207,9 +213,26 @@ export function createDatumTransformExecutor(
       },
     };
   };
+  const transform = async (
+    input: Positions,
+    matrix: readonly number[],
+    vector = false,
+  ) => {
+    check();
+    if (
+      input.length % 3 ||
+      matrix.length !== 12 ||
+      !matrix.every(Number.isFinite)
+    )
+      throw new Error(
+        "Alignment transform requires XYZ coordinates and a finite 3x4 matrix.",
+      );
+    return transformStages(input, [matrix], vector);
+  };
   return {
     close,
     transform,
+    transformStages,
     transformScan: async (entity: Entity, matrix: readonly number[]) => {
       check();
       const plan = datumScanTransformPlan(entity, matrix);

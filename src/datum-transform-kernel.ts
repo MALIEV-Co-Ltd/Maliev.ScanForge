@@ -42,11 +42,17 @@ export function transformDatumCoordinateStages(
   input: ArrayLike<number>,
   matrices: readonly (readonly number[])[],
   vector = false,
+  bounds?: { min: number[]; max: number[] },
 ): Float32Array {
   if (!matrices.length || matrices.length > 16)
     throw new Error("Alignment requires one to 16 finite transform stages.");
   let output: ArrayLike<number> = input;
-  for (const matrix of matrices)
-    output = transformDatumCoordinates(output, matrix, vector);
+  for (let i = 0; i < matrices.length; i++)
+    output = transformDatumCoordinates(
+      output,
+      matrices[i],
+      vector,
+      i === matrices.length - 1 ? bounds : undefined,
+    );
   return output as Float32Array;
 }

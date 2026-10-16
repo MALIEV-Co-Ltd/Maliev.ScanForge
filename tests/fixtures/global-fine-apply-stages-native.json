@@ -1,0 +1,446 @@
+{
+  "provenance": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "execution": "Actual original concrete mesh object setter, original mesh geometry transform controller, original vertex and face-normal workers; actual cloud object setter and original Double placement composition plus original world-bounds worker. Complete owner PLY vertex/normal carriers and controlled face normals copied from each face first-vertex normal; original global-alignment final matrix commands from both modes. Empty attachments, notify observer and absent optional render attachment. Original range construction executes; logical lane scheduling is adapted, original OS scheduler and original importer/GUI are not executed.",
+    "routes": [
+      { "vtable": "0x141248370", "slot": "0x250", "method": "0x14088b070" },
+      { "vtable": "0x141248070", "slot": "0x250", "method": "0x14088b910" },
+      { "vtable": "0x141248b20", "slot": "0x250", "method": "0x140892100" },
+      { "vtable": "0x141155e60", "slot": "0x38", "method": "0x1401de8d0" },
+      { "vtable": "0x141249028", "slot": "0x30", "method": "0x14089f5b0" }
+    ],
+    "patches": [
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327e0",
+        "locations": 1
+      },
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327f0",
+        "locations": 1
+      },
+      {
+        "binding": "Retained allocator/free import",
+        "originalPointer": "0x7ffe9c9327c0",
+        "locations": 2
+      },
+      { "address": "0x140d58f36", "original": "ff25f48d1500" },
+      { "address": "0x140143510", "original": "48895c240848" },
+      { "address": "0x14016b1f0", "original": "48895c240848" },
+      { "address": "0x140d5b0f0", "original": "e92fdeffffcc" },
+      { "address": "0x140d58f30", "original": "ff251a8e1500" },
+      { "address": "0x140d5cf70", "original": "ff25b2181500" },
+      { "address": "0x140d5cf76", "original": "ff25b4181500" },
+      { "address": "0x140d5cf7c", "original": "ff25c6181500" },
+      { "address": "0x140d5cfac", "original": "ff25d61b1500" },
+      { "address": "0x140d5cfee", "original": "ff25041c1500" },
+      { "address": "0x140d5cfbe", "original": "ff25f41b1500" },
+      { "address": "0x140d5cfd0", "original": "ff25fa1b1500" },
+      { "address": "0x140d5cfca", "original": "ff25f81b1500" },
+      {
+        "binding": "Identified sqrtf import; six adjacent exports match one ucrtbase ASLR delta",
+        "identification": "global-fine-point-tree-crt-identification.json"
+      },
+      { "address": "0x1401a76d0", "original": "48894c240848" },
+      {
+        "address": "0x140eb1d70",
+        "original": "f027939cfe7f0000",
+        "binding": "Raw retained allocation import; original alignment/header logic preserved"
+      },
+      { "address": "0x14054df00", "original": "40574883ec30" },
+      {
+        "address": "0x140eb2060",
+        "original": "e0c5134001000000",
+        "binding": "Rebase retained same-image CFG check/dispatch pointer; original target body preserved"
+      },
+      {
+        "address": "0x140eb2068",
+        "original": "401ad64001000000",
+        "binding": "Rebase retained same-image CFG check/dispatch pointer; original target body preserved"
+      },
+      {
+        "binding": "clock original CRT export; clock wrapper records actual values",
+        "originalPointer": "0x7fff1b9b2320",
+        "locations": 1
+      },
+      {
+        "binding": "srand original CRT export; clock wrapper records actual values",
+        "originalPointer": "0x7fff1b9c2960",
+        "locations": 2
+      },
+      {
+        "binding": "rand original CRT export; clock wrapper records actual values",
+        "originalPointer": "0x7fff1b94db40",
+        "locations": 1
+      },
+      { "address": "0x140d5cfb8", "original": "ff25f21b1500" },
+      { "address": "0x140d619f1", "original": "ff2551d11400" },
+      { "address": "0x140d619fd", "original": "ff2555d11400" },
+      {
+        "binding": "Rebase original class vtable data pointers to this owned image; original function bodies preserved",
+        "address": "0x141269ed0",
+        "entries": 3
+      },
+      {
+        "binding": "Rebase original class vtable data pointers to this owned image; original function bodies preserved",
+        "address": "0x141269f18",
+        "entries": 6
+      },
+      { "address": "0x14020f2c0", "original": "48894c240841" },
+      { "address": "0x14013c970", "original": "40534883ec20" },
+      { "address": "0x14088be00", "original": "405556574883" },
+      {
+        "binding": "Non-numerical instrumentation callback; no original OS scheduler is executed",
+        "originalPointer": "0x7ffed34597b0",
+        "locations": [15376728]
+      },
+      { "address": "0x1402153f0", "original": "405541544155" },
+      { "address": "0x1402157c0", "original": "405541544155" },
+      {
+        "binding": "Original object matrix setters, geometry controller range arithmetic, vertex/triangle numerical workers and cloud placement handler execute unchanged. Empty attachment tree, notify observer, absent optional render attachment and caller-owned lookup containers. Logical lanes dispatched serially through original workers, without original OS scheduler."
+      }
+    ]
+  },
+  "sources": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "count": 140113,
+      "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "count": 1375494,
+      "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "count": 1865848,
+      "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+    }
+  ],
+  "meshCases": [
+    {
+      "source": 0,
+      "name": "ply-1.ply",
+      "mode": "pooled-plane",
+      "vertices": 140113,
+      "triangles": 274154,
+      "matrices": [
+        "3c6f862ffdffef3fc0e59fce903755bf82611671ee7050bf20b33ea4fed4c0bf27a0ce31fa38553f2a66821ffeffef3fa3dd53775ef1353f321d535000ef92bf1e5033ea1b6f503f3769984e2b0736bfb18998d3feffef3fc7ab3446af05d1bf",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "bccc411b8f2ff0806d7cb4cf2fbb9ed2080e98a953bc9f8d9dace45068f46c6b",
+          "normalsSha256": "fb54e71ec2e96350fe6993cfbe7dd39300570cf61918077e9ad4b381db295647",
+          "faceNormalsSha256": "9f220b422600249222994a7900486e13e729eb66708a3bbecaa0adcec75f435c"
+        },
+        {
+          "positionsSha256": "9c2459fe597d76fef65b3a7f1030576e12b23010b1566964b1ad692d852ff5f5",
+          "normalsSha256": "74ed745504d6716c531f1373fec068eb0480d90c445f0d72d31f63a298bc0dec",
+          "faceNormalsSha256": "fdae03ab363803c1791a7f286e6e7ae7cd173e5d7c32aa781935db33073024f4"
+        }
+      ],
+      "sourceFaceNormalsSha256": "1eafb39ab4995a56be022bb089c32b67033b0b00cbe37aed367bbeb81c2a29c9",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    },
+    {
+      "source": 0,
+      "name": "ply-1.ply",
+      "mode": "target-average",
+      "vertices": 140113,
+      "triangles": 274154,
+      "matrices": [
+        "90c3084bfdffef3feaa9a9852cdd58bf6695a0249e4a413fd1c9dce9f765d13f6cebe02379da583f7b14c307fcffef3fcafc9ae8adf6533f75f37b18ba2cd23f16a254fd1e5a41bf7ab730b750f353bff1beb426feffef3f5a5ab61f7386c1bf",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "6aacd27c075f4c3621fa78a0fd5725d5a294d333baa962363e1292c45bb6bd18",
+          "normalsSha256": "7febed7fd7832613b0103e29cd776bd5756bbafc80ebdd66b15efe0383ef00ed",
+          "faceNormalsSha256": "07f84fb0390ea964733cea1b279dce43c9e4bb114892b2d33deea8432f7bb003"
+        },
+        {
+          "positionsSha256": "2ea5ad8e1503356ac58b7c09ea7fe24ce9b5c56839d9fe2509f6d88b93a25f24",
+          "normalsSha256": "e7dd7c45ff342a9ac3402f19c444dcbfd6987995b032353a8193f884aef40413",
+          "faceNormalsSha256": "97897f132a141917cb748fc1438eddabe00dc17d8ab8b4f32b75ac149b155c80"
+        }
+      ],
+      "sourceFaceNormalsSha256": "1eafb39ab4995a56be022bb089c32b67033b0b00cbe37aed367bbeb81c2a29c9",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    },
+    {
+      "source": 1,
+      "name": "ply-2.ply",
+      "mode": "pooled-plane",
+      "vertices": 1375494,
+      "triangles": 2697877,
+      "matrices": [
+        "2a507f8cfeffef3f3672bce2f81151bfba36eb61a2e641bf9c71731524d1c3bf96c700d30313513f32f2e5a4feffef3f5cb488b47cd13d3f60f69a21bf54b53f4275629da7e2413f4424b48308db3dbfb88d5178ffffef3f79144a86e83a853f",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "a22030bcb8a90090cdef7d30fd7d88e3c84931ba625777c04e1236504b036318",
+          "normalsSha256": "9858d3936109b547f88107f1bbb82c58263144c13bf9a0ac36f95011c44a37b4",
+          "faceNormalsSha256": "fbefab8ea871e6470b0b380862eae6414659b432745d00cb535082d25fc05a56"
+        },
+        {
+          "positionsSha256": "6a0a59586b78f40d9d43546f645e581274e424aabf8b75f679f8fa52840642a0",
+          "normalsSha256": "09171b5d5d37b08b430b2db9ef8110a3875f1864b68243fb8fbc01335c7c0e9f",
+          "faceNormalsSha256": "3da6f5e11d3727b5fd6acdc962bb301f08672360182c5fe8c14a090d406f52dd"
+        }
+      ],
+      "sourceFaceNormalsSha256": "9e13f48c20bf54060fbd02f80fc49c77850cded238a1b9df611d1323571b4052",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    },
+    {
+      "source": 1,
+      "name": "ply-2.ply",
+      "mode": "target-average",
+      "vertices": 1375494,
+      "triangles": 2697877,
+      "matrices": [
+        "86b4f097fbffef3f389a2e4c6ba860bf248c1517a606313f966e0f37edb0b53f4cd2a40da9a7603f3e5438a7f9ffef3f7410cbeedeb2563f4913a1cf3804d83f589c3151e63531bffcd7b2aca4b056bf1d7fa6eafdffef3f70cfe97d3c2aab3f",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "356e705cce44e09764a33b6b795e670e5f046d9d2216118606382661abb57268",
+          "normalsSha256": "3cfdfcf757f8386889f5244b4710e0f4b54f2245371c542a41be26fc861e4624",
+          "faceNormalsSha256": "b2b56ba63447b8e37f93f65d63e16888732a8b336651ad4aa50d7188bfabf101"
+        },
+        {
+          "positionsSha256": "1ad7f31b54f66318163b19ca7a33e8a40f56512487ef5b52cba74c3ecdf63178",
+          "normalsSha256": "e8c2e97e4d0dad24dd6c6633abe4606178c7af2fb27b8c84b81916635b784dd5",
+          "faceNormalsSha256": "df34b3f60550991a13617a4cfd90c91df5221e4bbfe864ae75109414ff31eb18"
+        }
+      ],
+      "sourceFaceNormalsSha256": "9e13f48c20bf54060fbd02f80fc49c77850cded238a1b9df611d1323571b4052",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    },
+    {
+      "source": 2,
+      "name": "ply-3.ply",
+      "mode": "pooled-plane",
+      "vertices": 1865848,
+      "triangles": 3691133,
+      "matrices": [
+        "da0f0e13ffffef3f12b0c3eb13e446bf5cdf265b079644bf67eddeb3d289c7bf82eb77399fe5463f90cde965ffffef3f50f33f1ef530333f28af58570f4eb03f215ddda94f94443fd2a8b6fe513833bf50de087fffffef3f39510061583e863f",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "5cb0c4c6d142a313168ab8d0851b06a24c9894b0b26b1da240642520fd73175e",
+          "normalsSha256": "850031ceeba8bcffaf80a446059c71b18650d8d542a56b468095b13e083c8dbe",
+          "faceNormalsSha256": "1ba489fc15592cc4f6764748bab5c57f86d4743198ec077d9ca197755e0aa46b"
+        },
+        {
+          "positionsSha256": "4bd03f7fb1d901feb7c714da8456f1a9bf92149fb7415d1dd5d0179a40019829",
+          "normalsSha256": "ce87e02357215c65fc4c40e2404b2ed2c8f3cebb4f69ea7e6d0bcbb485dd9e42",
+          "faceNormalsSha256": "c3dea59163d644f774bb53b33a6330847947a1ec14a58995fb73d4eb3654ecb0"
+        }
+      ],
+      "sourceFaceNormalsSha256": "504fdd4d891d62d0dc2206215d433d49138a9ed147263eb47aabfdd6787b3a87",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    },
+    {
+      "source": 2,
+      "name": "ply-3.ply",
+      "mode": "target-average",
+      "vertices": 1865848,
+      "triangles": 3691133,
+      "matrices": [
+        "26526a07feffef3fd697a03c057056bf726f680d4914113f8a8d14f65b438e3f563f2edab86f563fda75b0cffcffef3feea6352f81b0513fc1559da31d0ad43f00458685817711bfa8f8ac4b20b051bf846cf1c5feffef3fd67398b3c16ba73f",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "stages": [
+        {
+          "positionsSha256": "cbd8810aac78a8a7cf0c66b4b3f03f6e138431c5d0494834b2fc845d3764d7ff",
+          "normalsSha256": "237663136c1fed348b63df9d9ff0200fec6f358e609861874b75247c8e07cfcb",
+          "faceNormalsSha256": "9ec5c28071675f46c5a56ae60f5bec900a90dd2cb37f03c54cf37e6c916f928e"
+        },
+        {
+          "positionsSha256": "865a15f9f8a068b7d9030d3054093465cea17859eecb2330dbeed7f0bf5b32a1",
+          "normalsSha256": "10b49ff649cf50badf2d292fc4b2aef9fa17984b4fea135127c9f0e93f494170",
+          "faceNormalsSha256": "2add6d2aaa1021bb2a5bc02f1155317ffa8f44e50ea28631a59c1446fa016569"
+        }
+      ],
+      "sourceFaceNormalsSha256": "504fdd4d891d62d0dc2206215d433d49138a9ed147263eb47aabfdd6787b3a87",
+      "metadataUnchanged": true,
+      "notifications": ["notify", "notify"],
+      "objectFlags": [1, 0],
+      "meshFlags": [
+        [0, 0],
+        [0, 0]
+      ]
+    }
+  ],
+  "cloudCases": [
+    {
+      "name": "ply-1.ply-pooled-plane",
+      "source": 0,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "3c6f862ffdffef3fc0e59fce903755bf82611671ee7050bf20b33ea4fed4c0bf27a0ce31fa38553f2a66821ffeffef3fa3dd53775ef1353f321d535000ef92bf1e5033ea1b6f503f3769984e2b0736bfb18998d3feffef3fc7ab3446af05d1bf",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "poseBits": [
+        "3c6f862ffdffef3fc0e59fce903755bf82611671ee7050bf20b33ea4fed4c0bf27a0ce31fa38553f2a66821ffeffef3fa3dd53775ef1353f321d535000ef92bf1e5033ea1b6f503f3769984e2b0736bfb18998d3feffef3fc7ab3446af05d1bf",
+        "cbc6b67affffef3f92a9c3d3478b43bf7cd1b0322d9738bff820c4d7feb4aa3f636f92f5698b433ff8ec05a0ffffef3f70fa7ab17c26063f0070d3f9e206b5bfb05fd8aec096383fc0b3161f864406bf1e3bbad9ffffef3f2b50a4c090b8d1bf"
+      ],
+      "worldBoundsBits": "c4d302c2e6571ac2a4f2a5c3f0be91423f879142ed0b83c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    },
+    {
+      "name": "ply-1.ply-target-average",
+      "source": 0,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "90c3084bfdffef3feaa9a9852cdd58bf6695a0249e4a413fd1c9dce9f765d13f6cebe02379da583f7b14c307fcffef3fcafc9ae8adf6533f75f37b18ba2cd23f16a254fd1e5a41bf7ab730b750f353bff1beb426feffef3f5a5ab61f7386c1bf",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "poseBits": [
+        "90c3084bfdffef3feaa9a9852cdd58bf6695a0249e4a413fd1c9dce9f765d13f6cebe02379da583f7b14c307fcffef3fcafc9ae8adf6533f75f37b18ba2cd23f16a254fd1e5a41bf7ab730b750f353bff1beb426feffef3f5a5ab61f7386c1bf",
+        "b3c7a2c0ffffef3ff0ba6e6eee6823bf46a0409c58533e3ff2c061b76773d03fb29d625cc966233fe271fef4ffffef3f500fca80251c223f10fde809cefe9dbf0bf29772b0533ebf889a4a00d91922bfd6df65c1ffffef3f79647c0dde61c7bf"
+      ],
+      "worldBoundsBits": "421203c2db421ac227e7a5c3c5b6914261909142d20683c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    },
+    {
+      "name": "ply-2.ply-pooled-plane",
+      "source": 1,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "2a507f8cfeffef3f3672bce2f81151bfba36eb61a2e641bf9c71731524d1c3bf96c700d30313513f32f2e5a4feffef3f5cb488b47cd13d3f60f69a21bf54b53f4275629da7e2413f4424b48308db3dbfb88d5178ffffef3f79144a86e83a853f",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "poseBits": [
+        "2a507f8cfeffef3f3672bce2f81151bfba36eb61a2e641bf9c71731524d1c3bf96c700d30313513f32f2e5a4feffef3f5cb488b47cd13d3f60f69a21bf54b53f4275629da7e2413f4424b48308db3dbfb88d5178ffffef3f79144a86e83a853f",
+        "f63889deffffef3f70f64fe0718136bf885423a7c182153f285a97e5f7c89d3fe9479fbb3881363ff2e24ad9ffffef3f54498415233f253f208ef6887515943f8056aee37d8615bfee2726f3303e25bf219c23f7ffffef3f0078b1c7fa9f40bf"
+      ],
+      "worldBoundsBits": "b85904c2874c18c2f407a5c3541a9042b7d29142cb1783c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    },
+    {
+      "name": "ply-2.ply-target-average",
+      "source": 1,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "86b4f097fbffef3f389a2e4c6ba860bf248c1517a606313f966e0f37edb0b53f4cd2a40da9a7603f3e5438a7f9ffef3f7410cbeedeb2563f4913a1cf3804d83f589c3151e63531bffcd7b2aca4b056bf1d7fa6eafdffef3f70cfe97d3c2aab3f",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "poseBits": [
+        "86b4f097fbffef3f389a2e4c6ba860bf248c1517a606313f966e0f37edb0b53f4cd2a40da9a7603f3e5438a7f9ffef3f7410cbeedeb2563f4913a1cf3804d83f589c3151e63531bffcd7b2aca4b056bf1d7fa6eafdffef3f70cfe97d3c2aab3f",
+        "4e35757fffffef3f2732d41e7ac145bfa5e369c73291293fa9a9a31b0ceeb13f8a29d91efac0453fd6e1a470ffffef3f0cec6e05fe04343f881f4bc43ec3af3f70357b7d009829bf14cef885d10234bf39cabcdcffffef3f30f7805ef63e7e3f"
+      ],
+      "worldBoundsBits": "aa5804c2e44518c21b08a5c3311f9042f0d19142a01783c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    },
+    {
+      "name": "ply-3.ply-pooled-plane",
+      "source": 2,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "da0f0e13ffffef3f12b0c3eb13e446bf5cdf265b079644bf67eddeb3d289c7bf82eb77399fe5463f90cde965ffffef3f50f33f1ef530333f28af58570f4eb03f215ddda94f94443fd2a8b6fe513833bf50de087fffffef3f39510061583e863f",
+        "da0f0e13ffffef3f82eb77399fe5463f215ddda94f94443f12500f782388c73f12b0c3eb13e446bf90cde965ffffef3fd2a8b6fe513833bf7c7febda4456b0bf5cdf265b079644bf50f33f1ef530333f50de087fffffef3f553a084fb18486bf"
+      ],
+      "poseBits": [
+        "da0f0e13ffffef3f12b0c3eb13e446bf5cdf265b079644bf67eddeb3d289c7bf82eb77399fe5463f90cde965ffffef3f50f33f1ef530333f28af58570f4eb03f215ddda94f94443fd2a8b6fe513833bf50de087fffffef3f39510061583e863f",
+        "feffffffffffef3f0000000000b8fb3b000000000000103c00000000000000000000000000b8fb3b010000000000f03f000000000000f0bb0000000000000000000000000000103c000000000000f0bb000000000000f03f0000000000000000"
+      ],
+      "worldBoundsBits": "0ed204c2e80718c27b24a5c37cbd8f425fe99142b01083c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    },
+    {
+      "name": "ply-3.ply-target-average",
+      "source": 2,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "26526a07feffef3fd697a03c057056bf726f680d4914113f8a8d14f65b438e3f563f2edab86f563fda75b0cffcffef3feea6352f81b0513fc1559da31d0ad43f00458685817711bfa8f8ac4b20b051bf846cf1c5feffef3fd67398b3c16ba73f",
+        "26526a07feffef3f563f2edab86f563f00458685817711bfb71bb6b58f228fbfd697a03c057056bfda75b0cffcffef3fa8f8ac4b20b051bf3e98f6a0f708d4bf726f680d4914113feea6352f81b0513f846cf1c5feffef3fc39ecdbc3098a7bf"
+      ],
+      "poseBits": [
+        "26526a07feffef3fd697a03c057056bf726f680d4914113f8a8d14f65b438e3f563f2edab86f563fda75b0cffcffef3feea6352f81b0513fc1559da31d0ad43f00458685817711bfa8f8ac4b20b051bf846cf1c5feffef3fd67398b3c16ba73f",
+        "000000000000f03f000000000030cbbb000000000000e03b0000000000000000000000000030cbbb000000000000f03f00000000000000000000000000000000000000000000e03b0000000000000000ffffffffffffef3f0000000000000000"
+      ],
+      "worldBoundsBits": "0ed204c2e80718c27b24a5c37cbd8f425fe99142b01083c3",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    }
+  ],
+  "roundingWitness": {
+    "inputBits": "20bcbe4c0000000000000000",
+    "matrices": [
+      "000000000000f03f0000000000000000000000000000000000000000000008400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "000000000000f03f0000000000000000000000000000000000000000000008400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000"
+    ],
+    "meshBits": "20bcbe4c0000000000000000",
+    "cloud": {
+      "name": "rounding-witness",
+      "source": null,
+      "initialBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+      "matrices": [
+        "000000000000f03f0000000000000000000000000000000000000000000008400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "000000000000f03f0000000000000000000000000000000000000000000008400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000"
+      ],
+      "poseBits": [
+        "000000000000f03f0000000000000000000000000000000000000000000008400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "000000000000f03f0000000000000000000000000000000000000000000018400000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000"
+      ],
+      "worldBoundsBits": "21bcbe4c000000000000000021bcbe4c0000000000000000",
+      "sourcePayloadUnchanged": true,
+      "objectFlags": [1, 0],
+      "placementFlags": [0, 0]
+    }
+  },
+  "peakTrackedBytes": 415033792
+}

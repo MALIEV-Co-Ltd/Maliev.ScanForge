@@ -1,0 +1,115 @@
+{
+  "scope": "Original two-stage mesh geometry application and cloud placement, with bounded physical CPU-worker replay.",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "fixture": "tests/fixtures/global-fine-apply-stages-native.json",
+  "execution": "Actual original concrete mesh object setter, original mesh geometry transform controller, original vertex and face-normal workers; actual cloud object setter and original Double placement composition plus original world-bounds worker. Complete owner PLY vertex/normal carriers and controlled face normals copied from each face first-vertex normal; original global-alignment final matrix commands from both modes. Empty attachments, notify observer and absent optional render attachment. Original range construction executes; logical lane scheduling is adapted, original OS scheduler and original importer/GUI are not executed.",
+  "browser": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "All six complete-owner two-stage coordinate, vertex-normal and controlled face-normal outputs match original native hashes.",
+      "Two physical workers retain intermediate Float32 rounding within each chunk, consume staged messages, preserve authored coordinates/normals/indices and terminate."
+    ],
+    "passed": true,
+    "results": [
+      {
+        "source": 0,
+        "mode": "pooled-plane",
+        "positionsSha256": "9c2459fe597d76fef65b3a7f1030576e12b23010b1566964b1ad692d852ff5f5",
+        "normalsSha256": "74ed745504d6716c531f1373fec068eb0480d90c445f0d72d31f63a298bc0dec",
+        "faceNormalsSha256": "fdae03ab363803c1791a7f286e6e7ae7cd173e5d7c32aa781935db33073024f4",
+        "physicalWorkers": 2,
+        "elapsedMs": 41.935000002384186
+      },
+      {
+        "source": 0,
+        "mode": "target-average",
+        "positionsSha256": "2ea5ad8e1503356ac58b7c09ea7fe24ce9b5c56839d9fe2509f6d88b93a25f24",
+        "normalsSha256": "e7dd7c45ff342a9ac3402f19c444dcbfd6987995b032353a8193f884aef40413",
+        "faceNormalsSha256": "97897f132a141917cb748fc1438eddabe00dc17d8ab8b4f32b75ac149b155c80",
+        "physicalWorkers": 2,
+        "elapsedMs": 31.700000017881393
+      },
+      {
+        "source": 1,
+        "mode": "pooled-plane",
+        "positionsSha256": "6a0a59586b78f40d9d43546f645e581274e424aabf8b75f679f8fa52840642a0",
+        "normalsSha256": "09171b5d5d37b08b430b2db9ef8110a3875f1864b68243fb8fbc01335c7c0e9f",
+        "faceNormalsSha256": "3da6f5e11d3727b5fd6acdc962bb301f08672360182c5fe8c14a090d406f52dd",
+        "physicalWorkers": 2,
+        "elapsedMs": 171.91499999165535
+      },
+      {
+        "source": 1,
+        "mode": "target-average",
+        "positionsSha256": "1ad7f31b54f66318163b19ca7a33e8a40f56512487ef5b52cba74c3ecdf63178",
+        "normalsSha256": "e8c2e97e4d0dad24dd6c6633abe4606178c7af2fb27b8c84b81916635b784dd5",
+        "faceNormalsSha256": "df34b3f60550991a13617a4cfd90c91df5221e4bbfe864ae75109414ff31eb18",
+        "physicalWorkers": 2,
+        "elapsedMs": 178.52500000596046
+      },
+      {
+        "source": 2,
+        "mode": "pooled-plane",
+        "positionsSha256": "4bd03f7fb1d901feb7c714da8456f1a9bf92149fb7415d1dd5d0179a40019829",
+        "normalsSha256": "ce87e02357215c65fc4c40e2404b2ed2c8f3cebb4f69ea7e6d0bcbb485dd9e42",
+        "faceNormalsSha256": "c3dea59163d644f774bb53b33a6330847947a1ec14a58995fb73d4eb3654ecb0",
+        "physicalWorkers": 2,
+        "elapsedMs": 257.0600000023842
+      },
+      {
+        "source": 2,
+        "mode": "target-average",
+        "positionsSha256": "865a15f9f8a068b7d9030d3054093465cea17859eecb2330dbeed7f0bf5b32a1",
+        "normalsSha256": "10b49ff649cf50badf2d292fc4b2aef9fa17984b4fea135127c9f0e93f494170",
+        "faceNormalsSha256": "2add6d2aaa1021bb2a5bc02f1155317ffa8f44e50ea28631a59c1446fa016569",
+        "physicalWorkers": 2,
+        "elapsedMs": 297.2950000166893
+      }
+    ],
+    "frames": {
+      "count": 51,
+      "medianMs": 16.684999999999945,
+      "maximumMs": 49.960000000000036
+    },
+    "workers": [
+      {
+        "messages": 62,
+        "staged": 62,
+        "terminated": true
+      },
+      {
+        "messages": 54,
+        "staged": 54,
+        "terminated": true
+      }
+    ],
+    "browserErrors": [],
+    "frameBudgetPassed": true
+  },
+  "validation": {
+    "build": "passed; zero warnings and errors",
+    "fingerprint": "scanforge-b711aa524ba46e0d",
+    "focused": {
+      "passed": 2230,
+      "files": 5
+    },
+    "guiMcp": "Existing single-matrix coordinate and multi-object alignment workflows passed; complete Global Fine Align publication remains gated.",
+    "suite": {
+      "passed": 43275,
+      "skipped": 40,
+      "filesPassed": 409,
+      "filesSkipped": 13
+    },
+    "staticChecks": [
+      "Formatting passed for all ten staged files",
+      "Staged whitespace check passed",
+      "Repository prohibited-name audit passed"
+    ]
+  },
+  "limitations": [
+    "Original OS scheduling was not executed.",
+    "Face normals are controlled carriers from each face first-vertex normal; importer normal generation is not verified.",
+    "Browser timing excludes input parsing, Entity assembly, full-scene rendering and public Apply.",
+    "Generic mesh template setter is statically identified only."
+  ]
+}
