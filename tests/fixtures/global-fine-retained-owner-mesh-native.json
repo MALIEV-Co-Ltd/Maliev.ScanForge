@@ -1,0 +1,394 @@
+{
+  "provenance": {
+    "procedures": [
+      "0x140b38e30",
+      "0x140b35d90",
+      "0x140a7f470",
+      "0x1403999e0",
+      "0x140399e30",
+      "0x140ae87d0"
+    ],
+    "originalTargetBuilderExecuted": true,
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "originalGlobalRebuildExecuted": true,
+    "serialSchedulingAdapter": true,
+    "crtArrayLifecycleAdapter": true,
+    "stackProbeAdapter": true,
+    "nativeUiCapture": false,
+    "bucketTolerance": 1.1920928955078125e-7
+  },
+  "cases": [
+    {
+      "sourceFile": "scan-1.stl",
+      "originalSourceSha256Recorded": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "originalSourceIdentityRechecked": false,
+      "verticesCarrier": "stl-owner-scan1-vertices.bin",
+      "trianglesCarrier": "stl-owner-scan1-triangles.bin",
+      "verticesSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+      "trianglesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+      "vertices": 139338,
+      "triangles": 273139,
+      "minimumExtent": 0.5,
+      "nodes": 60539,
+      "memberships": 639591,
+      "nodePoolCounts": [7402, 5264, 14428, 14744, 8209, 9480, 9, 1003],
+      "indexSha256": "e7f41c49ea0e5ee0ae1d0979ac5ca4355879e69cd08d80086bd7a6b0a25f9e30",
+      "neighborMasksSha256": "a6157d76c9c7530b5187c70c5995398a1436239a632759dd52f53a8a1f9d78ad",
+      "facetNormalsSha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+      "queries": [
+        {
+          "point": [
+            -1.6432554721832275, -36.29645029703776, -314.56309611002604
+          ],
+          "radius": 1,
+          "winner": 0,
+          "distanceBits": "830578e18052b93f",
+          "projectionBits": "000000c0703dfabf00000080bf2742c00000004093aa73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0703dfabf00000080bf2742c00000004093aa73c0",
+          "normalBits": "000000a02bd9a0bf000000005937c23f000000c022a8ef3f"
+        },
+        {
+          "point": [
+            -30.727909723917644, 26.655553181966145, -322.33718465169267
+          ],
+          "radius": 1,
+          "winner": 8534,
+          "distanceBits": "c3c780c6e826b23f",
+          "projectionBits": "000000007fae3ec000000040d5ac3a4000000000322674c0",
+          "edgeFlags": 2,
+          "outputBits": "000000007fae3ec000000040d5ac3a4000000000322674c0",
+          "normalBits": "000000e09165e4bf00000000d480d0bf00000020423ce73f"
+        },
+        {
+          "point": [
+            -42.97203063964844, -2.137255152066549, -324.48354695638017
+          ],
+          "radius": 1,
+          "winner": 17068,
+          "distanceBits": "1643acf7803181bf",
+          "projectionBits": "00000040747b45c0000000e08f1101c000000060bc4774c0",
+          "edgeFlags": 0,
+          "outputBits": "00000040747b45c0000000e08f1101c000000060bc4774c0",
+          "normalBits": "00000060e9c2ec3f00000080a90ddc3f000000408421783f"
+        },
+        {
+          "point": [28.702464421590168, 34.21179962158203, -324.80406290690104],
+          "radius": 1,
+          "winner": 25606,
+          "distanceBits": "648a8b7a8c5f823f",
+          "projectionBits": "000000c0bab13c40000000e08f1b4140000000c0e04c74c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0bab13c40000000e08f1b4140000000c0e04c74c0",
+          "normalBits": "00000000cd45ed3f000000402d2ed9bf000000206975b73f"
+        },
+        {
+          "point": [
+            11.176432291666666, -35.33497111002604, -314.29352416992185
+          ],
+          "radius": 1,
+          "winner": 34140,
+          "distanceBits": "398dbe347652b93f",
+          "projectionBits": "00000080845a264000000020beac41c00000000043a673c0",
+          "edgeFlags": 0,
+          "outputBits": "00000080845a264000000020beac41c00000000043a673c0",
+          "normalBits": "000000e08cd46dbf0000006014dfc23f000000606ca6ef3f"
+        },
+        {
+          "point": [-10.75381596883138, -23.71712811787923, -315.6700093587239],
+          "radius": 1,
+          "winner": 42674,
+          "distanceBits": "ec0764131539653f",
+          "projectionBits": "00000040a88025c00000002072b737c0000000a0b8ba73c0",
+          "edgeFlags": 0,
+          "outputBits": "00000040a88025c00000002072b737c0000000a0b8ba73c0",
+          "normalBits": "000000e09947efbf000000209bd9cabf000000806125973f"
+        },
+        {
+          "point": [
+            -31.264851888020832, 39.90054575602213, -326.39443562825517
+          ],
+          "radius": 1,
+          "winner": 51213,
+          "distanceBits": "9947058d60c7a8bf",
+          "projectionBits": "000000c0af383fc000000040e8f34340000000c0a46674c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0af383fc000000040e8f34340000000c0a46674c0",
+          "normalBits": "0000004059b6ec3f000000004855ba3f00000020887adbbf"
+        },
+        {
+          "point": [23.44398244222005, 36.05462773640951, -321.46023152669267],
+          "radius": 1,
+          "winner": 59745,
+          "distanceBits": "88ea09c88a75b43f",
+          "projectionBits": "000000a0117c374000000080b8034240000000c0621874c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a0117c374000000080b8034240000000c0621874c0",
+          "normalBits": "000000e01d47e0bf000000e04b77d43f000000a06494e93f"
+        },
+        {
+          "point": [
+            23.595487594604492, 28.362825393676758, -319.78663736979166
+          ],
+          "radius": 1,
+          "winner": 68280,
+          "distanceBits": "c37987411324b93f",
+          "projectionBits": "00000060fe95374000000040d5583c400000002021fe73c0",
+          "edgeFlags": 0,
+          "outputBits": "00000060fe95374000000040d5583c400000002021fe73c0",
+          "normalBits": "00000020bcf5b83f00000080da9ec43f00000060736def3f"
+        },
+        {
+          "point": [36.99166361490885, 52.720221201578774, -329.37103881835935],
+          "radius": 1,
+          "winner": 153446,
+          "distanceBits": "1e0b27fd0eea763f",
+          "projectionBits": "00000060477e4240000000007a5c4a4000000020f19574c0",
+          "edgeFlags": 0,
+          "outputBits": "00000060477e4240000000007a5c4a4000000020f19574c0",
+          "normalBits": "000000601f3ced3f00000060d5c3d9bf000000809559ad3f"
+        },
+        {
+          "point": [
+            16.144063313802082, -1.4429316123326619, -314.73403523763017
+          ],
+          "radius": 1,
+          "winner": 85350,
+          "distanceBits": "6bfd860a9849b93f",
+          "projectionBits": "000000408a253040000000408154f7bf000000404ead73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000408a253040000000408154f7bf000000404ead73c0",
+          "normalBits": "0000006051b69abf000000605fb2c33f000000609b9bef3f"
+        },
+        {
+          "point": [14.221098264058432, 25.478391647338867, -318.9842183430989],
+          "radius": 1,
+          "winner": 93885,
+          "distanceBits": "b62a21d23337b93f",
+          "projectionBits": "0000004041742c400000002064763940000000c04cf173c0",
+          "edgeFlags": 0,
+          "outputBits": "0000004041742c400000002064763940000000c04cf173c0",
+          "normalBits": "000000c0c6fdaebf0000008063b2c43f000000a0fa84ef3f"
+        },
+        {
+          "point": [-29.193438212076824, 58.15646107991537, -331.5343790690104],
+          "radius": 1,
+          "winner": 102421,
+          "distanceBits": "f107eaebb0c785bf",
+          "projectionBits": "000000a0c12f3dc0000000800e154d40000000c090b874c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a0c12f3dc0000000800e154d40000000c090b874c0",
+          "normalBits": "000000c07fb9e43f000000a0a334e83f000000a0656eb7bf"
+        },
+        {
+          "point": [30.08545176188151, 13.459949175516764, -317.3186096191406],
+          "radius": 1,
+          "winner": 110955,
+          "distanceBits": "38527793e720b93f",
+          "projectionBits": "000000e026133e40000000408ce32a40000000a0a3d673c0",
+          "edgeFlags": 0,
+          "outputBits": "000000e026133e40000000408ce32a40000000a0a3d673c0",
+          "normalBits": "000000401fc0bb3f000000006b3dc43f000000e00b68ef3f"
+        },
+        {
+          "point": [29.96104685465495, 39.98066838582357, -323.05445963541666],
+          "radius": 1,
+          "winner": 119490,
+          "distanceBits": "bacf21db79b8b23f",
+          "projectionBits": "0000008087e93d400000002094fe434000000080bb3174c0",
+          "edgeFlags": 4,
+          "outputBits": "0000008087e93d400000002094fe434000000080bb3174c0",
+          "normalBits": "00000020e390e53f000000e06723bbbf000000808865e73f"
+        },
+        {
+          "point": [13.740366299947103, -8.654011726379395, -313.6927958170573],
+          "radius": 1,
+          "winner": 128025,
+          "distanceBits": "521103236851b93f",
+          "projectionBits": "000000c0157c2b40000000203b5621c000000060a69c73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0157c2b40000000203b5621c000000060a69c73c0",
+          "normalBits": "00000060ee9294bf000000601ea5c23f00000020f4a6ef3f"
+        },
+        {
+          "point": [-6.231874465942383, -43.90813700358073, -315.5898905436198],
+          "radius": 1,
+          "winner": 136564,
+          "distanceBits": "b557cf3c40034bbf",
+          "projectionBits": "000000a042ee18c00000002044f445c00000004070b973c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a042ee18c00000002044f445c00000004070b973c0",
+          "normalBits": "000000604823efbf000000e05079cdbf00000040b31588bf"
+        },
+        {
+          "point": [
+            -30.006797790527344, 46.95136388142904, -328.37792561848954
+          ],
+          "radius": 1,
+          "winner": 145095,
+          "distanceBits": "cd1a841dc32db83f",
+          "projectionBits": "00000060c8fe3dc0000000c01676474000000060798774c0",
+          "edgeFlags": 0,
+          "outputBits": "00000060c8fe3dc0000000c01676474000000060798774c0",
+          "normalBits": "000000e0f64fbfbf000000c09382d33f000000007839ee3f"
+        },
+        {
+          "point": [36.91166687011719, 58.70894114176432, -330.7316040039062],
+          "radius": 1,
+          "winner": 153628,
+          "distanceBits": "1d7aa478e96c9bbf",
+          "projectionBits": "000000a0c976424000000060505d4d40000000a0d0ab74c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a0c976424000000060505d4d40000000a0d0ab74c0",
+          "normalBits": "00000000138ce33f00000060f3fbe73f000000c07b54d0bf"
+        },
+        {
+          "point": [35.45370229085287, 9.632272720336914, -317.8092814127604],
+          "radius": 1,
+          "winner": 162165,
+          "distanceBits": "3ca6ddb2ca6ab53f",
+          "projectionBits": "000000a022bb414000000020cd5a23400000008011de73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a022bb414000000020cd5a23400000008011de73c0",
+          "normalBits": "000000805d5eb9bf000000c08d3de1bf000000e07ec5ea3f"
+        },
+        {
+          "point": [19.2473882039388, 61.64563115437826, -330.57290242513017],
+          "radius": 1,
+          "winner": 124518,
+          "distanceBits": "fbc4d51baac98fbf",
+          "projectionBits": "000000004b3c334000000000e0d34e400000008035a974c0",
+          "edgeFlags": 0,
+          "outputBits": "000000004b3c334000000000e0d34e400000008035a974c0",
+          "normalBits": "000000e0ef78e8bf000000408ae1e33f000000a04cdac5bf"
+        },
+        {
+          "point": [6.128673871358235, 30.84664026896159, -320.0514383951823],
+          "radius": 1,
+          "winner": 179235,
+          "distanceBits": "fe7c4881306ab93f",
+          "projectionBits": "000000a00786184000000040bcd53e4000000060660274c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a00786184000000040bcd53e4000000060660274c0",
+          "normalBits": "000000207ed896bf00000040f343be3f000000e07ec4ef3f"
+        },
+        {
+          "point": [
+            -10.93752638498942, -10.977579752604166, -314.1261555989583
+          ],
+          "radius": 1,
+          "winner": 187770,
+          "distanceBits": "26de01d85736b93f",
+          "projectionBits": "00000040eedc25c0000000a0b7fc25c00000000092a373c0",
+          "edgeFlags": 0,
+          "outputBits": "00000040eedc25c0000000a0b7fc25c00000000092a373c0",
+          "normalBits": "00000040c64dafbf0000000072cec43f000000008483ef3f"
+        },
+        {
+          "point": [-29.285686492919922, 12.3382199605306, -318.93127034505204],
+          "radius": 1,
+          "winner": 196305,
+          "distanceBits": "684d004f652db93f",
+          "projectionBits": "000000c0b4463dc0000000a06ca52840000000a072f073c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0b4463dc0000000a06ca52840000000a072f073c0",
+          "normalBits": "000000c0c7b4b8bf0000002035b0c33f00000080cf77ef3f"
+        },
+        {
+          "point": [-46.1707763671875, 2.8757239977518716, -321.11843465169267],
+          "radius": 1,
+          "winner": 204843,
+          "distanceBits": "2bd79659776481bf",
+          "projectionBits": "00000060e01647c0000000005d070740000000a0e81174c0",
+          "edgeFlags": 0,
+          "outputBits": "00000060e01647c0000000005d070740000000a0e81174c0",
+          "normalBits": "00000000bbf0edbf00000060bfa2d53f000000e0c2fbb9bf"
+        },
+        {
+          "point": [13.5486478805542, -44.62924321492513, -316.15075276692704],
+          "radius": 1,
+          "winner": 213374,
+          "distanceBits": "0526f2a1aa9e99bf",
+          "projectionBits": "00000020bf242b40000000001d5046c0000000208ec273c0",
+          "edgeFlags": 0,
+          "outputBits": "00000020bf242b40000000001d5046c0000000208ec273c0",
+          "normalBits": "000000003695ed3f000000606031c13f0000008039d6d6bf"
+        },
+        {
+          "point": [39.05923207600912, -7.372034072875977, -314.784765625],
+          "radius": 1,
+          "winner": 221910,
+          "distanceBits": "7d6e2d4bf847b93f",
+          "projectionBits": "0000008049874340000000a0ac8c1dc0000000e01dae73c0",
+          "edgeFlags": 0,
+          "outputBits": "0000008049874340000000a0ac8c1dc0000000e01dae73c0",
+          "normalBits": "00000080eee1973f00000020d8e2c33f000000c0469aef3f"
+        },
+        {
+          "point": [
+            59.919097900390625, -2.5646607875823975, -320.87804768880204
+          ],
+          "radius": 1,
+          "winner": 230436,
+          "distanceBits": "6c562003190a94bf",
+          "projectionBits": "000000001af84d4000000040008b04c0000000e0140e74c0",
+          "edgeFlags": 0,
+          "outputBits": "000000001af84d4000000040008b04c0000000e0140e74c0",
+          "normalBits": "00000000dd63ef3f000000a0ceffc4bf00000000c0a7babf"
+        },
+        {
+          "point": [
+            19.461945215861004, 10.574652989705404, -319.75634358723954
+          ],
+          "radius": 1,
+          "winner": 238979,
+          "distanceBits": "87d65aa1ed8154bf",
+          "projectionBits": "000000c00176334000000020d3252540000000201afc73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c00176334000000020d3252540000000201afc73c0",
+          "normalBits": "000000203218e9bf0000002084d8e3bf00000020448394bf"
+        },
+        {
+          "point": [6.128673871358235, -7.28378963470459, -314.6284240722656],
+          "radius": 1,
+          "winner": 36519,
+          "distanceBits": "a989a8ff0ed482bf",
+          "projectionBits": "000000a03480184000000000fc191dc0000000c008aa73c0",
+          "edgeFlags": 0,
+          "outputBits": "000000a03480184000000000fc191dc0000000c008aa73c0",
+          "normalBits": "00000000222dd8bf000000a00b49ed3f0000008087ffc13f"
+        },
+        {
+          "point": [-10.53691037495931, 37.57697296142578, -322.21005859375],
+          "radius": 1,
+          "winner": 256050,
+          "distanceBits": "39be44dc9afdb83f",
+          "projectionBits": "00000080ac1025c0000000e033c74240000000c0e22474c0",
+          "edgeFlags": 0,
+          "outputBits": "00000080ac1025c0000000e033c74240000000c0e22474c0",
+          "normalBits": "000000402bc8a6bf000000c00625cb3f000000e05e3def3f"
+        },
+        {
+          "point": [-26.32114537556966, 49.31044387817383, -326.02191772460935],
+          "radius": 1,
+          "winner": 264585,
+          "distanceBits": "4d571ad654e7b23f",
+          "projectionBits": "000000c0894b3ac0000000a04ea2484000000020396174c0",
+          "edgeFlags": 0,
+          "outputBits": "000000c0894b3ac0000000a04ea2484000000020396174c0",
+          "normalBits": "000000a08498d6bf000000000e61e23f000000604da2e73f"
+        },
+        {
+          "point": [32.61023712158203, 61.89581171671549, -331.3281717936198],
+          "radius": 1,
+          "winner": 273120,
+          "distanceBits": "3f8c31615945aabf",
+          "projectionBits": "000000001152404000000040aef64e4000000000acb574c0",
+          "edgeFlags": 0,
+          "outputBits": "000000001152404000000040aef64e4000000000acb574c0",
+          "normalBits": "00000040df45e33f000000605d91e33f00000020d06be0bf"
+        }
+      ]
+    }
+  ]
+}
