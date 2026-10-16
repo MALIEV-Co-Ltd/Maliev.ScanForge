@@ -70,8 +70,9 @@ These durations vary with host load and are not a throughput guarantee.
 
 The full browser replay uses `refineGlobalScanSet`, physical scene/query workers
 and the staged geometry application workers. It matches all 19 original native
-pass snapshots, 439 queries, 57 local refinements, final states and six matrix
-commands exactly. Two physical query workers share the target preparation. They
+pass snapshots, final states and six matrix commands exactly. The port issued
+439 query batches and 57 local refinements; the individual native query-batch
+count was not independently captured. Two physical query workers share the target preparation. They
 close before two geometry workers transform all three complete entities. All five
 worker handles terminated, with no page errors, and the disposable browser closed.
 

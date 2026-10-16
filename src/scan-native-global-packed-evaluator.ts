@@ -1,4 +1,5 @@
 import { nativeGlobalTriangleDistance } from "./scan-native-global-triangle";
+import { nativeScratchStorage } from "./scan-native-target-storage";
 import {
   queryNativeGlobalPackedIndex,
   type NativeGlobalPackedIndex,
@@ -150,6 +151,7 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
       edgeFlags,
     );
   };
+  const seenTriangles = new Uint32Array(nativeScratchStorage(4096));
   return {
     surface,
     queryPacked(
@@ -170,6 +172,7 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
         filterHidden,
         scratch,
         evaluate,
+        seenTriangles,
       );
     },
     query(

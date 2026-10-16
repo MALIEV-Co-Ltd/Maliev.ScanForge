@@ -1,0 +1,190 @@
+{
+  "scope": "Bounded duplicate triangle suppression in the private shared global registration kernel",
+  "sources": [
+    {
+      "path": "src/scan-native-global-packed-index.ts",
+      "sha256": "007b876b9f949d29a345ca21f3a7607fc8f2b68268269c36a0726c2160e18d39"
+    },
+    {
+      "path": "src/scan-native-global-packed-evaluator.ts",
+      "sha256": "e93dc4ade40e2cd2b1dd6a7952fec67459f8d980c4ef9e780f0272b543b3329e"
+    },
+    {
+      "path": "tests/scan-global-compact-target.test.ts",
+      "sha256": "93b3c2a3928a5ed11bd7655b3bcbc465ef10b28f82450936e3c40611af74573e"
+    }
+  ],
+  "nativeFixtureSha256": "f59bf3f6c5394ed6916e3e5a2f513c4e8383221ac20c47f138bbe617a36a40ed",
+  "leafEvaluations": {
+    "before": 45579330,
+    "after": 35873580,
+    "removed": 9705750,
+    "percentRemoved": 21.29419190672614,
+    "perTargetQueries": 46020
+  },
+  "pairedTiming": {
+    "baselineMs": [
+      704.6882999999998, 733.0878999999986, 720.9946999999993, 729.7439999999988
+    ],
+    "candidateMs": [
+      576.8747999999996, 664.9804000000004, 638.9669999999969, 647.3796000000002
+    ],
+    "meanReductionPercent": 12.47399139260108,
+    "allResultsIdentical": true,
+    "preparationExcluded": true,
+    "limitation": "Alternating queries in one process; host load varies. This is not a full-application navigation benchmark."
+  },
+  "ownerPreparation": {
+    "elapsedMs": 10714.1127,
+    "storage": {
+      "limit": 536870912,
+      "reserved": 372701152,
+      "live": 521333648,
+      "peak": 527923964
+    },
+    "completeTargetHashComparisons": 3
+  },
+  "nativeBrowser": {
+    "passes": 19,
+    "queries": 439,
+    "localRefinements": 57,
+    "physicalQueryWorkers": 2,
+    "entities": [
+      {
+        "id": "0",
+        "values": 2458251,
+        "indexedVertices": 418014
+      },
+      {
+        "id": "1",
+        "values": 22926627,
+        "indexedVertices": 3897099
+      },
+      {
+        "id": "2",
+        "values": 29942190,
+        "indexedVertices": 5050815
+      }
+    ],
+    "exactComparedFields": ["passSnapshots", "final", "applications"],
+    "elapsedMs": 143984.8449999988,
+    "mainPageHeapPeak": 23085124,
+    "mainPageHeapSamples": 48,
+    "workers": [
+      {
+        "url": "http://127.0.0.1:5173/src/scan-global-scene-worker.ts?worker_file&type=module",
+        "terminated": true,
+        "ready": 0
+      },
+      {
+        "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+        "terminated": true,
+        "ready": 1,
+        "storage": {
+          "limit": 536870912,
+          "reserved": 372701152,
+          "live": 521333648,
+          "peak": 527923964
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5173/src/scan-global-query-worker.ts?worker_file&type=module",
+        "terminated": true,
+        "ready": 1,
+        "storage": {
+          "limit": 536870912,
+          "reserved": 521333648,
+          "live": 521345936,
+          "peak": 521421317
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5173/src/datum-transform-worker.ts?worker_file&type=module",
+        "terminated": true,
+        "ready": 0
+      },
+      {
+        "url": "http://127.0.0.1:5173/src/datum-transform-worker.ts?worker_file&type=module",
+        "terminated": true,
+        "ready": 0
+      }
+    ],
+    "errors": [],
+    "checkedCarriers": [
+      "stl-owner-scan1-vertices.bin",
+      "global-fine-source-normal-owner-scan1-normals.f32",
+      "stl-owner-scan1-triangles.bin",
+      "stl-owner-scan2-vertices.bin",
+      "global-fine-source-normal-owner-scan2-normals.f32",
+      "stl-owner-scan2-triangles.bin",
+      "stl-owner-scan3-vertices.bin",
+      "global-fine-source-normal-owner-scan3-normals.f32",
+      "stl-owner-scan3-triangles.bin"
+    ],
+    "rawResultSha256": "2231e333c8feb4559485ae674e8dd5e696f557a8ee7a844ce50d34e9fb865393",
+    "cleanup": {
+      "browserClosed": true,
+      "pid": 30116
+    }
+  },
+  "validation": {
+    "build": "passed without warnings or errors",
+    "focusedTests": 2166,
+    "focusedFiles": 17,
+    "suitePassed": 46444,
+    "suiteSkipped": 54,
+    "suiteFailed": 0,
+    "suiteSeconds": 220.63
+  },
+  "limitsUnchanged": true,
+  "publicGuiMcpSchemasChanged": false,
+  "publicGlobalWorkflowComplete": false,
+  "nativeCaseConverged": false,
+  "seededNativeComparisonComplete": false,
+  "originalSourceFilesRehashed": false,
+  "nativeOriginalUiCaptured": false,
+  "nativeOriginalFullSetterOutputCaptured": false,
+  "viewportNavigationBenchmarked": false,
+  "seededPortPreparation": {
+    "elapsedMs": 11854.2539,
+    "storage": {
+      "limit": 536870912,
+      "reserved": 372701152,
+      "live": 527746908,
+      "peak": 535893636
+    },
+    "targets": [
+      {
+        "id": 0,
+        "nodes": 76272,
+        "memberships": 717052,
+        "indexSha256": "f1fc1d703a37e5df0b0f0c568562888ed385423ad420678518c4ba28b85c31bd",
+        "facetNormalsSha256": "ef42aa1b0a0a58b45bf47736a539c5f7a75854a6fda220f6c105e3a2c7020233",
+        "neighborMasksSha256": "a6157d76c9c7530b5187c70c5995398a1436239a632759dd52f53a8a1f9d78ad"
+      },
+      {
+        "id": 1,
+        "nodes": 72894,
+        "memberships": 3676284,
+        "indexSha256": "2ce94ab0362ac1392f8d4d1a34f91e3cab3969c0b0dc1936df0404b8e10ccfd6",
+        "facetNormalsSha256": "d194d5221dc9e3ffb4d7dca99aec9d0737dcd28bb0e2ab8e9365fd92a14d35bc",
+        "neighborMasksSha256": "054a3a1446daa4308eba3d598f8130dbb6f55a645d330bbfc4c2bb1bad78f035"
+      },
+      {
+        "id": 2,
+        "nodes": 79477,
+        "memberships": 4617801,
+        "indexSha256": "e6b35d71ee703e8a8f6885b38b6cbf343124f9020d876b5ffa1fc3908133ec2b",
+        "facetNormalsSha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118",
+        "neighborMasksSha256": "8589cedf2c08aba1063f451691598e9f214b6552a4a0ff7fc823d537a771f731"
+      }
+    ],
+    "nativeCompared": false
+  },
+  "cleanupExternallyVerified": {
+    "browserPidAbsent": true,
+    "admissionAndControllerPidsAbsent": true,
+    "browserListenerPort": 51084,
+    "browserListenerAbsent": true
+  }
+}

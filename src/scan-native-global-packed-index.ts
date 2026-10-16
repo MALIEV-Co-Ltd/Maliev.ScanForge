@@ -197,10 +197,19 @@ export function queryNativeGlobalPackedIndex(
   filterHidden: boolean,
   scratch: NativeGlobalPackedIndexScratch,
   evaluate: NativeGlobalEvaluatorDistance<number>,
+  /** Opt-in for immutable triangle callbacks. Repeated triangles cannot beat a
+   * decreasing radius. The memo is exclusive to this synchronous query. */
+  seenTriangles?: Uint32Array,
 ) {
   const { values, links, memberships } = index,
     { stack } = scratch;
   stack.length = 0;
+  // Above the Float32 cutoff, a later clipped value can itself win. That route
+  // must retain the original repeated evaluations and their scratch effects.
+  const seen = Math.abs(distance[0]) <= maximum ? seenTriangles : undefined;
+  if (seen && (!(seen instanceof Uint32Array) || seen.length !== 1024))
+    throw Error("Invalid packed evaluator query memo.");
+  seen?.fill(0xffffffff);
   if (links.length) stack.push(0);
   let best: number | undefined;
   try {
@@ -234,6 +243,11 @@ export function queryNativeGlobalPackedIndex(
         end = start + links[base + 9];
       for (let slot = start; slot < end; slot++) {
         const triangle = memberships[slot];
+        if (seen) {
+          const memo = triangle & 1023;
+          if (triangle !== 0xffffffff && seen[memo] === triangle) continue;
+          seen[memo] = triangle;
+        }
         radius = Math.abs(distance[0]);
         const candidate = evaluate(
           triangle,
