@@ -456,7 +456,7 @@
   },
   {
     "name": "mesh_analyze",
-    "description": "Explicitly compute mesh topology diagnostics in a cancellable worker. Requests for unchanged geometry share the reusable processing worker and its prepared topology when weld tolerance matches; opening Edit Scan alone does not run analysis.",
+    "description": "Explicitly compute mesh topology diagnostics in a cancellable worker. Unchanged geometry reuses memory or a persistent content-, tolerance- and algorithm-version-keyed full topology cache across reopening. Result diagnostics.topologyCache reports persistent-hit, memory-hit, stored, unavailable or oversize, with topologyCacheBytes on persistent hits/writes. Opening Edit Scan alone does not run analysis; invalid or unavailable cached data falls back to analysis.",
     "readOnly": true,
     "job": true,
     "inputSchema": {

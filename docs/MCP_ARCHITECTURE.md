@@ -41,6 +41,14 @@ against that snapshot. `landmark_get` exposes the effective ordered target IDs.
 
 `scripts/mcp-server.mjs` implements MCP stdio using the official TypeScript SDK, plus the authenticated loopback HTTP queue. It never runs geometry or accesses arbitrary user files. `browser-bridge.ts` pairs explicitly, fetches command envelopes and posts structured results. `AgentConnection` owns connection controls with credentials held only in memory. The connection remains mounted while Settings closes.
 
+Topology-dependent GUI and MCP mesh operations share the processing worker's
+optional persistent topology cache. IndexedDB stores versioned full-index snapshots
+keyed by ordered source coordinates and weld tolerance, separately from project
+and recovery data. Content changes select a new entry; invalid, expired, oversized
+or unavailable entries fall back to normal analysis. The shared job diagnostics
+report cache status. See [the agent guide](AGENT_GUIDE.md) for retention limits
+and recovery behavior.
+
 The bridge's session identifier explicitly identifies the owning browser; it is independent of MCP transport/session versions. Geometry remains owned by the browser workers. There is one admission lane, not a duplicate agent worker pool. Heavy tools acknowledge a job immediately; agents read status separately. Native handles never appear in tool inspection output.
 
 ## Visual workflow

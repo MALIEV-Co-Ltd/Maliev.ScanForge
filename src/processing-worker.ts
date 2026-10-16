@@ -1,4 +1,5 @@
 import { growConnectedSelection } from "./connected-selection";
+import { preparePersistentTopology } from "./persistent-topology";
 import { refineNativeSurfaceAsync } from "./native-surface-refinement";
 import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
 import { editPointCloud } from "./point-cloud-processing";
@@ -67,6 +68,28 @@ let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
 const selectedSmoothing = new SelectedSmoothingPool();
 let scanPreview: ScanPreviewSession | undefined;
 let previewExpiry: ReturnType<typeof setTimeout> | undefined;
+function preparationTolerance(request: ProcessingRequest): number | undefined {
+  if (request.kind === "selectionMorphology") return SCAN_TOPOLOGY_TOLERANCE;
+  if (
+    request.kind === "report" ||
+    request.kind === "scanEdit" ||
+    request.kind === "repair" ||
+    request.kind === "smooth" ||
+    request.kind === "segment" ||
+    request.kind === "connectedSelection"
+  )
+    return request.tolerance ?? 1e-6;
+  // Keep transform-only and record-bounded reduction paths free of eager topology.
+  if (
+    request.positions.length / 9 <= 500_000 &&
+    ((request.kind === "scanTools" &&
+      request.operation.kind === "reduceNoise") ||
+      (request.kind === "scanPreview" &&
+        request.phase === "create" &&
+        request.operation.kind === "reduceNoise"))
+  )
+    return 1e-6;
+}
 scope.onmessage = async ({ data: incoming }) => {
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
@@ -91,6 +114,15 @@ scope.onmessage = async ({ data: incoming }) => {
     }
   }
   try {
+    const tolerance = preparationTolerance(request);
+    const persistent =
+      tolerance !== undefined && typeof indexedDB !== "undefined"
+        ? await preparePersistentTopology(request.positions, {
+            tolerance,
+            topologyCache,
+            onProgress: progress,
+          })
+        : undefined;
     let result: ProcessingResult = { kind: request.kind, diagnostics: {} };
     if (request.kind === "nativeRefine") {
       const refined = await refineNativeSurfaceAsync(request, progress);
@@ -517,6 +549,7 @@ scope.onmessage = async ({ data: incoming }) => {
           registration.principalAxesAmbiguous ?? false;
       }
     }
+    if (persistent) Object.assign(result.diagnostics, persistent);
     const transfers: Transferable[] = [];
     const successor =
       result.pointCloudEdit?.positions ??

@@ -17,8 +17,27 @@ sharing the prepared topology. Shared diagnostics stop only when their last
 observer leaves; cancellation of queued work starts no worker. Geometry edits,
 replacement, or a different tolerance invalidate reuse. Compact cached counts
 may be reused on Undo; the worker index belongs to the selected geometry.
-These caches are session-local, so reopening a file can still require one
-analysis when a topology-dependent tool is first requested.
+Prepared topology is also cached in the browser's local IndexedDB storage. The
+key includes all ordered mesh coordinates, weld tolerance, and topology/cache
+algorithm version. Reopening an unchanged STL or project in the same browser
+profile and application origin restores the full index without welding or
+building topology again. Changed mesh content or tolerance gets a new key;
+renaming a file does not. Live edit topology remains in memory; persistent
+snapshots use the canonical source-coordinate analysis.
+
+`mesh_analyze` and `mesh_process` share this cache. Their diagnostics include
+`topologyCache` (`persistent-hit`, `memory-hit`, `stored`, `unavailable`, or
+`oversize`) and `topologyCacheBytes` when a snapshot was stored/restored. Poll
+`job_get` for the result and progress such as "Restoring saved mesh topology".
+Opening Edit Scan remains lazy; first use requests the stored index.
+
+The derived cache is separate from project/recovery data and project files.
+It retains at most eight entries, 256 MiB total, 128 MiB per snapshot, with
+30-day expiry and least-recently-used eviction. Storage denial, quota failures,
+expired/incompatible/corrupt entries, or snapshots above the size cap fall back
+to ordinary analysis. Clearing browser storage removes this cache; project files
+remain independently usable. Source geometry, normal history and revision,
+lock and cancellation checks are unchanged by cache hits.
 
 ## Drag bridges and automatic continuity
 
