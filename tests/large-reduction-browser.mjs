@@ -188,6 +188,34 @@ try {
     }
     throw Error("Geometry job timeout");
   };
+  const geometryHash = async () => {
+    const exported = (
+      await job(await call("project_export", { format: "stl", visible: true }))
+    ).result;
+    const hash = createHash("sha256");
+    try {
+      // Stream coordinate bytes only; STL headers/normals are export metadata.
+      let at = 84;
+      while (at < exported.bytes) {
+        const read = (
+          await call("artifact_read", {
+            artifactId: exported.artifactId,
+            offset: at,
+            length: 262100,
+          })
+        ).result;
+        const data = Buffer.from(read.base64, "base64");
+        assert(data.length > 0 && data.length % 50 === 0);
+        for (let face = 0; face < data.length; face += 50)
+          hash.update(data.subarray(face + 12, face + 48));
+        assert.equal(read.nextOffset, at + data.length);
+        at = read.nextOffset;
+      }
+      return hash.digest("hex");
+    } finally {
+      await call("artifact_delete", { artifactId: exported.artifactId });
+    }
+  };
 
   const nx = residentFixture ? 300 : 750,
     ny = residentFixture ? 192 : 768,
@@ -293,6 +321,35 @@ try {
   console.log(
     `GUI accepted ${outputTriangles} triangles; preview + comparison ${Math.round(previewMs)} ms`,
   );
+  const guiGeometrySha256 = await geometryHash();
+  await mutate("history_seek", { index: imported.undo });
+  assert.equal(
+    (await call("project_get")).result.objects.find((o) => o.id === object.id)
+      .triangles,
+    inputTriangles,
+  );
+  await job(
+    await mutate("mesh_process", {
+      entityId: object.id,
+      operation: {
+        kind: "scanTools",
+        operation: {
+          kind: "reducePolygons",
+          mode: "percentage",
+          percentage: 50,
+          measureDeviation: true,
+          deviation: 0.05,
+          paletteThreshold: 0.05,
+        },
+      },
+    }),
+  );
+  const mcpGeometrySha256 = await geometryHash();
+  assert.equal(
+    mcpGeometrySha256,
+    guiGeometrySha256,
+    "GUI and MCP differ on the same source and 50% target",
+  );
   const secondStart = performance.now();
   await job(
     await mutate("mesh_process", {
@@ -331,6 +388,9 @@ try {
     comparisonRequired: true,
     previewPreservesSource: true,
     mcpDirectComparison: true,
+    sameInputGeometryParity: true,
+    guiGeometrySha256,
+    mcpGeometrySha256,
     errors,
   };
   console.log(JSON.stringify(ledger.result));
