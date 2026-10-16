@@ -1,0 +1,55 @@
+{
+  "scope": "Internal indexed-mesh facet/index producer connected to the packed evaluator. No public Global Fine Align capability enabled.",
+  "normalFixture": "tests/fixtures/global-fine-facet-normals-native.json",
+  "normalKernel": "0x140b35d90",
+  "normalCases": 42,
+  "normalFacets": 406,
+  "indexFixture": "tests/fixtures/alignment-target-builder.json",
+  "indexProducer": "0x140a7f470",
+  "indexCases": 5,
+  "contracts": [
+    "Double cross products and square root, Float32 denominator and stored facet normals; original degeneracy bytes.",
+    "Authored indexed vertices/triangles/flags retained; original IDs restored after hidden filtering.",
+    "Existing verified subdivision reused; owned node graph promoted in place to typed memberships.",
+    "Only complete preparation cached by immutable input/configuration identity; cancellation checked before cache retrieval.",
+    "Empty preparation can have no index, preserving query outputs on a miss."
+  ],
+  "baseline": "6cc523341cfdcc02cb1498fc15697a92fb1ee21e",
+  "build": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0,
+    "fingerprint": "scanforge-4359c16c791e6359"
+  },
+  "focused": {
+    "passed": 1730,
+    "failed": 0,
+    "skipped": 0
+  },
+  "suite": {
+    "passed": 45084,
+    "failed": 0,
+    "optionalSkipped": 40
+  },
+  "browserWorker": {
+    "cases": 392,
+    "comparisons": 784,
+    "packedComparisons": 784,
+    "extentCases": 12,
+    "facetCases": 42,
+    "builtIndexCases": 5,
+    "stackEmpty": true,
+    "workerTerminated": true,
+    "errors": [],
+    "scope": "Original facet caches, constructed indexes, supplied-tree queries and extent cases in an isolated browser Worker; not owner-scan or full alignment verification."
+  },
+  "mcp": "Internal producer only. No new public operation, schema, discovery, history or cancellation publication. Full shared GUI/MCP workflow remains required.",
+  "remaining": [
+    "Whole owner-scan normal/index/output comparisons",
+    "Reciprocal face-neighbour boundary gating",
+    "Native ready-index routing and complete multicore registration",
+    "Shared GUI/MCP preview, Apply, cancellation and history validation"
+  ],
+  "limits": "No large-scan latency/heap improvement claim. Native captures adapt scheduling/allocation; actual native concurrency and whole GUI alignment are not proved.",
+  "cleanup": "Owned browser and worker closed. Existing fixed snapshot reused after its earlier removal rejection; no cleanup removal retried."
+}

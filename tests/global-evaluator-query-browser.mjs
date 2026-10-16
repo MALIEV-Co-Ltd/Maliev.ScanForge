@@ -60,8 +60,11 @@ try {
       import {nativeGlobalEvaluatorExtent} from '${origin}/src/scan-native-global-evaluator-policy.ts';
       import {nativeGlobalPackedEvaluator} from '${origin}/src/scan-native-global-packed-evaluator.ts';
       import {packGlobalEvaluatorFixture} from '${origin}/tests/helpers/global-evaluator-packed-fixture.ts';
+      import {nativeGlobalFacetNormals,prepareNativeGlobalMeshEvaluator} from '${origin}/src/scan-native-global-surface.ts';
       const fixture=await fetch('${origin}/tests/fixtures/global-fine-evaluator-query-native.json').then(r=>r.json());
       const policy=await fetch('${origin}/tests/fixtures/global-fine-evaluator-preparation-native.json').then(r=>r.json());
+      const facets=await fetch('${origin}/tests/fixtures/global-fine-facet-normals-native.json').then(r=>r.json());
+      const construction=await fetch('${origin}/tests/fixtures/alignment-target-builder.json').then(r=>r.json());
       function prepare(s){return {
         bounds:s.bounds??[-10,-10,-10,10,10,10],center:s.center??[0,0,0],flat:!!s.flat,
         children:(s.children??[]).map(c=>c?prepare(c):undefined),
@@ -96,7 +99,19 @@ try {
         if(bits(Float32Array.of(nativeGlobalEvaluatorExtent(Float32Array.from(c.bounds))))!==c.extentBits)
           throw Error('Original extent mismatch: '+c.name);
       }
-      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,stackEmpty:scratch.stack.length===0});
+      for(const c of facets.cases){
+        const out=nativeGlobalFacetNormals(Float32Array.from(c.vertices),Uint32Array.from(c.triangles));
+        if(bits(out.normals)!==c.facetNormalBits||JSON.stringify([...out.degenerate])!==JSON.stringify(c.degenerate))
+          throw Error('Original facet cache mismatch: '+c.label);
+      }
+      const canonical=n=>n&&({bounds:[...n.bounds],center:[...n.center],inverse:[...n.inverse],depth:n.depth,triangles:[...n.triangles],children:Object.fromEntries(Object.entries(n.children).map(([id,c])=>[id,canonical(c)]))});
+      for(const c of construction.cases){
+        const input={vertices:Float32Array.from(c.points.flat(2)),triangles:Uint32Array.from({length:c.points.length*3},(_,i)=>i),flags:Uint8Array.from(c.flags),cachedBounds:c.cachedBounds??undefined,minimumExtent:c.minextent,maximumDepth:c.maxdepth,filterHidden:c.filterHidden};
+        const out=prepareNativeGlobalMeshEvaluator(input);
+        if(JSON.stringify(canonical(out.root))!==JSON.stringify(c.root))throw Error('Original constructed index mismatch: '+c.name);
+        if(prepareNativeGlobalMeshEvaluator(input)!==out)throw Error('Constructed index was rebuilt');
+      }
+      self.postMessage({cases:fixture.cases.length,comparisons,packedComparisons,extentCases:policy.cases.length,facetCases:facets.cases.length,builtIndexCases:construction.cases.length,stackEmpty:scratch.stack.length===0});
     `;
     const url = URL.createObjectURL(
       new Blob([code], { type: "text/javascript" }),
@@ -117,11 +132,13 @@ try {
   assert.equal(report.comparisons, 784);
   assert.equal(report.packedComparisons, 784);
   assert.equal(report.extentCases, 12);
+  assert.equal(report.facetCases, 42);
+  assert.equal(report.builtIndexCases, 5);
   assert.equal(report.stackEmpty, true);
   assert.equal(errors.length, 0);
   report.errors = errors;
   report.scope =
-    "Original supplied-tree record/packed queries and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification.";
+    "Original facet caches, constructed indexes, supplied-tree queries and extent cases in an isolated browser Worker; not owner-scan or full alignment verification.";
   await writeFile(
     new URL("results.json", out),
     JSON.stringify(report, null, 2),
