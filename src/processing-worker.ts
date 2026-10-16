@@ -91,6 +91,13 @@ function preparationTolerance(request: ProcessingRequest): number | undefined {
     return 1e-6;
 }
 scope.onmessage = async ({ data: incoming }) => {
+  if ("releasePreviewId" in incoming) {
+    if (scanPreview?.id === incoming.releasePreviewId) {
+      scanPreview = undefined;
+      clearTimeout(previewExpiry);
+    }
+    return;
+  }
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
@@ -104,7 +111,13 @@ scope.onmessage = async ({ data: incoming }) => {
   geometryKey = key;
   // Reconstruction replaces connectivity and does not consume retained adjacency.
   // Drop it before taking a rollback snapshot; the canonical source remains intact.
-  if (request.kind === "scanTools" && request.operation.kind === "repolygonize")
+  if (
+    (request.kind === "scanTools" &&
+      ["repolygonize", "shrinkwrap"].includes(request.operation.kind)) ||
+    (request.kind === "scanPreview" &&
+      request.phase === "create" &&
+      request.operation.kind === "shrinkwrap")
+  )
     topologyCache = {};
   const previousCache = { ...topologyCache };
   let lastProgress = -Infinity;
@@ -152,13 +165,19 @@ scope.onmessage = async ({ data: incoming }) => {
       result.pointCloudEdit = editPointCloud(request, progress);
       result.diagnostics = result.pointCloudEdit.diagnostics;
     } else if (request.kind === "scanPreview") {
-      if (request.phase === "create") {
+      if (request.phase === "release") {
+        if (scanPreview?.id === request.previewId) scanPreview = undefined;
+        clearTimeout(previewExpiry);
+        result.diagnostics.released = true;
+      } else if (request.phase === "create") {
         scanPreview = undefined;
         scanPreview = await ScanPreviewSession.create(request, {
           onProgress: progress,
           topologyCache,
         });
         result.positions = scanPreview.output.slice();
+        result.topology = scanPreview.topology;
+        Object.assign(result.diagnostics, scanPreview.diagnostics);
         result.diagnostics.summary = scanPreview.summary;
       } else {
         if (!scanPreview || scanPreview.id !== request.previewId)

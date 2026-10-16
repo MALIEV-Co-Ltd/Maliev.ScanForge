@@ -1,3 +1,4 @@
+import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
 import type { Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { analyzeMesh } from "./mesh-processing";
@@ -18,6 +19,10 @@ import {
 } from "./scan-tools-transforms";
 
 export type ScanToolOperation =
+  | ({ kind: "shrinkwrap" } & Omit<
+      ShrinkwrapOptions,
+      "signal" | "onProgress" | "topologyCache"
+    >)
   | {
       kind: "reducePolygons";
       mode: "triangles" | "percentage" | "deviation";
@@ -63,6 +68,8 @@ export function runScanTool(
       return reducePolygonsWithComparison(positions, operation, options);
     case "reduceNoise":
       return reduceScanNoise(positions, { ...operation, ...options });
+    case "shrinkwrap":
+      return shrinkwrapScanMesh(positions, { ...operation, ...options });
     case "repolygonize":
       return repolygonizeScanMesh(positions, { ...operation, ...options });
     case "scaleMesh":

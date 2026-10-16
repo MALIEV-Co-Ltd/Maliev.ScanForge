@@ -59,3 +59,12 @@ export function acquireProcessingSession(
   };
 }
 globalThis.addEventListener?.("pagehide", releaseProcessingSession);
+
+/** Drop only the matching disposable preview in an existing worker; never create a cleanup worker. */
+export function releaseProcessingPreview(
+  positions: Positions,
+  previewId: string,
+) {
+  if (retained?.positions === positions)
+    retained.worker.postMessage({ releasePreviewId: previewId });
+}

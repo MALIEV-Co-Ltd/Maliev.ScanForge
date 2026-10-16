@@ -605,6 +605,51 @@
                       "properties": {
                         "kind": {
                           "type": "string",
+                          "enum": ["shrinkwrap"]
+                        },
+                        "sampleInterval": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "default": 0.5,
+                          "description": "Requested sampling spacing in mm; never silently coarsened."
+                        },
+                        "gapFill": {
+                          "type": "number",
+                          "minimum": 0,
+                          "default": 0,
+                          "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+                        },
+                        "organicShape": {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "extraThickness": {
+                          "type": "number",
+                          "minimum": 0,
+                          "default": 0,
+                          "description": "Additional outward offset in mm, tapering at local fixed seams."
+                        },
+                        "maxDeviation": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "default": 0.1,
+                          "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
+                        },
+                        "scope": {
+                          "type": "string",
+                          "enum": ["whole", "selected", "isolated"],
+                          "default": "whole",
+                          "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+                        }
+                      },
+                      "required": ["kind"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
                           "enum": ["repolygonize"]
                         },
                         "resolution": {
@@ -1208,7 +1253,7 @@
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize: optional additional aligned raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
+          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"
@@ -5703,6 +5748,104 @@
         "sessionId",
         "expectedSessionVersion"
       ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "scan_preview",
+    "description": "Preview ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["create", "compare", "accept", "cancel"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previewId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["shrinkwrap"]
+            },
+            "sampleInterval": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 0.5,
+              "description": "Requested sampling spacing in mm; never silently coarsened."
+            },
+            "gapFill": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+            },
+            "organicShape": {
+              "type": "boolean",
+              "default": false
+            },
+            "extraThickness": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Additional outward offset in mm, tapering at local fixed seams."
+            },
+            "maxDeviation": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 0.1,
+              "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["whole", "selected", "isolated"],
+              "default": "whole",
+              "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+            }
+          },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        "targetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "deviation": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 0.1
+        },
+        "createNew": {
+          "type": "boolean",
+          "default": false
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["action", "entityId", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
   }

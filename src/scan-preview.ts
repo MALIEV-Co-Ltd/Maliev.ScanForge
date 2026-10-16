@@ -1,3 +1,4 @@
+import { compareShrinkwrapSurface } from "./scan-shrinkwrap-comparison";
 import {
   analyzeMesh,
   type MeshProcessingOptions,
@@ -19,6 +20,7 @@ export type ScanPreviewRequest = {
   previewId: string;
 } & (
   | { phase: "create"; operation: ScanToolOperation }
+  | { phase: "release" }
   | {
       phase: "compare";
       deviation: number;
@@ -33,10 +35,17 @@ export class ScanPreviewSession {
   private constructor(
     readonly id: string,
     readonly kind:
-      "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh",
+      | "reduceNoise"
+      | "reducePolygons"
+      | "scaleMesh"
+      | "mirrorMesh"
+      | "shrinkwrap",
     readonly original: MeshTopology | undefined,
     readonly output: Float32Array,
     readonly summary: string,
+    readonly diagnostics?: Record<string, unknown>,
+    readonly topology?: import("./processing-client").TopologySummary,
+    private readonly sourcePositions?: Positions,
   ) {}
   static async create(
     request: Extract<ScanPreviewRequest, { phase: "create" }>,
@@ -48,13 +57,16 @@ export class ScanPreviewSession {
       operation.kind !== "reduceNoise" &&
       operation.kind !== "reducePolygons" &&
       operation.kind !== "scaleMesh" &&
-      operation.kind !== "mirrorMesh"
+      operation.kind !== "mirrorMesh" &&
+      operation.kind !== "shrinkwrap"
     )
       throw new Error("This tool does not support mesh preview.");
     // Transforms read the original coordinates directly and need no welding or
     // adjacency. Only the two comparison tools retain indexed source topology.
     const original =
-      operation.kind === "scaleMesh" || operation.kind === "mirrorMesh"
+      operation.kind === "scaleMesh" ||
+      operation.kind === "mirrorMesh" ||
+      operation.kind === "shrinkwrap"
         ? undefined
         : analyzeMesh(request.positions, {
             ...options,
@@ -80,7 +92,8 @@ export class ScanPreviewSession {
               positions: request.positions,
               operation:
                 operation.kind === "scaleMesh" ||
-                operation.kind === "mirrorMesh"
+                operation.kind === "mirrorMesh" ||
+                operation.kind === "shrinkwrap"
                   ? operation
                   : { ...operation, measureDeviation: false },
             },
@@ -92,6 +105,9 @@ export class ScanPreviewSession {
       original,
       outcome.positions,
       outcome.summary,
+      outcome.diagnostics,
+      outcome.topology,
+      operation.kind === "shrinkwrap" ? request.positions : undefined,
     );
   }
   compare(
@@ -100,6 +116,15 @@ export class ScanPreviewSession {
     options: MeshProcessingOptions = {},
     displayRange?: number,
   ) {
+    if (this.kind === "shrinkwrap")
+      return compareShrinkwrapSurface(
+        this.sourcePositions!,
+        this.output,
+        deviation,
+        paletteThreshold,
+        options,
+        displayRange,
+      );
     if (
       displayRange !== undefined &&
       (!Number.isFinite(displayRange) || displayRange <= 0)

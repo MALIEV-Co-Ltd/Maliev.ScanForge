@@ -225,6 +225,13 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
       "none",
       'stroke="#8bbb80" stroke-width="2"',
     ),
+  shrinkwrap:
+    mesh +
+    path(
+      "M3 4Q16 0 29 4L29 28Q16 32 3 28Z",
+      "none",
+      'stroke="#87d3e8" stroke-width="2"',
+    ),
   repolygonize:
     mesh +
     path("M8 7 3 22h26L19 4Z", "none", 'stroke="#8bbb80" stroke-width="2"'),

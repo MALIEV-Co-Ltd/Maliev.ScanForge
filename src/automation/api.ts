@@ -1,3 +1,7 @@
+import {
+  validateScanPreviewOperation,
+  releaseScanPreviewOperation,
+} from "./scan-preview-operations";
 import { releaseInteractiveSession } from "./interactive-alignment-operations";
 import type { InteractiveAlignmentState } from "../interactive-alignment-session";
 import type { InteractiveDragInput } from "../interactive-alignment-math";
@@ -76,6 +80,20 @@ export interface WorkspaceHost {
   select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
   present?(signal?: AbortSignal): Promise<void>;
   showDatumPreview?(entities: Entity[] | null): void;
+  showScanPreview?(
+    preview: {
+      id: string;
+      entityId: string;
+      source: Entity["positions"];
+      output: Float32Array;
+      summary: string;
+      settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+      comparison?: NonNullable<
+        import("../processing-client").ProcessingResult["noiseComparison"]
+      >;
+    } | null,
+  ): void;
+  clearScanPreview?(previewId: string): void;
   setSelection(entityId: string, mask: Uint8Array): void;
   setSketch(sketch: Sketch): void;
   setAuthoring?(authoring: NonNullable<Project["authoring"]>): void;
@@ -341,6 +359,12 @@ export class ApplicationApi {
     return this.revision;
   }
 
+  discardScanPreview(previewId?: string) {
+    releaseScanPreviewOperation(this.host, previewId);
+  }
+  validateScanPreview() {
+    return validateScanPreviewOperation(this.host);
+  }
   async invoke(
     command: string,
     args: Record<string, unknown> = {},
@@ -418,6 +442,11 @@ export class ApplicationApi {
           this.active?.command === "landmark_preview"
         )
           this.active.controller.abort();
+        if (args.target === "scan") {
+          if (this.active?.command === "scan_preview")
+            this.active.controller.abort();
+          this.discardScanPreview();
+        }
         if (args.target === "datum") await releaseDatumPreview(this.host);
         if (args.target === "interactive") {
           if (this.active?.command.startsWith("interactive_alignment_"))
@@ -795,6 +824,7 @@ export class ApplicationApi {
     this.disposed = true;
     this.cancelActive();
     releaseInteractiveSession(this.host);
+    releaseScanPreviewOperation(this.host);
     void releaseDatumPreview(this.host).catch(() => {});
     this.artifacts.clear();
     this.requests.clear();

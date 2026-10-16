@@ -401,15 +401,29 @@ function runProcessingRequest(
           transfers.push(copied.selection.buffer);
         }
       }
+      if (copied.kind === "scanPreview" && copied.phase === "create") {
+        copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "shrinkwrap") {
+          copied.operation.targets = copied.operation.targets?.map(clone);
+          if (copied.operation.selection) {
+            copied.operation.selection = new Uint8Array(
+              copied.operation.selection,
+            );
+            transfers.push(copied.operation.selection.buffer);
+          }
+        }
+      }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
         if (
           copied.operation.kind === "averageMesh" ||
-          copied.operation.kind === "repolygonize"
+          copied.operation.kind === "repolygonize" ||
+          copied.operation.kind === "shrinkwrap"
         )
           copied.operation.targets = copied.operation.targets?.map(clone);
         if (
-          copied.operation.kind === "reduceNoise" &&
+          (copied.operation.kind === "reduceNoise" ||
+            copied.operation.kind === "shrinkwrap") &&
           copied.operation.selection
         ) {
           copied.operation.selection = new Uint8Array(

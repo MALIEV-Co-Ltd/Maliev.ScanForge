@@ -1,3 +1,5 @@
+import { bindShrinkwrap } from "../shrinkwrap-request";
+import { createScanPreviewOperation } from "./scan-preview-operations";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
@@ -330,6 +332,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     }
   };
   const operations: Record<string, Handler> = {
+    scan_preview: createScanPreviewOperation(host),
     ...createAlignmentOperations(host),
     ...createDatumOperations(host),
     ...createInteractiveOperations(host),
@@ -707,7 +710,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (
         a.targetIds !== undefined &&
         kind !== "nativeRefine" &&
-        !(kind === "scanTools" && op.operation.kind === "repolygonize")
+        !(
+          kind === "scanTools" &&
+          ["repolygonize", "shrinkwrap"].includes(op.operation.kind)
+        )
       )
         throw new Error(
           "targetIds is supported only for surface refinement or re-polygonize.",
@@ -837,6 +843,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanTools") {
         if ("targets" in op.operation || "selection" in op.operation)
           throw new Error("Inner geometry must refer to workspace objects.");
+        if (op.operation.kind === "shrinkwrap") {
+          if (a.targetId || a.selectionOnly !== undefined)
+            throw Error(
+              "ShrinkWrap uses explicit scope and optional targetIds; omit targetId and selectionOnly.",
+            );
+          op.operation = bindShrinkwrap(
+            e,
+            { ...op.operation, targetIds: a.targetIds },
+            s.entities,
+            s.selectedId === e.id ? s.selection : undefined,
+          );
+          Object.assign(request, { operation: op.operation });
+        }
         if (op.operation.kind === "repolygonize") {
           if (a.targetId)
             throw new Error("Reconstruction uses targetIds, not targetId.");

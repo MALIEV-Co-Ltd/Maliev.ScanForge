@@ -1,3 +1,4 @@
+import { bindShrinkwrap } from "../shrinkwrap-request";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
@@ -17,6 +18,10 @@ export function scanToolRequest(
     );
   let operation: ScanToolOperation;
   switch (parameters.kind) {
+    case "shrinkwrap": {
+      operation = bindShrinkwrap(source, parameters, entities, selection);
+      break;
+    }
     case "repolygonize": {
       const targets = (parameters.targetIds ?? []).map((id) => {
         const entity = entities.find((e) => e.id === id);

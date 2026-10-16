@@ -1,3 +1,8 @@
+import {
+  cancelScanToolOnSourceChange,
+  cancelShrinkwrapOperation,
+  runShrinkwrapPreviewCommand,
+} from "./shrinkwrap-preview-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
 import { getWorkingJobStatus } from "../working-job-status";
 import {
@@ -238,6 +243,7 @@ import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
+import { releaseProcessingPreview } from "../processing-session";
 import type { WorkspaceHost } from "../automation/api";
 import { pointCloudStats } from "../point-cloud";
 import {
@@ -427,7 +433,7 @@ export function App() {
   const [scanToolResult, setScanToolResult] = useState("");
   const scanToolOutput = useRef<Entity["positions"] | null>(null);
   const [noiseComparison, setNoiseComparison] = useState<{
-    kind: "reduceNoise" | "reducePolygons";
+    kind: "reduceNoise" | "reducePolygons" | "shrinkwrap";
     entityId: string;
     source: Entity["positions"];
     output: Entity["positions"];
@@ -443,13 +449,20 @@ export function App() {
   } | null>(null);
   const [scanPreview, setScanPreview] = useState<{
     id: string;
-    kind: "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh";
+    kind:
+      | "reduceNoise"
+      | "reducePolygons"
+      | "scaleMesh"
+      | "mirrorMesh"
+      | "shrinkwrap";
     entityId: string;
     source: Entity["positions"];
     output: Float32Array;
+    settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
   } | null>(null);
   const [pickedScanReference, setPickedScanReference] = useState<string>();
   const scanToolAbort = useRef<AbortController | null>(null);
+  const scanToolAccepting = useRef(false);
   const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
   const pickScanReference = useRef<(id: string) => boolean>(() => false);
   const busy = actionBusy || processingBusy;
@@ -929,11 +942,15 @@ export function App() {
     activeScanPreview,
   ]);
   useEffect(() => {
+    if (scanPreview?.kind === "shrinkwrap")
+      queueMicrotask(() => workspaceApi.validateScanPreview());
     if (scanPreview && !activeScanPreview) {
+      if (scanPreview.kind === "shrinkwrap")
+        queueMicrotask(() => workspaceApi.discardScanPreview(scanPreview.id));
       setScanPreview(null);
       releaseProcessingSession();
     }
-  }, [scanPreview, activeScanPreview]);
+  }, [scanPreview, activeScanPreview, entities]);
   useEffect(() => {
     const comparison = activeNoiseComparison?.visible
       ? activeNoiseComparison
@@ -1767,6 +1784,7 @@ export function App() {
       dismissScanTool();
       void applyScanTool({ kind: "flipNormals" });
     },
+    shrinkwrap: () => openScanTool("shrinkwrap"),
     repolygonize: () => openScanTool("repolygonize"),
     averageMesh: () => openScanTool("averageMesh"),
     mirrorMesh: () => openScanTool("mirrorMesh"),
@@ -2224,6 +2242,9 @@ export function App() {
     dismissScanTool();
   }
   function dismissScanTool() {
+    workspaceApi.discardScanPreview();
+    if (scanPreview?.kind === "shrinkwrap")
+      releaseProcessingPreview(scanPreview.source, scanPreview.id);
     setScanToolFraction(undefined);
     setScanPreview(null);
     setNoiseComparison(null);
@@ -2280,7 +2301,10 @@ export function App() {
     return true;
   };
   useEffect(() => {
-    scanToolAbort.current?.abort();
+    cancelScanToolOnSourceChange(
+      scanToolAbort.current,
+      scanToolAccepting.current,
+    );
     scanReferencePick.current = null;
   }, [selected?.id, selected?.positions]);
   useEffect(() => {
@@ -2297,8 +2321,44 @@ export function App() {
     setPickedScanReference(undefined);
     setScanToolResult("");
   }, [selected?.id]);
+  async function runGuiShrinkwrap(args: Record<string, unknown>) {
+    const controller = new AbortController();
+    scanToolAccepting.current = args.action === "accept";
+    scanToolAbort.current = controller;
+    setError("");
+    try {
+      return await runShrinkwrapPreviewCommand(workspaceApi, args, {
+        signal: controller.signal,
+        onProgress: (fraction, stage) => {
+          setScanToolProgress(`${stage}   ${Math.round(fraction * 100)}%`);
+        },
+      });
+    } catch (error) {
+      if (controller.signal.aborted) {
+        workspaceApi.discardScanPreview();
+        setMessage("Mesh operation cancelled; original geometry retained.");
+      } else setError(errorText(error));
+      return undefined;
+    } finally {
+      if (scanToolAbort.current === controller) {
+        scanToolAbort.current = null;
+        scanToolAccepting.current = false;
+      }
+      setScanToolProgress("");
+    }
+  }
   async function applyScanTool(parameters: ScanToolParameters) {
     if (!selected || busy || scanToolAbort.current) return;
+    if (parameters.kind === "shrinkwrap") {
+      const { targetIds, ...operation } = parameters;
+      await runGuiShrinkwrap({
+        action: "create",
+        entityId: selected.id,
+        operation,
+        ...(targetIds?.length ? { targetIds } : {}),
+      });
+      return;
+    }
     const source = selected;
     const controller = new AbortController();
     const reduction = parameters.kind === "reducePolygons";
@@ -2358,7 +2418,11 @@ export function App() {
         setScanPreview({
           id: previewId,
           kind: parameters.kind as
-            "reduceNoise" | "reducePolygons" | "scaleMesh" | "mirrorMesh",
+            | "reduceNoise"
+            | "reducePolygons"
+            | "scaleMesh"
+            | "mirrorMesh"
+            | "shrinkwrap",
           entityId: source.id,
           source: source.positions,
           output: result.positions,
@@ -2437,8 +2501,21 @@ export function App() {
       }
     }
   }
-  function acceptScanPreview(options?: { createNewObject?: boolean }) {
+  async function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
+    if (activeScanPreview.kind === "shrinkwrap") {
+      const result = await runGuiShrinkwrap({
+        action: "accept",
+        entityId: activeScanPreview.entityId,
+        previewId: activeScanPreview.id,
+        createNew: options?.createNewObject ?? false,
+      });
+      if (result) {
+        dismissScanTool();
+        setMessage("Mesh preview accepted.");
+      }
+      return;
+    }
     if (
       activeScanPreview.kind === "reducePolygons" &&
       !activeNoiseComparison?.statistics
@@ -2480,6 +2557,16 @@ export function App() {
     paletteThreshold: number,
   ) {
     const preview = activeScanPreview;
+    if (preview?.kind === "shrinkwrap") {
+      if (!busy && !scanToolAbort.current)
+        await runGuiShrinkwrap({
+          action: "compare",
+          entityId: preview.entityId,
+          previewId: preview.id,
+          deviation,
+        });
+      return;
+    }
     if (
       !preview ||
       preview.kind === "scaleMesh" ||
@@ -4012,6 +4099,42 @@ export function App() {
     },
     inspectCommands: () => commandRepeat.current.inspect(),
     launchCommand: runRepeatable,
+    clearScanPreview: (previewId) => {
+      setScanPreview((current) => (current?.id === previewId ? null : current));
+      setNoiseComparison((current) =>
+        current?.kind === "shrinkwrap" ? null : current,
+      );
+    },
+    showScanPreview: (preview) => {
+      if (!preview) {
+        setScanPreview(null);
+        setNoiseComparison(null);
+        return;
+      }
+      setSelectedId(preview.entityId);
+      setScanTool("shrinkwrap");
+      setMode("inspect");
+      showTools("scanTools");
+      setScanPreview({
+        id: preview.id,
+        kind: "shrinkwrap",
+        entityId: preview.entityId,
+        source: preview.source,
+        output: preview.output,
+        settings: preview.settings,
+      });
+      setScanToolResult(preview.summary);
+      if (preview.comparison)
+        setNoiseComparison({
+          kind: "shrinkwrap",
+          entityId: preview.entityId,
+          source: preview.source,
+          output: preview.output,
+          ...preview.comparison,
+          visible: true,
+        });
+      else setNoiseComparison(null);
+    },
     showDatumPreview: (next) => {
       datumPreview.current = next ? { base: entities, entities: next } : null;
       viewport.current?.setEntities(next ?? entities, selectedId, selectedIds);
@@ -5153,8 +5276,11 @@ export function App() {
                 selected={selected}
                 triangleSelection={triangleMask}
                 tool={scanTool}
+                previewSettings={activeScanPreview?.settings}
                 disabled={actionBusy}
-                busy={processingBusy}
+                busy={
+                  processingBusy || (scanTool === "shrinkwrap" && actionBusy)
+                }
                 progress={scanToolProgress}
                 progressFraction={
                   scanTool === "reducePolygons" ? scanToolFraction : undefined
@@ -5171,13 +5297,20 @@ export function App() {
                   scanTool === "reduceNoise" ||
                   scanTool === "reducePolygons" ||
                   scanTool === "scaleMesh" ||
-                  scanTool === "mirrorMesh"
+                  scanTool === "mirrorMesh" ||
+                  scanTool === "shrinkwrap"
                     ? acceptScanPreview
                     : undefined
                 }
-                onInvalidatePreview={() => setScanPreview(null)}
+                onInvalidatePreview={() => {
+                  workspaceApi.discardScanPreview();
+                  setScanPreview(null);
+                  setNoiseComparison(null);
+                }}
                 onCompare={
-                  scanTool === "reduceNoise" || scanTool === "reducePolygons"
+                  scanTool === "reduceNoise" ||
+                  scanTool === "reducePolygons" ||
+                  scanTool === "shrinkwrap"
                     ? updateScanComparison
                     : undefined
                 }
@@ -5198,7 +5331,14 @@ export function App() {
                   )
                 }
                 onClose={closeScanTool}
-                onCancel={() => scanToolAbort.current?.abort()}
+                onCancel={() => {
+                  if (scanTool === "shrinkwrap")
+                    cancelShrinkwrapOperation(
+                      workspaceApi,
+                      scanToolAbort.current,
+                    );
+                  else scanToolAbort.current?.abort();
+                }}
                 pickedReferenceId={pickedScanReference}
                 onPickReference={(kind) => {
                   scanReferencePick.current = kind;

@@ -25,6 +25,7 @@ import { RIBBON_HELP_ICONS } from "./RibbonHelpIcons";
 export const RIBBON_RASTER_ICONS: Readonly<Record<string, string>> = {
   ...RIBBON_EXTENDED_ICONS,
   ...RIBBON_HELP_ICONS,
+  shrinkwrap: RIBBON_EXTENDED_ICONS.wrap,
   deselectAll: clearImage,
   showHidden: revealImage,
   newDocument: newDocumentImage,

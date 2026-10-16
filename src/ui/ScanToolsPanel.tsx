@@ -15,6 +15,7 @@ export type ScanToolId =
   | "reduceNoise"
   | "scaleMesh"
   | "flipNormals"
+  | "shrinkwrap"
   | "repolygonize"
   | "averageMesh"
   | "mirrorMesh"
@@ -39,6 +40,16 @@ export type ScanToolParameters =
     }
   | { kind: "scaleMesh"; factor: number; center: Vec3 }
   | { kind: "flipNormals" }
+  | {
+      kind: "shrinkwrap";
+      sampleInterval: number;
+      gapFill: number;
+      organicShape: boolean;
+      extraThickness: number;
+      maxDeviation: number;
+      scope: "whole" | "selected" | "isolated";
+      targetIds?: string[];
+    }
   | { kind: "repolygonize"; resolution: number; targetIds?: string[] }
   | { kind: "averageMesh"; targetIds: string[]; tolerance: number }
   | {
@@ -53,6 +64,7 @@ export const scanToolTitles: Record<ScanToolId, string> = {
   reduceNoise: "Reduce noise",
   scaleMesh: "Scale mesh",
   flipNormals: "Flip normals",
+  shrinkwrap: "ShrinkWrap",
   repolygonize: "Re-polygonize",
   averageMesh: "Average mesh",
   mirrorMesh: "Mirror mesh",
@@ -137,6 +149,7 @@ export interface ScanToolsPanelProps {
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
+  previewSettings?: import("../shrinkwrap-request").ShrinkwrapParameters;
   onAccept?: (options?: { createNewObject?: boolean }) => void;
   onInvalidatePreview?: () => void;
   onCompare?: (deviation: number, paletteThreshold: number) => void;
@@ -160,6 +173,7 @@ export function ScanToolsPanel({
   onToggleComparison,
   onApply,
   previewReady = false,
+  previewSettings,
   onAccept,
   onInvalidatePreview,
   onCompare,
@@ -190,9 +204,27 @@ export function ScanToolsPanel({
   const [scaleMode, setScaleMode] = useState<"factor" | "percentage">("factor");
   const [center, setCenter] = useState<Vec3>([0, 0, 0]);
   const [createNewObject, setCreateNewObject] = useState(false);
+  const [sampleInterval, setSampleInterval] = useState(0.5);
+  const [gapFill, setGapFill] = useState(0);
+  const [organicShape, setOrganicShape] = useState(false);
+  const [extraThickness, setExtraThickness] = useState(0);
+  const [maxDeviation, setMaxDeviation] = useState(0.1);
+  const [scope, setScope] = useState<"whole" | "selected" | "isolated">(
+    "whole",
+  );
   const [resolution, setResolution] = useState(0.5);
   const [tolerance, setTolerance] = useState(10);
   const [targetIds, setTargetIds] = useState<string[]>([]);
+  useEffect(() => {
+    if (!previewSettings) return;
+    setSampleInterval(previewSettings.sampleInterval ?? 0.5);
+    setGapFill(previewSettings.gapFill ?? 0);
+    setOrganicShape(previewSettings.organicShape ?? false);
+    setExtraThickness(previewSettings.extraThickness ?? 0);
+    setMaxDeviation(previewSettings.maxDeviation ?? 0.1);
+    setScope(previewSettings.scope ?? "whole");
+    setTargetIds(previewSettings.targetIds ?? []);
+  }, [previewSettings]);
   const [plane, setPlane] = useState<"OXY" | "OYZ" | "OXZ" | "object">("OXY");
   const planes = useMemo(
     () =>
@@ -273,6 +305,33 @@ export function ScanToolsPanel({
       (!positive(factor) || !center.every(Number.isFinite))
     )
       problem = "Enter a positive scale factor and finite center coordinates.";
+    if (
+      tool === "shrinkwrap" &&
+      (!positive(sampleInterval) ||
+        !positive(maxDeviation) ||
+        !Number.isFinite(gapFill) ||
+        gapFill < 0 ||
+        !Number.isFinite(extraThickness) ||
+        extraThickness < 0)
+    )
+      problem =
+        "Use positive sample interval and maximum deviation, and nonnegative gap fill and thickness.";
+    if (
+      tool === "shrinkwrap" &&
+      scope === "selected" &&
+      !triangleSelection?.some(
+        (value, index) =>
+          !!value && !selected?.meshSelection?.hidden.includes(index),
+      )
+    )
+      problem = "Select visible triangles before local ShrinkWrap.";
+    if (
+      tool === "shrinkwrap" &&
+      scope === "isolated" &&
+      !selected?.meshSelection?.hidden.length
+    )
+      problem =
+        "Isolate triangles or hide a subset before using isolated scope.";
     if (tool === "repolygonize" && !positive(resolution))
       problem = "Point resolution must be greater than zero.";
     if (
@@ -333,6 +392,18 @@ export function ScanToolsPanel({
         break;
       case "flipNormals":
         onApply({ kind: tool });
+        break;
+      case "shrinkwrap":
+        onApply({
+          kind: tool,
+          sampleInterval,
+          gapFill,
+          organicShape,
+          extraThickness,
+          maxDeviation,
+          scope,
+          targetIds: scope === "whole" ? targetIds : undefined,
+        });
         break;
       case "repolygonize":
         onApply({ kind: tool, resolution, targetIds });
@@ -522,6 +593,98 @@ export function ScanToolsPanel({
           {tool === "flipNormals" && (
             <p>Reverse the winding and normal direction of every triangle.</p>
           )}
+          {tool === "shrinkwrap" && (
+            <>
+              <Field
+                label="Sample interval (mm)"
+                value={sampleInterval}
+                min={0.001}
+                step={0.1}
+                onChange={setSampleInterval}
+              />
+              <Field
+                label="Gap fill (mm)"
+                value={gapFill}
+                min={0}
+                step={0.1}
+                onChange={setGapFill}
+              />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={organicShape}
+                  onChange={(e) => setOrganicShape(e.target.checked)}
+                />
+                Organic shape
+              </label>
+              <Field
+                label="Add extra thickness (mm)"
+                value={extraThickness}
+                min={0}
+                step={0.1}
+                onChange={setExtraThickness}
+              />
+              <Field
+                label="Maximum surface deviation (mm)"
+                value={maxDeviation}
+                min={0.001}
+                step={0.01}
+                onChange={setMaxDeviation}
+              />
+              <label>
+                Scope
+                <AppSelect
+                  value={scope}
+                  onChange={(e) => {
+                    setScope(e.target.value as typeof scope);
+                    onInvalidatePreview?.();
+                  }}
+                >
+                  <option value="whole">Whole mesh object</option>
+                  <option value="selected">Selected triangles</option>
+                  <option value="isolated">Isolated visible triangles</option>
+                </AppSelect>
+              </label>
+              {scope === "whole" &&
+                targets
+                  .filter((e) => e.visible)
+                  .map((e) => (
+                    <label key={e.id}>
+                      <input
+                        type="checkbox"
+                        checked={targetIds.includes(e.id)}
+                        onChange={(event) =>
+                          setTargetIds((current) =>
+                            event.target.checked
+                              ? [...current, e.id]
+                              : current.filter((id) => id !== e.id),
+                          )
+                        }
+                      />
+                      {e.name}
+                    </label>
+                  ))}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={createNewObject}
+                  onChange={(event) => {
+                    event.stopPropagation();
+                    setCreateNewObject(event.target.checked);
+                  }}
+                />
+                Create new object
+              </label>
+              <p>
+                Sample spacing controls detail. Thickness adds outward offset
+                and tapers at a local fixed seam. Gap fill can close intentional
+                separations; inspect the preview. Fit tolerance checks supported
+                output vertices and sampled source coverage; it is not a
+                certified global error bound. Local wrapping leaves unrelated
+                parent holes unchanged.
+              </p>
+            </>
+          )}
           {tool === "repolygonize" && (
             <>
               <Field
@@ -710,6 +873,22 @@ export function ScanToolsPanel({
           progress && <p role="status">{progress}</p>
         )}
         {result && tool !== "reducePolygons" && <p role="status">{result}</p>}
+        {onCompare && tool === "shrinkwrap" && (
+          <button
+            disabled={busy || !previewReady || !positive(maxDeviation)}
+            onClick={() => onCompare(maxDeviation, maxDeviation)}
+          >
+            Compare to source
+          </button>
+        )}
+        {tool === "shrinkwrap" && comparison && onToggleComparison && (
+          <button
+            aria-pressed={comparison.visible}
+            onClick={onToggleComparison}
+          >
+            {comparison.visible ? "Show wrapped mesh" : "Show source deviation"}
+          </button>
+        )}
         {onCompare && tool !== "reducePolygons" && measureDeviation && (
           <button
             disabled={
@@ -783,7 +962,9 @@ export function ScanToolsPanel({
             onClick={() =>
               readyToAccept
                 ? onAccept(
-                    tool === "scaleMesh" || tool === "mirrorMesh"
+                    tool === "scaleMesh" ||
+                      tool === "mirrorMesh" ||
+                      tool === "shrinkwrap"
                       ? { createNewObject }
                       : undefined,
                   )

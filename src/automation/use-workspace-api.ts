@@ -40,6 +40,10 @@ export function useWorkspaceApi(host: WorkspaceHost) {
           return current.current.launchCommand(name);
         }),
       snapshot: () => current.current.snapshot(),
+      showScanPreview: (preview) =>
+        mutate(() => current.current.showScanPreview?.(preview)),
+      clearScanPreview: (previewId) =>
+        mutate(() => current.current.clearScanPreview?.(previewId)),
       showDatumPreview: (entities) =>
         mutate(() => {
           if (!current.current.showDatumPreview)
