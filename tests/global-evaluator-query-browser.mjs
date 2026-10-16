@@ -57,7 +57,9 @@ try {
   const report = await page.evaluate(async (origin) => {
     const code = `
       import {nativeGlobalEvaluatorQuery} from '${origin}/src/scan-native-global-evaluator-query.ts';
+      import {nativeGlobalEvaluatorExtent} from '${origin}/src/scan-native-global-evaluator-policy.ts';
       const fixture=await fetch('${origin}/tests/fixtures/global-fine-evaluator-query-native.json').then(r=>r.json());
+      const policy=await fetch('${origin}/tests/fixtures/global-fine-evaluator-preparation-native.json').then(r=>r.json());
       function prepare(s){return {
         bounds:s.bounds??[-10,-10,-10,10,10,10],center:s.center??[0,0,0],flat:!!s.flat,
         children:(s.children??[]).map(c=>c?prepare(c):undefined),
@@ -78,7 +80,11 @@ try {
           comparisons++;
         }
       }
-      self.postMessage({cases:fixture.cases.length,comparisons,stackEmpty:scratch.stack.length===0});
+      for(const c of policy.cases){
+        if(bits(Float32Array.of(nativeGlobalEvaluatorExtent(Float32Array.from(c.bounds))))!==c.extentBits)
+          throw Error('Original extent mismatch: '+c.name);
+      }
+      self.postMessage({cases:fixture.cases.length,comparisons,extentCases:policy.cases.length,stackEmpty:scratch.stack.length===0});
     `;
     const url = URL.createObjectURL(
       new Blob([code], { type: "text/javascript" }),
@@ -97,11 +103,12 @@ try {
   }, origin);
   assert.equal(report.cases, 392);
   assert.equal(report.comparisons, 784);
+  assert.equal(report.extentCases, 12);
   assert.equal(report.stackEmpty, true);
   assert.equal(errors.length, 0);
   report.errors = errors;
   report.scope =
-    "Original supplied-tree query cases in an isolated browser Worker; not owner-scan alignment or index-builder verification.";
+    "Original supplied-tree query and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification.";
   await writeFile(
     new URL("results.json", out),
     JSON.stringify(report, null, 2),

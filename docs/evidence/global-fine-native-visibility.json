@@ -84,7 +84,15 @@
         }
       }
     ],
-    "meaning": "Both imported raw PLY mesh objects carry ready PointEvaluator properties. The prior empty-evaluator raw-point replays do not verify this prepared evaluator route."
+    "meaning": "Both imported raw PLY mesh objects carry nonnull PointEvaluator properties and a nonbusy completion flag of 1. The constructor initializes that flag to 1 even before an index is built, so this capture does not prove a nonnull index or an exercised evaluator route. Prior empty-evaluator raw-point replays do not verify that route.",
+    "readinessQualification": {
+      "propertyValueFlagOffset": "0x90",
+      "indexPointerNotCaptured": true,
+      "constructorInitialValue": 1,
+      "workerEntry": "0x1407b9950",
+      "constructorEvidence": "ev_11e48d37327d70e25e9e88ad59fad0185cbf3ecc47ba2ae218e1f1b6e1c91dfb",
+      "workerEvidence": "ev_5e84d1fc4487fffdc108d3b38c757064fd8270b1464b2fc3db2a64d1cca96a7a"
+    }
   },
   "staticPropertyLookup": {
     "mesh": "ev_fbc1dc2d8bccf4d4127a14940990866d23d8affe4ae8c7db70c2a644357660ac",

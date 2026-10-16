@@ -1,0 +1,262 @@
+{
+  "scope": "Original evaluator build-worker control and extent policy; supplied property/payload/build callback. Actual index construction, asynchronous dispatch, cache invalidation and complete registration remain unverified.",
+  "worker": {
+    "procedure": "0x1407b9950",
+    "evidenceId": "ev_5e84d1fc4487fffdc108d3b38c757064fd8270b1464b2fc3db2a64d1cca96a7a",
+    "chainedFragment": "0x1407b9a2f",
+    "completionPropertyOffset": "0x90",
+    "auxiliaryPropertyOffset": "0x94",
+    "embeddedEvaluatorPropertyOffset": "0x60",
+    "filterHidden": false
+  },
+  "extent": {
+    "helper": "0x14017ab00",
+    "helperEvidence": "ev_4c1ac472cce0e82ac8c6403e39c021a57ea022b9344afa5f53f8912c99e1d43e",
+    "default": 0.5,
+    "divisor": 1000,
+    "arithmetic": "Float32 axis differences, longest span promoted to Double, divide by 1000, maximum with 0.5, convert to Float32. Invalid bounds retain default."
+  },
+  "originalCapture": {
+    "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "procedure": "0x1407b9950",
+    "evidenceId": "ev_5e84d1fc4487fffdc108d3b38c757064fd8270b1464b2fc3db2a64d1cca96a7a",
+    "cases": [
+      {
+        "name": "prepare-0",
+        "bounds": [0.0, 0.0, 0.0, 1.0, 2.0, 3.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-1",
+        "bounds": [0.0, 0.0, 0.0, 500.0, 300.0, 100.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-2",
+        "bounds": [0.0, 0.0, 0.0, 500.0010070800781, 1.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5000010132789612,
+        "extentBits": "1100003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-3",
+        "bounds": [0.0, 0.0, 0.0, 1000.0, 2.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 1.0,
+        "extentBits": "0000803f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-4",
+        "bounds": [0.0, 0.0, 0.0, 2.0, 2000.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 2.0,
+        "extentBits": "00000040",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-5",
+        "bounds": [0.0, 0.0, 0.0, 2.0, 1.0, 4000.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 4.0,
+        "extentBits": "00008040",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-6",
+        "bounds": [-1000.0, -1000.0, -1000.0, 1000.0, 1000.0, 1000.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 2.0,
+        "extentBits": "00000040",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-7",
+        "bounds": [
+          100000.0, -200000.0, 300000.0, 101000.0, -199999.0, 300003.0
+        ],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 1.0,
+        "extentBits": "0000803f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-8",
+        "bounds": [1.0, 0.0, 0.0, 0.0, 1.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-9",
+        "bounds": [0.0, 2.0, 0.0, 1.0, 1.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-10",
+        "bounds": [0.0, 0.0, 3.0, 1.0, 1.0, 1.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      },
+      {
+        "name": "prepare-11",
+        "bounds": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "indexMatches": true,
+        "meshMatches": true,
+        "extent": 0.5,
+        "extentBits": "0000003f",
+        "filterHidden": 0,
+        "completionDuring": 0,
+        "auxiliaryDuring": 0,
+        "completionAfter": 1,
+        "returnValue": 0
+      }
+    ],
+    "scope": "Original mesh evaluator worker control body and longest-axis helper. Supplied existing property, already-prepared mesh payload and build callback capture caller arguments and state. Actual index construction, geometry preparation, asynchronous dispatch and full registration are not executed."
+  },
+  "readinessCorrection": "The constructor initializes completion to 1 before index construction. A captured nonnull property and flag 1 do not prove a nonnull index or actual evaluator routing.",
+  "cleanup": {
+    "executableAllocationReleased": true,
+    "browserWorkerTerminated": true,
+    "ownedBrowserClosed": true,
+    "temporarySnapshotRemoval": "Automatic approval review rejected the snapshot/dependency-junction removal command with only blocked by policy. The temporary snapshot is retained; no removal is claimed.",
+    "temporarySnapshot": "B:/temp/scanforge-global-evaluator-policy-20261016-0534"
+  },
+  "remaining": [
+    "Actual nonnull evaluator index during native GUI execution",
+    "Dispatch and geometry-invalidation triggers",
+    "Packed provider integration and owner-scan comparisons",
+    "Shared GUI/MCP publication and cancellation/history validation"
+  ],
+  "dispatcher": {
+    "procedure": "0x1407bafd0",
+    "evidenceId": "ev_fadd05761163d651aaad750ad569c555d9a54e3ead4b23f0a2218ce5555ce6b4",
+    "existingProperty": "Set word at value +0x94 to 1; poll completion at +0x90 until nonzero, using 50 ms sleeps.",
+    "newBuild": "Reuse/create property object; write property value +0x58 from dispatch context +0x1950; clear completion; invoke thread dispatch with original worker and mesh object. The meaning of the pointer field is not established.",
+    "scope": "Static control flow. Actual threading, invalidation triggers and full geometry rebuild were not executed by this capture.",
+    "cacheLimit": "Existing property-object identity does not establish an already-built immutable index cache."
+  },
+  "applicationValidation": {
+    "scope": "Internal mesh-worker extent policy only. Lifecycle observations are original execution/static evidence; application asynchronous index lifecycle is not implemented by this slice.",
+    "currentTreeBuild": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "fingerprint": "scanforge-3fe0ed38e922ca49",
+      "includesConcurrentWork": true
+    },
+    "focused": {
+      "passed": 1271,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sharedTreeSuite": {
+      "passed": 44689,
+      "failed": 3,
+      "optionalSkipped": 40,
+      "failures": [
+        "noise-comparison-overlay: disposal expects bridge state added by concurrent edits",
+        "scan-bridge-geometry: curvature output equals tangent output",
+        "viewport-passive-pointer: test event lacks preventDefault after concurrent viewport change"
+      ]
+    },
+    "isolatedSnapshot": {
+      "baseline": "4a97812bedc6b03115e9533c532ca8c7d6032526",
+      "contents": "Committed baseline plus seven owned evaluator policy/evidence/browser-test files; concurrent edits excluded.",
+      "build": {
+        "passed": true,
+        "warnings": 0,
+        "errors": 0,
+        "fingerprint": "scanforge-4217090dbf44de18"
+      },
+      "focused": {
+        "passed": 1271,
+        "failed": 0,
+        "skipped": 0
+      },
+      "suite": {
+        "passed": 44624,
+        "failed": 0,
+        "optionalSkipped": 40
+      }
+    },
+    "browserWorker": {
+      "cases": 392,
+      "comparisons": 784,
+      "extentCases": 12,
+      "stackEmpty": true,
+      "workerTerminated": true,
+      "errors": [],
+      "scope": "Original supplied-tree query and mesh-worker extent cases in an isolated browser Worker; not owner-scan alignment or index-builder verification."
+    },
+    "mcp": "No public GUI/MCP capability, schema or discovery changes. Complete evaluator provider and public alignment remain gated."
+  }
+}
