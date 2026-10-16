@@ -1,0 +1,43 @@
+{
+  "loadedImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "constructor": {
+    "address": "0x140d57960",
+    "evidenceId": "ev_484c7a6da89cb45b73b5e61bc3c3a48bbfdad645d18899d0d27fa272df345c10"
+  },
+  "childInsertion": {
+    "address": "0x140d57240",
+    "evidenceId": "ev_1769af479d66d745b2ecd3a3628d7aef5e5c8e33bc292cca194e727cb26822b4"
+  },
+  "rttiReads": [
+    {
+      "vtable": "0x140ec1de0",
+      "locator": "0x1412e7cd8",
+      "locatorFields": [1, 0, 0, 22933328, 19823872, 19823832],
+      "typeDescriptorRva": "0x15def50",
+      "rtti": ".?AVcGroupObject@@",
+      "locatorBytes": "01000000000000000000000050ef5d01007d2e01d87c2e01"
+    },
+    {
+      "vtable": "0x140ec2098",
+      "locator": "0x1412e7df8",
+      "locatorFields": [1, 728, 4, 22933328, 19823872, 19824120],
+      "typeDescriptorRva": "0x15def50",
+      "rtti": ".?AVcGroupObject@@",
+      "locatorBytes": "01000000d80200000400000050ef5d01007d2e01f87d2e01"
+    },
+    {
+      "vtable": "0x140ec20b8",
+      "locator": "0x1412e7e20",
+      "locatorFields": [1, 744, 4, 22933328, 19823872, 19824160],
+      "typeDescriptorRva": "0x15def50",
+      "rtti": ".?AVcGroupObject@@",
+      "locatorBytes": "01000000e80200000400000050ef5d01007d2e01207e2e01"
+    }
+  ],
+  "observations": [
+    "The constructor writes the three listed cGroupObject virtual tables.",
+    "Child insertion queries interface 0x141176d28 on its collection owner and inserts the supplied object into an ordered linked collection.",
+    "The alignment controller creates one temporary group adapter per admitted scan and attaches that scan through 0x1407c8570."
+  ],
+  "scope": "Static REA pseudocode and independent digest-verified loaded-image RTTI reads. No original constructor execution, GUI admission, child payload identity, evaluator production or public editor workflow is proven by this record."
+}
