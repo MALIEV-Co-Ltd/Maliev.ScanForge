@@ -7,6 +7,8 @@ export interface NativeAlignmentEdgeRecords {
   readonly kind: "compact" | "map";
   /** Live table storage only; not total process memory. Unknown for Map. */
   readonly byteLength: number | undefined;
+  /** Release private scratch after linking; idempotent, including after abort. */
+  dispose(): void;
 }
 
 function hash(from: number, to: number) {
@@ -34,6 +36,10 @@ export function createNativeAlignmentEdgeRecords(
   edgeSlots: number,
   options: { signal?: AbortSignal; expectedEntries?: number } = {},
 ): NativeAlignmentEdgeRecords {
+  let disposed = false;
+  const active = () => {
+    if (disposed) throw Error("Directed-edge directory is disposed.");
+  };
   if (
     !Number.isSafeInteger(vertexCount) ||
     vertexCount < 0 ||
@@ -71,19 +77,30 @@ export function createNativeAlignmentEdgeRecords(
     const records = new Map<string, number>();
     return {
       kind: "map",
-      byteLength: undefined,
+      get byteLength() {
+        return disposed ? 0 : undefined;
+      },
       get size() {
         return records.size;
       },
-      get: (from, to) => records.get(`${from}:${to}`),
+      get: (from, to) => {
+        active();
+        return records.get(`${from}:${to}`);
+      },
       set(from, to, value) {
+        active();
         validate(from, to, value);
         records.set(`${from}:${to}`, value);
       },
       remember(from, to, value) {
+        active();
         validate(from, to, value);
         const key = `${from}:${to}`;
         if (!records.has(key)) records.set(key, value);
+      },
+      dispose() {
+        disposed = true;
+        records.clear();
       },
     };
   }
@@ -147,6 +164,7 @@ export function createNativeAlignmentEdgeRecords(
     release(oldValues.buffer);
   };
   const put = (from: number, to: number, value: number, firstOnly: boolean) => {
+    active();
     validate(from, to, value);
     let slot = locate(from, to);
     if (values[slot]) {
@@ -171,10 +189,20 @@ export function createNativeAlignmentEdgeRecords(
       return keys.byteLength + values.byteLength;
     },
     get(from, to) {
+      active();
       const value = values[locate(from, to)];
       return value ? (value > 0 ? value - 1 : value) : undefined;
     },
     set: (from, to, value) => put(from, to, value, false),
     remember: (from, to, value) => put(from, to, value, true),
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      release(keys.buffer);
+      release(values.buffer);
+      keys = new Uint32Array();
+      values = new Int32Array();
+      count = 0;
+    },
   };
 }

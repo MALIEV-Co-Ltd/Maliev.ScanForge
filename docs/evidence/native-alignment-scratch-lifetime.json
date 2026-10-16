@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-16T12:13:12.011Z",
+  "baselineCommit": "6dad7f4",
+  "runtime": "v24.13.1",
+  "oracleFixture": "tests/fixtures/global-fine-retained-owner-mesh-native.json",
+  "oracleSha256": "43fa5df7fed3960199135e6c42ff3dae10dc02ea933fc5d51cb5706cf4508eb5",
+  "probePath": "B:/temp/scanforge-global-evaluator-policy-20261016-0534/.resources/resident-target-probe.test.ts",
+  "probeSha256": "a74365e48368d5eeef812dfa2b90008ab6f57eb616acbd688908c85589bfca76",
+  "scope": "One Node process, three retained targets, authored inputs plus shared copies, two prepared descriptor graphs. Not a browser process or complete physical worker pool.",
+  "samplingIntervalMs": 50,
+  "startGuardMiB": 4096,
+  "runtimeMinimumFreeMiB": 1024,
+  "deadlineSeconds": 90,
+  "sharedBackingStorageCountedOnce": true,
+  "originalSourceIdentityRechecked": false,
+  "productionAdmissionMiB": 512,
+  "productionAdmissionChanged": false,
+  "fullRegistrationVerified": false,
+  "projectLoadHeapSpikeFixed": false,
+  "modes": [
+    {
+      "mode": "cached",
+      "comparisons": 198,
+      "retainedBufferBytes": 490910800,
+      "beforePrepared": {
+        "phase": "prepared",
+        "ms": 9489.9387,
+        "rss": 1041121280,
+        "heapTotal": 381091840,
+        "heapUsed": 241929504,
+        "external": 221342282,
+        "arrayBuffers": 598544380,
+        "freeBytes": 5679628288
+      },
+      "afterPrepared": {
+        "phase": "prepared",
+        "ms": 11976.0363,
+        "rss": 929652736,
+        "heapTotal": 370536448,
+        "heapUsed": 231095424,
+        "external": 120678986,
+        "arrayBuffers": 497881084,
+        "freeBytes": 5587533824
+      },
+      "releasedPreparedArrayBufferBytes": 100663296,
+      "beforeSampledPreparationPeaks": {
+        "rss": 1065545728,
+        "heapUsed": 283226008,
+        "external": 221342282,
+        "arrayBuffers": 598544380
+      },
+      "afterSampledPreparationPeaks": {
+        "rss": 1030324224,
+        "heapUsed": 309113840,
+        "external": 221342282,
+        "arrayBuffers": 598544380
+      },
+      "scans": [
+        {
+          "scan": 1,
+          "nodes": 60539,
+          "members": 639591,
+          "boundBytes": 6555336
+        },
+        {
+          "scan": 2,
+          "nodes": 52446,
+          "members": 3452946,
+          "boundBytes": 61137672
+        },
+        {
+          "scan": 3,
+          "nodes": 79477,
+          "members": 4617801,
+          "boundBytes": 79845840
+        }
+      ]
+    },
+    {
+      "mode": "compact",
+      "comparisons": 198,
+      "retainedBufferBytes": 343371952,
+      "beforePrepared": {
+        "phase": "prepared",
+        "ms": 12259.258100000001,
+        "rss": 883195904,
+        "heapTotal": 371834880,
+        "heapUsed": 233370264,
+        "external": 221336281,
+        "arrayBuffers": 451005532,
+        "freeBytes": 5421555712
+      },
+      "afterPrepared": {
+        "phase": "prepared",
+        "ms": 10850.9696,
+        "rss": 783835136,
+        "heapTotal": 372830208,
+        "heapUsed": 234426176,
+        "external": 120672985,
+        "arrayBuffers": 350342236,
+        "freeBytes": 5018189824
+      },
+      "releasedPreparedArrayBufferBytes": 100663296,
+      "beforeSampledPreparationPeaks": {
+        "rss": 920772608,
+        "heapUsed": 285657080,
+        "external": 299439382,
+        "arrayBuffers": 507304518
+      },
+      "afterSampledPreparationPeaks": {
+        "rss": 884506624,
+        "heapUsed": 317523344,
+        "external": 221336281,
+        "arrayBuffers": 451005532
+      },
+      "scans": [
+        {
+          "scan": 1,
+          "nodes": 60539,
+          "members": 639591,
+          "boundBytes": 0
+        },
+        {
+          "scan": 2,
+          "nodes": 52446,
+          "members": 3452946,
+          "boundBytes": 0
+        },
+        {
+          "scan": 3,
+          "nodes": 79477,
+          "members": 4617801,
+          "boundBytes": 0
+        }
+      ]
+    }
+  ],
+  "exclusions": [
+    "source sampling normals",
+    "raw point indexes",
+    "physical worker process overhead",
+    "browser renderer and GPU",
+    "expanded display positions and normals",
+    "project history",
+    "project-decoding intermediates"
+  ],
+  "validation": {
+    "buildFingerprint": "scanforge-c36d853822814a50",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "redLifetimeFailures": 7,
+    "focusedPassed": 295,
+    "fullPassed": 45973,
+    "fullSkipped": 49,
+    "fullFailures": 0,
+    "residentNativeComparisons": 396,
+    "browserNativeComparisons": 64,
+    "browserPoseComparisons": 2,
+    "browserFallbackComparisons": 2,
+    "browserQueryWorkers": 2,
+    "browserWorkersTerminated": 71
+  }
+}

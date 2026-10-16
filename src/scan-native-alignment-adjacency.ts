@@ -152,9 +152,24 @@ function buildAlignmentAdjacency(
       expectedEntries: Math.min(triangles.length, usedVertices * 3),
     },
   );
-  let recordCount = 0;
-  for (const bucket of Array.from(groups.keys()).sort((a, b) => a - b)) {
-    for (const face of groups.get(bucket)!) {
+  try {
+    let recordCount = 0;
+    for (const bucket of Array.from(groups.keys()).sort((a, b) => a - b)) {
+      for (const face of groups.get(bucket)!) {
+        recordCount += linkFace(
+          triangles,
+          face,
+          neighbors,
+          neighborEdges,
+          first,
+          masks,
+        );
+        if (!masks) triangleFlags[face] |= 4;
+      }
+    }
+    for (const face of fallback) {
+      if (face % 4096 === 0 && options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
       recordCount += linkFace(
         triangles,
         face,
@@ -163,30 +178,19 @@ function buildAlignmentAdjacency(
         first,
         masks,
       );
-      if (!masks) triangleFlags[face] |= 4;
     }
-  }
-  for (const face of fallback) {
-    if (face % 4096 === 0 && options.signal?.aborted)
-      throw new DOMException("Mesh operation cancelled.", "AbortError");
-    recordCount += linkFace(
-      triangles,
-      face,
+    return {
+      bounds,
+      vertexBuckets,
       neighbors,
       neighborEdges,
-      first,
-      masks,
-    );
+      triangleFlags,
+      recordCount,
+      adjacencyValid: true,
+    };
+  } finally {
+    first.dispose();
   }
-  return {
-    bounds,
-    vertexBuckets,
-    neighbors,
-    neighborEdges,
-    triangleFlags,
-    recordCount,
-    adjacencyValid: true,
-  };
 }
 
 /** Original fresh adjacency bucket worker; spatial bucket assignment and the outer fallback are separate stages. */
@@ -206,22 +210,26 @@ export function nativeLinkAlignmentBucket(
     triangles.length,
     options,
   );
-  let recordCount = 0;
-  for (let face = 0; face < triangleFlags.length; face++) {
-    if (face % 4096 === 0 && options.signal?.aborted)
-      throw new DOMException("Mesh operation cancelled.", "AbortError");
-    let included = true;
-    for (let edge = 0; edge < 3; edge++) {
-      const id = triangles[face * 3 + edge];
-      if (!Number.isSafeInteger(id) || id < 0 || id >= vertexBuckets.length)
-        throw new Error(
-          "Adjacency triangle index is outside the vertex buffer.",
-        );
-      included &&= vertexBuckets[id] === bucket;
+  try {
+    let recordCount = 0;
+    for (let face = 0; face < triangleFlags.length; face++) {
+      if (face % 4096 === 0 && options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      let included = true;
+      for (let edge = 0; edge < 3; edge++) {
+        const id = triangles[face * 3 + edge];
+        if (!Number.isSafeInteger(id) || id < 0 || id >= vertexBuckets.length)
+          throw new Error(
+            "Adjacency triangle index is outside the vertex buffer.",
+          );
+        included &&= vertexBuckets[id] === bucket;
+      }
+      if (!included) continue;
+      recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
+      triangleFlags[face] |= 4;
     }
-    if (!included) continue;
-    recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
-    triangleFlags[face] |= 4;
+    return { neighbors, neighborEdges, triangleFlags, recordCount };
+  } finally {
+    first.dispose();
   }
-  return { neighbors, neighborEdges, triangleFlags, recordCount };
 }
