@@ -1,0 +1,165 @@
+{
+  "scenario": "All three full owner PLY scans; actual original scene preparation, local refinement and outer scheduling, serial original query or default original numeric cell callbacks with ordered scheduling adapter. Application compares every pass snapshot and both final setter-command groups.",
+  "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+  "sources": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "count": 140113,
+      "pointsSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "normalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "count": 1375494,
+      "pointsSha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "normalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "count": 1865848,
+      "pointsSha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "normalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+    }
+  ],
+  "vertices": 3381455,
+  "controlledOuterCases": 17,
+  "serial": {
+    "passes": 6,
+    "allOutputBytesMatched": true,
+    "originalQueryBodyExecuted": true,
+    "peakTrackedNativeAdapterBytes": 530602301,
+    "application": {
+      "initializedMs": 5488.2127,
+      "elapsedMs": 10659.0666,
+      "queries": 121
+    }
+  },
+  "defaultNumericBranch": {
+    "passes": 4,
+    "allOutputBytesMatched": true,
+    "originalNumericCellCallbackExecuted": true,
+    "originalOsSchedulerExecuted": false,
+    "peakTrackedNativeAdapterBytes": 509453120,
+    "application": {
+      "initializedMs": 5314.330900000001,
+      "elapsedMs": 7344.587499999998,
+      "queries": 76
+    }
+  },
+  "nativeAdapterRawAllocationLimitBytes": 1610612736,
+  "browser": {
+    "browserRoute": "Browser plugin not available; isolated Playwright profile, no access to the user browser tab.",
+    "checks": [
+      "The complete default numeric outer/local/query chain matches every native pass, statistic, pose and final setter-command byte on all three full scans.",
+      "One preparation and two persistent query workers initialize once and terminate."
+    ],
+    "passed": true,
+    "physicalWorkers": 2,
+    "initializedMs": 5184.3499999940395,
+    "elapsedMs": 6850.185000002384,
+    "queries": 76,
+    "localCalls": [
+      {
+        "source": "scan-0",
+        "pass": 0,
+        "status": 0,
+        "iterations": 8
+      },
+      {
+        "source": "scan-1",
+        "pass": 0,
+        "status": 0,
+        "iterations": 8
+      },
+      {
+        "source": "scan-2",
+        "pass": 0,
+        "status": 0,
+        "iterations": 8
+      },
+      {
+        "source": "scan-2",
+        "pass": 1,
+        "status": 0,
+        "iterations": 1
+      },
+      {
+        "source": "scan-0",
+        "pass": 1,
+        "status": 0,
+        "iterations": 8
+      },
+      {
+        "source": "scan-1",
+        "pass": 1,
+        "status": 0,
+        "iterations": 2
+      },
+      {
+        "source": "scan-1",
+        "pass": 2,
+        "status": 0,
+        "iterations": 5
+      },
+      {
+        "source": "scan-2",
+        "pass": 2,
+        "status": 0,
+        "iterations": 5
+      },
+      {
+        "source": "scan-0",
+        "pass": 2,
+        "status": 0,
+        "iterations": 7
+      },
+      {
+        "source": "scan-0",
+        "pass": 3,
+        "status": 0,
+        "iterations": 1
+      },
+      {
+        "source": "scan-2",
+        "pass": 3,
+        "status": 0,
+        "iterations": 3
+      },
+      {
+        "source": "scan-1",
+        "pass": 3,
+        "status": 0,
+        "iterations": 8
+      }
+    ],
+    "passes": 4,
+    "frames": {
+      "count": 410,
+      "medianMs": 16.68000000000029,
+      "maximumMs": 33.39499999999998
+    },
+    "workers": [
+      {
+        "kind": "preparation",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "query",
+        "initialized": 1,
+        "terminated": true
+      },
+      {
+        "kind": "query",
+        "initialized": 1,
+        "terminated": true
+      }
+    ],
+    "browserErrors": [],
+    "frameBudgetPassed": true
+  },
+  "scope": "Recorded original clock inputs control sampler and outer RNG. Native cancellation boundary is fixed false in the connected replay. Metadata/storage/progress wrappers are controlled; actual geometry setters only have their command matrices recorded. No original GUI/importer, CAD-target branches or original OS scheduling are asserted. Browser RAF measures the numeric pipeline with an otherwise empty application viewport, not full-scan rendering or Apply. No public GUI/MCP operation is promoted by this private numeric slice."
+}
