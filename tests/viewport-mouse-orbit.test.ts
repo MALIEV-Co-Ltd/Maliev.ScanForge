@@ -46,6 +46,7 @@ function fixture(orthographic = false) {
     cancelViewTransition: vi.fn(),
     invalidate: vi.fn(),
     pointer: null,
+    navigationDepthPoint: vi.fn(),
   });
   return { view, camera, target, controls, mesh };
 }
@@ -105,6 +106,8 @@ it("uses the view-center surface for left-drag starting in empty space", () => {
 
 it("starts camera gestures without a full mesh scan while the surface index is unavailable", () => {
   const { view, mesh } = fixture();
+  const surface = new THREE.Vector3(1, 0, 1);
+  view.navigationDepthPoint.mockReturnValue(surface);
   mesh.geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(30_000), 1));
   const query = vi
     .spyOn(view.raycaster, "intersectObjects")
@@ -114,13 +117,39 @@ it("starts camera gestures without a full mesh scan while the surface index is u
   view.pointerDown(down());
   expect(query).not.toHaveBeenCalled();
   expect(view.mouseOrbitPointer).toBe(7);
-  expect(view.mouseOrbitPivot).toBeUndefined();
+  expect(view.navigationDepthPoint).toHaveBeenCalledOnce();
+  expect(view.mouseOrbitPivot.toArray()).toEqual(surface.toArray());
   // Readiness restores exact surface pivots on the next gesture.
   mesh.geometry.boundsTree = {} as any;
   view.pointerDown(down({ pointerId: 8 }));
   expect(query).toHaveBeenCalledOnce();
   expect(view.mouseOrbitPivot.toArray()).toEqual([1, 0, 1]);
 });
+
+it.each([false, true])(
+  "MCP surface rotation uses the same picked pivot (ortho: %s)",
+  (ortho) => {
+    const { view, camera, target } = fixture(ortho);
+    view.bounds = new THREE.Box3();
+    const surface = view.navigationSurfacePoint(
+      false,
+      new THREE.Vector2(0.4, 0),
+    );
+    expect(surface).toBeDefined();
+    const before = surface.clone().project(camera);
+    view.controlAgentView({
+      action: "rotate",
+      direction: "left",
+      degrees: 25,
+      x: 0.7,
+      y: 0.5,
+    });
+    expect(surface.clone().project(camera).distanceTo(before)).toBeLessThan(
+      1e-10,
+    );
+    expect(target.length()).toBeGreaterThan(0);
+  },
+);
 
 it("avoids linear point-cloud navigation queries without changing ordinary point picking", () => {
   const { view, mesh } = fixture();

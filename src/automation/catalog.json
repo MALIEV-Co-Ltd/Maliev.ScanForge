@@ -4385,7 +4385,7 @@
   },
   {
     "name": "viewport_control",
-    "description": "Frame all/object/active selection; set projection; rotate by degrees; orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
+    "description": "Frame all/object/active selection; set projection; rotate by degrees (optionally around the surface at normalized x/y); orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4444,6 +4444,18 @@
               "type": "number",
               "minimum": 0.1,
               "maximum": 180
+            },
+            "x": {
+              "description": "Surface orbit horizontal coordinate in normalized top-left space; requires y.",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "y": {
+              "description": "Surface orbit vertical coordinate in normalized top-left space; requires x.",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           },
           "required": [

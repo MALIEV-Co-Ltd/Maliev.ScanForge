@@ -7,6 +7,8 @@ export interface ViewportCommand {
   selection?: boolean;
   direction?: "left" | "right" | "up" | "down";
   degrees?: number;
+  x?: number;
+  y?: number;
   projection?: "orthographic" | "perspective";
   position?: [number, number, number];
   target?: [number, number, number];
@@ -114,6 +116,8 @@ export function createWorkflowOperations(
     },
     viewport_get: () => host.inspectViewport?.() ?? unavailable(),
     viewport_control: (a, c) => {
+      if (a.action === "rotate" && (a.x === undefined) !== (a.y === undefined))
+        throw new Error("Surface rotation requires both x and y.");
       if (a.action === "fit" && a.selection && !a.entityId)
         throw new Error("Selection framing requires an explicit object ID.");
       if (a.action === "fit" && a.entityId) {

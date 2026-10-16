@@ -384,6 +384,41 @@ it("validates navigation variants and refuses empty selection frames", async () 
     api.dispose();
   }
 });
+it("exposes paired normalized surface-orbit coordinates through MCP", async () => {
+  const { api, mutate, controlViewport } = setup();
+  try {
+    expect(
+      (
+        await mutate("viewport_control", {
+          action: "rotate",
+          direction: "left",
+          degrees: 15,
+          x: 0.7,
+          y: 0.4,
+        })
+      ).ok,
+    ).toBe(true);
+    expect(controlViewport).toHaveBeenLastCalledWith(
+      expect.objectContaining({ x: 0.7, y: 0.4 }),
+    );
+    for (const coords of [{ x: 0.7 }, { y: 0.4 }, { x: -0.1, y: 0.4 }]) {
+      expect(
+        (
+          await mutate("viewport_control", {
+            action: "rotate",
+            direction: "left",
+            degrees: 15,
+            ...coords,
+          })
+        ).ok,
+      ).toBe(false);
+    }
+    expect(controlViewport).toHaveBeenCalledOnce();
+  } finally {
+    api.dispose();
+  }
+});
+
 it("returns an image and readable artifact, recoverable through session metadata", async () => {
   const { api, image } = setup();
   try {

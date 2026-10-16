@@ -37,6 +37,7 @@ import {
   type DeviationDisplay,
 } from "./deviation-heatmap";
 import { NavigationPivot } from "./navigation-pivot";
+import { pickNavigationDepth } from "./navigation-depth";
 import {
   createScanBoundaryEdges,
   type ScanBoundaryPath,
@@ -530,9 +531,10 @@ export class Viewport {
 
   private navigationSurfacePoint(
     cameraCenter = false,
+    normalized?: THREE.Vector2,
   ): THREE.Vector3 | undefined {
-    const screen = new THREE.Vector2();
-    if (!cameraCenter) {
+    const screen = normalized?.clone() ?? new THREE.Vector2();
+    if (!cameraCenter && !normalized) {
       if (!this.navigationCursor) return;
       const rect = this.renderer.domElement.getBoundingClientRect();
       const { clientX, clientY } = this.navigationCursor;
@@ -555,9 +557,12 @@ export class Viewport {
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
       .map((item) => item.pointCloud ?? item.mesh);
-    // Use the stable existing pivot until every possible occluder can be
-    // queried cheaply. Skipping just one unready object could pick through it.
-    if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) return;
+    // Render one depth pixel rather than silently retaining a stale pivot or
+    // scanning a large unindexed mesh. Include every mesh to retain occlusion.
+    if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) {
+      if (meshes.some((mesh) => mesh instanceof THREE.Points)) return;
+      return this.navigationDepthPoint(meshes as THREE.Mesh[], screen);
+    }
     for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
     return this.raycaster
       .intersectObjects(meshes, false)
@@ -571,6 +576,10 @@ export class Viewport {
           ).material.clippingPlanes ?? []
         ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
       )?.point;
+  }
+
+  private navigationDepthPoint(meshes: THREE.Mesh[], screen: THREE.Vector2) {
+    return pickNavigationDepth(this.renderer, this.camera, meshes, screen);
   }
 
   /** Render and copy before WebGL clears its drawing buffer after presentation. */
@@ -622,9 +631,18 @@ export class Viewport {
     this.viewTransition = undefined;
     if (command.action === "fit")
       this.fitView(command.entityId, command.selection ? selection : undefined);
-    else if (command.action === "rotate")
-      this.rotateView(command.direction!, command.degrees!);
-    else if (command.action === "projection")
+    else if (command.action === "rotate") {
+      const pivot =
+        command.x === undefined
+          ? undefined
+          : this.navigationSurfacePoint(
+              false,
+              new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
+            );
+      if (command.x !== undefined && !pivot)
+        throw new Error("No mesh surface at the requested orbit point.");
+      this.rotateView(command.direction!, command.degrees!, pivot);
+    } else if (command.action === "projection")
       this.setProjection(command.projection!);
     else if (command.action === "sketchNormal") {
       if (!this.sketchEditor)
@@ -2568,15 +2586,18 @@ export class Viewport {
   rotateView(
     direction: "left" | "right" | "up" | "down",
     degrees: number,
+    pivot?: THREE.Vector3,
   ): void {
     if (!Number.isFinite(degrees)) return;
     this.viewTransition = undefined;
     const pixels = THREE.MathUtils.degToRad(degrees) / 0.008;
-    rotateCamera(
-      this.camera,
-      this.controls.target,
-      direction === "left" ? pixels : direction === "right" ? -pixels : 0,
-      direction === "up" ? pixels : direction === "down" ? -pixels : 0,
+    updateSurfaceOrbit(this.camera, this.controls.target, pivot, () =>
+      rotateCamera(
+        this.camera,
+        this.controls.target,
+        direction === "left" ? pixels : direction === "right" ? -pixels : 0,
+        direction === "up" ? pixels : direction === "down" ? -pixels : 0,
+      ),
     );
     this.controls.update();
     this.invalidate();
