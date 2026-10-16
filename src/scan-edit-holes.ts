@@ -435,6 +435,18 @@ export function runHoleFill(
     }
     // Partial arcs retain their chord contract; bridge rails are refined separately.
     if ((r.mode ?? "entire") === "entire") {
+      // Cap interior diagonals must not reuse edges already inside the retained
+      // mesh. Such edges would acquire extra incident faces or duplicate facets.
+      const forbiddenEdges = new Set<string>();
+      for (let a = 0; a < rimCount; a++) {
+        if (a % 128 === 0)
+          checkProgress(o, 0, "Constraining hole triangulation");
+        for (let b = a + 2; b < rimCount; b++) {
+          if (a === 0 && b === rimCount - 1) continue;
+          if (t.edges.has(edgeId(loop[a], loop[b])))
+            forbiddenEdges.add(edgeId(a, b));
+        }
+      }
       try {
         const refined = refineHolePatch(
           points,
@@ -443,6 +455,7 @@ export function runHoleFill(
           rimCount,
           surface,
           o,
+          forbiddenEdges,
         );
         triangles = refined.triangles;
       } catch (error) {

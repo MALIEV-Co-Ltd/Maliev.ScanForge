@@ -7,8 +7,15 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+// Optional extracted single-hole component: positions, rim, center and radius.
+const fixturePath = process.env.SCANFORGE_HOLE_FIXTURE;
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/hole-pit-browser/", import.meta.url);
+  out = new URL(
+    fixturePath
+      ? "../.resources/hole22-browser/"
+      : "../.resources/hole-pit-browser/",
+    import.meta.url,
+  );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -196,8 +203,8 @@ try {
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
-  const positions = [],
-    count = 32;
+  let positions = [];
+  const count = 32;
   const point = (i, r, z) => [
     r * Math.cos((i * 2 * Math.PI) / count),
     r * Math.sin((i * 2 * Math.PI) / count),
@@ -214,6 +221,47 @@ try {
         t = point(i + 1, a, za);
       positions.push(...p, ...q, ...r, ...p, ...r, ...t);
     }
+  const fixture = fixturePath
+    ? JSON.parse(await readFile(fixturePath, "utf8"))
+    : undefined;
+  if (fixture) positions = fixture.positions;
+  const center = fixture?.center ?? [0, 0, 0],
+    normal = [0, 0, 0];
+  const rim = fixture?.rim;
+  if (rim) {
+    for (let i = 0; i < rim.length; i += 3) {
+      const j = (i + 3) % rim.length,
+        a = center.map((v, k) => rim[i + k] - v),
+        b = center.map((v, k) => rim[j + k] - v);
+      normal[0] += a[1] * b[2] - a[2] * b[1];
+      normal[1] += a[2] * b[0] - a[0] * b[2];
+      normal[2] += a[0] * b[1] - a[1] * b[0];
+    }
+    const length = Math.hypot(...normal);
+    for (let k = 0; k < 3; k++) normal[k] /= -length;
+  } else normal[2] = 1;
+  const height = (p) =>
+    normal.reduce((sum, n, k) => sum + n * (p[k] - center[k]), 0);
+  const rimHeights = rim
+    ? Array.from({ length: rim.length / 3 }, (_, i) =>
+        height(rim.slice(i * 3, i * 3 + 3)),
+      )
+    : [0];
+  const minHeight = Math.min(...rimHeights),
+    maxHeight = Math.max(...rimHeights);
+  const perimeter = rim
+    ? rimHeights.reduce(
+        (sum, _, i) =>
+          sum +
+          Math.hypot(
+            ...[0, 1, 2].map(
+              (k) =>
+                rim[i * 3 + k] - rim[((i + 1) % rimHeights.length) * 3 + k],
+            ),
+          ),
+        0,
+      )
+    : 0;
   const project = {
     format: "maliev-scanforge",
     version: 1,
@@ -222,7 +270,9 @@ try {
     entities: [
       {
         id: "panel",
-        name: "Shallow panel with steep scan lip",
+        name: fixture
+          ? "Exported Hole 22 component"
+          : "Shallow panel with steep scan lip",
         kind: "mesh",
         positions: Array.from(new Float32Array(positions)),
         visible: true,
@@ -231,13 +281,18 @@ try {
       },
     ],
   };
-  const upload = (
-    await call("artifact_put", {
-      name: "panel.json",
-      offset: 0,
-      base64: Buffer.from(JSON.stringify(project)).toString("base64"),
-    })
-  ).result;
+  const bytes = Buffer.from(JSON.stringify(project));
+  let upload;
+  for (let offset = 0; offset < bytes.length; offset += 262144) {
+    upload = (
+      await call("artifact_put", {
+        name: "panel.json",
+        offset,
+        base64: bytes.subarray(offset, offset + 262144).toString("base64"),
+        ...(upload ? { artifactId: upload.artifactId } : {}),
+      })
+    ).result;
+  }
   await job(
     await mutate("project_import", {
       artifactId: upload.artifactId,
@@ -252,24 +307,29 @@ try {
   });
   await mutate("viewport_control", {
     action: "camera",
-    position: [0, 0, 45],
-    target: [0, 0, 0],
-    up: [0, 1, 0],
-    zoom: 4,
+    position: fixture
+      ? center.map((v, k) => v + normal[k] * fixture.radius * 3)
+      : [0, 0, 45],
+    target: center,
+    up: Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0],
+    zoom: fixture ? 1 : 4,
   });
   const original = await geometry(),
     beforeHistory = await history();
   const inventoryJob = await job(
     await mutate("mesh_process", {
       entityId: "panel",
-      operation: { kind: "scanEdit", action: "inventory" },
+      operation: { kind: "scanEdit", action: "inventory", tolerance: 0.001 },
     }),
   );
   const inventory = (await artifactJson(inventoryJob.result.artifact))
     .inventory;
   const hole = inventory.boundaries.findIndex(
     (b) =>
-      b.closed && b.points.every((v, i) => i % 3 === 2 || Math.abs(v) < 4.01),
+      b.closed &&
+      (fixture
+        ? Math.abs(b.length - perimeter) < 0.001
+        : b.points.every((v, i) => i % 3 === 2 || Math.abs(v) < 4.01)),
   );
   assert(hole >= 0);
   await page.getByRole("button", { name: "Edit holes", exact: true }).click();
@@ -294,10 +354,33 @@ try {
     original.positions,
   );
   let maximumHeight = 0;
-  for (let i = original.positions.length; i < gui.positions.length; i += 3)
-    maximumHeight = Math.max(maximumHeight, Math.abs(gui.positions[i + 2]));
+  for (let i = original.positions.length; i < gui.positions.length; i += 3) {
+    const h = height(gui.positions.slice(i, i + 3));
+    maximumHeight = Math.max(maximumHeight, Math.abs(h));
+    assert(
+      h >= minHeight - 0.0001 && h <= maxHeight + 0.0001,
+      `Unbounded height ${h}`,
+    );
+  }
   assert(gui.positions.length > original.positions.length);
-  assert(maximumHeight < 1e-6, `Pit depth ${maximumHeight}`);
+  if (!fixture) assert(maximumHeight < 1e-6, `Pit depth ${maximumHeight}`);
+  assert((gui.positions.length - original.positions.length) / 9 < 100000);
+  if (fixture)
+    await writeFile(new URL("gui-geometry.json", out), JSON.stringify(gui));
+  const analyzed = await job(
+    await call("mesh_analyze", { entityId: "panel", tolerance: 0.001 }),
+  );
+  const topology = analyzed.result.topology;
+  for (const key of [
+    "nonManifoldEdges",
+    "nonManifoldVertices",
+    "inconsistentEdges",
+    "degenerateTriangles",
+    "duplicateTriangles",
+    "boundaryChains",
+  ])
+    assert.equal(topology[key], 0, `${key}: ${JSON.stringify(topology)}`);
+  assert.equal(topology.boundaryLoops, fixture ? 0 : 1);
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
   await mutate("history_undo", {});
   assert.deepEqual((await geometry()).positions, original.positions);
@@ -313,6 +396,7 @@ try {
         indices: [hole],
         algorithm: "automatic",
         mode: "entire",
+        tolerance: 0.001,
       },
     }),
   );
@@ -325,6 +409,9 @@ try {
     undoRedo: true,
     sourcePreserved: true,
     maximumHeight,
+    topology,
+    sourceBoundary: fixture?.sourceBoundary,
+    perimeter,
     diagnostics: mcp.result.diagnostics,
     pageErrors: errors,
   };

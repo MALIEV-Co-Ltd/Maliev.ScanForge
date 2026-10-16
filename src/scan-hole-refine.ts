@@ -73,6 +73,7 @@ export function refineHolePatch(
   rimCount: number,
   surface: (p: Vector2) => Vec3,
   options: MeshProcessingOptions,
+  forbiddenEdges: ReadonlySet<string> = new Set(),
 ): { points: Vec3[]; triangles: Face[] } {
   const rim = new Set<string>();
   const lengths: number[] = [];
@@ -113,6 +114,7 @@ export function refineHolePatch(
     return target;
   };
   let triangles = seed.map((f) => [...f] as Face);
+  legalizePatch(projected, triangles, options, forbiddenEdges, 0);
   const cap = 100000;
   for (let pass = 0; pass < 32; pass++) {
     checkProgress(
@@ -128,8 +130,9 @@ export function refineHolePatch(
           key = edgeId(a, b);
         if (rim.has(key) || splits.has(key)) continue;
         if (
+          !forbiddenEdges.has(key) &&
           projected[a].distanceTo(projected[b]) <=
-          targetSize(projected[a], projected[b])
+            targetSize(projected[a], projected[b])
         )
           continue;
         const p = projected[a].clone().add(projected[b]).multiplyScalar(0.5);
@@ -138,7 +141,15 @@ export function refineHolePatch(
         points.push(surface(p));
       }
     if (!splits.size) {
-      improvePatch(points, projected, triangles, rimCount, surface, options);
+      improvePatch(
+        points,
+        projected,
+        triangles,
+        rimCount,
+        surface,
+        options,
+        forbiddenEdges,
+      );
       return { points, triangles };
     }
     const next: Face[] = [];
@@ -170,6 +181,93 @@ export function refineHolePatch(
   );
 }
 
+/** Legalize constrained interior edges before density refinement so long ear-cut
+ * fans do not multiply into slivers. Rim edges have one incident patch face. */
+function legalizePatch(
+  projected: Vector2[],
+  triangles: Face[],
+  options: MeshProcessingOptions,
+  forbiddenEdges: ReadonlySet<string>,
+  progress = 0.9,
+) {
+  checkProgress(options, progress, "Optimizing hole triangulation");
+  type Use = { face: number; a: number; b: number; c: number };
+  const edges = new Map<string, Use[]>();
+  const queue: string[] = [],
+    pending = new Set<string>();
+  const enqueue = (key: string) => {
+    if (edges.get(key)?.length === 2 && !pending.has(key)) {
+      pending.add(key);
+      queue.push(key);
+    }
+  };
+  const add = (face: number) => {
+    const tri = triangles[face];
+    for (let k = 0; k < 3; k++) {
+      const a = tri[k],
+        b = tri[(k + 1) % 3],
+        c = tri[(k + 2) % 3],
+        key = edgeId(a, b);
+      const uses = edges.get(key) ?? [];
+      uses.push({ face, a, b, c });
+      edges.set(key, uses);
+      enqueue(key);
+    }
+  };
+  const remove = (face: number) => {
+    const tri = triangles[face];
+    for (let k = 0; k < 3; k++) {
+      const key = edgeId(tri[k], tri[(k + 1) % 3]),
+        uses = edges.get(key)!;
+      const remaining = uses.filter((use) => use.face !== face);
+      if (remaining.length) edges.set(key, remaining);
+      else edges.delete(key);
+    }
+  };
+  triangles.forEach((_, face) => {
+    if (face % 4096 === 0)
+      checkProgress(options, progress, "Optimizing hole triangulation");
+    add(face);
+  });
+  const budget = Math.max(4096, triangles.length * 64);
+  for (let head = 0; head < queue.length; head++) {
+    if (head % 1024 === 0)
+      checkProgress(options, progress, "Optimizing hole triangulation");
+    if (head >= budget)
+      throw new HoleRefinementError(
+        "Hole triangulation did not converge; the hole was left unchanged.",
+      );
+    const key = queue[head];
+    pending.delete(key);
+    const pair = edges.get(key);
+    if (pair?.length !== 2) continue;
+    const [first, second] = pair,
+      { a, b, c } = first,
+      d = second.c;
+    if (edges.has(edgeId(c, d)) || forbiddenEdges.has(edgeId(c, d))) continue;
+    const pc = projected[c],
+      pd = projected[d],
+      pa = projected[a],
+      pb = projected[b];
+    if (orient(pc, pa, pd) <= 1e-14 || orient(pc, pd, pb) <= 1e-14) continue;
+    const cot = (p: Vector2, q: Vector2, origin: Vector2) => {
+      const ux = p.x - origin.x,
+        uy = p.y - origin.y,
+        vx = q.x - origin.x,
+        vy = q.y - origin.y;
+      return (ux * vx + uy * vy) / Math.max(Math.abs(ux * vy - uy * vx), 1e-20);
+    };
+    if (!forbiddenEdges.has(key) && cot(pa, pb, pc) + cot(pa, pb, pd) >= -1e-8)
+      continue;
+    remove(first.face);
+    remove(second.face);
+    triangles[first.face] = [c, a, d];
+    triangles[second.face] = [c, d, b];
+    add(first.face);
+    add(second.face);
+  }
+}
+
 /** Constrained Delaunay flips remove the long, skinny ear-cut fan; interior
  * relaxation improves element shape while retaining all rim coordinates. */
 function improvePatch(
@@ -179,52 +277,9 @@ function improvePatch(
   rimCount: number,
   surface: (p: Vector2) => Vec3,
   options: MeshProcessingOptions,
+  forbiddenEdges: ReadonlySet<string>,
 ) {
-  for (let pass = 0; pass < 12; pass++) {
-    checkProgress(options, 0.9, "Fairing hole interior");
-    const edges = new Map<
-      string,
-      { face: number; a: number; b: number; c: number }[]
-    >();
-    triangles.forEach((face, index) => {
-      for (let k = 0; k < 3; k++) {
-        const a = face[k],
-          b = face[(k + 1) % 3],
-          c = face[(k + 2) % 3];
-        const key = edgeId(a, b),
-          entries = edges.get(key) ?? [];
-        entries.push({ face: index, a, b, c });
-        edges.set(key, entries);
-      }
-    });
-    const touched = new Set<number>();
-    let flips = 0;
-    for (const pair of edges.values()) {
-      if (pair.length !== 2) continue;
-      const [first, second] = pair;
-      if (touched.has(first.face) || touched.has(second.face)) continue;
-      const { a, b, c } = first,
-        d = second.c;
-      if (edges.has(edgeId(c, d))) continue;
-      const pc = projected[c],
-        pd = projected[d],
-        pa = projected[a],
-        pb = projected[b];
-      if (orient(pc, pa, pd) <= 1e-14 || orient(pc, pd, pb) <= 1e-14) continue;
-      const cot = (p: Vector2, q: Vector2, origin: Vector2) => {
-        const u = p.clone().sub(origin),
-          v = q.clone().sub(origin);
-        return u.dot(v) / Math.max(Math.abs(u.cross(v)), 1e-20);
-      };
-      if (cot(pa, pb, pc) + cot(pa, pb, pd) >= -1e-8) continue;
-      triangles[first.face] = [c, a, d];
-      triangles[second.face] = [c, d, b];
-      touched.add(first.face);
-      touched.add(second.face);
-      flips++;
-    }
-    if (!flips) break;
-  }
+  legalizePatch(projected, triangles, options, forbiddenEdges);
   const neighbors = Array.from(
     { length: points.length },
     () => new Set<number>(),

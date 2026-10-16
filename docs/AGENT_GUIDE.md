@@ -1008,3 +1008,20 @@ results expose `diagnostics.surfaceFitHoles`, `surfaceFitMaxRms` (model units),
 `method` retains the selected algorithm category. The GUI reports how many holes
 were filled from the boundary. Unsupported or invalid disks still remain unchanged
 and count as skipped.
+
+## Constrained hole triangulation
+
+Entire-hole fills (`mesh_process` with `kind: "scanEdit"`, `action: "fillHoles"`,
+`mode: "entire"`) legalize cap diagonals before density refinement and during
+final fairing. A bounded, cancellable queue replaces long, thin ear-cut fans with
+local triangles, avoiding excessive subdivision on long narrow scan openings.
+Existing rim vertices stay fixed. Cap interior edges cannot reuse diagonals of
+the retained mesh: those diagonals are flipped away or subdivided inside the cap
+to avoid duplicate facets and nonmanifold edge connections.
+
+GUI and MCP share this triangulation and the existing `addedTriangles`,
+`filledHoles` and `skippedHoles` diagnostics. No new parameters are required.
+The 100,000-triangle patch limit, refinement limits and single-hole/batch failure
+semantics remain enforced; genuinely oversized patches still fail safely.
+Surface estimation, model history, undo/redo and cancellation use the existing
+shared operations.
