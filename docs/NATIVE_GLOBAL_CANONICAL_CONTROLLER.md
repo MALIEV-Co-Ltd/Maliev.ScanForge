@@ -80,13 +80,60 @@ all 71 worker handles. Its synthetic registration retained zero plane gap after
 five query batches. These are independent checks; the small browser cases do not
 prove physical-worker registration of all three large owner scans.
 
-Full application-controller comparison, production memory admission, actual
-geometry setters and GUI/MCP acceptance of this complete owner case remain
-unverified. The production 512 MiB query-pool admission was not relaxed. No public
-command was enabled by this capture.
+Production memory admission, physical-worker execution with all three large
+scans, actual geometry setters and GUI/MCP acceptance of this complete owner case
+remain unverified. The production 512 MiB query-pool admission was not relaxed.
+No public command was enabled by this capture.
+
+The subsequent isolated controller-core replay matched all 19 native pass
+snapshots, final matrix/error/coverage bits, convergence/stability flags and all
+six application matrix commands exactly. It executed 439 correspondence queries
+across 57 local refinements on the complete three retained meshes. The initial
+diagnostic took 181.25 seconds after input loading, including 4.51 seconds of
+scene preparation. This is a local diagnostic timing, not a browser performance
+claim or a comparison with the original product's normal runtime.
+
+The retained [controller fixture](../tests/fixtures/global-fine-canonical-controller-native.json)
+and [replay regression](../tests/scan-native-global-canonical-controller.test.ts)
+bind the controller case to the independently verified coordinate, normal,
+connectivity and evaluator hashes. The always-enabled metadata test verifies
+these links; the large replay requires the retained carriers:
+
+```powershell
+$env:SCANFORGE_NATIVE_CANONICAL_CONTROLLER = 'B:\codex\artifacts\native-scan-analysis\rea-inventory-fix'
+npx vitest run tests/scan-native-global-canonical-controller.test.ts --maxWorkers=1
+```
+
+This replay intentionally invokes the application kernels directly. It neither
+uses nor changes the production query-pool admission. It proves controller-core
+numerical parity for this input/configuration, including the non-converged
+outcome, and does not prove successful coarse alignment, large-owner physical
+multicore execution, geometry setters, browser responsiveness, import coverage,
+combination into one mesh or GUI/MCP acceptance/history/cancellation.
 
 External evidence is retained under the task's `native-scan-analysis/rea-inventory-fix`
 directory as `global-fine-canonical-mesh-controller-*`; isolated scene and browser
 replay reports are in the `scanforge-target-order-20261016` validation snapshot.
-These are locally retained evidence, not portable source fixtures or public API
-schemas. No new GUI/MCP behavior is introduced by this document.
+The retained fixture is portable metadata and expected output; the large source
+carriers remain external. No new GUI/MCP behavior or public API schema is
+introduced by this evidence slice.
+
+## Regression validation
+
+The tracked replay ran again after the production build and passed together with
+local and outer-controller regressions: 48 tests across three files. This second
+complete replay performed the same 439 queries and 57 local refinements, matched
+all expected states and commands, and took 185.01 seconds including 4.53 seconds
+of scene preparation. No numerical correction was required.
+
+Validation uses an isolated snapshot of the committed application plus this
+owned slice, preserving unrelated working-tree changes. The production build
+passed with fingerprint `scanforge-cd1e69942faa6828`. The full default suite does
+not load the large carriers unless the explicit replay environment variable is
+set; the input-provenance metadata regression always runs.
+
+The default suite subsequently passed: 46,383 tests passed, 53 skipped, zero
+failures across 481 test files (466 passed, 15 skipped), in 258.27 seconds with one
+active worker. The large replay is one of the default skips and was explicitly
+executed in the 48-test focused run above. Build, focused replay and full suite
+ran sequentially; unrelated source changes were excluded from this snapshot.
