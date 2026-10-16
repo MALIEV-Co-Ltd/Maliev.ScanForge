@@ -1,30 +1,26 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
 import {
+  createNativeAlignmentEdgeRecords,
+  type NativeAlignmentEdgeRecords,
+} from "./scan-native-edge-records";
+import {
   nativeAlignmentBucketTree,
   nativeAlignmentSpatialBucket,
 } from "./scan-native-alignment-buckets";
-
-// Nonnegative values identify the first directed edge; -value-1 marks it consumed.
-// Packing the key is exact while vertexCount squared fits a safe integer.
-type EdgeRecords = Map<number | string, number>;
-const edgeStride = (vertexCount: number) =>
-  vertexCount <= 94906265 ? vertexCount : 0;
 
 function linkFace(
   triangles: ArrayLike<number>,
   face: number,
   neighbors: Int32Array,
   neighborEdges: Uint8Array,
-  first: EdgeRecords,
-  stride: number,
+  first: NativeAlignmentEdgeRecords,
   masks?: Uint8Array,
 ) {
   let appended = 0;
   for (let edge = 0; edge < 3; edge++) {
     const from = triangles[face * 3 + edge];
     const to = triangles[face * 3 + ((edge + 1) % 3)];
-    const reverseKey = stride ? to * stride + from : `${to}:${from}`;
-    const reverse = first.get(reverseKey);
+    const reverse = first.get(to, from);
     if (reverse !== undefined) {
       if (reverse >= 0) {
         if (masks) {
@@ -36,7 +32,7 @@ function linkFace(
           neighbors[face * 3 + edge] = Math.floor(reverse / 3);
           neighborEdges[face * 3 + edge] = reverse % 3;
         }
-        first.set(reverseKey, -reverse - 1);
+        first.set(to, from, -reverse - 1);
       } else if (!masks) {
         neighbors[face * 3 + edge] = -1;
         neighborEdges[face * 3 + edge] = 255;
@@ -44,9 +40,8 @@ function linkFace(
       continue;
     }
     appended++;
-    const key = stride ? from * stride + to : `${from}:${to}`;
     // Reverse lookup stops at the first record, even when a later duplicate is unused.
-    if (!first.has(key)) first.set(key, face * 3 + edge);
+    first.remember(from, to, face * 3 + edge);
   }
   return appended;
 }
@@ -120,6 +115,8 @@ function buildAlignmentAdjacency(
   const triangleFlags = new Uint8Array(masks ? 0 : triangles.length / 3);
   const groups = new Map<number, number[]>();
   const fallback: number[] = [];
+  const used = new Uint32Array(Math.ceil(vertexBuckets.length / 32));
+  let usedVertices = 0;
   for (let face = 0; face < triangles.length / 3; face++) {
     for (let edge = 0; edge < 3; edge++) {
       const id = triangles[face * 3 + edge];
@@ -127,6 +124,12 @@ function buildAlignmentAdjacency(
         throw new Error(
           "Adjacency triangle index is outside the vertex buffer.",
         );
+      const word = Math.floor(id / 32),
+        bit = 1 << (id & 31);
+      if (!(used[word] & bit)) {
+        used[word] |= bit;
+        usedVertices++;
+      }
     }
     const bucket = vertexBuckets[triangles[face * 3]];
     if (
@@ -138,8 +141,14 @@ function buildAlignmentAdjacency(
       group.push(face);
     } else fallback.push(face);
   }
-  const first: EdgeRecords = new Map();
-  const stride = edgeStride(vertexBuckets.length);
+  const first = createNativeAlignmentEdgeRecords(
+    vertexBuckets.length,
+    triangles.length,
+    {
+      signal: options.signal,
+      expectedEntries: Math.min(triangles.length, usedVertices * 3),
+    },
+  );
   let recordCount = 0;
   for (const bucket of Array.from(groups.keys()).sort((a, b) => a - b)) {
     for (const face of groups.get(bucket)!) {
@@ -149,7 +158,6 @@ function buildAlignmentAdjacency(
         neighbors,
         neighborEdges,
         first,
-        stride,
         masks,
       );
       if (!masks) triangleFlags[face] |= 4;
@@ -164,7 +172,6 @@ function buildAlignmentAdjacency(
       neighbors,
       neighborEdges,
       first,
-      stride,
       masks,
     );
   }
@@ -191,8 +198,11 @@ export function nativeLinkAlignmentBucket(
   const neighbors = new Int32Array(triangles.length).fill(-1);
   const neighborEdges = new Uint8Array(triangles.length);
   const triangleFlags = new Uint8Array(triangles.length / 3);
-  const first: EdgeRecords = new Map();
-  const stride = edgeStride(vertexBuckets.length);
+  const first = createNativeAlignmentEdgeRecords(
+    vertexBuckets.length,
+    triangles.length,
+    options,
+  );
   let recordCount = 0;
   for (let face = 0; face < triangleFlags.length; face++) {
     if (face % 4096 === 0 && options.signal?.aborted)
@@ -207,14 +217,7 @@ export function nativeLinkAlignmentBucket(
       included &&= vertexBuckets[id] === bucket;
     }
     if (!included) continue;
-    recordCount += linkFace(
-      triangles,
-      face,
-      neighbors,
-      neighborEdges,
-      first,
-      stride,
-    );
+    recordCount += linkFace(triangles, face, neighbors, neighborEdges, first);
     triangleFlags[face] |= 4;
   }
   return { neighbors, neighborEdges, triangleFlags, recordCount };
