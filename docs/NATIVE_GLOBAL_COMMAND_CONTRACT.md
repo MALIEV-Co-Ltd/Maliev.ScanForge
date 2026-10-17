@@ -56,8 +56,9 @@ into a claim about every native point-cloud import path.
 
 ## Remaining integration checks
 
-The seeded full native three-scan comparison remains outstanding. The mapping
-from hidden triangles to native vertex flags also requires verification before
+The [seeded three-scan numerical controller comparison](NATIVE_SEEDED_GLOBAL_ALIGNMENT.md)
+now matches fresh native and browser execution. The mapping from hidden triangles
+to native vertex flags still requires verification before
 the public adapter can reproduce hidden-region admission. Shared GUI/MCP
 preview, Apply, cancellation, stale-input checks and a single history transaction
 remain to be implemented and verified for this controller. Existing coarse
@@ -76,14 +77,16 @@ the recorded explicit tolerance and with the option omitted. Before correction,
 16 default-path cases failed against their native coverage and subsequent call
 records. Explicit caller values retain their existing behavior. This internal
 fix changes neither public GUI/MCP schemas nor command availability; the public
-workflow and seeded native comparison remain outstanding.
+workflow remains outstanding; the subsequent seeded numerical comparison is
+recorded in the linked verification report.
 
 The correction passed an isolated TypeScript/Vite build with zero warnings or
 errors, 73 focused tests (3 skipped), and the full suite of 46,461 passing tests
 (54 skipped; zero failures). The full suite completed in 219.46 seconds.
 Scoped Prettier and diff checks passed. These checks verify the default-path
 regression against retained native fixtures; they do not replace the outstanding
-seeded three-scan native comparison or public GUI/MCP workflow verification.
+public GUI/MCP workflow verification. The subsequent seeded three-scan numerical
+comparison has its own evidence and remaining boundaries in the linked report.
 
 The original evidence-only capture changed no application source, command
 availability, GUI behavior or MCP schema. Its validation consists of streamed image hashing,

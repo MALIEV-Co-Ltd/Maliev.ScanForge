@@ -41,8 +41,10 @@ The memo does not retain caller scratch references or allocate per query.
 
 This is an internal change to the shared global-registration kernel. Public
 GUI/MCP schemas and command gates are unchanged. Successful coarse-to-fine
-alignment, the remaining seeded native comparison, GUI/MCP preview and Apply,
-history, mixed input imports and combining scans remain open requirements.
+alignment, GUI/MCP preview and Apply, history, mixed input imports and combining
+scans remain open requirements. The subsequent [seeded native/browser numerical
+comparison](NATIVE_SEEDED_GLOBAL_ALIGNMENT.md) now matches all pass snapshots,
+final states and matrix commands; that captured result remains non-converged.
 
 ## Verification
 
