@@ -31,4 +31,6 @@ it("offers documented initial grid counts, staged acceptance and a cancel action
   expect(markup).toContain('disabled="">OK');
   expect(markup).toContain("<button>Cancel</button>");
   expect(markup).toContain("Selection-bounds orientation");
+  expect(markup).toContain("Projected grid");
+  expect(markup).toContain("Approximate");
 });

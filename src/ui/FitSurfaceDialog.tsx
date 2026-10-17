@@ -3,6 +3,7 @@ import "./ToolPanel.css";
 import { useState } from "react";
 import type { SurfaceFitOptions } from "../surfaces";
 import type { SurfaceFitSession } from "../surface-fit-session";
+import { nativeSurfaceWorkingSet } from "../native-surface-fitting";
 
 export function FitSurfaceDialog({
   session,
@@ -22,8 +23,23 @@ export function FitSurfaceDialog({
   const [projection, setProjection] =
     useState<SurfaceFitOptions["projection"]>("xy");
   const [analysis, setAnalysis] = useState(false);
+  const [method, setMethod] = useState<"projected-grid" | "approximate">(
+    "projected-grid",
+  );
+  const [regularizationWeight, setRegularizationWeight] = useState(0.0001);
   const [changed, setChanged] = useState(false);
   const valid = [u, v].every((n) => Number.isInteger(n) && n >= 4 && n <= 16);
+  let approximationError = "";
+  if (method === "approximate") {
+    try {
+      if (!Number.isFinite(regularizationWeight) || regularizationWeight < 0)
+        throw new Error("Smoothing weight must be finite and nonnegative.");
+      nativeSurfaceWorkingSet(u, v, Math.min(10000, session.scan.length / 3));
+    } catch (error) {
+      approximationError =
+        error instanceof Error ? error.message : String(error);
+    }
+  }
   return (
     <aside className="inspector tool-panel" aria-label="Fit Surface">
       <h2>Fit Surface</h2>
@@ -33,6 +49,34 @@ export function FitSurfaceDialog({
           triangles
         </p>
         <fieldset disabled={busy}>
+          <label className="field">
+            Method
+            <AppSelect
+              value={method}
+              onChange={(e) => {
+                setMethod(e.target.value as "projected-grid" | "approximate");
+                setChanged(true);
+              }}
+            >
+              <option value="projected-grid">Projected grid</option>
+              <option value="approximate">Approximate</option>
+            </AppSelect>
+          </label>
+          {method === "approximate" && (
+            <label className="field">
+              Smoothing weight
+              <input
+                type="number"
+                min={0}
+                step="any"
+                value={regularizationWeight}
+                onChange={(e) => {
+                  setRegularizationWeight(Number(e.target.value));
+                  setChanged(true);
+                }}
+              />
+            </label>
+          )}
           {(
             [
               ["U count", u, setU],
@@ -81,21 +125,24 @@ export function FitSurfaceDialog({
         </fieldset>
         {session.preview && analysis && (
           <p role="status">
-            Projected RMS {session.preview.rms.toPrecision(4)} mm · maximum{" "}
+            {session.preview.method === "approximate" ? "Sample" : "Projected"}{" "}
+            RMS {session.preview.rms.toPrecision(4)} mm · maximum{" "}
             {session.preview.maxError.toPrecision(4)} mm ·{" "}
             {session.preview.samples} samples
           </p>
         )}
         {changed && <p>Apply the changed options before accepting.</p>}
+        {approximationError && <p role="alert">{approximationError}</p>}
         <p className="muted">
-          Preview leaves the scan unchanged. This fit currently supports
-          axis-oriented height fields. Selection-bounds orientation, smoothness
-          and automatic tolerance fitting remain unavailable.
+          Preview leaves the scan unchanged. Both methods use the chosen
+          projection. Approximate fits and smooths all three coordinates.
+          Selection-bounds orientation and automatic tolerance fitting remain
+          unavailable.
         </p>
       </section>
       <footer className="tool-panel-actions">
         <button
-          disabled={busy || !valid}
+          disabled={busy || !valid || Boolean(approximationError)}
           onClick={() => {
             setChanged(false);
             onApply({
@@ -104,6 +151,9 @@ export function FitSurfaceDialog({
               degree: 3,
               projection,
               sampleLimit: 10000,
+              ...(method === "approximate"
+                ? { method, regularizationWeight }
+                : {}),
             });
           }}
         >

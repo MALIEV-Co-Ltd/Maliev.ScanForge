@@ -327,8 +327,26 @@ try {
     .getByRole("spinbutton", { name: "V count", exact: true })
     .fill("4");
   // AppSelect exposes a visible button/listbox, not a native visible select.
-  await panel.locator('button[aria-haspopup="listbox"]').click();
+  await panel
+    .locator("label.field")
+    .filter({ hasText: "Orientation" })
+    .locator('button[aria-haspopup="listbox"]')
+    .click();
   await page.getByRole("option", { name: "OXY", exact: true }).click();
+  const approximate = process.env.SCANFORGE_SURFACE_METHOD === "approximate";
+  if (approximate) {
+    await panel
+      .locator("label.field")
+      .filter({ hasText: "Method" })
+      .locator('button[aria-haspopup="listbox"]')
+      .click();
+    await page
+      .getByRole("option", { name: "Approximate", exact: true })
+      .click();
+    await panel
+      .getByRole("spinbutton", { name: "Smoothing weight", exact: true })
+      .fill("0.0001");
+  }
   await panel.getByRole("button", { name: "Apply", exact: true }).click();
   await eventually(async () =>
     assert(
@@ -381,6 +399,9 @@ try {
     degree: 3,
     projection: "xy",
     sampleLimit: 10000,
+    ...(approximate
+      ? { method: "approximate", regularizationWeight: 0.0001 }
+      : {}),
   };
   const mcpResult = await job(
     await mutate("surface_fit", {

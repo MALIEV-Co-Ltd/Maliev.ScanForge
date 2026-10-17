@@ -638,6 +638,27 @@ Sketch v1 contains `version:1`, `points:[{id,x,y}]`, `segments:[{id,a,b,construc
 
 NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`, `degreeU`, `degreeV`, `knotsU`, `knotsV`, row-major `points:[[x,y,z],...]`, and `weights`. Surface fitting takes `options:{countU,countV,degree?,projection:"xy"|"xz"|"yz",sampleLimit}`. Knots and weights must satisfy the existing rational surface validator.
 
+Surface fitting additionally accepts `method:"projected-grid"|"approximate"`.
+Omitting it preserves projected-grid behavior. Approximate uses the recovered
+XYZ basis, derivative penalties and column-normalized LU through the same worker,
+selection extraction and transaction as the GUI. Set `regularizationWeight`
+(finite, nonnegative; default `0.0001`) only with `method:"approximate"`.
+The penalty weights are fixed at `[0,1,0.1]`. This method uses the existing explicit
+projection and deterministic samples; full native UV initialization, iterative
+parameter correction and automatic orientation/tolerance are not established by
+the arithmetic fixtures. It does not reconstruct closed or overlapping surfaces.
+
+Approximation admits at most 10,000 actual samples, 256 coefficients, an estimated
+64 MiB workspace and 250,000,000 scalar work units before matrix allocation.
+The default 10×10 controls with 10,000 samples fit this budget; larger combinations
+may require fewer controls or samples. Resource rejection leaves source/history
+unchanged. Its result includes `method:"approximate"`, `regularizationWeight`,
+sample XYZ residual `rms`/`maxError` in millimetres and estimated `solverBytes`.
+These are residuals at the supplied projected UVs, not closest-surface deviation
+or a whole-native-controller parity claim. Existing projected-grid diagnostics
+remain projected height residuals. Accepted controls use the saved patch's
+V-outer/U-inner ordering after transposing the recovered core's U-outer/V-inner net.
+
 `surface_fit` defaults to the entire input, retaining point-cloud support. Set
 `selectionOnly:true` to fit the active raw mesh's selected visible triangles,
 or the active point cloud's selected XYZ points. Hidden mesh facets are excluded

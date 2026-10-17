@@ -1,4 +1,5 @@
 import type { Positions, Vec3 } from "./types";
+import { fitApproximateSurface } from "./surface-approximation";
 
 /** Row-major tensor surface: index = v * countU + u. Coordinates are millimetres. */
 export interface NurbsPatch {
@@ -19,6 +20,8 @@ export interface SurfaceFitOptions {
   degree?: number;
   projection: "xy" | "xz" | "yz";
   sampleLimit: number;
+  method?: "projected-grid" | "approximate";
+  regularizationWeight?: number;
 }
 export interface SurfaceFitResult {
   patch: NurbsPatch;
@@ -27,6 +30,8 @@ export interface SurfaceFitResult {
   maxError: number;
   projection: SurfaceFitOptions["projection"];
   solverBytes: number;
+  method?: "approximate";
+  regularizationWeight?: number;
 }
 export type PatchEdge = "u0" | "u1" | "v0" | "v1";
 export type PatchAxis = "u" | "v";
@@ -513,6 +518,19 @@ export function fitGridSurface(
   scan: Positions | Float64Array,
   options: SurfaceFitOptions,
 ): SurfaceFitResult {
+  if (
+    options.method !== undefined &&
+    options.method !== "projected-grid" &&
+    options.method !== "approximate"
+  )
+    throw new Error("Choose projected-grid or approximate surface fitting.");
+  if (
+    options.method !== "approximate" &&
+    options.regularizationWeight !== undefined
+  )
+    throw new Error(
+      "Regularization weight requires approximate surface fitting.",
+    );
   integer(options.sampleLimit, 16, 100000, "Fit sample limit");
   if (!scan.length || scan.length % 3)
     throw new Error("Scan must contain complete vertices.");
@@ -553,6 +571,20 @@ export function fitGridSurface(
     throw new Error(
       "Sample limit must cover at least all control coefficients.",
     );
+  if (options.method === "approximate") {
+    const result = fitApproximateSurface(
+      scan,
+      options,
+      patch,
+      axes,
+      min,
+      width,
+      height,
+      samples,
+    );
+    validatePatch(result.patch);
+    return result;
+  }
   const normal = new Float64Array(n * n),
     rhs = new Float64Array(n);
   const sampled = new Float64Array(samples * 3);

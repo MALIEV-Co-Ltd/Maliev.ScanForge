@@ -21,6 +21,24 @@ const preview = {
   solverBytes: 4096,
 };
 const options = { countU: 4, countV: 4, projection: "xy", sampleLimit: 100 };
+it("forwards approximation and its smoothing weight through the shared MCP worker path", async () => {
+  const h = setup();
+  const approximation = {
+    ...options,
+    method: "approximate",
+    regularizationWeight: 0.0001,
+  };
+  await h.operation(
+    { entityId: "scan", selectionOnly: true, options: approximation },
+    h.context,
+  );
+  expect(fitGridSurfaceAsync).toHaveBeenCalledWith(
+    expect.any(Float32Array),
+    approximation,
+    expect.objectContaining({ signal: h.context.signal }),
+  );
+  expect(h.commit).toHaveBeenCalledOnce();
+});
 beforeEach(() => {
   vi.mocked(fitGridSurfaceAsync).mockReset();
   vi.mocked(fitGridSurfaceAsync).mockResolvedValue(preview);
