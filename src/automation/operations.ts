@@ -6,6 +6,7 @@ import { createInteractiveOperations } from "./interactive-alignment-operations"
 import { isSampledScan } from "../scan-source";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
+import { createGlobalAlignmentOperations } from "./global-alignment-operations";
 import type { Entity, Project, Positions, KernelMesh } from "../types";
 import { cloudPlacement } from "../point-cloud-placement";
 import { validateBridgePreview, bridgePreviewResponse } from "./bridge-preview";
@@ -335,6 +336,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     scan_preview: createScanPreviewOperation(host),
     ...createAlignmentOperations(host),
     ...createDatumOperations(host),
+    ...createGlobalAlignmentOperations(host),
     ...createInteractiveOperations(host),
     project_get: () => {
       const s = host.snapshot();

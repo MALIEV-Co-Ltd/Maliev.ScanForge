@@ -318,7 +318,7 @@ Never infer that an operation succeeded from a status message or transport succe
 
 Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Binary format 2/3, source geometry, scanner normals, selections and undo/redo history remain unchanged. Derived display normals preserve previous restore shading. See `docs/PROJECT_LOAD_PERFORMANCE.md` for measurements and limits.
 
-Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version or tool schema changes. The new connected Global Fine Align controller remains private until native admission, CAD/reference preparation and shared editor publication are verified; it is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
+Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 
 ### Response contract
 
@@ -1058,3 +1058,60 @@ mode: "entire", algorithm: "automatic", indices: [boundaryIndex]}`. Existing
 `surfaceFitHoles` includes accepted interpolated surfaces; the additional
 `interpolatedSurfaceHoles` count identifies that subset. `surfaceFitMaxRms`
 reports the accepted surface model's retained-support RMS in millimetres.
+
+### Global Fine Align preview, Apply and Cancel
+
+The Global fine align panel and MCP share `global_alignment_preview`,
+`global_alignment_state`, `global_alignment_apply` and
+`global_alignment_cancel`. This command refines an already approximately placed
+scan set; it does not automatically find a coarse placement or establish complete
+original-application or browser parity.
+
+Preview requires 2–32 visible, unlocked raw triangle meshes. Omit `entityIds` to
+use all visible raw meshes, or supply unique object IDs for an explicit subset.
+Hidden objects and unsupported point clouds/CAD objects are excluded from the
+implicit set; explicitly naming them fails. A visible raw mesh with a lock,
+hidden triangles or incomplete facets blocks preparation and reports the reason.
+Show all its triangles and unlock it first. Point clouds require an appropriate
+point alignment workflow; exact CAD requires origin/reference alignment.
+
+`searchTolerance` is in millimetres. Its omitted value is 0.5, an observed
+persisted command setting rather than a recovered factory default. Shared input
+normalization rounds a finite value to Float32, takes its absolute value and
+widens it again; zero is allowed and values outside finite Float32 range fail.
+`parallel` defaults to `true` and controls bounded CPU execution. Input
+preparation has a collective 512 MiB estimated admission limit; subsequent
+correspondence-query admission still applies independently. This is not a total
+browser-memory guarantee. Preparation and query workers retain their bounded
+lifetimes and cancellation cleanup.
+
+For each mutation, send the current `expectedRevision` and a fresh `requestId`.
+Preview returns a job receipt; poll `job_get` until it settles. Read
+`global_alignment_state` to inspect the shared preparing/preview/idle state,
+`previewId`, participating IDs, normalized settings, input summary, diagnostics
+and expiry. Per-scan outer diagnostics expose mean distance, coverage percentage,
+stability and convergence; nonfinite metric values are returned as `null`.
+Nonconvergence is a structured result, not proof of successful alignment. The
+panel labels acceptance **Apply anyway** in that case; inspect the staged result
+and diagnostics before accepting it.
+
+Preview preserves authored geometry and history and retains the exact staged
+result for 60 seconds after preparation completes. GUI and MCP see the same
+cached preview. Apply with its `previewId` adopts that result without solving
+again and records one `Global Fine Align` history entry. Expiry or changes to
+authored inputs, project settings or history invalidate it; create a fresh
+preview instead of applying stale output. Ordinary selection alone does not
+invalidate it.
+
+`global_alignment_cancel` remains available while preparation is busy, aborts
+the owning preparation, releases the staged display and closes the panel without
+committing geometry. The panel's Cancel/close and Escape use this operation too.
+For automatic cleanup, pass the `jobId` returned by `global_alignment_preview`:
+`global_alignment_cancel({jobId, expectedRevision, requestId})`. The scope stays
+valid after the job finishes and its preview is cached. A mismatched or obsolete
+job ID returns `cancelled: false` without aborting another job, releasing another
+preview or closing its panel. Omit `jobId` only to explicitly cancel the current
+shared global preview. Panel unmount, late launch responses and preparation
+timeouts use the scoped form.
+Cancellation, failure, invalidation and expiry release the same retained
+resources; cancellation does not accept a partial scan set.

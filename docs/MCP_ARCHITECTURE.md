@@ -210,7 +210,7 @@ GUI project opening and public MCP `project_import` / `backup_restore` use the s
 
 ### Connected Global Fine scan-set groundwork
 
-The private `refineGlobalScanSet` controller now connects preparation, persistent native correspondence workers, sequential outer/local updates and two-stage complete scan-object assembly. It closes query resources before allocating application workers and returns private results for the caller's later atomic publication. It is not a public operation yet: no tool schema, ribbon availability or GUI/MCP capability is advertised by this dependency. Existing shared datum/Interactive operations retain their compatible staged object setter. The new admitted multi-scan controller explicitly requests background application for its smaller scans too, rather than inheriting the generic small-input serial threshold. Global Fine admission, original input-carrier construction, CAD references and public preview/Apply/history still require their own verified integration.
+The `refineGlobalScanSet` controller connects preparation, persistent native correspondence workers, sequential outer/local updates and two-stage complete scan-object assembly. It closes query resources before allocating application workers and returns staged results for the caller's later atomic publication. This controller dependency alone does not advertise a public operation; the bounded raw-mesh integration is described under [Public Global Fine Align preview boundary](#public-global-fine-align-preview-boundary). Existing shared datum/Interactive operations retain their compatible staged object setter. The admitted multi-scan controller explicitly requests background application for its smaller scans too, rather than inheriting the generic small-input serial threshold. Exact-CAD references and complete original-application parity remain separate gates.
 
 Compact normal buffers are accepted by shared project validation and the existing point-normal consumer. Global scan-set application opts into Float32 normal storage; existing alignment callers keep their container defaults. Binary formats and public tool schemas are unchanged, and both JSON writers emit ordinary numeric arrays. The built-app regression imports an independent v2 Float32-normal fixture through GUI and MCP and checks identical exported normal bytes, including signed zero.
 
@@ -234,3 +234,45 @@ pairs; local results audit changed facets against the parent and expose that
 restricted scope. Exact Float32 predicates, index-integrity checks, bounded
 candidate work and cancellation apply identically through GUI and MCP. Audit
 counts and scope travel through the existing processing diagnostics contract.
+
+## Public Global Fine Align preview boundary
+
+The earlier private scan-set groundwork now has a bounded public workflow for
+2–32 visible, unlocked raw triangle meshes. The Global fine align panel and MCP
+call `createGlobalAlignmentOperations` in
+`src/automation/global-alignment-operations.ts`; they share the input factory in
+`src/global-alignment-input.ts` and the existing scan-set controller. Point-cloud
+and exact-CAD targets remain unsupported. Hidden objects are excluded from
+implicit discovery; locks, hidden facets and incomplete raw meshes have explicit
+failure reasons. This integration adds no automatic coarse placement and makes
+no claim of complete original-application or browser parity.
+
+`global_alignment_preview` owns preparation and publishes the complete staged
+scan set through the host's preview display. `global_alignment_state` exposes its
+settings, source IDs, preparation summary and structured convergence/coverage
+diagnostics. A host-scoped cache retains the output for 60 seconds after solving.
+`global_alignment_apply` validates identity, expiry and authored-source state,
+then commits that exact output once through the existing history boundary;
+acceptance does not rerun a time-dependent solve. Nonconverged output remains
+inspectable and is explicitly presented as Apply anyway in the panel.
+
+The factory applies finite Float32/absolute-value search-tolerance normalization
+(zero permitted, omitted value 0.5 mm), preserves indexed inputs where valid and
+prepares other carriers without detaching authored buffers. Its collective
+512 MiB estimated preparation admission complements the unchanged downstream
+query admission; it does not replace or lower it. Workers and temporary input
+ownership retain cancellation and finite-lifetime cleanup.
+
+Cancellation has an API busy-lane exception so `global_alignment_cancel` can
+abort its owning preview job before releasing staged geometry and display.
+An optional cancel `jobId` is matched against the active API job and the retained
+preview's originating job before any abort, release or panel closure. This lookup
+does not depend on the bounded job-receipt cache. GUI automatic cleanup uses that
+scope and a component lifecycle generation; late responses and old panels cannot
+cancel newer GUI/MCP work. Explicit unscoped cancellation retains shared-preview
+semantics.
+Failure, expiry, input invalidation, editor disposal and explicit cancellation
+share release handling. Project geometry, settings and history changes invalidate
+the cached preview; selection alone does not. GUI and MCP use the same revision
+and retry guards and the same one-commit Apply behavior. See the
+[public workflow](AGENT_GUIDE.md#global-fine-align-preview-apply-and-cancel).

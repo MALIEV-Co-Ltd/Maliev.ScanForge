@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  globalFineAlign:
+    "docs/NATIVE_SEEDED_GLOBAL_ALIGNMENT.md: verified raw mesh numerical route; shared GUI/MCP Preview, cached Apply and Cancel",
   alignInteractive:
     "docs/NATIVE_INTERACTIVE_ALIGNMENT.md: public GUI/MCP pose preview, native owner-scan bounds, mirror, Apply, Cancel and Undo",
   align:

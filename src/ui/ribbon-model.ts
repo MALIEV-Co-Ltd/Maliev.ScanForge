@@ -55,6 +55,7 @@ export const RIBBON_ACTION_IDS = [
   "mirrorMesh",
   "unroll",
   "fineAlign",
+  "globalFineAlign",
   "alignNPoints",
   "alignInteractive",
   "repairMesh",
@@ -282,7 +283,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("alignInteractive", "Interactive", "transform", true),
         tool("alignNPoints", "By N points", "select"),
         tool("fineAlign", "Fine align", "align"),
-        planned("globalFineAlign", "Global fine align", "align"),
+        tool("globalFineAlign", "Global fine align", "align"),
       ),
       group(
         "Colors",
@@ -524,6 +525,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 export interface RibbonState {
   landmarkSourceId?: string | null;
   interactiveTargetError?: string | null;
+  globalAlignmentError?: string | null;
   disabled: boolean;
   hasSelection: boolean;
   canUndo: boolean;
@@ -562,6 +564,8 @@ export function ribbonToolAvailability(
     };
   if (tool.action === "alignInteractive" && state.interactiveTargetError)
     return { available: false, reason: state.interactiveTargetError };
+  if (tool.action === "globalFineAlign" && state.globalAlignmentError)
+    return { available: false, reason: state.globalAlignmentError };
   if (tool.requiresSelection && !state.hasSelection)
     return { available: false, reason: "Select an object first" };
   if (tool.action === "undo" && !state.canUndo)

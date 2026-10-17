@@ -1792,3 +1792,35 @@ dd {
   height: 28px;
   padding: 3px;
 }
+
+/* Global Fine Align: shared-operation preview panel. */
+.global-alignment-panel .tool-panel-content {
+  padding: 12px;
+}
+.global-alignment-panel fieldset {
+  margin: 0 0 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+}
+.global-alignment-panel ul {
+  padding-left: 18px;
+  overflow-wrap: anywhere;
+}
+.global-alignment-panel dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+}
+.global-alignment-panel dd {
+  margin: 0;
+}
+.global-alignment-panel input[type="number"] {
+  width: 100%;
+  min-width: 0;
+}
+.global-alignment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}

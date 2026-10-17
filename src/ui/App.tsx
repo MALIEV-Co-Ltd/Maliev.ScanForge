@@ -29,6 +29,8 @@ import {
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
+import { GlobalAlignmentTools } from "./GlobalAlignmentTools";
+import { inspectGlobalAlignmentCandidates } from "../global-alignment-input";
 import {
   coordinateAlignmentInterface,
   type InterfacePatch,
@@ -370,6 +372,7 @@ export function App() {
   const [ribbonTab, setRibbonTab] = useState("main");
   const [toolPanelOpen, setToolPanelOpen] = useState(false);
   const [datumAlignmentOpen, setDatumAlignmentOpen] = useState(false);
+  const [globalAlignmentOpen, setGlobalAlignmentOpen] = useState(false);
   useEffect(() => {
     if (!datumPreview.current) {
       datumPointPick.current = null;
@@ -466,7 +469,7 @@ export function App() {
   const scanReferencePick = useRef<"plane" | "cylinder" | null>(null);
   const pickScanReference = useRef<(id: string) => boolean>(() => false);
   const busy = actionBusy || processingBusy;
-  const editingBlocked = busy || interactiveOpen;
+  const editingBlocked = busy || interactiveOpen || globalAlignmentOpen;
   const busyRef = useRef(busy);
   busyRef.current = busy;
   const [message, setMessage] = useState("Ready · open a scan to begin");
@@ -951,6 +954,9 @@ export function App() {
       releaseProcessingSession();
     }
   }, [scanPreview, activeScanPreview, entities]);
+  useEffect(() => {
+    queueMicrotask(() => workspaceApi.validateGlobalAlignmentPreview());
+  });
   useEffect(() => {
     const comparison = activeNoiseComparison?.visible
       ? activeNoiseComparison
@@ -1714,6 +1720,11 @@ export function App() {
     selectedIds,
   );
   const commandRepeat = useRef(new CommandRepeat());
+  const globalCandidates = inspectGlobalAlignmentCandidates(entities);
+  const globalAlignmentError = globalCandidates.canPreview
+    ? null
+    : globalCandidates.blocked.map((item) => item.reason).join(" ") ||
+      "Choose 2–32 visible, unlocked raw meshes.";
   const [, setCommandVersion] = useState(0);
   const ribbonActions = {
     newDocument: requestNewDocument,
@@ -1800,6 +1811,17 @@ export function App() {
     mirrorMesh: () => openScanTool("mirrorMesh"),
     unroll: () => openScanTool("unroll"),
     fineAlign: () => showTools("fineAlign"),
+    globalFineAlign: () => {
+      if (globalAlignmentError || datumPreview.current || scanPreview) {
+        setError(
+          globalAlignmentError ?? "Apply or cancel the existing preview first.",
+        );
+        return;
+      }
+      setMode("inspect");
+      setToolPanelOpen(true);
+      setGlobalAlignmentOpen(true);
+    },
     alignNPoints: openLandmarks,
     alignInteractive: () => {
       void interactiveEditor
@@ -1825,6 +1847,7 @@ export function App() {
     "settings",
   ]);
   const globalRibbonCommands = new Set([
+    "globalFineAlign",
     "fitView",
     "iso",
     "top",
@@ -1977,6 +2000,7 @@ export function App() {
       !!(
         scanPreview ||
         interactiveOpen ||
+        globalAlignmentOpen ||
         datumPreview.current ||
         nPoints ||
         surfaceFit ||
@@ -2007,6 +2031,7 @@ export function App() {
     modalOpen: !!(
       nPoints ||
       interactiveOpen ||
+      globalAlignmentOpen ||
       surfaceFit ||
       createSketch ||
       primitiveDialog ||
@@ -4037,7 +4062,8 @@ export function App() {
       interactiveStore.getSnapshot() &&
       (patch.workspace !== undefined ||
         patch.toolPanelOpen !== undefined ||
-        patch.datumAlignmentOpen !== undefined)
+        patch.datumAlignmentOpen !== undefined ||
+        patch.globalAlignmentOpen !== undefined)
     )
       throw new Error(
         "Apply or cancel Interactive alignment before changing its panel.",
@@ -4070,6 +4096,34 @@ export function App() {
         datumFacePick.current = null;
       }
       setDatumAlignmentOpen(patch.datumAlignmentOpen);
+    }
+    if (patch.globalAlignmentOpen !== undefined) {
+      const state = workspaceApi.inspectGlobalAlignmentPreview();
+      if (!patch.globalAlignmentOpen && state.state !== "idle")
+        throw new Error(
+          "Apply or cancel Global Fine Align before closing its panel.",
+        );
+      if (patch.globalAlignmentOpen) {
+        const candidates = inspectGlobalAlignmentCandidates(entities);
+        if (!candidates.canPreview)
+          throw new Error(
+            candidates.blocked.map((item) => item.reason).join(" ") ||
+              "Global Fine Align requires two to 32 visible scan meshes.",
+          );
+        if (
+          nPoints ||
+          surfaceFit ||
+          createSketch ||
+          (datumPreview.current && state.state === "idle")
+        )
+          throw new Error(
+            "Finish or cancel the active preview before Global Fine Align.",
+          );
+        setWorkspace("properties");
+        setToolPanelOpen(true);
+        setMode("inspect");
+      }
+      setGlobalAlignmentOpen(patch.globalAlignmentOpen);
     }
     if (patch.settingsOpen !== undefined) setSettingsOpen(patch.settingsOpen);
     if (patch.dismissError) setError("");
@@ -4151,7 +4205,10 @@ export function App() {
     },
     discardPreview: (target) => {
       if (target === "scan") closeScanTool();
-      else if (target === "datum") {
+      else if (target === "globalAlignment") {
+        // The shared global operation releases only its own cached display.
+        workspaceApi.validateGlobalAlignmentPreview();
+      } else if (target === "datum") {
         datumPreview.current = null;
         datumPointPick.current = null;
         viewport.current?.setEntities(entities, selectedId, selectedIds);
@@ -4166,6 +4223,7 @@ export function App() {
     inspectApplication: (maxControls) => {
       const root = viewportHost.current?.closest<HTMLElement>(".workbench");
       if (!root) throw new Error("Application is not mounted.");
+      const globalAlignment = workspaceApi.inspectGlobalAlignmentPreview();
       return {
         name,
         commands: commandRepeat.current.inspect(),
@@ -4179,6 +4237,8 @@ export function App() {
         mode,
         toolPanelOpen,
         datumAlignmentOpen,
+        globalAlignmentOpen,
+        globalAlignment,
         settingsOpen,
         previews: {
           interactive: !!interactiveStore.getSnapshot(),
@@ -4195,7 +4255,8 @@ export function App() {
             renameObject ||
             sketchPlaneDialog
           ),
-          datum: !!datumPreview.current,
+          datum: !!datumPreview.current && globalAlignment.state === "idle",
+          globalAlignment: globalAlignment.state !== "idle",
           scan: !!scanPreview,
           landmarks: !!nPoints?.preview,
           surface: !!surfaceFit?.preview,
@@ -4527,6 +4588,7 @@ export function App() {
         onTabChange={setRibbonTab}
         disabled={editingBlocked || !!nPoints || !!surfaceFit || !!createSketch}
         interactiveTargetError={interactiveTargetError}
+        globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
@@ -5133,6 +5195,16 @@ export function App() {
           )}
           <CanvasError message={error} onDismiss={() => setError("")} />
         </section>
+        {globalAlignmentOpen && (
+          <GlobalAlignmentTools
+            api={workspaceApi}
+            entities={entities}
+            onClose={() => {
+              setGlobalAlignmentOpen(false);
+              setToolPanelOpen(false);
+            }}
+          />
+        )}
         {interactiveOpen && (
           <InteractiveAlignmentDialog
             store={interactiveStore}
@@ -5206,7 +5278,11 @@ export function App() {
           <aside
             className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
             style={
-              interactiveOpen || nPoints || surfaceFit || createSketch
+              interactiveOpen ||
+              globalAlignmentOpen ||
+              nPoints ||
+              surfaceFit ||
+              createSketch
                 ? { display: "none" }
                 : undefined
             }

@@ -21,6 +21,7 @@ export interface InterfacePatch {
   mode?: "inspect" | "measure" | "section" | "brush";
   toolPanelOpen?: boolean;
   datumAlignmentOpen?: boolean;
+  globalAlignmentOpen?: boolean;
   settingsOpen?: boolean;
   dismissError?: boolean;
 }

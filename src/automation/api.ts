@@ -11,6 +11,11 @@ import catalog from "./catalog.json";
 import { cloudPlacement } from "../point-cloud-placement";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
+  inspectGlobalAlignmentPreview,
+  releaseGlobalAlignmentPreview,
+  validateGlobalAlignmentPreview,
+} from "./global-alignment-operations";
+import {
   selectionProcessingMode,
   type SelectionProcessingMode,
 } from "../selection-processing-mode";
@@ -125,6 +130,7 @@ export interface WorkspaceHost {
       | "landmarks"
       | "sketchSection"
       | "datum"
+      | "globalAlignment"
       | "interactive",
   ): void;
 }
@@ -135,6 +141,8 @@ export interface ArtifactInfo {
   bytes: number;
 }
 export interface CommandContext {
+  /** API-owned operation identity; retained previews may outlive the job receipt. */
+  jobId?: string;
   signal: AbortSignal;
   progress(fraction: number, stage: string): void;
   check(): void;
@@ -365,6 +373,12 @@ export class ApplicationApi {
   validateScanPreview() {
     return validateScanPreviewOperation(this.host);
   }
+  validateGlobalAlignmentPreview() {
+    return validateGlobalAlignmentPreview(this.host);
+  }
+  inspectGlobalAlignmentPreview() {
+    return inspectGlobalAlignmentPreview(this.host);
+  }
   async invoke(
     command: string,
     args: Record<string, unknown> = {},
@@ -421,7 +435,35 @@ export class ApplicationApi {
           "REVISION_CONFLICT",
           "Workspace changed; inspect project_get and use its current revision with a new requestId.",
         );
+      if (command === "global_alignment_cancel") {
+        const scoped = args.jobId !== undefined;
+        const ownsActive =
+          this.active?.command === "global_alignment_preview" &&
+          (!scoped || this.active.jobId === args.jobId);
+        if (ownsActive) this.active?.controller.abort();
+        const released = releaseGlobalAlignmentPreview(
+          this.host,
+          scoped ? { jobId: args.jobId as string } : undefined,
+        );
+        if (!scoped || released)
+          this.host.setInterface?.({ globalAlignmentOpen: false });
+        return this.success({ cancelled: !scoped || ownsActive || released });
+      }
       if (command === "preview_discard") {
+        // The renderer is shared with coordinate alignment. Global cancellation
+        // must release only its own lease, including when no global preview exists.
+        if (args.target === "globalAlignment") {
+          if (this.active?.command === "global_alignment_preview")
+            this.active.controller.abort();
+          releaseGlobalAlignmentPreview(this.host);
+          this.host.setInterface?.({ globalAlignmentOpen: false });
+          return this.success({
+            target: args.target,
+            cancellationRequested: true,
+            committedGeometryPreserved: true,
+            note: "Global alignment and its owning API job are cancelled; committed geometry is preserved.",
+          });
+        }
         if (args.target !== "interactive" && this.host.inspectInteractive?.())
           throw new ApiError(
             "BUSY",
@@ -435,7 +477,12 @@ export class ApplicationApi {
         if (args.target !== "interactive")
           this.host.discardPreview!(
             args.target as
-              "scan" | "surface" | "landmarks" | "sketchSection" | "datum",
+              | "scan"
+              | "surface"
+              | "landmarks"
+              | "sketchSection"
+              | "datum"
+              | "globalAlignment",
           );
         if (
           args.target === "landmarks" &&
@@ -446,6 +493,11 @@ export class ApplicationApi {
           if (this.active?.command === "scan_preview")
             this.active.controller.abort();
           this.discardScanPreview();
+        }
+        if (args.target === "datum") {
+          if (this.active?.command === "global_alignment_preview")
+            this.active.controller.abort();
+          releaseGlobalAlignmentPreview(this.host);
         }
         if (args.target === "datum") await releaseDatumPreview(this.host);
         if (args.target === "interactive") {
@@ -631,6 +683,14 @@ export class ApplicationApi {
         return this.success({ deleted: true });
       }
       if (
+        ["alignment_apply", "alignment_preview"].includes(command) &&
+        inspectGlobalAlignmentPreview(this.host).state !== "idle"
+      )
+        throw new ApiError(
+          "BUSY",
+          "Apply or cancel Global Fine Align before coordinate alignment.",
+        );
+      if (
         !readOnly &&
         this.host.inspectInteractive?.() &&
         !command.startsWith("interactive_alignment_") &&
@@ -658,6 +718,7 @@ export class ApplicationApi {
         timer: undefined!,
       };
       const context: CommandContext = {
+        jobId: job.jobId,
         signal: job.controller.signal,
         progress: (fraction, stage) => {
           job.progress = Math.max(0, Math.min(1, fraction));
@@ -825,6 +886,7 @@ export class ApplicationApi {
     this.cancelActive();
     releaseInteractiveSession(this.host);
     releaseScanPreviewOperation(this.host);
+    releaseGlobalAlignmentPreview(this.host);
     void releaseDatumPreview(this.host).catch(() => {});
     this.artifacts.clear();
     this.requests.clear();

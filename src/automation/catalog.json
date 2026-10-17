@@ -4321,7 +4321,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4410,6 +4410,9 @@
           "type": "boolean"
         },
         "datumAlignmentOpen": {
+          "type": "boolean"
+        },
+        "globalAlignmentOpen": {
           "type": "boolean"
         }
       },
@@ -4736,7 +4739,7 @@
   },
   {
     "name": "preview_discard",
-    "description": "Explicitly discard one GUI scan/surface/landmark/sketch-section preview using the same Cancel handlers as the editor. Available while GUI workers are busy. Preserve committed model; never accepts a preview. Cancel API jobs separately with job_cancel.",
+    "description": "Explicitly discard one GUI scan/surface/landmark/sketch-section preview using the same Cancel handlers as the editor. Available while GUI workers are busy. Preserve committed model; never accepts a preview. Cancel API jobs separately with job_cancel. Global alignment discard also cancels its active preparation and clears its cached preview.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4750,6 +4753,7 @@
             "landmarks",
             "sketchSection",
             "datum",
+            "globalAlignment",
             "interactive"
           ]
         },
@@ -5846,6 +5850,114 @@
         }
       },
       "required": ["action", "entityId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "global_alignment_preview",
+    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "searchTolerance": {
+          "type": "number",
+          "default": 0.5
+        },
+        "parallel": {
+          "type": "boolean",
+          "default": true
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "global_alignment_apply",
+    "description": "Apply an unexpired Global Fine Align preview exactly once as one history step, without recomputing. Requires unchanged source geometry, history, settings and authoring state. Non-converged results may be explicitly applied after inspecting diagnostics.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "previewId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["previewId", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "global_alignment_cancel",
+    "description": "Cancel preparation or discard the staged Global Fine Align preview and close its panel. Available while its preview job is running; preserves originals and history. Optional jobId scopes automatic cleanup to its owning preparation/preview; a mismatched ID leaves newer work and its panel unchanged. Omit jobId to explicitly cancel the current global preview.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "global_alignment_state",
+    "description": "Read Global Fine Align state, preview lease, settings, source IDs, memory/input summary and per-scan convergence diagnostics.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
       "additionalProperties": false
     }
   }
