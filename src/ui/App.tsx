@@ -70,6 +70,7 @@ import {
   OperationStatus,
 } from "./StatusFeedback";
 import { linearProgress, type ReductionStatistics } from "../reduction-report";
+import { holeFillCounts, holeFillOutcomes } from "../hole-fill-progress";
 import { ReductionColorScale } from "./ReductionResults";
 import { toleranceCoverage } from "../reduction-display";
 import { ModelTimeline } from "./ModelTimeline";
@@ -1616,8 +1617,12 @@ export function App() {
         },
         {
           signal: controller.signal,
-          onProgress: (fraction, stage) =>
-            setMessage(`${stage} · ${Math.round(fraction * 100)}%`),
+          onProgress: (fraction, stage, details) =>
+            setMessage(
+              details
+                ? `${stage} · ${holeFillCounts(details)} · ${holeFillOutcomes(details)} · ${Math.floor(fraction * 100)}%`
+                : `${stage} · ${Math.round(fraction * 100)}%`,
+            ),
           reuseTopology: true,
         },
       );
@@ -1630,6 +1635,17 @@ export function App() {
         );
       if (result.scanEdit?.segments)
         createSegments(result.scanEdit.segments, label);
+      if (
+        operation.action === "fillHoles" &&
+        operation.mode !== "bridge" &&
+        result.scanEdit
+      ) {
+        const { filledHoles, skippedHoles } = result.scanEdit.diagnostics;
+        if (typeof filledHoles === "number" && typeof skippedHoles === "number")
+          setMessage(
+            `Finished: ${holeFillOutcomes({ closed: filledHoles, skipped: skippedHoles })}`,
+          );
+      }
     } catch (error) {
       if (!controller.signal.aborted) {
         setError(errorText(error));

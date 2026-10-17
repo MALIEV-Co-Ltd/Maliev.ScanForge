@@ -19,6 +19,7 @@ import { OverflowStatusText } from "./OverflowStatusText";
 import { PointerJobStatus, trackJobPointer } from "./PointerJobStatus";
 import {
   getWorkingJobStatus,
+  getWorkingJobProgress,
   watchWorkingJobStatus,
 } from "../working-job-status";
 export function completedStatusTimeout(callback: () => void) {
@@ -192,10 +193,16 @@ export function StatusBar({
     getWorkingJobStatus,
     () => "",
   );
+  const progressDetails = useSyncExternalStore(
+    watchWorkingJobStatus,
+    getWorkingJobProgress,
+    () => undefined,
+  );
   return (
     <footer className="statusbar">
       <PointerJobStatus
         message={runningJob || (busy ? jobMessage || "Processing…" : "")}
+        progressDetails={progressDetails}
       />
       <div
         className="status-operation"

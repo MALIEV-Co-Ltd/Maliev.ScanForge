@@ -1,4 +1,5 @@
 import { weldMeshPositions } from "./mesh-weld";
+import type { HoleFillProgress } from "./hole-fill-progress";
 import { MeshEdgeIndex } from "./mesh-edge-index";
 import { MeshFaceIndex, vertexIncidence } from "./mesh-face-index";
 import type { FitResult, Positions, Vec3 } from "./types";
@@ -13,7 +14,11 @@ export interface MeshProcessingOptions {
   };
   tolerance?: number;
   signal?: AbortSignal;
-  onProgress?: (fraction: number, stage: string) => void;
+  onProgress?: (
+    fraction: number,
+    stage: string,
+    details?: HoleFillProgress,
+  ) => void;
 }
 export interface EdgeUse {
   face: number;

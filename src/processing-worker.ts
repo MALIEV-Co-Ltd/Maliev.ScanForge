@@ -1,4 +1,8 @@
 import { growConnectedSelection } from "./connected-selection";
+import {
+  createHoleFillReporter,
+  type HoleFillProgress,
+} from "./hole-fill-progress";
 import { preparePersistentTopology } from "./persistent-topology";
 import { refineNativeSurfaceAsync } from "./native-surface-refinement";
 import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
@@ -122,7 +126,26 @@ scope.onmessage = async ({ data: incoming }) => {
   const previousCache = { ...topologyCache };
   let lastProgress = -Infinity;
   let lastStage = "";
-  function progress(fraction: number, stage: string) {
+  const reportHoles = createHoleFillReporter((fraction, stage, details) =>
+    scope.postMessage({
+      progress: fraction,
+      stage,
+      ...(details ? { details } : {}),
+    }),
+  );
+  const fillingHoles =
+    request.kind === "scanEdit" &&
+    request.action === "fillHoles" &&
+    request.mode !== "bridge";
+  function progress(
+    fraction: number,
+    stage: string,
+    details?: HoleFillProgress,
+  ) {
+    if (fillingHoles) {
+      reportHoles(fraction, stage, details);
+      return;
+    }
     const now = performance.now();
     if (now - lastProgress > 100 || fraction === 1 || stage !== lastStage) {
       lastProgress = now;

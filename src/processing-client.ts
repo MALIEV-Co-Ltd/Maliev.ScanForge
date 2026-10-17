@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import type { HoleFillProgress } from "./hole-fill-progress";
 import { beginWorkingJob } from "./working-job-status";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
 import type { NativeSurfaceRefinementRequest } from "./native-surface-refinement";
@@ -149,14 +150,18 @@ export interface ProcessingResult {
   diagnostics: Record<string, number | string | boolean>;
 }
 export type ProcessingResponse =
-  | { progress: number; stage: string }
+  | { progress: number; stage: string; details?: HoleFillProgress }
   | { result: ProcessingResult }
   | { error: string };
 export interface ProcessingOptions {
   /** Geometry arrays must be immutable; replace the array after any edit. */
   reuseTopology?: boolean;
   signal?: AbortSignal;
-  onProgress?: (fraction: number, stage: string) => void;
+  onProgress?: (
+    fraction: number,
+    stage: string,
+    details?: HoleFillProgress,
+  ) => void;
 }
 
 /** Operations have bounded execution leases; reusable topology belongs to the selected geometry. */
@@ -271,8 +276,18 @@ function runProcessingRequest(
       if ("progress" in event.data) {
         renewLease();
         try {
-          job.progress(event.data.progress, event.data.stage);
-          options.onProgress?.(event.data.progress, event.data.stage);
+          job.progress(
+            event.data.progress,
+            event.data.stage,
+            event.data.details,
+          );
+          if (event.data.details)
+            options.onProgress?.(
+              event.data.progress,
+              event.data.stage,
+              event.data.details,
+            );
+          else options.onProgress?.(event.data.progress, event.data.stage);
         } catch (error) {
           fail(error);
         }

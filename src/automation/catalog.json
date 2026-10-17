@@ -3626,7 +3626,7 @@
   },
   {
     "name": "job_get",
-    "description": "Inspect running/completed job; poll at modest intervals.",
+    "description": "Inspect running/completed job; poll at modest intervals. Hole-filling jobs expose progressDetails with kind holeFill, phase closing/finalizing/complete, processed, total, closed and skipped counts. Total counts unique selected boundaries, including those skipped by the diameter limit or patch validation.",
     "readOnly": true,
     "job": false,
     "inputSchema": {

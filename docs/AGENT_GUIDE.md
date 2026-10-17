@@ -1117,3 +1117,21 @@ shared global preview. Panel unmount, late launch responses and preparation
 timeouts use the scoped form.
 Cancellation, failure, invalidation and expiry release the same retained
 resources; cancellation does not accept a partial scan set.
+
+### Hole-filling batch progress
+
+`mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles"}`
+(excluding bridge mode) shares the GUI batch progress. Poll `job_get` for
+`progressDetails: {kind: "holeFill", phase, processed, total, closed, skipped}`.
+`total` counts unique selected closed boundaries (all closed boundaries when
+`indices` is omitted). Diameter-filtered or rejected patches count as processed
+and skipped, so `processed = closed + skipped`; a processed hole is not necessarily
+closed. The stable closing label and linear fraction track processed/total.
+Preparation reports no invented count. Updates are limited to five per second,
+with immediate phase changes. `phase: "finalizing"` means the holes have been
+processed but output geometry/topology is still being prepared. `complete`
+means the geometry worker finished; inspect the job's terminal status before
+using the result. Cancellation/errors retain their existing terminal states and
+do not imply successful completion. Final `diagnostics.filledHoles` and
+`diagnostics.skippedHoles` remain available unchanged. The pointer card shows the
+same counts, and the GUI status bar retains the final outcome summary.

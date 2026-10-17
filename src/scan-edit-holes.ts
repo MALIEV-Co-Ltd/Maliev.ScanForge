@@ -1,4 +1,5 @@
 import { ShapeUtils, Vector2 } from "three";
+import { holeFillTitle, type HoleFillProgress } from "./hole-fill-progress";
 import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
@@ -81,6 +82,39 @@ export function runHoleFill(
     surfaceFitMaxRms = 0;
   const surfaceFallbackReasons = new Set<string>();
   const methods = new Set<string>();
+  const batch = !bridging && r.action === "fillHoles";
+  const report = o.onProgress;
+  const reportBatch = (
+    phase: HoleFillProgress["phase"] = "closing",
+    internalStage?: string,
+  ) => {
+    if (o.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const details: HoleFillProgress = {
+      kind: "holeFill",
+      phase,
+      processed: filledHoles + skippedHoles,
+      total: selected.length,
+      closed: filledHoles,
+      skipped: skippedHoles,
+    };
+    report?.(
+      details.processed / Math.max(1, details.total),
+      internalStage ?? holeFillTitle(details),
+      details,
+    );
+  };
+  // Preserve solver checkpoints for cancellation/diagnostics; the worker presents
+  // the stable batch title from details instead of these internal stage names.
+  if (batch)
+    o = {
+      ...o,
+      onProgress: (_fraction, stage) => reportBatch("closing", stage),
+    };
+  const skipHole = () => {
+    skippedHoles++;
+    if (batch) reportBatch();
+  };
   checkProgress(o, 0, "Estimating boundary tangents");
   const vertexNormals = bridging
     ? new Float64Array(0)
@@ -92,7 +126,7 @@ export function runHoleFill(
       "Triangulating selected holes",
     );
     if (diameter && inventory.boundaries[index].diameter > diameter) {
-      skippedHoles++;
+      skipHole();
       continue;
     }
     const original = boundaries[index];
@@ -155,7 +189,7 @@ export function runHoleFill(
       loop.push(original[end]);
     }
     if (loop.length < 3) {
-      skippedHoles++;
+      skipHole();
       continue;
     }
     const first = t.edges.get(edgeId(loop[0], loop[1]))?.[0];
@@ -172,7 +206,7 @@ export function runHoleFill(
     if (norm < (o.tolerance ?? 1e-6) ** 2) {
       if (bridging)
         throw new Error("Bridge edges form a degenerate or crossing strip.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     const unit = n.map((v) => v / norm) as Vec3;
@@ -245,7 +279,7 @@ export function runHoleFill(
       }
     if (unsafe) {
       if (bridging) throw new Error("Bridge edges form a self-crossing strip.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     const planar = points.every(
@@ -272,13 +306,13 @@ export function runHoleFill(
     if (method === "flat" && !planar) {
       if (bridging)
         throw new Error("A flat bridge requires coplanar attachment edges.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     let triangles = ShapeUtils.triangulateShape(projected, []);
     if (triangles.length !== points.length - 2) {
       if (bridging) throw new Error("Bridge edges cannot form a valid strip.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     // A complete flat patch must not double an existing flat surface.
@@ -321,7 +355,7 @@ export function runHoleFill(
         }
       }
       if (overlap) {
-        skippedHoles++;
+        skipHole();
         continue;
       }
     }
@@ -412,7 +446,7 @@ export function runHoleFill(
         : validHolePatch(projected, triangles, rimCount))
     ) {
       if (bridging) throw new Error("Bridge strip triangulation is invalid.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     if (r.mode === "bridge" && method !== "flat") {
@@ -473,7 +507,7 @@ export function runHoleFill(
           throw error;
         // Refinement changes only this hole's local patch. Nothing has been
         // appended to output or the successor topology until it succeeds.
-        skippedHoles++;
+        skipHole();
         continue;
       }
     }
@@ -484,7 +518,7 @@ export function runHoleFill(
     ) {
       if (bridging)
         throw new Error("Bridge refinement creates an invalid strip.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     if (
@@ -497,7 +531,7 @@ export function runHoleFill(
     ) {
       if (bridging)
         throw new Error("Bridge creates degenerate or inverted facets.");
-      skippedHoles++;
+      skipHole();
       continue;
     }
     if (bridging && bridgeIntersectsMesh(t, points, triangles, loop, o))
@@ -530,7 +564,9 @@ export function runHoleFill(
       surfaceFallbackReasons.add(fallbackReason);
     }
     filledHoles++;
+    if (batch) reportBatch();
   }
+  if (batch) reportBatch("finalizing");
   const positions = finiteOutput([...r.positions, ...output]);
   if (o.topologyCache && cachedVertices && cachedTriangles) {
     // Appending a patch preserves every existing edge use. Copy the map, sharing
@@ -565,7 +601,8 @@ export function runHoleFill(
     o.topologyCache.tolerance = o.tolerance ?? 1e-6;
     o.topologyCache.topology = topology;
   }
-  checkProgress(o, 1, "Hole filling complete");
+  if (batch) reportBatch("complete");
+  else checkProgress(o, 1, "Hole filling complete");
   return {
     positions,
     diagnostics: {

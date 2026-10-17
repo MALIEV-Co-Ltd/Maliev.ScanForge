@@ -1,6 +1,12 @@
 import { useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./pointer-job-status.css";
+import {
+  holeFillCounts,
+  holeFillOutcomes,
+  holeFillTitle,
+  type HoleFillProgress,
+} from "../hole-fill-progress";
 
 type Point = { x: number; y: number };
 type Size = { width: number; height: number };
@@ -60,7 +66,13 @@ export function positionJobStatus(
 }
 
 /** Noninteractive, cursor-following feedback for a running operation. */
-export function PointerJobStatus({ message }: { message: string }) {
+export function PointerJobStatus({
+  message,
+  progressDetails,
+}: {
+  message: string;
+  progressDetails?: HoleFillProgress;
+}) {
   const label = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     const element = label.current;
@@ -117,27 +129,55 @@ export function PointerJobStatus({ message }: { message: string }) {
   if (!message) return null;
   // Shared job status remains unchanged for the status bar and MCP inspection.
   const progress = / · (\d+(?:\.\d+)?)%$/.exec(message);
-  const stage = progress ? message.slice(0, progress.index) : message;
-  const percent = progress ? Math.min(100, Number(progress[1])) : undefined;
+  const stage = progressDetails
+    ? holeFillTitle(progressDetails)
+    : progress
+      ? message.slice(0, progress.index)
+      : message;
+  const percent = progressDetails
+    ? Math.floor(
+        (progressDetails.processed / Math.max(1, progressDetails.total)) * 100,
+      )
+    : progress
+      ? Math.min(100, Number(progress[1]))
+      : undefined;
   const content = (
     <span
       ref={label}
-      className="pointer-job-status"
+      className={`pointer-job-status${progressDetails ? " pointer-job-batch" : ""}`}
       role="status"
       aria-live="polite"
     >
-      <span className="pointer-job-stage">{stage}</span>
-      <span
-        className="pointer-job-track"
-        role="progressbar"
-        aria-label={stage}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={percent}
-        data-indeterminate={percent === undefined ? "true" : undefined}
-      >
-        <span style={{ width: `${percent ?? 30}%` }} />
-      </span>
+      <>
+        <span className="pointer-job-stage">{stage}</span>
+        {progressDetails && (
+          <span className="pointer-job-counts">
+            <span>{holeFillCounts(progressDetails)}</span>
+            <span>{percent}%</span>
+          </span>
+        )}
+        <span
+          className="pointer-job-track"
+          role="progressbar"
+          aria-label={stage}
+          aria-valuemin={0}
+          aria-valuemax={progressDetails?.total || 100}
+          aria-valuenow={progressDetails?.processed ?? percent}
+          aria-valuetext={
+            progressDetails
+              ? `${holeFillCounts(progressDetails)}; ${holeFillOutcomes(progressDetails)}`
+              : undefined
+          }
+          data-indeterminate={percent === undefined ? "true" : undefined}
+        >
+          <span style={{ width: `${percent ?? 30}%` }} />
+        </span>
+        {progressDetails && (
+          <span className="pointer-job-outcomes">
+            {holeFillOutcomes(progressDetails)}
+          </span>
+        )}
+      </>
     </span>
   );
   return typeof document === "undefined"

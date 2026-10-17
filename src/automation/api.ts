@@ -30,6 +30,7 @@ import {
 } from "./visual-capture";
 import type { InterfacePatch, ViewportCommand } from "./workflow-operations";
 import type { ObjectSelectionModifiers } from "../object-selection";
+import type { HoleFillProgress } from "../hole-fill-progress";
 import type {
   LandmarkEdit,
   LandmarkPreviewOptions,
@@ -144,7 +145,7 @@ export interface CommandContext {
   /** API-owned operation identity; retained previews may outlive the job receipt. */
   jobId?: string;
   signal: AbortSignal;
-  progress(fraction: number, stage: string): void;
+  progress(fraction: number, stage: string, details?: HoleFillProgress): void;
   check(): void;
   /** Check the revision, apply an owned synchronous write, then track its revision. */
   mutate?(write: () => void): void;
@@ -288,6 +289,7 @@ interface Job {
   status: "running" | "succeeded" | "failed" | "cancelled";
   progress: number;
   stage: string;
+  progressDetails?: HoleFillProgress;
   result?: unknown;
   error?: { code: string; message: string };
   controller: AbortController;
@@ -720,9 +722,10 @@ export class ApplicationApi {
       const context: CommandContext = {
         jobId: job.jobId,
         signal: job.controller.signal,
-        progress: (fraction, stage) => {
+        progress: (fraction, stage, details) => {
           job.progress = Math.max(0, Math.min(1, fraction));
           job.stage = stage;
+          job.progressDetails = details;
         },
         check: () => {
           job.controller.signal.throwIfAborted();

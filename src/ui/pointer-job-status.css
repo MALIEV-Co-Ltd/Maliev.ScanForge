@@ -45,3 +45,35 @@
   margin-inline: auto;
   opacity: 0.5;
 }
+
+.pointer-job-batch {
+  width: 232px;
+  max-width: min(232px, calc(100vw - 16px));
+  padding: 8px 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pointer-job-counts {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pointer-job-batch .pointer-job-track {
+  height: 3px;
+}
+
+.pointer-job-batch .pointer-job-track > span {
+  transition: width 180ms linear;
+}
+
+.pointer-job-outcomes {
+  color: #acacac;
+  font-size: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer-job-batch .pointer-job-track > span {
+    transition: none;
+  }
+}
