@@ -1,0 +1,284 @@
+{
+  "source": "Z:/scanforge (2).stl",
+  "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+  "baselineCommit": "2292f56faec65b87224efd4082bece6e28ca48b2",
+  "toleranceMm": 0.001,
+  "sameTopology": {
+    "count": 1998344,
+    "vertices": 1010968,
+    "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+    "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+    "edges": 3011098,
+    "components": 10,
+    "loops": 1796,
+    "chains": 15,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 3,
+    "duplicates": 0,
+    "degenerates": 2
+  },
+  "baselineRuns": [
+    {
+      "file": "Z:/scanforge (2).stl",
+      "total": 1998344,
+      "count": 1998344,
+      "ms": 37801.600600000005,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 29527.0815
+        },
+        {
+          "stage": "Building topology",
+          "ms": 6219.228399999996
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 836.0337
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 1187.2374000000054
+        }
+      ],
+      "vertices": 1010968,
+      "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+      "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+      "edges": 3011098,
+      "components": 10,
+      "loops": 1796,
+      "chains": 15,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 3,
+      "duplicates": 0,
+      "degenerates": 2,
+      "memory": {
+        "rss": 2180714496,
+        "heapTotal": 1960574976,
+        "heapUsed": 1755743056,
+        "external": 122296208,
+        "arrayBuffers": 120200367
+      }
+    },
+    {
+      "file": "Z:/scanforge (2).stl",
+      "total": 1998344,
+      "count": 1998344,
+      "ms": 50635.3042,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 35181.058899999996
+        },
+        {
+          "stage": "Building topology",
+          "ms": 13135.4971
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 929.7594000000026
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 1361.051999999996
+        }
+      ],
+      "vertices": 1010968,
+      "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+      "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+      "edges": 3011098,
+      "components": 10,
+      "loops": 1796,
+      "chains": 15,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 3,
+      "duplicates": 0,
+      "degenerates": 2,
+      "memory": {
+        "rss": 2170847232,
+        "heapTotal": 1960837120,
+        "heapUsed": 1751130048,
+        "external": 122296208,
+        "arrayBuffers": 120200367
+      }
+    }
+  ],
+  "optimizedRuns": [
+    {
+      "file": "Z:/scanforge (2).stl",
+      "total": 1998344,
+      "count": 1998344,
+      "ms": 11462.431199999999,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 2997.5858000000003
+        },
+        {
+          "stage": "Building topology",
+          "ms": 6700.4311
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 482.6658000000007
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 1254.0270999999993
+        }
+      ],
+      "vertices": 1010968,
+      "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+      "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+      "edges": 3011098,
+      "components": 10,
+      "loops": 1796,
+      "chains": 15,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 3,
+      "duplicates": 0,
+      "degenerates": 2,
+      "memory": {
+        "rss": 2157965312,
+        "heapTotal": 1940402176,
+        "heapUsed": 1772230952,
+        "external": 122297497,
+        "arrayBuffers": 120200367
+      }
+    },
+    {
+      "file": "Z:/scanforge (2).stl",
+      "total": 1998344,
+      "count": 1998344,
+      "ms": 14348.6301,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 4370.731100000001
+        },
+        {
+          "stage": "Building topology",
+          "ms": 8135.6074
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 492.4189000000006
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 1309.618199999999
+        }
+      ],
+      "vertices": 1010968,
+      "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+      "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+      "edges": 3011098,
+      "components": 10,
+      "loops": 1796,
+      "chains": 15,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 3,
+      "duplicates": 0,
+      "degenerates": 2,
+      "memory": {
+        "rss": 2160975872,
+        "heapTotal": 1942872064,
+        "heapUsed": 1777352232,
+        "external": 122297497,
+        "arrayBuffers": 120200367
+      }
+    },
+    {
+      "report": "B:\\maliev-legacy\\reverse-engineering-online\\.resources\\mesh-readiness-1792209622042\\result.json",
+      "revision": "working-tree",
+      "file": "Z:/scanforge (2).stl",
+      "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+      "total": 1998344,
+      "count": 1998344,
+      "coldMs": 13390.518199999999,
+      "cachedMs": 0.08139999999912106,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 4035.9096999999997
+        },
+        {
+          "stage": "Building topology",
+          "ms": 7389.6339
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 472.6832000000013
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 1458.6997999999985
+        }
+      ],
+      "vertices": 1010968,
+      "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+      "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+      "edges": 3011098,
+      "components": 10,
+      "loops": 1796,
+      "chains": 15,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 3,
+      "duplicates": 0,
+      "degenerates": 2,
+      "memory": {
+        "rss": 2259124224,
+        "heapTotal": 1942347776,
+        "heapUsed": 1759805008,
+        "external": 222455625,
+        "arrayBuffers": 220117651
+      },
+      "maxRssKiB": 2211432
+    }
+  ],
+  "limitations": [
+    "Cold analyzer CPU time excludes import, rendering, persistent cache I/O and browser message transfer.",
+    "Runs were sequential on a shared machine; timings vary with load.",
+    "The full topology still uses resident memory proportional to mesh size."
+  ],
+  "browserValidation": {
+    "triangles": 250000,
+    "inputSha256": "8d5719906d89e80011ab2d93c83a9ba4e34c4e2cc1a45c7f232f6fc028caf33a",
+    "displayedMs": 1577.1446000000005,
+    "selectionAfterDisplayMs": 1047.3840999999993,
+    "selectedAtPhase": "pending",
+    "readyAfterDisplayMs": 2175.1553999999996,
+    "topology": {
+      "vertices": 256794,
+      "triangles": 250000,
+      "components": 25934,
+      "boundaryLoops": 6167,
+      "boundaryChains": 67955,
+      "boundaryEdges": 243244,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 15550,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 0,
+      "duplicateTriangles": 0
+    },
+    "guiMcpEqual": true,
+    "memoryHit": true,
+    "pageErrors": []
+  },
+  "validation": {
+    "build": "passed; TypeScript and Vite production build",
+    "focusedTests": {
+      "passed": 108
+    },
+    "suite": {
+      "passed": 46582,
+      "skipped": 54,
+      "failed": 0
+    },
+    "format": "passed; scoped Prettier check",
+    "guiMcp": "matching background and mesh_analyze topology; memory-hit",
+    "sourceFile": "unchanged; SHA-256 verified",
+    "resourceCleanup": "benchmark workers, browser and MCP helpers exited; temporary browser ports closed"
+  },
+  "integrationParent": "c5239d3f6688a24f91c043c66df04ae8de8407b2"
+}

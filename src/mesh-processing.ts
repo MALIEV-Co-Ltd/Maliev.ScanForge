@@ -1,3 +1,4 @@
+import { weldMeshPositions } from "./mesh-weld";
 import type { FitResult, Positions, Vec3 } from "./types";
 import { fitPlane, fitSphere, fitCylinder, fitCone } from "./geometry";
 
@@ -91,57 +92,12 @@ export function analyzeMesh(
   }
   validate(positions, tolerance);
   checkpoint(options, 0, "Welding vertices");
-  const vertices: number[] = [];
-  const triangles = new Uint32Array(positions.length / 3);
-  const cells = new Map<string, number[]>();
-  const origin = [positions[0], positions[1], positions[2]];
-  for (let i = 0; i < positions.length; i += 3) {
-    if (i % 12288 === 0)
-      checkpoint(options, (0.45 * i) / positions.length, "Welding vertices");
-    const x = positions[i],
-      y = positions[i + 1],
-      z = positions[i + 2];
-    const cx = Math.floor((x - origin[0]) / tolerance),
-      cy = Math.floor((y - origin[1]) / tolerance),
-      cz = Math.floor((z - origin[2]) / tolerance);
-    if (![cx, cy, cz].every(Number.isSafeInteger))
-      throw new Error(
-        "Coordinate range exceeds weld precision; increase tolerance.",
-      );
-    let id = -1;
-    search: for (let dx = -1; dx <= 1; dx++)
-      for (let dy = -1; dy <= 1; dy++)
-        for (let dz = -1; dz <= 1; dz++) {
-          for (const candidate of cells.get(
-            `${cx + dx},${cy + dy},${cz + dz}`,
-          ) ?? []) {
-            if (
-              Math.hypot(
-                vertices[candidate * 3] - x,
-                vertices[candidate * 3 + 1] - y,
-                vertices[candidate * 3 + 2] - z,
-              ) <= tolerance
-            ) {
-              id = candidate;
-              break search;
-            }
-          }
-        }
-    if (id < 0) {
-      id = vertices.length / 3;
-      vertices.push(x, y, z);
-      const key = `${cx},${cy},${cz}`;
-      const cell = cells.get(key);
-      if (cell) cell.push(id);
-      else cells.set(key, [id]);
-    }
-    triangles[i / 3] = id;
-  }
-  const topology = analyzeIndexedMesh(
-    new Float64Array(vertices),
-    triangles,
-    options,
+  const { vertices, triangles } = weldMeshPositions(
+    positions,
+    tolerance,
+    (fraction) => checkpoint(options, 0.45 * fraction, "Welding vertices"),
   );
+  const topology = analyzeIndexedMesh(vertices, triangles, options);
   if (cache && (!cache.positions || cache.positions === positions)) {
     cache.positions = positions;
     cache.tolerance = tolerance;
@@ -178,15 +134,30 @@ export function analyzeIndexedMesh(
       triangles[face * 3 + 1],
       triangles[face * 3 + 2],
     ];
-    const duplicateKey = [...ids].sort((a, b) => a - b).join(":");
+    const lo = Math.min(ids[0], ids[1], ids[2]),
+      hi = Math.max(ids[0], ids[1], ids[2]);
+    const duplicateKey = `${lo}:${ids[0] + ids[1] + ids[2] - lo - hi}:${hi}`;
     if (seen.has(duplicateKey)) duplicateTriangles++;
     else seen.add(duplicateKey);
-    const a = point(vertices, ids[0]),
-      b = point(vertices, ids[1]),
-      c = point(vertices, ids[2]);
+    const a = ids[0] * 3,
+      b = ids[1] * 3,
+      c = ids[2] * 3;
+    const abx = vertices[b] - vertices[a],
+      aby = vertices[b + 1] - vertices[a + 1],
+      abz = vertices[b + 2] - vertices[a + 2],
+      acx = vertices[c] - vertices[a],
+      acy = vertices[c + 1] - vertices[a + 1],
+      acz = vertices[c + 2] - vertices[a + 2];
     if (
-      new Set(ids).size < 3 ||
-      Math.hypot(...cross(sub(b, a), sub(c, a))) <= tolerance * tolerance
+      ids[0] === ids[1] ||
+      ids[1] === ids[2] ||
+      ids[2] === ids[0] ||
+      Math.hypot(
+        aby * acz - abz * acy,
+        abz * acx - abx * acz,
+        abx * acy - aby * acx,
+      ) <=
+        tolerance * tolerance
     ) {
       degenerateTriangles++;
       continue;

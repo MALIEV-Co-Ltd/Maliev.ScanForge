@@ -2,6 +2,8 @@
 
 ## Background mesh preparation
 
+Topology preparation uses the optimized numeric weld index while preserving the same tolerance, representative ordering and diagnostics. GUI and MCP share this kernel; no tool parameters or cache formats changed. Full-file measurements and remaining limits are documented in [Scan preparation performance](MESH_READINESS.md).
+
 Loading or selecting a raw triangle scan schedules topology preparation after
 rendering/idle. Navigation and facet selection remain available; this read-only
 work does not mark the project dirty or add history. One selected source is
