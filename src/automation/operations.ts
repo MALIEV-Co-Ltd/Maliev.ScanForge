@@ -45,7 +45,7 @@ import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
-import { fitGridSurfaceAsync } from "../surface-client";
+import { createSurfaceFitOperation } from "./surface-fit-operations";
 import { importScan } from "../import-client";
 import {
   retainIndexedMesh,
@@ -1218,32 +1218,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       );
       return { entityId: e.id };
     },
-    surface_fit: async (a, c) => {
-      const s = host.snapshot(),
-        e = object(s, a.entityId);
-      const fit = await fitGridSurfaceAsync(
-        selectedPositions(s, e, a.selectionOnly),
-        a.options,
-        {
-          signal: c.signal,
-          onProgress: () => c.progress(0.5, "Fitting surface"),
-        },
-      );
-      const entity: Entity = {
-        id: id(),
-        name: a.name ?? `${e.name} fitted surface`,
-        kind: "mesh",
-        positions: tessellatePatch(fit.patch),
-        surfacePatch: fit.patch,
-        surfaceScanId: e.id,
-        color: e.color,
-        visible: true,
-        opacity: 1,
-      };
-      commit(c, [...s.entities, entity], "Fit surface");
-      const { patch: _patch, ...report } = fit;
-      return { entityId: entity.id, ...report };
-    },
+    surface_fit: createSurfaceFitOperation(host),
     project_import: async (a, c) => {
       const s = host.snapshot(),
         blob = c.artifactBlob(a.artifactId),

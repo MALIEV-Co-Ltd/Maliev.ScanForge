@@ -3374,7 +3374,23 @@
         },
         "options": {
           "type": "object",
-          "description": "SurfaceFitOptions; validated by existing surface fitter"
+          "description": "SurfaceFitOptions; validated by existing surface fitter",
+          "properties": {
+            "countU": { "type": "integer", "minimum": 2, "maximum": 16 },
+            "countV": { "type": "integer", "minimum": 2, "maximum": 16 },
+            "degree": { "type": "integer", "minimum": 1, "maximum": 5 },
+            "projection": { "type": "string", "enum": ["xy", "xz", "yz"] },
+            "sampleLimit": {
+              "type": "integer",
+              "minimum": 16,
+              "maximum": 100000
+            }
+          },
+          "required": ["countU", "countV", "projection", "sampleLimit"]
+        },
+        "selectionOnly": {
+          "type": "boolean",
+          "description": "Fit selected visible triangles of the active raw mesh, or selected XYZ points of the active point cloud. Hidden mesh facets are excluded. Default false fits the whole input."
         },
         "expectedRevision": {
           "type": "integer",

@@ -171,6 +171,7 @@ export function createDatumOperations(
       : createDatumTransformExecutor({
           parallel: args.parallel,
           signal: context.signal,
+          typedNormals: true,
         });
     try {
       for (let index = 0; index < targets.length; index++) {

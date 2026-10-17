@@ -1,6 +1,7 @@
 import { AppSelect } from "./AppSelect";
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
+import { resetSketchRectangle } from "../sketch-authoring";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
@@ -823,7 +824,10 @@ export function SketchTools({
       >
         Extrude solved profile
       </button>
-      <button disabled={disabled} onClick={() => update(rectangleSketch())}>
+      <button
+        disabled={disabled}
+        onClick={() => update(resetSketchRectangle(sketch))}
+      >
         Reset rectangle
       </button>
       {error && <p role="alert">{error}</p>}
