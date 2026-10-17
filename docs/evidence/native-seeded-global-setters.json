@@ -571,7 +571,9 @@
     "nativeHostAdmissionBytes": 4294967296,
     "runtimeHostMinimumBytes": 1073741824,
     "rawCapBytes": 1610612736,
-    "verifierHeapMiB": 768
+    "verifierHeapMiB": 768,
+    "verifierHeapLimitKind": "old-space",
+    "totalV8HeapLimitCaptured": false
   },
   "scope": "Complete retained seeded three-scan geometry setters and current staged coordinate/normal application; separate from installed native UI, physical browser worker scheduling, public GUI/MCP workflow, original import and final alignment quality."
 }

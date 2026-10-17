@@ -56,7 +56,8 @@ The native probe's peak tracked raw storage was 692,157,184 bytes. The verifier'
 observed ArrayBuffer peak was 741,491,440 bytes; its largest conservative staged
 estimate was 1,034,529,032 bytes. The unchanged guards required 4 GiB host
 headroom at admission, at least 1 GiB at runtime and a 1.5 GiB raw-storage cap.
-The independent verifier used a 768 MiB JavaScript heap limit. These measurements
+The independent verifier used a 768 MiB old-space limit. Its total V8 heap limit
+was not recorded during that capture. These measurements
 exclude unrelated applications, GPU memory and untracked allocator overhead.
 
 The initial parent wrapper lost the redirected native child's exit code after
