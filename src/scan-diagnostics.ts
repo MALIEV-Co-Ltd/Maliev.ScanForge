@@ -1,6 +1,7 @@
 import type { Positions } from "./types";
 import { hasQueuedProcessing, watchQueuedProcessing } from "./processing-queue";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
+import { registerSpeculativePreparation } from "./speculative-mesh-preparation";
 import {
   cachedTopologySummary,
   cacheTopologySummary,
@@ -24,6 +25,7 @@ const pending = new WeakMap<
     listeners: Set<(state: ScanDiagnostics) => void>;
     state: ScanDiagnostics;
     stopWatching?: () => void;
+    stopSpeculation?: () => void;
   }
 >();
 
@@ -61,7 +63,11 @@ export function observeScanDiagnostics(
     request: ProcessingRequest,
     options: ProcessingOptions,
   ) => Promise<ProcessingResult> = processMesh,
-  options: { prepareTopology?: boolean } = {},
+  options: {
+    prepareTopology?: boolean;
+    speculative?: boolean;
+    onYield?: () => void;
+  } = {},
 ): () => void {
   const listener = (state: ScanDiagnostics) => update(state);
   const cached = cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
@@ -71,6 +77,10 @@ export function observeScanDiagnostics(
     return () => {};
   }
   if (existing) {
+    if (!options.speculative) {
+      existing.stopSpeculation?.();
+      existing.stopSpeculation = undefined;
+    }
     existing.stopWatching?.();
     existing.stopWatching = undefined;
     existing.listeners.add(listener);
@@ -87,6 +97,7 @@ export function observeScanDiagnostics(
       const releaseIfUnused = () => {
         if (!hasQueuedProcessing(positions)) {
           entry.stopWatching?.();
+          entry.stopSpeculation?.();
           entry.stopWatching = undefined;
           if (pending.get(positions) === entry) pending.delete(positions);
           entry.controller.abort();
@@ -107,6 +118,14 @@ export function observeScanDiagnostics(
     } as ScanDiagnostics,
   };
   pending.set(positions, entry);
+  if (options.speculative)
+    entry.stopSpeculation = registerSpeculativePreparation(positions, () => {
+      if (pending.get(positions) === entry) pending.delete(positions);
+      entry.stopWatching?.();
+      controller.abort();
+      options.onYield?.();
+      notifyWatchers(positions);
+    });
   const publish = (state: ScanDiagnostics) => {
     entry.state = state;
     for (const listener of entry.listeners) listener(state);
@@ -133,11 +152,13 @@ export function observeScanDiagnostics(
         throw new Error("Mesh diagnostics returned no topology.");
       cacheTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE, result.topology);
       entry.stopWatching?.();
+      entry.stopSpeculation?.();
       pending.delete(positions);
       publish({ phase: "ready", topology: result.topology });
     })
     .catch((error) => {
       entry.stopWatching?.();
+      entry.stopSpeculation?.();
       if (!controller.signal.aborted)
         publish({
           phase: "error",

@@ -83,15 +83,20 @@ it("fills both dense holes left by a bridge without rewelding the successor", as
     options,
   );
 
-  expect(topologyCache.topology!.edges.get(unchangedKey)).toBe(unchangedUses);
+  // Compact source rows are snapshots; appending must preserve their values.
+  expect(topologyCache.topology!.edges.get(unchangedKey)).toEqual(
+    unchangedUses,
+  );
   expect(sourceTopology.edges.size).toBe(sourceEdgeCount);
   const { analyzeIndexedMesh } = await import("../src/mesh-processing");
   const successor = topologyCache.topology!;
-  expect(successor).toEqual(
-    analyzeIndexedMesh(successor.vertices, successor.triangles, {
-      tolerance: 0.001,
-    }),
-  );
+  const rebuilt = analyzeIndexedMesh(successor.vertices, successor.triangles, {
+    tolerance: 0.001,
+  });
+  expect({ ...successor, edges: [...successor.edges] }).toEqual({
+    ...rebuilt,
+    edges: [...rebuilt.edges],
+  });
   const stages: string[] = [];
   const remaining = runScanEdit(
     {

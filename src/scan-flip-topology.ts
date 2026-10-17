@@ -20,7 +20,7 @@ export function flippedTopology(
     triangles[face + 1] = triangles[face + 2];
     triangles[face + 2] = second;
   }
-  const edges: MeshTopology["edges"] = new Map();
+  const edges = new Map<string, import("./mesh-processing").EdgeUse[]>();
   let index = 0;
   for (const [key, uses] of source.edges) {
     if (index++ % 4096 === 0) check();

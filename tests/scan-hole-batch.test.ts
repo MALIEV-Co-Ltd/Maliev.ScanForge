@@ -84,7 +84,11 @@ it.each([0, 1, 2])(
     ).toBe(true);
     expect(topology.nonManifoldEdges).toBe(0);
     expect(topology.inconsistentEdges).toBe(0);
-    expect(topologyCache.topology).toEqual(topology);
+    // Compare the complete logical topology across compact and editable storage.
+    expect({
+      ...topologyCache.topology,
+      edges: [...topologyCache.topology!.edges],
+    }).toEqual({ ...topology, edges: [...topology.edges] });
   },
 );
 

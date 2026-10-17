@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { MeshEdgeIndex } from "../src/mesh-edge-index";
 import {
   analyzeIndexedMesh,
   analyzeMesh,
@@ -14,7 +15,7 @@ import {
 const square = [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0];
 function roundtrip(topology: MeshTopology) {
   const packed = packTopology(topology);
-  expect(packed.format).toBe(1);
+  expect(packed.format).toBe(2);
   expect(packed.buffers).toHaveLength(14);
   expect(packed.buffers.every((buffer) => buffer instanceof ArrayBuffer)).toBe(
     true,
@@ -29,7 +30,10 @@ function roundtrip(topology: MeshTopology) {
     structuredClone(packed),
     topology.triangles.length * 3,
   );
-  expect(restored).toEqual(topology);
+  expect({ ...restored, edges: undefined }).toEqual({
+    ...topology,
+    edges: undefined,
+  });
   expect([...restored!.edges]).toEqual([...topology.edges]);
   expect(restored!.vertices).not.toBe(topology.vertices);
   expect(restored!.triangles).not.toBe(topology.triangles);
@@ -37,6 +41,77 @@ function roundtrip(topology: MeshTopology) {
 }
 
 describe("packed full topology cache", () => {
+  it("packs and estimates compact edges without materializing edge-use objects", () => {
+    const topology = analyzeMesh(square);
+    expect(topology.edges).toBeInstanceOf(MeshEdgeIndex);
+    const expected = estimatedPackedTopologyBytes(topology);
+    const values = vi.spyOn(topology.edges, "values").mockImplementation(() => {
+      throw new Error("materialized edge rows");
+    });
+    const iterator = vi
+      .spyOn(topology.edges, Symbol.iterator)
+      .mockImplementation(() => {
+        throw new Error("materialized edge entries");
+      });
+    try {
+      expect(estimatedPackedTopologyBytes(topology)).toBe(expected);
+      expect(packedTopologyBytes(packTopology(topology))).toBe(expected);
+    } finally {
+      values.mockRestore();
+      iterator.mockRestore();
+    }
+  });
+  it("stores ordered corner references without redundant edge endpoints", () => {
+    const topology = analyzeMesh(square),
+      packed = packTopology(topology);
+    expect(packed.buffers[2].byteLength).toBe(0);
+    const corners = new Uint32Array(packed.buffers[4]);
+    const uses = [...topology.edges.values()].flat();
+    expect(corners.length).toBe(uses.length);
+    expect(
+      [...corners].map((corner) => {
+        const face = Math.floor(corner / 3);
+        return {
+          face,
+          from: topology.triangles[corner],
+          to: topology.triangles[face * 3 + (((corner % 3) + 1) % 3)],
+        };
+      }),
+    ).toEqual(uses);
+    const duplicate = structuredClone(packed);
+    new Uint32Array(duplicate.buffers[4])[1] = corners[0];
+    expect(unpackTopology(duplicate, square.length)).toBeUndefined();
+  });
+
+  it("admits the retained full scan by exact lengths without allocating mesh data", () => {
+    const rows = (count: number, entries: number) =>
+      ({
+        length: count,
+        *[Symbol.iterator]() {
+          yield { length: entries };
+        },
+      }) as unknown as number[][];
+    const topology = {
+      vertices: { length: 1_010_968 * 3 },
+      triangles: { length: 1_998_344 * 3 },
+      edges: {
+        size: 3_011_098,
+        *values() {
+          yield { length: 5_995_026 };
+        },
+      },
+      neighbors: rows(1_998_344, 5_967_856),
+      components: rows(10, 1_998_344),
+      // Only the aggregate is needed: boundary edges + one extra point per chain.
+      boundaryLoops: rows(1796, 27_155),
+      boundaryChains: rows(15, 30),
+    } as unknown as MeshTopology;
+    expect(estimatedPackedTopologyBytes(topology)).toBe(124_242_124);
+    expect(estimatedPackedTopologyBytes(topology)).toBeLessThan(
+      128 * 1024 * 1024,
+    );
+  });
+
   it("estimates an oversized snapshot from lengths without touching element data or allocating packed arrays", () => {
     const lengthOnly = <T>(length: number): T =>
       new Proxy(
@@ -63,8 +138,7 @@ describe("packed full topology cache", () => {
       30_000_000 * 8 +
         15_000_000 * 4 +
         2 * 4 +
-        2 * 4 +
-        12_000_000 * 3 * 4 +
+        12_000_000 * 4 +
         4 * 2 * 4 +
         13_000_000 * 4 +
         6 * 8,
@@ -74,6 +148,20 @@ describe("packed full topology cache", () => {
 
   it("roundtrips manifold topology, facet order, winding and edge insertion/use order", () => {
     roundtrip(analyzeMesh(square));
+  });
+
+  it("preserves explicit noncanonical edge and use insertion order", () => {
+    const topology = analyzeMesh(square);
+    topology.edges = new Map(
+      [...topology.edges]
+        .reverse()
+        .map(([key, uses]) => [key, [...uses].reverse()]),
+    );
+    roundtrip(topology);
+  });
+
+  it("roundtrips a mesh containing only a degenerate facet and no edges", () => {
+    roundtrip(analyzeMesh(new Float32Array(9)));
   });
 
   it("preserves disconnected components and each ordered hole boundary", () => {
@@ -124,7 +212,7 @@ describe("packed full topology cache", () => {
     for (const malformed of [
       null,
       {},
-      { ...packed, format: 2 },
+      { ...packed, format: 1 },
       { ...packed, buffers: packed.buffers.slice(1) },
       {
         ...packed,
@@ -149,9 +237,9 @@ describe("packed full topology cache", () => {
     corrupt(1, (buffer) => {
       new Uint32Array(buffer)[0] = 999;
     });
-    corrupt(2, (buffer) => {
-      new Uint32Array(buffer)[0] = 999;
-    });
+    const endpoints = structuredClone(packed);
+    endpoints.buffers[2] = new Uint32Array([0, 1]).buffer;
+    expect(unpackTopology(endpoints, square.length)).toBeUndefined();
     corrupt(3, (buffer) => {
       new Uint32Array(buffer)[0] = 1;
     });

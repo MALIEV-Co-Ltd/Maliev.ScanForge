@@ -25,7 +25,7 @@ const ledger = {
 };
 let failed;
 try {
-  let source = `export { analyzeMesh } from ${JSON.stringify(fileURLToPath(new URL("src/mesh-processing.ts", root)))};`;
+  let source = `export { analyzeMesh } from ${JSON.stringify(fileURLToPath(new URL("src/mesh-processing.ts", root)))}; export {packTopology, unpackTopology, packedTopologyBytes, estimatedPackedTopologyBytes} from ${JSON.stringify(fileURLToPath(new URL("src/topology-cache-codec.ts", root)))};`;
   let revision = "working-tree";
   if (baseline) {
     assert(!baseline.startsWith("-"), "Invalid baseline commit.");
@@ -57,7 +57,8 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {analyzeMesh} from './engine.mjs';
+import * as engine from './engine.mjs';
+const {analyzeMesh}=engine;
 const identity=JSON.parse(execFileSync('powershell.exe',['-NoProfile','-Command', 'Get-Process -Id '+process.pid+" | Select-Object Id,Path,@{Name='actualStartedAt';Expression={$_.StartTime.ToUniversalTime().ToString('o')}} | ConvertTo-Json -Compress"],{encoding:'utf8',windowsHide:true,timeout:10000}));
 writeFileSync(new URL('./worker-ledger.json',import.meta.url),JSON.stringify({purpose:'cold mesh preparation benchmark',...identity,expiresAt:new Date(Date.now()+600000).toISOString(),persistentData:false}));
 const data=readFileSync(process.argv[2]);
@@ -70,7 +71,22 @@ const original=hash(p),stages=[],cache={};let stage='',begin=performance.now();c
 const t=analyzeMesh(p,{tolerance:0.001,topologyCache:cache,onProgress:(_,next)=>{if(next!==stage){const now=performance.now();if(stage)stages.push({stage,ms:now-begin});begin=now;stage=next;}}});
 const coldMs=performance.now()-start,hot=performance.now();assert.equal(analyzeMesh(p,{tolerance:0.001,topologyCache:cache}),t);const cachedMs=performance.now()-hot;
 assert.equal(hash(p),original,'Source coordinates changed.');
-console.log(JSON.stringify({file:process.argv[2],sourceSha256:createHash('sha256').update(data).digest('hex'),total,count,coldMs,cachedMs,stages,vertices:t.vertices.length/3,vertexHash:hash(t.vertices),triangleHash:hash(t.triangles),edges:t.edges.size,components:t.components.length,loops:t.boundaryLoops.length,chains:t.boundaryChains.length,nonManifoldEdges:t.nonManifoldEdges,nonManifoldVertices:t.nonManifoldVertices,duplicates:t.duplicateTriangles,degenerates:t.degenerateTriangles,memory:process.memoryUsage(),maxRssKiB:process.resourceUsage().maxRSS}));
+const analysisMemory=process.memoryUsage();
+const rowHash=rows=>{const h=createHash('sha256'), buffer=new Uint32Array(4096);let count=0;const flush=()=>{h.update(new Uint8Array(buffer.buffer,0,count*4));count=0;};const add=value=>{buffer[count++]=value;if(count===buffer.length)flush();};for(const row of rows){add(row.length);for(const value of row)add(value);}flush();return h.digest('hex');};
+const orderedHashes={neighbors:rowHash(t.neighbors),components:rowHash(t.components),loops:rowHash(t.boundaryLoops),chains:rowHash(t.boundaryChains)};
+let persistent;
+if(engine.packTopology){
+ const estimated=engine.estimatedPackedTopologyBytes(t), packStart=performance.now(), packed=engine.packTopology(t), packMs=performance.now()-packStart;
+ assert.equal(engine.packedTopologyBytes(packed),estimated);
+ assert(estimated<=128*1048576,'Exported STL exceeds persistent-cache record limit.');
+ const hydrateStart=performance.now(), restored=engine.unpackTopology(packed,p.length),hydrateMs=performance.now()-hydrateStart;
+ assert(restored,'Packed topology failed hydration.');assert.equal(hash(restored.vertices),hash(t.vertices));assert.equal(hash(restored.triangles),hash(t.triangles));
+ for(const [key,rows] of [['neighbors',restored.neighbors],['components',restored.components],['loops',restored.boundaryLoops],['chains',restored.boundaryChains]])assert.equal(rowHash(rows),orderedHashes[key]);
+ assert.equal(restored.edges.size,t.edges.size);
+ persistent={bytes:estimated,packMs,hydrateMs};
+}
+
+console.log(JSON.stringify({file:process.argv[2],sourceSha256:createHash('sha256').update(data).digest('hex'),total,count,coldMs,cachedMs,stages,analysisMemory,orderedHashes,persistent,vertices:t.vertices.length/3,vertexHash:hash(t.vertices),triangleHash:hash(t.triangles),edges:t.edges.size,components:t.components.length,loops:t.boundaryLoops.length,chains:t.boundaryChains.length,nonManifoldEdges:t.nonManifoldEdges,nonManifoldVertices:t.nonManifoldVertices,duplicates:t.duplicateTriangles,degenerates:t.degenerateTriangles,memory:process.memoryUsage(),maxRssKiB:process.resourceUsage().maxRSS}));
 `;
   await writeFile(new URL("run.mjs", out), entry);
   const log = execFileSync(

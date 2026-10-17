@@ -3,6 +3,52 @@
 Raw scans use the same `analyzeMesh` kernel for background preparation, GUI scan
 editing, `mesh_analyze`, and topology-dependent `mesh_process` operations.
 
+## Compact topology and foreground readiness
+
+The next optimization keeps ordered numeric edge and face directories and flat
+vertex-incidence rows. It avoids retaining millions of string keys, edge-use
+objects and small per-vertex arrays. Edge directories are immutable; returned
+rows are value snapshots. Editing consumers explicitly copy to a mutable Map,
+while smoothing/noise caches retain the directory identity.
+
+Topology-free scale, mirror, flip-normal and unroll requests can cancel explicitly
+speculative background preparation for the same source. Visible diagnostics,
+queued topology consumers and stateful preview ownership remain protected. The
+normal processing queue and finite worker leases still apply to GUI and MCP.
+
+Persistent format 2 stores ordered corner references and derives edge endpoints.
+The full exported STL packed to 124,242,124 bytes (118.49 MiB), fitting the existing
+128 MiB record cap; format 1 would require 187.20 MiB. A fresh browser worker
+restored a 250,000-triangle sample from IndexedDB without welding or building
+adjacency. See [cache format](TOPOLOGY_CACHE.md) and [readiness](SCAN_READINESS.md).
+
+No extra preparation workers are launched. First-representative welding and
+ordered topology have dependencies that require deterministic merging; adding
+parallel copies without measured benefit would increase memory pressure. Existing
+bounded operation-specific pools are preserved. This change targets measured
+scan-preparation costs, not every operation in the application.
+
+On the full 1,998,344-triangle STL, final cold analysis took 8.11 s and adjacency
+construction 2.05 s, with analysis RSS 954,544,128 bytes. Welded coordinates,
+triangle indices and ordered neighbor/component/boundary hashes matched the prior
+candidate and a fresh full-file baseline at commit `febb367`. The fresh baseline
+measured 15.89 s and 2,329,915,392 bytes analysis RSS: approximately 49% less cold
+time and 59% less analysis RSS in the final version. Earlier baseline runs
+measured 11.5–14.3 s on this shared machine.
+A fresh paired 250,000-triangle comparison against commit `febb367` improved cold
+analysis from 2.52 s to 1.32 s; analysis RSS fell from 669,560,832 to 488,501,248
+bytes. Full snapshot packing took 0.56 s and hydration 4.68 s in the final run.
+These observations reflect a shared machine; import, rendering, cache hashing and
+IndexedDB I/O are outside cold analyzer timing.
+
+The isolated production build passed with zero warnings/errors. The full suite
+passed 46,672 tests, with 54 skipped. Browser GUI/MCP counts matched and a fresh
+worker restored the same sample from IndexedDB in 0.36 s without rebuilding.
+See [compact readiness evidence](evidence/mesh-readiness-compact.json).
+
+The following measurements describe the earlier numeric-welding optimization.
+New measurements and their validation scope are recorded separately.
+
 ## Change
 
 Welding retains the original Euclidean tolerance, first-coordinate origin,

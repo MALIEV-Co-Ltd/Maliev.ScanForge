@@ -1,4 +1,5 @@
 import {
+  backgroundMeshPreparation,
   prepareMeshInBackground,
   stopBackgroundMeshPreparation,
 } from "../src/scan-background-preparation";
@@ -1001,4 +1002,117 @@ it("hands background preparation to a selected-facet edit without restarting the
     },
   });
   await editing;
+});
+
+describe("foreground mesh readiness", () => {
+  it.each([true, false])(
+    "releases speculative topology before a topology-free tool (reuseTopology=%s)",
+    async (reuseTopology) => {
+      const source = positions.slice();
+      prepareMeshInBackground(source);
+      await vi.advanceTimersByTimeAsync(500);
+      const background = ProcessingWorkerDouble.latest;
+      expect(background.sent?.kind).toBe("report");
+      const editing = processMesh(
+        {
+          kind: "scanTools",
+          positions: source,
+          operation: { kind: "scaleMesh", factor: 2 },
+        },
+        { reuseTopology },
+      );
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(background.terminated).toBe(true);
+      expect(backgroundMeshPreparation(source).phase).toBe("inactive");
+      const foreground = ProcessingWorkerDouble.latest;
+      expect(foreground).not.toBe(background);
+      expect(foreground.sent?.kind).toBe("scanTools");
+      expect(foreground.sent?.positions).toEqual(source);
+      expect(ProcessingWorkerDouble.creates).toBe(2);
+      foreground.reply({ result: { kind: "scanTools", diagnostics: {} } });
+      await editing;
+    },
+  );
+
+  it("keeps requested diagnostics when a topology-free tool follows", async () => {
+    const source = positions.slice();
+    prepareMeshInBackground(source);
+    await vi.advanceTimersByTimeAsync(500);
+    const background = ProcessingWorkerDouble.latest;
+    const leave = observeScanDiagnostics(source, () => {});
+    const editing = processMesh(
+      {
+        kind: "scanTools",
+        positions: source,
+        operation: { kind: "scaleMesh", factor: 2 },
+      },
+      { reuseTopology: true },
+    );
+    await Promise.resolve();
+    expect(background.terminated).toBe(false);
+    expect(background.sent?.kind).toBe("report");
+    background.reply({ result: { kind: "report", diagnostics: {} } });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(background.sent?.kind).toBe("scanTools");
+    background.reply({ result: { kind: "scanTools", diagnostics: {} } });
+    await editing;
+    leave();
+  });
+
+  it("never interrupts a speculative source to run an already cancelled tool", async () => {
+    const source = positions.slice();
+    prepareMeshInBackground(source);
+    await vi.advanceTimersByTimeAsync(500);
+    const background = ProcessingWorkerDouble.latest;
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      processMesh(
+        {
+          kind: "scanTools",
+          positions: source,
+          operation: { kind: "scaleMesh", factor: 2 },
+        },
+        { reuseTopology: true, signal: controller.signal },
+      ),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    expect(background.terminated).toBe(false);
+    stopBackgroundMeshPreparation();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(background.terminated).toBe(true);
+  });
+
+  it("preserves preparation promised to an already queued topology consumer", async () => {
+    const source = positions.slice();
+    prepareMeshInBackground(source);
+    await vi.advanceTimersByTimeAsync(500);
+    const background = ProcessingWorkerDouble.latest;
+    const inventory = processMesh(
+      { kind: "scanEdit", action: "inventory", positions: source },
+      { reuseTopology: true },
+    );
+    const editing = processMesh(
+      {
+        kind: "scanTools",
+        positions: source,
+        operation: { kind: "scaleMesh", factor: 2 },
+      },
+      { reuseTopology: true },
+    );
+    await Promise.resolve();
+    expect(background.terminated).toBe(false);
+    background.reply({ result: { kind: "report", diagnostics: {} } });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(background.sent?.kind).toBe("scanEdit");
+    background.reply({ result: { kind: "scanEdit", diagnostics: {} } });
+    await inventory;
+    expect(background.sent?.kind).toBe("scanTools");
+    background.reply({ result: { kind: "scanTools", diagnostics: {} } });
+    await editing;
+    expect(ProcessingWorkerDouble.creates).toBe(1);
+  });
 });

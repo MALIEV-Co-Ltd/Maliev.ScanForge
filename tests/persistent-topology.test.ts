@@ -40,6 +40,23 @@ afterEach(() => {
 });
 
 describe("persistent full topology preparation", () => {
+  it("discards an obsolete format and rebuilds under the current content key", async () => {
+    vi.stubGlobal("crypto", webcrypto);
+    const { store, records } = memoryStore();
+    await preparePersistentTopology(square(), options(), store);
+    const saved = [...records.values()][0];
+    (saved.payload as { format: number }).format = 1;
+    const stages: string[] = [];
+    expect(
+      (await preparePersistentTopology(square(), options(stages), store))
+        .topologyCache,
+    ).toBe("stored");
+    expect(store.remove).toHaveBeenCalledOnce();
+    expect(stages).toContain("Welding vertices");
+    expect(
+      ([...records.values()][0].payload as { format: number }).format,
+    ).toBe(2);
+  });
   it("rejects an oversized snapshot before allocating packed buffers", async () => {
     vi.stubGlobal("crypto", webcrypto);
     vi.spyOn(codec, "estimatedPackedTopologyBytes").mockReturnValue(
@@ -82,7 +99,7 @@ describe("persistent full topology preparation", () => {
       edited = positions.slice();
     edited[edited.length - 1] = 0.0000001;
     const key = await meshTopologyCacheKey(positions, 0.001);
-    expect(key).toMatch(/^scanforge-topology-v1:/);
+    expect(key).toMatch(/^scanforge-topology-v2:/);
     expect(await meshTopologyCacheKey(same, 0.001)).toBe(key);
     expect(await meshTopologyCacheKey(edited, 0.001)).not.toBe(key);
     expect(await meshTopologyCacheKey(positions, 0.000001)).not.toBe(key);

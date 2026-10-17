@@ -2,13 +2,15 @@
 
 ## Background mesh preparation
 
-Topology preparation uses the optimized numeric weld index while preserving the same tolerance, representative ordering and diagnostics. GUI and MCP share this kernel; no tool parameters or cache formats changed. Full-file measurements and remaining limits are documented in [Scan preparation performance](MESH_READINESS.md).
+Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).
+
+Scale, mirror, flip normals and unroll may yield speculative preparation for the same source, then use the normal worker queue. Visible diagnostics and queued topology consumers remain protected. Stateful previews retain their owning worker. See [staged readiness](SCAN_READINESS.md).
 
 Loading or selecting a raw triangle scan schedules topology preparation after
 rendering/idle. Navigation and facet selection remain available; this read-only
 work does not mark the project dirty or add history. One selected source is
 prepared at a time, after existing foreground geometry jobs. Switching source,
-editing geometry, or closing the page cancels obsolete preparation. A mesh tool
+editing geometry, or closing the page cancels obsolete preparation. A topology-dependent mesh tool
 started before preparation finishes queues behind the same worker and reuses its
 index; it can still wait for the unfinished prerequisites, but does not restart
 them. Point clouds and exact CAD bodies are excluded.

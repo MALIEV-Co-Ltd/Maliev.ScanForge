@@ -1,4 +1,6 @@
 import { weldMeshPositions } from "./mesh-weld";
+import { MeshEdgeIndex } from "./mesh-edge-index";
+import { MeshFaceIndex, vertexIncidence } from "./mesh-face-index";
 import type { FitResult, Positions, Vec3 } from "./types";
 import { fitPlane, fitSphere, fitCylinder, fitCone } from "./geometry";
 
@@ -21,7 +23,8 @@ export interface EdgeUse {
 export interface MeshTopology {
   vertices: Float64Array;
   triangles: Uint32Array;
-  edges: Map<string, EdgeUse[]>;
+  /** Immutable directory. Copy into Map before replacing edge uses during edits. */
+  edges: ReadonlyMap<string, EdgeUse[]>;
   neighbors: number[][];
   components: number[][];
   boundaryLoops: number[][];
@@ -111,17 +114,18 @@ export function analyzeIndexedMesh(
   vertices: Float64Array,
   triangles: Uint32Array,
   options: MeshProcessingOptions = {},
-  existingEdges?: Map<string, EdgeUse[]>,
+  existingEdges?: ReadonlyMap<string, EdgeUse[]>,
 ): MeshTopology {
   const tolerance = options.tolerance ?? 1e-6;
-  const edges = existingEdges ?? new Map<string, EdgeUse[]>();
+  const index = existingEdges ? undefined : new MeshEdgeIndex(triangles);
+  const edges = existingEdges ?? index!;
   const neighbors = Array.from(
     { length: triangles.length / 3 },
     () => [] as number[],
   );
   let degenerateTriangles = 0,
     duplicateTriangles = 0;
-  const seen = new Set<string>();
+  const seen = new MeshFaceIndex(triangles);
   for (let face = 0; face < neighbors.length; face++) {
     if (face % 4096 === 0)
       checkpoint(
@@ -134,11 +138,7 @@ export function analyzeIndexedMesh(
       triangles[face * 3 + 1],
       triangles[face * 3 + 2],
     ];
-    const lo = Math.min(ids[0], ids[1], ids[2]),
-      hi = Math.max(ids[0], ids[1], ids[2]);
-    const duplicateKey = `${lo}:${ids[0] + ids[1] + ids[2] - lo - hi}:${hi}`;
-    if (seen.has(duplicateKey)) duplicateTriangles++;
-    else seen.add(duplicateKey);
+    if (seen.add(face)) duplicateTriangles++;
     const a = ids[0] * 3,
       b = ids[1] * 3,
       c = ids[2] * 3;
@@ -163,13 +163,7 @@ export function analyzeIndexedMesh(
       continue;
     }
     for (let k = 0; !existingEdges && k < 3; k++) {
-      const from = ids[k],
-        to = ids[(k + 1) % 3],
-        key = edgeKey(from, to);
-      const use = { face, from, to };
-      const uses = edges.get(key);
-      if (uses) uses.push(use);
-      else edges.set(key, [use]);
+      index!.addCorner(face * 3 + k);
     }
   }
   let nonManifoldEdges = 0,
@@ -248,19 +242,18 @@ export function analyzeIndexedMesh(
         boundaryLoops.push(chain);
       } else boundaryChains.push(chain);
     }
-  const incident = Array.from(
-    { length: vertices.length / 3 },
-    () => [] as number[],
-  );
-  for (let face = 0; face < triangles.length / 3; face++)
-    for (let corner = 0; corner < 3; corner++)
-      incident[triangles[face * 3 + corner]].push(face);
+  const incident = vertexIncidence(triangles, vertices.length / 3);
   let nonManifoldVertices = 0;
-  for (let vertex = 0; vertex < incident.length; vertex++) {
+  for (let vertex = 0; vertex < vertices.length / 3; vertex++) {
     if (vertex % 4096 === 0)
       checkpoint(options, 0.95, "Checking vertex surface fans");
     const link = new Map<number, Set<number>>();
-    for (const face of incident[vertex]) {
+    for (
+      let entry = incident.offsets[vertex];
+      entry < incident.offsets[vertex + 1];
+      entry++
+    ) {
+      const face = incident.faces[entry];
       const ids = [
         triangles[face * 3],
         triangles[face * 3 + 1],

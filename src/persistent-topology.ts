@@ -15,7 +15,7 @@ import {
 } from "./topology-cache-store";
 
 // Bump when welding, adjacency, diagnostics, boundary ordering, or packing changes.
-const VERSION = "scanforge-topology-v1";
+const VERSION = "scanforge-topology-v2";
 const CHUNK_BYTES = 256 * 1024;
 const MAX_RECORD_BYTES = 128 * 1024 * 1024;
 export interface TopologyRecordStore {
@@ -119,7 +119,7 @@ function boundedPayload(value: unknown): value is PackedTopology {
   if (!value || typeof value !== "object") return false;
   const payload = value as PackedTopology;
   return (
-    payload.format === 1 &&
+    payload.format === 2 &&
     Array.isArray(payload.buffers) &&
     payload.buffers.length === 14 &&
     payload.buffers.every((buffer) => buffer instanceof ArrayBuffer) &&

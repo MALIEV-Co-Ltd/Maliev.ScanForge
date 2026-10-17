@@ -1,8 +1,9 @@
-import type { EdgeUse, MeshTopology } from "./mesh-processing";
+import type { MeshTopology } from "./mesh-processing";
+import { MeshEdgeIndex } from "./mesh-edge-index";
 
 /** Versioned binary topology snapshot. Buffer positions are part of the format. */
 export interface PackedTopology {
-  format: 1;
+  format: 2;
   buffers: ArrayBuffer[];
 }
 
@@ -34,34 +35,48 @@ function packRows(rows: number[][]): [ArrayBuffer, ArrayBuffer] {
 
 /** Copy a complete topology without welding, changing identity, or recomputing diagnostics. */
 export function packTopology(topology: MeshTopology): PackedTopology {
-  let useCount = 0;
-  for (const uses of topology.edges.values()) useCount += uses.length;
-  if (useCount > 0xffffffff)
-    throw new RangeError("Topology cache exceeds uint32 capacity.");
-  const endpoints = new Uint32Array(topology.edges.size * 2);
-  const offsets = new Uint32Array(topology.edges.size + 1);
-  const useData = new Uint32Array(useCount * 3);
-  let edge = 0,
-    cursor = 0;
-  for (const [key, uses] of topology.edges) {
-    const separator = key.indexOf(":");
-    endpoints[edge * 2] = Number(key.slice(0, separator));
-    endpoints[edge * 2 + 1] = Number(key.slice(separator + 1));
-    offsets[edge++] = cursor;
-    for (const use of uses) {
-      useData[cursor * 3] = use.face;
-      useData[cursor * 3 + 1] = use.from;
-      useData[cursor * 3 + 2] = use.to;
-      cursor++;
+  let offsets: Uint32Array<ArrayBuffer>, useData: Uint32Array<ArrayBuffer>;
+  if (topology.edges instanceof MeshEdgeIndex) {
+    const packed = topology.edges.packCorners();
+    offsets = packed.offsets;
+    useData = packed.corners;
+  } else {
+    let useCount = 0;
+    for (const uses of topology.edges.values()) useCount += uses.length;
+    if (useCount > 0xffffffff)
+      throw new RangeError("Topology cache exceeds uint32 capacity.");
+    offsets = new Uint32Array(topology.edges.size + 1);
+    useData = new Uint32Array(useCount);
+    let edge = 0,
+      cursor = 0;
+    for (const [key, uses] of topology.edges) {
+      offsets[edge++] = cursor;
+      for (const use of uses) {
+        const base = use.face * 3;
+        let reference = -1;
+        for (let corner = 0; corner < 3; corner++)
+          if (
+            topology.triangles[base + corner] === use.from &&
+            topology.triangles[base + ((corner + 1) % 3)] === use.to
+          ) {
+            reference = base + corner;
+            break;
+          }
+        const expectedKey =
+          use.from < use.to ? `${use.from}:${use.to}` : `${use.to}:${use.from}`;
+        if (reference < 0 || reference > 0xffffffff || expectedKey !== key)
+          throw new RangeError("Invalid topology edge incidence.");
+        useData[cursor++] = reference;
+      }
     }
+    offsets[edge] = cursor;
   }
-  offsets[edge] = cursor;
   return {
-    format: 1,
+    format: 2,
     buffers: [
       topology.vertices.slice().buffer,
       topology.triangles.slice().buffer,
-      endpoints.buffer,
+      new ArrayBuffer(0),
       offsets.buffer,
       useData.buffer,
       ...packRows(topology.neighbors),
@@ -84,10 +99,11 @@ export function estimatedPackedTopologyBytes(topology: MeshTopology): number {
   let bytes =
     topology.vertices.length * 8 +
     topology.triangles.length * 4 +
-    topology.edges.size * 2 * 4 +
     (topology.edges.size + 1) * 4 +
     diagnosticKeys.length * 8;
-  for (const uses of topology.edges.values()) bytes += uses.length * 3 * 4;
+  if (topology.edges instanceof MeshEdgeIndex)
+    bytes += topology.edges.useCount * 4;
+  else for (const uses of topology.edges.values()) bytes += uses.length * 4;
   for (const rows of [
     topology.neighbors,
     topology.components,
@@ -151,7 +167,7 @@ export function unpackTopology(
     if (!payload || typeof payload !== "object") return undefined;
     const packed = payload as Partial<PackedTopology>;
     if (
-      packed.format !== 1 ||
+      packed.format !== 2 ||
       !Array.isArray(packed.buffers) ||
       packed.buffers.length !== 14
     )
@@ -176,16 +192,13 @@ export function unpackTopology(
     for (let i = 0; i < vertices.length; i++)
       if (!Number.isFinite(vertices[i])) return undefined;
     if (!validIndices(triangles, vertexCount)) return undefined;
-    const endpoints = new Uint32Array(buffers[2]);
     const edgeOffsets = new Uint32Array(buffers[3]);
     const uses = new Uint32Array(buffers[4]);
-    const edgeCount = endpoints.length / 2;
+    const edgeCount = edgeOffsets.length - 1;
     if (
-      endpoints.length % 2 ||
-      uses.length % 3 ||
-      edgeOffsets.length !== edgeCount + 1 ||
-      !validOffsets(edgeOffsets, uses.length / 3, true) ||
-      !validIndices(endpoints, vertexCount)
+      buffers[2].byteLength !== 0 ||
+      !validOffsets(edgeOffsets, uses.length, true) ||
+      !validIndices(uses, triangles.length)
     )
       return undefined;
     const rowViews: { offsets: Uint32Array; data: Uint32Array }[] = [];
@@ -226,37 +239,33 @@ export function unpackTopology(
         diagnostics[i] > diagnosticLimits[i]
       )
         return undefined;
-    const edges = new Map<string, EdgeUse[]>();
+    const edges = new MeshEdgeIndex(triangles);
+    const seenCorners = new Uint8Array(Math.ceil(triangles.length / 8));
     for (let edge = 0; edge < edgeCount; edge++) {
-      const a = endpoints[edge * 2],
-        b = endpoints[edge * 2 + 1];
-      if (a >= b) return undefined;
+      const first = uses[edgeOffsets[edge]],
+        base = Math.floor(first / 3) * 3;
+      const from = triangles[first],
+        to = triangles[base + (((first % 3) + 1) % 3)];
+      const a = Math.min(from, to),
+        b = Math.max(from, to);
+      if (a === b) return undefined;
       const key = `${a}:${b}`;
       if (edges.has(key)) return undefined;
-      const entries = new Array<EdgeUse>(
-        edgeOffsets[edge + 1] - edgeOffsets[edge],
-      );
       for (let i = edgeOffsets[edge]; i < edgeOffsets[edge + 1]; i++) {
-        const face = uses[i * 3],
-          from = uses[i * 3 + 1],
-          to = uses[i * 3 + 2];
+        const corner = uses[i],
+          base = Math.floor(corner / 3) * 3,
+          from = triangles[corner],
+          to = triangles[base + (((corner % 3) + 1) % 3)],
+          byte = corner >>> 3,
+          mask = 1 << (corner & 7);
         if (
-          face >= faceCount ||
+          seenCorners[byte] & mask ||
           !((from === a && to === b) || (from === b && to === a))
         )
           return undefined;
-        const base = face * 3;
-        let incident = false;
-        for (let corner = 0; corner < 3; corner++)
-          if (
-            triangles[base + corner] === from &&
-            triangles[base + ((corner + 1) % 3)] === to
-          )
-            incident = true;
-        if (!incident) return undefined;
-        entries[i - edgeOffsets[edge]] = { face, from, to };
+        seenCorners[byte] |= mask;
+        edges.addCorner(corner);
       }
-      edges.set(key, entries);
     }
     return {
       vertices,

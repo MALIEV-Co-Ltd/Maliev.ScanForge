@@ -9,6 +9,7 @@ import type {
 import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
+import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
@@ -163,6 +164,17 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  // These transforms do not consume source adjacency. Cancel only speculative
+  // preparation, then keep the normal queue so its worker exits before ours starts.
+  // Preview requests remain serialized on their stateful owning worker.
+  if (
+    !options.signal?.aborted &&
+    request.kind === "scanTools" &&
+    ["scaleMesh", "flipNormals", "mirrorMesh", "unroll"].includes(
+      request.operation.kind,
+    )
+  )
+    yieldSpeculativePreparation(request.positions);
   return options.reuseTopology
     ? queueProcessing(request.positions, options.signal, () =>
         runProcessingRequest(request, options),

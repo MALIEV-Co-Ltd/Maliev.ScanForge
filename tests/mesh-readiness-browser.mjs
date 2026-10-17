@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { randomUUID, randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -32,7 +32,14 @@ const token = randomBytes(32).toString("hex"),
     persistentData: false,
     resources: [],
   };
-let server, reserve, browserServer, browser, client, transport, failed;
+let server,
+  reserve,
+  browserServer,
+  browser,
+  client,
+  transport,
+  failed,
+  validationSTL;
 function identity(pid) {
   const result = spawnSync(
     "powershell.exe",
@@ -55,6 +62,11 @@ try {
   server = http.createServer(async (req, res) => {
     try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
+      if (name === "/validation.stl" && validationSTL) {
+        res.writeHead(200, { "Content-Type": "application/octet-stream" });
+        res.end(validationSTL);
+        return;
+      }
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
         new URL("dist/", root),
@@ -185,6 +197,7 @@ try {
     );
   const stl = Buffer.from(source.subarray(0, 84 + count * 50));
   stl.writeUInt32LE(count, 80);
+  validationSTL = stl;
   const file = fileURLToPath(new URL("readiness-scan.stl", out));
   await writeFile(file, stl);
   const started = performance.now();
@@ -235,6 +248,68 @@ try {
     count,
     "Selection succeeds while preparation is running",
   );
+  // A fresh worker has no resident session. Exercise the real browser IndexedDB
+  // cache rather than treating the previous in-memory hit as a persisted hit.
+  const workerAsset = (await readdir(new URL("dist/assets/", root))).find(
+    (file) => /^processing-worker-.*\.js$/.test(file),
+  );
+  assert(workerAsset, "Production processing worker was built");
+  const persistent = await page.evaluate(async (workerAsset) => {
+    const data = new DataView(
+      await (await fetch("/validation.stl")).arrayBuffer(),
+    );
+    const count = data.getUint32(80, true),
+      positions = new Float32Array(count * 9);
+    for (let face = 0; face < count; face++)
+      for (let corner = 0; corner < 9; corner++)
+        positions[face * 9 + corner] = data.getFloat32(
+          84 + face * 50 + 12 + corner * 4,
+          true,
+        );
+    // GUI import centers XY bounds and places the base at Z=0. The cache key
+    // includes coordinates, so the fresh worker must receive that same source.
+    const min = [Infinity, Infinity, Infinity],
+      max = [-Infinity, -Infinity, -Infinity];
+    for (let i = 0; i < positions.length; i++) {
+      const axis = i % 3;
+      min[axis] = Math.min(min[axis], positions[i]);
+      max[axis] = Math.max(max[axis], positions[i]);
+    }
+    const center = [min[0] / 2 + max[0] / 2, min[1] / 2 + max[1] / 2, min[2]];
+    for (let i = 0; i < positions.length; i++) positions[i] -= center[i % 3];
+    const worker = new Worker(`/assets/${workerAsset}`, { type: "module" });
+    const stages = [],
+      started = performance.now();
+    let timer;
+    try {
+      const result = await new Promise((resolve, reject) => {
+        timer = setTimeout(
+          () => reject(Error("Persistent topology validation timed out")),
+          60000,
+        );
+        worker.onerror = (event) => reject(Error(event.message));
+        worker.onmessage = ({ data }) => {
+          if ("error" in data) reject(Error(data.error));
+          else if ("result" in data) resolve(data.result);
+          else if (data.stage && stages.at(-1) !== data.stage)
+            stages.push(data.stage);
+        };
+        worker.postMessage({ kind: "report", positions, tolerance: 0.001 }, [
+          positions.buffer,
+        ]);
+      });
+      return { result, stages, elapsedMs: performance.now() - started };
+    } finally {
+      clearTimeout(timer);
+      worker.terminate();
+    }
+  }, workerAsset);
+  ledger.persistentAttempt = persistent;
+  assert.equal(persistent.result.diagnostics.topologyCache, "persistent-hit");
+  assert.deepEqual(persistent.result.topology, state.topology);
+  assert(
+    !persistent.stages.some((stage) => /Welding|Building topology/.test(stage)),
+  );
   assert.deepEqual(errors, []);
   ledger.result = {
     triangles: count,
@@ -246,6 +321,7 @@ try {
     topology: state.topology,
     guiMcpEqual: true,
     memoryHit: true,
+    persistentHit: persistent,
     pageErrors: errors,
   };
   await page.screenshot({

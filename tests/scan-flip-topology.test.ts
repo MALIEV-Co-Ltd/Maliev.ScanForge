@@ -70,7 +70,7 @@ it.each(capture.cases)(
       topologyCache: cache,
     });
     expect(twice.triangles).toEqual(before.triangles);
-    expect(twice.edges).toEqual(before.edges);
+    expect([...twice.edges]).toEqual([...before.edges]);
   },
 );
 

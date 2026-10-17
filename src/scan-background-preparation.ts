@@ -63,7 +63,11 @@ export function prepareMeshInBackground(
         if (!entry.stopped) entry.state = state;
       },
       undefined,
-      { prepareTopology: true },
+      {
+        prepareTopology: true,
+        speculative: true,
+        onYield: () => stop(entry),
+      },
     );
   };
   const schedule = () => {

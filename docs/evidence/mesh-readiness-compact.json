@@ -1,0 +1,334 @@
+{
+  "baselineRevision": "febb3675aaeb1c94e8b43a6124d765a461631ff5",
+  "validatedParent": "4ea84d1c1bb1b421dd865883cd73d2b6bd054b65",
+  "fullScan": {
+    "report": "B:\\maliev-legacy\\reverse-engineering-online\\.resources\\scan-readiness-next\\source\\.resources\\mesh-readiness-1792219580568\\result.json",
+    "revision": "working-tree",
+    "file": "Z:/scanforge (2).stl",
+    "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+    "total": 1998344,
+    "count": 1998344,
+    "coldMs": 8111.613200000001,
+    "cachedMs": 0.13040000000000873,
+    "stages": [
+      {
+        "stage": "Welding vertices",
+        "ms": 3974.7693
+      },
+      {
+        "stage": "Building topology",
+        "ms": 2054.267500000001
+      },
+      {
+        "stage": "Finding connected components",
+        "ms": 307.53519999999844
+      },
+      {
+        "stage": "Checking vertex surface fans",
+        "ms": 1736.954600000001
+      }
+    ],
+    "analysisMemory": {
+      "rss": 954544128,
+      "heapTotal": 552255488,
+      "heapUsed": 437846056,
+      "external": 341569910,
+      "arrayBuffers": 339230647
+    },
+    "orderedHashes": {
+      "neighbors": "30e04d8e6324213d311e066cda627a05c830c7cee5c48e39bd5141d581094534",
+      "components": "127310b87cf1777877a0c156e22e34f0ad8061c037966c3238fcaaeed6b3242f",
+      "loops": "d942cb5b67f1961c6f7f0b782758be96a125a3a5805e3cfacbe1f3834f22956c",
+      "chains": "7b6843482de41381c765db6a337dd416d2f748f3014a8f5d7db88d5ce82d8488"
+    },
+    "persistent": {
+      "bytes": 124242124,
+      "packMs": 564.9241000000002,
+      "hydrateMs": 4675.458500000001
+    },
+    "vertices": 1010968,
+    "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+    "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+    "edges": 3011098,
+    "components": 10,
+    "loops": 1796,
+    "chains": 15,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 3,
+    "duplicates": 0,
+    "degenerates": 2,
+    "memory": {
+      "rss": 1281196032,
+      "heapTotal": 716918784,
+      "heapUsed": 620552424,
+      "external": 528924925,
+      "arrayBuffers": 526586911
+    },
+    "maxRssKiB": 1251176
+  },
+  "partialScan": {
+    "baseline": {
+      "report": "B:\\maliev-legacy\\reverse-engineering-online\\.resources\\scan-readiness-next\\source\\.resources\\mesh-readiness-1792219497104\\result.json",
+      "revision": "febb3675aaeb1c94e8b43a6124d765a461631ff5",
+      "file": "Z:/scanforge (2).stl",
+      "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+      "total": 1998344,
+      "count": 250000,
+      "coldMs": 2518.7347999999997,
+      "cachedMs": 0.016700000000128057,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 517.4706999999999
+        },
+        {
+          "stage": "Building topology",
+          "ms": 1003.6853000000001
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 692.7209000000003
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 298.58339999999953
+        }
+      ],
+      "analysisMemory": {
+        "rss": 669560832,
+        "heapTotal": 480591872,
+        "heapUsed": 398630608,
+        "external": 120437552,
+        "arrayBuffers": 118096963
+      },
+      "orderedHashes": {
+        "neighbors": "6de51408895d82b11f984eba3d8927cd8a73e3269c04dbf64c971e439c937bc7",
+        "components": "d5fdc7fcb7b9cd774ed8fc5df95fcaa7c32766df137d4c0018a8fef8b4c475ba",
+        "loops": "7089be55efeb5573b80b3bfac0b9fd03daa3d5ea69e5a5b0db15f058b322aa3b",
+        "chains": "24c558cdcb9e843ee4224f7f65fae88e2de6138bb3899e1e93602d2dd723e032"
+      },
+      "vertices": 256794,
+      "vertexHash": "caa4ecb7450f2fe43e7682b8972fc153a6932b37f28aa7f0c8d2724124eb81c2",
+      "triangleHash": "bb36c112deeae5582da40f4bc136d3a49ea00fcfba828ac569741bc48a24bbf6",
+      "edges": 496622,
+      "components": 25934,
+      "loops": 6167,
+      "chains": 67955,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 15550,
+      "duplicates": 0,
+      "degenerates": 0,
+      "memory": {
+        "rss": 669999104,
+        "heapTotal": 480591872,
+        "heapUsed": 376794232,
+        "external": 120503128,
+        "arrayBuffers": 118162499
+      },
+      "maxRssKiB": 657188
+    },
+    "optimized": {
+      "report": "B:\\maliev-legacy\\reverse-engineering-online\\.resources\\scan-readiness-next\\source\\.resources\\mesh-readiness-1792218674820\\result.json",
+      "revision": "working-tree",
+      "file": "Z:/scanforge (2).stl",
+      "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+      "total": 1998344,
+      "count": 250000,
+      "coldMs": 1316.9130000000005,
+      "cachedMs": 0.014599999999518332,
+      "stages": [
+        {
+          "stage": "Welding vertices",
+          "ms": 464.0047999999997
+        },
+        {
+          "stage": "Building topology",
+          "ms": 278.25459999999975
+        },
+        {
+          "stage": "Finding connected components",
+          "ms": 371.0040000000008
+        },
+        {
+          "stage": "Checking vertex surface fans",
+          "ms": 197.0046999999995
+        }
+      ],
+      "analysisMemory": {
+        "rss": 488501248,
+        "heapTotal": 287817728,
+        "heapUsed": 193798448,
+        "external": 135853340,
+        "arrayBuffers": 133512751
+      },
+      "orderedHashes": {
+        "neighbors": "6de51408895d82b11f984eba3d8927cd8a73e3269c04dbf64c971e439c937bc7",
+        "components": "d5fdc7fcb7b9cd774ed8fc5df95fcaa7c32766df137d4c0018a8fef8b4c475ba",
+        "loops": "7089be55efeb5573b80b3bfac0b9fd03daa3d5ea69e5a5b0db15f058b322aa3b",
+        "chains": "24c558cdcb9e843ee4224f7f65fae88e2de6138bb3899e1e93602d2dd723e032"
+      },
+      "persistent": {
+        "bytes": 19821656,
+        "packMs": 22.55079999999998,
+        "hydrateMs": 279.16899999999987
+      },
+      "vertices": 256794,
+      "vertexHash": "caa4ecb7450f2fe43e7682b8972fc153a6932b37f28aa7f0c8d2724124eb81c2",
+      "triangleHash": "bb36c112deeae5582da40f4bc136d3a49ea00fcfba828ac569741bc48a24bbf6",
+      "edges": 496622,
+      "components": 25934,
+      "loops": 6167,
+      "chains": 67955,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 15550,
+      "duplicates": 0,
+      "degenerates": 0,
+      "memory": {
+        "rss": 521928704,
+        "heapTotal": 291098624,
+        "heapUsed": 185388776,
+        "external": 167239314,
+        "arrayBuffers": 164898685
+      },
+      "maxRssKiB": 512920
+    }
+  },
+  "browser": {
+    "triangles": 250000,
+    "inputSha256": "8d5719906d89e80011ab2d93c83a9ba4e34c4e2cc1a45c7f232f6fc028caf33a",
+    "displayedMs": 2374.1014999999998,
+    "selectionAfterDisplayMs": 1807.2195000000002,
+    "selectedAtPhase": "ready",
+    "readyAfterDisplayMs": 3824.8892000000005,
+    "topology": {
+      "vertices": 256794,
+      "triangles": 250000,
+      "components": 25934,
+      "boundaryLoops": 6167,
+      "boundaryChains": 67955,
+      "boundaryEdges": 243244,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 15550,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 0,
+      "duplicateTriangles": 0
+    },
+    "guiMcpEqual": true,
+    "memoryHit": true,
+    "persistentHit": {
+      "result": {
+        "kind": "report",
+        "diagnostics": {
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 19821656
+        },
+        "topology": {
+          "vertices": 256794,
+          "triangles": 250000,
+          "components": 25934,
+          "boundaryLoops": 6167,
+          "boundaryChains": 67955,
+          "boundaryEdges": 243244,
+          "nonManifoldEdges": 0,
+          "nonManifoldVertices": 15550,
+          "inconsistentEdges": 0,
+          "degenerateTriangles": 0,
+          "duplicateTriangles": 0
+        }
+      },
+      "stages": [
+        "Checking saved mesh topology",
+        "Verifying saved mesh topology",
+        "Restoring saved mesh topology",
+        "Reusing mesh topology"
+      ],
+      "elapsedMs": 358.5
+    },
+    "pageErrors": []
+  },
+  "validation": {
+    "build": "npm run build - passed, zero warnings/errors",
+    "focused": "103 tests passed",
+    "compatibilityRegressions": "101 tests passed",
+    "suite": {
+      "passed": 46672,
+      "skipped": 54,
+      "failed": 0,
+      "filesPassed": 490,
+      "filesSkipped": 16
+    },
+    "fullScanHashEquality": true,
+    "sourceUnchanged": true,
+    "baselineFullScanHashEquality": true
+  },
+  "limits": [
+    "Shared-machine sequential observations, not latency guarantees.",
+    "Cold timing excludes import, rendering and IndexedDB I/O.",
+    "Full codec roundtrip was executed; browser IndexedDB was validated on a 250000-triangle portion.",
+    "Extra preparation workers were not added; ordered welding and boundary IDs remain deterministic."
+  ],
+  "fullBaseline": {
+    "report": "B:\\maliev-legacy\\reverse-engineering-online\\.resources\\scan-readiness-next\\source\\.resources\\mesh-readiness-1792220686150\\result.json",
+    "revision": "febb3675aaeb1c94e8b43a6124d765a461631ff5",
+    "file": "Z:/scanforge (2).stl",
+    "sourceSha256": "d25fb01797575f1824483752e7992f59512fbf58216cc987a6e4ed0aefb48f32",
+    "total": 1998344,
+    "count": 1998344,
+    "coldMs": 15892.4069,
+    "cachedMs": 0.10599999999976717,
+    "stages": [
+      {
+        "stage": "Welding vertices",
+        "ms": 5061.812399999999
+      },
+      {
+        "stage": "Building topology",
+        "ms": 7930.1775
+      },
+      {
+        "stage": "Finding connected components",
+        "ms": 1237.9406000000017
+      },
+      {
+        "stage": "Checking vertex surface fans",
+        "ms": 1619.468399999998
+      }
+    ],
+    "analysisMemory": {
+      "rss": 2329915392,
+      "heapTotal": 1963696128,
+      "heapUsed": 1747874072,
+      "external": 222455625,
+      "arrayBuffers": 220117651
+    },
+    "orderedHashes": {
+      "neighbors": "30e04d8e6324213d311e066cda627a05c830c7cee5c48e39bd5141d581094534",
+      "components": "127310b87cf1777877a0c156e22e34f0ad8061c037966c3238fcaaeed6b3242f",
+      "loops": "d942cb5b67f1961c6f7f0b782758be96a125a3a5805e3cfacbe1f3834f22956c",
+      "chains": "7b6843482de41381c765db6a337dd416d2f748f3014a8f5d7db88d5ce82d8488"
+    },
+    "vertices": 1010968,
+    "vertexHash": "3e3eed2bb60a69b3319c2df1a5e56a94e64c4803713e63af25039232fce94da8",
+    "triangleHash": "dc37a6cfce6b66f28b0d33fc801c84ae18ebf88b2d2493098fa49ed0b1bb2980",
+    "edges": 3011098,
+    "components": 10,
+    "loops": 1796,
+    "chains": 15,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 3,
+    "duplicates": 0,
+    "degenerates": 2,
+    "memory": {
+      "rss": 2331848704,
+      "heapTotal": 1963696128,
+      "heapUsed": 1778708760,
+      "external": 222521201,
+      "arrayBuffers": 220183187
+    },
+    "maxRssKiB": 2426640
+  },
+  "improvement": {
+    "coldTimeReductionPercent": 48.95919006453327,
+    "analysisRssReductionPercent": 59.03095317205407
+  }
+}
