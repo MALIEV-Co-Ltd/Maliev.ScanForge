@@ -60,6 +60,7 @@ export interface FittedScanSurface {
   evaluate(point: Vec3): Vec3;
   rim: Vec3[];
   fitRms: number;
+  heightBounds(direction: Vec3, at: Vec3): [number, number];
 }
 
 /** Fit only retained, connected collar geometry; reject creases and underdetermined support. */
@@ -174,7 +175,10 @@ export function fitCurvatureSurface(
       weighted += w * residuals[i];
       weights += w;
     }
-    const corrected = height(x, y) + weighted / weights;
+    // Interpolated hole fills reconcile their rim with a global patch solve.
+    // A singular nearest-rim correction here introduces localized shoulders
+    // before that solve and contaminates its differential reference surface.
+    const corrected = height(x, y) + (interpolated ? 0 : weighted / weights);
     const z = interpolated
       ? Math.max(minimum, Math.min(maximum, corrected))
       : corrected;
@@ -187,7 +191,32 @@ export function fitCurvatureSurface(
       points.reduce((s, [x, y, z]) => s + (z - height(x, y)) ** 2, 0) /
         points.length,
     ) * radius;
-  return { surface: { project: local, evaluate, rim, fitRms, interpolated } };
+  const heightBounds = (direction: Vec3, at: Vec3): [number, number] => {
+    const offset = dot(sub(origin, at), direction);
+    const ax = radius * dot(axis, direction),
+      ay = radius * dot(second, direction),
+      az = radius * dot(normal, direction);
+    let minimum = Infinity,
+      maximum = -Infinity;
+    for (let i = 0; i < points.length; i++) {
+      if (i % 128 === 0) cancel();
+      const p = points[i],
+        height = offset + ax * p[0] + ay * p[1] + az * p[2];
+      minimum = Math.min(minimum, height);
+      maximum = Math.max(maximum, height);
+    }
+    return [minimum, maximum];
+  };
+  return {
+    surface: {
+      project: local,
+      evaluate,
+      rim,
+      fitRms,
+      interpolated,
+      heightBounds,
+    },
+  };
 }
 
 /** Recover a local panel from retained facets only. No surviving vertex moves.

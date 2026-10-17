@@ -1135,3 +1135,19 @@ using the result. Cancellation/errors retain their existing terminal states and
 do not imply successful completion. Final `diagnostics.filledHoles` and
 `diagnostics.skippedHoles` remain available unchanged. The pointer card shows the
 same counts, and the GUI status bar retains the final outcome summary.
+
+Interpolated automatic fills also detect a dominant direction of collar-slope
+variation and continue supported rib sections along that direction. Directional
+fits retain the same support-error gates and retry the isotropic fit if rejected.
+A screened cotangent solve reconciles the fitted surface with fixed rim heights
+and averaged retained tangents, preserving the fitted interior curvature. It is
+bounded to 600 iterations, 60000 new vertices and 8192 retained one-ring facets.
+Original scan vertices remain fixed; finite correction overshoots are limited to
+the full retained-support height envelope. Cancellation still aborts the operation.
+Blending is optional: if its numeric solve or limits fail, the operation restores
+the refined fitted patch and runs the usual winding and topology validation.
+A blending failure alone no longer prevents a geometrically valid hole from
+closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
+`surfaceBlendLimitedHoles`; no new agent parameter is needed. Support-fit RMS
+describes the interpolant, not a guarantee of final visual continuity or accuracy
+of geometry absent from the scan. Close-up inspection remains necessary.

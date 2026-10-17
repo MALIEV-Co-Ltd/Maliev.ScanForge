@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+import { holeSeamMetrics } from "./hole-seam-metrics.mjs";
 // Optional extracted single-hole component: positions, rim, center and radius.
 const fixturePath = process.env.SCANFORGE_HOLE_FIXTURE;
 const root = new URL("../", import.meta.url),
@@ -319,7 +320,7 @@ try {
       : [0, 0, 45],
     target: center,
     up: Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0],
-    zoom: interpolation ? 3 : fixture ? 1 : 4,
+    zoom: interpolation ? 6 : fixture ? 1 : 4,
   });
   const original = await geometry(),
     beforeHistory = await history();
@@ -377,10 +378,19 @@ try {
     );
   }
   assert(gui.positions.length > original.positions.length);
+  if (fixture) {
+    await writeFile(new URL("gui-geometry.json", out), JSON.stringify(gui));
+    if (interpolation)
+      await page.screenshot({
+        path: fileURLToPath(new URL("candidate-closeup.png", out)),
+      });
+  }
+  const seam = holeSeamMetrics(gui.positions, original.positions.length);
+  if (interpolation) {
+    assert.equal(seam.edges, rim.length / 3);
+  }
   if (!fixture) assert(maximumHeight < 1e-6, `Pit depth ${maximumHeight}`);
   assert((gui.positions.length - original.positions.length) / 9 < 100000);
-  if (fixture)
-    await writeFile(new URL("gui-geometry.json", out), JSON.stringify(gui));
   const analyzed = await job(
     await call("mesh_analyze", { entityId: "panel", tolerance: 0.001 }),
   );
@@ -427,17 +437,120 @@ try {
   assert.deepEqual((await geometry()).positions, gui.positions);
   assert.equal(await history(), beforeHistory + 1);
   assert.deepEqual(errors, []);
+  const inspection = [];
+  if (interpolation && process.env.SCANFORGE_HOLE_BASELINE) {
+    const baseline = JSON.parse(
+      await readFile(process.env.SCANFORGE_HOLE_BASELINE, "utf8"),
+    );
+    assert.deepEqual(
+      baseline.positions.slice(0, original.positions.length),
+      original.positions,
+    );
+    const up = Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0];
+    const side = [
+      up[1] * normal[2] - up[2] * normal[1],
+      up[2] * normal[0] - up[0] * normal[2],
+      up[0] * normal[1] - up[1] * normal[0],
+    ];
+    const sideLength = Math.hypot(...side);
+    side.forEach((v, k) => (side[k] = v / sideLength));
+    const cameras = [
+      {
+        name: "front",
+        position: center.map((v, k) => v + normal[k] * fixture.radius * 3),
+      },
+      {
+        name: "oblique",
+        position: center.map(
+          (v, k) =>
+            v + fixture.radius * (normal[k] * 1.8 + side[k] * 1.2 - up[k]),
+        ),
+      },
+    ];
+    for (const [label, meshPositions] of [
+      ["previous", baseline.positions],
+      ["repaired", gui.positions],
+    ]) {
+      const bytes = Buffer.from(
+        JSON.stringify({
+          ...project,
+          name: "Patch surface inspection",
+          entities: [
+            {
+              ...project.entities[0],
+              name: "Sample project repair area",
+              positions: meshPositions,
+            },
+          ],
+        }),
+      );
+      let uploaded;
+      for (let offset = 0; offset < bytes.length; offset += 262144)
+        uploaded = (
+          await call("artifact_put", {
+            name: "inspection.json",
+            offset,
+            base64: bytes.subarray(offset, offset + 262144).toString("base64"),
+            ...(uploaded ? { artifactId: uploaded.artifactId } : {}),
+          })
+        ).result;
+      await job(
+        await mutate("project_import", {
+          artifactId: uploaded.artifactId,
+          replace: true,
+        }),
+      );
+      await mutate("object_select", { entityId: "panel" });
+      await mutate("ui_set", {
+        workspace: "mesh",
+        mode: "brush",
+        toolPanelOpen: false,
+      });
+      for (const camera of cameras) {
+        await mutate("viewport_control", {
+          action: "camera",
+          position: camera.position,
+          target: center,
+          up,
+          zoom: 6,
+        });
+        const name = `${label}-${camera.name}.png`;
+        await page.screenshot({ path: fileURLToPath(new URL(name, out)) });
+        await mutate("settings_set", { patch: { flatShading: false } });
+        await page.screenshot({
+          path: fileURLToPath(
+            new URL(`${label}-${camera.name}-smooth.png`, out),
+          ),
+        });
+        await mutate("settings_set", { patch: { flatShading: true } });
+        inspection.push({
+          label,
+          view: camera.name,
+          file: name,
+          position: camera.position,
+          target: center,
+          up,
+          zoom: 6,
+        });
+      }
+    }
+  }
+  assert.deepEqual(errors, []);
   ledger.result = {
     guiMcpEqual: true,
     undoRedo: true,
     sourcePreserved: true,
     maximumHeight,
+    seam,
+    inspection,
     topology,
     sourceBoundary: fixture?.sourceBoundary,
     perimeter,
     diagnostics: mcp.result.diagnostics,
     pageErrors: errors,
   };
+  if (interpolation)
+    assert(seam.p95Degrees < 8, `Visible seam angle ${JSON.stringify(seam)}`);
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
   failed = error;

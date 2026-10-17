@@ -4,6 +4,7 @@ import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
 import { fitCurvatureSurface } from "./scan-defeature-surface";
+import { fairHolePatch } from "./scan-hole-fair";
 import {
   bridgeAttachmentNormals,
   bridgeInsideBoundary,
@@ -78,6 +79,8 @@ export function runHoleFill(
     skippedHoles = 0,
     surfaceFitHoles = 0,
     interpolatedSurfaceHoles = 0,
+    surfaceBlendFallbackHoles = 0,
+    surfaceBlendLimitedHoles = 0,
     boundedFallbackHoles = 0,
     surfaceFitMaxRms = 0;
   const surfaceFallbackReasons = new Set<string>();
@@ -371,6 +374,9 @@ export function runHoleFill(
       method,
     );
     let interpolatedSurface = false;
+    let blendFallback = false,
+      blendLimited = false;
+    let supportBounds: [number, number] | undefined;
     let fittedRms: number | undefined,
       fallbackReason = "";
     if (
@@ -382,10 +388,13 @@ export function runHoleFill(
       const fitted = fitCurvatureSurface(t, original, {
         signal: o.signal,
         interpolate: true,
+        vertexNormals,
       });
       if (fitted.surface) {
         const model = fitted.surface;
         interpolatedSurface = !!model.interpolated;
+        if (interpolatedSurface)
+          supportBounds = model.heightBounds(unit, points[0]);
         surface = (p) => {
           const world = points[0].map(
             (value, k) => value + u[k] * p.x + v[k] * p.y,
@@ -498,6 +507,24 @@ export function runHoleFill(
           forbiddenEdges,
         );
         triangles = refined.triangles;
+        if (interpolatedSurface) {
+          const blended = fairHolePatch(
+            t,
+            loop,
+            points,
+            projected,
+            triangles,
+            u,
+            v,
+            unit,
+            boundaryNormals,
+            surface,
+            o,
+            supportBounds,
+          );
+          blendFallback = !blended.applied;
+          blendLimited = blended.limitedVertices > 0;
+        }
       } catch (error) {
         if (
           selected.length <= 1 ||
@@ -557,6 +584,8 @@ export function runHoleFill(
     if (fittedRms !== undefined) {
       surfaceFitHoles++;
       if (interpolatedSurface) interpolatedSurfaceHoles++;
+      if (blendFallback) surfaceBlendFallbackHoles++;
+      if (blendLimited) surfaceBlendLimitedHoles++;
       surfaceFitMaxRms = Math.max(surfaceFitMaxRms, fittedRms);
     }
     if (fallbackReason) {
@@ -611,6 +640,8 @@ export function runHoleFill(
       addedTriangles: output.length / 9,
       surfaceFitHoles,
       interpolatedSurfaceHoles,
+      surfaceBlendFallbackHoles,
+      surfaceBlendLimitedHoles,
       surfaceFitMaxRms,
       boundedFallbackHoles,
       surfaceFallbackReasons: [...surfaceFallbackReasons].join("; "),
