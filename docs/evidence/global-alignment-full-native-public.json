@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "observed": "2026-10-17T11:30:15.523Z",
+  "implementation": {
+    "commit": "d01d2caf5630fb823377bd5f25408154cc64c344",
+    "tree": "2fa512832540df54aa610800eb3fe06fc46957c0",
+    "buildManifest": "scanforge-f92028e0ae416f62",
+    "activeMainIntegrationPending": true
+  },
+  "scope": "Full retained seeded three-scan shared public ApplicationApi controller, Preview and cached Apply in an immutable no-watch source snapshot; not fresh native import, full-size GUI replay, or successful final alignment.",
+  "originalSources": [
+    {
+      "name": "scan-1.stl",
+      "path": "B:\\temp\\alignment-example-files\\scan-1.stl",
+      "bytes": 13657034,
+      "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "recordedSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "matched": true
+    },
+    {
+      "name": "scan-2.stl",
+      "path": "B:\\temp\\alignment-example-files\\scan-2.stl",
+      "bytes": 127370334,
+      "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "recordedSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "matched": true
+    },
+    {
+      "name": "scan-3.stl",
+      "path": "B:\\temp\\alignment-example-files\\scan-3.stl",
+      "bytes": 166345584,
+      "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "recordedSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "matched": true
+    }
+  ],
+  "originalSourceIdentityRechecked": true,
+  "fixture": {
+    "sourceFormat": "STL",
+    "inputSha256": "43d972958a12fcceb603637e9abfeb303f10d3945d7d6464fc42df0e0e042702",
+    "nativeResultSha256": "02ac22a2d4540ea3320275cffaed63169a5430d83a9852d9e14b34fbcaceea77",
+    "nativeSetterCaptureSha256": "4e3070072729f7a6d9bc198d66735c13a3938b61093f82dba096e184dcf693b2",
+    "expandedScannerNormals": "Explicit Float32 corner stream expanded from retained indexed scanner normals before Preview, matching the source-normal import contract; separate from derived display shading normals.",
+    "clockInstrumentation": "Only the two native environmental clock expressions were replaced by 424242; solver algorithms and imported geometry were unchanged."
+  },
+  "checks": {
+    "controllerExecuted": true,
+    "nativeDiagnosticBitsMatched": true,
+    "passes": 19,
+    "queries": 476,
+    "physicalQueryWorkers": 2,
+    "exactStagedObjectsApplied": true,
+    "historyEntries": 1,
+    "retryDidNotCommit": true,
+    "sourceReferencesPreserved": true,
+    "allOwnedWorkersTerminated": true,
+    "nativeFinalOutputFilesRechecked": true,
+    "applicationModuleIdentitiesRechecked": true,
+    "geometry": {
+      "reports": [
+        {
+          "source": 0,
+          "indexedPositionBytes": 1672056,
+          "indexedNormalBytes": 1672056,
+          "rangeCount": 4,
+          "indexIdentityPreserved": true,
+          "renderPositionBytes": 9833004,
+          "renderNormalBytes": 9833004,
+          "allIndexedAndExpandedBitsMatched": true
+        },
+        {
+          "source": 1,
+          "indexedPositionBytes": 15588396,
+          "indexedNormalBytes": 15588396,
+          "rangeCount": 30,
+          "indexIdentityPreserved": true,
+          "renderPositionBytes": 91706508,
+          "renderNormalBytes": 91706508,
+          "allIndexedAndExpandedBitsMatched": true
+        },
+        {
+          "source": 2,
+          "indexedPositionBytes": 20203260,
+          "indexedNormalBytes": 20203260,
+          "rangeCount": 40,
+          "indexIdentityPreserved": true,
+          "renderPositionBytes": 119768760,
+          "renderNormalBytes": 119768760,
+          "allIndexedAndExpandedBitsMatched": true
+        }
+      ],
+      "matchedIndexedBytes": 74927424,
+      "matchedExpandedBytes": 442616544,
+      "rangeCount": 74
+    },
+    "rangeCoverage": {
+      "files": 6,
+      "matchedBytes": 74927424,
+      "ranges": 74
+    }
+  },
+  "finalStates": [
+    {
+      "meanBits": "03ed94c200afee3f",
+      "coverageBits": "0000000000000840",
+      "converged": false,
+      "stable": false,
+      "mean": 0.958862667124237,
+      "coverage": 3
+    },
+    {
+      "meanBits": "6a656c11c421cf3f",
+      "coverageBits": "0000000000003940",
+      "converged": false,
+      "stable": false,
+      "mean": 0.24321795321229028,
+      "coverage": 25
+    },
+    {
+      "meanBits": "1d127fdaa8cfd13f",
+      "coverageBits": "0000000000002240",
+      "converged": false,
+      "stable": false,
+      "mean": 0.27829953515564104,
+      "coverage": 9
+    }
+  ],
+  "successfulFinalAlignmentEstablished": false,
+  "performance": {
+    "observedTotalMs": 142554.46499999985,
+    "inputLoadMs": 7701.199999999255,
+    "totalIncludes": "Input loading, native controller, staged geometry application, and byte comparison; not isolated solve or GUI interaction latency.",
+    "queryWorkerStorage": [
+      {
+        "limit": 536870912,
+        "reserved": 372701152,
+        "live": 527746908,
+        "peak": 535893636
+      },
+      {
+        "limit": 536870912,
+        "reserved": 527746908,
+        "live": 527759196,
+        "peak": 527834577
+      }
+    ],
+    "observedMainThreadHeapMaxBytes": 13526836,
+    "heapScope": "Sampled main-thread JS heap excludes typed-buffer backing stores, workers, browser processes and GPU memory; not application peak RAM.",
+    "observedHostAvailableMinMiB": 3308.54296875,
+    "hostMemoryScope": "Shared host observation; not attribution to this application."
+  },
+  "validation": {
+    "harnessRegressionTestsPassed": 31,
+    "fullSuitePassed": 46694,
+    "fullSuiteSkipped": 54,
+    "buildWarnings": 0,
+    "buildErrors": 0
+  },
+  "cleanup": {
+    "browser": {
+      "browserClosed": true,
+      "originalBrowserProcessAbsent": true,
+      "pid": 2288,
+      "actualStartUtc": "2026-10-17T11:27:47.6526677Z",
+      "existing5173ServerStopped": false
+    },
+    "helpers": [
+      {
+        "kind": "runner",
+        "Id": 33076,
+        "Path": "C:\\Program Files\\nodejs\\node.exe",
+        "actualStartUtc": "2026-10-17T11:27:46.5097285Z",
+        "absent": true
+      },
+      {
+        "kind": "vite",
+        "Id": 63736,
+        "Path": "C:\\Program Files\\nodejs\\node.exe",
+        "actualStartUtc": "2026-10-17T11:27:46.1682528Z",
+        "absent": true
+      },
+      {
+        "port": 59452,
+        "binding": "127.0.0.1",
+        "purpose": "Owned immutable-source no-watch preview",
+        "absent": true
+      }
+    ],
+    "existing5173Available": true
+  },
+  "evidence": [
+    {
+      "path": ".resources/global-native-frozen-41e71b51-ffdf-47f9-8ade-e3c20e96fc7c-ledger.json",
+      "sha256": "6c3f41fb283c820c0dc2b5b7bebd86202e2c8b805f19906bb0ede2591c4d0404"
+    },
+    {
+      "path": ".resources/global-native-frozen-41e71b51-ffdf-47f9-8ade-e3c20e96fc7c-comparison-results.json",
+      "sha256": "2a1d905dc8485eab53598590ed4eaf1ba55832414d41eaa3288f7bb3def38eb3"
+    },
+    {
+      "path": ".resources/global-native-frozen-41e71b51-ffdf-47f9-8ade-e3c20e96fc7c-comparison-cleanup.json",
+      "sha256": "de168283d0470c9645008262be3a786cfef739de2dd2f6bf2be980a819fceb27"
+    },
+    {
+      "path": ".resources/global-public-native-browser.mjs",
+      "sha256": "b5af2ad4310af84a12aaf8f734b653e55ea1827f12ee5d9b1dcfca596b861da7"
+    },
+    {
+      "path": ".resources/global-native-final-check-browser.mjs",
+      "sha256": "b2466dfe2261f8e4aa46ee68d7764c16c95ab45b510cdf05a3b7945f92def4c5"
+    }
+  ],
+  "remaining": [
+    "Successful coarse-to-fine alignment and combine quality against the supplied final reference",
+    "Fresh STL/PLY/ASC public import-through-alignment workflow",
+    "Full-size GUI cancellation, Undo/Redo and navigation responsiveness",
+    "Hidden-facet preparation mapping and remaining native coverage",
+    "Integration of the validated candidate into the advancing main branch"
+  ]
+}

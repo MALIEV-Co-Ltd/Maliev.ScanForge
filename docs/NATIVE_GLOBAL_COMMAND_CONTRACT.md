@@ -63,9 +63,14 @@ matches the retained native and private browser executions. Shared GUI/MCP
 preview, cached Apply, cancellation, stale-input checks and a single history
 transaction are implemented. A separate two-scan synthetic browser replay
 verified Preview/Cancel, mismatched-job cancellation, cached Apply, one history
-step and exact undo/redo. The full retained three-scan public controller and
-final geometry comparison have not run; those results must not be inferred
-from the synthetic workflow replay or private controller captures.
+step and exact undo/redo. A subsequent immutable-source replay of the full
+retained three-scan public controller matched all native diagnostic bits and
+all six native final indexed position/normal fields, plus their expanded
+geometry/scanner-normal carriers. See the
+[full public comparison](evidence/global-alignment-full-native-public.json).
+That replay preserves the distinction between scanner normals and derived
+viewport shading; it establishes neither full-size GUI behavior nor successful
+alignment from the supplied coarse poses.
 
 Retained routine `0x14088aeb0` establishes hidden-face admission to vertex bit
 `8`: vertices start with `(old & ~2) | 8`, visible incident faces clear bit `8`,

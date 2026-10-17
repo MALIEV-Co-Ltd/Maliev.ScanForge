@@ -49,7 +49,7 @@ with these supplied coarse poses:
 
 No numerical difference was found to fix in this replay. The result does not
 establish a successful final alignment or an accurately combined mesh. Initial
-placement and full three-scan public workflow verification remain necessary. A subsequent
+placement and full-size GUI/import workflow verification remain necessary. A subsequent
 [complete native setter comparison](NATIVE_SEEDED_GLOBAL_SETTERS.md) verifies
 the indexed and expanded render positions and normals for all six captured
 matrix applications; it does not establish successful final alignment.
@@ -99,9 +99,18 @@ step and exact undo/redo. See the
 [public workflow checkpoint](evidence/global-alignment-public-workflow.json)
 for the tested bundle, fixture size and limitations.
 
-The full retained three-scan public controller and final geometry comparison
-remain unexecuted. The exact merged production bundle also has not repeated the
-synthetic browser replay. Mixed STL/PLY/ASC import workflows, combining/exporting
+The [full retained three-scan public controller comparison](evidence/global-alignment-full-native-public.json)
+has now passed on immutable source tree
+`2fa512832540df54aa610800eb3fe06fc46957c0`. It matched 74,927,424 indexed bytes
+and 442,616,544 expanded geometry/scanner-normal bytes, all final diagnostic
+bits, one cached Apply history entry and retry protection. All five workers
+terminated. The original three STL files were hash-checked before and after
+this replay. Explicit corner scanner normals were expanded from the retained
+indexed inputs; this is not a fresh import or viewport RGB/shading comparison.
+The observed 142.55 seconds includes input loading and final byte verification,
+so it is not an isolated solver timing. Both native and public results remain
+non-converged. The exact advancing main bundle has not repeated the synthetic
+browser replay. Mixed STL/PLY/ASC import workflows, combining/exporting
 scans and successful final alignment against an independent reference remain
 outstanding. Neither numerical parity nor the smaller workflow replay completes
 the broader application goal.

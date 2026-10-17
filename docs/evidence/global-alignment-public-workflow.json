@@ -95,8 +95,8 @@
     ]
   },
   "mergedBundleBrowserReplay": false,
-  "fullRetainedThreeScanPublicControllerExecuted": false,
-  "fullRetainedThreeScanPublicFinalGeometryCompared": false,
+  "fullRetainedThreeScanPublicControllerExecuted": true,
+  "fullRetainedThreeScanPublicFinalGeometryCompared": true,
   "successfulFinalAlignmentEstablished": false,
   "hiddenInputBoundary": {
     "supported": false,
@@ -136,5 +136,6 @@
       "sha256": "e4cfe6ddf006f2b8f58797dd00497d3a7fbda7d9d21eb918ff174bc2ffa2f104"
     }
   ],
-  "scope": "The public synthetic workflow and private native three-scan captures are separate evidence lanes. No full three-scan public equivalence or successful final alignment is claimed."
+  "scope": "Small synthetic GUI workflow and full retained seeded three-scan shared public controller/final scanner-carrier parity are verified in separate evidence lanes. Successful final alignment and fresh full-size import/GUI workflow remain unverified.",
+  "fullRetainedThreeScanEvidence": "docs/evidence/global-alignment-full-native-public.json"
 }
