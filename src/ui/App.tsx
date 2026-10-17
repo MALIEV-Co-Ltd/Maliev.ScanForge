@@ -996,12 +996,22 @@ export function App() {
   useEffect(() => {
     viewport.current?.setBrush(
       mode === "brush" &&
+        workspace === "mesh" &&
+        toolPanelOpen &&
         !busy &&
         !selected?.kernelId &&
         !scanPanel &&
         !scanBoundaryPaths.length,
     );
-  }, [mode, busy, selected?.kernelId, scanPanel, scanBoundaryPaths]);
+  }, [
+    mode,
+    workspace,
+    toolPanelOpen,
+    busy,
+    selected?.kernelId,
+    scanPanel,
+    scanBoundaryPaths,
+  ]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
       selectionTool,

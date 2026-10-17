@@ -385,6 +385,8 @@ Other actions are `rotate` (`direction`, `degrees`, optional paired `x`/`y`), `p
 
 `ui_set` changes the ribbon tab, tool workspace, mode, tool-panel visibility or Settings visibility, and can dismiss the displayed error. It does not click arbitrary controls or accept GUI preview results. Changing workspace rejects an active GUI preview; inspect it, then explicitly use `preview_discard` with `target: "scan"`, `"surface"`, `"landmarks"` or `"sketchSection"` to discard the corresponding GUI preview. This uses the existing Cancel handlers, preserves committed geometry and remains available during GUI worker cleanup. It does not cancel API jobs; use `job_cancel` for those. Read visible control/status state to check the result. `settings_set` also exposes `normalsDisplay`; grid spacing uses the same supported bounds as the viewport.
 
+Scan selection gestures are active only while the Edit Scan panel is open in the `mesh` workspace. Closing it or switching workspaces through the GUI or `ui_set` releases the brush, so double-clicking a visible scan can reopen Edit Scan. Agents can open the same editor with `command_run` and `name: "ribbon:editScan"`.
+
 ### Discover and recover efficiently
 
 - `tools_search`: match query terms against tool names, descriptions, supported parameters and nested modeling subcommands, bounded to 20 results. Include `includeSchemas: true` only when needed; `tools/list` remains authoritative for all schemas.
