@@ -17,9 +17,19 @@ export function beginSurfaceFit(
 ): SurfaceFitSession {
   if (source.kind !== "mesh" || source.surfacePatch)
     throw new Error("Select a triangle scan to fit a surface.");
+  if (!source.positions.length || source.positions.length % 9)
+    throw new Error("Scan must contain complete triangles.");
   const count = source.positions.length / 9;
   if (selection && selection.length !== count)
     throw new Error("Triangle selection does not match the scan.");
+  if (selection?.some((value) => value !== 0 && value !== 1))
+    throw new Error("Triangle selection must be binary.");
+  if (
+    hidden.some(
+      (index) => !Number.isInteger(index) || index < 0 || index >= count,
+    )
+  )
+    throw new Error("Hidden triangle indices must refer to the current scan.");
   const excluded = new Set(hidden);
   const ids: number[] = [];
   for (let i = 0; i < count; i++)
@@ -28,7 +38,14 @@ export function beginSurfaceFit(
     throw new Error("Select a visible scan region before fitting a surface.");
   const scan = new Float32Array(ids.length * 9);
   for (let i = 0; i < ids.length; i++)
-    scan.set(source.positions.slice(ids[i] * 9, ids[i] * 9 + 9), i * 9);
+    for (let j = 0; j < 9; j++) {
+      const value = source.positions[ids[i] * 9 + j];
+      if (!Number.isFinite(value))
+        throw new Error("Selected scan coordinates must be finite.");
+      scan[i * 9 + j] = value;
+      if (!Number.isFinite(scan[i * 9 + j]))
+        throw new Error("Selected scan exceeds Float32 coordinate range.");
+    }
   return { source, scan, triangles: ids.length };
 }
 
@@ -46,17 +63,18 @@ export function surfaceFitSourceUnchanged(
 export function surfaceFitEntity(
   session: SurfaceFitSession,
   id: string,
+  appearance?: { name?: string; color?: string },
 ): Entity {
   if (!session.preview)
     throw new Error("Apply a surface fit before accepting it.");
   return {
     id,
-    name: "Fitted surface",
+    name: appearance?.name ?? "Fitted surface",
     kind: "mesh",
     positions: tessellatePatch(session.preview.patch, 32, 32),
     surfacePatch: session.preview.patch,
     surfaceScanId: session.source.id,
-    color: DEFAULT_FREEFORM_COLOR,
+    color: appearance?.color ?? DEFAULT_FREEFORM_COLOR,
     visible: true,
     opacity: 1,
   };

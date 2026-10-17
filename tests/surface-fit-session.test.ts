@@ -26,6 +26,45 @@ const source: Entity = {
   ]),
 };
 describe("staged surface fitting", () => {
+  it("rejects malformed selected sources and invalid facet state before copying", () => {
+    const selection = new Uint8Array([1, 0, 0]);
+    expect(() =>
+      beginSurfaceFit(
+        { ...source, positions: [0, 0, 0] },
+        new Uint8Array([1]),
+        [],
+      ),
+    ).toThrow(/complete triangles/);
+    expect(() =>
+      beginSurfaceFit(source, new Uint8Array([2, 0, 0]), []),
+    ).toThrow(/binary/);
+    for (const hidden of [[-1], [3], [0.5], [NaN]])
+      expect(() => beginSurfaceFit(source, selection, hidden)).toThrow(
+        /Hidden triangle/,
+      );
+    const invalid = [...source.positions];
+    invalid[0] = Infinity;
+    expect(() =>
+      beginSurfaceFit({ ...source, positions: invalid }, selection, []),
+    ).toThrow(/finite/);
+    invalid[0] = Number.MAX_VALUE;
+    expect(() =>
+      beginSurfaceFit({ ...source, positions: invalid }, selection, []),
+    ).toThrow(/Float32/);
+  });
+  it("never reads unselected or hidden coordinates into the frozen fit", () => {
+    const positions = [...source.positions];
+    positions[9] = Infinity;
+    const session = beginSurfaceFit(
+      { ...source, positions },
+      new Uint8Array([1, 1, 0]),
+      [1],
+    );
+    expect(Array.from(session.scan)).toEqual(
+      Array.from(source.positions.slice(0, 9)),
+    );
+    expect(session.triangles).toBe(1);
+  });
   it("freezes only selected visible triangles and preserves the source", () => {
     const mask = new Uint8Array([1, 1, 0]);
     const session = beginSurfaceFit(source, mask, [1]);

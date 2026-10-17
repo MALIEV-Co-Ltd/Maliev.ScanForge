@@ -2,13 +2,15 @@
 
 ## Background mesh preparation
 
-Topology preparation uses the optimized numeric weld index while preserving the same tolerance, representative ordering and diagnostics. GUI and MCP share this kernel; no tool parameters or cache formats changed. Full-file measurements and remaining limits are documented in [Scan preparation performance](MESH_READINESS.md).
+Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).
+
+Scale, mirror, flip normals and unroll may yield speculative preparation for the same source, then use the normal worker queue. Visible diagnostics and queued topology consumers remain protected. Stateful previews retain their owning worker. See [staged readiness](SCAN_READINESS.md).
 
 Loading or selecting a raw triangle scan schedules topology preparation after
 rendering/idle. Navigation and facet selection remain available; this read-only
 work does not mark the project dirty or add history. One selected source is
 prepared at a time, after existing foreground geometry jobs. Switching source,
-editing geometry, or closing the page cancels obsolete preparation. A mesh tool
+editing geometry, or closing the page cancels obsolete preparation. A topology-dependent mesh tool
 started before preparation finishes queues behind the same worker and reuses its
 index; it can still wait for the unfinished prerequisites, but does not restart
 them. Point clouds and exact CAD bodies are excluded.
@@ -635,6 +637,15 @@ Full Sketch and NurbsPatch wire structures are shown below. Existing domain vali
 Sketch v1 contains `version:1`, `points:[{id,x,y}]`, `segments:[{id,a,b,construction?}]`, optional `arcs:[{id,a,b,center,clockwise,construction?}]`, and `constraints`. Constraint kinds include fixed, coincident, horizontal, vertical, distance, horizontalDistance, verticalDistance, radius, tangent, parallel, perpendicular, equal and angle. Inspect an existing sketch or the source `src/sketch.ts` for each constraint's fields. Optional `frame` defines its position and orientation; frame definitions live in `src/sketch-frame.ts`.
 
 NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`, `degreeU`, `degreeV`, `knotsU`, `knotsV`, row-major `points:[[x,y,z],...]`, and `weights`. Surface fitting takes `options:{countU,countV,degree?,projection:"xy"|"xz"|"yz",sampleLimit}`. Knots and weights must satisfy the existing rational surface validator.
+
+`surface_fit` defaults to the entire input, retaining point-cloud support. Set
+`selectionOnly:true` to fit the active raw mesh's selected visible triangles,
+or the active point cloud's selected XYZ points. Hidden mesh facets are excluded
+through the same extraction helper as GUI fitting. An empty, hidden-only,
+mismatched or invalid selection is rejected before a worker starts. A changed
+source or cancelled job cannot publish a fitted surface.
+The accepted patch retains its source link and creates one history transaction.
+This shared workflow does not establish numerical parity with the native fitter.
 
 ## Limits and recovery
 
