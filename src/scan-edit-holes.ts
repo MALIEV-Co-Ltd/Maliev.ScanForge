@@ -76,6 +76,7 @@ export function runHoleFill(
   let filledHoles = 0,
     skippedHoles = 0,
     surfaceFitHoles = 0,
+    interpolatedSurfaceHoles = 0,
     boundedFallbackHoles = 0,
     surfaceFitMaxRms = 0;
   const surfaceFallbackReasons = new Set<string>();
@@ -335,6 +336,7 @@ export function runHoleFill(
       unit,
       method,
     );
+    let interpolatedSurface = false;
     let fittedRms: number | undefined,
       fallbackReason = "";
     if (
@@ -343,9 +345,13 @@ export function runHoleFill(
       method !== "flat" &&
       (!r.algorithm || r.algorithm === "automatic")
     ) {
-      const fitted = fitCurvatureSurface(t, original, { signal: o.signal });
+      const fitted = fitCurvatureSurface(t, original, {
+        signal: o.signal,
+        interpolate: true,
+      });
       if (fitted.surface) {
         const model = fitted.surface;
+        interpolatedSurface = !!model.interpolated;
         surface = (p) => {
           const world = points[0].map(
             (value, k) => value + u[k] * p.x + v[k] * p.y,
@@ -516,6 +522,7 @@ export function runHoleFill(
     methods.add(method);
     if (fittedRms !== undefined) {
       surfaceFitHoles++;
+      if (interpolatedSurface) interpolatedSurfaceHoles++;
       surfaceFitMaxRms = Math.max(surfaceFitMaxRms, fittedRms);
     }
     if (fallbackReason) {
@@ -566,6 +573,7 @@ export function runHoleFill(
       skippedHoles,
       addedTriangles: output.length / 9,
       surfaceFitHoles,
+      interpolatedSurfaceHoles,
       surfaceFitMaxRms,
       boundedFallbackHoles,
       surfaceFallbackReasons: [...surfaceFallbackReasons].join("; "),

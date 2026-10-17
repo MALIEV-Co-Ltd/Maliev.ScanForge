@@ -1,5 +1,6 @@
 import type { MeshTopology } from "./mesh-processing";
 import type { Vec3 } from "./types";
+import { interpolateHoleSurface } from "./scan-hole-surface";
 import {
   type SpatialRepatchOptions,
   type SpatialRepatchResult,
@@ -54,6 +55,7 @@ export interface CurvatureRepatchResult {
 }
 
 export interface FittedScanSurface {
+  interpolated?: boolean;
   project(point: Vec3): Vec3;
   evaluate(point: Vec3): Vec3;
   rim: Vec3[];
@@ -64,7 +66,7 @@ export interface FittedScanSurface {
 export function fitCurvatureSurface(
   topology: MeshTopology,
   ids: readonly number[],
-  options: SpatialRepatchOptions = {},
+  options: SpatialRepatchOptions & { interpolate?: boolean } = {},
 ): { surface?: FittedScanSurface; reason?: string } {
   const cancel = () => {
     if (options.signal?.aborted)
@@ -141,15 +143,28 @@ export function fitCurvatureSurface(
   const points = Array.from(samples, (id) => local(point(id))),
     coefficients = fit(points);
   if (!coefficients) return reject("underdetermined surface fit");
-  const height = (x: number, y: number) => dot6(basis(x, y), coefficients);
+  let height = (x: number, y: number) => dot6(basis(x, y), coefficients);
   const rms = Math.sqrt(
     points.reduce((sum, [x, y, z]) => sum + (z - height(x, y)) ** 2, 0) /
       points.length,
   );
   const rim = ids.map((id) => local(point(id)));
-  if (rms > 0.01 || rim.some(([x, y, z]) => Math.abs(z - height(x, y)) > 0.02))
-    return reject("surrounding surface is not a smooth local quadratic");
+  let interpolated = false;
+  if (
+    rms > 0.01 ||
+    rim.some(([x, y, z]) => Math.abs(z - height(x, y)) > 0.02)
+  ) {
+    const continuation = options.interpolate
+      ? interpolateHoleSurface(points, rim, cancel)
+      : undefined;
+    if (!continuation)
+      return reject("surrounding surface is not a smooth local quadratic");
+    height = continuation;
+    interpolated = true;
+  }
   const residuals = rim.map(([x, y, z]) => z - height(x, y));
+  const minimum = points.reduce((h, p) => Math.min(h, p[2]), Infinity),
+    maximum = points.reduce((h, p) => Math.max(h, p[2]), -Infinity);
   const evaluate = ([x, y]: Vec3): Vec3 => {
     let weighted = 0,
       weights = 0;
@@ -159,12 +174,20 @@ export function fitCurvatureSurface(
       weighted += w * residuals[i];
       weights += w;
     }
-    const z = height(x, y) + weighted / weights;
+    const corrected = height(x, y) + weighted / weights;
+    const z = interpolated
+      ? Math.max(minimum, Math.min(maximum, corrected))
+      : corrected;
     return origin.map(
       (v, k) => v + radius * (axis[k] * x + second[k] * y + normal[k] * z),
     ) as Vec3;
   };
-  return { surface: { project: local, evaluate, rim, fitRms: rms * radius } };
+  const fitRms =
+    Math.sqrt(
+      points.reduce((s, [x, y, z]) => s + (z - height(x, y)) ** 2, 0) /
+        points.length,
+    ) * radius;
+  return { surface: { project: local, evaluate, rim, fitRms, interpolated } };
 }
 
 /** Recover a local panel from retained facets only. No surviving vertex moves.

@@ -1039,3 +1039,20 @@ shared operations.
 `scan_preview` exposes the same GUI preview lifecycle: `action:"create"` with entityId and ShrinkWrap operation returns a previewId through its job; `compare` uses that ID and an optional positive deviation; `accept` uses that ID and optional createNew; `cancel` releases it. Each mutation requires a fresh expectedRevision and unique requestId. Retained previews expire after 60 seconds or source/reference changes. Both GUI and MCP operate on the same retained preview. Comparison reports unsigned distances at all source triangle corners, including repeated vertices; these are not certified global bounds. Source-fit, topology, generated-region, scope and resource diagnostics remain available to agents. See [ShrinkWrap workflow and evidence](SHRINKWRAP.md).
 
 Whole ShrinkWrap now runs an exhaustive triangle-pair self-intersection check before returning or retaining a preview. It reports selfIntersectionsChecked, selfIntersectionPairs, selfIntersectionCandidatePairs, selfIntersectionTestedPairs, selfIntersectionIndexFaces, selfIntersectionTriangles, selfIntersectionMethod and selfIntersectionScope; selfIntersectionExamples is a bounded JSON string of original output face-index pairs. The check uses exact Float32 orientation predicates after BVH broad-phase validation. It rejects intersections, incomplete index coverage, overflowing bounds, cancellation and the 500-million candidate-pair limit rather than reporting a partial zero. Local wrapping checks changed facets against the whole parent, reports changedRegionSelfIntersectionsChecked:true, and leaves selfIntersectionsChecked:false when unchanged-only pairs were excluded. No extra MCP action is required; GUI and MCP share this guarded kernel.
+
+Automatic entire-hole filling also continues smooth non-quadratic scan surfaces.
+The shared GUI/MCP operation first tries its existing quadratic collar fit. If
+that fit is inadequate, a bounded thin-plate interpolant uses up to 192 spatially
+spread samples from the retained connected collar and rim. The existing angular,
+8192-face support, 2048-rim, cancellation and patch-validation limits remain in
+force. Overhangs and steep lips keep the conservative boundary-height fallback.
+Interpolation is accepted only when errors against all retained support samples
+stay within 0.1 normalized radius individually and 0.02 radius RMS. Interior
+heights are limited to the retained support envelope; original rim vertices and
+source facets remain fixed. This approximates missing geometry from available
+scan evidence; features wholly absent from the collar cannot be recovered.
+Use `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles",
+mode: "entire", algorithm: "automatic", indices: [boundaryIndex]}`. Existing
+`surfaceFitHoles` includes accepted interpolated surfaces; the additional
+`interpolatedSurfaceHoles` count identifies that subset. `surfaceFitMaxRms`
+reports the accepted surface model's retained-support RMS in millimetres.

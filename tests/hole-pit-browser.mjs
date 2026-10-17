@@ -11,9 +11,10 @@ import { chromium } from "playwright";
 const fixturePath = process.env.SCANFORGE_HOLE_FIXTURE;
 const root = new URL("../", import.meta.url),
   out = new URL(
-    fixturePath
-      ? "../.resources/hole22-browser/"
-      : "../.resources/hole-pit-browser/",
+    process.env.SCANFORGE_HOLE_OUTPUT ??
+      (fixturePath
+        ? "../.resources/hole22-browser/"
+        : "../.resources/hole-pit-browser/"),
     import.meta.url,
   );
 const admission = spawnSync(
@@ -247,8 +248,14 @@ try {
         height(rim.slice(i * 3, i * 3 + 3)),
       )
     : [0];
-  const minHeight = Math.min(...rimHeights),
-    maxHeight = Math.max(...rimHeights);
+  const interpolation = fixture?.expectedSurface === "interpolated";
+  const supportHeights = interpolation
+    ? positions
+        .filter((_, i) => i % 3 === 0)
+        .map((_, i) => height(positions.slice(i * 3, i * 3 + 3)))
+    : rimHeights;
+  const supportMin = Math.min(...supportHeights),
+    supportMax = Math.max(...supportHeights);
   const perimeter = rim
     ? rimHeights.reduce(
         (sum, _, i) =>
@@ -312,10 +319,15 @@ try {
       : [0, 0, 45],
     target: center,
     up: Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0],
-    zoom: fixture ? 1 : 4,
+    zoom: interpolation ? 3 : fixture ? 1 : 4,
   });
   const original = await geometry(),
     beforeHistory = await history();
+  const originalTopology = (
+    await job(
+      await call("mesh_analyze", { entityId: "panel", tolerance: 0.001 }),
+    )
+  ).result.topology;
   const inventoryJob = await job(
     await mutate("mesh_process", {
       entityId: "panel",
@@ -347,7 +359,9 @@ try {
   for (let i = 0; i < 150 && (await history()) === beforeHistory; i++)
     await new Promise((r) => setTimeout(r, 100));
   assert.equal(await history(), beforeHistory + 1);
-  await page.getByText(/1 filled from boundary/).waitFor();
+  await page
+    .getByText(interpolation ? /1 holes filled/ : /1 filled from boundary/)
+    .waitFor();
   const gui = await geometry();
   assert.deepEqual(
     gui.positions.slice(0, original.positions.length),
@@ -358,7 +372,7 @@ try {
     const h = height(gui.positions.slice(i, i + 3));
     maximumHeight = Math.max(maximumHeight, Math.abs(h));
     assert(
-      h >= minHeight - 0.0001 && h <= maxHeight + 0.0001,
+      h >= supportMin - 0.0001 && h <= supportMax + 0.0001,
       `Unbounded height ${h}`,
     );
   }
@@ -379,8 +393,12 @@ try {
     "duplicateTriangles",
     "boundaryChains",
   ])
-    assert.equal(topology[key], 0, `${key}: ${JSON.stringify(topology)}`);
-  assert.equal(topology.boundaryLoops, fixture ? 0 : 1);
+    assert.equal(
+      topology[key],
+      originalTopology[key],
+      `${key}: ${JSON.stringify(topology)}`,
+    );
+  assert.equal(topology.boundaryLoops, originalTopology.boundaryLoops - 1);
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
   await mutate("history_undo", {});
   assert.deepEqual((await geometry()).positions, original.positions);
@@ -400,7 +418,12 @@ try {
       },
     }),
   );
-  assert.equal(mcp.result.diagnostics.boundedFallbackHoles, 1);
+  assert.equal(
+    mcp.result.diagnostics.boundedFallbackHoles,
+    interpolation ? 0 : 1,
+  );
+  if (interpolation)
+    assert.equal(mcp.result.diagnostics.interpolatedSurfaceHoles, 1);
   assert.deepEqual((await geometry()).positions, gui.positions);
   assert.equal(await history(), beforeHistory + 1);
   assert.deepEqual(errors, []);
