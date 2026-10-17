@@ -42,8 +42,10 @@ transform commands delivered to recording adapters.
 
 Those commands establish dispatch despite non-convergence. They do not prove
 the original geometry setters' output, installed UI behavior, or successful
-alignment. Public diagnostics must preserve this distinction. Preview/Apply
-remains a proposed application workflow, not an extracted native interaction.
+alignment. Public diagnostics must preserve this distinction. Preview/Apply is
+the owner-approved, implemented application workflow; it is not an extracted
+native interaction. Its verified scope is recorded in
+[the public workflow checkpoint](evidence/global-alignment-public-workflow.json).
 
 ## Point-cloud admission boundary
 
@@ -57,12 +59,22 @@ into a claim about every native point-cloud import path.
 ## Remaining integration checks
 
 The [seeded three-scan numerical controller comparison](NATIVE_SEEDED_GLOBAL_ALIGNMENT.md)
-now matches fresh native and browser execution. The mapping from hidden triangles
-to native vertex flags still requires verification before
-the public adapter can reproduce hidden-region admission. Shared GUI/MCP
-preview, Apply, cancellation, stale-input checks and a single history transaction
-remain to be implemented and verified for this controller. Existing coarse
-alignment commands do not establish those behaviors for Global Fine Align.
+matches the retained native and private browser executions. Shared GUI/MCP
+preview, cached Apply, cancellation, stale-input checks and a single history
+transaction are implemented. A separate two-scan synthetic browser replay
+verified Preview/Cancel, mismatched-job cancellation, cached Apply, one history
+step and exact undo/redo. The full retained three-scan public controller and
+final geometry comparison have not run; those results must not be inferred
+from the synthetic workflow replay or private controller captures.
+
+Retained routine `0x14088aeb0` establishes hidden-face admission to vertex bit
+`8`: vertices start with `(old & ~2) | 8`, visible incident faces clear bit `8`,
+and selected visible faces set bit `2`. Vertex bit `1` is preserved. However,
+the global preparation caller `0x140aead00` invokes `0x1401ddac0(mesh, mask | 4)`
+and a mesh virtual at `+0x70(mask)` before sampling. That conversion boundary
+has not been extracted. Global sampling tests the configured mask, whose command
+value is `1`; bit `8` must not be substituted for bit `1` without evidence.
+The public adapter therefore continues to reject partially hidden meshes.
 
 ## Application coverage default
 
@@ -76,16 +88,17 @@ The outer-controller regression replays all 17 captured native cases both with
 the recorded explicit tolerance and with the option omitted. Before correction,
 16 default-path cases failed against their native coverage and subsequent call
 records. Explicit caller values retain their existing behavior. This internal
-fix changes neither public GUI/MCP schemas nor command availability; the public
-workflow remains outstanding; the subsequent seeded numerical comparison is
-recorded in the linked verification report.
+fix changed neither public GUI/MCP schemas nor command availability at that
+checkpoint. The subsequent seeded numerical comparison is recorded in the
+linked verification report; the later public workflow has the separate scope
+described above.
 
 The correction passed an isolated TypeScript/Vite build with zero warnings or
 errors, 73 focused tests (3 skipped), and the full suite of 46,461 passing tests
 (54 skipped; zero failures). The full suite completed in 219.46 seconds.
 Scoped Prettier and diff checks passed. These checks verify the default-path
-regression against retained native fixtures; they do not replace the outstanding
-public GUI/MCP workflow verification. The subsequent seeded three-scan numerical
+regression against retained native fixtures; they do not prove full three-scan
+public GUI/MCP workflow equivalence. The subsequent seeded three-scan numerical
 comparison has its own evidence and remaining boundaries in the linked report.
 
 The original evidence-only capture changed no application source, command

@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "implementationCommit": "90c07d4a797d9e6867c6f753997de98f60f0a22c",
+  "build": {
+    "manifest": "scanforge-b3e99eada7f0e84f",
+    "passed": true
+  },
+  "latestTests": {
+    "observed": "2026-10-17T05:04:29.3054006Z",
+    "focusedPassed": 73,
+    "verifierPassed": 28,
+    "suitePassed": 46655,
+    "suiteSkipped": 54,
+    "suiteFailed": 0
+  },
+  "browser": {
+    "runId": "765c5cd4-2076-4f63-aa52-d817f428037a",
+    "startedAt": "2026-10-17T04:20:46.5629201Z",
+    "distIndexSha256": "bb56c80684e2d571c83137cc16e24dd098d9836e11aefe085920f05fb3a01f46",
+    "fixture": {
+      "scans": 2,
+      "facetsPerScan": 5120,
+      "format": "generated binary STL",
+      "units": "mm"
+    },
+    "checks": [
+      {
+        "check": "GUI preview/cancel",
+        "converged": false,
+        "authoredHashes": [
+          {
+            "id": "5188f6e1-14e3-4b83-905e-8522d7fdb326",
+            "sha256": "3db010ce05a4e8889341f9709dd6a1c65b95e57785c9609e24918c8ce6fcbe63",
+            "coordinates": 46080
+          },
+          {
+            "id": "7a70934e-3ce9-4b10-a792-122e5849e62c",
+            "sha256": "29f30a8540b4ab0dc97d94a8bdf91d4bef8c156cf9aea01e7bf74981e0ff03d7",
+            "coordinates": 46080
+          }
+        ]
+      },
+      {
+        "check": "MCP mismatched job cleanup preserves current preview"
+      },
+      {
+        "check": "MCP cached Apply + one history step + Undo/Redo",
+        "converged": false,
+        "appliedGeometry": [
+          {
+            "id": "5188f6e1-14e3-4b83-905e-8522d7fdb326",
+            "sha256": "8fab751e6c15a9d1ae215f3eaf85e405984aa459a68d7405ec21d251d0f9bf2b",
+            "coordinates": 46080
+          },
+          {
+            "id": "7a70934e-3ce9-4b10-a792-122e5849e62c",
+            "sha256": "79793796479054043cc62f898cbe5842ffa9a3b65de8ae8b94499477bbe00ddc",
+            "coordinates": 46080
+          }
+        ],
+        "historyCursor": 3,
+        "noWorkersStartedOnApply": true
+      }
+    ],
+    "completed": true,
+    "passed": true,
+    "cleanup": [
+      {
+        "kind": "mcp-stdio-child",
+        "pid": 80816,
+        "exited": true
+      },
+      {
+        "kind": "disposable-browser",
+        "pid": 57532,
+        "exited": true
+      },
+      {
+        "port": 53450,
+        "closed": true
+      },
+      {
+        "port": 53451,
+        "closed": true
+      },
+      {
+        "port": 53452,
+        "closed": true
+      }
+    ],
+    "limitations": [
+      "Synthetic small binary STL fixture; full native application UI/import/OS scheduling equivalence is not established.",
+      "Worker and diagnostic reuse verifies no recomputation on Apply; staged private coordinate buffers are not directly exposed by the public API.",
+      "This GUI replay does not repeat the separately retained complete native seeded geometry-setter comparison."
+    ]
+  },
+  "mergedBundleBrowserReplay": false,
+  "fullRetainedThreeScanPublicControllerExecuted": false,
+  "fullRetainedThreeScanPublicFinalGeometryCompared": false,
+  "successfulFinalAlignmentEstablished": false,
+  "hiddenInputBoundary": {
+    "supported": false,
+    "visibleFaceVertexRefresh": {
+      "procedure": "0x14088aeb0",
+      "evidenceId": "ev_d4a126dea9cad71c3553471d2bc9b0fb4b302ba11fc189d031fb4916a289a551",
+      "artifact": {
+        "path": "B:/codex/artifacts/native-scan-analysis/rea-inventory-fix/focused-0x14088aeb0.c.txt",
+        "sha256": "1368b716f1f7fdace7734692430a1a62bad7889d2875d4618a1c53660f42ec15"
+      }
+    },
+    "globalPreparationCaller": {
+      "procedure": "0x140aead00",
+      "evidenceId": "ev_e3155b70be3dbc8a51b4eb62ed82e027a082079a57d6acae24f7dc75d086435b",
+      "artifact": {
+        "path": "B:/codex/artifacts/native-scan-analysis/rea-inventory-fix/global-fine-flow-0x140aead00.c.txt",
+        "sha256": "d58d98f4377bc121d17e96ed7848a8b4eaeed431b7a3f0294d011520cfab0107"
+      }
+    },
+    "unresolved": [
+      "0x1401ddac0(mesh, mask | 4)",
+      "mesh virtual +0x70(mask)",
+      "conversion from hidden vertex bit 8 to command exclusion mask 1"
+    ]
+  },
+  "localEvidence": [
+    {
+      "path": ".resources/global-public-gui-green-evidence.json",
+      "sha256": "79cf885a0d95cfdac759990378f6922f689a4607d5c772a507217a2a0fb25bb2"
+    },
+    {
+      "path": ".resources/global-integrated-validation-checkpoint.json",
+      "sha256": "f76c7554aea12e0b76fd9e8baf59ec475fc3d213f01cfa7a29aaca926b332995"
+    },
+    {
+      "path": ".resources/global-memory-validation-20261017.json",
+      "sha256": "e4cfe6ddf006f2b8f58797dd00497d3a7fbda7d9d21eb918ff174bc2ffa2f104"
+    }
+  ],
+  "scope": "The public synthetic workflow and private native three-scan captures are separate evidence lanes. No full three-scan public equivalence or successful final alignment is claimed."
+}

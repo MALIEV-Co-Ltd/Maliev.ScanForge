@@ -49,7 +49,7 @@ with these supplied coarse poses:
 
 No numerical difference was found to fix in this replay. The result does not
 establish a successful final alignment or an accurately combined mesh. Initial
-placement and public workflow verification remain necessary. A subsequent
+placement and full three-scan public workflow verification remain necessary. A subsequent
 [complete native setter comparison](NATIVE_SEEDED_GLOBAL_SETTERS.md) verifies
 the indexed and expanded render positions and normals for all six captured
 matrix applications; it does not establish successful final alignment.
@@ -91,8 +91,17 @@ and compared their complete position/normal output with the current application
 staging kernels. Its installed-UI, scheduling and import limits are documented
 separately.
 
-Meshes were staged through private operations and were not rendered in the
-editor. Public GUI/MCP Preview, Apply, cancellation, undo/redo and timeline
-verification remain outstanding, as do mixed STL/PLY/ASC import workflows,
-combining/exporting scans and successful final alignment against an independent
-reference. This numerical milestone does not complete the broader application goal.
+Meshes in this numerical capture were staged through private operations and
+were not rendered in the editor. Subsequently, the shared public workflow was
+implemented and a separate two-scan synthetic browser replay verified GUI
+Preview/Cancel, MCP cancellation ownership, cached Apply, one timeline history
+step and exact undo/redo. See the
+[public workflow checkpoint](evidence/global-alignment-public-workflow.json)
+for the tested bundle, fixture size and limitations.
+
+The full retained three-scan public controller and final geometry comparison
+remain unexecuted. The exact merged production bundle also has not repeated the
+synthetic browser replay. Mixed STL/PLY/ASC import workflows, combining/exporting
+scans and successful final alignment against an independent reference remain
+outstanding. Neither numerical parity nor the smaller workflow replay completes
+the broader application goal.
