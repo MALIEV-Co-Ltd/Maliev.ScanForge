@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 1,
+  "verifiedUtc": "2026-10-17T02:45:06.633Z",
+  "verification": {
+    "matchedScans": 3,
+    "matchedStages": 6,
+    "matchedFieldBytes": 149854848,
+    "reports": [
+      {
+        "source": 0,
+        "name": "scan-1.stl",
+        "vertices": 139338,
+        "triangles": 273139,
+        "fields": [
+          {
+            "label": "positions",
+            "stage": 1,
+            "bytes": 1672056,
+            "matchedBytes": 1672056,
+            "sha256": "4974edd67430ec6b77e900bfdaace36f453d77005c750a86520d7b37c03835be"
+          },
+          {
+            "label": "normals",
+            "stage": 1,
+            "bytes": 1672056,
+            "matchedBytes": 1672056,
+            "sha256": "3d2d5de26d8e717afbba3ee49fb5423b0c36c35808ef1c70407d2120a8645c0f"
+          },
+          {
+            "label": "positions",
+            "stage": 2,
+            "bytes": 1672056,
+            "matchedBytes": 1672056,
+            "sha256": "83cc8201d948690f962146aa2455bce2d12e91f68a82441c29ab303743d48070"
+          },
+          {
+            "label": "normals",
+            "stage": 2,
+            "bytes": 1672056,
+            "matchedBytes": 1672056,
+            "sha256": "8950c82316860f33a68bf930172a49ceb8d329cd01913015a7720aaf722a46d5"
+          }
+        ],
+        "integrated": {
+          "positionsBytes": 9833004,
+          "positionsSha256": "f312f53e9c22dc8f740249a40228ac5629e240cf8ca1b2a71f61066b68792754",
+          "renderNormalsBytes": 9833004,
+          "renderNormalsSha256": "b4f3b1bdd4e7a6e45340ac05c123145a6ce6b09bd6f931e27fe91d5ca86cbbb4",
+          "indexedPositionsBytes": 1672056,
+          "indexedNormalsBytes": 1672056,
+          "allExpandedRenderCoordinateBitsMatched": true,
+          "allExpandedRenderNormalBitsMatched": true,
+          "indexIdentityPreserved": true,
+          "originalCarriersUnchanged": true,
+          "unusedVertices": 0,
+          "estimatedPeakBytes": 115894796,
+          "bounds": {
+            "min": [
+              -33.570030212402344, -37.531620025634766, -329.1268615722656
+            ],
+            "max": [72.12659454345703, 73.5515365600586, -259.0569152832031]
+          }
+        }
+      },
+      {
+        "source": 1,
+        "name": "scan-2.stl",
+        "vertices": 1299033,
+        "triangles": 2547403,
+        "fields": [
+          {
+            "label": "positions",
+            "stage": 1,
+            "bytes": 15588396,
+            "matchedBytes": 15588396,
+            "sha256": "05164919e6a30814e244ba49e74b0a316b1b8f3e6aea4da1100b15c6b94e72c5"
+          },
+          {
+            "label": "normals",
+            "stage": 1,
+            "bytes": 15588396,
+            "matchedBytes": 15588396,
+            "sha256": "5af539202b9f22a7e4a8d79f3c454e887b99da3cc56a5dbf1479df2e844434f8"
+          },
+          {
+            "label": "positions",
+            "stage": 2,
+            "bytes": 15588396,
+            "matchedBytes": 15588396,
+            "sha256": "85a229fbd638002a3439c900d20cc78a8a7014b0cc0d0d58c73002827355ec82"
+          },
+          {
+            "label": "normals",
+            "stage": 2,
+            "bytes": 15588396,
+            "matchedBytes": 15588396,
+            "sha256": "f8de2527b44dac340f921b878411a51bfd71be7ea998d22848afe66e2b7d8c69"
+          }
+        ],
+        "integrated": {
+          "positionsBytes": 91706508,
+          "positionsSha256": "1933301b1f9dd589eb7b0a90e3206c645dc9efb114683ab4016413f0db2e4b07",
+          "renderNormalsBytes": 91706508,
+          "renderNormalsSha256": "14abf59837bb9c790145dbb876933df6a90239b319328bec8af460c15be531cb",
+          "indexedPositionsBytes": 15588396,
+          "indexedNormalsBytes": 15588396,
+          "allExpandedRenderCoordinateBitsMatched": true,
+          "allExpandedRenderNormalBitsMatched": true,
+          "indexIdentityPreserved": true,
+          "originalCarriersUnchanged": true,
+          "unusedVertices": 0,
+          "estimatedPeakBytes": 801423068,
+          "bounds": {
+            "min": [
+              -33.06711196899414, -38.127071380615234, -328.96856689453125
+            ],
+            "max": [72.74378967285156, 72.97051239013672, -261.9302978515625]
+          }
+        }
+      },
+      {
+        "source": 2,
+        "name": "scan-3.stl",
+        "vertices": 1683605,
+        "triangles": 3326910,
+        "fields": [
+          {
+            "label": "positions",
+            "stage": 1,
+            "bytes": 20203260,
+            "matchedBytes": 20203260,
+            "sha256": "946fe14187ea99294eb60bc5d46b35496727dc817f2319913ea0391aaae0e443"
+          },
+          {
+            "label": "normals",
+            "stage": 1,
+            "bytes": 20203260,
+            "matchedBytes": 20203260,
+            "sha256": "12840e1fc0d9d42aab2471cdf49e874c55842aa6877536b83d9f18dcb3d6620d"
+          },
+          {
+            "label": "positions",
+            "stage": 2,
+            "bytes": 20203260,
+            "matchedBytes": 20203260,
+            "sha256": "9c0f59283c24772425ff2b199501ac29a4a7dbe557e1baa2890815211b0d833c"
+          },
+          {
+            "label": "normals",
+            "stage": 2,
+            "bytes": 20203260,
+            "matchedBytes": 20203260,
+            "sha256": "ec6fa94cc6c05c242044fadc9ea49065ee77f12fa7f8925f72a0a39cd3502fc6"
+          }
+        ],
+        "integrated": {
+          "positionsBytes": 119768760,
+          "positionsSha256": "3ff5ad030259482770af53399b4f206f764ee3b28e1a354e818be87b41287a03",
+          "renderNormalsBytes": 119768760,
+          "renderNormalsSha256": "3a452e13f0f59f2928ab67e2a2b3b0d7f5a4f9368148f8220ae4a62e64df1309",
+          "indexedPositionsBytes": 20203260,
+          "indexedNormalsBytes": 20203260,
+          "allExpandedRenderCoordinateBitsMatched": true,
+          "allExpandedRenderNormalBitsMatched": true,
+          "indexIdentityPreserved": true,
+          "originalCarriersUnchanged": true,
+          "unusedVertices": 0,
+          "estimatedPeakBytes": 1034529032,
+          "bounds": {
+            "min": [-33.7733039855957, -37.77750015258789, -329.6728515625],
+            "max": [71.86053466796875, 73.18508911132812, -262.1337585449219]
+          }
+        }
+      }
+    ],
+    "cleanup": {
+      "pid": 30236,
+      "actualStartUtc": "2026-10-17T02:42:39.895454+00:00",
+      "allocationReleased": true,
+      "exceptionHandlerRemoved": true,
+      "sourceMappingsClosed": true,
+      "ownedAllocationsRemaining": 0,
+      "nativeHeapRemaining": 0,
+      "finishedUtc": "2026-10-17T02:44:17.375853+00:00"
+    },
+    "sources": [
+      {
+        "path": "src/datum-transform-kernel.ts",
+        "sha256": "4dcc2f58d0d537af0780bc2118703930532b0d801b377fe203fd562c1fb95da5"
+      },
+      {
+        "path": "src/scan-task.ts",
+        "sha256": "ac2b5fee00588c33517539ada55e42b7e9f408ae701513a76b18d0cc1f1f9759"
+      },
+      {
+        "path": "src/scan-native-datum-primitive.ts",
+        "sha256": "6cf8c0b467e82184e8a3c7af114ae132269150476f95592c0bc5d2ab5f7b1475"
+      },
+      {
+        "path": "src/point-cloud-placement.ts",
+        "sha256": "6b20c2ab5f042f81c400a410051aaf6d14431175ca228c6d3a2efe0ba2ebc606"
+      },
+      {
+        "path": "src/datum-staged-scan.ts",
+        "sha256": "9c4a7920098a40cd9c01c6b17d51da91400d029c9cb1d8cf5fcba8e8bf40f59e"
+      }
+    ],
+    "peakArrayBufferBytes": 741491440,
+    "captureSha256": "4e3070072729f7a6d9bc198d66735c13a3938b61093f82dba096e184dcf693b2",
+    "probeSha256": "eedd5cd3f41529cfa94380ea4726249861e21dbe28531a88159112f53acab397",
+    "nativeControllerResultSha256": "02ac22a2d4540ea3320275cffaed63169a5430d83a9852d9e14b34fbcaceea77",
+    "inputSha256": "43d972958a12fcceb603637e9abfeb303f10d3945d7d6464fc42df0e0e042702",
+    "scope": "Same complete retained seeded indexed position/normal/triangle carriers. Each scan applies both native command matrices sequentially with Float32 storage after each stage, including unused vertices. Controlled face normals use source first-vertex normals; face-output parity, original import, installed GUI/history and automatic global command dispatch are not claimed.",
+    "integration": "Executes current transformDatumScanStages with its actual indexed/render identity checks and preservation logic. Its injected transform executor runs the current transformDatumCoordinateStages kernel. Native setter fields are compared independently, byte for byte, after both original matrix calls; expanded staged render coordinates are checked against final native indexed positions for every corner. Physical browser worker scheduling and installed native UI are not established by this Node verification.",
+    "originalSourceIdentityRechecked": false,
+    "verifierSources": [
+      {
+        "path": "global-fine-seeded-setter-verify.mjs",
+        "sha256": "400cd2b2917702294244712e9c9b71dcbe619fe5d793c118b64ff6242e69fef3"
+      },
+      {
+        "path": "global-fine-seeded-setter-receipts.mjs",
+        "sha256": "503c16c47254975e11aebb9ae2c4d13294b470eda7570dd89cd0a78abf01550d"
+      }
+    ]
+  },
+  "capture": {
+    "provenance": {
+      "imageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+      "scaffoldSha256": "d098488e29e981d8302ee4f02aa0c2a440f1cdb2db078b14211b34fb919a1703",
+      "probeSha256": "eedd5cd3f41529cfa94380ea4726249861e21dbe28531a88159112f53acab397",
+      "inputSha256": "43d972958a12fcceb603637e9abfeb303f10d3945d7d6464fc42df0e0e042702",
+      "nativeResultSha256": "02ac22a2d4540ea3320275cffaed63169a5430d83a9852d9e14b34fbcaceea77",
+      "runtime": {
+        "path": "C:/Windows/System32/concrt140.dll",
+        "sha256": "b2faf3b85b23c840b654e57d5497a0ad31acd02fb01856cad4725a1715d5f78e",
+        "oldBase": "0x7ffed3430000",
+        "sizeOfImage": 315392,
+        "matchedImports": [
+          {
+            "iat": "0x85690e0",
+            "oldAddress": "0x7ffed343e420",
+            "rva": "0xe420",
+            "symbol": "?_Confirm_cancel@_Cancellation_beacon@details@Concurrency@@QEAA_NXZ"
+          }
+        ]
+      },
+      "execution": "Original native mesh setter 0x14088b070 -> 0x1401de8d0, original vertex/face workers and actual concurrency DLL; supplied indexed record containers, empty attachment tree, notification observer and cached status interface. No scheduler replacement.",
+      "virtualRoute": {
+        "vtable": "0x141248370",
+        "slot": "0x250",
+        "method": "0x14088b070"
+      },
+      "geometryRoute": {
+        "vtable": "0x141155e60",
+        "slot": "0x38",
+        "method": "0x1401de8d0"
+      }
+    },
+    "scope": "Same complete retained seeded indexed position/normal/triangle carriers. Each scan applies both native command matrices sequentially with Float32 storage after each stage, including unused vertices. Controlled face normals use source first-vertex normals; face-output parity, original import, installed GUI/history and automatic global command dispatch are not claimed.",
+    "cases": [
+      {
+        "source": 0,
+        "name": "scan-1.stl",
+        "vertices": 139338,
+        "triangles": 273139,
+        "unusedVertices": 0,
+        "lanes": 2,
+        "matrices": [
+          "442bcbe4fceeef3f22408150cfa49d3faf6ea5dc0b76adbf7fcc7354f3fe22c06c1530f9896c9cbf8bbf5eb6f7faef3f6e1252d87fe8953fa7e29e655d7e1a405e9ce7ee97c2ad3faa62fcb6263a94bf82ba6a788cf0ef3fa41ee09b3e361d40",
+          "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0"
+        ],
+        "stages": [
+          {
+            "stage": 1,
+            "matrixBits": "442bcbe4fceeef3f22408150cfa49d3faf6ea5dc0b76adbf7fcc7354f3fe22c06c1530f9896c9cbf8bbf5eb6f7faef3f6e1252d87fe8953fa7e29e655d7e1a405e9ce7ee97c2ad3faa62fcb6263a94bf82ba6a788cf0ef3fa41ee09b3e361d40",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-1-stage-1-positions.f32",
+                "bytes": 1672056,
+                "sha256": "4974edd67430ec6b77e900bfdaace36f453d77005c750a86520d7b37c03835be"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-1-stage-1-normals.f32",
+                "bytes": 1672056,
+                "sha256": "3d2d5de26d8e717afbba3ee49fb5423b0c36c35808ef1c70407d2120a8645c0f"
+              }
+            },
+            "seconds": 1.5258465000079013,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          },
+          {
+            "stage": 2,
+            "matrixBits": "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-1-stage-2-positions.f32",
+                "bytes": 1672056,
+                "sha256": "83cc8201d948690f962146aa2455bce2d12e91f68a82441c29ab303743d48070"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-1-stage-2-normals.f32",
+                "bytes": 1672056,
+                "sha256": "8950c82316860f33a68bf930172a49ceb8d329cd01913015a7720aaf722a46d5"
+              }
+            },
+            "seconds": 1.4627076999749988,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          }
+        ]
+      },
+      {
+        "source": 1,
+        "name": "scan-2.stl",
+        "vertices": 1299033,
+        "triangles": 2547403,
+        "unusedVertices": 0,
+        "lanes": 2,
+        "matrices": [
+          "f20fd21984f2ef3f3a6299afbf249b3f103dc5b5300aaabfbf336388d5f41dc025b0872f10be9abfd6552e90ebfcef3f1433c95d721a813f322ab53c85e80540fecb3e09b324aa3f546a1e7dbeb57cbf1e6825bb1cf5ef3faeb1cccbd5ca1d40",
+          "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0"
+        ],
+        "stages": [
+          {
+            "stage": 1,
+            "matrixBits": "f20fd21984f2ef3f3a6299afbf249b3f103dc5b5300aaabfbf336388d5f41dc025b0872f10be9abfd6552e90ebfcef3f1433c95d721a813f322ab53c85e80540fecb3e09b324aa3f546a1e7dbeb57cbf1e6825bb1cf5ef3faeb1cccbd5ca1d40",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-2-stage-1-positions.f32",
+                "bytes": 15588396,
+                "sha256": "05164919e6a30814e244ba49e74b0a316b1b8f3e6aea4da1100b15c6b94e72c5"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-2-stage-1-normals.f32",
+                "bytes": 15588396,
+                "sha256": "5af539202b9f22a7e4a8d79f3c454e887b99da3cc56a5dbf1479df2e844434f8"
+              }
+            },
+            "seconds": 14.513491599995177,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          },
+          {
+            "stage": 2,
+            "matrixBits": "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-2-stage-2-positions.f32",
+                "bytes": 15588396,
+                "sha256": "85a229fbd638002a3439c900d20cc78a8a7014b0cc0d0d58c73002827355ec82"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-2-stage-2-normals.f32",
+                "bytes": 15588396,
+                "sha256": "f8de2527b44dac340f921b878411a51bfd71be7ea998d22848afe66e2b7d8c69"
+              }
+            },
+            "seconds": 14.144403400016017,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          }
+        ]
+      },
+      {
+        "source": 2,
+        "name": "scan-3.stl",
+        "vertices": 1683605,
+        "triangles": 3326910,
+        "unusedVertices": 0,
+        "lanes": 2,
+        "matrices": [
+          "1a41eeaaeaf2ef3f04dc622964f0993f5aa0d4bac1daa9bfc1db0e33d21420c0daeb488c665a99bfa0b9fcf8e7fcef3f0240ee1fc96b883fdb786ecbf7c80f40e6e7da22d9ffa93ff1cee2df4ed285bf22521c2df7f4ef3fd829affd9ca81c40",
+          "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0"
+        ],
+        "stages": [
+          {
+            "stage": 1,
+            "matrixBits": "1a41eeaaeaf2ef3f04dc622964f0993f5aa0d4bac1daa9bfc1db0e33d21420c0daeb488c665a99bfa0b9fcf8e7fcef3f0240ee1fc96b883fdb786ecbf7c80f40e6e7da22d9ffa93ff1cee2df4ed285bf22521c2df7f4ef3fd829affd9ca81c40",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-3-stage-1-positions.f32",
+                "bytes": 20203260,
+                "sha256": "946fe14187ea99294eb60bc5d46b35496727dc817f2319913ea0391aaae0e443"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-3-stage-1-normals.f32",
+                "bytes": 20203260,
+                "sha256": "12840e1fc0d9d42aab2471cdf49e874c55842aa6877536b83d9f18dcb3d6620d"
+              }
+            },
+            "seconds": 19.283204500039574,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          },
+          {
+            "stage": 2,
+            "matrixBits": "1a41eeaaeaf2ef3fdaeb488c665a99bfe6e7da22d9ffa93f9ea23171ab0c1f4004dc622964f0993fa0b9fcf8e7fcef3ff1cee2df4ed285bfa47938be6a880dc05aa0d4bac1daa9bf0240ee1fc96b883f22521c2df7f4ef3f8a885321056f1ec0",
+            "outputs": {
+              "positions": {
+                "path": "global-fine-seeded-setter-scan-3-stage-2-positions.f32",
+                "bytes": 20203260,
+                "sha256": "9c0f59283c24772425ff2b199501ac29a4a7dbe557e1baa2890815211b0d833c"
+              },
+              "normals": {
+                "path": "global-fine-seeded-setter-scan-3-stage-2-normals.f32",
+                "bytes": 20203260,
+                "sha256": "ec6fa94cc6c05c242044fadc9ea49065ee77f12fa7f8925f72a0a39cd3502fc6"
+              }
+            },
+            "seconds": 18.549559900013264,
+            "threads": [2204, 63844],
+            "nativeHeapRemaining": 0,
+            "attributesPreserved": true,
+            "notifications": [
+              {
+                "kind": "transformed",
+                "node": 0
+              },
+              {
+                "kind": "statusUpdate"
+              }
+            ],
+            "objectFlags": [1, 0]
+          }
+        ]
+      }
+    ],
+    "checkedCarriers": [
+      {
+        "path": "global-fine-coarse-seed-20261017-scan1-points.f32",
+        "sha256": "827e139b09ef1c4ef0b3c65e999d061c03bbdf5f684f384dac56bd5046082577"
+      },
+      {
+        "path": "global-fine-coarse-seed-20261017-scan1-normals.f32",
+        "sha256": "98015fc70adb6edc123bab104074889e7a563b5edc9d2a96878632708f884859"
+      },
+      {
+        "path": "stl-owner-scan1-triangles.bin",
+        "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+      },
+      {
+        "path": "global-fine-coarse-seed-20261017-scan2-points.f32",
+        "sha256": "53bcb830aba44393bfbd8b1bdc9782f520614462ffef9777298f25c987a447fe"
+      },
+      {
+        "path": "global-fine-coarse-seed-20261017-scan2-normals.f32",
+        "sha256": "77f4dade0af995220bf5853a75959d530bca563d8570c44d14635fc38b9e5b03"
+      },
+      {
+        "path": "stl-owner-scan2-triangles.bin",
+        "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+      },
+      {
+        "path": "stl-owner-scan3-vertices.bin",
+        "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+      },
+      {
+        "path": "global-fine-source-normal-owner-scan3-normals.f32",
+        "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+      },
+      {
+        "path": "stl-owner-scan3-triangles.bin",
+        "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+      }
+    ],
+    "knownRawPeakBytes": 692157184,
+    "rawCapBytes": 1610612736,
+    "hostAdmissionBytes": 4294967296,
+    "runtimeMinimumBytes": 1073741824,
+    "originalSourceIdentityRechecked": false
+  },
+  "artifacts": {
+    "verification": {
+      "name": "global-fine-seeded-setter-verification.json",
+      "sha256": "efc262d7e2c50cd02d62dd06dd15fd43925a34a27104e8634452f4c1ed942bd1"
+    },
+    "nativeCapture": {
+      "name": "global-fine-seeded-setter-native-results.json",
+      "sha256": "4e3070072729f7a6d9bc198d66735c13a3938b61093f82dba096e184dcf693b2"
+    },
+    "nativeCleanup": {
+      "name": "global-fine-seeded-setter-cleanup.json",
+      "sha256": "162060a19811ebebd2150c95b7ea1ff8e38e884c6591b38625e56fd697b331b7"
+    }
+  },
+  "processObservation": {
+    "native": {
+      "pid": 30236,
+      "actualStartUtc": "2026-10-17T02:42:39.8954549Z",
+      "executable": "C:/Python314/python.exe",
+      "exitCode": null,
+      "exitCodeLimitation": "Redirected Windows PowerShell Start-Process wrapper did not retain ExitCode. Native capture and cleanup receipts completed, stderr was empty, and the process was independently absent. The repaired wrapper retains the handle before waiting."
+    },
+    "independentVerifier": {
+      "purpose": "Independent current TypeScript stages and complete staged-scan comparison",
+      "pid": 39212,
+      "actualStartUtc": "2026-10-17T02:44:53.2126810Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "leaseSeconds": 650,
+      "ports": [],
+      "persistentData": false,
+      "exited": true,
+      "exitCode": 0
+    }
+  },
+  "additionalVerification": {
+    "receiptIdentityRegression": {
+      "validReceiptPassed": true,
+      "malformedReceiptsRejected": 5,
+      "nativeExecutionPerformed": false
+    }
+  },
+  "limits": {
+    "nativeHostAdmissionBytes": 4294967296,
+    "runtimeHostMinimumBytes": 1073741824,
+    "rawCapBytes": 1610612736,
+    "verifierHeapMiB": 768
+  },
+  "scope": "Complete retained seeded three-scan geometry setters and current staged coordinate/normal application; separate from installed native UI, physical browser worker scheduling, public GUI/MCP workflow, original import and final alignment quality."
+}

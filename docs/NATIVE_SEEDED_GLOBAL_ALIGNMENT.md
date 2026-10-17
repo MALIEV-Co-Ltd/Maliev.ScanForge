@@ -49,7 +49,10 @@ with these supplied coarse poses:
 
 No numerical difference was found to fix in this replay. The result does not
 establish a successful final alignment or an accurately combined mesh. Initial
-placement, public workflow and final geometry verification remain necessary.
+placement and public workflow verification remain necessary. A subsequent
+[complete native setter comparison](NATIVE_SEEDED_GLOBAL_SETTERS.md) verifies
+the indexed and expanded render positions and normals for all six captured
+matrix applications; it does not establish successful final alignment.
 
 ## Resources and validation
 
@@ -82,9 +85,11 @@ readback, not another application build.
 Native allocator, iterator, metadata and serial OS scheduling adapters were
 controlled. Original importers, installed UI and the original OS scheduler were
 not executed. Native geometry setters were recording adapters during this
-controller capture. The browser executed application setters on the full data,
-but their full coordinate output was not directly compared with native setters
-for these seeds.
+controller capture. The subsequent [setter capture](NATIVE_SEEDED_GLOBAL_SETTERS.md)
+executed the actual native geometry setters with the original concurrency runtime
+and compared their complete position/normal output with the current application
+staging kernels. Its installed-UI, scheduling and import limits are documented
+separately.
 
 Meshes were staged through private operations and were not rendered in the
 editor. Public GUI/MCP Preview, Apply, cancellation, undo/redo and timeline
