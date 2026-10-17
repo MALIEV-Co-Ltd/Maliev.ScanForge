@@ -638,6 +638,15 @@ Sketch v1 contains `version:1`, `points:[{id,x,y}]`, `segments:[{id,a,b,construc
 
 NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`, `degreeU`, `degreeV`, `knotsU`, `knotsV`, row-major `points:[[x,y,z],...]`, and `weights`. Surface fitting takes `options:{countU,countV,degree?,projection:"xy"|"xz"|"yz",sampleLimit}`. Knots and weights must satisfy the existing rational surface validator.
 
+`surface_fit` defaults to the entire input, retaining point-cloud support. Set
+`selectionOnly:true` to fit the active raw mesh's selected visible triangles,
+or the active point cloud's selected XYZ points. Hidden mesh facets are excluded
+through the same extraction helper as GUI fitting. An empty, hidden-only,
+mismatched or invalid selection is rejected before a worker starts. A changed
+source or cancelled job cannot publish a fitted surface.
+The accepted patch retains its source link and creates one history transaction.
+This shared workflow does not establish numerical parity with the native fitter.
+
 ## Limits and recovery
 
 - One operation admission lane protects the owning model. Lightweight state reads and job/artifact tools remain available while a job runs. A second geometry operation returns `BUSY`.

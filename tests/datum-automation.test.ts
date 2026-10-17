@@ -9,6 +9,7 @@ import type { CadClient } from "../src/cad/client";
 import type { Entity } from "../src/types";
 import native from "./fixtures/alignment-datum-plane-native.json";
 import cadTransforms from "./fixtures/alignment-datum-cad-transform-native.json";
+import meshTransforms from "./fixtures/alignment-datum-mesh-transform-native.json";
 import {
   executeDatumTransform,
   type DatumTransformRequest,
@@ -19,7 +20,16 @@ import {
   nativeDatumOriginPayload,
   type NativeDatumOriginReference,
 } from "../src/scan-native-datum-origin";
-import { parseProject, serializeProject } from "../src/io";
+import {
+  parseProject,
+  serializeProject,
+  serializeProjectBlob,
+} from "../src/io";
+import {
+  decodeProjectContents,
+  encodeProjectFileLocally,
+} from "../src/project-file-codec";
+import type { Project } from "../src/types";
 function setup() {
   const entity: Entity = {
     id: "scan",
@@ -862,6 +872,151 @@ it("preserves native signed-zero normals through the shared Apply operation", as
   expect(original.normals?.every((value) => Object.is(value, -0))).toBe(true);
   expect(state.history).toHaveLength(1);
 });
+const floatBytes = (values: ArrayLike<number>) =>
+  Buffer.from(Float32Array.from(values).buffer).toString("hex");
+function capturedFloats(hex: string) {
+  const bytes = Buffer.from(hex, "hex");
+  return Float32Array.from({ length: bytes.length / 4 }, (_, index) =>
+    bytes.readFloatLE(index * 4),
+  );
+}
+it.each([meshTransforms.cases[0], meshTransforms.cases[3]])(
+  "retains compact Apply normals and exact captured streams: $name",
+  async (sample) => {
+    const { api, state } = setup();
+    const plane = native.cases.find(
+      (item) =>
+        sample.name === `datum-plane-sequence-results.json-${item.name}-1`,
+    )!;
+    expect(plane).toBeDefined();
+    const source: Entity = {
+      ...state.entities[0],
+      color: "#ffffff",
+      positions: capturedFloats(sample.positionsBits),
+      normals: capturedFloats(sample.normalsBits),
+    };
+    source.indexedMesh = {
+      vertices: new Float32Array(source.positions),
+      triangles: Uint32Array.from(
+        { length: source.positions.length / 3 },
+        (_, index) => index,
+      ),
+      normals: new Float32Array(source.normals!),
+    };
+    state.entities = [source];
+    const sourceEntities = state.entities;
+    try {
+      const result = await settle(
+        api,
+        await api.invoke("alignment_apply", {
+          ...request(
+            api,
+            plane.steps.map((step) => ({
+              kind: "plane",
+              point: step.point,
+              direction: step.normal,
+              axis: step.axis,
+            })),
+          ),
+          parallel: false,
+        }),
+      );
+      expect(result.status).toBe("succeeded");
+      const output = state.entities[0];
+      expect(output.normals).toBeInstanceOf(Float32Array);
+      expect(floatBytes(output.positions)).toBe(sample.nativePositionsBits);
+      expect(floatBytes(output.indexedMesh!.vertices)).toBe(
+        sample.nativePositionsBits,
+      );
+      expect(floatBytes(output.normals!)).toBe(sample.nativeNormalsBits);
+      expect(floatBytes(output.indexedMesh!.normals!)).toBe(
+        sample.nativeNormalsBits,
+      );
+      expect(output.normals).not.toBe(source.normals);
+      expect(output.indexedMesh!.triangles).toBe(source.indexedMesh!.triangles);
+      expect(floatBytes(source.positions)).toBe(sample.positionsBits);
+      expect(floatBytes(source.normals!)).toBe(sample.normalsBits);
+      expect(floatBytes(source.indexedMesh!.vertices)).toBe(
+        sample.positionsBits,
+      );
+      expect(floatBytes(source.indexedMesh!.normals!)).toBe(sample.normalsBits);
+      expect(state.history).toHaveLength(1);
+      expect(state.history[0].entities).toBe(sourceEntities);
+      expect(state.history[0].entities[0]).toBe(source);
+
+      for (const text of [
+        serializeProject("Aligned scan", [output]),
+        await (await serializeProjectBlob("Aligned scan", [output])).text(),
+      ]) {
+        const json = JSON.parse(text).entities[0];
+        expect(Array.isArray(json.normals)).toBe(true);
+        expect(Array.isArray(json.indexedMesh.normals)).toBe(true);
+        expect(json.indexedMesh.normals).toEqual(json.normals);
+        expect(floatBytes(json.normals)).toBe(
+          floatBytes(JSON.parse(JSON.stringify(Array.from(output.normals!)))),
+        );
+        expect(parseProject(text).entities[0].normals).toEqual(json.normals);
+      }
+      const project: Project = {
+        format: "maliev-scanforge",
+        version: 1,
+        name: "Aligned scan",
+        units: "mm",
+        entities: state.entities,
+      };
+      const restored = await decodeProjectContents(
+        await encodeProjectFileLocally({
+          project,
+          history: state.history,
+          future: [],
+        }),
+      );
+      expect(restored.project.entities[0].normals).toBeInstanceOf(Float32Array);
+      expect(floatBytes(restored.project.entities[0].positions)).toBe(
+        sample.nativePositionsBits,
+      );
+      expect(floatBytes(restored.project.entities[0].normals!)).toBe(
+        sample.nativeNormalsBits,
+      );
+      expect(
+        floatBytes(restored.project.entities[0].indexedMesh!.normals!),
+      ).toBe(sample.nativeNormalsBits);
+      expect(floatBytes(restored.history[0].entities[0].normals!)).toBe(
+        sample.normalsBits,
+      );
+    } finally {
+      api.dispose();
+    }
+  },
+);
+it("keeps nonunit normals and signed zeros compact without changing source history", async () => {
+  const { api, state } = setup();
+  const normals = new Float32Array([-0, -0, -0, 0, 0, 2, 0, 3, 0]);
+  state.entities[0].normals = normals;
+  const original = state.entities[0];
+  const before = floatBytes(normals);
+  try {
+    const result = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...request(api),
+        parallel: false,
+      }),
+    );
+    expect(result.status).toBe("succeeded");
+    const output = state.entities[0].normals!;
+    expect(output).toBeInstanceOf(Float32Array);
+    expect(floatBytes(output)).toBe(before);
+    expect(Object.is(output[0], -0)).toBe(true);
+    expect(output[5]).toBe(2);
+    expect(output[7]).toBe(3);
+    expect(floatBytes(normals)).toBe(before);
+    expect(state.history[0].entities[0]).toBe(original);
+    expect(original.normals).toBe(normals);
+  } finally {
+    api.dispose();
+  }
+});
 it("resolves CAD references from current geometry and preserves GUI/MCP manual equivalence", async () => {
   const { api, host, state } = setup();
   state.entities.push({
@@ -1251,7 +1406,8 @@ it("aligns multiple scans atomically and preserves point-cloud normals", async (
     expect(host.commit).toHaveBeenCalledTimes(1);
     expect(state.history).toHaveLength(1);
     expect(Array.from(state.entities[1].positions)).toEqual([0, 0, 0]);
-    expect(state.entities[1].normals).toEqual([0, 0, 1]);
+    expect(state.entities[1].normals).toBeInstanceOf(Float32Array);
+    expect(Array.from(state.entities[1].normals!)).toEqual([0, 0, 1]);
     expect(job.result.targets[1]).toMatchObject({
       entityId: "cloud",
       kind: "pointcloud",
