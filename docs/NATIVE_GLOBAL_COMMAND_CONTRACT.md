@@ -63,8 +63,31 @@ preview, Apply, cancellation, stale-input checks and a single history transactio
 remain to be implemented and verified for this controller. Existing coarse
 alignment commands do not establish those behaviors for Global Fine Align.
 
-This evidence-only slice changes no application source, command availability,
-GUI behavior or MCP schema. Validation consists of streamed image hashing,
+## Application coverage default
+
+The shared private outer controller now defaults coverage tolerance to Float32
+`0.05`, matching the native constructor's field at `+0x88`. It previously used
+`0.001`, which is the command's separate local-fit tolerance. The complete
+canonical three-scan replays supplied coverage explicitly and therefore did not
+test that default.
+
+The outer-controller regression replays all 17 captured native cases both with
+the recorded explicit tolerance and with the option omitted. Before correction,
+16 default-path cases failed against their native coverage and subsequent call
+records. Explicit caller values retain their existing behavior. This internal
+fix changes neither public GUI/MCP schemas nor command availability; the public
+workflow and seeded native comparison remain outstanding.
+
+The correction passed an isolated TypeScript/Vite build with zero warnings or
+errors, 73 focused tests (3 skipped), and the full suite of 46,461 passing tests
+(54 skipped; zero failures). The full suite completed in 219.46 seconds.
+Scoped Prettier and diff checks passed. These checks verify the default-path
+regression against retained native fixtures; they do not replace the outstanding
+seeded three-scan native comparison or public GUI/MCP workflow verification.
+
+The original evidence-only capture changed no application source, command
+availability, GUI behavior or MCP schema. Its validation consists of streamed image hashing,
 decompilation equality, exact dialog-byte checks, six query-case assertions,
-fixture readback and scoped formatting. Build and application tests are not
-applicable because no executable input or application source changes.
+fixture readback and scoped formatting. Build and application tests were not
+applicable to that original evidence-only capture. The later controller fix
+requires separate build and test validation.

@@ -44,8 +44,13 @@ const decode = (bits: string) => {
 };
 const bits = (v: readonly number[]) =>
   Buffer.from(new Float64Array(v).buffer).toString("hex");
-it.each(fixture.cases)(
-  "matches original outer scheduling and frame dispatch: $name",
+it.each(
+  fixture.cases.flatMap((c) => [
+    { ...c, coverage: "explicit" },
+    { ...c, coverage: "constructor default" },
+  ]),
+)(
+  "matches original outer scheduling and frame dispatch: $name ($coverage)",
   async (c) => {
     let clocks = 0;
     const localCalls: unknown[] = [],
@@ -89,7 +94,7 @@ it.each(fixture.cases)(
           clocks++;
           return c.seed;
         },
-        coverageTolerance: c.tolerance,
+        coverageTolerance: c.coverage === "explicit" ? c.tolerance : undefined,
         onProgress: (pass) => events.push(pass === 0 ? "begin" : "pass"),
       },
     );

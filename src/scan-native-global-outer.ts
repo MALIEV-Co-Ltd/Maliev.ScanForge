@@ -77,7 +77,9 @@ export async function nativeGlobalRefineOuter(
       stable: false,
     };
   });
-  const tolerance = Math.fround(options.coverageTolerance ?? 0.001),
+  // The native constructor sets coverage (+0x88) to Float32 0.05. Its separate
+  // local-fit tolerance (+0x74) is overridden to 0.001 by the command handler.
+  const tolerance = Math.fround(options.coverageTolerance ?? 0.05),
     seed = (options.clock ?? (() => Math.trunc(performance.now()) | 0))();
   if (
     !Number.isFinite(tolerance) ||
