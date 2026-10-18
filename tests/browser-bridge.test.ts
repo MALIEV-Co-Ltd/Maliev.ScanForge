@@ -75,3 +75,212 @@ it("renders accessible explicit pairing controls with password field and disable
   expect(html).toContain('autoComplete="off"');
   expect(html).toContain("Connect agent");
 });
+
+it("negotiates long polling and forwards sequential commands without a one-second pause", async () => {
+  vi.useFakeTimers();
+  const pollUrls: string[] = [];
+  const fetcher = vi.fn(
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith("/connect"))
+        return Response.json({
+          sessionId: "session",
+          capabilities: { pollWaitMs: 8000 },
+        });
+      if (url.includes("/poll")) {
+        pollUrls.push(url);
+        if (pollUrls.length <= 2)
+          return Response.json({
+            requests: [
+              { id: String(pollUrls.length), command: "project_get", args: {} },
+            ],
+          });
+        return new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener(
+            "abort",
+            () => reject(new Error("aborted")),
+            { once: true },
+          );
+        });
+      }
+      return Response.json({ ok: true });
+    },
+  );
+  const api = {
+    invoke: vi.fn(async () => ({ ok: true as const, revision: 0, result: {} })),
+    cancelActive: vi.fn(),
+  };
+  const connection = await connectBrowserBridge(
+    api,
+    "http://127.0.0.1:5184",
+    token,
+    vi.fn(),
+    fetcher,
+  );
+  try {
+    await vi.advanceTimersByTimeAsync(20);
+    expect(api.invoke).toHaveBeenCalledTimes(2);
+    expect(pollUrls).toHaveLength(3);
+    expect(
+      pollUrls.every(
+        (url) => new URL(url).searchParams.get("waitMs") === "8000",
+      ),
+    ).toBe(true);
+  } finally {
+    await connection.disconnect();
+  }
+});
+
+it("bounds unexpectedly fast empty negotiated replies without an idle busy loop", async () => {
+  vi.useFakeTimers();
+  let polls = 0;
+  const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url.endsWith("/connect"))
+      return Response.json({
+        sessionId: "session",
+        capabilities: { pollWaitMs: 8000 },
+      });
+    if (url.includes("/poll")) polls++;
+    return Response.json({ requests: [], ok: true });
+  });
+  const connection = await connectBrowserBridge(
+    { invoke: vi.fn(), cancelActive: vi.fn() },
+    "http://127.0.0.1:5184",
+    token,
+    vi.fn(),
+    fetcher,
+  );
+  try {
+    await vi.advanceTimersByTimeAsync(99);
+    expect(polls).toBe(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(polls).toBe(2);
+  } finally {
+    await connection.disconnect();
+  }
+});
+
+it("keeps immediate legacy polls and the one-second cadence when capability is absent or invalid", async () => {
+  vi.useFakeTimers();
+  for (const capabilities of [
+    undefined,
+    { pollWaitMs: 8001 },
+    { pollWaitMs: "8000" },
+  ]) {
+    const urls: string[] = [];
+    const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith("/connect"))
+        return Response.json({ sessionId: "session", capabilities });
+      if (url.includes("/poll")) urls.push(url);
+      return Response.json({ requests: [], ok: true });
+    });
+    const connection = await connectBrowserBridge(
+      { invoke: vi.fn(), cancelActive: vi.fn() },
+      "http://127.0.0.1:5184",
+      token,
+      vi.fn(),
+      fetcher,
+    );
+    try {
+      await vi.advanceTimersByTimeAsync(999);
+      expect(urls).toHaveLength(1);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(urls).toHaveLength(2);
+      expect(
+        urls.every((url) => !new URL(url).searchParams.has("waitMs")),
+      ).toBe(true);
+    } finally {
+      await connection.disconnect();
+    }
+  }
+});
+
+it("reports only Disconnected when intentional disconnect aborts a held poll", async () => {
+  vi.useFakeTimers();
+  const onStatus = vi.fn();
+  let polls = 0;
+  const fetcher = vi.fn(
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith("/connect"))
+        return Response.json({
+          sessionId: "session",
+          capabilities: { pollWaitMs: 8000 },
+        });
+      if (url.includes("/poll")) {
+        polls++;
+        return new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener(
+            "abort",
+            () => reject(new Error("intentional poll abort")),
+            { once: true },
+          );
+        });
+      }
+      return Response.json({ ok: true });
+    },
+  );
+  const api = { invoke: vi.fn(), cancelActive: vi.fn() };
+  const connection = await connectBrowserBridge(
+    api,
+    "http://127.0.0.1:5184",
+    token,
+    onStatus,
+    fetcher,
+  );
+  try {
+    await vi.advanceTimersByTimeAsync(0);
+    expect(polls).toBe(1);
+    await connection.disconnect();
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(polls).toBe(1);
+    expect(api.invoke).not.toHaveBeenCalled();
+    expect(api.cancelActive).toHaveBeenCalledOnce();
+    expect(onStatus.mock.calls.map(([status]) => status)).toEqual([
+      { connected: true, message: "Connected · agents control this workspace" },
+      { connected: false, message: "Disconnected" },
+    ]);
+  } finally {
+    await connection.disconnect();
+  }
+});
+
+it("still disconnects and reports unexpected poll failures", async () => {
+  vi.useFakeTimers();
+  const onStatus = vi.fn();
+  let polls = 0;
+  const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url.endsWith("/connect"))
+      return Response.json({
+        sessionId: "session",
+        capabilities: { pollWaitMs: 8000 },
+      });
+    if (url.includes("/poll")) {
+      polls++;
+      throw new Error("Unexpected network failure");
+    }
+    return Response.json({ ok: true });
+  });
+  const api = { invoke: vi.fn(), cancelActive: vi.fn() };
+  const connection = await connectBrowserBridge(
+    api,
+    "http://127.0.0.1:5184",
+    token,
+    onStatus,
+    fetcher,
+  );
+  try {
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(polls).toBe(1);
+    expect(api.cancelActive).toHaveBeenCalledOnce();
+    expect(onStatus).toHaveBeenLastCalledWith({
+      connected: false,
+      message: "Unexpected network failure",
+    });
+  } finally {
+    await connection.disconnect();
+  }
+});

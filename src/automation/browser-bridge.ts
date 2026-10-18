@@ -77,6 +77,13 @@ export async function connectBrowserBridge(
     if (typeof connected.sessionId !== "string" || !connected.sessionId)
       throw new Error("Bridge returned an invalid workspace session.");
     sessionId = connected.sessionId;
+    const advertisedWait = connected.capabilities?.pollWaitMs;
+    const pollWaitMs =
+      Number.isInteger(advertisedWait) &&
+      advertisedWait > 0 &&
+      advertisedWait <= 8000
+        ? advertisedWait
+        : 0;
     onStatus({
       connected: true,
       message: "Connected · agents control this workspace",
@@ -84,8 +91,9 @@ export async function connectBrowserBridge(
     async function poll() {
       if (closed) return;
       try {
+        const started = Date.now();
         const result = await request(
-          `/poll?sessionId=${encodeURIComponent(sessionId)}`,
+          `/poll?sessionId=${encodeURIComponent(sessionId)}${pollWaitMs ? `&waitMs=${pollWaitMs}` : ""}`,
         );
         if (!Array.isArray(result.requests) || result.requests.length > 16)
           throw new Error("Invalid bridge request batch.");
@@ -105,8 +113,18 @@ export async function connectBrowserBridge(
           if (!closed)
             await request("/result", { sessionId, id: item.id, result: reply });
         }
-        if (!closed) timer = setTimeout(() => void poll(), 1000);
+        if (!closed) {
+          // A negotiated server waits while idle. Bound a faulty fast-empty
+          // reply without delaying completed commands or legacy clients.
+          const delay = pollWaitMs
+            ? result.requests.length
+              ? 0
+              : Math.max(0, 100 - (Date.now() - started))
+            : 1000;
+          timer = setTimeout(() => void poll(), delay);
+        }
       } catch (error) {
+        if (closed) return;
         await disconnect();
         onStatus({
           connected: false,

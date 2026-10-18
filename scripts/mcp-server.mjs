@@ -34,7 +34,17 @@ export async function createBridge({
   const pending = new Map();
   let closed = false;
   let closing;
+  let pollWaiter;
+  function takeRequests() {
+    const requests = queue.splice(0, 16);
+    for (const request of requests) {
+      const entry = pending.get(request.id);
+      if (entry) entry.delivered = true;
+    }
+    return requests;
+  }
   function rejectAll(message) {
+    pollWaiter?.finish(409, () => ({ error: message }));
     queue = [];
     for (const entry of pending.values()) {
       clearTimeout(entry.timer);
@@ -120,7 +130,10 @@ export async function createBridge({
         if (!session)
           session = { id: randomUUID(), expires: Date.now() + leaseMs };
         session.expires = Date.now() + leaseMs;
-        return respond(200, { sessionId: session.id });
+        return respond(200, {
+          sessionId: session.id,
+          capabilities: { pollWaitMs: 8000 },
+        });
       }
       const data =
         req.method === "GET"
@@ -132,12 +145,50 @@ export async function createBridge({
         });
       session.expires = Date.now() + leaseMs;
       if (req.method === "GET" && url.pathname === "/poll") {
-        const requests = queue.splice(0, 16);
-        for (const request of requests) {
-          const entry = pending.get(request.id);
-          if (entry) entry.delivered = true;
-        }
-        return respond(200, { requests });
+        const rawWait = url.searchParams.get("waitMs");
+        if (
+          rawWait !== null &&
+          (!/^\d{1,4}$/.test(rawWait) || Number(rawWait) > 8000)
+        )
+          return respond(400, {
+            error: "waitMs must be an integer from 0 to 8000",
+          });
+        if (pollWaiter)
+          return respond(409, { error: "A poll already owns this session" });
+        const waitMs = Number(rawWait ?? 0);
+        if (queue.length || !waitMs)
+          return respond(200, { requests: takeRequests() });
+        let done = false;
+        let timer;
+        const waiter = {
+          finish(status, value) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            req.off("aborted", abort);
+            res.off("close", abort);
+            if (pollWaiter === waiter) pollWaiter = undefined;
+            // Consume queued work only when the owning response is still usable.
+            if (!res.destroyed && !res.writableEnded) respond(status, value());
+          },
+          wake() {
+            waiter.finish(200, () => ({ requests: takeRequests() }));
+          },
+        };
+        const abort = () => waiter.finish(200, () => ({ requests: [] }));
+        pollWaiter = waiter;
+        req.once("aborted", abort);
+        res.once("close", abort);
+        timer = setTimeout(
+          () => {
+            expire();
+            if (pollWaiter === waiter)
+              waiter.finish(200, () => ({ requests: [] }));
+          },
+          Math.min(waitMs, Math.max(1, session.expires - Date.now())),
+        );
+        timer.unref();
+        return;
       }
       if (req.method === "POST" && url.pathname === "/result") {
         const entry = pending.get(data.id);
@@ -201,6 +252,7 @@ export async function createBridge({
       }, timeoutMs);
       pending.set(id, { resolve, reject, timer, delivered: false });
       queue.push({ id, command, args });
+      pollWaiter?.wake();
     });
   }
   async function close() {

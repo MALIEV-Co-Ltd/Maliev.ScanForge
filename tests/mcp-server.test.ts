@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import http from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -68,6 +68,236 @@ async function connect(bridge: Bridge) {
   return (await (await request(bridge, "/connect", {})).json())
     .sessionId as string;
 }
+
+describe("opt-in bounded long polling", () => {
+  it("advertises the bound while legacy clients still receive an immediate empty batch", async () => {
+    const bridge = await setup();
+    const paired = await (await request(bridge, "/connect", {})).json();
+    expect(paired.capabilities).toEqual({ pollWaitMs: 8000 });
+    expect(
+      await (
+        await request(bridge, `/poll?sessionId=${paired.sessionId}`)
+      ).json(),
+    ).toEqual({ requests: [] });
+    for (const wait of ["8001", "-1", "1.5", "NaN", "", "00000"])
+      expect(
+        (
+          await request(
+            bridge,
+            `/poll?sessionId=${paired.sessionId}&waitMs=${wait}`,
+          )
+        ).status,
+      ).toBe(400);
+    expect(
+      (await request(bridge, `/poll?sessionId=${paired.sessionId}&waitMs=0`))
+        .status,
+    ).toBe(200);
+  });
+
+  it("holds one idle poll, rejects a duplicate, and wakes immediately on dispatch", async () => {
+    const bridge = await setup();
+    const sessionId = await connect(bridge);
+    let settled = false;
+    const poll = request(
+      bridge,
+      `/poll?sessionId=${sessionId}&waitMs=8000`,
+    ).then((value) => {
+      settled = true;
+      return value;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(settled).toBe(false);
+    expect((await request(bridge, `/poll?sessionId=${sessionId}`)).status).toBe(
+      409,
+    );
+    const call = bridge.dispatch("project_get");
+    const response = await poll;
+    expect(response.status).toBe(200);
+    const batch = await response.json();
+    expect(batch.requests).toHaveLength(1);
+    await request(bridge, "/result", {
+      sessionId,
+      id: batch.requests[0].id,
+      result: { ok: true },
+    });
+    await expect(call).resolves.toEqual({ ok: true });
+    // A completed waiter must not retain ownership of the next poll.
+    expect((await request(bridge, `/poll?sessionId=${sessionId}`)).status).toBe(
+      200,
+    );
+  });
+
+  it("ends an empty idle wait at its finite bound without retaining the waiter", async () => {
+    const bridge = await setup();
+    const sessionId = await connect(bridge);
+    const started = Date.now();
+    expect(
+      await (
+        await request(bridge, `/poll?sessionId=${sessionId}&waitMs=40`)
+      ).json(),
+    ).toEqual({ requests: [] });
+    expect(Date.now() - started).toBeGreaterThanOrEqual(30);
+    expect((await request(bridge, `/poll?sessionId=${sessionId}`)).status).toBe(
+      200,
+    );
+  });
+
+  it("releases an aborted poll without consuming the next command", async () => {
+    const bridge = await setup();
+    const sessionId = await connect(bridge);
+    const controller = new AbortController();
+    const aborted = fetch(
+      `http://127.0.0.1:${bridge.port}/poll?sessionId=${sessionId}&waitMs=8000`,
+      {
+        headers: { Origin: origin, Authorization: `Bearer ${token}` },
+        signal: controller.signal,
+      },
+    ).catch((error: unknown) => error);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    controller.abort();
+    await aborted;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    const call = bridge.dispatch("project_get");
+    const response = await request(bridge, `/poll?sessionId=${sessionId}`);
+    expect(response.status).toBe(200);
+    const batch = await response.json();
+    expect(batch.requests).toHaveLength(1);
+    await request(bridge, "/result", {
+      sessionId,
+      id: batch.requests[0].id,
+      result: { ok: true },
+    });
+    await expect(call).resolves.toEqual({ ok: true });
+  });
+
+  it("releases a pending waiter on expiry and allows a new owner", async () => {
+    const bridge = await setup({ leaseMs: 40 });
+    const sessionId = await connect(bridge);
+    const response = await request(
+      bridge,
+      `/poll?sessionId=${sessionId}&waitMs=8000`,
+    );
+    expect(response.status).toBe(409);
+    await expect(bridge.dispatch("project_get")).rejects.toThrow(
+      "No ScanForge",
+    );
+    const next = await connect(bridge);
+    expect(next).not.toBe(sessionId);
+    expect((await request(bridge, `/poll?sessionId=${next}`)).status).toBe(200);
+  });
+
+  it("releases a pending waiter on disconnect and on server close", async () => {
+    const bridge = await setup();
+    let sessionId = await connect(bridge);
+    const first = request(bridge, `/poll?sessionId=${sessionId}&waitMs=8000`);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await request(bridge, "/disconnect", { sessionId });
+    expect((await first).status).toBe(409);
+    sessionId = await connect(bridge);
+    const second = request(
+      bridge,
+      `/poll?sessionId=${sessionId}&waitMs=8000`,
+    ).catch((error: unknown) => error);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await bridge.close();
+    // Closing may end the HTTP response or close its socket; neither retains a lease.
+    const ended = await second;
+    if (ended instanceof Response) expect(ended.status).toBe(409);
+    else expect(ended).toBeInstanceOf(Error);
+    await expect(bridge.dispatch("project_get")).rejects.toThrow(
+      "Bridge closed",
+    );
+  });
+
+  it("does not weaken origin, token, owner or command timeout checks for waiting polls", async () => {
+    const bridge = await setup({ timeoutMs: 30 });
+    const sessionId = await connect(bridge);
+    const path = `/poll?sessionId=${sessionId}&waitMs=8000`;
+    expect(
+      (
+        await request(bridge, path, undefined, {
+          Origin: "https://evil.example",
+        })
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(bridge, path, undefined, {
+          Authorization: "Bearer wrong",
+        })
+      ).status,
+    ).toBe(401);
+    expect(
+      (await request(bridge, "/poll?sessionId=wrong&waitMs=8000")).status,
+    ).toBe(409);
+    await expect(bridge.dispatch("project_get")).rejects.toThrow("timed out");
+    expect(
+      await (await request(bridge, `/poll?sessionId=${sessionId}`)).json(),
+    ).toEqual({ requests: [] });
+  });
+
+  it("retains sixteen-command batches and sixty-four pending commands for opt-in clients", async () => {
+    const bridge = await setup();
+    const sessionId = await connect(bridge);
+    const calls = Array.from({ length: 64 }, () =>
+      bridge.dispatch("project_get").catch((error: Error) => error.message),
+    );
+    await expect(bridge.dispatch("project_get")).rejects.toThrow(
+      "queue is full",
+    );
+    for (let batch = 0; batch < 4; batch++)
+      expect(
+        (
+          await (
+            await request(bridge, `/poll?sessionId=${sessionId}&waitMs=8000`)
+          ).json()
+        ).requests,
+      ).toHaveLength(16);
+    await request(bridge, "/disconnect", { sessionId });
+    expect(await Promise.all(calls)).toEqual(
+      Array(64).fill("Browser disconnected"),
+    );
+  });
+
+  it("clears the actual waiter timer on abort, disconnect, expiry and close", async () => {
+    for (const reason of ["abort", "disconnect", "expiry", "close"]) {
+      const bridge = await setup({ leaseMs: reason === "expiry" ? 80 : 60000 });
+      const sessionId = await connect(bridge);
+      const timers = vi.spyOn(globalThis, "setTimeout");
+      const clears = vi.spyOn(globalThis, "clearTimeout");
+      const controller = new AbortController();
+      try {
+        const poll = fetch(
+          `http://127.0.0.1:${bridge.port}/poll?sessionId=${sessionId}&waitMs=8000`,
+          {
+            headers: { Origin: origin, Authorization: `Bearer ${token}` },
+            signal: controller.signal,
+          },
+        ).catch((error: unknown) => error);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        const index = timers.mock.calls.findIndex(([, delay]) =>
+          reason === "expiry"
+            ? typeof delay === "number" && delay > 20 && delay <= 80
+            : delay === 8000,
+        );
+        expect(index).toBeGreaterThanOrEqual(0);
+        const actualWaiterTimer = timers.mock.results[index].value;
+        if (reason === "abort") controller.abort();
+        if (reason === "disconnect")
+          await request(bridge, "/disconnect", { sessionId });
+        if (reason === "close") await bridge.close();
+        await poll;
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        expect(clears).toHaveBeenCalledWith(actualWaiterTimer);
+      } finally {
+        controller.abort();
+        timers.mockRestore();
+        clears.mockRestore();
+        await bridge.close();
+      }
+    }
+  });
+});
 
 describe("authenticated browser bridge", () => {
   it("requires a sufficiently strong token", async () => {

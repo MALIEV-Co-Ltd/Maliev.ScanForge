@@ -5,6 +5,11 @@ import {
 } from "../src/automation/bridge-preview";
 import type { CommandContext } from "../src/automation/api";
 import { runScanEdit } from "../src/scan-edit";
+import { connectBrowserBridge } from "../src/automation/browser-bridge";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+// @ts-expect-error The independent Node bridge has no browser declaration.
+import { createBridge, createMcpServer } from "../scripts/mcp-server.mjs";
 
 const operation = {
   kind: "scanEdit",
@@ -14,6 +19,70 @@ const operation = {
   start: 0,
   end: 2,
 };
+
+it("carries sequential official MCP calls through the negotiated browser bridge without poll sleeps", async () => {
+  const token = "integration-token-with-at-least-thirty-two-characters";
+  const bridge = await createBridge({ token, port: 0 });
+  const server = createMcpServer(
+    bridge,
+    [
+      {
+        name: "project_get",
+        description: "Read project",
+        readOnly: true,
+        inputSchema: {
+          type: "object",
+          properties: {},
+          additionalProperties: false,
+        },
+      },
+    ],
+    "Agent guide",
+  );
+  const client = new Client({ name: "long-poll-integration", version: "1" });
+  let connection: Awaited<ReturnType<typeof connectBrowserBridge>> | undefined;
+  let calls = 0;
+  try {
+    const [clientTransport, serverTransport] =
+      InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    await client.connect(clientTransport);
+    const browserFetch: typeof fetch = (input, init) => {
+      const headers = new Headers(init?.headers);
+      headers.set("Origin", "http://127.0.0.1:5173");
+      return fetch(input, { ...init, headers });
+    };
+    connection = await connectBrowserBridge(
+      {
+        invoke: async () => ({
+          ok: true,
+          revision: ++calls,
+          result: { name: "Project" },
+        }),
+        cancelActive: () => {},
+      },
+      `http://127.0.0.1:${bridge.port}`,
+      token,
+      () => {},
+      browserFetch,
+    );
+    const started = Date.now();
+    for (let revision = 1; revision <= 3; revision++)
+      expect(
+        await client.callTool({ name: "project_get", arguments: {} }),
+      ).toMatchObject({
+        isError: false,
+        structuredContent: { ok: true, revision },
+      });
+    expect(calls).toBe(3);
+    expect(Date.now() - started).toBeLessThan(1500);
+  } finally {
+    await connection?.disconnect();
+    await client.close();
+    await server.close();
+    await bridge.close();
+  }
+});
 
 it("accepts only explicit, single-boundary bridge previews", () => {
   expect(validateBridgePreview({ operation })).toBe(false);
