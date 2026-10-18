@@ -111,20 +111,34 @@ export async function createAlignmentPool(
   surfaces: readonly NativeAlignmentQuerySurface[],
   options: { parallel?: boolean; signal?: AbortSignal } = {},
 ) {
+  if (options.signal?.aborted)
+    throw new DOMException("Alignment cancelled.", "AbortError");
   const fallbackReason = alignmentPoolAdmission(
     lanes,
     surfaces,
     options.parallel,
   );
   if (fallbackReason) {
-    const query = nativeAlignmentTargetGroupQuery(
-      surfaces.map(createNativeAlignmentSurfaceQuery),
-    );
+    let query: ReturnType<typeof nativeAlignmentTargetGroupQuery> | undefined =
+      nativeAlignmentTargetGroupQuery(
+        surfaces.map(createNativeAlignmentSurfaceQuery),
+      );
+    const close = () => {
+      query = undefined;
+      options.signal?.removeEventListener("abort", close);
+    };
+    options.signal?.addEventListener("abort", close, { once: true });
     return {
       physicalWorkers: 1,
       fallbackReason,
-      execute: async (batch: AlignmentBatch) => runAlignmentBatch(batch, query),
-      close: () => {},
+      execute: async (batch: AlignmentBatch) => {
+        if (!query || options.signal?.aborted) {
+          close();
+          throw new DOMException("Alignment cancelled.", "AbortError");
+        }
+        return runAlignmentBatch(batch, query);
+      },
+      close,
     };
   }
   const immutableTargets = sharedTargetsAvailable()
@@ -150,7 +164,13 @@ export async function createAlignmentPool(
       pending.reject(new DOMException("Alignment cancelled.", "AbortError"));
       pending = undefined;
     }
-    for (const worker of workers) worker.terminate();
+    for (const worker of workers) {
+      worker.onmessage = null;
+      worker.onerror = null;
+      worker.onmessageerror = null;
+      worker.terminate();
+    }
+    workers.length = 0;
     options.signal?.removeEventListener("abort", close);
     clearTimeout(lease);
   };

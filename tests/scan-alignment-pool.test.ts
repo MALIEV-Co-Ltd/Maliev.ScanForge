@@ -20,8 +20,9 @@ class TestWorker {
   terminated = false;
   initializations = 0;
   state?: ReturnType<typeof createAlignmentWorkerState>;
-  onmessage?: (event: { data: unknown }) => void;
-  onerror?: (event: { message: string }) => void;
+  onmessage?: ((event: { data: unknown }) => void) | null;
+  onerror?: ((event: { message: string }) => void) | null;
+  onmessageerror?: (() => void) | null;
   constructor() {
     TestWorker.instances.push(this);
   }
@@ -248,4 +249,126 @@ it("admits shared compact trees under the unchanged cap and rejects oversized ta
   expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(true);
   vi.stubGlobal("crossOriginIsolated", false);
   expect(alignmentCanInitializeTogether(lanes, surfaces)).toBe(false);
+});
+
+it.each(["single-core requested", "device memory admission"])(
+  "closing a fallback pool rejects work before reading the batch: %s",
+  async (reason) => {
+    install();
+    if (reason === "device memory admission")
+      vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 2 });
+    const { surfaces, lanes } = input(
+      captured.samples.find((sample) => sample.lanes.length > 1)!,
+    );
+    const pool = await createAlignmentPool(lanes, surfaces, {
+      parallel: reason !== "single-core requested",
+    });
+    const readBatch = vi.fn();
+    try {
+      expect(pool.fallbackReason).toBe(reason);
+      pool.close();
+      pool.close();
+      await expect(
+        pool.execute({
+          get kind() {
+            readBatch();
+            return "orientation" as const;
+          },
+          lanes,
+          options: {},
+        }),
+      ).rejects.toMatchObject({ name: "AbortError" });
+      expect(readBatch).not.toHaveBeenCalled();
+      expect(TestWorker.instances).toHaveLength(0);
+    } finally {
+      pool.close();
+    }
+  },
+);
+
+it("rejects an already-aborted fallback pool before initialization", async () => {
+  install();
+  const { surfaces, lanes } = input(captured.samples[0]);
+  const abort = new AbortController();
+  abort.abort();
+  await expect(
+    createAlignmentPool(lanes, surfaces, {
+      parallel: false,
+      signal: abort.signal,
+    }),
+  ).rejects.toMatchObject({ name: "AbortError" });
+  expect(TestWorker.instances).toHaveLength(0);
+});
+
+it("aborting a ready fallback pool rejects subsequent work", async () => {
+  install();
+  const { surfaces, lanes } = input(captured.samples[0]);
+  const abort = new AbortController();
+  const pool = await createAlignmentPool(lanes, surfaces, {
+    parallel: false,
+    signal: abort.signal,
+  });
+  const readBatch = vi.fn();
+  try {
+    abort.abort();
+    await expect(
+      pool.execute({
+        get kind() {
+          readBatch();
+          return "orientation" as const;
+        },
+        lanes,
+        options: {},
+      }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    expect(readBatch).not.toHaveBeenCalled();
+  } finally {
+    pool.close();
+  }
+});
+
+it("closing a worker pool detaches all response handlers", async () => {
+  install();
+  const { surfaces, lanes } = input(
+    captured.samples.find((sample) => sample.lanes.length > 1)!,
+  );
+  const pool = await createAlignmentPool(lanes, surfaces);
+  try {
+    pool.close();
+    pool.close();
+    expect(TestWorker.instances).toHaveLength(2);
+    for (const worker of TestWorker.instances) {
+      expect(worker.terminated).toBe(true);
+      expect(worker.onmessage).toBeNull();
+      expect(worker.onerror).toBeNull();
+      expect(worker.onmessageerror).toBeNull();
+    }
+  } finally {
+    pool.close();
+  }
+});
+
+it("rejects an already-aborted shared-worker request before reading targets", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { surfaces, lanes } = input(
+    captured.samples.find((sample) => sample.lanes.length > 1)!,
+  );
+  const readTargets = vi.fn();
+  const unreadableSurfaces = new Proxy(surfaces, {
+    get() {
+      readTargets();
+      throw new Error("Cancelled alignment accessed target surfaces.");
+    },
+  });
+  const abort = new AbortController();
+  abort.abort();
+  await expect(
+    createAlignmentPool(lanes, unreadableSurfaces, {
+      parallel: true,
+      signal: abort.signal,
+    }),
+  ).rejects.toMatchObject({ name: "AbortError" });
+  expect(readTargets).not.toHaveBeenCalled();
+  expect(TestWorker.instances).toHaveLength(0);
 });
