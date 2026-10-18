@@ -1435,13 +1435,23 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       c.check();
       return c.artifact(data, name, mime);
     },
-    history_undo: (_a, c) => {
+    history_undo: (a, c) => {
       c.check();
+      if (a.scope === "sketch") {
+        if (!host.stepSketchHistory)
+          throw new Error("Sketch history is unavailable.");
+        return { updated: host.stepSketchHistory(false), scope: "sketch" };
+      }
       host.undo();
       return { updated: true };
     },
-    history_redo: (_a, c) => {
+    history_redo: (a, c) => {
       c.check();
+      if (a.scope === "sketch") {
+        if (!host.stepSketchHistory)
+          throw new Error("Sketch history is unavailable.");
+        return { updated: host.stepSketchHistory(true), scope: "sketch" };
+      }
       host.redo();
       return { updated: true };
     },

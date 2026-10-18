@@ -1220,3 +1220,9 @@ pixels. Invalid rectangles fail without camera changes. Orthographic zoom is bou
 to `[0.001,1000]`; perspective window zoom reduces camera distance. Existing revision,
 request retry, and busy/preview safeguards apply. Read `viewport_get` before/after;
 geometry, selection and undo history remain unchanged.
+
+### Undo and redo the active sketch edit
+
+Use `history_undo` or `history_redo` with `scope:"sketch"`, a fresh `expectedRevision` and `requestId` to traverse the editor's current sketch edit session. This is the same shared action as the sketch Undo/Redo controls. It changes only the active saved sketch (or the legacy draft when none is active); other sketch sessions and CAD model history remain unchanged. Inspect `sketch_get` after the action. The reply is `{updated:boolean,scope:"sketch"}`; `updated:false` means that session has no edit in that direction. Existing single-step sketch undo/redo retention is unchanged. Retry an identical request with the same requestId without applying the edit twice.
+
+Omit `scope` (or use `scope:"model"`) to retain existing model-history behavior, including undoing a completed extrusion. `history_get` continues to describe model history. Sketch edits and model creation are distinct histories; sketch-scope undo does not remove an extruded body. Busy and Interactive alignment editing guards apply. Sketch history does not modify source CAD objects. This adds no new sketch locking policy or new tool.

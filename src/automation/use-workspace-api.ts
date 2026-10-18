@@ -100,6 +100,12 @@ export function useWorkspaceApi(host: WorkspaceHost) {
       setSelection: (entityId, mask) =>
         mutate(() => current.current.setSelection(entityId, mask)),
       setSketch: (sketch) => mutate(() => current.current.setSketch(sketch)),
+      stepSketchHistory: (repeat) =>
+        mutate(() => {
+          if (!current.current.stepSketchHistory)
+            throw new Error("Sketch history is unavailable.");
+          return current.current.stepSketchHistory(repeat);
+        }),
       setAuthoring: (authoring) =>
         mutate(() => {
           if (!current.current.setAuthoring)

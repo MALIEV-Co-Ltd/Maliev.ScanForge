@@ -3807,14 +3807,21 @@ export function App() {
   }
   function sketchUndo(repeat = false) {
     if (busy) return;
+    void uiCommand(repeat ? "history_redo" : "history_undo", {
+      scope: "sketch",
+    });
+  }
+  // Called only inside the shared API admission lane, which already owns busy.
+  function applySketchUndo(repeat: boolean): boolean {
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     const session = sketchUndoSessions.current.get(key);
     const sketch = repeat
       ? session?.redo(sketchDraft)
       : session?.undo(sketchDraft);
-    if (!sketch) return;
+    if (!sketch) return false;
     applySketchDraft(sketch);
     setMessage(repeat ? "Sketch edit reapplied" : "Sketch edit undone");
+    return true;
   }
   function applySketchDraft(sketch: Sketch) {
     setError("");
@@ -4411,6 +4418,7 @@ export function App() {
       );
       setDirty(true);
     },
+    stepSketchHistory: applySketchUndo,
     undo: undoModel,
     redo: redoModel,
     view: (view) => {

@@ -280,3 +280,5 @@ share release handling. Project geometry, settings and history changes invalidat
 the cached preview; selection alone does not. GUI and MCP use the same revision
 and retry guards and the same one-commit Apply behavior. See the
 [public workflow](AGENT_GUIDE.md#global-fine-align-preview-apply-and-cancel).
+
+Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` shared executor with explicit `scope:"sketch"`. The host's optional `stepSketchHistory(repeat)` adapter traverses only the current saved/legacy SketchUndo session inside the stable React proxy's synchronous flush. Its implementation does not reject API-owned busy state a second time; generic ApplicationApi admission enforces busy, expected revision, request retries and Interactive alignment exclusion before the write. Empty sketch history returns updated:false. Omitted scope retains the original model history handlers and response shape; history_get remains model history. Geometry/authoring ownership and source CAD remain unchanged.

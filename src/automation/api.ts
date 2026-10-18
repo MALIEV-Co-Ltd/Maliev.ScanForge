@@ -102,6 +102,8 @@ export interface WorkspaceHost {
   clearScanPreview?(previewId: string): void;
   setSelection(entityId: string, mask: Uint8Array): void;
   setSketch(sketch: Sketch): void;
+  /** Current authoring edit session only; never traverses model history. */
+  stepSketchHistory?(repeat: boolean): boolean;
   setAuthoring?(authoring: NonNullable<Project["authoring"]>): void;
   undo(): void;
   redo(): void;

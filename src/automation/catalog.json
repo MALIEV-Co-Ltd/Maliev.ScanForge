@@ -3512,12 +3512,18 @@
   },
   {
     "name": "history_undo",
-    "description": "Undo one modeling revision through the shared history.",
+    "description": "Undo one modeling revision by default, or the current sketch edit with scope:sketch. Sketch scope preserves model history and reports updated:false when no edit is available.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "scope": {
+          "type": "string",
+          "enum": ["model", "sketch"],
+          "default": "model",
+          "description": "Use sketch only for the current active saved sketch or legacy draft edit session; omitted keeps existing model history."
+        },
         "expectedRevision": {
           "type": "integer",
           "minimum": 0
@@ -3535,12 +3541,18 @@
   },
   {
     "name": "history_redo",
-    "description": "Redo one modeling revision through the shared history.",
+    "description": "Redo one modeling revision by default, or the current sketch edit with scope:sketch. Sketch scope preserves model history and reports updated:false when no edit is available.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "scope": {
+          "type": "string",
+          "enum": ["model", "sketch"],
+          "default": "model",
+          "description": "Use sketch only for the current active saved sketch or legacy draft edit session; omitted keeps existing model history."
+        },
         "expectedRevision": {
           "type": "integer",
           "minimum": 0
