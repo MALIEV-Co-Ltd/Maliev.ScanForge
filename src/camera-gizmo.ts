@@ -1,6 +1,7 @@
 import "./camera-gizmo.css";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import * as THREE from "three";
+import type { OrbitMode } from "./camera-actions";
 
 export type Projection = "orthographic" | "perspective";
 export type ViewFace =
@@ -217,6 +218,10 @@ export function cubeRegions(quaternion: THREE.Quaternion) {
     });
 }
 export interface CubeActions {
+  navigation?: (patch: {
+    orbitMode?: OrbitMode;
+    zoomWindowActive?: boolean;
+  }) => void;
   orient: (direction: THREE.Vector3, up: THREE.Vector3) => void;
 }
 /** CAD standard views use Z up on side faces, Y up on Top and -Y on Bottom. */
@@ -269,6 +274,7 @@ export class CameraGizmo {
   private svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   private menu = document.createElement("div");
   private mode: Projection = "orthographic";
+  private orbitMode: OrbitMode = "free";
   private hovered?: string;
   private orientation = new THREE.Quaternion();
   private faceControls: HTMLButtonElement[] = [];
@@ -356,6 +362,23 @@ export class CameraGizmo {
       item.setAttribute("role", "menuitemradio");
     }
     button("Fit model in view", onFit);
+    if (this.actions?.navigation) {
+      for (const mode of ["free", "constrained"] as const) {
+        const item = button(
+          mode === "free" ? "Free orbit" : "Constrained orbit (Z up)",
+          () => this.actions?.navigation?.({ orbitMode: mode }),
+        );
+        item.setAttribute(
+          "aria-label",
+          mode === "free" ? "Free orbit" : "Constrained orbit (Z up)",
+        );
+        item.dataset.orbitMode = mode;
+        item.setAttribute("role", "menuitemradio");
+      }
+      button("Zoom Window", () =>
+        this.actions?.navigation?.({ zoomWindowActive: true }),
+      );
+    }
     for (const [side, glyph] of [
       ["up", "▴"],
       ["down", "▾"],
@@ -453,7 +476,18 @@ export class CameraGizmo {
         ?.setAttribute("aria-expanded", "false");
     }
   };
+  setNavigation(mode: OrbitMode) {
+    this.orbitMode = mode;
+    this.checks();
+  }
   private checks() {
+    for (const item of this.menu.querySelectorAll<HTMLElement>(
+      "[data-orbit-mode]",
+    ))
+      item.setAttribute(
+        "aria-checked",
+        String(item.dataset.orbitMode === this.orbitMode),
+      );
     for (const item of this.menu.querySelectorAll<HTMLElement>(
       "[data-projection]",
     ))

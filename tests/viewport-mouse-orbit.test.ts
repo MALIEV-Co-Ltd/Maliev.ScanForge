@@ -352,3 +352,47 @@ it.each([false, true])(
     });
   },
 );
+
+it("preserves Trackball touch gestures in constrained mouse-orbit mode", () => {
+  const { view } = fixture();
+  view.orbitMode = "constrained";
+  view.renderer.domElement.setPointerCapture = vi.fn();
+  view.pointerDown(
+    down({
+      button: 0,
+      pointerType: "touch",
+      preventDefault: vi.fn(),
+      stopImmediatePropagation: vi.fn(),
+    }),
+  );
+  expect(view.constrainedDrag).toBeUndefined();
+  expect(view.renderer.domElement.setPointerCapture).not.toHaveBeenCalled();
+});
+it("freezes constrained orbit while the selection picker disables rotation", () => {
+  const { view, camera, controls } = fixture();
+  view.orbitMode = "constrained";
+  view.renderer.domElement.setPointerCapture = vi.fn();
+  view.pointerDown(
+    down({ preventDefault: vi.fn(), stopImmediatePropagation: vi.fn() }),
+  );
+  const before = camera.position.clone();
+  controls.noRotate = true;
+  view.pointerMove({
+    pointerId: 7,
+    pointerType: "mouse",
+    buttons: 4,
+    clientX: 160,
+    clientY: 120,
+    preventDefault: vi.fn(),
+    stopImmediatePropagation: vi.fn(),
+  });
+  expect(camera.position.equals(before)).toBe(true);
+  expect(view.constrainedDrag).toMatchObject({ x: 160, y: 120 });
+});
+it("rejects navigation setting changes during right-drag panning", () => {
+  const { view } = fixture();
+  view.pointerDown(down({ button: 2 }));
+  expect(() =>
+    view.controlAgentView({ action: "navigation", orbitMode: "constrained" }),
+  ).toThrow(/gesture/);
+});

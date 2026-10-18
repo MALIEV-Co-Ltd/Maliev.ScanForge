@@ -2,7 +2,20 @@ import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 
 export interface ViewportCommand {
-  action: "fit" | "rotate" | "projection" | "camera" | "sketchNormal";
+  action:
+    | "fit"
+    | "rotate"
+    | "projection"
+    | "camera"
+    | "sketchNormal"
+    | "navigation"
+    | "zoomWindow";
+  orbitMode?: "free" | "constrained";
+  zoomWindowActive?: boolean;
+  x0?: number;
+  y0?: number;
+  x1?: number;
+  y1?: number;
   entityId?: string;
   selection?: boolean;
   direction?: "left" | "right" | "up" | "down";
@@ -117,6 +130,14 @@ export function createWorkflowOperations(
     },
     viewport_get: () => host.inspectViewport?.() ?? unavailable(),
     viewport_control: (a, c) => {
+      if (
+        a.action === "navigation" &&
+        a.orbitMode === undefined &&
+        a.zoomWindowActive === undefined
+      )
+        throw new Error("Supply an orbit mode or window-tool state.");
+      if (a.action === "zoomWindow" && (a.x0 === a.x1 || a.y0 === a.y1))
+        throw new Error("Zoom window must have nonzero width and height.");
       if (a.action === "rotate" && (a.x === undefined) !== (a.y === undefined))
         throw new Error("Surface rotation requires both x and y.");
       if (a.action === "fit" && a.selection && !a.entityId)

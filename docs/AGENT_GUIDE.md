@@ -1189,3 +1189,34 @@ shortcuts remain available. Agents use `viewport_control` with `action: "camera"
 by translating `position` and `target` by the same world-mm vector, or `action:
 "rotate"` to orbit; inspect `viewport_get` before and after. These use the same viewport
 camera and preserve geometry/history.
+
+Camera navigation additions:
+
+- Double-click the middle mouse button without dragging or modifiers to fit all
+  visible objects. This uses the existing `viewport_control` `action: "fit"` operation
+  and also works in mesh edit. A middle drag does not trigger Fit.
+- ViewCube settings offers **Free orbit** and **Constrained orbit (Z up)**. Free orbit
+  remains the session default. Constrained mouse/ViewCube orbit and semantic
+  `action: "rotate"` preserve world-Z upright and cap pitch just short of the poles.
+  Changing orbit mode removes roll without moving the camera or target. Explicit
+  camera poses, named standard views, and SpaceMouse remain their own navigation
+  paths. This session setting is not saved into geometry history.
+- Choose **Zoom Window** from ViewCube settings, then left-drag a rectangle. The
+  rectangle is fitted on the camera-facing plane through the current target;
+  it does not select geometry or infer a new surface depth. Release applies the
+  zoom and exits the tool. Escape, pointer cancellation, or loss of window focus
+  cancels it without changing the camera. Tiny drags cancel without zooming.
+
+Agents use `viewport_control` with `action: "navigation"` and either or both
+`orbitMode: "free" | "constrained"` and `zoomWindowActive: true | false` to configure
+orbit or arm/cancel the same window tool. Supply at least one setting. Mode changes
+reject active selection/model/orbit gestures; finish those before changing modes.
+`viewport_get.navigation` exposes `orbitMode` and `zoomWindowActive`.
+
+For direct rectangle zoom, use `viewport_control` with `action: "zoomWindow"` and
+`x0`, `y0`, `x1`, `y1`: finite normalized top-left viewport coordinates in `[0,1]`.
+Reversed corners are accepted; both rectangle dimensions must span at least 4 CSS
+pixels. Invalid rectangles fail without camera changes. Orthographic zoom is bounded
+to `[0.001,1000]`; perspective window zoom reduces camera distance. Existing revision,
+request retry, and busy/preview safeguards apply. Read `viewport_get` before/after;
+geometry, selection and undo history remain unchanged.

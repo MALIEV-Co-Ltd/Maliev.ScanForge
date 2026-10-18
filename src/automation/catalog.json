@@ -4447,7 +4447,7 @@
   },
   {
     "name": "viewport_get",
-    "description": "Read camera projection/position/target/up/zoom, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
+    "description": "Read camera projection/position/target/up/zoom, session navigation.orbitMode and navigation.zoomWindowActive, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -4459,11 +4459,94 @@
   },
   {
     "name": "viewport_control",
-    "description": "Frame all/object/active selection; set projection; rotate by degrees (optionally around the surface at normalized x/y); orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
+    "description": "Frame all/object/active selection; zoom to a normalized rectangle; set session free/constrained orbit or arm/cancel window zoom; set projection; rotate by degrees (optionally around the surface at normalized x/y); orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["navigation"]
+            },
+            "orbitMode": {
+              "type": "string",
+              "enum": ["free", "constrained"],
+              "description": "Session orbit mode. Constrained keeps world Z upright; free preserves unrestricted trackball orbit."
+            },
+            "zoomWindowActive": {
+              "type": "boolean",
+              "description": "Arm or cancel the next left-drag window zoom without changing model selection."
+            }
+          },
+          "required": ["expectedRevision", "requestId", "action"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["zoomWindow"]
+            },
+            "x0": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Normalized top-left viewport coordinate; reversed corners are accepted. Both dimensions must span at least 4 CSS pixels."
+            },
+            "y0": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Normalized top-left viewport coordinate; reversed corners are accepted. Both dimensions must span at least 4 CSS pixels."
+            },
+            "x1": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Normalized top-left viewport coordinate; reversed corners are accepted. Both dimensions must span at least 4 CSS pixels."
+            },
+            "y1": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Normalized top-left viewport coordinate; reversed corners are accepted. Both dimensions must span at least 4 CSS pixels."
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "x0",
+            "y0",
+            "x1",
+            "y1"
+          ],
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "properties": {

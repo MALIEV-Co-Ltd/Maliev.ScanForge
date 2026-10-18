@@ -96,6 +96,12 @@ import {
   configureNavigationSensitivity,
   updateSurfaceOrbit,
 } from "./camera-navigation";
+import {
+  constrainCameraUp,
+  rotateConstrained,
+  zoomCameraWindow,
+  type OrbitMode,
+} from "./camera-actions";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import {
   createOriginGeometry,
@@ -263,6 +269,21 @@ export class Viewport {
     y: number;
     moved: boolean;
   };
+  private auxiliaryNavigationPointer?: number;
+  private orbitMode: OrbitMode = "free";
+  private zoomWindowActive = false;
+  private zoomWindowPointer?: {
+    id: number;
+    x: number;
+    y: number;
+    endX: number;
+    endY: number;
+  };
+  private constrainedDrag?: { id: number; x: number; y: number };
+  private middleClickReady = false;
+  private middleClickStart?: { x: number; y: number; moved: boolean };
+  private readonly zoomWindowOverlay = document.createElement("div");
+  private readonly zoomWindowHint = document.createElement("div");
   private navigationCursor?: { clientX: number; clientY: number };
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
@@ -323,6 +344,9 @@ export class Viewport {
     this.pointerUp = this.pointerUp.bind(this);
     this.pointerCancel = this.pointerCancel.bind(this);
     this.contextMenu = this.contextMenu.bind(this);
+    this.auxClick = this.auxClick.bind(this);
+    this.navigationKeyDown = this.navigationKeyDown.bind(this);
+    this.navigationBlur = this.navigationBlur.bind(this);
     this.sketchKeyDown = this.sketchKeyDown.bind(this);
     this.scene.background = new THREE.Color("#e9eef2");
     this.scene.add(this.originGeometry);
@@ -345,6 +369,16 @@ export class Viewport {
     this.pivotMarker.style.cssText =
       "position:absolute;width:6px;height:6px;border:1px solid rgba(255,255,255,0.9);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:3;background:#63d889;box-shadow:0 0 0 1px rgba(0,0,0,0.45)";
     container.appendChild(this.pivotMarker);
+    this.zoomWindowOverlay.className = "screen-selection-overlay";
+    this.zoomWindowOverlay.hidden = true;
+    this.zoomWindowOverlay.setAttribute("aria-hidden", "true");
+    this.zoomWindowHint.hidden = true;
+    this.zoomWindowHint.setAttribute("role", "status");
+    this.zoomWindowHint.textContent =
+      "Drag a rectangle to zoom · Esc to cancel";
+    this.zoomWindowHint.style.cssText =
+      "position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:4;pointer-events:none;background:var(--surface);color:var(--text);padding:8px 12px;border:1px solid var(--border);border-radius:4px";
+    container.append(this.zoomWindowOverlay, this.zoomWindowHint);
     this.controls = new TrackballControls(
       this.camera,
       this.renderer.domElement,
@@ -371,7 +405,7 @@ export class Viewport {
       (view) => this.setView(view),
       (dx, dy) => {
         this.cancelViewTransition();
-        rotateCamera(this.camera, this.controls.target, dx, dy);
+        this.rotateNavigation(dx, dy);
         this.controls.update();
         this.invalidate();
       },
@@ -379,6 +413,8 @@ export class Viewport {
       () => this.fitView(),
       {
         orient: (direction, up) => this.orientCamera(direction, up, true),
+        navigation: (patch) =>
+          this.controlAgentView({ action: "navigation", ...patch }),
       },
     );
     container.append(this.gizmo.element);
@@ -442,6 +478,9 @@ export class Viewport {
     container.appendChild(this.paintOverlay);
     this.doubleClick = this.doubleClick.bind(this);
     this.renderer.domElement.addEventListener("dblclick", this.doubleClick);
+    this.renderer.domElement.addEventListener("auxclick", this.auxClick);
+    window.addEventListener("keydown", this.navigationKeyDown, true);
+    window.addEventListener("blur", this.navigationBlur);
     this.renderer.domElement.addEventListener(
       "pointerdown",
       this.pointerDown,
@@ -615,6 +654,10 @@ export class Viewport {
     );
     return {
       ...view,
+      navigation: {
+        orbitMode: this.orbitMode ?? "free",
+        zoomWindowActive: !!this.zoomWindowActive,
+      },
       orbitCenter: this.orbitCenterState(performance.now()),
       ...(this.interactiveMirror
         ? { interactiveMirror: this.interactiveMirror.inspect() }
@@ -640,7 +683,13 @@ export class Viewport {
 
   controlAgentView(command: ViewportCommand, selection?: Uint8Array) {
     this.viewTransition = undefined;
-    if (command.action === "fit")
+    if (command.action === "navigation") {
+      this.setNavigation(command);
+    } else if (command.action === "zoomWindow") {
+      this.zoomWindow(
+        command as { x0: number; y0: number; x1: number; y1: number },
+      );
+    } else if (command.action === "fit")
       this.fitView(command.entityId, command.selection ? selection : undefined);
     else if (command.action === "rotate") {
       const pivot =
@@ -1068,6 +1117,136 @@ export class Viewport {
     this.invalidate();
   };
 
+  private rotateNavigation(dx: number, dy: number): void {
+    if (this.orbitMode === "constrained")
+      rotateConstrained(this.camera, this.controls.target, dx, dy);
+    else rotateCamera(this.camera, this.controls.target, dx, dy);
+  }
+
+  private setNavigation(command: {
+    orbitMode?: OrbitMode;
+    zoomWindowActive?: boolean;
+  }): void {
+    if (
+      command.orbitMode === undefined &&
+      command.zoomWindowActive === undefined
+    )
+      throw new Error("Supply an orbit mode or window-tool state.");
+    if (
+      command.orbitMode !== undefined &&
+      !["free", "constrained"].includes(command.orbitMode)
+    )
+      throw new Error("Unknown orbit mode.");
+    if (
+      this.mouseOrbitPointer !== undefined ||
+      this.auxiliaryNavigationPointer !== undefined ||
+      this.pointer ||
+      this.interactivePointer !== undefined ||
+      this.bridgeDrag ||
+      this.sketchDrag
+    )
+      throw new Error(
+        "Finish the current gesture before changing camera navigation.",
+      );
+    if (command.orbitMode !== undefined) {
+      this.orbitMode = command.orbitMode;
+      if (command.orbitMode === "constrained")
+        constrainCameraUp(this.camera, this.controls.target);
+      this.gizmo?.setNavigation(command.orbitMode);
+      this.controls.update();
+    }
+    if (command.zoomWindowActive !== undefined)
+      this.setZoomWindowActive(command.zoomWindowActive);
+    this.invalidate();
+  }
+
+  private setZoomWindowActive(active: boolean): void {
+    if (this.zoomWindowPointer) {
+      const canvas = this.renderer.domElement;
+      if (canvas.hasPointerCapture?.(this.zoomWindowPointer.id))
+        canvas.releasePointerCapture(this.zoomWindowPointer.id);
+      this.zoomWindowPointer = undefined;
+    }
+    this.zoomWindowActive = active;
+    if (this.zoomWindowOverlay) this.zoomWindowOverlay.hidden = true;
+    if (this.zoomWindowHint) this.zoomWindowHint.hidden = !active;
+    this.renderer.domElement.style.cursor = active ? "crosshair" : "";
+  }
+
+  private zoomWindow(rect: {
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+  }): void {
+    zoomCameraWindow(
+      this.camera,
+      this.controls.target,
+      rect,
+      this.container.clientWidth,
+      this.container.clientHeight,
+    );
+    this.viewTransition = undefined;
+    this.setZoomWindowActive(false);
+    updateCameraClipping(this.camera, this.bounds);
+    this.controls.update();
+    this.invalidate();
+  }
+
+  private navigationKeyDown(event: KeyboardEvent): void {
+    if (event.key !== "Escape" || !this.zoomWindowActive) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.setZoomWindowActive(false);
+  }
+
+  private endConstrainedDrag(): void {
+    if (!this.constrainedDrag) return;
+    const canvas = this.renderer.domElement;
+    if (canvas.hasPointerCapture?.(this.constrainedDrag.id))
+      canvas.releasePointerCapture(this.constrainedDrag.id);
+    this.constrainedDrag = undefined;
+  }
+
+  private navigationBlur(): void {
+    this.middleClickReady = false;
+    this.auxiliaryNavigationPointer = undefined;
+    this.middleClickStart = undefined;
+    if (this.zoomWindowActive) this.setZoomWindowActive(false);
+    if (this.constrainedDrag) {
+      this.endConstrainedDrag();
+      this.endMouseOrbit();
+      this.pointer = null;
+    }
+  }
+
+  private windowPoint(event: PointerEvent): [number, number] {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    return [
+      THREE.MathUtils.clamp((event.clientX - rect.left) / rect.width, 0, 1),
+      THREE.MathUtils.clamp((event.clientY - rect.top) / rect.height, 0, 1),
+    ];
+  }
+
+  private auxClick(event: MouseEvent): void {
+    if (event.button !== 1) return;
+    event.preventDefault();
+    if (
+      this.middleClickStart?.moved ||
+      !this.controls.enabled ||
+      event.shiftKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey
+    ) {
+      this.middleClickReady = false;
+      return;
+    }
+    const fit = event.detail === 2 && this.middleClickReady;
+    this.middleClickReady = event.detail === 1;
+    if (fit) this.controlAgentView({ action: "fit" });
+  }
+
   private updateControls(): void {
     updateSurfaceOrbit(
       this.camera,
@@ -1087,6 +1266,23 @@ export class Viewport {
   }
 
   private pointerDown(event: PointerEvent): void {
+    if (event.button !== 1) this.middleClickReady = false;
+    if ((event.button === 1 || event.button === 2) && this.controls.enabled)
+      this.auxiliaryNavigationPointer = event.pointerId;
+    this.middleClickStart =
+      event.button === 1
+        ? { x: event.clientX, y: event.clientY, moved: false }
+        : undefined;
+    if (this.zoomWindowActive && event.button === 0 && this.controls.enabled) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.cancelViewTransition();
+      this.holdMenu?.close();
+      const [x, y] = this.windowPoint(event);
+      this.zoomWindowPointer = { id: event.pointerId, x, y, endX: x, endY: y };
+      this.renderer.domElement.setPointerCapture(event.pointerId);
+      return;
+    }
     this.rightPanPointer =
       event.button === 2
         ? {
@@ -1163,6 +1359,16 @@ export class Viewport {
       if (surface) this.mouseOrbitPivot = surface.clone();
       this.mouseOrbitPointer = event.pointerId;
       this.mouseOrbitButton = event.button;
+      if (this.orbitMode === "constrained" && event.pointerType !== "touch") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.constrainedDrag = {
+          id: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+        };
+        this.renderer.domElement.setPointerCapture(event.pointerId);
+      }
       this.invalidate();
     }
     if (!this.brushing || event.button === 1 || event.button === 2) {
@@ -1210,6 +1416,64 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (
+      this.middleClickStart &&
+      event.buttons & 4 &&
+      Math.hypot(
+        event.clientX - this.middleClickStart.x,
+        event.clientY - this.middleClickStart.y,
+      ) > 4
+    )
+      this.middleClickStart.moved = true;
+    if (
+      this.zoomWindowPointer &&
+      this.zoomWindowPointer.id === event.pointerId
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const drag = this.zoomWindowPointer;
+      [drag.endX, drag.endY] = this.windowPoint(event);
+      this.zoomWindowOverlay.hidden = false;
+      Object.assign(this.zoomWindowOverlay.style, {
+        left: `${Math.min(drag.x, drag.endX) * this.container.clientWidth}px`,
+        top: `${Math.min(drag.y, drag.endY) * this.container.clientHeight}px`,
+        width: `${Math.abs(drag.x - drag.endX) * this.container.clientWidth}px`,
+        height: `${Math.abs(drag.y - drag.endY) * this.container.clientHeight}px`,
+      });
+      return;
+    }
+    if (this.constrainedDrag && this.constrainedDrag.id === event.pointerId) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const drag = this.constrainedDrag;
+      if (!this.controls.enabled || this.controls.noRotate) {
+        drag.x = event.clientX;
+        drag.y = event.clientY;
+        return;
+      }
+      const dx = event.clientX - drag.x,
+        dy = event.clientY - drag.y;
+      updateSurfaceOrbit(
+        this.camera,
+        this.controls.target,
+        this.mouseOrbitPivot,
+        () => this.rotateNavigation(dx, dy),
+      );
+      drag.x = event.clientX;
+      drag.y = event.clientY;
+      if (
+        this.pointer &&
+        Math.hypot(
+          event.clientX - this.pointer.x,
+          event.clientY - this.pointer.y,
+        ) > 4
+      )
+        this.pointer.moved = true;
+      this.holdMenu?.move(event.clientX, event.clientY);
+      this.controls.update();
+      this.invalidate();
+      return;
+    }
     if (
       this.rightPanPointer?.id === event.pointerId &&
       (event.buttons & 2) !== 0 &&
@@ -1334,6 +1598,11 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.middleClickReady = false;
+    this.auxiliaryNavigationPointer = undefined;
+    this.middleClickStart = undefined;
+    this.endConstrainedDrag();
+    if (this.zoomWindowActive) this.setZoomWindowActive(false);
     this.rightPanPointer = undefined;
     this.cancelBridgeDrag();
     this.interactiveDrag?.cancel();
@@ -1362,6 +1631,47 @@ export class Viewport {
   };
 
   private pointerUp(event: PointerEvent): void {
+    if (
+      this.auxiliaryNavigationPointer === event.pointerId &&
+      !((event.buttons ?? 0) & 6)
+    )
+      this.auxiliaryNavigationPointer = undefined;
+    if (
+      event.button === 1 &&
+      this.middleClickStart &&
+      Math.hypot(
+        event.clientX - this.middleClickStart.x,
+        event.clientY - this.middleClickStart.y,
+      ) > 4
+    )
+      this.middleClickStart.moved = true;
+    if (
+      this.zoomWindowPointer &&
+      this.zoomWindowPointer.id === event.pointerId
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const drag = this.zoomWindowPointer;
+      const [x1, y1] = this.windowPoint(event);
+      if (
+        Math.abs(x1 - drag.x) * this.container.clientWidth >= 4 &&
+        Math.abs(y1 - drag.y) * this.container.clientHeight >= 4
+      )
+        this.controlAgentView({
+          action: "zoomWindow",
+          x0: drag.x,
+          y0: drag.y,
+          x1,
+          y1,
+        });
+      else this.setZoomWindowActive(false);
+      return;
+    }
+    if (this.constrainedDrag && this.constrainedDrag.id === event.pointerId) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.endConstrainedDrag();
+    }
     if (this.bridgeDrag && this.bridgeDrag.id === event.pointerId) {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -2559,6 +2869,7 @@ export class Viewport {
     }, signal);
   }
   fitView(entityId?: string, selection?: Uint8Array): void {
+    if (this.zoomWindowActive) this.setZoomWindowActive(false);
     this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
     if (entityId && !item) return;
@@ -2686,9 +2997,7 @@ export class Viewport {
     this.viewTransition = undefined;
     const pixels = THREE.MathUtils.degToRad(degrees) / 0.008;
     updateSurfaceOrbit(this.camera, this.controls.target, pivot, () =>
-      rotateCamera(
-        this.camera,
-        this.controls.target,
+      this.rotateNavigation(
         direction === "left" ? pixels : direction === "right" ? -pixels : 0,
         direction === "up" ? pixels : direction === "down" ? -pixels : 0,
       ),
@@ -3644,6 +3953,11 @@ export class Viewport {
     canvas.removeEventListener("pointerup", this.pointerUp);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
     canvas.removeEventListener("dblclick", this.doubleClick);
+    canvas.removeEventListener("auxclick", this.auxClick);
+    window.removeEventListener("keydown", this.navigationKeyDown, true);
+    window.removeEventListener("blur", this.navigationBlur);
+    this.zoomWindowOverlay.remove();
+    this.zoomWindowHint.remove();
     window.removeEventListener("keydown", this.sketchKeyDown);
     window.removeEventListener("keydown", this.paintModifierKey);
     window.removeEventListener("keyup", this.paintModifierKey);

@@ -558,3 +558,61 @@ it("returns viewport mirror readiness and failure diagnostics through the existi
     api.dispose();
   }
 });
+
+it("exposes constrained orbit, rectangle zoom, and window-tool cancellation through MCP", async () => {
+  const { api, mutate, controlViewport } = setup();
+  try {
+    for (const command of [
+      { action: "navigation", orbitMode: "constrained" },
+      { action: "navigation", orbitMode: "free", zoomWindowActive: true },
+      { action: "navigation", zoomWindowActive: false },
+      { action: "zoomWindow", x0: 0.2, y0: 0.3, x1: 0.7, y1: 0.8 },
+    ]) {
+      expect(await mutate("viewport_control", command)).toMatchObject({
+        ok: true,
+      });
+      expect(controlViewport).toHaveBeenLastCalledWith(
+        expect.objectContaining(command),
+      );
+    }
+    for (const command of [
+      { action: "navigation" },
+      { action: "navigation", orbitMode: "sideways" },
+      { action: "zoomWindow", x0: -0.1, y0: 0.3, x1: 0.7, y1: 0.8 },
+      { action: "zoomWindow", x0: 0.2, y0: 0.3, x1: 0.7 },
+      { action: "zoomWindow", x0: 0.2, y0: 0.3, x1: 0.2, y1: 0.8 },
+    ])
+      expect(await mutate("viewport_control", command)).toMatchObject({
+        ok: false,
+      });
+    expect(controlViewport).toHaveBeenCalledTimes(4);
+  } finally {
+    api.dispose();
+  }
+});
+
+it("retains MCP revision and retry protection for navigation settings", async () => {
+  const { api, controlViewport } = setup();
+  try {
+    const request = {
+      action: "navigation",
+      orbitMode: "constrained",
+      expectedRevision: api.currentRevision(),
+      requestId: "camera-nav-once",
+    };
+    const first = await api.invoke("viewport_control", request);
+    expect(first.ok).toBe(true);
+    expect(await api.invoke("viewport_control", request)).toEqual(first);
+    expect(controlViewport).toHaveBeenCalledOnce();
+    expect(
+      await api.invoke("viewport_control", {
+        ...request,
+        expectedRevision: 123456,
+        requestId: "camera-nav-stale",
+      }),
+    ).toMatchObject({ ok: false, error: { code: "REVISION_CONFLICT" } });
+    expect(controlViewport).toHaveBeenCalledOnce();
+  } finally {
+    api.dispose();
+  }
+});

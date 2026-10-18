@@ -137,6 +137,8 @@ it("dispose releases original comparison geometry and restores underlying mesh",
   ) as THREE.Mesh;
   const disposed = vi.spyOn(overlay.geometry, "dispose");
   const disposable = { remove: vi.fn() };
+  const zoomWindowOverlay = { remove: vi.fn() };
+  const zoomWindowHint = { remove: vi.fn() };
   const canvas = { removeEventListener: vi.fn(), remove: vi.fn() };
   const bridgePreview = new THREE.Group();
   const bridgeMesh = new THREE.Mesh(
@@ -160,6 +162,8 @@ it("dispose releases original comparison geometry and restores underlying mesh",
       new THREE.MeshBasicMaterial(),
     ),
     gridScene: new THREE.Scene(),
+    zoomWindowOverlay,
+    zoomWindowHint,
     selectionOverlay: disposable,
     paintOverlay: disposable,
     landmarkOverlay: disposable,
@@ -174,6 +178,8 @@ it("dispose releases original comparison geometry and restores underlying mesh",
   });
   vi.stubGlobal("window", { removeEventListener: vi.fn() });
   view.dispose();
+  expect(zoomWindowOverlay.remove).toHaveBeenCalledOnce();
+  expect(zoomWindowHint.remove).toHaveBeenCalledOnce();
   expect(disposed).toHaveBeenCalledOnce();
   expect(bridgeDisposed).toHaveBeenCalledOnce();
   expect(mesh.visible).toBe(true);
