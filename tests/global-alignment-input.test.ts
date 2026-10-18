@@ -1,4 +1,4 @@
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   prepareGlobalAlignmentInput,
   inspectGlobalAlignmentCandidates,
@@ -9,6 +9,36 @@ import { executeGlobalAlignmentInputPreparation } from "../src/global-alignment-
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { noiseNormals } from "../src/scan-native-noise";
 import type { Entity } from "../src/types";
+import nativeNormals from "./fixtures/noise-normal-kernel.json";
+
+// All indexed scans now require the same disposable normal derivation worker.
+// Model transfer detachment without detaching the authored entity carriers.
+beforeEach(() => {
+  vi.stubGlobal(
+    "Worker",
+    class {
+      onmessage?: (event: { data: unknown }) => void;
+      onerror?: unknown;
+      onmessageerror?: unknown;
+      terminate = vi.fn();
+      postMessage(
+        packet: Parameters<typeof executeGlobalAlignmentInputPreparation>[0],
+        transfer: ArrayBuffer[],
+      ) {
+        const copy = structuredClone(packet, { transfer });
+        queueMicrotask(() => {
+          try {
+            this.onmessage?.({
+              data: { result: executeGlobalAlignmentInputPreparation(copy) },
+            });
+          } catch (error) {
+            this.onmessage?.({ data: { error: (error as Error).message } });
+          }
+        });
+      }
+    },
+  );
+});
 
 const points = () => new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
 function mesh(id: string): Entity {
@@ -80,7 +110,8 @@ it("counts reused backing carriers once and admits the full indexed three-scan d
   expect(shared.retainedBytes).toBe(
     (a.indexedMesh!.vertices as Float32Array).byteLength +
       (a.indexedMesh!.triangles as Uint32Array).byteLength +
-      (a.indexedMesh!.normals as Float32Array).byteLength,
+      (a.indexedMesh!.normals as Float32Array).byteLength +
+      2 * a.indexedMesh!.vertices.length * 4,
   );
   const indexed = (id: string, vertices: number, triangles: number) =>
     ({
@@ -141,7 +172,13 @@ it("uses scene order, visible mesh wrappers, command defaults and original unuse
     mask: 1,
   });
   expect(result.input.scans[0].geometry.points).toBe(a.indexedMesh!.vertices);
-  expect(result.input.scans[0].geometry.normals).toBe(a.indexedMesh!.normals);
+  expect(result.input.scans[0].geometry.normals).not.toBe(
+    a.indexedMesh!.normals,
+  );
+  expect(result.input.scans[0].geometry.normals).toEqual(
+    noiseNormals(a.indexedMesh!),
+  );
+  expect(result.summary.preparation.physicalWorkers).toBe(2);
   expect(result.input.scans[0].geometry.targetMeshes![0].triangles).toBe(
     a.indexedMesh!.triangles,
   );
@@ -214,13 +251,14 @@ it("honors cancellation and stale-input checks before preparation", async () => 
     }),
   ).rejects.toThrow("stale");
 });
-it("refuses nonfinite normals and prevents triangle-index wrapping", async () => {
+it("ignores nonfinite authored normals and prevents triangle-index wrapping", async () => {
   const a = mesh("a");
   a.indexedMesh!.normals![0] = Infinity;
-  await expect(prepareGlobalAlignmentInput([a, mesh("b")])).rejects.toThrow(
-    /finite/i,
+  const result = await prepareGlobalAlignmentInput([a, mesh("b")]);
+  expect(result.input.scans[0].geometry.normals.every(Number.isFinite)).toBe(
+    true,
   );
-  a.indexedMesh!.normals![0] = 0;
+  expect(a.indexedMesh!.normals![0]).toBe(Infinity);
   a.indexedMesh!.triangles = [0, 1, 2 ** 32];
   await expect(prepareGlobalAlignmentInput([a, mesh("b")])).rejects.toThrow(
     /vertex/i,
@@ -270,7 +308,7 @@ it("terminates its disposable worker on success and abort", async () => {
   a.indexedMesh!.normals = undefined;
   const result = await prepareGlobalAlignmentInput([a, mesh("b")]);
   expect(last!.terminate).toHaveBeenCalledTimes(1);
-  expect(result.summary.preparation.physicalWorkers).toBe(1);
+  expect(result.summary.preparation.physicalWorkers).toBe(2);
   const controller = new AbortController();
   FakeWorker.prototype.postMessage = function () {
     controller.abort();
@@ -301,14 +339,15 @@ async function pendingPreparation(
     packet?: Parameters<typeof executeGlobalAlignmentInputPreparation>[0];
     terminate = vi.fn();
     constructor() {
-      worker = this;
+      worker ??= this;
     }
     postMessage(
       packet: Parameters<typeof executeGlobalAlignmentInputPreparation>[0],
       transfer: ArrayBuffer[],
     ) {
       this.packet = structuredClone(packet, { transfer });
-      posted();
+      if (this === worker) posted();
+      else queueMicrotask(() => this.complete());
     }
     complete() {
       this.onmessage?.({
@@ -407,6 +446,52 @@ it("cleans successful input preparation after transferring only disposable copie
   pending.worker.complete();
   const outcome = await pending.outcome;
   expect(outcome.error).toBeUndefined();
-  expect(outcome.result?.summary.preparation.physicalWorkers).toBe(1);
+  expect(outcome.result?.summary.preparation.physicalWorkers).toBe(2);
   pending.verifyCleanup();
+});
+
+it("recomputes polygon normals from native-captured topology without changing authored normals or IDs", async () => {
+  const captured = nativeNormals.cases.find(
+    (sample) => sample.label === "fan-5-scale-1",
+  )!;
+  const vertices = Float32Array.from(captured.vertices);
+  const triangles = Uint32Array.from(captured.triangles);
+  const supplied = new Float32Array(vertices.length).fill(7);
+  const positions = Float32Array.from(
+    [...triangles].flatMap((id) => [...vertices.subarray(id * 3, id * 3 + 3)]),
+  );
+  const a: Entity = {
+    ...mesh("a"),
+    positions,
+    indexedMesh: { vertices, triangles, normals: supplied },
+  };
+  const b: Entity = {
+    ...mesh("b"),
+    positions,
+    indexedMesh: { vertices, triangles },
+  };
+  const before = supplied.slice();
+  const result = await prepareGlobalAlignmentInput([a, b]);
+  for (const scan of result.input.scans) {
+    expect(scan.geometry.points).toBe(vertices);
+    expect(scan.geometry.targetMeshes![0].triangles).toBe(triangles);
+    expect(Buffer.from(scan.geometry.normals.buffer).toString("hex")).toBe(
+      captured.nativeNormalBits,
+    );
+  }
+  expect(result.input.scans[0].geometry.normals).not.toBe(
+    result.input.scans[1].geometry.normals,
+  );
+  expect(a.indexedMesh!.normals).toBe(supplied);
+  expect(supplied).toEqual(before);
+  expect(result.summary.preparation.physicalWorkers).toBe(2);
+});
+
+it("admits generated normal output and copied topology even when scanner normals already exist", () => {
+  const a = mesh("a");
+  const admission = globalAlignmentInputAdmission([a]);
+  const v = a.indexedMesh!.vertices.length * 4;
+  const t = a.indexedMesh!.triangles.length * 4;
+  expect(admission.retainedBytes).toBe(v + t + v + v);
+  expect(admission.peakPreparationBytes).toBe(v + t + 1048576);
 });

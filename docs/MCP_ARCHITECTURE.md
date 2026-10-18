@@ -267,6 +267,11 @@ prepares other carriers without detaching authored buffers. Its collective
 query admission; it does not replace or lower it. Workers and temporary input
 ownership retain cancellation and finite-lifetime cleanup.
 
+The shared `prepareGlobalAlignmentInput` derives command-local vertex normals
+from mesh topology for both GUI and MCP. Imported object/scanner normal buffers
+remain preserved on the authored object. Derived normals belong to the prepared
+command input and follow its existing cancellation and release handling.
+
 Cancellation has an API busy-lane exception so `global_alignment_cancel` can
 abort its owning preview job before releasing staged geometry and display.
 An optional cancel `jobId` is matched against the active API job and the retained

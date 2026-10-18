@@ -149,14 +149,15 @@ export function globalAlignmentInputAdmission(
     let scratch = 0;
     if (indexed) {
       retainedBytes += carrier(indexed.vertices) + carrier(indexed.triangles);
+      // Authored scanner normals remain attached to their entity. The command
+      // owns a distinct native-derived normal output for each scan, even when
+      // multiple scans share their original indexed backing stores.
       if (indexed.normals) retainedBytes += carrier(indexed.normals);
-      else {
-        retainedBytes += indexed.vertices.length * 4;
-        // Transferred clones remain live beside the borrowed originals and
-        // normal output until the disposable worker response is released.
-        scratch =
-          indexed.vertices.length * 4 + indexed.triangles.length * 4 + 1048576;
-      }
+      retainedBytes += indexed.vertices.length * 4;
+      // Transferred clones remain live beside the borrowed originals and
+      // normal output until the disposable worker response is released.
+      scratch =
+        indexed.vertices.length * 4 + indexed.triangles.length * 4 + 1048576;
     } else {
       const bytes = entity.positions.length * 4;
       // Worst-case output keeps every corner: vertices + normals + indices.
@@ -403,26 +404,21 @@ export async function prepareGlobalAlignmentInput(
           if (triangles !== indexed.triangles) triangles[i] = id;
         }
       });
-      if (indexed.normals)
-        mesh = {
-          vertices,
-          triangles,
-          normals: await floats(indexed.normals, check),
-        };
-      else {
-        const v = await floats(vertices, check, true);
-        const t = new Uint32Array(triangles.length);
-        await visit(t.length, check, (first, end) =>
-          t.set(triangles.subarray(first, end), first),
-        );
-        const prepared = await derive(
-          { vertices: v, triangles: t },
-          options.signal,
-          check,
-        );
-        mesh = { vertices, triangles, normals: prepared.normals };
-        summary.preparation.physicalWorkers++;
-      }
+      // The original polygon import finalizer recomputes vertex normals.
+      // Preserve indexed identities and authored normals; derive command-local
+      // normals in the existing disposable worker from copied topology only.
+      const v = await floats(vertices, check, true);
+      const t = new Uint32Array(triangles.length);
+      await visit(t.length, check, (first, end) =>
+        t.set(triangles.subarray(first, end), first),
+      );
+      const prepared = await derive(
+        { vertices: v, triangles: t },
+        options.signal,
+        check,
+      );
+      mesh = { vertices, triangles, normals: prepared.normals };
+      summary.preparation.physicalWorkers++;
       summary.preparation.reusedIndexedScans++;
     } else {
       mesh = await derive(

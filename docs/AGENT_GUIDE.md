@@ -322,6 +322,10 @@ Project and backup restoration decode, validate and prepare current mesh display
 
 Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 
+Global Fine Align derives command-local alignment normals from each mesh's
+topology during shared GUI/MCP preparation. Imported object normals, including
+scanner-provided PLY normals, remain preserved on the source object.
+
 ### Response contract
 
 Successful tools return MCP `structuredContent` and equivalent JSON text. `screenshot_capture` additionally returns native MCP image content; its structured metadata omits the base64 image to avoid duplicating it:
