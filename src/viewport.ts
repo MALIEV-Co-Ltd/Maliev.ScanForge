@@ -257,6 +257,12 @@ export class Viewport {
   private brushPath: [number, number][] = [];
   private readonly clippingPlane = new THREE.Plane();
   private selectedId: string | null = null;
+  private rightPanPointer?: {
+    id: number;
+    x: number;
+    y: number;
+    moved: boolean;
+  };
   private navigationCursor?: { clientX: number; clientY: number };
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
@@ -316,6 +322,7 @@ export class Viewport {
     this.pointerMove = this.pointerMove.bind(this);
     this.pointerUp = this.pointerUp.bind(this);
     this.pointerCancel = this.pointerCancel.bind(this);
+    this.contextMenu = this.contextMenu.bind(this);
     this.sketchKeyDown = this.sketchKeyDown.bind(this);
     this.scene.background = new THREE.Color("#e9eef2");
     this.scene.add(this.originGeometry);
@@ -1080,6 +1087,15 @@ export class Viewport {
   }
 
   private pointerDown(event: PointerEvent): void {
+    this.rightPanPointer =
+      event.button === 2
+        ? {
+            id: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+            moved: false,
+          }
+        : undefined;
     if (
       this.bridgeSession?.mode === "holes" &&
       event.button === 0 &&
@@ -1149,7 +1165,7 @@ export class Viewport {
       this.mouseOrbitButton = event.button;
       this.invalidate();
     }
-    if (!this.brushing || event.button === 1) {
+    if (!this.brushing || event.button === 1 || event.button === 2) {
       const bounds = this.renderer.domElement.getBoundingClientRect();
       configureNavigationSensitivity(
         this.camera,
@@ -1194,6 +1210,15 @@ export class Viewport {
   }
 
   private pointerMove(event: PointerEvent): void {
+    if (
+      this.rightPanPointer?.id === event.pointerId &&
+      (event.buttons & 2) !== 0 &&
+      Math.hypot(
+        event.clientX - this.rightPanPointer.x,
+        event.clientY - this.rightPanPointer.y,
+      ) > 4
+    )
+      this.rightPanPointer.moved = true;
     if (this.bridgeDrag && this.bridgeDrag.id === event.pointerId) {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -1255,7 +1280,7 @@ export class Viewport {
     if (
       (event.buttons !== 0 || event.pointerType === "touch") &&
       (!this.brushing ||
-        (event.buttons & 4) !== 0 ||
+        (event.buttons & 6) !== 0 ||
         event.pointerType === "touch")
     )
       this.invalidate();
@@ -1309,6 +1334,7 @@ export class Viewport {
   }
 
   private pointerCancel(): void {
+    this.rightPanPointer = undefined;
     this.cancelBridgeDrag();
     this.interactiveDrag?.cancel();
     this.releaseInteractivePointer();
@@ -1440,15 +1466,16 @@ export class Viewport {
     if (this.renderer.domElement.hasPointerCapture(event.pointerId))
       this.renderer.domElement.releasePointerCapture(event.pointerId);
   }
-  private contextMenu = (event: MouseEvent): void => {
+  private contextMenu(event: MouseEvent): void {
     event.preventDefault();
+    if (this.rightPanPointer?.moved) return;
     if (this.sketchDrag || this.sketchCurvePoints.length) {
       this.cancelSketchDrag();
       return;
     }
     const [x, y] = this.screenPoint(event.clientX, event.clientY);
     this.onContext?.(x, y);
-  };
+  }
   async visibleSelection(id: string, mask: Uint8Array): Promise<Uint8Array> {
     const item = this.objects.get(id);
     if (!item) return new Uint8Array(mask.length);

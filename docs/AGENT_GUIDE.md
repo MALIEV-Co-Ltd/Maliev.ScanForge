@@ -1181,3 +1181,11 @@ closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
 `surfaceBlendLimitedHoles`; no new agent parameter is needed. Support-fit RMS
 describes the interpolant, not a guarantee of final visual continuity or accuracy
 of geometry absent from the scan. Close-up inspection remains necessary.
+
+Canvas navigation: hold the right mouse button and drag to pan; hold the middle button
+and drag to rotate. Right-drag panning also works in mesh edit and does not open the
+context menu on release; a stationary right click still opens it. Existing modifier
+shortcuts remain available. Agents use `viewport_control` with `action: "camera"` to pan
+by translating `position` and `target` by the same world-mm vector, or `action:
+"rotate"` to orbit; inspect `viewport_get` before and after. These use the same viewport
+camera and preserve geometry/history.

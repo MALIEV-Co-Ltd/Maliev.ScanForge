@@ -26,6 +26,6 @@ export function cameraMouseButtons(
   return {
     LEFT: meshEdit ? null : navigation,
     MIDDLE: navigation,
-    RIGHT: null,
+    RIGHT: MOUSE.PAN,
   };
 }

@@ -312,6 +312,63 @@ try {
   });
   assert.equal((await call("viewport_get")).result.projection, "perspective");
   await capture("viewport", "jpeg");
+  // Real mouse gestures must match the camera state exposed through MCP.
+  const canvas = page.locator("canvas").first();
+  const rect = await canvas.boundingBox();
+  assert(rect);
+  const x = rect.x + rect.width * 0.5,
+    y = rect.y + rect.height * 0.5;
+  const subtract = (a, b) => a.map((v, i) => v - b[i]);
+  const norm = (a) => Math.hypot(...a);
+  const closeVector = (a, b) => assert(norm(subtract(a, b)) < 1e-6);
+  for (const projection of ["orthographic", "perspective"]) {
+    await mutate("viewport_control", { action: "projection", projection });
+    await mutate("viewport_control", { action: "fit" });
+    const before = (await call("viewport_get")).result;
+    await page.mouse.move(x, y);
+    await page.mouse.down({ button: "right" });
+    await page.mouse.move(x + 70, y + 35, { steps: 12 });
+    await page.mouse.up({ button: "right" });
+    await page.evaluate(() => new Promise(requestAnimationFrame));
+    const panned = (await call("viewport_get")).result;
+    assert(norm(subtract(panned.target, before.target)) > 0.1);
+    closeVector(
+      subtract(panned.position, before.position),
+      subtract(panned.target, before.target),
+    );
+    closeVector(panned.up, before.up);
+    assert.equal(panned.zoom, before.zoom);
+    assert.equal(await page.locator(".app-context-menu").count(), 0);
+    // Apply the same pan through the existing semantic API, then compare.
+    await mutate("viewport_control", {
+      action: "camera",
+      position: panned.position,
+      target: panned.target,
+      up: panned.up,
+      projection,
+      zoom: panned.zoom,
+    });
+    const semantic = (await call("viewport_get")).result;
+    closeVector(semantic.position, panned.position);
+    closeVector(semantic.target, panned.target);
+    await page.mouse.move(x, y);
+    await page.mouse.down({ button: "middle" });
+    await page.mouse.move(x + 50, y + 40, { steps: 12 });
+    await page.mouse.up({ button: "middle" });
+    await page.evaluate(() => new Promise(requestAnimationFrame));
+    const rotated = (await call("viewport_get")).result;
+    assert(
+      norm(
+        subtract(
+          subtract(rotated.position, rotated.target),
+          subtract(panned.position, panned.target),
+        ),
+      ) > 0.1,
+    );
+    await page.mouse.click(x, y, { button: "right" });
+    await page.locator(".app-context-menu").waitFor();
+    await page.keyboard.press("Escape");
+  }
   const history = await call("history_get");
   assert(
     history.result.entries.some((entry) => entry.label.includes("Create")),
@@ -369,6 +426,7 @@ try {
     "camera rotation changes image and absolute perspective pose",
     "compact discovery/session recovery/history/project rename",
     "display settings parity",
+    "right drag pans, middle drag rotates, click menu and MCP pose parity in both projections",
   ];
   console.log("PASS: " + ledger.steps.join("; "));
 } catch (error) {

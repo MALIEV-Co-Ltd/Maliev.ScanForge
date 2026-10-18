@@ -332,3 +332,21 @@ it("flushes pending orbit movement on release and then stops using the pivot", (
   view.endMouseOrbit();
   expect(controls.update).toHaveBeenCalledTimes(1);
 });
+
+it.each([false, true])(
+  "right-button pan initializes mesh-edit sensitivity without an orbit pivot (ortho: %s)",
+  (ortho) => {
+    const { view, controls } = fixture(ortho);
+    view.brushing = true;
+    view.pointerDown(down({ button: 2 }));
+    expect(controls.mouseButtons.RIGHT).toBe(THREE.MOUSE.PAN);
+    expect(controls.panSpeed).not.toBe(1);
+    expect(view.mouseOrbitPointer).toBeUndefined();
+    expect(view.rightPanPointer).toEqual({
+      id: 7,
+      x: 140,
+      y: 100,
+      moved: false,
+    });
+  },
+);

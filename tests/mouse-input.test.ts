@@ -16,8 +16,8 @@ it("enables object-mode camera drag but reserves mesh-edit left drag for selecti
       );
       expect(editing.LEFT).toBeNull();
       expect(editing.MIDDLE).toBe(inspection.LEFT);
-      expect(inspection.RIGHT).toBeNull();
-      expect(editing.RIGHT).toBeNull();
+      expect(inspection.RIGHT).toBe(MOUSE.PAN);
+      expect(editing.RIGHT).toBe(MOUSE.PAN);
     }
   }
 });
