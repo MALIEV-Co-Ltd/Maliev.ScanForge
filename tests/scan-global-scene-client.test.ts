@@ -224,6 +224,10 @@ it("uses the preparation mask by default for correspondence queries", async () =
   );
   const prepared = executeGlobalScenePreparation(data),
     pool = await createPreparedGlobalQueryPool(data);
+  const readMask = vi.fn(() => {
+    throw new Error("Prepared query reread its input mask.");
+  });
+  Object.defineProperty(data, "mask", { get: readMask });
   try {
     const poses = data.scans.map((s) => ({
       id: s.id,
@@ -250,6 +254,7 @@ it("uses the preparation mask by default for correspondence queries", async () =
     expect(expected.count).toBeGreaterThan(0);
     expect(expected.count).toBeLessThan(500);
     expect(await pool.execute(job)).toEqual(expected);
+    expect(readMask).not.toHaveBeenCalled();
   } finally {
     pool.close();
   }
@@ -284,4 +289,99 @@ it("rejects replay clock mismatches and malformed IDs before worker admission", 
       scans: [{ id: "big", geometry: { points: size, normals: size } }],
     }),
   ).toThrow(/admission/);
+});
+
+it.each(["complete", "error", "abort"] as const)(
+  "detaches all preparation handlers after %s",
+  async (outcome) => {
+    install();
+    FakeWorker.hold = outcome === "abort";
+    FakeWorker.failAt = outcome === "error" ? 0 : -1;
+    const controller = new AbortController();
+    const pending = prepareGlobalScene(input(), controller.signal);
+    try {
+      if (outcome === "abort") {
+        controller.abort();
+        await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+      } else if (outcome === "error")
+        await expect(pending).rejects.toThrow("injected failure");
+      else await pending;
+      expect(FakeWorker.instances).toHaveLength(1);
+      const worker = FakeWorker.instances[0];
+      expect(worker.terminated).toBe(true);
+      expect(worker.onmessage).toBeNull();
+      expect(worker.onerror).toBeNull();
+      expect(worker.onmessageerror).toBeNull();
+    } finally {
+      controller.abort();
+    }
+  },
+);
+
+it("rejects cancelled preparation before reading the input", async () => {
+  install();
+  const readInput = vi.fn();
+  const unreadableInput = new Proxy(input(), {
+    get() {
+      readInput();
+      throw new Error("Cancelled preparation accessed its input.");
+    },
+  });
+  await expect(
+    prepareGlobalScene(unreadableInput, AbortSignal.abort()),
+  ).rejects.toMatchObject({ name: "AbortError" });
+  expect(readInput).not.toHaveBeenCalled();
+  expect(FakeWorker.instances).toHaveLength(0);
+});
+
+it.each([
+  {
+    name: "explicit zero overrides the prepared mask",
+    preparedMask: 2,
+    queryMask: 0,
+  },
+  {
+    name: "omitted masks retain native default zero",
+    preparedMask: undefined,
+    queryMask: undefined,
+  },
+])("preserves exact prepared-query mask semantics: $name", async (sample) => {
+  install();
+  const data = input();
+  if (sample.preparedMask !== undefined) data.mask = sample.preparedMask;
+  data.scans[1].geometry.flags = Uint32Array.from({ length: 500 }, (_, i) =>
+    i % 2 ? 2 : 0,
+  );
+  const prepared = executeGlobalScenePreparation(data),
+    pool = await createPreparedGlobalQueryPool(data);
+  try {
+    const poses = data.scans.map((s) => ({
+      id: s.id,
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+    }));
+    const placed = data.scans.map((s, i) => ({
+      ...s,
+      ...poses[i],
+      geometry: { ...s.geometry, labels: prepared.sources[i].labels },
+    }));
+    const job = {
+      sourceId: "0",
+      poses,
+      radius: 5,
+      mode: "target-average" as const,
+      ...(sample.queryMask === undefined ? {} : { mask: sample.queryMask }),
+    };
+    const oracle = {
+      ...job,
+      cells: prepared.sources[0].selected,
+      source: placed[0],
+      targets: placed,
+    };
+    const expected = nativeGlobalQuery({ ...oracle, mask: 0 });
+    const masked = nativeGlobalQuery({ ...oracle, mask: 2 });
+    expect(expected.count).toBeGreaterThan(masked.count);
+    expect(await pool.execute(job)).toEqual(expected);
+  } finally {
+    pool.close();
+  }
 });

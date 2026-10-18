@@ -500,3 +500,60 @@ it("starts the idle lease after a completed long query", async () => {
     pool.close();
   }
 });
+
+it("rejects cancelled query initialization before reading its input", async () => {
+  install();
+  vi.stubGlobal("crossOriginIsolated", true);
+  const { scans } = setup(fixture.cases[0]);
+  const readInput = vi.fn();
+  const unreadableInput = new Proxy(
+    { scans },
+    {
+      get() {
+        readInput();
+        throw new Error("Cancelled query initialization accessed its input.");
+      },
+    },
+  );
+  await expect(
+    createGlobalQueryPool(unreadableInput, { signal: AbortSignal.abort() }),
+  ).rejects.toMatchObject({ name: "AbortError" });
+  expect(readInput).not.toHaveBeenCalled();
+  expect(FakeWorker.instances).toHaveLength(0);
+});
+
+it.each(["close", "abort"] as const)(
+  "rejects query work before reading the job after %s",
+  async (outcome) => {
+    install();
+    const { scans, job } = setup(fixture.cases[0]);
+    const controller = new AbortController();
+    const pool = await createGlobalQueryPool(
+      { scans },
+      {
+        signal: controller.signal,
+      },
+    );
+    const readJob = vi.fn();
+    const unreadableJob = new Proxy(job, {
+      get() {
+        readJob();
+        throw new Error("Closed query pool accessed its job.");
+      },
+    });
+    try {
+      if (outcome === "close") pool.close();
+      else controller.abort();
+      await expect(pool.execute(unreadableJob)).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(readJob).not.toHaveBeenCalled();
+      expect(FakeWorker.instances.every((worker) => worker.terminated)).toBe(
+        true,
+      );
+    } finally {
+      controller.abort();
+      pool.close();
+    }
+  },
+);

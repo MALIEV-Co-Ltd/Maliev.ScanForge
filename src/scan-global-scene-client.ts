@@ -39,9 +39,9 @@ export async function prepareGlobalScene(
   input: GlobalSceneInput,
   signal?: AbortSignal,
 ): Promise<GlobalSceneResult> {
-  globalSceneAdmission(input);
   if (signal?.aborted)
     throw new DOMException("Global preparation cancelled.", "AbortError");
+  globalSceneAdmission(input);
   if (typeof Worker === "undefined") {
     if (typeof document !== "undefined")
       throw Error("Global scene preparation requires browser workers.");
@@ -59,7 +59,10 @@ export async function prepareGlobalScene(
         settled = true;
         clearTimeout(timer);
         signal?.removeEventListener("abort", abort);
-        worker?.terminate();
+        if (worker) {
+          worker.onmessage = worker.onerror = worker.onmessageerror = null;
+          worker.terminate();
+        }
         worker = undefined;
         if (error) reject(error);
         else resolve(result!);
@@ -154,6 +157,7 @@ export async function createPreparedGlobalQueryPool(
       geometry: { ...original.geometry, labels: source.labels },
     };
   });
+  const preparedMask = input.mask;
   let pool: Awaited<ReturnType<typeof createGlobalQueryPool>> | undefined =
     await createGlobalQueryPool({ scans }, options);
   const physicalWorkers = pool.physicalWorkers;
@@ -183,7 +187,7 @@ export async function createPreparedGlobalQueryPool(
       try {
         return await pool.execute({
           ...job,
-          mask: job.mask ?? input.mask,
+          mask: job.mask ?? preparedMask,
           cells: source.selected,
         });
       } catch (error) {

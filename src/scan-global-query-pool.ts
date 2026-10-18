@@ -115,9 +115,9 @@ export async function createGlobalQueryPool(
   input: GlobalQueryWorkerInit,
   options: { parallel?: boolean; signal?: AbortSignal } = {},
 ) {
-  const { count, storageBudget } = queryPlan(input, options.parallel);
   if (options.signal?.aborted)
     throw new DOMException("Global alignment cancelled.", "AbortError");
+  const { count, storageBudget } = queryPlan(input, options.parallel);
   if (typeof Worker === "undefined") {
     let state: ReturnType<typeof createGlobalQueryWorkerState> | undefined =
       createGlobalQueryWorkerState(input);
@@ -351,6 +351,8 @@ export async function createGlobalQueryPool(
         job: GlobalQueryJob,
       ): Promise<ReturnType<typeof nativeGlobalQuery>> => {
         try {
+          if (stopped || options.signal?.aborted)
+            throw new DOMException("Global alignment cancelled.", "AbortError");
           if (
             storageBudget &&
             job.cells.reduce((sum, cell) => sum + cell.length, 0) > 16384
