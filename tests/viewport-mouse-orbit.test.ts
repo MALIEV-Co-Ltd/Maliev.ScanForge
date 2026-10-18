@@ -21,7 +21,9 @@ function fixture(orthographic = false) {
     target,
     enabled: true,
     noRotate: false,
-    mouseButtons: {},
+    mouseButtons: {} as Partial<
+      Record<"LEFT" | "MIDDLE" | "RIGHT", THREE.MOUSE>
+    >,
     update: vi.fn(),
     rotateSpeed: 1,
     zoomSpeed: 1,
