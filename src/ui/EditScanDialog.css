@@ -171,37 +171,37 @@ section.edit-scan-dialog .scan-dialog-footer {
   margin-top: 0;
 }
 
-/* Generated selection gestures need room for their surface and tool. */
-section.edit-scan-dialog .scan-tool-row button:has([data-scan-raster]) {
+/* Diagrams retain the existing tool labels and control grouping. */
+section.edit-scan-dialog .scan-tool-row button:has([data-scan-icon]) {
   flex-direction: column;
   gap: 2px;
 }
-section.edit-scan-dialog .scan-tool-row [data-scan-raster] {
-  width: 56px;
-  height: 56px;
+section.edit-scan-dialog .scan-tool-row [data-scan-icon] {
+  width: 30px;
+  height: 30px;
   object-fit: contain;
 }
-section.edit-scan-dialog .edit-scan-actions button:has([data-scan-raster]) {
+section.edit-scan-dialog .edit-scan-actions button:has([data-scan-icon]) {
   flex-direction: column;
   gap: 3px;
   padding: 4px 2px;
 }
-section.edit-scan-dialog .edit-scan-actions [data-scan-raster] {
-  width: 40px;
-  height: 40px;
+section.edit-scan-dialog .edit-scan-actions [data-scan-icon] {
+  width: 26px;
+  height: 26px;
 }
-section.edit-scan-dialog .edit-scan-through [data-scan-raster] {
-  width: 40px;
-  height: 40px;
+section.edit-scan-dialog .edit-scan-through [data-scan-icon] {
+  width: 26px;
+  height: 26px;
 }
-section.edit-scan-dialog .edit-scan-create button:has([data-scan-raster]) {
+section.edit-scan-dialog .edit-scan-create button:has([data-scan-icon]) {
   flex-direction: column;
   gap: 3px;
   padding: 4px 2px;
 }
-section.edit-scan-dialog .edit-scan-create [data-scan-raster] {
-  width: 40px;
-  height: 40px;
+section.edit-scan-dialog .edit-scan-create [data-scan-icon] {
+  width: 26px;
+  height: 26px;
   margin-right: 0;
 }
 

@@ -60,7 +60,7 @@
 .viewport-tools button:disabled {
   opacity: 0.55;
 }
-.viewport-tools button:disabled img {
+.viewport-tools button:disabled svg {
   opacity: 1;
   filter: grayscale(0.5);
 }
@@ -104,7 +104,7 @@
   color: var(--muted);
 }
 
-.viewport-tools img {
+.viewport-tools svg {
   object-fit: contain;
   flex: 0 0 auto;
 }

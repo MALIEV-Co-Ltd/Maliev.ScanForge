@@ -17,11 +17,11 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.scan-quick-tools button:has([data-scan-raster]) {
-  width: 42px;
-  height: 42px;
+.scan-quick-tools button:has([data-scan-icon]) {
+  width: 34px;
+  height: 34px;
 }
-.scan-quick-tools [data-scan-raster] {
-  width: 36px;
-  height: 36px;
+.scan-quick-tools [data-scan-icon] {
+  width: 26px;
+  height: 26px;
 }

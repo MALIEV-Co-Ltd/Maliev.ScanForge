@@ -1,0 +1,8 @@
+.ribbon-cad-icon {
+  --diagram-edge: #526779;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+:root[data-theme="dark"] .ribbon-cad-icon {
+  --diagram-edge: #d3e0e8;
+}

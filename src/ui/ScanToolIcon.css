@@ -2,10 +2,7 @@
   flex: 0 0 auto;
   vertical-align: middle;
 }
-img.scan-feature-icon {
-  object-fit: contain;
-}
-.scan-diagnostics img.scan-feature-icon {
+.scan-diagnostics .scan-feature-icon {
   width: 36px;
   height: 36px;
 }
@@ -37,4 +34,10 @@ img.scan-feature-icon {
 }
 .edit-scan-dialog .button-row button .scan-feature-icon {
   margin-right: 4px;
+}
+
+:root[data-theme="dark"] .scan-feature-icon {
+  --scan-action: #f5c65d;
+  --scan-reference: #8de7fa;
+  --scan-edge: #cbdce6;
 }

@@ -2,28 +2,27 @@
   display: flex;
   align-items: stretch;
 }
-/* Larger command illustrations share the existing 68px ribbon row. */
-.ribbon-button img.ribbon-command-image {
+/* Flat vector diagrams share the existing ribbon layout. */
+.ribbon-button svg.ribbon-cad-icon {
   width: 40px;
   height: 40px;
-  object-fit: contain;
   flex: 0 0 auto;
 }
-.ribbon-button:has(img.ribbon-command-image) {
+.ribbon-button:has(svg.ribbon-cad-icon) {
   padding-top: 2px;
   padding-bottom: 2px;
   gap: 2px;
 }
 /* Keep unavailable illustrations recognizable without suggesting availability. */
-.ribbon-button:disabled:has(img.ribbon-command-image) {
+.ribbon-button:disabled:has(svg.ribbon-cad-icon) {
   opacity: 0.6;
 }
-.ribbon .ribbon-button:disabled img.ribbon-command-image {
+.ribbon .ribbon-button:disabled svg.ribbon-cad-icon {
   filter: grayscale(0.65);
   opacity: 1;
 }
-.ribbon-options .ribbon-button img.ribbon-command-image,
-.ribbon-group-compact .ribbon-button img.ribbon-command-image {
+.ribbon-options .ribbon-button svg.ribbon-cad-icon,
+.ribbon-group-compact .ribbon-button svg.ribbon-cad-icon {
   width: 28px;
   height: 28px;
 }

@@ -4,7 +4,7 @@ import {
   DEFAULT_REFERENCE_COLOR,
 } from "../appearance";
 import { RIBBON_TABS } from "./ribbon-model";
-import { RIBBON_RASTER_ICONS } from "./RibbonRasterIcons";
+import "./RibbonCommandIcon.css";
 /** Independently drawn, local SVG artwork. Each command has an explicit entry. */
 const path = (d: string, fill = "none", extra = "") =>
   `<path d="${d}" fill="${fill}" ${extra}/>`;
@@ -16,14 +16,21 @@ const gold = "#edbe48",
 const green = "#8bbb80",
   red = "#e37766",
   purple = "#bba1d1";
-const plane = path("M4 10h24v14H4Z", gold);
+const plane =
+  path("m2 18 17-12 11 9-17 12Z", "#65c4d5") +
+  path("m7 18 12-8m-6 12 12-8", "none", 'stroke="#d8f2f5"');
 const solid =
-  path("m16 3 12 6-12 7L4 9Z", light) +
-  path("m4 9 12 7v13L4 22Z", gold) +
-  path("m16 16 12-7v13l-12 7Z", shade);
+  path("m16 3 12 6-12 7L4 9Z", "#d5dee4") +
+  path("m4 9 12 7v13L4 22Z", "#9aaab7") +
+  path("m16 16 12-7v13l-12 7Z", "#647785");
 const mesh =
-  path("m3 22 5-15 11-3 10 16-12 9Z", gold) +
-  path("m8 7 9 22 2-25M3 22l16-18M8 7l21 13M3 22l26-2");
+  path("m3 21 5-14 11-3 10 16-12 9Z", "#9aaab7") +
+  path(
+    "m8 7 9 22 2-25M3 21l16-17M8 7l21 13M3 21l26-1",
+    "none",
+    'stroke="#e1eaf0"',
+  ) +
+  path("m8 7 11-3-6 9Z", "#cbd5dd");
 const surface =
   path("M3 23C8 5 15 21 23 5l6 9C22 30 13 13 8 29Z", gold) +
   path("M5 19c8-9 14 6 20-10M7 26c7-12 15 5 21-9M11 13l5 10M19 11l5 10");
@@ -34,7 +41,19 @@ const cylinder =
 const cone =
   path("M16 3 4 25c0 6 24 6 24 0Z", gold) +
   path("M4 25c0-5 24-5 24 0", "none", 'stroke-dasharray="2 2"');
-const arrow = path("M21 29V18h-4l7-7 7 7h-4v11Z", green);
+const arrow = path("M21 29V18h-4l7-7 7 7h-4v11Z", "#f4c35a");
+const exportArrow = path("M18 18h8v-4l5 7-5 7v-4h-8Z", "#f4c35a");
+const registration =
+  '<g transform="translate(0 3) scale(.58)">' +
+  mesh +
+  '</g><g transform="translate(14 12) scale(.58)">' +
+  mesh +
+  "</g>" +
+  path(
+    "M9 27h7m-3-3 3 3-3 3M23 5h-7m3-3-3 3 3 3",
+    "none",
+    'stroke="#f4c35a" stroke-width="2"',
+  );
 const plus = path(
   "M22 19v10M17 24h10",
   "none",
@@ -46,7 +65,7 @@ const cross = path(
   'stroke="#d65e50" stroke-width="3"',
 );
 const pencil =
-  path("m12 25 3-7L26 7l5 5-11 11Z", light) + path("m15 18 5 5m4-14 5 5");
+  path("m12 25 3-7L26 7l5 5-11 11Z", "#f4c35a") + path("m15 18 5 5m4-14 5 5");
 const axes =
   path(
     "M7 25V4m0 21h23M7 25l13-12",
@@ -55,7 +74,7 @@ const axes =
   ) + path("m4 7 3-3 3 3m17 15 3 3-3 3m-10-12 3-3 0 5");
 const dots =
   circle(7, 8, 2, red) + circle(24, 12, 2, green) + circle(14, 25, 2, purple);
-const file = path("M6 2h14l7 7v21H6Z", light) + path("M20 2v7h7");
+const file = path("M6 2h14l7 7v21H6Z", "#d5dee4") + path("M20 2v7h7");
 const curve = path(
   "M3 25C10 1 16 31 29 6",
   "none",
@@ -122,10 +141,18 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     path("M2 28v-7c0-8 18-8 18 0v7m0-10c5-3 10 0 10 5v5", gold),
   newDocument: file + plus,
   open:
-    path("M2 9h11l3 4h14l-4 15H3Z", gold) + path("M3 9V5h10l3 4h12v4", light),
+    path("M2 11h11l3 4h14l-4 13H3Z", "#9aaab7") +
+    path("M3 11V6h10l3 4h12v5", "#d5dee4") +
+    path("M19 1v10m-4-4 4 4 4-4", "none", 'stroke="#f4c35a" stroke-width="2"'),
   save:
-    path("M4 3h21l4 4v22H4Z", green) +
-    path("M9 3h13v9H9Zm0 17h15v12H9Z", "#eee"),
+    path("M4 3h21l4 4v22H4Z", "#9aaab7") +
+    path("M9 3h13v9H9Z", "#65c4d5") +
+    path("M9 29v-9h15v9Z", "#d5dee4"),
+  backup:
+    file +
+    circle(21, 22, 9, "#65c4d5") +
+    path("M21 16v6l4 3", "none", 'stroke="#e1eaf0" stroke-width="1.8"') +
+    path("M11 25 8 22l-3 3m3-3v7", "none", 'stroke="#f4c35a" stroke-width="2"'),
   editScan: mesh + pencil,
   cleanup: mesh + path("m20 2 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z", light),
   repairMesh:
@@ -139,7 +166,7 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
   fitSphere:
     circle(16, 16, 12, gold) +
     '<ellipse cx="16" cy="16" rx="5" ry="12" fill="#ffe294"/><ellipse cx="16" cy="16" rx="12" ry="4" fill="none"/>',
-  align: solid + axes,
+  align: registration,
   section: solid + path("m2 18 19-8 10 6-19 9Z", purple),
   fitSurface: mesh + path("M2 18C10 2 19 25 30 10v8C18 30 11 9 2 26Z", green),
   newFreeform: surface + plus,
@@ -154,8 +181,18 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     ),
   measure: ruler + path("M4 5h24m-24 0 4-3m-4 3 4 3m20-3-4-3m4 3-4 3"),
   deviation: heat + curve,
-  exportStep: solid + arrow,
-  exportStl: mesh + arrow,
+  exportStep:
+    file +
+    '<g transform="translate(4 9) scale(.5)">' +
+    solid +
+    "</g>" +
+    exportArrow,
+  exportStl:
+    file +
+    '<g transform="translate(4 9) scale(.5)">' +
+    mesh +
+    "</g>" +
+    exportArrow,
   undo: path("M12 4 3 12l9 7v-5h9c8 0 8 12 1 13 13-1 13-19-1-19h-9Z", gold),
   redo: path("M20 4 9 8C-4 8-4 26 10 27c-8-1-8-13 1-13h9v5l9-7-9-8Z", green),
   rebuild: gear + arrow,
@@ -206,7 +243,10 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
     path("M2 16Q16 1 30 16 16 31 2 16Z", light) +
     path("M16 6v20Q30 23 30 16 25 8 16 6Z", shade),
   reducePolygons:
-    path("m4 25 12-21 12 21Z", gold) + path("M16 4v21m-12 0 12-10 12 10"),
+    path("m2 23 7-18 7 18Z", "#9aaab7") +
+    path("M9 5v18m-7 0 11-9M5 14l11 9m-11-9h8", "none", 'stroke="#e1eaf0"') +
+    path("m20 23 5-13 5 13Z", "#d5dee4") +
+    path("M15 7h7m-3-3 3 3-3 3", "none", 'stroke="#f4c35a" stroke-width="2"'),
   reduceNoise:
     path("M2 9 5 4l4 10 4-10 4 9 4-8 4 8 5-9", "none", 'stroke="#e37766"') +
     path("M2 24Q16 13 30 24", "none", 'stroke="#edbe48" stroke-width="3"'),
@@ -506,21 +546,6 @@ export function RibbonCommandIcon({
   const artwork = RIBBON_ICON_ARTWORK[command];
   if (!artwork) throw new Error(`Missing ribbon artwork: ${command}`);
   const palette = ribbonCommandPalette(command);
-  const image = compact ? undefined : RIBBON_RASTER_ICONS[command];
-  if (image)
-    return (
-      <img
-        className="ribbon-cad-icon ribbon-command-image"
-        data-artwork={command}
-        data-palette={palette.family}
-        src={image}
-        alt=""
-        aria-hidden="true"
-        draggable={false}
-        width={40}
-        height={40}
-      />
-    );
   const colors: Record<string, string> = {
     [gold]: palette.base,
     [light]: palette.light,
@@ -535,12 +560,15 @@ export function RibbonCommandIcon({
     <svg
       className="ribbon-cad-icon"
       data-artwork={command}
+      data-icon-style="geometric-isometric"
+      width={compact ? 20 : 40}
+      height={compact ? 20 : 40}
       data-palette={palette.family}
       viewBox="0 0 32 32"
       aria-hidden="true"
       focusable="false"
-      stroke={palette.edge}
-      strokeWidth="1.1"
+      stroke="var(--diagram-edge, #526779)"
+      strokeWidth="1.15"
       strokeLinejoin="round"
       strokeLinecap="round"
       dangerouslySetInnerHTML={{ __html: coloredArtwork }}
