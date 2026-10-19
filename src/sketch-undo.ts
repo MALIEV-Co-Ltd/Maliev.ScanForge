@@ -47,3 +47,15 @@ export class SketchUndo {
     return following;
   }
 }
+
+/** Release histories whose saved sketches no longer exist; keep legacy history. */
+export function pruneSketchUndoSessions(
+  sessions: Map<string, SketchUndo>,
+  sketches: readonly { id: string }[],
+): void {
+  const retainedIds = new Set(sketches.map((sketch) => sketch.id));
+  const prefix = "saved:";
+  for (const key of sessions.keys())
+    if (key.startsWith(prefix) && !retainedIds.has(key.slice(prefix.length)))
+      sessions.delete(key);
+}

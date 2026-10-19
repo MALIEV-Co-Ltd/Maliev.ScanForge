@@ -108,7 +108,7 @@ import {
   shortcutPlatform,
   VIEWPORT_VISIBILITY_CATEGORIES,
 } from "../shortcut-registry";
-import { SketchUndo } from "../sketch-undo";
+import { SketchUndo, pruneSketchUndoSessions } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
 import { ApplicationVersion } from "./ApplicationVersion";
@@ -4409,6 +4409,10 @@ export function App() {
     },
     setSketch: updateSketchDraft,
     setAuthoring: (authoring) => {
+      pruneSketchUndoSessions(
+        sketchUndoSessions.current,
+        authoring.sketches ?? [],
+      );
       setSavedSketches(authoring.sketches ?? []);
       setActiveSketchId(authoring.activeSketchId ?? null);
       legacySketch.current = authoring.sketch ?? rectangleSketch();

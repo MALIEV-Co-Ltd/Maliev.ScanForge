@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SketchUndo } from "../src/sketch-undo";
+import { SketchUndo, pruneSketchUndoSessions } from "../src/sketch-undo";
 import {
   drawSketchCircle,
   drawSketchLine,
@@ -108,5 +108,58 @@ describe("one-step sketch authoring undo", () => {
     expect(second.canUndo).toBe(false);
     expect(second.undo(before)).toBeUndefined();
     expect(first.undo(next)?.points).toEqual([]);
+  });
+});
+
+describe("saved sketch history ownership", () => {
+  it("releases removed sessions while preserving surviving and legacy undo", () => {
+    const before = empty();
+    const next = drawSketchLine(before, [0, 0], [10, 0], 0.1, false);
+    const removed = new SketchUndo();
+    const survivor = new SketchUndo();
+    const legacy = new SketchUndo();
+    for (const session of [removed, survivor, legacy])
+      session.record(before, next);
+    const sessions = new Map([
+      ["saved:removed", removed],
+      ["saved:survivor", survivor],
+      ["legacy", legacy],
+    ]);
+    pruneSketchUndoSessions(sessions, [{ id: "survivor" }]);
+    expect(sessions.has("saved:removed")).toBe(false);
+    expect(sessions.get("saved:survivor")).toBe(survivor);
+    expect(sessions.get("legacy")).toBe(legacy);
+    expect(survivor.undo(next)).toEqual(before);
+    expect(legacy.undo(next)).toEqual(before);
+  });
+  it("keeps both saved histories when activation changes and preserves redo", () => {
+    const before = empty();
+    const next = drawSketchLine(before, [0, 0], [10, 0], 0.1, false);
+    const first = new SketchUndo();
+    const second = new SketchUndo();
+    first.record(before, next);
+    second.record(before, next);
+    expect(first.undo(next)).toEqual(before);
+    const sessions = new Map([
+      ["saved:first", first],
+      ["saved:second", second],
+    ]);
+    pruneSketchUndoSessions(sessions, [{ id: "second" }, { id: "first" }]);
+    expect(first.canRedo).toBe(true);
+    expect(second.canUndo).toBe(true);
+    expect(first.redo(before)).toEqual(next);
+    expect(second.undo(next)).toEqual(before);
+  });
+  it("prunes every deleted saved sketch idempotently without clearing legacy", () => {
+    const saved = new SketchUndo();
+    const legacy = new SketchUndo();
+    const sessions = new Map([
+      ["saved:deleted", saved],
+      ["legacy", legacy],
+    ]);
+    pruneSketchUndoSessions(sessions, []);
+    pruneSketchUndoSessions(sessions, []);
+    expect([...sessions.keys()]).toEqual(["legacy"]);
+    expect(sessions.get("legacy")).toBe(legacy);
   });
 });
