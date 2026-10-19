@@ -45,6 +45,7 @@ export const RIBBON_ACTION_IDS = [
   "autoFreeform",
   "quadObj",
   "sketch2d",
+  "sketchFromSection",
   "reducePolygons",
   "reduceNoise",
   "scaleMesh",
@@ -195,7 +196,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       group(
         "Sketch",
         tool("sketch2d", "New sketch", "curve"),
-        planned("sketchFromSection", "Section to sketch", "section"),
+        tool("sketchFromSection", "Section to sketch", "section", true),
       ),
       group(
         "Inspect",
@@ -337,7 +338,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "From scan",
-        planned("sketchFromSection", "Section to sketch", "section"),
+        tool("sketchFromSection", "Section to sketch", "section", true),
         tool("section", "Cross section", "section", true),
         planned("multipleSections", "Multiple sections", "section"),
       ),

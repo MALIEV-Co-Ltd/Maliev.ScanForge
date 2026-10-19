@@ -1813,6 +1813,10 @@ export function App() {
     autoFreeform: () => showTools("surface"),
     quadObj: () => showTools("surface"),
     sketch2d: openSketchCreation,
+    sketchFromSection:
+      selected?.kind === "mesh" && !selected.surfacePatch
+        ? openScanSketchCreation
+        : undefined,
     reducePolygons: () => openScanTool("reducePolygons"),
     reduceNoise: () => openScanTool("reduceNoise"),
     scaleMesh: () => openScanTool("scaleMesh"),
@@ -3707,6 +3711,7 @@ export function App() {
     }
   }
   function openScanSketchCreation() {
+    if (busy) return;
     if (!selected || selected.kind !== "mesh" || selected.surfacePatch) {
       showTools("sketch");
       setError(

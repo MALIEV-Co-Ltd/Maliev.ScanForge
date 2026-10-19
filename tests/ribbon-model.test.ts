@@ -139,12 +139,7 @@ describe("ribbon command inventory", () => {
       "multipleSections",
       "projectSketch",
     ]);
-    for (const id of [
-      "sketchFromSection",
-      "sectionView",
-      "referenceAxis",
-      "coordinateSystem",
-    ])
+    for (const id of ["sectionView", "referenceAxis", "coordinateSystem"])
       expect(getRibbonToolMetadata(id)?.action, id).toBeUndefined();
   });
   it("never enables an unimplemented operation even if a caller injects a same-name callback", () => {
@@ -246,4 +241,26 @@ describe("ribbon command inventory", () => {
           if (tool.action) expect(RIBBON_ACTION_IDS).toContain(tool.action);
         }
   });
+});
+
+it("offers Section to sketch on Main and Sketch with selected idle scan admission", () => {
+  for (const tabId of ["main", "sketch"]) {
+    const tools = RIBBON_TABS.find((tab) => tab.id === tabId)!.groups.flatMap(
+      (group) => group.tools,
+    );
+    const tool = tools.find((item) => item.id === "sketchFromSection")!;
+    expect(tool.action).toBe("sketchFromSection");
+    expect(tool.requiresSelection).toBe(true);
+    const actions = { sketchFromSection: vi.fn() };
+    expect(ribbonToolAvailability(tool, ready, actions).available).toBe(true);
+    expect(
+      ribbonToolAvailability(tool, { ...ready, hasSelection: false }, actions)
+        .available,
+    ).toBe(false);
+    expect(
+      ribbonToolAvailability(tool, { ...ready, disabled: true }, actions)
+        .available,
+    ).toBe(false);
+    expect(ribbonToolAvailability(tool, ready, {}).available).toBe(false);
+  }
 });

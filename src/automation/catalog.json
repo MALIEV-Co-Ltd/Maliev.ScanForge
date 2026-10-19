@@ -1029,7 +1029,23 @@
                 },
                 "options": {
                   "type": "object",
-                  "description": "SketchSectionOptions: frame,offset?,tolerance,chordTolerance"
+                  "description": "Scan section options shared with Create Sketch. selectedOnly uses current original triangle slots; omit top-level selectionOnly or supply the same value.",
+                  "properties": {
+                    "plane": {
+                      "type": "string",
+                      "enum": ["OXY", "OYZ", "OXZ"]
+                    },
+                    "offset": { "type": "number" },
+                    "onSlicingPlane": { "type": "boolean" },
+                    "selectedOnly": { "type": "boolean" }
+                  },
+                  "required": [
+                    "plane",
+                    "offset",
+                    "onSlicingPlane",
+                    "selectedOnly"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": ["kind", "options"],

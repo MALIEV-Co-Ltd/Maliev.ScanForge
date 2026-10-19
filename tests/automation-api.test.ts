@@ -517,3 +517,49 @@ it("keeps selection inside the admission lane even without host busy toggles", a
   expect((await selecting).ok).toBe(true);
   api.dispose();
 });
+
+describe("published sketch-section options", () => {
+  const schema = catalog.find(
+    (command) => command.name === "mesh_process",
+  )!.inputSchema;
+  const options = {
+    plane: "OXY",
+    offset: 1,
+    onSlicingPlane: true,
+    selectedOnly: true,
+  };
+  const args = (value: unknown) => ({
+    entityId: "mesh",
+    expectedRevision: 0,
+    requestId: "section-schema",
+    operation: { kind: "sketchSection", options: value },
+  });
+  it.each(["OXY", "OYZ", "OXZ"])(
+    "accepts the actual GUI section options for %s",
+    (plane) => {
+      expect(() =>
+        validateInput(schema, args({ ...options, plane })),
+      ).not.toThrow();
+    },
+  );
+  it.each(["plane", "offset", "onSlicingPlane", "selectedOnly"])(
+    "requires the explicit GUI option %s",
+    (key) => {
+      const incomplete: Record<string, unknown> = { ...options };
+      delete incomplete[key];
+      expect(() => validateInput(schema, args(incomplete))).toThrow();
+    },
+  );
+  it.each([
+    { ...options, plane: "XY" },
+    { ...options, offset: NaN },
+    { ...options, offset: Infinity },
+    { ...options, selectedOnly: "true" },
+    { ...options, onSlicingPlane: 1 },
+    { ...options, frame: {} },
+    { ...options, tolerance: 0.1 },
+    { ...options, chordTolerance: 0.1 },
+  ])("rejects unsupported fields and invalid option values: %j", (invalid) => {
+    expect(() => validateInput(schema, args(invalid))).toThrow();
+  });
+});

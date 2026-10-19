@@ -13,6 +13,7 @@ import type { CadClient } from "../src/cad/client";
 import type { Entity } from "../src/types";
 import type { ParametricRecipe } from "../src/parametric";
 import { processMesh } from "../src/processing-client";
+import { extractSketchSection } from "../src/sketch-section";
 import { createGridPatch } from "../src/surfaces";
 import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
 import smoothingInput from "./fixtures/defeature-annular.json";
@@ -737,4 +738,175 @@ it("exposes automatic mesh preparation through MCP object inspection without mod
   } finally {
     stop();
   }
+});
+
+describe("sketch section GUI/MCP original-slot parity", () => {
+  const sectionPositions = new Float32Array([
+    0, 0, 0, 2, 0, 2, 0, 2, 0, 10, 0, 0, 12, 0, 2, 10, 2, 0,
+  ]);
+  const sectionOptions = {
+    plane: "OXY" as const,
+    offset: 1,
+    onSlicingPlane: true,
+    selectedOnly: true,
+  };
+  const runSection = (request: Parameters<typeof processMesh>[0]) => {
+    if (request.kind !== "sketchSection")
+      throw new Error("Expected the actual sketch section worker request");
+    return Promise.resolve({
+      kind: "sketchSection" as const,
+      diagnostics: {},
+      sketchSection: extractSketchSection(
+        request.positions,
+        request.options,
+        request.sourceId,
+        request.hidden,
+        request.selection,
+        request.sampled,
+      ),
+    });
+  };
+  it.each([undefined, true])(
+    "matches GUI extraction using full source slots with top-level selectionOnly=%s",
+    async (selectionOnly) => {
+      const positions = sectionPositions.slice();
+      const before = positions.slice();
+      const hidden = [0];
+      const h = harness([
+        entity({ positions, meshSelection: { hidden, saved: [] } }),
+      ]);
+      h.state.selection = new Uint8Array([0, 1]);
+      const selectionBefore = h.state.selection.slice();
+      const expected = extractSketchSection(
+        positions,
+        sectionOptions,
+        "mesh",
+        hidden,
+        h.state.selection,
+        false,
+      );
+      const worker = vi.mocked(processMesh);
+      worker.mockClear();
+      worker.mockImplementation(runSection);
+      try {
+        await h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            ...(selectionOnly === undefined ? {} : { selectionOnly }),
+            operation: { kind: "sketchSection", options: sectionOptions },
+          },
+          h.context,
+        );
+        const request = worker.mock.lastCall![0];
+        expect(request.positions).toBe(positions);
+        expect(request).toMatchObject({
+          hidden: [0],
+          selection: new Uint8Array([0, 1]),
+          sourceId: "mesh",
+        });
+        const payload = vi.mocked(h.context.artifact).mock.lastCall![0];
+        expect(typeof payload).toBe("string");
+        expect(JSON.parse(payload as string).sketchSection).toEqual(expected);
+        expect(expected.eligibleTriangles).toBe(1);
+        expect(expected.reference.segments[0]).toBe(11);
+        expect(positions).toEqual(before);
+        expect(h.state.selection).toEqual(selectionBefore);
+        expect(hidden).toEqual([0]);
+        expect(h.state.history).toEqual([]);
+        expect(h.host.commit).not.toHaveBeenCalled();
+      } finally {
+        worker.mockReset();
+      }
+    },
+  );
+  it.each([undefined, false])(
+    "ignores the live selection for a full visible section with top-level flag %s",
+    async (selectionOnly) => {
+      const positions = sectionPositions.slice();
+      const h = harness([
+        entity({ positions, meshSelection: { hidden: [0], saved: [] } }),
+      ]);
+      h.state.selection = new Uint8Array([1, 0]);
+      const options = { ...sectionOptions, selectedOnly: false };
+      const expected = extractSketchSection(positions, options, "mesh", [0]);
+      const worker = vi.mocked(processMesh);
+      worker.mockClear();
+      worker.mockImplementation(runSection);
+      try {
+        await h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            ...(selectionOnly === undefined ? {} : { selectionOnly }),
+            operation: { kind: "sketchSection", options },
+          },
+          h.context,
+        );
+        expect(worker.mock.lastCall![0].positions).toBe(positions);
+        const payload = vi.mocked(h.context.artifact).mock.lastCall![0];
+        expect(JSON.parse(payload as string).sketchSection).toEqual(expected);
+        expect(expected.eligibleTriangles).toBe(1);
+        expect(h.host.commit).not.toHaveBeenCalled();
+      } finally {
+        worker.mockReset();
+      }
+    },
+  );
+  it.each([
+    [true, false],
+    [false, true],
+  ])(
+    "rejects contradictory nested selectedOnly=%s and top-level selectionOnly=%s before processing",
+    async (selectedOnly, selectionOnly) => {
+      const h = harness([entity({ positions: sectionPositions.slice() })]);
+      const worker = vi.mocked(processMesh);
+      worker.mockClear();
+      worker.mockImplementation(runSection);
+      try {
+        await expect(
+          h.ops.mesh_process(
+            {
+              entityId: "mesh",
+              selectionOnly,
+              operation: {
+                kind: "sketchSection",
+                options: { ...sectionOptions, selectedOnly },
+              },
+            },
+            h.context,
+          ),
+        ).rejects.toThrow(/must match/);
+        expect(worker).not.toHaveBeenCalled();
+        expect(h.context.artifact).not.toHaveBeenCalled();
+        expect(h.host.commit).not.toHaveBeenCalled();
+      } finally {
+        worker.mockReset();
+      }
+    },
+  );
+  it.each([null, new Uint8Array([1]), new Uint8Array([0, 0])])(
+    "rejects a missing, stale or empty selected-only mask before processing: %s",
+    async (selection) => {
+      const h = harness([entity({ positions: sectionPositions.slice() })]);
+      h.state.selection = selection;
+      const worker = vi.mocked(processMesh);
+      worker.mockClear();
+      worker.mockImplementation(runSection);
+      try {
+        await expect(
+          h.ops.mesh_process(
+            {
+              entityId: "mesh",
+              operation: { kind: "sketchSection", options: sectionOptions },
+            },
+            h.context,
+          ),
+        ).rejects.toThrow(/Select|Selection/);
+        expect(worker).not.toHaveBeenCalled();
+        expect(h.context.artifact).not.toHaveBeenCalled();
+        expect(h.host.commit).not.toHaveBeenCalled();
+      } finally {
+        worker.mockReset();
+      }
+    },
+  );
 });

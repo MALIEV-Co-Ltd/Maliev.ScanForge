@@ -198,3 +198,22 @@ describe("ribbon verification gate", () => {
       ).not.toContain('disabled=""');
   });
 });
+
+it("renders the reachable section command with its guarded callback", () => {
+  for (const activeTab of ["main", "sketch"]) {
+    const markup = renderToStaticMarkup(
+      <Ribbon
+        {...ready}
+        activeTab={activeTab}
+        onTabChange={() => {}}
+        actions={{ sketchFromSection: vi.fn() }}
+      />,
+    );
+    const button = markup.match(
+      /<button[^>]*data-command="sketchFromSection"[^>]*>/,
+    )?.[0];
+    expect(button).toBeDefined();
+    expect(button).toContain('data-verification="verified"');
+    expect(button).not.toContain('disabled=""');
+  }
+});

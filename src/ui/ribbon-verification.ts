@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  sketchFromSection:
+    "docs/AGENT_GUIDE.md: scan section references; tests/create-sketch-dialog.test.tsx and automation section original-slot parity; GUI/MCP section workflow",
   globalFineAlign:
     "docs/NATIVE_SEEDED_GLOBAL_ALIGNMENT.md: verified raw mesh numerical route; shared GUI/MCP Preview, cached Apply and Cancel",
   alignInteractive:

@@ -708,7 +708,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         throw new Error(
           "Point-cloud registration moves the whole source; omit selectionOnly.",
         );
-      const selection = a.selectionOnly ? mask(s, e) : undefined;
+      if (
+        kind === "sketchSection" &&
+        a.selectionOnly !== undefined &&
+        a.selectionOnly !== op.options.selectedOnly
+      )
+        throw new Error(
+          "For sketchSection, selectionOnly must match options.selectedOnly; omit the top-level flag otherwise.",
+        );
+      const selection = (
+        kind === "sketchSection" ? op.options.selectedOnly : a.selectionOnly
+      )
+        ? mask(s, e)
+        : undefined;
       if (
         a.targetIds !== undefined &&
         kind !== "nativeRefine" &&
@@ -748,6 +760,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             "nativeRefine",
             "global",
             "pointCloudEdit",
+            "sketchSection",
           ].includes(kind)
             ? partitionTriangles(e.positions, selection).selected
             : e.positions,
