@@ -1,3 +1,4 @@
+import { retireDatumTransformScratch } from "./datum-transform-scratch";
 /** World-space scan application preserves native double arithmetic and Float32 storage. */
 export function transformDatumCoordinates(
   input: ArrayLike<number>,
@@ -47,12 +48,22 @@ export function transformDatumCoordinateStages(
   if (!matrices.length || matrices.length > 16)
     throw new Error("Alignment requires one to 16 finite transform stages.");
   let output: ArrayLike<number> = input;
-  for (let i = 0; i < matrices.length; i++)
-    output = transformDatumCoordinates(
-      output,
-      matrices[i],
-      vector,
-      i === matrices.length - 1 ? bounds : undefined,
-    );
-  return output as Float32Array;
+  try {
+    for (let i = 0; i < matrices.length; i++) {
+      const previous = output;
+      output = transformDatumCoordinates(
+        output,
+        matrices[i],
+        vector,
+        i === matrices.length - 1 ? bounds : undefined,
+      );
+      if (previous !== input)
+        retireDatumTransformScratch((previous as Float32Array).buffer);
+    }
+    return output as Float32Array;
+  } catch (error) {
+    if (output !== input)
+      retireDatumTransformScratch((output as Float32Array).buffer);
+    throw error;
+  }
 }

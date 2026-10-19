@@ -1,3 +1,4 @@
+import { retireDatumTransformScratch } from "./datum-transform-scratch";
 import { yieldScanTask } from "./scan-task";
 import type { Entity, Positions } from "./types";
 import { transformDatumScanStages } from "./datum-staged-scan";
@@ -38,7 +39,11 @@ export function createDatumTransformExecutor(
       entry.reject(new DOMException("Alignment cancelled.", "AbortError"));
     }
     pending.clear();
-    for (const worker of workers) worker.terminate();
+    for (const worker of workers) {
+      worker.onmessage = worker.onerror = null;
+      worker.terminate();
+    }
+    workers.length = 0;
   };
   const lease = setTimeout(close, 180_000);
   options.signal?.addEventListener("abort", close, { once: true });
@@ -89,7 +94,11 @@ export function createDatumTransformExecutor(
         };
       }
     } catch {
-      for (const worker of workers) worker.terminate();
+      for (const worker of workers) {
+        worker.onmessage = worker.onerror = null;
+        worker.terminate();
+      }
+      workers.length = 0;
       workers.length = 0;
       fallbackReason = "CPU worker startup failed";
     }
@@ -170,26 +179,44 @@ export function createDatumTransformExecutor(
           },
         });
       }
-      const results = await Promise.all(
-        requests.map((part, lane) =>
-          lanes > 1
-            ? send(workers[lane], part.request)
-            : Promise.resolve(executeDatumTransform(part.request)),
-        ),
-      );
-      check();
-      results.forEach((result, lane) => {
-        if ("error" in result) throw new Error(result.error);
-        if (result.output.length !== requests[lane].length)
-          throw new Error(
-            "Alignment worker returned an invalid coordinate count.",
-          );
-        output.set(result.output, requests[lane].offset);
-        for (let axis = 0; axis < 3; axis++) {
-          min[axis] = Math.min(min[axis], result.min[axis]);
-          max[axis] = Math.max(max[axis], result.max[axis]);
-        }
-      });
+      // These are private chunk copies, not authored geometry or final output.
+      const chunkOutputs = new Set<ArrayBufferLike>();
+      let batchClosed = false;
+      try {
+        const results = await Promise.all(
+          requests.map((part, lane) =>
+            (lanes > 1
+              ? send(workers[lane], part.request)
+              : Promise.resolve(executeDatumTransform(part.request))
+            ).then((result) => {
+              if (!("error" in result)) {
+                if (batchClosed)
+                  retireDatumTransformScratch(result.output.buffer);
+                else chunkOutputs.add(result.output.buffer);
+              }
+              return result;
+            }),
+          ),
+        );
+        check();
+        results.forEach((result, lane) => {
+          if ("error" in result) throw new Error(result.error);
+          if (result.output.length !== requests[lane].length)
+            throw new Error(
+              "Alignment worker returned an invalid coordinate count.",
+            );
+          output.set(result.output, requests[lane].offset);
+          for (let axis = 0; axis < 3; axis++) {
+            min[axis] = Math.min(min[axis], result.min[axis]);
+            max[axis] = Math.max(max[axis], result.max[axis]);
+          }
+        });
+      } finally {
+        batchClosed = true;
+        for (const buffer of chunkOutputs) retireDatumTransformScratch(buffer);
+        for (const part of requests)
+          retireDatumTransformScratch(part.request.input.buffer);
+      }
       await yieldScanTask();
       check();
     }
