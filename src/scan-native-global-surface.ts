@@ -1,3 +1,4 @@
+import { nativeGlobalFacetNormal } from "./scan-native-global-facet-normal";
 import { buildNativeGlobalPackedIndex } from "./scan-native-global-direct-index";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import {
@@ -32,6 +33,14 @@ export function nativeGlobalFacetNormals(
   triangles: Uint32Array,
   options: MeshProcessingOptions = {},
 ) {
+  return prepareFacetNormals(vertices, triangles, options, false);
+}
+function prepareFacetNormals(
+  vertices: Float32Array,
+  triangles: Uint32Array,
+  options: MeshProcessingOptions,
+  compact: boolean,
+) {
   check(options);
   if (
     !(vertices instanceof Float32Array) ||
@@ -51,37 +60,21 @@ export function nativeGlobalFacetNormals(
       throw Error("Evaluator triangle references an invalid vertex.");
   }
   const normals = new Float32Array(
-      nativeTargetStorage(vertices, triangles.length * 4),
+      nativeTargetStorage(vertices, compact ? 0 : triangles.length * 4),
     ),
     degenerate = new Uint8Array(
       nativeTargetStorage(vertices, triangles.length / 3),
     );
+  const scratch = compact ? new Float32Array(3) : normals;
   for (let face = 0; face < degenerate.length; face++) {
     if (face % 4096 === 0) check(options);
-    const slot = face * 3,
-      a = triangles[slot] * 3,
-      b = triangles[slot + 1] * 3,
-      c = triangles[slot + 2] * 3;
-    const ux = vertices[b] - vertices[a],
-      uy = vertices[b + 1] - vertices[a + 1],
-      uz = vertices[b + 2] - vertices[a + 2],
-      vx = vertices[c] - vertices[a],
-      vy = vertices[c + 1] - vertices[a + 1],
-      vz = vertices[c + 2] - vertices[a + 2];
-    let x = vz * uy - vy * uz,
-      y = vx * uz - vz * ux,
-      z = vy * ux - vx * uy;
-    const length = Math.sqrt(x * x + y * y + z * z);
-    degenerate[face] = length <= Number.EPSILON ? 1 : 0;
-    if (length > Number.EPSILON) {
-      const denominator = Math.fround(length);
-      x /= denominator;
-      y /= denominator;
-      z /= denominator;
-    }
-    normals[slot] = x;
-    normals[slot + 1] = y;
-    normals[slot + 2] = z;
+    degenerate[face] = nativeGlobalFacetNormal(
+      vertices,
+      triangles,
+      face,
+      scratch,
+      compact ? 0 : face * 3,
+    );
   }
   check(options);
   return { normals, degenerate };
@@ -97,6 +90,8 @@ export interface NativeGlobalEvaluatorMesh {
   filterHidden?: boolean;
   /** Internal storage policy; source geometry and query arithmetic are unchanged. */
   compactBounds?: boolean;
+  /** Internal policy: derive identical Float32 facet normals into local scratch. */
+  compactNormals?: boolean;
   /** Internal shared metadata policy; native graph ordering remains unchanged. */
   packedNodes?: boolean;
 }
@@ -155,10 +150,16 @@ function prepare(
     (!(flags instanceof Uint8Array) || flags.length !== triangles.length / 3)
   )
     throw Error("Invalid evaluator flags.");
-  const { normals, degenerate } = nativeGlobalFacetNormals(
+  if (
+    input.compactNormals !== undefined &&
+    typeof input.compactNormals !== "boolean"
+  )
+    throw Error("Invalid evaluator normal storage policy.");
+  const { normals, degenerate } = prepareFacetNormals(
     vertices,
     triangles,
     options,
+    input.compactNormals ?? false,
   );
   const meshBounds: number[] = [
     maximum,
@@ -314,6 +315,7 @@ function prepare(
     normals,
     bounds: bounds ?? new Float32Array(nativeTargetStorage(vertices, 0)),
     deriveBounds: compactBounds,
+    ...(input.compactNormals ? { deriveNormals: true } : {}),
     flags,
   };
   check(options);
@@ -354,6 +356,14 @@ export function resumeNativeGlobalMeshEvaluator(
     minimumExtent < 0
   )
     throw Error("Prepared evaluator does not match its geometry.");
+  if (
+    (input.compactNormals !== undefined &&
+      typeof input.compactNormals !== "boolean") ||
+    (surface.deriveNormals !== undefined &&
+      typeof surface.deriveNormals !== "boolean") ||
+    !!surface.deriveNormals !== !!input.compactNormals
+  )
+    throw Error("Prepared evaluator normal policy mismatch.");
   const seen = new Set<NativeGlobalEvaluatorIndexNode>(),
     pending = root ? [root] : [];
   while (pending.length) {

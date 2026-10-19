@@ -1,3 +1,4 @@
+import { nativeGlobalFacetNormal } from "./scan-native-global-facet-normal";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { nativeBuildAlignmentNeighbourMasks } from "./scan-native-alignment-adjacency";
 import {
@@ -54,18 +55,52 @@ export function prepareNativeGlobalMeshTarget(
   prepared.set(input, result);
   return result;
 }
-function prepare(
+/** Bounded initialization retires all adjacency scratch before new evaluators.
+ * Publish complete target entries only after the missing batch succeeds. */
+export function prepareNativeGlobalMeshTargets(
+  inputs: readonly NativeGlobalEvaluatorMesh[],
+  options: MeshProcessingOptions = {},
+) {
+  check(options);
+  const missing = new Map<NativeGlobalEvaluatorMesh, Uint8Array>();
+  for (const input of inputs) {
+    check(options);
+    if (!prepared.has(input) && !missing.has(input))
+      missing.set(input, prepareNeighbours(input, options));
+  }
+  const complete = new Map<
+    NativeGlobalEvaluatorMesh,
+    ReturnType<typeof prepare>
+  >();
+  for (const [input, neighbours] of missing) {
+    check(options);
+    complete.set(
+      input,
+      attach(prepareNativeGlobalMeshEvaluator(input, options), neighbours),
+    );
+  }
+  check(options);
+  for (const [input, target] of complete) prepared.set(input, target);
+  return inputs.map((input) => prepared.get(input)!);
+}
+function prepareNeighbours(
   input: NativeGlobalEvaluatorMesh,
   options: MeshProcessingOptions,
 ) {
-  // Finish and release adjacency scratch before the evaluator occupies memory.
-  const neighbours = input.vertices.length
+  return input.vertices.length
     ? nativeBuildAlignmentNeighbourMasks(
         input.vertices,
         input.triangles,
         options,
       )
     : new Uint8Array();
+}
+function prepare(
+  input: NativeGlobalEvaluatorMesh,
+  options: MeshProcessingOptions,
+) {
+  // Finish and release adjacency scratch before the evaluator occupies memory.
+  const neighbours = prepareNeighbours(input, options);
   const evaluator = prepareNativeGlobalMeshEvaluator(input, options);
   return attach(evaluator, neighbours);
 }
@@ -104,6 +139,7 @@ function attach(
     projection: new Float64Array(3),
     edgeFlags: new Uint8Array(1),
   };
+  const facetNormal = new Float32Array(3);
   const distance = new Float64Array(1),
     projection = new Float64Array(3),
     edgeFlags = new Uint8Array(1);
@@ -143,9 +179,18 @@ function attach(
         scratch,
       );
       if (face === undefined) return result;
+      if (evaluator.surface.deriveNormals)
+        nativeGlobalFacetNormal(
+          evaluator.surface.vertices,
+          evaluator.surface.triangles,
+          face,
+          facetNormal,
+        );
       for (let axis = 0; axis < 3; axis++) {
         point[axis] = projection[axis];
-        normal[axis] = evaluator.surface.normals[face * 3 + axis];
+        normal[axis] = evaluator.surface.deriveNormals
+          ? facetNormal[axis]
+          : evaluator.surface.normals[face * 3 + axis];
       }
       result.found = true;
       result.signedDistance = distance[0];

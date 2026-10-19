@@ -1,3 +1,4 @@
+import { nativeGlobalFacetNormal } from "./scan-native-global-facet-normal";
 import { nativeGlobalTriangleDistance } from "./scan-native-global-triangle";
 import { nativeScratchStorage } from "./scan-native-target-storage";
 import {
@@ -15,8 +16,9 @@ import {
 export interface NativeGlobalPackedEvaluatorSurface {
   vertices: Float32Array;
   triangles: Uint32Array;
-  /** Prepared native face normals; this provider does not recompute them. */
+  /** Prepared native face normals, or empty only with deriveNormals. */
   normals: Float32Array;
+  deriveNormals?: boolean;
   /** Six Float32 bounds per triangle: min XYZ then max XYZ. */
   bounds: Float32Array;
   /** An empty cache with this flag derives the same tight Float32 bounds from
@@ -46,6 +48,7 @@ export function nativeGlobalPackedEvaluator(
 function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
   const { vertices, triangles, normals, bounds, flags } = surface;
   const derived = surface.deriveBounds === true;
+  const deriveNormals = surface.deriveNormals === true;
   const count = triangles.length / 3;
   if (
     !(vertices instanceof Float32Array) ||
@@ -53,7 +56,9 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
     !(triangles instanceof Uint32Array) ||
     !Number.isInteger(count) ||
     !(normals instanceof Float32Array) ||
-    normals.length !== triangles.length ||
+    normals.length !== (deriveNormals ? 0 : triangles.length) ||
+    (surface.deriveNormals !== undefined &&
+      typeof surface.deriveNormals !== "boolean") ||
     !(bounds instanceof Float32Array) ||
     bounds.length !== (derived ? 0 : count * 6) ||
     (surface.deriveBounds !== undefined &&
@@ -92,10 +97,11 @@ function prepare(surface: NativeGlobalPackedEvaluatorSurface) {
       a[axis] = vertices[ia + axis];
       b[axis] = vertices[ib + axis];
       c[axis] = vertices[ic + axis];
-      normal[axis] = normals[face + axis];
+      if (!deriveNormals) normal[axis] = normals[face + axis];
     }
+    if (deriveNormals) nativeGlobalFacetNormal(vertices, triangles, id, normal);
   };
-  // One closure and 48 bytes of coordinate scratch per immutable surface, rather
+  // One closure and 48 bytes of coordinate/normal scratch per immutable surface, rather
   // than per-triangle objects/views or per-query arrays. Synchronous, non-reentrant.
   const evaluate = (
     id: number,

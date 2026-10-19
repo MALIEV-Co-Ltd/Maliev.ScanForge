@@ -7,7 +7,7 @@ import {
 import {
   nativeGlobalMeshTargetData,
   installNativeGlobalMeshTarget,
-  prepareNativeGlobalMeshTarget,
+  prepareNativeGlobalMeshTargets,
   type NativeGlobalMeshTargetData,
 } from "./scan-native-global-mesh-target";
 import {
@@ -99,10 +99,11 @@ function prepareState(input: GlobalQueryWorkerInit) {
           "Bounded alignment requires evaluator-only packed mesh targets.",
         );
     if (!input.preparedMeshes)
-      for (const mesh of input.scans
-        .flatMap((scan) => [...scan.geometry.targetMeshes!])
-        .sort((a, b) => b.triangles.length - a.triangles.length))
-        prepareNativeGlobalMeshTarget(mesh);
+      prepareNativeGlobalMeshTargets(
+        input.scans
+          .flatMap((scan) => [...scan.geometry.targetMeshes!])
+          .sort((a, b) => b.triangles.length - a.triangles.length),
+      );
   }
   for (const [index, scan] of input.scans.entries()) {
     if (!scan.id || geometries.has(scan.id))
