@@ -124,6 +124,12 @@ import {
 
 type Item = {
   pointCloud?: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>;
+  pointDeviation?: {
+    colorAttribute:
+      THREE.BufferAttribute | THREE.InterleavedBufferAttribute | undefined;
+    vertexColors: boolean;
+    color: THREE.Color;
+  };
   edgePositions?: number[];
   cadEdges?: THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
   hidden?: number[];
@@ -2585,6 +2591,7 @@ export class Viewport {
         item.mesh.geometry.dispose();
         item.selectionIndex = undefined;
         if (item.pointCloud) {
+          item.pointDeviation = undefined;
           item.mesh.remove(item.pointCloud);
           item.pointCloud.geometry.dispose();
           item.pointCloud.material.dispose();
@@ -2742,10 +2749,14 @@ export class Viewport {
         }
         item.edgePositions = edgePositions;
       }
+      if (item.pointDeviation && item.color !== entity.color)
+        item.pointDeviation.color.set(entity.color);
       item.color = entity.color;
       if (item.pointCloud) {
         item.pointCloud.name = entity.name;
-        item.pointCloud.material.color.set(entity.color);
+        item.pointCloud.material.color.set(
+          item.pointDeviation ? 0xffffff : entity.color,
+        );
         item.pointCloud.material.opacity = entity.opacity;
         item.pointCloud.material.transparent = entity.opacity < 1;
         item.pointCloud.material.clippingPlanes = this.clipping
@@ -3855,6 +3866,16 @@ export class Viewport {
 
   private clearDeviations(): void {
     for (const item of this.objects.values()) {
+      if (item.pointDeviation && item.pointCloud) {
+        const saved = item.pointDeviation;
+        if (saved.colorAttribute)
+          item.pointCloud.geometry.setAttribute("color", saved.colorAttribute);
+        else item.pointCloud.geometry.deleteAttribute("color");
+        item.pointCloud.material.vertexColors = saved.vertexColors;
+        item.pointCloud.material.color.copy(saved.color);
+        item.pointCloud.material.needsUpdate = true;
+        item.pointDeviation = undefined;
+      }
       if (!item.mesh.material.vertexColors) continue;
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
@@ -3878,8 +3899,17 @@ export class Viewport {
       this.invalidate();
       return;
     }
-    const count = item.mesh.geometry.getAttribute("position").count;
+    const rendered = item.pointCloud ?? item.mesh;
+    const count = rendered.geometry.getAttribute("position").count;
     if (values && values.length === count) {
+      if (item.pointCloud) {
+        item.pointDeviation = {
+          colorAttribute: item.pointCloud.geometry.getAttribute("color"),
+          vertexColors: item.pointCloud.material.vertexColors,
+          color: item.pointCloud.material.color.clone(),
+        };
+        item.pointCloud.material.color.set(0xffffff);
+      }
       const colors = new Float32Array(count * 3);
       const color = new THREE.Color();
       const negative = new THREE.Color("#2479de");
@@ -3895,12 +3925,12 @@ export class Viewport {
           .lerp(signed < 0 ? negative : positive, Math.abs(signed));
         color.toArray(colors, i * 3);
       }
-      item.mesh.geometry.setAttribute(
+      rendered.geometry.setAttribute(
         "color",
         new THREE.BufferAttribute(colors, 3),
       );
-      item.mesh.material.vertexColors = true;
-    } else {
+      rendered.material.vertexColors = true;
+    } else if (!item.pointCloud) {
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
     }
@@ -3909,7 +3939,7 @@ export class Viewport {
       item.color,
       !!this.selectedId && entityId !== this.selectedId,
     );
-    item.mesh.material.needsUpdate = true;
+    rendered.material.needsUpdate = true;
     this.invalidate();
   }
 

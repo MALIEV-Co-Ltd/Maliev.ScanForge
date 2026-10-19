@@ -4,6 +4,7 @@ import {
   runShrinkwrapPreviewCommand,
 } from "./shrinkwrap-preview-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
+import { primitiveFitSamples } from "../primitive-fit-samples";
 import { getWorkingJobStatus } from "../working-job-status";
 import {
   ToolWorkspace,
@@ -1284,12 +1285,13 @@ export function App() {
     viewport.current?.setMeasurement(measure);
   }, [measure]);
   useEffect(() => {
-    if (selected)
-      viewport.current?.setDeviation(
-        selected.id,
-        showDeviation && fit ? deviations(selected.positions, fit) : null,
-        tolerance,
-      );
+    viewport.current?.setDeviation(
+      selected?.id ?? "",
+      selected && showDeviation && fit
+        ? deviations(selected.positions, fit)
+        : null,
+      tolerance,
+    );
   }, [selected, showDeviation, fit, tolerance]);
   useEffect(() => {
     setFit(null);
@@ -3470,24 +3472,11 @@ export function App() {
           );
         if (fitRadius <= 0) throw new Error("Region radius must be positive.");
       }
-      const source = selected.positions;
-      const eligible = (i: number) =>
-        (!selectedTriangleCount || !!triangleMask?.[Math.floor(i / 9)]) &&
-        (!localFit ||
-          (anchor !== null &&
-            Math.hypot(
-              source[i] - anchor[0],
-              source[i + 1] - anchor[1],
-              source[i + 2] - anchor[2],
-            ) <= fitRadius));
-      let count = 0;
-      for (let i = 0; i < source.length; i += 3) if (eligible(i)) count++;
-      const stride = Math.max(1, Math.ceil(count / 20_000));
-      const positions: number[] = [];
-      let eligibleIndex = 0;
-      for (let i = 0; i < source.length; i += 3)
-        if (eligible(i) && eligibleIndex++ % stride === 0)
-          positions.push(source[i], source[i + 1], source[i + 2]);
+      const positions = primitiveFitSamples(
+        selected,
+        triangleMask,
+        localFit && anchor ? { center: anchor, radius: fitRadius } : undefined,
+      );
       const fitted =
         kind === "plane"
           ? fitPlane(positions)
