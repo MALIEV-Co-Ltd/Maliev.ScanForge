@@ -1,28 +1,33 @@
 import { afterEach, expect, it, vi } from "vitest";
 import type { Entity } from "../src/types";
+import type { GlobalSceneInput } from "../src/scan-global-scene-core";
 const mock = vi.hoisted(() => ({
   events: [] as string[],
   applicationThreshold: -1,
+  routedInputs: [] as GlobalSceneInput["scans"][],
   close: vi.fn(),
   failQuery: false,
   failApply: false,
   abort: undefined as AbortController | undefined,
 }));
 vi.mock("../src/scan-global-scene-client", () => ({
-  createPreparedGlobalQueryPool: vi.fn(async (input) => ({
-    scanIds: input.scans.map((s: any) => s.id),
-    physicalWorkers: 2,
-    close() {
-      mock.events.push("query-close");
-      mock.close();
-    },
-    async execute(job: any) {
-      mock.events.push("query:" + job.sourceId);
-      if (mock.failQuery) throw Error("query failed");
-      mock.abort?.abort();
-      return { count: 3, pairs: [] };
-    },
-  })),
+  createPreparedGlobalQueryPool: vi.fn(async (input: GlobalSceneInput) => {
+    mock.routedInputs.push([...input.scans]);
+    return {
+      scanIds: input.scans.map((scan) => scan.id),
+      physicalWorkers: 2,
+      close() {
+        mock.events.push("query-close");
+        mock.close();
+      },
+      async execute(job: any) {
+        mock.events.push("query:" + job.sourceId);
+        if (mock.failQuery) throw Error("query failed");
+        mock.abort?.abort();
+        return { count: 3, pairs: [] };
+      },
+    };
+  }),
 }));
 vi.mock("../src/scan-native-global-local", () => ({
   nativeGlobalRefineLocal: vi.fn(async (source, query) => {
@@ -107,6 +112,7 @@ const input = (entities: Entity[]) => ({
 });
 afterEach(() => {
   mock.events = [];
+  mock.routedInputs = [];
   mock.close.mockClear();
   mock.failQuery = false;
   mock.failApply = false;
@@ -158,12 +164,10 @@ it("routes ordinary mesh evaluator children without indexing their source sample
       ],
     });
   await refineGlobalScanSet(scene, entities, { clock: () => 17 });
-  const passed = vi.mocked(createPreparedGlobalQueryPool).mock.calls[0][0];
-  for (let index = 0; index < passed.scans.length; index++) {
-    const geometry = passed.scans[index]
-      .geometry as (typeof passed.scans)[number]["geometry"] & {
-      rawTargetIds?: Uint32Array;
-    };
+  const passed = mock.routedInputs[0];
+  expect(passed).toHaveLength(scene.scans.length);
+  for (let index = 0; index < passed.length; index++) {
+    const geometry = passed[index].geometry;
     expect(geometry.rawTargetIds).toEqual(new Uint32Array());
     expect(geometry.points).toBe(scene.scans[index].geometry.points);
     expect(geometry.normals).toBe(scene.scans[index].geometry.normals);
@@ -194,10 +198,11 @@ it("preserves explicit mixed-child raw IDs and leaves raw cloud routing unchange
     ],
   });
   await refineGlobalScanSet(scene, entities, { clock: () => 17 });
-  const passed = vi.mocked(createPreparedGlobalQueryPool).mock.calls[0][0];
-  expect(passed.scans[0].geometry.rawTargetIds).toBe(ids);
-  expect(passed.scans[1].geometry.rawTargetIds).toBeUndefined();
-  expect(passed.scans[1].geometry.points).toBe(scene.scans[1].geometry.points);
+  const passed = mock.routedInputs[0];
+  expect(passed).toHaveLength(scene.scans.length);
+  expect(passed[0].geometry.rawTargetIds).toBe(ids);
+  expect(passed[1].geometry.rawTargetIds).toBeUndefined();
+  expect(passed[1].geometry.points).toBe(scene.scans[1].geometry.points);
 });
 it("cancels between a query and geometry application", async () => {
   mock.abort = new AbortController();

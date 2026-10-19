@@ -96,3 +96,11 @@ export function shareGlobalQueryInput(
     }),
   };
 }
+
+/** Ordinary caller backings remain live after a coordinator receives shared copies. */
+export function globalQueryExternalInputBytes(input: GlobalQueryWorkerInit) {
+  const buffers = new Set(carriers(input).map((value) => value.buffer));
+  let bytes = 0;
+  for (const buffer of buffers) if (!shared(buffer)) bytes += buffer.byteLength;
+  return bytes;
+}

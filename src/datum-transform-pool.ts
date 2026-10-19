@@ -6,7 +6,7 @@ import {
   executeDatumTransform,
   type DatumTransformRequest,
   type DatumTransformResponse,
-} from "./datum-transform-worker";
+} from "./datum-transform-core";
 const CHUNK_VALUES = 262_144 * 3;
 export function createDatumTransformExecutor(
   options: {

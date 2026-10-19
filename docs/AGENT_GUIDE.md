@@ -1121,6 +1121,24 @@ correspondence-query admission still applies independently. This is not a total
 browser-memory guarantee. Preparation and query workers retain their bounded
 lifetimes and cancellation cleanup.
 
+Before deriving new input normals, the shared preview checks unresolved worker
+cleanup and retries the retained exact handles with their existing bounded
+recovery. If a stop remains unconfirmed, the preview job fails with
+`OPERATION_FAILED` and an error beginning `Unresolved exact worker cleanup`;
+no new input preparation or staged result is published. Poll the returned
+`jobId` with `job_get` for that failure. `global_alignment_state` can already
+report `idle`; this does not prove every worker stopped or memory was released.
+
+After the failed job settles, a new `global_alignment_preview` attempt uses the
+current `expectedRevision` and a **new** `requestId` to retry cleanup before
+preparation. Persistent failures still block it; do not bypass the error or
+start duplicate work. While its receipt is retained, repeating the identical
+old request returns its original job receipt, even after failure; changed
+arguments with that ID return
+`REQUEST_CONFLICT`. State reads and `global_alignment_cancel` do not provide a
+separate worker-recovery command. A successful cancel or an expired lease is not
+proof of physical worker exit.
+
 For each mutation, send the current `expectedRevision` and a fresh `requestId`.
 Preview returns a job receipt; poll `job_get` until it settles. Read
 `global_alignment_state` to inspect the shared preparing/preview/idle state,
@@ -1149,8 +1167,9 @@ job ID returns `cancelled: false` without aborting another job, releasing anothe
 preview or closing its panel. Omit `jobId` only to explicitly cancel the current
 shared global preview. Panel unmount, late launch responses and preparation
 timeouts use the scoped form.
-Cancellation, failure, invalidation and expiry release the same retained
-resources; cancellation does not accept a partial scan set.
+Cancellation, failure, invalidation and expiry request cleanup of the same
+retained resources; failed stop requests keep recovery ownership. Cancellation
+does not accept a partial scan set.
 
 ### Hole-filling batch progress
 

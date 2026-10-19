@@ -272,6 +272,27 @@ from mesh topology for both GUI and MCP. Imported object/scanner normal buffers
 remain preserved on the authored object. Derived normals belong to the prepared
 command input and follow its existing cancellation and release handling.
 
+The input-lifetime adapter checks the shared cleanup registry before input
+preparation. `assertNoUnresolvedOwnedWorkers` retries exact retained handles and
+rejects persistent unresolved ownership before deriving new normal buffers.
+The registry remains internal: `global_alignment_state` does not expose its
+pending handles, and `idle` is not a cleanup-completion receipt. GUI and MCP
+receive the same failure through the shared preview operation.
+
+Command-owned input descriptors are cleared in place after controller input
+consumption, with an idempotent release-once fallback in `finally`. Authored and
+otherwise retained geometry buffers are never detached by this release. This
+reference-lifetime boundary does not certify garbage collection or decommit.
+
+A fresh `global_alignment_preview` request is the public recovery attempt; no new
+cleanup tool is introduced. `ApplicationApi` caches the original request promise
+before job completion. While that request receipt is retained, an identical
+`requestId` returns the same job receipt after failure instead of rerunning cleanup. A new attempt needs a new ID and
+current revision; changed arguments under an old ID produce `REQUEST_CONFLICT`.
+For an unresolved-stop error, `job_get` exposes `status: "failed"` and
+`error.code: "OPERATION_FAILED"`. Cancellation and lease expiry request cleanup;
+failed stop requests retain exact recovery ownership rather than proving exit.
+
 Cancellation has an API busy-lane exception so `global_alignment_cancel` can
 abort its owning preview job before releasing staged geometry and display.
 An optional cancel `jobId` is matched against the active API job and the retained

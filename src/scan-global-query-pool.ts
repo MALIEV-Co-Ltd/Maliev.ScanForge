@@ -1,10 +1,17 @@
 import {
+  assertNoUnresolvedOwnedWorkers,
+  requestOwnedWorkerStop,
+  retryOwnedWorkerStops,
+  type WorkerCleanupOutcome,
+} from "./scan-global-worker-cleanup";
+let nextPoolOwner = 0;
+import {
   createGlobalQueryWorkerState,
   type GlobalQueryWorkerInit,
   type GlobalQueryJob,
   type GlobalQueryRequest,
   type GlobalQueryResponse,
-} from "./scan-global-query-worker";
+} from "./scan-global-query-core";
 import type { nativeGlobalQuery } from "./scan-native-global-query";
 import type { NativeGlobalQueryGeometry } from "./scan-native-global-query";
 import {
@@ -45,7 +52,17 @@ export function globalQueryPoolAdmission(
 ) {
   return queryPlan(input, parallel).count;
 }
-function queryPlan(input: GlobalQueryWorkerInit, parallel = true) {
+function queryPlan(
+  input: GlobalQueryWorkerInit,
+  parallel = true,
+  additionalReserveBytes = 0,
+) {
+  if (
+    !Number.isSafeInteger(additionalReserveBytes) ||
+    additionalReserveBytes < 0 ||
+    additionalReserveBytes > 512 * 1048576
+  )
+    throw Error("Invalid coordinator runtime reserve.");
   const memory = (globalThis.navigator as Navigator & { deviceMemory?: number })
     ?.deviceMemory;
   const candidate =
@@ -95,29 +112,74 @@ function queryPlan(input: GlobalQueryWorkerInit, parallel = true) {
       0,
     );
     for (const count of candidate === 2 ? [2, 1] : [1]) {
-      const reserved = inputBytes + (count + 1) * 16 * 1048576;
+      const reserved =
+        inputBytes + (count + 1) * 16 * 1048576 + additionalReserveBytes;
       if (reserved + minimum <= limit)
         return { count, storageBudget: { limit, reserved } };
     }
     throw Error("Global query pool exceeds its 512 MiB memory admission.");
   }
-  if (bytes(input, 2) > 512 * 1048576)
+  if (bytes(input, 2) + additionalReserveBytes > 512 * 1048576)
     throw new Error("Global query pool exceeds its 512 MiB memory admission.");
   return {
-    count: candidate === 2 && bytes(input, 3) <= 512 * 1048576 ? 2 : 1,
+    count:
+      candidate === 2 &&
+      bytes(input, 3) + additionalReserveBytes <= 512 * 1048576
+        ? 2
+        : 1,
     storageBudget: undefined,
   };
+}
+/** Additional coordinator runtime fits inside the same512MiB admission; never changes worker count. */
+export function globalCoordinatorQueryAdmission(
+  input: GlobalQueryWorkerInit,
+  parallel: boolean | undefined,
+  runtimeReserveBytes: number,
+  externalReservedBytes = 0,
+  expectedWorkers?: number,
+) {
+  const original = queryPlan(input, parallel, externalReservedBytes);
+  const adjusted = queryPlan(
+    input,
+    parallel,
+    externalReservedBytes + runtimeReserveBytes,
+  );
+  if (
+    original.count !== adjusted.count ||
+    (expectedWorkers !== undefined && adjusted.count !== expectedWorkers)
+  )
+    throw Error("Coordinator reserve would change query worker count.");
+  return adjusted.count;
 }
 /** One or two persistent physical CPU workers, same numeric mode in either case.
  * Only independent source queries run concurrently; pose updates stay sequential.
  * Every error/abort/timeout closes all exact owned worker handles. */
 export async function createGlobalQueryPool(
   input: GlobalQueryWorkerInit,
-  options: { parallel?: boolean; signal?: AbortSignal } = {},
+  options: {
+    parallel?: boolean;
+    signal?: AbortSignal;
+    runtimeReserveBytes?: number;
+    externalReservedBytes?: number;
+    expectedWorkers?: number;
+    onQueryPoolCleanup?: (outcomes: WorkerCleanupOutcome[]) => void;
+  } = {},
 ) {
   if (options.signal?.aborted)
     throw new DOMException("Global alignment cancelled.", "AbortError");
-  const { count, storageBudget } = queryPlan(input, options.parallel);
+  const { count, storageBudget } = queryPlan(
+    input,
+    options.parallel,
+    (options.runtimeReserveBytes ?? 0) + (options.externalReservedBytes ?? 0),
+  );
+  if (options.runtimeReserveBytes || options.externalReservedBytes)
+    globalCoordinatorQueryAdmission(
+      input,
+      options.parallel,
+      options.runtimeReserveBytes ?? 0,
+      options.externalReservedBytes ?? 0,
+      options.expectedWorkers,
+    );
   if (typeof Worker === "undefined") {
     let state: ReturnType<typeof createGlobalQueryWorkerState> | undefined =
       createGlobalQueryWorkerState(input);
@@ -138,6 +200,10 @@ export async function createGlobalQueryPool(
       },
     };
   }
+  assertNoUnresolvedOwnedWorkers();
+  const poolOwner = ++nextPoolOwner,
+    createdUnixMs = Date.now();
+  const ownedIds: string[] = [];
   const workers: Worker[] = [];
   let initialization: GlobalQueryWorkerInit | undefined = sharingAvailable()
     ? shareGlobalQueryInput(input)
@@ -174,7 +240,10 @@ export async function createGlobalQueryPool(
   const abort = () =>
     close(new DOMException("Global alignment cancelled.", "AbortError"));
   const close = (error = new Error("Global query pool is closed.")) => {
-    if (stopped) return;
+    if (stopped)
+      return !retryOwnedWorkerStops(ownedIds).some((value) =>
+        ownedIds.includes(value.owner),
+      );
     stopped = true;
     if (pending) {
       const current = pending;
@@ -182,15 +251,26 @@ export async function createGlobalQueryPool(
       clearTimeout(current.timer);
       current.reject(error);
     }
-    for (const worker of workers) {
-      worker.onmessage = worker.onerror = worker.onmessageerror = null;
-      worker.terminate();
-    }
+    const outcomes = workers.map((worker, part) =>
+      requestOwnedWorkerStop(worker, {
+        owner: ownedIds[part],
+        runId: poolOwner,
+        target: "scan-global-query-worker.ts:" + part,
+        createdUnixMs,
+        expiresUnixMs: createdUnixMs + 15 * 60_000,
+      }),
+    );
     workers.length = 0;
     initialization = undefined;
     clearTimeout(lease);
     clearTimeout(idle);
     options.signal?.removeEventListener("abort", abort);
+    try {
+      options.onQueryPoolCleanup?.(outcomes);
+    } catch {
+      /* Diagnostic callback cannot interrupt cleanup. */
+    }
+    return outcomes.every((outcome) => !outcome.retained);
   };
   const lease = setTimeout(
     () => close(new Error("Global query pool lease expired.")),
@@ -244,6 +324,7 @@ export async function createGlobalQueryPool(
         { type: "module" },
       );
       workers.push(worker);
+      ownedIds.push("query:" + poolOwner + ":" + part);
       worker.onmessage = ({ data }: MessageEvent<GlobalQueryResponse>) => {
         if (
           !pending ||

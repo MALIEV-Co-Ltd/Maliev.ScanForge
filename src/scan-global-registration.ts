@@ -1,15 +1,16 @@
-import { createPreparedGlobalQueryPool } from "./scan-global-scene-client";
+import { runGlobalScanController } from "./scan-global-controller-core";
+import { runSharedGlobalController } from "./scan-global-controller-client";
 import type { GlobalSceneInput } from "./scan-global-scene-worker";
-import { nativeGlobalRefineLocal } from "./scan-native-global-local";
-import {
-  nativeGlobalRefineOuter,
-  type GlobalOuterState,
-} from "./scan-native-global-outer";
+import type { GlobalOuterState } from "./scan-native-global-outer";
 import { createDatumTransformExecutor } from "./datum-transform-pool";
 import type { Entity } from "./types";
 
 export interface GlobalRegistrationOptions {
   parallel?: boolean;
+  /** Internal lifetime isolation switch; false preserves the direct controller route. */
+  controllerIsolation?: boolean;
+  /** Internal ownership boundary, after controller completion and before frame outputs. */
+  onInputConsumed?: () => void;
   signal?: AbortSignal;
   check?: () => void;
   mode?: "target-average" | "pooled-plane";
@@ -87,79 +88,19 @@ export async function refineGlobalScanSet(
         : scan,
     ),
   };
-  const pool = await createPreparedGlobalQueryPool(routedInput, options);
-  let outer: Awaited<ReturnType<typeof nativeGlobalRefineOuter>>;
-  let queries = 0;
-  const localResults: {
-    id: string;
-    pass: number;
-    status: number;
-    iterations: number;
-  }[] = [];
-  const queryWorkers = pool.physicalWorkers;
-  try {
-    check();
-    options.onProgress?.(0.2, "Refining global scan poses");
-    const eligible = new Set(pool.scanIds);
-    outer = await nativeGlobalRefineOuter(
-      input.scans
-        .filter((s) => eligible.has(s.id))
-        .map((s) => ({
-          id: s.id,
-          pointCount: s.geometry.points.length / 3,
-          matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-          mean: 0,
-          std: 0,
-        })),
-      async (source, ordered, pass) => {
-        check();
-        const local = await nativeGlobalRefineLocal(
-          source,
-          async (matrix) => {
-            check();
-            queries++;
-            const value = await pool.execute({
-              sourceId: source.id,
-              poses: ordered.map((s) => ({
-                id: s.id,
-                matrix: s.id === source.id ? matrix : s.matrix,
-              })),
-              radius,
-              mode,
-            });
-            check();
-            return value;
-          },
-          { tolerance: options.localTolerance, signal: options.signal },
-        );
-        check();
-        localResults.push({
-          id: source.id,
-          pass,
-          status: local.status,
-          iterations: local.iterations,
-        });
-        return local;
-      },
-      {
-        clock: options.clock,
-        coverageTolerance: options.coverageTolerance,
-        onProgress: (pass, total, ordered) => {
-          check();
-          options.onPass?.(pass, ordered);
-          check();
-          options.onProgress?.(
-            0.2 + (0.5 * pass) / total,
-            "Refining global scan poses",
-          );
-        },
-      },
-    );
-    check();
-  } finally {
-    // Do not overlap the retained point trees with geometry-application workers.
-    pool.close();
-  }
+  const controlled =
+    (await runSharedGlobalController(
+      input,
+      routedInput,
+      options,
+      mode,
+      radius,
+    )) ??
+    (await runGlobalScanController(input, routedInput, options, mode, radius));
+  const { outer, queries, queryWorkers, localResults } = controlled;
+  // Retire only this function's routed descriptors; authored carriers stay intact.
+  routedInput.scans = [];
+  options.onInputConsumed?.();
   const stages = new Map<string, number[][]>();
   for (const command of outer.applications) {
     const list = stages.get(command.id) ?? [];

@@ -318,7 +318,7 @@ export async function prepareGlobalAlignmentInput(
   input: GlobalSceneInput;
   entities: Entity[];
   summary: GlobalAlignmentInputSummary;
-  release?: () => void;
+  release: () => void;
 }> {
   const check = () => {
     options.signal?.throwIfAborted();
@@ -443,5 +443,14 @@ export async function prepareGlobalAlignmentInput(
   check();
   input.scans = scans;
   options.onProgress?.(1, "Global alignment inputs ready");
-  return { input, entities: admitted, summary };
+  return {
+    input,
+    entities: admitted,
+    summary,
+    release() {
+      // Retire command-owned descriptors through every borrowed array alias.
+      // Authored and retained geometry buffers remain intact and attached.
+      scans.length = 0;
+    },
+  };
 }

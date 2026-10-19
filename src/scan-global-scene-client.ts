@@ -1,13 +1,19 @@
+import {
+  assertNoUnresolvedOwnedWorkers,
+  requestOwnedWorkerStop,
+  type WorkerCleanupOutcome,
+} from "./scan-global-worker-cleanup";
 import { copyGlobalSceneForTransfer } from "./scan-global-scene-transport";
 import {
   executeGlobalScenePreparation,
   type GlobalSceneInput,
   type GlobalSceneResult,
   type GlobalSceneResponse,
-} from "./scan-global-scene-worker";
+} from "./scan-global-scene-core";
 import { createGlobalQueryPool } from "./scan-global-query-pool";
 import type { GlobalQueryJob } from "./scan-global-query-worker";
 let preparationActive = false;
+let nextPreparationOwner = 0;
 export function globalSceneAdmission(input: GlobalSceneInput) {
   const ids = new Set<string>();
   let estimated = 0;
@@ -41,6 +47,7 @@ export async function prepareGlobalScene(
 ): Promise<GlobalSceneResult> {
   if (signal?.aborted)
     throw new DOMException("Global preparation cancelled.", "AbortError");
+  assertNoUnresolvedOwnedWorkers();
   globalSceneAdmission(input);
   if (typeof Worker === "undefined") {
     if (typeof document !== "undefined")
@@ -50,6 +57,8 @@ export async function prepareGlobalScene(
   if (preparationActive)
     throw Error("Global scene preparation is already running.");
   preparationActive = true;
+  const runId = ++nextPreparationOwner,
+    createdUnixMs = Date.now();
   try {
     return await new Promise((resolve, reject) => {
       let worker: Worker | undefined;
@@ -59,13 +68,30 @@ export async function prepareGlobalScene(
         settled = true;
         clearTimeout(timer);
         signal?.removeEventListener("abort", abort);
-        if (worker) {
-          worker.onmessage = worker.onerror = worker.onmessageerror = null;
-          worker.terminate();
+        let terminationError: Error | undefined;
+        try {
+          if (worker) {
+            const cleanup = requestOwnedWorkerStop(worker, {
+              owner: "scene-preparation:" + runId,
+              runId,
+              target: "scan-global-scene-worker.ts",
+              createdUnixMs,
+              expiresUnixMs: createdUnixMs + 120_000,
+            });
+            if (cleanup.retained)
+              terminationError = Error(
+                "Scene preparation termination request remains unconfirmed; exact recovery handle retained.",
+              );
+          }
+        } catch (stopError) {
+          terminationError =
+            stopError instanceof Error ? stopError : Error(String(stopError));
+        } finally {
+          worker = undefined;
+          if (error) reject(error);
+          else if (terminationError) reject(terminationError);
+          else resolve(result!);
         }
-        worker = undefined;
-        if (error) reject(error);
-        else resolve(result!);
       };
       const abort = () =>
         finish(new DOMException("Global preparation cancelled.", "AbortError"));
@@ -137,14 +163,61 @@ export async function prepareGlobalScene(
 }
 /** Prepared scene labels and sample IDs remain fixed while the outer controller
  * changes poses. Only independent correspondence queries use multiple cores. */
+export interface PreparedGlobalQueryScene {
+  sources: {
+    id: string;
+    eligible: boolean;
+    labels: Uint32Array;
+    selected: number[][];
+    sampled: number;
+  }[];
+}
+export function preparedGlobalQueryScans(
+  input: GlobalSceneInput,
+  scene: PreparedGlobalQueryScene,
+) {
+  const eligible = scene.sources.filter((source) => source.eligible);
+  if (eligible.length < 2)
+    throw Error(
+      "Global alignment requires two eligible scans with retained normal groups.",
+    );
+  const scans = eligible.map((source) => {
+    const original = input.scans.find((scan) => scan.id === source.id)!;
+    return {
+      id: source.id,
+      geometry: { ...original.geometry, labels: source.labels },
+    };
+  });
+  return { scans };
+}
 export async function createPreparedGlobalQueryPool(
   input: GlobalSceneInput,
-  options: { parallel?: boolean; signal?: AbortSignal } = {},
+  options: {
+    parallel?: boolean;
+    signal?: AbortSignal;
+    runtimeReserveBytes?: number;
+    externalReservedBytes?: number;
+    expectedWorkers?: number;
+    onQueryPoolCleanup?: (outcomes: WorkerCleanupOutcome[]) => void;
+  } = {},
 ) {
-  let scene: GlobalSceneResult | undefined = await prepareGlobalScene(
-    input,
-    options.signal,
-  );
+  const scene = await prepareGlobalScene(input, options.signal);
+  return createGlobalQueryPoolFromPrepared(input, scene, options);
+}
+/** Preparation has already completed on the original admitted parent route. */
+export async function createGlobalQueryPoolFromPrepared(
+  input: GlobalSceneInput,
+  preparedScene: PreparedGlobalQueryScene,
+  options: {
+    parallel?: boolean;
+    signal?: AbortSignal;
+    runtimeReserveBytes?: number;
+    externalReservedBytes?: number;
+    expectedWorkers?: number;
+    onQueryPoolCleanup?: (outcomes: WorkerCleanupOutcome[]) => void;
+  } = {},
+) {
+  let scene: PreparedGlobalQueryScene | undefined = preparedScene;
   const eligible = scene.sources.filter((source) => source.eligible);
   if (eligible.length < 2)
     throw Error(
@@ -161,11 +234,14 @@ export async function createPreparedGlobalQueryPool(
   let pool: Awaited<ReturnType<typeof createGlobalQueryPool>> | undefined =
     await createGlobalQueryPool({ scans }, options);
   const physicalWorkers = pool.physicalWorkers;
+  let closeRequested = true;
   const close = () => {
     options.signal?.removeEventListener("abort", close);
-    pool?.close();
+    const requested = pool?.close();
+    if (requested === false) closeRequested = false;
     pool = undefined;
     scene = undefined;
+    return closeRequested;
   };
   options.signal?.addEventListener("abort", close, { once: true });
   if (options.signal?.aborted) close();

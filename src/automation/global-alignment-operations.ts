@@ -6,6 +6,7 @@ import type {
 } from "./api";
 import type { Entity } from "../types";
 import type { refineGlobalScanSet } from "../scan-global-registration";
+import { assertNoUnresolvedOwnedWorkers } from "../scan-global-worker-cleanup";
 
 const LEASE_MS = 60_000;
 type Registration = Awaited<ReturnType<typeof refineGlobalScanSet>>;
@@ -335,6 +336,7 @@ export function createGlobalAlignmentOperations(
       };
       try {
         check();
+        assertNoUnresolvedOwnedWorkers();
         const prepared = await prepareGlobalAlignmentInput(initial.entities, {
           entityIds: preview.entityIds,
           ...preview.settings,
@@ -342,6 +344,12 @@ export function createGlobalAlignmentOperations(
           check,
           onProgress: context.progress,
         });
+        let released = false;
+        const releaseOnce = () => {
+          if (released) return;
+          released = true;
+          prepared.release();
+        };
         let result: Registration;
         try {
           check();
@@ -357,13 +365,14 @@ export function createGlobalAlignmentOperations(
               signal: preview.controller.signal,
               check,
               onProgress: context.progress,
+              onInputConsumed: releaseOnce,
               localTolerance: 0.001,
               coverageTolerance: 0.05,
             },
           );
           check();
         } finally {
-          prepared.release?.();
+          releaseOnce();
         }
         check();
         if (
