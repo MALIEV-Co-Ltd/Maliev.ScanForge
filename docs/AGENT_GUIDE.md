@@ -1,5 +1,22 @@
 # ScanForge MCP agent guide
 
+Settings uses a height-bounded dialog with Appearance, SpaceMouse, Scan import and
+AI agents tabs. `ui_set` accepts `settingsOpen: true` and `settingsSection`
+(`appearance`, `spacemouse`, `import` or `agents`); `application_inspect` reports the
+selected section. Switching tabs preserves input and agent connections. SpaceMouse
+controls still use `spacemouse_get` and `spacemouse_control`.
+
+## SpaceMouse navigation
+
+`spacemouse_get` reports the active source, connection status and preferences.
+`spacemouse_control` uses the same controller as Settings, with actions
+`automatic`, `connectDriver`, `disconnect` and `preferences`. Mutations require
+the current `expectedRevision` and a unique `requestId`. Preferences are accepted
+only with the `preferences` action. These settings do not add model-history steps.
+Automatic Gamepad detection is the default. The optional official driver connection
+requires installed 3DxWare and manages its own sensitivity; fallback preferences
+apply to Gamepad and explicit browser HID input. See [input devices](INPUT_DEVICES.md).
+
 ## Background mesh preparation
 
 Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).

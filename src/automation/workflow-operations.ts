@@ -36,6 +36,7 @@ export interface InterfacePatch {
   datumAlignmentOpen?: boolean;
   globalAlignmentOpen?: boolean;
   settingsOpen?: boolean;
+  settingsSection?: "appearance" | "spacemouse" | "import" | "agents";
   dismissError?: boolean;
 }
 
@@ -129,6 +130,22 @@ export function createWorkflowOperations(
       return host.inspectApplication?.(100) ?? unavailable();
     },
     viewport_get: () => host.inspectViewport?.() ?? unavailable(),
+    spacemouse_get: () => host.inspectSpaceMouse?.() ?? unavailable(),
+    spacemouse_control: (a, c) => {
+      if (
+        a.action === "preferences" &&
+        (!a.preferences || !Object.keys(a.preferences).length)
+      )
+        throw new Error("Supply SpaceMouse preferences.");
+      if (a.action !== "preferences" && a.preferences !== undefined)
+        throw new Error("Preferences require the preferences action.");
+      c.check();
+      if (!host.controlSpaceMouse) return unavailable();
+      return host.controlSpaceMouse(
+        a as unknown as import("../spacemouse").SpaceMouseCommand,
+        c.signal,
+      );
+    },
     viewport_control: (a, c) => {
       if (
         a.action === "navigation" &&

@@ -22,9 +22,7 @@ export function SpaceMouseConnection({
     ? "Connecting SpaceMouse…"
     : !available
       ? "SpaceMouse unavailable"
-      : connected
-        ? "SpaceMouse settings"
-        : "Connect SpaceMouse";
+      : "SpaceMouse settings";
   return (
     <div className={`spacemouse-connection${compact ? " compact" : ""}`}>
       <button
@@ -36,8 +34,8 @@ export function SpaceMouseConnection({
           connected
             ? `${status}. Click for navigation preferences.`
             : available
-              ? "Enable SpaceMouse navigation: choose your device in the browser permission dialog."
-              : "SpaceMouse requires Chrome or Edge over HTTPS or localhost."
+              ? "Move the SpaceMouse cap for automatic detection, or open settings to connect via 3Dconnexion."
+              : "SpaceMouse navigation is unavailable in this browser."
         }
       >
         <SpaceMouseIcon />
@@ -58,14 +56,14 @@ export function SpaceMouseConnection({
         title={status}
       >
         {connecting
-          ? "Choose your device in the browser dialog"
+          ? "Connecting to 3Dconnexion"
           : !available
-            ? "WebHID is unavailable in this browser"
+            ? "Navigation unavailable"
             : connected
               ? status.startsWith("Receiving motion:")
                 ? "Receiving motion"
                 : "Connected · waiting for motion"
-              : "Browser permission needed"}
+              : "Move the cap for automatic detection"}
       </small>
     </div>
   );

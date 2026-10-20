@@ -93,7 +93,7 @@ Dark mode uses monochrome charcoal shades. Newly imported and created parts star
 8. Assemble compatible NURBS patches, inspect seam/topology diagnostics and convert a closed single shell into an exact CAD solid. The worker sews the faces and checks orientation and kernel validity. Automatic reconstruction of an arbitrary scan is not available.
 9. Edit a CAD feature's JSON recipe through the advanced CAD tool panel and rebuild its dependent features atomically. Failed or cancelled rebuilds preserve the prior model; successful rebuilds support Undo. Projects retain these recipes, tessellation, object properties, exact BREP, NURBS grids and the sketch draft. Worker IDs, measurement points, fit analysis and session undo history are transient.
 
-SpaceMouse navigation is available in Settings through browser-local WebHID, with explicit device selection, translation/rotation sensitivity, deadzone, dominant-axis and rotation-lock controls. See [input devices](docs/INPUT_DEVICES.md) for tested protocol coverage and hardware limitations.
+SpaceMouse navigation detects supported Gamepad devices automatically. Settings also offers an optional connection through the official 3Dconnexion driver API and a browser HID fallback. See [input devices](docs/INPUT_DEVICES.md) for connection requirements and hardware validation limits.
 
 The built-in bracket is independently generated demonstration geometry, not measured scan data. Its two intersecting components are not welded; its volume is illustrative only.
 

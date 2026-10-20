@@ -149,7 +149,7 @@ describe("SpaceMouse to camera workflow", () => {
         expect(step(axis, 20) / step(axis, 0.1)).toBeCloseTo(200);
         expect(
           step(axis, DEFAULT_SPACE_MOUSE.translationSpeed) / step(axis, 1),
-        ).toBeCloseTo(3);
+        ).toBeCloseTo(1);
       }
     },
   );

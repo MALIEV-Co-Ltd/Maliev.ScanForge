@@ -4459,6 +4459,10 @@
         "settingsOpen": {
           "type": "boolean"
         },
+        "settingsSection": {
+          "type": "string",
+          "enum": ["appearance", "spacemouse", "import", "agents"]
+        },
         "dismissError": {
           "type": "boolean"
         },
@@ -4470,6 +4474,57 @@
         }
       },
       "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "spacemouse_get",
+    "description": "Read SpaceMouse connection source (gamepad, driver, webhid or null), status, browser capability and session preferences. Driver navigation sensitivity is managed by 3DxWare. No hardware permission prompt.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "spacemouse_control",
+    "description": "Use automatic Gamepad detection, explicitly connect the official local 3Dconnexion driver, disable navigation, or change session Gamepad/HID preferences. One input source owns navigation. Driver loss resumes automatic detection. Requires installed 3DxWare for connectDriver; never opens a WebHID permission chooser. Does not edit model history.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "action": {
+          "type": "string",
+          "enum": ["automatic", "connectDriver", "disconnect", "preferences"]
+        },
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "translationSpeed": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "rotationSpeed": { "type": "number", "minimum": 0, "maximum": 20 },
+            "deadzone": { "type": "number", "minimum": 0, "maximum": 0.9 },
+            "dominantAxis": { "type": "boolean" },
+            "rotationEnabled": { "type": "boolean" }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": ["expectedRevision", "requestId", "action"],
       "additionalProperties": false
     }
   },

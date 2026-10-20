@@ -9,9 +9,13 @@ export interface SpaceMousePreferences {
   dominantAxis: boolean;
   rotationEnabled: boolean;
 }
+export interface SpaceMouseCommand {
+  action: "automatic" | "connectDriver" | "disconnect" | "preferences";
+  preferences?: Partial<SpaceMousePreferences>;
+}
 export const DEFAULT_SPACE_MOUSE: SpaceMousePreferences = {
-  translationSpeed: 3,
-  rotationSpeed: 3,
+  translationSpeed: 1,
+  rotationSpeed: 1,
   deadzone: 0.04,
   dominantAxis: false,
   rotationEnabled: true,
@@ -210,6 +214,8 @@ export class SpaceMouseController {
   private lastFrame = 0;
   private receivedMotion = false;
   private autoReconnect = true;
+  private gamepad?: { index: number; name: string };
+  private driverActive = false;
   preferences = { ...DEFAULT_SPACE_MOUSE };
   /** Notify the viewport before RAF so emulated wheel input cannot also zoom. */
   onInputMotion?: () => void;
@@ -225,14 +231,95 @@ export class SpaceMouseController {
   ) {
     access?.addEventListener("disconnect", this.unplug);
     access?.addEventListener("connect", this.plug);
+    if (typeof window !== "undefined") {
+      window.addEventListener("gamepadconnected", this.startAutomatic);
+      window.addEventListener("gamepaddisconnected", this.startAutomatic);
+    }
     if (typeof document !== "undefined")
       document.addEventListener("visibilitychange", this.resumeMonitor);
   }
   get connected(): boolean {
-    return !!this.device;
+    return this.driverActive || !!this.device || !!this.gamepad;
+  }
+  get source(): "driver" | "webhid" | "gamepad" | null {
+    return this.driverActive
+      ? "driver"
+      : this.device
+        ? "webhid"
+        : this.gamepad
+          ? "gamepad"
+          : null;
+  }
+  /** Gamepad exposure follows browser interaction; never opens a permission chooser. */
+  startAutomatic = (): void => {
+    if (
+      this.disposed ||
+      !this.autoReconnect ||
+      this.driverActive ||
+      this.device
+    )
+      return;
+    const input = this.readGamepad();
+    if (!input) {
+      if (this.gamepad)
+        this.onStatus("Disconnected — move the SpaceMouse cap to detect it");
+      this.gamepad = undefined;
+      return;
+    }
+    if (
+      this.gamepad?.index !== input.pad.index ||
+      this.gamepad.name !== input.pad.id
+    ) {
+      this.receivedMotion = false;
+      this.buttons = 0;
+      this.onStatus(`Connected: ${input.pad.id} — Gamepad`);
+    }
+    this.gamepad = { index: input.pad.index, name: input.pad.id };
+    if (this.frame === null) {
+      this.lastFrame = this.clock();
+      this.frame = this.raf(this.tick);
+    }
+  };
+  setDriverActive(active: boolean): void {
+    this.driverActive = active;
+    if (active) {
+      this.gamepad = undefined;
+      if (this.frame !== null) this.cancel(this.frame);
+      this.frame = null;
+    } else {
+      this.autoReconnect = true;
+      this.startAutomatic();
+    }
+  }
+  private readGamepad() {
+    if (typeof navigator === "undefined" || !navigator.getGamepads) return;
+    try {
+      for (const pad of navigator.getGamepads()) {
+        if (!pad?.connected || pad.axes.length < 6) continue;
+        const ids =
+          /vendor:\s*([0-9a-f]{4}).*product:\s*([0-9a-f]{4})/i.exec(pad.id) ??
+          /^([0-9a-f]{4})-([0-9a-f]{4})-/i.exec(pad.id);
+        const spec = ids
+          ? spaceMouseSpec({
+              vendorId: parseInt(ids[1], 16),
+              productId: parseInt(ids[2], 16),
+            })
+          : SPACE_MOUSE_DEVICES.find((s) =>
+              [
+                s.name.toLowerCase(),
+                `3dconnexion ${s.name.toLowerCase()}`,
+              ].includes(pad.id.trim().toLowerCase()),
+            );
+        if (spec) return { pad, spec };
+      }
+    } catch {
+      /* Browser policy can deny controller enumeration. */
+    }
   }
   /** Reopen only devices already permitted by this origin, without a chooser. */
   async restoreAuthorized(): Promise<void> {
+    this.startAutomatic();
+    if (this.gamepad) return;
     if (!this.access?.getDevices) return;
     await this.connect(true);
   }
@@ -276,6 +363,8 @@ export class SpaceMouseController {
         return;
       }
       this.device = chosen;
+      this.gamepad = undefined;
+      if (this.frame !== null) this.cancel(this.frame);
       this.openedHere = opened;
       this.receivedMotion = false;
       chosen.addEventListener("inputreport", this.report);
@@ -339,7 +428,61 @@ export class SpaceMouseController {
   };
   private tick = (): void => {
     this.frame = null;
-    if (this.disposed || !this.device) return;
+    if (this.disposed || this.driverActive) return;
+    if (!this.device) {
+      if (typeof document !== "undefined" && document.hidden) return;
+      const input = this.readGamepad();
+      if (!input) {
+        if (this.gamepad)
+          this.onStatus("Disconnected — move the SpaceMouse cap to detect it");
+        this.gamepad = undefined;
+        return;
+      }
+      const { pad, spec } = input;
+      this.gamepad = { index: pad.index, name: pad.id };
+      const now = this.clock(),
+        seconds = Math.min(0.05, Math.max(0, (now - this.lastFrame) / 1000));
+      this.lastFrame = now;
+      // A malformed sample is not a disconnect; keep polling for the next report.
+      if (!pad.axes.slice(0, 6).every(Number.isFinite)) {
+        this.frame = this.raf(this.tick);
+        return;
+      }
+      // SpaceMouse axes can exceed ±1; filteredMotion saturates finite input.
+      const signs = spec.productId === 0xc62b ? [1, -1, -1] : [-1, -1, 1];
+      const motion = filteredMotion(
+        {
+          translation: [pad.axes[0], -pad.axes[1], -pad.axes[2]],
+          rotation: [
+            pad.axes[3] * signs[0],
+            pad.axes[4] * signs[1],
+            pad.axes[5] * signs[2],
+          ],
+        },
+        this.preferences,
+      );
+      if ([...motion.translation, ...motion.rotation].some((v) => v !== 0)) {
+        if (!this.receivedMotion) {
+          this.receivedMotion = true;
+          this.onStatus(`Receiving motion: ${pad.id} — Gamepad`);
+        }
+        this.onInputMotion?.();
+        this.onMotion(motion, seconds);
+      }
+      const buttons = pad.buttons
+        .slice(0, 32)
+        .reduce(
+          (mask, button, index) =>
+            button.pressed ? mask | (1 << index) : mask,
+          0,
+        );
+      const pressed = buttons & ~this.buttons;
+      if (pressed & (spec.pro ? 2 : 1)) this.onButton("fit");
+      if (pressed & (spec.pro ? 4 : 2)) this.onButton("isometric");
+      this.buttons = buttons;
+      this.frame = this.raf(this.tick);
+      return;
+    }
     const now = this.clock();
     const seconds = Math.min(0.05, Math.max(0, (now - this.lastFrame) / 1000));
     this.lastFrame = now;
@@ -370,7 +513,13 @@ export class SpaceMouseController {
   };
   /** Monitor already-granted HID permission; never opens a permission chooser. */
   private monitor = (): void => {
-    if (this.disposed || !this.autoReconnect || !this.access?.getDevices)
+    if (
+      this.disposed ||
+      !this.autoReconnect ||
+      this.gamepad ||
+      this.driverActive ||
+      !this.access?.getDevices
+    )
       return;
     void this.connect(true).catch((error) =>
       this.onStatus(`SpaceMouse reconnect: ${String(error)}`),
@@ -381,7 +530,13 @@ export class SpaceMouseController {
     if (device && spaceMouseSpec(device)) this.monitor();
   };
   private resumeMonitor = (): void => {
-    if (!document.hidden) this.monitor();
+    if (!document.hidden) {
+      this.startAutomatic();
+      if (!this.gamepad && !this.driverActive) this.monitor();
+    } else if (this.gamepad && this.frame !== null) {
+      this.cancel(this.frame);
+      this.frame = null;
+    }
   };
   async disconnect(manual = true): Promise<void> {
     if (manual) this.autoReconnect = false;
@@ -391,6 +546,8 @@ export class SpaceMouseController {
     const device = this.device,
       openedHere = this.openedHere;
     this.device = undefined;
+    this.gamepad = undefined;
+    this.driverActive = false;
     this.openedHere = false;
     this.motion = { translation: [0, 0, 0], rotation: [0, 0, 0] };
     this.buttons = 0;
@@ -398,6 +555,7 @@ export class SpaceMouseController {
     if (device && openedHere) await device.close();
     if (generation === this.generation && !this.device)
       this.onStatus("Disconnected");
+    if (!manual) this.startAutomatic();
   }
   async dispose(): Promise<void> {
     if (this.disposed) return;
@@ -406,6 +564,10 @@ export class SpaceMouseController {
     this.access?.removeEventListener("connect", this.plug);
     if (typeof document !== "undefined")
       document.removeEventListener("visibilitychange", this.resumeMonitor);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("gamepadconnected", this.startAutomatic);
+      window.removeEventListener("gamepaddisconnected", this.startAutomatic);
+    }
     await this.disconnect();
   }
 }

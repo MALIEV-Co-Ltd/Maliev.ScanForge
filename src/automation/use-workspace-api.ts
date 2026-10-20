@@ -65,6 +65,12 @@ export function useWorkspaceApi(host: WorkspaceHost) {
           current.current.setInterface(patch);
         }),
       inspectViewport: () => current.current.inspectViewport?.(),
+      inspectSpaceMouse: () => current.current.inspectSpaceMouse?.(),
+      controlSpaceMouse: (command, signal) => {
+        if (!current.current.controlSpaceMouse)
+          throw new Error("SpaceMouse control unavailable");
+        return current.current.controlSpaceMouse(command, signal);
+      },
       controlViewport: (command) => {
         if (!current.current.controlViewport)
           throw new Error("Viewport control unavailable");

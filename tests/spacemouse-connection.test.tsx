@@ -25,10 +25,10 @@ describe("viewport SpaceMouse connection", () => {
     expect(html).toContain('class="visually-hidden"');
     expect(html).toContain("spacemouse-connected-dot");
   });
-  it("offers permission directly before a device is authorized", () => {
+  it("offers settings and automatic detection without requiring a chooser", () => {
     const html = renderToStaticMarkup(<SpaceMouseConnection {...defaults} />);
-    expect(html).toContain("Connect SpaceMouse");
-    expect(html).toContain("Browser permission needed");
+    expect(html).toContain("SpaceMouse settings");
+    expect(html).toContain("Move the cap for automatic detection");
     expect(html).not.toContain("disabled=");
   });
   it("invokes connection synchronously from the disconnected button", () => {
@@ -65,19 +65,19 @@ describe("viewport SpaceMouse connection", () => {
       ),
     ).toContain("Receiving motion");
   });
-  it("disables duplicate requests while the chooser is pending", () => {
+  it("disables duplicate requests while the driver connection is pending", () => {
     const html = renderToStaticMarkup(
       <SpaceMouseConnection {...defaults} connecting />,
     );
     expect(html).toContain("disabled=");
-    expect(html).toContain("Choose your device in the browser dialog");
+    expect(html).toContain("Connecting to 3Dconnexion");
   });
   it("explains unsupported browsers instead of offering a dead action", () => {
     const html = renderToStaticMarkup(
       <SpaceMouseConnection {...defaults} available={false} />,
     );
     expect(html).toContain("disabled=");
-    expect(html).toContain("WebHID is unavailable in this browser");
+    expect(html).toContain("Navigation unavailable");
     expect(html).not.toContain("Browser permission needed");
   });
 });

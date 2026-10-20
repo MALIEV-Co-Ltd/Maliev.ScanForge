@@ -72,6 +72,7 @@ import {
 import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
+import { createSpaceMouseCameraClient } from "./spacemouse-camera-client";
 import {
   SpaceMouseInputGate,
   captureSpaceMouseWheel,
@@ -547,6 +548,50 @@ export class Viewport {
 
   noteSpaceMouseInput(): void {
     this.spaceMouseInput.noteMotion();
+  }
+
+  spaceMouseDriverTarget() {
+    const element = this.renderer.domElement;
+    element.tabIndex = 0;
+    return {
+      element,
+      client: createSpaceMouseCameraClient({
+        camera: () => this.camera,
+        target: this.controls.target,
+        bounds: () => this.bounds,
+        pointer: () => {
+          const rect = element.getBoundingClientRect();
+          const cursor = this.navigationCursor;
+          this.camera.updateMatrixWorld();
+          return new THREE.Vector3(
+            cursor && rect.width
+              ? ((cursor.clientX - rect.left) / rect.width) * 2 - 1
+              : 0,
+            cursor && rect.height
+              ? -((cursor.clientY - rect.top) / rect.height) * 2 + 1
+              : 0,
+            -1,
+          ).unproject(this.camera);
+        },
+        selection: () => {
+          const item = this.objects.get(this.selectedId ?? "");
+          if (!item?.mesh.visible) return;
+          const box = new THREE.Box3().setFromObject(
+            this.triangleSelection?.children.length
+              ? this.triangleSelection
+              : (item.pointCloud ?? item.mesh),
+          );
+          return box.isEmpty() ? undefined : box;
+        },
+        rotatable: () => !this.sketchEditor,
+        motion: () => this.noteSpaceMouseInput(),
+        update: () => {
+          this.cancelViewTransition();
+          this.controls.update();
+          this.invalidate();
+        },
+      }),
+    };
   }
 
   navigate(motion: Motion6D, seconds: number): void {

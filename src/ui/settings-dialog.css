@@ -1,0 +1,195 @@
+.modal.settings-dialog {
+  width: 680px;
+  height: min(680px, calc(100dvh - 40px));
+  max-height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.settings-dialog > .modal-title {
+  flex: none;
+  margin: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-dialog > .modal-title button {
+  width: 36px;
+  min-height: 36px;
+}
+
+.settings-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--border) var(--surface);
+  scrollbar-gutter: stable;
+  padding: 24px;
+}
+
+.settings-section {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.settings-section[hidden] {
+  display: none;
+}
+
+.settings-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  flex: none;
+  gap: 4px;
+  padding: 8px 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-tabs [role="tab"] {
+  min-width: 0;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+}
+
+.settings-tabs [aria-selected="true"] {
+  border-bottom-color: var(--accent);
+  color: var(--text);
+  background: var(--hover);
+}
+
+.settings-section h3,
+.settings-section p {
+  margin: 0;
+}
+
+.settings-section h3 {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.settings-section p {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.settings-dialog .theme-options {
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0;
+  padding: 12px 16px;
+}
+
+.settings-dialog .theme-options label {
+  min-height: 28px;
+}
+
+.settings-agent-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.settings-agent-fields label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.settings-agent-fields input {
+  width: 100%;
+  min-height: 34px;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-dialog .settings-navigation-fields {
+  display: grid;
+  gap: 12px;
+  border: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.settings-dialog .settings-navigation-fields .field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px;
+  gap: 16px;
+  margin: 0;
+}
+
+.settings-dialog .field input {
+  width: 100%;
+  height: 34px;
+}
+
+.settings-dialog .check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.settings-dialog .check input {
+  flex: none;
+  margin-top: 2px;
+}
+
+.settings-device-status {
+  font-weight: 600;
+}
+
+.settings-hid summary {
+  width: fit-content;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.settings-hid[open] > button {
+  margin-top: 4px;
+}
+
+.settings-section .settings-license {
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .settings-tabs {
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+  .settings-dialog > .modal-title {
+    padding: 12px 16px;
+  }
+
+  .settings-content {
+    padding: 20px 16px;
+  }
+
+  .settings-agent-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-actions > button {
+    flex: 1 1 auto;
+  }
+
+  .settings-dialog .settings-navigation-fields .field {
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 12px;
+  }
+}

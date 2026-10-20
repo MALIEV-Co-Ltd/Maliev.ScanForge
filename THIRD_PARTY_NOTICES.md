@@ -1,5 +1,12 @@
 # Third-party notices
 
+The optional 3Dconnexion driver integration includes the proprietary, royalty-free
+3DconnexionJS 0.8.1 minified runtime from 3DxWare SDK 4.0.6. Its separate
+[license](public/vendor/3dconnexion/LICENSE.txt) and
+[dependency notices and transport amendments](public/vendor/3dconnexion/NOTICE.txt)
+apply. 3D input device development tools and related technology are provided under
+license from 3Dconnexion. © 3Dconnexion 1992 - 2025. All rights reserved.
+
 ScanForge makes use of facilities provided by Open CASCADE Technology. Current covered ScanForge code uses the [ScanForge Source-Available License](LICENSE). Previously MIT-licensed ScanForge versions and portions retain their original permissions and [historical notice](docs/licenses/SCANFORGE_PREVIOUS_MIT.txt). Third-party components are not relicensed.
 
 | Component                   | License                                         | Source                                                   |

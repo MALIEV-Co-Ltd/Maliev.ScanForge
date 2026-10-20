@@ -119,6 +119,11 @@ export interface WorkspaceHost {
   inspectApplication?(maxControls: number): unknown;
   setInterface?(patch: InterfacePatch): void;
   inspectViewport?(): unknown;
+  inspectSpaceMouse?(): unknown;
+  controlSpaceMouse?(
+    command: import("../spacemouse").SpaceMouseCommand,
+    signal: AbortSignal,
+  ): Promise<unknown>;
   controlViewport?(command: ViewportCommand): void;
   pickViewport?(x: number, y: number, maxHits: number): unknown;
   captureScreenshot?(

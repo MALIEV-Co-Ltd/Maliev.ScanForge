@@ -5,7 +5,13 @@ import {
   type BridgeStatus,
 } from "../automation/browser-bridge";
 
-export function AgentConnection({ api }: { api: ApplicationApi }) {
+export function AgentConnection({
+  api,
+  hidden = false,
+}: {
+  api: ApplicationApi;
+  hidden?: boolean;
+}) {
   const [endpoint, setEndpoint] = useState("http://127.0.0.1:5184");
   const [token, setToken] = useState("");
   const [connecting, setConnecting] = useState(false);
@@ -49,47 +55,58 @@ export function AgentConnection({ api }: { api: ApplicationApi }) {
     }
   }
   return (
-    <section aria-label="AI agent access">
+    <section
+      className="settings-section"
+      aria-label="AI agent access"
+      role="tabpanel"
+      id="settings-panel-agents"
+      aria-labelledby="settings-tab-agents"
+      hidden={hidden}
+    >
       <h3>AI agent access</h3>
-      <p>
+      <p className="muted">
         Connect an MCP agent to this workspace. Agents can edit the model and
         create local export artifacts. Disconnect stops agent access and
         requests cancellation of active agent work.
       </p>
-      <label>
-        Local bridge URL
-        <input
-          aria-label="Local bridge URL"
-          value={endpoint}
-          disabled={status.connected || connecting}
-          onChange={(e) => setEndpoint(e.target.value)}
-        />
-      </label>
-      <label>
-        Pairing token
-        <input
-          aria-label="Pairing token"
-          type="password"
-          autoComplete="off"
-          value={token}
-          disabled={status.connected || connecting}
-          onChange={(e) => setToken(e.target.value)}
-        />
-      </label>
+      <div className="settings-agent-fields">
+        <label>
+          Local bridge URL
+          <input
+            aria-label="Local bridge URL"
+            value={endpoint}
+            disabled={status.connected || connecting}
+            onChange={(e) => setEndpoint(e.target.value)}
+          />
+        </label>
+        <label>
+          Pairing token
+          <input
+            aria-label="Pairing token"
+            type="password"
+            autoComplete="off"
+            value={token}
+            disabled={status.connected || connecting}
+            onChange={(e) => setToken(e.target.value)}
+          />
+        </label>
+      </div>
       <p role="status">{status.message}</p>
-      <button
-        disabled={connecting || (!status.connected && token.length < 32)}
-        onClick={() =>
-          status.connected
-            ? void connection.current?.disconnect()
-            : void connect()
-        }
-      >
-        {status.connected ? "Disconnect agent" : "Connect agent"}
-      </button>
-      <button disabled={!status.connected} onClick={() => api.cancelActive()}>
-        Cancel agent operation
-      </button>
+      <div className="settings-actions">
+        <button
+          disabled={connecting || (!status.connected && token.length < 32)}
+          onClick={() =>
+            status.connected
+              ? void connection.current?.disconnect()
+              : void connect()
+          }
+        >
+          {status.connected ? "Disconnect agent" : "Connect agent"}
+        </button>
+        <button disabled={!status.connected} onClick={() => api.cancelActive()}>
+          Cancel agent operation
+        </button>
+      </div>
     </section>
   );
 }

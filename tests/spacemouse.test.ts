@@ -81,6 +81,27 @@ function fixture() {
   };
 }
 describe("SpaceMouse HID input", () => {
+  it("restores all six axes from an authorized HID when Gamepad exposure is absent", async () => {
+    vi.stubGlobal("navigator", { getGamepads: () => [] });
+    const f = fixture();
+    f.access.getDevices = vi.fn(async () => [f.device]);
+    try {
+      await f.controller.restoreAuthorized();
+      f.device.send(1, [175, 140, 105]);
+      f.device.send(2, [105, 140, 175]);
+      f.advance(16);
+      expect(f.controller.source).toBe("webhid");
+      expect(f.access.requestDevice).not.toHaveBeenCalled();
+      expect(f.onMotion).toHaveBeenCalled();
+      const motion = f.onMotion.mock.lastCall![0];
+      expect(
+        [...motion.translation, ...motion.rotation].every((axis) => axis !== 0),
+      ).toBe(true);
+    } finally {
+      await f.controller.dispose();
+      vi.unstubAllGlobals();
+    }
+  });
   it.each(SPACE_MOUSE_DEVICES)(
     "keeps split and combined rotation consistent for $name ($productId)",
     (spec) => {

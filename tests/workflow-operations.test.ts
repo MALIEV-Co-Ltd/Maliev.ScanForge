@@ -9,6 +9,28 @@ import { VisualCaptureError } from "../src/automation/visual-capture";
 import { CommandRepeat } from "../src/command-repeat";
 import { coordinateAlignmentInterface } from "../src/automation/workflow-operations";
 
+it("opens a specific settings category through the shared interface operation", async () => {
+  const { api, mutate, ui } = setup();
+  try {
+    expect(
+      await mutate("ui_set", {
+        settingsOpen: true,
+        settingsSection: "spacemouse",
+      }),
+    ).toMatchObject({ ok: true });
+    expect(ui).toMatchObject({
+      settingsOpen: true,
+      settingsSection: "spacemouse",
+    });
+    expect(
+      await mutate("ui_set", { settingsSection: "unknown" }),
+    ).toMatchObject({ ok: false });
+    expect(ui).toMatchObject({ settingsSection: "spacemouse" });
+  } finally {
+    api.dispose();
+  }
+});
+
 it("previews landmarks as a retry-protected cancellable job and accepts through the shared host", async () => {
   const { api, host, mutate, state } = setup();
   host.previewLandmarks = vi.fn(async (options) => {

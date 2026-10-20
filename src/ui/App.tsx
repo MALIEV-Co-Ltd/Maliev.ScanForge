@@ -46,6 +46,8 @@ import "./ObjectList.css";
 import { objectContextActions } from "./object-context-actions";
 import { RenameObjectDialog } from "./RenameObjectDialog";
 import { AgentConnection } from "./AgentConnection";
+import "./settings-dialog.css";
+import { SettingsTabs, type SettingsSection } from "./SettingsTabs";
 import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
@@ -112,6 +114,7 @@ import {
 import { SketchUndo, pruneSketchUndoSessions } from "../sketch-undo";
 import { CreateSketchDialog } from "./CreateSketchDialog";
 import { SpaceMouseConnection } from "./SpaceMouseConnection";
+import { createSpaceMouseDriver } from "../spacemouse-driver";
 import { ApplicationVersion } from "./ApplicationVersion";
 import { HeaderIconButton } from "./HeaderIconButton";
 import { SaveProjectButton } from "./SaveProjectButton";
@@ -181,6 +184,7 @@ import { Ribbon } from "./Ribbon";
 import {
   SpaceMouseController,
   DEFAULT_SPACE_MOUSE,
+  filteredMotion,
   type HidAccess,
   type SpaceMousePreferences,
 } from "../spacemouse";
@@ -391,20 +395,39 @@ export function App() {
   const landmarkAbort = useRef<AbortController | null>(null);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] =
+    useState<SettingsSection>("appearance");
   const [newDocumentDialog, setNewDocumentDialog] = useState(false);
   const [previewImport, setPreviewImport] = useState(false);
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
   );
-  const [spaceMouseStatus, setSpaceMouseStatus] = useState("Disconnected");
+  const [spaceMouseStatus, setSpaceMouseStatus] = useState(
+    "Move the SpaceMouse cap to detect it",
+  );
+  const spaceMouseStatusRef = useRef(spaceMouseStatus);
+  const reportSpaceMouseStatus = (value: string) => {
+    spaceMouseStatusRef.current = value;
+    setSpaceMouseStatus(value);
+  };
   const [spaceMouseConnecting, setSpaceMouseConnecting] = useState(false);
   const [spaceMousePreferences, setSpaceMousePreferences] =
     useState<SpaceMousePreferences>({ ...DEFAULT_SPACE_MOUSE });
   const spaceMouse = useRef<SpaceMouseController | null>(null);
+  const spaceMouseDriver = useRef<ReturnType<
+    typeof createSpaceMouseDriver
+  > | null>(null);
   const updateSpaceMousePreferences = (
     patch: Partial<SpaceMousePreferences>,
   ) => {
-    const preferences = { ...spaceMousePreferences, ...patch };
+    const preferences = {
+      ...(spaceMouse.current?.preferences ?? spaceMousePreferences),
+      ...patch,
+    };
+    filteredMotion(
+      { translation: [0, 0, 0], rotation: [0, 0, 0] },
+      preferences,
+    );
     // Apply in the input event, before the next HID animation frame.
     if (spaceMouse.current) spaceMouse.current.preferences = preferences;
     setSpaceMousePreferences(preferences);
@@ -412,14 +435,67 @@ export function App() {
   const connectSpaceMouse = async () => {
     setSpaceMouseConnecting(true);
     try {
-      // Keep requestDevice in the button's trusted user activation.
-      await spaceMouse.current?.connect();
+      await controlSpaceMouse({ action: "connectDriver" });
     } catch (error) {
-      setSpaceMouseStatus(`SpaceMouse connection: ${errorText(error)}`);
+      reportSpaceMouseStatus(`SpaceMouse connection: ${errorText(error)}`);
       setError(errorText(error));
     } finally {
       setSpaceMouseConnecting(false);
     }
+  };
+  const inspectSpaceMouse = () => ({
+    connected: spaceMouse.current?.connected ?? false,
+    source: spaceMouse.current?.source ?? null,
+    status: spaceMouseStatusRef.current,
+    connecting: spaceMouseConnecting,
+    preferences: {
+      ...(spaceMouse.current?.preferences ?? spaceMousePreferences),
+    },
+    driverManagedPreferences: spaceMouse.current?.source === "driver",
+    gamepadAvailable: typeof navigator.getGamepads === "function",
+    browserHidAvailable: !!(navigator as Navigator & { hid?: HidAccess }).hid,
+  });
+  const controlSpaceMouse = async (
+    command: import("../spacemouse").SpaceMouseCommand,
+    signal?: AbortSignal,
+  ) => {
+    const controller = spaceMouse.current;
+    if (!controller) throw new Error("SpaceMouse navigation is not ready.");
+    signal?.throwIfAborted();
+    if (command.action === "preferences") {
+      updateSpaceMousePreferences(command.preferences ?? {});
+    } else if (command.action === "disconnect") {
+      spaceMouseDriver.current?.close();
+      await controller.disconnect();
+      reportSpaceMouseStatus("Disconnected");
+    } else if (command.action === "automatic") {
+      spaceMouseDriver.current?.close();
+      await controller.disconnect(false);
+      controller.setDriverActive(false);
+      await controller.restoreAuthorized();
+      if (!controller.connected)
+        reportSpaceMouseStatus("Move the SpaceMouse cap to detect it");
+    } else {
+      if (!viewport.current || !spaceMouseDriver.current)
+        throw new Error("Viewport is not ready.");
+      setSpaceMouseConnecting(true);
+      try {
+        await controller.disconnect(false);
+        const target = viewport.current.spaceMouseDriverTarget();
+        await spaceMouseDriver.current.connect(
+          target.element,
+          target.client,
+          signal,
+        );
+        target.element.focus({ preventScroll: true });
+      } catch (error) {
+        controller.setDriverActive(false);
+        throw error;
+      } finally {
+        setSpaceMouseConnecting(false);
+      }
+    }
+    return inspectSpaceMouse();
   };
   const [resolvedTheme, setResolvedTheme] = useState(() => resolveTheme(theme));
   const [dragging, setDragging] = useState(false);
@@ -849,7 +925,7 @@ export function App() {
           action === "fit"
             ? viewport.current?.fitView()
             : viewport.current?.setView("iso"),
-        setSpaceMouseStatus,
+        reportSpaceMouseStatus,
       );
       spaceMouse.current.preferences = spaceMousePreferences;
       spaceMouse.current.onInputMotion = () =>
@@ -857,13 +933,31 @@ export function App() {
       void spaceMouse.current
         .restoreAuthorized()
         .catch((error) =>
-          setSpaceMouseStatus(`SpaceMouse reconnect: ${errorText(error)}`),
+          reportSpaceMouseStatus(`SpaceMouse reconnect: ${errorText(error)}`),
         );
+      spaceMouseDriver.current = createSpaceMouseDriver({
+        onReady: () => {
+          spaceMouse.current?.setDriverActive(true);
+          reportSpaceMouseStatus("Connected: 3Dconnexion driver");
+        },
+        onLost: (reason) => {
+          spaceMouse.current?.setDriverActive(false);
+          if (spaceMouse.current?.source !== "gamepad")
+            reportSpaceMouseStatus(
+              `3Dconnexion: ${String(reason)} · automatic detection resumed`,
+            );
+        },
+      });
     } catch (e) {
       setError(`WebGL unavailable: ${errorText(e)}`);
     }
     const unload = (event?: PageTransitionEvent) => {
       if (!event?.persisted) {
+        try {
+          spaceMouseDriver.current?.dispose();
+        } catch (error) {
+          console.error("SpaceMouse cleanup failed", error);
+        }
         workspaceApi.dispose();
         datumPreview.current = null;
         datumPointPick.current = null;
@@ -4143,6 +4237,8 @@ export function App() {
       setGlobalAlignmentOpen(patch.globalAlignmentOpen);
     }
     if (patch.settingsOpen !== undefined) setSettingsOpen(patch.settingsOpen);
+    if (patch.settingsSection !== undefined)
+      setSettingsSection(patch.settingsSection);
     if (patch.dismissError) setError("");
   }
   const workspaceApi = useWorkspaceApi({
@@ -4257,6 +4353,7 @@ export function App() {
         globalAlignmentOpen,
         globalAlignment,
         settingsOpen,
+        settingsSection,
         previews: {
           interactive: !!interactiveStore.getSnapshot(),
           landmarkSession: !!nPoints,
@@ -4291,6 +4388,8 @@ export function App() {
       if (!viewport.current) throw new Error("Viewport is not ready.");
       return viewport.current.inspectAgentView();
     },
+    inspectSpaceMouse,
+    controlSpaceMouse,
     controlViewport: (command) => {
       if (!viewport.current) throw new Error("Viewport is not ready.");
       viewport.current.controlAgentView(command, triangleMask ?? undefined);
@@ -4573,9 +4672,15 @@ export function App() {
                 status={spaceMouseStatus}
                 connected={spaceMouse.current?.connected ?? false}
                 connecting={spaceMouseConnecting}
-                available={!!(navigator as Navigator & { hid?: HidAccess }).hid}
-                onConnect={() => void connectSpaceMouse()}
-                onSettings={() => setSettingsOpen(true)}
+                available={true}
+                onConnect={() => {
+                  setSettingsSection("spacemouse");
+                  setSettingsOpen(true);
+                }}
+                onSettings={() => {
+                  setSettingsSection("spacemouse");
+                  setSettingsOpen(true);
+                }}
               />
               <HeaderIconButton
                 label="Open scan"
@@ -6455,7 +6560,7 @@ export function App() {
           onClick={() => setSettingsOpen(false)}
         >
           <section
-            className="modal"
+            className="modal settings-dialog"
             role="dialog"
             aria-modal="true"
             aria-label="Settings"
@@ -6470,128 +6575,215 @@ export function App() {
                 <X size={17} />
               </button>
             </div>
-            <h3>Appearance</h3>
-            <p className="muted">
-              One theme across the interface and 3D viewport. Remembered on this
-              device.
-            </p>
-            <fieldset className="theme-options">
-              <legend>Interface</legend>
-              {(["light", "dark", "system"] as const).map((value) => (
-                <label key={value}>
+            <SettingsTabs
+              value={settingsSection}
+              onChange={setSettingsSection}
+            />
+            <div className="settings-content">
+              <section
+                className="settings-section"
+                aria-label="Appearance"
+                role="tabpanel"
+                id="settings-panel-appearance"
+                aria-labelledby="settings-tab-appearance"
+                hidden={settingsSection !== "appearance"}
+              >
+                <h3>Appearance</h3>
+                <p className="muted">
+                  One theme across the interface and 3D viewport. Remembered on
+                  this device.
+                </p>
+                <fieldset className="theme-options">
+                  <legend>Interface</legend>
+                  {(["light", "dark", "system"] as const).map((value) => (
+                    <label key={value}>
+                      <input
+                        type="radio"
+                        name="theme"
+                        checked={theme === value}
+                        onChange={() => setTheme(value)}
+                      />
+                      {value[0].toUpperCase() + value.slice(1)}
+                    </label>
+                  ))}
+                </fieldset>
+                <p className="muted">
+                  Current appearance: {resolvedTheme}. System follows your
+                  operating system.
+                </p>
+              </section>
+              <AgentConnection
+                api={workspaceApi}
+                hidden={settingsSection !== "agents"}
+              />
+              <section
+                className="settings-section"
+                aria-label="Scan import"
+                role="tabpanel"
+                id="settings-panel-import"
+                aria-labelledby="settings-tab-import"
+                hidden={settingsSection !== "import"}
+              >
+                <h3>Scan import</h3>
+                <label className="check">
                   <input
-                    type="radio"
-                    name="theme"
-                    checked={theme === value}
-                    onChange={() => setTheme(value)}
-                  />
-                  {value[0].toUpperCase() + value.slice(1)}
+                    type="checkbox"
+                    checked={previewImport}
+                    onChange={(event) => setPreviewImport(event.target.checked)}
+                  />{" "}
+                  Memory efficient binary STL preview
                 </label>
-              ))}
-            </fieldset>
-            <p className="muted">
-              Current appearance: {resolvedTheme}. System follows your operating
-              system.
-            </p>
-            <AgentConnection api={workspaceApi} />
-            <h3>Scan import</h3>
-            <label>
-              <input
-                type="checkbox"
-                checked={previewImport}
-                onChange={(event) => setPreviewImport(event.target.checked)}
-              />{" "}
-              Memory efficient binary STL preview
-            </label>
-            <p className="muted">
-              Reads and validates every source triangle while displaying up to
-              250,000 uniformly sampled triangles. Editing, measurements and
-              exports use the sample. Turn this off to import full resolution.
-              No file-size limit is imposed.
-            </p>
-            <h3>SpaceMouse</h3>
-            <p className="muted">
-              {spaceMouseStatus}. Direct WebHID connection requires Chrome or
-              Edge over HTTPS or localhost. Choose the device when the browser
-              asks.
-            </p>
-            <div className="button-row">
-              <button
-                disabled={spaceMouseConnecting}
-                onClick={() => void connectSpaceMouse()}
+                <p className="muted">
+                  Reads and validates every source triangle while displaying up
+                  to 250,000 uniformly sampled triangles. Editing, measurements
+                  and exports use the sample. Turn this off to import full
+                  resolution. No file-size limit is imposed.
+                </p>
+              </section>
+              <section
+                className="settings-section"
+                aria-label="SpaceMouse"
+                role="tabpanel"
+                id="settings-panel-spacemouse"
+                aria-labelledby="settings-tab-spacemouse"
+                hidden={settingsSection !== "spacemouse"}
               >
-                Connect SpaceMouse
-              </button>
-              <button
-                onClick={() =>
-                  void spaceMouse.current
-                    ?.disconnect()
-                    .catch((error) => setError(errorText(error)))
-                }
-              >
-                Disconnect SpaceMouse
-              </button>
+                <h3>SpaceMouse</h3>
+                <p className="settings-device-status">{spaceMouseStatus}</p>
+                <p className="muted">
+                  Move the cap to enable automatic detection. The optional
+                  official connection requires the installed 3DxWare driver.
+                </p>
+                <div className="settings-actions">
+                  <button
+                    disabled={spaceMouseConnecting}
+                    onClick={() => void connectSpaceMouse()}
+                  >
+                    Connect via 3Dconnexion
+                  </button>
+                  <button
+                    onClick={() =>
+                      void controlSpaceMouse({ action: "automatic" }).catch(
+                        (error) => setError(errorText(error)),
+                      )
+                    }
+                  >
+                    Use automatic detection
+                  </button>
+                  <button
+                    onClick={() =>
+                      void controlSpaceMouse({ action: "disconnect" }).catch(
+                        (error) => setError(errorText(error)),
+                      )
+                    }
+                  >
+                    Disable navigation
+                  </button>
+                </div>
+                <details className="settings-hid">
+                  <summary>Browser HID connection</summary>
+                  <button
+                    disabled={
+                      spaceMouseConnecting ||
+                      !(navigator as Navigator & { hid?: HidAccess }).hid
+                    }
+                    onClick={() => {
+                      try {
+                        spaceMouseDriver.current?.close();
+                        spaceMouse.current?.setDriverActive(false);
+                        void spaceMouse.current
+                          ?.connect()
+                          .catch((error) => setError(errorText(error)));
+                      } catch (error) {
+                        setError(errorText(error));
+                      }
+                    }}
+                  >
+                    Connect via browser HID
+                  </button>
+                </details>
+                {spaceMouse.current?.source === "driver" && (
+                  <p className="muted">
+                    Adjust driver navigation sensitivity in 3DxWare. These
+                    controls apply to automatic and browser HID input.
+                  </p>
+                )}
+                <fieldset
+                  className="settings-navigation-fields"
+                  aria-label="Navigation preferences"
+                  disabled={spaceMouse.current?.source === "driver"}
+                >
+                  <Field
+                    label="Translation sensitivity"
+                    value={spaceMousePreferences.translationSpeed}
+                    min={0}
+                    max={20}
+                    step={0.1}
+                    onChange={(translationSpeed) =>
+                      updateSpaceMousePreferences({
+                        translationSpeed: Math.min(
+                          20,
+                          Math.max(0, translationSpeed),
+                        ),
+                      })
+                    }
+                  />
+                  <Field
+                    label="Rotation sensitivity"
+                    value={spaceMousePreferences.rotationSpeed}
+                    min={0}
+                    max={20}
+                    step={0.1}
+                    onChange={(rotationSpeed) =>
+                      updateSpaceMousePreferences({
+                        rotationSpeed: Math.min(20, Math.max(0, rotationSpeed)),
+                      })
+                    }
+                  />
+                  <Field
+                    label="SpaceMouse deadzone"
+                    value={spaceMousePreferences.deadzone}
+                    min={0}
+                    max={0.9}
+                    step={0.01}
+                    onChange={(deadzone) =>
+                      updateSpaceMousePreferences({
+                        deadzone: Math.max(0, Math.min(0.9, deadzone)),
+                      })
+                    }
+                  />
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={spaceMousePreferences.dominantAxis}
+                      onChange={(event) =>
+                        updateSpaceMousePreferences({
+                          dominantAxis: event.target.checked,
+                        })
+                      }
+                    />
+                    Dominant axis only
+                  </label>
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={spaceMousePreferences.rotationEnabled}
+                      onChange={(event) =>
+                        updateSpaceMousePreferences({
+                          rotationEnabled: event.target.checked,
+                        })
+                      }
+                    />
+                    Enable SpaceMouse rotation
+                  </label>
+                </fieldset>
+                <p className="settings-license">
+                  3D input device development tools and related technology are
+                  provided under license from 3Dconnexion. © 3Dconnexion 1992 -
+                  2025. All rights reserved.
+                </p>
+              </section>
             </div>
-            <Field
-              label="Translation sensitivity"
-              value={spaceMousePreferences.translationSpeed}
-              min={0}
-              max={20}
-              step={0.1}
-              onChange={(translationSpeed) =>
-                updateSpaceMousePreferences({
-                  translationSpeed: Math.max(0, translationSpeed),
-                })
-              }
-            />
-            <Field
-              label="Rotation sensitivity"
-              value={spaceMousePreferences.rotationSpeed}
-              min={0}
-              max={20}
-              step={0.1}
-              onChange={(rotationSpeed) =>
-                updateSpaceMousePreferences({
-                  rotationSpeed: Math.max(0, rotationSpeed),
-                })
-              }
-            />
-            <Field
-              label="SpaceMouse deadzone"
-              value={spaceMousePreferences.deadzone}
-              min={0}
-              max={0.9}
-              step={0.01}
-              onChange={(deadzone) =>
-                updateSpaceMousePreferences({
-                  deadzone: Math.max(0, Math.min(0.9, deadzone)),
-                })
-              }
-            />
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={spaceMousePreferences.dominantAxis}
-                onChange={(event) =>
-                  updateSpaceMousePreferences({
-                    dominantAxis: event.target.checked,
-                  })
-                }
-              />
-              Dominant axis only
-            </label>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={spaceMousePreferences.rotationEnabled}
-                onChange={(event) =>
-                  updateSpaceMousePreferences({
-                    rotationEnabled: event.target.checked,
-                  })
-                }
-              />
-              Enable SpaceMouse rotation
-            </label>
           </section>
         </div>
       }
