@@ -1,4 +1,5 @@
 import { PLYLoader } from "three/addons/loaders/PLYLoader.js";
+import { parsePackedBinaryPly } from "./ply-binary-topology";
 
 /** Preserve file vertex and face order for indexed native geometry operations.
  * Coordinate welding cannot recover this order from rendered triangle soup.
@@ -7,6 +8,11 @@ export function parsePlyTopology(
   data: ArrayBuffer,
   options: { onNormals?: (normals: Float32Array) => void } = {},
 ) {
+  const packed = parsePackedBinaryPly(data);
+  if (packed) {
+    options.onNormals?.(packed.normals);
+    return packed;
+  }
   const geometry = new PLYLoader().parse(data);
   try {
     const position = geometry.getAttribute("position");

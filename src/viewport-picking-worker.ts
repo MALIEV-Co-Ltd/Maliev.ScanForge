@@ -7,7 +7,9 @@ self.onmessage = ({ data }) => {
     if (data.index) geometry.setIndex(new BufferAttribute(data.index, 1));
     geometry.setDrawRange(data.drawRange.start, data.drawRange.count);
     geometry.groups = data.groups;
-    const tree = MeshBVH.serialize(new MeshBVH(geometry, { indirect: true }));
+    const tree = MeshBVH.serialize(new MeshBVH(geometry, { indirect: true }), {
+      cloneBuffers: false,
+    });
     const transfer = [...tree.roots];
     if (tree.index) transfer.push(tree.index.buffer as ArrayBuffer);
     if (tree.indirectBuffer)
