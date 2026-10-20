@@ -3,14 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { ScanToolIcon } from "../src/ui/ScanToolIcon";
 import { ViewportTools } from "../src/ui/ViewportTools";
 
-it("uses vector diagrams for selection expansion, contraction, clipping and saving", () => {
+it("uses generated raster artwork for selection expansion, contraction, clipping and saving", () => {
   for (const name of ["grow", "shrink", "clip", "save"] as const) {
     const html = renderToStaticMarkup(<ScanToolIcon name={name} size={36} />);
-    expect(html).toContain("<svg");
+    expect(html).not.toContain("<svg");
     expect(html).toContain(`data-scan-icon="${name}"`);
     expect(html).toContain('aria-hidden="true"');
     expect(html).toContain('width="36"');
-    expect(html).not.toContain("<img");
+    expect(html).toContain("<img");
   }
 });
 
@@ -43,8 +43,8 @@ it("illustrates all seven viewport actions while preserving labels, state and di
   ]) {
     expect(html).toContain(`data-viewport-icon="${kind}"`);
   }
-  expect(html.match(/<svg /g)).toHaveLength(7);
-  expect(html).not.toContain("<img");
+  expect(html.match(/<img /g)).toHaveLength(7);
+  expect(html).toContain("<img");
   expect(html).toContain('aria-label="Normals"');
   expect(html).toContain('aria-label="Fit selection"');
   expect(html).toContain('disabled=""');
@@ -86,9 +86,9 @@ it("gives every mesh action nonempty, distinct artwork, including connected and 
   const artwork = names.map((name) => {
     const html = renderToStaticMarkup(<ScanToolIcon name={name} />);
     expect(html).toContain('aria-hidden="true"');
-    expect(html).toContain('focusable="false"');
-    expect(html).toMatch(/<(path|circle|rect|g) /);
-    expect(html).not.toMatch(/<img|<image|<filter|<linearGradient/);
+    expect(html).toContain('draggable="false"');
+    expect(html).toContain(`/icons/generated/scan-${name}.png`);
+    expect(html).not.toMatch(/<svg|<image|<filter|<linearGradient/);
     return html.replace(/data-scan-icon="[^"]*"/, "");
   });
   expect(new Set(artwork).size).toBe(names.length);

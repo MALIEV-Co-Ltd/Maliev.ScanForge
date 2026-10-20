@@ -22,7 +22,7 @@
   background: var(--chrome);
   border-bottom: 1px solid var(--border);
 }
-.recovery-header > svg {
+.recovery-header > :is(svg, img.generated-icon) {
   color: var(--muted);
   flex: 0 0 auto;
 }

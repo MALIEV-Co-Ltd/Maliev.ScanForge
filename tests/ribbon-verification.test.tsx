@@ -152,7 +152,7 @@ describe("ribbon verification gate", () => {
         } else {
           expect(content, tool.id).toContain(`data-status-icon="${status}"`);
           expect(content, tool.id).toContain(
-            status === "planned" ? "lucide-milestone" : "lucide-wrench",
+            status === "planned" ? "ui-Milestone.png" : "ui-Wrench.png",
           );
           expect(button, tool.id).toContain("aria-description=");
         }

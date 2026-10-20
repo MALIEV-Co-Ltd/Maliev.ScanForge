@@ -315,16 +315,27 @@ export class CameraGizmo {
         this.orient(id);
       }
     });
+    const controlArtwork = (asset: string, rotation = 0) => {
+      const image = document.createElement("img");
+      image.src = `${import.meta.env.BASE_URL}icons/generated/${asset}.png`;
+      image.alt = "";
+      image.setAttribute("aria-hidden", "true");
+      image.className = "generated-icon";
+      image.dataset.cameraIcon = asset;
+      image.draggable = false;
+      image.width = image.height = 20;
+      if (rotation) image.style.transform = `rotate(${rotation}deg)`;
+      return image;
+    };
     const home = document.createElement("button");
     home.className = "cube-home cube-control";
-    home.innerHTML =
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 11 12 2l10 9h-4v11h-5v-7h-2v7H6V11Z"/></svg>';
+    home.append(controlArtwork("camera-home"));
     home.setAttribute("aria-label", "Go Home");
     home.title = "Go Home";
     home.onclick = () => this.goHome();
     const toggle = document.createElement("button");
     toggle.className = "cube-menu-toggle cube-control";
-    toggle.textContent = "▾";
+    toggle.append(controlArtwork("ui-ChevronRight", 90));
     toggle.setAttribute("aria-label", "ViewCube settings");
     toggle.setAttribute("aria-expanded", "false");
     toggle.onclick = () => {
@@ -379,39 +390,21 @@ export class CameraGizmo {
         this.actions?.navigation?.({ zoomWindowActive: true }),
       );
     }
-    for (const [side, glyph] of [
-      ["up", "▴"],
-      ["down", "▾"],
-      ["left", "◂"],
-      ["right", "▸"],
-      ["ccw", "↶"],
-      ["cw", "↷"],
-    ]) {
+    for (const side of ["up", "down", "left", "right", "ccw", "cw"] as const) {
       const control = document.createElement("button");
       control.className = `cube-control cube-adjacent cube-${side}`;
       control.hidden = true;
-      control.textContent = glyph;
-      if (side === "cw" || side === "ccw") {
-        const icon = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg",
-        );
-        icon.setAttribute("viewBox", "0 0 32 32");
-        icon.setAttribute("aria-hidden", "true");
-        const arrow = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path",
-        );
-        arrow.setAttribute(
-          "d",
-          side === "ccw"
-            ? "M29 23C25 12 16 6 8 8L8 3L1 11L10 16L9 11C16 9 23 15 26 24Z"
-            : "M4 3C16 5 24 13 23 23L28 22L23 31L16 23L21 24C22 16 15 8 3 6Z",
-        );
-        arrow.setAttribute("fill", "currentColor");
-        icon.append(arrow);
-        control.replaceChildren(icon);
-      }
+      const asset =
+        side === "cw"
+          ? "camera-cw"
+          : side === "ccw"
+            ? "camera-ccw"
+            : side === "left"
+              ? "ui-ChevronLeft"
+              : "ui-ChevronRight";
+      control.append(
+        controlArtwork(asset, side === "up" ? -90 : side === "down" ? 90 : 0),
+      );
       control.setAttribute(
         "aria-label",
         side === "cw" || side === "ccw"

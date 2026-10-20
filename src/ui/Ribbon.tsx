@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { RibbonToolButton } from "./RibbonToolButton";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "./GeneratedUiIcons";
 import "./ribbon-verification.css";
 import "./ribbon-tabs-scroll.css";
 import { ribbonOverflowEdges } from "./ribbon-overflow";

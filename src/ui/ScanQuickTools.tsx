@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { GripVertical } from "lucide-react";
+import { GripVertical } from "./GeneratedUiIcons";
 import "./ScanQuickTools.css";
 import { ScanToolIcon } from "./ScanToolIcon";
 

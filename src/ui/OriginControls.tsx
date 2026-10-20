@@ -1,4 +1,4 @@
-import { Crosshair, Plus } from "lucide-react";
+import { Crosshair, Plus } from "./GeneratedUiIcons";
 import "./origin-controls.css";
 
 export function CoordinateSystem({

@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from "react";
-import { Milestone, Wrench } from "lucide-react";
+import { Milestone, Wrench } from "./GeneratedUiIcons";
 import { RibbonCommandIcon } from "./RibbonCommandIcon";
 import { ribbonVerification } from "./ribbon-verification";
 import {

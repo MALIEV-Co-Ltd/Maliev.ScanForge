@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Save } from "lucide-react";
+import { Save } from "./GeneratedUiIcons";
 import { HeaderIconButton } from "./HeaderIconButton";
 import { SaveReminderClock } from "./save-reminder";
 

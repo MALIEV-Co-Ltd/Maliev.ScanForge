@@ -1,0 +1,3 @@
+Use case: scientific-educational. Asset type: square CAD toolbar icon. Subject: one steel-blue open-ended spanner with orange handle grip, diagonal isolated tool. Precise shaded technical textbook illustration, thin crisp navy outlines, flat planar shading, steel-gray muted steel-blue metal and orange grip. One single centered tool occupies 85 percent of square. Strong simple silhouette readable at 20 and 40 pixels, no extra details. Genuinely transparent background. NO text, labels, letters, watermark, border, glossy emoji, hands or surrounding UI.
+Source: B:\codex\generated_images\01a15829-6911-7f81-b24e-e39f04f67b41\exec-ec246508-6900-47d8-9914-db502ffa5fe7.png
+Workflow: built-in image_gen, transparent_background true

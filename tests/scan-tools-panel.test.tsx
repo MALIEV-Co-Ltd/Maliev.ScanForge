@@ -79,13 +79,13 @@ function render(
     />,
   );
 }
-it("shows only the current tool and a colored geometry diagram", () => {
+it("shows only the current tool and its generated technical illustration", () => {
   const html = render("reducePolygons");
   expect(html).toContain('aria-haspopup="listbox"');
   expect(html).toContain("Percentage remaining");
   expect(html).toContain('aria-label="Reduce by"');
   expect(html).toContain('value="50"');
-  expect(html).toContain('stroke="#87d3e8"');
+  expect(html).toContain("/icons/generated/ribbon-reducePolygons.png");
   expect(html).not.toContain("Smooth iterations");
 });
 it("uses the requested millimetre defaults", () => {
@@ -220,7 +220,7 @@ it.each([
     expect(footer.indexOf('aria-label="Preview"')).toBeLessThan(
       footer.indexOf(">Cancel</button>"),
     );
-    expect(footer).toContain("lucide-search");
+    expect(footer).toContain("ui-Search.png");
   } else expect(footer).toContain(">Apply</button>");
 });
 

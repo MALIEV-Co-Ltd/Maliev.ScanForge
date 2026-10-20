@@ -20,7 +20,7 @@
   color: #123947;
   background: #ccecf6;
 }
-.workspace .object-list > li.selected > button svg {
+.workspace .object-list > li.selected > button :is(svg, img.generated-icon) {
   color: inherit;
 }
 .object-protection {

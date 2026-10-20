@@ -155,7 +155,7 @@ import {
   Trash2,
   Triangle,
   X,
-} from "lucide-react";
+} from "./GeneratedUiIcons";
 import {
   DEFAULT_PART_COLOR,
   DEFAULT_FREEFORM_COLOR,

@@ -123,6 +123,6 @@
   color: #123947;
 }
 
-.object-list > li.selected .object-name svg {
+.object-list > li.selected .object-name :is(svg, img.generated-icon) {
   color: inherit;
 }

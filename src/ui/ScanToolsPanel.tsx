@@ -1,3 +1,4 @@
+import { GeneratedIcon } from "./GeneratedIcon";
 import { AppSelect } from "./AppSelect";
 import { PreviewButton } from "./PreviewButton";
 import { ReductionModeSelect } from "./ReductionModeSelect";
@@ -71,63 +72,13 @@ export const scanToolTitles: Record<ScanToolId, string> = {
   unroll: "Unroll",
 };
 
-/** Gold is the input mesh; cyan shows the resulting geometry or direction. */
 function ToolDiagram({ tool }: { tool: ScanToolId }) {
   return (
-    <svg
+    <GeneratedIcon
+      asset={`ribbon-${tool}`}
+      size={28}
       className="scan-tools-diagram"
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      aria-hidden="true"
-      fill="none"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-    >
-      <path
-        d="M3 7h15v14H3zM3 7l7 7 8-7M3 21l7-7 8 7M10 14v7"
-        fill="#66522d"
-        stroke="#f3c667"
-      />
-      {tool === "reducePolygons" && (
-        <path d="M19 4h6v20h-6M20 10l4 4-4 4" stroke="#87d3e8" />
-      )}
-      {tool === "reduceNoise" && (
-        <>
-          <path d="m3 5 3-3 4 3 4-3 4 3M3 25c5-3 10-3 15 0" stroke="#87d3e8" />
-        </>
-      )}
-      {tool === "scaleMesh" && (
-        <path d="M21 3h4v4M25 3l-9 9M7 25H3v-4M3 25l7-7" stroke="#87d3e8" />
-      )}
-      {tool === "flipNormals" && (
-        <path
-          d="M13 12V2m-3 3 3-3 3 3M23 13v12m-3-3 3 3 3-3"
-          stroke="#87d3e8"
-        />
-      )}
-      {tool === "repolygonize" && (
-        <path
-          d="M3 14h15M6.5 7v14M14 7v14m-11 0 15-14M3 7l15 14"
-          stroke="#87d3e8"
-        />
-      )}
-      {tool === "averageMesh" && (
-        <path d="M6 4h15v14M9 1h15v14M20 21h6m-3-3 3 3-3 3" stroke="#87d3e8" />
-      )}
-      {tool === "mirrorMesh" && (
-        <>
-          <path d="M20 2v24" stroke="#b59aeb" strokeDasharray="2 2" />
-          <path d="m24 7 2 7-2 7" stroke="#87d3e8" />
-        </>
-      )}
-      {tool === "unroll" && (
-        <>
-          <ellipse cx="21" cy="5" rx="4" ry="2" stroke="#87d3e8" />
-          <path d="M17 5v17c0 3 8 3 8 0V5M17 23H7" stroke="#87d3e8" />
-        </>
-      )}
-    </svg>
+    />
   );
 }
 

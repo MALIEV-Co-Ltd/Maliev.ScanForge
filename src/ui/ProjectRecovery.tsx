@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, FileClock, Trash2, X } from "lucide-react";
+import { Check, FileClock, Trash2, X } from "./GeneratedUiIcons";
 import { RibbonCommandIcon } from "./RibbonCommandIcon";
 import type { Backup } from "../project-backup";
 import "./project-backups.css";

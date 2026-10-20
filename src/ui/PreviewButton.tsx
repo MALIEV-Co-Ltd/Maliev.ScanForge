@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search } from "./GeneratedUiIcons";
 import type { ButtonHTMLAttributes } from "react";
 import "./ToolPanel.css";
 

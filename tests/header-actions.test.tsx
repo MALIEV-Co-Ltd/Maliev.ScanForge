@@ -1,6 +1,6 @@
 import { expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { FolderOpen } from "lucide-react";
+import { FolderOpen } from "../src/ui/GeneratedUiIcons";
 import { HeaderIconButton } from "../src/ui/HeaderIconButton";
 import { SaveProjectButton } from "../src/ui/SaveProjectButton";
 import { SaveReminderClock } from "../src/ui/save-reminder";
@@ -18,7 +18,7 @@ it("keeps header actions icon-only with accessible names, hover labels and the a
   const html = renderToStaticMarkup(button);
   expect(html).toContain('aria-label="Open scan"');
   expect(html).toContain('class="header-tooltip" role="tooltip">Open scan');
-  expect(html).toContain("lucide-folder-open");
+  expect(html).toContain("ui-FolderOpen.png");
   expect(
     renderToStaticMarkup(
       <HeaderIconButton label="Open scan" disabled onClick={() => {}}>
@@ -52,9 +52,10 @@ it("does not invent unsaved time for a clean or newly opened project", () => {
   expect(dirty).toContain("needs-save");
   expect(dirty).toContain('aria-label="Save project"');
 });
-it("draws a short SpaceMouse cap and base instead of joystick artwork", () => {
+it("uses generated SpaceMouse controller artwork", () => {
   const icon = renderToStaticMarkup(<SpaceMouseIcon />);
   expect(icon).toContain('data-icon="spacemouse"');
-  expect(icon).toContain("<ellipse");
+  expect(icon).toContain("/icons/generated/spacemouse.png");
+  expect(icon).toContain("<img");
   expect(icon).not.toContain("joystick");
 });

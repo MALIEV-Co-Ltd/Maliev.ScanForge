@@ -1,0 +1,3 @@
+Workflow: built-in image_gen.imagegen
+Prompt: Use case: scientific-educational. Asset: CAD toolbar icon for mesh selection brush. Subject: a short orange bristled selection brush touching a highlighted orange region of a faceted blue mesh patch. Style: precise shaded technical textbook illustration, isometric 3/4, thin crisp navy outlines, flat planar shading, steel gray/muted steel blue, orange active geometry. Strong silhouette readable at 20/40 pixels, few simple details. Centered single isolated square icon occupies 85%, genuinely transparent background. NO text/labels/letters/numbers/watermarks, no glossy emoji, no surrounding panel or scene.
+Source: B:\codex\generated_images\01a15829-9194-7db1-8181-f618880ae819\exec-28839eb9-0552-426c-ad2a-d96333b0fcff.png

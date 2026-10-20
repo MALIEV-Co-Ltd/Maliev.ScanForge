@@ -30,7 +30,7 @@
 .origin-plane-buttons button[aria-pressed="true"] {
   border-color: var(--text);
 }
-.objects-panel > h2 svg {
+.objects-panel > h2 :is(svg, img.generated-icon) {
   flex-shrink: 0;
 }
 .ribbon .header-utilities .header,
@@ -57,7 +57,7 @@
   font-weight: 600;
   line-height: 1;
 }
-.application-version svg {
+.application-version :is(svg, img.generated-icon) {
   color: #72bd89;
 }
 .ribbon .ribbon-tab-row {

@@ -9,7 +9,7 @@
   color: #facc15;
   pointer-events: none;
 }
-.ribbon .ribbon-button .ribbon-status-icon svg {
+.ribbon .ribbon-button .ribbon-status-icon :is(svg, img.generated-icon) {
   width: 13px;
   height: 13px;
   color: inherit;

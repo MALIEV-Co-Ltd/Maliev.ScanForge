@@ -30,12 +30,12 @@ describe("complete ribbon artwork", () => {
       expect(markup).toContain(`data-artwork="${command}"`);
       expect(markup).toContain('aria-hidden="true"');
       expect(markup).not.toMatch(/lucide|<image|<script|url\(/);
-      expect(markup).toContain("<svg");
-      expect(markup).not.toContain("<img");
-      expect(markup).not.toContain("href=");
-      expect(markup).toContain('data-icon-style="geometric-isometric"');
-      expect(markup).toContain('viewBox="0 0 32 32"');
-      expect(markup).toMatch(/(?:fill|stroke)="#(?:[a-f0-9]{3}|[a-f0-9]{6})"/);
+      expect(markup).not.toContain("<svg");
+      expect(markup).toContain("<img");
+      expect(markup).not.toContain("<use");
+      expect(markup).toContain('data-icon-style="generated-technical"');
+      expect(markup).toContain('alt=""');
+      expect(markup).toContain(`/icons/generated/ribbon-${command}.png`);
     }
   });
   it("distinguishes operations with different geometric results", () => {
@@ -65,19 +65,19 @@ describe("complete ribbon artwork", () => {
       renderToStaticMarkup(<RibbonCommandIcon command="unregistered" />),
     ).toThrow("Missing ribbon artwork");
   });
-  it("uses the same vector diagram at compact and full ribbon sizes", () => {
+  it("uses the same generated raster artwork at compact and full ribbon sizes", () => {
     for (const command of ["delete", "repairMesh", "newFreeform"]) {
       const compact = renderToStaticMarkup(
         <RibbonCommandIcon command={command} compact />,
       );
-      expect(compact).toContain("<svg");
-      expect(compact).not.toContain("<img");
+      expect(compact).not.toContain("<svg");
+      expect(compact).toContain("<img");
       expect(compact).toContain(`data-artwork="${command}"`);
       const fullSize = renderToStaticMarkup(
         <RibbonCommandIcon command={command} />,
       );
-      expect(fullSize).toContain("<svg");
-      expect(fullSize).not.toContain("<img");
+      expect(fullSize).not.toContain("<svg");
+      expect(fullSize).toContain("<img");
     }
   });
   it("retains operation-family identity across all authoring commands", () => {
@@ -101,12 +101,12 @@ describe("complete ribbon artwork", () => {
         <RibbonCommandIcon command={command} />,
       );
       expect(markup).toContain('data-palette="reference"');
-      expect(markup).toContain("<svg");
+      expect(markup).not.toContain("<svg");
     }
     const solidMarkup = renderToStaticMarkup(
       <RibbonCommandIcon command="primitive" />,
     );
     expect(solidMarkup).toContain('data-palette="cad"');
-    expect(solidMarkup).not.toContain("<img");
+    expect(solidMarkup).toContain("<img");
   });
 });

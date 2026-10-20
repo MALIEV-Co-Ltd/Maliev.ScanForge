@@ -295,7 +295,7 @@ h3 {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.object-name svg {
+.object-name :is(svg, img.generated-icon) {
   color: var(--accent);
 }
 .wide {
@@ -439,7 +439,7 @@ h3 {
   gap: 12px;
   border-bottom: 1px solid var(--border);
 }
-.selected-title > svg {
+.selected-title > :is(svg, img.generated-icon) {
   color: var(--accent);
   flex-shrink: 0;
 }
@@ -995,7 +995,7 @@ dd {
   font-size: 11px;
   gap: 6px;
 }
-.header-actions svg {
+.header-actions :is(svg, img.generated-icon) {
   width: 15px;
   height: 15px;
 }
@@ -1041,7 +1041,7 @@ dd {
   gap: 6px;
   font-size: 11px;
 }
-.element-grid svg {
+.element-grid :is(svg, img.generated-icon) {
   color: var(--accent);
 }
 .project-name {
@@ -1290,7 +1290,7 @@ dd {
   font-size: 11px;
   line-height: 1.25;
 }
-.ribbon-button svg {
+.ribbon-button :is(svg, img.generated-icon) {
   color: var(--accent);
 }
 .ribbon-button:disabled {
@@ -1475,7 +1475,7 @@ dd {
   padding: 7px;
   border: 1px solid var(--border);
 }
-.edit-scan-dialog button svg {
+.edit-scan-dialog button :is(svg, img.generated-icon) {
   vertical-align: middle;
 }
 .edit-scan-dialog form {

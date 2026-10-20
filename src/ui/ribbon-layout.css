@@ -2,27 +2,27 @@
   display: flex;
   align-items: stretch;
 }
-/* Flat vector diagrams share the existing ribbon layout. */
-.ribbon-button svg.ribbon-cad-icon {
+/* Generated technical illustrations share the existing ribbon layout. */
+.ribbon-button .ribbon-cad-icon {
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
 }
-.ribbon-button:has(svg.ribbon-cad-icon) {
+.ribbon-button:has(.ribbon-cad-icon) {
   padding-top: 2px;
   padding-bottom: 2px;
   gap: 2px;
 }
 /* Keep unavailable illustrations recognizable without suggesting availability. */
-.ribbon-button:disabled:has(svg.ribbon-cad-icon) {
+.ribbon-button:disabled:has(.ribbon-cad-icon) {
   opacity: 0.6;
 }
-.ribbon .ribbon-button:disabled svg.ribbon-cad-icon {
+.ribbon .ribbon-button:disabled .ribbon-cad-icon {
   filter: grayscale(0.65);
   opacity: 1;
 }
-.ribbon-options .ribbon-button svg.ribbon-cad-icon,
-.ribbon-group-compact .ribbon-button svg.ribbon-cad-icon {
+.ribbon-options .ribbon-button .ribbon-cad-icon,
+.ribbon-group-compact .ribbon-button .ribbon-cad-icon {
   width: 28px;
   height: 28px;
 }
@@ -53,7 +53,7 @@
   justify-content: flex-start;
   padding: 4px 6px;
 }
-.ribbon-options .ribbon-button svg {
+.ribbon-options .ribbon-button :is(svg, img.generated-icon) {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
@@ -80,7 +80,7 @@
   padding: 2px 16px 2px 2px;
   gap: 4px;
 }
-.ribbon-group-compact .ribbon-button svg {
+.ribbon-group-compact .ribbon-button :is(svg, img.generated-icon) {
   width: 22px;
   height: 22px;
   flex-shrink: 0;

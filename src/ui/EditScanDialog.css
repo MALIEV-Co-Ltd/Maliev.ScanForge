@@ -154,8 +154,8 @@ section.edit-scan-dialog .scan-tool-row button {
   min-height: 32px;
   gap: 4px;
 }
-section.edit-scan-dialog .scan-tool-row button svg,
-section.edit-scan-dialog .edit-scan-through svg {
+section.edit-scan-dialog .scan-tool-row button :is(svg, img.generated-icon),
+section.edit-scan-dialog .edit-scan-through :is(svg, img.generated-icon) {
   width: 18px;
   height: 18px;
 }

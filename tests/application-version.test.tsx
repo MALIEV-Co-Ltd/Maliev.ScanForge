@@ -8,9 +8,9 @@ it("shows the package version and links to repository change history", () => {
   expect(html).toContain(
     `<span class="application-version-badge">v${version}</span>`,
   );
-  expect(html).toContain("lucide-github");
+  expect(html).toContain("ui-Github.png");
   expect(html.indexOf("application-version-badge")).toBeLessThan(
-    html.indexOf("lucide-github"),
+    html.lastIndexOf("ui-Github.png"),
   );
   expect(html).toContain(
     'href="https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/releases"',

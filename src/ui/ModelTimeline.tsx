@@ -7,7 +7,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Layers,
-} from "lucide-react";
+} from "./GeneratedUiIcons";
 import "./model-timeline.css";
 
 import { RibbonCommandIcon, ribbonCommandPalette } from "./RibbonCommandIcon";

@@ -4,7 +4,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { Keyboard } from "lucide-react";
+import { Keyboard } from "./GeneratedUiIcons";
 import {
   activeToolGuidance,
   compactToolGuidance,

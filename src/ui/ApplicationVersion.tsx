@@ -1,5 +1,5 @@
 import { version } from "../../package.json";
-import { Github } from "lucide-react";
+import { Github } from "./GeneratedUiIcons";
 
 export function ApplicationVersion() {
   return (

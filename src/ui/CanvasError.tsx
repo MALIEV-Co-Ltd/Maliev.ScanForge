@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X } from "./GeneratedUiIcons";
 import "./ErrorBanner.css";
 
 export function CanvasError({
