@@ -1,6 +1,7 @@
 import { yieldScanTask } from "./scan-task";
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { datumFeatureMetadata } from "./scan-native-datum-primitive";
+import { cacheScanRenderData, prepareScanRenderData } from "./scan-render-data";
 import {
   cloudPoseMatrix,
   nextCloudPlacementStages,
@@ -171,6 +172,16 @@ export async function transformDatumScanStages(
     surfaceScanId: undefined,
     ...metadata,
   };
+  if (output.kind === "mesh" && output.indexedMesh) {
+    await yieldScanTask();
+    check();
+    const renderData = prepareScanRenderData(
+      positions.output,
+      output.indexedMesh,
+    );
+    check();
+    cacheScanRenderData(output.positions, renderData);
+  }
   return {
     entity: placement
       ? placedCloud(output, placement, {

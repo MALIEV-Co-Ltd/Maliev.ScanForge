@@ -6,6 +6,8 @@ import { smoothDisplayNormals } from "./viewport-display";
 /** Disposable display data stays outside authored entities and project files. */
 export interface ScanRenderData {
   normals?: Float32Array;
+  /** When present, display normals follow this topology's vertex order. */
+  indexedMesh?: IndexedMesh;
   bounds: [number, number, number, number, number, number];
   /** Conservative radius about the bounds midpoint, avoiding another vertex scan. */
   radius: number;
@@ -39,10 +41,7 @@ export function scanRenderData(
   return prepared.get(positions);
 }
 
-function indexedNormals(
-  positions: Float32Array,
-  mesh: IndexedMesh,
-): Float32Array {
+function indexedNormals(mesh: IndexedMesh): Float32Array {
   const sums = new Float32Array(mesh.vertices.length);
   const triangles = mesh.triangles;
   for (let i = 0; i < triangles.length; i += 3) {
@@ -74,15 +73,7 @@ function indexedNormals(
       sums[i + 2] /= length;
     }
   }
-  const normals = new Float32Array(positions.length);
-  for (let i = 0; i < triangles.length; i++) {
-    const source = triangles[i] * 3,
-      target = i * 3;
-    normals[target] = sums[source];
-    normals[target + 1] = sums[source + 1];
-    normals[target + 2] = sums[source + 2];
-  }
-  return normals;
+  return sums;
 }
 
 /** Run in the import worker after unit conversion and placement, before transfer. */
@@ -111,14 +102,19 @@ export function prepareScanRenderData(
     (bounds[4] - bounds[1]) / 2,
     (bounds[5] - bounds[2]) / 2,
   );
+  const mesh =
+    !pointCloud && indexedMeshMatches(indexedMesh, positions)
+      ? indexedMesh
+      : undefined;
   return {
     bounds,
     radius,
     stats,
+    indexedMesh: mesh,
     normals: pointCloud
       ? undefined
-      : indexedMeshMatches(indexedMesh, positions)
-        ? indexedNormals(positions, indexedMesh)
+      : mesh
+        ? indexedNormals(mesh)
         : smoothDisplayNormals(positions),
   };
 }

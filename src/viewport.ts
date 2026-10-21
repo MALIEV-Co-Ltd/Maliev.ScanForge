@@ -49,6 +49,10 @@ import type {
 } from "./scan-bridge-gesture";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
 import { scanRenderData } from "./scan-render-data";
+import {
+  scanDisplayBuffers,
+  indexedDisplayValues,
+} from "./scan-display-buffers";
 import { presentFrame } from "./frame-presentation";
 import {
   inspectCamera,
@@ -138,6 +142,9 @@ type Item = {
   selectionIndex?: AsyncScreenSelectionIndex;
   positions: Positions;
   renderPositions?: Positions;
+  renderTopology?: Entity["indexedMesh"];
+  displayBuffers?: ReturnType<typeof scanDisplayBuffers>;
+  deviationGeometry?: THREE.BufferGeometry;
   worldBounds?: THREE.Box3;
   color: string;
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
@@ -2599,6 +2606,8 @@ export class Viewport {
         this.scene.remove(item.mesh);
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
+        item.deviationGeometry?.dispose();
+        item.deviationGeometry = undefined;
         item.mesh.material.dispose();
         item.cadEdges?.geometry.dispose();
         item.cadEdges?.material.dispose();
@@ -2626,14 +2635,18 @@ export class Viewport {
       item.mesh.name = entity.name;
       const placement = cloudPlacement(entity);
       const renderPositions = placement?.sourcePositions ?? entity.positions;
+      const renderTopology = placement ? undefined : entity.indexedMesh;
       const renderNormals = placement?.sourceNormals ?? entity.normals;
       if (
         item.renderPositions !== renderPositions ||
+        item.renderTopology !== renderTopology ||
         item.hidden !== entity.meshSelection?.hidden
       ) {
         item.worldBounds = undefined;
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
+        item.deviationGeometry?.dispose();
+        item.deviationGeometry = undefined;
         item.selectionIndex = undefined;
         if (item.pointCloud) {
           item.pointDeviation = undefined;
@@ -2642,43 +2655,33 @@ export class Viewport {
           item.pointCloud.material.dispose();
           item.pointCloud = undefined;
         }
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute(
-          "position",
-          renderPositions instanceof Float32Array
-            ? new THREE.BufferAttribute(renderPositions, 3)
-            : new THREE.Float32BufferAttribute(renderPositions, 3),
-        );
-        item.triangleSlots = undefined;
-        if (
-          entity.kind !== "pointcloud" &&
-          entity.meshSelection?.hidden.length
-        ) {
-          const hidden = new Set(entity.meshSelection.hidden);
-          const slots: number[] = [],
-            indices = new Uint32Array(
-              (entity.positions.length / 9 - hidden.size) * 3,
-            );
-          let offset = 0;
-          for (let i = 0; i < entity.positions.length / 9; i++)
-            if (!hidden.has(i)) {
-              slots.push(i);
-              indices[offset++] = i * 3;
-              indices[offset++] = i * 3 + 1;
-              indices[offset++] = i * 3 + 2;
-            }
-          geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-          item.triangleSlots = slots;
-        }
-        item.hidden = entity.meshSelection?.hidden;
         const prepared =
           entity.kind === "pointcloud"
             ? undefined
             : scanRenderData(entity.positions);
-        if (prepared?.normals) {
+        const display = scanDisplayBuffers(
+          renderPositions,
+          renderTopology,
+          placement ? undefined : prepared,
+          entity.kind === "pointcloud"
+            ? []
+            : (entity.meshSelection?.hidden ?? []),
+        );
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          display.positions instanceof Float32Array
+            ? new THREE.BufferAttribute(display.positions, 3)
+            : new THREE.Float32BufferAttribute(display.positions, 3),
+        );
+        if (display.index)
+          geometry.setIndex(new THREE.BufferAttribute(display.index, 1));
+        item.triangleSlots = display.triangleSlots;
+        item.hidden = entity.meshSelection?.hidden;
+        if (display.normals) {
           geometry.setAttribute(
             "normal",
-            new THREE.BufferAttribute(prepared.normals, 3),
+            new THREE.BufferAttribute(display.normals, 3),
           );
         } else if (
           entity.kernelId &&
@@ -2743,6 +2746,8 @@ export class Viewport {
           void prepareViewportPicking(item.mesh);
         item.positions = entity.positions;
         item.renderPositions = renderPositions;
+        item.renderTopology = renderTopology;
+        item.displayBuffers = display;
         item.mesh.material.vertexColors = false;
       }
       if (item.positions !== entity.positions) {
@@ -3911,6 +3916,12 @@ export class Viewport {
 
   private clearDeviations(): void {
     for (const item of this.objects.values()) {
+      if (item.deviationGeometry) {
+        const expanded = item.mesh.geometry;
+        item.mesh.geometry = item.deviationGeometry;
+        item.deviationGeometry = undefined;
+        expanded.dispose();
+      }
       if (item.pointDeviation && item.pointCloud) {
         const saved = item.pointDeviation;
         if (saved.colorAttribute)
@@ -3944,9 +3955,45 @@ export class Viewport {
       this.invalidate();
       return;
     }
+    const sourceCount = item.positions
+      ? item.positions.length / 3
+      : (item.pointCloud ?? item.mesh).geometry.getAttribute("position").count;
+    let displayValues: ArrayLike<number> | null =
+      values?.length === sourceCount ? values : null;
+    if (displayValues && !item.pointCloud && item.displayBuffers?.indexed) {
+      const mapped = indexedDisplayValues(values!, item.renderTopology!);
+      if (mapped) displayValues = mapped;
+      else {
+        const display = scanDisplayBuffers(
+          item.renderPositions ?? item.positions,
+          item.renderTopology,
+          scanRenderData(item.positions),
+          item.hidden ?? [],
+          true,
+        );
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          display.positions instanceof Float32Array
+            ? new THREE.BufferAttribute(display.positions, 3)
+            : new THREE.Float32BufferAttribute(display.positions, 3),
+        );
+        if (display.normals)
+          geometry.setAttribute(
+            "normal",
+            new THREE.BufferAttribute(display.normals, 3),
+          );
+        if (display.index)
+          geometry.setIndex(new THREE.BufferAttribute(display.index, 1));
+        geometry.boundingBox = item.mesh.geometry.boundingBox;
+        geometry.boundingSphere = item.mesh.geometry.boundingSphere;
+        item.deviationGeometry = item.mesh.geometry;
+        item.mesh.geometry = geometry;
+      }
+    }
     const rendered = item.pointCloud ?? item.mesh;
     const count = rendered.geometry.getAttribute("position").count;
-    if (values && values.length === count) {
+    if (displayValues && displayValues.length === count) {
       if (item.pointCloud) {
         item.pointDeviation = {
           colorAttribute: item.pointCloud.geometry.getAttribute("color"),
@@ -3962,8 +4009,8 @@ export class Viewport {
       const positive = new THREE.Color("#e56b47");
       const limit = Math.max(Math.abs(tolerance), 0.000001);
       for (let i = 0; i < count; i++) {
-        const signed = Number.isFinite(values[i])
-          ? Math.max(-1, Math.min(1, values[i] / limit))
+        const signed = Number.isFinite(displayValues[i])
+          ? Math.max(-1, Math.min(1, displayValues[i] / limit))
           : 0;
         color
           .copy(zero)
@@ -4040,6 +4087,8 @@ export class Viewport {
     for (const item of this.objects.values()) {
       item.selectionIndex?.dispose();
       item.mesh.geometry.dispose();
+      item.deviationGeometry?.dispose();
+      item.deviationGeometry = undefined;
       item.mesh.material.dispose();
       item.cadEdges?.geometry.dispose();
       item.cadEdges?.material.dispose();

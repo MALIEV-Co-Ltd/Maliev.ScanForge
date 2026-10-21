@@ -30,12 +30,46 @@ it("prepares smooth normals from source connectivity without changing geometry",
   const positions = expandPlyTopology(topology);
   const original = positions.slice();
   const data = prepareScanRenderData(positions, topology);
-  expect(data.normals?.length).toBe(positions.length);
+  expect(data.indexedMesh).toBe(topology);
+  expect(data.normals?.length).toBe(topology.vertices.length);
+  expect(data.normals!.byteLength).toBeLessThan(positions.byteLength);
   expect(data.normals?.[1]).toBeCloseTo(Math.SQRT1_2);
   expect(data.normals?.[2]).toBeCloseTo(Math.SQRT1_2);
   expect(data.normals?.[8]).toBeCloseTo(1);
   expect(data.stats).toEqual(meshStats(positions));
   expect(positions).toEqual(original);
+});
+
+it("expands indexed display normals to the exact previous Float32 soup values", () => {
+  const data = prepareScanRenderData(expandPlyTopology(topology), topology);
+  const s = Math.SQRT1_2;
+  const previous = new Float32Array([
+    0,
+    s,
+    s,
+    0,
+    s,
+    s,
+    0,
+    0,
+    1,
+    0,
+    s,
+    s,
+    0,
+    1,
+    0,
+    0,
+    s,
+    s,
+  ]);
+  const expanded = expandPlyTopology({
+    vertices: data.normals!,
+    triangles: topology.triangles,
+  });
+  expect(new Uint8Array(expanded.buffer)).toEqual(
+    new Uint8Array(previous.buffer),
+  );
 });
 
 it("preserves separate vertex identities even when coordinates coincide", () => {
@@ -54,8 +88,28 @@ it("falls back to existing weld semantics when topology is absent or stale", () 
   const positions = expandPlyTopology(topology);
   const stale = { ...topology, triangles: new Uint32Array([1, 0, 2, 0, 3, 1]) };
   const expected = smoothDisplayNormals(positions);
-  expect(prepareScanRenderData(positions).normals).toEqual(expected);
-  expect(prepareScanRenderData(positions, stale).normals).toEqual(expected);
+  for (const mesh of [undefined, stale]) {
+    const data = prepareScanRenderData(positions, mesh);
+    expect(data.normals).toEqual(expected);
+    expect(data.indexedMesh).toBeUndefined();
+    expect(data.bounds).toEqual([0, 0, 0, 1, 1, 1]);
+    expect(data.stats).toEqual(meshStats(positions));
+  }
+});
+
+it("keeps authored-soup bounds and statistics when topology has unused vertices", () => {
+  const mesh = {
+    vertices: new Float32Array([...topology.vertices, -100, 200, 300]),
+    triangles: topology.triangles,
+  };
+  const positions = expandPlyTopology(mesh);
+  const data = prepareScanRenderData(positions, mesh);
+  expect(data.indexedMesh).toBe(mesh);
+  expect(data.normals?.length).toBe(mesh.vertices.length);
+  expect(Array.from(data.normals!.subarray(-3))).toEqual([0, 0, 0]);
+  expect(data.bounds).toEqual([0, 0, 0, 1, 1, 1]);
+  expect(data.radius).toBe(Math.hypot(0.5, 0.5, 0.5));
+  expect(data.stats).toEqual(meshStats(positions));
 });
 
 it("provides exact bounds and a conservative sphere without normals for point clouds", () => {
@@ -65,6 +119,7 @@ it("provides exact bounds and a conservative sphere without normals for point cl
   expect(data.radius).toBeCloseTo(9);
   expect(data.normals).toBeUndefined();
   expect(data.stats).toBeUndefined();
+  expect(data.indexedMesh).toBeUndefined();
 });
 
 it("keeps render preparation tied to the exact geometry buffer identity", () => {
