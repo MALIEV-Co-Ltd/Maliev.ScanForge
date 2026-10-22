@@ -410,3 +410,23 @@ provide explicit agent access. Binaryv4 stores byte chunks outside metadata,
 deduplicates across history and rejects malformed references/opaque-alpha/count
 mismatches before publication. JSONv2 prevents silent loss in old readers.
 See [ASC attributes](ASC_ATTRIBUTES.md) for version and fidelity limitations.
+
+## Analytic sketch mirror copies
+
+`sketch_mirror` snapshots the active draft (falling back to authoring sketch),
+awaits the shared immutable `mirrorSketch` helper with the operation's signal and
+revision check, then checks again immediately before one `setSketch` publication.
+The GUI dispatches the same operation. The existing adapter owns the saved-sketch
+or legacy-sketch undo entry; no model commit or separate agent implementation is
+introduced. Discovery exposes the construction axis, selected line/arc IDs,
+revision/retry fields, coordinate units, output maps and bounded failure states.
+
+Copies retain selected shared topology without sharing editable point IDs with
+originals. Reflection reverses arc direction and preserves construction flags,
+frame and scan references; constraints are retained only on original geometry.
+Maps use own keys safely even for prototype-like source IDs. Input/output counts
+and synchronous validation work are admitted before copying, with periodic
+event-loop yields, cancellation/revision checks and a final publication check.
+The operation returns IDs and maps rather than duplicating the whole sketch in
+its response; `sketch_get` exposes the resulting graph. Native workflow evidence
+and remaining numerical fidelity limits are in [mirror evidence](NATIVE_SKETCH_MIRROR.md).

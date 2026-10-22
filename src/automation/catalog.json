@@ -3507,6 +3507,40 @@
     }
   },
   {
+    "name": "sketch_mirror",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside ±1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "axis": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Existing straight construction segment ID; the infinite supporting line is the mirror axis."
+        },
+        "curveIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "description": "Existing line/arc IDs to copy, excluding the axis. Include both semicircles for a stored two-arc circle."
+        },
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical requests, retained for latest256 requests."
+        }
+      },
+      "required": ["axis", "curveIds", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "sketch_solve",
     "description": "Solve supplied sketch constraints and return residual/conflict/degree-of-freedom diagnostics.",
     "readOnly": true,

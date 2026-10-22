@@ -1613,6 +1613,10 @@ dd {
   padding: 14px;
   border-top: 1px solid var(--border);
 }
+.sketch-mirror-curves {
+  max-height: 12rem;
+  overflow-y: auto;
+}
 [data-workspace="advancedCad"] .advanced-cad-panels {
   display: block;
 }

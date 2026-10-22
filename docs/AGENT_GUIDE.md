@@ -1461,3 +1461,39 @@ interpretation-bearing saves require JSON wirev2/binaryv4; older readers reject
 these versions. Current readers retain older projects. Read [ASC attributes](ASC_ATTRIBUTES.md)
 for parsing bounds, history and export limits. Native displayed-color and full
 GUI importer equivalence remain unverified.
+
+### Mirror sketch geometry
+
+Read `sketch_get`, then call `sketch_mirror` with a straight construction segment
+ID as `axis`, a nonempty unique `curveIds` array, and the usual
+`expectedRevision`/`requestId`. The infinite supporting line is the mirror axis;
+coordinates are local sketch UV millimetres. Exclude the axis from `curveIds`.
+To copy a circle stored as two semicircles, select both arc IDs. The GUI's
+**Mirror geometry → Mirror axis → curve checkboxes → Mirror selected** uses the
+same operation.
+
+This creates independent copies. Originals and existing constraints remain;
+no symmetry or copied constraints are added. Shared selected endpoints and arc
+centres are copied once, construction flags survive, and arc direction reverses.
+Frame and scan-reference metadata remain unchanged. The result contains
+`changed:true`, `pointMap`, `curveMap`, `createdPointIds`, and `createdCurveIds`.
+Maps associate original IDs with copy IDs; new IDs are deterministic in stored
+point/curve order, independent of selection order. Read `sketch_get` to inspect
+the copied analytic geometry. One `history_undo`/`history_redo` with
+`scope:"sketch"` steps the edit; model history remains separate.
+
+Mirror does not weld coincident endpoints. An open half-profile can look closed
+after mirroring while extrusion still rejects it because its endpoints have
+different point IDs. Coincident constraints alone do not join topology. For
+lines, use the GUI segment endpoint selectors to reuse the corresponding point
+IDs; general line/arc relinking is available through `sketch_set`. Automatic
+profile joining and GUI arc-endpoint relinking remain separate workflow gaps.
+
+Limits are 32768 input/output points, 8192 input/output stored curves, 4096
+constraints, 4096 selected curves and 2000000 work units. Coordinates must remain
+within ±1e9 mm; axis length must be at least 1e-10 mm. Invalid references,
+nonconstruction/degenerate axes, exceeded limits, cancellation and changed
+revisions fail before publication. The helper yields during bounded work and
+uses the existing executor's cancellation, busy and retry guards. These bounds
+and ID rules are implementation policies; exact native thresholds and ID order
+remain unverified. See [mirror evidence](NATIVE_SKETCH_MIRROR.md).

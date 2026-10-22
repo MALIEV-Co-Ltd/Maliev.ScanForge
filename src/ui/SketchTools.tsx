@@ -6,6 +6,7 @@ import { coordinateSketchFrame } from "../sketch-frame";
 import { resetSketchRectangle } from "../sketch-authoring";
 import { cornerTrimSketch, type SketchCornerSelection } from "../sketch-corner";
 import { filletSketchCorner, type SketchFilletRequest } from "../sketch-fillet";
+import { mirrorSketch, type SketchMirrorRequest } from "../sketch-mirror";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
@@ -24,6 +25,7 @@ export interface SketchToolsProps {
   onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
   onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
   onCornerFillet?: (options: SketchFilletRequest) => void | Promise<void>;
+  onMirror?: (options: SketchMirrorRequest) => void | Promise<void>;
   onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
@@ -56,6 +58,7 @@ export function SketchTools({
   onConstrain,
   onCornerTrim,
   onCornerFillet,
+  onMirror,
   onExtrude,
   disabled = false,
   drawingTool = "navigate",
@@ -105,6 +108,9 @@ export function SketchTools({
   const [cornerSecondEnd, setCornerSecondEnd] = useState<"a" | "b">("a");
   const [cornerPending, setCornerPending] = useState(false);
   const [filletRadiusMm, setFilletRadiusMm] = useState(2);
+  const [requestedMirrorAxis, setMirrorAxis] = useState("");
+  const [mirrorSelection, setMirrorSelection] = useState<string[]>([]);
+  const [mirrorPending, setMirrorPending] = useState(false);
   const firstLine = sketch.segments.some((s) => s.id === cornerFirst)
     ? cornerFirst
     : (sketch.segments[0]?.id ?? "");
@@ -113,6 +119,16 @@ export function SketchTools({
     ? cornerSecond
     : (otherLines[0]?.id ?? "");
   const axes = sketch.segments.filter((segment) => segment.construction);
+  const mirrorAxis = axes.some((segment) => segment.id === requestedMirrorAxis)
+    ? requestedMirrorAxis
+    : (axes[0]?.id ?? "");
+  const mirrorCurves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+    (curve) => curve.id !== mirrorAxis,
+  );
+  const mirrorSelectedIds = new Set(mirrorSelection);
+  const selectedMirrorCurves = mirrorCurves
+    .filter((curve) => mirrorSelectedIds.has(curve.id))
+    .map((curve) => curve.id);
   const symmetryAxis = axes.some((segment) => segment.id === requestedAxis)
     ? requestedAxis
     : (axes[0]?.id ?? "");
@@ -524,6 +540,90 @@ export function SketchTools({
           }}
         >
           Create fillet
+        </button>
+      </fieldset>
+      <fieldset disabled={disabled || mirrorPending}>
+        <legend>Mirror geometry</legend>
+        <label>
+          Mirror axis
+          <AppSelect
+            value={mirrorAxis}
+            disabled={!axes.length}
+            onChange={(event) => setMirrorAxis(event.target.value)}
+          >
+            {!axes.length && (
+              <option value="">Create a construction line first</option>
+            )}
+            {axes.map((axis) => (
+              <option key={axis.id} value={axis.id}>
+                {axis.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <div className="button-row">
+          <button
+            disabled={!mirrorCurves.length}
+            onClick={() =>
+              setMirrorSelection(mirrorCurves.map((curve) => curve.id))
+            }
+          >
+            Select all curves
+          </button>
+          <button
+            disabled={!selectedMirrorCurves.length}
+            onClick={() => setMirrorSelection([])}
+          >
+            Clear mirror selection
+          </button>
+        </div>
+        <div className="sketch-mirror-curves">
+          {mirrorCurves.map((curve) => (
+            <label className="check" key={curve.id}>
+              <input
+                type="checkbox"
+                checked={mirrorSelectedIds.has(curve.id)}
+                onChange={(event) =>
+                  setMirrorSelection((selected) =>
+                    event.target.checked
+                      ? [...selected, curve.id]
+                      : selected.filter((id) => id !== curve.id),
+                  )
+                }
+              />
+              Mirror {curve.id} · {"center" in curve ? "arc" : "line"}
+            </label>
+          ))}
+        </div>
+        <p className="hint">
+          Copy selected curves across the construction line. Originals and
+          existing relations stay in place; copies have no new relations. Select
+          both arcs of a circle.
+        </p>
+        <button
+          disabled={!mirrorAxis || !selectedMirrorCurves.length}
+          onClick={async () => {
+            const options = {
+              axis: mirrorAxis,
+              curveIds: selectedMirrorCurves,
+            };
+            setMirrorPending(true);
+            try {
+              if (onMirror) await onMirror(options);
+              else update((await mirrorSketch(sketch, options)).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : "Sketch mirror failed.",
+              );
+            } finally {
+              setMirrorPending(false);
+            }
+          }}
+        >
+          Mirror selected
         </button>
       </fieldset>
       <svg

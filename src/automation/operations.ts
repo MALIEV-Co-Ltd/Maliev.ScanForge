@@ -55,6 +55,7 @@ import { validateSketch, solveSketch } from "../sketch";
 import { cornerTrimSketch } from "../sketch-corner";
 import { filletSketchCorner } from "../sketch-fillet";
 import { trimSketchStroke } from "../sketch-trim";
+import { mirrorSketch } from "../sketch-mirror";
 import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
@@ -1428,6 +1429,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (result.changed) host.setSketch(result.sketch);
       const { sketch: _, ...diagnostics } = result;
       return diagnostics;
+    },
+    sketch_mirror: async (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = await mirrorSketch(
+        sketch,
+        { axis: a.axis, curveIds: a.curveIds },
+        { signal: c.signal, check: c.check },
+      );
+      c.check();
+      host.setSketch(result.sketch);
+      const { sketch: _, ...copies } = result;
+      return { changed: true, ...copies };
     },
     sketch_solve: (a, c) => {
       const s = host.snapshot(),

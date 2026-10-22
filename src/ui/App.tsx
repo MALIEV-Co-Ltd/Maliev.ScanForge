@@ -6374,6 +6374,12 @@ export function App() {
                         });
                         if (!result.ok) throw new Error(result.error.message);
                       }}
+                      onMirror={async (options) => {
+                        const result = await uiCommand("sketch_mirror", {
+                          ...options,
+                        });
+                        if (!result.ok) throw new Error(result.error.message);
+                      }}
                       onConstrain={async (constraint) => {
                         const result = await uiCommand("sketch_set", {
                           sketch: {
