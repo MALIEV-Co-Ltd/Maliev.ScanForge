@@ -326,3 +326,7 @@ Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` sh
 The sketch panel's Add constraint action submits `sketch_set` with `solve:true`. The existing executor validates the full Sketch v1, solves it, rejects conflicts before host mutation and publishes once through `setSketch`; revision checks, retry receipts and per-sketch edit history remain shared with MCP. The default false preserves unsolved-draft replacement. Symmetry is a persisted shared-solver constraint, including its construction-axis reference and explicit endpoint correspondence; no separate agent solver or GUI-only geometry path is introduced.
 
 GUI extrusion requests `cad_create.selectCreated:true`; selection is published inside the shared operation before job completion. The GUI completion poll only reports errors and performs no later selection mutation. The optional flag preserves existing selection defaults for agents.
+
+### Construction sketch display
+
+The viewport separates ordinary and construction line/arc display batches. Construction batches use dashed materials and per-primitive normalized line distances; their source remains the same shared Sketch v1 returned by `sketch_get` and written by `sketch_set`. No display-only agent operation or separate geometry model is introduced. Point-relation markers include the additional references of symmetry constraints; solver diagnostics remain authoritative for local DOF.

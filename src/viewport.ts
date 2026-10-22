@@ -1920,11 +1920,20 @@ export class Viewport {
         this.invalidate();
         return;
       }
-      const lines: number[] = [];
+      const lines: number[] = [],
+        constructionLines: number[] = [],
+        constructionEnds: number[] = [];
       for (const segment of sketch.segments) {
         const a = sketch.points.find((p) => p.id === segment.a),
           b = sketch.points.find((p) => p.id === segment.b);
-        if (a && b) lines.push(...world([a.x, a.y]), ...world([b.x, b.y]));
+        if (a && b) {
+          (segment.construction ? constructionLines : lines).push(
+            ...world([a.x, a.y]),
+            ...world([b.x, b.y]),
+          );
+          if (segment.construction)
+            constructionEnds.push(constructionLines.length);
+        }
       }
       for (const arc of sketch.arcs ?? []) {
         let samples: SketchUV[];
@@ -1936,9 +1945,20 @@ export class Viewport {
         const end = sketch.points.find((p) => p.id === arc.b);
         if (end) samples.push([end.x, end.y]);
         for (let i = 1; i < samples.length; i++)
-          lines.push(...world(samples[i - 1]), ...world(samples[i]));
+          (arc.construction ? constructionLines : lines).push(
+            ...world(samples[i - 1]),
+            ...world(samples[i]),
+          );
+        if (arc.construction) constructionEnds.push(constructionLines.length);
       }
       this.addSketchLines(this.sketchGeometry, lines, "#eeeeee");
+      this.addSketchLines(
+        this.sketchGeometry,
+        constructionLines,
+        "#eeeeee",
+        true,
+        constructionEnds,
+      );
       const constrained = new Set<string>();
       for (const c of sketch.constraints) {
         if ("point" in c) constrained.add(c.point);
@@ -1961,6 +1981,17 @@ export class Viewport {
           if (primitive) {
             constrained.add(primitive.a);
             constrained.add(primitive.b);
+          }
+        }
+        if (c.kind === "symmetric") {
+          const axis = sketch.segments.find((s) => s.id === c.axis);
+          if (axis) {
+            constrained.add(axis.a);
+            constrained.add(axis.b);
+          }
+          for (const id of [c.first, c.second]) {
+            const arc = sketch.arcs?.find((a) => a.id === id);
+            if (arc) constrained.add(arc.center);
           }
         }
       }
@@ -2089,6 +2120,8 @@ export class Viewport {
     group: THREE.Group,
     positions: number[],
     color: string,
+    construction = false,
+    primitiveEnds = [positions.length],
   ): void {
     if (!positions.length) return;
     const geometry = new THREE.BufferGeometry();
@@ -2096,9 +2129,44 @@ export class Viewport {
       "position",
       new THREE.Float32BufferAttribute(positions, 3),
     );
+    if (construction) {
+      // Normalize each original line/arc independently: spatial separation and
+      // mixed primitive lengths must not turn short reference curves solid.
+      // Keep arc samples continuous and retain a single geometry/material batch.
+      const distances = new Float32Array(positions.length / 3);
+      let start = 0;
+      for (const end of primitiveEnds) {
+        let total = 0;
+        for (let i = start; i < end; i += 6) {
+          distances[i / 3] = total;
+          total += Math.hypot(
+            positions[i + 3] - positions[i],
+            positions[i + 4] - positions[i + 1],
+            positions[i + 5] - positions[i + 2],
+          );
+          distances[i / 3 + 1] = total;
+        }
+        if (Number.isFinite(total) && total > 0) {
+          for (let i = start / 3; i < end / 3; i++) distances[i] /= total;
+          distances[end / 3 - 1] = 1;
+        }
+        start = end;
+      }
+      geometry.setAttribute(
+        "lineDistance",
+        new THREE.BufferAttribute(distances, 1),
+      );
+    }
     const lines = new THREE.LineSegments(
       geometry,
-      new THREE.LineBasicMaterial({ color, depthTest: false }),
+      construction
+        ? new THREE.LineDashedMaterial({
+            color,
+            depthTest: false,
+            dashSize: 1 / 32,
+            gapSize: 1 / 32,
+          })
+        : new THREE.LineBasicMaterial({ color, depthTest: false }),
     );
     lines.renderOrder = 10;
     group.add(lines);
