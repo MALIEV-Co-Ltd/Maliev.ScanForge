@@ -3,6 +3,7 @@ import {
   cancelShrinkwrapOperation,
   runShrinkwrapPreviewCommand,
 } from "./shrinkwrap-preview-command";
+import { runReconstructionCommand } from "./reconstruction-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
 import { primitiveFitSamples } from "../primitive-fit-samples";
 import { getWorkingJobStatus } from "../working-job-status";
@@ -2536,6 +2537,58 @@ export function App() {
   }
   async function applyScanTool(parameters: ScanToolParameters) {
     if (!selected || busy || scanToolAbort.current) return;
+    if (parameters.kind === "repolygonize") {
+      const sourceId = selected.id;
+      const controller = new AbortController();
+      scanToolAbort.current = controller;
+      scanToolAccepting.current = true;
+      setError("");
+      setScanToolResult("");
+      setScanToolFraction(undefined);
+      setScanToolProgress("Preparing reconstruction");
+      try {
+        const result = await runReconstructionCommand(
+          workspaceApi,
+          {
+            entityId: sourceId,
+            resolution: parameters.resolution,
+            ...(parameters.targetIds?.length
+              ? { targetIds: parameters.targetIds }
+              : {}),
+          },
+          {
+            signal: controller.signal,
+            onProgress: (fraction, stage) => {
+              const message = `${stage} · ${Math.round(fraction * 100)}%`;
+              setScanToolProgress(message);
+              setMessage(message);
+            },
+          },
+        );
+        const diagnostics = result.diagnostics as
+          Record<string, unknown> | undefined;
+        const summary = String(
+          diagnostics?.summary ?? "Reconstruction complete.",
+        );
+        // The shared host commit flushes React before its terminal job receipt.
+        scanToolOutput.current =
+          entitiesRef.current.find((entity) => entity.id === sourceId)
+            ?.positions ?? null;
+        setScanToolResult(summary);
+        setMessage(summary);
+      } catch (error) {
+        if (controller.signal.aborted)
+          setMessage("Cancellation requested; inspect the current geometry.");
+        else setError(errorText(error));
+      } finally {
+        if (scanToolAbort.current === controller) {
+          scanToolAbort.current = null;
+          scanToolAccepting.current = false;
+          setScanToolProgress("");
+        }
+      }
+      return;
+    }
     if (parameters.kind === "shrinkwrap") {
       const { targetIds, ...operation } = parameters;
       await runGuiShrinkwrap({
@@ -5547,7 +5600,9 @@ export function App() {
                 previewSettings={activeScanPreview?.settings}
                 disabled={actionBusy}
                 busy={
-                  processingBusy || (scanTool === "shrinkwrap" && actionBusy)
+                  processingBusy ||
+                  (["shrinkwrap", "repolygonize"].includes(scanTool) &&
+                    actionBusy)
                 }
                 progress={scanToolProgress}
                 progressFraction={

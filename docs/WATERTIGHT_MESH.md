@@ -10,7 +10,9 @@ The reference application's shipped `QSHelp.pdf` documents **Reference Mesh > Ed
 - The existing independent voxel algorithm samples a shell about 0.75 times the resolution, fills enclosed cavities and extracts its surface. Small gaps/features can merge; open sheets become thick shells. It does not reproduce the native numerical kernel. Large holes are not guaranteed to preserve their intended interior surface.
 - Limits are one billion grid points, 3 million aggregate input triangles, 16 million output triangles and at most 32 additional meshes. Sampling has a 500-million-candidate work budget and exterior flooding has a bounded frontier. Increase point resolution when the grid limit is exceeded. Cancellation, validation errors and verification failures leave the workspace unchanged.
 
-MCP uses the same binding, worker and verification:
+MCP uses the same binding, worker and verification.
+
+GUI Apply now submits the same public `mesh_process` job as MCP, including its disposable worker and single model commit. The previous GUI-only retained reconstruction output copy is removed. See [shared-job validation](RECONSTRUCTION_JOB_VALIDATION.md) for geometry/history parity, cancellation, worker failure and measured cleanup; this does not raise the input limit or establish full original-three reconstruction. For example:
 
 ```json
 {
