@@ -3400,6 +3400,43 @@
     }
   },
   {
+    "name": "sketch_corner_fillet",
+    "description": "Round explicitly selected ends of two straight sketch lines with an analytic tangent arc of radiusMm in sketch-local millimetres. Uses the active draft and publishes one sketch edit; preserves placement, references, opposite ends, line IDs, unrelated geometry and constraints. Returns changed:true, intersection, ordered tangentPoints, center, radiusMm and arcId; read sketch_get for the exact arc/topology. Splits a shared selected corner ID when needed. Rejects invalid or excessive radius, parallel/degenerate lines, collapsed retained rays, mismatched construction policies, affected constraints, endpoints shared with unrelated primitives and resource exhaustion atomically. Does not infer automatic radius or transfer constraints. Limits:32768 input/output points,8192 input/output curves,4096 constraints,2000000 counted work units including validation.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "first": { "type": "string", "minLength": 1 },
+        "second": { "type": "string", "minLength": 1 },
+        "firstEnd": { "type": "string", "enum": ["a", "b"] },
+        "secondEnd": { "type": "string", "enum": ["a", "b"] },
+        "radiusMm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000
+        },
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": [
+        "first",
+        "second",
+        "firstEnd",
+        "secondEnd",
+        "radiusMm",
+        "expectedRevision",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "sketch_trim_stroke",
     "description": "Paint away analytic line/arc/circle intervals between actual sketch intersections using an unsnapped UV millimetre stroke and radiusMm. Uses the active draft and one shared sketch edit; no-hit returns changed:false. Preserves unrelated geometry, placement and constraints; rejects affected constraints, ambiguous overlaps and exceeded work limits atomically. Circles stored as two arcs are periodic, so their storage seam is not a trim stop. Returns changed, removedCurveIds, retainedCurveIds and intersectionCount. Limits:4096 stroke points,32768 sketch points,4096 constraints,512 stored curves,65536 intersections,8192 output curves,2000000 work units.",
     "readOnly": false,
@@ -5149,7 +5186,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
+    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {

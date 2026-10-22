@@ -6287,6 +6287,12 @@ export function App() {
                         });
                         if (!result.ok) throw new Error(result.error.message);
                       }}
+                      onCornerFillet={async (options) => {
+                        const result = await uiCommand("sketch_corner_fillet", {
+                          ...options,
+                        });
+                        if (!result.ok) throw new Error(result.error.message);
+                      }}
                       onConstrain={async (constraint) => {
                         const result = await uiCommand("sketch_set", {
                           sketch: {

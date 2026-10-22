@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
 import { resetSketchRectangle } from "../sketch-authoring";
 import { cornerTrimSketch, type SketchCornerSelection } from "../sketch-corner";
+import { filletSketchCorner, type SketchFilletRequest } from "../sketch-fillet";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
@@ -22,6 +23,7 @@ export interface SketchToolsProps {
   onChange?: (sketch: Sketch) => void;
   onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
   onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
+  onCornerFillet?: (options: SketchFilletRequest) => void | Promise<void>;
   onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
@@ -53,6 +55,7 @@ export function SketchTools({
   onChange,
   onConstrain,
   onCornerTrim,
+  onCornerFillet,
   onExtrude,
   disabled = false,
   drawingTool = "navigate",
@@ -101,6 +104,7 @@ export function SketchTools({
   const [cornerFirstEnd, setCornerFirstEnd] = useState<"a" | "b">("b");
   const [cornerSecondEnd, setCornerSecondEnd] = useState<"a" | "b">("a");
   const [cornerPending, setCornerPending] = useState(false);
+  const [filletRadiusMm, setFilletRadiusMm] = useState(2);
   const firstLine = sketch.segments.some((s) => s.id === cornerFirst)
     ? cornerFirst
     : (sketch.segments[0]?.id ?? "");
@@ -476,6 +480,50 @@ export function SketchTools({
           }}
         >
           Join corner
+        </button>
+        <label>
+          Fillet radius (mm)
+          <input
+            type="number"
+            min="0"
+            max="1000000000"
+            step="any"
+            value={filletRadiusMm}
+            onChange={(event) => setFilletRadiusMm(Number(event.target.value))}
+          />
+        </label>
+        <p className="hint">
+          Round the selected line ends with a tangent circular arc. Radius must
+          fit before both opposite ends. Affected constraints or endpoints
+          shared with other geometry must be detached first.
+        </p>
+        <button
+          disabled={!firstLine || !secondLine}
+          onClick={async () => {
+            const options = {
+              first: firstLine,
+              second: secondLine,
+              firstEnd: cornerFirstEnd,
+              secondEnd: cornerSecondEnd,
+              radiusMm: filletRadiusMm,
+            };
+            setCornerPending(true);
+            try {
+              if (onCornerFillet) await onCornerFillet(options);
+              else update((await filletSketchCorner(sketch, options)).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : "Sketch fillet failed.",
+              );
+            } finally {
+              setCornerPending(false);
+            }
+          }}
+        >
+          Create fillet
         </button>
       </fieldset>
       <svg

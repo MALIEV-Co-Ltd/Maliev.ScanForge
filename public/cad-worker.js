@@ -799,7 +799,12 @@ function alignmentReferences(oc, input) {
             axis: coordinates(direction),
             firstV: adaptor.FirstVParameter(),
             lastV: adaptor.LastVParameter(),
-            radius: kind === "cone" ? primitive.RefRadius() : 0,
+            radius:
+              kind === "cylinder"
+                ? primitive.Radius()
+                : kind === "cone"
+                  ? primitive.RefRadius()
+                  : 0,
             semiAngle: kind === "cone" ? primitive.SemiAngle() : 0,
           });
         } else

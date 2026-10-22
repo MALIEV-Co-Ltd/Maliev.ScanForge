@@ -12,6 +12,7 @@ export interface AlignmentReference {
   point?: number[];
   direction?: number[];
   length?: number;
+  radiusMm?: number;
   faceIndex?: number;
   firstTriangle?: number;
   triangleCount?: number;
@@ -76,6 +77,7 @@ export function createAlignmentOperations(
             point: value.point,
             direction: value.direction,
             length: value.length,
+            ...(value.kind === "cylinder" ? { radiusMm: value.radiusMm } : {}),
           };
         });
       }
