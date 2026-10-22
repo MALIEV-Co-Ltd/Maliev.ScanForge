@@ -104,6 +104,37 @@ has not been established as native-equivalent, and duplication remains open.
 The first insertion opens the native history change once; subsequent insertions
 share it. Project persistence and exact history behavior still need live replay.
 
+## Direction and count handler follow-up
+
+Both direction lists are ordered X Axis, Y Axis, Sketch line. The first two
+choices replace the stored direction with `(1,0,0)` or `(0,1,0)` respectively.
+Choosing Sketch line leaves that vector unchanged in the combobox handler; the
+separate pick workflow must supply it. Enabling Direction 2 selects Y Axis and
+resets its stored vector to `(0,1,0)`, even after a previous secondary direction.
+Picked-line normalization and degenerate-input behavior are still unresolved.
+
+The primary, secondary and circular instance edit handlers clamp values below
+one to one. The linear/grid generator independently clamps both active counts
+to at least two. A value of one is therefore not proven to mean an original-only
+preview or acceptance. Preserve this distinction until native UI replay resolves
+it; do not silently replace these two observed rules with one validation rule.
+
+For linear/grid spacing, the native instructions load each full binary64 value
+into XMM1, clamp it against zero, call the unit service at virtual slot `+0x20`,
+and use the XMM0 result in the translation calculation. In particular, the
+decompiler's `SUB84` expression does not establish truncation to 32 bits. The
+converter implementation, unit settings and formatting round-trip remain open.
+For finite spacing inputs, the pre-conversion operand is `max(spacing, 0)`;
+this does not prove that the converter is linear, identity, or globally constant.
+
+REA dossiers bind six handlers to the original message-map controls. A separate
+Capstone check verifies 46 instruction anchors and rejects an intentionally
+incorrect editor minimum. The secondary virtual-table thunk at `0x140664808`
+adjusts the object pointer and enters the destructor, not a picked-line callback.
+This excludes a false callback candidate without claiming the real picker has
+been found. These are static observations, not executed native acceptance tests.
+The provider was closed and its owned Java process exited after retention.
+
 ## Implementation and validation gate
 
 Before adding duplication, resolve native curve categories, relation equations,

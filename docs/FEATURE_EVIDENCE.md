@@ -268,3 +268,10 @@ The subsequent [collinear application slice](SKETCH_COLLINEAR.md) implements kin
 Analytic tests and actual rendered/public-MCP workflows validate its documented
 application contract, including history and persistence. Native solver equations
 and numerical equivalence remain unverified; duplication is still incomplete.
+
+The duplication direction/count follow-up binds six native handlers, verifies
+46 instruction anchors and rejects a wrong editor-minimum negative control.
+It records axis selection, the Direction 2 reset, separate editor/generator count
+limits and full binary64 spacing arguments crossing the unit-service boundary.
+Picked-line normalization, unit conversion and live duplication acceptance remain
+open. No application or MCP duplication capability is advertised from these checks.

@@ -90,6 +90,18 @@
       "operation": "sketch_set",
       "nativeNumericalAcceptance": false,
       "evidence": "sketch-collinear.json"
+    },
+    "directionAndCountHandlers": {
+      "axisIndices": {
+        "0": "X Axis, vector (1,0,0)",
+        "1": "Y Axis, vector (0,1,0)",
+        "2": "Sketch line; combobox handler leaves stored direction unchanged"
+      },
+      "enableDirection2": "Resets second vector to (0,1,0) and selects Y Axis",
+      "editorMinimumInstances": 1,
+      "linearGeneratorMinimumInstances": 2,
+      "spacingArgument": "Full binary64 value in XMM1, clamped against zero before virtual slot +0x20; result in XMM0",
+      "secondaryDestructorThunk": "0x140664808 adjusts this by -0x130 then calls destructor 0x1406601a0; not a picked-line callback"
     }
   },
   "evidence": {
@@ -106,7 +118,33 @@
     "relationToolbar": "ev_8e7456990c5235b066c5c0b88bbc9093ee965b2c3b84b586ced3815b4e0d97cf",
     "equalCommandCallback": "ev_d540153a2bc87a098eb2da36ebc91e3dbb90ce77fdb88809971f8e12c05a9808",
     "spacingFormatting": "ev_a7bf72617a5fddc641198f217c9c20d0324d4d7a18a432f815a14445dfaddc48",
-    "dispatcherUnrecoveredOwner": "ev_62e0ed5804f767df8e15e12c22f695818b128f6c2e56078b9ce19cbcb2d2db04"
+    "dispatcherUnrecoveredOwner": "ev_62e0ed5804f767df8e15e12c22f695818b128f6c2e56078b9ce19cbcb2d2db04",
+    "directionAndCountHandlers": [
+      {
+        "procedure": "0x1406638d0",
+        "evidenceId": "ev_59b5f1c86c5d5a6991e6df950e1e93fcdba1dbc57db769050ceea326122d90d6"
+      },
+      {
+        "procedure": "0x140663910",
+        "evidenceId": "ev_bfef0172186d1bb87e6ac82af8539d4e2365d07b7f573f1bb4073c59a2d83f40"
+      },
+      {
+        "procedure": "0x1406639c0",
+        "evidenceId": "ev_9ec4abb3bf35aad1248b6dec352d9b59078498b2ab602ff841b6a9a17ddff356"
+      },
+      {
+        "procedure": "0x140663af0",
+        "evidenceId": "ev_d29a0792c63371ff6b1b44390f0a661fc7c0c8fcf5c67825e6f436e79e552e9c"
+      },
+      {
+        "procedure": "0x140663b30",
+        "evidenceId": "ev_043b12e7c192c90cf8cc0fcee6d9f1b5af95d7869b007768d85ab876a4d0f934"
+      },
+      {
+        "procedure": "0x140663bb0",
+        "evidenceId": "ev_06dc3c8f0db83538aeb33da17f44f294ce489e07ea1ba03cdb8505f41aae571e"
+      }
+    ]
   },
   "verification": {
     "imageAndResourceDigests": true,
@@ -122,7 +160,11 @@
     "rawDispatchInstructionChecks": 25,
     "dispatchDecoder": "Capstone 5.0.6 from installed Ghidra distribution",
     "rawDispatcherFunctionOwner": "Not recovered by Ghidra; no function-body completeness claim",
-    "relationVerificationReceiptSha256": "81f5e9751e26f453af470269691df06be02699678315e6bf73b7bdb48823a730"
+    "relationVerificationReceiptSha256": "81f5e9751e26f453af470269691df06be02699678315e6bf73b7bdb48823a730",
+    "directionHandlerInstructionChecks": 46,
+    "directionHandlerControlBindings": 6,
+    "wrongEditorMinimumRejected": true,
+    "directionHandlerReceiptSha256": "33353466ee525e8d5baa008f2b484ffe5643f75a55d692aa1f9fc0b3c5929aa7"
   },
   "unresolved": [
     "Native curve category and control-point representation",
@@ -131,6 +173,7 @@
     "Picked-direction normalization and degeneracy rules",
     "Native curve distance-to-parameter evaluation and frame behavior",
     "Preview/Accept/Cancel history and save/reopen replay",
-    "Real native-versus-GUI-versus-MCP duplicate fixtures"
+    "Real native-versus-GUI-versus-MCP duplicate fixtures",
+    "Count-one editor versus preview/Accept behavior on the native UI"
   ]
 }
