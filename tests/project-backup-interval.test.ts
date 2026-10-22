@@ -5,6 +5,27 @@ import {
   backupProjectId,
 } from "../src/project-backup";
 
+it("retries a deferred snapshot and then saves the latest session", async () => {
+  const save = vi
+    .fn()
+    .mockResolvedValueOnce(false)
+    .mockResolvedValue(undefined);
+  const failed = vi.fn();
+  const writer = new IntervalBackupController<number>(
+    save,
+    async () => {},
+    failed,
+  );
+  writer.update("project", 1, [1], true);
+  await writer.tick();
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(2);
+  writer.update("project", 2, [2], true);
+  await writer.tick();
+  expect(save.mock.calls.map((args) => args[1])).toEqual([1, 1, 2]);
+  expect(failed).not.toHaveBeenCalled();
+});
+
 it("coalesces edits until the interval and skips unchanged or busy projects", async () => {
   vi.useFakeTimers();
   const saved: [string, number][] = [];

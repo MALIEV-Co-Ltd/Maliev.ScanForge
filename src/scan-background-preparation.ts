@@ -17,17 +17,32 @@ interface Entry {
 }
 let active: Entry | undefined;
 let priorityPreparations = 0;
+const priorityListeners = new Set<() => void>();
+export function hasPriorityScanPreparation(): boolean {
+  return priorityPreparations > 0;
+}
+export function watchPriorityScanPreparation(listener: () => void): () => void {
+  priorityListeners.add(listener);
+  return () => {
+    priorityListeners.delete(listener);
+  };
+}
 
 /** Imports and picking take priority over preparation without a foreground owner. */
 export function beginPriorityScanPreparation(): () => void {
   priorityPreparations++;
+  for (const listener of priorityListeners) listener();
   if (active) yieldSpeculativePreparation(active.positions);
   let released = false;
   return () => {
     if (released) return;
     released = true;
     priorityPreparations--;
+    for (const listener of priorityListeners) listener();
   };
+}
+export function priorityScanPreparationCount(): number {
+  return priorityPreparations;
 }
 export function backgroundMeshPreparation(positions: Positions): State {
   return active?.positions === positions

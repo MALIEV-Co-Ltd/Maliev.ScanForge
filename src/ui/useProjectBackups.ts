@@ -4,10 +4,11 @@ import {
   IntervalBackupController,
   listBackups,
   removeBackup,
-  writeBackup,
   type Backup,
 } from "../project-backup";
-import { encodeProjectFile, type ProjectSession } from "../project-file";
+import type { ProjectSession } from "../project-file";
+import { writeAutomaticProjectBackup } from "../automatic-project-backup";
+import { hasPriorityScanPreparation } from "../scan-background-preparation";
 
 export function useProjectBackups(
   session: ProjectSession,
@@ -23,31 +24,35 @@ export function useProjectBackups(
   const latest = useRef({ session, enabled, captureThumbnail });
   latest.current = { session, enabled, captureThumbnail };
   const deleting = useRef(false);
+  const activeAutomatic = useRef<AbortController | null>(null);
   useEffect(() => {
     let mounted = true;
     let ready = false;
     const writer = new IntervalBackupController<ProjectSession>(
       async (id, snapshot, allowed) => {
         if (mounted) setStatus("Backing up…");
-        let thumbnail: Blob | null = null;
+        const cancel = new AbortController();
+        activeAutomatic.current = cancel;
         try {
-          thumbnail = (await latest.current.captureThumbnail?.()) ?? null;
-        } catch {
-          /* A thumbnail failure must never prevent project recovery. */
-        }
-        const file = await encodeProjectFile(snapshot);
-        if (!allowed()) return;
-        const backup: Backup = {
-          id,
-          name: snapshot.project.name,
-          savedAt: Date.now(),
-          file,
-          ...(thumbnail ? { thumbnail } : {}),
-        };
-        await writeBackup(backup);
-        if (mounted) {
-          setStatus("Backup ready");
-          setBackups(await listBackups());
+          const result = await writeAutomaticProjectBackup(
+            id,
+            snapshot,
+            allowed,
+            latest.current.captureThumbnail,
+            cancel.signal,
+          );
+          if (result === false) {
+            if (mounted)
+              setStatus("Backup postponed until preparation finishes.");
+            return false;
+          }
+          if (mounted) {
+            setStatus("Backup ready");
+            setBackups(await listBackups());
+          }
+        } finally {
+          if (activeAutomatic.current === cancel)
+            activeAutomatic.current = null;
         }
       },
       async (id) => {
@@ -78,7 +83,7 @@ export function useProjectBackups(
           );
       });
     const timer = setInterval(() => {
-      if (!ready || deleting.current) return;
+      if (!ready || deleting.current || hasPriorityScanPreparation()) return;
       const { session: snapshot, enabled: eligible } = latest.current;
       if (!snapshot.projectId) return;
       writer.update(
@@ -101,6 +106,7 @@ export function useProjectBackups(
       mounted = false;
       clearInterval(timer);
       writer.stop();
+      activeAutomatic.current?.abort();
       controller.current = null;
     };
   }, []);
@@ -112,6 +118,7 @@ export function useProjectBackups(
     deleteBackup: async (backup: Pick<Backup, "id">) => {
       if (!controller.current) throw new Error("Backups are not ready.");
       deleting.current = true;
+      activeAutomatic.current?.abort();
       try {
         await controller.current.delete(backup.id);
       } finally {

@@ -108,7 +108,7 @@ export class IntervalBackupController<T> {
       id: string,
       value: T,
       allowed: () => boolean,
-    ) => Promise<void>,
+    ) => Promise<void | false>,
     private remove: (id: string) => Promise<void>,
     private failed: (error: unknown) => void,
   ) {}
@@ -141,8 +141,9 @@ export class IntervalBackupController<T> {
     this.tail = this.tail.then(async () => {
       try {
         if (allowed()) {
-          await this.save(snapshot.id, snapshot.value, allowed);
-          if (allowed()) this.saved.set(snapshot.id, snapshot.key);
+          const saved = await this.save(snapshot.id, snapshot.value, allowed);
+          if (saved !== false && allowed())
+            this.saved.set(snapshot.id, snapshot.key);
         }
       } catch (error) {
         this.failed(error);
