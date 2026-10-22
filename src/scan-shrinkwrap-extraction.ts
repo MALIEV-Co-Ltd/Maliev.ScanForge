@@ -1,6 +1,5 @@
 import { fitShrinkwrapContour } from "./scan-shrinkwrap-contours";
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { RECONSTRUCTION_MAX_COORDINATES } from "./scan-reconstruction-targets";
 import {
   sampleShrinkwrapGrid,
   closeReconstructionGrid,
@@ -13,6 +12,8 @@ import {
   cubeEdges,
 } from "./scan-reconstruction-cubes";
 import type { Positions } from "./types";
+
+const RECONSTRUCTION_MAX_COORDINATES = 27_000_000;
 
 type Options = Pick<MeshProcessingOptions, "signal" | "onProgress"> & {
   resolution?: number;

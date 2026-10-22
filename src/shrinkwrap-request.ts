@@ -67,7 +67,10 @@ export function bindShrinkwrap(
         throw Error("ShrinkWrap references must exist and be visible.");
       return entity;
     });
-    return { ...operation, targets: reconstructionTargets(source, targets) };
+    return {
+      ...operation,
+      targets: reconstructionTargets(source, targets, 27_000_000),
+    };
   }
   if (targetIds.length)
     throw Error("Additional ShrinkWrap references require whole scope.");

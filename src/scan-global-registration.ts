@@ -119,6 +119,7 @@ export async function refineGlobalScanSet(
     ...options,
     threshold: 0,
     typedNormals: true,
+    sharedOutput: true,
   });
   try {
     for (const [id, matrices] of stages) {

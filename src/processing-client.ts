@@ -10,6 +10,10 @@ import type {
 import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
+import {
+  admitReconstructionInputs,
+  isBorrowableReconstructionInput,
+} from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
 import type { ScanToolsRequest } from "./scan-tools";
@@ -171,6 +175,22 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (
+    request.kind === "scanTools" &&
+    request.operation.kind === "repolygonize"
+  ) {
+    try {
+      admitReconstructionInputs([
+        request.positions,
+        ...(request.operation.targets ?? []),
+      ]);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    // Reconstruction reads immutable inputs once; retaining a canonical worker
+    // would keep every source and target alive after the job finishes.
+    options = { ...options, reuseTopology: false };
+  }
   // These transforms do not consume source adjacency. Cancel only speculative
   // preparation, then keep the normal queue so its worker exits before ours starts.
   // Preview requests remain serialized on their stateful owning worker.
@@ -344,7 +364,13 @@ function runProcessingRequest(
     try {
       // Transfer a dedicated copy. Scene geometry and undo history retain their original buffers.
       const transfers: Transferable[] = [];
+      const borrowReconstruction =
+        !session &&
+        request.kind === "scanTools" &&
+        request.operation.kind === "repolygonize";
       function clone(positions: Positions): Positions {
+        if (borrowReconstruction && isBorrowableReconstructionInput(positions))
+          return positions;
         const copy = positions.slice();
         if (copy instanceof Float32Array) transfers.push(copy.buffer);
         return copy;
