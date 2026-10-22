@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "scope": "Static native sketch duplication resource/controller recovery; implementation remains open",
+  "nativeAcceptance": false,
+  "implemented": false,
+  "mcpDiscoveryAdvertised": false,
+  "reference": {
+    "version": "8.0.123.0",
+    "installedSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "derivedAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "analysisOnly": true,
+    "executed": false
+  },
+  "dialog": {
+    "id": 496,
+    "caption": "Duplicate selected",
+    "templateBytes": 2300,
+    "templateSha256": "971267d18bb39dbf31bf9cf6f690c9f5e40ca6a50a479c3f85416decef07bf20",
+    "controls": 49,
+    "messageEntries": 30,
+    "constructor": "0x14065ff70",
+    "messageMap": "0x1411c9d40",
+    "generator": "0x1406611d0",
+    "accept": "0x140663cf0",
+    "cancel": "0x1406611b0"
+  },
+  "modes": ["linear", "grid", "circular", "alongCurve"],
+  "facts": {
+    "instancesIncludeOriginal": true,
+    "minimumEffectiveInstances": 2,
+    "circularDivisor": {
+      "below360": "instances - 1",
+      "atOrAbove360": "instances"
+    },
+    "circularUncheckedFlipStepSign": "negative",
+    "circularRetainedOrientationAnchor": "Selected native point-record extrema reduced to single precision, then midpoint; special curve-category mapping unresolved",
+    "pathEqualSpacingDivisor": {
+      "open": "instances - 1",
+      "endpointsCloserThan0_0001": "instances"
+    },
+    "pathDistanceTolerance": 1.1920928955078125e-7,
+    "acceptCopiedRelationNumericKinds": [3, 4, 19, 20],
+    "acceptRelationSemanticNames": "UNRESOLVED",
+    "activation": {
+      "linearInstances": 2,
+      "secondaryInstances": 2,
+      "circularInstances": 2,
+      "angleToFillDegrees": 360,
+      "circularCentre": [0, 0],
+      "spacingNumericalInputToUnresolvedUnitConverter": 10
+    }
+  },
+  "evidence": {
+    "resources": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
+    "constructor": "ev_a612e638964efc38017edcb4711c228022b6709aed2b0df60f8125fadf4cb668",
+    "registration": "ev_34513456b65ef46f4c12f647c0468e5741c1f3b044b83310e59d0bda4d749b9a",
+    "controlBindings": "ev_5722a3c96a49bfdad5da5b8ef4ec0c1b7be522eef6d8a25ea541466c07e19c00",
+    "initialization": "ev_ce090de06b532fa62bc0ef1afd7fc9c13e0993cd7bc7f607dffbd656dd860893",
+    "generator": "ev_0627e2da36bba4e815b63e7ec1847d64e9108141984fa36d05dabd7daecade51",
+    "acceptance": "ev_dbb5f77d4163a5ca7c6af68e1266739502581852a8a05af1d71c9b082c2d1d78",
+    "pathEvaluation": "ev_cd97eacff09a7b4817192dd4312bb23980f1fd692b59a70d69cce6ac153639d1",
+    "circularMode": "ev_91ef464e6791159fd1d7ed3cada834b127eaf77919b04d22241c177dc243ccb0"
+  },
+  "verification": {
+    "imageAndResourceDigests": true,
+    "exactDialogLengthConsumed": true,
+    "controlAndMessageMapBindings": true,
+    "circularConstantAndBranchInstructions": true,
+    "nativeUiReplay": false,
+    "nativeNumericalReplay": false,
+    "applicationTestsRun": false,
+    "analysisSessionClosed": true,
+    "cleanupPending": false
+  },
+  "unresolved": [
+    "Native curve category and control-point representation",
+    "Semantic names and copy rules of relation kinds 3,4,19,20",
+    "Complete length-unit conversion",
+    "Picked-direction normalization and degeneracy rules",
+    "Native curve distance-to-parameter evaluation and frame behavior",
+    "Preview/Accept/Cancel history and save/reopen replay",
+    "Real native-versus-GUI-versus-MCP duplicate fixtures"
+  ]
+}

@@ -243,3 +243,11 @@ This resolves the supplied-graph connection-pool boundary and two geometric inpu
 ## Construction-axis sketch symmetry check (2026-10-22)
 
 The installed manual's printed page 80 (PDF page 86) documents symmetry between two lines or two arcs around a construction line. The current manual SHA-256 is `acaeb787431300f8fbeaf0f12845d35008f0732b6d938e011c9798db014a6018`; the page was extracted and visually inspected locally. ScanForge now stores this relation in Sketch v1 with stable curve/axis references and explicit endpoint pairing, solves it in the shared constraint evaluator, and applies GUI/MCP edits through atomic `sketch_set` solving. Mathematical fixtures and public GUI/MCP persistence/history checks validate the implementation; original solver numerical equivalence is not established. The historical inventory table above remains a baseline, while `CAPABILITIES.md` describes current implementation.
+
+## Sketch duplication controller follow-up
+
+Static recovery binds the shipped Duplicate selected dialog to its preview and
+Accept handlers. In addition to linear, grid and circular modes, it contains an
+along-curve mode. Circular endpoint spacing, retained-orientation anchoring and
+selective relation copying are now supported by controller evidence. Duplication
+remains unimplemented in GUI and MCP; see [the native behavior and open gates](NATIVE_SKETCH_DUPLICATION.md).
