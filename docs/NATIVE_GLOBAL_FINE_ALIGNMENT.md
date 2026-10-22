@@ -1,6 +1,50 @@
 # Native Global Fine Align
 
-Global Fine Align is a distinct native workflow, not the existing coarse `mesh_process` registration kind `global`. Its ribbon entry remains planned while native geometry preparation, overlap queries and the complete multi-scan controller are being integrated. The numerical code below is internal groundwork; no new GUI command or MCP math tool is advertised.
+## Current installed controller check (2026-10-22)
+
+This current check supersedes the historical-only qualification for the outer
+and local stop rules below. It does not establish a complete current native
+GUI registration result. Later integration sections supersede the early
+internal-only implementation checkpoints.
+
+The installed executable is version 8.0.123.0, SHA-256
+`0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`.
+Its retained original-process image and metadata-only static derivative are
+identified in [the ASC contract investigation](NATIVE_ASC_IMPORT_CONTRACT.md).
+The derivative preserves all thirteen original sections and was never executed.
+
+Fresh outer-controller pseudocode and complete assembly for
+`0x140af8cb0` confirm a maximum of nineteen passes and separate stop predicates:
+every source converged, or every source stable. The correspondence record
+stride is `0x48`; its distance at `+0x38` is counted only when strictly below
+the Float32 controller threshold. The integer-truncated coverage percentage
+overwrites the Double slot at context `+0x108`, previously used by the local
+standard deviation. Convergence and stability remain separate bytes at
+`+0x110` and `+0x111`.
+
+Fresh local-controller pseudocode for `0x140aeb080` confirms the distinct
+mean-distance convergence threshold and entry-mean stability comparison.
+These observations support the existing shared controller's stop and diagnostic
+semantics. They do not justify reporting stability as convergence or changing
+the acceptance threshold to make a failed quality gate pass.
+
+Evidence: outer pseudocode
+`ev_704d6039e587259681a38e0f1dcb9c7dbde7f6e6cdacfca95ebc64ae50492ec7`;
+complete outer assembly
+`ev_3dd207a91827fe6e8d2dbc66b651f183b6bd2cfa4b96f813f62c480c599b5356`;
+local pseudocode
+`ev_973c87f321b6acdfbf77d2dd839126554b480222b2afc7bd1bb0f149f5f5f7ce`.
+
+The original-three ScanForge workflow described in
+[the import validation report](IMPORT_GUI_MCP_PARITY.md) completes under the
+4 GiB process cap but remains non-converged. That memory/workflow result is
+separate from both strict registration quality and full current-native
+numerical equivalence. No runtime behavior or MCP contract changes in this
+documentation checkpoint.
+
+## Historical groundwork
+
+Global Fine Align is a distinct native workflow, not the coarse `mesh_process` registration kind `global`. At the initial checkpoint below, its ribbon entry and connected controller were still planned. Later integration sections record the subsequent public GUI/MCP implementation; the early kernel captures alone did not establish that integration.
 
 Prepared indexed-mesh evaluation now has a facet-normal/index producer connected to the packed query provider. Controlled original captures constrain its normal arithmetic and index contents; complete owner-scan registration and public GUI/MCP publication remain gated.
 
