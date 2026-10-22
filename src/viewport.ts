@@ -760,14 +760,17 @@ export class Viewport {
     } else if (command.action === "fit")
       this.fitView(command.entityId, command.selection ? selection : undefined);
     else if (command.action === "rotate") {
-      const pivot = command.x === undefined ? undefined : this.navigationSurfacePoint(
-        false, new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
-      );
+      const pivot =
+        command.x === undefined
+          ? undefined
+          : this.navigationSurfacePoint(
+              false,
+              new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
+            );
       if (command.x !== undefined && !pivot)
         throw new Error("No mesh surface at the requested orbit point.");
       this.rotateView(command.direction!, command.degrees!, pivot);
-    }
-    else if (command.action === "projection")
+    } else if (command.action === "projection")
       this.setProjection(command.projection!);
     else if (command.action === "sketchNormal") {
       if (!this.sketchEditor)

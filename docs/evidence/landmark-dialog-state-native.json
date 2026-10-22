@@ -7,12 +7,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -21,12 +16,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -35,12 +25,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -49,12 +34,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -63,12 +43,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -77,12 +52,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -91,12 +61,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -105,12 +70,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -119,12 +79,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -133,12 +88,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -147,12 +97,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -161,12 +106,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -175,12 +115,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -189,12 +124,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -203,12 +133,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "backupRetained": true
     },
     {
@@ -217,12 +142,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -232,18 +152,9 @@
       "allocationSuccess": false,
       "preview": false,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -253,12 +164,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -268,18 +174,9 @@
       "allocationSuccess": false,
       "preview": true,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -289,12 +186,7 @@
       "oldGeometry": false,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -304,23 +196,10 @@
       "allocationSuccess": true,
       "preview": false,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -330,12 +209,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -345,23 +219,10 @@
       "allocationSuccess": true,
       "preview": true,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -371,12 +232,7 @@
       "oldGeometry": false,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -386,23 +242,10 @@
       "allocationSuccess": false,
       "preview": false,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -412,12 +255,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -427,23 +265,10 @@
       "allocationSuccess": false,
       "preview": true,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -453,12 +278,7 @@
       "oldGeometry": true,
       "allocationSuccess": false,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -468,28 +288,11 @@
       "allocationSuccess": true,
       "preview": false,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -499,12 +302,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": false,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -514,28 +312,11 @@
       "allocationSuccess": true,
       "preview": true,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "close",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["render", true],
+        ["close", true]
       ],
       "backupRetained": true
     },
@@ -545,12 +326,7 @@
       "oldGeometry": true,
       "allocationSuccess": true,
       "preview": true,
-      "events": [
-        [
-          "close",
-          true
-        ]
-      ],
+      "events": [["close", true]],
       "geometryPreserved": true
     },
     {
@@ -559,16 +335,8 @@
       "before": 0,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -577,16 +345,8 @@
       "before": 1,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -595,16 +355,8 @@
       "before": 2,
       "after": 1,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -613,16 +365,8 @@
       "before": 3,
       "after": 2,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -631,16 +375,8 @@
       "before": 4,
       "after": 3,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -649,16 +385,8 @@
       "before": 5,
       "after": 4,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -667,16 +395,8 @@
       "before": 6,
       "after": 5,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -685,16 +405,8 @@
       "before": 7,
       "after": 6,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -703,16 +415,8 @@
       "before": 8,
       "after": 7,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -721,16 +425,8 @@
       "before": 9,
       "after": 8,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -809,16 +505,8 @@
       "before": 0,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -827,16 +515,8 @@
       "before": 1,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -845,16 +525,8 @@
       "before": 2,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -863,16 +535,8 @@
       "before": 3,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -881,16 +545,8 @@
       "before": 4,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -899,16 +555,8 @@
       "before": 5,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -917,16 +565,8 @@
       "before": 6,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -935,16 +575,8 @@
       "before": 7,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -953,16 +585,8 @@
       "before": 8,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -971,16 +595,8 @@
       "before": 9,
       "after": 0,
       "events": [
-        [
-          "refresh",
-          true
-        ],
-        [
-          "invalidate",
-          77,
-          null,
-          1
-        ]
+        ["refresh", true],
+        ["invalidate", 77, null, 1]
       ]
     },
     {
@@ -1062,15 +678,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1085,15 +694,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1108,15 +710,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1131,15 +726,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1154,15 +742,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1177,15 +758,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1200,15 +774,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1223,15 +790,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1246,15 +806,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1269,15 +822,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1292,15 +838,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1315,15 +854,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1338,15 +870,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1361,15 +886,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1384,15 +902,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1407,15 +918,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1430,15 +934,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1453,15 +950,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1476,15 +966,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1499,15 +982,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1522,15 +998,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1545,15 +1014,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1568,15 +1030,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1591,15 +1046,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1614,15 +1062,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1637,15 +1078,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1660,15 +1094,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1683,15 +1110,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1706,15 +1126,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1729,15 +1142,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1752,15 +1158,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1775,15 +1174,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1798,15 +1190,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1821,15 +1206,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1844,15 +1222,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1867,15 +1238,8 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1890,15 +1254,8 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1913,15 +1270,8 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1936,15 +1286,8 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1959,15 +1302,8 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -1982,34 +1318,12 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2024,34 +1338,12 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2066,34 +1358,12 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2108,34 +1378,12 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2150,34 +1398,12 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2192,34 +1418,12 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2234,34 +1438,12 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2276,34 +1458,12 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2318,34 +1478,12 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2360,34 +1498,12 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2402,39 +1518,13 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2449,39 +1539,13 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2496,39 +1560,13 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2543,39 +1581,13 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2590,39 +1602,13 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2637,39 +1623,13 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2684,39 +1644,13 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2731,39 +1665,13 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2778,39 +1686,13 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2825,39 +1707,13 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2872,39 +1728,13 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2919,39 +1749,13 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -2966,39 +1770,13 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3013,39 +1791,13 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3060,39 +1812,13 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3107,39 +1833,13 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3154,39 +1854,13 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3201,39 +1875,13 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3248,39 +1896,13 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3295,39 +1917,13 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3342,44 +1938,14 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3394,44 +1960,14 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3446,44 +1982,14 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3498,44 +2004,14 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3550,44 +2026,14 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3602,44 +2048,14 @@
       "originalRecordCount": 0,
       "restoredRecordCount": 0,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          0
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 0],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3654,44 +2070,14 @@
       "originalRecordCount": 1,
       "restoredRecordCount": 1,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          1
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 1],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3706,44 +2092,14 @@
       "originalRecordCount": 3,
       "restoredRecordCount": 3,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          3
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 3],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3758,44 +2114,14 @@
       "originalRecordCount": 6,
       "restoredRecordCount": 6,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          6
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 6],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,
@@ -3810,44 +2136,14 @@
       "originalRecordCount": 9,
       "restoredRecordCount": 9,
       "events": [
-        [
-          "allocate",
-          368
-        ],
-        [
-          "clone",
-          true,
-          1
-        ],
-        [
-          "destroy",
-          true,
-          1
-        ],
-        [
-          "restore-records",
-          true,
-          true,
-          9
-        ],
-        [
-          "render",
-          true
-        ],
-        [
-          "destroy-backup",
-          true,
-          1
-        ],
-        [
-          "redraw",
-          true,
-          0
-        ],
-        [
-          "refresh",
-          true
-        ]
+        ["allocate", 368],
+        ["clone", true, 1],
+        ["destroy", true, 1],
+        ["restore-records", true, true, 9],
+        ["render", true],
+        ["destroy-backup", true, 1],
+        ["redraw", true, 0],
+        ["refresh", true]
       ],
       "backupCleared": true,
       "candidatesCleared": true,

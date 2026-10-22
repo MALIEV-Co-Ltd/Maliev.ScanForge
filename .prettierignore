@@ -1,6 +1,8 @@
 node_modules
 dist
 public/kernel
+# Preserve upstream packaged dependencies as distributed.
+public/vendor
 .resources
 package-lock.json
 LICENSE

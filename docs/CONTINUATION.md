@@ -47,7 +47,11 @@ The last isolated validated application commit before this checkpoint was
 `ba4804435ede15040a3d4198f7c4ff65ba055757` (compact indexed display buffers).
 Its isolated build passed with zero warnings/errors; focused checks passed 55
 tests; the suite passed 47,055 tests with 54 skipped. These results do not validate
-the pending changes included in this checkpoint. Review current CI separately.
+the pending changes included in this checkpoint. The initial handoff commit
+`1b6f691` subsequently passed its hosted build, 47,161 tests (54 skipped) and CAD
+smoke tests. Its formatting check found seven files; the handoff follow-up fixes
+project formatting and preserves upstream vendor bytes. Review the final pushed
+commit's CI separately. Native browser comparison remains outstanding.
 
 The R5 actual full three-PLY browser attempt exceeded its unchanged 2 GiB Job
 limit before alignment. All 24 children exited and cleanup completed. The R6
