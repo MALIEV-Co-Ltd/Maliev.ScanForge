@@ -2,6 +2,8 @@ import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ApplicationApi } from "../src/automation/api";
 import type { Entity } from "../src/types";
+import { cloudPoseBits } from "../src/point-cloud-placement";
+const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
 import {
   GlobalAlignmentDiagnostics,
   GlobalAlignmentTools,
@@ -55,12 +57,22 @@ it("reports nonconvergence, native coverage, unavailable mean and per-scan stabi
         entityIds: ["a"],
         converged: false,
         outer: {
+          matrixFormat: "row-major-3x4",
+          matrixEncoding: "float64-le-hex",
+          translationUnits: "mm",
+          applications: [0, 1].map(() => ({
+            id: "a",
+            matrix: [...identity],
+            matrixBits: cloudPoseBits(identity),
+          })),
           passes: 19,
           order: ["a"],
           seed: 1,
           states: [
             {
               id: "a",
+              matrix: [...identity],
+              matrixBits: cloudPoseBits(identity),
               pointCount: 3,
               mean: null,
               std: 42,

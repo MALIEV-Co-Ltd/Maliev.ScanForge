@@ -6187,7 +6187,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry.",
+    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -6228,7 +6228,7 @@
   },
   {
     "name": "global_alignment_apply",
-    "description": "Apply an unexpired Global Fine Align preview exactly once as one history step, without recomputing. Requires unchanged source geometry, history, settings and authoring state. Non-converged results may be explicitly applied after inspecting diagnostics.",
+    "description": "Apply an unexpired Global Fine Align preview exactly once as one history step, without recomputing. Requires unchanged source geometry, history, settings and authoring state. Non-converged results may be explicitly applied after inspecting diagnostics. Returns the same staged outer transform receipt, including exact matrix bits and controller-issued application sequence.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -6283,7 +6283,7 @@
   },
   {
     "name": "global_alignment_state",
-    "description": "Read Global Fine Align state, preview lease, settings, source IDs, memory/input summary and per-scan convergence diagnostics.",
+    "description": "Read Global Fine Align state, preview lease, settings, source IDs, memory/input summary and per-scan convergence diagnostics, plus copied outer poses and controller-issued application stages (row-major 3x4 matrices, Float64 little-endian hex bits, translation in mm).",
     "readOnly": true,
     "job": false,
     "inputSchema": {

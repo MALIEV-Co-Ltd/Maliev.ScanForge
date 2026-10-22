@@ -91,14 +91,23 @@ function setup() {
     summary: { scanCount: 2 },
     release,
   }));
-  solver.refine.mockResolvedValue({
+  const matrices = [
+    [1, -0, 0, 2, 0, 1, 0, -0, 0, 0, 1, 3],
+    [1, 0, -0, -4, 0, 1, 0, 5, 0, 0, 1, -0],
+  ];
+  const registration = {
     entities: output,
     outer: {
       passes: 1,
       order: ["a", "b"],
       seed: 1,
-      states: ["a", "b"].map((id) => ({
+      applications: ["b", "a", "a", "b"].map((id, i) => ({
         id,
+        matrix: [...matrices[i % 2]],
+      })),
+      states: ["a", "b"].map((id, i) => ({
+        id,
+        matrix: [...matrices[i]],
         pointCount: 3,
         mean: 0,
         std: 100,
@@ -107,7 +116,8 @@ function setup() {
       })),
     },
     diagnostics: { localResults: [] },
-  });
+  };
+  solver.refine.mockResolvedValue(registration);
   const handlers = createGlobalAlignmentOperations(host);
   const api = new ApplicationApi(host, handlers);
   apis.push(api);
@@ -141,6 +151,7 @@ function setup() {
     start,
     settled,
     handlers,
+    registration,
   };
 }
 
@@ -477,4 +488,68 @@ it("discarding an idle global preview preserves an ordinary coordinate display",
     globalAlignmentOpen: false,
   });
   expect(h.host.commit).not.toHaveBeenCalled();
+});
+
+it("publishes exact ordered final poses and setter receipts without exposing cache arrays", async () => {
+  const h = setup();
+  const jobId = await h.start();
+  await h.settled(jobId, "succeeded");
+  const original = structuredClone(h.registration.outer);
+  const first = inspectGlobalAlignmentPreview(h.host);
+  expect(first.outer).toMatchObject({
+    matrixFormat: "row-major-3x4",
+    matrixEncoding: "float64-le-hex",
+    translationUnits: "mm",
+  });
+  const expected = first.outer!;
+  expect(expected.states.map((s) => s.matrix)).toEqual(
+    original.states.map((s) => s.matrix),
+  );
+  expect(expected.applications.map((s) => s.id)).toEqual(["b", "a", "a", "b"]);
+  const decode = (bits: string) => {
+    const bytes = Uint8Array.from(bits.match(/../g)!, (s) => parseInt(s, 16));
+    const view = new DataView(bytes.buffer);
+    return Array.from({ length: 12 }, (_, i) => view.getFloat64(i * 8, true));
+  };
+  for (const [returned, source] of [
+    ...expected.states.map((s, i) => [s, original.states[i]] as const),
+    ...expected.applications.map(
+      (s, i) => [s, original.applications[i]] as const,
+    ),
+  ]) {
+    expect(returned.matrix).toEqual(source.matrix);
+    expect(decode(returned.matrixBits)).toEqual(source.matrix);
+    source.matrix.forEach((v, i) =>
+      expect(Object.is(decode(returned.matrixBits)[i], v)).toBe(true),
+    );
+    expect(returned.matrixBits).toMatch(/^[0-9a-f]{192}$/);
+  }
+  const clean = structuredClone(first.outer);
+  expected.order.reverse();
+  expected.states[0].matrix[0] = 99;
+  expected.states.reverse();
+  expected.applications[0].matrix[0] = 88;
+  expected.applications.reverse();
+  expect(h.registration.outer).toEqual(original);
+  const second = value<any>(await h.api.invoke("global_alignment_state", {}));
+  expect(second.outer).toEqual(clean);
+  const job = value<any>(await h.api.invoke("job_get", { jobId }));
+  expect(job.result.outer).toEqual(clean);
+  second.outer.order.reverse();
+  second.outer.states[0].matrix[0] = 77;
+  second.outer.applications[0].matrix[0] = 66;
+  job.result.outer.order.reverse();
+  job.result.outer.states[0].matrix[0] = 55;
+  job.result.outer.applications[0].matrix[0] = 44;
+  expect(inspectGlobalAlignmentPreview(h.host).outer).toEqual(clean);
+  expect(h.registration.outer).toEqual(original);
+  const applied = value<any>(
+    await h.api.invoke("global_alignment_apply", {
+      ...h.mutation(),
+      previewId: first.previewId,
+    }),
+  );
+  expect(applied.outer).toEqual(clean);
+  expect(solver.refine).toHaveBeenCalledOnce();
+  expect(h.host.commit).toHaveBeenCalledOnce();
 });

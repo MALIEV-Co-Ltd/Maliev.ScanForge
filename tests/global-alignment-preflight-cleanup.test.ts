@@ -1,3 +1,4 @@
+const receiptMatrix = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type {
   CommandContext,
@@ -129,8 +130,13 @@ it("blocks shared preview before normal preparation while an exact worker stop i
           order: ["a", "b"],
           gaugeId: "a",
           seed: 123,
+          applications: ["a", "b", "a", "b"].map((id) => ({
+            id,
+            matrix: receiptMatrix(),
+          })),
           states: state.entities.map((source) => ({
             id: source.id,
+            matrix: receiptMatrix(),
             pointCount: 1,
             mean: 0,
             std: 100,

@@ -33,6 +33,24 @@ const entity = (id: string): Entity => ({
   color: "#aaa",
   opacity: 1,
 });
+const matrix = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+function outerResult(converged = true) {
+  return {
+    passes: 2,
+    order: ["a", "b"],
+    seed: 1,
+    states: ["a", "b"].map((id, i) => ({
+      id,
+      matrix: matrix(),
+      pointCount: 3,
+      mean: 0,
+      std: 100,
+      converged: i === 0 ? converged : true,
+      stable: true,
+    })),
+    applications: ["a", "b", "a", "b"].map((id) => ({ id, matrix: matrix() })),
+  };
+}
 function harness() {
   const state: WorkspaceSnapshot = {
     name: "test",
@@ -75,13 +93,7 @@ function harness() {
   }));
   native.refine.mockResolvedValue({
     entities: output,
-    outer: {
-      passes: 2,
-      states: [
-        { id: "a", converged: true },
-        { id: "b", converged: true },
-      ],
-    },
+    outer: outerResult(),
     diagnostics: { localResults: [{ status: 0 }] },
   });
   return {
@@ -264,7 +276,7 @@ it("generic lifecycle release aborts a preparation and prevents later publicatio
   // Dynamic module imports may take multiple microtask turns.
   await vi.waitFor(() => expect(complete).toBeTypeOf("function"));
   releaseGlobalAlignmentPreview(h.host);
-  complete({ entities: h.output, outer: { states: [] }, diagnostics: {} });
+  complete({ entities: h.output, outer: outerResult(), diagnostics: {} });
   await expect(pending).rejects.toThrow();
   expect(h.host.showDatumPreview).not.toHaveBeenCalled();
   expect(native.release).toHaveBeenCalledOnce();
@@ -273,7 +285,7 @@ it("cleans preparation references if cancellation arrives after native completio
   const h = harness();
   native.refine.mockImplementationOnce(async () => {
     h.controller.abort();
-    return { entities: h.output, outer: { states: [] }, diagnostics: {} };
+    return { entities: h.output, outer: outerResult(), diagnostics: {} };
   });
   await expect(
     h.ops.global_alignment_preview({}, h.context),
@@ -286,7 +298,7 @@ it("reports nonconvergence explicitly while preserving a reviewable preview", as
   const h = harness();
   native.refine.mockResolvedValueOnce({
     entities: h.output,
-    outer: { states: [{ id: "a", converged: false }] },
+    outer: outerResult(false),
     diagnostics: { localResults: [{ status: -2 }] },
   });
   const preview = (await h.ops.global_alignment_preview({}, h.context)) as any;
