@@ -13,6 +13,7 @@ const FACES_PER_CHUNK = Math.floor(MAX_CHUNK_BYTES / 13);
 export async function readPackedBinaryPly(
   file: ScanFile,
   signal?: AbortSignal,
+  onProgress?: (fraction: number) => void,
 ) {
   const check = () => {
     if (signal?.aborted)
@@ -23,6 +24,10 @@ export async function readPackedBinaryPly(
     const bytes = await file.slice(start, end).arrayBuffer();
     check();
     return bytes.byteLength === end - start ? bytes : undefined;
+  };
+  const progress = (fraction: number) => {
+    onProgress?.(fraction);
+    check();
   };
   const header = await read(0, Math.min(file.size, 65_536));
   if (!header) return;
@@ -42,11 +47,14 @@ export async function readPackedBinaryPly(
     const view = new DataView(bytes);
     for (let face = 0; face < count; face++)
       if (view.getUint8(face * 13) !== 3) return;
+    progress((0.1 * (first + count)) / faceCount);
   }
 
+  progress(0.15);
   const vertices = new Float32Array(vertexCount * 3);
   const normals = new Float32Array(vertexCount * 3);
   const triangles = new Uint32Array(faceCount * 3);
+  progress(0.2);
   for (let first = 0; first < vertexCount; first += VERTICES_PER_CHUNK) {
     const count = Math.min(VERTICES_PER_CHUNK, vertexCount - first);
     const bytes = await read(
@@ -61,6 +69,7 @@ export async function readPackedBinaryPly(
       first,
       count,
     );
+    progress(0.2 + (0.45 * (first + count)) / vertexCount);
   }
   for (let first = 0; first < faceCount; first += FACES_PER_CHUNK) {
     const count = Math.min(FACES_PER_CHUNK, faceCount - first);
@@ -73,8 +82,10 @@ export async function readPackedBinaryPly(
     for (let face = 0; face < count; face++)
       if (view.getUint8(face * 13) !== 3) return;
     decodePackedPlyFaces(view, triangles, vertexCount, first, count);
+    progress(0.65 + (0.3 * (first + count)) / faceCount);
   }
   if (!normals.every(Number.isFinite))
     throw new Error("PLY vertex normals must be finite.");
+  progress(1);
   return { vertices, normals, triangles };
 }

@@ -131,9 +131,15 @@ export async function readScan(
     throw new Error(
       "Bounded preview currently supports binary STL only. Select full resolution for text STL, OBJ or PLY.",
     );
+  const plyProgress = (fraction: number) => {
+    if (extension === "ply") options.onProgress?.(fraction);
+    checkAbort(options.signal);
+  };
   const streamed =
     extension === "ply"
-      ? await readPackedBinaryPly(file, options.signal)
+      ? await readPackedBinaryPly(file, options.signal, (fraction) =>
+          plyProgress(fraction * 0.4),
+        )
       : undefined;
   checkAbort(options.signal);
   const buffer = streamed ? undefined : await file.arrayBuffer();
@@ -149,11 +155,14 @@ export async function readScan(
         })
       : undefined);
   if (streamed) sourceNormals = streamed.normals;
+  plyProgress(0.5);
   const positions = topology
     ? expandPlyTopology(topology)
     : parseMesh(buffer!, extension);
+  plyProgress(0.6);
   if (topology) options.onIndexedMesh?.(topology);
   if (topology && sourceNormals) {
+    plyProgress(0.65);
     const normals = new Float32Array(positions.length);
     for (let slot = 0; slot < topology.triangles.length; slot++) {
       if (slot % 65536 === 0) checkAbort(options.signal);
@@ -163,6 +172,7 @@ export async function readScan(
       normals[slot * 3 + 2] = sourceNormals[vertex + 2];
     }
     options.onMeshNormals?.(normals);
+    plyProgress(0.9);
   }
   options.onSource?.({
     bytes: file.size,

@@ -39,6 +39,9 @@ the full geometry and authored normals. Other PLY layouts use the existing loade
 Cancellation, units, placement, source counts and history semantics are unchanged.
 This bounds raw input reads; final geometry and preparation still scale with scan
 size, and the three-scan 2 GiB diagnostic gate remains unresolved.
+Packed PLY per-file progress now advances during face preflight, vertex/face
+decoding and position/normal expansion through the existing import progress
+responses. Cancellation and callback failures do not report completion.
 
 Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).
 

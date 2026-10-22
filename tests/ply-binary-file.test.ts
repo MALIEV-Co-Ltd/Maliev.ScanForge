@@ -90,6 +90,78 @@ const digest = (array: ArrayBufferView) =>
     .update(new Uint8Array(array.buffer, array.byteOffset, array.byteLength))
     .digest("hex");
 
+it("reports monotonic PLY decoding and expansion progress through completion", async () => {
+  const { data } = packed();
+  const { file } = source(data);
+  const progress: number[] = [];
+  await readScan(file, "ply", { onProgress: (value) => progress.push(value) });
+  expect(progress).toEqual([...progress].sort((a, b) => a - b));
+  expect(progress).toContain(0.4);
+  expect(progress).toContain(0.5);
+  expect(progress).toContain(0.6);
+  expect(progress).toContain(0.65);
+  expect(progress).toContain(0.9);
+  expect(progress.at(-1)).toBe(1);
+});
+
+it.each([0.5, 0.65])(
+  "cancels at expansion boundary %s without completion",
+  async (boundary) => {
+    const { data } = packed();
+    const { file } = source(data);
+    const controller = new AbortController();
+    const onSource = vi.fn(),
+      onMeshNormals = vi.fn();
+    const progress: number[] = [];
+    await expect(
+      readScan(file, "ply", {
+        signal: controller.signal,
+        onSource,
+        onMeshNormals,
+        onProgress(value) {
+          progress.push(value);
+          if (value === boundary) controller.abort();
+        },
+      }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    expect(progress.at(-1)).toBe(boundary);
+    expect(onSource).not.toHaveBeenCalled();
+    expect(onMeshNormals).not.toHaveBeenCalled();
+  },
+);
+
+it("keeps progress monotonic when a later short read uses the general loader", async () => {
+  const { data } = packed();
+  const { file, reads, whole } = source(data, true);
+  const sliced = file.slice;
+  file.slice = (start, end) => ({
+    async arrayBuffer() {
+      const bytes = await sliced(start, end).arrayBuffer();
+      return reads.length === 4 ? bytes.slice(0, -1) : bytes;
+    },
+  });
+  const progress: number[] = [];
+  await readScan(file, "ply", { onProgress: (value) => progress.push(value) });
+  expect(whole).toHaveBeenCalledOnce();
+  expect(progress).toEqual([...progress].sort((a, b) => a - b));
+  expect(progress.at(-1)).toBe(1);
+});
+
+it("does not report completion when a PLY consumer rejects its geometry", async () => {
+  const { data } = packed();
+  const { file } = source(data);
+  const progress: number[] = [];
+  await expect(
+    readScan(file, "ply", {
+      onProgress: (value) => progress.push(value),
+      onIndexedMesh() {
+        throw new Error("Consumer failed");
+      },
+    }),
+  ).rejects.toThrow("Consumer failed");
+  expect(progress).not.toContain(1);
+});
+
 function originalFileHashes(path: string, sourceSha256: string) {
   const bytes = readFileSync(path);
   expect(digest(bytes)).toBe(sourceSha256);
