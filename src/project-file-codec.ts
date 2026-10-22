@@ -3,6 +3,7 @@ import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import { projectValueHash, projectValueBlob } from "./project-value-stream";
 
 export interface ProjectSession {
   projectId?: string;
@@ -46,22 +47,13 @@ async function digest(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
     (x) => x.toString(16).padStart(2, "0"),
   ).join("");
 }
-async function compress(
-  bytes: Uint8Array<ArrayBuffer>,
-): Promise<Uint8Array<ArrayBuffer>> {
-  return new Uint8Array(
-    await new Response(
-      new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip")),
-    ).arrayBuffer(),
-  );
-}
 /** Portable, lossless binary container. Identical revision payloads are stored once. */
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
 export async function encodeProjectFileLocally(
   session: ProjectSession,
 ): Promise<Blob> {
   const chunks: Chunk[] = [],
-    payloads: Uint8Array<ArrayBuffer>[] = [],
+    payloads: Blob[] = [],
     records: RecordData[] = [];
   const chunkIds = new Map<string, number>(),
     recordIds = new Map<string, number>();
@@ -85,34 +77,22 @@ export async function encodeProjectFileLocally(
       const cached = valueCache.get(value);
       if (cached?.type === type) return cached;
     }
-    let bytes: Uint8Array<ArrayBuffer>;
-    if (typeof value === "string") bytes = new TextEncoder().encode(value);
-    else {
-      const width = type === "f64" ? 8 : 4;
-      bytes = new Uint8Array(value.length * width);
-      const view = new DataView(bytes.buffer);
-      for (let i = 0; i < value.length; i++) {
-        if (integer) view.setUint32(i * width, value[i], true);
-        else if (width === 4) view.setFloat32(i * width, value[i], true);
-        else view.setFloat64(i * width, value[i], true);
-      }
-    }
-    const sha256 = await digest(bytes);
+    const { sha256, rawBytes } = projectValueHash(value, type);
     let chunk = chunkIds.get(sha256);
     if (chunk === undefined) {
-      const zipped = await compress(bytes),
-        smaller = zipped.length < bytes.length;
-      const data = smaller ? zipped : bytes;
+      const zipped = await projectValueBlob(value, type, true),
+        smaller = zipped.size < rawBytes;
+      const data = smaller ? zipped : await projectValueBlob(value, type);
       chunk = chunks.length;
       chunks.push({
         offset,
-        bytes: data.length,
-        rawBytes: bytes.length,
+        bytes: data.size,
+        rawBytes,
         codec: smaller ? "gzip" : "raw",
         sha256,
       });
       payloads.push(data);
-      offset += data.length;
+      offset += data.size;
       chunkIds.set(sha256, chunk);
     }
     const ref: Ref = { chunk, type };

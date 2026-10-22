@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
+    "@noble/hashes": "2.4.0",
     "html-to-image": "1.11.13",
     "lucide-react": "^0.468.0",
     "opencascade.js": "1.1.1",

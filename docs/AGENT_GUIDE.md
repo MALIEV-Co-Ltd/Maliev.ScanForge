@@ -367,6 +367,8 @@ Use `backup_delete` with the selected `backupId`, `expectedRevision`, and a fres
 
 Backups are local to the paired browser origin and save changed data at 30-second intervals. Refresh or shutdown may lose work since the last completed interval. Stable project identities are shared across file copies; two tabs working on the same identity share its backup, with the last completed write taking precedence. New documents have separate identities. See [project files and recovery](PROJECT_FILES.md).
 
+Save/export and automatic backups encode numeric geometry in canonical chunks of at most 1 MiB and stream compressed payloads into Blobs. MCP project export uses the same codec, with unchanged project formats, geometry hashes, history and cancellation. This bounds numeric staging, not total memory: compressed output, browser storage and BRep text remain additional allocations. No new parameter is needed.
+
 1. Read `scanforge://agent-guide`, then discover tool schemas.
 2. Call `project_get`. Retain object IDs, feature IDs, units and the response's top-level `revision`.
 3. For a mutation, supply that `expectedRevision` and a new `requestId` alongside command parameters.
