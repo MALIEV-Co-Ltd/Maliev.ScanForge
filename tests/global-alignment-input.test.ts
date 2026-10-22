@@ -111,7 +111,7 @@ it("counts reused backing carriers once and admits the full indexed three-scan d
     (a.indexedMesh!.vertices as Float32Array).byteLength +
       (a.indexedMesh!.triangles as Uint32Array).byteLength +
       (a.indexedMesh!.normals as Float32Array).byteLength +
-      2 * a.indexedMesh!.vertices.length * 4,
+      2 * a.indexedMesh!.vertices.length * (4 + 4 / 3),
   );
   const indexed = (id: string, vertices: number, triangles: number) =>
     ({
@@ -177,6 +177,9 @@ it("uses scene order, visible mesh wrappers, command defaults and original unuse
   );
   expect(result.input.scans[0].geometry.normals).toEqual(
     noiseNormals(a.indexedMesh!),
+  );
+  expect(result.input.scans[0].geometry.flags).toEqual(
+    Uint32Array.of(1, 1, 1, 0),
   );
   expect(result.summary.preparation.physicalWorkers).toBe(2);
   expect(result.input.scans[0].geometry.targetMeshes![0].triangles).toBe(
@@ -492,6 +495,64 @@ it("admits generated normal output and copied topology even when scanner normals
   const admission = globalAlignmentInputAdmission([a]);
   const v = a.indexedMesh!.vertices.length * 4;
   const t = a.indexedMesh!.triangles.length * 4;
-  expect(admission.retainedBytes).toBe(v + t + v + v);
+  expect(admission.retainedBytes).toBe(v + t + v + v + v / 3);
   expect(admission.peakPreparationBytes).toBe(v + t + 1048576);
+});
+
+it("reserves existing carriers and prepared outputs without charging future derived outputs", async () => {
+  const packets: Parameters<
+    typeof executeGlobalAlignmentInputPreparation
+  >[0][] = [];
+  vi.stubGlobal(
+    "Worker",
+    class {
+      onmessage?: (event: { data: unknown }) => void;
+      terminate() {}
+      postMessage(
+        packet: Parameters<typeof executeGlobalAlignmentInputPreparation>[0],
+        transfer: ArrayBuffer[],
+      ) {
+        const copy = structuredClone(packet, { transfer });
+        packets.push(copy);
+        queueMicrotask(() =>
+          this.onmessage?.({
+            data: { result: executeGlobalAlignmentInputPreparation(copy) },
+          }),
+        );
+      }
+    },
+  );
+  const a = mesh("a"),
+    b = mesh("b");
+  const admission = globalAlignmentInputAdmission([a, b]);
+  await prepareGlobalAlignmentInput([a, b]);
+  const flags = (a.indexedMesh!.vertices.length / 3) * 4;
+  const normals = a.indexedMesh!.vertices.length * 4;
+  const clones = normals + a.indexedMesh!.triangles.length * 4;
+  expect(packets.map((p) => p.storage?.reserved)).toEqual([
+    admission.retainedBytes - normals - flags * 2 + clones + 1048576,
+    admission.retainedBytes - flags + clones + 1048576,
+  ]);
+});
+
+it("rejects a worker response missing the source exclusion flags", async () => {
+  const terminate = vi.fn();
+  vi.stubGlobal(
+    "Worker",
+    class {
+      onmessage?: (event: { data: unknown }) => void;
+      terminate = terminate;
+      postMessage(
+        packet: Parameters<typeof executeGlobalAlignmentInputPreparation>[0],
+      ) {
+        const { flags: _flags, ...result } =
+          executeGlobalAlignmentInputPreparation(packet);
+        queueMicrotask(() => this.onmessage?.({ data: { result } }));
+      }
+    },
+  );
+  await expect(
+    prepareGlobalAlignmentInput([mesh("a"), mesh("b")]),
+  ).rejects.toThrow(/worker buffers/);
+  expect(terminate).toHaveBeenCalledOnce();
 });

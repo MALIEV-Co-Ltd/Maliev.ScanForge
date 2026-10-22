@@ -154,6 +154,7 @@ export function globalAlignmentInputAdmission(
       // multiple scans share their original indexed backing stores.
       if (indexed.normals) retainedBytes += carrier(indexed.normals);
       retainedBytes += indexed.vertices.length * 4;
+      retainedBytes += (indexed.vertices.length / 3) * 4;
       // Transferred clones remain live beside the borrowed originals and
       // normal output until the disposable worker response is released.
       scratch =
@@ -161,13 +162,13 @@ export function globalAlignmentInputAdmission(
     } else {
       const bytes = entity.positions.length * 4;
       // Worst-case output keeps every corner: vertices + normals + indices.
-      retainedBytes += (bytes * 7) / 3;
+      retainedBytes += (bytes * 8) / 3;
       // Seven coordinate streams cover copied input, native topology arrays,
       // trimmed output and normal output. Reserve 1024 bytes per corner for
       // the largest possible bucket's keys, linked entries and maps, plus tree.
       const workingPeak =
         bytes * 7 + (entity.positions.length / 3) * 1024 + 1048576;
-      scratch = workingPeak - (bytes * 7) / 3;
+      scratch = workingPeak - (bytes * 8) / 3;
     }
     peakPreparationBytes = Math.max(peakPreparationBytes, scratch);
     estimatedPeakBytes = Math.max(estimatedPeakBytes, retainedBytes + scratch);
@@ -286,7 +287,9 @@ async function derive(
             !(r.vertices instanceof Float32Array) ||
             !(r.triangles instanceof Uint32Array) ||
             !(r.normals instanceof Float32Array) ||
-            r.normals.length !== r.vertices.length
+            r.normals.length !== r.vertices.length ||
+            !(r.flags instanceof Uint32Array) ||
+            r.flags.length !== r.vertices.length / 3
           )
             throw Error("Invalid global alignment input worker buffers.");
           finish(undefined, r);
@@ -304,7 +307,13 @@ async function derive(
       check();
       worker.postMessage(
         packet,
-        Object.values(packet).map((value) => value.buffer as ArrayBuffer),
+        [
+          packet.positions?.buffer,
+          packet.vertices?.buffer,
+          packet.triangles?.buffer,
+        ].filter(
+          (buffer): buffer is ArrayBuffer => buffer instanceof ArrayBuffer,
+        ),
       );
     } catch (error) {
       finish(error instanceof Error ? error : Error(String(error)));
@@ -364,6 +373,15 @@ export async function prepareGlobalAlignmentInput(
       admission,
     },
   };
+  const derivedBytes = (entity: Entity) =>
+    entity.indexedMesh
+      ? entity.indexedMesh.vertices.length * 4 +
+        (entity.indexedMesh.vertices.length / 3) * 4
+      : (entity.positions.length * 4 * 8) / 3;
+  let futureDerivedBytes = admitted.reduce(
+    (sum, entity) => sum + derivedBytes(entity),
+    0,
+  );
   for (const entity of admitted) {
     check();
     options.onProgress?.(
@@ -371,6 +389,30 @@ export async function prepareGlobalAlignmentInput(
       `Preparing ${entity.name}`,
     );
     const indexed = entity.indexedMesh;
+    futureDerivedBytes -= derivedBytes(entity);
+    const flagBytes = indexed
+      ? (indexed.vertices.length / 3) * 4
+      : (entity.positions.length / 3) * 4;
+    const copiedBytes = indexed
+      ? (indexed.vertices.length + indexed.triangles.length) * 4
+      : entity.positions.length * 4;
+    const storage = {
+      limit: admission.limitBytes,
+      reserved:
+        admission.retainedBytes -
+        futureDerivedBytes -
+        flagBytes +
+        copiedBytes +
+        1048576,
+    };
+    if (
+      !Number.isSafeInteger(storage.reserved) ||
+      storage.reserved < 0 ||
+      storage.reserved > storage.limit
+    )
+      throw Error(
+        "Global alignment exceeds its 512 MiB whole-scene storage admission.",
+      );
     let mesh: GlobalAlignmentPreparedMesh;
     if (indexed) {
       if (
@@ -413,16 +455,29 @@ export async function prepareGlobalAlignmentInput(
         t.set(triangles.subarray(first, end), first),
       );
       const prepared = await derive(
-        { vertices: v, triangles: t },
+        {
+          vertices: v,
+          triangles: t,
+          storage,
+        },
         options.signal,
         check,
       );
-      mesh = { vertices, triangles, normals: prepared.normals };
+      mesh = {
+        vertices,
+        triangles,
+        normals: prepared.normals,
+        flags: prepared.flags,
+      };
       summary.preparation.physicalWorkers++;
       summary.preparation.reusedIndexedScans++;
     } else {
+      const positions = await floats(entity.positions, check, true);
       mesh = await derive(
-        { positions: await floats(entity.positions, check, true) },
+        {
+          positions,
+          storage,
+        },
         options.signal,
         check,
       );
@@ -436,6 +491,7 @@ export async function prepareGlobalAlignmentInput(
       geometry: {
         points: mesh.vertices,
         normals: mesh.normals,
+        flags: mesh.flags,
         targetMeshes: [{ vertices: mesh.vertices, triangles: mesh.triangles }],
       },
     });

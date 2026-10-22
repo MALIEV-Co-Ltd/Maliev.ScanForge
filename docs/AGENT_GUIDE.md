@@ -385,6 +385,13 @@ Normal buffers may use compact Float32 storage internally. GUI opening and MCP `
 Global Fine Align derives command-local alignment normals from each mesh's
 topology during shared GUI/MCP preparation. Imported object normals, including
 scanner-provided PLY normals, remain preserved on the source object.
+The same preparation excludes boundary vertices from source sampling using
+command-local mask-1 flags derived from the native directed-edge neighbor
+semantics. This applies to GUI and `global_alignment_preview`; original topology,
+positions and scanner normals remain unchanged. Flags cost four bytes per indexed
+vertex. Adjacency scratch is checked as allocated under the existing 512 MiB
+preparation admission; a storage failure settles the preview job without applying
+geometry. See `docs/GLOBAL_ALIGNMENT_SOURCE_FLAGS.md` for evidence and limits.
 
 ### Response contract
 

@@ -279,6 +279,16 @@ The shared `prepareGlobalAlignmentInput` derives command-local vertex normals
 from mesh topology for both GUI and MCP. Imported object/scanner normal buffers
 remain preserved on the authored object. Derived normals belong to the prepared
 command input and follow its existing cancellation and release handling.
+The same disposable input worker derives command-local source mask-1 flags from
+the existing native-compatible neighbor-mask builder. Missing directed neighbor
+slots mark both edge endpoints; source sampling consumes the existing geometry
+flags contract. GUI and MCP use this operation without a new tool or schema.
+Returned flags and temporary neighbor masks, partition storage and edge-directory
+growth are charged under the unchanged 512 MiB allocator scope. Reservations keep
+existing authored carriers and prepared outputs, excluding future derived outputs;
+the fixed bucket tree is covered by the existing 1 MiB runtime reserve. Temporary
+mask storage stays conservatively charged until worker teardown. This is logical
+buffer accounting, not a browser RSS or heap guarantee.
 
 The input-lifetime adapter checks the shared cleanup registry before input
 preparation. `assertNoUnresolvedOwnedWorkers` retries exact retained handles and
