@@ -2,6 +2,8 @@
 
 Viewport surface queries use a disposable, indirect triangle BVH prepared in a background worker. Canvas selection, orbit-pivot picking, pick-through and MCP `viewport_pick` query the same display objects. This changes query cost, not geometry, triangle numbering, clipping rules, history or the public tool schema.
 
+Worker replies transfer only BVH roots and the indirect facet mapping. The receiver preserves the live geometry index, so replies omit the disposable construction index. An original-data diagnostic measured 35,664,372 bytes of unused index replies across the first two scans; omitting them reduces transport volume, while peak-memory impact requires a separate guarded replay.
+
 The build starts when display geometry is installed and is serialized across the viewport. Live positions and indices remain attached; only private copies are transferred. Meshes below 10,000 rendered triangles retain ordinary picking. The worker terminates on completion, failure, geometry disposal or its 120-second lease. Replacing geometry cancels obsolete queued/active builds and releases its index. Before readiness, or if a worker fails, ordinary picking remains available. Clouds continue to use measured-point picking.
 
 Passive pointer movement updates the navigation cursor without submitting a full scene. Button drags, touch navigation, origin-plane highlighting and sketch/selection overlays retain their redraw paths. Explicit MCP viewport presentation remains available.

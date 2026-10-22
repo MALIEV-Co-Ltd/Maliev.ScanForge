@@ -10,8 +10,9 @@ self.onmessage = ({ data }) => {
     const tree = MeshBVH.serialize(new MeshBVH(geometry, { indirect: true }), {
       cloneBuffers: false,
     });
+    // The receiver preserves its live index with deserialize({ setIndex: false }).
+    tree.index = null;
     const transfer = [...tree.roots];
-    if (tree.index) transfer.push(tree.index.buffer as ArrayBuffer);
     if (tree.indirectBuffer)
       transfer.push(tree.indirectBuffer.buffer as ArrayBuffer);
     self.postMessage({ tree }, { transfer });
