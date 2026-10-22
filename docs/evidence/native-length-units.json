@@ -50,7 +50,7 @@
   "remaining": [
     "Native numerical replay of defaults across units and precision settings.",
     "Locale, rounding ties, overflow and invalid-input behavior.",
-    "Picked-line normalization, curve categories, relation equations and complete duplication acceptance."
+    "Picked-line eligibility/frame fixtures, curve categories, relation equations and complete duplication acceptance."
   ],
   "evidence": {
     "0x1404040e0": "ev_138bb13a2adfe26e7d91a7020d727e69cbf9557bb246a4e0cd4852017659a80b",

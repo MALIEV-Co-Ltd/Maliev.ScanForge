@@ -113,7 +113,8 @@ choices replace the stored direction with `(1,0,0)` or `(0,1,0)` respectively.
 Choosing Sketch line leaves that vector unchanged in the combobox handler; the
 separate pick workflow must supply it. Enabling Direction 2 selects Y Axis and
 resets its stored vector to `(0,1,0)`, even after a previous secondary direction.
-Picked-line normalization and degenerate-input behavior are still unresolved.
+The picked-line calculations are now bound below; curve eligibility, coordinate
+frame and native degenerate-input fixtures still require validation.
 
 The primary, secondary and circular instance edit handlers clamp values below
 one to one. The linear/grid generator independently clamps both active counts
@@ -134,14 +135,64 @@ REA dossiers bind six handlers to the original message-map controls. A separate
 Capstone check verifies 46 instruction anchors and rejects an intentionally
 incorrect editor minimum. The secondary virtual-table thunk at `0x140664808`
 adjusts the object pointer and enters the destructor, not a picked-line callback.
-This excludes a false callback candidate without claiming the real picker has
-been found. These are static observations, not executed native acceptance tests.
+The actual picked-line branch is now bound separately below. These are static
+observations, not executed native acceptance tests.
 The provider was closed and its owned Java process exited after retention.
+
+## Picked-line direction, spacing and grid state
+
+The view initializer `0x1406f55f0` obtains the dialog from factory
+`DAT_141620f30` and stores it at view offset `0x3140`. The retained factory
+registration names `DialogFactorycSubCopyCurvesDialog`. View callback
+`0x1406fa340`, switch case `0x0e`, accesses that same member and calls the bound
+duplication preview generator. This connects the picked-line branch to the
+Duplicate selected dialog.
+
+Before reading endpoints, the branch checks a selected-item context byte, a
+non-null selected curve and a true result from virtual query `+0x30`. The precise
+curve-type mapping of that query is not recovered. The selection resolver also
+recurses through groups and clears temporary point-record bits; it must not be
+invoked as a supposedly read-only geometry getter during analysis.
+
+For an eligible picked curve, it reads virtual endpoint indices zero and one,
+computes `endpoint1 - endpoint0` in three binary64 components, measures
+`sqrt((dx*dx + dy*dy) + dz*dz)`, and normalizes the vector. For finite lengths,
+normalization multiplies by the reciprocal when length is at least `2^-52`
+(`2.220446049250313e-16`). Below that threshold, it leaves the original vector
+unchanged and returns no local error. This is not evidence that the native GUI
+can create or select a degenerate line; earlier authoring and eligibility guards
+remain to be tested. The expanded sum of squares is not a stable-hypot formula.
+
+The callback preserves the measured length before normalization and passes that
+full double to the matching spacing setter. The setter clamps non-positive
+values to zero, then uses the recovered [unit/precision helper](NATIVE_LENGTH_UNITS.md).
+Picking therefore changes both direction and spacing. It selects combobox index
+two, Sketch line, and writes the normalized direction to the primary or secondary
+vector. In grid mode, a primary pick clears the primary flag and arms the
+secondary flag. A secondary pick clears both. The callback then updates controls
+and regenerates the preview. The picked coordinates' exact frame and live UI
+transitions still need equivalent fixtures.
+
+The parent callback's complete analyzed body is 23,015 bytes. Its high-P-code
+value flow is truncated and its indirect-call relationship coverage is partial;
+no complete semantic reconstruction is claimed. A complete retained Evidence
+bundle was exported after inline delivery exceeded the MCP response budget.
+Independent verification checks 59 instruction anchors, two negative controls,
+and six spans containing 185 decoded instructions (827 bytes).
+
+A read-only snapshot of the current native process matched all six code spans
+twice. It also bound the indirect length call to the current `ucrtbase.sqrt`
+export by matching the address, mapped DLL path and 32 entry bytes against the
+host export. No target function executed and no scan geometry was read. The
+helper made 22 region queries, peaked below 15 MiB under a 4 GiB/25% CPU Job,
+and closed its process/Job handles. The analysis provider also closed with no
+pending cleanup or remaining owned Java process. These checks bind current code;
+they do not establish native numerical acceptance or GUI/MCP duplication parity.
 
 ## Implementation and validation gate
 
 Before adding duplication, resolve native curve categories, relation equations,
-unit/precision numerical replay, picked-direction normalization, path evaluation and
+unit/precision numerical replay, picked-line eligibility/frame fixtures, path evaluation and
 acceptance history on equivalent fixtures. Then implement all supported modes through one
 shared operation used by GUI and MCP, with an observable preview/accept/cancel
 contract, instance maps, bounded work, revision/retry/cancellation checks and

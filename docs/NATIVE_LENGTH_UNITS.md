@@ -65,5 +65,6 @@ existing 4 GiB/25% CPU limits. Process and Job handles closed. The analysis
 provider closed with no pending cleanup and no remaining owned Java process.
 
 See [structured facts](evidence/native-length-units.json). Full duplication,
-picked-line normalization, curve-category behavior, relation equations and native
-numerical acceptance remain open.
+picked-line eligibility/frame fixtures, curve-category behavior, relation equations
+and native numerical acceptance remain open. The picked-line arithmetic is now
+bound in [duplication evidence](NATIVE_SKETCH_DUPLICATION.md).

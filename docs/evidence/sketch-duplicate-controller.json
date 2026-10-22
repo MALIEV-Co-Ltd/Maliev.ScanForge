@@ -103,7 +103,20 @@
       "spacingArgument": "Full binary64 value in XMM1, clamped against zero before virtual slot +0x20; result in XMM0",
       "secondaryDestructorThunk": "0x140664808 adjusts this by -0x130 then calls destructor 0x1406601a0; not a picked-line callback"
     },
-    "lengthUnitsEvidence": "native-length-units.json"
+    "lengthUnitsEvidence": "native-length-units.json",
+    "pickedLine": {
+      "dialogOwnerMember": "view+0x3140 via factory DAT_141620f30",
+      "endpointOrder": "endpoint 1 minus endpoint 0, three binary64 components",
+      "length": "sqrt((dx*dx+dy*dy)+dz*dz), bound to live ucrtbase.sqrt",
+      "normalizationMinimumLength": 2.220446049250313e-16,
+      "belowNormalizationMinimum": "Leave original vector unchanged; no local error return",
+      "pickedSpacing": "Original measured length through shared native unit/precision helper; primary +0xdf8 or secondary +0xef8",
+      "gridAfterPrimaryPick": "Primary pick flag cleared; secondary pick flag armed",
+      "afterSecondaryPick": "Both direction pick flags cleared",
+      "comboSelection": "Index 2, Sketch line",
+      "eligibility": "Selected-item context byte, non-null selected curve, virtual query +0x30 returns true",
+      "normalizationScope": "Finite lengths; no claim that earlier native authoring/selection accepts degenerate or nonfinite inputs"
+    }
   },
   "evidence": {
     "resources": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
@@ -145,7 +158,21 @@
         "procedure": "0x140663bb0",
         "evidenceId": "ev_06dc3c8f0db83538aeb33da17f44f294ce489e07ea1ba03cdb8505f41aae571e"
       }
-    ]
+    ],
+    "pickedLine": {
+      "0x14065fc90": "ev_094c7bb2d3b96079a16f8f6c79a62af08d20440a87ff103a6697d6766ddb3d02",
+      "0x1406f55f0": "ev_1507f9fd6a0e8c41562abec3763439babaad56fd89225b5f1e3124396dfca284",
+      "0x140154070": "ev_36f6926c88b0b9501273c4f029f07ca6493d45884ca54a3e11b6ac316d56ae6f",
+      "0x1406e5970": "ev_7929dcf2fc0bdfec536bb94e497702dca69c8d8f09d5860e74f1f2ca20035028",
+      "0x1401664c0": "ev_8060c34ad6ac58fa36749ab2dcf54c01c46042749281010b8f27dfaccee8b282",
+      "0x1406e4f60": "ev_8fefeaa15a67d2dd0f0151e3ea519f85bae4e3ec6e5ad267fde5a5732a284356",
+      "0x140d5cfac": "ev_92db1981364c6fef1150f5c89d01f32efab76ca5efc163593cdf363d14f2aa7e",
+      "0x1406fa340": "ev_9aeca40e7d73738402eb28e08b556bba30a2debed95622f3d970da1e57962eb2",
+      "0x1406e4fd0": "ev_b0714f472774022b40614e12bdc1a1d890233cb9399a75f6a89df3c6475fad7b",
+      "0x140155100": "ev_bcb671dbe22775ce0d50026ad67bf2e3906854d282d534423d4ce1a6a359d51c",
+      "0x14065fc60": "ev_e87fbb9b8521727975dafd37b22301646c3e2c4a5411e6c6a450a020f9e081f3",
+      "0x140154010": "ev_ec31242b7c9aa0e3d990d20a89ff46509505372e78957895a9878d08fc63f01c"
+    }
   },
   "verification": {
     "imageAndResourceDigests": true,
@@ -165,13 +192,41 @@
     "directionHandlerInstructionChecks": 46,
     "directionHandlerControlBindings": 6,
     "wrongEditorMinimumRejected": true,
-    "directionHandlerReceiptSha256": "33353466ee525e8d5baa008f2b484ffe5643f75a55d692aa1f9fc0b3c5929aa7"
+    "directionHandlerReceiptSha256": "33353466ee525e8d5baa008f2b484ffe5643f75a55d692aa1f9fc0b3c5929aa7",
+    "pickedLine": {
+      "instructionCheckCount": 59,
+      "decodedInstructions": 185,
+      "codeSpans": 6,
+      "codeBytes": 827,
+      "negativeControlsRejected": 2,
+      "parentFunction": {
+        "address": "0x1406fa340",
+        "bytes": 23015,
+        "valueFlowTruncated": true,
+        "relationshipCoverage": "partial"
+      },
+      "runtime": {
+        "codeSpansMatch": true,
+        "sqrtExportBound": true,
+        "sqrtEntrySha256": "4eb8e595ea6a8364dd21ce4ccc46e0090bcae9424479a5bf23de47e778a74e3e",
+        "queries": 22,
+        "peakBytes": 15486976,
+        "handlesClosed": true,
+        "targetFunctionsCalled": false
+      },
+      "receiptSha256": "952462fbd5353efeff4fa76bc668c1ce7758ab8d864f8e05f7f4d0d8f5b7c465",
+      "runtimeReceiptSha256": "2d71b322e0d43675978ad1f3d647b283fca4742fe38e970cb0639504170ba5ae",
+      "privateBundleSha256": "97fab434cc706d310863b8897b8a972cf0b7450efe6b663887467c80ef03a56d",
+      "passiveHelperSha256": "858c8beec1e53bbdf953b2f765d9912063742e109ce594113b863bd48ea41555",
+      "targetFunctionsCalled": false,
+      "nativeUiReplay": false
+    }
   },
   "unresolved": [
     "Native curve category and control-point representation",
     "Native relation equations and equal-relation quantity semantics on every eligible curve category",
     "Native numerical unit/precision replay, locale, rounding ties and overflow",
-    "Picked-direction normalization and degeneracy rules",
+    "Picked-line eligibility type mapping, coordinate frame and degenerate-line authoring/selection fixtures",
     "Native curve distance-to-parameter evaluation and frame behavior",
     "Preview/Accept/Cancel history and save/reopen replay",
     "Real native-versus-GUI-versus-MCP duplicate fixtures",
