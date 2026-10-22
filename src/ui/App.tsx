@@ -19,6 +19,7 @@ import { interactiveAlignmentTargetError } from "../interactive-alignment-sessio
 import { createInteractiveEditor } from "../automation/interactive-editor";
 import { InteractiveAlignmentDialog } from "./InteractiveAlignmentDialog";
 import { isSampledScan } from "../scan-source";
+import { DEFAULT_ASC_ATTRIBUTES, type AscAttributes } from "../asc-import";
 import { flushSync } from "react-dom";
 import {
   prepareImportedScan,
@@ -410,6 +411,9 @@ export function App() {
     useState<SettingsSection>("appearance");
   const [newDocumentDialog, setNewDocumentDialog] = useState(false);
   const [previewImport, setPreviewImport] = useState(false);
+  const [importAscAttributes, setImportAscAttributes] = useState<AscAttributes>(
+    DEFAULT_ASC_ATTRIBUTES,
+  );
   const [placeImportAtOrigin, setPlaceImportAtOrigin] = useState(
     DEFAULT_IMPORT_PLACE_AT_ORIGIN,
   );
@@ -1660,6 +1664,7 @@ export function App() {
           kind: "pointCloudEdit",
           positions: source.positions,
           normals: source.normals,
+          pointColors: source.pointColors,
           ...operation,
         },
         {
@@ -1680,6 +1685,8 @@ export function App() {
                   ? {
                       ...entity,
                       positions: edited.positions!,
+                      pointColors: edited.pointColors,
+                      pointCloudPlacement: undefined,
                       normals: edited.normals
                         ? Array.from(edited.normals)
                         : undefined,
@@ -3253,6 +3260,7 @@ export function App() {
                   ? prepareImportedScan(file, {
                       unit,
                       placeAtOrigin: placeImportAtOrigin,
+                      ascAttributes: importAscAttributes,
                       previewTriangles: previewImport ? 250_000 : undefined,
                       signal: context.signal,
                       onProgress: (fraction) =>
@@ -3427,6 +3435,7 @@ export function App() {
           (await prepareImportedScan(file, {
             unit,
             placeAtOrigin: placeImportAtOrigin,
+            ascAttributes: importAscAttributes,
             previewTriangles: previewImport ? 250_000 : undefined,
             signal,
             onProgress: (fraction) =>
@@ -3565,6 +3574,7 @@ export function App() {
           kind: "pointCloudEdit" as const,
           positions: selected.positions,
           normals: selected.normals,
+          pointColors: selected.pointColors,
           selection: triangleMask,
         };
         const picked =
@@ -3583,6 +3593,8 @@ export function App() {
                   ? {
                       ...entity,
                       positions: remainder.positions!,
+                      pointColors: remainder.pointColors,
+                      pointCloudPlacement: undefined,
                       normals: remainder.normals
                         ? Array.from(remainder.normals)
                         : undefined,
@@ -3597,6 +3609,8 @@ export function App() {
             id: crypto.randomUUID(),
             name: `${selected.name} selection`,
             positions: picked.positions!,
+            pointColors: picked.pointColors,
+            pointCloudPlacement: undefined,
             normals: picked.normals ? Array.from(picked.normals) : undefined,
             meshSelection: undefined,
           };
@@ -4548,6 +4562,7 @@ export function App() {
         snapGrid,
         originVisible,
         importPlaceAtOrigin: placeImportAtOrigin,
+        importAscAttributes,
       },
     }),
     cad: () => {
@@ -4636,6 +4651,8 @@ export function App() {
     settings: (patch) => {
       if (patch.importPlaceAtOrigin !== undefined)
         setPlaceImportAtOrigin(patch.importPlaceAtOrigin as boolean);
+      if (patch.importAscAttributes !== undefined)
+        setImportAscAttributes(patch.importAscAttributes as AscAttributes);
       if (patch.theme !== undefined) setTheme(patch.theme as Theme);
       if (patch.wireframe !== undefined)
         setWireframe(patch.wireframe as boolean);
@@ -6773,6 +6790,26 @@ export function App() {
                 hidden={settingsSection !== "import"}
               >
                 <h3>Scan import</h3>
+                <label>
+                  ASC attributes
+                  <select
+                    aria-label="ASC attributes"
+                    value={importAscAttributes}
+                    onChange={(event) =>
+                      void uiCommand("settings_set", {
+                        patch: { importAscAttributes: event.target.value },
+                      })
+                    }
+                  >
+                    <option value="xyz-rgb">XYZ / RGB colors</option>
+                    <option value="xyz-normal">XYZ / scanner normals</option>
+                  </select>
+                </label>
+                <p className="muted">
+                  RGB reads integer color columns and uses white for XYZ-only
+                  records. Choose scanner normals explicitly for XYZ NX NY NZ
+                  files. This changes future imports.
+                </p>
                 <label className="check">
                   <input
                     type="checkbox"

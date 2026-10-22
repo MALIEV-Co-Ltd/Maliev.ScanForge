@@ -140,6 +140,7 @@ import {
 
 type Item = {
   pointCloud?: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>;
+  pointColors?: Uint8Array;
   pointDeviation?: {
     colorAttribute:
       THREE.BufferAttribute | THREE.InterleavedBufferAttribute | undefined;
@@ -2963,6 +2964,7 @@ export class Viewport {
         item.selectionIndex = undefined;
         if (item.pointCloud) {
           item.pointDeviation = undefined;
+          item.pointColors = undefined;
           item.mesh.remove(item.pointCloud);
           item.pointCloud.geometry.dispose();
           item.pointCloud.material.dispose();
@@ -3112,13 +3114,32 @@ export class Viewport {
         }
         item.edgePositions = edgePositions;
       }
-      if (item.pointDeviation && item.color !== entity.color)
-        item.pointDeviation.color.set(entity.color);
+      if (item.pointCloud && item.pointColors !== entity.pointColors) {
+        const colorAttribute = entity.pointColors
+          ? new THREE.BufferAttribute(entity.pointColors, 4, true)
+          : undefined;
+        item.pointColors = entity.pointColors;
+        if (item.pointDeviation) {
+          // Keep the transient overlay visible, but restore the latest authored baseline.
+          item.pointDeviation.colorAttribute = colorAttribute;
+          item.pointDeviation.vertexColors = !!colorAttribute;
+        } else {
+          if (colorAttribute)
+            item.pointCloud.geometry.setAttribute("color", colorAttribute);
+          else item.pointCloud.geometry.deleteAttribute("color");
+          item.pointCloud.material.vertexColors = !!colorAttribute;
+          item.pointCloud.material.needsUpdate = true;
+        }
+      }
+      if (item.pointDeviation)
+        item.pointDeviation.color.set(
+          item.pointColors ? 0xffffff : entity.color,
+        );
       item.color = entity.color;
       if (item.pointCloud) {
         item.pointCloud.name = entity.name;
         item.pointCloud.material.color.set(
-          item.pointDeviation ? 0xffffff : entity.color,
+          item.pointDeviation || item.pointColors ? 0xffffff : entity.color,
         );
         item.pointCloud.material.opacity = entity.opacity;
         item.pointCloud.material.transparent = entity.opacity < 1;

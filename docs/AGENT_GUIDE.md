@@ -703,7 +703,7 @@ Call `artifact_read` with the artifact ID, byte `offset` and optional `length` (
 
 See [point-cloud editing](POINT_CLOUD_EDITING.md) for selection, deletion, simplification, noise reduction and connected-selection MCP contracts.
 
-`project_import` accepts `.asc` scans containing XYZ columns and optional NX/NY/NZ columns. Choose the import unit as for other scans. Every point is retained as a `pointcloud` object, without artificial triangle faces; normals survive project round trips and rigid alignment. Import results and object summaries report `points`, rather than `triangles`. Triangle topology and mesh-editing operations reject point clouds.
+`project_import` accepts `.asc` scans as point-cloud objects without artificial triangle faces. The default `xyz-rgb` interpretation reads integer colors with XYZ fallback; choose `ascAttributes: "xyz-normal"` explicitly for XYZ and optional NX/NY/NZ scanner columns. Choose the import unit as for other scans. Imported colors and explicit normals survive project round trips and rigid alignment. Results and summaries report `points`, rather than `triangles`. See [ASC attributes](ASC_ATTRIBUTES.md) for parsing limits and the shared preference. Triangle topology and mesh-editing operations reject point clouds.
 
 GUI N-point alignment and `mesh_process` with `operation.kind: "paired"` use the same recovered landmark-registration wrapper. Supply matching `sourceLandmarks` and `targetLandmarks` XYZ arrays in world-space millimeters, with at least three points on each side. The returned transform maps the moving/source object into the fixed/target frame. It applies to the whole moving mesh or point cloud and leaves the fixed object unchanged. Scanner normals rotate with their object.
 
@@ -831,8 +831,10 @@ existing bounded worker admission; retained GPU buffers do not mean the entire
 transaction is constant-time. Undo/Redo, preview discard and project recovery
 retain the pose. Geometry-changing edits discard inherited placement when they
 replace the world-coordinate buffers. Binary exports containing posed clouds use
-manifest version 3 and share local buffers across history; the reader also accepts
-version 2. JSON exports include both world compatibility geometry and placement.
+manifest version 3, or version 4 when cloud attributes are present, and share
+local buffers across history; the reader also accepts version 2. JSON exports
+include both world compatibility geometry and placement, using wire version 2
+when cloud attributes are present.
 
 The first alignment of a cloud loaded from a JSON project retains the active
 point selection while converting local storage to Float32. Subsequent poses and
@@ -1440,3 +1442,22 @@ To verify an extruded fillet, read `alignment_references` for the CAD body. Exac
 ### Shared reconstruction job lifecycle
 
 GUI **Re-polygonize → Apply** submits the existing `mesh_process` reconstruction operation and observes its public job. GUI and MCP use the same source/reference validation, revision checks, disposable processing worker, commit and history path. The GUI does not retain a second canonical reconstruction output in a geometry-session worker or commit the returned geometry again. Public parameters and reconstruction limits remain unchanged. Poll `job_get` for the topology and diagnostics; `job_cancel` requests cancellation. A cancellation request can race with completion, so inspect the terminal job and project state before assuming geometry was preserved. A reported successful terminal result remains authoritative if cancellation arrives afterward.
+
+### ASC color and normal interpretation
+
+Fresh GUI/MCP ASC imports use `xyz-rgb`: XYZ plus integer RGB, with white for
+XYZ-only/fallback records. Select `xyz-normal` explicitly to retain six-column
+scanner normals. Read/write the shared preference through
+`project_get.settings.importAscAttributes` and
+`settings_set.patch.importAscAttributes`; `project_import` and
+`project_import_batch` accept a per-request `ascAttributes` override.
+No existing object is reinterpreted by preference changes.
+
+Object summaries omit bulk color data and expose `pointColorAttributes`
+(encoding `rgba8`, point count and bytes). `object_get(includeGeometry: true)`
+includes `pointColors`; `object_geometry_digest` hashes its canonical `u8`
+bytes. Cloud transforms and edits retain corresponding colors. Colored or
+interpretation-bearing saves require JSON wirev2/binaryv4; older readers reject
+these versions. Current readers retain older projects. Read [ASC attributes](ASC_ATTRIBUTES.md)
+for parsing bounds, history and export limits. Native displayed-color and full
+GUI importer equivalence remain unverified.

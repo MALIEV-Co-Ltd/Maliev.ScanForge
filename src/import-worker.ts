@@ -1,7 +1,7 @@
 import { readScan, type ScanSource } from "./import-parser";
 import { convertScanUnits, type ScanUnit } from "./import-units";
 import { placeScanOnOrigin } from "./import-origin";
-import { readAscPointCloud } from "./asc-import";
+import { readAscPointCloud, type AscAttributes } from "./asc-import";
 import type { parsePlyTopology } from "./ply-topology";
 import { prepareScanRenderData } from "./scan-render-data";
 
@@ -13,6 +13,7 @@ const scope = self as unknown as {
       previewTriangles?: number;
       unit?: ScanUnit;
       placeAtOrigin?: boolean;
+      ascAttributes?: AscAttributes;
     }>,
   ) => void;
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -24,6 +25,7 @@ scope.onmessage = async ({ data }) => {
     let meshNormals: Float32Array | undefined;
     if (data.extension === "asc") {
       const cloud = await readAscPointCloud(data.file, {
+        attributes: data.ascAttributes,
         onProgress: (progress) =>
           scope.postMessage({ progress: progress * 0.85 }),
       });
@@ -37,10 +39,15 @@ scope.onmessage = async ({ data }) => {
       );
       const transfers = [cloud.positions.buffer as ArrayBuffer];
       if (cloud.normals) transfers.push(cloud.normals.buffer as ArrayBuffer);
+      if (cloud.pointColors)
+        transfers.push(cloud.pointColors.buffer as ArrayBuffer);
       scope.postMessage(
         {
           positions: cloud.positions,
-          pointCloud: { normals: cloud.normals },
+          pointCloud: {
+            normals: cloud.normals,
+            pointColors: cloud.pointColors,
+          },
           renderData,
         },
         transfers,

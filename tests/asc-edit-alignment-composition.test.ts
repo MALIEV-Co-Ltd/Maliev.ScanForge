@@ -306,11 +306,11 @@ it.each(["voxel", "sampleCount"] as const)(
       fixed: new File([fixedAsc], "fixed.asc"),
     });
     const movingImport = (await h.operations.project_import(
-      { artifactId: "moving", unit: "mm" },
+      { artifactId: "moving", unit: "mm", ascAttributes: "xyz-normal" },
       h.context,
     )) as { entityId: string; points: number };
     const fixedImport = (await h.operations.project_import(
-      { artifactId: "fixed", unit: "mm" },
+      { artifactId: "fixed", unit: "mm", ascAttributes: "xyz-normal" },
       h.context,
     )) as { entityId: string; points: number };
     expect(movingImport.points).toBe(8);

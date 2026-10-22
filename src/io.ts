@@ -16,6 +16,38 @@ import { entityFeatureModel } from "./parametric-entities";
 import { validatePlaneFrame } from "./plane-frame";
 import { indexedMeshMatches, retainIndexedMesh } from "./indexed-mesh";
 
+/** Validate imported cloud attributes before converting untrusted JSON bytes. */
+export function validatePointCloudAttributes(entity: {
+  kind?: unknown;
+  positions: { length: number };
+  pointColors?: unknown;
+  ascAttributes?: unknown;
+}): Uint8Array | undefined {
+  if (
+    entity.ascAttributes !== undefined &&
+    (entity.kind !== "pointcloud" ||
+      !["xyz-normal", "xyz-rgb"].includes(entity.ascAttributes as string))
+  )
+    throw new Error("Invalid ASC attribute interpretation.");
+  const colors = entity.pointColors;
+  if (colors === undefined) return undefined;
+  if (
+    entity.kind !== "pointcloud" ||
+    !(colors instanceof Uint8Array || Array.isArray(colors)) ||
+    colors.length !== (entity.positions.length / 3) * 4
+  )
+    throw new Error("Invalid point-cloud RGBA colors.");
+  for (let i = 0; i < colors.length; i++)
+    if (
+      !Number.isInteger(colors[i]) ||
+      colors[i] < 0 ||
+      colors[i] > 255 ||
+      (i % 4 === 3 && colors[i] !== 255)
+    )
+      throw new Error("Point-cloud colors must be opaque RGBA bytes.");
+  return colors instanceof Uint8Array ? colors : Uint8Array.from(colors);
+}
+
 /** Validate sparse triangle slots without allocating a mask proportional to mesh size. */
 export function validateMeshSelection(
   value: unknown,
@@ -159,7 +191,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    input.version !== 1 ||
+    ![1, 2].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -170,6 +202,7 @@ export function validateProject(value: unknown): Project {
   const ids = new Set<string>();
   const entities: Entity[] = input.entities.map((entity) => {
     validatePositions(entity.positions, entity.kind === "pointcloud");
+    const pointColors = validatePointCloudAttributes(entity);
     if (
       entity.indexedMesh !== undefined &&
       (entity.kind !== "mesh" ||
@@ -286,6 +319,10 @@ export function validateProject(value: unknown): Project {
       positions: entity.positions,
       indexedMesh: entity.indexedMesh,
       normals: entity.normals,
+      ...(pointColors !== undefined ? { pointColors } : {}),
+      ...(entity.ascAttributes !== undefined
+        ? { ascAttributes: entity.ascAttributes }
+        : {}),
       edgePositions: entity.edgePositions,
       planeFrame:
         entity.planeFrame === undefined
@@ -436,6 +473,7 @@ export function serializeProject(
   authoring?: Project["authoring"],
 ): string {
   entities = entities.map(retainIndexedMesh);
+  for (const entity of entities) validatePointCloudAttributes(entity);
   for (const entity of entities)
     if (entity.planeFrame !== undefined)
       validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
@@ -447,13 +485,20 @@ export function serializeProject(
       );
   return JSON.stringify({
     format: "maliev-scanforge",
-    version: 1,
+    version: entities.some(
+      (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+    )
+      ? 2
+      : 1,
     name,
     units: "mm",
     authoring,
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
       positions: Array.from(entity.positions),
+      ...(entity.pointColors !== undefined
+        ? { pointColors: Array.from(entity.pointColors) }
+        : {}),
       ...(entity.normals instanceof Float32Array
         ? { normals: Array.from(entity.normals) }
         : {}),
@@ -477,8 +522,14 @@ export async function serializeProjectBlob(
   authoring?: Project["authoring"],
 ): Promise<Blob> {
   entities = entities.map(retainIndexedMesh);
+  for (const entity of entities) validatePointCloudAttributes(entity);
+  const version = entities.some(
+    (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+  )
+    ? 2
+    : 1;
   const parts: BlobPart[] = [
-    `{"format":"maliev-scanforge","version":1,"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
+    `{"format":"maliev-scanforge","version":${version},"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
   for (let index = 0; index < entities.length; index++) {
     const {
@@ -486,6 +537,7 @@ export async function serializeProjectBlob(
       fit: _fit,
       positions,
       normals,
+      pointColors,
       indexedMesh,
       pointCloudPlacement: _placement,
       ...metadata
@@ -516,6 +568,21 @@ export async function serializeProjectBlob(
       await new Promise<void>((resolve) => setTimeout(resolve, 0));
     }
     parts.push("]");
+    if (pointColors !== undefined) {
+      parts.push(',"pointColors":[');
+      for (let first = 0; first < pointColors.length; first += 65536) {
+        parts.push(
+          first ? "," : "",
+          new Blob([
+            Array.from(pointColors.subarray(first, first + 65536), String).join(
+              ",",
+            ),
+          ]),
+        );
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      }
+      parts.push("]");
+    }
     if (normals) {
       if (
         normals.length !== positions.length ||

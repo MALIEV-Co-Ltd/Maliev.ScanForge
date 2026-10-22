@@ -1,9 +1,11 @@
 import type { Positions } from "./types";
+import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 
 export interface PointCloudEditRequest {
   kind: "pointCloudEdit";
   positions: Positions;
   normals?: Positions;
+  pointColors?: Uint8Array;
   selection?: Uint8Array;
   action:
     | "delete"
@@ -25,6 +27,7 @@ export interface PointCloudEditRequest {
 export interface PointCloudEditResult {
   positions?: Float32Array;
   normals?: Float32Array;
+  pointColors?: Uint8Array;
   /** Original point slots retained by deletion, extraction and sampling. */
   sourceIndices?: Uint32Array;
   selection?: Uint8Array;
@@ -46,6 +49,7 @@ export function editPointCloud(
   const count = positions.length / 3;
   if (!Number.isInteger(count) || count === 0)
     throw new Error("Point cloud must contain XYZ samples.");
+  validatePointColors(request.pointColors, count);
   if (positions.some((value) => !Number.isFinite(value)))
     throw new Error("Point coordinates must be finite.");
   if (
@@ -66,6 +70,7 @@ export function editPointCloud(
     algorithm: `point-cloud-${action}`,
   };
   const retain = (indices: number[]): PointCloudEditResult => {
+    const sourceIndices = Uint32Array.from(indices);
     const output = new Float32Array(indices.length * 3);
     const outputNormals = normals ? new Float32Array(output.length) : undefined;
     indices.forEach((source, index) => {
@@ -79,7 +84,16 @@ export function editPointCloud(
     return {
       positions: output,
       normals: outputNormals,
-      sourceIndices: Uint32Array.from(indices),
+      sourceIndices,
+      ...(request.pointColors
+        ? {
+            pointColors: reindexPointColors(
+              request.pointColors,
+              sourceIndices,
+              count,
+            ),
+          }
+        : {}),
       diagnostics: {
         ...diagnostics,
         points: indices.length,
@@ -256,6 +270,7 @@ export function editPointCloud(
   return {
     positions: output,
     normals: normals ? Float32Array.from(normals) : undefined,
+    ...(request.pointColors ? { pointColors: request.pointColors } : {}),
     diagnostics: {
       ...diagnostics,
       points: count,

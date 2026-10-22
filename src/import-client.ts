@@ -54,7 +54,7 @@ export function importScan(
         positions?: Float32Array;
         renderData?: ScanRenderData;
         source?: ScanSource;
-        pointCloud?: { normals?: Float32Array };
+        pointCloud?: { normals?: Float32Array; pointColors?: Uint8Array };
         meshNormals?: Float32Array;
         indexedMesh?: ReturnType<typeof parsePlyTopology>;
         error?: string;
@@ -110,6 +110,7 @@ export function importScan(
         previewTriangles: options.previewTriangles,
         unit: options.unit,
         placeAtOrigin: options.placeAtOrigin,
+        ascAttributes: options.ascAttributes,
       });
     } catch (error) {
       cleanup();

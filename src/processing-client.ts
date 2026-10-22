@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
 import { beginWorkingJob } from "./working-job-status";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
@@ -175,6 +176,13 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "pointCloudEdit") {
+    try {
+      validatePointColors(request.pointColors, request.positions.length / 3);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
   if (
     request.kind === "scanTools" &&
     request.operation.kind === "repolygonize"
@@ -323,6 +331,36 @@ function runProcessingRequest(
         fail(new Error("Unexpected mesh processing response."));
         return;
       }
+      if (request.kind === "pointCloudEdit" && request.pointColors) {
+        try {
+          const edit = event.data.result.pointCloudEdit;
+          if (edit?.positions) {
+            if (request.action === "smooth") {
+              if (edit.positions.length !== request.positions.length)
+                throw new Error(
+                  "Point color correspondence changed smoothing slots.",
+                );
+              edit.pointColors = request.pointColors;
+            } else {
+              if (
+                !(edit.sourceIndices instanceof Uint32Array) ||
+                edit.sourceIndices.length * 3 !== edit.positions.length
+              )
+                throw new Error(
+                  "Point color correspondence requires matching source indices.",
+                );
+              edit.pointColors = reindexPointColors(
+                request.pointColors,
+                edit.sourceIndices,
+                request.positions.length / 3,
+              );
+            }
+          }
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
       settled = true;
       if (
         event.data.result.topology &&
@@ -460,6 +498,8 @@ function runProcessingRequest(
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
       if (copied.kind === "pointCloudEdit") {
+        // Colors stay with authored geometry; only returned slot indices need transport.
+        delete copied.pointColors;
         if (copied.normals) copied.normals = clone(copied.normals);
         if (copied.selection) {
           copied.selection = new Uint8Array(copied.selection);

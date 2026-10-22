@@ -1,8 +1,8 @@
 # Native ASC import: current evidence and remaining parity
 
-This is a static contract investigation, not a completed ASC color feature.
-The existing GUI and MCP importer both read XYZ or XYZ/NXYZ point clouds.
-Their agreement does not establish native ASC attribute equivalence.
+This records native static bindings and the corresponding ScanForge integration.
+Implemented color-byte handling and GUI/MCP agreement do not establish complete
+native ASC importer or displayed-color equivalence.
 
 ## Target identity
 
@@ -60,22 +60,24 @@ not proof that the native application never generates normals.
 | Upload preparation       | `ev_3b6615f762eb066baee9c3dd6f786d6da5324849d93ab6b0b3b1b34c06f90994` |
 | Point/index upload       | `ev_9bf17e832777c3f8886053ddc77cb7de507629f3c0c3d5c42125d484972f8180` |
 
-## Current ScanForge behavior and required integration
+## ScanForge integration
 
-`readAscPointCloud` treats every six-column record as XYZ/NXYZ. The original
-`asc-3.asc` contains fractional values in the last three columns; preserving
-those as normals is an existing ScanForge capability. The full-size GUI/MCP
-comparison in [the import report](IMPORT_GUI_MCP_PARITY.md) verifies this shared
+Before the color integration, `readAscPointCloud` treated every six-column
+record as XYZ/NXYZ. The original `asc-3.asc` contains fractional values in the
+last three columns; preserving those as normals remains available explicitly
+through `xyz-normal`. The earlier full-size comparison in
+[the import report](IMPORT_GUI_MCP_PARITY.md) verifies that historical shared
 behavior, not native normal-import fidelity.
 
-Six integer columns are ambiguous between colors and normals. A future color
-implementation must preserve the existing interpretation explicitly rather
-than silently guessing. It needs a shared GUI/MCP import option, persistent
-byte colors, worker transfer, correct point-edit correspondence, transform
-invariance, rendering and overlay restoration, JSON/binary backup and history,
-canonical byte digests, bounded summaries, schemas, documentation and tests.
-There is currently no general persisted color-attribute carrier to reuse.
-Do not advertise ASC color support in discovery until that integration works.
+Six integer columns are ambiguous between colors and normals. The shared
+importer now defaults to `xyz-rgb` and preserves normal import as an explicit
+mode. Integration includes opaque byte colors, worker transfer, point-edit
+correspondence, rendering and overlay restoration, versioned JSON/binary
+persistence and history, canonical byte digests, bounded summaries and MCP
+schemas. See [ASC attributes](ASC_ATTRIBUTES.md) for usage and explicit limits.
+Native integer overflow, locale/non-ASCII behavior and displayed-color parity
+remain unverified. Three's linear-working-space vertex colors and sRGB output
+do not establish the native framebuffer transfer function.
 
 Actual ASC admission to native Global Fine Align remains unverified. The owner
 query thunk points to bytes at `0x14088d330`; those bytes include a delegated
@@ -84,6 +86,6 @@ A failed procedure lookup is not proof that code or an interface is absent.
 The generic point-cloud null-interface fixture must not be used as proof of
 the actual ASC owner's admission policy.
 
-No application operation, MCP schema or advertised capability changes in this
-documentation checkpoint. Native GUI import, full color outcomes and native
-three-scan registration acceptance remain open.
+Native GUI import, full native color outcomes and native three-scan registration
+acceptance remain open. Passing application data-path tests must not be promoted
+to native numerical or visual equivalence.

@@ -39,6 +39,10 @@ export interface Entity {
   indexedMesh?: IndexedMesh;
   /** CAD display normals or imported scanner normals, aligned to XYZ positions. */
   normals?: Positions;
+  /** Opaque RGBA bytes in point order; colors do not change under cloud poses. */
+  pointColors?: Uint8Array;
+  /** Explicit interpretation selected when importing ASC records. */
+  ascAttributes?: "xyz-normal" | "xyz-rgb";
   /** Paired world-space points sampled from exact CAD topological edges. */
   edgePositions?: number[];
   color: string;

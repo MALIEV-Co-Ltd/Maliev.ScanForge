@@ -1,9 +1,17 @@
-import { parseProject, validateProject } from "./io";
+import {
+  parseProject,
+  validateProject,
+  validatePointCloudAttributes,
+} from "./io";
 import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { cloudPlacement, placedCloud } from "./point-cloud-placement";
-import { projectValueHash, projectValueBlob } from "./project-value-stream";
+import {
+  projectValueHash,
+  projectValueBlob,
+  type ProjectValue,
+} from "./project-value-stream";
 
 export interface ProjectSession {
   projectId?: string;
@@ -18,7 +26,7 @@ type Chunk = {
   codec: "raw" | "gzip";
   sha256: string;
 };
-type Ref = { chunk: number; type: "f32" | "f64" | "u32" | "text" };
+type Ref = { chunk: number; type: "f32" | "f64" | "u32" | "u8" | "text" };
 type RecordData = Omit<
   Entity,
   | "positions"
@@ -28,12 +36,14 @@ type RecordData = Omit<
   | "meshSelection"
   | "indexedMesh"
   | "pointCloudPlacement"
+  | "pointColors"
 > & {
   positions: Ref;
   cloudPoseBits?: string;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
+  pointColors?: Ref;
   indexedMesh?: { vertices: Ref; triangles: Ref; normals?: Ref };
   meshSelection?: {
     hidden: Ref;
@@ -61,18 +71,18 @@ export async function encodeProjectFileLocally(
   const valueCache = new WeakMap<object, Ref>();
   let offset = 0;
   let deferredClouds = false;
-  async function store(
-    value: Entity["positions"] | Uint32Array | string,
-    integer = false,
-  ): Promise<Ref> {
+  let cloudAttributes = false;
+  async function store(value: ProjectValue, integer = false): Promise<Ref> {
     const type =
       typeof value === "string"
         ? "text"
         : integer
           ? "u32"
-          : value instanceof Float32Array
-            ? "f32"
-            : "f64";
+          : value instanceof Uint8Array
+            ? "u8"
+            : value instanceof Float32Array
+              ? "f32"
+              : "f64";
     if (typeof value !== "string") {
       const cached = valueCache.get(value);
       if (cached?.type === type) return cached;
@@ -113,6 +123,7 @@ export async function encodeProjectFileLocally(
           edgePositions,
           brep,
           normals,
+          pointColors,
           meshSelection,
           indexedMesh,
           pointCloudPlacement: _placement,
@@ -134,10 +145,17 @@ export async function encodeProjectFileLocally(
           }
         const placement = cloudPlacement(entity);
         if (placement) deferredClouds = true;
+        if (pointColors !== undefined || entity.ascAttributes !== undefined)
+          cloudAttributes = true;
         const record: RecordData = {
           ...metadata,
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
+          ...(pointColors !== undefined
+            ? {
+                pointColors: await store(validatePointCloudAttributes(entity)!),
+              }
+            : {}),
           ...(edgePositions
             ? { edgePositions: await store(edgePositions) }
             : {}),
@@ -194,7 +212,7 @@ export async function encodeProjectFileLocally(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: deferredClouds ? 3 : 2,
+        version: cloudAttributes ? 4 : deferredClouds ? 3 : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -242,7 +260,7 @@ export async function decodeProjectContents(
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    ![2, 3].includes(m.version) ||
+    ![2, 3, 4].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -296,22 +314,32 @@ export async function decodeProjectContents(
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
-  const decoded = new Map<string, string | number[] | Float32Array>();
-  function read(ref: Ref): string | number[] | Float32Array {
+  const decoded = new Map<
+    string,
+    string | number[] | Float32Array | Uint8Array
+  >();
+  function read(ref: Ref): string | number[] | Float32Array | Uint8Array {
     if (
       !ref ||
       !Number.isInteger(ref.chunk) ||
       !data[ref.chunk] ||
-      !["f32", "f64", "u32", "text"].includes(ref.type)
+      ![
+        "f32",
+        "f64",
+        "u32",
+        "text",
+        ...(m.version === 4 ? ["u8"] : []),
+      ].includes(ref.type)
     )
       return invalid();
     const key = `${ref.chunk}:${ref.type}`,
       cached = decoded.get(key);
     if (cached !== undefined) return cached;
     const bytes = data[ref.chunk];
-    let result: string | number[] | Float32Array;
+    let result: string | number[] | Float32Array | Uint8Array;
     if (ref.type === "text")
       result = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    else if (ref.type === "u8") result = bytes;
     else {
       const width = ref.type === "f64" ? 8 : 4;
       if (bytes.length % width) return invalid();
@@ -348,6 +376,14 @@ export async function decodeProjectContents(
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
+    if (
+      (record.pointColors !== undefined ||
+        record.ascAttributes !== undefined) &&
+      m.version !== 4
+    )
+      return invalid();
+    if (record.pointColors !== undefined && record.pointColors.type !== "u8")
+      return invalid();
     const entity = {
       ...record,
       positions: read(record.positions),
@@ -365,6 +401,9 @@ export async function decodeProjectContents(
         : undefined,
       brep: record.brep ? read(record.brep) : undefined,
       normals: record.normals ? read(record.normals) : undefined,
+      ...(record.pointColors !== undefined
+        ? { pointColors: read(record.pointColors) }
+        : {}),
       meshSelection: record.meshSelection
         ? {
             hidden: read(record.meshSelection.hidden),
@@ -377,7 +416,8 @@ export async function decodeProjectContents(
         : undefined,
     } as Entity;
     if (record.cloudPoseBits !== undefined) {
-      if (m.version !== 3 || entity.kind !== "pointcloud") return invalid();
+      if (![3, 4].includes(m.version) || entity.kind !== "pointcloud")
+        return invalid();
       return placedCloud(entity, {
         matrixBits: record.cloudPoseBits,
         sourcePositions: entity.positions,

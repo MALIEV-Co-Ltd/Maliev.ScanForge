@@ -19,6 +19,7 @@ import {
 import { DEFAULT_PART_COLOR, DEFAULT_FREEFORM_COLOR } from "../appearance";
 import { CadClient } from "../cad/client";
 import { prepareImportedScan } from "../imported-scan";
+import { DEFAULT_ASC_ATTRIBUTES } from "../asc-import";
 import { beginWorkingJob } from "../working-job-status";
 import {
   importBatch,
@@ -256,10 +257,20 @@ function summary(e: Entity) {
     meshSelection: _selection,
     indexedMesh: _indexedMesh,
     pointCloudPlacement: _placement,
+    pointColors: _pointColors,
     ...metadata
   } = e;
   return {
     ...metadata,
+    ...(e.pointColors
+      ? {
+          pointColorAttributes: {
+            encoding: "rgba8",
+            points: e.pointColors.length / 4,
+            bytes: e.pointColors.byteLength,
+          },
+        }
+      : {}),
     pointCloudPose: cloudPlacement(e)?.matrixBits,
     ...(e.indexedMesh
       ? {
@@ -472,6 +483,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         unit: a.unit ?? "mm",
         placeAtOrigin:
           a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
+        ascAttributes:
+          a.ascAttributes ??
+          s.settings?.importAscAttributes ??
+          DEFAULT_ASC_ATTRIBUTES,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),
       });
@@ -580,6 +595,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       }
                     : undefined,
                   normals: e.normals ? Array.from(e.normals) : undefined,
+                  pointColors: e.pointColors
+                    ? Array.from(e.pointColors)
+                    : undefined,
                   edgePositions: e.edgePositions,
                 },
                 "geometry.json",
@@ -741,6 +759,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           action: "extract",
           positions: e.positions,
           normals: e.normals,
+          pointColors: e.pointColors,
           selection,
         });
         let next = s.entities;
@@ -751,6 +770,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             id: id(),
             name: `${e.name} selection`,
             positions: extracted.positions!,
+            pointColors: extracted.pointColors,
+            pointCloudPlacement: undefined,
             normals: extracted.normals
               ? Array.from(extracted.normals)
               : undefined,
@@ -764,6 +785,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             action: "delete",
             positions: e.positions,
             normals: e.normals,
+            pointColors: e.pointColors,
             selection,
           });
           next = remainder.positions!.length
@@ -772,6 +794,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                   ? {
                       ...e,
                       positions: remainder.positions!,
+                      pointColors: remainder.pointColors,
+                      pointCloudPlacement: undefined,
                       normals: remainder.normals
                         ? Array.from(remainder.normals)
                         : undefined,
@@ -939,6 +963,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "pointCloudEdit")
         Object.assign(request, {
           normals: e.normals,
+          pointColors: e.pointColors,
           selection: [
             "delete",
             "extract",
@@ -1087,6 +1112,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? {
                 ...e,
                 positions,
+                pointColors: pointEdit ? pointEdit.pointColors : e.pointColors,
+                pointCloudPlacement: pointEdit
+                  ? undefined
+                  : e.pointCloudPlacement,
                 meshSelection: pointEdit ? undefined : e.meshSelection,
                 normals: pointEdit
                   ? pointEdit.normals
@@ -1454,6 +1483,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     surface_fit: createSurfaceFitOperation(host),
     project_import: (a, c) => importObject(a, c),
     project_import_batch: async (a, c) => {
+      const ascAttributes =
+        a.ascAttributes ??
+        host.snapshot().settings?.importAscAttributes ??
+        DEFAULT_ASC_ATTRIBUTES;
       const placeAtOrigin =
         a.placeAtOrigin ??
         host.snapshot().settings?.importPlaceAtOrigin === true;
@@ -1479,6 +1512,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               ? prepareImportedScan(file, {
                   unit: a.unit ?? "mm",
                   placeAtOrigin,
+                  ascAttributes,
                   signal: context.signal,
                   onProgress: (fraction) =>
                     context.progress(fraction, "Importing"),

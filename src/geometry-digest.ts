@@ -4,7 +4,7 @@ import type { Entity, Positions } from "./types";
 
 export interface GeometryDigestBuffer {
   path: string;
-  encoding: "f32" | "f64" | "u32";
+  encoding: "f32" | "f64" | "u32" | "u8";
   elements: number;
   rawBytes: number;
   sha256: string;
@@ -41,7 +41,7 @@ export async function digestEntityGeometry(
   check();
   const fields: {
     path: string;
-    value: Positions | Uint32Array;
+    value: Positions | Uint32Array | Uint8Array;
     encoding: GeometryDigestBuffer["encoding"];
   }[] = [];
   const add = (
@@ -78,8 +78,29 @@ export async function digestEntityGeometry(
     "pointCloudPlacement.sourceNormals",
     entity.pointCloudPlacement?.sourceNormals,
   );
+  if (
+    entity.ascAttributes !== undefined &&
+    (entity.kind !== "pointcloud" ||
+      !["xyz-normal", "xyz-rgb"].includes(entity.ascAttributes))
+  )
+    throw new Error("Invalid ASC attribute interpretation.");
+  if (entity.pointColors !== undefined) {
+    if (
+      entity.kind !== "pointcloud" ||
+      !(entity.pointColors instanceof Uint8Array) ||
+      entity.pointColors.length !== (entity.positions.length / 3) * 4
+    )
+      throw new Error("Invalid point-cloud RGBA colors.");
+    fields.push({
+      path: "pointColors",
+      value: entity.pointColors,
+      encoding: "u8",
+    });
+  }
   const total = fields.reduce(
-    (sum, f) => sum + f.value.length * (f.encoding === "f64" ? 8 : 4),
+    (sum, f) =>
+      sum +
+      f.value.length * (f.encoding === "u8" ? 1 : f.encoding === "f64" ? 8 : 4),
     0,
   );
   if (!Number.isSafeInteger(total))
@@ -90,7 +111,7 @@ export async function digestEntityGeometry(
   for (const field of fields) {
     check();
     const { path, value, encoding } = field,
-      width = encoding === "f64" ? 8 : 4;
+      width = encoding === "u8" ? 1 : encoding === "f64" ? 8 : 4;
     const hash = sha256.create(),
       chunks = projectValueBytes(value, encoding);
     let first = 0;
@@ -114,6 +135,16 @@ export async function digestEntityGeometry(
           if (encoding === "f32" && !Number.isFinite(Math.fround(n)))
             throw new Error(
               `Geometry exceeds finite f32 range: ${path}[${i}].`,
+            );
+          if (
+            encoding === "u8" &&
+            (!Number.isInteger(n) ||
+              n < 0 ||
+              n > 255 ||
+              (i % 4 === 3 && n !== 255))
+          )
+            throw new Error(
+              `Point-cloud colors must be opaque RGBA bytes: ${path}[${i}].`,
             );
         }
         check();

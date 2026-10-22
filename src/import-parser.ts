@@ -3,6 +3,7 @@ import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { nativeStlTopology } from "./scan-native-stl-topology";
 import type { ScanSourceCounts } from "./scan-source";
 import { readPackedBinaryPly } from "./ply-binary-file";
+import type { AscAttributes } from "./asc-import";
 
 export interface ScanFile {
   readonly size: number;
@@ -10,8 +11,12 @@ export interface ScanFile {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 export interface ScanImportOptions {
+  ascAttributes?: AscAttributes;
   onIndexedMesh?: (mesh: ReturnType<typeof parsePlyTopology>) => void;
-  onPointCloud?: (cloud: { normals?: Float32Array }) => void;
+  onPointCloud?: (cloud: {
+    normals?: Float32Array;
+    pointColors?: Uint8Array;
+  }) => void;
   onMeshNormals?: (normals: Float32Array) => void;
   onProgress?: (fraction: number) => void;
   signal?: AbortSignal;

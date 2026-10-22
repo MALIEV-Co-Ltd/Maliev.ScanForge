@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Indexed scanner normals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Indexed scanner normals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -145,7 +145,7 @@
   },
   {
     "name": "object_geometry_digest",
-    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel.",
+    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -441,7 +441,7 @@
   },
   {
     "name": "selection_edit",
-    "description": "Copy, cut or delete selected mesh triangles or point-cloud samples while preserving normals.",
+    "description": "Copy, cut or delete selected mesh triangles or point-cloud samples while preserving normals. Point-cloud RGBA colors follow the exact retained point slots.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -1053,9 +1053,15 @@
                       "type": "string",
                       "enum": ["OXY", "OYZ", "OXZ"]
                     },
-                    "offset": { "type": "number" },
-                    "onSlicingPlane": { "type": "boolean" },
-                    "selectedOnly": { "type": "boolean" }
+                    "offset": {
+                      "type": "number"
+                    },
+                    "onSlicingPlane": {
+                      "type": "boolean"
+                    },
+                    "selectedOnly": {
+                      "type": "boolean"
+                    }
                   },
                   "required": [
                     "plane",
@@ -1711,7 +1717,10 @@
                     {
                       "type": "object",
                       "properties": {
-                        "kind": { "type": "string", "enum": ["sketch-curves"] },
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sketch-curves"]
+                        },
                         "sketch": {
                           "type": "object",
                           "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
@@ -2639,7 +2648,10 @@
                     {
                       "type": "object",
                       "properties": {
-                        "kind": { "type": "string", "enum": ["sketch-curves"] },
+                        "kind": {
+                          "type": "string",
+                          "enum": ["sketch-curves"]
+                        },
                         "sketch": {
                           "type": "object",
                           "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
@@ -3407,16 +3419,31 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "first": { "type": "string", "minLength": 1 },
-        "second": { "type": "string", "minLength": 1 },
-        "firstEnd": { "type": "string", "enum": ["a", "b"] },
-        "secondEnd": { "type": "string", "enum": ["a", "b"] },
+        "first": {
+          "type": "string",
+          "minLength": 1
+        },
+        "second": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firstEnd": {
+          "type": "string",
+          "enum": ["a", "b"]
+        },
+        "secondEnd": {
+          "type": "string",
+          "enum": ["a", "b"]
+        },
         "radiusMm": {
           "type": "number",
           "exclusiveMinimum": 0,
           "maximum": 1000000000
         },
-        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
         "requestId": {
           "type": "string",
           "minLength": 1,
@@ -3570,10 +3597,25 @@
           "type": "object",
           "description": "SurfaceFitOptions; validated by existing surface fitter",
           "properties": {
-            "countU": { "type": "integer", "minimum": 2, "maximum": 16 },
-            "countV": { "type": "integer", "minimum": 2, "maximum": 16 },
-            "degree": { "type": "integer", "minimum": 1, "maximum": 5 },
-            "projection": { "type": "string", "enum": ["xy", "xz", "yz"] },
+            "countU": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "countV": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "degree": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "projection": {
+              "type": "string",
+              "enum": ["xy", "xz", "yz"]
+            },
             "method": {
               "type": "string",
               "enum": ["projected-grid", "approximate"]
@@ -3612,7 +3654,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Geometry stays local.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3644,6 +3686,11 @@
           "minLength": 1,
           "maxLength": 200,
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "ascAttributes": {
+          "type": "string",
+          "enum": ["xyz-rgb", "xyz-normal"],
+          "description": "ASC files only. xyz-rgb reads XYZ plus integer RGB with white XYZ fallback; xyz-normal explicitly preserves XYZ NX NY NZ scanner normals. Omit to use settings.importAscAttributes (initially xyz-rgb). Explicit override does not change the preference."
         }
       },
       "required": ["artifactId", "expectedRevision", "requestId"],
@@ -3652,7 +3699,7 @@
   },
   {
     "name": "project_import_batch",
-    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 512 MiB.",
+    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 512 MiB. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3686,6 +3733,11 @@
         "placeAtOrigin": {
           "type": "boolean",
           "description": "Scan files only: center each scan's XY bounds and place its base on Z=0 after unit conversion. False preserves shared file coordinates; orientation and normals are unchanged. Omit to use settings.importPlaceAtOrigin (initially false); an explicit boolean overrides that preference for this import."
+        },
+        "ascAttributes": {
+          "type": "string",
+          "enum": ["xyz-rgb", "xyz-normal"],
+          "description": "ASC files only. xyz-rgb reads XYZ plus integer RGB with white XYZ fallback; xyz-normal explicitly preserves XYZ NX NY NZ scanner normals. Omit to use settings.importAscAttributes (initially xyz-rgb). Explicit override does not change the preference."
         }
       },
       "required": ["artifactIds", "expectedRevision", "requestId"],
@@ -3851,6 +3903,11 @@
             },
             "normalsDisplay": {
               "type": "boolean"
+            },
+            "importAscAttributes": {
+              "type": "string",
+              "enum": ["xyz-rgb", "xyz-normal"],
+              "description": "Default ASC interpretation for future GUI/MCP imports. Initially xyz-rgb. Does not reinterpret existing scans or create model history."
             }
           },
           "required": [],
@@ -4607,7 +4664,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4735,7 +4792,11 @@
           "minimum": 0,
           "maximum": 9007199254740991
         },
-        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
         "action": {
           "type": "string",
           "enum": ["automatic", "connectDriver", "disconnect", "preferences"]
@@ -4748,10 +4809,22 @@
               "minimum": 0,
               "maximum": 20
             },
-            "rotationSpeed": { "type": "number", "minimum": 0, "maximum": 20 },
-            "deadzone": { "type": "number", "minimum": 0, "maximum": 0.9 },
-            "dominantAxis": { "type": "boolean" },
-            "rotationEnabled": { "type": "boolean" }
+            "rotationSpeed": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "deadzone": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.9
+            },
+            "dominantAxis": {
+              "type": "boolean"
+            },
+            "rotationEnabled": {
+              "type": "boolean"
+            }
           },
           "required": [],
           "additionalProperties": false
@@ -6279,7 +6352,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {

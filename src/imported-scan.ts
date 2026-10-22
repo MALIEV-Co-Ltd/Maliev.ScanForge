@@ -2,6 +2,7 @@ import { importScan } from "./import-client";
 import { DEFAULT_PART_COLOR } from "./appearance";
 import { isSampledScan } from "./scan-source";
 import type { Entity } from "./types";
+import { DEFAULT_ASC_ATTRIBUTES } from "./asc-import";
 
 export const DEFAULT_IMPORT_PLACE_AT_ORIGIN = false;
 
@@ -11,16 +12,19 @@ export async function prepareImportedScan(
   options: Parameters<typeof importScan>[1] = {},
 ): Promise<Entity> {
   let normals: Entity["normals"],
+    pointColors: Entity["pointColors"],
     indexedMesh: Entity["indexedMesh"],
     scanSource: Entity["scanSource"];
   const positions = await importScan(file, {
     ...options,
     placeAtOrigin: options.placeAtOrigin ?? DEFAULT_IMPORT_PLACE_AT_ORIGIN,
+    ascAttributes: options.ascAttributes ?? DEFAULT_ASC_ATTRIBUTES,
     onMeshNormals: (value) => {
       normals = value;
     },
     onPointCloud: (value) => {
       normals = value.normals;
+      pointColors = value.pointColors;
     },
     onIndexedMesh: (value) => {
       indexedMesh = value;
@@ -36,6 +40,10 @@ export async function prepareImportedScan(
     kind: /\.asc$/i.test(file.name) ? "pointcloud" : "mesh",
     positions,
     normals,
+    pointColors,
+    ascAttributes: /\.asc$/i.test(file.name)
+      ? (options.ascAttributes ?? DEFAULT_ASC_ATTRIBUTES)
+      : undefined,
     indexedMesh,
     scanSource,
     source: file.name,

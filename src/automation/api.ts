@@ -356,6 +356,8 @@ export class ApplicationApi {
         e.selectable,
         e.kernelId,
         identity(cloudPlacement(e)?.sourcePositions ?? e.positions),
+        identity(e.pointColors),
+        e.ascAttributes,
         cloudPlacement(e)?.matrixBits,
         identity(e.surfacePatch),
         identity(e.parametric),

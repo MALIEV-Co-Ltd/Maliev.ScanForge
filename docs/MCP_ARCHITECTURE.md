@@ -392,3 +392,21 @@ The kernel alignment-reference reader also retains a cylinder's physical radius.
 The GUI reconstruction adapter submits `mesh_process` through the same executor used by MCP and only displays its terminal diagnostics. The executor owns validation, revision checks, the disposable processing worker and the single model commit. This removes the former GUI-only reusable-worker successor copy. A shared UI job observer captures revision/request identity once, forwards progress and requests cancellation on abort, observation failure or its finite lease; it never republishes geometry. Known terminal success takes precedence over a later observer abort. ShrinkWrap retains its existing `scan_preview` lifecycle through that observer.
 
 Reconstruction admission counts up to 500 million input coordinates and 256 MiB of logical private numeric transport payload before cloning or creating its worker. Ordinary Float32 views cost four bytes per coordinate and numeric arrays eight; repeated views are charged separately. Immutable Float32 shared-buffer views are borrowed without transfer only by the disposable read-only reconstruction worker, even when a caller requests reusable topology. Other mutating operations retain private copies. Global alignment allocates final streams directly in private shared buffers when cross-origin isolation supports them, preserving stage order and Float32 rounding; fallback output remains ordinary buffers. Reconstruction counts output facets before allocating one exact contiguous Float32 output. Grid, sampling, output and frontier limits remain independent. These payload and allocation policies do not establish a whole-workflow heap or process memory bound.
+
+## ASC attribute carriers
+
+The shared importer forwards `ascAttributes` to its worker. GUI settings and
+MCP `settings_set` share `importAscAttributes` (initially `xyz-rgb`);
+single/batch imports capture that preference unless explicitly overridden.
+`xyz-normal` preserves scanner-normal import as an explicit extension.
+Both entry points publish the same opaque `Entity.pointColors` Uint8 RGBA
+carrier and interpretation metadata. Colors do not transform with geometry.
+
+Point-edit workers return exact source slots; the client retains authored color
+buffers outside worker transport and reindexes those slots after validation.
+Revision identity includes the immutable color carrier and interpretation.
+Summaries exclude the carrier; geometry artifacts and canonical `u8` digests
+provide explicit agent access. Binaryv4 stores byte chunks outside metadata,
+deduplicates across history and rejects malformed references/opaque-alpha/count
+mismatches before publication. JSONv2 prevents silent loss in old readers.
+See [ASC attributes](ASC_ATTRIBUTES.md) for version and fidelity limitations.

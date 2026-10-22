@@ -237,7 +237,7 @@ describe("file boundaries", () => {
   it("rejects foreign versions, invalid coordinates, duplicate IDs and invalid colors", () => {
     const valid = JSON.parse(serializeProject("Project", [entity]));
     expect(() =>
-      parseProject(JSON.stringify({ ...valid, version: 2 })),
+      parseProject(JSON.stringify({ ...valid, version: 999 })),
     ).toThrow();
     expect(() =>
       parseProject(JSON.stringify({ ...valid, entities: [entity, entity] })),
