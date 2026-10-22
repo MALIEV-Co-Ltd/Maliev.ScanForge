@@ -99,6 +99,7 @@ export async function readScan(
       checkAbort(options.signal);
       if (options.previewTriangles === undefined) {
         const indexed = nativeStlTopology(positions, {
+          sharedReadonlyBuffers,
           signal: options.signal,
           onProgress: (fraction) => options.onProgress?.(0.5 + fraction * 0.45),
         });
@@ -143,8 +144,11 @@ export async function readScan(
   };
   const streamed =
     extension === "ply"
-      ? await readPackedBinaryPly(file, options.signal, (fraction) =>
-          plyProgress(fraction * 0.4),
+      ? await readPackedBinaryPly(
+          file,
+          options.signal,
+          (fraction) => plyProgress(fraction * 0.4),
+          sharedReadonlyBuffers,
         )
       : undefined;
   checkAbort(options.signal);
@@ -155,6 +159,7 @@ export async function readScan(
     streamed ??
     (extension === "ply"
       ? parsePlyTopology(buffer!, {
+          sharedReadonlyBuffers,
           onNormals: (normals) => {
             sourceNormals = normals;
           },

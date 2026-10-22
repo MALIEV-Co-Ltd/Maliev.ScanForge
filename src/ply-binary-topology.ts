@@ -1,3 +1,5 @@
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
+
 /** Recognize only the scanner schema; unusual files retain the general loader. */
 export function packedBinaryPlyLayout(
   data: ArrayBuffer,
@@ -86,7 +88,10 @@ export function decodePackedPlyFaces(
 }
 
 /** Read the scanner's packed schema without Three's intermediate number arrays. */
-export function parsePackedBinaryPly(data: ArrayBuffer) {
+export function parsePackedBinaryPly(
+  data: ArrayBuffer,
+  sharedReadonlyBuffers = false,
+) {
   const layout = packedBinaryPlyLayout(data);
   if (!layout) return;
   const { headerEnd, vertexCount, faceCount } = layout;
@@ -96,9 +101,15 @@ export function parsePackedBinaryPly(data: ArrayBuffer) {
   for (let offset = faceStart; offset < data.byteLength; offset += 13) {
     if (view.getUint8(offset) !== 3) return;
   }
-  const vertices = new Float32Array(vertexCount * 3);
-  const normals = new Float32Array(vertexCount * 3);
-  const triangles = new Uint32Array(faceCount * 3);
+  const vertices = new Float32Array(
+    allocateImportedReadonlyBuffer(vertexCount * 12, sharedReadonlyBuffers),
+  );
+  const normals = new Float32Array(
+    allocateImportedReadonlyBuffer(vertexCount * 12, sharedReadonlyBuffers),
+  );
+  const triangles = new Uint32Array(
+    allocateImportedReadonlyBuffer(faceCount * 12, sharedReadonlyBuffers),
+  );
   decodePackedPlyVertices(view, vertices, normals, 0, vertexCount, headerEnd);
   decodePackedPlyFaces(view, triangles, vertexCount, 0, faceCount, faceStart);
   if (!normals.every(Number.isFinite))

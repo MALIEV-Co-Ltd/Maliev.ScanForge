@@ -6,9 +6,12 @@ import { parsePackedBinaryPly } from "./ply-binary-topology";
  */
 export function parsePlyTopology(
   data: ArrayBuffer,
-  options: { onNormals?: (normals: Float32Array) => void } = {},
+  options: {
+    onNormals?: (normals: Float32Array) => void;
+    sharedReadonlyBuffers?: boolean;
+  } = {},
 ) {
-  const packed = parsePackedBinaryPly(data);
+  const packed = parsePackedBinaryPly(data, options.sharedReadonlyBuffers);
   if (packed) {
     options.onNormals?.(packed.normals);
     return packed;

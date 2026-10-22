@@ -1273,7 +1273,7 @@ same counts, and the GUI status bar retains the final outcome summary.
 
 `project_import_batch` prepares up to two STL/OBJ/PLY/ASC files concurrently using the same scheduler and parser as the GUI. Scene publication is serialized, appends to the current workspace, and retains one undo step per file. Results and failures retain input order; scene insertion follows readiness order. CAD imports remain serialized and project replacement stays separate. The batch fits the view once after scan publication.
 
-Cross-origin isolation lets indexed PLY/STL imports share immutable expanded positions and PLY corner normals with project encoding workers, reducing copies during save/export/automatic backup. Ordinary buffers remain the fallback without isolation; no agent parameter is required. Source geometry, history, cancellation and project formats retain the same contract.
+Cross-origin isolation lets indexed PLY/STL imports share immutable expanded positions and PLY corner normals with project encoding workers, reducing copies during save/export/automatic backup. Packed binary PLY also shares final indexed vertices, normals and triangle indices; binary STL shares final indexed vertices and triangle indices. The general PLY loader keeps ordinary indexed buffers, and ordinary buffers remain the fallback without isolation. No agent parameter is required. Source geometry, history, cancellation and project formats retain the same contract.
 
 Background mesh preparation may remain `scheduled` while imports or queued/active surface-picking preparation own priority. It resumes afterward; foreground mesh information and already queued topology operations retain ownership. GUI picking and MCP `viewport_pick` keep their existing hit and facet-ID contract.
 

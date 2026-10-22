@@ -443,6 +443,12 @@ for (const [name, sourceSha256] of [
             sharedReadonlyBuffers: shared,
             onIndexedMesh(mesh) {
               indexed = mesh;
+              for (const values of [
+                mesh.vertices,
+                mesh.normals!,
+                mesh.triangles,
+              ])
+                expect(values.buffer instanceof SharedArrayBuffer).toBe(shared);
               actual.vertices = digest(mesh.vertices);
               actual.normals = digest(mesh.normals!);
               actual.triangles = digest(mesh.triangles);

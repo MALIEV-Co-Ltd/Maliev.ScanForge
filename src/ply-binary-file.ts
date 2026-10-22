@@ -1,4 +1,5 @@
 import type { ScanFile } from "./import-parser";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import {
   decodePackedPlyFaces,
   decodePackedPlyVertices,
@@ -14,6 +15,7 @@ export async function readPackedBinaryPly(
   file: ScanFile,
   signal?: AbortSignal,
   onProgress?: (fraction: number) => void,
+  sharedReadonlyBuffers = false,
 ) {
   const check = () => {
     if (signal?.aborted)
@@ -51,9 +53,15 @@ export async function readPackedBinaryPly(
   }
 
   progress(0.15);
-  const vertices = new Float32Array(vertexCount * 3);
-  const normals = new Float32Array(vertexCount * 3);
-  const triangles = new Uint32Array(faceCount * 3);
+  const vertices = new Float32Array(
+    allocateImportedReadonlyBuffer(vertexCount * 12, sharedReadonlyBuffers),
+  );
+  const normals = new Float32Array(
+    allocateImportedReadonlyBuffer(vertexCount * 12, sharedReadonlyBuffers),
+  );
+  const triangles = new Uint32Array(
+    allocateImportedReadonlyBuffer(faceCount * 12, sharedReadonlyBuffers),
+  );
   progress(0.2);
   for (let first = 0; first < vertexCount; first += VERTICES_PER_CHUNK) {
     const count = Math.min(VERTICES_PER_CHUNK, vertexCount - first);
