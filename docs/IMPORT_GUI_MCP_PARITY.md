@@ -86,3 +86,13 @@ This workflow result is not a registration-quality pass: the controller stopped
 after two passes with all three scans stable but `converged:false`. Reported mean
 distances were approximately 0.038907, 0.023589 and 0.038663 mm. Independent native
 controller/GUI comparison and strict convergence remain unresolved.
+
+## Original-three STL follow-up
+
+The [full three-STL replay](ORIGINAL_STL_WORKFLOW.md) verifies all imported
+vertex/index hashes against retained native topology fixtures, cached Apply,
+GUI/MCP reconstruction and history under the unchanged 4 GiB cap. It does not
+pass registration quality: all three local refinements fail without iterations
+at 0.5 mm, all poses remain identity and the source geometry does not move.
+The two-component reconstruction is not proof of one usable solid or native
+reconstruction equivalence.
