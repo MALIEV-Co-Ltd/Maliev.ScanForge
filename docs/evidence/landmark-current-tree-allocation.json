@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "scope": "Native alignment tree allocation and subdivision: static function analysis with selected passive live code bindings",
+  "baseCommit": "f7b2afae42fd1eff5993fe9435bc5ed50ee11148",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "installedImageSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "records": [
+    {
+      "file": "native-current-alignment-tree-wrapper-20261023.json",
+      "sha256": "5b9340b470d53298ab636c36d4be4b3411dfc981693a15b07256b541741d5fca",
+      "evidenceId": "ev_f074ed181273cebc6ea4e10fa238a2ac6b5050503e1e39716f6857ac4b4f7ee5",
+      "procedure": "0x140a7f470"
+    },
+    {
+      "file": "native-current-alignment-tree-dispatch-20261023.json",
+      "sha256": "25e007006e0d0070c85333323ec20f7b57750f0017b2f3daffbd46def20a9007",
+      "evidenceId": "ev_9d76239c6261809c84ca70fc3c1aac4471838b6e446b8a1ba8cc3f6c9d0a7788",
+      "procedure": "0x140a80e10"
+    },
+    {
+      "file": "native-current-tree-split-20261023.json",
+      "sha256": "0320d79f747dd8d2daa2e105e9d4d8707c2ce437803ae534cbdc835e4454814e",
+      "evidenceId": "ev_212431be6915f633066d1716e29ad98111a80301d0930998fa221371a2f2dace",
+      "procedure": "0x140389680"
+    },
+    {
+      "file": "native-current-tree-arena-growth-20261023.json",
+      "sha256": "0edd8300925a35d0241eadac471347b4dffd6d46b34853f260b7cfa08701a5f8",
+      "evidenceId": "ev_40d649b50909abe0c3a0044ee61214285b626eb37d005379410afeefb6621982",
+      "procedure": "0x140389430"
+    },
+    {
+      "file": "native-current-tree-recursion-20261023.json",
+      "sha256": "459c22c09cefe0c54e3cfee4fb4b260c34012bf59620751695592ac5d4d5bd1e",
+      "evidenceId": "ev_47e7ab7c82c4bba463b8ac85540a4434c994c9e4a81923afd085c548237c3fbc",
+      "procedure": "0x1403895d0"
+    },
+    {
+      "file": "native-current-tree-root-init-20261023.json",
+      "sha256": "78f4d3319cac6e1b44e85ce68af896cd53c4f8e7e48c8d44d7d52d8c1c35282b",
+      "evidenceId": "ev_4eff398b147f0cfe15c43c48c45886c5687ee803d3d4c42a522cc000c15594af",
+      "procedure": "0x140387c40"
+    }
+  ],
+  "observations": {
+    "minimumMemberships": 25,
+    "minimumExtentField": "controller+0x7c Float32",
+    "maximumDepthField": "controller+0xc",
+    "nodeDepthField": "node+0xcc",
+    "nodeBytes": 216,
+    "nodesPerArenaBlock": 8192,
+    "arenaBlockBytes": 1769472,
+    "growthCallSites": [
+      "0x140389788: CALL 0x140389430",
+      "0x1403898f0: CALL 0x140389430"
+    ]
+  },
+  "binding": {
+    "evidenceSha256": "9e4dc3789e4cc1f458dff001e8e408bc68243089aca30929bb0828ebbce38e6f",
+    "helperSha256": "647eb6b2f7d5bf697121bd8bc3a67b474d09b8cc25eec6192d7f281d39e146c1",
+    "manifestSha256": "0eb876d13d84c948f3033e5da5c582221a06d5b0753a5c3179691493cf78862a",
+    "fingerprintCount": 17,
+    "bytesPerPass": 191,
+    "twoReadsAgree": true,
+    "regionQueries": 36,
+    "positiveControls": 17,
+    "negativeControlsRejected": 34,
+    "independentlyDecodedCallTargets": 4,
+    "minimumMembershipImmediate": 25,
+    "maximumDepthImmediate": 10,
+    "peakHelperMemoryBytes": 15319040,
+    "elapsedSeconds": 0.0327701999922283,
+    "handleClosed": true,
+    "selfJobClosed": true,
+    "targetAssignedToJob": false,
+    "targetFunctionsExecuted": false,
+    "scanGeometryRead": false
+  },
+  "boundedFinding": "The examined root initialization, recursive splitter, node split, arena growth and outer wrapper do not contain the port's fixed 100000-node guard. This does not prove the entire native application lacks other resource limits.",
+  "limits": [
+    "Selected instruction spans agree with the installed process; complete live-function equality is not established.",
+    "Task callback body is not recognized as a procedure by this provider; full callback-to-recursive-walker connection remains unresolved.",
+    "External allocator and global memory policy remain unexamined.",
+    "No native alignment was executed in this investigation.",
+    "The shared application buffer/tree fix and full successful three-STL acceptance remain incomplete."
+  ],
+  "snapshot": {
+    "sha256": "419d9a3dcc665f107a45649b417913955f5117a2204e1bb252396d36c55df601",
+    "bytes": 7358091,
+    "evidenceRecords": 7
+  },
+  "mcpCoverage": "Evidence-only change. Application operations, public MCP schemas, agent usage and resource policy are unchanged.",
+  "validation": {
+    "independentBindingAuditPassed": true,
+    "protectedWorkingEditsPreserved": 5,
+    "unitCadBrowserSuitesRun": false,
+    "reaSessionClosed": true
+  }
+}

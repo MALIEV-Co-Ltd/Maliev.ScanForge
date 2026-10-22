@@ -3046,3 +3046,34 @@ live-function equality or runtime allocation attribution. The proposed shared
 application memory fix remains unapplied. No application behavior, public MCP
 schema or agent usage changed; unit/CAD/browser suites were not rerun for this
 evidence-only investigation.
+
+## Current tree subdivision and allocation
+
+[Current-image tree evidence](evidence/landmark-current-tree-allocation.json)
+binds six fresh native function records to 17 selected instruction spans in
+the installed process. Both passive reads match all 191 selected bytes. Root
+initialization sets the membership threshold to 25 and stores the Float32
+minimum extent. The recursive walker additionally checks X width and maximum
+depth; the outer alignment target wrapper sets that depth to 10. The examined
+split helper supports eager child creation and preserves ordered membership
+insertion for lazy children.
+
+The arena uses 216-byte nodes in blocks of 8,192 (1,769,472 bytes). Both examined
+node-growth call sites pass the used count plus one. Four direct call targets
+and the threshold/depth immediates were independently decoded from retained
+image bytes. Seventeen positive and 34 mutated/truncated controls pass or reject
+as expected. The passive reader uses 36 region queries and peaks at 14.61 MiB
+under its 4 GiB/25% CPU self-Job. It closes both handles and performs no target
+calls, writes, UI actions, scan reads or target Job assignment.
+
+The examined initialization, wrapper, recursive split and arena bodies do not
+contain the port's fixed 100,000-node guard. This is a bounded finding: external
+allocator/global memory policy is unexamined, selected spans do not establish
+complete live-function equality, and the provider does not recognize the task
+callback body as a procedure. The full callback-to-walker path remains open.
+The seven-record REA snapshot is retained and the analysis session is closed.
+
+This evidence informs the pending shared application buffer/tree fix; it does
+not establish a successful full-size STL alignment. Application behavior, MCP
+schemas, agent usage and resource limits are unchanged. No unit, CAD or browser
+suite was rerun for this evidence-only change.
