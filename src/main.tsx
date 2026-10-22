@@ -1,7 +1,27 @@
 import { createRoot } from "react-dom/client";
 import { App } from "./ui/App";
 import "./ui/styles.css";
-createRoot(document.getElementById("root")!).render(<App />);
+import { clearDevelopmentCache } from "./development-cache";
+async function mount() {
+  if (import.meta.env.DEV && "serviceWorker" in navigator) {
+    try {
+      if (
+        await clearDevelopmentCache(
+          navigator.serviceWorker,
+          caches,
+          new URL("sw.js", document.baseURI).href,
+        )
+      ) {
+        window.location.reload();
+        return;
+      }
+    } catch (error) {
+      console.warn("Development offline cache reset unavailable:", error);
+    }
+  }
+  createRoot(document.getElementById("root")!).render(<App />);
+}
+void mount();
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker

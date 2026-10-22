@@ -19,7 +19,7 @@ kernel and signed-distance evaluator, Web Workers, OPFS, IndexedDB, Vitest and t
 existing isolated Playwright/MCP harness. No new backend or paid dependencies.
 
 **Spec:** [Approved design](../specs/2026-10-16-bounded-scan-processing-design.md).
-Owner approval received in this conversation on 2026-10-16. This plan awaits review.
+Owner approval received in this conversation on 2026-10-16. Execution approved by the owner on 2026-10-16.
 
 ## Global Constraints
 
@@ -203,16 +203,16 @@ Update only the matching comparison paragraph in `docs/AGENT_GUIDE.md`.
 **Interfaces:** Consumes existing `ScanPreviewSession` and `runScanTool` contracts;
 produces a validated baseline commit and input/result evidence for later comparisons.
 
-- [ ] Fingerprint and copy only the listed owned changes into the isolated checkout;
+- [x] Fingerprint and copy only the listed owned changes into the isolated checkout;
       verify the original native-parity file is identical to HEAD, not overwritten.
-- [ ] Run the exact node-budget reproducer and both native/scalable comparison files.
+- [x] Run the exact node-budget reproducer and both native/scalable comparison files.
       Assert signed distances, strict radius, source immutability and preview index reuse.
-- [ ] Run the standard build/suite/static gate and `node tests/large-reduction-browser.mjs`.
+- [x] Run the standard build/suite/static gate and `node tests/large-reduction-browser.mjs`.
       Require GUI preview/compare/accept and direct MCP success with 1,152,000 input triangles.
-- [ ] Preserve the measured baseline: GUI output 996,352 faces, approximately 26.9 s;
+- [x] Preserve the measured baseline: GUI output 996,352 faces, approximately 26.9 s;
       subsequent MCP output 977,492 faces, approximately 21.3 s. Timings are observations,
       not universal budgets; the GUI output is above the requested 576,000-face target.
-- [ ] Verify owned worker/port cleanup, commit the comparison fix and record the SHA.
+- [x] Verify owned worker/port cleanup, commit the comparison fix and record the SHA.
 
 ## Task 2: Add the resource coordinator and resident chunk/page adapters
 
@@ -225,16 +225,16 @@ produces a validated baseline commit and input/result evidence for later compari
 `createScanBudget(capacityBytes: number, residentProjectBytes: number): ScanBudget`;
 `createMemoryPageStore(budget: ScanBudget, owner: string): ScanPageStore`.
 
-- [ ] Add failing tests for overlapping reservations, double release, FIFO waiters,
+- [x] Add failing tests for overlapping reservations, double release, FIFO waiters,
       abort while queued, oversize claims, caller buffer retention and Float64 round trips.
       Pin `"reservations bound live scratch, not scan length"` with
       `expect(budget.snapshot().peakBytes).toBeLessThanOrEqual(65_536)` and
       `expect(budget.snapshot().reservedBytes).toBe(0)` after all leases are released.
-- [ ] Implement range validation, leased bounded copies, memory-page ownership and
+- [x] Implement range validation, leased bounded copies, memory-page ownership and
       deduplicated baseline accounting. Never allocate before a successful claim.
-- [ ] Assert `peakBytes <= capacityBytes` with 64 KiB test budgets and verify a huge
+- [x] Assert `peakBytes <= capacityBytes` with 64 KiB test budgets and verify a huge
       logical source can serve small ranges without a full-size array allocation.
-- [ ] Run the standard gate and commit the internal adapters; no new UI capability yet.
+- [x] Run the standard gate and commit the internal adapters; no new UI capability yet.
 
 ## Task 3: Replace whole-original preview topology with canonical sample pages
 
@@ -518,7 +518,7 @@ history/selection → Task 8; projects/backups/MCP streaming → Task 9; multico
 Task 10; independent baseline and final validation → Tasks 1 and 11.
 
 No capability can be presented as shipped solely because its foundation exists.
-Plan execution requires owner review of this document. Use direct inline execution;
+The owner approved plan execution on 2026-10-16. Use direct inline execution;
 do not offer or start subagents in this side conversation. Subsequent tasks may
 proceed without another routine permission request once this plan is approved;
 pause only for a material design change, new external authority or a real blocker.

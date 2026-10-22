@@ -2,8 +2,26 @@ import * as THREE from "three";
 import { updateCameraClipping } from "./camera-clipping";
 import type { NavigationCamera } from "./camera-gizmo";
 
-export function createViewportGrid(spacing = 20): THREE.GridHelper {
-  const grid = new THREE.GridHelper(spacing * 20, 20, "#a7b6bd", "#d0dadf");
+export function createViewportGrid(
+  spacing = 20,
+  visibleRadius = 0,
+): THREE.GridHelper {
+  const requested = Math.ceil(
+    Math.max(spacing * 10, visibleRadius / 0.8) / spacing,
+  );
+  // Bound line geometry for very large scans or very small user grid spacing.
+  const stride = Math.max(1, Math.ceil(requested / 1024));
+  const halfCells = Math.ceil(requested / stride);
+  const halfExtent = halfCells * stride * spacing;
+  const grid = new THREE.GridHelper(
+    halfExtent * 2,
+    halfCells * 2,
+    "#a7b6bd",
+    "#d0dadf",
+  );
+  grid.userData.spacing = spacing;
+  grid.userData.halfExtent = halfExtent;
+  grid.userData.divisions = halfCells * 2;
   grid.rotation.x = Math.PI / 2;
   const material = grid.material as THREE.LineBasicMaterial;
   material.transparent = true;
@@ -25,11 +43,48 @@ export function createViewportGrid(spacing = 20): THREE.GridHelper {
       )
       .replace(
         "#include <color_fragment>",
-        `#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(80.0, 190.0, length(gridPosition) * ${(20 / spacing).toExponential(8)});`,
+        `#include <color_fragment>\ndiffuseColor.a *= 1.0 - smoothstep(${(halfExtent * 0.8).toExponential(8)}, ${(halfExtent * 0.95).toExponential(8)}, length(gridPosition));`,
       );
   };
-  material.customProgramCacheKey = () => `radial-workspace-grid-${spacing}`;
+  material.customProgramCacheKey = () => `radial-workspace-grid-${halfExtent}`;
   return grid;
+}
+
+/** Keep the unfaded floor at least half a part width beyond every projected edge. */
+export function updateViewportGrid(
+  grid: THREE.GridHelper,
+  spacing: number,
+  bounds: THREE.Box3,
+): boolean {
+  let radius = 0;
+  if (!bounds.isEmpty()) {
+    grid.updateWorldMatrix(true, false);
+    const local = bounds
+      .clone()
+      .applyMatrix4(grid.matrixWorld.clone().invert());
+    const width = local.max.x - local.min.x;
+    const depth = local.max.z - local.min.z;
+    const x =
+      Math.max(Math.abs(local.min.x), Math.abs(local.max.x)) + width * 0.5;
+    const z =
+      Math.max(Math.abs(local.min.z), Math.abs(local.max.z)) + depth * 0.5;
+    radius = Math.hypot(x, z);
+  }
+  const requested = Math.ceil(Math.max(spacing * 10, radius / 0.8) / spacing);
+  const stride = Math.max(1, Math.ceil(requested / 1024));
+  const halfExtent = Math.ceil(requested / stride) * stride * spacing;
+  if (
+    grid.userData.spacing === spacing &&
+    grid.userData.halfExtent === halfExtent
+  )
+    return false;
+  const fresh = createViewportGrid(spacing, radius);
+  grid.geometry.dispose();
+  for (const material of [grid.material].flat()) material.dispose();
+  grid.geometry = fresh.geometry;
+  grid.material = fresh.material;
+  Object.assign(grid.userData, fresh.userData);
+  return true;
 }
 
 /** Draw the reference grid behind the model with its own depth range. */

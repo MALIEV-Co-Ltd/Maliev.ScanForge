@@ -389,9 +389,7 @@ export function SurfaceTools({
               1024,
             )}
             <p className="muted">
-              Output: {2 * segments * segments} triangles; approximately{" "}
-              {((segments * segments * 72) / 1048576).toFixed(2)} MiB of
-              coordinates.
+              Output size depends on sampling density and knot discontinuities.
             </p>
             <button
               onClick={() =>
@@ -672,10 +670,9 @@ export function SurfaceTools({
               2000000,
             )}
             <p className="muted">
-              {shellPatches.length} patches ·{" "}
-              {shellPatches.length * shellSegments * shellSegments * 2} planned
-              triangles. Matching patch seams must have matching sample
-              locations within tolerance.
+              {shellPatches.length} patches. Validate and assemble to inspect
+              triangle counts and topology. Matching patch seams must have
+              matching sample locations within tolerance.
             </p>
             <button
               onClick={() =>

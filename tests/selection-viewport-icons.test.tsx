@@ -22,6 +22,8 @@ it("illustrates all seven viewport actions while preserving labels, state and di
       grid
       normals
       spacing={10}
+      automatic={true}
+      onAutomatic={() => {}}
       snap={false}
       hasSelection={false}
       onFlat={noop}

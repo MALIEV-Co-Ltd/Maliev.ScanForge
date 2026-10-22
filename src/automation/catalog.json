@@ -3470,7 +3470,7 @@
   },
   {
     "name": "project_import_batch",
-    "description": "Import multiple scan/CAD artifacts sequentially with bounded workers. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Existing artifact size limits still apply.",
+    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Large batches, constrained devices or low reported heap headroom fall back to one parser. CAD remains serialized. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Existing artifact size limits still apply.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3643,6 +3643,10 @@
             },
             "floorGrid": {
               "type": "boolean"
+            },
+            "automaticGrid": {
+              "type": "boolean",
+              "description": "Adapt floor spacing to model size (default true). Disable to use gridSpacing for the display. Sketch snapping always uses gridSpacing."
             },
             "gridSpacing": {
               "type": "number",
@@ -3895,6 +3899,45 @@
         }
       },
       "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "object_rename",
+    "description": "Rename explicit entityIds or the current object selection atomically. Names follow existing display-metadata behavior and are preserved across geometry undo. One object uses name verbatim after trimming; multiple objects receive name - 1, name - 2, etc. in Objects-panel order. Selection and geometry are preserved. Empty, missing or duplicate IDs and names exceeding 200 characters after numbering fail without changes.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "entityIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Objects to rename; omit to use current selected objects. Numbering follows Objects-panel order."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["expectedRevision", "requestId", "name"],
       "additionalProperties": false
     }
   },

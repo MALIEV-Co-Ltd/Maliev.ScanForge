@@ -26,6 +26,7 @@ it("changes grid visibility and metric spacing and releases replaced GPU resourc
     disposedMaterial = vi.spyOn(material as THREE.Material, "dispose");
   Object.assign(view, {
     grid,
+    bounds: new THREE.Box3(),
     gridSpacing: 10,
     setTheme: vi.fn(),
     invalidate: vi.fn(),
@@ -55,14 +56,16 @@ it("switches material shading without editing source geometry", () => {
   material.dispose();
 });
 
-it("emits a floating-point GLSL fade scale for integral grid ratios", () => {
+it("emits floating-point GLSL fade distances for integral grid spacing", () => {
   const grid = createViewportGrid(5);
   const shader = {
     vertexShader: "#include <common>\n#include <begin_vertex>",
     fragmentShader: "#include <common>\n#include <color_fragment>",
   };
   (grid.material as THREE.Material).onBeforeCompile(shader as any, {} as any);
-  expect(shader.fragmentShader).toContain("4.00000000e+0");
+  expect(shader.fragmentShader).toContain(
+    "smoothstep(4.00000000e+1, 4.75000000e+1, length(gridPosition))",
+  );
   grid.geometry.dispose();
   (grid.material as THREE.Material).dispose();
 });

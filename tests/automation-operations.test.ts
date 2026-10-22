@@ -52,6 +52,30 @@ it("uses reusable geometry processing for MCP analysis and inventory", async () 
   });
   expect(h.host.commit).not.toHaveBeenCalled();
 });
+it("renames the selected objects in browser order in one transaction", () => {
+  const h = harness([entity(), entity({ id: "b" }), entity({ id: "c" })]);
+  h.state.selectedIds = ["c", "mesh", "b"];
+  h.ops.object_rename({ name: " scan " }, h.context);
+  expect(h.state.entities.map((e) => e.name)).toEqual([
+    "scan - 1",
+    "scan - 2",
+    "scan - 3",
+  ]);
+  expect(h.host.commit).toHaveBeenCalledOnce();
+  expect(h.state.selectedIds).toEqual(["c", "mesh", "b"]);
+});
+it("renames one object without numbering and rejects invalid batches atomically", () => {
+  const h = harness();
+  h.ops.object_rename({ name: "scan" }, h.context);
+  expect(h.state.entities[0].name).toBe("scan");
+  for (const args of [
+    { name: " " },
+    { name: "scan", entityIds: [] },
+    { name: "scan", entityIds: ["missing"] },
+  ])
+    expect(() => h.ops.object_rename(args, h.context)).toThrow();
+  expect(h.host.commit).toHaveBeenCalledTimes(1);
+});
 it("shares indexed point-pair refinement target validation and worker controls", async () => {
   const indexedMesh = {
     vertices: Float32Array.from(triangle),
@@ -700,44 +724,17 @@ it("keeps the dedicated mesh split available through MCP processing with workspa
   expect(h.state.entities.length).toBeGreaterThan(2);
 });
 
-it("reuses prepared source topology for MCP edits on selected facets", async () => {
-  const h = harness();
-  vi.mocked(processMesh).mockResolvedValueOnce({
-    kind: "scanEdit",
-    scanEdit: { diagnostics: {} },
-    diagnostics: {},
-  });
-  await h.ops.mesh_process(
-    {
-      entityId: "mesh",
-      selectionOnly: true,
-      operation: { kind: "scanEdit", action: "defeature", tolerance: 0.001 },
-    },
-    h.context,
-  );
-  expect(vi.mocked(processMesh).mock.lastCall?.[1]).toMatchObject({
-    reuseTopology: true,
-  });
-  expect(vi.mocked(processMesh).mock.lastCall?.[0].positions).toBe(
-    h.state.entities[0].positions,
-  );
+it("reuses prepared source topology for MCP edits on selected facets",async()=>{
+ const h=harness();vi.mocked(processMesh).mockResolvedValueOnce({kind:"scanEdit",scanEdit:{diagnostics:{}},diagnostics:{}});
+ await h.ops.mesh_process({entityId:"mesh",selectionOnly:true,operation:{kind:"scanEdit",action:"defeature",tolerance:0.001}},h.context);
+ expect(vi.mocked(processMesh).mock.lastCall?.[1]).toMatchObject({reuseTopology:true});
+ expect(vi.mocked(processMesh).mock.lastCall?.[0].positions).toBe(h.state.entities[0].positions);
 });
 
-it("exposes automatic mesh preparation through MCP object inspection without model writes", async () => {
-  const h = harness(),
-    { prepareMeshInBackground } =
-      await import("../src/scan-background-preparation");
-  const stop = prepareMeshInBackground(h.state.entities[0].positions, {
-    canStart: () => false,
-  });
-  try {
-    expect(h.ops.object_get({ entityId: "mesh" }, h.context)).toMatchObject({
-      meshPreparation: { phase: "scheduled" },
-    });
-    expect(h.host.commit).not.toHaveBeenCalled();
-  } finally {
-    stop();
-  }
+it("exposes automatic mesh preparation through MCP object inspection without model writes",async()=>{
+ const h=harness(),{prepareMeshInBackground}=await import("../src/scan-background-preparation");
+ const stop=prepareMeshInBackground(h.state.entities[0].positions,{canStart:()=>false});
+ try {expect(h.ops.object_get({entityId:"mesh"},h.context)).toMatchObject({meshPreparation:{phase:"scheduled"}});expect(h.host.commit).not.toHaveBeenCalled();}finally{stop();}
 });
 
 describe("sketch section GUI/MCP original-slot parity", () => {

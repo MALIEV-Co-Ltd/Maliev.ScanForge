@@ -20,7 +20,12 @@ export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> =
 const freeformCommands = new Set(
   RIBBON_TABS.find((tab) => tab.id === "freeform")!
     .groups.flatMap((group) => group.tools.map((tool) => tool.id))
-    .concat(["fitSurface", "wrap", "sketch3d"]),
+    .concat(["wrap", "sketch3d"]),
+);
+const surfaceCommands = new Set(
+  RIBBON_TABS.find((tab) => tab.id === "surfacing")!
+    .groups.flatMap((group) => group.tools.map((tool) => tool.id))
+    .concat(["surfacingTools"]),
 );
 const primitiveCommands = new Set([
   "fitPlane",
@@ -66,6 +71,8 @@ export function ribbonCommandPalette(command: string) {
       shade: "#775493",
       edge: "#4c365f",
     };
+  if (surfaceCommands.has(command))
+    return { family: "surface", base: gold, light, shade, edge: "#705817" };
   if (primitiveCommands.has(command))
     return {
       family: "reference",
@@ -84,6 +91,7 @@ export function ribbonCommandPalette(command: string) {
     };
   return { family: "scan", base: gold, light, shade, edge: "#705817" };
 }
+
 export function RibbonCommandIcon({
   command,
   compact = false,

@@ -332,13 +332,25 @@ function basis(
   count: number,
   degree: number,
   t: number,
+  oneSidedSpan?: number,
 ): Float64Array {
   const start = knots[degree],
     end = knots[count];
   if (!Number.isFinite(t) || t < start || t > end)
     throw new Error("Surface parameter lies outside its knot domain.");
   let span = count - 1;
-  if (t !== end) {
+  if (oneSidedSpan !== undefined) {
+    if (
+      !Number.isInteger(oneSidedSpan) ||
+      oneSidedSpan < degree ||
+      oneSidedSpan >= count ||
+      !(knots[oneSidedSpan] < knots[oneSidedSpan + 1]) ||
+      t < knots[oneSidedSpan] ||
+      t > knots[oneSidedSpan + 1]
+    )
+      throw new Error("One-sided surface span is invalid.");
+    span = oneSidedSpan;
+  } else if (t !== end) {
     let lo = degree,
       hi = count;
     while (hi - lo > 1) {
@@ -368,9 +380,15 @@ function basis(
   for (let j = 0; j <= degree; j++) result[span - degree + j] = values[j];
   return result;
 }
-function evaluateUnchecked(patch: NurbsPatch, u: number, v: number): Vec3 {
-  const bu = basis(patch.knotsU, patch.countU, patch.degreeU, u);
-  const bv = basis(patch.knotsV, patch.countV, patch.degreeV, v);
+function evaluateUnchecked(
+  patch: NurbsPatch,
+  u: number,
+  v: number,
+  uSpan?: number,
+  vSpan?: number,
+): Vec3 {
+  const bu = basis(patch.knotsU, patch.countU, patch.degreeU, u, uSpan);
+  const bv = basis(patch.knotsV, patch.countV, patch.degreeV, v, vSpan);
   const result: Vec3 = [0, 0, 0];
   let denominator = 0;
   for (let j = 0; j < patch.countV; j++)
@@ -473,6 +491,155 @@ export function snapControlPoint(
   if (!nearest) throw new Error("Scan coordinates exceed the distance range.");
   return editControlPoint(patch, index, nearest, patch.weights[index]);
 }
+function fullMultiplicityBreaks(
+  knots: number[],
+  count: number,
+  degree: number,
+) {
+  const start = knots[degree],
+    end = knots[count],
+    breaks: number[] = [];
+  for (let first = 0; first < knots.length;) {
+    let last = first + 1;
+    while (last < knots.length && knots[last] === knots[first]) last++;
+    if (
+      last - first === degree + 1 &&
+      knots[first] > start &&
+      knots[first] < end
+    )
+      breaks.push(knots[first]);
+    first = last;
+  }
+  return breaks;
+}
+
+interface TessellationInterval {
+  parameters: number[];
+  startSpan: number;
+  endSpan: number;
+}
+
+function tessellationIntervals(
+  knots: number[],
+  count: number,
+  degree: number,
+  segments: number,
+  breaks: number[],
+): TessellationInterval[] {
+  const start = knots[degree],
+    end = knots[count];
+  const uniform = Array.from(
+    { length: segments + 1 },
+    (_, i) => start + ((end - start) * i) / segments,
+  );
+  if (uniform.some((value) => !Number.isFinite(value)))
+    throw new Error("Surface parameter lies outside its knot domain.");
+  const boundarySpan = (parameter: number, right: boolean) => {
+    for (let span = degree; span < count; span++)
+      if (
+        knots[span] < knots[span + 1] &&
+        (right ? knots[span] === parameter : knots[span + 1] === parameter)
+      )
+        return span;
+    throw new Error("One-sided surface boundary has no nonempty span.");
+  };
+  const bounds = [start, ...breaks, end];
+  return bounds.slice(0, -1).map((lower, index) => {
+    const upper = bounds[index + 1],
+      parameters = [lower];
+    for (const value of uniform)
+      if (value > lower && value < upper && value !== parameters.at(-1))
+        parameters.push(value);
+    parameters.push(upper);
+    return {
+      parameters,
+      startSpan: boundarySpan(lower, true),
+      endSpan: boundarySpan(upper, false),
+    };
+  });
+}
+
+function tessellateDiscontinuousPatch(
+  patch: NurbsPatch,
+  segmentsU: number,
+  segmentsV: number,
+  breaksU: number[],
+  breaksV: number[],
+): Float32Array {
+  const us = tessellationIntervals(
+    patch.knotsU,
+    patch.countU,
+    patch.degreeU,
+    segmentsU,
+    breaksU,
+  );
+  const vs = tessellationIntervals(
+    patch.knotsV,
+    patch.countV,
+    patch.degreeV,
+    segmentsV,
+    breaksV,
+  );
+  const cellsU = us.reduce(
+    (sum, region) => sum + region.parameters.length - 1,
+    0,
+  );
+  const cellsV = vs.reduce(
+    (sum, region) => sum + region.parameters.length - 1,
+    0,
+  );
+  const scalars = cellsU * cellsV * 18;
+  // Each off-grid break adds at most one cell to the original bounded axis grid.
+  if (
+    cellsU > segmentsU + breaksU.length ||
+    cellsV > segmentsV + breaksV.length ||
+    !Number.isSafeInteger(scalars) ||
+    scalars <= 0
+  )
+    throw new Error(
+      "Discontinuous surface tessellation exceeds its grid bounds.",
+    );
+  const result = new Float32Array(scalars);
+  let offset = 0;
+  for (const v of vs)
+    for (const u of us) {
+      const grid: Vec3[] = [];
+      for (let j = 0; j < v.parameters.length; j++)
+        for (let i = 0; i < u.parameters.length; i++)
+          grid.push(
+            evaluateUnchecked(
+              patch,
+              u.parameters[i],
+              v.parameters[j],
+              i === 0
+                ? u.startSpan
+                : i === u.parameters.length - 1
+                  ? u.endSpan
+                  : undefined,
+              j === 0
+                ? v.startSpan
+                : j === v.parameters.length - 1
+                  ? v.endSpan
+                  : undefined,
+            ),
+          );
+      for (let j = 0; j < v.parameters.length - 1; j++)
+        for (let i = 0; i < u.parameters.length - 1; i++) {
+          const a = j * u.parameters.length + i,
+            b = a + 1,
+            c = a + u.parameters.length,
+            d = c + 1;
+          for (const index of [a, b, c, b, d, c])
+            for (const value of grid[index]) {
+              result[offset++] = value;
+              if (!Number.isFinite(result[offset - 1]))
+                throw new Error("Surface exceeds Float32 mesh range.");
+            }
+        }
+    }
+  return result;
+}
+
 export function tessellatePatch(
   patch: NurbsPatch,
   segmentsU = 32,
@@ -481,6 +648,24 @@ export function tessellatePatch(
   validatePatch(patch);
   integer(segmentsU, 1, 1024, "U tessellation segments");
   integer(segmentsV, 1, 1024, "V tessellation segments");
+  const breaksU = fullMultiplicityBreaks(
+    patch.knotsU,
+    patch.countU,
+    patch.degreeU,
+  );
+  const breaksV = fullMultiplicityBreaks(
+    patch.knotsV,
+    patch.countV,
+    patch.degreeV,
+  );
+  if (breaksU.length || breaksV.length)
+    return tessellateDiscontinuousPatch(
+      patch,
+      segmentsU,
+      segmentsV,
+      breaksU,
+      breaksV,
+    );
   const grid: Vec3[] = [];
   const u0 = patch.knotsU[patch.degreeU],
     u1 = patch.knotsU[patch.countU];
@@ -840,7 +1025,43 @@ export function assemblePatchShell(
   const tolerance = options.weldTolerance;
   if (!Number.isFinite(tolerance) || tolerance <= 0)
     throw new Error("Weld tolerance must be finite and positive.");
-  if (patches.length * options.segments ** 2 * 2 > options.triangleBudget)
+  let requestedTriangles = 0;
+  for (const patch of patches) {
+    const breaksU = fullMultiplicityBreaks(
+      patch.knotsU,
+      patch.countU,
+      patch.degreeU,
+    );
+    const breaksV = fullMultiplicityBreaks(
+      patch.knotsV,
+      patch.countV,
+      patch.degreeV,
+    );
+    const cells = (
+      knots: number[],
+      count: number,
+      degree: number,
+      breaks: number[],
+    ) =>
+      tessellationIntervals(
+        knots,
+        count,
+        degree,
+        options.segments,
+        breaks,
+      ).reduce((sum, region) => sum + region.parameters.length - 1, 0);
+    const cellsU =
+      breaksU.length || breaksV.length
+        ? cells(patch.knotsU, patch.countU, patch.degreeU, breaksU)
+        : options.segments;
+    const cellsV =
+      breaksU.length || breaksV.length
+        ? cells(patch.knotsV, patch.countV, patch.degreeV, breaksV)
+        : options.segments;
+    requestedTriangles += cellsU * cellsV * 2;
+    if (requestedTriangles > options.triangleBudget) break;
+  }
+  if (requestedTriangles > options.triangleBudget)
     throw new Error(
       "Shell tessellation exceeds the configured triangle budget. Lower segments or increase the operation budget.",
     );

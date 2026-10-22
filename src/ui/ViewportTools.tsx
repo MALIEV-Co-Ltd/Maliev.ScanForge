@@ -16,6 +16,8 @@ export function ViewportTools(props: {
   flat: boolean;
   grid: boolean;
   spacing: number;
+  automatic: boolean;
+  onAutomatic: (value: boolean) => void;
   snap: boolean;
   hasSelection: boolean;
   normals?: boolean;
@@ -117,7 +119,15 @@ export function ViewportTools(props: {
           aria-label="Grid and snap settings"
         >
           <label>
-            Grid spacing (mm)
+            <input
+              type="checkbox"
+              checked={props.automatic}
+              onChange={(e) => props.onAutomatic(e.target.checked)}
+            />
+            Automatic grid spacing
+          </label>
+          <label>
+            Manual grid / snap spacing (mm)
             <input
               aria-label="Grid spacing (mm)"
               type="number"
@@ -144,7 +154,10 @@ export function ViewportTools(props: {
             />
             Snap sketch points to grid
           </label>
-          <p>Snapping uses the sketch plane’s origin and grid spacing.</p>
+          <p>
+            Automatic display spacing follows model size. Sketch snapping uses
+            the manual spacing and sketch origin.
+          </p>
           <button onClick={() => setSettings(false)}>
             Close grid settings
           </button>

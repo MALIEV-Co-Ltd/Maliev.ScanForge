@@ -1,0 +1,2 @@
+# Preserve historical analysis source hashes across checkout platforms.
+tools/continuation/reference/** -text -whitespace

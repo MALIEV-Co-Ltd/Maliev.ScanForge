@@ -89,3 +89,43 @@ it("clamps progress and preserves percentages inside phase descriptions", () => 
   expect(html).not.toContain("120%");
   expect(html).toContain('aria-valuenow="100"');
 });
+
+it("shows one named progress bar per active import plus queue counts", () => {
+  const html = renderToStaticMarkup(
+    <PointerJobStatus
+      message="Importing files"
+      progressDetails={{
+        kind: "importBatch",
+        files: [
+          {
+            index: 0,
+            name: "first.stl",
+            status: "importing",
+            fraction: 0.25,
+            stage: "Reading",
+          },
+          {
+            index: 1,
+            name: "second.ply",
+            status: "importing",
+            fraction: 0.6,
+            stage: "Preparing",
+          },
+          {
+            index: 2,
+            name: "queued.obj",
+            status: "queued",
+            fraction: 0,
+            stage: "Queued",
+          },
+        ],
+      }}
+    />,
+  );
+  expect(html.match(/role="progressbar"/g)).toHaveLength(2);
+  expect(html).toContain('aria-label="first.stl"');
+  expect(html).toContain('aria-valuenow="25"');
+  expect(html).toContain('aria-label="second.ply"');
+  expect(html).toContain('aria-valuenow="60"');
+  expect(html).toContain("1 queued");
+});

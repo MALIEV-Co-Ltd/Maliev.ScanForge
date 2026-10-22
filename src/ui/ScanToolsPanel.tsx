@@ -147,7 +147,8 @@ export function ScanToolsPanel({
   const [measureDeviation, setMeasureDeviation] = useState(false);
   function changeComparison(enabled: boolean) {
     setMeasureDeviation(enabled);
-    if (enabled && onCompare) onCompare(deviation, paletteThreshold);
+    if (enabled && previewReady && onCompare)
+      onCompare(deviation, paletteThreshold);
     else if (comparison?.visible && onToggleComparison) onToggleComparison();
   }
   const paletteThreshold = deviation;
@@ -470,7 +471,6 @@ export function ScanToolsPanel({
                 <input
                   type="checkbox"
                   checked={measureDeviation}
-                  disabled={!!onAccept && !previewReady}
                   onChange={(e) => {
                     e.stopPropagation();
                     changeComparison(e.target.checked);

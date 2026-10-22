@@ -17,6 +17,20 @@ Automatic Gamepad detection is the default. The optional official driver connect
 requires installed 3DxWare and manages its own sensitivity; fallback preferences
 apply to Gamepad and explicit browser HID input. See [input devices](INPUT_DEVICES.md).
 
+## Noise reduction input and comparison
+
+Reduce noise accepts meshes without a fixed triangle-count input cap through
+both the GUI and `mesh_process` with
+`operation: {kind: "scanTools", operation: {kind: "reduceNoise"}}`.
+Memory use still scales with geometry; cancellation and topology validation remain
+active. Enable **Measure deviation from original** before Preview to calculate
+comparison with that preview, or enable it after Preview to compare the existing
+result without smoothing again. MCP callers use `measureDeviation: true` and
+`deviation` (millimetres) on the inner operation. Large surfaces use the shared
+BVH comparison index instead of failing at the native octree's node budget;
+small surfaces retain the recovered comparison behavior. Comparison never limits
+smoothing.
+
 ## Background mesh preparation
 
 Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).
@@ -408,7 +422,7 @@ Captures render the current WebGL frame and the application DOM, including visib
 
 Other actions are `rotate` (`direction`, `degrees`, optional paired `x`/`y`), `projection` (`orthographic`/`perspective`), `camera` (`position`, `target`, optional `up`, `zoom`, `projection`) and `sketchNormal` (requires the sketch editor open). Coordinates are world millimetres; rotation is in degrees. For selection framing, provide `entityId` and `selection: true` with a nonempty active triangle selection. `viewport_pick` takes normalized top-left `x`/`y` in `[0,1]` and returns ordered rendered-object hits and world points. Mesh triangle indices address rendered tessellation; point-cloud hits expose `pointIndex` instead. Neither is a native CAD face/edge reference. Picking does not change selection; use `object_select` or selection tools afterwards.
 
-`ui_set` changes the ribbon tab, tool workspace, mode, tool-panel visibility or Settings visibility, and can dismiss the displayed error. It does not click arbitrary controls or accept GUI preview results. Changing workspace rejects an active GUI preview; inspect it, then explicitly use `preview_discard` with `target: "scan"`, `"surface"`, `"landmarks"` or `"sketchSection"` to discard the corresponding GUI preview. This uses the existing Cancel handlers, preserves committed geometry and remains available during GUI worker cleanup. It does not cancel API jobs; use `job_cancel` for those. Read visible control/status state to check the result. `settings_set` also exposes `normalsDisplay`; grid spacing uses the same supported bounds as the viewport.
+`ui_set` changes the ribbon tab, tool workspace, mode, tool-panel visibility or Settings visibility, and can dismiss the displayed error. It does not click arbitrary controls or accept GUI preview results. Changing workspace rejects an active GUI preview; inspect it, then explicitly use `preview_discard` with `target: "scan"`, `"surface"`, `"landmarks"` or `"sketchSection"` to discard the corresponding GUI preview. This uses the existing Cancel handlers, preserves committed geometry and remains available during GUI worker cleanup. It does not cancel API jobs; use `job_cancel` for those. Read visible control/status state to check the result. `settings_set` also exposes `normalsDisplay`; grid spacing uses the same supported bounds as the viewport. `settings_set.patch.automaticGrid` defaults to true and chooses readable floor intervals from visible model dimensions (10, 25, 50, 100 mm and other engineering steps). Set it false for a manual floor. `gridSpacing` always controls sketch snapping independently of automatic display spacing. State settings include `effectiveGridSpacing` and `scale` (`distanceMm`, `widthPx`, `reference: "view-center"`; null for an unavailable scale). The bottom-right scale bar updates with zoom and resize; in perspective it measures in the camera-facing plane through the orbit target.
 
 Scan selection gestures are active only while the Edit Scan panel is open in the `mesh` workspace. Closing it or switching workspaces through the GUI or `ui_set` releases the brush, so double-clicking a visible scan can reopen Edit Scan. Agents can open the same editor with `command_run` and `name: "ribbon:editScan"`.
 
@@ -652,6 +666,10 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 | NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, C0/C1 joins and shell diagnostics; exact face/closed-patch conversion through recipes                                               |
 | History and interaction  | Modeling undo/redo and timeline seeking, standard camera views/fit, display/theme/grid settings                                                                                                                                                                 |
 | Files and execution      | Local artifact upload/download, project/scan/CAD import, project/STL/STEP export, job status/cancel                                                                                                                                                             |
+
+Polygon-reduction comparisons use the recovered octree for small surfaces and a linear-storage BVH for surfaces above 100,000 triangles or when the octree exhausts its node budget. GUI preview/accept and `mesh_process` with `scanTools.reducePolygons` share this path. The BVH still evaluates signed triangle distances with the existing numerical kernel, palette/search radius and tolerance statistics; comparison does not modify reduction output. Equal-distance BVH candidates use stable source-triangle order. Index construction and comparison retain cancellation checks.
+
+Resident spatial reduction proves complete source vertex fans before separating fans disconnected only by a patch cut. The temporary representatives have identical coordinates and stay pinned at patch boundaries; fans that fail this check and locally unsafe facets remain protected. Original-to-reduced comparison retains unique samples and corner IDs without constructing original adjacency, using the same weld order for GUI and MCP. These improvements retain resident source/output arrays; disk-backed application loading is not yet enabled. Always inspect achieved counts and any protected-topology message rather than treating the requested count as achieved.
 
 Full Sketch and NurbsPatch wire structures are shown below. Existing domain validators enforce their invariants. Operations outside the advertised schemas are rejected; do not inject native worker IDs, raw worker requests, executable code, or arbitrary geometry fields into a command.
 
@@ -966,6 +984,8 @@ picks and committed geometry and creates no history. Repeated requests using
 the original request ID retain normal idempotent receipt behavior. A failed
 registration does not publish an empty preview.
 
+Object rename: F2 opens the rename dialog for the current object selection. Use object_rename with name and optional entityIds over MCP (omit IDs to use the selection). A single target receives the trimmed name; multiple targets receive name - 1, name - 2, etc. in Objects-panel order, in one transaction. Names retain the existing metadata behavior: geometry undo does not revert them. Selection and geometry are preserved. Names must remain within 200 characters including the numeric suffix. Normal revision, retry and busy guards apply.
+
 Canvas landmark picking uses the same world-point extraction as `viewport_pick`:
 mesh hits retain their surface intersection, while point-cloud hits use the actual
 measured vertex transformed by its world pose. `landmark_get` reports the resulting
@@ -1095,23 +1115,6 @@ shared operations.
 
 Whole ShrinkWrap now runs an exhaustive triangle-pair self-intersection check before returning or retaining a preview. It reports selfIntersectionsChecked, selfIntersectionPairs, selfIntersectionCandidatePairs, selfIntersectionTestedPairs, selfIntersectionIndexFaces, selfIntersectionTriangles, selfIntersectionMethod and selfIntersectionScope; selfIntersectionExamples is a bounded JSON string of original output face-index pairs. The check uses exact Float32 orientation predicates after BVH broad-phase validation. It rejects intersections, incomplete index coverage, overflowing bounds, cancellation and the 500-million candidate-pair limit rather than reporting a partial zero. Local wrapping checks changed facets against the whole parent, reports changedRegionSelfIntersectionsChecked:true, and leaves selfIntersectionsChecked:false when unchanged-only pairs were excluded. No extra MCP action is required; GUI and MCP share this guarded kernel.
 
-Automatic entire-hole filling also continues smooth non-quadratic scan surfaces.
-The shared GUI/MCP operation first tries its existing quadratic collar fit. If
-that fit is inadequate, a bounded thin-plate interpolant uses up to 192 spatially
-spread samples from the retained connected collar and rim. The existing angular,
-8192-face support, 2048-rim, cancellation and patch-validation limits remain in
-force. Overhangs and steep lips keep the conservative boundary-height fallback.
-Interpolation is accepted only when errors against all retained support samples
-stay within 0.1 normalized radius individually and 0.02 radius RMS. Interior
-heights are limited to the retained support envelope; original rim vertices and
-source facets remain fixed. This approximates missing geometry from available
-scan evidence; features wholly absent from the collar cannot be recovered.
-Use `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles",
-mode: "entire", algorithm: "automatic", indices: [boundaryIndex]}`. Existing
-`surfaceFitHoles` includes accepted interpolated surfaces; the additional
-`interpolatedSurfaceHoles` count identifies that subset. `surfaceFitMaxRms`
-reports the accepted surface model's retained-support RMS in millimetres.
-
 ### Global Fine Align preview, Apply and Cancel
 
 The Global fine align panel and MCP share `global_alignment_preview`,
@@ -1188,6 +1191,39 @@ Cancellation, failure, invalidation and expiry request cleanup of the same
 retained resources; failed stop requests keep recovery ownership. Cancellation
 does not accept a partial scan set.
 
+Automatic entire-hole filling also continues smooth non-quadratic scan surfaces.
+The shared GUI/MCP operation first tries its existing quadratic collar fit. If
+that fit is inadequate, a bounded thin-plate interpolant uses up to 192 spatially
+spread samples from the retained connected collar and rim. The existing angular,
+8192-face support, 2048-rim, cancellation and patch-validation limits remain in
+force. Overhangs and steep lips keep the conservative boundary-height fallback.
+Interpolation is accepted only when errors against all retained support samples
+stay within 0.1 normalized radius individually and 0.02 radius RMS. Interior
+heights are limited to the retained support envelope; original rim vertices and
+source facets remain fixed. This approximates missing geometry from available
+scan evidence; features wholly absent from the collar cannot be recovered.
+Use `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles",
+mode: "entire", algorithm: "automatic", indices: [boundaryIndex]}`. Existing
+`surfaceFitHoles` includes accepted interpolated surfaces; the additional
+`interpolatedSurfaceHoles` count identifies that subset. `surfaceFitMaxRms`
+reports the accepted surface model's retained-support RMS in millimetres.
+
+Interpolated automatic fills also detect a dominant direction of collar-slope
+variation and continue supported rib sections along that direction. Directional
+fits retain the same support-error gates and retry the isotropic fit if rejected.
+A screened cotangent solve reconciles the fitted surface with fixed rim heights
+and averaged retained tangents, preserving the fitted interior curvature. It is
+bounded to 600 iterations, 60000 new vertices and 8192 retained one-ring facets.
+Original scan vertices remain fixed; finite correction overshoots are limited to
+the full retained-support height envelope. Cancellation still aborts the operation.
+Blending is optional: if its numeric solve or limits fail, the operation restores
+the refined fitted patch and runs the usual winding and topology validation.
+A blending failure alone no longer prevents a geometrically valid hole from
+closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
+`surfaceBlendLimitedHoles`; no new agent parameter is needed. Support-fit RMS
+describes the interpolant, not a guarantee of final visual continuity or accuracy
+of geometry absent from the scan. Close-up inspection remains necessary.
+
 ### Hole-filling batch progress
 
 `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles"}`
@@ -1206,21 +1242,13 @@ do not imply successful completion. Final `diagnostics.filledHoles` and
 `diagnostics.skippedHoles` remain available unchanged. The pointer card shows the
 same counts, and the GUI status bar retains the final outcome summary.
 
-Interpolated automatic fills also detect a dominant direction of collar-slope
-variation and continue supported rib sections along that direction. Directional
-fits retain the same support-error gates and retry the isotropic fit if rejected.
-A screened cotangent solve reconciles the fitted surface with fixed rim heights
-and averaged retained tangents, preserving the fitted interior curvature. It is
-bounded to 600 iterations, 60000 new vertices and 8192 retained one-ring facets.
-Original scan vertices remain fixed; finite correction overshoots are limited to
-the full retained-support height envelope. Cancellation still aborts the operation.
-Blending is optional: if its numeric solve or limits fail, the operation restores
-the refined fitted patch and runs the usual winding and topology validation.
-A blending failure alone no longer prevents a geometrically valid hole from
-closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
-`surfaceBlendLimitedHoles`; no new agent parameter is needed. Support-fit RMS
-describes the interpolant, not a guarantee of final visual continuity or accuracy
-of geometry absent from the scan. Close-up inspection remains necessary.
+### Parallel mesh batch imports
+
+`project_import_batch` prepares up to two STL/OBJ/PLY/ASC files concurrently using the same scheduler and parser as the GUI. Scene publication is serialized, appends to the current workspace, and retains one undo step per file. Results and failures retain input order; scene insertion follows readiness order. CAD imports remain serialized and project replacement stays separate. The batch fits the view once after scan publication.
+
+Admission uses device CPU/memory hints, reported JavaScript heap headroom where available, a 64 MiB per-file threshold, and a conservative 512 MiB decoded batch estimate. Inputs above these limits remain supported through one parser; browser hints cannot guarantee physical memory availability.
+
+Poll `job_get`: `progressDetails.kind` is `importBatch`, with `files` containing `index`, `name`, `status` (`queued`, `importing`, `rendering`, `complete`, `failed`, `cancelled`), `fraction` (0-1), and `stage`. The cursor overlay shows the active filenames and bars plus completed/queued/failed counts. `job_cancel` stops queued and active scan work, waits for worker cleanup, and retains committed objects. Per-file errors do not stop other imports. Native CAD cancellation still waits for native work to settle.
 
 Canvas navigation: hold the right mouse button and drag to pan; hold the middle button
 and drag to rotate. Right-drag panning also works in mesh edit and does not open the
@@ -1272,3 +1300,12 @@ Omit `scope` (or use `scope:"model"`) to retain existing model-history behavior,
 Use `mesh_process` with `operation:{kind:"sketchSection",options:{plane:"OXY",offset:1,onSlicingPlane:true,selectedOnly:true}}` and the usual object/revision/request fields. All four options are required: `plane` is OXY/OYZ/OXZ, `offset` is finite world millimetres, and the two switches are booleans. `selectedOnly:true` uses the current nonempty triangle selection on the specified source object. Omit the top-level `selectionOnly` flag or supply the same value; contradictory flags are rejected before processing. The operation retains original triangle slots and excludes hidden triangles, matching GUI Create Sketch section extraction. `onSlicingPlane:false` projects references onto the zero-offset reference plane.
 
 Poll the existing job receipt and read the JSON artifact: `sketchSection` contains the frame, local reference segments, actual/placed world segments and eligible-triangle count. Extraction changes no geometry, selection, sketch ownership or model history. A missing/stale/empty selection, a selected region with no eligible visible triangles, or a nonintersecting plane fails without an accepted result. To retain references, use the existing `sketch_manage` create action with a validated empty Sketch v1 containing the returned `frame` and `reference`; reference samples are separate from editable curves. This does not assert original native section-algorithm parity.
+
+NURBS display tessellation used by GUI patch editing and `surface_set` preserves
+interior knot multiplicity degree + 1 as separate one-sided span strips in U and
+V, without triangles across a discontinuity. Continuous and C0 patch sampling
+retains its existing order. `surface_shell` and GUI shell validation enforce
+`options.triangleBudget` against the actual sampled strip cells, including
+off-grid breaks; an on-grid break does not add an extra cell. A budget failure
+publishes no assembled result. Inspect returned shell diagnostics; display
+tessellation does not certify a closed or valid exact CAD solid.

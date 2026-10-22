@@ -1,8 +1,12 @@
+import type { ImportBatchProgress } from "./import-batch";
 import type { HoleFillProgress } from "./hole-fill-progress";
-const jobs = new Map<symbol, { message: string; details?: HoleFillProgress }>();
+const jobs = new Map<
+  symbol,
+  { message: string; details?: HoleFillProgress | ImportBatchProgress }
+>();
 const listeners = new Set<() => void>();
 let snapshot = "";
-let progressDetails: HoleFillProgress | undefined;
+let progressDetails: HoleFillProgress | ImportBatchProgress | undefined;
 export const getWorkingJobStatus = () => snapshot;
 export const getWorkingJobProgress = () => progressDetails;
 export function watchWorkingJobStatus(listener: () => void) {
@@ -25,7 +29,11 @@ export function beginWorkingJob(label: string) {
   jobs.set(id, { message: `${label}…` });
   publish();
   return {
-    progress(fraction: number, stage: string, details?: HoleFillProgress) {
+    progress(
+      fraction: number,
+      stage: string,
+      details?: HoleFillProgress | ImportBatchProgress,
+    ) {
       if (!jobs.has(id)) return;
       const percent = Number.isFinite(fraction)
         ? ` · ${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%`

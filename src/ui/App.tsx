@@ -19,7 +19,13 @@ import { createInteractiveEditor } from "../automation/interactive-editor";
 import { InteractiveAlignmentDialog } from "./InteractiveAlignmentDialog";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
-import { importBatch, validateImportBatch } from "../import-batch";
+import { prepareImportedScan } from "../imported-scan";
+import { beginWorkingJob } from "../working-job-status";
+import {
+  importBatch,
+  importConcurrency,
+  validateImportBatch,
+} from "../import-batch";
 import { displayMeshStats } from "../scan-render-data";
 import {
   selectObject,
@@ -210,7 +216,6 @@ import {
   geometryPositions,
   validatePositions,
 } from "../io";
-import { importScan } from "../import-client";
 import {
   retainIndexedMesh,
   transformIndexedMesh,
@@ -221,7 +226,6 @@ import {
   cloudPlacement,
   cloudSelectionSource,
 } from "../point-cloud-placement";
-import type { ScanSource } from "../import-parser";
 import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { ImportUnitsDialog } from "./ImportUnitsDialog";
@@ -353,6 +357,7 @@ export function App() {
   const [normalsDisplay, setNormalsDisplay] = useState(true);
   const [floorGrid, setFloorGrid] = useState(true);
   const [gridSpacing, setGridSpacing] = useState(10);
+  const [automaticGrid, setAutomaticGrid] = useState(true);
   const [snapGrid, setSnapGrid] = useState(false);
   const [mode, setMode] = useState<Mode>("inspect");
   const [workspace, setWorkspace] = useState("measure");
@@ -591,7 +596,7 @@ export function App() {
     revision?: number;
   } | null>(null);
   const [renameObject, setRenameObject] = useState<{
-    id: string;
+    ids: string[];
     name: string;
   } | null>(null);
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
@@ -1090,8 +1095,13 @@ export function App() {
     viewport.current?.setNormalsDisplay(normalsDisplay);
   }, [normalsDisplay]);
   useEffect(() => {
-    viewport.current?.setGridOptions(floorGrid, gridSpacing, snapGrid);
-  }, [floorGrid, gridSpacing, snapGrid]);
+    viewport.current?.setGridOptions(
+      floorGrid,
+      gridSpacing,
+      snapGrid,
+      automaticGrid,
+    );
+  }, [floorGrid, gridSpacing, snapGrid, automaticGrid]);
   useEffect(() => {
     viewport.current?.setWireframe(wireframe);
   }, [wireframe]);
@@ -2028,6 +2038,13 @@ export function App() {
       setDirty(true);
     },
     "toggle-visibility": () => {},
+    "rename-objects": selectedIds.length
+      ? () =>
+          setRenameObject({
+            ids: [...selectedIds],
+            name: selectedIds.length === 1 ? (selected?.name ?? "") : "",
+          })
+      : undefined,
     "toggle-selected-visibility": selectedIds.length
       ? () => {
           void uiCommand("object_visibility_toggle").then((result) => {
@@ -2154,7 +2171,8 @@ export function App() {
       settingsOpen ||
       saveDialogOpen ||
       newDocumentDialog ||
-      contextMenu
+      contextMenu ||
+      renameObject
     ),
     supportedActions: new Set(Object.keys(actions) as ShortcutActionId[]),
     availableActions: new Set(
@@ -2248,7 +2266,12 @@ export function App() {
         }
       },
       rename: () => {
-        if (target) setRenameObject({ id: target.id, name: target.name });
+        if (target) {
+          const ids = selectedIds.includes(target.id)
+            ? [...selectedIds]
+            : [target.id];
+          setRenameObject({ ids, name: ids.length === 1 ? target.name : "" });
+        }
       },
       visibility: () => patch({ visible: !target?.visible }),
       selectable: () => patch({ selectable: target?.selectable === false }),
@@ -3148,16 +3171,55 @@ export function App() {
       `Opening ${files.length} file${files.length === 1 ? "" : "s"}…`,
       async () => {
         try {
-          const result = await importBatch(
-            files,
-            async (file, index) => {
-              setMessage(`Opening ${index + 1}/${files.length} · ${file.name}`);
-              operationLabel.current = `Opening ${file.name}`;
-              await loadFile.current(file, unit, controller.signal);
-              return file.name;
-            },
-            controller.signal,
-          );
+          const status = beginWorkingJob("Importing files");
+          let result;
+          try {
+            result = await importBatch(
+              files,
+              async (file, _index, context) =>
+                /\.(stl|obj|ply|asc)$/i.test(file.name)
+                  ? prepareImportedScan(file, {
+                      unit,
+                      placeAtOrigin: true,
+                      previewTriangles: previewImport ? 250_000 : undefined,
+                      signal: context.signal,
+                      onProgress: (fraction) =>
+                        context.progress(fraction, "Importing"),
+                    })
+                  : undefined,
+              controller.signal,
+              {
+                concurrency: importConcurrency(files),
+                names: files.map((file) => file.name),
+                onProgress: (details) => {
+                  const fraction =
+                    details.files.reduce(
+                      (sum, file) => sum + file.fraction,
+                      0,
+                    ) / files.length;
+                  status.progress(fraction, "Importing files", details);
+                  setImportProgress({
+                    name: `${details.files.filter((file) => file.status === "complete").length}/${files.length} files`,
+                    fraction,
+                  });
+                },
+                commit: async (prepared, file) => {
+                  operationLabel.current = `Opening ${file.name}`;
+                  await loadFile.current(
+                    file,
+                    unit,
+                    controller.signal,
+                    prepared,
+                    true,
+                  );
+                  return file.name;
+                },
+              },
+            );
+            if (result.completed.length) viewport.current?.fitView();
+          } finally {
+            status.finish();
+          }
           if (result.failed.length)
             setError(
               result.failed
@@ -3175,7 +3237,13 @@ export function App() {
       },
     );
   }
-  async function openFile(file: File, unit?: ScanUnit, signal?: AbortSignal) {
+  async function openFile(
+    file: File,
+    unit?: ScanUnit,
+    signal?: AbortSignal,
+    prepared?: Entity,
+    batch = false,
+  ) {
     setImportProgress({
       name: file.name,
       fraction: /\.(stl|obj|ply|asc|step|stp|iges|igs|brep)$/i.test(file.name)
@@ -3282,52 +3350,18 @@ export function App() {
           source: file.name,
         };
       } else {
-        let positions;
-        let pointNormals: Entity["normals"];
-        let scanSource: ScanSource | undefined;
-        let indexedMesh: Entity["indexedMesh"];
-        {
-          positions = await importScan(file, {
-            onMeshNormals: (normals) => {
-              pointNormals = normals;
-            },
-            onIndexedMesh: (mesh) => {
-              indexedMesh = mesh;
-            },
+        entity =
+          prepared ??
+          (await prepareImportedScan(file, {
             unit,
             placeAtOrigin: true,
             previewTriangles: previewImport ? 250_000 : undefined,
-            onSource: (source) => {
-              scanSource = source;
-            },
-            onPointCloud: (cloud) => {
-              pointNormals = cloud.normals;
-            },
             signal,
-            onProgress: (progress) => {
-              setImportProgress({ name: file.name, fraction: progress });
-              setMessage(
-                `Opening ${file.name} · ${Math.round(progress * 100)}%`,
-              );
-            },
-          });
-        }
-        entity = {
-          id: crypto.randomUUID(),
-          name:
-            file.name + (isSampledScan(scanSource) ? " [sampled preview]" : ""),
-          kind: extension === "asc" ? "pointcloud" : "mesh",
-          positions,
-          normals: pointNormals,
-          color: DEFAULT_PART_COLOR,
-          visible: true,
-          opacity: 1,
-          source: file.name,
-          scanSource,
-          indexedMesh,
-        };
+            onProgress: (fraction) =>
+              setImportProgress({ name: file.name, fraction }),
+          }));
       }
-      pendingImportFit.current = entity.id;
+      if (!batch) pendingImportFit.current = entity.id;
       setImportProgress({ name: file.name, fraction: null });
       setMessage(`Rendering ${file.name}…`);
       try {
@@ -3345,7 +3379,11 @@ export function App() {
         throw error;
       }
     }
-    await viewport.current?.present(signal);
+    try {
+      await viewport.current?.present(signal);
+    } catch (error) {
+      if (!batch || !signal?.aborted) throw error;
+    }
     setMessage(
       `Opened ${file.name}${unit ? ` · ${SCAN_UNITS[unit].label} converted to mm` : ""}`,
     );
@@ -4435,6 +4473,8 @@ export function App() {
         normalsDisplay,
         floorGrid,
         gridSpacing,
+        ...viewport.current?.getGridState(),
+        automaticGrid,
         snapGrid,
         originVisible,
       },
@@ -4534,6 +4574,8 @@ export function App() {
         setFloorGrid(patch.floorGrid as boolean);
       if (patch.gridSpacing !== undefined)
         setGridSpacing(patch.gridSpacing as number);
+      if (patch.automaticGrid !== undefined)
+        setAutomaticGrid(patch.automaticGrid as boolean);
       if (patch.snapGrid !== undefined) setSnapGrid(patch.snapGrid as boolean);
       if (patch.originVisible !== undefined)
         setOriginVisible(patch.originVisible as boolean);
@@ -4764,14 +4806,14 @@ export function App() {
       {renameObject && (
         <RenameObjectDialog
           name={renameObject.name}
+          count={renameObject.ids.length}
           onClose={() => setRenameObject(null)}
-          onRename={(name) => {
-            commit(
-              entities.map((entity) =>
-                entity.id === renameObject.id ? { ...entity, name } : entity,
-              ),
-            );
-            setRenameObject(null);
+          onRename={async (name) => {
+            const result = await uiCommand("object_rename", {
+              entityIds: renameObject.ids,
+              name,
+            });
+            if (result.ok) setRenameObject(null);
           }}
         />
       )}
@@ -5287,6 +5329,8 @@ export function App() {
             onNormals={setNormalsDisplay}
             grid={floorGrid}
             spacing={gridSpacing}
+            automatic={automaticGrid}
+            onAutomatic={setAutomaticGrid}
             snap={snapGrid}
             hasSelection={!!selected}
             onFlat={setFlatShading}

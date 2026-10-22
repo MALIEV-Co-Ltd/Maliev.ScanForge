@@ -1,10 +1,12 @@
 import { useState } from "react";
 export function RenameObjectDialog({
   name,
+  count = 1,
   onRename,
   onClose,
 }: {
   name: string;
+  count?: number;
   onRename: (name: string) => void;
   onClose: () => void;
 }) {
@@ -28,7 +30,13 @@ export function RenameObjectDialog({
           if (value.trim()) onRename(value.trim());
         }}
       >
-        <h3>Rename object</h3>
+        <h3>{count > 1 ? `Rename ${count} objects` : "Rename object"}</h3>
+        {count > 1 && (
+          <p>
+            Names will be numbered: {value.trim() || "name"} - 1,{" "}
+            {value.trim() || "name"} - 2, …
+          </p>
+        )}
         <label className="field">
           Name
           <input

@@ -1,11 +1,58 @@
 import { expect, it, vi } from "vitest";
 import * as THREE from "three";
-import { createViewportGrid, renderSceneWithGrid } from "../src/viewport-grid";
+import {
+  createViewportGrid,
+  renderSceneWithGrid,
+  updateViewportGrid,
+} from "../src/viewport-grid";
 import {
   DEFAULT_CAMERA_NEAR,
   updateCameraClipping,
 } from "../src/camera-clipping";
 import { createOriginGeometry } from "../src/origin";
+
+it("keeps an offset long part and its 50% edge margins inside the unfaded grid", () => {
+  const grid = createViewportGrid(10);
+  const bounds = new THREE.Box3(
+    new THREE.Vector3(300, -20, 5),
+    new THREE.Vector3(1300, 20, 15),
+  );
+  try {
+    expect(updateViewportGrid(grid, 10, bounds)).toBe(true);
+    const fadeStart = grid.userData.halfExtent * 0.8;
+    // Padded XY footprint is [-200,1800] x [-40,40], still anchored to the origin.
+    expect(fadeStart).toBeGreaterThanOrEqual(Math.hypot(1800, 40));
+    expect(grid.position.toArray()).toEqual([0, 0, 0]);
+    expect(updateViewportGrid(grid, 10, bounds)).toBe(false);
+    expect(updateViewportGrid(grid, 5, bounds)).toBe(true);
+    expect(grid.userData.halfExtent * 0.8).toBeGreaterThanOrEqual(
+      Math.hypot(1800, 40),
+    );
+  } finally {
+    grid.geometry.dispose();
+    (grid.material as THREE.Material).dispose();
+  }
+});
+it("sizes rotated sketch floors in their local plane and bounds dense grid geometry", () => {
+  const grid = createViewportGrid(0.001);
+  grid.rotation.set(0, 0, 0);
+  const bounds = new THREE.Box3(
+    new THREE.Vector3(-1000, -5, -500),
+    new THREE.Vector3(1000, 5, 500),
+  );
+  try {
+    updateViewportGrid(grid, 0.001, bounds);
+    expect(grid.userData.halfExtent * 0.8).toBeGreaterThanOrEqual(
+      Math.hypot(2000, 1000),
+    );
+    expect(grid.userData.divisions).toBeLessThanOrEqual(2048);
+    updateViewportGrid(grid, 0.001, new THREE.Box3());
+    expect(grid.userData.halfExtent).toBe(0.01);
+  } finally {
+    grid.geometry.dispose();
+    (grid.material as THREE.Material).dispose();
+  }
+});
 
 for (const perspective of [false, true]) {
   it(`keeps origin axes in the model render range for tiny and distant parts (${perspective ? "perspective" : "orthographic"})`, () => {

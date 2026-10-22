@@ -1,5 +1,8 @@
 # ScanForge
 
+Continuing development on another computer? Start with the
+[handoff checkpoint](docs/CONTINUATION.md).
+
 An independently authored, source-available scan-to-CAD workbench that runs in a modern browser. TypeScript and React provide the interface, Three.js renders geometry, and OpenCascade.js processes exact CAD inside an isolated WebAssembly worker.
 
 **Status: experimental workbench.** Editable rational NURBS patches, compatible closed-patch solid reconstruction, dependency-driven parametric rebuilds, line/arc sketch constraints, classified segmentation, scan registration and nonmanifold sheet repair are implemented. Their limits are explicit: this is not a complete professional reconstruction suite or a verified reproduction of another application's algorithms. See [capabilities](docs/CAPABILITIES.md).
@@ -13,7 +16,7 @@ npm ci --ignore-scripts
 npm run dev
 ```
 
-Open the loopback URL printed by Vite. No application server, account, API key, proprietary activation, or external CAD service is required. Do not open `index.html` through `file://`: browsers require HTTP(S) for workers and offline installation.
+Open http://127.0.0.1:5173/ for live development. Saved source edits update through Vite's hot reload. Development and build preview both reserve port 5173: stop the existing server before switching modes. If the port is occupied, startup fails instead of silently choosing a different port. Use `npm run dev` while editing; `npm run preview` serves the last production build. Development clears this application's static offline cache so an earlier preview cannot mask current source changes. No application server, account, API key, proprietary activation, or external CAD service is required. Do not open `index.html` through `file://`: browsers require HTTP(S) for workers and offline installation.
 
 ## Connect and control through MCP
 

@@ -38,7 +38,7 @@ it.each(["scaleMesh", "mirrorMesh"] as const)(
   },
 );
 it.each(["reduceNoise"] as const)(
-  "%s gates comparison and acceptance on an available preview",
+  "%s allows comparison before preview and gates acceptance on a preview",
   (tool) => {
     const panel = (previewReady: boolean) =>
       renderToStaticMarkup(
@@ -56,7 +56,7 @@ it.each(["reduceNoise"] as const)(
       );
     expect(panel(false)).toContain(">Preview</button>");
     expect(panel(false)).not.toContain(">Accept</button>");
-    expect(panel(false)).toContain('type="checkbox" disabled=""/>Measure');
+    expect(panel(false)).toContain('type="checkbox"/>Measure');
     expect(panel(false)).toContain('aria-label="Preview"');
     expect(panel(true)).not.toContain('disabled="">Accept');
     expect(panel(true)).not.toContain('type="checkbox" disabled=""/>Measure');

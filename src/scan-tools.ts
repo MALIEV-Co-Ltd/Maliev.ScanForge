@@ -1,7 +1,7 @@
 import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
 import type { Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { analyzeMesh } from "./mesh-processing";
+import { weldScanSamples } from "./scan-resident-samples";
 import { compareReductionSurface } from "./scan-reduction-comparison";
 import { linearProgress } from "./reduction-report";
 import {
@@ -112,7 +112,7 @@ function reducePolygonsWithComparison(
     onProgress: progress(0, measure ? 0.8 : 1),
   });
   if (!measure) return result;
-  const original = analyzeMesh(positions, {
+  const original = weldScanSamples(positions, {
     ...options,
     tolerance: 1e-6,
     onProgress: progress(0.8, 0.85),

@@ -39,6 +39,82 @@ function grid(size: number) {
   return p;
 }
 
+function curvedPanel(width: number, height: number) {
+  const points = new Float32Array(width * height * 18);
+  let at = 0;
+  const point = (x: number, y: number) => {
+    const px = (x * 600) / width,
+      py = (y * 300) / height;
+    return [px, py, 15 * Math.sin(px / 100) * Math.cos(py / 80)];
+  };
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const a = point(x, y),
+        b = point(x + 1, y),
+        c = point(x + 1, y + 1),
+        d = point(x, y + 1);
+      points.set([...a, ...b, ...c, ...a, ...c, ...d], at);
+      at += 18;
+    }
+  return points;
+}
+
+it("does not protect healthy source fans disconnected only by a spatial cut", () => {
+  const source = curvedPanel(750, 768);
+  let visited = 0;
+  const result = reduceSpatialMesh(
+    source,
+    source.length / 18,
+    {},
+    (patch, _, topology) => {
+      expect(topology.nonManifoldVertices).toBe(0);
+      visited += patch.length / 9;
+      return patch;
+    },
+  );
+  expect(result.protectedPatches).toBe(0);
+  expect(visited).toBe(source.length / 9);
+}, 60_000);
+
+it("retains genuinely disconnected source fans instead of treating them as cuts", () => {
+  const source = new Float32Array([
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0,
+  ]);
+  const reduce = vi.fn();
+  const result = reduceSpatialMesh(source, 1, {}, reduce);
+  expect(result.protectedPatches).toBe(1);
+  expect(reduce).not.toHaveBeenCalled();
+  expect([...result.positions].sort()).toEqual([...source].sort());
+});
+
+it("healthy cut fans reach the requested global count", () => {
+  const source = curvedPanel(750, 768);
+  const result = reduceScanMesh(source, { mode: "percentage", percentage: 50 });
+  expect(result.positions.length / 9).toBeLessThanOrEqual(576_000);
+  expect(result.summary).not.toContain("unsafe patches");
+  const perimeter = (points: Float32Array) => {
+    const keys = new Set<string>();
+    for (let at = 0; at < points.length; at += 3)
+      if (
+        points[at] === 0 ||
+        points[at] === 600 ||
+        points[at + 1] === 0 ||
+        points[at + 1] === 300
+      )
+        keys.add(`${points[at]},${points[at + 1]},${points[at + 2]}`);
+    return [...keys].sort();
+  };
+  expect(perimeter(result.positions)).toEqual(perimeter(source));
+  const p = result.positions;
+  for (let at = 0; at < p.length; at += 9) {
+    const signedArea =
+      (p[at + 3] - p[at]) * (p[at + 7] - p[at + 1]) -
+      (p[at + 4] - p[at + 1]) * (p[at + 6] - p[at]);
+    if (!(signedArea > 0) || !p.subarray(at, at + 9).every(Number.isFinite))
+      throw new Error(`Invalid reduced facet ${at / 9}`);
+  }
+}, 60_000);
+
 it("reduces spatial patches without introducing seams, changing the perimeter or mutating input", () => {
   const source = grid(70),
     copy = source.slice();

@@ -85,12 +85,11 @@ function preparationTolerance(request: ProcessingRequest): number | undefined {
     return request.tolerance ?? 1e-6;
   // Keep transform-only and record-bounded reduction paths free of eager topology.
   if (
-    request.positions.length / 9 <= 500_000 &&
-    ((request.kind === "scanTools" &&
+    (request.kind === "scanTools" &&
       request.operation.kind === "reduceNoise") ||
-      (request.kind === "scanPreview" &&
-        request.phase === "create" &&
-        request.operation.kind === "reduceNoise"))
+    (request.kind === "scanPreview" &&
+      request.phase === "create" &&
+      request.operation.kind === "reduceNoise")
   )
     return 1e-6;
 }

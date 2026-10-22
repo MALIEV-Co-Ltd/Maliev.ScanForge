@@ -1,4 +1,23 @@
 import { describe, expect, it } from "vitest";
+it("F2 renames selected objects without intercepting typing, dialogs or busy tools", () => {
+  const context: ShortcutContext = {
+    mode: "main",
+    allowExtensions: true,
+    availableActions: new Set(["rename-objects"]),
+  };
+  expect(resolveKeyboardShortcut({ key: "F2" }, context)).toEqual({
+    id: "rename-objects",
+  });
+  for (const blocked of [
+    { textEditing: true },
+    { modalOpen: true },
+    { busy: true },
+    { availableActions: new Set<ShortcutActionId>() },
+  ])
+    expect(
+      resolveKeyboardShortcut({ key: "F2" }, { ...context, ...blocked }),
+    ).toBeNull();
+});
 import {
   keyboardTargetContext,
   hasVisibleKeyboardModal,

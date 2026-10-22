@@ -4,3 +4,5 @@ public/kernel
 .resources
 package-lock.json
 LICENSE
+# Historical validation sources retain their recorded byte hashes.
+tools/continuation/reference

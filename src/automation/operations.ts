@@ -4,6 +4,7 @@ import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
+import { renameObjects } from "../object-renaming";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
 import { createGlobalAlignmentOperations } from "./global-alignment-operations";
@@ -17,7 +18,13 @@ import {
 } from "../project-backup";
 import { DEFAULT_PART_COLOR, DEFAULT_FREEFORM_COLOR } from "../appearance";
 import { CadClient } from "../cad/client";
-import { importBatch, validateImportBatch } from "../import-batch";
+import { prepareImportedScan } from "../imported-scan";
+import { beginWorkingJob } from "../working-job-status";
+import {
+  importBatch,
+  importConcurrency,
+  validateImportBatch,
+} from "../import-batch";
 import type { Revision } from "../history";
 import { entityFeatureState, bindFeatureInputs } from "../parametric-entities";
 import {
@@ -46,7 +53,6 @@ import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
-import { importScan } from "../import-client";
 import {
   retainIndexedMesh,
   transformIndexedMesh,
@@ -332,6 +338,140 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       write();
     }
   };
+  async function publishImportedEntity(
+    entity: Entity,
+    a: { replace?: boolean },
+    c: CommandContext,
+    fit = true,
+  ) {
+    const name = entity.name;
+    try {
+      if (a.replace) {
+        const project: Project = {
+          format: "maliev-scanforge",
+          version: 1,
+          name,
+          units: "mm",
+          entities: [entity],
+        };
+        if (c.mutate) c.mutate(() => host.replace(project));
+        else {
+          c.check();
+          host.replace(project);
+        }
+      } else commit(c, [...host.snapshot().entities, entity], "Import object");
+    } catch (error) {
+      if (entity.kernelId) await host.cad().release([entity.kernelId]);
+      throw error;
+    }
+    const show = () => {
+      host.select(entity.id);
+      if (fit) host.view("fit");
+    };
+    if (c.mutate) c.mutate(show);
+    else show();
+    c.progress(0.98, "Rendering imported object");
+    try {
+      await host.present?.(c.signal);
+    } catch (error) {
+      if (!c.signal.aborted) throw error;
+    }
+    return entity.kind === "pointcloud"
+      ? { entityId: entity.id, points: entity.positions.length / 3 }
+      : { entityId: entity.id, triangles: entity.positions.length / 9 };
+  }
+  async function importObject(
+    a: Parameters<Handler>[0],
+    c: CommandContext,
+    fit = true,
+  ) {
+    const s = host.snapshot(),
+      blob = c.artifactBlob(a.artifactId),
+      name = (blob as File).name ?? a.name ?? "import.stl",
+      extension = name.split(".").pop()?.toLowerCase();
+    if (extension === "scanforge" || extension === "json") {
+      if (!a.replace) throw new Error("Project import requires replace:true.");
+      const session = await decodeProjectFile(blob, c.signal),
+        project = session.project,
+        cad = new CadClient();
+      let transferred = false;
+      try {
+        const cache = new Map<string, KernelMesh>();
+        const restore = async (entities: Entity[]) => {
+          const restored: Entity[] = [];
+          for (const e of entities) {
+            abort(c.signal);
+            let output: KernelMesh | undefined;
+            if (e.brep) {
+              output = cache.get(e.brep);
+              if (!output) {
+                output = await cad.importFile(
+                  new TextEncoder().encode(e.brep),
+                  "brep",
+                );
+                cache.set(e.brep, output);
+              }
+            }
+            restored.push({ ...e, ...output });
+          }
+          return restored;
+        };
+        const restored = await restore(project.entities);
+        const history: Revision[] = [],
+          future: Revision[] = [];
+        for (const revision of session.history)
+          history.push({
+            ...revision,
+            entities: await restore(revision.entities),
+          });
+        for (const revision of session.future)
+          future.push({
+            ...revision,
+            entities: await restore(revision.entities),
+          });
+        c.check();
+        host.replace({ ...project, entities: restored }, cad, {
+          history,
+          future,
+          projectId: a.recoveryProjectId ?? session.projectId,
+        });
+        transferred = true;
+        return { objects: restored.length };
+      } finally {
+        if (!transferred) cad.dispose();
+      }
+    }
+    let entity: Entity;
+    if (["step", "stp", "iges", "igs", "brep"].includes(extension ?? "")) {
+      const cad = host.cad(),
+        mesh = await cad.importFile(
+          new Uint8Array(await blob.arrayBuffer()),
+          extension as "step",
+        );
+      entity = {
+        ...mesh,
+        id: id(),
+        name,
+        kind: "cad",
+        visible: true,
+        color: DEFAULT_PART_COLOR,
+        opacity: 1,
+      };
+      try {
+        c.check();
+      } catch (error) {
+        await cad.release([mesh.kernelId]);
+        throw error;
+      }
+    } else {
+      entity = await prepareImportedScan(new File([blob], name), {
+        unit: a.unit ?? "mm",
+        signal: c.signal,
+        onProgress: (fraction) => c.progress(fraction, "Importing scan"),
+      });
+    }
+    return publishImportedEntity(entity, a, c, fit);
+  }
   const operations: Record<string, Handler> = {
     scan_preview: createScanPreviewOperation(host),
     ...createAlignmentOperations(host),
@@ -449,6 +589,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         objects: next
           .filter((entity) => targets.has(entity.id))
           .map((entity) => ({ entityId: entity.id, visible: entity.visible })),
+      };
+    },
+    object_rename: (a, c) => {
+      const s = host.snapshot();
+      const ids =
+        a.entityIds ?? s.selectedIds ?? (s.selectedId ? [s.selectedId] : []);
+      const next = renameObjects(s.entities, ids, a.name);
+      commit(c, next, ids.length > 1 ? "Rename objects" : "Rename object");
+      const targets = new Set(ids);
+      return {
+        objects: next
+          .filter((e) => targets.has(e.id))
+          .map((e) => ({ entityId: e.id, name: e.name })),
       };
     },
     object_update: (a, c) => {
@@ -1232,146 +1385,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return { entityId: e.id };
     },
     surface_fit: createSurfaceFitOperation(host),
-    project_import: async (a, c) => {
-      const s = host.snapshot(),
-        blob = c.artifactBlob(a.artifactId),
-        name = (blob as File).name ?? a.name ?? "import.stl",
-        extension = name.split(".").pop()?.toLowerCase();
-      if (extension === "scanforge" || extension === "json") {
-        if (!a.replace)
-          throw new Error("Project import requires replace:true.");
-        const session = await decodeProjectFile(blob, c.signal),
-          project = session.project,
-          cad = new CadClient();
-        let transferred = false;
-        try {
-          const cache = new Map<string, KernelMesh>();
-          const restore = async (entities: Entity[]) => {
-            const restored: Entity[] = [];
-            for (const e of entities) {
-              abort(c.signal);
-              let output: KernelMesh | undefined;
-              if (e.brep) {
-                output = cache.get(e.brep);
-                if (!output) {
-                  output = await cad.importFile(
-                    new TextEncoder().encode(e.brep),
-                    "brep",
-                  );
-                  cache.set(e.brep, output);
-                }
-              }
-              restored.push({ ...e, ...output });
-            }
-            return restored;
-          };
-          const restored = await restore(project.entities);
-          const history: Revision[] = [],
-            future: Revision[] = [];
-          for (const revision of session.history)
-            history.push({
-              ...revision,
-              entities: await restore(revision.entities),
-            });
-          for (const revision of session.future)
-            future.push({
-              ...revision,
-              entities: await restore(revision.entities),
-            });
-          c.check();
-          host.replace({ ...project, entities: restored }, cad, {
-            history,
-            future,
-            projectId: a.recoveryProjectId ?? session.projectId,
-          });
-          transferred = true;
-          return { objects: restored.length };
-        } finally {
-          if (!transferred) cad.dispose();
-        }
-      }
-      let entity: Entity;
-      if (["step", "stp", "iges", "igs", "brep"].includes(extension ?? "")) {
-        const cad = host.cad(),
-          mesh = await cad.importFile(
-            new Uint8Array(await blob.arrayBuffer()),
-            extension as "step",
-          );
-        entity = {
-          ...mesh,
-          id: id(),
-          name,
-          kind: "cad",
-          visible: true,
-          color: DEFAULT_PART_COLOR,
-          opacity: 1,
-        };
-        try {
-          c.check();
-        } catch (error) {
-          await cad.release([mesh.kernelId]);
-          throw error;
-        }
-      } else {
-        let pointNormals: Entity["normals"];
-        let indexedMesh: Entity["indexedMesh"];
-        const positions = await importScan(new File([blob], name), {
-          onMeshNormals: (normals) => {
-            pointNormals = normals;
-          },
-          onIndexedMesh: (mesh) => {
-            indexedMesh = mesh;
-          },
-          unit: a.unit ?? "mm",
-          signal: c.signal,
-          onProgress: (f) => c.progress(f, "Importing scan"),
-          onPointCloud: (cloud) => {
-            pointNormals = cloud.normals;
-          },
-        });
-        entity = {
-          id: id(),
-          name,
-          kind: extension === "asc" ? "pointcloud" : "mesh",
-          positions,
-          normals: pointNormals,
-          indexedMesh,
-          visible: true,
-          color: DEFAULT_PART_COLOR,
-          opacity: 1,
-        };
-      }
-      try {
-        if (a.replace) {
-          const project: Project = {
-            format: "maliev-scanforge",
-            version: 1,
-            name,
-            units: "mm",
-            entities: [entity],
-          };
-          if (c.mutate) c.mutate(() => host.replace(project));
-          else {
-            c.check();
-            host.replace(project);
-          }
-        } else commit(c, [...s.entities, entity], "Import object");
-      } catch (error) {
-        if (entity.kernelId) await host.cad().release([entity.kernelId]);
-        throw error;
-      }
-      const show = () => {
-        host.select(entity.id);
-        host.view("fit");
-      };
-      if (c.mutate) c.mutate(show);
-      else show();
-      c.progress(0.98, "Rendering imported object");
-      await host.present?.(c.signal);
-      return entity.kind === "pointcloud"
-        ? { entityId: entity.id, points: entity.positions.length / 3 }
-        : { entityId: entity.id, triangles: entity.positions.length / 9 };
-    },
+    project_import: (a, c) => importObject(a, c),
     project_import_batch: async (a, c) => {
       const names = a.artifactIds.map((artifactId: string) => {
         const blob = c.artifactBlob(artifactId);
@@ -1380,24 +1394,63 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       validateImportBatch(names);
       if (names.some((name: string) => /\.(scanforge|json)$/i.test(name)))
         throw new Error("Open project files separately from scan batches.");
-      const result = await importBatch(
-        a.artifactIds as string[],
-        async (artifactId, index) => {
-          c.check();
-          return await operations.project_import(
-            { artifactId, unit: a.unit },
-            {
-              ...c,
-              progress: (fraction, stage) =>
-                c.progress(
-                  (index + fraction) / a.artifactIds.length,
-                  `${index + 1}/${a.artifactIds.length} · ${names[index]} · ${stage}`,
-                ),
-            },
-          );
-        },
-        c.signal,
+      const files = (a.artifactIds as string[]).map(
+        (artifactId, index) =>
+          new File([c.artifactBlob(artifactId)], names[index]),
       );
+      const status = beginWorkingJob("Importing files");
+      let result;
+      try {
+        result = await importBatch(
+          files,
+          async (file, _index, context) => {
+            c.check();
+            return /\.(stl|obj|ply|asc)$/i.test(file.name)
+              ? prepareImportedScan(file, {
+                  unit: a.unit ?? "mm",
+                  signal: context.signal,
+                  onProgress: (fraction) =>
+                    context.progress(fraction, "Importing"),
+                })
+              : undefined;
+          },
+          c.signal,
+          {
+            concurrency: importConcurrency(files),
+            names,
+            onProgress: (details) => {
+              const fraction =
+                details.files.reduce((sum, file) => sum + file.fraction, 0) /
+                files.length;
+              c.progress(fraction, "Importing files", details);
+              status.progress(fraction, "Importing files", details);
+            },
+            commit: async (entity, _file, index) =>
+              entity
+                ? publishImportedEntity(
+                    entity,
+                    {},
+                    { ...c, progress: () => {} },
+                    false,
+                  )
+                : importObject(
+                    { artifactId: a.artifactIds[index], unit: a.unit },
+                    { ...c, progress: () => {} },
+                    false,
+                  ),
+          },
+        );
+        if (result.completed.length) {
+          const fit = () => host.view("fit");
+          if (c.mutate) c.mutate(fit);
+          else {
+            c.check();
+            fit();
+          }
+        }
+      } finally {
+        status.finish();
+      }
       if (result.cancelled)
         throw new DOMException(
           "Import batch cancelled; completed objects retained.",

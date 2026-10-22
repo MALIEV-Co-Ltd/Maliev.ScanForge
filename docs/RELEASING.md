@@ -5,9 +5,11 @@ compiled CAD binaries. ScanForge will become a frontend service of the
 Legacy.Maliev.* site; deployment integration is separate work.
 
 Every push to `main` runs the existing build, unit suite, native CAD smoke suite
-and formatting checks. Only a successful run on the current main SHA can publish
-a version. Release processing is serialized; rerunning the same SHA reuses its
-tag. Pull requests, failed runs and superseded builds cannot publish.
+and formatting checks. Publishing requires an explicit manual dispatch of
+**Release validated source** on `main`, after validation of that exact SHA passes.
+Pushing a checkpoint does not publish a release. Release processing is serialized;
+rerunning the same SHA reuses its tag. Pull requests, failed runs and superseded
+builds cannot publish.
 
 ## Version decisions
 

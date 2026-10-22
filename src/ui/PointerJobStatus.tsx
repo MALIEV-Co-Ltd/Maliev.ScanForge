@@ -1,3 +1,4 @@
+import type { ImportBatchProgress } from "../import-batch";
 import { useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./pointer-job-status.css";
@@ -68,11 +69,13 @@ export function positionJobStatus(
 /** Noninteractive, cursor-following feedback for a running operation. */
 export function PointerJobStatus({
   message,
-  progressDetails,
+  progressDetails: details,
 }: {
   message: string;
-  progressDetails?: HoleFillProgress;
+  progressDetails?: HoleFillProgress | ImportBatchProgress;
 }) {
+  const progressDetails = details?.kind === "holeFill" ? details : undefined;
+  const imports = details?.kind === "importBatch" ? details : undefined;
   const label = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     const element = label.current;
@@ -144,40 +147,77 @@ export function PointerJobStatus({
   const content = (
     <span
       ref={label}
-      className={`pointer-job-status${progressDetails ? " pointer-job-batch" : ""}`}
+      className={`pointer-job-status${details ? " pointer-job-batch" : ""}`}
       role="status"
       aria-live="polite"
     >
-      <>
-        <span className="pointer-job-stage">{stage}</span>
-        {progressDetails && (
-          <span className="pointer-job-counts">
-            <span>{holeFillCounts(progressDetails)}</span>
-            <span>{percent}%</span>
-          </span>
-        )}
-        <span
-          className="pointer-job-track"
-          role="progressbar"
-          aria-label={stage}
-          aria-valuemin={0}
-          aria-valuemax={progressDetails?.total || 100}
-          aria-valuenow={progressDetails?.processed ?? percent}
-          aria-valuetext={
-            progressDetails
-              ? `${holeFillCounts(progressDetails)}; ${holeFillOutcomes(progressDetails)}`
-              : undefined
-          }
-          data-indeterminate={percent === undefined ? "true" : undefined}
-        >
-          <span style={{ width: `${percent ?? 30}%` }} />
-        </span>
-        {progressDetails && (
+      {imports ? (
+        <>
+          <span className="pointer-job-stage">Importing files</span>
           <span className="pointer-job-outcomes">
-            {holeFillOutcomes(progressDetails)}
+            {imports.files.filter((file) => file.status === "complete").length}/
+            {imports.files.length} complete &middot;{" "}
+            {imports.files.filter((file) => file.status === "queued").length}{" "}
+            queued &middot;{" "}
+            {imports.files.filter((file) => file.status === "failed").length}{" "}
+            failed
           </span>
-        )}
-      </>
+          {imports.files
+            .filter(
+              (file) =>
+                file.status === "importing" || file.status === "rendering",
+            )
+            .map((file) => (
+              <span key={file.index} className="pointer-import-file">
+                <span className="pointer-job-stage">{file.name}</span>
+                <span className="pointer-job-outcomes">
+                  {file.stage} &middot; {Math.round(file.fraction * 100)}%
+                </span>
+                <span
+                  className="pointer-job-track"
+                  role="progressbar"
+                  aria-label={file.name}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(file.fraction * 100)}
+                >
+                  <span style={{ width: `${file.fraction * 100}%` }} />
+                </span>
+              </span>
+            ))}
+        </>
+      ) : (
+        <>
+          <span className="pointer-job-stage">{stage}</span>
+          {progressDetails && (
+            <span className="pointer-job-counts">
+              <span>{holeFillCounts(progressDetails)}</span>
+              <span>{percent}%</span>
+            </span>
+          )}
+          <span
+            className="pointer-job-track"
+            role="progressbar"
+            aria-label={stage}
+            aria-valuemin={0}
+            aria-valuemax={progressDetails?.total || 100}
+            aria-valuenow={progressDetails?.processed ?? percent}
+            aria-valuetext={
+              progressDetails
+                ? `${holeFillCounts(progressDetails)}; ${holeFillOutcomes(progressDetails)}`
+                : undefined
+            }
+            data-indeterminate={percent === undefined ? "true" : undefined}
+          >
+            <span style={{ width: `${percent ?? 30}%` }} />
+          </span>
+          {progressDetails && (
+            <span className="pointer-job-outcomes">
+              {holeFillOutcomes(progressDetails)}
+            </span>
+          )}
+        </>
+      )}
     </span>
   );
   return typeof document === "undefined"

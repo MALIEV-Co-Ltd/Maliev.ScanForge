@@ -1,0 +1,38 @@
+.viewport-scale {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text, #e8e8e8);
+  padding: 5px 7px;
+  border-radius: 3px;
+  background: var(--surface, #252525);
+  font:
+    10px/1.2 system-ui,
+    sans-serif;
+  pointer-events: none;
+  z-index: 5;
+}
+.viewport-scale[hidden] {
+  display: none;
+}
+.viewport-scale i {
+  display: block;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 0 2px;
+  background: linear-gradient(currentColor, currentColor) center / 100% 2px
+    no-repeat;
+}
+.viewport-scale span:last-child {
+  color: var(--muted, #aaa);
+}
+@media (max-width: 600px) {
+  .viewport-scale {
+    bottom: 60px;
+    right: 10px;
+  }
+}

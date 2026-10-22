@@ -77,3 +77,9 @@
     transition: none;
   }
 }
+
+.pointer-import-file {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}

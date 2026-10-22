@@ -61,10 +61,6 @@ function progress(o: Options, f: number, s: string) {
   o.onProgress?.(f, s);
 }
 function topology(p: Positions, o: Options, tolerance = 1e-6) {
-  if (p.length / 9 > 500_000)
-    throw new Error(
-      "This operation supports at most 500,000 input triangles; split the mesh first.",
-    );
   const t = analyzeMesh(p, { ...o, tolerance });
   if (
     t.degenerateTriangles ||

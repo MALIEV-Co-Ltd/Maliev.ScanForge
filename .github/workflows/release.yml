@@ -1,9 +1,6 @@
 name: Release validated source
 on:
-  workflow_run:
-    workflows: [Validate browser CAD]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
@@ -12,17 +9,16 @@ concurrency:
 jobs:
   release:
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_repository.full_name == github.repository
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
+      actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -30,10 +26,18 @@ jobs:
       - name: Skip superseded builds
         id: head
         env:
-          VALIDATED_HEAD: ${{ github.event.workflow_run.head_sha }}
+          VALIDATED_HEAD: ${{ github.sha }}
         run: |
           current=$(git ls-remote origin refs/heads/main | cut -f1)
           if [ "$current" = "$VALIDATED_HEAD" ]; then echo "current=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Require successful validation of this exact commit
+        if: steps.head.outputs.current == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATED_HEAD: ${{ github.sha }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$VALIDATED_HEAD&event=push&status=success" \
+            --jq '.workflow_runs | any(.head_branch == "main" and .conclusion == "success")' | grep -qx true
       - name: Plan version and cumulative notes
         if: steps.head.outputs.current == 'true'
         run: node scripts/release.mjs plan

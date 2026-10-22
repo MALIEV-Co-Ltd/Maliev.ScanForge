@@ -1,0 +1,172 @@
+/* Warm accents for scan controls; authoring icons retain their operation colors. */
+:root {
+  --tool-icon-ivory: #dbd5c9;
+  --tool-icon-body: #aaa293;
+  --tool-icon-shadow: #79766e;
+  --tool-icon-outline: #625b4f;
+  --tool-icon-brass: #a57429;
+  --tool-icon-brass-light: #e4b55e;
+  --tool-icon-brass-shadow: #8b692d;
+  --tool-icon-danger: #b66051;
+  --tool-icon-cutout: #292721;
+  --tool-icon-hover: #eee7db;
+  --tool-icon-selected: #f5e8cc;
+}
+
+:root[data-theme="dark"] {
+  --tool-icon-outline: #e1d9c8;
+  --tool-icon-brass: #e4b55e;
+  --tool-icon-brass-light: #f2d69d;
+  --tool-icon-danger: #ce7465;
+  --tool-icon-hover: #38342d;
+  --tool-icon-selected: #443b2c;
+}
+
+:root[data-theme]
+  .workbench
+  :is(
+    .ribbon-cad-icon,
+    .scan-feature-icon,
+    [data-viewport-icon],
+    [data-icon="spacemouse"]
+  ) {
+  --diagram-edge: var(--tool-icon-outline);
+  --scan-action: var(--tool-icon-brass);
+  --scan-reference: var(--tool-icon-outline);
+  --scan-edge: var(--tool-icon-outline);
+  --icon-detail: var(--tool-icon-outline);
+}
+
+/* Keep scan and viewport artwork warm without overriding authoring palettes. */
+:is(.scan-feature-icon, [data-viewport-icon], [data-icon="spacemouse"]) {
+  :is(
+    [fill="#9aaab7"],
+    [fill="#768b9b"],
+    [fill="#a6a6a6"],
+    [fill="#aaa"],
+    [fill="#c4c4c4"],
+    [fill="#ccc"],
+    [fill="#60b6ad"],
+    [fill="#aa83cf"],
+    [fill="#65c4d5"],
+    [fill="#7bd7e8"],
+    [fill="#87d3e8"],
+    [fill="#bba1d1"]
+  ) {
+    fill: var(--tool-icon-body);
+  }
+  :is(
+    [fill="#d5dee4"],
+    [fill="#cbd5dd"],
+    [fill="#d5d5d5"],
+    [fill="#dedede"],
+    [fill="#ddd"],
+    [fill="#eee"],
+    [fill="#fff"],
+    [fill="#dbc5ef"],
+    [fill="#bce4df"],
+    [fill="#eef7fa"]
+  ) {
+    fill: var(--tool-icon-ivory);
+  }
+  :is(
+    [fill="#647785"],
+    [fill="#344653"],
+    [fill="#406879"],
+    [fill="#3e8f86"],
+    [fill="#775493"],
+    [fill="#777"],
+    [fill="#777777"],
+    [fill="#888"],
+    [fill="#444"]
+  ) {
+    fill: var(--tool-icon-shadow);
+  }
+  :is([fill="#edbe48"], [fill="#f4c35a"], [fill="#8bbb80"], [fill="#9adeb0"]) {
+    fill: var(--tool-icon-brass);
+  }
+  [fill="#ffe294"] {
+    fill: var(--tool-icon-brass-light);
+  }
+  [fill="#202326"] {
+    fill: var(--tool-icon-cutout);
+  }
+  :is([fill="#b98628"], [fill="#56884c"]) {
+    fill: var(--tool-icon-brass-shadow);
+  }
+  :is([fill="#e37766"], [fill="#e78376"], [fill="#d65e50"]) {
+    fill: var(--tool-icon-danger);
+  }
+  :is(
+    [stroke="#d6e4ed"],
+    [stroke="#d4f8ff"],
+    [stroke="#e1eaf0"],
+    [stroke="#e8f0f5"],
+    [stroke="#eaf7ff"],
+    [stroke="#d8f2f5"],
+    [stroke="#86c8ff"],
+    [stroke="#8ed5e5"],
+    [stroke="#344653"],
+    [stroke="#285c57"],
+    [stroke="#4c365f"],
+    [stroke="#494949"],
+    [stroke="#ececec"],
+    [stroke="#eee"],
+    [stroke="#fff"]
+  ) {
+    stroke: var(--tool-icon-outline);
+  }
+  :is(
+    [stroke="#edbe48"],
+    [stroke="#f4c35a"],
+    [stroke="#8bbb80"],
+    [stroke="#9adeb0"],
+    [stroke="#705817"],
+    [stroke="#56884c"],
+    [stroke="#bba1d1"],
+    [stroke="#87d3e8"],
+    [stroke="#60b6ad"],
+    [stroke="#aa83cf"]
+  ) {
+    stroke: var(--tool-icon-brass);
+  }
+  :is([stroke="#e37766"], [stroke="#ff837b"], [stroke="#f48d81"]) {
+    stroke: var(--tool-icon-danger);
+  }
+}
+
+.workbench
+  :is(
+    .ribbon-button,
+    .viewport-tools button,
+    .scan-tool-row button,
+    .scan-quick-tools button
+  ):hover:not(:disabled) {
+  background: var(--tool-icon-hover);
+}
+.workbench
+  :is(
+    .viewport-tools button,
+    .scan-tool-row button,
+    .scan-quick-tools button
+  )[aria-pressed="true"] {
+  background: var(--tool-icon-selected);
+  border-color: var(--tool-icon-brass);
+  box-shadow: inset 0 0 0 1px var(--tool-icon-brass);
+}
+
+/* Neutral meshes and solid faces must not inherit a blue or brass material tint. */
+.ribbon-cad-icon {
+  :is([fill="#9aaab7"], [fill="#a6a6a6"]) {
+    fill: #a6a6a6;
+  }
+  :is([fill="#d5dee4"], [fill="#cbd5dd"]) {
+    fill: #dedede;
+  }
+  [fill="#647785"] {
+    fill: #777777;
+  }
+  :is([stroke="#e1eaf0"], [stroke="#d8f2f5"]) {
+    stroke: var(--tool-icon-outline);
+  }
+}

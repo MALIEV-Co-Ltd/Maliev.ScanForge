@@ -1,0 +1,131 @@
+{
+  "status": "REFERENCE_SOURCES_REQUIRE_FRESH_MACHINE_BINDING",
+  "sourceRoot": "B:/codex/artifacts/native-scan-analysis/rea-inventory-fix",
+  "files": [
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/borrowed-geometry-reader.mjs",
+      "bytes": 4957,
+      "sha256": "99807d89dd0c767c406181cc766f9fd8da9144a5501618130695cecf46406aa2"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/browser-borrowed-observer.mjs",
+      "bytes": 10543,
+      "sha256": "b49316dd80bef3094871ddbe211b5239cb6f53ab2a6293bab42a73e70df4955d"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/gui-import.fixed.fixture.mjs",
+      "bytes": 2806,
+      "sha256": "b4ff9f02cdcadf1dabfaea76abfaa4d4a0af58325fcf120543e699a8f546f12d"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/hook-parent.preview.ts",
+      "bytes": 6086,
+      "sha256": "a034d3753e66a61d4f1b45f8b4428f6b917df4f80a71dbb91cc82300e2fe3d8b"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/hook-postimage.preview.ts",
+      "bytes": 6299,
+      "sha256": "67f518b9d1cdb1b5c50835be026316011714adf98de176c81f3e03e4e2af835f"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/import-attribution.fixture.mjs",
+      "bytes": 3815,
+      "sha256": "7704cf605ac002ba12a2b149386e0959492368f3510f82c1cde72dc0bae56f40"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/import-attribution.mjs",
+      "bytes": 3192,
+      "sha256": "6143ad99907159eef17d8facc514563fd07dd02ba967853189855c2a0a411417"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/instrument-current-workspace.mjs",
+      "bytes": 1260,
+      "sha256": "b708e09f33c50e429d5a3cbe16e8b3cb83ce10ec30413376323ce8641ce1c603"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/original-three-ply-public.current.mjs",
+      "bytes": 33404,
+      "sha256": "5c5e1b15698f4b19a5b8528cdf6c9d785a56bd00633ba6a95e4f94894c51cbc4"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/probe-contract.fixture.mjs",
+      "bytes": 5746,
+      "sha256": "a9f0082a1e5d43c2aab46e2968da1f90bb38d7068f2c52e489be550ac490f43e"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/public-gui-ply-input.mjs",
+      "bytes": 2187,
+      "sha256": "bede5ff6a23e751235b07fa10dd835c27c55f3d0af612a75e9ce863209e6f414"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/public-ply-input.mjs",
+      "bytes": 2824,
+      "sha256": "4e73a3c2977906cb5c030987beeb8fb64230fc9d0b5adea36afcd7e142e0a8d9"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/run-original-three-ply-cli.mjs",
+      "bytes": 9066,
+      "sha256": "9aa63ac57f8f967dcf4ee46160f51ad68dc9c4117d6af771404a3bda1a6e412d"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r6-import-diagnostic-r2-20261021/capture/syntax.current.mjs",
+      "bytes": 935,
+      "sha256": "3d0fd275d44ecfe0fb57cf3042153c55124c9250ba1616932702684116cc8541"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r5-native-bindings-prepared-20261021/finalize-runtime-binding-r5.py",
+      "bytes": 19340,
+      "sha256": "6dcd568a7823778a8fbf33c86399c163ce83a0ea6bc30c474e8f0d71010f38c0"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r2-gui-import-proposed-20261020/runtime-binding-r1/bind-native.py",
+      "bytes": 16052,
+      "sha256": "721c252d0d190b1a58f14baeda811fcf488d61e11061e7206e430ff90a8ba4e8"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r2-gui-import-proposed-20261020/runtime-binding-r1/bind-public.mjs",
+      "bytes": 6020,
+      "sha256": "025e78bbd8f65fa689f24873dede30c2450d770daf7a53b59ff279fd3582cb76"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r2-gui-import-proposed-20261020/runtime-binding-r1/contract_fixture.py",
+      "bytes": 4051,
+      "sha256": "370e458adf8f55ad5b781a4ca9291860020eaa19777641400e7c8eee10270b38"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r2-gui-import-proposed-20261020/runtime-binding-r1/launcher_derivations.py",
+      "bytes": 4566,
+      "sha256": "8548b12d7010e120c10613ddcb992a2fef8b901817bed802525f1ea3f5b660ae"
+    },
+    {
+      "path": "reference/alignment-original-three-ply-public-r2-gui-import-proposed-20261020/runtime-binding-r1/standalone.mjs",
+      "bytes": 1499,
+      "sha256": "7cb03ec60e3dd4171da0785f96fe21f6a238f5f50d50c43d51676d282dcf0d2a"
+    },
+    {
+      "path": "reference/mvp-owned-node-validation.v4.py",
+      "bytes": 24358,
+      "sha256": "fd3b5bc4d97a14716f59585ee4ab057bdf1372e20e43b0148e16b53f803552d7"
+    },
+    {
+      "path": "reference/mvp-owned-node-validation.r12-profile-proposal.r4.py",
+      "bytes": 27103,
+      "sha256": "a1d912b03afde64d1691910af6d83340f35d47f563b2851aee99b297434404a1"
+    },
+    {
+      "path": "reference/mvp-owned-privatebytes-profile.r12-proposal.py",
+      "bytes": 5880,
+      "sha256": "a65c25bbfc99acb9fcfcd93171b5d6b6de4234fd1c53b4b6a9a4775029225942"
+    },
+    {
+      "path": "reference/alignment-import-memory-attribution-r1-20261021/derive-r6.r2.py",
+      "bytes": 9429,
+      "sha256": "5de335a26d463cc6094e210faaf0a508f56672d597135d5ec108cacf75698242"
+    },
+    {
+      "path": "reference/asc-browser-real-import-r1-20261021/point-cloud-browser-smoke.candidate.r3.mjs",
+      "bytes": 14094,
+      "sha256": "0dc98e97e135c0f05df7924ad1bce78211e43925531327f04a8961fc82f04a16"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import type { ImportBatchProgress } from "../import-batch";
 import {
   validateScanPreviewOperation,
   releaseScanPreviewOperation,
@@ -152,7 +153,11 @@ export interface CommandContext {
   /** API-owned operation identity; retained previews may outlive the job receipt. */
   jobId?: string;
   signal: AbortSignal;
-  progress(fraction: number, stage: string, details?: HoleFillProgress): void;
+  progress(
+    fraction: number,
+    stage: string,
+    details?: HoleFillProgress | ImportBatchProgress,
+  ): void;
   check(): void;
   /** Check the revision, apply an owned synchronous write, then track its revision. */
   mutate?(write: () => void): void;
@@ -296,7 +301,7 @@ interface Job {
   status: "running" | "succeeded" | "failed" | "cancelled";
   progress: number;
   stage: string;
-  progressDetails?: HoleFillProgress;
+  progressDetails?: HoleFillProgress | ImportBatchProgress;
   result?: unknown;
   error?: { code: string; message: string };
   controller: AbortController;

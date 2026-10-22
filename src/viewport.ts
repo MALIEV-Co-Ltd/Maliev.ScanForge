@@ -24,6 +24,8 @@ import {
   interactiveDragForCamera,
   type InteractivePointerDrag,
 } from "./interactive-camera";
+import { modelGridSpacing, viewportScale } from "./viewport-scale";
+import { ViewportScaleOverlay } from "./viewport-scale-overlay";
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
 import { SelectionProcessingHighlight } from "./selection-processing-highlight";
@@ -73,7 +75,11 @@ import {
   EMPTY_SCENE_EXTENT,
   updateCameraClipping,
 } from "./camera-clipping";
-import { createViewportGrid, renderSceneWithGrid } from "./viewport-grid";
+import {
+  createViewportGrid,
+  renderSceneWithGrid,
+  updateViewportGrid,
+} from "./viewport-grid";
 import type { Entity, Positions, Vec3 } from "./types";
 import type { Motion6D } from "./spacemouse";
 import { createSpaceMouseCameraClient } from "./spacemouse-camera-client";
@@ -302,6 +308,8 @@ export class Viewport {
   private pickTargetId: string | null = null;
   private grid: THREE.GridHelper;
   private gridSpacing = 10;
+  private automaticGrid = true;
+  private scaleOverlay?: ViewportScaleOverlay;
   private snapGrid = false;
   private flatShading = true;
   private theme: "light" | "dark" = "dark";
@@ -465,6 +473,7 @@ export class Viewport {
     this.scene.add(fill);
     this.grid = createViewportGrid(this.gridSpacing);
     this.gridScene.add(this.grid);
+    this.scaleOverlay = new ViewportScaleOverlay(container);
     this.scene.add(
       this.section,
       this.measurement,
@@ -542,7 +551,8 @@ export class Viewport {
     const major = new THREE.Color(theme === "dark" ? "#454545" : "#c3c8ce");
     const minor = new THREE.Color(theme === "dark" ? "#303030" : "#e0e3e6");
     for (let i = 0; i < color.count; i++) {
-      const value = Math.floor(i / 4) === 10 ? major : minor;
+      const value =
+        Math.floor(i / 4) === this.grid.userData.divisions / 2 ? major : minor;
       color.setXYZ(i, value.r, value.g, value.b);
     }
     color.needsUpdate = true;
@@ -750,17 +760,14 @@ export class Viewport {
     } else if (command.action === "fit")
       this.fitView(command.entityId, command.selection ? selection : undefined);
     else if (command.action === "rotate") {
-      const pivot =
-        command.x === undefined
-          ? undefined
-          : this.navigationSurfacePoint(
-              false,
-              new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
-            );
+      const pivot = command.x === undefined ? undefined : this.navigationSurfacePoint(
+        false, new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
+      );
       if (command.x !== undefined && !pivot)
         throw new Error("No mesh surface at the requested orbit point.");
       this.rotateView(command.direction!, command.degrees!, pivot);
-    } else if (command.action === "projection")
+    }
+    else if (command.action === "projection")
       this.setProjection(command.projection!);
     else if (command.action === "sketchNormal") {
       if (!this.sketchEditor)
@@ -1092,6 +1099,12 @@ export class Viewport {
     if (this.disposed) return;
     this.advanceViewTransition(performance.now());
     this.updateControls();
+    const gridState = this.getGridState();
+    this.scaleOverlay?.update(
+      gridState.scale,
+      gridState.effectiveGridSpacing,
+      this.grid.visible,
+    );
     this.updateInteractiveMirror();
     this.interactiveGizmo?.update(this.camera, this.container.clientHeight);
     const selectionAnimating =
@@ -1882,6 +1895,12 @@ export class Viewport {
         );
     }
     this.clearGroup(this.sketchGeometry);
+    if (
+      this.grid?.geometry &&
+      this.bounds &&
+      updateViewportGrid(this.grid, this.effectiveGridSpacing(), this.bounds)
+    )
+      this.setTheme(this.theme);
     if (editor) {
       const sketch = editor.sketch;
       const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0);
@@ -2879,6 +2898,12 @@ export class Viewport {
       this.extent = EMPTY_SCENE_EXTENT;
     }
     this.applyClipPlanes();
+    if (
+      this.grid?.geometry &&
+      this.bounds &&
+      updateViewportGrid(this.grid, this.effectiveGridSpacing(), this.bounds)
+    )
+      this.setTheme(this.theme);
     this.invalidate();
   }
 
@@ -2905,18 +2930,37 @@ export class Viewport {
       );
     this.invalidate();
   }
-  setGridOptions(visible: boolean, spacing: number, snap: boolean): void {
+  private effectiveGridSpacing(): number {
+    return this.automaticGrid
+      ? modelGridSpacing(this.bounds)
+      : this.gridSpacing;
+  }
+  getGridState() {
+    return {
+      automaticGrid: this.automaticGrid,
+      effectiveGridSpacing:
+        (this.grid.userData.halfExtent * 2) / this.grid.userData.divisions ||
+        this.effectiveGridSpacing(),
+      scale: viewportScale(
+        this.camera,
+        this.controls.target,
+        this.container.clientWidth,
+        this.container.clientHeight,
+      ),
+    };
+  }
+  setGridOptions(
+    visible: boolean,
+    spacing: number,
+    snap: boolean,
+    automatic = false,
+  ): void {
     if (!Number.isFinite(spacing) || spacing < 0.001 || spacing > 1000000)
       return;
-    if (spacing !== this.gridSpacing) {
-      const fresh = createViewportGrid(spacing);
-      this.grid.geometry.dispose();
-      this.grid.geometry = fresh.geometry;
-      (this.grid.material as THREE.Material).dispose();
-      this.grid.material = fresh.material;
-      this.gridSpacing = spacing;
+    this.gridSpacing = spacing;
+    this.automaticGrid = automatic;
+    if (updateViewportGrid(this.grid, this.effectiveGridSpacing(), this.bounds))
       this.setTheme(this.theme);
-    }
     this.grid.visible = visible;
     this.snapGrid = snap;
     this.invalidate();
@@ -4117,6 +4161,7 @@ export class Viewport {
     this.paintOverlay.remove();
     this.landmarkOverlay.remove();
     this.pivotMarker.remove();
+    this.scaleOverlay?.dispose();
     this.landmarkLabels = [];
   }
 }

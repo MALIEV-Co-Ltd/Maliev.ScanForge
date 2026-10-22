@@ -1,5 +1,8 @@
-import { prepareNoiseOctree, type PackedNoiseTree } from "./scan-noise-octree";
-import { prepareNoiseOctreeAsync } from "./scan-noise-tree-parallel";
+import {
+  prepareReductionSurface,
+  ReductionSurfaceBVH,
+  type ReductionComparisonSurface,
+} from "./scan-reduction-surface";
 import { queryNoiseOctree } from "./scan-noise-octree-query";
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
 
@@ -176,10 +179,8 @@ export function compareNoiseSurface(
     throw new DOMException("Mesh operation cancelled.", "AbortError");
   if (preview.some((value) => !Number.isFinite(value)))
     throw new Error("Preview coordinates must be finite.");
-  const prepared = prepareNoiseOctree(
+  const prepared = prepareReductionSurface(
     { coordinates: preview, indices: original.triangles },
-    0.5,
-    10,
     options,
   );
   return comparePreparedNoiseSurface(original, prepared, threshold, options);
@@ -199,18 +200,16 @@ export async function compareNoiseSurfaceAsync(
     throw new DOMException("Mesh operation cancelled.", "AbortError");
   if (preview.some((value) => !Number.isFinite(value)))
     throw new Error("Preview coordinates must be finite.");
-  const prepared = await prepareNoiseOctreeAsync(
+  const prepared = prepareReductionSurface(
     { coordinates: preview, indices: original.triangles },
-    0.5,
-    10,
     options,
   );
   return comparePreparedNoiseSurface(original, prepared, threshold, options);
 }
 
 export function comparePreparedNoiseSurface(
-  original: MeshTopology,
-  prepared: PackedNoiseTree,
+  original: Pick<MeshTopology, "vertices" | "triangles">,
+  prepared: ReductionComparisonSurface,
   threshold: number,
   options: MeshProcessingOptions,
 ): NoiseDeviation {
@@ -223,6 +222,24 @@ export function comparePreparedNoiseSurface(
     a = [0, 0, 0],
     b = [0, 0, 0],
     c = [0, 0, 0];
+  const query =
+    prepared instanceof ReductionSurfaceBVH
+      ? prepared.createQuery()
+      : (point: number[], radius: number) =>
+          queryNoiseOctree(
+            prepared.root,
+            point,
+            radius,
+            prepared.triangleBounds,
+            (triangle, searchRadius) => {
+              for (let axis = 0; axis < 3; axis++) {
+                a[axis] = prepared.points[triangle * 9 + axis];
+                b[axis] = prepared.points[triangle * 9 + 3 + axis];
+                c[axis] = prepared.points[triangle * 9 + 6 + axis];
+              }
+              return noiseTriangleDistance(point, a, b, c, searchRadius);
+            },
+          );
   for (let id = 0; id < total; id++) {
     if (id % 1024 === 0) {
       if (options.signal?.aborted)
@@ -236,20 +253,7 @@ export function comparePreparedNoiseSurface(
     }
     for (let axis = 0; axis < 3; axis++)
       p[axis] = Math.fround(original.vertices[id * 3 + axis]);
-    const hit = queryNoiseOctree(
-      prepared.root,
-      p,
-      5 * threshold,
-      prepared.triangleBounds,
-      (triangle, radius) => {
-        for (let axis = 0; axis < 3; axis++) {
-          a[axis] = prepared.points[triangle * 9 + axis];
-          b[axis] = prepared.points[triangle * 9 + 3 + axis];
-          c[axis] = prepared.points[triangle * 9 + 6 + axis];
-        }
-        return noiseTriangleDistance(p, a, b, c, radius);
-      },
-    );
+    const hit = query(p, 5 * threshold);
     const value = hit?.distance ?? NaN;
     distances[id] = value;
     if (Number.isFinite(value)) {
