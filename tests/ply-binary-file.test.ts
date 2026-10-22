@@ -5,6 +5,10 @@ import { join } from "node:path";
 import { expect, it, vi } from "vitest";
 import { readScan, type ScanFile } from "../src/import-parser";
 import { expandPlyTopology, parsePlyTopology } from "../src/ply-topology";
+import { convertScanUnits } from "../src/import-units";
+import { placeScanOnOrigin } from "../src/import-origin";
+import { indexedMeshMatches } from "../src/indexed-mesh";
+import { prepareScanRenderData } from "../src/scan-render-data";
 
 function packed(
   options: {
@@ -430,8 +434,10 @@ for (const [name, sourceSha256] of [
           },
         };
         const actual: Partial<typeof expected> = { bytes: file.size };
+        let indexed: ReturnType<typeof parsePlyTopology> | undefined;
         const positions = await readScan(file, "ply", {
           onIndexedMesh(mesh) {
+            indexed = mesh;
             actual.vertices = digest(mesh.vertices);
             actual.normals = digest(mesh.normals!);
             actual.triangles = digest(mesh.triangles);
@@ -445,6 +451,16 @@ for (const [name, sourceSha256] of [
         expect(wholeFileReads).toBe(0);
         expect(maximumSliceBytes).toBeLessThanOrEqual(1024 * 1024);
         expect(slices).toBeGreaterThan(3);
+        convertScanUnits(positions, "mm");
+        convertScanUnits(indexed!.vertices, "mm");
+        placeScanOnOrigin(positions, false, [indexed!.vertices]);
+        expect(
+          indexedMeshMatches(indexed, positions),
+          "placed scan retains compact topology",
+        ).toBe(true);
+        const render = prepareScanRenderData(positions, indexed);
+        expect(render.indexedMesh).toBe(indexed);
+        expect(render.normals!.length).toBe(indexed!.vertices.length);
         process.stdout.write(
           JSON.stringify({
             file: name,
@@ -452,6 +468,8 @@ for (const [name, sourceSha256] of [
             slices,
             wholeFileReads,
             hashes: actual,
+            compactDisplayAfterPlacement: render.indexedMesh === indexed,
+            displayNormalBytes: render.normals!.byteLength,
           }) + "\n",
         );
       } finally {
