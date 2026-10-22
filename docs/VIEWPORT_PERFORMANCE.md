@@ -54,3 +54,32 @@ Validation:
 - Set `SCANFORGE_ALIGNMENT_EXAMPLES=B:/temp/alignment-example-files`, then run `node tests/viewport-post-landmark-browser.mjs`. This optional real-data test verifies source hashes/counts, public MCP export, public landmark preview/accept, camera gestures, browser errors and a 100 ms maximum-frame budget on the test machine. CPU profiles, screenshots and resource ledgers remain in ignored `.resources/`.
 
 This fixes the measured post-alignment viewport stalls. Full import, modeling and native algorithm verification remain separate workstreams.
+
+## Imports and speculative topology preparation
+
+The original full three-PLY import diagnostic found the second scan's speculative
+topology preparation still running while the third scan imported. The Job reported
+a memory-limit event. GUI and MCP scan imports now share an import lease: before
+creating an import worker, they yield preparation that has no foreground owner.
+Scheduled preparation waits until all active imports finish. A foreground diagnostics
+observer or queued topology consumer retains its preparation; stateful previews keep
+their owning worker. After an import fails or is cancelled, preparation of the same
+selected source can resume under its existing lease. Disposal and replacement cancel
+that retry. Import completion callback exceptions reject the import, releasing the
+lease. Public parameters, schemas, geometry and history semantics are unchanged.
+
+The repeated original-file diagnostic confirmed that the speculative topology worker
+terminated before the third import worker started, with preparation reported as
+`scheduled` during import. It still hit the unchanged 2 GiB Job limit. Reported Job
+peaks were 2,244,792,320 bytes before the change and 2,254,524,416 bytes afterward;
+both observations ended at a memory-limit failure and do not establish a reduction
+in peak memory. Full three-scan import and native alignment equivalence remain
+unverified.
+
+Validation for this change passed the source build and 66 focused tests.
+`tests/parallel-import-browser.mjs` passed GUI parallel import with two workers,
+three objects and three undo steps, plus MCP progress and cancellation, with zero
+active import workers or browser errors afterward. `tests/global-alignment-browser.mjs`
+passed Preview, Cancel, cached Apply, Undo/Redo and timeline checks using two synthetic
+STL scans of 5,120 facets each. These browser checks cover shared workflow behavior;
+the original full-scan memory failure remains open.

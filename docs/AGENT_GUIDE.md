@@ -37,6 +37,16 @@ Topology preparation uses compact numeric weld, edge and face indexes while pres
 
 Scale, mirror, flip normals and unroll may yield speculative preparation for the same source, then use the normal worker queue. Visible diagnostics and queued topology consumers remain protected. Stateful previews retain their owning worker. See [staged readiness](SCAN_READINESS.md).
 
+GUI and MCP scan imports share an import lease that yields speculative topology
+preparation before creating an import worker. Preparation requested by a foreground
+diagnostics observer or queued topology consumer keeps its owner. Other scheduled
+preparation waits until every active scan import finishes. After failure or
+cancellation, the same selected source can resume within its existing preparation
+lease; disposal or replacement cancels that retry. Exceptions from import completion
+callbacks reject the import and release its lease. Tool parameters and schemas are
+unchanged. Full three-scan import under the existing 2 GiB diagnostic Job limit
+remains unresolved; see [import scheduling evidence](VIEWPORT_PERFORMANCE.md#imports-and-speculative-topology-preparation).
+
 Loading or selecting a raw triangle scan schedules topology preparation after
 rendering/idle. Navigation and facet selection remain available; this read-only
 work does not mark the project dirty or add history. One selected source is

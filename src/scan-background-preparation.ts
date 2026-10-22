@@ -4,6 +4,7 @@ import {
   type ScanDiagnostics,
 } from "./scan-diagnostics";
 import { hasProcessingWork } from "./processing-queue";
+import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 type State = ScanDiagnostics | { phase: "scheduled" } | { phase: "inactive" };
 interface Entry {
   positions: Positions;
@@ -15,6 +16,19 @@ interface Entry {
   leave?: () => void;
 }
 let active: Entry | undefined;
+let activeImports = 0;
+
+/** Import allocations take priority over preparation without a foreground owner. */
+export function beginScanImport(): () => void {
+  activeImports++;
+  if (active) yieldSpeculativePreparation(active.positions);
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    activeImports--;
+  };
+}
 export function backgroundMeshPreparation(positions: Positions): State {
   return active?.positions === positions
     ? { ...active.state }
@@ -49,7 +63,8 @@ export function prepareMeshInBackground(
     expiresAt: Date.now() + 15 * 60 * 1000,
   };
   active = entry;
-  const allowed = () => !hasProcessingWork() && (options.canStart?.() ?? true);
+  const allowed = () =>
+    !activeImports && !hasProcessingWork() && (options.canStart?.() ?? true);
   const begin = () => {
     entry.idle = undefined;
     if (entry.stopped) return;
@@ -66,7 +81,16 @@ export function prepareMeshInBackground(
       {
         prepareTopology: true,
         speculative: true,
-        onYield: () => stop(entry),
+        onYield: () => {
+          if (!activeImports) {
+            stop(entry);
+            return;
+          }
+          entry.leave?.();
+          entry.leave = undefined;
+          entry.state = { phase: "scheduled" };
+          entry.timer = setTimeout(schedule, 250);
+        },
       },
     );
   };
