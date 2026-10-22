@@ -1482,12 +1482,14 @@ point/curve order, independent of selection order. Read `sketch_get` to inspect
 the copied analytic geometry. One `history_undo`/`history_redo` with
 `scope:"sketch"` steps the edit; model history remains separate.
 
-Mirror does not weld coincident endpoints. An open half-profile can look closed
-after mirroring while extrusion still rejects it because its endpoints have
-different point IDs. Coincident constraints alone do not join topology. For
-lines, use the GUI segment endpoint selectors to reuse the corresponding point
-IDs; general line/arc relinking is available through `sketch_set`. Automatic
-profile joining and GUI arc-endpoint relinking remain separate workflow gaps.
+Mirror keeps copied endpoint IDs independent. Both analytic `sketch-curves` and
+legacy `sketch` extrusion recipes passed to `cad_create` join profile endpoints
+with exactly equal local UV coordinates, even when their point IDs differ.
+This affects derived wire assembly only: `sketch_get`, constraints and saved
+recipe graphs preserve the authored IDs. Real gaps, zero-length edges, branches
+and disconnected cycles remain errors. No near-point snapping is performed;
+repair gaps explicitly through `sketch_set` or GUI endpoint editing. See
+[profile junction behavior](SKETCH_PROFILE_JUNCTIONS.md).
 
 Limits are 32768 input/output points, 8192 input/output stored curves, 4096
 constraints, 4096 selected curves and 2000000 work units. Coordinates must remain

@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "scope": "Exact endpoint profile assembly in analytic/legacy GUI/MCP CAD extrusion",
+  "nativeAcceptance": false,
+  "testedBaseCommit": "315b5a27da0295e03d0ba42d0442e2915b641ee4",
+  "workingTreeIncludesPreservedViewportRevisionEdits": true,
+  "sourceAndConstraintsMutated": false,
+  "joiningPolicy": "Exactly equal local UV endpoints, including signed zero; no near-point snapping",
+  "guiFailureBeforeFix": "Profile must be a single unbranched cycle.",
+  "validation": {
+    "newTests": 11,
+    "redBeforeFix": {
+      "failed": 7,
+      "passed": 4
+    },
+    "focusedPassed": 132,
+    "fullSuitePassed": 47667,
+    "fullSuiteSkipped": 64,
+    "productionBuild": true,
+    "cadSmoke": true,
+    "guiMcpLegacyPlanes": [
+      {
+        "plane": "OXY",
+        "frame": {
+          "origin": [0, 0, 12],
+          "u": [1, 0, 0],
+          "v": [0, 1, 0],
+          "normal": [0, 0, 1]
+        },
+        "guiMcpLegacyFaceEquality": true,
+        "sourceGraphPreserved": true,
+        "oneModelUndoRedo": true,
+        "exactRetry": true,
+        "expectedVolumeMm3": 48000,
+        "volumeObservation": "Tessellation-derived; exact CAD mass is not exposed",
+        "meshVolumeToleranceMm3": 0.01,
+        "descriptions": [
+          {
+            "id": "8035f125-578a-45c9-a328-bb18cda9426b",
+            "planes": [
+              [0, 0],
+              [0, 0],
+              [0, 40],
+              [0, 40],
+              [1, -30],
+              [1, 30],
+              [2, 12],
+              [2, 32]
+            ],
+            "meshVolume": 48000,
+            "min": [0, -30, 12],
+            "max": [40, 30, 32]
+          },
+          {
+            "id": "2073bc3a-333e-45e8-9771-99f0f46102c3",
+            "planes": [
+              [0, 0],
+              [0, 0],
+              [0, 40],
+              [0, 40],
+              [1, -30],
+              [1, 30],
+              [2, 12],
+              [2, 32]
+            ],
+            "meshVolume": 48000,
+            "min": [0, -30, 12],
+            "max": [40, 30, 32]
+          },
+          {
+            "id": "10607f27-1d30-4e55-9295-06ecb0f3772d",
+            "planes": [
+              [0, 0],
+              [0, 0],
+              [0, 40],
+              [0, 40],
+              [1, -30],
+              [1, 30],
+              [2, 12],
+              [2, 32]
+            ],
+            "meshVolume": 48000,
+            "min": [0, -30, 12],
+            "max": [40, 30, 32]
+          }
+        ]
+      },
+      {
+        "plane": "OYZ",
+        "frame": {
+          "origin": [13, 0, 0],
+          "u": [0, 1, 0],
+          "v": [0, 0, 1],
+          "normal": [1, 0, 0]
+        },
+        "guiMcpLegacyFaceEquality": true,
+        "sourceGraphPreserved": true,
+        "oneModelUndoRedo": true,
+        "exactRetry": true,
+        "expectedVolumeMm3": 48000,
+        "volumeObservation": "Tessellation-derived; exact CAD mass is not exposed",
+        "meshVolumeToleranceMm3": 0.01,
+        "descriptions": [
+          {
+            "id": "530226c8-e0d0-4ca6-af38-1ea9c4d74589",
+            "planes": [
+              [0, 13],
+              [0, 33],
+              [1, 0],
+              [1, 0],
+              [1, 40],
+              [1, 40],
+              [2, -30],
+              [2, 30]
+            ],
+            "meshVolume": 48000,
+            "min": [13, 0, -30],
+            "max": [33, 40, 30]
+          },
+          {
+            "id": "f9499663-1052-4d86-a8a2-953bde0f37d8",
+            "planes": [
+              [0, 13],
+              [0, 33],
+              [1, 0],
+              [1, 0],
+              [1, 40],
+              [1, 40],
+              [2, -30],
+              [2, 30]
+            ],
+            "meshVolume": 48000,
+            "min": [13, 0, -30],
+            "max": [33, 40, 30]
+          },
+          {
+            "id": "c220a53a-637a-4ec4-8ba3-7997fff61781",
+            "planes": [
+              [0, 13],
+              [0, 33],
+              [1, 0],
+              [1, 0],
+              [1, 40],
+              [1, 40],
+              [2, -30],
+              [2, 30]
+            ],
+            "meshVolume": 48000,
+            "min": [13, 0, -30],
+            "max": [33, 40, 30]
+          }
+        ]
+      },
+      {
+        "plane": "OXZ",
+        "frame": {
+          "origin": [0, -7, 0],
+          "u": [0, 0, 1],
+          "v": [1, 0, 0],
+          "normal": [0, 1, 0]
+        },
+        "guiMcpLegacyFaceEquality": true,
+        "sourceGraphPreserved": true,
+        "oneModelUndoRedo": true,
+        "exactRetry": true,
+        "expectedVolumeMm3": 48000,
+        "volumeObservation": "Tessellation-derived; exact CAD mass is not exposed",
+        "meshVolumeToleranceMm3": 0.01,
+        "descriptions": [
+          {
+            "id": "3b636285-62ea-4102-bb63-cfb2f5c48c53",
+            "planes": [
+              [0, -30],
+              [0, 30],
+              [1, -7],
+              [1, 13],
+              [2, 0],
+              [2, 0],
+              [2, 40],
+              [2, 40]
+            ],
+            "meshVolume": 48000,
+            "min": [-30, -7, 0],
+            "max": [30, 13, 40]
+          },
+          {
+            "id": "861e3fad-9ca1-48cf-9f6c-d6d9a712ea99",
+            "planes": [
+              [0, -30],
+              [0, 30],
+              [1, -7],
+              [1, 13],
+              [2, 0],
+              [2, 0],
+              [2, 40],
+              [2, 40]
+            ],
+            "meshVolume": 48000,
+            "min": [-30, -7, 0],
+            "max": [30, 13, 40]
+          },
+          {
+            "id": "2a9a0502-451a-4a9d-80d6-293e134f5613",
+            "planes": [
+              [0, -30],
+              [0, 30],
+              [1, -7],
+              [1, 13],
+              [2, 0],
+              [2, 0],
+              [2, 40],
+              [2, 40]
+            ],
+            "meshVolume": 48000,
+            "min": [-30, -7, 0],
+            "max": [30, 13, 40]
+          }
+        ]
+      }
+    ],
+    "saveReopen": true,
+    "independentReview": "No actionable findings; read-only review, no independent rerun"
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuPercent": 25,
+    "peakJobMemoryBytes": 1219194880,
+    "processes": 17,
+    "allOwnedProcessesExited": true,
+    "finalActiveProcesses": 0,
+    "portsClosed": true,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "console": {
+    "pageErrors": [],
+    "workflowWarnings": 4,
+    "bridgeTeardownErrors": [
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      },
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+      }
+    ],
+    "offlineCaching": "Not validated; inspect retained browser stderr for environment errors"
+  },
+  "evidenceSha256": "def275afb06291f6eaff4699c039da6a34c47a99867185b030e3810d07e46756",
+  "resourceLedgerSha256": "1ac74fc3e9549cff1f025f4a2b972cbe1dc0fc52261539c883b76ad6164285ad",
+  "limits": [
+    "Native general joining tolerance and curve-network equivalence remain unverified.",
+    "Actual gaps, branches and disconnected cycles remain rejected.",
+    "Exact CAD mass is not exposed; the 48000 mm3 volume check uses tessellated geometry.",
+    "The complete reconstruction and three-scan alignment gates remain open."
+  ]
+}

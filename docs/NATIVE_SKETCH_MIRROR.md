@@ -26,11 +26,12 @@ coincident-copy handling, ID order and original-window pixel parity have not
 been measured. Manual workflow evidence and mathematical regression checks do
 not establish full native equivalence.
 
-Mirror does not weld coincident endpoints. An open half-profile can therefore
-look closed while extrusion rejects its disconnected point-ID graph. Coincident
-constraints alone do not join topology. Existing GUI segment endpoint selectors
-can relink lines; `sketch_set` can relink general line/arc graphs. Automatic
-profile joining and GUI arc-endpoint relinking remain separate workflow gaps.
+Mirror keeps copied endpoint IDs independent. Profile assembly joins endpoints
+whose local UV coordinates are exactly equal, allowing a closed mirrored
+half-profile to extrude without editing its authored IDs or constraints.
+Near-coincident gaps still require repair; no snapping tolerance is inferred from
+native behavior. GUI arc-endpoint relinking remains a separate workflow gap.
+See [profile junction behavior](SKETCH_PROFILE_JUNCTIONS.md).
 
 Validation passed: 36 mirror tests, 92 focused sketch tests, the complete suite
 (47656 passed, 64 skipped), production build and native CAD smoke checks.

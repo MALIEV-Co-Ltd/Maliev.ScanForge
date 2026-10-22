@@ -430,3 +430,9 @@ event-loop yields, cancellation/revision checks and a final publication check.
 The operation returns IDs and maps rather than duplicating the whole sketch in
 its response; `sketch_get` exposes the resulting graph. Native workflow evidence
 and remaining numerical fidelity limits are in [mirror evidence](NATIVE_SKETCH_MIRROR.md).
+
+Analytic and legacy sketch extrusion share exact-coordinate endpoint aliasing in
+derived profile topology. This enables independently copied curves to form one
+wire without mutating authored IDs, constraints or recipe data. GUI validation
+and the MCP `cad_create` evaluator use the same profile assembly; real gaps and
+ambiguous branches remain rejected. This is not tolerance-based sketch welding.

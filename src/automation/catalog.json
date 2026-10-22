@@ -1482,7 +1482,7 @@
   },
   {
     "name": "cad_create",
-    "description": "Create exact CAD from a validated recipe. Dependency refs use featureId/output from project_get; use cad_bind for imported exact bodies. Edge/face indices are valid only at expectedRevision.",
+    "description": "Create exact CAD from a validated recipe. Dependency refs use featureId/output from project_get; use cad_bind for imported exact bodies. Edge/face indices are valid only at expectedRevision. Analytic sketch-curves and legacy sketch extrusion recipes join exactly equal local UV endpoints in the derived wire even when point IDs differ; authored IDs, constraints and recipe graphs remain unchanged. Real gaps are not snapped, and zero-length edges, branches and disconnected cycles are rejected.",
     "readOnly": false,
     "job": true,
     "inputSchema": {

@@ -724,22 +724,48 @@ export function sampleSketchArc(
   });
 }
 
-/** Preserve one ordered analytic cycle; the CAD kernel validates the resulting wire. */
-export function sketchCurveProfile(sketch: Sketch): SketchProfileEdge[] {
+/** Endpoint aliases join only in the derived wire; authored IDs and relations stay separate. */
+function profileTopology(sketch: Sketch) {
   validateSketch(sketch);
-  const curves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+  const sourceCurves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
     (curve) => !curve.construction,
   );
-  if (curves.length < 2)
+  if (sourceCurves.length < 2)
     throw new Error("Extrusion requires one closed profile.");
   const points = new Map(sketch.points.map((p) => [p.id, p]));
-  const adjacent = new Map(sketch.points.map((p) => [p.id, [] as string[]]));
+  const coordinates = new Map<number, Map<number, string>>();
+  const vertex = (id: string) => {
+    const point = points.get(id)!;
+    let column = coordinates.get(point.x);
+    if (!column) coordinates.set(point.x, (column = new Map()));
+    const existing = column.get(point.y);
+    if (existing !== undefined) return existing;
+    column.set(point.y, id);
+    return id;
+  };
+  const curves = sourceCurves.map((curve) => {
+    const a = points.get(curve.a)!,
+      b = points.get(curve.b)!;
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 1e-8)
+      throw new Error("Profile has zero-length edges.");
+    return { ...curve, a: vertex(curve.a), b: vertex(curve.b) };
+  });
+  const adjacent = new Map<string, string[]>();
   for (const curve of curves) {
-    adjacent.get(curve.a)!.push(curve.id);
-    adjacent.get(curve.b)!.push(curve.id);
+    for (const id of [curve.a, curve.b]) {
+      let neighbours = adjacent.get(id);
+      if (!neighbours) adjacent.set(id, (neighbours = []));
+      neighbours.push(curve.id);
+    }
   }
-  if ([...adjacent.values()].some((v) => v.length !== 0 && v.length !== 2))
+  if ([...adjacent.values()].some((v) => v.length !== 2))
     throw new Error("Profile must be a single unbranched cycle.");
+  return { curves, points, adjacent };
+}
+
+/** Preserve one ordered analytic cycle; the CAD kernel validates the resulting wire. */
+export function sketchCurveProfile(sketch: Sketch): SketchProfileEdge[] {
+  const { curves, points, adjacent } = profileTopology(sketch);
   const byId = new Map(curves.map((curve) => [curve.id, curve]));
   const arcs = new Map((sketch.arcs ?? []).map((arc) => [arc.id, arc]));
   const used = new Set<string>(),
@@ -820,20 +846,7 @@ export function sketchProfile(
   sketch: Sketch,
   chordTolerance = 0.1,
 ): [number, number][] {
-  validateSketch(sketch);
-  const curves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
-    (curve) => !curve.construction,
-  );
-  if (curves.length < 2)
-    throw new Error("Extrusion requires one closed profile.");
-  const adjacent = new Map(sketch.points.map((p) => [p.id, [] as string[]]));
-  for (const s of curves) {
-    adjacent.get(s.a)!.push(s.id);
-    adjacent.get(s.b)!.push(s.id);
-  }
-  if ([...adjacent.values()].some((v) => v.length !== 0 && v.length !== 2))
-    throw new Error("Profile must be a single unbranched cycle.");
-  const points = new Map(sketch.points.map((p) => [p.id, p]));
+  const { curves, points, adjacent } = profileTopology(sketch);
   const byId = new Map(curves.map((curve) => [curve.id, curve])),
     used = new Set<string>();
   const byArcId = new Map((sketch.arcs ?? []).map((arc) => [arc.id, arc]));
@@ -851,7 +864,7 @@ export function sketchProfile(
     const arc = byArcId.get(id);
     if (arc)
       profile.push(
-        ...sampleSketchArc(sketch, arc, arc.b === current, chordTolerance),
+        ...sampleSketchArc(sketch, arc, curve.b === current, chordTolerance),
       );
     else {
       const point = points.get(current)!;
