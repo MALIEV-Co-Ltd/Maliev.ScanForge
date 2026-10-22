@@ -34,9 +34,42 @@ vertices remain unflagged.
 
 This combines retained import-path evidence with current-image constructor,
 readiness, adjacency, command and flag bodies. It establishes the static ordinary
-PLY base-mesh route; it does not capture live readiness, all edit invalidations,
-or native final three-scan controller matrices and geometry. Derived mesh classes
+PLY base-mesh route. That earlier capture did not establish live readiness,
+all edit invalidations, or native final three-scan controller matrices and
+geometry. Derived mesh classes
 can have a different virtual `+0x68` implementation.
+
+## Current native readiness snapshot
+
+A later passive metadata check on the installed version verifies the three
+loaded ordinary PLY owners, their base geometry tables, exact vertex/facet
+counts, and geometry byte `+0x108`. That byte is `1` on all three meshes in
+two matching reads. Geometry virtual `+0x68` resolves to `0x140b38e30`, and
+virtual `+0x70` resolves to `0x1401dfed0`, matching the static route above.
+
+Fresh REA analysis of the adjacency builder confirms its write of `1` to
+`+0x108`; direct instruction checks bind the incoming mesh pointer to that
+store. The vertex clear helper performs `flags &= ~requestedMask`. The base
+boundary marker then ORs its requested mask into both endpoints of null
+facet-neighbor slots. These operations do not convert hidden vertex bit `8`
+into sampling mask `1`. The marker's bytes were decoded directly; this
+Ghidra import did not recover that entry as a procedure.
+
+The [sanitized evidence](evidence/global-alignment-current-readiness.json)
+pins the static and installed executable hashes, two REA records, passive
+receipt/helper hashes, ten instruction anchors and two virtual-table slots.
+Two mutated instruction controls and four invalid metadata controls are
+rejected. All 276 sampled code bytes match the saved image. The metadata
+helper made 68 region queries, peaked at 14.58 MiB under its 4 GiB/25% CPU
+Job, and closed both handles. It did not assign the target to a Job, call
+native functions, or read vertex/facet buffers. The analysis provider was
+closed after exporting its evidence.
+
+This establishes live readiness only for the observed current state. It
+does not establish readiness invalidation after every edit, a starting-geometry
+baseline, per-setter matrices, clock/query inputs, or full solver equivalence.
+Shared GUI/MCP preparation behavior and schemas are unchanged. No build,
+unit/CAD suite or browser replay was rerun for this evidence-only update.
 
 ## Ownership and limits
 

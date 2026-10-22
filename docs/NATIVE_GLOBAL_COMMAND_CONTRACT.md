@@ -76,10 +76,17 @@ Retained routine `0x14088aeb0` establishes hidden-face admission to vertex bit
 `8`: vertices start with `(old & ~2) | 8`, visible incident faces clear bit `8`,
 and selected visible faces set bit `2`. Vertex bit `1` is preserved. However,
 the global preparation caller `0x140aead00` invokes `0x1401ddac0(mesh, mask | 4)`
-and a mesh virtual at `+0x70(mask)` before sampling. That conversion boundary
-has not been extracted. Global sampling tests the configured mask, whose command
-value is `1`; bit `8` must not be substituted for bit `1` without evidence.
-The public adapter therefore continues to reject partially hidden meshes.
+and a mesh virtual at `+0x70(mask)` before sampling. The subsequently recovered
+[ordinary PLY preparation route](GLOBAL_ALIGNMENT_SOURCE_FLAGS.md) establishes
+that the helper clears requested vertex bits and the base virtual marks
+endpoints of null facet-neighbor slots. It does not convert hidden vertex bit
+`8` into sampling mask `1`. Current passive metadata also confirms adjacency
+readiness and the expected virtual dispatch on all three loaded original meshes.
+
+These findings supersede the earlier unresolved-preparation description. They
+do not establish partially hidden mesh behavior across evaluator construction
+and edit invalidation. The public adapter continues to reject partially hidden
+meshes; that GUI/MCP capability boundary is unchanged.
 
 ## Application coverage default
 
