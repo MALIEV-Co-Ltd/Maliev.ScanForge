@@ -72,6 +72,38 @@ for this evidence-only update. Full native controller/setter/clock comparison,
 useful registration quality and the remaining M3 acceptance requirements stay
 open.
 
+## Default visible-scene preview: separate node-budget failure
+
+A subsequent full-size replay omits both `fixedId` and `targetScope`. For moving
+scan 2, GUI controls and MCP state select `visibleScene`, no bound fixed target,
+and scans 1 and 3 in scene order. All six physical landmark pairs are present.
+The GUI then reports **Noise tree exceeds its node budget**, and no preview is
+published. `prepareNativeAlignmentTarget` reaches the shared noise-tree builder,
+whose default guard rejects more than 100,000 generated child nodes. This is a
+logical application limit, separate from the expanded-normal acceptance spike.
+
+The explicit-error run peaks at 2,393,513,984 bytes (2,282.63 MiB), below the
+unchanged 4 GiB Job cap. Its initial diagnostic missed GUI alert banners and
+waited the 780-second work budget; that run peaks at 2,278.77 MiB. Its terminal
+trace retains 12,253 responsive MCP calls, so the unchanged intermediate status
+file does not establish an MCP stall. The corrected observer reads the GUI alert,
+captures its screenshot and public state, then reports failure promptly.
+The initial owned GPU process used SwiftShader software rendering; its exact
+creation identity matches the retained Job record. Graphics metadata does not
+explain away the explicit application guard failure.
+
+All 17 owned processes exit in each run, active count reaches zero, handles and
+temporary ports close, and cleanup errors are empty. The independent audit
+rechecks all 2,136 source/dist files and both frozen plans, including original
+STLs. The fresh build passes with 1,864 unchanged compiler inputs. The
+[sanitized diagnostic evidence](evidence/original-stl-default-preview-node-budget.json)
+pins both runs and the corrected observer. MCP state inspection is verified;
+MCP preview-error parity, post-error geometry digests, Reset/cancellation,
+acceptance and the second moving-scan preview were not reached. Native full
+controller/geometry comparison remains open. No GUI/MCP behavior, schema or
+agent usage changed; unit/CAD suites were not repeated for this evidence-only
+investigation. No product fix has been applied.
+
 ## Independent first-acceptance coordinates and sampled accuracy
 
 For scan 2 from the fixed-target N-point replay below, a read-only checker

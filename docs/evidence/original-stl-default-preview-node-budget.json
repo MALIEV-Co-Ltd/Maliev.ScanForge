@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "scope": "Full original STL default visible-scene point-pair preview failure; no acceptance or native equivalence",
+  "verification": {
+    "auditPassed": true,
+    "workflowPassed": false,
+    "sourceAndDistFilesRehashed": 2136,
+    "sourceNodeGuard": {
+      "path": "src/scan-noise-octree.ts",
+      "defaultChildNodeLimit": 100000,
+      "sha256": "f4d0dee39bbecd31f771f1916af35908f0f4e1462c217f73cb911bef58e6610b"
+    },
+    "observedGuiError": "Noise tree exceeds its node budget",
+    "targetScope": "visibleScene",
+    "fixedTargetBinding": null,
+    "refinementTargetNames": ["scan-1.stl", "scan-3.stl"],
+    "landmarkPairs": 6,
+    "previewPublished": false,
+    "acceptanceTested": false,
+    "mcpPreviewErrorParityTested": false,
+    "originalFilesRehashedByFrozenPlans": true,
+    "runs": [
+      {
+        "stamp": "20261022T224130379009Z",
+        "browserReceiptSha256": "79594c17e75e9ee62e69d352d9cb72163fb5b0594398fa7dfc424ccea04e7d33",
+        "resourceReceiptSha256": "6c05c6bc7e44540a80330bbb257a65faf8f1aff320f1a62b54963e35667bdb85",
+        "peakJobMemoryBytes": 2389458944,
+        "jobCapBytes": 4294967296,
+        "all17OwnedProcessesExited": true,
+        "handlesClosed": true,
+        "temporaryPortsClosed": true,
+        "cleanupErrors": [],
+        "mcpCallCount": 12253
+      },
+      {
+        "stamp": "20261022T225614667929Z",
+        "browserReceiptSha256": "f954cb27f135a893de9c3de5641eaf148abdd82bed2bb6f39ffc378fc60b2067",
+        "resourceReceiptSha256": "af30416b40aaffb8382eafb7459041fa9ec3a37d1e3e64309d3089898c665bbe",
+        "peakJobMemoryBytes": 2393513984,
+        "jobCapBytes": 4294967296,
+        "all17OwnedProcessesExited": true,
+        "handlesClosed": true,
+        "temporaryPortsClosed": true,
+        "cleanupErrors": [],
+        "mcpCallCount": 321
+      }
+    ],
+    "initialDiagnosticLimit": "Initial observer missed UI alert and waited 780 seconds; terminal trace proves MCP polling continued",
+    "graphicsObservation": "Owned initial-run GPU process used SwiftShader; exact process creation identity matched",
+    "limits": [
+      "Not a native application/controller comparison",
+      "Second moving-scan preview, Reset, cancellation and acceptance did not run",
+      "Post-error authored geometry digests were not captured",
+      "Logical node guard failure is separate from the known 4 GiB acceptance allocation spike",
+      "No product fix was applied"
+    ]
+  },
+  "build": {
+    "head": "7147856597288306b6a1a751b56afbbc38716aeb",
+    "tree": "0f0836751b6aff734e827dd2d42ea8713723aaff",
+    "exitCode": 0,
+    "sourceFiles": 1864,
+    "sourceUnchangedAcrossBuild": true,
+    "receiptSha256": "cd20d977ce590e657292f2038f9b4b732af878f52b3953d21b9414c73c78156a"
+  },
+  "pins": [
+    {
+      "name": "original-stl-default-preview-browser.mjs",
+      "sha256": "d9c2a5adb2e6ca630d33a0a86b274ed82308e7c870e3838093d116e2a95578af"
+    },
+    {
+      "name": "original-stl-default-preview-alert-browser.mjs",
+      "sha256": "a8c8b838c9e04489b5b2e24060c93e81c6d0fd334edfcec8aec27081bee3d589"
+    },
+    {
+      "name": "original-stl-default-preview-runner-r3.py",
+      "sha256": "f52acfb2fe064e5e18a0a8dd5e644dbff54bca00008f800d13a983465903abc3"
+    },
+    {
+      "name": "original-stl-default-preview-alert-runner-r3.py",
+      "sha256": "f6e003e74f919f79de737a094dd5f4a0a037767ed2f40261b59a69fbc6107da9"
+    },
+    {
+      "name": "verify-default-preview-failures.py",
+      "sha256": "d2ca22355b4f60f20a7f51ace040172c463ffdc3bfabf48024ffec5ce8435045"
+    },
+    {
+      "name": "default-preview-failures-independent-verification.json",
+      "sha256": "b65b577b959c8f49b369876dbb5580ee650216cb3c0db059c4b27b57d5a758cb"
+    },
+    {
+      "name": "gui-preview-error.png",
+      "sha256": "ab60f9ebcc2f3c018f446d4b01110b34194c73cac49d3a2be98a031ed0bfdd0e"
+    }
+  ]
+}
