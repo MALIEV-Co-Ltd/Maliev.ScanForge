@@ -72,6 +72,46 @@ for this evidence-only update. Full native controller/setter/clock comparison,
 useful registration quality and the remaining M3 acceptance requirements stay
 open.
 
+## Independent first-acceptance coordinates and sampled accuracy
+
+For scan 2 from the fixed-target N-point replay below, a read-only checker
+decodes the raw-STL project container with standard gzip
+and verifies all nine original geometry carriers against the browser replay.
+Without importing application transform code, it applies the recorded coarse
+and refinement frames with separate Float32 stores. All 3,897,099 indexed
+coordinate elements and 22,926,627 expanded position elements match the accepted
+scan 2 SHA-256s exactly; its 7,642,209 triangle-index elements remain unchanged.
+This checks coordinate/index publication, not independently reconstructed normals.
+
+Point-to-triangle distances use 1,024 deterministic stratified original indexed
+vertices, excluding all picked landmarks, against every triangle in the target
+surface. Axis-aligned bounding-box lower bounds prune impossible matches. A hit
+requires distance strictly below 0.5 mm. The complete fixed surface contains
+273,139 triangles; the reverse final-pose query uses all 2,547,403 moving triangles.
+
+| Sample direction / stage      | Hits / samples | Conditional RMS (mm) |
+| ----------------------------- | -------------: | -------------------: |
+| Moving to fixed, raw poses    |     10 / 1,024 |              0.36216 |
+| Moving to fixed, coarse pose  |    301 / 1,024 |              0.16675 |
+| Moving to fixed, refined pose |    299 / 1,024 |              0.16714 |
+| Fixed to moving, refined pose |    279 / 1,024 |              0.20813 |
+
+The coarse pose increases sampled overlap substantially. Refinement does not
+improve this particular forward sample. Different stages admit different subsets,
+so their conditional RMS values are not a fixed-support global error score.
+Vertex samples are not uniform area samples, and these partial-overlap results
+do not certify whole-scan accuracy or native controller equivalence.
+
+The bidirectional run reproduces all forward results from the first run. Five
+analytic distance cases and a Float32 stage-boundary control pass. It finishes
+under the unchanged 4 GiB/25% CPU analysis Job, peaking at 857.77 MiB; the retained
+child exits, only the owner remains in the final Job accounting, both handles
+close and cleanup errors are empty. This private checker peak is not an
+application memory measurement. The second moving scan's application acceptance
+failure remains unresolved. [Structured evidence](evidence/original-stl-first-acceptance-accuracy.json)
+pins the inputs, checker, owner and results. No GUI/MCP behavior or schema changed;
+unit/CAD/browser suites were not rerun for this evidence-only check.
+
 ## Subsequent full-size N-point replay: memory failure
 
 A separate replay supplied six corresponding original STL vertex pairs for each

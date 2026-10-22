@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "runId": "20261022T215615539084Z",
+  "applicationBaseCommit": "0b7b42da663c5a9c65f3f992b3251b7660665d4f",
+  "targetScope": "fixed",
+  "moving": "scan-2.stl",
+  "fixed": "scan-1.stl",
+  "result": {
+    "scope": "Independent full coordinate publication and sampled point-to-triangle accuracy for first accepted moving STL; no native final-controller equivalence",
+    "baselineCarriersMatched": 9,
+    "geometry": {
+      "indexedVertexElements": 3897099,
+      "indexElements": 7642209,
+      "expandedPositionElements": 22926627,
+      "indexedVerticesSha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f",
+      "positionsSha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532",
+      "triangleIndicesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+      "fullAcceptedCoordinatesMatch": true
+    },
+    "accuracy": {
+      "fixedTriangles": 273139,
+      "selection": "1024 deterministic stratified original indexed vertices; all exclude picked landmarks",
+      "before": {
+        "sampleVertices": 1024,
+        "radiusMm": 0.5,
+        "hits": 10,
+        "coverage": 0.009765625,
+        "conditionalRmsMm": 0.36216410430026336,
+        "maximumAdmittedDistanceMm": 0.47744827861365946,
+        "triangleDistanceEvaluations": 111
+      },
+      "afterCoarse": {
+        "sampleVertices": 1024,
+        "radiusMm": 0.5,
+        "hits": 301,
+        "coverage": 0.2939453125,
+        "conditionalRmsMm": 0.16675460428369573,
+        "maximumAdmittedDistanceMm": 0.4962687994882634,
+        "triangleDistanceEvaluations": 3026
+      },
+      "afterRefinement": {
+        "sampleVertices": 1024,
+        "radiusMm": 0.5,
+        "hits": 299,
+        "coverage": 0.2919921875,
+        "conditionalRmsMm": 0.16714064793939773,
+        "maximumAdmittedDistanceMm": 0.4998436334207758,
+        "triangleDistanceEvaluations": 3015
+      },
+      "reverseAfterRefinement": {
+        "selection": "1024 deterministic stratified fixed indexed vertices; all exclude picked landmarks",
+        "movingTriangles": 2547403,
+        "sampleVertices": 1024,
+        "radiusMm": 0.5,
+        "hits": 279,
+        "coverage": 0.2724609375,
+        "conditionalRmsMm": 0.20812663967397455,
+        "maximumAdmittedDistanceMm": 0.498435389535226,
+        "triangleDistanceEvaluations": 4405
+      }
+    },
+    "nativeAcceptance": false,
+    "applicationMutated": false,
+    "nativeApplicationAccess": false,
+    "completed": true,
+    "elapsedMs": 20164
+  },
+  "resources": {
+    "completed": true,
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "peakJobMemoryBytes": 899432448,
+    "leaseSeconds": 180,
+    "childExitCode": 0,
+    "childExitObserved": true,
+    "childHandleClosed": true,
+    "jobHandleClosed": true,
+    "cleanupErrors": [],
+    "jobActiveProcesses": 1,
+    "jobAccountingIncludesOwner": true
+  },
+  "selfTests": {
+    "analyticDistanceCases": 5,
+    "Float32StageBoundary": true,
+    "forwardResultsExactlyReproducedInBidirectionalRun": true
+  },
+  "pins": [
+    {
+      "name": "verify-stl-accepted-geometry-r2.mjs",
+      "sha256": "8436b11ede714c0b99ff2b732abd9a103c2aa579163bcceeec08a4339b932855"
+    },
+    {
+      "name": "verify-stl-accepted-geometry-owner-r2.py",
+      "sha256": "60f2cd7582bd029b01a540805bbdb3119beac0b2971e17f2c6e7882ee2b2bcd1"
+    },
+    {
+      "name": "stl-accepted-geometry-inputs-r1.json",
+      "sha256": "55bc56605d251f72f87725b1eca54ae50129e80690d2b50af606ab3470597532"
+    },
+    {
+      "name": "stl-accepted-geometry-r2.json",
+      "sha256": "42fa1298a563a33e634499ed351713073fad7b3d2f4362f8c90b33c5ff0b89c1"
+    },
+    {
+      "name": "stl-accepted-geometry-r2.owner.json",
+      "sha256": "0997606332f9f3792e081c53c28a8db19426f619cf54d094acc48fc16f35b707"
+    },
+    {
+      "name": "ScanForge-original-STL-raw-poses.scanforge",
+      "sha256": "d7d617128e899be8eafe70609a6fd2cf354baec48d9a3bd6841b3c3102d91190"
+    },
+    {
+      "name": "evidence.json",
+      "sha256": "861b3bbc19a9173f95a7799085811ee45bd49caf707fb90813609e846db34773"
+    }
+  ],
+  "limits": [
+    "Only first moving scan acceptance is checked; second moving scan acceptance failed in the application replay",
+    "Accepted normals are not independently reconstructed by this coordinate check",
+    "Distances use deterministic indexed-vertex samples, not a uniform area sample or every surface point",
+    "Coverage uses a strict distance below 0.5 mm; RMS is conditional on admitted points",
+    "Different stages can admit different sample subsets; their conditional RMS is not a fixed-support global score",
+    "Surface-distance queries use independent double arithmetic and AABB lower-bound pruning over every target triangle",
+    "The original native controller, current GUI run and complete three-scan workflow remain unverified",
+    "The private analysis peak is not an application memory measurement"
+  ],
+  "applicationSourceManifestSha256": "4058cb5402c8193856ef91a937cf06c7ab412a0e479b4b5d316f936b371cd22c",
+  "sourceProvenance": "Recorded base commit plus the five pre-existing working edits pinned by the original replay"
+}
