@@ -8,6 +8,7 @@ export function inspectCamera(
   width: number,
   height: number,
 ) {
+  camera.updateMatrixWorld(true);
   return {
     projection:
       camera instanceof THREE.OrthographicCamera
@@ -19,6 +20,9 @@ export function inspectCamera(
     zoom: camera.zoom,
     near: camera.near,
     far: camera.far,
+    cameraMatrixFormat: "column-major-4x4",
+    projectionMatrix: camera.projectionMatrix.toArray(),
+    cameraWorldMatrix: camera.matrixWorld.toArray(),
     viewport: {
       width,
       height,

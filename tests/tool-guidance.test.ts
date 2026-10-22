@@ -107,6 +107,7 @@ for (const [tool, action] of [
   ["circle", "sets radius"],
   ["circle3", "three points"],
   ["arc3", "through point"],
+  ["trim", "paints unwanted intervals"],
 ] as const)
   it(`describes ${tool} sketch authoring and cancellation`, () => {
     const hint = activeToolGuidance({ ...base, sketchTool: tool });

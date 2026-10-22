@@ -124,6 +124,11 @@ import {
 import type { SketchFrame } from "./sketch-frame";
 import { sampleSketchArc, type Sketch } from "./sketch";
 import {
+  trimSketchStroke,
+  SKETCH_TRIM_LIMITS,
+  type SketchTrimStroke,
+} from "./sketch-trim";
+import {
   drawSketchLine,
   drawSketchCircle,
   drawThreePointCurve,
@@ -239,6 +244,12 @@ export class Viewport {
     tool: SketchDrawingTool;
     constraints: boolean;
     showControlPoints?: boolean;
+    trimRadiusMm?: number;
+    beginTrim?: () => number;
+    onTrim?: (
+      request: SketchTrimStroke,
+      revision: number,
+    ) => void | Promise<void>;
     onChange: (sketch: Sketch) => void;
     onError: (message: string) => void;
   };
@@ -248,7 +259,12 @@ export class Viewport {
     end: SketchUV;
     pointId?: string;
     tolerance: number;
+    trim?: { stroke: SketchUV[]; radiusMm: number; revision: number };
   };
+  private trimPreviewController?: AbortController;
+  private trimPreviewRunning = false;
+  private trimPreviewPending = false;
+  private trimPreviewVersion = 0;
   private sketchCurvePoints: SketchUV[] = [];
   private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
@@ -524,6 +540,10 @@ export class Viewport {
     window.addEventListener("keyup", this.paintModifierKey);
     window.addEventListener("blur", this.paintModifierBlur);
     this.renderer.domElement.addEventListener("pointerup", this.pointerUp);
+    this.renderer.domElement.addEventListener(
+      "lostpointercapture",
+      this.sketchLostCapture,
+    );
     this.renderer.domElement.addEventListener(
       "pointercancel",
       this.pointerCancel,
@@ -1627,7 +1647,15 @@ export class Viewport {
       ["brush", "freehand", "line"].includes(this.selectionTool)
     )
       this.drawPaintStroke(event);
-    if (this.sketchDrag?.id === event.pointerId) {
+    if (this.sketchDrag && this.sketchDrag.id === event.pointerId) {
+      if (this.sketchDrag.trim) {
+        const samples = event.getCoalescedEvents?.() ?? [];
+        for (const sample of [...samples, event]) {
+          if (!this.appendTrimPoint(sample.clientX, sample.clientY)) return;
+        }
+        this.renderSketchDrag();
+        return;
+      }
       const hit = this.sketchPlanePoint(event.clientX, event.clientY);
       if (hit) {
         this.sketchDrag.end = hit;
@@ -1661,7 +1689,8 @@ export class Viewport {
     )
       this.drawSelectionRegion(event);
     if (
-      this.pointer?.id === event.pointerId &&
+      this.pointer &&
+      this.pointer.id === event.pointerId &&
       Math.hypot(
         event.clientX - this.pointer.x,
         event.clientY - this.pointer.y,
@@ -1771,6 +1800,27 @@ export class Viewport {
     if (this.sketchDrag?.id === event.pointerId && this.sketchEditor) {
       const drag = this.sketchDrag,
         editor = this.sketchEditor;
+      if (drag.trim) {
+        if (!this.appendTrimPoint(event.clientX, event.clientY)) return;
+        const request = {
+          stroke: drag.trim.stroke,
+          radiusMm: drag.trim.radiusMm,
+        };
+        const revision = drag.trim.revision;
+        this.cancelSketchDrag();
+        try {
+          Promise.resolve(editor.onTrim!(request, revision)).catch((error) =>
+            editor.onError(
+              error instanceof Error ? error.message : "Paint trim failed.",
+            ),
+          );
+        } catch (error) {
+          editor.onError(
+            error instanceof Error ? error.message : "Paint trim failed.",
+          );
+        }
+        return;
+      }
       const end =
         this.sketchPlanePoint(event.clientX, event.clientY) ?? drag.end;
       const threePoint = editor.tool === "circle3" || editor.tool === "arc3";
@@ -2215,6 +2265,41 @@ export class Viewport {
       event.shiftKey
     )
       return false;
+    if (editor.tool === "trim") {
+      const start = this.sketchPlanePoint(event.clientX, event.clientY, false);
+      if (!start) return false;
+      try {
+        if (
+          !editor.onTrim ||
+          !editor.beginTrim ||
+          !Number.isFinite(editor.trimRadiusMm) ||
+          editor.trimRadiusMm! <= 0
+        )
+          throw new Error("Choose a positive paint-trim radius.");
+        this.sketchDrag = {
+          id: event.pointerId,
+          start,
+          end: start,
+          tolerance: 0,
+          trim: {
+            stroke: [start],
+            radiusMm: editor.trimRadiusMm!,
+            revision: editor.beginTrim(),
+          },
+        };
+        this.pointer = null;
+        this.renderer.domElement.setPointerCapture(event.pointerId);
+        this.renderSketchDrag();
+      } catch (error) {
+        this.cancelSketchDrag();
+        editor.onError(
+          error instanceof Error ? error.message : "Paint trim failed.",
+        );
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return true;
+    }
     const start = this.sketchPlanePoint(event.clientX, event.clientY);
     if (!start) return false;
     const rawStart = this.sketchPlanePoint(
@@ -2268,6 +2353,10 @@ export class Viewport {
     return true;
   }
   private renderSketchDrag(): void {
+    if (this.sketchDrag?.trim && this.sketchEditor) {
+      this.renderTrimPreview();
+      return;
+    }
     this.clearGroup(this.sketchPreview);
     if (
       this.sketchEditor &&
@@ -2344,16 +2433,150 @@ export class Viewport {
     this.invalidate();
   }
   private cancelSketchDrag(resetCurvePoints = true): void {
-    if (
-      this.sketchDrag &&
-      this.renderer.domElement.hasPointerCapture(this.sketchDrag.id)
-    )
-      this.renderer.domElement.releasePointerCapture(this.sketchDrag.id);
+    const drag = this.sketchDrag;
     this.sketchDrag = undefined;
+    this.trimPreviewVersion = (this.trimPreviewVersion ?? 0) + 1;
+    this.trimPreviewPending = false;
+    this.trimPreviewController?.abort();
+    this.sketchGeometry.visible = true;
+    if (drag && this.renderer.domElement.hasPointerCapture(drag.id))
+      this.renderer.domElement.releasePointerCapture(drag.id);
     if (resetCurvePoints) this.sketchCurvePoints = [];
     this.sketchCurveHover = undefined;
     this.clearGroup(this.sketchPreview);
     this.invalidate();
+  }
+  private sketchLostCapture = (event: PointerEvent): void => {
+    if (this.sketchDrag?.trim && this.sketchDrag.id === event.pointerId)
+      this.cancelSketchDrag();
+  };
+  private appendTrimPoint(x: number, y: number): boolean {
+    const drag = this.sketchDrag,
+      editor = this.sketchEditor;
+    if (!drag?.trim || !editor) return false;
+    const point = this.sketchPlanePoint(x, y, false);
+    if (!point) return true;
+    const stroke = drag.trim.stroke,
+      last = stroke[stroke.length - 1];
+    if (last[0] === point[0] && last[1] === point[1]) return true;
+    if (stroke.length >= SKETCH_TRIM_LIMITS.strokePoints) {
+      this.cancelSketchDrag();
+      editor.onError(
+        `Paint trim exceeds ${SKETCH_TRIM_LIMITS.strokePoints} stroke points; use a shorter stroke.`,
+      );
+      return false;
+    }
+    stroke.push(point);
+    drag.end = point;
+    return true;
+  }
+  private renderTrimPreview(): void {
+    const drag = this.sketchDrag,
+      editor = this.sketchEditor;
+    if (!drag?.trim || !editor) return;
+    this.trimPreviewVersion = (this.trimPreviewVersion ?? 0) + 1;
+    if (this.trimPreviewRunning) {
+      this.trimPreviewPending = true;
+      return;
+    }
+    const version = this.trimPreviewVersion,
+      controller = new AbortController();
+    this.trimPreviewRunning = true;
+    this.trimPreviewController = controller;
+    this.trimPreviewPending = false;
+    const request = {
+      stroke: drag.trim.stroke.map((p) => [...p] as SketchUV),
+      radiusMm: drag.trim.radiusMm,
+    };
+    const current = () =>
+      !controller.signal.aborted &&
+      this.sketchDrag === drag &&
+      this.sketchEditor === editor &&
+      this.trimPreviewVersion === version;
+    void trimSketchStroke(editor.sketch, request, { signal: controller.signal })
+      .then((result) => {
+        if (!current()) return;
+        this.clearGroup(this.sketchPreview);
+        this.drawTrimSketch(result.sketch);
+        this.sketchGeometry.visible = false;
+        this.drawTrimStroke(request.stroke, editor.sketch);
+        this.invalidate();
+      })
+      .catch(() => {
+        if (!current()) return;
+        this.clearGroup(this.sketchPreview);
+        this.sketchGeometry.visible = true;
+        this.drawTrimStroke(request.stroke, editor.sketch);
+        this.invalidate();
+        // The shared commit reports invalid geometry/dependencies once on release.
+      })
+      .finally(() => {
+        this.trimPreviewRunning = false;
+        if (this.trimPreviewController === controller)
+          this.trimPreviewController = undefined;
+        if (this.trimPreviewPending && this.sketchDrag?.trim)
+          this.renderTrimPreview();
+      });
+  }
+  private drawTrimStroke(stroke: SketchUV[], sketch: Sketch): void {
+    const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0),
+      positions: number[] = [];
+    for (let i = 1; i < stroke.length; i++)
+      positions.push(
+        ...sketchWorldPoint(frame, stroke[i - 1]),
+        ...sketchWorldPoint(frame, stroke[i]),
+      );
+    this.addSketchLines(this.sketchPreview, positions, "#ee933d");
+  }
+  private drawTrimSketch(sketch: Sketch): void {
+    const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0),
+      points = new Map(sketch.points.map((p) => [p.id, p]));
+    const lines: number[] = [],
+      construction: number[] = [],
+      ends: number[] = [];
+    const append = (uv: SketchUV[], isConstruction?: boolean) => {
+      const output = isConstruction ? construction : lines;
+      for (let i = 1; i < uv.length; i++)
+        output.push(
+          ...sketchWorldPoint(frame, uv[i - 1]),
+          ...sketchWorldPoint(frame, uv[i]),
+        );
+      if (isConstruction) ends.push(output.length);
+    };
+    for (const line of sketch.segments) {
+      const a = points.get(line.a)!,
+        b = points.get(line.b)!;
+      append(
+        [
+          [a.x, a.y],
+          [b.x, b.y],
+        ],
+        line.construction,
+      );
+    }
+    for (const arc of sketch.arcs ?? []) {
+      const a = points.get(arc.a)!,
+        b = points.get(arc.b)!,
+        c = points.get(arc.center)!;
+      const radius = Math.hypot(a.x - c.x, a.y - c.y);
+      // Drawing only: bound preview tessellation to at most 72 edges per circle.
+      const uv = sampleSketchArc(
+        { ...sketch, points: [a, b, c] },
+        arc,
+        false,
+        Math.max(0.1, radius * (1 - Math.cos(Math.PI / 72))),
+      );
+      uv.push([b.x, b.y]);
+      append(uv, arc.construction);
+    }
+    this.addSketchLines(this.sketchPreview, lines, "#eeeeee");
+    this.addSketchLines(
+      this.sketchPreview,
+      construction,
+      "#eeeeee",
+      true,
+      ends,
+    );
   }
   private sketchKeyDown(event: KeyboardEvent): void {
     if (matchesLocalShortcut(event, "cancel") && this.bridgeSession) {
@@ -4151,6 +4374,7 @@ export class Viewport {
   }
 
   dispose(): void {
+    this.cancelSketchDrag();
     this.cancelBridgeDrag();
     this.bridgeSession = null;
     this.clearGroup(this.bridgePreview);
@@ -4188,6 +4412,7 @@ export class Viewport {
     canvas.removeEventListener("pointermove", this.pointerMove);
     canvas.removeEventListener("pointerleave", this.pointerLeave);
     canvas.removeEventListener("pointerup", this.pointerUp);
+    canvas.removeEventListener("lostpointercapture", this.sketchLostCapture);
     canvas.removeEventListener("pointercancel", this.pointerCancel);
     canvas.removeEventListener("dblclick", this.doubleClick);
     canvas.removeEventListener("auxclick", this.auxClick);

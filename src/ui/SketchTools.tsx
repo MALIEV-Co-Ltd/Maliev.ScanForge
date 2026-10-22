@@ -26,6 +26,8 @@ export interface SketchToolsProps {
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
   onDrawingTool?: (tool: SketchDrawingTool) => void;
+  trimRadiusMm?: number;
+  onTrimRadiusMm?: (radius: number) => void;
   drawingConstraints?: boolean;
   onDrawingConstraints?: (enabled: boolean) => void;
   onNormalView?: () => void;
@@ -55,6 +57,8 @@ export function SketchTools({
   disabled = false,
   drawingTool = "navigate",
   onDrawingTool,
+  trimRadiusMm = 1,
+  onTrimRadiusMm,
   drawingConstraints = true,
   onDrawingConstraints,
   onNormalView,
@@ -250,7 +254,15 @@ export function SketchTools({
           <legend>Model-view drawing</legend>
           <div className="button-row">
             {(
-              ["navigate", "line", "circle", "circle3", "arc3", "move"] as const
+              [
+                "navigate",
+                "line",
+                "circle",
+                "circle3",
+                "arc3",
+                "move",
+                "trim",
+              ] as const
             ).map((tool) => (
               <button
                 key={tool}
@@ -265,6 +277,7 @@ export function SketchTools({
                     circle3: "Circle · 3 points",
                     arc3: "Arc · 3 points",
                     move: "Move endpoint",
+                    trim: "Paint trim",
                   }[tool]
                 }
               </button>
@@ -277,6 +290,28 @@ export function SketchTools({
               Redo sketch edit
             </button>
           </div>
+          {drawingTool === "trim" && (
+            <>
+              <label>
+                Trim radius (mm)
+                <input
+                  type="number"
+                  min="0"
+                  max="1000000000"
+                  step="any"
+                  value={trimRadiusMm}
+                  onChange={(event) =>
+                    onTrimRadiusMm?.(Number(event.target.value))
+                  }
+                />
+              </label>
+              <p className="hint">
+                Paint unwanted portions between intersections in the model view.
+                Release to apply one edit; Escape cancels. Affected constraints
+                must be removed first.
+              </p>
+            </>
+          )}
           <label className="check">
             <input
               type="checkbox"

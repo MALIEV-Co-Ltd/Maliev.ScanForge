@@ -367,6 +367,7 @@ export function App() {
   const sketchUndoSessions = useRef(new Map<string, SketchUndo>());
   const [sketchDrawingTool, setSketchDrawingTool] =
     useState<SketchDrawingTool>("navigate");
+  const [sketchTrimRadiusMm, setSketchTrimRadiusMm] = useState(1);
   const [sketchDrawingConstraints, setSketchDrawingConstraints] =
     useState(true);
   const [sketchControlPoints, setSketchControlPoints] = useState(true);
@@ -1337,6 +1338,16 @@ export function App() {
             tool: busy ? "navigate" : sketchDrawingTool,
             constraints: sketchDrawingConstraints,
             showControlPoints: sketchControlPoints,
+            trimRadiusMm: sketchTrimRadiusMm,
+            beginTrim: () => workspaceApi.currentRevision(),
+            onTrim: async (request, expectedRevision) => {
+              const result = await workspaceApi.invoke("sketch_trim_stroke", {
+                ...request,
+                expectedRevision,
+                requestId: crypto.randomUUID(),
+              });
+              if (!result.ok) throw new Error(result.error.message);
+            },
             onChange: updateSketchDraft,
             onError: setError,
           }
@@ -1350,6 +1361,7 @@ export function App() {
     sketchDrawingTool,
     sketchDrawingConstraints,
     sketchControlPoints,
+    sketchTrimRadiusMm,
     busy,
     activeSketchId,
   ]);
@@ -6247,6 +6259,8 @@ export function App() {
                       value={sketchDraft}
                       drawingTool={sketchDrawingTool}
                       onDrawingTool={setSketchDrawingTool}
+                      trimRadiusMm={sketchTrimRadiusMm}
+                      onTrimRadiusMm={setSketchTrimRadiusMm}
                       drawingConstraints={sketchDrawingConstraints}
                       onDrawingConstraints={setSketchDrawingConstraints}
                       onNormalView={() => viewport.current?.viewSketchNormal()}

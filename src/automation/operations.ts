@@ -52,6 +52,7 @@ import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { cornerTrimSketch } from "../sketch-corner";
+import { trimSketchStroke } from "../sketch-trim";
 import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
@@ -1357,6 +1358,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         firstEnd: a.firstEnd,
         secondEnd: a.secondEnd,
       });
+      c.check();
+      if (result.changed) host.setSketch(result.sketch);
+      const { sketch: _, ...diagnostics } = result;
+      return diagnostics;
+    },
+    sketch_trim_stroke: async (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = await trimSketchStroke(
+        sketch,
+        { stroke: a.stroke, radiusMm: a.radiusMm },
+        { signal: c.signal, check: c.check },
+      );
       c.check();
       if (result.changed) host.setSketch(result.sketch);
       const { sketch: _, ...diagnostics } = result;

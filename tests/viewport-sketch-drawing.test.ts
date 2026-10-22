@@ -302,3 +302,79 @@ it("snaps points in each sketch plane's local coordinates", () => {
     expect(point[1] / 5).toBeCloseTo(Math.round(point[1] / 5));
   }
 });
+
+describe("paint trim gesture ownership", () => {
+  it.each(["OXY", "OYZ", "OXZ"] as const)(
+    "collects unsnapped %s samples and commits the gesture-start revision once",
+    async (plane) => {
+      const f = fixture(plane),
+        trim = vi.fn(),
+        revision = vi.fn(() => 17);
+      Object.assign(f.view, { snapGrid: true, gridSpacing: 10 });
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool: "trim",
+        constraints: false,
+        trimRadiusMm: 0.1,
+        beginTrim: revision,
+        onTrim: trim,
+        onChange: f.change,
+        onError: f.error,
+      });
+      f.hooks.pointerDown(event(487, 500));
+      f.hooks.pointerMove(
+        event(488, 500, { getCoalescedEvents: () => [event(487.5, 500)] }),
+      );
+      expect(trim).not.toHaveBeenCalled();
+      expect(f.change).not.toHaveBeenCalled();
+      expect(revision).toHaveBeenCalledOnce();
+      f.hooks.pointerUp(event(490, 500));
+      await Promise.resolve();
+      expect(trim).toHaveBeenCalledOnce();
+      const [request, expectedRevision] = trim.mock.calls[0];
+      expect(expectedRevision).toBe(17);
+      expect(request.radiusMm).toBe(0.1);
+      expect(request.stroke.length).toBeGreaterThanOrEqual(4);
+      expect(request.stroke[0][0]).toBeLessThan(0);
+      expect(request.stroke.at(-1)[0]).toBeLessThan(0);
+      expect(request.stroke.every((p: number[]) => p[0] !== 0)).toBe(true);
+      expect(f.change).not.toHaveBeenCalled();
+      expect(f.capture.size).toBe(0);
+      expect(f.preview.children).toHaveLength(0);
+      expect(f.geometry.visible).toBe(true);
+    },
+  );
+  it.each(["escape", "pointercancel", "toolchange"] as const)(
+    "discards the stroke and late preview after %s",
+    async (how) => {
+      const f = fixture(),
+        trim = vi.fn();
+      f.view.setSketchEditor({
+        sketch: f.sketch,
+        tool: "trim",
+        constraints: false,
+        trimRadiusMm: 0.1,
+        beginTrim: () => 17,
+        onTrim: trim,
+        onChange: f.change,
+        onError: f.error,
+      });
+      f.hooks.pointerDown(event(487, 500));
+      f.hooks.pointerMove(event(490, 500));
+      if (how === "escape")
+        f.hooks.sketchKeyDown({
+          key: "Escape",
+          preventDefault: vi.fn(),
+        } as unknown as KeyboardEvent);
+      else if (how === "pointercancel") f.hooks.pointerCancel();
+      else f.view.setSketchEditor();
+      f.hooks.pointerUp(event(490, 500));
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(trim).not.toHaveBeenCalled();
+      expect(f.change).not.toHaveBeenCalled();
+      expect(f.capture.size).toBe(0);
+      expect(f.preview.children).toHaveLength(0);
+      expect(f.geometry.visible).toBe(true);
+    },
+  );
+});

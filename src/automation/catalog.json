@@ -3400,6 +3400,49 @@
     }
   },
   {
+    "name": "sketch_trim_stroke",
+    "description": "Paint away analytic line/arc/circle intervals between actual sketch intersections using an unsnapped UV millimetre stroke and radiusMm. Uses the active draft and one shared sketch edit; no-hit returns changed:false. Preserves unrelated geometry, placement and constraints; rejects affected constraints, ambiguous overlaps and exceeded work limits atomically. Circles stored as two arcs are periodic, so their storage seam is not a trim stop. Returns changed, removedCurveIds, retainedCurveIds and intersectionCount. Limits:4096 stroke points,32768 sketch points,4096 constraints,512 stored curves,65536 intersections,8192 output curves,2000000 work units.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "stroke": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            }
+          },
+          "description": "Unsnapped ordered sketch UV coordinates in millimetres; one point paints a disk."
+        },
+        "radiusMm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["stroke", "radiusMm", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "sketch_solve",
     "description": "Solve supplied sketch constraints and return residual/conflict/degree-of-freedom diagnostics.",
     "readOnly": true,
@@ -4671,7 +4714,7 @@
   },
   {
     "name": "viewport_get",
-    "description": "Read camera projection/position/target/up/zoom, session navigation.orbitMode and navigation.zoomWindowActive, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
+    "description": "Read camera projection/position/target/up/zoom and copied projectionMatrix/cameraWorldMatrix (cameraMatrixFormat:column-major-4x4), session navigation.orbitMode and navigation.zoomWindowActive, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
     "readOnly": true,
     "job": false,
     "inputSchema": {

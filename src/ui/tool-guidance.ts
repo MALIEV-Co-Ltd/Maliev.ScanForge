@@ -62,6 +62,7 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
       circle3:
         "Left-click three points creates circle · Right-click or Escape clears unfinished points",
       arc3: "Left-click start, through point, then end creates arc · Right-click or Escape clears unfinished points",
+      trim: "Left-drag paints unwanted intervals · Release applies one sketch edit · Right-click or Escape cancels painting",
     };
     return context.sketchTool === "navigate"
       ? instructions.navigate
