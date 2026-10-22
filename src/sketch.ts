@@ -61,7 +61,7 @@ export type SketchConstraint =
     }
   | {
       id: string;
-      kind: "parallel" | "perpendicular" | "equal";
+      kind: "parallel" | "perpendicular" | "equal" | "collinear";
       first: string;
       second: string;
     }
@@ -169,7 +169,9 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       if (!string(c.first) || !string(c.second) || !string(c.point))
         throw new Error("Tangent constraint structure is invalid.");
     } else if (
-      ["parallel", "perpendicular", "equal", "angle"].includes(c.kind)
+      ["parallel", "perpendicular", "equal", "collinear", "angle"].includes(
+        c.kind,
+      )
     ) {
       if (
         !string(c.first) ||
@@ -234,6 +236,24 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       !segments.has(c.segment)
     )
       throw new Error("Constraint segment is missing.");
+    if (c.kind === "collinear") {
+      if (!segments.has(c.first) || !segments.has(c.second))
+        throw new Error("Collinearity requires two straight segments.");
+      if (c.first === c.second)
+        throw new Error(
+          "Collinearity requires two distinct straight segments.",
+        );
+      for (const id of [c.first, c.second]) {
+        const segment = sketch.segments.find((s) => s.id === id)!;
+        const a = sketch.points.find((p) => p.id === segment.a)!,
+          b = sketch.points.find((p) => p.id === segment.b)!;
+        const length = Math.hypot(b.x - a.x, b.y - a.y);
+        if (!Number.isFinite(length) || length < 1e-10)
+          throw new Error(
+            "Collinearity requires nondegenerate finite segments.",
+          );
+      }
+    }
     if (c.kind === "radius" && (!arcs.has(c.arc) || c.value <= 0))
       throw new Error("Radius requires an arc and a positive dimension.");
     if (c.kind === "symmetric") {
@@ -426,9 +446,11 @@ export function solveSketch(
   const index = new Map(input.points.map((p, i) => [p.id, i * 2]));
   const segments = new Map(input.segments.map((s) => [s.id, s]));
   const arcs = new Map((input.arcs ?? []).map((arc) => [arc.id, arc]));
-  const hasSymmetry = input.constraints.some((c) => c.kind === "symmetric");
+  const guardsDegeneracy = input.constraints.some(
+    (c) => c.kind === "symmetric" || c.kind === "collinear",
+  );
   const residualCount = (c: SketchConstraint) =>
-    c.kind === "fixed" || c.kind === "coincident"
+    c.kind === "fixed" || c.kind === "coincident" || c.kind === "collinear"
       ? 2
       : c.kind === "symmetric"
         ? arcs.has(c.first)
@@ -528,6 +550,28 @@ export function solveSketch(
         const v = vector(x, c.segment);
         return [v[c.kind === "horizontal" ? 1 : 0]];
       }
+      if (c.kind === "collinear") {
+        const a = vector(x, c.first),
+          b = vector(x, c.second),
+          length = Math.hypot(...a),
+          secondLength = Math.hypot(...b);
+        if (
+          !Number.isFinite(length) ||
+          !Number.isFinite(secondLength) ||
+          length < 1e-10 ||
+          secondLength < 1e-10
+        )
+          return [Infinity, Infinity];
+        const origin = point(x, segments.get(c.first)!.a),
+          second = segments.get(c.second)!;
+        // Two signed distances constrain the supporting line without joining endpoints.
+        return [second.a, second.b].map((id) => {
+          const p = point(x, id);
+          return (
+            ((p[0] - origin[0]) * a[1] - (p[1] - origin[1]) * a[0]) / length
+          );
+        });
+      }
       if (!("first" in c)) throw new Error("Unsupported segment constraint.");
       const a = vector(x, c.first),
         b = vector(x, c.second),
@@ -554,23 +598,33 @@ export function solveSketch(
   ];
   const jacobian = (x: number[], r: number[]) => {
     const j = r.map(() => Array(x.length).fill(0) as number[]);
-    const axisSteps = new Map<number, number>();
+    const geometrySteps = new Map<number, number>();
     for (const c of input.constraints) {
-      if (c.kind !== "symmetric") continue;
-      const axis = segments.get(c.axis)!;
-      const length = Math.hypot(...vector(x, c.axis));
-      for (const id of [axis.a, axis.b]) {
-        const offset = index.get(id)!;
-        for (const coordinate of [offset, offset + 1])
-          axisSteps.set(
-            coordinate,
-            Math.min(axisSteps.get(coordinate) ?? Infinity, length * 1e-5),
-          );
+      const ids =
+        c.kind === "symmetric"
+          ? [c.axis]
+          : c.kind === "collinear"
+            ? [c.first, c.second]
+            : [];
+      for (const id of ids) {
+        const segment = segments.get(id)!;
+        const length = Math.hypot(...vector(x, id));
+        for (const pointId of [segment.a, segment.b]) {
+          const offset = index.get(pointId)!;
+          for (const coordinate of [offset, offset + 1])
+            geometrySteps.set(
+              coordinate,
+              Math.min(
+                geometrySteps.get(coordinate) ?? Infinity,
+                length * 1e-5,
+              ),
+            );
+        }
       }
     }
     for (let k = 0; k < x.length; k++) {
       const defaultStep = 1e-5 * Math.max(1, Math.abs(x[k]));
-      const axisStep = axisSteps.get(k);
+      const axisStep = geometrySteps.get(k);
       const h =
         axisStep === undefined
           ? defaultStep
@@ -582,7 +636,7 @@ export function solveSketch(
       t[k] += h;
       let rr = residual(t),
         step = axisStep === undefined ? h : t[k] - x[k];
-      if (hasSymmetry && rr.some((v) => !Number.isFinite(v))) {
+      if (guardsDegeneracy && rr.some((v) => !Number.isFinite(v))) {
         t[k] = x[k] - h;
         rr = residual(t);
         step = axisStep === undefined ? -h : t[k] - x[k];
@@ -596,15 +650,15 @@ export function solveSketch(
     damping = 1e-3,
     iterations = 0;
   const cost = (v: number[]) =>
-    hasSymmetry && v.some((n) => !Number.isFinite(n))
+    guardsDegeneracy && v.some((n) => !Number.isFinite(n))
       ? Infinity
       : v.reduce((sum, n) => sum + n * n, 0);
   const violated = (v: number) =>
-    (hasSymmetry && !Number.isFinite(v)) || Math.abs(v) > tolerance;
+    (guardsDegeneracy && !Number.isFinite(v)) || Math.abs(v) > tolerance;
   for (
     ;
     iterations < maxIterations &&
-    (!hasSymmetry || r.every(Number.isFinite)) &&
+    (!guardsDegeneracy || r.every(Number.isFinite)) &&
     r.some(violated);
     iterations++
   ) {
@@ -657,7 +711,7 @@ export function solveSketch(
     },
     converged: !conflictingConstraintIds.length,
     maxResidual:
-      hasSymmetry && r.some((v) => !Number.isFinite(v))
+      guardsDegeneracy && r.some((v) => !Number.isFinite(v))
         ? Infinity
         : Math.max(0, ...r.map(Math.abs)),
     conflictingConstraintIds,
@@ -665,7 +719,7 @@ export function solveSketch(
       0,
       x.length -
         rank(
-          hasSymmetry
+          guardsDegeneracy
             ? finalJacobian.filter((row) => row.every(Number.isFinite))
             : finalJacobian,
         ),

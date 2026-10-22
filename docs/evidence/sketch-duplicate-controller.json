@@ -84,7 +84,13 @@
         "selectorIndex": 3,
         "branch": "0x14070eb02"
       }
-    ]
+    ],
+    "sharedCollinearRelation": {
+      "implemented": true,
+      "operation": "sketch_set",
+      "nativeNumericalAcceptance": false,
+      "evidence": "sketch-collinear.json"
+    }
   },
   "evidence": {
     "resources": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
@@ -125,7 +131,6 @@
     "Picked-direction normalization and degeneracy rules",
     "Native curve distance-to-parameter evaluation and frame behavior",
     "Preview/Accept/Cancel history and save/reopen replay",
-    "Real native-versus-GUI-versus-MCP duplicate fixtures",
-    "Shared GUI/MCP collinear relation support needed before native duplication can preserve copied kind 19"
+    "Real native-versus-GUI-versus-MCP duplicate fixtures"
   ]
 }

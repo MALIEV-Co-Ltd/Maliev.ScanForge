@@ -1499,3 +1499,18 @@ revisions fail before publication. The helper yields during bounded work and
 uses the existing executor's cancellation, busy and retry guards. These bounds
 and ID rules are implementation policies; exact native thresholds and ID order
 remain unverified. See [mirror evidence](NATIVE_SKETCH_MIRROR.md).
+
+### Collinear sketch segments
+
+Add `{id,kind:"collinear",first,second}` to the Sketch v1 constraints and call
+`sketch_set` with `solve:true`, `expectedRevision` and `requestId`. Both references
+must be distinct straight segments with finite lengths at least 1e-10 mm.
+Construction, disjoint, overlapping and reversed lines are supported; endpoints
+are not welded and lengths are not equated. The two residuals measure the second
+segment's endpoints against the first supporting line in local UV millimetres.
+The existing solver tolerance is 1e-6; extrapolating from the other reference can
+amplify its error. Read the returned solution diagnostics and `sketch_get`.
+Conflicts and invalid references leave the draft and revision unchanged; sketch
+history, retry protection and saved-sketch/project persistence remain shared with
+the GUI Constraint menu. See [collinear behavior](SKETCH_COLLINEAR.md) for limits
+and the distinction between native command evidence and numerical verification.

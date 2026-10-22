@@ -436,3 +436,12 @@ derived profile topology. This enables independently copied curves to form one
 wire without mutating authored IDs, constraints or recipe data. GUI validation
 and the MCP `cad_create` evaluator use the same profile assembly; real gaps and
 ambiguous branches remain rejected. This is not tolerance-based sketch welding.
+
+The `collinear` Sketch v1 relation uses the existing `sketch_set` executor,
+`validateSketch` and `solveSketch`. The GUI submits the identical operation with
+`solve:true`; no separate agent solver or new mutation route is introduced.
+Its two residual rows and geometry-aware finite-difference steps preserve
+conflict attribution, local DOF reporting and invalid-trial rejection. The
+existing draft adapter owns sketch history and project persistence; model
+history, revisions, retry protection and lock/busy admission retain their
+existing contracts. See [collinear constraints](SKETCH_COLLINEAR.md).

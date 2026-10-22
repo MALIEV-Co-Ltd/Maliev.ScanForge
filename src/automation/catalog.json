@@ -3336,7 +3336,7 @@
   },
   {
     "name": "sketch_set",
-    "description": "Replace the active sketch draft with a validated Sketch v1; With solve:true, solve and apply atomically; conflicting constraints leave the draft unchanged. Returns solution diagnostics when solving. CAD remains unchanged until rebuild/extrude.",
+    "description": "Replace the active sketch draft with a validated Sketch v1; With solve:true, solve and apply atomically; conflicting constraints leave the draft unchanged. Returns solution diagnostics when solving. Supports collinear constraints {id,kind:'collinear',first,second} on two distinct finite straight segments of length at least 1e-10 mm: both supporting lines coincide, including disjoint or reversed segments, without welding endpoints or equating lengths. Collinear residuals are signed endpoint-to-line distances in local UV millimetres. CAD remains unchanged until rebuild/extrude.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

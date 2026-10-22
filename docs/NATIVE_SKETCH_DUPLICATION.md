@@ -96,9 +96,10 @@ digest-bound decoder using Capstone 5.0.6 from the installed Ghidra distribution
 checked the two table decodes and 25 critical instructions. This establishes the
 command-to-record-kind mapping, not complete dispatcher analysis, executed paths,
 solver equations or which quantity Make Equal constrains on every curve class.
-Raw code stays in private evidence. The current shared sketch model lacks a
-collinear relation, which must be addressed before duplication can preserve kind
-19 through both GUI and MCP.
+Raw code stays in private evidence. The shared sketch model now represents a
+collinear relation through GUI and MCP `sketch_set`; see
+[the application contract](SKETCH_COLLINEAR.md). Its numerical solver formulation
+has not been established as native-equivalent, and duplication remains open.
 
 The first insertion opens the native history change once; subsequent insertions
 share it. Project persistence and exact history behavior still need live replay.

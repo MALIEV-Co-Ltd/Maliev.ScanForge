@@ -163,6 +163,7 @@ export function SketchTools({
               "horizontal",
               "vertical",
               "parallel",
+              "collinear",
               "perpendicular",
               "equal",
               "angle",
@@ -175,17 +176,19 @@ export function SketchTools({
     : (references[0]?.id ?? "");
   const firstCurve = references.find((r) => r.id === first);
   const secondReferences =
-    kind === "symmetric"
-      ? references.filter(
-          (r) =>
-            r.id !== first &&
-            "center" in r ===
-              (firstCurve !== undefined && "center" in firstCurve),
-        )
-      : references;
+    kind === "collinear"
+      ? references.filter((r) => r.id !== first)
+      : kind === "symmetric"
+        ? references.filter(
+            (r) =>
+              r.id !== first &&
+              "center" in r ===
+                (firstCurve !== undefined && "center" in firstCurve),
+          )
+        : references;
   const second = secondReferences.some((r) => r.id === requestedSecond)
     ? requestedSecond
-    : ((kind === "symmetric"
+    : ((kind === "symmetric" || kind === "collinear"
         ? secondReferences[0]?.id
         : (references[1]?.id ?? references[0]?.id)) ?? "");
   const tangentPoint = sketch.points.some((p) => p.id === requestedTangentPoint)
@@ -1003,6 +1006,7 @@ export function SketchTools({
               "horizontalDistance",
               "verticalDistance",
               "parallel",
+              "collinear",
               "perpendicular",
               "equal",
               "angle",
