@@ -238,3 +238,28 @@ solve or establish a controlled memory improvement. Neither successful
 alignment nor acceptance is proved. The node-budget and expanded-normal
 acceptance failures remain unresolved; no product fix or schema change was
 made, and unit/CAD suites were not rerun for this evidence-only update.
+
+## Joined visible-scene target size
+
+[Read-only joined-tree census](evidence/original-stl-joined-tree-census.json)
+explains why the original moving scan 2 fails with both other STL references:
+point-pair refinement joins target records before building one query tree.
+Scan 1 alone needs 60,538 child nodes and scan 3 alone needs 79,476. Their
+joined target needs 275,561 children, exceeding the unchanged 100,000 limit.
+The wider joined root cube leaves depth-8 cells above the 0.5 mm threshold;
+166,554 additional nodes reach depth 9. Individual cubes stop at depth 8.
+The joined leaves contain 6,199,177 ordered triangle memberships.
+
+The private streaming census calls the existing shared target join and
+one-level partition operations. Both complete individual trees match normal
+production node counts, bounds and ordered membership hashes. Two small
+fixture trees also match, and a second joined census repeats the full ordered
+tree hash. The normal joined builder reproduces the exact node-budget error.
+All six bundled source inputs, the original saved project and cleanup receipts
+were independently checked. The final probe peaks at 1,325.82 MiB under the
+unchanged 4 GiB/25% CPU Job and exits normally in 11.79 seconds. It releases
+completed branches; this is not a full application or fully retained tree peak.
+
+This is evidence for sizing the pending shared GUI/MCP memory fix, not a fix or
+a successful joined solve. Application behavior, MCP schemas and agent usage
+remain unchanged. No unit, CAD or browser suite was rerun.
