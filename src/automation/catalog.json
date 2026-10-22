@@ -144,6 +144,24 @@
     }
   },
   {
+    "name": "object_geometry_digest",
+    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "object_update",
     "description": "Change name/display/protection properties using shared project validation.",
     "readOnly": false,

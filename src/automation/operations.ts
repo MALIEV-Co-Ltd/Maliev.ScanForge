@@ -52,6 +52,7 @@ import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { cornerTrimSketch } from "../sketch-corner";
+import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
 import {
@@ -549,6 +550,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         { ...c, artifactBlob: () => backup.file },
       );
     },
+    object_geometry_digest: (a, c) =>
+      digestEntityGeometry(object(host.snapshot(), a.entityId), {
+        signal: c.signal,
+        check: c.check,
+        onProgress: (fraction) => c.progress(fraction, "Hashing geometry"),
+      }),
     object_get: (a, c) => {
       const e = object(host.snapshot(), a.entityId);
       return {

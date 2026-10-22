@@ -334,3 +334,7 @@ The viewport separates ordinary and construction line/arc display batches. Const
 ### Shared sketch corner edits
 
 `sketch_corner_trim` reads the active draft, invokes the pure two-line intersection helper, checks cancellation/revision and publishes through the existing `setSketch` adapter only when changed. GUI endpoint selectors dispatch the same operation. Discovery exposes both segment references and endpoint choices; structured results identify the shared intersection point. Constraint and shared-endpoint dependency failures occur before publication, preserving the draft and both history scopes. No-op joins do not call the adapter. The helper preserves source geometry and metadata without invoking a second solver or mutating CAD bodies.
+
+### Bounded read-only geometry verification
+
+`object_geometry_digest` is a discoverable read-only asynchronous operation over the existing host snapshot. It reuses the project codec's 1 MiB canonical numeric byte generator with incremental SHA-256, validation and event-loop yields. The API job lane, cancellation signal and revision checks protect its lifetime; no geometry artifact, full-array JSON copy, new worker or editor mutation is required. Results enumerate numeric display/indexed/cloud carriers, canonical encoding and local backing aliases. This exposes full-resolution content verification to agents while keeping exact CAD/authoring metadata outside the stated digest scope.
