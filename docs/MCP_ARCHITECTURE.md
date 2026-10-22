@@ -330,3 +330,7 @@ GUI extrusion requests `cad_create.selectCreated:true`; selection is published i
 ### Construction sketch display
 
 The viewport separates ordinary and construction line/arc display batches. Construction batches use dashed materials and per-primitive normalized line distances; their source remains the same shared Sketch v1 returned by `sketch_get` and written by `sketch_set`. No display-only agent operation or separate geometry model is introduced. Point-relation markers include the additional references of symmetry constraints; solver diagnostics remain authoritative for local DOF.
+
+### Shared sketch corner edits
+
+`sketch_corner_trim` reads the active draft, invokes the pure two-line intersection helper, checks cancellation/revision and publishes through the existing `setSketch` adapter only when changed. GUI endpoint selectors dispatch the same operation. Discovery exposes both segment references and endpoint choices; structured results identify the shared intersection point. Constraint and shared-endpoint dependency failures occur before publication, preserving the draft and both history scopes. No-op joins do not call the adapter. The helper preserves source geometry and metadata without invoking a second solver or mutating CAD bodies.

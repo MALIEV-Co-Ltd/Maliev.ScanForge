@@ -3336,6 +3336,52 @@
     }
   },
   {
+    "name": "sketch_corner_trim",
+    "description": "Join two straight sketch lines at their analytic infinite-line intersection by trimming or extending selected endpoints. Uses the active draft, preserves placement and unrelated geometry, and records one sketch edit. Rejects parallel/degenerate lines, collapsed results, affected constraints and endpoints used by other primitives without changes. Already joined endpoints return changed:false. Returns changed, intersection in sketch UV millimetres and shared pointId. General paint trimming, arcs and fillets are separate operations.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "string",
+          "minLength": 1
+        },
+        "second": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firstEnd": {
+          "type": "string",
+          "enum": ["a", "b"]
+        },
+        "secondEnd": {
+          "type": "string",
+          "enum": ["a", "b"]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        }
+      },
+      "required": [
+        "first",
+        "second",
+        "firstEnd",
+        "secondEnd",
+        "expectedRevision",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "sketch_solve",
     "description": "Solve supplied sketch constraints and return residual/conflict/degree-of-freedom diagnostics.",
     "readOnly": true,

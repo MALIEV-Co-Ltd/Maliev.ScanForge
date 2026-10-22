@@ -51,6 +51,7 @@ import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
+import { cornerTrimSketch } from "../sketch-corner";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
 import {
@@ -1338,6 +1339,21 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       c.check();
       host.setSketch(structuredClone(solution?.sketch ?? a.sketch));
       return { updated: true, ...(solution ? { solution } : {}) };
+    },
+    sketch_corner_trim: (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = cornerTrimSketch(sketch, {
+        first: a.first,
+        second: a.second,
+        firstEnd: a.firstEnd,
+        secondEnd: a.secondEnd,
+      });
+      c.check();
+      if (result.changed) host.setSketch(result.sketch);
+      const { sketch: _, ...diagnostics } = result;
+      return diagnostics;
     },
     sketch_solve: (a, c) => {
       const s = host.snapshot(),

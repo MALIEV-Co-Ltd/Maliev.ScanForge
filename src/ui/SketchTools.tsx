@@ -4,6 +4,7 @@ import { AppSelect } from "./AppSelect";
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
 import { resetSketchRectangle } from "../sketch-authoring";
+import { cornerTrimSketch, type SketchCornerSelection } from "../sketch-corner";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
@@ -20,6 +21,7 @@ export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
   onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
+  onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
   onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
@@ -48,6 +50,7 @@ export function SketchTools({
   value,
   onChange,
   onConstrain,
+  onCornerTrim,
   onExtrude,
   disabled = false,
   drawingTool = "navigate",
@@ -89,6 +92,18 @@ export function SketchTools({
   const [chordTolerance, setChordTolerance] = useState(0.1);
   const [requestedAxis, setAxis] = useState("");
   const [reversePairing, setReversePairing] = useState(false);
+  const [cornerFirst, setCornerFirst] = useState("");
+  const [cornerSecond, setCornerSecond] = useState("");
+  const [cornerFirstEnd, setCornerFirstEnd] = useState<"a" | "b">("b");
+  const [cornerSecondEnd, setCornerSecondEnd] = useState<"a" | "b">("a");
+  const [cornerPending, setCornerPending] = useState(false);
+  const firstLine = sketch.segments.some((s) => s.id === cornerFirst)
+    ? cornerFirst
+    : (sketch.segments[0]?.id ?? "");
+  const otherLines = sketch.segments.filter((s) => s.id !== firstLine);
+  const secondLine = otherLines.some((s) => s.id === cornerSecond)
+    ? cornerSecond
+    : (otherLines[0]?.id ?? "");
   const axes = sketch.segments.filter((segment) => segment.construction);
   const symmetryAxis = axes.some((segment) => segment.id === requestedAxis)
     ? requestedAxis
@@ -346,6 +361,88 @@ export function SketchTools({
           }
         />
       </label>
+      <fieldset disabled={disabled || cornerPending}>
+        <legend>Corner Trim</legend>
+        <label>
+          First line
+          <AppSelect
+            value={firstLine}
+            onChange={(event) => setCornerFirst(event.target.value)}
+          >
+            {sketch.segments.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <label>
+          First line end
+          <AppSelect
+            value={cornerFirstEnd}
+            onChange={(event) =>
+              setCornerFirstEnd(event.target.value as "a" | "b")
+            }
+          >
+            <option value="a">Start · a</option>
+            <option value="b">End · b</option>
+          </AppSelect>
+        </label>
+        <label>
+          Second line
+          <AppSelect
+            value={secondLine}
+            onChange={(event) => setCornerSecond(event.target.value)}
+          >
+            {otherLines.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <label>
+          Second line end
+          <AppSelect
+            value={cornerSecondEnd}
+            onChange={(event) =>
+              setCornerSecondEnd(event.target.value as "a" | "b")
+            }
+          >
+            <option value="a">Start · a</option>
+            <option value="b">End · b</option>
+          </AppSelect>
+        </label>
+        <p className="muted">
+          Move the chosen ends to their intersection. Other geometry and
+          dependent constraints must be detached first.
+        </p>
+        <button
+          disabled={!firstLine || !secondLine}
+          onClick={async () => {
+            const options = {
+              first: firstLine,
+              second: secondLine,
+              firstEnd: cornerFirstEnd,
+              secondEnd: cornerSecondEnd,
+            };
+            setCornerPending(true);
+            try {
+              if (onCornerTrim) await onCornerTrim(options);
+              else update(cornerTrimSketch(sketch, options).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error ? error.message : "Corner trim failed.",
+              );
+            } finally {
+              setCornerPending(false);
+            }
+          }}
+        >
+          Join corner
+        </button>
+      </fieldset>
       <svg
         role="img"
         aria-label="Sketch profile preview"

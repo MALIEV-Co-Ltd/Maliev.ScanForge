@@ -6267,6 +6267,12 @@ export function App() {
                       showMeshPoints={sketchMeshPoints}
                       onShowMeshPoints={setSketchMeshPoints}
                       onChange={updateSketchDraft}
+                      onCornerTrim={async (options) => {
+                        const result = await uiCommand("sketch_corner_trim", {
+                          ...options,
+                        });
+                        if (!result.ok) throw new Error(result.error.message);
+                      }}
                       onConstrain={async (constraint) => {
                         const result = await uiCommand("sketch_set", {
                           sketch: {
