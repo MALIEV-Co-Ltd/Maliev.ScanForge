@@ -207,3 +207,34 @@ close and cleanup errors are empty. [Structured evidence](evidence/original-stl-
 distinguishes the passing failure-contract diagnostic from the still-failing
 alignment workflow. No product fix, schema change or native controller comparison
 is established; unit/CAD suites were not rerun for this evidence-only update.
+
+## In-flight cancellation after worker progress
+
+A separate replay cancels both full-size moving STL scans with default
+visible-scene targets and the same six physical landmark pairs. Before each
+cancellation, a paired processing worker reports progress and `job_get` still
+reports `running`. Both worker and public progress are already `1`, which does
+not mean the operation has completed. GUI Cancel stops the first MCP-issued
+preview; MCP `job_cancel` stops the second. Both settle as `cancelled` with
+error code `CANCELLED` and message `Processing cancelled.`
+
+Both processing-worker targets close within the five-second probe budget.
+Identical request retries return their original job receipts without another
+solve. GUI Cancel closes its draft. `job_cancel` leaves the second draft and
+twelve picks active until MCP `preview_discard` closes it. Twenty-one public
+digest jobs verify seven complete buffer snapshots: all nine authored carriers
+stay identical, and all recorded history/public-state snapshots retain the
+three imports and no redo entries. The independent audit rehashes all 2,136
+source/dist files and rejects a corrupted digest control.
+
+The fresh build passes with 1,864 unchanged compiler inputs. Peak Job memory is
+2,016,997,376 bytes (1,923.56 MiB), under the unchanged 4 GiB cap. All 17 owned
+processes exit, active count reaches zero, handles/temporary ports close and
+cleanup errors are empty. [Structured cancellation evidence](evidence/original-stl-inflight-cancellation.json)
+pins the exact build, replay and audit. This covers MCP-issued raw-mesh jobs
+and observed worker progress, not GUI-submitted previews or later native
+CAD/controller stages. An early-cancellation peak does not bound a successful
+solve or establish a controlled memory improvement. Neither successful
+alignment nor acceptance is proved. The node-budget and expanded-normal
+acceptance failures remain unresolved; no product fix or schema change was
+made, and unit/CAD suites were not rerun for this evidence-only update.

@@ -1536,3 +1536,20 @@ Close the failed session through `preview_discard` with `target:landmarks` or
 GUI Cancel. Both post-failure close routes preserved geometry/history in the
 full-size replay. This checks closing an already failed job, not in-flight
 cancellation, successful alignment, acceptance or native final-controller parity.
+
+### In-flight N-point cancellation
+
+A full original-STL replay cancels MCP-issued previews after paired-worker
+progress while `job_get.status` is still `running`. Worker and public progress
+can already be `1`; wait for the terminal status. GUI Cancel closes the draft
+and produces `status:cancelled` with error code `CANCELLED`. MCP `job_cancel`
+produces the same terminal state but retains the active draft and twelve picks;
+close that draft with `preview_discard` targeting `landmarks` when finished.
+
+Both worker targets closed within the five-second probe budget. Identical
+request retries returned the original cancelled job receipts without another
+solve. All nine original geometry carriers and the three-import history were
+preserved. See [the complete cancellation evidence](ORIGINAL_STL_WORKFLOW.md).
+This covers MCP-issued raw-mesh jobs, not GUI-submitted previews, later native
+CAD/controller stages, successful alignment or acceptance. The known resource
+failures above remain unresolved.
