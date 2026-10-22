@@ -231,5 +231,63 @@
     "Preview/Accept/Cancel history and save/reopen replay",
     "Real native-versus-GUI-versus-MCP duplicate fixtures",
     "Count-one editor versus preview/Accept behavior on the native UI"
-  ]
+  ],
+  "pathFollowUp": {
+    "scope": "Static Along curve wrapper and live constant/code binding; no target function execution or native numerical acceptance",
+    "staticImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "generatorEvidenceId": "ev_0627e2da36bba4e815b63e7ec1847d64e9108141984fa36d05dabd7daecade51",
+    "pathWrapperEvidenceId": "ev_cd97eacff09a7b4817192dd4312bb23980f1fd692b59a70d69cce6ac153639d1",
+    "wrapper": "0x14065fe60",
+    "finiteDistanceBounds": "0 <= distance <= length + 2^-23; Flip maps to length-distance; lower clamp 0 before distance-to-parameter call",
+    "distanceParameterStorage": "XMM1 binary64; no integer conversion at the generator call",
+    "distanceToParameter": {
+      "virtualOffset": "0x168",
+      "tolerance": 1.1920928955078125e-7,
+      "toleranceStorage": "XMM3 binary64",
+      "parameterOutput": "stack double read into XMM1 for virtual +0xb8"
+    },
+    "frameNormal": [0, 0, 1],
+    "pathSpacingAccumulation": "binary64 repeated addition, first copy at spacing",
+    "guardedTangentNegation": {
+      "helper": "0x14016b160",
+      "sentinelF32": 3.4028234663852886e38,
+      "thresholdF32": 1.1920928955078125e-7,
+      "absoluteMask128Hex": "ffffffffffffff7fffffffffffffff7f",
+      "signMask128Hex": "00000000000000800000000000000080",
+      "details": "Returns unchanged when first component is NaN or abs(Float32(first)-FLT_MAX) < 2^-23; otherwise XORs sign bits of all three doubles."
+    },
+    "validation": {
+      "instructionAnchors": 27,
+      "ripRelativeBindings": 8,
+      "constantNegativeControlsRejected": 2,
+      "constantDecoderPositiveCases": 1,
+      "constantDecoderNegativeCases": 2,
+      "codeBytesMatched": 578,
+      "twoLiveReadsAgree": true,
+      "regionQueries": 28,
+      "helperPeakJobBytes": 15126528,
+      "helperJobCapBytes": 4294967296,
+      "cpuPercent": 25,
+      "processHandleClosed": true,
+      "jobHandleClosed": true,
+      "nativeFunctionsCalled": false,
+      "geometryBuffersRead": false
+    },
+    "pins": {
+      "captureSha256": "51b86e4167a096fd0cd2e1463ed445fec7758675d077aa508d0740f76625ee6f",
+      "helperSha256": "a842d5084a4b9223804c4cefffce3249694e1c5fa4299c6c8abb941bcaa6cd84"
+    },
+    "repeatedAddDemonstration": {
+      "step": 0.1,
+      "sixthDistance": 0.6,
+      "multiplication": 0.6000000000000001
+    },
+    "limits": [
+      "Concrete curve-class distance-to-parameter and point/tangent evaluation remain indirect-call boundaries.",
+      "Finite bounds describe ordered finite comparisons; COMISD/JA alone is not a NaN rejection guard.",
+      "Live code/constant binding is not an executed native numerical fixture or GUI acceptance.",
+      "No duplication application/MCP capability implemented or advertised.",
+      "No application build, unit/CAD or browser suite rerun."
+    ]
+  }
 }

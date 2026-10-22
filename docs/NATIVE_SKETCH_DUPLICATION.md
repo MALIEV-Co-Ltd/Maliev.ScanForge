@@ -189,6 +189,56 @@ and closed its process/Job handles. The analysis provider also closed with no
 pending cleanup or remaining owned Java process. These checks bind current code;
 they do not establish native numerical acceptance or GUI/MCP duplication parity.
 
+## Along-curve distance and frame follow-up
+
+The generator passes a full binary64 path distance in `XMM1` to wrapper
+`0x14065fe60`. Its apparent integer cast in recovered pseudocode is not an
+instruction-level conversion. The first copy starts at the spacing value;
+subsequent copies use repeated binary64 addition, not `index * spacing`.
+For example, six additions of `0.1` yield `0.6`, whereas `6 * 0.1` yields
+`0.6000000000000001`. This illustrates a rounding distinction; it is not a
+native numerical replay.
+
+For ordered finite inputs, the wrapper admits distances from zero through
+`length + 2^-23`, inclusively. Flip replaces the admitted distance with
+`length - distance`; a lower clamp to zero precedes virtual `+0x168`. That
+call receives binary64 tolerance `2^-23` in `XMM3` and writes the curve
+parameter to a stack double. Virtual `+0xb8` then receives that parameter in
+`XMM1` and the point/tangent output pointers. Its concrete curve-class
+implementation remains unresolved. The ordered-comparison description must
+not be treated as NaN validation: the actual bounds use `COMISD` and `JA`,
+whose unordered behavior differs from a high-level finite check.
+
+Both initial and subsequent frame construction call the already recovered
+`0x140365fe0` with constant normal `(0,0,1)` and the evaluated tangent hint.
+The constant was read from the installed process because its address is
+virtual-only in this analysis image; no file-offset bytes were invented.
+The frame builder and rigid inverse are described in
+[NATIVE_MIRROR_COORDINATES.md](NATIVE_MIRROR_COORDINATES.md). This does not
+resolve every selected curve's sketch/world coordinate mapping.
+
+Flip's tangent helper `0x14016b160` uses guarded sign-bit negation. A NaN
+first component returns unchanged. It also returns unchanged when the
+absolute Float32 difference between the first component and `FLT_MAX` is
+less than `2^-23`, preserving the native invalid-point sentinel. Otherwise
+it XORs the sign bits of all three doubles. Ordinary finite tangent vectors
+therefore reverse, including the signs of zero components; an unconditional
+three-component negation would lose the sentinel behavior.
+
+The structured follow-up pins 27 instruction anchors, eight RIP-relative
+constant bindings and the existing generator/wrapper REA identities. A passive
+current-process check matched six code spans totaling 578 bytes and read the
+frame/tolerance/sign-mask constants twice with identical results. Two altered
+constant controls and two malformed/nonfinite decoder controls were rejected.
+The helper used 28 region queries and peaked at 14.43 MiB under its existing
+4 GiB/25% CPU Job. Both handles closed; no target function was called and no
+vertex/facet buffer was read. No new analysis provider was started.
+
+This supplies implementation details for the pending shared duplication
+operation; it does not establish curve evaluation, native numerical acceptance,
+or GUI/MCP duplication parity. Application source and tool discovery remain
+unchanged. No application build, unit/CAD suite or browser replay was rerun.
+
 ## Implementation and validation gate
 
 Before adding duplication, resolve native curve categories, relation equations,
