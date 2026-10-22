@@ -43,7 +43,10 @@ option has been replayed successfully in the native UI.
 The generator clamps instance counts to at least two. Activation initializes
 linear, secondary and circular counts to two, circular fill to 360 degrees and
 centre coordinates to zero. Length defaults pass the numerical value 10 through
-a unit conversion helper; that helper's complete unit contract remains open.
+a helper that first calls a virtual floating-value helper, then formats its
+result with precision settings
+and parses the text back to double. Its complete unit and rounding contract
+remains open; it must not be reduced to a hard-coded unit scale.
 
 For finite nonnegative circular fill angles below 360 degrees, the angle step
 uses `fill / (instances - 1)`. At 360 degrees or above, it uses
@@ -70,24 +73,50 @@ distance-to-parameter behavior are still indirect-call boundaries.
 
 Accept also remaps and copies selected relation records with numeric kinds
 3, 4, 19 and 20 when both referenced source entities have corresponding copies.
-Their semantic names are not yet mapped. Consequently, independent copies must
-not be interpreted as proof that all internal constraints should be dropped.
+Their native command names are now mapped:
+
+| Numeric kind | Native command     | Command ID | Dispatch branch |
+| ------------ | ------------------ | ---------- | --------------- |
+| 3            | Make Perpendicular | `0x829e`   | `0x14070bf72`   |
+| 4            | Make Parallel      | `0x829d`   | `0x14070bd48`   |
+| 19           | Make Colinear      | `0x84c3`   | `0x14070e8de`   |
+| 20           | Make Equal         | `0x84c4`   | `0x14070eb02`   |
+
+These are derived static bindings. Retained REA menu evidence binds the first
+three labels to command IDs. The Make Equal tooltip belongs to the embedded
+button at byte offset `0x8fa0`; callback `0x1405c85f0` accesses its window at
+`0x8fe0` and sends `0x84c4`. Two selector/target dispatch tables connect those
+commands to branches that store the corresponding relation kind before calling
+the known insertion routine `0x140a401c0`. Independent copies therefore retain
+selected internal perpendicular, parallel, collinear and equal relations; they
+must not drop every relation.
+
+Ghidra did not recover a function owner for this raw dispatch region. A separate
+digest-bound decoder using Capstone 5.0.6 from the installed Ghidra distribution
+checked the two table decodes and 25 critical instructions. This establishes the
+command-to-record-kind mapping, not complete dispatcher analysis, executed paths,
+solver equations or which quantity Make Equal constrains on every curve class.
+Raw code stays in private evidence. The current shared sketch model lacks a
+collinear relation, which must be addressed before duplication can preserve kind
+19 through both GUI and MCP.
+
 The first insertion opens the native history change once; subsequent insertions
 share it. Project persistence and exact history behavior still need live replay.
 
 ## Implementation and validation gate
 
-Before adding duplication, resolve native curve categories, copied relation kinds,
-unit conversion, picked-direction normalization, path evaluation and acceptance
-history on equivalent fixtures. Then implement all supported modes through one
+Before adding duplication, resolve native curve categories, relation equations,
+unit/precision conversion, picked-direction normalization, path evaluation and
+acceptance history on equivalent fixtures. Then implement all supported modes through one
 shared operation used by GUI and MCP, with an observable preview/accept/cancel
 contract, instance maps, bounded work, revision/retry/cancellation checks and
 atomic history. Discovery must not advertise duplication before it exists.
 
 Static checks verified the image/template digests, all 49 dialog controls,
 30 message-map entries and terminator, Accept/Cancel bindings, numerical constants
-and circular divisor branch. No new application behavior, GUI/MCP end-to-end run,
-native numerical replay or full test-suite run is claimed by this investigation.
+and circular divisor branch. The follow-up checks bind all four copied relation
+names and recover the spacing-helper formatting boundary. No new application
+behavior, GUI/MCP end-to-end run, native numerical replay or full test-suite run is claimed by this investigation.
 The analysis provider was closed after evidence retention.
 
 See the [structured controller facts](evidence/sketch-duplicate-controller.json)

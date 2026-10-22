@@ -251,3 +251,13 @@ Accept handlers. In addition to linear, grid and circular modes, it contains an
 along-curve mode. Circular endpoint spacing, retained-orientation anchoring and
 selective relation copying are now supported by controller evidence. Duplication
 remains unimplemented in GUI and MCP; see [the native behavior and open gates](NATIVE_SKETCH_DUPLICATION.md).
+
+The duplication follow-up maps copied numeric kinds 3, 4, 19 and 20 to native
+Perpendicular, Parallel, Colinear and Equal commands. Retained REA UI labels and
+a callback, two digest-bound raw dispatch tables and 25 instruction checks
+support these derived static names. Native equations, equal-quantity behavior,
+curve categories and runtime acceptance remain unverified. The default-spacing
+helper also performs formatting/precision and parse-back after a virtual
+conversion; a simple unit multiplier is not established. Shared collinear
+constraint support is an implementation prerequisite. This is evidence progress
+for M4, with no added application behavior or MCP operation.

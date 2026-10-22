@@ -40,15 +40,51 @@
     },
     "pathDistanceTolerance": 1.1920928955078125e-7,
     "acceptCopiedRelationNumericKinds": [3, 4, 19, 20],
-    "acceptRelationSemanticNames": "UNRESOLVED",
+    "acceptRelationSemanticNames": {
+      "3": "perpendicular",
+      "4": "parallel",
+      "19": "collinear",
+      "20": "equal"
+    },
     "activation": {
       "linearInstances": 2,
       "secondaryInstances": 2,
       "circularInstances": 2,
       "angleToFillDegrees": 360,
       "circularCentre": [0, 0],
-      "spacingNumericalInputToUnresolvedUnitConverter": 10
-    }
+      "spacingNumericalInputToConversionAndPrecisionHelper": 10,
+      "spacingHelper": "Virtual floating-value conversion followed by stream formatting with precision settings and stod parsing; virtual unit/rounding contract unresolved"
+    },
+    "acceptRelationCommandBindings": [
+      {
+        "command": "0x829e",
+        "relationKind": 3,
+        "name": "perpendicular",
+        "selectorIndex": 3,
+        "branch": "0x14070bf72"
+      },
+      {
+        "command": "0x829d",
+        "relationKind": 4,
+        "name": "parallel",
+        "selectorIndex": 2,
+        "branch": "0x14070bd48"
+      },
+      {
+        "command": "0x84c3",
+        "relationKind": 19,
+        "name": "collinear",
+        "selectorIndex": 2,
+        "branch": "0x14070e8de"
+      },
+      {
+        "command": "0x84c4",
+        "relationKind": 20,
+        "name": "equal",
+        "selectorIndex": 3,
+        "branch": "0x14070eb02"
+      }
+    ]
   },
   "evidence": {
     "resources": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
@@ -59,7 +95,12 @@
     "generator": "ev_0627e2da36bba4e815b63e7ec1847d64e9108141984fa36d05dabd7daecade51",
     "acceptance": "ev_dbb5f77d4163a5ca7c6af68e1266739502581852a8a05af1d71c9b082c2d1d78",
     "pathEvaluation": "ev_cd97eacff09a7b4817192dd4312bb23980f1fd692b59a70d69cce6ac153639d1",
-    "circularMode": "ev_91ef464e6791159fd1d7ed3cada834b127eaf77919b04d22241c177dc243ccb0"
+    "circularMode": "ev_91ef464e6791159fd1d7ed3cada834b127eaf77919b04d22241c177dc243ccb0",
+    "relationMenu": "ev_2448d4d8173f157c254e24608e16e55437dad2d1bde9344250f9ea38e581b3db",
+    "relationToolbar": "ev_8e7456990c5235b066c5c0b88bbc9093ee965b2c3b84b586ced3815b4e0d97cf",
+    "equalCommandCallback": "ev_d540153a2bc87a098eb2da36ebc91e3dbb90ce77fdb88809971f8e12c05a9808",
+    "spacingFormatting": "ev_a7bf72617a5fddc641198f217c9c20d0324d4d7a18a432f815a14445dfaddc48",
+    "dispatcherUnrecoveredOwner": "ev_62e0ed5804f767df8e15e12c22f695818b128f6c2e56078b9ce19cbcb2d2db04"
   },
   "verification": {
     "imageAndResourceDigests": true,
@@ -70,15 +111,21 @@
     "nativeNumericalReplay": false,
     "applicationTestsRun": false,
     "analysisSessionClosed": true,
-    "cleanupPending": false
+    "cleanupPending": false,
+    "copiedRelationNames": "Derived from native UI command labels, two raw selector/target dispatch tables, record-kind stores and insertion calls",
+    "rawDispatchInstructionChecks": 25,
+    "dispatchDecoder": "Capstone 5.0.6 from installed Ghidra distribution",
+    "rawDispatcherFunctionOwner": "Not recovered by Ghidra; no function-body completeness claim",
+    "relationVerificationReceiptSha256": "81f5e9751e26f453af470269691df06be02699678315e6bf73b7bdb48823a730"
   },
   "unresolved": [
     "Native curve category and control-point representation",
-    "Semantic names and copy rules of relation kinds 3,4,19,20",
-    "Complete length-unit conversion",
+    "Native relation equations and equal-relation quantity semantics on every eligible curve category",
+    "Complete length conversion, formatting precision and round-trip behavior",
     "Picked-direction normalization and degeneracy rules",
     "Native curve distance-to-parameter evaluation and frame behavior",
     "Preview/Accept/Cancel history and save/reopen replay",
-    "Real native-versus-GUI-versus-MCP duplicate fixtures"
+    "Real native-versus-GUI-versus-MCP duplicate fixtures",
+    "Shared GUI/MCP collinear relation support needed before native duplication can preserve copied kind 19"
   ]
 }
