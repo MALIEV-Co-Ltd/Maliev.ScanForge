@@ -5,6 +5,9 @@ import {
 } from "./scan-diagnostics";
 import { hasProcessingWork } from "./processing-queue";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
+import { SCAN_DEFAULT_BUDGET_BYTES } from "./scan-geometry-source";
+// Optional warmup reservation policy, not an engine/process memory upper bound.
+const WARMUP_BYTES_PER_FACET = 512;
 type State = ScanDiagnostics | { phase: "scheduled" } | { phase: "inactive" };
 interface Entry {
   positions: Positions;
@@ -71,6 +74,11 @@ export function prepareMeshInBackground(
 ) {
   stopBackgroundMeshPreparation();
   if (!positions?.length || positions.length % 9) return () => {};
+  if (
+    (positions.length / 9) * WARMUP_BYTES_PER_FACET >
+    SCAN_DEFAULT_BUDGET_BYTES
+  )
+    return () => {};
   const entry: Entry = {
     positions,
     state: { phase: "scheduled" },

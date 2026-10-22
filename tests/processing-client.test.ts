@@ -16,6 +16,7 @@ import {
   type ProcessingResult,
 } from "../src/processing-client";
 import { getWorkingJobStatus } from "../src/working-job-status";
+import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -47,6 +48,29 @@ const request: ProcessingRequest = {
   positions,
   tolerance: 0.001,
 };
+
+it("keeps explicit large diagnostics available after optional warmup admission declines", async () => {
+  const triangles = SCAN_DEFAULT_BUDGET_BYTES / 512 + 1;
+  const source = new Float32Array(triangles * 9);
+  source.set(positions);
+  source[source.length - 1] = 13;
+  prepareMeshInBackground(source);
+  await vi.advanceTimersByTimeAsync(500);
+  expect(ProcessingWorkerDouble.creates).toBe(0);
+  const leave = observeScanDiagnostics(source, () => {});
+  const worker = ProcessingWorkerDouble.latest;
+  expect(ProcessingWorkerDouble.creates).toBe(1);
+  expect(worker.sent).toMatchObject({ kind: "report", tolerance: 0.001 });
+  expect(worker.sent?.positions.length).toBe(source.length);
+  expect(worker.sent?.positions.slice(0, 9)).toEqual(positions);
+  expect(worker.sent?.positions[source.length - 1]).toBe(13);
+  worker.reply({
+    result: { kind: "report", topology: { triangles }, diagnostics: {} },
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  leave();
+});
 
 it("borrows immutable shared positions only for speculative retained reports", async () => {
   const source = new Float32Array(new SharedArrayBuffer(positions.byteLength));

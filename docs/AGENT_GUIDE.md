@@ -54,11 +54,18 @@ preparation waits until every active scan import finishes. After failure or
 cancellation, the same selected source can resume within its existing preparation
 lease; disposal or replacement cancels that retry. Exceptions from import completion
 callbacks reject the import and release its lease. Tool parameters and schemas are
-unchanged. Full three-scan import under the existing 2 GiB diagnostic Job limit
-remains unresolved; see [import scheduling evidence](VIEWPORT_PERFORMANCE.md#imports-and-speculative-topology-preparation).
+unchanged. The original three-scan import and navigation replay passes under the
+existing 2 GiB diagnostic Job limit with bounded speculative admission. A longer
+replay still exceeds that cap when automatic backup encoding starts; full native
+alignment remains unverified. See [import scheduling evidence](VIEWPORT_PERFORMANCE.md#imports-and-speculative-topology-preparation).
 
 Loading or selecting a raw triangle scan schedules topology preparation after
-rendering/idle. Navigation and facet selection remain available; this read-only
+rendering/idle when it fits the speculative admission budget. Warmup reserves
+512 bytes per facet against the existing 128 MiB scan budget, admitting at most
+262,144 facets. This is a conservative scheduling policy, not a process-memory
+bound. Larger scans keep uncached counts uncalculated until **Calculate mesh information**,
+`mesh_analyze`, or a topology-dependent tool requests the full-resolution index.
+Navigation and facet selection remain available; this read-only
 work does not mark the project dirty or add history. One selected source is
 prepared at a time, after existing foreground geometry jobs. Switching source,
 editing geometry, or closing the page cancels obsolete preparation. A topology-dependent mesh tool
@@ -69,8 +76,8 @@ them. Point clouds and exact CAD bodies are excluded.
 **Edit Scan** observes background progress and completed counts.
 **Calculate mesh information** remains a manual/retry action; topology tools
 also request any missing prerequisites. Pending counts are never shown as zero.
-Compact cached counts do not suppress full-index preparation after a source is
-selected again. Preparation never starts a competing foreground geometry job.
+Compact cached counts do not suppress admitted full-index preparation after a
+source is selected again. Preparation never starts a competing foreground geometry job.
 
 Agents use `mesh_analyze` for diagnostics or `mesh_process` with
 `operation: {kind: "scanEdit", action: "inventory", tolerance: 0.001}` for

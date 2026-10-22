@@ -87,3 +87,37 @@ active import workers or browser errors afterward. `tests/global-alignment-brows
 passed Preview, Cancel, cached Apply, Undo/Redo and timeline checks using two synthetic
 STL scans of 5,120 facets each. These browser checks cover shared workflow behavior;
 the original full-scan memory failure remains open.
+
+### Bounded warmup checkpoint
+
+Optional topology warmup now reserves 512 bytes per facet against the existing
+128 MiB scan budget, admitting up to 262,144 facets. Larger sources start no
+speculative worker or retry timer. Uncached counts remain uncalculated until
+GUI Calculate, MCP `mesh_analyze`, or a topology-dependent tool requests the
+full-resolution index. This reservation is a scheduling policy, not a guaranteed
+process-memory bound. Existing cached counts, source geometry, weld tolerance,
+foreground operations and resource caps are unchanged.
+
+The original three-PLY GUI import replay with normal selection now passes all
+three imports, nine MCP orbit/pan/zoom probes and exactly three import history
+steps under the unchanged 2 GiB Job cap. Peak Job memory was 1,981,325,312 bytes.
+Both inner cleanup and outer retained-handle verification passed: all 15 observed
+processes exited, final active count was zero, test ports closed and cleanup
+errors were empty. The probes include transport, inspection and rendering waits;
+they do not measure production p50/p95 navigation latency.
+
+The instrumented replay with a 60-second settling window also completed imports
+and navigation, then exceeded the cap when automatic backup encoding started.
+Its snapshot contained 479,747,808 shared bytes and 161,112,888 ordinary bytes in
+indexed geometry; the latter cross the worker boundary by cloning. Peak Job
+memory was 2,157,821,952 bytes. All 15 observed processes exited with zero active
+and no outer cleanup errors. This identifies a further backup transport peak;
+it does not establish complete large-scan save/restore, processing, native
+alignment or registration quality.
+
+Validation passed a fresh build, 47,249 tests with 60 skipped, focused MCP
+contracts and GUI/MCP indexed-mesh integration. The final MCP discovery text
+documents the admission policy; it introduces no parameter or schema change.
+Separate pre-existing alignment revision edits were preserved, so validation
+used the combined working tree. Exact replay/build receipts are retained in the
+coordinator's private evidence.

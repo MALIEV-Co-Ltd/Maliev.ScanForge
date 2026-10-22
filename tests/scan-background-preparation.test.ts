@@ -6,11 +6,55 @@ import {
 } from "../src/scan-background-preparation";
 import type { Positions } from "../src/types";
 import { queueProcessing } from "../src/processing-queue";
+import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
 const mesh = () => Float32Array.from([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+const admittedFacets = SCAN_DEFAULT_BUDGET_BYTES / 512;
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => {
   stopBackgroundMeshPreparation();
   vi.useRealTimers();
+});
+it("admits the exact optional warmup budget boundary", async () => {
+  const positions = new Float32Array(admittedFacets * 9);
+  const observe = vi.fn((_positions: Positions) => vi.fn());
+  prepareMeshInBackground(positions, { observe });
+  expect(backgroundMeshPreparation(positions).phase).toBe("scheduled");
+  await vi.advanceTimersByTimeAsync(250);
+  expect(observe).toHaveBeenCalledOnce();
+  expect(observe.mock.calls[0][0]).toBe(positions);
+});
+
+it("leaves oversized optional warmup inactive without timers, idle callbacks, or expiry errors", async () => {
+  const positions = new Float32Array((admittedFacets + 1) * 9);
+  const observe = vi.fn((_positions: Positions) => vi.fn());
+  const idle = vi.fn();
+  vi.stubGlobal("requestIdleCallback", idle);
+  try {
+    prepareMeshInBackground(positions, { observe });
+    expect(backgroundMeshPreparation(positions).phase).toBe("inactive");
+    expect(vi.getTimerCount()).toBe(0);
+    await vi.advanceTimersByTimeAsync(15 * 60 * 1000 + 500);
+    expect(observe).not.toHaveBeenCalled();
+    expect(idle).not.toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+    expect(backgroundMeshPreparation(positions).phase).toBe("inactive");
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
+it("prepares a small source after an oversized source was skipped", async () => {
+  const observe = vi.fn((_positions: Positions) => vi.fn());
+  prepareMeshInBackground(new Float32Array((admittedFacets + 1) * 9), {
+    observe,
+  });
+  const small = mesh();
+  const stop = prepareMeshInBackground(small, { observe });
+  await vi.advanceTimersByTimeAsync(250);
+  expect(observe).toHaveBeenCalledOnce();
+  expect(observe.mock.calls[0][0]).toBe(small);
+  stop();
+  expect(vi.getTimerCount()).toBe(0);
 });
 it("yields before preparation and exposes background progress without changing geometry", async () => {
   const positions = mesh(),

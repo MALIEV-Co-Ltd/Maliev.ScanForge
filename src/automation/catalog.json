@@ -456,7 +456,7 @@
   },
   {
     "name": "mesh_analyze",
-    "description": "Explicitly compute mesh topology diagnostics in a cancellable worker. Unchanged geometry reuses memory or a persistent content-, tolerance- and algorithm-version-keyed full topology cache across reopening. Result diagnostics.topologyCache reports persistent-hit, memory-hit, stored, unavailable or oversize, with topologyCacheBytes on persistent hits/writes. Selected raw scans prepare after render/idle in the background, sharing the GUI 0.001 tolerance index with queued mesh tools; invalid or unavailable cached data falls back to analysis.",
+    "description": "Explicitly compute full-resolution mesh topology diagnostics in a cancellable worker. Unchanged geometry reuses memory or a persistent content-, tolerance- and algorithm-version-keyed full topology cache across reopening. Result diagnostics.topologyCache reports persistent-hit, memory-hit, stored, unavailable or oversize, with topologyCacheBytes on persistent hits/writes. Selected raw scans up to 262144 facets prepare after render/idle in the background, sharing the GUI 0.001 tolerance index with queued mesh tools. Larger scans prepare on explicit diagnostics or topology-dependent tool requests; invalid or unavailable cached data falls back to analysis.",
     "readOnly": true,
     "job": true,
     "inputSchema": {

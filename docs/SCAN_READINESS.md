@@ -2,7 +2,13 @@
 
 Geometry remains an immutable, identity-scoped source. Display buffers and
 bounded sample preparation can become ready before full welded adjacency.
-Topology is prepared speculatively after paint/idle for the selected source;
+Topology is prepared speculatively after paint/idle for the selected source
+when a 512-byte-per-facet reservation fits the existing 128 MiB scan budget.
+This admits up to 262,144 facets; it is an admission policy, not a guaranteed
+JavaScript heap or process-memory bound. Larger sources start no speculative
+worker or retry timer. Their uncached counts remain uncalculated until GUI Calculate,
+MCP `mesh_analyze`, or a topology-dependent tool requests the full-resolution
+index. Geometry, tolerance and foreground operation limits are unchanged;
 foreground tools that consume it continue through the geometry queue and reuse
 the same worker index.
 
