@@ -16,17 +16,17 @@ interface Entry {
   leave?: () => void;
 }
 let active: Entry | undefined;
-let activeImports = 0;
+let priorityPreparations = 0;
 
-/** Import allocations take priority over preparation without a foreground owner. */
-export function beginScanImport(): () => void {
-  activeImports++;
+/** Imports and picking take priority over preparation without a foreground owner. */
+export function beginPriorityScanPreparation(): () => void {
+  priorityPreparations++;
   if (active) yieldSpeculativePreparation(active.positions);
   let released = false;
   return () => {
     if (released) return;
     released = true;
-    activeImports--;
+    priorityPreparations--;
   };
 }
 export function backgroundMeshPreparation(positions: Positions): State {
@@ -64,7 +64,9 @@ export function prepareMeshInBackground(
   };
   active = entry;
   const allowed = () =>
-    !activeImports && !hasProcessingWork() && (options.canStart?.() ?? true);
+    !priorityPreparations &&
+    !hasProcessingWork() &&
+    (options.canStart?.() ?? true);
   const begin = () => {
     entry.idle = undefined;
     if (entry.stopped) return;
@@ -82,7 +84,7 @@ export function prepareMeshInBackground(
         prepareTopology: true,
         speculative: true,
         onYield: () => {
-          if (!activeImports) {
+          if (!priorityPreparations) {
             stop(entry);
             return;
           }

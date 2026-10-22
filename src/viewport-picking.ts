@@ -1,4 +1,5 @@
 import { BufferAttribute, type Mesh, type Points } from "three";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 import {
   acceleratedRaycast,
   MeshBVH,
@@ -42,6 +43,7 @@ export function prepareViewportPicking(mesh: Mesh): Promise<void> {
     (geometry.index?.count ?? positions.count) < 30_000
   )
     return Promise.resolve();
+  const releasePreparation = beginPriorityScanPreparation();
   let resolve!: () => void;
   const ready = new Promise<void>((done) => {
     resolve = done;
@@ -59,6 +61,7 @@ export function prepareViewportPicking(mesh: Mesh): Promise<void> {
     const index = queue.indexOf(job);
     if (index >= 0) queue.splice(index, 1);
     if (active === job) active = undefined;
+    releasePreparation();
     resolve();
     pump();
   };

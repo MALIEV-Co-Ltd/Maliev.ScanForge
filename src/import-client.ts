@@ -2,7 +2,7 @@ import type { ScanImportOptions, ScanSource } from "./import-parser";
 import type { ScanUnit } from "./import-units";
 import type { parsePlyTopology } from "./ply-topology";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
-import { beginScanImport } from "./scan-background-preparation";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
@@ -14,7 +14,7 @@ export function importScan(
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (options.signal?.aborted)
     return Promise.reject(new DOMException("Import cancelled", "AbortError"));
-  const releaseImport = beginScanImport();
+  const releaseImport = beginPriorityScanPreparation();
   return new Promise<Float32Array>((resolve, reject) => {
     const worker = new Worker(new URL("./import-worker.ts", import.meta.url), {
       type: "module",

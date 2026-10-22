@@ -1268,6 +1268,8 @@ same counts, and the GUI status bar retains the final outcome summary.
 
 Cross-origin isolation lets indexed PLY/STL imports share immutable expanded positions and PLY corner normals with project encoding workers, reducing copies during save/export/automatic backup. Ordinary buffers remain the fallback without isolation; no agent parameter is required. Source geometry, history, cancellation and project formats retain the same contract.
 
+Background mesh preparation may remain `scheduled` while imports or queued/active surface-picking preparation own priority. It resumes afterward; foreground mesh information and already queued topology operations retain ownership. GUI picking and MCP `viewport_pick` keep their existing hit and facet-ID contract.
+
 Admission uses device CPU/memory hints, reported JavaScript heap headroom where available, a 64 MiB per-file threshold, and a conservative 512 MiB decoded batch estimate. Inputs above these limits remain supported through one parser; browser hints cannot guarantee physical memory availability.
 
 Poll `job_get`: `progressDetails.kind` is `importBatch`, with `files` containing `index`, `name`, `status` (`queued`, `importing`, `rendering`, `complete`, `failed`, `cancelled`), `fraction` (0-1), and `stage`. The cursor overlay shows the active filenames and bars plus completed/queued/failed counts. `job_cancel` stops queued and active scan work, waits for worker cleanup, and retains committed objects. Per-file errors do not stop other imports. Native CAD cancellation still waits for native work to settle.
