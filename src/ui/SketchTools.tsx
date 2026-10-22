@@ -19,6 +19,7 @@ import {
 export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
+  onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
   onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
@@ -46,6 +47,7 @@ const constraintLabel = (kind: string) =>
 export function SketchTools({
   value,
   onChange,
+  onConstrain,
   onExtrude,
   disabled = false,
   drawingTool = "navigate",
@@ -85,6 +87,12 @@ export function SketchTools({
     [dimension, setDimension] = useState(40);
   const [requestedTangentPoint, setTangentPoint] = useState("p1");
   const [chordTolerance, setChordTolerance] = useState(0.1);
+  const [requestedAxis, setAxis] = useState("");
+  const [reversePairing, setReversePairing] = useState(false);
+  const axes = sketch.segments.filter((segment) => segment.construction);
+  const symmetryAxis = axes.some((segment) => segment.id === requestedAxis)
+    ? requestedAxis
+    : (axes[0]?.id ?? "");
   const update = (next: Sketch) => {
     setLocal(next);
     onChange?.(next);
@@ -108,8 +116,10 @@ export function SketchTools({
   const getReferences = (kind: SketchConstraint["kind"]) =>
     kind === "radius"
       ? (sketch.arcs ?? [])
-      : kind === "tangent"
-        ? [...sketch.segments, ...(sketch.arcs ?? [])]
+      : kind === "tangent" || kind === "symmetric"
+        ? [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+            (curve) => kind !== "symmetric" || curve.id !== symmetryAxis,
+          )
         : [
               "horizontal",
               "vertical",
@@ -124,9 +134,21 @@ export function SketchTools({
   const first = references.some((r) => r.id === requestedFirst)
     ? requestedFirst
     : (references[0]?.id ?? "");
-  const second = references.some((r) => r.id === requestedSecond)
+  const firstCurve = references.find((r) => r.id === first);
+  const secondReferences =
+    kind === "symmetric"
+      ? references.filter(
+          (r) =>
+            r.id !== first &&
+            "center" in r ===
+              (firstCurve !== undefined && "center" in firstCurve),
+        )
+      : references;
+  const second = secondReferences.some((r) => r.id === requestedSecond)
     ? requestedSecond
-    : (references[1]?.id ?? references[0]?.id ?? "");
+    : ((kind === "symmetric"
+        ? secondReferences[0]?.id
+        : (references[1]?.id ?? references[0]?.id)) ?? "");
   const tangentPoint = sketch.points.some((p) => p.id === requestedTangentPoint)
     ? requestedTangentPoint
     : (sketch.points[0]?.id ?? "");
@@ -154,8 +176,23 @@ export function SketchTools({
         constraint = { id, kind, arc: first, value: dimension };
       else if (kind === "tangent")
         constraint = { id, kind, first, second, point: tangentPoint };
+      else if (kind === "symmetric")
+        constraint = {
+          id,
+          kind,
+          first,
+          second,
+          axis: symmetryAxis,
+          reverse: reversePairing,
+        };
       else constraint = { id, kind, first, second };
-      update(constrainSketch(sketch, constraint));
+      if (onConstrain) {
+        void Promise.resolve(onConstrain(constraint)).catch((error: unknown) =>
+          setError(
+            error instanceof Error ? error.message : "Constraint failed.",
+          ),
+        );
+      } else update(constrainSketch(sketch, constraint));
     });
   const preview = sketch.points;
   const arcPreview = (sketch.arcs ?? []).map((arc) => {
@@ -691,6 +728,7 @@ export function SketchTools({
               "angle",
               "radius",
               "tangent",
+              "symmetric",
             ].map((k) => (
               <option key={k} value={k}>
                 {constraintLabel(k)}
@@ -715,13 +753,38 @@ export function SketchTools({
               value={second}
               onChange={(e) => setSecond(e.target.value)}
             >
-              {references.map((p) => (
+              {secondReferences.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.id.slice(0, 6)}
                 </option>
               ))}
             </AppSelect>
           </label>
+        )}
+        {kind === "symmetric" && (
+          <>
+            <label>
+              Symmetry construction line
+              <AppSelect
+                value={symmetryAxis}
+                onChange={(event) => setAxis(event.target.value)}
+              >
+                {axes.map((axis) => (
+                  <option key={axis.id} value={axis.id}>
+                    {axis.id.slice(0, 6)}
+                  </option>
+                ))}
+              </AppSelect>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={reversePairing}
+                onChange={(event) => setReversePairing(event.target.checked)}
+              />
+              Reverse endpoint pairing
+            </label>
+          </>
         )}
         {kind === "tangent" && (
           <label>

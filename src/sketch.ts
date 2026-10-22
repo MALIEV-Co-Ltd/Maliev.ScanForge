@@ -46,6 +46,14 @@ export type SketchConstraint =
   | { id: string; kind: "radius"; arc: string; value: number }
   | {
       id: string;
+      kind: "symmetric";
+      first: string;
+      second: string;
+      axis: string;
+      reverse: boolean;
+    }
+  | {
+      id: string;
       kind: "tangent";
       first: string;
       second: string;
@@ -149,6 +157,14 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     } else if (c.kind === "radius") {
       if (!string(c.arc) || !finite(c.value))
         throw new Error("Radius constraint structure is invalid.");
+    } else if (c.kind === "symmetric") {
+      if (
+        !string(c.first) ||
+        !string(c.second) ||
+        !string(c.axis) ||
+        typeof c.reverse !== "boolean"
+      )
+        throw new Error("Symmetry constraint structure is invalid.");
     } else if (c.kind === "tangent") {
       if (!string(c.first) || !string(c.second) || !string(c.point))
         throw new Error("Tangent constraint structure is invalid.");
@@ -220,6 +236,37 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       throw new Error("Constraint segment is missing.");
     if (c.kind === "radius" && (!arcs.has(c.arc) || c.value <= 0))
       throw new Error("Radius requires an arc and a positive dimension.");
+    if (c.kind === "symmetric") {
+      const axis = sketch.segments.find((s) => s.id === c.axis);
+      if (
+        !curves.has(c.first) ||
+        !curves.has(c.second) ||
+        c.first === c.second ||
+        arcs.has(c.first) !== arcs.has(c.second)
+      )
+        throw new Error(
+          "Symmetry requires two distinct curves of the same kind.",
+        );
+      if (!axis?.construction || c.axis === c.first || c.axis === c.second)
+        throw new Error("Symmetry requires a separate construction axis.");
+      const a = sketch.points.find((p) => p.id === axis.a)!,
+        b = sketch.points.find((p) => p.id === axis.b)!;
+      const length = Math.hypot(b.x - a.x, b.y - a.y);
+      if (!Number.isFinite(length) || length < 1e-10)
+        throw new Error("Symmetry axis must be nondegenerate and finite.");
+      const first = arcs.get(c.first),
+        second = arcs.get(c.second);
+      if (
+        first &&
+        second &&
+        (c.reverse
+          ? first.clockwise !== second.clockwise
+          : first.clockwise === second.clockwise)
+      )
+        throw new Error(
+          "Symmetric arc orientation must match the endpoint correspondence.",
+        );
+    }
     if (c.kind === "tangent") {
       const a = curves.get(c.first),
         b = curves.get(c.second);
@@ -238,6 +285,7 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     if (
       "first" in c &&
       c.kind !== "tangent" &&
+      c.kind !== "symmetric" &&
       (!segments.has(c.first) || !segments.has(c.second))
     )
       throw new Error("Constraint segment is missing.");
@@ -302,6 +350,12 @@ export function removeSketchGeometry(
     if (c.kind === "tangent")
       return (
         pointIds.has(c.point) && curveIds.has(c.first) && curveIds.has(c.second)
+      );
+    if (c.kind === "symmetric")
+      return (
+        curveIds.has(c.first) &&
+        curveIds.has(c.second) &&
+        segmentIds.has(c.axis)
       );
     return "first" in c && segmentIds.has(c.first) && segmentIds.has(c.second);
   });
@@ -372,6 +426,15 @@ export function solveSketch(
   const index = new Map(input.points.map((p, i) => [p.id, i * 2]));
   const segments = new Map(input.segments.map((s) => [s.id, s]));
   const arcs = new Map((input.arcs ?? []).map((arc) => [arc.id, arc]));
+  const hasSymmetry = input.constraints.some((c) => c.kind === "symmetric");
+  const residualCount = (c: SketchConstraint) =>
+    c.kind === "fixed" || c.kind === "coincident"
+      ? 2
+      : c.kind === "symmetric"
+        ? arcs.has(c.first)
+          ? 6
+          : 4
+        : 1;
   const point = (x: number[], id: string) => {
     const i = index.get(id)!;
     return [x[i], x[i + 1]];
@@ -414,6 +477,37 @@ export function solveSketch(
           a = point(x, arc.a),
           center = point(x, arc.center);
         return [Math.hypot(a[0] - center[0], a[1] - center[1]) - c.value];
+      }
+      if (c.kind === "symmetric") {
+        const axis = segments.get(c.axis)!,
+          origin = point(x, axis.a),
+          direction = vector(x, c.axis);
+        const length = Math.hypot(...direction),
+          width = residualCount(c);
+        // Invalid trial axes are rejected by the cost comparison without losing row alignment.
+        const invalid = () => Array<number>(width).fill(Infinity);
+        if (!Number.isFinite(length) || length < 1e-10) return invalid();
+        const nx = -direction[1] / length,
+          ny = direction[0] / length;
+        const first = segments.get(c.first) ?? arcs.get(c.first)!;
+        const second = segments.get(c.second) ?? arcs.get(c.second)!;
+        const pairs = [
+          [first.a, c.reverse ? second.b : second.a],
+          [first.b, c.reverse ? second.a : second.b],
+        ];
+        const firstArc = arcs.get(c.first);
+        if (firstArc) pairs.push([firstArc.center, arcs.get(c.second)!.center]);
+        const values = pairs.flatMap(([aId, bId]) => {
+          const a = point(x, aId),
+            b = point(x, bId);
+          const normalDistance =
+            (a[0] - origin[0]) * nx + (a[1] - origin[1]) * ny;
+          return [
+            a[0] - 2 * normalDistance * nx - b[0],
+            a[1] - 2 * normalDistance * ny - b[1],
+          ];
+        });
+        return values.every(Number.isFinite) ? values : invalid();
       }
       if (c.kind === "tangent") {
         const tangent = (id: string) => {
@@ -460,12 +554,40 @@ export function solveSketch(
   ];
   const jacobian = (x: number[], r: number[]) => {
     const j = r.map(() => Array(x.length).fill(0) as number[]);
+    const axisSteps = new Map<number, number>();
+    for (const c of input.constraints) {
+      if (c.kind !== "symmetric") continue;
+      const axis = segments.get(c.axis)!;
+      const length = Math.hypot(...vector(x, c.axis));
+      for (const id of [axis.a, axis.b]) {
+        const offset = index.get(id)!;
+        for (const coordinate of [offset, offset + 1])
+          axisSteps.set(
+            coordinate,
+            Math.min(axisSteps.get(coordinate) ?? Infinity, length * 1e-5),
+          );
+      }
+    }
     for (let k = 0; k < x.length; k++) {
-      const h = 1e-5 * Math.max(1, Math.abs(x[k]));
+      const defaultStep = 1e-5 * Math.max(1, Math.abs(x[k]));
+      const axisStep = axisSteps.get(k);
+      const h =
+        axisStep === undefined
+          ? defaultStep
+          : Math.max(
+              Number.EPSILON * Math.max(1, Math.abs(x[k])) * 4,
+              Math.min(defaultStep, axisStep),
+            );
       const t = [...x];
       t[k] += h;
-      const rr = residual(t);
-      for (let i = 0; i < r.length; i++) j[i][k] = (rr[i] - r[i]) / h;
+      let rr = residual(t),
+        step = axisStep === undefined ? h : t[k] - x[k];
+      if (hasSymmetry && rr.some((v) => !Number.isFinite(v))) {
+        t[k] = x[k] - h;
+        rr = residual(t);
+        step = axisStep === undefined ? -h : t[k] - x[k];
+      }
+      for (let i = 0; i < r.length; i++) j[i][k] = (rr[i] - r[i]) / step;
     }
     return j;
   };
@@ -473,10 +595,17 @@ export function solveSketch(
     r = residual(x),
     damping = 1e-3,
     iterations = 0;
-  const cost = (v: number[]) => v.reduce((sum, n) => sum + n * n, 0);
+  const cost = (v: number[]) =>
+    hasSymmetry && v.some((n) => !Number.isFinite(n))
+      ? Infinity
+      : v.reduce((sum, n) => sum + n * n, 0);
+  const violated = (v: number) =>
+    (hasSymmetry && !Number.isFinite(v)) || Math.abs(v) > tolerance;
   for (
     ;
-    iterations < maxIterations && r.some((v) => Math.abs(v) > tolerance);
+    iterations < maxIterations &&
+    (!hasSymmetry || r.every(Number.isFinite)) &&
+    r.some(violated);
     iterations++
   ) {
     const j = jacobian(x, r),
@@ -507,16 +636,16 @@ export function solveSketch(
   let cursor = 0;
   const conflictingConstraintIds = input.constraints
     .filter((c) => {
-      const count = c.kind === "fixed" || c.kind === "coincident" ? 2 : 1;
+      const count = residualCount(c);
       const values = r.slice(cursor, cursor + count);
       cursor += count;
-      return values.some((v) => Math.abs(v) > tolerance);
+      return values.some(violated);
     })
     .map((c) => c.id);
   [...arcs.values()].forEach((arc, i) => {
-    if (Math.abs(r[cursor + i]) > tolerance)
-      conflictingConstraintIds.push(`arc:${arc.id}`);
+    if (violated(r[cursor + i])) conflictingConstraintIds.push(`arc:${arc.id}`);
   });
+  const finalJacobian = jacobian(x, r);
   return {
     sketch: {
       ...input,
@@ -527,9 +656,20 @@ export function solveSketch(
       })),
     },
     converged: !conflictingConstraintIds.length,
-    maxResidual: Math.max(0, ...r.map(Math.abs)),
+    maxResidual:
+      hasSymmetry && r.some((v) => !Number.isFinite(v))
+        ? Infinity
+        : Math.max(0, ...r.map(Math.abs)),
     conflictingConstraintIds,
-    degreesOfFreedom: Math.max(0, x.length - rank(jacobian(x, r))),
+    degreesOfFreedom: Math.max(
+      0,
+      x.length -
+        rank(
+          hasSymmetry
+            ? finalJacobian.filter((row) => row.every(Number.isFinite))
+            : finalJacobian,
+        ),
+    ),
     iterations,
   };
 }

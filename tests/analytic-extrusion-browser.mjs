@@ -284,6 +284,11 @@ try {
   }
   assert(gui, "GUI extrusion settled");
   const guiId = gui.objects.find((o) => o.id !== created.entityIds[0]).id;
+  assert.equal(
+    gui.selectedId,
+    guiId,
+    "GUI selection is part of completed CAD transaction",
+  );
   const guiRefs = await job(
     await call("alignment_references", { entityId: guiId }),
   );

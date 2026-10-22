@@ -3964,6 +3964,7 @@ export function App() {
     void (async () => {
       const receipt = await uiCommand("cad_create", {
         recipe: { kind: "extrude", profile, height },
+        selectCreated: true,
         name:
           profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
       });
@@ -3978,10 +3979,7 @@ export function App() {
           result?: { entityIds: string[] };
           error?: { message: string };
         };
-        if (job.status === "succeeded" && job.result) {
-          setSelectedId(job.result.entityIds[0]);
-          return;
-        }
+        if (job.status === "succeeded" && job.result) return;
         if (job.status !== "running")
           throw new Error(job.error?.message ?? "Extrusion cancelled.");
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -6269,6 +6267,19 @@ export function App() {
                       showMeshPoints={sketchMeshPoints}
                       onShowMeshPoints={setSketchMeshPoints}
                       onChange={updateSketchDraft}
+                      onConstrain={async (constraint) => {
+                        const result = await uiCommand("sketch_set", {
+                          sketch: {
+                            ...sketchDraft,
+                            constraints: [
+                              ...sketchDraft.constraints,
+                              constraint,
+                            ],
+                          },
+                          solve: true,
+                        });
+                        if (!result.ok) throw new Error(result.error.message);
+                      }}
                       onExtrude={extrude}
                       disabled={busy}
                     />

@@ -1291,6 +1291,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         await releaseCreated(cad, result.entities, s.entities);
         throw error;
       }
+      if (a.selectCreated === true) host.select(result.created[0].id);
       return {
         entityIds: result.created.map((e) => e.id),
         featureId: result.created[0].parametric!.feature.id,
@@ -1329,9 +1330,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     sketch_set: (a, c) => {
       validateSketch(a.sketch);
+      const solution = a.solve ? solveSketch(a.sketch) : undefined;
+      if (solution && !solution.converged)
+        throw new Error(
+          `Conflicting or unsolved constraints: ${solution.conflictingConstraintIds.join(", ")}`,
+        );
       c.check();
-      host.setSketch(structuredClone(a.sketch));
-      return { updated: true };
+      host.setSketch(structuredClone(solution?.sketch ?? a.sketch));
+      return { updated: true, ...(solution ? { solution } : {}) };
     },
     sketch_solve: (a, c) => {
       const s = host.snapshot(),

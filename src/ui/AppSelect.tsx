@@ -104,8 +104,21 @@ export function AppSelect({
       )
         close();
     };
+    const anchor = trigger.current?.getBoundingClientRect();
     const moved = (e: Event) => {
-      if (!menu.current?.contains(e.target as Node)) close();
+      if (menu.current?.contains(e.target as Node)) return;
+      const current = trigger.current?.getBoundingClientRect();
+      // A scroll queued before opening must not dismiss an unchanged anchor.
+      if (
+        e.type === "resize" ||
+        !anchor ||
+        !current ||
+        current.left !== anchor.left ||
+        current.top !== anchor.top ||
+        current.width !== anchor.width ||
+        current.height !== anchor.height
+      )
+        close();
     };
     const observer = new MutationObserver(() => {
       if (trigger.current?.matches(":disabled")) close();

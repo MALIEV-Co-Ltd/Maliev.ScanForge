@@ -2358,6 +2358,11 @@
         "hideInputs": {
           "type": "boolean"
         },
+        "selectCreated": {
+          "type": "boolean",
+          "default": false,
+          "description": "Select the first created body inside this operation, before the job succeeds."
+        },
         "expectedRevision": {
           "type": "integer",
           "minimum": 0
@@ -3301,7 +3306,7 @@
   },
   {
     "name": "sketch_set",
-    "description": "Replace the active sketch draft with a validated Sketch v1; CAD remains unchanged until rebuild/extrude.",
+    "description": "Replace the active sketch draft with a validated Sketch v1; With solve:true, solve and apply atomically; conflicting constraints leave the draft unchanged. Returns solution diagnostics when solving. CAD remains unchanged until rebuild/extrude.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3309,6 +3314,11 @@
       "properties": {
         "sketch": {
           "type": "object"
+        },
+        "solve": {
+          "type": "boolean",
+          "default": false,
+          "description": "Solve before applying; reject conflicting or unsolved constraints without modifying the active draft."
         },
         "expectedRevision": {
           "type": "integer",

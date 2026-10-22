@@ -320,3 +320,9 @@ Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` sh
 ### Analytic extrusion profile compatibility
 
 `cad_create` and `cad_rebuild` accept the explicit `sketch-curves` profile discriminant. The shared parametric evaluator solves the inline sketch and emits an ordered exact line/arc descriptor to `CadClient.extrudeCurves`; the worker constructs analytic edges, checks the planar face and resulting prism, then registers the CAD body. The sketch GUI submits the same shared `cad_create` operation. Discovery schemas expose this variant. Existing `sketch` profiles continue through the sampled polygon evaluator, preserving historical geometry; no automatic migration changes saved recipes.
+
+### Atomic sketch constraint application
+
+The sketch panel's Add constraint action submits `sketch_set` with `solve:true`. The existing executor validates the full Sketch v1, solves it, rejects conflicts before host mutation and publishes once through `setSketch`; revision checks, retry receipts and per-sketch edit history remain shared with MCP. The default false preserves unsolved-draft replacement. Symmetry is a persisted shared-solver constraint, including its construction-axis reference and explicit endpoint correspondence; no separate agent solver or GUI-only geometry path is introduced.
+
+GUI extrusion requests `cad_create.selectCreated:true`; selection is published inside the shared operation before job completion. The GUI completion poll only reports errors and performs no later selection mutation. The optional flag preserves existing selection defaults for agents.
