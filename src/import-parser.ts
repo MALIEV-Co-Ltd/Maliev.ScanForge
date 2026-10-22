@@ -17,6 +17,8 @@ export interface ScanImportOptions {
   signal?: AbortSignal;
   /** Optional display budget, never a file-size acceptance limit. All records are validated. */
   previewTriangles?: number;
+  /** Internal worker opt-in: final indexed buffers are immutable after publication. */
+  sharedReadonlyBuffers?: boolean;
   onSource?: (source: ScanSource) => void;
 }
 export type ScanSource = ScanSourceCounts;
@@ -33,6 +35,10 @@ export async function readScan(
   options: ScanImportOptions = {},
 ): Promise<Float32Array> {
   checkAbort(options.signal);
+  const sharedReadonlyBuffers =
+    options.sharedReadonlyBuffers === true &&
+    globalThis.crossOriginIsolated === true &&
+    typeof SharedArrayBuffer !== "undefined";
   if (
     options.previewTriangles !== undefined &&
     (!Number.isSafeInteger(options.previewTriangles) ||
@@ -100,7 +106,7 @@ export async function readScan(
           throw new Error(
             "STL has no accepted triangles after vertex mapping.",
           );
-        positions = expandPlyTopology(indexed);
+        positions = expandPlyTopology(indexed, sharedReadonlyBuffers);
         checkAbort(options.signal);
         options.onIndexedMesh?.(indexed);
       }
@@ -157,13 +163,15 @@ export async function readScan(
   if (streamed) sourceNormals = streamed.normals;
   plyProgress(0.5);
   const positions = topology
-    ? expandPlyTopology(topology)
+    ? expandPlyTopology(topology, sharedReadonlyBuffers)
     : parseMesh(buffer!, extension);
   plyProgress(0.6);
   if (topology) options.onIndexedMesh?.(topology);
   if (topology && sourceNormals) {
     plyProgress(0.65);
-    const normals = new Float32Array(positions.length);
+    const normals = sharedReadonlyBuffers
+      ? new Float32Array(new SharedArrayBuffer(positions.byteLength))
+      : new Float32Array(positions.length);
     for (let slot = 0; slot < topology.triangles.length; slot++) {
       if (slot % 65536 === 0) checkAbort(options.signal);
       const vertex = topology.triangles[slot] * 3;

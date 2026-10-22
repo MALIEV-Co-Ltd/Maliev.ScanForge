@@ -8,12 +8,19 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const plyFixture = process.env.SCANFORGE_IMPORT_FIXTURE === "ply";
+const sharedImport = process.env.SCANFORGE_SHARED_IMPORT === "1";
+assert(
+  !sharedImport || plyFixture,
+  "Shared import mode requires the PLY fixture",
+);
 const extension = plyFixture ? "ply" : "stl";
 const root = new URL("../", import.meta.url),
   out = new URL(
-    plyFixture
-      ? "../.resources/parallel-import-ply-browser/"
-      : "../.resources/parallel-import-browser/",
+    sharedImport
+      ? "../.resources/parallel-import-ply-shared-browser/"
+      : plyFixture
+        ? "../.resources/parallel-import-ply-browser/"
+        : "../.resources/parallel-import-browser/",
     import.meta.url,
   );
 const admission = spawnSync(
@@ -65,6 +72,12 @@ try {
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
+        ...(sharedImport
+          ? {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp",
+            }
+          : {}),
         "Content-Type":
           {
             html: "text/html",
@@ -143,6 +156,7 @@ try {
     window.__pendingImports = [];
     window.__importWorkers = 0;
     window.__activeImports = 0;
+    window.__importResultStorage = [];
     const Original = window.Worker;
     window.Worker = class extends Original {
       constructor(url, options) {
@@ -154,6 +168,15 @@ try {
           window.__activeImports++;
           this.addEventListener("message", (event) => {
             if (event.data.positions && !this.released) {
+              const shared = (array) =>
+                typeof SharedArrayBuffer !== "undefined" &&
+                array?.buffer instanceof SharedArrayBuffer;
+              window.__importResultStorage.push({
+                positionsShared: shared(event.data.positions),
+                meshNormalsShared: shared(event.data.meshNormals),
+                positionBytes: event.data.positions.byteLength,
+                normalBytes: event.data.meshNormals?.byteLength ?? 0,
+              });
               event.stopImmediatePropagation();
               window.__pendingImports.push(() => {
                 this.released = true;
@@ -175,6 +198,8 @@ try {
     };
   });
   await page.goto(origin);
+  if (plyFixture)
+    assert.equal(await page.evaluate(() => crossOriginIsolated), sharedImport);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
@@ -375,6 +400,57 @@ try {
       importUndoSteps: 1,
       undoRedo: true,
     };
+    const storage = await page.evaluate(() => window.__importResultStorage);
+    assert.equal(
+      storage.length,
+      6,
+      "Three GUI, two cancelled and one completed MCP import result",
+    );
+    for (const result of storage) {
+      assert.equal(result.positionsShared, sharedImport);
+      assert.equal(result.meshNormalsShared, sharedImport);
+      assert.equal(result.positionBytes, 36);
+      assert.equal(result.normalBytes, 36);
+    }
+    plyParity.sharedReadonlyBuffers = sharedImport;
+    plyParity.importStorage = storage;
+    if (sharedImport) {
+      const allGeometry = async () => {
+        const current = (await call("project_get")).result;
+        return Promise.all(
+          current.objects
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(async (object) => ({
+              name: object.name,
+              ...(await geometry(object.id)),
+            })),
+        );
+      };
+      const before = await allGeometry();
+      assert.equal(before.length, 4);
+      const exported = await job(
+        await call("project_export", { format: "project" }),
+      );
+      assert.deepEqual(
+        await allGeometry(),
+        before,
+        "Project export preserves every authored buffer",
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: exported.result.artifactId,
+          replace: true,
+        }),
+      );
+      assert.deepEqual(
+        await allGeometry(),
+        before,
+        "Project import restores every object geometry and source count",
+      );
+      assert.equal(await page.evaluate(() => window.__activeImports), 0);
+      plyParity.projectExportPreservesGeometry = true;
+      plyParity.projectRoundTripObjects = 4;
+    }
   }
   assert.deepEqual(errors, []);
   ledger.result = {

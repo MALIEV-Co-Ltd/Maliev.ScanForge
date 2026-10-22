@@ -55,6 +55,7 @@ scope.onmessage = async ({ data }) => {
         indexedMesh = mesh;
       },
       previewTriangles: data.previewTriangles,
+      sharedReadonlyBuffers: true,
       onSource: (value) => {
         source = value;
       },
@@ -85,7 +86,7 @@ scope.onmessage = async ({ data }) => {
       transfers.push(indexedMesh.normals.buffer as ArrayBuffer);
     scope.postMessage(
       { positions, source, indexedMesh, renderData, meshNormals },
-      transfers,
+      transfers.filter((buffer) => buffer instanceof ArrayBuffer),
     );
   } catch (error) {
     scope.postMessage({

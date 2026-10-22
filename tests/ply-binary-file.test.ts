@@ -2,13 +2,15 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { open } from "node:fs/promises";
 import { join } from "node:path";
-import { expect, it, vi } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
 import { readScan, type ScanFile } from "../src/import-parser";
 import { expandPlyTopology, parsePlyTopology } from "../src/ply-topology";
 import { convertScanUnits } from "../src/import-units";
 import { placeScanOnOrigin } from "../src/import-origin";
 import { indexedMeshMatches } from "../src/indexed-mesh";
 import { prepareScanRenderData } from "../src/scan-render-data";
+
+afterEach(() => vi.unstubAllGlobals());
 
 function packed(
   options: {
@@ -391,91 +393,98 @@ for (const [name, sourceSha256] of [
     "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
   ],
 ] as const) {
-  it.skipIf(!originalFolder)(
-    `streams original ${name} with exact prior indexed and authored buffer hashes`,
-    async () => {
-      const path = join(originalFolder!, name);
-      // Return only hashes so reference geometry does not belong to the streaming run.
-      const expected = originalFileHashes(path, sourceSha256);
-      const handle = await open(path, "r");
-      let wholeFileReads = 0;
-      let maximumSliceBytes = 0;
-      let slices = 0;
-      try {
-        expect((await handle.stat()).size).toBe(expected.bytes);
-        const file: ScanFile = {
-          size: expected.bytes,
-          async arrayBuffer() {
-            wholeFileReads++;
-            throw new Error("Original packed PLY must not be buffered whole");
-          },
-          slice(start = 0, end = expected.bytes) {
-            return {
-              async arrayBuffer() {
-                const length = end - start;
-                maximumSliceBytes = Math.max(maximumSliceBytes, length);
-                slices++;
-                const data = new ArrayBuffer(length);
-                const view = new Uint8Array(data);
-                let filled = 0;
-                while (filled < length) {
-                  const { bytesRead } = await handle.read(
-                    view,
-                    filled,
-                    length - filled,
-                    start + filled,
-                  );
-                  if (!bytesRead) break;
-                  filled += bytesRead;
-                }
-                return filled === length ? data : data.slice(0, filled);
-              },
-            };
-          },
-        };
-        const actual: Partial<typeof expected> = { bytes: file.size };
-        let indexed: ReturnType<typeof parsePlyTopology> | undefined;
-        const positions = await readScan(file, "ply", {
-          onIndexedMesh(mesh) {
-            indexed = mesh;
-            actual.vertices = digest(mesh.vertices);
-            actual.normals = digest(mesh.normals!);
-            actual.triangles = digest(mesh.triangles);
-          },
-          onMeshNormals(normals) {
-            actual.cornerNormals = digest(normals);
-          },
-        });
-        actual.positions = digest(positions);
-        expect(actual).toEqual(expected);
-        expect(wholeFileReads).toBe(0);
-        expect(maximumSliceBytes).toBeLessThanOrEqual(1024 * 1024);
-        expect(slices).toBeGreaterThan(3);
-        convertScanUnits(positions, "mm");
-        convertScanUnits(indexed!.vertices, "mm");
-        placeScanOnOrigin(positions, false, [indexed!.vertices]);
-        expect(
-          indexedMeshMatches(indexed, positions),
-          "placed scan retains compact topology",
-        ).toBe(true);
-        const render = prepareScanRenderData(positions, indexed);
-        expect(render.indexedMesh).toBe(indexed);
-        expect(render.normals!.length).toBe(indexed!.vertices.length);
-        process.stdout.write(
-          JSON.stringify({
-            file: name,
-            maximumSliceBytes,
-            slices,
-            wholeFileReads,
-            hashes: actual,
-            compactDisplayAfterPlacement: render.indexedMesh === indexed,
-            displayNormalBytes: render.normals!.byteLength,
-          }) + "\n",
-        );
-      } finally {
-        await handle.close();
-      }
-    },
-    30_000,
-  );
+  for (const shared of [false, true]) {
+    it.skipIf(!originalFolder)(
+      `streams original ${name} with exact prior indexed and authored buffer hashes (shared=${shared})`,
+      async () => {
+        vi.stubGlobal("crossOriginIsolated", shared);
+        const path = join(originalFolder!, name);
+        // Return only hashes so reference geometry does not belong to the streaming run.
+        const expected = originalFileHashes(path, sourceSha256);
+        const handle = await open(path, "r");
+        let wholeFileReads = 0;
+        let maximumSliceBytes = 0;
+        let slices = 0;
+        try {
+          expect((await handle.stat()).size).toBe(expected.bytes);
+          const file: ScanFile = {
+            size: expected.bytes,
+            async arrayBuffer() {
+              wholeFileReads++;
+              throw new Error("Original packed PLY must not be buffered whole");
+            },
+            slice(start = 0, end = expected.bytes) {
+              return {
+                async arrayBuffer() {
+                  const length = end - start;
+                  maximumSliceBytes = Math.max(maximumSliceBytes, length);
+                  slices++;
+                  const data = new ArrayBuffer(length);
+                  const view = new Uint8Array(data);
+                  let filled = 0;
+                  while (filled < length) {
+                    const { bytesRead } = await handle.read(
+                      view,
+                      filled,
+                      length - filled,
+                      start + filled,
+                    );
+                    if (!bytesRead) break;
+                    filled += bytesRead;
+                  }
+                  return filled === length ? data : data.slice(0, filled);
+                },
+              };
+            },
+          };
+          const actual: Partial<typeof expected> = { bytes: file.size };
+          let indexed: ReturnType<typeof parsePlyTopology> | undefined;
+          const positions = await readScan(file, "ply", {
+            sharedReadonlyBuffers: shared,
+            onIndexedMesh(mesh) {
+              indexed = mesh;
+              actual.vertices = digest(mesh.vertices);
+              actual.normals = digest(mesh.normals!);
+              actual.triangles = digest(mesh.triangles);
+            },
+            onMeshNormals(normals) {
+              expect(normals.buffer instanceof SharedArrayBuffer).toBe(shared);
+              actual.cornerNormals = digest(normals);
+            },
+          });
+          actual.positions = digest(positions);
+          expect(positions.buffer instanceof SharedArrayBuffer).toBe(shared);
+          expect(actual).toEqual(expected);
+          expect(wholeFileReads).toBe(0);
+          expect(maximumSliceBytes).toBeLessThanOrEqual(1024 * 1024);
+          expect(slices).toBeGreaterThan(3);
+          convertScanUnits(positions, "mm");
+          convertScanUnits(indexed!.vertices, "mm");
+          placeScanOnOrigin(positions, false, [indexed!.vertices]);
+          expect(
+            indexedMeshMatches(indexed, positions),
+            "placed scan retains compact topology",
+          ).toBe(true);
+          const render = prepareScanRenderData(positions, indexed);
+          expect(render.indexedMesh).toBe(indexed);
+          expect(render.normals!.length).toBe(indexed!.vertices.length);
+          process.stdout.write(
+            JSON.stringify({
+              file: name,
+              sharedReadonlyBuffers: shared,
+              maximumSliceBytes,
+              slices,
+              wholeFileReads,
+              hashes: actual,
+              compactDisplayAfterPlacement: render.indexedMesh === indexed,
+              displayNormalBytes: render.normals!.byteLength,
+            }) + "\n",
+          );
+        } finally {
+          await handle.close();
+        }
+      },
+      30_000,
+    );
+  }
 }

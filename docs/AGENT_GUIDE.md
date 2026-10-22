@@ -1266,6 +1266,8 @@ same counts, and the GUI status bar retains the final outcome summary.
 
 `project_import_batch` prepares up to two STL/OBJ/PLY/ASC files concurrently using the same scheduler and parser as the GUI. Scene publication is serialized, appends to the current workspace, and retains one undo step per file. Results and failures retain input order; scene insertion follows readiness order. CAD imports remain serialized and project replacement stays separate. The batch fits the view once after scan publication.
 
+Cross-origin isolation lets indexed PLY/STL imports share immutable expanded positions and PLY corner normals with project encoding workers, reducing copies during save/export/automatic backup. Ordinary buffers remain the fallback without isolation; no agent parameter is required. Source geometry, history, cancellation and project formats retain the same contract.
+
 Admission uses device CPU/memory hints, reported JavaScript heap headroom where available, a 64 MiB per-file threshold, and a conservative 512 MiB decoded batch estimate. Inputs above these limits remain supported through one parser; browser hints cannot guarantee physical memory availability.
 
 Poll `job_get`: `progressDetails.kind` is `importBatch`, with `files` containing `index`, `name`, `status` (`queued`, `importing`, `rendering`, `complete`, `failed`, `cancelled`), `fraction` (0-1), and `stage`. The cursor overlay shows the active filenames and bars plus completed/queued/failed counts. `job_cancel` stops queued and active scan work, waits for worker cleanup, and retains committed objects. Per-file errors do not stop other imports. Native CAD cancellation still waits for native work to settle.

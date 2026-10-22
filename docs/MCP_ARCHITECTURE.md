@@ -210,6 +210,8 @@ The App now mounts the Interactive session store and viewport/mirror adapters, w
 
 ## Project restoration and numeric transport
 
+In cross-origin-isolated browsers, the shared GUI/MCP scan importer allocates final indexed PLY/STL expanded positions and PLY corner normals in shared buffers before publication. Published geometry is immutable; processing workers receive private copies. Save/export/automatic-backup workers read shared storage without cloning those buffers. Nonisolated browsers retain ordinary buffers. Indexed topology and display normals retain their existing storage, and project formats and public schemas are unchanged.
+
 GUI project opening and public MCP `project_import` / `backup_restore` use the same decoder boundary. One disposable worker decodes and validates the file and prepares current mesh display caches before publishing a replacement. Cancellation, worker failure and its two-minute lease preserve the previous workspace. Decoded worker-owned buffers transfer back; authored buffers in the existing workspace never detach. Large ordinary numeric arrays use internal Float64 staging packets with cooperative main-thread reconstruction. The encoder uses the same transport for save/export/automatic backup to avoid a synchronous structured-clone pause. This internal protocol does not change on-disk formats or public tool schemas. See [loading evidence and regression limits](PROJECT_LOAD_PERFORMANCE.md).
 
 ### Connected Global Fine scan-set groundwork
