@@ -20,7 +20,10 @@ import { createInteractiveEditor } from "../automation/interactive-editor";
 import { InteractiveAlignmentDialog } from "./InteractiveAlignmentDialog";
 import { isSampledScan } from "../scan-source";
 import { flushSync } from "react-dom";
-import { prepareImportedScan } from "../imported-scan";
+import {
+  prepareImportedScan,
+  DEFAULT_IMPORT_PLACE_AT_ORIGIN,
+} from "../imported-scan";
 import { beginWorkingJob } from "../working-job-status";
 import {
   importBatch,
@@ -407,6 +410,9 @@ export function App() {
     useState<SettingsSection>("appearance");
   const [newDocumentDialog, setNewDocumentDialog] = useState(false);
   const [previewImport, setPreviewImport] = useState(false);
+  const [placeImportAtOrigin, setPlaceImportAtOrigin] = useState(
+    DEFAULT_IMPORT_PLACE_AT_ORIGIN,
+  );
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
   );
@@ -3246,7 +3252,7 @@ export function App() {
                 /\.(stl|obj|ply|asc)$/i.test(file.name)
                   ? prepareImportedScan(file, {
                       unit,
-                      placeAtOrigin: true,
+                      placeAtOrigin: placeImportAtOrigin,
                       previewTriangles: previewImport ? 250_000 : undefined,
                       signal: context.signal,
                       onProgress: (fraction) =>
@@ -3420,7 +3426,7 @@ export function App() {
           prepared ??
           (await prepareImportedScan(file, {
             unit,
-            placeAtOrigin: true,
+            placeAtOrigin: placeImportAtOrigin,
             previewTriangles: previewImport ? 250_000 : undefined,
             signal,
             onProgress: (fraction) =>
@@ -4541,6 +4547,7 @@ export function App() {
         automaticGrid,
         snapGrid,
         originVisible,
+        importPlaceAtOrigin: placeImportAtOrigin,
       },
     }),
     cad: () => {
@@ -4627,6 +4634,8 @@ export function App() {
       else viewport.current?.setView(view as "iso");
     },
     settings: (patch) => {
+      if (patch.importPlaceAtOrigin !== undefined)
+        setPlaceImportAtOrigin(patch.importPlaceAtOrigin as boolean);
       if (patch.theme !== undefined) setTheme(patch.theme as Theme);
       if (patch.wireframe !== undefined)
         setWireframe(patch.wireframe as boolean);
@@ -6764,6 +6773,23 @@ export function App() {
                 hidden={settingsSection !== "import"}
               >
                 <h3>Scan import</h3>
+                <label className="check">
+                  <input
+                    type="checkbox"
+                    checked={placeImportAtOrigin}
+                    onChange={(event) =>
+                      void uiCommand("settings_set", {
+                        patch: { importPlaceAtOrigin: event.target.checked },
+                      })
+                    }
+                  />{" "}
+                  Place each scan on origin
+                </label>
+                <p className="muted">
+                  Off preserves file coordinates and relative scan placement. On
+                  centers each scan's XY bounds and places its base on Z=0.
+                  Orientation and normals stay unchanged.
+                </p>
                 <label className="check">
                   <input
                     type="checkbox"

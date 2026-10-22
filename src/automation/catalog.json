@@ -3612,7 +3612,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Scan units explicit; replace=true required for project replacement. Geometry stays local.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Geometry stays local.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3631,6 +3631,10 @@
         "replace": {
           "type": "boolean"
         },
+        "placeAtOrigin": {
+          "type": "boolean",
+          "description": "Scan files only: center XY bounds and place the base on Z=0 after unit conversion. False preserves file coordinates; orientation and normals are unchanged. Omit to use settings.importPlaceAtOrigin (initially false); an explicit boolean overrides that preference for this import."
+        },
         "expectedRevision": {
           "type": "integer",
           "minimum": 0
@@ -3648,7 +3652,7 @@
   },
   {
     "name": "project_import_batch",
-    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Large batches, constrained devices or low reported heap headroom fall back to one parser. CAD remains serialized. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Existing artifact size limits still apply.",
+    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 512 MiB.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3678,6 +3682,10 @@
             "maxLength": 200
           },
           "description": "Completed scan/CAD artifacts in import order. Project files must be opened separately."
+        },
+        "placeAtOrigin": {
+          "type": "boolean",
+          "description": "Scan files only: center each scan's XY bounds and place its base on Z=0 after unit conversion. False preserves shared file coordinates; orientation and normals are unchanged. Omit to use settings.importPlaceAtOrigin (initially false); an explicit boolean overrides that preference for this import."
         }
       },
       "required": ["artifactIds", "expectedRevision", "requestId"],
@@ -3800,7 +3808,7 @@
   },
   {
     "name": "settings_set",
-    "description": "Set display and grid preferences through the application.",
+    "description": "Set display, grid and scan-import preferences through the application.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3809,6 +3817,10 @@
         "patch": {
           "type": "object",
           "properties": {
+            "importPlaceAtOrigin": {
+              "type": "boolean",
+              "description": "Default for GUI and MCP scan imports when no per-import placeAtOrigin override is supplied. Initially false preserves source coordinates. True centers XY bounds and places the base on Z=0. Does not move existing objects or create model history."
+            },
             "theme": {
               "type": "string",
               "enum": ["light", "dark", "system"]
@@ -3899,7 +3911,7 @@
   },
   {
     "name": "artifact_put",
-    "description": "Create/append a local upload artifact with ordered base64 chunks (max1MiB decoded). This grants no workspace edit.",
+    "description": "Create/append a local upload artifact with ordered base64 chunks (maximum 1 MiB decoded). Storage is bounded to 64 handles totaling 512 MiB, with a 15-minute inactivity lease. Append at the exact current byte offset; expired handles cannot be resumed. This grants no workspace edit.",
     "readOnly": true,
     "job": false,
     "inputSchema": {

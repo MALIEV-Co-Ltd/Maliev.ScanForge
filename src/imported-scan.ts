@@ -3,6 +3,8 @@ import { DEFAULT_PART_COLOR } from "./appearance";
 import { isSampledScan } from "./scan-source";
 import type { Entity } from "./types";
 
+export const DEFAULT_IMPORT_PLACE_AT_ORIGIN = false;
+
 /** Parse without changing the workspace; GUI and MCP publish through their owned transactions. */
 export async function prepareImportedScan(
   file: File,
@@ -13,6 +15,7 @@ export async function prepareImportedScan(
     scanSource: Entity["scanSource"];
   const positions = await importScan(file, {
     ...options,
+    placeAtOrigin: options.placeAtOrigin ?? DEFAULT_IMPORT_PLACE_AT_ORIGIN,
     onMeshNormals: (value) => {
       normals = value;
     },

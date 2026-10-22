@@ -470,6 +470,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     } else {
       entity = await prepareImportedScan(new File([blob], name), {
         unit: a.unit ?? "mm",
+        placeAtOrigin:
+          a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),
       });
@@ -1452,6 +1454,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     surface_fit: createSurfaceFitOperation(host),
     project_import: (a, c) => importObject(a, c),
     project_import_batch: async (a, c) => {
+      const placeAtOrigin =
+        a.placeAtOrigin ??
+        host.snapshot().settings?.importPlaceAtOrigin === true;
       const names = a.artifactIds.map((artifactId: string) => {
         const blob = c.artifactBlob(artifactId);
         return (blob as File).name ?? "import.stl";
@@ -1473,6 +1478,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             return /\.(stl|obj|ply|asc)$/i.test(file.name)
               ? prepareImportedScan(file, {
                   unit: a.unit ?? "mm",
+                  placeAtOrigin,
                   signal: context.signal,
                   onProgress: (fraction) =>
                     context.progress(fraction, "Importing"),

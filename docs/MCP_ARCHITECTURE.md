@@ -74,6 +74,28 @@ Visual workflow tools use the same host adapter: `workflow-operations.ts` expose
 
 ## Mutation correctness
 
+Automation transfer artifacts use the browser-owned Blob store with 64 handles,
+512 MiB aggregate logical bytes, 1 MiB decoded upload chunks and a 900-second
+inactivity lease. `capabilities_get` exposes all four limits. Appending replaces
+the same handle's byte accounting; rejected appends preserve its previous Blob.
+Expiry is swept before an append resolves its prior handle, so an expired upload
+cannot revive retained content. GUI and MCP import the same File/Blob through the
+shared importer; increasing transfer capacity does not bypass geometry admission.
+
+`prepareImportedScan` supplies the shared `placeAtOrigin:false` default for scan
+preparation. GUI single/batch imports pass their Scan import checkbox; MCP
+`project_import` and `project_import_batch` expose the same optional boolean.
+The checkbox uses the shared `settings_set` operation and editor adapter;
+`project_get.settings.importPlaceAtOrigin` exposes its current value. Omitted
+import options capture that workspace preference once, initially false;
+explicit booleans override it for the current import. Preference writes follow
+revision/retry validation without creating geometry history.
+File coordinates are preserved by default. Explicit placement translates XY bounds
+to their center and the base to Z=0 after unit conversion, including indexed
+companion vertices; normals and orientation remain unchanged. CAD/project inputs
+retain their placement. Import publication, revision checks, jobs, cancellation,
+retry receipts and per-file history still use the existing shared operations.
+
 All public mutations require `expectedRevision` and `requestId`. The revision includes geometry identity, metadata, authoring, selection, model history and relevant settings. A human action can advance it. Immediately before applying asynchronous work, the executor checks cancellation and whether the original revision is still current. Results that cannot be applied release newly owned native handles; previous model/history handles are preserved. Existing domain validation and lock checks run at commit.
 
 Retry receipts are bounded to the latest256 requests and are transient. They prevent ordinary in-session duplicate writes, not crash replay. A changed request needs a new ID. Project imports restore exact bodies in a separate kernel before atomic replacement; failed imports dispose that kernel. A cancelled native operation retains the admission lane until cleanup settles.

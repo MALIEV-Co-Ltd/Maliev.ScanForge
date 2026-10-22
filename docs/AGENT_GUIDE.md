@@ -516,9 +516,32 @@ Supply it to `cad_create` with `name`, the current `expectedRevision`, a fresh `
 
 Upload bytes through `artifact_put` with the original filename, base64 content and `offset:0`. For files larger than a chunk, append subsequent chunks with the returned `artifactId`, the same filename and the exact current byte offset. Each chunk is at most 1 MiB decoded; do not send the entire large scan as one MCP message. An empty first chunk can create the upload handle.
 
+`capabilities_get.limits` reports `artifactBytes` (512 MiB aggregate),
+`artifactCount` (64 handles), `artifactChunkBytes` (1 MiB) and
+`artifactLeaseSeconds` (900 seconds of inactivity). Delete transfer artifacts
+when finished to release capacity. An expired upload cannot be resumed; start
+a new handle and upload from offset zero. Rejected appends preserve the retained
+artifact. These are logical transfer-byte limits, not process-memory guarantees;
+the shared importer's geometry and worker admissions still apply.
+
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
-For several scans/CAD files, use `project_import_batch` with `artifactIds` in import order, a common `unit`, current `expectedRevision`, and a fresh `requestId`. GUI drop and file-picker imports use the same sequential queue. Workers prepare smooth normals, bounds and statistics before transfer; import completion waits for a viewport draw and paint opportunity. Full resolution is retained unless sampled preview was explicitly chosen. Each completed file is an independent model undo step. A batch returns `completed` import results plus `failed` entries containing the original zero-based file `index` and `error`. A failed file does not discard successful imports; cancellation stops the remaining queue and retains committed objects. Inspect `project_get` after cancelling. Project files must be opened separately; they cannot be mixed into a batch. Existing artifact limits are unchanged.
+For several scans/CAD files, use `project_import_batch` with `artifactIds` in import order, a common `unit`, current `expectedRevision`, and a fresh `requestId`. GUI drop and file-picker imports use the same sequential queue. Workers prepare smooth normals, bounds and statistics before transfer; import completion waits for a viewport draw and paint opportunity. Full resolution is retained unless sampled preview was explicitly chosen. Each completed file is an independent model undo step. A batch returns `completed` import results plus `failed` entries containing the original zero-based file `index` and `error`. A failed file does not discard successful imports; cancellation stops the remaining queue and retains committed objects. Inspect `project_get` after cancelling. Project files must be opened separately; they cannot be mixed into a batch.
+
+GUI scan imports and MCP `project_import` / `project_import_batch` preserve file
+coordinates by default. Set `placeAtOrigin:true` to center each scan's XY bounds
+and place its base on Z=0 after unit conversion. The matching GUI option is
+**Settings → Scan import → Place each scan on origin**; its initial value is off.
+Read the current preference at `project_get.settings.importPlaceAtOrigin` and
+change it with `settings_set` and `patch:{importPlaceAtOrigin:true|false}`.
+Omitting `placeAtOrigin` uses that preference, captured once for the import or
+batch; an explicit boolean overrides it without changing the preference.
+Changing the preference advances the workspace revision but does not move
+existing objects or create a model-history entry.
+This replaces the GUI's former unconditional centering so scans retain their
+shared source frame. The option translates positions and indexed vertices;
+orientation and imported normals stay unchanged. CAD and saved-project placement
+are retained. Each accepted import still creates its own undo step.
 
 PLY mesh import retains supplied finite vertex normals and expands them in original triangle order, alongside the indexed topology. GUI import and `project_import` share the same parser/worker transfer. `object_get` with `includeGeometry:true` exposes these normals in its geometry artifact; project save/reopen retains them. Files without normals keep the existing generated display normals. This does not enable the still-unverified main Align controller.
 
@@ -747,7 +770,7 @@ This shared workflow does not establish numerical parity with the native fitter.
 
 - One operation admission lane protects the owning model. Lightweight state reads and job/artifact tools remain available while a job runs. A second geometry operation returns `BUSY`.
 - Jobs expire after 15 minutes; mesh/surface/import workers also retain their existing shorter inactivity/hard leases. CAD retains its existing 90-second per-operation timeout. Cancellation is cooperative: synchronous native CAD may finish before its output is discarded and the lane is released. Poll the terminal job status; do not assume `job_cancel` completed native cleanup immediately.
-- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 64 MiB, with a 15-minute inactivity lease. These are automation transfer limits; they do not change the editor's existing manual file limits. Large scan transfers may require the human to import locally.
+- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 512 MiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
 - Primitive fits use at most 20,000 sampled vertices. Point-cloud selection slots identify XYZ records; mesh selection slots identify facets. Existing `analysis_fit` arithmetic is retained: `selectionOnly:true` extracts selected coordinates into Float32 storage before sampling; omitted/false uses original whole-source coordinates. Hidden metadata does not independently filter this primitive-fit operation. GUI empty selection retains whole-input fallback, while explicit MCP selection requires a nonempty mask. Synchronous section/deviation analysis is capped at 250,000 triangles; reduce a separate copy or a supported selected region when needed. Modeling estimates are not certified metrology.
 - Locked objects and affected locked dependents cannot be edited. Geometry changes invalidate stale triangle selection/authoring where applicable. Individual split outputs cannot be deleted alone.
 - Edge/face references remain kernel indices. Refresh state and revision after topology changes. Persistent topology naming is not implemented.

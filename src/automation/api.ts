@@ -183,6 +183,10 @@ export type ApiResult =
       error: { code: string; message: string };
     };
 type Schema = Record<string, any>;
+const ARTIFACT_BYTES = 512 * 1024 * 1024;
+const ARTIFACT_COUNT = 64;
+const ARTIFACT_CHUNK_BYTES = 1024 * 1024;
+const ARTIFACT_LEASE_MS = 900000;
 function discoveryKeywords(value: unknown): string[] {
   if (Array.isArray(value)) return value.flatMap(discoveryKeywords);
   if (!value || typeof value !== "object") return [];
@@ -579,7 +583,7 @@ export class ApplicationApi {
           ),
           artifacts: [...this.artifacts.values()].map(({ info, used }) => ({
             ...info,
-            expiresAt: new Date(used + 900000).toISOString(),
+            expiresAt: new Date(used + ARTIFACT_LEASE_MS).toISOString(),
           })),
           retainedRequestCount: this.requests.size,
         });
@@ -591,8 +595,10 @@ export class ApplicationApi {
           limits: {
             retainedRequests: 256,
             retainedJobs: 32,
-            artifactBytes: 64 * 1024 * 1024,
-            artifactLeaseSeconds: 900,
+            artifactBytes: ARTIFACT_BYTES,
+            artifactCount: ARTIFACT_COUNT,
+            artifactChunkBytes: ARTIFACT_CHUNK_BYTES,
+            artifactLeaseSeconds: ARTIFACT_LEASE_MS / 1000,
           },
           connection: "browser-owned workspace; no headless runtime",
         });
@@ -625,6 +631,7 @@ export class ApplicationApi {
         });
       }
       if (command === "artifact_put") {
+        this.sweepArtifacts();
         const encoded = args.base64 as string;
         if (
           encoded.length > 1400000 ||
@@ -637,7 +644,7 @@ export class ApplicationApi {
             "Invalid base64 chunk (maximum 1 MiB decoded).",
           );
         const data = Uint8Array.from(atob(encoded), (ch) => ch.charCodeAt(0));
-        if (data.byteLength > 1048576)
+        if (data.byteLength > ARTIFACT_CHUNK_BYTES)
           throw new ApiError(
             "RESOURCE_LIMIT",
             "Upload chunks cannot exceed 1 MiB decoded.",
@@ -854,7 +861,7 @@ export class ApplicationApi {
   }
   private sweepArtifacts() {
     for (const [id, item] of this.artifacts)
-      if (Date.now() - item.used > 900000) this.artifacts.delete(id);
+      if (Date.now() - item.used > ARTIFACT_LEASE_MS) this.artifacts.delete(id);
   }
   private getArtifact(id: string) {
     this.sweepArtifacts();
@@ -882,12 +889,12 @@ export class ApplicationApi {
       0,
     );
     if (
-      (this.artifacts.size >= 64 && !this.artifacts.has(id)) ||
-      used + blob.size > 64 * 1024 * 1024
+      (this.artifacts.size >= ARTIFACT_COUNT && !this.artifacts.has(id)) ||
+      used + blob.size > ARTIFACT_BYTES
     )
       throw new ApiError(
         "RESOURCE_LIMIT",
-        "Artifact storage exceeds 64 artifacts or 64 MiB; delete artifacts before retrying.",
+        "Artifact storage exceeds 64 artifacts or 512 MiB; delete artifacts before retrying.",
       );
     const info = { artifactId: id, name, mime, bytes: blob.size };
     this.artifacts.set(id, { info, blob, used: Date.now() });
