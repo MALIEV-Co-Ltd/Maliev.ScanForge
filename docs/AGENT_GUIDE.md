@@ -1344,3 +1344,9 @@ retains its existing order. `surface_shell` and GUI shell validation enforce
 off-grid breaks; an on-grid break does not add an extra cell. A budget failure
 publishes no assembled result. Inspect returned shell diagnostics; display
 tessellation does not certify a closed or valid exact CAD solid.
+
+### Analytic sketch extrusion
+
+Use `cad_create` with `recipe:{kind:"extrude",profile:{kind:"sketch-curves",sketch:<Sketch v1>},height:10}` and the usual revision/request fields. The sketch must solve into one closed unbranched line/arc cycle; construction geometry is excluded. Height is positive millimetres, at most one billion. The optional sketch frame places the profile and defines its extrusion normal. Circular arcs remain exact CAD curves; no `chordTolerance` is accepted for this profile kind. Invalid topology, inconsistent radii, unsolved constraints and intersecting profiles fail before a body is committed. Inspect the job receipt and `project_get`; use `cad_rebuild` with the same recipe kind to edit the feature. Both the GUI's solved-profile extrusion and MCP call the shared `cad_create` operation, with existing cancellation, revision, retry and model-history behavior.
+
+Existing `profile:{kind:"sketch",sketch:...,chordTolerance:...}` recipes retain their sampled polygon geometry on rebuild. Use `sketch-curves` explicitly to migrate a legacy feature to analytic curves. The sketch panel's arc preview tolerance affects drawing only. CAD meshes remain tessellated for display. Exact-cylinder volume and STEP round-trip checks establish kernel correctness; native workflow equivalence remains unverified.

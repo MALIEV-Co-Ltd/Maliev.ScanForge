@@ -1,3 +1,5 @@
+import { flushSync } from "react-dom";
+import type { ParametricProfile } from "../parametric";
 import { AppSelect } from "./AppSelect";
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
@@ -5,7 +7,7 @@ import { resetSketchRectangle } from "../sketch-authoring";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
-  sketchProfile,
+  sketchCurveProfile,
   solveSketch,
   sampleSketchArc,
   removeSketchGeometry,
@@ -17,11 +19,7 @@ import {
 export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
-  onExtrude: (
-    points: [number, number][],
-    height: number,
-    profile?: { sketch: Sketch; chordTolerance: number },
-  ) => void;
+  onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
   onDrawingTool?: (tool: SketchDrawingTool) => void;
@@ -779,7 +777,7 @@ export function SketchTools({
         Solve constraints
       </button>
       <label>
-        Arc chord tolerance (mm)
+        Arc preview tolerance (mm)
         <input
           type="number"
           min="0.000001"
@@ -790,7 +788,8 @@ export function SketchTools({
         />
       </label>
       <p className="muted">
-        Circular arcs are sampled into polygon chords for extrusion.
+        Circular arcs remain analytic in CAD. Tolerance controls the sketch
+        preview.
       </p>
       <label>
         Extrusion height
@@ -813,12 +812,10 @@ export function SketchTools({
               );
             if (!(height > 0) || !Number.isFinite(height))
               throw new Error("Extrusion height must be positive.");
-            const profile = sketchProfile(result.sketch, chordTolerance);
-            update(result.sketch);
-            onExtrude(profile, height, {
-              sketch: result.sketch,
-              chordTolerance,
-            });
+            sketchCurveProfile(result.sketch);
+            // Publish the solved draft before the shared operation captures its revision.
+            flushSync(() => update(result.sketch));
+            onExtrude({ kind: "sketch-curves", sketch: result.sketch }, height);
           })
         }
       >

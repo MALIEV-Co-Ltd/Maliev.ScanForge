@@ -4,6 +4,7 @@ import {
   validateSketch,
   solveSketch,
   sketchProfile,
+  sketchCurveProfile,
   type Sketch,
 } from "./sketch";
 import { validatePatch, type NurbsPatch } from "./surfaces";
@@ -14,6 +15,10 @@ export interface FeatureRef {
   readonly output?: number;
 }
 export type ParametricProfile =
+  | {
+      readonly kind: "sketch-curves";
+      readonly sketch: Sketch;
+    }
   | {
       readonly kind: "sketch";
       readonly sketch: Sketch;
@@ -284,6 +289,10 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
         validateSketch(p.sketch);
         if (p.chordTolerance !== undefined)
           requirePositive(p.chordTolerance, "Arc chord tolerance");
+      } else if (p.kind === "sketch-curves") {
+        if (Object.keys(p).some((key) => key !== "kind" && key !== "sketch"))
+          throw new Error("Analytic sketch profile has unknown fields.");
+        validateSketch(p.sketch);
       } else throw new Error("Unsupported profile kind.");
       requirePositive(value.height, "Extrusion height");
       break;
@@ -674,6 +683,19 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
           );
           break;
         case "extrude": {
+          if (r.profile.kind === "sketch-curves") {
+            const solution = solveSketch(r.profile.sketch);
+            if (!solution.converged)
+              throw new Error(
+                `Sketch conflicts: ${solution.conflictingConstraintIds.join(", ")}`,
+              );
+            output = await client.extrudeCurves(
+              sketchCurveProfile(solution.sketch),
+              r.height,
+              solution.sketch.frame,
+            );
+            break;
+          }
           let points: [number, number][];
           if (r.profile.kind === "polygon") points = r.profile.points;
           else {

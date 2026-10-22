@@ -1291,6 +1291,141 @@ function extrudeShape(oc, input) {
   }
 }
 
+// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
+function extrudeCurvesShape(oc, input) {
+  const { edges, height } = input;
+  const frame = sketchPlacement(input.frame);
+  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
+    throw new Error(
+      "Extrusion height must be positive and at most one billion.",
+    );
+  if (!Array.isArray(edges) || edges.length < 2 || edges.length > 10000)
+    throw new Error("Choose a closed profile with 2 to 10000 edges.");
+  const point = (p) =>
+    Array.isArray(p) &&
+    p.length === 2 &&
+    p.every((n) => Number.isFinite(n) && Math.abs(n) <= 1e9);
+  const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  const sweeps = [];
+  let area = 0;
+  const anchor = edges[0]?.start;
+  if (!point(anchor)) throw new Error("Invalid sketch profile coordinates.");
+  for (let i = 0; i < edges.length; i++) {
+    const edge = edges[i],
+      next = edges[(i + 1) % edges.length];
+    if (
+      !edge ||
+      !point(edge.start) ||
+      !point(edge.end) ||
+      !point(next?.start) ||
+      distance(edge.start, edge.end) < 1e-8 ||
+      distance(edge.end, next.start) > 1e-8
+    )
+      throw new Error(
+        "Sketch profile must form a closed cycle without zero-length edges.",
+      );
+    const a = edge.start.map((n, j) => n - anchor[j]),
+      b = edge.end.map((n, j) => n - anchor[j]);
+    if (edge.kind === "line") {
+      area += a[0] * b[1] - a[1] * b[0];
+      sweeps.push(0);
+    } else if (
+      edge.kind === "arc" &&
+      point(edge.center) &&
+      typeof edge.clockwise === "boolean"
+    ) {
+      const r = distance(edge.start, edge.center),
+        endRadius = distance(edge.end, edge.center);
+      if (r < 1e-8 || Math.abs(r - endRadius) > Math.max(1e-5, r * 1e-6))
+        throw new Error("Sketch arc radii are inconsistent.");
+      let sweep =
+        Math.atan2(edge.end[1] - edge.center[1], edge.end[0] - edge.center[0]) -
+        Math.atan2(
+          edge.start[1] - edge.center[1],
+          edge.start[0] - edge.center[0],
+        );
+      if (edge.clockwise) {
+        if (sweep >= 0) sweep -= 2 * Math.PI;
+      } else if (sweep <= 0) sweep += 2 * Math.PI;
+      const c = edge.center.map((n, j) => n - anchor[j]);
+      area += c[0] * (b[1] - a[1]) - c[1] * (b[0] - a[0]) + r * r * sweep;
+      sweeps.push(sweep);
+    } else throw new Error("Unknown sketch profile edge.");
+  }
+  if (!Number.isFinite(area) || Math.abs(area) < 1e-8)
+    throw new Error("Sketch profile has zero area.");
+  const handles = [];
+  const keep = (h) => (handles.push(h), h);
+  const placed = (uv) => {
+    const world = frame.origin.map(
+      (n, i) => n + frame.u[i] * uv[0] + frame.v[i] * uv[1],
+    );
+    if (world.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e9))
+      throw new Error("Placed sketch coordinates must be finite and bounded.");
+    return keep(new oc.gp_Pnt_3(...world));
+  };
+  let solid;
+  try {
+    const wireMaker = keep(new oc.BRepBuilderAPI_MakeWire_1());
+    for (let i = 0; i < edges.length; i++) {
+      const edge = edges[i],
+        start = placed(edge.start),
+        end = placed(edge.end);
+      let maker;
+      if (edge.kind === "line")
+        maker = keep(new oc.BRepBuilderAPI_MakeEdge_3(start, end));
+      else {
+        const r = distance(edge.start, edge.center),
+          angle =
+            Math.atan2(
+              edge.start[1] - edge.center[1],
+              edge.start[0] - edge.center[0],
+            ) +
+            sweeps[i] / 2;
+        const middle = placed([
+          edge.center[0] + r * Math.cos(angle),
+          edge.center[1] + r * Math.sin(angle),
+        ]);
+        const arc = keep(new oc.GC_MakeArcOfCircle_4(start, middle, end));
+        if (!arc.IsDone()) throw new Error("CAD arc construction failed.");
+        const trimmed = keep(arc.Value()),
+          curve = keep(new oc.Handle_Geom_Curve_2(trimmed.get()));
+        maker = keep(new oc.BRepBuilderAPI_MakeEdge_24(curve));
+      }
+      if (!maker.IsDone()) throw new Error("CAD edge construction failed.");
+      wireMaker.Add_1(keep(maker.Edge()));
+      if (!wireMaker.IsDone()) throw new Error("CAD wire construction failed.");
+    }
+    const wire = keep(wireMaker.Wire()),
+      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
+    if (!faceMaker.IsDone())
+      throw new Error("CAD sketch face construction failed.");
+    const face = keep(faceMaker.Face()),
+      faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
+    if (!faceCheck.IsValid_2())
+      throw new Error(
+        "Sketch profile intersects itself or has invalid geometry.",
+      );
+    const direction = keep(
+      new oc.gp_Vec_4(...frame.normal.map((n) => n * height)),
+    );
+    const prism = keep(
+      new oc.BRepPrimAPI_MakePrism_1(face, direction, true, true),
+    );
+    if (!prism.IsDone()) throw new Error("CAD extrusion construction failed.");
+    solid = prism.Shape();
+    const check = keep(new oc.BRepCheck_Analyzer(solid, true));
+    if (!check.IsValid_2())
+      throw new Error("CAD extrusion failed topology and geometry validation.");
+    const owned = solid;
+    solid = undefined;
+    return register(oc, owned);
+  } finally {
+    solid?.delete();
+    cleanup(handles);
+  }
+}
+
 function revolveShape(oc, input) {
   const points = polygonPoints(input.points);
   const { angleDegrees } = input;
@@ -1916,6 +2051,8 @@ self.onmessage = (event) => {
       else if (operation === "mirror") result = mirrorShape(oc, payload);
       else if (operation === "split") result = splitShape(oc, payload);
       else if (operation === "extrude") result = extrudeShape(oc, payload);
+      else if (operation === "extrudeCurves")
+        result = extrudeCurvesShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "loft") result = loftShape(oc, payload);
       else if (operation === "sweep") result = sweepShape(oc, payload);

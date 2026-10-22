@@ -1689,6 +1689,18 @@
                       },
                       "required": ["kind", "sketch"],
                       "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": { "type": "string", "enum": ["sketch-curves"] },
+                        "sketch": {
+                          "type": "object",
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
+                        }
+                      },
+                      "required": ["kind", "sketch"],
+                      "additionalProperties": false
                     }
                   ]
                 },
@@ -2596,6 +2608,18 @@
                         "chordTolerance": {
                           "type": "number",
                           "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": ["kind", "sketch"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": { "type": "string", "enum": ["sketch-curves"] },
+                        "sketch": {
+                          "type": "object",
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
                         }
                       },
                       "required": ["kind", "sketch"],

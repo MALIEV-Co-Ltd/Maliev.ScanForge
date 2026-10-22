@@ -23,6 +23,15 @@ export interface SketchArc {
   clockwise: boolean;
   construction?: boolean;
 }
+export type SketchProfileEdge =
+  | { kind: "line"; start: [number, number]; end: [number, number] }
+  | {
+      kind: "arc";
+      start: [number, number];
+      end: [number, number];
+      center: [number, number];
+      clockwise: boolean;
+    };
 export type SketchConstraint =
   | { id: string; kind: "fixed"; point: string; x: number; y: number }
   | { id: string; kind: "coincident"; a: string; b: string }
@@ -573,6 +582,97 @@ export function sampleSketchArc(
     const t = start + (sweep * i) / steps;
     return [c.x + radius * Math.cos(t), c.y + radius * Math.sin(t)];
   });
+}
+
+/** Preserve one ordered analytic cycle; the CAD kernel validates the resulting wire. */
+export function sketchCurveProfile(sketch: Sketch): SketchProfileEdge[] {
+  validateSketch(sketch);
+  const curves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+    (curve) => !curve.construction,
+  );
+  if (curves.length < 2)
+    throw new Error("Extrusion requires one closed profile.");
+  const points = new Map(sketch.points.map((p) => [p.id, p]));
+  const adjacent = new Map(sketch.points.map((p) => [p.id, [] as string[]]));
+  for (const curve of curves) {
+    adjacent.get(curve.a)!.push(curve.id);
+    adjacent.get(curve.b)!.push(curve.id);
+  }
+  if ([...adjacent.values()].some((v) => v.length !== 0 && v.length !== 2))
+    throw new Error("Profile must be a single unbranched cycle.");
+  const byId = new Map(curves.map((curve) => [curve.id, curve]));
+  const arcs = new Map((sketch.arcs ?? []).map((arc) => [arc.id, arc]));
+  const used = new Set<string>(),
+    edges: SketchProfileEdge[] = [];
+  const first = curves[0].a,
+    anchor = points.get(first)!;
+  let current = first,
+    previous = "",
+    twiceArea = 0;
+  while (used.size < curves.length) {
+    const id = adjacent
+      .get(current)!
+      .find((id) => id !== previous && !used.has(id));
+    if (!id) break;
+    const curve = byId.get(id)!,
+      arc = arcs.get(id),
+      reverse = curve.b === current;
+    const a = points.get(current)!,
+      b = points.get(reverse ? curve.a : curve.b)!;
+    const start: [number, number] = [a.x, a.y],
+      end: [number, number] = [b.x, b.y];
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 1e-8)
+      throw new Error("Profile has zero-length edges.");
+    // Translation keeps the closed integral unchanged and avoids large-origin cancellation.
+    const ax = a.x - anchor.x,
+      ay = a.y - anchor.y;
+    const bx = b.x - anchor.x,
+      by = b.y - anchor.y;
+    if (arc) {
+      const center = points.get(arc.center)!;
+      const radius = Math.hypot(a.x - center.x, a.y - center.y);
+      const endRadius = Math.hypot(b.x - center.x, b.y - center.y);
+      if (
+        radius < 1e-8 ||
+        Math.abs(radius - endRadius) > Math.max(1e-5, radius * 1e-6)
+      )
+        throw new Error(
+          "Arc endpoints must lie on the same positive-radius circle; solve constraints first.",
+        );
+      const clockwise = reverse ? !arc.clockwise : arc.clockwise;
+      let sweep =
+        Math.atan2(b.y - center.y, b.x - center.x) -
+        Math.atan2(a.y - center.y, a.x - center.x);
+      if (clockwise) {
+        while (sweep >= 0) sweep -= Math.PI * 2;
+      } else {
+        while (sweep <= 0) sweep += Math.PI * 2;
+      }
+      twiceArea +=
+        (center.x - anchor.x) * (by - ay) -
+        (center.y - anchor.y) * (bx - ax) +
+        radius * radius * sweep;
+      edges.push({
+        kind: "arc",
+        start,
+        end,
+        center: [center.x, center.y],
+        clockwise,
+      });
+    } else {
+      twiceArea += ax * by - ay * bx;
+      edges.push({ kind: "line", start, end });
+    }
+    used.add(id);
+    current = reverse ? curve.a : curve.b;
+    previous = id;
+    if (current === first) break;
+  }
+  if (current !== first || used.size !== curves.length)
+    throw new Error("Profile contains disconnected cycles.");
+  if (!Number.isFinite(twiceArea) || Math.abs(twiceArea) < 1e-8)
+    throw new Error("Profile area is zero or non-finite.");
+  return edges;
 }
 
 /** Traverse one mixed line/arc cycle. Arcs become polygon chords for extrusion. */

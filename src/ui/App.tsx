@@ -285,6 +285,7 @@ import {
   rebuildParametric,
   type FeatureRef,
   type ParametricRecipe,
+  type ParametricProfile,
 } from "../parametric";
 import { tessellatePatch, type NurbsPatch } from "../surfaces";
 import { rectangleSketch, type Sketch } from "../sketch";
@@ -3959,37 +3960,37 @@ export function App() {
       );
     setDirty(true);
   }
-  function extrude(
-    points: [number, number][],
-    height: number,
-    sketchProfile?: { sketch: Sketch; chordTolerance: number },
-  ) {
-    void action("Extruding polygon sketch…", async () => {
-      const result = await cad.current!.extrude(
-        points,
-        height,
-        sketchProfile?.sketch.frame,
-      );
-      const entity: Entity = {
-        id: crypto.randomUUID(),
-        name: "Polygon extrusion",
-        kind: "cad",
-        ...result,
-        color: DEFAULT_PART_COLOR,
-        visible: true,
-        opacity: 1,
-        parametric: featureBinding("Polygon extrusion", {
-          kind: "extrude",
-          profile: sketchProfile
-            ? { kind: "sketch", ...sketchProfile }
-            : { kind: "polygon", points },
-          height,
-        }),
-      };
-      commit([...entities, entity]);
-      setSelectedId(entity.id);
-      setMessage("Polygon extruded to exact CAD");
-    });
+  function extrude(profile: ParametricProfile, height: number) {
+    void (async () => {
+      const receipt = await uiCommand("cad_create", {
+        recipe: { kind: "extrude", profile, height },
+        name:
+          profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
+      });
+      if (!receipt.ok) return;
+      const { jobId } = receipt.result as { jobId: string };
+      const expires = Date.now() + 95_000;
+      while (Date.now() < expires) {
+        const response = await workspaceApi.invoke("job_get", { jobId });
+        if (!response.ok) throw new Error(response.error.message);
+        const job = response.result as {
+          status: string;
+          result?: { entityIds: string[] };
+          error?: { message: string };
+        };
+        if (job.status === "succeeded" && job.result) {
+          setSelectedId(job.result.entityIds[0]);
+          return;
+        }
+        if (job.status !== "running")
+          throw new Error(job.error?.message ?? "Extrusion cancelled.");
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      await workspaceApi.invoke("job_cancel", { jobId });
+      throw new Error("Extrusion exceeded its time limit.");
+    })().catch((error: unknown) =>
+      setError(error instanceof Error ? error.message : String(error)),
+    );
   }
   function createMesh(
     positions: Float32Array,
@@ -6161,7 +6162,9 @@ export function App() {
                             selected={selected}
                             busy={busy}
                             onBoolean={boolean}
-                            onExtrude={extrude}
+                            onExtrude={(points, height) =>
+                              extrude({ kind: "polygon", points }, height)
+                            }
                             onRevolve={revolve}
                           />
                         </div>
