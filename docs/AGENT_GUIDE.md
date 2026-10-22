@@ -33,6 +33,13 @@ smoothing.
 
 ## Background mesh preparation
 
+GUI and MCP imports stream the packed little-endian PLY scanner schema (XYZ and
+normal Float32 values, triangular faces) through reads of at most 1 MiB, retaining
+the full geometry and authored normals. Other PLY layouts use the existing loader.
+Cancellation, units, placement, source counts and history semantics are unchanged.
+This bounds raw input reads; final geometry and preparation still scale with scan
+size, and the three-scan 2 GiB diagnostic gate remains unresolved.
+
 Topology preparation uses compact numeric weld, edge and face indexes while preserving tolerance, facet identity, ordered boundaries and diagnostics. GUI and MCP share this kernel and unchanged tool parameters. The derived cache now uses compact format 2; older records are disposable misses and existing storage limits remain unchanged. See [Scan preparation performance](MESH_READINESS.md) and [cache format](TOPOLOGY_CACHE.md).
 
 Scale, mirror, flip normals and unroll may yield speculative preparation for the same source, then use the normal worker queue. Visible diagnostics and queued topology consumers remain protected. Stateful previews retain their owning worker. See [staged readiness](SCAN_READINESS.md).

@@ -7,8 +7,15 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+const plyFixture = process.env.SCANFORGE_IMPORT_FIXTURE === "ply";
+const extension = plyFixture ? "ply" : "stl";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/parallel-import-browser/", import.meta.url);
+  out = new URL(
+    plyFixture
+      ? "../.resources/parallel-import-ply-browser/"
+      : "../.resources/parallel-import-browser/",
+    import.meta.url,
+  );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -209,13 +216,40 @@ try {
     throw Error("Geometry job timeout");
   };
 
-  const source = Buffer.from(
-    "solid test\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 10 0 0\nvertex 0 10 0\nendloop\nendfacet\nendsolid test",
-  );
+  const packedPly = () => {
+    const header = Buffer.from(
+      "ply\nformat binary_little_endian 1.0\nelement vertex 4\nproperty float x\nproperty float y\nproperty float z\nproperty float nx\nproperty float ny\nproperty float nz\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n",
+    );
+    const data = Buffer.alloc(header.length + 4 * 24 + 13);
+    header.copy(data);
+    // Authored face bounds already have centered XY and base Z=0 for GUI/MCP placement parity.
+    const vertices = [
+      [-5, -5, 0, -0, 0.25, 2],
+      [5, -5, 0, 0, -3, 1],
+      [0, 5, 0, 4, 0, -0],
+      [9, 9, 9, 1, 1, 1],
+    ];
+    vertices.forEach((row, vertex) =>
+      row.forEach((value, component) =>
+        data.writeFloatLE(value, header.length + vertex * 24 + component * 4),
+      ),
+    );
+    const face = header.length + 4 * 24;
+    data.writeUInt8(3, face);
+    [2, 0, 1].forEach((id, corner) =>
+      data.writeInt32LE(id, face + 1 + corner * 4),
+    );
+    return data;
+  };
+  const source = plyFixture
+    ? packedPly()
+    : Buffer.from(
+        "solid test\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 10 0 0\nvertex 0 10 0\nendloop\nendfacet\nendsolid test",
+      );
   const input = page.locator('input[type=file][accept*=".stl"]');
   await input.setInputFiles(
-    ["first.stl", "second.stl", "third.stl"].map((name) => ({
-      name,
+    ["first", "second", "third"].map((stem) => ({
+      name: `${stem}.${extension}`,
       mimeType: "application/octet-stream",
       buffer: source,
     })),
@@ -227,8 +261,8 @@ try {
   const label = page.locator(".pointer-job-status");
   await label.waitFor({ state: "visible" });
   assert.equal(await label.getByRole("progressbar").count(), 2);
-  assert.match(await label.innerText(), /first.stl/);
-  assert.match(await label.innerText(), /second.stl/);
+  assert.match(await label.innerText(), new RegExp(`first\\.${extension}`));
+  assert.match(await label.innerText(), new RegExp(`second\\.${extension}`));
   assert.match(await label.innerText(), /1 queued/);
   await page.screenshot({
     path: fileURLToPath(new URL("parallel-import.png", out)),
@@ -247,11 +281,11 @@ try {
   assert.equal(await page.evaluate(() => window.__activeImports), 0);
 
   const uploads = [];
-  for (const name of ["agent-first.stl", "agent-second.stl", "agent-third.stl"])
+  for (const stem of ["agent-first", "agent-second", "agent-third"])
     uploads.push(
       (
         await call("artifact_put", {
-          name,
+          name: `${stem}.${extension}`,
           offset: 0,
           base64: source.toString("base64"),
         })
@@ -278,6 +312,70 @@ try {
   assert.equal(await page.evaluate(() => window.__activeImports), 0);
   assert.equal((await call("project_get")).result.objects.length, 3);
   await label.waitFor({ state: "detached" });
+  let plyParity;
+  if (plyFixture) {
+    // Drain held deliveries from the already cancelled workers before the fresh import.
+    await page.evaluate(() =>
+      window.__pendingImports.splice(0).forEach((release) => release()),
+    );
+    assert.equal(await page.evaluate(() => window.__pendingImports.length), 0);
+    const geometry = async (entityId) => {
+      const object = (
+        await call("object_get", { entityId, includeGeometry: true })
+      ).result;
+      const artifact = (
+        await call("artifact_read", { artifactId: object.geometry.artifactId })
+      ).result;
+      assert.equal(artifact.eof, true);
+      return {
+        geometry: JSON.parse(
+          Buffer.from(artifact.base64, "base64").toString("utf8"),
+        ),
+        source: object.scanSource,
+        triangles: object.triangles,
+        indexedTopology: object.indexedTopology,
+      };
+    };
+    project = (await call("project_get")).result;
+    const guiFirst = project.objects.find(
+      (object) => object.name === "first.ply",
+    );
+    assert(guiFirst);
+    const guiGeometry = await geometry(guiFirst.id);
+    const undoBefore = project.undo;
+    const completed = await mutate("project_import", {
+      artifactId: uploads[0],
+      unit: "mm",
+    });
+    await page.waitForFunction(() => window.__pendingImports.length === 1);
+    await page.evaluate(() =>
+      window.__pendingImports.splice(0).forEach((release) => release()),
+    );
+    const imported = await job(completed);
+    const entityId = imported.result.entityId;
+    const agentGeometry = await geometry(entityId);
+    assert.deepEqual(agentGeometry, guiGeometry);
+    assert.deepEqual(agentGeometry.geometry.indexedMesh.triangles, [2, 0, 1]);
+    assert.deepEqual(
+      agentGeometry.geometry.normals,
+      [4, 0, 0, 0, 0.25, 2, 0, -3, 1],
+    );
+    project = (await call("project_get")).result;
+    assert.equal(project.objects.length, 4);
+    assert.equal(project.undo, undoBefore + 1);
+    assert.equal(await page.evaluate(() => window.__activeImports), 0);
+    await mutate("history_undo", {});
+    assert.equal((await call("project_get")).result.objects.length, 3);
+    await mutate("history_redo", {});
+    assert.equal((await call("project_get")).result.objects.length, 4);
+    assert.deepEqual(await geometry(entityId), guiGeometry);
+    plyParity = {
+      completedMcpImport: true,
+      geometryMatchesGui: true,
+      importUndoSteps: 1,
+      undoRedo: true,
+    };
+  }
   assert.deepEqual(errors, []);
   ledger.result = {
     guiParallelWorkers: 2,
@@ -288,6 +386,7 @@ try {
     cancellationPreservesObjects: true,
     activeImportWorkersAfterCleanup: 0,
     pageErrors: errors,
+    ...(plyParity ? { fixture: "ply", plyParity } : {}),
   };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {

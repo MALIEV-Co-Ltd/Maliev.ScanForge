@@ -8,6 +8,8 @@ The build starts when display geometry is installed and is serialized across the
 
 Passive pointer movement updates the navigation cursor without submitting a full scene. Button drags, touch navigation, origin-plane highlighting and sketch/selection overlays retain their redraw paths. Explicit MCP viewport presentation remains available.
 
+Packed scanner PLY imports read a header of at most 65,536 bytes and record-aligned chunks of at most 1 MiB. Face counts are preflighted before output allocation, preserving polygon fallback and validation order. Vertex and face decoding share the synchronous parser's arithmetic; final geometry, scanner normals and display preparation remain unchanged. Face preflight adds a second pass over face records. Unsupported layouts retain the general loader. This avoids a whole-file raw buffer on the recognized path; guarded replay is required to establish its effect on peak memory.
+
 ## Measured owner-scan scenario
 
 Chrome, NVIDIA RTX A4000, 1183 x 944 viewport, owner `ply-1.ply` and `ply-2.ply`, 2,972,031 triangles. Same camera and geometry before/after; full-resolution rendering retained.

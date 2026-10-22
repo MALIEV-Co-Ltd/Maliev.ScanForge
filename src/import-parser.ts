@@ -2,6 +2,7 @@ import { parseMesh } from "./io";
 import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { nativeStlTopology } from "./scan-native-stl-topology";
 import type { ScanSourceCounts } from "./scan-source";
+import { readPackedBinaryPly } from "./ply-binary-file";
 
 export interface ScanFile {
   readonly size: number;
@@ -130,20 +131,27 @@ export async function readScan(
     throw new Error(
       "Bounded preview currently supports binary STL only. Select full resolution for text STL, OBJ or PLY.",
     );
-  const buffer = await file.arrayBuffer();
+  const streamed =
+    extension === "ply"
+      ? await readPackedBinaryPly(file, options.signal)
+      : undefined;
+  checkAbort(options.signal);
+  const buffer = streamed ? undefined : await file.arrayBuffer();
   checkAbort(options.signal);
   let sourceNormals: Float32Array | undefined;
   const topology =
-    extension === "ply"
-      ? parsePlyTopology(buffer, {
+    streamed ??
+    (extension === "ply"
+      ? parsePlyTopology(buffer!, {
           onNormals: (normals) => {
             sourceNormals = normals;
           },
         })
-      : undefined;
+      : undefined);
+  if (streamed) sourceNormals = streamed.normals;
   const positions = topology
     ? expandPlyTopology(topology)
-    : parseMesh(buffer, extension);
+    : parseMesh(buffer!, extension);
   if (topology) options.onIndexedMesh?.(topology);
   if (topology && sourceNormals) {
     const normals = new Float32Array(positions.length);
