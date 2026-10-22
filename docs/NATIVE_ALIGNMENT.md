@@ -3014,4 +3014,35 @@ made.
 
 ## Global Fine Align reconstruction
 
-The distinct multi-scan solver is being reconstructed separately from coarse registration and two-scan Fine align. Its rigid fit, four-dimensional eigen kernel and local iteration now have direct native execution and byte-level regression coverage. See [the native Global Fine Align evidence](NATIVE_GLOBAL_FINE_ALIGNMENT.md) for the verified scope, native control-flow details and remaining scene-query/publication gates. Its public ribbon entry remains planned.
+The distinct multi-scan solver is being reconstructed separately from coarse registration and two-scan Fine align. Its rigid fit, four-dimensional eigen kernel and local iteration now have direct native execution and byte-level regression coverage. See [the native Global Fine Align evidence](NATIVE_GLOBAL_FINE_ALIGNMENT.md) for current public GUI/MCP integration, verified scope and remaining native acceptance gates.
+
+## Current point-pair publication and normal storage
+
+Fresh REA analysis of the retained current image confirms preview callback
+`0x14054ca20`: landmark mapping, candidate construction/selection, coarse
+publication, refinement, then preview activation. Publication helper
+`0x14054c410` retains original geometry on its first application and restores
+from that source before reapplying a candidate. It invokes owner virtual slot
+`0x250`; this investigation does not resolve that dispatch's complete runtime
+connectivity. The separately analyzed vertex worker `0x1401deb20` loads Float32
+normals, uses double arithmetic and writes Float32 components at vertex offsets
+`0x10`, `0x14` and `0x18`. It does not require expanded Float64 normal storage.
+
+[Sanitized current-image evidence](evidence/landmark-current-publication-storage.json)
+pins five fresh REA records, the clone constructor/copy helpers, and 13 selected
+instruction spans. All 92 selected code bytes match the installed process in two
+passive reads. Independent byte decoding checks six direct call targets, the
+virtual slot and three Float32 conversion/store sequences. Thirteen positive and
+26 mutated/truncated controls pass or reject as expected. The code-only reader
+uses 28 region queries, peaks at 14.45 MiB under its 4 GiB/25% CPU self-Job, and
+closes both handles. It never assigns the target to a Job, executes its functions,
+reads scan buffers or changes the native window. The REA session and provider
+process were closed after saving the analysis snapshot.
+
+These observations strengthen the Float32 storage rationale for the separately
+documented [full-size STL acceptance memory failure](ORIGINAL_STL_WORKFLOW.md).
+They do not establish native final geometry, GUI acceptance lifecycle, complete
+live-function equality or runtime allocation attribution. The proposed shared
+application memory fix remains unapplied. No application behavior, public MCP
+schema or agent usage changed; unit/CAD/browser suites were not rerun for this
+evidence-only investigation.
