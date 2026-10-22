@@ -45,8 +45,10 @@ linear, secondary and circular counts to two, circular fill to 360 degrees and
 centre coordinates to zero. Length defaults pass the numerical value 10 through
 a helper that first calls a virtual floating-value helper, then formats its
 result with precision settings
-and parses the text back to double. Its complete unit and rounding contract
-remains open; it must not be reduced to a hard-coded unit scale.
+and parses the text back to double. The unit IDs, concrete conversion methods and default precision are now mapped
+in [native length units](NATIVE_LENGTH_UNITS.md); decimal edge cases and live
+acceptance across settings remain open. It must not be reduced to a hard-coded
+unit scale.
 
 For finite nonnegative circular fill angles below 360 degrees, the angle step
 uses `fill / (instances - 1)`. At 360 degrees or above, it uses
@@ -122,8 +124,9 @@ it; do not silently replace these two observed rules with one validation rule.
 For linear/grid spacing, the native instructions load each full binary64 value
 into XMM1, clamp it against zero, call the unit service at virtual slot `+0x20`,
 and use the XMM0 result in the translation calculation. In particular, the
-decompiler's `SUB84` expression does not establish truncation to 32 bits. The
-converter implementation, unit settings and formatting round-trip remain open.
+decompiler's `SUB84` expression does not establish truncation to 32 bits. The concrete converter methods and precision selector are now mapped in
+[native length units](NATIVE_LENGTH_UNITS.md). Numerical replay across settings
+and formatting edge cases remain open.
 For finite spacing inputs, the pre-conversion operand is `max(spacing, 0)`;
 this does not prove that the converter is linear, identity, or globally constant.
 
@@ -138,7 +141,7 @@ The provider was closed and its owned Java process exited after retention.
 ## Implementation and validation gate
 
 Before adding duplication, resolve native curve categories, relation equations,
-unit/precision conversion, picked-direction normalization, path evaluation and
+unit/precision numerical replay, picked-direction normalization, path evaluation and
 acceptance history on equivalent fixtures. Then implement all supported modes through one
 shared operation used by GUI and MCP, with an observable preview/accept/cancel
 contract, instance maps, bounded work, revision/retry/cancellation checks and

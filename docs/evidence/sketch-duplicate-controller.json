@@ -102,7 +102,8 @@
       "linearGeneratorMinimumInstances": 2,
       "spacingArgument": "Full binary64 value in XMM1, clamped against zero before virtual slot +0x20; result in XMM0",
       "secondaryDestructorThunk": "0x140664808 adjusts this by -0x130 then calls destructor 0x1406601a0; not a picked-line callback"
-    }
+    },
+    "lengthUnitsEvidence": "native-length-units.json"
   },
   "evidence": {
     "resources": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
@@ -169,7 +170,7 @@
   "unresolved": [
     "Native curve category and control-point representation",
     "Native relation equations and equal-relation quantity semantics on every eligible curve category",
-    "Complete length conversion, formatting precision and round-trip behavior",
+    "Native numerical unit/precision replay, locale, rounding ties and overflow",
     "Picked-direction normalization and degeneracy rules",
     "Native curve distance-to-parameter evaluation and frame behavior",
     "Preview/Accept/Cancel history and save/reopen replay",
