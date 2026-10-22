@@ -42,6 +42,100 @@ separate from both strict registration quality and full current-native
 numerical equivalence. No runtime behavior or MCP contract changes in this
 documentation checkpoint.
 
+## Actual three-scan GUI controller trace (2026-10-22)
+
+The user-supplied screen recording confirms QuickSurface Pro 8.0.123 importing
+three PLY scans, selecting **Global Fine Align**, entering **0.500 mm** and
+pressing **OK**. Passive instrumentation captured command entry/return, one
+outer entry/exit, six local entry/exits and six geometry-setter entry/exits.
+The [normalized runtime trace](evidence/global-fine-live-gui-controller-20261022.json)
+retains exact descriptor pose/statistic bytes, source permutations and the
+capture's limitations. Evidence:
+`ev_7a2ca141a162aa5ea6f0f50d6cc7f284a86131b3a1472c285517a57805d54df4`.
+The provider reported no truncated messages. The recording SHA-256 is
+`7aca9bf5a0e263f6e597f2ac7f46c3400cebeb8cb4b3cd702a7642392391a59b`.
+
+Aliases A/B/C denote initial source/descriptor order, not verified file names.
+Local order is A/B/C, then C/B/A. The second sweep returns stability byte 1
+for each descriptor while convergence byte remains 0. This is observed native
+stability termination, not proof of converged registration. The outer exit
+order is A/C/B; the first three setter inputs point to the corresponding
+descriptor matrices, followed by three calls using one shared matrix pointer.
+The actual setter matrix bytes were not captured.
+
+The controller threshold at `+0x88` remained Float32
+`0.05000000074505806` (`cdcc4c3d`). It is the coverage threshold described
+above, distinct from the dialog's 0.500 mm search tolerance. At the next local
+entry, `+0x108` contains the prior sweep's integer coverage percentage, not
+its local standard deviation. Initial `+0x111` bytes must not be treated as
+initialized boolean state. Native clocks, random seeds and query records
+were not captured; observer elapsed times do not supply those inputs.
+
+The setter guard incorrectly required derived geometry table `141155E60`.
+All six calls instead used ordinary PLY owner table `141248370`, base
+geometry table `140EBFCF0` and setter slot `1401DE8D0`. Retained owner
+constructor evidence
+`ev_d9bfce2c46c26ce42e468433514386a87318334ab42de7c38ecb8fe83dc6e527`
+already binds this base class. The guard failed closed and skipped matrix
+reads. A corrected private observer now checks that exact owner/base/setter
+combination; a mock execution rejects the derived class, wrong owner and
+wrong setter before matrix reads. It has not been loaded into the native
+application. Full geometry observation also needs the base container layout;
+derived pool accessors cannot be assumed valid.
+
+All four scripts from this observation were unloaded and the Frida session
+detached. The user-owned QuickSurface process remained running. This slice
+changes no application behavior or GUI/MCP contract. JSON readback verified
+all fourteen boundary events, six setter entries and exact Double encodings.
+
+### Complete native post-state geometry comparison
+
+A subsequent read-only capture bound the three live ordinary PLY owners and
+their paged vertex/facet containers. Each pool uses 16,384 records per page;
+the vertex and facet strides are `0x30` and `0x50`. Pool fields at geometry
+`+0x48` and `+0x130` store pointers, not inline structures. Capture validated
+the exact process creation FILETIME, executable hash, mapped setter bytes,
+owner/geometry/pool tables, counts, readable page spans and every facet's
+vertex-pointer membership. It read each complete used field twice, with
+identical hashes and unchanged container descriptors. The snapshot remains
+non-atomic: these checks do not suspend the native application.
+
+All 3,381,455 vertices and 6,663,164 triangles were retained as packed
+positions, computed vertex normals, ordered triangle indices and facet
+normals: 241,070,856 bytes total. The three unique count pairs and complete
+triangle arrays bind aliases A/C/B to `ply-1.ply` / `ply-3.ply` / `ply-2.ply`.
+Applying each recorded final descriptor pose, then the predicted inverse of
+largest-scan C's pose, through the actual shared ScanForge transform code
+matches **every byte of all four native fields on all three scans**. Native
+computed vertex normals match the existing angle-weighted normal producer;
+the source file's authored scanner normals do not. This supports the existing
+command-local derivation while preserving authored normal buffers.
+
+The [full-input regression fixture](../tests/fixtures/global-fine-live-post-owner-native.json)
+pins original file hashes, exact pose bits and native output hashes. Run
+`SCANFORGE_ALIGNMENT_EXAMPLES=C:/repo/alignment-example-files` with
+`tests/scan-native-global-live-post-owner.test.ts` to compare every element;
+without those files the three cases are explicitly skipped. No reduced or
+synthetic source replaces this acceptance input.
+
+The fresh production build passed without warnings/errors
+(`scanforge-55b609ad6bb23e70`); 89 focused tests passed across four files,
+including all three full-input comparisons. The native read-only capture took
+22.37 seconds with a 15.73 MiB helper Job peak; its target handle and helper
+Job handle closed. The independent comparison took 2.61 seconds with a
+459.95 MiB Job peak. Both retained the 4 GiB cap and 25% CPU quota. The native
+application remained running. No application behavior, catalog or GUI/MCP
+contract changed; these checks exercise the same geometry-application kernel
+already used by both interfaces. Five pre-existing unrelated working edits
+remain outside this change and were present in the tested tree.
+
+This verifies the post-state application arithmetic on the complete inputs,
+not complete solver equivalence. Native before-state and individual setter
+matrix bytes were not directly captured; the gauge inverse is predicted from
+the recorded descriptor pose and largest live count. Native clocks, query
+correspondences and equivalent full-controller replay remain open under
+tracking issue #3. The passing post-state comparison does not close that gate.
+
 ## Historical groundwork
 
 Global Fine Align is a distinct native workflow, not the coarse `mesh_process` registration kind `global`. At the initial checkpoint below, its ribbon entry and connected controller were still planned. Later integration sections record the subsequent public GUI/MCP implementation; the early kernel captures alone did not establish that integration.
