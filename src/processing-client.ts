@@ -156,6 +156,8 @@ export type ProcessingResponse =
 export interface ProcessingOptions {
   /** Geometry arrays must be immutable; replace the array after any edit. */
   reuseTopology?: boolean;
+  /** Internal speculative diagnostics only; authored shared buffers stay immutable. */
+  borrowReadonlyReportSource?: boolean;
   signal?: AbortSignal;
   onProgress?: (
     fraction: number,
@@ -349,9 +351,19 @@ function runProcessingRequest(
       }
       // A retained worker owns the canonical source and adopts edit successors.
       // Send it only on the first request; targets and masks still change per job.
+      const borrowedReportSource =
+        !!session &&
+        !session.initialized &&
+        options.borrowReadonlyReportSource === true &&
+        request.kind === "report" &&
+        request.positions instanceof Float32Array &&
+        typeof SharedArrayBuffer !== "undefined" &&
+        request.positions.buffer instanceof SharedArrayBuffer;
       const source = session?.initialized
         ? new Float32Array(0)
-        : clone(request.positions);
+        : borrowedReportSource
+          ? request.positions
+          : clone(request.positions);
       const copied: ProcessingRequest =
         request.kind === "icp" ||
         request.kind === "global" ||
@@ -485,7 +497,13 @@ function runProcessingRequest(
         transfers.push(copied.sourceSeedVertices.buffer);
       }
       worker.postMessage(
-        session ? { ...copied, geometryKey: session.key } : copied,
+        session
+          ? {
+              ...copied,
+              geometryKey: session.key,
+              ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+            }
+          : copied,
         transfers,
       );
     } catch (error) {

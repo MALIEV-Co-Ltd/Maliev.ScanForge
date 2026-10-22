@@ -68,6 +68,7 @@ function summarize(topology: MeshTopology): TopologySummary {
 }
 let geometryKey: number | undefined;
 let canonicalPositions: ProcessingRequest["positions"] | undefined;
+let borrowedCanonical = false;
 let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
 const selectedSmoothing = new SelectedSmoothingPool();
 let scanPreview: ScanPreviewSession | undefined;
@@ -109,6 +110,13 @@ scope.onmessage = async ({ data: incoming }) => {
     clearTimeout(previewExpiry);
     topologyCache = {};
     canonicalPositions = incoming.positions;
+    borrowedCanonical =
+      incoming.kind === "report" &&
+      (incoming as ProcessingRequest & { borrowedReportSource?: true })
+        .borrowedReportSource === true &&
+      incoming.positions instanceof Float32Array &&
+      typeof SharedArrayBuffer !== "undefined" &&
+      incoming.positions.buffer instanceof SharedArrayBuffer;
   } else if (canonicalPositions)
     request = { ...incoming, positions: canonicalPositions };
   geometryKey = key;
@@ -153,6 +161,18 @@ scope.onmessage = async ({ data: incoming }) => {
     }
   }
   try {
+    if (borrowedCanonical && request.kind !== "report" && canonicalPositions) {
+      // Every later command owns a private source, retaining already-built adjacency.
+      const borrowed = canonicalPositions;
+      const privatePositions = borrowed.slice();
+      if (topologyCache.positions === borrowed)
+        topologyCache.positions = privatePositions;
+      if (previousCache.positions === borrowed)
+        previousCache.positions = privatePositions;
+      canonicalPositions = privatePositions;
+      request = { ...request, positions: privatePositions };
+      borrowedCanonical = false;
+    }
     const tolerance = preparationTolerance(request);
     const persistent =
       tolerance !== undefined && typeof indexedDB !== "undefined"
@@ -385,6 +405,7 @@ scope.onmessage = async ({ data: incoming }) => {
         maxVertexDisplacement: reduced.maxVertexDisplacement,
       };
     } else if (request.kind === "segment") {
+      const tolerance = request.tolerance;
       const segmented = segmentMesh(request.positions, {
         tolerance: request.tolerance,
         angleDegrees: request.angleDegrees,
@@ -412,7 +433,7 @@ scope.onmessage = async ({ data: incoming }) => {
           "Classifying surface regions",
         );
         return classifyRegion(positions, {
-          tolerance: request.tolerance,
+          tolerance,
           onProgress: (fraction, stage) => progress(fraction, stage),
         });
       });
@@ -553,19 +574,17 @@ scope.onmessage = async ({ data: incoming }) => {
           r[8],
           t[2],
         ];
+        const sourceLandmarks = request.sourceLandmarks;
         const seeds = nativeAlignmentOriginalVertexIndices(
           Float32Array.from(request.sourceIndexed.vertices),
-          Array.from(
-            { length: request.sourceLandmarks.length / 3 },
-            (_, id) => ({
-              fixed: false,
-              point: request.sourceLandmarks.slice(id * 3, id * 3 + 3) as [
-                number,
-                number,
-                number,
-              ],
-            }),
-          ),
+          Array.from({ length: sourceLandmarks.length / 3 }, (_, id) => ({
+            fixed: false,
+            point: sourceLandmarks.slice(id * 3, id * 3 + 3) as [
+              number,
+              number,
+              number,
+            ],
+          })),
         );
         const refined = await refineNativeLandmarkAfterCoarse(
           request.sourceIndexed,
