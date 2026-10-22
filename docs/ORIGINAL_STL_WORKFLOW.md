@@ -71,3 +71,40 @@ affected full-size GUI/MCP replay were run; unit/CAD suites were not repeated
 for this evidence-only update. Full native controller/setter/clock comparison,
 useful registration quality and the remaining M3 acceptance requirements stay
 open.
+
+## Subsequent full-size N-point replay: memory failure
+
+A separate replay supplied six corresponding original STL vertex pairs for each
+moving scan, using scan 1 as the explicit fixed refinement target. Both GUI and
+MCP previews produced identical coarse registrations. Scan 2 completed cached
+MCP acceptance, retry and complete authored-buffer Undo/Redo comparisons. Its
+triangle indices and both other objects stayed unchanged; its positions and
+indexed vertices moved. Scan 3 completed both previews but failed during GUI
+acceptance. This replay did not exercise the default visible-scene target scope.
+
+The Windows Job emitted `JOB_MEMORY_LIMIT` at a 4,296,564,736-byte peak
+(4,097.52 MiB), against the unchanged 4,294,967,296-byte cap. The owner's generic
+identity-capture error wraps that explicit resource event; it is not evidence of
+a process-identity mismatch. All 17 owned processes exited, final active count
+was zero, handles closed and cleanup errors were empty. The complete workflow
+failed and remains unvalidated.
+
+The accepted scan 2 contains 22,926,627 expanded normal elements encoded as
+Float64, totaling 183,413,016 bytes, alongside Float32 indexed normals. The
+shared `indexedRenderNormals` helper currently expands those Float32 values into
+a JavaScript number array. Preserving Float32 storage would halve that expanded
+numeric payload without changing its values. Across scans 2 and 3, the predicted
+logical saving is 211,475,268 bytes (201.68 MiB). This is a source-backed
+allocation hypothesis; it does not attribute the entire measured peak or prove
+that the proposed fix resolves the failure. No product fix has been applied.
+
+An independent read-only audit rehashed all 2,136 pinned source/dist files and
+14 frozen inputs, including the original STL files and landmark fixture. It
+verified both GUI/MCP registration pairs, scan 2's complete Undo/Redo carrier
+digests, unchanged references and indices, changed moving coordinates, the
+memory event and cleanup. Two mutated digest controls were rejected. The fresh
+build passed; unit/CAD suites were not repeated for this evidence-only update.
+[Sanitized partial replay evidence](evidence/original-stl-coarse-memory-failure.json)
+records the exact scope and receipt hashes. Native final-controller equivalence,
+independent final alignment accuracy and the full three-scan acceptance remain
+open.

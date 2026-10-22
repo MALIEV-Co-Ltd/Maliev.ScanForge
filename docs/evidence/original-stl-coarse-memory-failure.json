@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "scope": "Original full-size three-STL N-point alignment partial replay; failed memory gate",
+  "validation": {
+    "auditPassed": true,
+    "workflowPassed": false,
+    "nativeAcceptance": false,
+    "runId": "20261022T215615539084Z",
+    "sourceAndDistFilesRehashed": 2136,
+    "frozenInputsRehashed": 14,
+    "guiMcpPreviewRegistrationPairsMatched": 2,
+    "fullCarrierUndoRedoComparisons": 2,
+    "mutatedDigestControlsRejected": 2,
+    "targetScope": "fixed",
+    "jobPeakMemoryBytes": 4296564736,
+    "jobCapBytes": 4294967296,
+    "finalActiveProcesses": 0,
+    "observedExpandedNormalBytes": 183413016,
+    "limits": [
+      "Second moving scan acceptance failed at the 4 GiB Job cap",
+      "Default visible-scene target scope was not exercised",
+      "No final native controller or independent final accuracy comparison",
+      "Read-only diagnosis; no memory fix implemented"
+    ]
+  },
+  "build": {
+    "head": "0b7b42da663c5a9c65f3f992b3251b7660665d4f",
+    "tree": "5af825778003e0836d59eb8a9a793b3ac4b2290f",
+    "exitCode": 0,
+    "sha256": "6f012dbd96f3381d57cf2c1bf8885b04f82fb504a9ef761f66b71cdd086fd63d"
+  },
+  "originalInputs": [
+    {
+      "name": "scan-1.stl",
+      "bytes": 13657034,
+      "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+    },
+    {
+      "name": "scan-2.stl",
+      "bytes": 127370334,
+      "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+    },
+    {
+      "name": "scan-3.stl",
+      "bytes": 166345584,
+      "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+    }
+  ],
+  "cases": [
+    {
+      "sourceFile": "scan-2.stl",
+      "phase": "complete",
+      "targetScope": "fixed",
+      "landmarkPairs": 6,
+      "guiMcpRegistrationExactlyEqual": true,
+      "reportedCoarseRmsMm": 0.23438583298542986
+    },
+    {
+      "sourceFile": "scan-3.stl",
+      "phase": "accept",
+      "targetScope": "fixed",
+      "landmarkPairs": 6,
+      "guiMcpRegistrationExactlyEqual": true,
+      "reportedCoarseRmsMm": 0.12218726834624381
+    }
+  ],
+  "evidencePins": [
+    {
+      "name": "original-stl-coarse-browser.mjs",
+      "sha256": "5c4042fcff0654efe2f7fcf184b7470e70fb5079698df20e8debfd08996765af"
+    },
+    {
+      "name": "original-stl-coarse-runner-r3.py",
+      "sha256": "4ad554bd03e80b6843e69f45fc79b335a4f6cc4d90602cc5885fcede6e9e317a"
+    },
+    {
+      "name": "stl-real-landmarks-r1.json",
+      "sha256": "1e6f68c47c3933e2da0cf64a0bddfbde735719bc4b8f114550415e87731c2ad9"
+    },
+    {
+      "name": "verify-stl-coarse-partial.py",
+      "sha256": "b73f5946a49d8ed093f5ebc66c950fcac574b2fc5248616de359ea18b5a17160"
+    },
+    {
+      "name": "stl-coarse-partial-independent-verification.json",
+      "sha256": "0c4a3d3eb35c47ac2700c0b45a11e4c5b1f1481b69095c725bbcf5446b427e23"
+    },
+    {
+      "name": "original-stl-coarse-evidence-20261022T215615539084Z-kernel/resource-ledger.json",
+      "sha256": "d23b4c53c942bba88af9b12babda0cdf24cc7b946304096bf97128fda1cfd9ca"
+    },
+    {
+      "name": "original-stl-coarse-evidence-20261022T215615539084Z-browser/evidence.json",
+      "sha256": "861b3bbc19a9173f95a7799085811ee45bd49caf707fb90813609e846db34773"
+    }
+  ]
+}
