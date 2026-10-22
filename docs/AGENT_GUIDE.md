@@ -1514,3 +1514,25 @@ Conflicts and invalid references leave the draft and revision unchanged; sketch
 history, retry protection and saved-sketch/project persistence remain shared with
 the GUI Constraint menu. See [collinear behavior](SKETCH_COLLINEAR.md) for limits
 and the distinction between native command evidence and numerical verification.
+
+### Full-size N-point preview failures
+
+The original three-STL checkpoint currently rejects both moving scans' default
+`visibleScene` previews with `OPERATION_FAILED` and message
+`Noise tree exceeds its node budget`. The shared target builder's 100,000-node
+limit is separate from the observed 4 GiB acceptance allocation spike. There is
+no public option to override that node limit. See the
+[full-size failure evidence](ORIGINAL_STL_WORKFLOW.md).
+
+Poll the terminal `job_get.status`: these failures report `progress: 1`, which
+is not success. They leave the session active with all twelve picks retained,
+`preview:false`, `canPreview:true` and `canReset:false`. Both failed previews
+preserved all nine committed geometry carriers and the three-import history.
+Identical request retries return the same job receipt; its job stays failed and
+no second solve runs. For an intentional new attempt, supply a new request ID
+and the current revision. This does not remove the resource guard.
+
+Close the failed session through `preview_discard` with `target:landmarks` or
+GUI Cancel. Both post-failure close routes preserved geometry/history in the
+full-size replay. This checks closing an already failed job, not in-flight
+cancellation, successful alignment, acceptance or native final-controller parity.

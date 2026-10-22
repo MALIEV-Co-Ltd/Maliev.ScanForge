@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "scope": "Real full-size STL MCP default-scope failure/retry and post-failure close; alignment remains unsuccessful",
+  "verification": {
+    "auditPassed": true,
+    "applicationWorkflowPassed": false,
+    "sourceAndDistFilesRehashed": 2136,
+    "guiAndMcpCompilerInputsExactlyEqual": 1864,
+    "failedMcpPreviews": 2,
+    "mcpMessagesMatchingObservedGuiError": 2,
+    "sameSourceGuiMcpErrorParityCases": 1,
+    "identicalRequestRetriesMatched": 2,
+    "processingWorkersObserved": 2,
+    "originalCarriersPerSnapshot": 9,
+    "fullCarrierSnapshotsCovered": 9,
+    "fullCarrierEqualityComparisons": 8,
+    "historyAndPublicStatePreserved": true,
+    "mutatedDigestRejected": true,
+    "closeRoutes": ["GUI Cancel", "MCP preview_discard landmarks"],
+    "jobProgressOneWithFailedStatusObserved": true,
+    "peakJobMemoryBytes": 2384171008,
+    "all17OwnedProcessesExited": true,
+    "handlesAndPortsClosed": true,
+    "cleanupErrors": [],
+    "nativeAcceptance": false,
+    "productFixApplied": false
+  },
+  "build": {
+    "head": "796878b053ff2eb3a6f1e38eabb85ca99f5c73f3",
+    "tree": "03972a91bf117a1582f5e0fdb5a02b8202704d5e",
+    "exitCode": 0,
+    "sourceFiles": 1864,
+    "sourceUnchangedAcrossBuild": true,
+    "stderrBytes": 0
+  },
+  "cases": [
+    {
+      "moving": "scan-2.stl",
+      "targetScope": "visibleScene",
+      "targetCount": 2,
+      "fixedId": null,
+      "pairs": 6,
+      "terminalJob": {
+        "jobId": "6e39a6d6-e10f-4de9-a13c-ed84e7936dfa",
+        "command": "landmark_preview",
+        "status": "failed",
+        "progress": 1,
+        "stage": "Noise tree exceeds its node budget",
+        "error": {
+          "code": "OPERATION_FAILED",
+          "message": "Noise tree exceeds its node budget"
+        }
+      },
+      "retrySameReceipt": true,
+      "previewPublished": false,
+      "closeRoute": "GUI Cancel",
+      "historyCursor": 3,
+      "fullOriginalGeometryPreserved": true
+    },
+    {
+      "moving": "scan-3.stl",
+      "targetScope": "visibleScene",
+      "targetCount": 2,
+      "fixedId": null,
+      "pairs": 6,
+      "terminalJob": {
+        "jobId": "5cc5e2f1-0d27-4167-afdc-6663f79381c1",
+        "command": "landmark_preview",
+        "status": "failed",
+        "progress": 1,
+        "stage": "Noise tree exceeds its node budget",
+        "error": {
+          "code": "OPERATION_FAILED",
+          "message": "Noise tree exceeds its node budget"
+        }
+      },
+      "retrySameReceipt": true,
+      "previewPublished": false,
+      "closeRoute": "MCP preview_discard landmarks",
+      "historyCursor": 3,
+      "fullOriginalGeometryPreserved": true
+    }
+  ],
+  "pins": [
+    {
+      "name": "original-stl-mcp-failure-contract-browser.mjs",
+      "sha256": "70626f3823b44a54ba0c1c1acf15e7efb5bc7c2707923a1cd5d6a3371f819ca7"
+    },
+    {
+      "name": "original-stl-mcp-failure-contract-runner-r3.py",
+      "sha256": "f98ad48f2254a3c0ca33af5c8153b95aa2b0f6ec3c9c25c8efa031f0a1ad44ac"
+    },
+    {
+      "name": "original-stl-mcp-failure-contract-plan-20261022T230644587171Z.json",
+      "sha256": "66e64b75c24ce196ec664ac112217581180692ed4dd9072d0dfa487996883d96"
+    },
+    {
+      "name": "original-stl-mcp-failure-contract-build-source-verified-final-20261023.json",
+      "sha256": "128a27c1869bd7aa8f1f9acc9d186be80722f01533fdd31a636611c7ef8e751e"
+    },
+    {
+      "name": "verify-mcp-stl-failure-contract.py",
+      "sha256": "cc114347f4e698fbf01a459b4d2aa873560034ee0deeab7f7500aa4cfbf66743"
+    },
+    {
+      "name": "mcp-stl-failure-contract-independent-verification.json",
+      "sha256": "539d25b0254157838d48b1e17922cd7570da3c002597b44ed84d2037544c1e74"
+    },
+    {
+      "name": "original-stl-mcp-failure-contract-evidence-20261022T230644587171Z-browser/evidence.json",
+      "sha256": "9efb3bdc7b4ed4cb30f7f4194b9e895428507d55b8382488ccd000dc467e445e"
+    },
+    {
+      "name": "original-stl-mcp-failure-contract-evidence-20261022T230644587171Z-kernel/resource-ledger.json",
+      "sha256": "79d3ea9fd462da79d218c61daa710197e1f3881b2e5779b5ca7d861c38737f2d"
+    }
+  ],
+  "limits": [
+    "No product fix or successful alignment acceptance",
+    "Both jobs failed; diagnostic success verifies failure semantics and preservation only",
+    "The GUI preview error comparison uses scan 2 from the preceding GUI run, not a new GUI scan-3 preview",
+    "Post-failure session closure is distinct from in-flight cancellation",
+    "No native final-controller or final-quality comparison",
+    "Unit and CAD suites were not repeated for this evidence-only update"
+  ]
+}

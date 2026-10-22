@@ -180,3 +180,30 @@ build passed; unit/CAD suites were not repeated for this evidence-only update.
 records the exact scope and receipt hashes. Native final-controller equivalence,
 independent final alignment accuracy and the full three-scan acceptance remain
 open.
+
+## MCP node-budget failure, retries and post-failure close
+
+A follow-up full-size MCP replay reproduces `OPERATION_FAILED` with message
+`Noise tree exceeds its node budget` for both moving STL scans against the
+other two visible originals. Scan 2's picks, input carriers and compiler inputs
+match the preceding GUI error capture exactly. Both job messages match that
+observed GUI error. The jobs report `progress:1` while terminal `status` is
+`failed`; progress alone must not be interpreted as success.
+
+Identical preview request retries return their original job receipts, and only
+two main processing workers are created for the two solves. All nine authored
+geometry carriers remain byte-identical after each failed preview and after
+closing its session. All recorded history/public-state snapshots retain the
+three imports and no redo entries. GUI Cancel closes the first failed session;
+MCP `preview_discard` closes the second. These are post-failure close checks,
+not in-flight cancellation. Neither scan publishes a preview or accepts geometry.
+
+The independent audit covers nine full carrier snapshots in eight equality
+comparisons, rejects one mutated digest, rehashes all 2,136 source/dist files,
+and matches all 1,864 compiler inputs to the earlier GUI run. The fresh build
+passes. Peak Job memory is 2,384,171,008 bytes (2,273.72 MiB), below 4 GiB.
+All 17 owned processes exit, final active count is zero, handles/temporary ports
+close and cleanup errors are empty. [Structured evidence](evidence/original-stl-mcp-failure-contract.json)
+distinguishes the passing failure-contract diagnostic from the still-failing
+alignment workflow. No product fix, schema change or native controller comparison
+is established; unit/CAD suites were not rerun for this evidence-only update.
