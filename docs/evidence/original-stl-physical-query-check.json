@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "scope": "Physical surface-distance queries on the fully retained original joined STL target; component verification only",
+  "sourceCommit": "15765855591b655aef922f3bc802bac100acf25a",
+  "targets": ["scan-1.stl", "scan-2.stl"],
+  "projectSha256": "d7d617128e899be8eafe70609a6fd2cf354baec48d9a3bd6841b3c3102d91190",
+  "triangles": 2820542,
+  "vertices": 1438371,
+  "retainedTreeSha256": "b977cf39f86b2b9ce03abf6f8a796f95cb77586564589501a503d25cdecd0572",
+  "queryCases": 33,
+  "selection": "33 deterministically stratified original target triangles; centroid offsets -0.1, 0, +0.1 mm along cached normals",
+  "radiusMm": 0.5,
+  "independentDistanceToleranceMm": 0.0002,
+  "maximumAbsoluteDistanceErrorMm": 2.050399776455104e-5,
+  "oracleAabbChecks": 93077886,
+  "oracleTriangleDistanceEvaluations": 536,
+  "independentOracle": "Double-precision point-to-triangle distance over every target face; exact AABB lower-bound pruning, no tree traversal",
+  "allObjectAndPackedResultsExactlyEqual": true,
+  "closestPointDistanceConsistency": true,
+  "adjacencyValid": true,
+  "openBoundaryHits": 0,
+  "controls": {
+    "smallFixtureTrees": 2,
+    "orderedTreeHashesMatch": true,
+    "independentTriangleAnalyticCases": 5
+  },
+  "inputManifestSha256": "cbbd023943e999e4cb9c763b3374884de350e5646349b03aff126a1c9133c623",
+  "bundleSha256": "667e06af3fd428c4e74dbd36277cf969f5bec3c1c44703fa5ed4ee47abca1d9e",
+  "ownerSha256": "aaf95184f81095c3b5a6542d8903d106da6d0b727cc7bfaaf8e40b269e50d96f",
+  "reportSha256": "067ccf4816e52d4bde373166f2eeca6348c4fac825f2a2f641ad54fa5d9fb35d",
+  "ownerReceiptSha256": "fce2549b8800c28b75d9f8fd967261d29bcb69e3a096d5cc7fd39c0d54856941",
+  "sourceInputCount": 75,
+  "validation": {
+    "independentSourceProjectAndCleanupAudit": true,
+    "protectedWorkingEditsPreserved": 5,
+    "childExitedNormally": true,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "leaseSeconds": 300,
+    "physicalAdmissionMiB": 3072,
+    "diskAdmissionGiB": 2,
+    "peakJobMemoryBytes": 1363337216,
+    "elapsedSeconds": 9.055991500004893
+  },
+  "mcpCoverage": "Evidence-only component investigation using shared GUI/MCP geometry/query operations; no application behavior, operation schema or agent usage changed.",
+  "limits": [
+    "33 deterministic near-surface query points; this is not registration accuracy or uniform-area coverage.",
+    "No open-boundary hit was observed; native boundary arbitration remains unverified by this probe.",
+    "The independent oracle checks unsigned nearest distance, not native signed winner, target controller, iteration or final accepted geometry equivalence.",
+    "The private construction combines independently admitted branches without the product merged-node cap. Normal product alignment still fails at that unchanged cap.",
+    "The Job peak belongs to this component probe; complete application, moving source solve and acceptance were not executed.",
+    "No unit, CAD or browser suite was rerun."
+  ]
+}

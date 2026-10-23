@@ -314,3 +314,26 @@ adjacency, worker duplication, solve and acceptance. Later transformed target
 sets are untested. Moving scan 1 is constructor-level evidence; the earlier
 GUI/MCP failed-preview checks cover moving scans 2 and 3. No application behavior,
 MCP schema or agent usage changed. No unit, CAD or browser suite was rerun.
+
+## Physical queries on the joined target
+
+[Physical query evidence](evidence/original-stl-physical-query-check.json) checks
+the complete original scan-1/scan-2 target with the shared full adjacency rebuild
+and face cache. Thirty-three deterministic triangle-centroid samples, offset
+-0.1, 0 or +0.1 mm along cached normals, return exactly identical signed distance,
+closest point, normal and boundary results through object and packed queries.
+An independent double-precision closest-triangle oracle checks every target
+face through AABB lower bounds: 93,077,886 bounds checks and 536 triangle-distance
+evaluations. Maximum unsigned-distance discrepancy is 0.000020504 mm against
+the predefined private check tolerance of 0.0002 mm. Five analytic controls,
+including a degenerate triangle, pass. No application tolerance changed.
+
+All 75 bundled input hashes, the original project, retained tree hash and owned
+process/handle cleanup were independently checked. The probe peaks at
+1,300.18 MiB under the existing 4 GiB/25% CPU Job and exits normally in 9.06
+seconds. No sampled query reports an open-boundary hit; this does not validate
+that branch, native signed-winner arbitration or final registration accuracy.
+The samples are not uniform-area coverage. The private build combines admitted
+branches without the product merged-node cap, which remains unchanged. No
+application behavior, MCP schema or agent usage changed. No unit, CAD or browser
+suite was rerun; a complete application solve and acceptance remain unverified.
