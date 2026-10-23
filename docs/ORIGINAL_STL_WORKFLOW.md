@@ -289,3 +289,28 @@ state, adjacency, worker duplication, solve and acceptance. Its peak does not
 prove full application memory use. No application behavior, MCP schema, agent
 usage or resource policy changed. No unit, CAD or browser suite was rerun.
 The shared memory fix and full native comparison remain incomplete.
+
+## All original target-pair sizes
+
+[All-pair tree sizing](evidence/original-stl-all-pair-tree-sizing.json) extends the
+retained-tree probe to the other two original target pairs. Moving scan 1 against
+scans 2 and 3 requires 239,075 children and 8,911,540 leaf memberships; its packed
+tree is 60.44 MiB. Moving scan 3 against scans 1 and 2 requires 189,548 children
+and 4,627,683 memberships; its packed tree is 38.62 MiB. Together with the
+275,561-child moving-scan-2 case, every original pair exceeds the unchanged
+100,000-node product cap. Normal construction reproduces the cap error in each
+case. The largest private branch across all pairs requires 60,161 descendants.
+
+Retained and separate streaming construction hashes match for every pair.
+Across all three pairs, 99 synthetic query cases retain identical object/packed
+callback sequences and winners over 652 visits. The two new pairings also retain
+negative-zero winner bits. Seven repository input hashes agree across all cases;
+the original project, process exit and handle cleanup were independently checked.
+The largest probe Job peak is 1,947.72 MiB with the existing 4 GiB/25% CPU policy.
+
+These private probes combine independently admitted branches without the product
+merged-node cap. They use original poses and omit complete application state,
+adjacency, worker duplication, solve and acceptance. Later transformed target
+sets are untested. Moving scan 1 is constructor-level evidence; the earlier
+GUI/MCP failed-preview checks cover moving scans 2 and 3. No application behavior,
+MCP schema or agent usage changed. No unit, CAD or browser suite was rerun.
