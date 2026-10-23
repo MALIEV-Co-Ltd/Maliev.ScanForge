@@ -337,3 +337,27 @@ The samples are not uniform-area coverage. The private build combines admitted
 branches without the product merged-node cap, which remains unchanged. No
 application behavior, MCP schema or agent usage changed. No unit, CAD or browser
 suite was rerun; a complete application solve and acceptance remain unverified.
+
+## Open-edge physical queries
+
+[Open-edge query evidence](evidence/original-stl-boundary-query-check.json)
+exercises the boundary branch missing from the earlier centroid samples. From
+56,276 original missing-neighbor edges on the joined scan-1/scan-2 target, 33
+unique deterministic edge midpoints move 0.05 mm outside their triangle and
++/-0.1 mm along the cached normal. All 33 queries report open-boundary hits.
+Object and packed results match exactly for signed distance, closest point,
+normal and boundary flag. The independent unsigned closest-triangle oracle
+checks every target face through AABB lower bounds: 93,077,886 bounds checks
+and 393 triangle-distance evaluations. Maximum distance discrepancy is
+0.000007994 mm within the predefined private tolerance of 0.0002 mm.
+
+All 75 bundled input hashes, original project bytes, retained tree hash and
+owned-process cleanup were independently checked. Peak Job memory is
+1,299.96 MiB under the existing 4 GiB/25% CPU policy; normal exit and handle
+closure occur in 9.14 seconds. The five pre-existing working edits are intact.
+This checks application boundary reporting on supplied geometry, not native
+signed-winner/boundary-output equivalence or registration accuracy. Private
+construction combines admitted branches without the unchanged product cap.
+Complete application memory, solve and acceptance remain unverified. No
+application behavior, MCP schema or agent usage changed. No unit, CAD or browser
+suite was rerun.
