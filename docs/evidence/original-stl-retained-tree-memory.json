@@ -1,0 +1,408 @@
+{
+  "schema": 1,
+  "scope": "Read-only fully retained joined STL target and packed query-tree measurement; no application node-cap change or complete alignment solve",
+  "sourceCommit": "e86e8400c8995fc9e53b6ebcae82f1be16155b94",
+  "projectSha256": "d7d617128e899be8eafe70609a6fd2cf354baec48d9a3bd6841b3c3102d91190",
+  "sourcePins": [
+    {
+      "name": "src/scan-native-noise.ts",
+      "sha256": "d82b43320955e62a3588641f8f8d4adfe1872f4f342fbe163f2be564e9f1c427"
+    },
+    {
+      "name": "src/native-landmark-target.ts",
+      "sha256": "48e4d9c75fd559bb2feac9e963ac2415c329a79b6c9861585120ba6d150724ec"
+    },
+    {
+      "name": "src/scan-noise-octree-bounds.ts",
+      "sha256": "b6d29631d88d9bc6f2105ff2c44420b92288c975463be171ee60c6d1866f24c1"
+    },
+    {
+      "name": "src/scan-noise-overlap.ts",
+      "sha256": "2b6e6677848f302aec06b78a7eb92f5cb1a2d3fe6d05ef5017d36b26b3b3c793"
+    },
+    {
+      "name": "src/scan-noise-octree.ts",
+      "sha256": "f4d0dee39bbecd31f771f1916af35908f0f4e1462c217f73cb911bef58e6610b"
+    },
+    {
+      "name": "src/scan-alignment-packed-tree.ts",
+      "sha256": "1c8385783eda7facce01d456102942b953cf826d08cd560f48e4ed745d6b2f14"
+    },
+    {
+      "name": "src/scan-noise-octree-query.ts",
+      "sha256": "f9d7dd028ca3ce65872b0b677981a400b79b3f1bf7336312bfec22307098d8a2"
+    },
+    {
+      "name": "stl-retained-tree.ts",
+      "sha256": "3406e79fb4f5544c7a16adff43acda3fd863757272fe1a3467b92be62cd02c90"
+    }
+  ],
+  "bundleSha256": "fc5585175a8174a990fe1617f5cf45ea63de4ff593ee15c052c6055fc5de6d54",
+  "ownerSha256": "bd6a204c5bf11072427f60c2f18dbcf46ddad40ea2014eb109dc22ac0f97804b",
+  "reportSha256": "e7a2a939b6299aa0feaa1288f71531d111340182cac918c083f7769352df0f71",
+  "ownerReceiptSha256": "9b85e4a285b2807921d617855749d39e9a57467d35af3a3dff7609fb5f2adb27",
+  "retainedTree": {
+    "nodes": 275562,
+    "descendants": 275561,
+    "leaves": 213841,
+    "leafMemberships": 6199177,
+    "maximumLeafMemberships": 109,
+    "byDepth": {
+      "0": 1,
+      "1": 8,
+      "2": 28,
+      "3": 113,
+      "4": 397,
+      "5": 1489,
+      "6": 5758,
+      "7": 21583,
+      "8": 79631,
+      "9": 166554
+    },
+    "orderedTreeSha256": "1d23c319c2064a1e7f1a77f35fcbccae4e7cad53c887412d1b3ecd49545ba637"
+  },
+  "octantTasks": [
+    {
+      "path": "0",
+      "descendants": 44514,
+      "generatedMemberships": 6242577
+    },
+    {
+      "path": "2",
+      "descendants": 60161,
+      "generatedMemberships": 8512954
+    },
+    {
+      "path": "3",
+      "descendants": 7336,
+      "generatedMemberships": 1047838
+    },
+    {
+      "path": "4",
+      "descendants": 59862,
+      "generatedMemberships": 7204910
+    },
+    {
+      "path": "5",
+      "descendants": 48682,
+      "generatedMemberships": 5500868
+    },
+    {
+      "path": "6",
+      "descendants": 14731,
+      "generatedMemberships": 804120
+    },
+    {
+      "path": "7",
+      "descendants": 40267,
+      "generatedMemberships": 4131490
+    }
+  ],
+  "largestOctantDescendants": 60161,
+  "packedBytes": 56761900,
+  "packedBuffers": {
+    "geometry": 19840464,
+    "links": 12124728,
+    "triangles": 24796708
+  },
+  "queryChecks": {
+    "cases": 33,
+    "callbackVisits": 207,
+    "allCallbackSequencesAndWinnersMatch": true,
+    "syntheticSignedDistanceCallback": true,
+    "casesAndTraceHashes": [
+      {
+        "callbacks": 5,
+        "callbackSha256": "789ee5c836cffdf77e5a3145b45fd09f7736ff1f2b859814c7e061e1ae9cb4a5",
+        "winner": {
+          "triangle": 33817,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 6,
+        "callbackSha256": "535505375ee93c79df4b4ac34b284e084b8e2436477d9e53adeb84d5d612b78b",
+        "winner": {
+          "triangle": 142807,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 7,
+        "callbackSha256": "501b2e648cd991155904b30a16c52f41d412d6c60536b00fc4fb0a07092b794d",
+        "winner": {
+          "triangle": 58313,
+          "distance": -0.125
+        }
+      },
+      {
+        "callbacks": 1,
+        "callbackSha256": "2fcd758bca60120a638b2b7f2b42eb80be41f8c74412877eedf0386bee6a4527",
+        "winner": {
+          "triangle": 354263,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 7,
+        "callbackSha256": "5219b310639ee12b8f2ea5700ebd6b3f2c75c1c0f0629e25082dc53edbc7cce3",
+        "winner": {
+          "triangle": 470190,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 5,
+        "callbackSha256": "da3041bc1a71cfc86cd08d5ada7948713b23eba6798e25585dc8df666362cbb4",
+        "winner": {
+          "triangle": 579082,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 6,
+        "callbackSha256": "c1d1519fd84da13a94fbe9a5b9ffc9bad65c1d0f684716d6e224cc5a855b8430",
+        "winner": {
+          "triangle": 688373,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 12,
+        "callbackSha256": "3323f7326ea58fa0432ce2a14a9b3cb8858762302158f1c48b97adf83fef330c",
+        "winner": {
+          "triangle": 2872954,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 1,
+        "callbackSha256": "71fb3d31f6c5985075c7b63b2c07ab02fd3a6690eaa0f691f76242f7268ead14",
+        "winner": {
+          "triangle": 529900,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 2,
+        "callbackSha256": "e1802081fbc34d9560603e40f961bbe66a6e363f0c956b20f5a8acd040a02df0",
+        "winner": {
+          "triangle": 347991,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 4,
+        "callbackSha256": "9c0887595a99b92d3abf60484cceaeddfdb4adfcba0742a6f84aec5475e662c5",
+        "winner": {
+          "triangle": 1124739,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 3,
+        "callbackSha256": "2c5718569ed16f8b3327633880909ca639e2b1f73c722f1884a34f6ad38b6361",
+        "winner": {
+          "triangle": 1065771,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 18,
+        "callbackSha256": "08e45dc6c9c5c28919e1c5b6285ce6fc292db86ac53cdd258ac1bff285a33547",
+        "winner": {
+          "triangle": 1342936,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 3,
+        "callbackSha256": "8d7c1aff4b22a8041ceff4bd3bc389733447e46877fd1ce46d7de2801e9bcf58",
+        "winner": {
+          "triangle": 322441,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 2,
+        "callbackSha256": "3b1911e7d40e8538ea5027a161a334fd73cb4006ce7d8f13d44909b80cbd92ad",
+        "winner": {
+          "triangle": 358967,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 3,
+        "callbackSha256": "3ca6a03910ee0fbc5509c13291fcf0826ac87768b25b7b5cf4a2899921fc8b91",
+        "winner": {
+          "triangle": 395535,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 5,
+        "callbackSha256": "83ebd37fbdfeb608a997b139ffdb8d4c753f0912978c38201c88bb9b6edb39ec",
+        "winner": {
+          "triangle": 413728,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 22,
+        "callbackSha256": "f65fa185a558733ee8dcd03d93f6a29bc20a2331ffd93321479ad0d1f7db9b13",
+        "winner": {
+          "triangle": 2490509,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 10,
+        "callbackSha256": "21eb518ca20c78a65a3c3a088d6047ba73c0cc0d74434e0129d835ca70e731a3",
+        "winner": {
+          "triangle": 1997471,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 4,
+        "callbackSha256": "7d6795fa68639d16e47c8a86213561fe13086570139d2698913b44276a345261",
+        "winner": {
+          "triangle": 541128,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 10,
+        "callbackSha256": "97705c80462c2c44e27dc05545c9979d48c840a953070b6dc9ac3dc8b8495ac0",
+        "winner": {
+          "triangle": 1178065,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 1,
+        "callbackSha256": "6d3200b2ec278c5941cffa74acdada61d10daa65d36295fdb1bf77d17c87d944",
+        "winner": {
+          "triangle": 613746,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 4,
+        "callbackSha256": "3e490fb4f7aed75f5d35a351abae918cf537bd87a7446c55a52e75bb63279e6c",
+        "winner": {
+          "triangle": 650251,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 7,
+        "callbackSha256": "c8b15316acb6c2db7d89a24c7410c62f258a043c3f3cc5ed3af027b97b744840",
+        "winner": {
+          "triangle": 686805,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 3,
+        "callbackSha256": "b8615531dd7ff811591973830623fca2c7c457b5a3618ece3a9d08fb7409a6fb",
+        "winner": {
+          "triangle": 311458,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 8,
+        "callbackSha256": "fdb5a07a142f9f160d7279ba8c6f07d276ae47245ca32dedc6eb528f55f9619c",
+        "winner": {
+          "triangle": 1257676,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 5,
+        "callbackSha256": "d974756f5779f0771456ee86155fe3ff78a80ebf823ed562ed261813b507c563",
+        "winner": {
+          "triangle": 795816,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 5,
+        "callbackSha256": "44caa95a64396d8e360bea239d1acba73d97da90a5ec765c3bf8ac82793ced05",
+        "winner": {
+          "triangle": 832671,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 12,
+        "callbackSha256": "2e299a839f9da9a4e36a9042214750e5d0c021f24087783d6403964006aec952",
+        "winner": {
+          "triangle": 1808065,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 12,
+        "callbackSha256": "ee799ee389994f8202fd5025d740d52332ebf54b4bcdd7ddceb54fee717b79d2",
+        "winner": {
+          "triangle": 1169763,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 4,
+        "callbackSha256": "a6b0fa527910bea5952784c996193ba42f1e671d6c35ed3ed160061fbb3a9785",
+        "winner": {
+          "triangle": 3305288,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 7,
+        "callbackSha256": "3bfe6c86dafa1514f4e54db5144e196a3f257634f7fd6f5e13f253123504114a",
+        "winner": {
+          "triangle": 805497,
+          "distance": 0
+        }
+      },
+      {
+        "callbacks": 3,
+        "callbackSha256": "3089b0e663acd23d4fe003366b421df04635959b4ffbb8994548b08165ae2e26",
+        "winner": {
+          "triangle": 350238,
+          "distance": 0
+        }
+      }
+    ]
+  },
+  "validation": {
+    "streamingCensusFullOrderedTreeHashMatches": true,
+    "smallFixtureTrees": 2,
+    "allEightInputHashesChecked": true,
+    "independentSourceProjectAndCleanupAudit": true,
+    "protectedEditsPreserved": 5,
+    "formatCheckRequired": true
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "leaseSeconds": 300,
+    "physicalAdmissionMiB": 3072,
+    "diskAdmissionGiB": 2,
+    "peakJobMemoryBytes": 1415159808,
+    "elapsedSeconds": 8.638029800000368,
+    "childExited": true,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcpCoverage": "Evidence-only investigation of existing shared GUI/MCP target operations; no application operation, public schema, agent usage or resource limit changed.",
+  "limitations": [
+    "Private analysis assembles independently admitted octants without enforcing the application merged-node cap; the normal product build remains unchanged and still rejects the joined target.",
+    "This retains the complete target object tree and packed transport, but omits complete application state, adjacency, worker duplication, solve and acceptance. The Job peak is not a complete application peak.",
+    "Synthetic signed distances verify traversal/callback ordering and winner transport equivalence; they are not physical surface distances or registration-accuracy measurements.",
+    "The full native final-tree/controller oracle remains incomplete.",
+    "No unit, CAD or browser suite was rerun."
+  ]
+}

@@ -263,3 +263,29 @@ completed branches; this is not a full application or fully retained tree peak.
 This is evidence for sizing the pending shared GUI/MCP memory fix, not a fix or
 a successful joined solve. Application behavior, MCP schemas and agent usage
 remain unchanged. No unit, CAD or browser suite was rerun.
+
+## Fully retained joined target and packed transport
+
+[Retained-tree memory evidence](evidence/original-stl-retained-tree-memory.json)
+constructs the joined target through the existing independent octant operation.
+Seven nonempty tasks fit its unchanged 100,000-descendant limit; the largest
+needs 60,161 descendants. The private analysis combines these tasks without
+enforcing the application merged-node cap. The normal product build remains
+unchanged and still rejects the joined target. Its complete retained object tree
+has 275,562 nodes and 6,199,177 leaf memberships, with the exact full ordered-tree
+hash from the earlier streaming census.
+
+The existing packed query transport occupies 56,761,900 bytes (54.13 MiB).
+Object and packed queries agree on all 207 callback visits and winners across
+33 synthetic signed-distance cases. These are traversal and strict-winner
+controls, not physical distance or alignment-accuracy measurements. The owned
+probe peaks at 1,349.60 MiB under the unchanged 4 GiB/25% CPU Job, completes in
+8.64 seconds, observes normal child exit and closes both handles. Eight bundled
+input hashes, the original project and cleanup receipts were independently
+verified; the five pre-existing working edits remain intact.
+
+This retains the object tree and packed transport, but omits complete application
+state, adjacency, worker duplication, solve and acceptance. Its peak does not
+prove full application memory use. No application behavior, MCP schema, agent
+usage or resource policy changed. No unit, CAD or browser suite was rerun.
+The shared memory fix and full native comparison remain incomplete.
