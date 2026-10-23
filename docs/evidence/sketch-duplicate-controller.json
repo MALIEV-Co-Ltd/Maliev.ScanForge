@@ -568,5 +568,15 @@
     "fullControllerAcceptance": false,
     "implemented": false,
     "mcpDiscoveryAdvertised": false
+  },
+  "nonlinearCurveKernelComparison": {
+    "evidence": "sketch-duplicate-spline-numerics.json",
+    "fixtureCount": 6,
+    "sampleCount": 48,
+    "coreNativeOutputDoublesCompared": 480,
+    "allComparedF64BytesEqual": true,
+    "fullControllerAcceptance": false,
+    "implemented": false,
+    "mcpDiscoveryAdvertised": false
   }
 }

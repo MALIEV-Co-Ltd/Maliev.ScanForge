@@ -70,8 +70,10 @@ when the native start/end points are less than 0.0001 units apart, where it uses
 `instances`. Path evaluation accepts distances up to length plus
 `1.1920928955078125e-7`; Flip reverses path traversal and tangent direction.
 The retained-orientation branch preserves the initial path frame's rotation;
-the other branch uses each evaluated path frame. Native curve evaluation and
-distance-to-parameter behavior are still indirect-call boundaries.
+the other branch uses each evaluated path frame. The concrete evaluation and
+distance-to-parameter methods are bound below, with component replay for line,
+arc, Bezier and cubic B-spline fixtures. Complete controller path behavior remains
+an acceptance gate.
 
 Accept also remaps and copies selected relation records with numeric kinds
 3, 4, 19 and 20 when both referenced source entities have corresponding copies.
@@ -387,3 +389,54 @@ contract or discovery changed. Duplication remains unimplemented; the existing
 full-controller, spline, unit/frame/relation and GUI/MCP acceptance gates remain
 open. No application build, full suite or browser replay was repeated for this
 evidence-only change.
+
+## Nonlinear curve comparison with the application kernel
+
+Six further fixtures now compare the installed native geometry components with
+the application's existing WASM kernel over 48 samples. They cover an open cubic
+Bezier curve and its reversed topology, a range trimmed to `[0.2, 0.85]`, a
+closed Bezier curve, a straight nonuniform Bezier curve with a stationary start,
+and a cubic B-spline with a nonuniform internal knot at `0.35`. The candidate and
+native runs use byte-identical generated BREP fixtures and identical requested
+distances, with source/kernel hashes checked before and after execution.
+
+All 480 native output doubles match the WASM results byte-for-byte: first/last
+parameters, range length, solved parameter, point and `D1` coordinates. Another
+192 input/derived doubles also match, for 672 comparisons in total. Raw
+little-endian bytes are retained before JSON serialization, so a changed sign
+bit on zero cannot disappear through numeric JSON equality. These are component
+outputs and harness calculations, not execution of the full native wrapper.
+
+The nonlinear cases reject a distance-divided-by-length substitute. For the open
+Bezier fixture, half the path distance gives normalized parameter
+`0.7313368860354995`, not `0.5`; the maximum parameter difference from that
+substitute across these fixtures is `0.3256644374765935`. Independent de Casteljau
+and de Boor evaluation agrees with native points within `3.552713678800501e-15`
+and derivatives within `1.9539925233402755e-14`. The straight nonuniform fixture
+has `x(u) = 3u^2 + 7u^3`; its distance residual is at most
+`1.7763568394002505e-15`. Its first derivative is exactly zero at the start.
+This does not validate the native tangent-normalization wrapper on that state.
+
+The file-only verifier checks byte comparisons for all 48 samples, ten installed export
+bindings, both kernels' matching BREP/source inputs, the reversed curve pair,
+closed endpoints, trimmed range and stationary derivative. It rejects three
+altered results: using a uniform distance parameter, omitting the trim origin
+and flipping a zero sign bit. An initial fixture run failed during WASM object
+cleanup because the helper deleted both a curve handle and its raw geometry
+wrapper. That failed run is retained separately and excluded from passing
+validation. The corrected private helper leaves ownership with the handle.
+
+All successful owned helpers kept the existing 4 GiB/25% CPU limits and finite
+leases. Their children exited and handles closed without cleanup errors; the
+largest successful helper peaked below 490 MiB. No native application process,
+private analysis PE or separate reported-length kernel was accessed by these
+helpers. Their process teardown is not an in-process destructor/leak test.
+
+The [nonlinear component evidence](evidence/sketch-duplicate-spline-numerics.json)
+records fixtures, byte counts, hashes, owner receipts, failure accounting and
+remaining limits. This supports reusing the existing kernel's recovered
+distance/evaluation overloads for these cases. It does not establish general
+rational/periodic spline behavior, units, selected-group anchors, copied relations
+or all four modes' complete native-controller acceptance. No application code,
+GUI/MCP contract or discovery changed. Duplication remains unimplemented; no
+application build, full suite or browser replay was repeated for this slice.
