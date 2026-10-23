@@ -136,6 +136,14 @@ the recorded descriptor pose and largest live count. Native clocks, query
 correspondences and equivalent full-controller replay remain open under
 tracking issue #3. The passing post-state comparison does not close that gate.
 
+The subsequent [full-size final proximity measurement](NATIVE_GLOBAL_FINAL_PROXIMITY.md)
+queries every vertex against both other complete captured scans. It records
+directional coverage and residual distributions separately from controller
+coverage, native numerical parity and successful registration. Fresh
+[common target-preparation evidence](NATIVE_GLOBAL_RAW_TARGET_ROUTING.md)
+also qualifies the historical CAD-only label for `0x140aec260`; evaluator
+presence by itself does not establish exact CAD admission.
+
 ## Historical groundwork
 
 Global Fine Align is a distinct native workflow, not the coarse `mesh_process` registration kind `global`. At the initial checkpoint below, its ribbon entry and connected controller were still planned. Later integration sections record the subsequent public GUI/MCP implementation; the early kernel captures alone did not establish that integration.

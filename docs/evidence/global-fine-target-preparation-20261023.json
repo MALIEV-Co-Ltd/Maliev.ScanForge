@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "scope": "Static common target preparation; no target execution or CAD input acceptance claim",
+  "evidenceId": "ev_efe807ef04e6644b8b211aa68c85178941187af2d5427b358e1c9d8370d6aab9",
+  "staticImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "body": {
+    "start": "0x140aec260",
+    "inclusiveEnd": "0x140aec5b7",
+    "bytes": 856
+  },
+  "evaluatorProperty": "PointEvaluator",
+  "routing": {
+    "controllerEvaluatorEnableOffset": "0x0d",
+    "propertyVirtualSlot": "0x298",
+    "propertyPointerAdjustment": -8,
+    "adjustedEvaluatorReadinessOffset": "0x98",
+    "descriptorEvaluatorVectorOffset": "0x80",
+    "descriptorRawTreeOffset": "0x78",
+    "rawLeafCapacity": 48,
+    "rawExcludedVertexFlag": 1,
+    "controllerRawVertexIndexStrideOffset": "0x80"
+  },
+  "validation": {
+    "instructionAnchors": 18,
+    "mutatedInstructionsRejected": 3,
+    "valueFlowTruncated": false,
+    "targetExecuted": false,
+    "helperJobMemoryLimitBytes": 4294967296,
+    "helperCpuRate": 2500,
+    "helperPeakJobMemoryBytes": 81960960,
+    "helperCleanupErrors": []
+  },
+  "privateArtifacts": [
+    {
+      "name": "native-global-target-preparation-rea-20261023.json",
+      "sha256": "ef5d9dc6ec384c4ae9016328f4dc7f152bba116b0ffa4232a0834e71466484ee"
+    },
+    {
+      "name": "native-global-target-preparation-snapshot-20261023.json",
+      "sha256": "856990388bf67c52aaf7e9d0bb4c0c87e40fe2e367bb77a0ec9352aee49debb1"
+    },
+    {
+      "name": "verify-global-target-preparation.py",
+      "sha256": "5177c9421a1f38304fea578b256653d891f935bd5e51071b5a677206edc3fa30"
+    },
+    {
+      "name": "run-global-target-preparation-owner.py",
+      "sha256": "f2c319faeea17920615f29891af3ea456dacb7e5f0a0d1f339bfe146ebd3f8a1"
+    },
+    {
+      "name": "native-global-target-preparation-verified-20261023-r1.json",
+      "sha256": "beb7b512d4edc021d14c8017007eb06a74ea756711edff70716abd404023b380"
+    },
+    {
+      "name": "native-global-target-preparation-verified-20261023-r1.owner.json",
+      "sha256": "5c030c1a4be5d0e02845560a26aadd96180323c439fcf9d8802bcfa2bdffdaa0"
+    }
+  ],
+  "limitations": [
+    "This is common per-source preparation; evaluator presence does not establish exact CAD identity or admission.",
+    "Controller +0x80 is a raw index stride here; other read-site semantics require separate binding.",
+    "Two incoming and 23 outgoing call references have incomplete relationship coverage.",
+    "The reported terminal call at 0x140aec588 has an unknown no-return basis.",
+    "No live readiness lifecycle, full native solver comparison or new GUI/MCP acceptance is established.",
+    "Application shared operations, public schemas and runtime behavior are unchanged."
+  ]
+}

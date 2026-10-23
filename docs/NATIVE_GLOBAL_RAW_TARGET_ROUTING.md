@@ -53,7 +53,7 @@ is an application integration check, not an original full-controller capture of
 that scene. Native normal-group admission was preserved; the fixture contains
 144 points per plane to exceed its 100-point requirement.
 
-The public Global Fine Align command remains gated. This private routing fix
+At this validation checkpoint, the public Global Fine Align command remained gated. This private routing fix
 adds no GUI-only behavior or public MCP parameter. Complete original multi-scan
 registration, import/controller publication and production memory admission
 remain separate requirements.
@@ -66,3 +66,38 @@ and owned-file branding checks passed. Optional large-owner evaluator tests were
 not repeated: their evaluator implementation is unchanged, and their prior
 original captures remain recorded separately. This slice tests the changed raw
 routing, worker protocol and registration boundaries directly.
+
+## Current common target-preparation binding
+
+The current installed-image derivative independently confirms the same common
+per-source preparation at `0x140aec260` (856 analyzed bytes, through
+`0x140aec5b7`). This is not a CAD-only branch. With controller byte `+0x0d`
+enabled, a child exposing `PointEvaluator` through virtual `+0x298` routes its
+property pointer minus eight into the descriptor's evaluator vector at `+0x80`.
+The adjusted evaluator's readiness word at `+0x98` is polled atomically before
+insertion. The external polling call receives `0x32`; this check does not bind
+its runtime identity or establish readiness under every edit.
+
+Other admitted raw children contribute vertices to the descriptor's tree at
+`+0x78`, with leaf capacity 48. Vertex flag bit zero excludes a record; the raw
+loop increments its vertex index by the controller's U32 field at `+0x80`.
+That is a stride use of this field in this procedure. It does not prove that
+other preparation/query uses of the same field are masks or strides. Existing
+observer names must not be promoted to runtime semantics without checking those
+read sites. The application raw-ID helper supports explicit strides, while the
+current public fixed-one route uses stride one.
+
+Fresh REA evidence
+`ev_efe807ef04e6644b8b211aa68c85178941187af2d5427b358e1c9d8370d6aab9`
+has untruncated value-flow output but partial call relationships: two incoming
+and 23 outgoing call references lack full ownership/destination coverage.
+The reported terminal call at `0x140aec588` has an unknown no-return basis.
+An independent byte decoder checked 18 instruction anchors, the evaluator
+property text and three changed-instruction rejection controls. It executed
+no target code. See [the structured binding](evidence/global-fine-target-preparation-20261023.json).
+
+The current shared GUI/MCP command is enabled for eligible raw scan meshes.
+Exact CAD admission remains rejected. Evaluator presence alone does not identify
+a CAD class or prove an exact-surface query contract, so this analysis does not
+justify removing that gate. No application operation, schema or runtime behavior
+changes in this evidence update.
