@@ -1,5 +1,43 @@
 # Native Global Fine Align
 
+## Same-run local solver replay (2026-10-23)
+
+A fresh native GUI run imported the three original full-size PLY scans and ran
+Global Fine Align at 0.500 mm. Its passive trace retained 3,901 sampler clock
+inputs and one outer clock input, 96 angular sampler calls, six local solver calls and all 45 ordered
+correspondence query results without message truncation. Separate before/after
+captures retained every used position, vertex normal, triangle index, facet
+normal and complete vertex record on all three scans. Each capture read those
+fields twice with matching hashes; these remain non-atomic snapshots.
+
+The [same-run replay evidence](evidence/global-fine-same-run-local-replay-20261023.json)
+feeds those captured query results into the existing shared local solver.
+All six calls match bit for bit: every requested query pose, final twelve-Double
+pose, mean and standard deviation, convergence/stability flags and return
+status. The calls consume exactly 9, 3, 9, 8, 7 and 9 queries. Descriptor aliases
+identify the observed call order, not verified original-file or owner mappings.
+Opaque correspondence bytes remain uninterpreted, and entry flag bytes are not
+used as initialized state. Decoder checks include malformed-record rejection
+and a signed-zero corruption control.
+All 31,463 captured records are active; this run does not exercise inactive
+correspondence handling. Reported iteration counts are the port's counters.
+
+The replay completed in 196 ms with a 157,126,656-byte aggregate Job peak,
+under the unchanged 4 GiB cap and 25% CPU quota. The owned processes exited
+and handles closed without cleanup errors. Source and input hashes were
+verified before and after the replay. This checkpoint changes no application
+behavior or MCP contract: it exercises the local solver already shared by GUI
+and MCP global alignment.
+
+This establishes the local solver arithmetic for this actual native run using
+its recorded correspondences. It does not establish the port's correspondence
+generation, sampling, scheduling or complete final transform application.
+The command returned with all sources stable and no source converged. The
+ordinary-owner setter observer recorded no matching calls despite changed
+post-state positions, so its receiver/dispatch route requires further runtime
+investigation before claiming a complete setter capture or full-controller
+equivalence.
+
 ## Current installed controller check (2026-10-22)
 
 This current check supersedes the historical-only qualification for the outer
