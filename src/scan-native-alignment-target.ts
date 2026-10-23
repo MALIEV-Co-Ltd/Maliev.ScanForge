@@ -53,6 +53,7 @@ export function prepareNativeAlignmentTarget(
     10,
     options,
     options.filterExcluded ? undefined : options.cachedBounds,
+    512 * 1048576,
   );
   if (ids.length === count) return prepared;
   const remap = (node: NoiseTreeNode) => {

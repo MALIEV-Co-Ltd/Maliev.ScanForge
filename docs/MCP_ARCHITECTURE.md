@@ -445,3 +445,43 @@ conflict attribution, local DOF reporting and invalid-trial rejection. The
 existing draft adapter owns sketch history and project persistence; model
 history, revisions, retry protection and lock/busy admission retain their
 existing contracts. See [collinear constraints](SKETCH_COLLINEAR.md).
+
+## Bounded indexed alignment memory
+
+The shared indexed normal expansion now preserves Float32 input storage,
+including signed zero, across point-pair acceptance, mesh processing and indexed
+transforms. Numeric-array inputs retain their existing precision. This supersedes
+the earlier indexed-caller container default described above. GUI commits and
+MCP `landmark_accept` use the same operation; existing digest resources expose
+the `f32` carrier without a new wire format or public setting.
+
+Alignment target construction opts into a 512 MiB tree estimate in the existing
+ordered octree builder. It reserves 512 bytes per node and 24 per live membership,
+including parent memberships until subdivision completes, and includes allowance
+for packed query transport. Geometry buffers and other allocations are separate;
+this is not an exact VM memory measurement. Other noise callers keep their legacy
+count guard. Budget checks precede membership/node allocation, retain cancellation,
+and fail through the existing public operation error contract with required and
+allowed estimated bytes. The 4 GiB process validation cap, worker-pool admission,
+revision checks, retry protection, locks and history behavior are unchanged.
+
+Geometry digests and project encoding hashes borrow canonical little-endian typed
+storage in bounded views rather than allocating a staging buffer per megabyte.
+This applies to GUI saves, automatic backups and MCP project exports through the
+shared encoder, and to `object_geometry_digest`. Signed zero and file/hash bytes
+remain unchanged. Compression streams still receive owned staging bytes; legacy
+numeric arrays and noncanonical storage retain the conversion path. Borrowed hash
+views are consumed before advancing and never transferred or detached.
+
+Completed Float32 indexed render normals use the existing immutable shared-buffer
+allocation policy when cross-origin isolation permits it. Encoder workers then
+share that backing rather than cloning another expanded normal buffer. Hosts
+without shared storage retain private Float32 buffers; values, history and file
+formats are unchanged. Application operations treat the published buffers as
+immutable, as they already do imported shared geometry.
+
+The same publication policy covers expanded positions from indexed landmark
+refinement. Unchanged Uint32 connectivity retains the source backing instead of
+being copied again. Worker result transfer lists include only private
+ArrayBuffers; shared model/history storage remains attached. Legacy ordinary
+index arrays are still converted to Uint32 storage without changing face order.

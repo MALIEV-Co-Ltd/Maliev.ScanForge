@@ -27,7 +27,11 @@ export async function refineNativeLandmarkAfterCoarse(
     source.vertices instanceof Float32Array
       ? source.vertices
       : Float32Array.from(source.vertices);
-  const triangles = Uint32Array.from(source.triangles);
+  // Connectivity is immutable; retain the published source index backing.
+  const triangles =
+    source.triangles instanceof Uint32Array
+      ? source.triangles
+      : Uint32Array.from(source.triangles);
   const region = prepareNativeLandmarkRegion(
     originalVertices.length / 3,
     triangles,

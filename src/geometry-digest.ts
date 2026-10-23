@@ -113,7 +113,7 @@ export async function digestEntityGeometry(
     const { path, value, encoding } = field,
       width = encoding === "u8" ? 1 : encoding === "f64" ? 8 : 4;
     const hash = sha256.create(),
-      chunks = projectValueBytes(value, encoding);
+      chunks = projectValueBytes(value, encoding, true);
     let first = 0;
     try {
       while (first < value.length) {

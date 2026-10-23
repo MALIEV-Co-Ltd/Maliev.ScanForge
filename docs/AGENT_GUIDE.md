@@ -1515,16 +1515,24 @@ history, retry protection and saved-sketch/project persistence remain shared wit
 the GUI Constraint menu. See [collinear behavior](SKETCH_COLLINEAR.md) for limits
 and the distinction between native command evidence and numerical verification.
 
-### Full-size N-point preview failures
+### Full-size N-point preview resource limits
 
-The original three-STL checkpoint currently rejects both moving scans' default
-`visibleScene` previews with `OPERATION_FAILED` and message
-`Noise tree exceeds its node budget`. The shared target builder's 100,000-node
-limit is separate from the observed 4 GiB acceptance allocation spike. There is
-no public option to override that node limit. See the
-[full-size failure evidence](ORIGINAL_STL_WORKFLOW.md).
+Historical original-three-STL checkpoints rejected both moving scans' default
+`visibleScene` previews at the old 100,000-node limit. Alignment now admits trees
+against a 512 MiB estimate for object nodes, live memberships and packed query
+transport; geometry buffers and other application allocations are separate.
+The estimate reserves 512 bytes per node and 24 per live membership, including
+parent/child overlap during subdivision. Native subdivision and query order are
+unchanged. Other noise consumers retain their existing node-count limits.
+There is no public budget override. Exhaustion reports `OPERATION_FAILED` with
+`Alignment target tree exceeds its memory budget` and estimated required/allowed
+bytes. The 4 GiB validation-process cap is separate from this tree estimate.
+Float32 indexed normals retain Float32 render storage through acceptance;
+legacy numeric arrays retain their original precision. `object_geometry_digest`
+reports `f32` for compact normal buffers; project/wire formats are unchanged.
+See the [historical failure evidence](ORIGINAL_STL_WORKFLOW.md).
 
-Poll the terminal `job_get.status`: these failures report `progress: 1`, which
+Poll the terminal `job_get.status`: the historical failures reported `progress: 1`, which
 is not success. They leave the session active with all twelve picks retained,
 `preview:false`, `canPreview:true` and `canReset:false`. Both failed previews
 preserved all nine committed geometry carriers and the three-import history.
@@ -1551,5 +1559,34 @@ request retries returned the original cancelled job receipts without another
 solve. All nine original geometry carriers and the three-import history were
 preserved. See [the complete cancellation evidence](ORIGINAL_STL_WORKFLOW.md).
 This covers MCP-issued raw-mesh jobs, not GUI-submitted previews, later native
-CAD/controller stages, successful alignment or acceptance. The known resource
-failures above remain unresolved.
+CAD/controller stages, successful alignment or acceptance. That historical
+checkpoint still had the resource failures described above.
+
+### Indexed alignment storage and project encoding
+
+Geometry digests and project encoding hashes borrow canonical little-endian typed
+storage in bounded views rather than allocating a staging buffer per megabyte.
+This applies to GUI saves, automatic backups and MCP project exports through the
+shared encoder, and to `object_geometry_digest`. Signed zero and file/hash bytes
+remain unchanged. Compression streams still receive owned staging bytes; legacy
+numeric arrays and noncanonical storage retain the conversion path. Borrowed hash
+views are consumed before advancing and never transferred or detached.
+
+Completed Float32 indexed render normals use the existing immutable shared-buffer
+allocation policy when cross-origin isolation permits it. Encoder workers then
+share that backing rather than cloning another expanded normal buffer. Hosts
+without shared storage retain private Float32 buffers; values, history and file
+formats are unchanged. Application operations treat the published buffers as
+immutable, as they already do imported shared geometry.
+
+The same publication policy covers expanded positions from indexed landmark
+refinement. Unchanged Uint32 connectivity retains the source backing instead of
+being copied again. Worker result transfer lists include only private
+ArrayBuffers; shared model/history storage remains attached. Legacy ordinary
+index arrays are still converted to Uint32 storage without changing face order.
+
+The complete original-three-STL GUI/MCP coarse/refinement, cached acceptance,
+retry, Undo/Redo and GUI save workflow passed under the unchanged 4 GiB Job,
+peaking at 3,457.16 MiB. Independent decoding matched all 13 current geometry
+carriers and full history. See [the validated workflow](ORIGINAL_STL_WORKFLOW.md#bounded-indexed-alignment-memory-correction).
+Native final numerical equivalence remains unverified.

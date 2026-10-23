@@ -44,7 +44,7 @@ documentation checkpoint.
 
 ## Actual three-scan GUI controller trace (2026-10-22)
 
-The user-supplied screen recording confirms QuickSurface Pro 8.0.123 importing
+The user-supplied screen recording confirms the native reference application 8.0.123 importing
 three PLY scans, selecting **Global Fine Align**, entering **0.500 mm** and
 pressing **OK**. Passive instrumentation captured command entry/return, one
 outer entry/exit, six local entry/exits and six geometry-setter entry/exits.
@@ -84,7 +84,7 @@ application. Full geometry observation also needs the base container layout;
 derived pool accessors cannot be assumed valid.
 
 All four scripts from this observation were unloaded and the Frida session
-detached. The user-owned QuickSurface process remained running. This slice
+detached. The user-owned native reference process remained running. This slice
 changes no application behavior or GUI/MCP contract. JSON readback verified
 all fourteen boundary events, six setter entries and exact Double encodings.
 

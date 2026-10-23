@@ -6,7 +6,7 @@ native ASC importer or displayed-color equivalence.
 
 ## Target identity
 
-The installed QuickSurface executable inspected on 2026-10-22 is version
+The installed native reference executable inspected on 2026-10-22 is version
 8.0.123.0, 13,617,424 bytes, SHA-256
 `0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`.
 The retained original-process image has SHA-256

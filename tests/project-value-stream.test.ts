@@ -117,3 +117,31 @@ it("propagates compression failure", async () => {
     vi.unstubAllGlobals();
   }
 });
+
+it.each([false, true])(
+  "borrows canonical typed storage for synchronous hashing (shared=%s)",
+  (shared) => {
+    const buffer = shared
+      ? new SharedArrayBuffer(2 * 1024 * 1024 + 16)
+      : new ArrayBuffer(2 * 1024 * 1024 + 16);
+    const values = new Float32Array(buffer, 4, (2 * 1024 * 1024) / 4);
+    values[0] = -0;
+    values[values.length - 1] = 1 / 3;
+    const chunks = [...projectValueBytes(values, "f32", true)];
+    expect(chunks).toHaveLength(2);
+    expect(chunks.every((chunk) => chunk.buffer === buffer)).toBe(true);
+    expect(chunks[0].byteOffset).toBe(4);
+    expect(chunks[1].byteOffset).toBe(1024 * 1024 + 4);
+    expect(projectValueHash(values, "f32")).toEqual(
+      projectValueHash(values.slice(), "f32"),
+    );
+    // Streaming consumers still receive independent, non-shared staging buffers.
+    const owned = [...projectValueBytes(values, "f32")];
+    expect(
+      owned.every(
+        (chunk) =>
+          chunk.buffer !== buffer && chunk.buffer instanceof ArrayBuffer,
+      ),
+    ).toBe(true);
+  },
+);

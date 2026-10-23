@@ -1,0 +1,152 @@
+{
+  "scope": "Original three STL shared indexed alignment memory correction; GUI/MCP coarse/refinement and project save",
+  "testedBaseCommit": "b32cd666d902746dcd591f4e7bbd2a7d493ca31b",
+  "testedWorkingTree": " M docs/AGENT_GUIDE.md\n M docs/MCP_ARCHITECTURE.md\n M src/automation/api.ts\n M src/automation/catalog.json\n M src/geometry-digest.ts\n M src/indexed-mesh.ts\n M src/native-landmark-refinement.ts\n M src/processing-client.ts\n M src/processing-worker.ts\n M src/project-value-stream.ts\n M src/scan-native-alignment-target.ts\n M src/scan-noise-octree.ts\n M tests/interactive-alignment-api.test.ts\n M tests/interactive-public-browser.mjs\n M tests/native-landmark-refinement.test.ts\n M tests/processing-client.test.ts\n M tests/project-value-stream.test.ts\n?? tests/alignment-memory-admission.test.ts\n",
+  "runId": "20261023T013923810649Z",
+  "compilerInputsVerified": 1865,
+  "sourceAndDistEntriesRehashed": 2409,
+  "sourceUnchangedAcrossBuildAndReplay": true,
+  "buildPassed": true,
+  "sourceManifestSha256": "eb2503522376d304623674b4bbba97472f77b574cd3f84909a5c9802d4f0afec",
+  "packageLockSha256": "2c5cac886fdfdf6408d2221c6cda5173c8265fb2d7ef8757cb5f8d9e40c9ccce",
+  "candidateFileSha256": {
+    "src/indexed-mesh.ts": "51db54813cd7dcb64e6a0970af0304118d71c8f41e78367d1c765ba5adbe7d54",
+    "src/scan-noise-octree.ts": "f2702344ff2c0e364e4f36e25f818e29df8c0412d963994a90a751a8b0791082",
+    "src/scan-native-alignment-target.ts": "6eb78ec10ebe036a5a66c60cc5476d16b02ed3983fb9e856d1e6fc60bdc4cfa2",
+    "src/native-landmark-refinement.ts": "6f6b24d1ac358d211897a4cfcea796632a4ffef79125a6a3f17b5da5d15aa102",
+    "src/processing-client.ts": "3ff98d2a9ba65a479109aae9f166d45f5d0fa0b759d68b95e0086006cab1a3cd",
+    "src/processing-worker.ts": "a8a81f15a9fef580f97e276c0c36790bd1cdc84664a659b902996020e0f06395",
+    "src/project-value-stream.ts": "684e694cf7be2a85a026a2f14dceabf0aca4deab6b3ea09dff9456ea39a34a92",
+    "src/geometry-digest.ts": "40bf29651aa160dc27d8d80cf2b77c39fad97c759b8a093e7ba7aab4c4519f77",
+    "src/automation/catalog.json": "93117b1f691231af6b047a80e42dba885f81ea600452aab9c9a941faf05ed581",
+    "tests/alignment-memory-admission.test.ts": "d63c38c57059cd308cd669f8bfbae6297fc4b83870fdaa69ca81439ff8f89148",
+    "tests/project-value-stream.test.ts": "20dd4c5b092901e6927b28d54afae505b4dff06d8dbf69b8b1b6add4eeff29e3",
+    "tests/processing-client.test.ts": "200585cf0c611fe607f6e49b756905161ef86adf6c2347f5e8204940204811b6",
+    "tests/native-landmark-refinement.test.ts": "bdb94c1aeb161c6c06b396d842a58d8b7736a0ebf467b3905103e117f9f80d61"
+  },
+  "inputs": [
+    {
+      "name": "scan-1.stl",
+      "bytes": 13657034,
+      "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+    },
+    {
+      "name": "scan-2.stl",
+      "bytes": 127370334,
+      "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+    },
+    {
+      "name": "scan-3.stl",
+      "bytes": 166345584,
+      "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+    }
+  ],
+  "acceptedTriangles": 6147452,
+  "indexedVertices": 3121976,
+  "downsampled": false,
+  "verification": {
+    "completed": true,
+    "fullWorkflowPassed": true,
+    "sourceAndDistFilesRehashed": 2409,
+    "sourceBuildInputs": 1865,
+    "originalInputsMatched": true,
+    "guiMcpPreviewPairs": 2,
+    "coarseAndRefinementExactlyEqual": true,
+    "cachedAcceptanceRetry": true,
+    "fullUndoRedoCarriersMatch": true,
+    "currentCarriersVerifiedAgainstSavedProject": 13,
+    "coordinateAndNormalChecks": [
+      {
+        "name": "scan-2.stl",
+        "indexedVertices": 1299033,
+        "triangles": 2547403,
+        "allCoordinatesMatchTwoFloat32Stores": true,
+        "expandedNormalsMatchIndexedBytes": true
+      },
+      {
+        "name": "scan-3.stl",
+        "indexedVertices": 1683605,
+        "triangles": 3326910,
+        "allCoordinatesMatchTwoFloat32Stores": true,
+        "expandedNormalsMatchIndexedBytes": true
+      }
+    ],
+    "renderNormalBytesSavedVersusNumberArrays": 211475268,
+    "renderNormalBackingShared": true,
+    "expandedPositionsAndConnectivityBackingShared": true,
+    "historySteps": 5,
+    "savedProject": {
+      "bytes": 410861843,
+      "sha256": "93701c5b8ef2afd4be2ef29d9b00bc9f908cdc79aafbdd73997b5a54fbddc0bc"
+    },
+    "jobMemoryCapBytes": 4294967296,
+    "peakJobMemoryBytes": 3625091072,
+    "allOwnedProcessesExited": true,
+    "ownedProcessCount": 17,
+    "handlesClosed": true,
+    "cleanupErrors": [],
+    "nativeFinalComparison": false,
+    "elapsedMs": 7221
+  },
+  "validation": {
+    "fullSuitePassed": 47692,
+    "fullSuiteSkipped": 64,
+    "focusedTestsPassed": 228,
+    "buildPassed": true,
+    "fullSuiteReceiptSha256": "0285221a63a7278d57e2820bca6009f6be3809d9dcebb8c242cd91bfb22fa06a",
+    "independentAuditReceiptSha256": "b2fc7c4292fc6e7ee8860ff1c4d0170f7550d52ad1c7196e8074d546e103982f",
+    "nativeCadSmokePassed": true,
+    "nativeCadSmokeReceiptSha256": "761185726b9fda8a0eb3fd5772f4eeba26c2048db3a94c8ec5fbe9daf58bf62c"
+  },
+  "resourcePolicy": {
+    "jobMemoryBytes": 4294967296,
+    "cpuPercent": 25,
+    "peakJobMemoryBytes": 3625091072,
+    "peakProcessMemoryBytes": 2073059328,
+    "allJobChildrenObserved": true,
+    "allObservedExited": true,
+    "handlesClosed": true,
+    "finalAccounting": {
+      "totalProcesses": 17,
+      "activeProcesses": 0
+    },
+    "captureErrors": [],
+    "cleanupErrors": []
+  },
+  "privateReceiptSha256": {
+    "plan": "15a3ea725bc6b27280d5c156de29e980e9b1ad10e7d22296933161d30e35249b",
+    "owner": "f987ce42e34f031cb7f515ef3c2f0dbf1646871d524dc2054f61f641ed6437ab",
+    "browser": "c0d27a2c66414302c948841b6220cda87793f26cf5d45b382cf47528ca7bb3c2",
+    "build": "6d20470454289340658780b110e970513ca00b56c951154b5e2fe9a5294bdcfe"
+  },
+  "earlierCandidates": [
+    {
+      "candidate": "typed-normal/tree candidate",
+      "jobMemoryLimitEvent": 10,
+      "peakJobMemoryBytes": 4295925760,
+      "allObservedExited": true,
+      "receiptSha256": "ba7e165b82a590f15d10aa3d50e5bc18d06c572965813eb95427be2c4b8a3387"
+    },
+    {
+      "candidate": "borrowed-hash candidate",
+      "jobMemoryLimitEvent": 10,
+      "peakJobMemoryBytes": 4294983680,
+      "allObservedExited": true,
+      "receiptSha256": "f088eab42a794c1d448a9d506a2f684c9308fb1a2fe2faaa61a11460946b8efe"
+    },
+    {
+      "candidate": "shared-normal candidate",
+      "jobMemoryLimitEvent": 10,
+      "peakJobMemoryBytes": 4295585792,
+      "allObservedExited": true,
+      "receiptSha256": "3060ae01e69c96889c47f91cb03a317b0a76d0faa4f40a2cfe108d86f96450b7"
+    }
+  ],
+  "nativeFinalNumericalEquivalence": false,
+  "finalGlobalQualityVerified": false,
+  "limitations": [
+    "Memory peak covers the owned browser, server and driver group, not an isolated application process benchmark.",
+    "Normal byte-equivalent savings are not an attribution of total RAM.",
+    "Five pre-existing viewport-revision/API/browser-test edits remain separate and were included in the tested working tree."
+  ]
+}

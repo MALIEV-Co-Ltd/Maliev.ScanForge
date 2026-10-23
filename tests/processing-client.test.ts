@@ -1225,3 +1225,33 @@ describe("foreground mesh readiness", () => {
     expect(ProcessingWorkerDouble.creates).toBe(1);
   });
 });
+
+it.each([false, true])(
+  "retains only immutable shared paired connectivity (shared=%s)",
+  async (shared) => {
+    const triangles = shared
+      ? new Uint32Array(new SharedArrayBuffer(12))
+      : new Uint32Array(3);
+    triangles.set([0, 1, 2]);
+    const pending = processMesh({
+      kind: "paired",
+      positions,
+      sourceIndexed: { vertices: positions, triangles },
+      sourceLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      targetLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as Extract<ProcessingRequest, { kind: "paired" }>;
+    expect(sent.sourceIndexed!.triangles === triangles).toBe(shared);
+    if (shared) expect(worker.transfers).not.toContain(triangles.buffer);
+    else
+      expect(worker.transfers).toContain(
+        (sent.sourceIndexed!.triangles as Uint32Array).buffer,
+      );
+    expect(triangles).toEqual(new Uint32Array([0, 1, 2]));
+    worker.reply({
+      result: { kind: "paired", positions: positions.slice(), diagnostics: {} },
+    });
+    await pending;
+  },
+);

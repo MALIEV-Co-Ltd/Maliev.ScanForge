@@ -47,7 +47,7 @@ it.each(captures.cases)(
     expect(bits(result.indexedMesh.vertices)).toBe(joint.finalPointBits);
     expect(bits(result.indexedMesh.normals)).toBe(joint.finalNormalBits);
     expect(bits(source.vertices)).toBe(before);
-    expect(result.indexedMesh.triangles).toEqual(source.triangles);
+    expect(result.indexedMesh.triangles).toBe(source.triangles);
     const generated = await refineNativeLandmarkAfterCoarse(
       { vertices: source.vertices, triangles: source.triangles },
       [

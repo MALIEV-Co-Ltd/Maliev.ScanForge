@@ -601,7 +601,7 @@ scope.onmessage = async ({ data: incoming }) => {
           },
         );
         result.indexedMesh = refined.indexedMesh;
-        result.positions = expandPlyTopology(refined.indexedMesh);
+        result.positions = expandPlyTopology(refined.indexedMesh, true);
         result.refinement = refined.refinement;
         result.selection = refined.selection;
         Object.assign(result.diagnostics, refined.diagnostics, {
@@ -683,7 +683,11 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.noiseComparison?.renderDistances)
       transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
-    scope.postMessage({ result }, transfers);
+    // Published shared geometry stays attached; only private buffers transfer.
+    scope.postMessage(
+      { result },
+      transfers.filter((buffer) => buffer instanceof ArrayBuffer),
+    );
   } catch (error) {
     // A rejected edit may have analyzed temporary geometry. Never reinterpret
     // that temporary mesh as the next request's original input.

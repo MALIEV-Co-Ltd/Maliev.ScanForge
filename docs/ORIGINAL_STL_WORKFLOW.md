@@ -1,5 +1,9 @@
 # Original three STL workflow validation
 
+The current N-point coarse/refinement workflow and project save now complete
+under 4 GiB; see [the memory correction](#bounded-indexed-alignment-memory-correction).
+The historical raw-pose fine-alignment quality failure below is a separate result.
+
 The full original STL workflow completes under the 4 GiB process cap, but
 **fine alignment from the raw file poses fails the quality gate**. At a
 0.5 mm search tolerance, all three local refinements return status `-2`
@@ -361,3 +365,50 @@ construction combines admitted branches without the unchanged product cap.
 Complete application memory, solve and acceptance remain unverified. No
 application behavior, MCP schema or agent usage changed. No unit, CAD or browser
 suite was rerun.
+
+## Bounded indexed alignment memory correction
+
+The approved shared correction replaces the alignment-only 100,000-node cap
+with a 512 MiB estimated tree budget. Each node reserves 512 bytes and each live
+membership 24 bytes, including parent/child overlap during subdivision. Geometry
+and total process memory are separate. Other noise consumers retain their limits.
+Subdivision, membership order, nearest-query winners and registration arithmetic
+are unchanged; there is no new public budget override.
+
+Expanded Float32 scanner normals keep Float32 storage. Completed indexed
+positions and render normals use the existing immutable shared publication policy
+when cross-origin isolation permits it. Paired registration borrows existing
+shared Uint32 connectivity; the refinement controller preserves it rather than
+copying it again. Private inputs retain dedicated copies and transfer ownership.
+Shared model/history buffers never enter transfer lists. Hash consumers borrow
+canonical typed byte views, while compression retains owned staging buffers.
+
+The original 6,147,452 accepted triangles and 3,121,976 indexed vertices were
+imported without downsampling. Both moving scans used six physical point pairs
+and default `visibleScene` refinement against both other visible scans. GUI and
+MCP coarse and refinement results were exactly equal. Cached acceptance, identical
+request retry, unchanged reference geometry, complete Undo/Redo and five history
+steps passed. Public digests confirmed shared positions, expanded normals and
+unchanged triangle indices. The actual GUI saved a 410,861,843-byte project with
+complete history (SHA-256 `93701c5b8ef2afd4be2ef29d9b00bc9f908cdc79aafbdd73997b5a54fbddc0bc`).
+
+The complete browser/server/driver process group peaked at 3,625,091,072 bytes
+(3,457.16 MiB) under the unchanged 4 GiB/25% CPU Job. All 17 owned processes
+exited, with zero active descendants, capture errors or cleanup errors. Earlier
+candidate runs had completed alignment but still hit the Job cap during backup
+or saving; typed normals and hash staging alone were insufficient. This success
+includes the remaining position/connectivity publication correction.
+
+An independent bounded decoder verified every container chunk, all 13 current
+geometry carriers, all moving coordinates after separate coarse/refinement
+Float32 stores, and byte-exact expansion of indexed normals. It rehashed 2,409
+source/dist entries and verified all 1,865 compiler inputs remained unchanged
+across build and replay. The normal raw-byte-equivalent reduction versus numeric
+arrays is 211,475,268 bytes (201.68 MiB); it is not an attribution of total RAM.
+
+[Structured evidence](evidence/indexed-alignment-memory-fix.json) records the
+source/build/input and resource pins. The run includes the five explicitly
+preserved pre-existing working edits. Native final numerical equivalence and
+final global-registration quality remain unestablished. This is a successful
+original-STL application/MCP memory and history workflow, not a native final
+controller oracle or a complete MVP claim.

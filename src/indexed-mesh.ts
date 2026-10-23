@@ -1,5 +1,6 @@
 import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
 import { transformPositions } from "./geometry";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 
 /** Transform coordinates without changing source vertex IDs or face connectivity. */
 export function transformIndexedMesh(
@@ -103,9 +104,16 @@ export function rotateIndexedNormals(
 }
 
 /** Expand scanner vectors for display while retaining the original indexed records. */
-export function indexedRenderNormals(mesh?: IndexedMesh): number[] | undefined {
+export function indexedRenderNormals(
+  mesh?: IndexedMesh,
+): Positions | undefined {
   if (!mesh?.normals) return undefined;
-  const output = new Array<number>(mesh.triangles.length * 3);
+  const output =
+    mesh.normals instanceof Float32Array
+      ? new Float32Array(
+          allocateImportedReadonlyBuffer(mesh.triangles.length * 3 * 4, true),
+        )
+      : new Array<number>(mesh.triangles.length * 3);
   for (let slot = 0; slot < mesh.triangles.length; slot++)
     for (let axis = 0; axis < 3; axis++)
       output[slot * 3 + axis] = mesh.normals[mesh.triangles[slot] * 3 + axis];

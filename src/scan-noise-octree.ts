@@ -31,7 +31,25 @@ export function prepareNoiseOctree(
   maximumDepth = 10,
   options: MeshProcessingOptions = {},
   sourceBounds?: NoiseBounds,
+  maximumTreeBytes?: number,
 ) {
+  if (options.signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  const count = Array.isArray(triangles)
+    ? triangles.length
+    : (triangles as NoiseIndexedSurface).indices.length / 3;
+  const budget: NoiseTreeBudget = { nodes: 0 };
+  if (maximumTreeBytes !== undefined) {
+    if (
+      !Number.isSafeInteger(maximumTreeBytes) ||
+      maximumTreeBytes < 1 ||
+      maximumTreeBytes > 512 * 1048576
+    )
+      throw new RangeError("Noise tree memory budget is invalid");
+    budget.limit = Infinity;
+    budget.memory = { limit: maximumTreeBytes, bytes: 0 };
+    reserveNoiseTreeMemory(budget, 512 + count * 24);
+  }
   const prepared = packNoiseOctree(
     triangles,
     minimumExtent,
@@ -39,7 +57,6 @@ export function prepareNoiseOctree(
     options,
     sourceBounds,
   );
-  const budget = { nodes: 0 };
   splitNoiseNode(
     prepared.root,
     prepared,
@@ -51,6 +68,27 @@ export function prepareNoiseOctree(
     true,
   );
   return prepared;
+}
+
+interface NoiseTreeBudget {
+  nodes: number;
+  limit?: number;
+  entries?: number;
+  entryLimit?: number;
+  memory?: { limit: number; bytes: number };
+}
+
+/** Estimate object nodes plus packed query transport; geometry buffers are separate.
+ * Reserve 512 bytes per node and 24 per live membership, including array overhead.
+ */
+function reserveNoiseTreeMemory(budget: NoiseTreeBudget, bytes: number) {
+  if (!budget.memory) return;
+  const next = budget.memory.bytes + bytes;
+  if (!Number.isSafeInteger(next) || next > budget.memory.limit)
+    throw new RangeError(
+      `Alignment target tree exceeds its memory budget (${next} > ${budget.memory.limit} estimated bytes).`,
+    );
+  budget.memory.bytes = next;
 }
 
 export interface PackedNoiseTree {
@@ -318,12 +356,7 @@ function splitNoiseNode(
   prepared: PackedNoiseTree | (IndexedNoiseTreeInput & { root: NoiseTreeNode }),
   minimumExtent: number,
   maximumDepth: number,
-  budget: {
-    nodes: number;
-    limit?: number;
-    entries?: number;
-    entryLimit?: number;
-  },
+  budget: NoiseTreeBudget,
   options: MeshProcessingOptions,
   eager: boolean,
   recursive: boolean,
@@ -383,6 +416,7 @@ function splitNoiseNode(
             (points[dOffset + axis] - box.center[axis]) * box.inverse[axis];
         }
         if (noiseTriangleCubeOverlap(a, c, d)) {
+          reserveNoiseTreeMemory(budget, 24);
           budget.entries = (budget.entries ?? 0) + 1;
           if (budget.entries > (budget.entryLimit ?? Infinity))
             throw new RangeError("Noise task exceeds its membership budget");
@@ -394,6 +428,7 @@ function splitNoiseNode(
       if (!eager && !memberships[child].length) continue;
       if (++budget.nodes > (budget.limit ?? 100000))
         throw new RangeError("Noise tree exceeds its node budget");
+      reserveNoiseTreeMemory(budget, 512);
       node.children[child] = {
         ...boxes[child],
         mode: 0,
@@ -402,6 +437,7 @@ function splitNoiseNode(
         children: {},
       };
     }
+    if (budget.memory) budget.memory.bytes -= node.triangles.length * 24;
     node.triangles = [];
     if (!recursive) return;
     for (const child of Object.values(node.children))

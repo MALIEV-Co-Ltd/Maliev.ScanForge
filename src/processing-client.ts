@@ -487,8 +487,16 @@ function runProcessingRequest(
         copied.sourceIndexed
       ) {
         const mesh = copied.sourceIndexed;
-        const triangles = Uint32Array.from(mesh.triangles);
-        transfers.push(triangles.buffer);
+        const sharedConnectivity =
+          copied.kind === "paired" &&
+          mesh.triangles instanceof Uint32Array &&
+          typeof SharedArrayBuffer !== "undefined" &&
+          mesh.triangles.buffer instanceof SharedArrayBuffer;
+        const triangles = sharedConnectivity
+          ? (mesh.triangles as Uint32Array)
+          : Uint32Array.from(mesh.triangles);
+        if (triangles.buffer instanceof ArrayBuffer)
+          transfers.push(triangles.buffer);
         copied.sourceIndexed = {
           vertices: clone(mesh.vertices),
           triangles,
