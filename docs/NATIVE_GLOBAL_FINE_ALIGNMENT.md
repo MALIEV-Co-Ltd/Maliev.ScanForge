@@ -34,9 +34,36 @@ its recorded correspondences. It does not establish the port's correspondence
 generation, sampling, scheduling or complete final transform application.
 The command returned with all sources stable and no source converged. The
 ordinary-owner setter observer recorded no matching calls despite changed
-post-state positions, so its receiver/dispatch route requires further runtime
-investigation before claiming a complete setter capture or full-controller
-equivalence.
+post-state positions. The separate dispatch observation below identifies a
+different direct receiver implementation; original-owner forwarding and matrix
+capture remain necessary before claiming full-controller equivalence.
+
+### Wrapper transform dispatch
+
+A separate 0.500 mm GUI run started from that already-aligned scene. All
+fifteen complete before-field hashes match the previous final capture; this is
+not another pristine original-input replay. Its
+[passive dispatch trace](evidence/global-fine-wrapper-dispatch-20261023.json)
+observes six successful interface queries and six virtual `+0x250` calls:
+three descriptor transforms, then three inverse-gauge transforms. Every
+receiver is the source wrapper itself, with table RVA `0xec1de0` and method
+RVA `0xd58d50`, rather than a direct call to ordinary-owner method `0x88b070`.
+This distinguishes the actual direct dispatch from the earlier observer's
+assumption; it does not retrospectively capture the prior run's setter calls.
+
+The diagnostic permits only paired permutations of the three source/descriptor
+identities before the first interface result, then freezes their order through
+both transform loops and return. Forty-two bounded mock cases passed before
+loading it. The live capture read 1,632 metadata bytes, completed both loops,
+detached all hooks, verified the restored code anchors and reported no cleanup
+errors. The script was unloaded and the session detached. It read no matrix or
+geometry payload and invoked no native application functions. Separate full
+post-state captures confirm changed positions and unchanged topology on all
+three original owners. Forwarded ordinary-owner setter calls, actual matrix
+bytes and complete query-generation parity still require verification.
+
+No application behavior, catalog entry or GUI/MCP contract changes in this
+evidence-only checkpoint.
 
 ## Current installed controller check (2026-10-22)
 
