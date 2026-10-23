@@ -402,8 +402,10 @@ mutations. The owned reader peaked at 78.27 MiB and cleaned up successfully.
 No native code executed or current native process was accessed. See
 [the structured transform/classifier evidence](evidence/sketch-arc-transform-classifier.json).
 
-Geometric authority, native trim/split ownership and numerical native editing
-remain investigation gates. No application schema or behavior is changed by
+Ordinary arc trim replacement now has a [static construction contract](NATIVE_SKETCH_PAINT_TRIM.md):
+its through point is newly evaluated at the retained interval's parameter
+midpoint. Complete solver authority, other trim/split categories and numerical
+native editing remain investigation gates. No application schema or behavior is changed by
 this follow-up, and no native/UI/MCP numerical parity is claimed.
 
 ## Implementation and validation gate

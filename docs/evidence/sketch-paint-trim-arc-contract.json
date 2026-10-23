@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "scope": "Static paint-trim command routing and ordinary arc replacement construction; synthetic cases are not native numerical replay",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "existingSharedOperation": "sketch_trim_stroke",
+  "applicationTrimAlreadyImplemented": true,
+  "nativeArcReplacementRuleAddedToApplication": false,
+  "mcpDiscoveryChanged": false,
+  "command": {
+    "id": "0x82fc",
+    "resourceLabels": [
+      { "menu": 189, "label": "SketchTrim" },
+      { "menu": 3054, "label": "Trim\tT" }
+    ],
+    "resourceEvidenceId": "ev_98a75917e41ca7becbcfc109647958e9285aa8960648d04b8a2744d91525ac33",
+    "menuPayloadSha256": [
+      "531134a4252b2ea4d0dec60d82fb666414f0843f01065d5add731ef9fa034588",
+      "bcb3925a3766f8a6974d2435a941bdfd74d81376bf666e0fb73013080951b9c4"
+    ],
+    "selectorIndex": 14,
+    "branch": "0x14070ae05",
+    "mode": 7,
+    "modeSetterCall": "0x14070ae6b -> 0x1406f8f20",
+    "motionModeField": "view+0x3110",
+    "motionJumpTable": "0x1407212ec",
+    "motionBranch": "0x14071ad23",
+    "mutationCall": "0x14071aed6 -> 0x1403a43d0",
+    "completeBrushAdmissionEstablished": false
+  },
+  "dispatcher": {
+    "entry": "0x1403a43d0",
+    "evidenceId": "ev_fef6f7340366e80aeed9e94213b40453c74400d67389120fd02e16955743b68b",
+    "provider": "Ghidra 12.1.4",
+    "bodyBytes": 13594,
+    "nonContiguous": true,
+    "inclusiveRanges": [
+      ["0x1403a43d0", "0x1403a71f9"],
+      ["0x1403a7232", "0x1403a78d9"],
+      ["0x1403a78df", "0x1403a7926"]
+    ],
+    "nativeValueFlowTruncated": true,
+    "callRelationshipCoverage": "partial; 94 call references or decoded calls lack resolved destinations",
+    "unresolvedTerminalCallBases": ["0x1403a5031", "0x1403a591c"],
+    "completeRetainedRecordExportedAfterTransportBudgetError": true,
+    "analysisRepeatedAfterTransportError": false
+  },
+  "ordinaryArc": {
+    "categoryCheck": "0x1403a5062: outer virtual +0x38",
+    "pointVectorGetter": "outer +0x180 -> 0x1401e3ff0",
+    "pointVectorOrder": ["P0/start", "P1/through", "P2/end", "center"],
+    "pointVectorStride": "0x18",
+    "differentControlRecordStride": "0x170 getter returns 0x50-byte control records; do not confuse the collections",
+    "evaluationChain": "outer +0xf0 -> 0x1401e0540 -> inner table 0x141157ac0 +0xb8 -> 0x140278bb0 -> 0x1401ec8a0",
+    "evaluationParameter": "first+(last-first)*clamp01(t), normalized curve parameter; complete evaluation exceptional paths remain limited by prior evidence",
+    "leftRetainedInterval": {
+      "interval": "[0,L] when that side is retained",
+      "constructorInputs": ["oldStart", "evaluate(L/2)", "evaluate(L)"],
+      "constructorCall": "0x1403a554c -> 0x1401e4d70"
+    },
+    "rightRetainedInterval": {
+      "interval": "[U,1] when that side is retained",
+      "constructorInputs": ["evaluate(U)", "evaluate((U+1)/2)", "oldEnd"],
+      "constructorCall": "0x1403a5830 -> 0x1401e4d70"
+    },
+    "frameArgument": "argument five: supplied provider frame at +0x20",
+    "finalFlag": false,
+    "originalThroughPointIdentityCopied": false,
+    "originalThroughPointStillInfluencesOriginalCurve": true,
+    "ordinarySetterExceptionsStillApply": true,
+    "setterSuccessHandlingFullyEstablished": false
+  },
+  "lineFallback": {
+    "scope": "Ordinary nondegenerate chord directions around the evaluated midpoint",
+    "lineCondition": "absolute chord-direction dot > cos(0.0008726646259971648)",
+    "orderedEqualityProduces": "arc",
+    "angleConstantAddress": "0x14126aed8",
+    "normalizationGuard": "Normalize only when norm >= 2^-52; shorter chords skip normalization",
+    "cosineBinding": "Stub 0x140d5cfbe -> IAT 0x140eaebb8; earlier static ucrtbase.dll cos inference, not a fresh live binding",
+    "nativeCosineResultCaptured": false,
+    "leftLineSetter": "0x1403a5487 -> 0x1401e2c80",
+    "rightLineSetter": "0x1403a57b3 -> 0x1401e2c80",
+    "completeDegenerateOrNaNBehaviorEstablished": false
+  },
+  "relationBoundary": {
+    "helper": "0x1403a4180",
+    "role": "Relation remapping rather than geometry construction",
+    "completeTransferSemanticsEstablished": false
+  },
+  "verification": {
+    "completeSelectedMenuTemplatesDecoded": 2,
+    "instructionChecks": 50,
+    "constantBindings": 4,
+    "syntheticCases": 8,
+    "actualInstructionByteMutationsRedecodedAndRejected": 3,
+    "staticVerifierPeakJobMemoryBytes": 109383680,
+    "staticVerifierMemoryCapBytes": 4294967296,
+    "staticVerifierCpuRatePercent": 25,
+    "staticVerifierMinimumFreeMemoryMiB": 3072,
+    "staticVerifierChildExitedAndHandlesClosed": true,
+    "cleanupErrors": [],
+    "analysisProviderClosedObserved": true,
+    "analysisCleanupPendingObserved": false,
+    "ownedAnalysisJavaExitObserved": true,
+    "nativeFunctionsExecuted": false,
+    "imageExecutedOrMappedAsCode": false,
+    "nativeProcessAccessed": false,
+    "applicationBuildOrSuiteRerun": false,
+    "nativeNumericalTrimReplay": false,
+    "guiMcpNativeParityReplay": false
+  },
+  "privateArtifacts": [
+    {
+      "name": "verify-native-paint-trim-arc.py",
+      "sha256": "df0fdab31ccbc9b3226112e8d6dff02c65e8be848972095f9ca07d90f9601d84"
+    },
+    {
+      "name": "run-native-paint-trim-owner.py",
+      "sha256": "30c3cd9134f5fb67378e6e52bd7cfb80bb4494d5791c063aef6a5f59c8bd32e8"
+    },
+    {
+      "name": "native-paint-trim-arc-verified-20261023-r1.json",
+      "sha256": "84780bc78e618f85938237d4ccf3d3023fa18ae86e177b3bf72c394ce6137cfa"
+    },
+    {
+      "name": "native-paint-trim-arc-verified-20261023-r1.owner.json",
+      "sha256": "138f7d687c8060a11e805a8e34841030c09bd5aef13766c5910ae3c80e41c640"
+    },
+    {
+      "name": "native-paint-trim-dispatch-rea-bundle-20261023.json",
+      "sha256": "eaa7c899b7f34eb4e736e57c04060079651e2fee17e45035437e76f1fece1c7a"
+    }
+  ],
+  "remaining": [
+    "Intersection-cache construction, cursor parameter selection and complete brush behavior",
+    "Other curve categories, relation transfer, history and failure handling",
+    "Native numerical trim outcomes on matching input geometry/settings",
+    "Shared GUI/MCP through-point model and native-derived replacement policies with boundary validation"
+  ]
+}

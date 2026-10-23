@@ -189,7 +189,7 @@
     ],
     "designBoundariesStillOpen": [
       "Complete geometric authority and solver behavior for a retained through point",
-      "Native trim/split policy when the retained point is outside a surviving piece",
+      "Other native trim/split categories and numerical replay; ordinary arc replacements regenerate P1 at their parameter midpoint",
       "Numerical replay of the transformed-record updater at slot +0x158; static frame/translation branches are now mapped separately",
       "Native numerical edit/constraint replay and equivalent GUI/MCP verification"
     ]
@@ -272,6 +272,12 @@
       "sha256": "aa07c20ad5e657dd046cc4698e39fff03c2a48bc449321708825bd67093a1006"
     }
   ],
+  "trimmedArcThroughPointFollowUp": {
+    "evidence": "sketch-paint-trim-arc-contract.json",
+    "ordinaryArcReconstructsThroughPoint": true,
+    "nativeNumericalReplay": false,
+    "applicationReplacementRuleAdded": false
+  },
   "transformedRecordAndClassifierFollowUp": {
     "evidence": "sketch-arc-transform-classifier.json",
     "staticTransformBranchesMapped": true,
