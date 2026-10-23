@@ -33,7 +33,7 @@
       "atOrAbove360": "instances"
     },
     "circularUncheckedFlipStepSign": "negative",
-    "circularRetainedOrientationAnchor": "Selected native point-record extrema reduced to single precision, then midpoint; special curve-category mapping unresolved",
+    "circularRetainedOrientationAnchor": "Selected control-record extrema converted to Float32 before bounds and midpoint; six class policies and ordinary arc start/through/end records mapped in sketch-duplicate-anchor-contract.json; no native anchor replay",
     "pathEqualSpacingDivisor": {
       "open": "instances - 1",
       "endpointsCloserThan0_0001": "instances"
@@ -223,7 +223,7 @@
     }
   },
   "unresolved": [
-    "Native curve category and control-point representation",
+    "Remaining curve categories, exceptional control-point setter behavior and native anchor numerical replay; six static class policies and ordinary arc defining points are mapped",
     "Native relation equations and equal-relation quantity semantics on every eligible curve category",
     "Native numerical unit/precision replay, locale, rounding ties and overflow",
     "Picked-line eligibility type mapping, coordinate frame and degenerate-line authoring/selection fixtures",
@@ -566,6 +566,16 @@
     "sampleCount": 56,
     "nativeExportBindings": 10,
     "fullControllerAcceptance": false,
+    "implemented": false,
+    "mcpDiscoveryAdvertised": false
+  },
+  "selectedGroupAnchorContract": {
+    "evidence": "sketch-duplicate-anchor-contract.json",
+    "staticClassPolicies": 6,
+    "syntheticAnchorCases": 13,
+    "ordinaryArcThroughPointPreserved": true,
+    "applicationThroughPointRepresentationMissing": true,
+    "nativeAnchorNumericalReplay": false,
     "implemented": false,
     "mcpDiscoveryAdvertised": false
   },

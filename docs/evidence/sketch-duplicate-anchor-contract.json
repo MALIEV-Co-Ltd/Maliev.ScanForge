@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "scope": "Digest-bound static selected-group anchor and ordinary arc defining-point contract; synthetic arithmetic is not native numerical replay",
+  "implemented": false,
+  "mcpDiscoveryAdvertised": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "activation": {
+    "address": "0x1406609b0",
+    "bodyBytes": 2048,
+    "bodySha256": "8d8d83e80293286c814a659f1eb200f46e1dda6d05ea33f7cf7ae0da3d417f9a",
+    "reaEvidenceId": "ev_ce090de06b532fa62bc0ef1afd7fc9c13e0993cd7bc7f607dffbd656dd860893",
+    "retainedArtifactSha256": "6114034973d62e5a1d2ff4bcda346b4dc3f77e4ae3acf2995841214ba0d0679d",
+    "selectedCurveByte": "0xd2",
+    "pointCollectionGetterSlot": "0x170",
+    "pointCollectionBeginOffset": "0x8",
+    "pointCollectionEndOffset": "0x10",
+    "pointRecordStride": "0x50",
+    "xyzDoubleOffsets": ["0x0", "0x8", "0x10"],
+    "onlyDialogAnchorXInitializedToFloatMax": true
+  },
+  "classPolicies": [
+    {
+      "kind": "line",
+      "vtable": "0x141155400",
+      "vectorOffset": "0x198",
+      "records": "all"
+    },
+    {
+      "kind": "arc",
+      "vtable": "0x141155bb0",
+      "vectorOffset": "0x198",
+      "records": "all except final computed center"
+    },
+    {
+      "kind": "circle",
+      "vtable": "0x1411557c0",
+      "vectorOffset": "0x198",
+      "records": "zero-based record 3 only: center"
+    },
+    {
+      "kind": "spline",
+      "vtable": "0x141154c00",
+      "vectorOffset": "0x238",
+      "records": "all"
+    },
+    {
+      "kind": "ellipse",
+      "vtable": "0x141266f60",
+      "vectorOffset": "0x198",
+      "records": "all"
+    },
+    {
+      "kind": "partialEllipse",
+      "vtable": "0x141266ca8",
+      "vectorOffset": "0x198",
+      "records": "all"
+    }
+  ],
+  "classBinding": {
+    "excludeFinalRecordQuerySlot": "0x38",
+    "onlyRecord3QuerySlot": "0x40",
+    "earlierPassiveTypeMetadataSha256": "5a79c85ab4b0988a55fd8fe5109c52d77851d188464af623072ee0ef6f76f369",
+    "newSlotsRecapturedLive": false,
+    "completeCurveUniverse": false
+  },
+  "arithmetic": {
+    "inputConversion": "Convert each binary64 coordinate to Float32 before strict ordered minimum/maximum updates",
+    "aggregation": "Aggregate all admitted records of all selected curves before taking one group midpoint",
+    "boundsAdmission": "For each axis min <= max, min > -FLT_MAX and max < FLT_MAX",
+    "midpoint": "Float32 ADDSS(min,max), widen sum to binary64, multiply by binary64 0.5, convert result to Float32",
+    "equalValueUpdate": "Strict comparisons preserve first encountered zero sign; JavaScript Math.min/Math.max differs",
+    "syntheticSumOverflow": "Admitted finite bounds can overflow the Float32 addition before halving",
+    "syntheticRoundingAssumption": "Default nearest-even Float32 conversion; native MXCSR was not captured"
+  },
+  "ordinaryArc": {
+    "outerSetter": "0x1401e4d70",
+    "definingPointOffsets": ["0x80", "0x98", "0xb0"],
+    "pointRoles": ["P0: start", "P1: through point", "P2: end"],
+    "recordOrder": ["P0", "P1", "P2", "computed center"],
+    "inputZForcedToZero": true,
+    "throughPointReplacedByAnalyticMidpoint": false,
+    "centerHelperCall": "0x1401e5273 -> 0x140212100",
+    "outerSync": "0x1401e3570",
+    "innerVtable": "0x141157ac0",
+    "innerCreationSlot": "0x40",
+    "innerCreationMethod": "0x140275720",
+    "constructorCallSite": "0x140275aa0",
+    "constructorIatSlot": "0x140eacd98",
+    "kernelArgumentOrder": ["P0", "P1", "P2"],
+    "constructor": {
+      "module": "TKGeomBase.dll",
+      "moduleSha256": "870f1edd2804b12bc24cc0112c781e0eea6a29e3d2a09bd809b5240c032f2b23",
+      "export": "??0GC_MakeArcOfCircle@@QEAA@AEBVgp_Pnt@@00@Z",
+      "exportRva": "0x192f00",
+      "derivedOldModuleBase": "0x7ff9452d0000",
+      "baseDerivation": "Two consistent static IAT pointers minus known export RVAs: 0x140eacd78 minus 0x35a70 and 0x140eacd70 minus 0x35350",
+      "freshLiveBinding": false,
+      "semanticSource": "https://github.com/Open-Cascade-SAS/OCCT/wiki/tutorial"
+    },
+    "exceptions": [
+      "Near-point fallback compares squared P0-P1/P2-P1 distances with 0.0001 and can replace P1",
+      "Closing/coincident-endpoint branch uses a 1e-8 squared-distance threshold and can replace P0",
+      "Ordinary input preservation does not establish the complete behavior of either exceptional branch"
+    ]
+  },
+  "applicationGap": {
+    "model": "src/sketch.ts SketchArc",
+    "stored": ["a", "b", "center", "clockwise"],
+    "missing": "An independently retained through-point reference",
+    "consequence": "Equal analytic arcs can have different native control-record anchors; reconstructing an analytic midpoint loses information",
+    "requiredParity": "Any future representation change must reach GUI authoring, shared sketch_set validation/results, persistence, history and MCP contracts together"
+  },
+  "verification": {
+    "anchorInstructionChecks": 26,
+    "classQueryAndGetterEntries": 18,
+    "syntheticAnchorCases": 13,
+    "alteredAnchorPolicyControlsRejected": 8,
+    "definingPointInstructionChecks": 40,
+    "setterConstantsChecked": 4,
+    "definingPointMetadataConsistencyControlsRejected": 3,
+    "metadataControlsAreIndependentBinaryMutations": false,
+    "anchorPeakJobMemoryBytes": 80785408,
+    "definingPointPeakJobMemoryBytes": 165253120,
+    "jobMemoryLimitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "minimumFreeMemoryMiB": 3072,
+    "allOwnedChildrenExited": true,
+    "childAndJobHandlesClosed": true,
+    "cleanupErrors": [],
+    "nativeFunctionsCalled": false,
+    "imageExecutedOrMappedAsCode": false,
+    "nativeProcessAccessed": false,
+    "newProviderStarted": false,
+    "applicationBuildOrSuiteRerun": false,
+    "guiMcpDuplicationReplay": false
+  },
+  "privateArtifacts": [
+    {
+      "name": "verify-duplicate-anchor-contract.py",
+      "sha256": "9a96e7473957a120cc9a3032efa502bb15dd8c081a70f05b42ca5e29cf568170"
+    },
+    {
+      "name": "run-duplicate-anchor-owner.py",
+      "sha256": "06519fa85771c22dabc8d964c3b552d97e6ba404b0be8c557b54222e261504ed"
+    },
+    {
+      "name": "duplicate-anchor-static-plan-20261023-r1.json",
+      "sha256": "a2acae008cb652927ef310b28005918e819d25aef20c3886f7f5e5b68069a500"
+    },
+    {
+      "name": "duplicate-anchor-contract-verified-20261023-r1.json",
+      "sha256": "a7132ce11b29972c1ebe65a05bd77af2967c1be336410fff1bc7b70700bec55c"
+    },
+    {
+      "name": "duplicate-anchor-contract-verified-20261023-r1.owner.json",
+      "sha256": "e4591b6f35fe9da9cc9b58c4bbeac5f7f1b73ed125acebc2fcdca3dffb338072"
+    },
+    {
+      "name": "verify-duplicate-defining-points.py",
+      "sha256": "2f26f64e2f4efac2cf0c572cc5238c06e122ab1730e9e39105eebcb96a28a2e2"
+    },
+    {
+      "name": "run-duplicate-static-owner.py",
+      "sha256": "dab60413cadf1cada3d5a0a73f3ad4596d66769e588ad8f79e8eafddf43a0c87"
+    },
+    {
+      "name": "duplicate-defining-points-verified-20261023-r1.json",
+      "sha256": "79124fce59b7e6355d16adcbe4c5fb4f047cc6f192ff35c57ede951fa97da641"
+    },
+    {
+      "name": "duplicate-defining-points-verified-20261023-r1.owner.json",
+      "sha256": "aa07c20ad5e657dd046cc4698e39fff03c2a48bc449321708825bd67093a1006"
+    }
+  ],
+  "remaining": [
+    "Native numerical anchor/control-point replay including exceptional arc setters and unsupported curve categories",
+    "Complete picked sketch/world coordinate mapping and unit/precision replay",
+    "Copied-relation equations, preview/accept/cancel and persistence/history comparison",
+    "Shared GUI/MCP implementation and equivalent acceptance fixtures"
+  ]
+}

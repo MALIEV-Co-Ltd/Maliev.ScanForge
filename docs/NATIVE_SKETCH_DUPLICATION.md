@@ -61,8 +61,9 @@ decompiler variable types.
 With retained orientation, circular copies use a translation calculated from
 the selected group's stored anchor rotating around the requested centre. Without
 it, source geometry rotates about that centre. Activation derives the anchor
-from single-precision extrema of selected native point records, with special
-handling for a curve category whose exact type mapping remains unresolved.
+from single-precision extrema of selected native point records. The six bound
+classes' special handling and ordinary arc defining-point order are now mapped
+in the selected-group anchor follow-up below.
 It is not established as the analytic bounding box of every supported curve.
 
 Along-curve Equal spacing uses path length divided by `instances - 1`, except
@@ -243,9 +244,95 @@ operation; it does not establish curve evaluation, native numerical acceptance,
 or GUI/MCP duplication parity. Application source and tool discovery remain
 unchanged. No application build, unit/CAD suite or browser replay was rerun.
 
+## Selected-group anchor and defining points
+
+The retained activation dossier for `0x1406609b0` covers 2,048 bytes. A
+digest-bound static check verifies 26 instruction anchors and the six previously
+identified class tables. The new query/getter entries were read from the static
+image; they were not recaptured from a live process.
+
+Only curves whose selected byte at `+0xd2` is nonzero contribute. Virtual
+`+0x170` returns a point collection with begin/end pointers at `+8/+0x10` and
+`0x50`-byte records whose first three doubles are XYZ. The six bound classes use
+these records:
+
+| Class           | Collection offset | Records contributing to the anchor |
+| --------------- | ----------------- | ---------------------------------- |
+| Line            | `+0x198`          | All records                        |
+| Arc             | `+0x198`          | All except the final center record |
+| Circle          | `+0x198`          | Zero-based record 3, the center    |
+| Spline          | `+0x238`          | All records                        |
+| Ellipse         | `+0x198`          | All records                        |
+| Partial ellipse | `+0x198`          | All records                        |
+
+Virtual `+0x38` identifies the exclude-final policy on the bound arc class;
+`+0x40` identifies the record-3 policy on the bound circle class. This is not a
+complete list of eligible native curve categories or an analytic curve-bounds
+calculation.
+
+Each coordinate converts from binary64 to Float32 before strict ordered
+minimum/maximum updates. All selected curves contribute to one set of extrema.
+After checking ordered bounds strictly inside the positive/negative `FLT_MAX`
+sentinels, the midpoint adds each minimum/maximum pair in Float32, widens that
+sum to binary64, multiplies by 0.5, and converts back to Float32. It does not add
+in binary64 before halving. Strict updates also retain the first zero sign;
+JavaScript `Math.min`/`Math.max` have different zero-tie behavior. Synthetic
+finite bounds can overflow the Float32 sum before halving. No native UI
+authoring or MXCSR state was captured for that edge case. Activation initializes
+only the dialog anchor's X component to `FLT_MAX`; it does not reset all three
+components at that instruction.
+
+The ordinary arc setter `0x1401e4d70` retains its three defining XY points in
+outer fields `+0x80/+0x98/+0xb0`, forces their Z components to zero, appends them
+in that order, and stores the computed center as a fourth record. The outer sync
+`0x1401e3570` forwards those points to inner creation method `0x140275720`.
+Instruction-level copies and argument setup bind its call at `0x140275aa0` to
+the three-`gp_Pnt` `GC_MakeArcOfCircle` constructor. The constructor uses its
+first and third arguments as endpoints and the second as a through point,
+as documented by the [OCCT tutorial](https://github.com/Open-Cascade-SAS/OCCT/wiki/tutorial).
+
+That import binding is derived from static IAT values: two known export RVAs
+independently give the same old module base, after which slot `0x140eacd98`
+resolves to `TKGeomBase.dll+0x192f00` and its exact three-point constructor
+export. This is not a fresh live module binding. Forty defining-point
+instruction checks and four constant checks support the chain; bounded slices
+do not imply recovered unwind-function extents.
+
+Ordinary P1 is therefore an independently retained through point, rather than
+a calculated halfway point. For example, the same unit semicircle can retain
+P1 `(0,1)` or `(0.6,0.8)` between endpoints `(-1,0)` and `(1,0)`. Synthetic
+control-record anchors are respectively `(0,0.5)` and `(0,Float32(0.4))`.
+ScanForge's current `SketchArc` stores endpoints, center and direction, with no
+independent through-point reference. Reconstructing P1 from that analytic arc
+would discard native state. Any representation correction must include GUI
+authoring, the shared `sketch_set` operation and MCP contract, persistence and
+history in one change. No such application change is made here.
+
+Ordinary preservation has exceptions. The setter's near-point fallback compares
+squared P0-P1/P2-P1 distances with `0.0001` and can replace P1. Its closing or
+coincident-endpoint branch uses squared-distance threshold `1e-8` and can replace
+P0. These exceptional paths are recorded, not established as complete numerical
+fixtures.
+
+Thirteen synthetic arithmetic cases passed and eight altered anchor policies
+were distinguished or rejected. Three additional defining-point metadata
+consistency controls rejected changed chains; these compare metadata and do not
+independently mutate/redecode binary instructions. The two owned static readers
+peaked at 77.04 and 157.60 MiB under the existing 4 GiB/25% CPU policy. Both exited
+and closed their handles without cleanup errors. Independent read-only review
+found no blocking issue in this scoped evidence.
+
+No native function executed, private image was mapped as code, current native
+process was accessed, or new analysis provider started. Application builds,
+unit/CAD tests and browser replay were not rerun for this evidence-only change.
+Duplication remains unimplemented and absent from MCP discovery. See the
+[structured anchor contract](evidence/sketch-duplicate-anchor-contract.json)
+for hashes, addresses, limits and remaining acceptance work.
+
 ## Implementation and validation gate
 
-Before adding duplication, resolve native curve categories, relation equations,
+Before adding duplication, resolve remaining curve categories and degenerate
+control-point paths, relation equations,
 unit/precision numerical replay, picked-line eligibility/frame fixtures, path evaluation and
 acceptance history on equivalent fixtures. Then implement all supported modes through one
 shared operation used by GUI and MCP, with an observable preview/accept/cancel
