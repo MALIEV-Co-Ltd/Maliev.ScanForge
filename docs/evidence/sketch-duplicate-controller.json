@@ -559,5 +559,14 @@
       "No duplication application/MCP capability added",
       "No new build/unit/CAD/browser validation for this evidence-only change"
     ]
+  },
+  "curveComponentNumericalReplay": {
+    "evidence": "sketch-duplicate-curve-numerics.json",
+    "fixtureCount": 7,
+    "sampleCount": 56,
+    "nativeExportBindings": 10,
+    "fullControllerAcceptance": false,
+    "implemented": false,
+    "mcpDiscoveryAdvertised": false
   }
 }

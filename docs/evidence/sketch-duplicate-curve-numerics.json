@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "passed": true,
+  "fixtureCount": 7,
+  "sampleCount": 56,
+  "nativeExportBindings": 10,
+  "maxAnalyticPointOrUnitTangentError": 2.0872192862952943e-14,
+  "maxAnalyticLengthError": 2.042810365310288e-14,
+  "reversedEdgePairsVerified": 2,
+  "negativeControls": [
+    {
+      "name": "multiply-instead-of-divide",
+      "rejected": true,
+      "reason": "Distance result was not normalized by parameter range"
+    },
+    {
+      "name": "clockwise-tangent-flipped",
+      "rejected": true,
+      "reason": "Harness tangent is inconsistent with native D1"
+    },
+    {
+      "name": "reversed-edge-point-flipped",
+      "rejected": true,
+      "reason": "Point or tangent disagrees with analytic fixture"
+    }
+  ],
+  "owners": {
+    "duplicate-curve-fixtures-generated-20261023-r1": {
+      "receiptSha256": "9290ce67a450846d86a646df4ebde081c509d037fb71e0aea0678c93a0c15aa2",
+      "peakJobMemoryBytes": 514359296,
+      "childExited": true,
+      "allDescendantsExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    "duplicate-curve-native-numerics-20261023-r2": {
+      "receiptSha256": "bf977d9722cc8563e453de25d68b82ec26adda61bf0ae8f47ffc7a5b8c5227e6",
+      "peakJobMemoryBytes": 36007936,
+      "childExited": true,
+      "allDescendantsExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    }
+  },
+  "nativeReplaySha256": "fd10e5ec9851e26a975a76945c40f06e30ad3340bafc6746eb24560476a29121",
+  "fixtureManifestSha256": "38ee088e51bda172fdfeb04de98f53ba481c533a6effb1f94d85ae8b4af22539",
+  "sourceInputSha256": {
+    "public/cad-worker.js": "d1df515002cfbd4bce559f67b9f4df6476fc2ef68e371d53d5ea3babb5296fbc",
+    "public/kernel/opencascade.wasm.wasm": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+    "public/kernel/opencascade.js": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+  },
+  "modules": {
+    "TKGeomBase.dll": "870f1edd2804b12bc24cc0112c781e0eea6a29e3d2a09bd809b5240c032f2b23",
+    "api-ms-win-crt-runtime-l1-1-0.dll": "8afdaf1c630aecb97ab5625ac8483664643c526bd705decfae0daaf2481f0a81",
+    "api-ms-win-crt-math-l1-1-0.dll": "1d8e2b59452b927cc3e0f75b2d5277b667a503c53507fdac11d3d8b44986080d",
+    "api-ms-win-crt-heap-l1-1-0.dll": "ed8b2def856e4effce4856efcc7f3c35fb7e3428287ba8851cde2da8df1d1c58",
+    "VCRUNTIME140.dll": "184146852727a9db4eea06178716bec3cdbb1015c911f6b0f915b184ad7775b2",
+    "api-ms-win-crt-stdio-l1-1-0.dll": "8824840d84f561d2b46d13f30484683c36328850a596f1e2ee48bca2e7de2d30",
+    "MSVCP140.dll": "def46aa6a8f72f27bafac0c43334419486a4d1dcdb6c479a8ef7034b3e1fa4cb",
+    "api-ms-win-crt-locale-l1-1-0.dll": "37489d3f078513ecccb7bfb9f18ec1338d011b91ad091085ad1db02f633a23bf",
+    "TKernel.dll": "e98958743dc563223fa24059a2ef4fc23506864b91d8d6b6df931ad0ffc1538a",
+    "tbbmalloc.dll": "ec3298f6a7bde1d4cab59ba629bbee87a322d0efdc8a59d87ff6d406240407b1",
+    "tbb12.dll": "35dee5d6cad732ba89aac7ad9d98acee47800409650855b1dba695c4226073e5",
+    "TKMath.dll": "a227f46b8c15296167aa40231e5b53e300cd7fd7eda7a0baae56c593ebc46cfb",
+    "TKG2d.dll": "2673100ecd9add9e11498d51e94d16239d1c9a1f5a6454b0241e80951207106a",
+    "TKG3d.dll": "bb7648a9a47a863a1696914ea4c62572ddb7a0b3533297b13a2279a6fad3366f",
+    "TKBRep.dll": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5"
+  },
+  "limits": [
+    "Native full-controller acceptance not replayed",
+    "Reported path length uses a separate kernel and remains unverified",
+    "Tangent normalization is performed by this harness, not the native wrapper",
+    "No selected-group anchors, relations or GUI/MCP duplication history tested",
+    "C++ objects are confined to the disposable child; no in-process destructor/leak claim"
+  ],
+  "scope": "Installed native geometry component replay for pending sketch duplication; not full-controller or application parity",
+  "controllerGateComplete": false,
+  "applicationFeatureImplemented": false,
+  "mcpDiscoveryAdvertised": false,
+  "kernelFileVersion": "7.7.0",
+  "kernelProductVersion": "7.7.0",
+  "requestedLoadedComponents": ["TKBRep.dll", "TKG3d.dll", "TKGeomBase.dll"],
+  "fixedPolicy": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "maxConcurrentProcessesIncludingOwner": 2,
+    "physicalAdmissionBytes": 3221225472,
+    "diskAdmissionBytes": 2147483648,
+    "leaseSeconds": 180,
+    "cleanupBudgetSeconds": 15
+  },
+  "fixtures": [
+    {
+      "id": "line-3d",
+      "kind": "line",
+      "start": [1.25, -2.5, 3.75],
+      "end": [4.25, 1.5, 15.75],
+      "brepSha256": "51ce502d050297bbb753c4f99554f07dd46ed3716afc7cce2e13476b408913d0",
+      "firstParameter": 0.0,
+      "lastParameter": 13.0,
+      "nativeLength": 13.0,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 1.7763568394002505e-15
+    },
+    {
+      "id": "line-reversed",
+      "kind": "line",
+      "start": [1.25, -2.5, 3.75],
+      "end": [4.25, 1.5, 15.75],
+      "reversed": true,
+      "brepSha256": "e62e07eb5c2192d2236bd7c33c222797629f2700393ee7887faf4fb6f6551f4d",
+      "firstParameter": 0.0,
+      "lastParameter": 13.0,
+      "nativeLength": 13.0,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 1.7763568394002505e-15
+    },
+    {
+      "id": "line-short",
+      "kind": "line",
+      "start": [0, 0, 0],
+      "end": [1e-6, 0, 0],
+      "brepSha256": "ce3c630fa0bbb4b5f4577bdddbfb4a174643d850be5d37224b909813b0964658",
+      "firstParameter": 0.0,
+      "lastParameter": 1e-6,
+      "nativeLength": 1e-6,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 0.0
+    },
+    {
+      "id": "arc-quarter",
+      "kind": "arc",
+      "radius": 5,
+      "startAngle": 0,
+      "sweep": 1.5707963267948966,
+      "axisU": [1, 0, 0],
+      "axisV": [0, 1, 0],
+      "center": [2, -3, 4],
+      "reversed": false,
+      "brepSha256": "f773772e1b20550add37f3a4d1b08fadb9b4672c2560752d6ce698f0a99b8f95",
+      "firstParameter": 0.0,
+      "lastParameter": 1.5707963267949,
+      "nativeLength": 7.853981633974503,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 2.0872192862952943e-14
+    },
+    {
+      "id": "arc-clockwise",
+      "kind": "arc",
+      "radius": 7,
+      "startAngle": 0.3,
+      "sweep": -1.7,
+      "axisU": [1, 0, 0],
+      "axisV": [0, 1, 0],
+      "center": [0, 0, 0],
+      "reversed": false,
+      "brepSha256": "0941c1d1a8ddfe6e337dd821d22ec6d2d090f27a051ecf6eb60d081916d45467",
+      "firstParameter": 0.0,
+      "lastParameter": 1.7,
+      "nativeLength": 11.9,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 1.3322676295501878e-15
+    },
+    {
+      "id": "arc-major-tilted",
+      "kind": "arc",
+      "radius": 3.5,
+      "startAngle": -0.7,
+      "sweep": 4.71238898038469,
+      "axisU": [0, 1, 0],
+      "axisV": [0, 0, 1],
+      "center": [100, -20, 3],
+      "reversed": false,
+      "brepSha256": "30d05e09fff368b25bb27b9637762380d249107a0a17b74c1caaee12892892fe",
+      "firstParameter": 0.0,
+      "lastParameter": 4.71238898038469,
+      "nativeLength": 16.493361431346415,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 8.881784197001252e-16
+    },
+    {
+      "id": "arc-reversed",
+      "kind": "arc",
+      "radius": 5,
+      "startAngle": 0,
+      "sweep": 1.5707963267948966,
+      "axisU": [1, 0, 0],
+      "axisV": [0, 1, 0],
+      "center": [2, -3, 4],
+      "reversed": true,
+      "brepSha256": "6db2c26a707620a00f6510a56f0ec9f4c402e07eaf448d7955fe82f58d467504",
+      "firstParameter": 0.0,
+      "lastParameter": 1.5707963267949,
+      "nativeLength": 7.853981633974503,
+      "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+      "maximumAnalyticPointOrUnitTangentError": 2.0872192862952943e-14
+    }
+  ],
+  "replayFunctions": [
+    {
+      "key": "read",
+      "module": "TKBRep.dll",
+      "symbol": "?Read@BRepTools@@SA_NAEAVTopoDS_Shape@@QEBDAEBVBRep_Builder@@AEBVMessage_ProgressRange@@@Z",
+      "rva": "0x2fe10",
+      "entry32Bytes": "488bc457415641574881ec4002000048c7442460feffffff4889580848896810",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "adaptorCtor",
+      "module": "TKBRep.dll",
+      "symbol": "??0BRepAdaptor_Curve@@QEAA@AEBVTopoDS_Edge@@@Z",
+      "rva": "0x28410",
+      "entry32Bytes": "48894c2408574883ec3048c7442420feffffff48895c24484889742458488bfa",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "curveRef",
+      "module": "TKBRep.dll",
+      "symbol": "?Curve@BRepAdaptor_Curve@@QEBAAEBVGeomAdaptor_Curve@@XZ",
+      "rva": "0x28cc0",
+      "entry32Bytes": "488d8180000000c3cccccccccccccccc488b81c8000000c3cccccccccccccccc",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "curveHandle",
+      "module": "TKBRep.dll",
+      "symbol": "?Curve@BRep_Tool@@SA?AV?$handle@VGeom_Curve@@@opencascade@@AEBVTopoDS_Edge@@AEAN1@Z",
+      "rva": "0x1b720",
+      "entry32Bytes": "488bc44889480841564883ec4048c740f0feffffff4889581048897018488978",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "curveLoad",
+      "module": "TKG3d.dll",
+      "symbol": "?load@GeomAdaptor_Curve@@AEAAXAEBV?$handle@VGeom_Curve@@@opencascade@@NN@Z",
+      "rva": "0x442f0",
+      "entry32Bytes": "405553565741564157488d6c24d14881ec8800000048c745dffeffffff0f2974",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "first",
+      "module": "TKBRep.dll",
+      "symbol": "?FirstParameter@BRepAdaptor_Curve@@UEBANXZ",
+      "rva": "0x29180",
+      "entry32Bytes": "488bc1488b89c80000004885c97507488d8880000000488b0148ff6020cccccc",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "last",
+      "module": "TKBRep.dll",
+      "symbol": "?LastParameter@BRepAdaptor_Curve@@UEBANXZ",
+      "rva": "0x29b20",
+      "entry32Bytes": "488bc1488b89c80000004885c97507488d8880000000488b0148ff6028cccccc",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "length",
+      "module": "TKGeomBase.dll",
+      "symbol": "?Length@GCPnts_AbscissaPoint@@SANAEBVAdaptor3d_Curve@@NN@Z",
+      "rva": "0x35a70",
+      "entry32Bytes": "4533c9e968f4ffffccccccccccccccccf20f115c24204883ec284c8d4c2448e8",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "abscissaCtor",
+      "module": "TKGeomBase.dll",
+      "symbol": "??0GCPnts_AbscissaPoint@@QEAA@AEBVAdaptor3d_Curve@@NN@Z",
+      "rva": "0x35350",
+      "entry32Bytes": "488bc448894808574881ecc000000048c7442440feffffff488958180f2970e8",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    },
+    {
+      "key": "d1",
+      "module": "TKBRep.dll",
+      "symbol": "?D1@BRepAdaptor_Curve@@UEBAXNAEAVgp_Pnt@@AEAVgp_Vec@@@Z",
+      "rva": "0x28d20",
+      "entry32Bytes": "48895c24084889742410574883ec20488bd9498bf9488b89c8000000498bf048",
+      "loadedRvaVerified": true,
+      "loadedEntry32BytesMatch": true
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "generate-duplicate-curve-fixtures.mjs",
+      "sha256": "52d0417cd8d6370db3095ac92e93aa060a7aa762c562627bef8662cafebc9a1f"
+    },
+    {
+      "name": "run-duplicate-curve-fixture-owner.py",
+      "sha256": "e9bdc8cac0bc3e87b1e0aec8197fd2fea2d56cf4c1d07c222a57ee496cd0e17c"
+    },
+    {
+      "name": "duplicate-curve-fixture-plan-20261023-r1.json",
+      "sha256": "790213f0133deccf6a322fa104349a542fc0be999609757859c809bae46bdddd"
+    },
+    {
+      "name": "run-duplicate-native-curve-owner.py",
+      "sha256": "24103d474775716634637165dd9e6d905bf7ee06c7d4d8a468d2940f481930fb"
+    },
+    {
+      "name": "probe-duplicate-curve-numerics.py",
+      "sha256": "c7b76c654e54441ff76430bdf282268f4ebb0e9292bd9772daced437793792c7"
+    },
+    {
+      "name": "duplicate-curve-native-plan-20261023-r2.json",
+      "sha256": "b62287f82c6c3fb6d31a93dd7b41a236b6f00fd9a16fb25c36847973241c57e2"
+    },
+    {
+      "name": "verify-duplicate-curve-numerics.py",
+      "sha256": "a09f14e39d5b7ce9f2f3d5971403767329aac38503acc97d9142bc95a52fdde9"
+    },
+    {
+      "name": "duplicate-curve-numerics-independent-verification-20261023-r2.json",
+      "sha256": "ca0cec3107a8185550c9aa685dd3ba98d8754748df428ac5a5d782368273e844"
+    },
+    {
+      "name": "verify-duplicate-curve-kernel-imports.py",
+      "sha256": "9800042764596703a618829cb5b74bd51bef8a6c5620e6cf091b455e7c546b68"
+    }
+  ],
+  "officialHeaderSources": [
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/Message/Message_ProgressRange.hxx",
+      "sha256": "12b867fd3e6b442a7805b0c988cf060146a594f9723f57a2c5b1021c47001c0e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/BRep/BRep_Builder.hxx",
+      "sha256": "6716c43d6a90d0b6706c6b9c0d8549d108060a44c059396d378ec420241b83b7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/TopoDS/TopoDS_Builder.hxx",
+      "sha256": "107c4c7df4686d182844742b81ad5a9f8a4fcb07c994e96d89d6c23d8ebf666d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/GCPnts/GCPnts_AbscissaPoint.hxx",
+      "sha256": "7432bc6160759630ba71dea2e4aa3a96b3b944e1ad87ff074bf4c0f4f9623c89"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/GeomAdaptor/GeomAdaptor_Curve.hxx",
+      "sha256": "25ac475f0bef8489ac50151fae41ed515615ba74c6fb2fd9eec65d70c3a831bc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/BRepAdaptor/BRepAdaptor_Curve.hxx",
+      "sha256": "4385ff2c1181a457a9e7b19fa5a3a82add38ad847b60f5f920006aa12a414271"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/CPnts/CPnts_AbscissaPoint.hxx",
+      "sha256": "c20e2e8b1512c73d8f96c3ba714f847ba968368a04aeea33db4fd3580b25723b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/CPnts/CPnts_AbscissaPoint.lxx",
+      "sha256": "00468a860640b5fb8e77efdfb4a3011ca9a0cf172da8d8a090f3287d75521f9b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/TopLoc/TopLoc_Location.hxx",
+      "sha256": "63e3ed161200df3fd2e21308bc1d4c62e6b18ba8cd78c35c11f31aed1a4308b3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/TopLoc/TopLoc_Location.lxx",
+      "sha256": "7db00391c9b4af5194902b5411e239152c57f295a139a3711b4d6c360a371b7e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/V7_7_0/src/TopAbs/TopAbs_Orientation.hxx",
+      "sha256": "11dbd3b2d27c097b3dc15526d23219f0a323e5b2ae8c2e63d8c7e70cfb9f112a"
+    }
+  ]
+}

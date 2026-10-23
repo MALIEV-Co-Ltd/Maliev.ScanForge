@@ -337,3 +337,53 @@ application unit/CAD suite or browser replay was rerun for this evidence-only
 slice. Duplication remains unimplemented. Remaining gates include matching native
 line/arc/spline fixtures, closed/reversed path behavior, selected-group anchors,
 unit settings, copied relations, all four preview modes and atomic GUI/MCP history.
+
+## Line and arc component numerical replay
+
+The installed OpenCascade 7.7 components now have a controlled numerical replay
+for seven generated edge fixtures and 56 samples. The fixtures use the existing
+application worker's edge builders and BREP serializer, then load those BREP files
+in a disposable native helper. They include a 3D line, a short line, clockwise and
+counterclockwise arcs, a major arc in a tilted plane, and reversed line/arc
+topology. This tests the recovered OpenCascade branch, not the full duplication
+controller or the separate kernel that reports path length.
+
+The helper calls `BRep_Tool::Curve`, `GeomAdaptor_Curve::load`, the recovered
+no-explicit-tolerance `GCPnts_AbscissaPoint` constructor, range length and
+`BRepAdaptor_Curve::D1`. The geometric adaptor is initialized through the exported
+edge-adaptor constructor and getter before loading the curve and range explicitly.
+Ten function bindings match the installed DLL export RVAs and 32 loaded entry
+bytes; all three explicitly loaded component paths match their intended files.
+The local static dependency closure is hashed before and after the run.
+
+For these finite valid line/arc fixtures, the maximum analytic length difference
+was `2.042810365310288e-14`; the largest point or unit-tangent difference was
+`2.0872192862952943e-14`. Tangent normalization is performed by the harness from
+native `D1` output, so this is not validation of the native normalization wrapper.
+Distances below zero and beyond length are clamped by the reconstructed caller
+in the harness before invoking the kernel. Its normalized result uses
+`(solved - first) / (last - first)`. The native kernel's evaluated points,
+derivatives and parameters are identical between the forward/reversed topology
+pairs. This does not prove how the complete native controller selects or reverses
+a path, nor the nonlinear inverse for splines.
+
+An independent file-only verifier checks all 56 samples, both reversal pairs,
+fixture/source hashes, resource receipts and ten export bindings. It rejects
+three altered-result controls: multiplying instead of dividing by parameter
+range, flipping a clockwise tangent, and reversing the line endpoint result.
+
+Both owned helpers retained the 4 GiB/25% CPU policy, 3 GiB physical admission,
+2 GiB disk admission and finite leases. Fixture generation peaked at 490.53 MiB;
+the final native replay peaked at 34.34 MiB. Both child trees exited, their
+handles closed and their receipts contain no cleanup errors. The native
+executable, its private analysis image and its reported-length kernel were not
+executed or opened by these helpers. C++ object storage is reclaimed at child
+exit; this is not an in-process destructor or leak test.
+
+See [component numerical evidence](evidence/sketch-duplicate-curve-numerics.json)
+for fixture inputs, source/component hashes, function bindings, owner receipts,
+official header provenance and explicit limits. No application behavior, GUI/MCP
+contract or discovery changed. Duplication remains unimplemented; the existing
+full-controller, spline, unit/frame/relation and GUI/MCP acceptance gates remain
+open. No application build, full suite or browser replay was repeated for this
+evidence-only change.
