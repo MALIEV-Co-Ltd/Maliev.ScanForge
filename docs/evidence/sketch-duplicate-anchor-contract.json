@@ -117,7 +117,7 @@
     "fastPathConditions": "Collection contains more than three records and each of the first three proposed points differs from its stored defining point by squared distance strictly less than 1e-5",
     "fastPathEffect": "Retain stored defining points and stored center with positive-zero additions, rebuild four records and resynchronize inner geometry; no byte-preservation claim",
     "newCenterCompared": false,
-    "fallback": "Read records 0/1/2, apply existing classifier checks, then reject or call 0x1401e4d70 with its known exceptions; complete invalid-input semantics are not established",
+    "fallback": "Read records 0/1/2, apply classifier checks, then reject or call 0x1401e4d70 with its known exceptions; NaN classifier meaning is now inferred in sketch-arc-transform-classifier.json, but complete invalid-input semantics remain unestablished",
     "preliminaryVirtualCallbacks": ["0x128", "0x228"],
     "preliminaryCallbackSideEffectsFullyEstablished": false,
     "shortVectorSafetyEstablished": false,
@@ -190,7 +190,7 @@
     "designBoundariesStillOpen": [
       "Complete geometric authority and solver behavior for a retained through point",
       "Native trim/split policy when the retained point is outside a surviving piece",
-      "Full transformed-record updater at slot +0x158",
+      "Numerical replay of the transformed-record updater at slot +0x158; static frame/translation branches are now mapped separately",
       "Native numerical edit/constraint replay and equivalent GUI/MCP verification"
     ]
   },
@@ -272,6 +272,14 @@
       "sha256": "aa07c20ad5e657dd046cc4698e39fff03c2a48bc449321708825bd67093a1006"
     }
   ],
+  "transformedRecordAndClassifierFollowUp": {
+    "evidence": "sketch-arc-transform-classifier.json",
+    "staticTransformBranchesMapped": true,
+    "staticClassifierMeaningInferred": true,
+    "nativeNumericalReplay": false,
+    "implemented": false,
+    "mcpDiscoveryAdvertised": false
+  },
   "remaining": [
     "Native numerical anchor/control-point replay including exceptional arc setters and unsupported curve categories",
     "Complete picked sketch/world coordinate mapping and unit/precision replay",

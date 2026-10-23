@@ -370,9 +370,41 @@ the shared operation once validation and solver semantics are defined; a new
 MCP tool is not inherently required. GUI point editing, undo/redo and saved
 authoring sketches must preserve the same state.
 
-Geometric authority, native trim/split ownership and the transformed-record
-updater at `+0x158` remain investigation gates. No application schema or behavior
-is changed by this follow-up, and no native/UI/MCP numerical parity is claimed.
+The transformed-record updater at `+0x158` is now statically mapped. It compares
+the first three stored defining points after converting them to world coordinates
+with the supplied 3x4 frame. If the collection has more than three records and
+all three squared displacements are strictly below `1e-5`, it converts record 3
+back to local coordinates, subtracts the stored center and translates all three
+stored defining points and the center by that delta. Otherwise, it converts the
+first three records to local coordinates and passes them and the frame to the
+existing setter. Its local conversion subtracts translation and multiplies by
+the rotation transpose, with the Y product added before X and then Z. It is not
+a general matrix inverse, and the branch does not establish orthonormality
+validation. These are call inputs and static flows, not replayed setter outputs.
+World/local here describe coordinates relative to the supplied frame; complete
+caller-to-sketch/world mapping and units remain unestablished.
+
+The earlier record updater's classifier call at `0x1401e5625` resolves through
+IAT `0x140eaeba8`. Eight consistent static IAT/export offsets infer the historical
+`ucrtbase.dll` base. The matching pinned installed export has two aliases,
+`_dtest` and `_ldtest`, which cannot be distinguished from this slot. Its integer
+bit tests return 2 for NaN, 1 for infinity, 0 for either signed zero, -2 for a
+subnormal and -1 for an ordinary finite nonzero value. The caller's `cmp AX,2`
+therefore rejects NaN if those checks are reached; it does not itself reject
+infinity. Earlier `COMISD` instructions can raise under unmasked exceptions, and
+native MXCSR was not captured. Full invalid-input acceptance remains unverified.
+This module binding is derived, not a fresh live code-byte comparison.
+
+The new check covers 59 transform instruction anchors, three threshold loads,
+13 classifier instructions, eight consistent import bindings, six synthetic
+transform cases, 18 synthetic bit-pattern cases and three redecoded instruction
+mutations. The owned reader peaked at 78.27 MiB and cleaned up successfully.
+No native code executed or current native process was accessed. See
+[the structured transform/classifier evidence](evidence/sketch-arc-transform-classifier.json).
+
+Geometric authority, native trim/split ownership and numerical native editing
+remain investigation gates. No application schema or behavior is changed by
+this follow-up, and no native/UI/MCP numerical parity is claimed.
 
 ## Implementation and validation gate
 

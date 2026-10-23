@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "scope": "Static transformed arc record-update contract and inferred CRT classifier; synthetic checks are not native numerical replay",
+  "implemented": false,
+  "mcpDiscoveryAdvertised": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "transform": {
+    "vtable": "0x141155bb0",
+    "slot": "0x158",
+    "entry": "0x1401e5760",
+    "boundedSpanEndExclusive": "0x1401e5e8e",
+    "boundedSpanSha256": "85a27f4f1c12e9ebaf1233e95cb11ab8bff8a29ea701786092ae55c10804d144",
+    "unwindFunctionExtentEstablished": false,
+    "frame": "Twelve binary64 values in row-major 3x4 layout, R and translation t",
+    "coordinateScope": "Local/external relative to the supplied frame; complete caller-to-sketch/world mapping and units remain unestablished",
+    "worldPoint": "R*p+t, with separate binary64 multiplication/addition in decoded order",
+    "localCandidate": "R transpose*(worldPoint-t), with Y term added before X term, then Z term; this is not a general matrix inverse",
+    "admission": "More than three point records; each transformed stored defining point differs from proposed records 0/1/2 by squared distance strictly below 1e-5",
+    "fastPath": "Convert record 3 to local; subtract stored center; add the resulting delta to stored center and all three defining points, rebuild records and resynchronize geometry",
+    "slowPath": "Convert records 0/1/2 to local and call existing setter with these three points, the supplied frame, and false final flag",
+    "setterCall": "0x1401e5e38 -> 0x1401e4d70",
+    "ordinarySetterExceptionsStillApply": true,
+    "fullSetterOutputsReplayed": false,
+    "orthonormalityOrMalformedInputValidationEstablished": false
+  },
+  "classifier": {
+    "callSite": "0x1401e5625",
+    "iatSlot": "0x140eaeba8",
+    "capturedStaticPointer": "0x7ff9b9bd8960",
+    "module": "ucrtbase.dll",
+    "installedModulePath": "C:/Windows/System32/ucrtbase.dll",
+    "installedModuleBytes": 1399656,
+    "installedModuleSha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca",
+    "inferredHistoricalModuleBase": "0x7ff9b9b70000",
+    "exportRva": "0x68960",
+    "aliases": ["_dtest", "_ldtest"],
+    "exactAliasDistinguished": false,
+    "spanBytes": 83,
+    "spanSha256": "3197b246ad29cd7eb2b457be0c138736af53287d92aee4b12611694468c01abb",
+    "binding": "Eight consistent static IAT pointers minus exact installed export RVAs; derived, not a fresh live byte comparison",
+    "neighborExportRvas": [
+      { "slot": "0x140eaeb90", "rva": "0x51160", "aliases": ["ldexp"] },
+      { "slot": "0x140eaeb98", "rva": "0xf8030", "aliases": ["ceilf"] },
+      {
+        "slot": "0x140eaeba0",
+        "rva": "0x83190",
+        "aliases": ["_dsign", "_ldsign"]
+      },
+      {
+        "slot": "0x140eaeba8",
+        "rva": "0x68960",
+        "aliases": ["_dtest", "_ldtest"]
+      },
+      { "slot": "0x140eaebb0", "rva": "0xf8020", "aliases": ["ceil"] },
+      { "slot": "0x140eaebb8", "rva": "0xa7730", "aliases": ["cos"] },
+      { "slot": "0x140eaebc0", "rva": "0xf8040", "aliases": ["floor"] },
+      { "slot": "0x140eaebc8", "rva": "0x4d400", "aliases": ["atan2"] }
+    ],
+    "integerBitClassification": {
+      "normal": -1,
+      "subnormal": -2,
+      "zeroEitherSign": 0,
+      "infinityEitherSign": 1,
+      "nanEitherSignOrPayload": 2
+    },
+    "callerComparison": "cmp AX,2 branches to false return",
+    "meaningIfReached": "Rejects NaN bit patterns; these classifier checks alone do not reject infinity",
+    "fullInputAcceptanceEstablished": false,
+    "preliminaryComisdExceptionBehavior": "May raise invalid operation under unmasked exceptions before reaching the classifier; native MXCSR was not captured"
+  },
+  "verification": {
+    "transformInstructionChecks": 59,
+    "thresholdConstantBindings": 3,
+    "classifierInstructionChecks": 13,
+    "consistentImportBindings": 8,
+    "syntheticTransformCases": 6,
+    "syntheticClassifierBitCases": 18,
+    "actualInstructionByteMutationsRedecodedAndRejected": 3,
+    "peakJobMemoryBytes": 82067456,
+    "jobMemoryLimitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "minimumFreeMemoryMiB": 3072,
+    "completed": true,
+    "ownedChildExited": true,
+    "childAndJobHandlesClosed": true,
+    "cleanupErrors": [],
+    "nativeFunctionsCalled": false,
+    "nativeProcessAccessed": false,
+    "imageExecutedOrMappedAsCode": false,
+    "newAnalysisProviderStarted": false,
+    "applicationOrMcpBehaviorChanged": false,
+    "applicationBuildOrSuiteRerun": false,
+    "guiMcpNumericalReplay": false
+  },
+  "privateArtifacts": [
+    {
+      "name": "verify-native-arc-transform-classifier.py",
+      "sha256": "52330fd6f29b5b0f2cb3341ee9c56b25aed6f743ef87f14f33fb50336d45c88e"
+    },
+    {
+      "name": "run-native-arc-transform-owner.py",
+      "sha256": "fb10711e6cd3cc1754e7b3a1fe29e544e268a952640d415e917df8bf5abd34b2"
+    },
+    {
+      "name": "native-arc-transform-classifier-verified-20261023-r1.json",
+      "sha256": "16e3d4ab2518d592d03c58f4e522afc9a3f78cc2a1247b1776774b646e7d338d"
+    },
+    {
+      "name": "native-arc-transform-classifier-verified-20261023-r1.owner.json",
+      "sha256": "e33d0a587e3126f4fe31f7b536db2b33a531038ad59c00b7434c6b398f9c91fb"
+    }
+  ],
+  "remaining": [
+    "Numerical native transform/edit replay and matching controller inputs",
+    "Complete preliminary callback, caller/sketch/world frame mapping, ordinary exceptional setter and invalid-input behavior",
+    "Native constraint-solver authority and trim/split ownership of defining points",
+    "Shared GUI/MCP implementation, history/persistence and equivalent acceptance fixtures"
+  ]
+}
