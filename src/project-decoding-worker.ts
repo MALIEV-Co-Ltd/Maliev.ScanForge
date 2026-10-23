@@ -11,7 +11,9 @@ const scope = self as unknown as {
 const lease = setTimeout(() => scope.close(), 120000);
 scope.onmessage = async ({ data }) => {
   try {
-    const session = await decodeProjectContents(data.file);
+    const session = await decodeProjectContents(data.file, {
+      sharedReadonlyBuffers: true,
+    });
     prepareRestoredScanDisplays(session.project.entities);
     const seen = new Set();
     const displays = session.project.entities.flatMap((e) => {

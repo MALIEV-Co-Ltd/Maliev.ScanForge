@@ -1590,3 +1590,20 @@ retry, Undo/Redo and GUI save workflow passed under the unchanged 4 GiB Job,
 peaking at 3,457.16 MiB. Independent decoding matched all 13 current geometry
 carriers and full history. See [the validated workflow](ORIGINAL_STL_WORKFLOW.md#bounded-indexed-alignment-memory-correction).
 Native final numerical equivalence remains unverified.
+
+### Compact binary project restoration
+
+GUI opening and MCP `project_import` / `backup_restore` now preserve binary `u32`
+mesh topology as `Uint32Array` instead of widening it into ordinary numeric
+arrays. Hidden/saved facet selections retain their existing array semantics even
+when their encoded chunks match topology. Legacy JSON and `f64` storage remain
+compatible; face order, values, signed zero and current/history aliases survive.
+
+The decoder worker publishes final Float32 geometry and Uint32 topology through
+the existing immutable shared-buffer policy when cross-origin isolation permits
+it. Saving or backing up those restored revisions then shares their backing with
+the encoder. Other hosts retain private typed buffers and transfer only decoded
+worker-owned storage; retained model/history buffers never detach. Public schemas,
+revision/retry/cancellation rules, worker leases and file formats are unchanged.
+`object_geometry_digest` reports the actual shared or private backing and the same
+canonical hashes. See [restoration validation](PROJECT_LOAD_PERFORMANCE.md#binary-topology-and-history-publication).

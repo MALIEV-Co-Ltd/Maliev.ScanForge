@@ -6,6 +6,7 @@ import {
 import type { Entity, Project } from "./types";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import { cloudPlacement, placedCloud } from "./point-cloud-placement";
 import {
   projectValueHash,
@@ -241,6 +242,7 @@ export async function encodeProjectFileLocally(
 
 export async function decodeProjectContents(
   file: Blob,
+  options: { sharedReadonlyBuffers?: boolean } = {},
 ): Promise<ProjectSession> {
   const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
   if (!magic.every((byte, i) => header[i] === byte))
@@ -314,11 +316,8 @@ export async function decodeProjectContents(
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
-  const decoded = new Map<
-    string,
-    string | number[] | Float32Array | Uint8Array
-  >();
-  function read(ref: Ref): string | number[] | Float32Array | Uint8Array {
+  const decoded = new Map<string, ProjectValue>();
+  function read(ref: Ref, typedIndices = false): ProjectValue {
     if (
       !ref ||
       !Number.isInteger(ref.chunk) ||
@@ -332,36 +331,64 @@ export async function decodeProjectContents(
       ].includes(ref.type)
     )
       return invalid();
-    const key = `${ref.chunk}:${ref.type}`,
+    // Selection lists can share a chunk with topology, but retain array semantics.
+    const unsignedTopology = typedIndices && ref.type === "u32";
+    const key = `${ref.chunk}:${ref.type}:${unsignedTopology ? "indices" : ""}`,
       cached = decoded.get(key);
     if (cached !== undefined) return cached;
     const bytes = data[ref.chunk];
-    let result: string | number[] | Float32Array | Uint8Array;
+    let result: ProjectValue;
     if (ref.type === "text")
       result = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
     else if (ref.type === "u8") result = bytes;
     else {
       const width = ref.type === "f64" ? 8 : 4;
       if (bytes.length % width) return invalid();
-      // Decoded chunks already own their bytes. Keep an immutable Float32 view
-      // instead of allocating another complete geometry buffer during restore.
+      // Decoded chunks own their bytes. Keep typed geometry views rather than
+      // widening topology and repacking it into Float64 transport staging.
       if (
-        ref.type === "f32" &&
+        (ref.type === "f32" || unsignedTopology) &&
+        bytes.byteOffset % width === 0 &&
         new Uint8Array(new Uint16Array([1]).buffer)[0] === 1
       ) {
-        result = new Float32Array(
+        const ArrayType = unsignedTopology ? Uint32Array : Float32Array;
+        result = new ArrayType(
           bytes.buffer,
           bytes.byteOffset,
           bytes.length / width,
         );
+        if (
+          options.sharedReadonlyBuffers &&
+          globalThis.crossOriginIsolated === true &&
+          typeof SharedArrayBuffer !== "undefined"
+        ) {
+          const buffer = allocateImportedReadonlyBuffer(bytes.length, true);
+          const shared = unsignedTopology
+            ? new Uint32Array(buffer)
+            : new Float32Array(buffer);
+          shared.set(result);
+          result = shared;
+        }
         decoded.set(key, result);
         return result;
       }
-      const v = new DataView(bytes.buffer);
+      const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
       const values =
         ref.type === "f32"
-          ? new Float32Array(bytes.length / width)
-          : new Array<number>(bytes.length / width);
+          ? new Float32Array(
+              allocateImportedReadonlyBuffer(
+                bytes.length,
+                options.sharedReadonlyBuffers,
+              ),
+            )
+          : unsignedTopology
+            ? new Uint32Array(
+                allocateImportedReadonlyBuffer(
+                  bytes.length,
+                  options.sharedReadonlyBuffers,
+                ),
+              )
+            : new Array<number>(bytes.length / width);
       for (let i = 0; i < values.length; i++)
         values[i] =
           ref.type === "u32"
@@ -390,7 +417,7 @@ export async function decodeProjectContents(
       indexedMesh: record.indexedMesh
         ? {
             vertices: read(record.indexedMesh.vertices),
-            triangles: read(record.indexedMesh.triangles),
+            triangles: read(record.indexedMesh.triangles, true),
             ...(record.indexedMesh.normals
               ? { normals: read(record.indexedMesh.normals) }
               : {}),

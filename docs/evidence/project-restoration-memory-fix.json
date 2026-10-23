@@ -1,0 +1,102 @@
+{
+  "scope": "Original full three-STL binary reopen, Global Fine Align, cached MCP Apply, Undo/Redo and full-history GUI save",
+  "testedBaseCommit": "7bbd3e8e79d3f01ab9b1ecb45e3cec81f78e95fe",
+  "runId": "20261023T023157164015Z",
+  "buildPassed": true,
+  "compilerInputsVerified": 1866,
+  "sourceAndDistEntriesRehashed": 2410,
+  "sourceUnchangedAcrossBuildAndReplay": true,
+  "candidateFileSha256": {
+    "src/project-file-codec.ts": "08ed4682e612599269bd3aa231db8f449ca28e141dc146a4da445f0d5da6bcbd",
+    "src/project-decoding-worker.ts": "d9599296e2fb7b822b898f2c0f1e6accdf6213a19beb739bf6dba659c1bc76c2",
+    "tests/project-index-storage.test.ts": "673a0d42b135d0ef8a87ef4e278259fe3aa601269febf98cbb5daeb71fcc763b"
+  },
+  "sourceManifestSha256": "062bc98819d2cd64c8e224d0df62697bee6b14a9e2b889212dc0aa08ff411aa1",
+  "packageLockSha256": "2c5cac886fdfdf6408d2221c6cda5173c8265fb2d7ef8757cb5f8d9e40c9ccce",
+  "baselineProject": {
+    "bytes": 410861843,
+    "sha256": "93701c5b8ef2afd4be2ef29d9b00bc9f908cdc79aafbdd73997b5a54fbddc0bc"
+  },
+  "acceptedTriangles": 6147452,
+  "indexedVertices": 3121976,
+  "publicSchemaChanged": false,
+  "independentVerification": {
+    "completed": true,
+    "fullWorkflowPassed": true,
+    "sourceAndDistFilesRehashed": 2410,
+    "sourceBuildInputs": 1866,
+    "reopenedTopologyUint32": true,
+    "fullUndoRedoCarriersMatch": true,
+    "currentCarriersVerifiedAgainstSavedProject": 13,
+    "coordinateAndNormalChecks": [
+      {
+        "name": "scan-1.stl",
+        "twoOrderedFloat32Stages": true,
+        "indexedAndExpandedCarriersExact": true
+      },
+      {
+        "name": "scan-2.stl",
+        "twoOrderedFloat32Stages": true,
+        "indexedAndExpandedCarriersExact": true
+      },
+      {
+        "name": "scan-3.stl",
+        "twoOrderedFloat32Stages": true,
+        "indexedAndExpandedCarriersExact": true
+      }
+    ],
+    "historySteps": 6,
+    "priorHistoryAndCoarseStateExact": true,
+    "savedProject": {
+      "bytes": 666828179,
+      "sha256": "ab67731336431afa966e1fd8b2fde36a9f19828e0438a60fd2b3c25e1480a66f"
+    },
+    "jobMemoryCapBytes": 4294967296,
+    "peakJobMemoryBytes": 4065284096,
+    "allOwnedProcessesExited": true,
+    "ownedProcessCount": 17,
+    "handlesClosed": true,
+    "cleanupErrors": [],
+    "controllerConverged": false,
+    "nativeFinalComparison": false,
+    "elapsedMs": 9556
+  },
+  "receiptSha256": {
+    "project-index-build-source-verified-r3.json": "725875ed16dcdf62f2f08e721cd30603d2c172f06881059574d8a5cda04212ac",
+    "global-project-index-independent-verification-r1.json": "11b8e308a6cdcd292896b0c307d64d80b4a4a4800b68a96f7be632e552bac854",
+    "global-project-index-independent-verification-r1.owner.json": "e1060202faefb05ea9281d828ff0f5657059e8c571500cb3ef4fc62fe9f9f3eb",
+    "global-after-coarse-three-stl-evidence-20261023T023157164015Z-kernel/resource-ledger.json": "c063b7e91f39241b7ab59b3a1dabc8c96bbda228e1b66f5c0daa3aae24edb9b6",
+    "global-after-coarse-three-stl-evidence-20261023T023157164015Z-browser/evidence.json": "4306cda9e53ad9cfb07018264b5ebb5b70e6404717ca15897d1f4d5e33b04e57"
+  },
+  "limits": [
+    "One successful capped run; approximately 219 MiB headroom",
+    "Controller did not report convergence",
+    "No final native numerical comparison",
+    "Private chunk and shared publication coexist during decode"
+  ],
+  "sharedRestorationOperations": ["project_import", "backup_restore"],
+  "observedMcpOperations": [
+    "object_geometry_digest",
+    "global_alignment_state",
+    "global_alignment_apply",
+    "history_get",
+    "history_undo",
+    "history_redo",
+    "project_get"
+  ],
+  "unitValidation": {
+    "focusedPassed": 87,
+    "fullPassed": 47697,
+    "fullSkipped": 64,
+    "fullFailed": 0,
+    "fullFilesPassed": 588,
+    "fullReceiptSha256": "dc0c2238d921c187f0600b575631064fac61f01bd69f999e6e22acb36164887f"
+  },
+  "preExistingWorkingEditsPreserved": [
+    "docs/AGENT_GUIDE.md computed viewport revision paragraph",
+    "docs/MCP_ARCHITECTURE.md computed settings revision paragraph",
+    "src/automation/api.ts",
+    "tests/interactive-alignment-api.test.ts",
+    "tests/interactive-public-browser.mjs"
+  ]
+}

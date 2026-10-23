@@ -485,3 +485,17 @@ refinement. Unchanged Uint32 connectivity retains the source backing instead of
 being copied again. Worker result transfer lists include only private
 ArrayBuffers; shared model/history storage remains attached. Legacy ordinary
 index arrays are still converted to Uint32 storage without changing face order.
+
+## Binary project geometry publication
+
+The shared decoder keeps `u32` indexed topology typed, with a representation-aware
+cache key so identical topology/selection chunks do not change selection array
+semantics. The GUI/MCP decoder worker opts into the existing immutable publication
+policy for final Float32 geometry and Uint32 topology, after raw container hash
+validation. Current and history references reuse the published carriers. Encoding
+workers can share them rather than cloning private restored geometry again.
+Private fallback transfers worker-owned buffers; shared backing is excluded from
+transfer lists. Legacy JSON/f64 decoding, file formats and public contracts remain
+unchanged. Publication temporarily coexists with validated private chunk bytes;
+its whole-workflow memory outcome is measured, not inferred from buffer size.
+See [the restoration evidence](PROJECT_LOAD_PERFORMANCE.md#binary-topology-and-history-publication).
