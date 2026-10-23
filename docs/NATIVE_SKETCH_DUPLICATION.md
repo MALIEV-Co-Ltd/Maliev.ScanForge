@@ -150,7 +150,8 @@ Duplicate selected dialog.
 
 Before reading endpoints, the branch checks a selected-item context byte, a
 non-null selected curve and a true result from virtual query `+0x30`. The precise
-curve-type mapping of that query is not recovered. The selection resolver also
+curve-type mapping of that query is now bound for six classes in the follow-up
+below; this is not an executed picking fixture. The selection resolver also
 recurses through groups and clears temporary point-record bits; it must not be
 invoked as a supposedly read-only geometry getter during analysis.
 
@@ -205,7 +206,8 @@ For ordered finite inputs, the wrapper admits distances from zero through
 call receives binary64 tolerance `2^-23` in `XMM3` and writes the curve
 parameter to a stack double. Virtual `+0xb8` then receives that parameter in
 `XMM1` and the point/tangent output pointers. Its concrete curve-class
-implementation remains unresolved. The ordered-comparison description must
+implementation is now bound to the inner sketch-edge wrapper below. Numerical
+fixtures and complete eligibility remain open. The ordered-comparison description must
 not be treated as NaN validation: the actual bounds use `COMISD` and `JA`,
 whose unordered behavior differs from a high-level finite check.
 
@@ -258,3 +260,80 @@ The analysis provider was closed after evidence retention.
 See the [structured controller facts](evidence/sketch-duplicate-controller.json)
 for exact evidence identities and unresolved boundaries. Raw decompiler output
 and the captured image remain private analysis material.
+
+## Concrete curve dispatch and kernel evaluation
+
+Four bounded passive captures now bind the native type metadata, six outer curve
+vtables, the inner geometry getter/factory, and fourteen imported routine targets.
+Each capture read its selected metadata twice with identical results, verified the
+exact process creation identity and installed executable hash, and closed both
+handles. No target command or geometry routine executed and no scan buffers were
+read. These observations are about that recorded process, which later exited.
+
+Among the six bound outer classes, the picked-line query at virtual `+0x30`
+returns true for the line class and false for arc, circle, spline, ellipse and
+partial ellipse. This resolves those concrete table entries, not every possible
+curve subclass or the complete UI eligibility chain. Their shared `+0xf0` getter
+at `0x1401e0540` reads the geometry pointer at object offset `0x190`. Consequently,
+the outer class's `+0x168` entry is not the path distance evaluator.
+
+The base constructor obtains that inner object from service factory virtual
+`+0x28`, bound to `0x140273450`, whose constructor installs table `0x141157ac0`.
+The inner slots are:
+
+| Slot     | Method                           | Address       |
+| -------- | -------------------------------- | ------------- |
+| `+0x120` | Reported path length             | `0x140273ff0` |
+| `+0x168` | Distance to normalized parameter | `0x140274030` |
+| `+0xb8`  | Point and tangent                | `0x140278bb0` |
+
+For ordered finite inputs, distance inversion obtains the edge's geometric curve
+and first/last parameters with `BRep_Tool::Curve`, loads `GeomAdaptor_Curve`, and
+computes range length with `GCPnts_AbscissaPoint::Length`. It rejects lengths below
+`1e-7`, clamps distance into `[0, length]`, and constructs `GCPnts_AbscissaPoint`
+from adaptor, distance and starting parameter. This is the overload without an
+explicit tolerance argument; the caller's extra `2^-23` argument must not be
+mistaken for a selected tolerance overload. On success the stored value is
+`(solvedParameter - firstParameter) / (lastParameter - firstParameter)`, in
+binary64 arithmetic. It is neither raw curve parameter nor distance divided by
+length in the general spline case. Kernel exceptions and unordered floating
+comparisons have not been replayed.
+
+Point/tangent evaluation delegates to `0x1401ec8a0`. On a non-degenerate edge it
+clamps the normalized parameter for finite ordered inputs, evaluates
+`first + (last - first) * normalizedParameter` through `BRepAdaptor_Curve::D1`,
+and normalizes the derivative through `0x140154070`. A degenerate edge returns
+its first vertex and the initially zero tangent. The `+0xb8` slot wrapper returns
+false immediately when its native body handle at `+0x90` is zero, without writing
+either output. Otherwise it calls the delegate, then unconditionally returns true.
+The delegate initializes both outputs to zero and returns false if its topology
+pointer is null; the wrapper discards that result. The enclosing duplication path
+helper also ignores the wrapper status: its success follows the earlier distance
+inversion. Valid-path runtime fixtures must establish the actual states reached
+through the UI before reproducing failure behavior.
+
+Reported path length uses a separate branch: `PK_BODY_ask_first_edge` followed
+by helper `0x14026cbf0`. Static import candidates identify `PK_EDGE_ask_geometry`
+and `PK_CURVE_find_length`; their two additional slots were not recaptured live.
+The helper multiplies the result by a global scale whose current value remains
+unread. It also temporarily changes a global flag, so it must not be invoked as
+a supposedly read-only measurement probe. A single-kernel analytic length must
+not silently substitute for this mixed path before numerical comparison.
+
+Independent verification passed 50 checks, including twelve critical instruction
+anchors, and three altered-class/getter/arithmetic rejection controls.
+All fourteen captured import targets matched exact installed DLL export RVAs and
+32 entry bytes. The largest successful helper peaked at 18.49 MiB under its
+unchanged 4 GiB/25% CPU Job. A later attempt to capture full function spans and
+the two extra imports stopped before any read because the process could not be
+opened; the following inventory found no native process. It is retained as a
+failed attempt, not counted as validation. The analysis session also closed with
+no pending cleanup or remaining owned Java process.
+
+The [structured controller evidence](evidence/sketch-duplicate-controller.json)
+retains the artifact/Evidence IDs, capture hashes, import identities and limits.
+No application behavior, GUI/MCP schema or discovery changed, so no build,
+application unit/CAD suite or browser replay was rerun for this evidence-only
+slice. Duplication remains unimplemented. Remaining gates include matching native
+line/arc/spline fixtures, closed/reversed path behavior, selected-group anchors,
+unit settings, copied relations, all four preview modes and atomic GUI/MCP history.

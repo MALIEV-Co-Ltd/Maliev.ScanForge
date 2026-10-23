@@ -289,5 +289,275 @@
       "No duplication application/MCP capability implemented or advertised.",
       "No application build, unit/CAD or browser suite rerun."
     ]
+  },
+  "concreteCurveDispatch": {
+    "scope": "Static and passive metadata bindings for outer curve eligibility and inner kernel path evaluation; no native geometry execution",
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "reaBundleSha256": "b0ba16a60509c14aaf48a1f80f4f10dd766ccc3458ff01f630ec696fbf199b71",
+    "reaEvidenceIds": [
+      "ev_1e7aabf66af12765efb12efa1d170bf8d0e5a42d9a49823c0cb1d39b1fee1ebb",
+      "ev_31a4f51ee084c1cf9b9a62b9b75c5822d0e2cf42b76becaaff7d57409186f656",
+      "ev_a80db8631a5a55f0c9591e24a5aad3ec2594eaf8517fd78de017ff283ec491a0",
+      "ev_b20685701ddc867d918a61e93361c511427e1aa456ffa7f02c885acb2f69959b",
+      "ev_b2981fb17ea8724200e8517fdb4eba8c55aa8ca58b03f92c00ead29d9addae30",
+      "ev_bcdd2e422bc12b5a382de75d1928fa422be01d2cb6f36bdd9fc14c074e5bef63",
+      "ev_c9e1ba199b226b9863d3eae4f31992ebf52f2577242abc39b9af74faed54b945",
+      "ev_ccfad712f3af3bfeefdedc2ce2a91631428985944e10150c451238e9a1e34d64",
+      "ev_cd97eacff09a7b4817192dd4312bb23980f1fd692b59a70d69cce6ac153639d1",
+      "ev_e4b5d4752fadd77efe3921cfae3c29f5f5413f5ebaafd401cae409484b7a6233",
+      "ev_e7e13f9648ee33a7c29890badb955f66ad0df7a0d4a569961bd2c07689b6a4bc"
+    ],
+    "outerClassEligibility": {
+      "queryOffset": "0x30",
+      "line": true,
+      "arc": false,
+      "circle": false,
+      "spline": false,
+      "ellipse": false,
+      "partialEllipse": false,
+      "scope": "Six bound classes only; complete UI eligibility and subclass inventory not established"
+    },
+    "innerGetter": {
+      "address": "0x1401e0540",
+      "memberOffset": "0x190"
+    },
+    "factory": {
+      "global": "0x141615610",
+      "vtable": "0x141157868",
+      "slot": "0x28",
+      "method": "0x140273450",
+      "constructor": "0x140273ac0"
+    },
+    "innerVtable": "0x141157ac0",
+    "innerMethods": {
+      "length": "0x140273ff0",
+      "distanceToParameter": "0x140274030",
+      "pointTangent": "0x140278bb0",
+      "pointTangentDelegate": "0x1401ec8a0"
+    },
+    "distanceToParameter": {
+      "minimumOrderedLength": 1e-7,
+      "distanceClamp": "[0, length]",
+      "solver": "GCPnts_AbscissaPoint(adaptor, distance, firstParameter); no explicit tolerance overload",
+      "output": "(solvedParameter-firstParameter)/(lastParameter-firstParameter)",
+      "storage": "binary64",
+      "kernelExceptionsReplayed": false
+    },
+    "pointTangent": {
+      "parameter": "first+(last-first)*clamp01(normalizedParameter), ordered finite inputs",
+      "evaluation": "BRepAdaptor_Curve::D1",
+      "derivativeNormalization": "0x140154070",
+      "degenerateEdge": "First vertex and zero tangent",
+      "wrapperNullBodyHandle": {
+        "offset": "0x90",
+        "result": false,
+        "outputs": "unchanged"
+      },
+      "delegateNullTopology": {
+        "result": false,
+        "outputs": "zero-initialized"
+      },
+      "wrapperChecksDelegateStatus": false,
+      "pathHelperChecksWrapperStatus": false
+    },
+    "reportedLength": {
+      "firstEdgeImport": "PK_BODY_ask_first_edge",
+      "helper": "0x14026cbf0",
+      "staticImportCandidates": [
+        "PK_EDGE_ask_geometry",
+        "PK_CURVE_find_length"
+      ],
+      "additionalImportSlotsVerifiedLive": false,
+      "scaleValueRead": false,
+      "temporaryGlobalWriteObservedStatically": true
+    },
+    "verifiedImports": [
+      {
+        "slotRva": "0xeab1d8",
+        "module": "pskernel.dll",
+        "moduleSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+        "targetRva": "0xf5550",
+        "exportNames": ["PK_BODY_ask_first_edge"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab7b8",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x1b720",
+        "exportNames": [
+          "?Curve@BRep_Tool@@SA?AV?$handle@VGeom_Curve@@@opencascade@@AEBVTopoDS_Edge@@AEAN1@Z"
+        ],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeac548",
+        "module": "TKG3d.dll",
+        "moduleSha256": "bb7648a9a47a863a1696914ea4c62572ddb7a0b3533297b13a2279a6fad3366f",
+        "targetRva": "0x442f0",
+        "exportNames": [
+          "?load@GeomAdaptor_Curve@@AEAAXAEBV?$handle@VGeom_Curve@@@opencascade@@NN@Z"
+        ],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeacd78",
+        "module": "TKGeomBase.dll",
+        "moduleSha256": "870f1edd2804b12bc24cc0112c781e0eea6a29e3d2a09bd809b5240c032f2b23",
+        "targetRva": "0x35a70",
+        "exportNames": [
+          "?Length@GCPnts_AbscissaPoint@@SANAEBVAdaptor3d_Curve@@NN@Z"
+        ],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeacd70",
+        "module": "TKGeomBase.dll",
+        "moduleSha256": "870f1edd2804b12bc24cc0112c781e0eea6a29e3d2a09bd809b5240c032f2b23",
+        "targetRva": "0x35350",
+        "exportNames": [
+          "??0GCPnts_AbscissaPoint@@QEAA@AEBVAdaptor3d_Curve@@NN@Z"
+        ],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xead160",
+        "module": "TKMath.dll",
+        "moduleSha256": "a227f46b8c15296167aa40231e5b53e300cd7fd7eda7a0baae56c593ebc46cfb",
+        "targetRva": "0x15b80",
+        "exportNames": ["??1math_FunctionWithDerivative@@UEAA@XZ"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeae338",
+        "module": "TKernel.dll",
+        "moduleSha256": "e98958743dc563223fa24059a2ef4fc23506864b91d8d6b6df931ad0ffc1538a",
+        "targetRva": "0x47480",
+        "exportNames": ["?DecrementRefCounter@Standard_Transient@@QEBAHXZ"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab7a8",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x1c9a0",
+        "exportNames": ["?Degenerated@BRep_Tool@@SA_NAEBVTopoDS_Edge@@@Z"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab728",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x6880",
+        "exportNames": [
+          "?FirstVertex@TopExp@@SA?AVTopoDS_Vertex@@AEBVTopoDS_Edge@@_N@Z"
+        ],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab708",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x1f360",
+        "exportNames": ["?Pnt@BRep_Tool@@SA?AVgp_Pnt@@AEBVTopoDS_Vertex@@@Z"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab748",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x28410",
+        "exportNames": ["??0BRepAdaptor_Curve@@QEAA@AEBVTopoDS_Edge@@@Z"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab738",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x29180",
+        "exportNames": ["?FirstParameter@BRepAdaptor_Curve@@UEBANXZ"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab730",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x29b20",
+        "exportNames": ["?LastParameter@BRepAdaptor_Curve@@UEBANXZ"],
+        "entry32BytesMatch": true
+      },
+      {
+        "slotRva": "0xeab790",
+        "module": "TKBRep.dll",
+        "moduleSha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5",
+        "targetRva": "0x28d20",
+        "exportNames": [
+          "?D1@BRepAdaptor_Curve@@UEBAXNAEAVgp_Pnt@@AEAVgp_Vec@@@Z"
+        ],
+        "entry32BytesMatch": true
+      }
+    ],
+    "verification": {
+      "passed": true,
+      "scope": "Independent source-image, runtime-metadata, DLL-export and arithmetic checks; no native geometry execution",
+      "positiveChecks": 50,
+      "instructionAnchors": 12,
+      "negativeControlsRejected": 3,
+      "reaEvidenceIds": [
+        "ev_1e7aabf66af12765efb12efa1d170bf8d0e5a42d9a49823c0cb1d39b1fee1ebb",
+        "ev_31a4f51ee084c1cf9b9a62b9b75c5822d0e2cf42b76becaaff7d57409186f656",
+        "ev_a80db8631a5a55f0c9591e24a5aad3ec2594eaf8517fd78de017ff283ec491a0",
+        "ev_b20685701ddc867d918a61e93361c511427e1aa456ffa7f02c885acb2f69959b",
+        "ev_b2981fb17ea8724200e8517fdb4eba8c55aa8ca58b03f92c00ead29d9addae30",
+        "ev_bcdd2e422bc12b5a382de75d1928fa422be01d2cb6f36bdd9fc14c074e5bef63",
+        "ev_c9e1ba199b226b9863d3eae4f31992ebf52f2577242abc39b9af74faed54b945",
+        "ev_ccfad712f3af3bfeefdedc2ce2a91631428985944e10150c451238e9a1e34d64",
+        "ev_cd97eacff09a7b4817192dd4312bb23980f1fd692b59a70d69cce6ac153639d1",
+        "ev_e4b5d4752fadd77efe3921cfae3c29f5f5413f5ebaafd401cae409484b7a6233",
+        "ev_e7e13f9648ee33a7c29890badb955f66ad0df7a0d4a569961bd2c07689b6a4bc"
+      ],
+      "reaBundleSha256": "b0ba16a60509c14aaf48a1f80f4f10dd766ccc3458ff01f630ec696fbf199b71",
+      "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+      "captures": {
+        "r1": {
+          "sha256": "20c93e8baa3b2d5363e571f6c4510372e1e5c6223d3c57e82f4b05b93846d324",
+          "regionQueries": 5556,
+          "totalReadBytes": 702448,
+          "peakJobMemoryBytes": 19386368
+        },
+        "r2": {
+          "sha256": "5a79c85ab4b0988a55fd8fe5109c52d77851d188464af623072ee0ef6f76f369",
+          "regionQueries": 5722,
+          "totalReadBytes": 706432,
+          "peakJobMemoryBytes": 18980864
+        },
+        "dispatch-r1": {
+          "sha256": "8acceb1e1618707581e0e4b8dcdc74120425659a0ba89761e12815bb9a7496e1",
+          "regionQueries": 48,
+          "totalReadBytes": 420,
+          "peakJobMemoryBytes": 15515648
+        },
+        "imports-r1": {
+          "sha256": "204fbacc23923d02371c064a823772d2d8f41afde8ac1c120984fad212f1bdfb",
+          "regionQueries": 64,
+          "totalReadBytes": 1232,
+          "peakJobMemoryBytes": 15495168
+        }
+      },
+      "fullFunctionLiveCodeRecapturePassed": false,
+      "failedRecaptureReason": "Read-only OpenProcess failed",
+      "applicationImplementation": false,
+      "mcpDiscovery": false,
+      "elapsedSeconds": 0.014241800003219396
+    },
+    "controllerImplemented": false,
+    "mcpDiscovery": false,
+    "limits": [
+      "No curve geometry routine executed; no native numerical or GUI acceptance fixtures",
+      "Complete live function-span recapture failed before reads after native process became unavailable",
+      "Reported-length global scale remains unread",
+      "No duplication application/MCP capability added",
+      "No new build/unit/CAD/browser validation for this evidence-only change"
+    ]
   }
 }
