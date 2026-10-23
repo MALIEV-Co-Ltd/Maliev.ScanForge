@@ -329,6 +329,51 @@ Duplication remains unimplemented and absent from MCP discovery. See the
 [structured anchor contract](evidence/sketch-duplicate-anchor-contract.json)
 for hashes, addresses, limits and remaining acceptance work.
 
+## Arc record updates and application impact
+
+The bound arc class's point-record updater, virtual slot `+0x160`, enters
+`0x1401e5360`. After two preliminary virtual callbacks, it takes a preservation
+branch only when the supplied collection has more than three records and each
+of proposed records 0/1/2 differs from the corresponding stored defining point
+by squared distance strictly below `1e-5`. This is a different threshold from
+the ordinary setter's `0.0001` near-point fallback. The proposed center record
+is not compared in this branch.
+
+That branch retains the old defining points and center, adds positive zero to
+their coordinates, rebuilds the four point records and resynchronizes inner
+geometry. Positive-zero addition can change signed-zero bytes, so this is not
+byte-for-byte preservation. Otherwise, the updater reads the first three
+records, applies existing classifier checks, and either rejects or calls the
+ordinary setter with its existing exceptional branches. Complete invalid-input
+semantics are not established.
+The short-count branch also reaches those loads; it does not establish safety
+for malformed short vectors. Preliminary callback side effects and native
+floating-point exception state are not fully established.
+
+Forty-three instruction checks, seven synthetic branch cases and three mutations of
+private instruction-byte copies passed. Each mutated conditional opcode was
+redecoded and rejected by the instruction checker; this is distinct from the
+earlier metadata-only controls. The corrected owned static reader peaked at 74.70 MiB,
+exited and closed its handles without cleanup errors. No native function ran.
+The span ends immediately after the decoded return; no unwind-derived function
+extent is claimed. These checks do not establish native numerical editing or
+constraint-solver equivalence.
+
+Source inspection found that a field-only correction would lose state in other
+operations. Mirror currently copies only endpoints and center; trim carries arc
+metadata onto split pieces and prunes point references without a through point;
+the solver and symmetry residuals likewise assume endpoint/center geometry.
+Deletion and shared-point guards need the new reference too. The structured
+contract pins the eight inspected source files and identifies these changes.
+Existing `sketch_set`/`sketch_get` can carry an optional point reference through
+the shared operation once validation and solver semantics are defined; a new
+MCP tool is not inherently required. GUI point editing, undo/redo and saved
+authoring sketches must preserve the same state.
+
+Geometric authority, native trim/split ownership and the transformed-record
+updater at `+0x158` remain investigation gates. No application schema or behavior
+is changed by this follow-up, and no native/UI/MCP numerical parity is claimed.
+
 ## Implementation and validation gate
 
 Before adding duplication, resolve remaining curve categories and degenerate

@@ -103,12 +103,96 @@
       "Ordinary input preservation does not establish the complete behavior of either exceptional branch"
     ]
   },
+  "recordUpdateFollowUp": {
+    "scope": "Static point-record update branch plus synthetic arithmetic; no native numerical edit replay",
+    "outerArcVtable": "0x141155bb0",
+    "slot": "0x160",
+    "entry": "0x1401e5360",
+    "boundedSpanEndExclusive": "0x1401e5754",
+    "boundedSpanSha256": "d4cff1780915b766ad9645709c0bfcd3bde80d76a67fd3304d71158629a69309",
+    "unwindFunctionExtentEstablished": false,
+    "squaredDistanceThreshold": 0.00001,
+    "thresholdAddress": "0x14126ae50",
+    "thresholdBytes": "f168e388b5f8e43e",
+    "fastPathConditions": "Collection contains more than three records and each of the first three proposed points differs from its stored defining point by squared distance strictly less than 1e-5",
+    "fastPathEffect": "Retain stored defining points and stored center with positive-zero additions, rebuild four records and resynchronize inner geometry; no byte-preservation claim",
+    "newCenterCompared": false,
+    "fallback": "Read records 0/1/2, apply existing classifier checks, then reject or call 0x1401e4d70 with its known exceptions; complete invalid-input semantics are not established",
+    "preliminaryVirtualCallbacks": ["0x128", "0x228"],
+    "preliminaryCallbackSideEffectsFullyEstablished": false,
+    "shortVectorSafetyEstablished": false,
+    "finiteInputValidationEstablished": false,
+    "nativeFloatingPointExceptionStateCaptured": false,
+    "centerIndependenceEvidence": "Static operand inspection; the center-not-compared synthetic case repeats identical defining points without independently varying a center",
+    "syntheticNaNCaseScope": "Models unordered comparison flags under masked exceptions; no demonstrated native NaN rejection or MXCSR capture",
+    "verification": {
+      "instructionChecks": 43,
+      "syntheticBranchCases": 7,
+      "actualPrivateByteMutationControlsRedecodedAndRejected": 3,
+      "peakJobMemoryBytes": 78327808,
+      "completed": true,
+      "ownedChildExited": true,
+      "childAndJobHandlesClosed": true,
+      "cleanupErrors": [],
+      "nativeFunctionsCalled": false,
+      "imageExecutedOrMappedAsCode": false,
+      "nativeProcessAccessed": false
+    }
+  },
   "applicationGap": {
     "model": "src/sketch.ts SketchArc",
     "stored": ["a", "b", "center", "clockwise"],
     "missing": "An independently retained through-point reference",
     "consequence": "Equal analytic arcs can have different native control-record anchors; reconstructing an analytic midpoint loses information",
-    "requiredParity": "Any future representation change must reach GUI authoring, shared sketch_set validation/results, persistence, history and MCP contracts together"
+    "requiredParity": "Any future representation change must reach GUI authoring, shared sketch_set validation/results, persistence, history and MCP contracts together",
+    "sourceImpactAudit": [
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3",
+        "required": "Optional-reference validation, geometric authority, residual/conflict indexing, symmetry and deletion references"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3",
+        "required": "Retain the second picked point of three-point arcs; no midpoint migration for older analytic arcs"
+      },
+      {
+        "path": "src/sketch-mirror.ts",
+        "sha256": "42dbb1ac5dce29f69e3423e2de8118955c5d08a04da5b45814dc53418d83f3cf",
+        "required": "Include and remap an independent through-point reference in copied geometry"
+      },
+      {
+        "path": "src/sketch-trim.ts",
+        "sha256": "d713d934356bcc44bd2604ea9e1ce43b05127d225f0eab2cc2e79582e4a2b96b",
+        "required": "Resolve through-point ownership when splitting/removing arcs and pruning unused points"
+      },
+      {
+        "path": "src/sketch-corner.ts",
+        "sha256": "8d6ad29a591df15039315e6f92e0e1c8f77b7814f172bb230141771dee692202",
+        "required": "Recognize through-point references in shared-point guards"
+      },
+      {
+        "path": "src/sketch-fillet.ts",
+        "sha256": "c8dbd49cdc33a9346ced21dbddb9e29cc136e804bc8c0fe126dbf0739b278f72",
+        "required": "Recognize through-point references in shared-point guards; avoid inventing retained points for analytic fillets"
+      },
+      {
+        "path": "src/ui/SketchTools.tsx",
+        "sha256": "d8b554ff7863617759525d72929bc8afe34b6e614fece009f0e2d44d3ca0a440",
+        "required": "Expose retained reference and consistent edit/direction validation"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "5c35a9b904b344ab1bd33735be815d6e9e9b7bb56a451021daba722df3369cc0",
+        "required": "Retain shared sketch_set/sketch_get atomic behavior and solver results; update catalog/agent documentation alongside any implementation"
+      }
+    ],
+    "designBoundariesStillOpen": [
+      "Complete geometric authority and solver behavior for a retained through point",
+      "Native trim/split policy when the retained point is outside a surviving piece",
+      "Full transformed-record updater at slot +0x158",
+      "Native numerical edit/constraint replay and equivalent GUI/MCP verification"
+    ]
   },
   "verification": {
     "anchorInstructionChecks": 26,
@@ -135,6 +219,22 @@
     "guiMcpDuplicationReplay": false
   },
   "privateArtifacts": [
+    {
+      "name": "verify-native-arc-record-update-r2.py",
+      "sha256": "e7f42f19bf7f9393e5364fc40a29ffb0128c9deecb1f7656ac110356c44e247e"
+    },
+    {
+      "name": "run-native-arc-update-owner-r2.py",
+      "sha256": "488a139c2e7a79f5023e6225a9b817e47ad0ea65c457a1ff58e8234f5d78dc32"
+    },
+    {
+      "name": "native-arc-record-update-verified-20261023-r2.json",
+      "sha256": "0c74b3efdbdd4f2c6fd11265bbdc4b9155ce667078a7c2f59f8bd8c83304a1d5"
+    },
+    {
+      "name": "native-arc-record-update-verified-20261023-r2.owner.json",
+      "sha256": "de76ec0b27af37c5957257a405ac1e2d18288ed36fbe0307a5ccbd78b8d62bf1"
+    },
     {
       "name": "verify-duplicate-anchor-contract.py",
       "sha256": "9a96e7473957a120cc9a3032efa502bb15dd8c081a70f05b42ca5e29cf568170"
