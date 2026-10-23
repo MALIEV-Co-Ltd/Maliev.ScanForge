@@ -1,5 +1,50 @@
 # Native Global Fine Align
 
+## Same-run geometry application (2026-10-23)
+
+A subsequent native GUI run at 0.500 mm captured the matrices forwarded from
+each source wrapper to its original scan owner. All six calls were observed:
+three descriptor transforms followed by three common inverse-gauge transforms.
+The owner receives the same matrix pointer and bytes as its wrapper, through
+forwarding return site RVA `0xd57720`. The wrapper's one-member owner list and
+both class chains were checked before matrix reads. This explains why the
+earlier observer, which expected a direct controller return site, recorded no
+ordinary-owner calls.
+
+The [same-run application evidence](evidence/global-fine-same-run-applied-geometry-20261023.json)
+feeds those actual matrices and complete before-state buffers through the
+existing shared `executeDatumTransform` operation. Every final position,
+vertex normal and facet normal matches the native after-state byte for byte:
+nine buffers, 40,278,222 Float32 values, zero differing words. The three scans
+contain 3,381,455 vertices and 6,663,164 facets; triangle indices remain
+unchanged. Both matrix stages retain their intermediate Float32 stores.
+Intermediate native geometry was not captured separately.
+
+This run starts from the prior dispatch run's aligned final scene. All fifteen
+before-field hashes match that prior after-state, verified by rehashing all
+thirty files. It is not a pristine original-input alignment replay. The native
+controller returned zero with three stable sources and no converged sources.
+The trace also retains six local calls and 38 correspondence queries, but this
+checkpoint does not replay their generation.
+
+The observer passed 44 bounded VM cases and ten static code-anchor checks.
+Its live capture completed all six owner entry/return pairs, detached its hooks
+and verified the restored anchors with no cleanup errors. All scripts were
+then unloaded and the session detached. Full before/after captures read every
+field twice with equal hashes; these remain non-atomic snapshots.
+
+The shared-core replay took 1,287 ms and peaked at 616,837,120 bytes across its
+owned Job, under the unchanged 4 GiB cap and 25% CPU quota. Its child processes
+exited and owned handles closed without cleanup errors. Source and tool hashes
+were verified before and after execution; input and expected buffers were
+checked against the pinned capture manifests.
+
+This is an evidence-only checkpoint for the unchanged transform core shared by
+GUI and MCP global alignment. It changes no application behavior or agent
+contract and does not rerun the public GUI/MCP workflow. Sampling,
+correspondence generation, scheduling, rendering and complete alignment
+acceptance remain separate validation work.
+
 ## Same-run local solver replay (2026-10-23)
 
 A fresh native GUI run imported the three original full-size PLY scans and ran
@@ -35,8 +80,9 @@ generation, sampling, scheduling or complete final transform application.
 The command returned with all sources stable and no source converged. The
 ordinary-owner setter observer recorded no matching calls despite changed
 post-state positions. The separate dispatch observation below identifies a
-different direct receiver implementation; original-owner forwarding and matrix
-capture remain necessary before claiming full-controller equivalence.
+different direct receiver implementation. The later geometry checkpoint above
+captures original-owner forwarding and matrix application in its own run;
+full-controller equivalence remains unestablished.
 
 ### Wrapper transform dispatch
 
@@ -59,8 +105,9 @@ detached all hooks, verified the restored code anchors and reported no cleanup
 errors. The script was unloaded and the session detached. It read no matrix or
 geometry payload and invoked no native application functions. Separate full
 post-state captures confirm changed positions and unchanged topology on all
-three original owners. Forwarded ordinary-owner setter calls, actual matrix
-bytes and complete query-generation parity still require verification.
+three original owners. The later geometry checkpoint above verifies forwarded
+owner calls and applied matrix bytes in a separate run. Complete
+query-generation parity remains unverified.
 
 No application behavior, catalog entry or GUI/MCP contract changes in this
 evidence-only checkpoint.

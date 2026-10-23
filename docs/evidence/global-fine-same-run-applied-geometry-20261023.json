@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "scope": "Actual shared datum worker core against all same-run final position/vertex-normal/facet-normal bytes using directly captured owner matrices",
+  "passed": true,
+  "baseline": "R3 starts from R2 final aligned scene; all fifteen R3-before hashes were independently verified equal to R2-after",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "runtimeEvidence": "ev_8a48b5006c04e097832c1f9ea4c6915018910358f23b2a7734d1fd4414b56000",
+  "canonicalBundleSha256": "8b7e105c7a824bfa74f89a24cfb6253ea2124c786ff471c934b63a3eab4bac9e",
+  "privateReplayReportSha256": "e707eec2d1ca289da062a36fe22efcf5e21ed40d3cbefad69ee6c937ecdc2117",
+  "privateReplayScriptSha256": "ab1874c40ea24f21d554b5c10a88bbc905ce1d929b5a5ed35996df25c3bf5b7c",
+  "observerSourceSha256": "eba31969fb2f1ed2ce3517cdaa6e79ec11d70059920fc05e748acd98fe82b128",
+  "observerMockCases": 44,
+  "staticCodeAnchorsVerified": 10,
+  "baselineFilesFullyRehashed": 30,
+  "beforeR3MatchesAfterR2": true,
+  "forwarding": {
+    "wrapperSetterRva": "0xd58d50",
+    "ownerSetterRva": "0x88b070",
+    "ownerReturnSiteRva": "0xd57720",
+    "wrapperVtableRva": "0xec1de0",
+    "ownerVtableRva": "0x1248370",
+    "listMembersPerWrapper": 1,
+    "wrapperOwnerStages": 6,
+    "matrixBytesIdenticalAtWrapperAndOwner": true,
+    "descriptorMatricesEqualOuterReturn": true,
+    "commonGaugeMatrixEqualAcrossOwners": true
+  },
+  "observedEvents": {
+    "clock-outer-ready": 1,
+    "ready": 1,
+    "wrapper-owner-matrix-ready": 1,
+    "unscoped-crt-call": 2,
+    "sampling-parent-entry": 3,
+    "sampler-entry": 96,
+    "clock-return": 3904,
+    "seed": 3904,
+    "rand-return": 3907,
+    "sampler-exit": 96,
+    "sampling-parent-exit": 3,
+    "outer-entry": 1,
+    "local-entry": 6,
+    "query-entry": 38,
+    "query-return": 38,
+    "local-exit": 6,
+    "wrapper-matrix-entry": 6,
+    "owner-matrix-entry": 6,
+    "owner-matrix-return": 6,
+    "wrapper-matrix-return": 6,
+    "outer-command-complete": 1,
+    "clock-outer-terminal": 1,
+    "wrapper-owner-matrix-terminal": 1
+  },
+  "observerTerminal": {
+    "cleanupErrors": [],
+    "complete": true,
+    "elapsedMs": 28639,
+    "eventBytesBeforeTerminal": 12806,
+    "eventsBeforeTerminal": 25,
+    "geometryPayloadsRead": false,
+    "ignoredOwner": 0,
+    "ignoredWrapper": 0,
+    "nativeFunctionsCalled": false,
+    "ownerEntries": 6,
+    "ownerReturns": 6,
+    "postDetachCodeAnchorsVerified": true,
+    "rangeChecks": 311,
+    "readBytes": 4792,
+    "reason": "six-wrapper-and-owner-stages-returned",
+    "stagesReturned": 6,
+    "type": "wrapper-owner-matrix-terminal",
+    "wholeAcceptance": false
+  },
+  "outerResult": {
+    "status": 0,
+    "stable": 3,
+    "converged": 0
+  },
+  "captures": [
+    {
+      "sha256": "5fe338926f938f2df0ebbb0f13d0fa43e454703119fb538b571b977df71b2292",
+      "bytesWritten": 403380696
+    },
+    {
+      "sha256": "b7b11d036c566ca2dfbeaced6dbb1af807231584c63e7c0eefcb5cf6d261b9d2",
+      "bytesWritten": 403380696
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "src/datum-transform-core.ts",
+      "sha256": "26f3899965cd81d523a8f57bfa6045136e7feba5fd61a6ee84e293dafb22eec9"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/datum-transform-scratch.ts",
+      "sha256": "2669e3d05a0c3069503f7e5babdfa237ffcc2ba7f3a24a888c678f13e50f4366"
+    },
+    {
+      "path": "node_modules/esbuild/lib/main.js",
+      "sha256": "61ec0ba144ff93f4bf0e96ad6fab6f430ede0aa13e27ace8063ed63ba416b3cd"
+    },
+    {
+      "path": "node_modules/@esbuild/win32-x64/esbuild.exe",
+      "sha256": "c7bee37877d0aa6a046e52783fa0a2cf1a9ce5579d68bb3083bda99d4bff18ef"
+    }
+  ],
+  "compiledCoreSha256": "0335c5fdf2383fa0764178e2670f03391403e4f52ae4fb91d9fd794b53979cde",
+  "geometry": [
+    {
+      "owner": "0x2f6f030",
+      "geometry": "0x2fde2a0",
+      "vertexCount": 140113,
+      "facetCount": 274154,
+      "matrices": [
+        "30fd4da3ffffef3fca524471e482e43ec44672bec540433f189705087b6cc63fe878a989f87fe4be1089f3ffffffef3f6028e1b5d76de3beafa913361ad672bff0453bf0c54043bfbd1e0d1fc26ae33e16aa4ea3ffffef3f166097222d8e833f",
+        "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+      ],
+      "fields": [
+        {
+          "name": "positions.f32",
+          "elements": 420339,
+          "actualSha256": "66ec01c7951b63245c358bd0b233371753dc52224575460bc420b95a3e519241",
+          "expectedSha256": "66ec01c7951b63245c358bd0b233371753dc52224575460bc420b95a3e519241",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 10.880899999999997
+        },
+        {
+          "name": "vertex-normals.f32",
+          "elements": 420339,
+          "actualSha256": "c78d9e24aadd820cd19ea0171f430dfd927facbab98ac26aea7d1831146356ef",
+          "expectedSha256": "c78d9e24aadd820cd19ea0171f430dfd927facbab98ac26aea7d1831146356ef",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 9.787399999999991
+        },
+        {
+          "name": "facet-normals.f32",
+          "elements": 822462,
+          "actualSha256": "ad3a4c5e9885cd8a382f5ce89b371c01b36d285a26db82752cbc69a69ad25775",
+          "expectedSha256": "ad3a4c5e9885cd8a382f5ce89b371c01b36d285a26db82752cbc69a69ad25775",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 11.024400000000014
+        }
+      ],
+      "topologySha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674",
+      "topologyUnchanged": true
+    },
+    {
+      "owner": "0x2f6f900",
+      "geometry": "0x2fdd0a0",
+      "vertexCount": 1375494,
+      "facetCount": 2697877,
+      "matrices": [
+        "e9ab34ecffffef3f49f1953117adee3e28b4e1813cc5313fc6c79867affbb33f72a652fd72a4eebe6d2bfffeffffef3f3e1a4054781f0fbf1ce8cf5934948ebf42440e3c40c531bfce4f241ff01e0f3f423751ebffffef3f582afbdf0e26833f",
+        "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+      ],
+      "fields": [
+        {
+          "name": "positions.f32",
+          "elements": 4126482,
+          "actualSha256": "54ceab9fdda34a733f4584675a122982d04269d38a59ff8ec3f760f82587283c",
+          "expectedSha256": "54ceab9fdda34a733f4584675a122982d04269d38a59ff8ec3f760f82587283c",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 61.14420000000001
+        },
+        {
+          "name": "vertex-normals.f32",
+          "elements": 4126482,
+          "actualSha256": "84fb8424291f9203e9ed19b82a13552b93fbb6a5ca13d5e07848c7619b42ba16",
+          "expectedSha256": "84fb8424291f9203e9ed19b82a13552b93fbb6a5ca13d5e07848c7619b42ba16",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 55.90079999999995
+        },
+        {
+          "name": "facet-normals.f32",
+          "elements": 8093631,
+          "actualSha256": "17dc9ed1afc1fd57fbb03bad53be9ffdd53b9cda6266a018cfe9232b7bf92abe",
+          "expectedSha256": "17dc9ed1afc1fd57fbb03bad53be9ffdd53b9cda6266a018cfe9232b7bf92abe",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 109.7387
+        }
+      ],
+      "topologySha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76",
+      "topologyUnchanged": true
+    },
+    {
+      "owner": "0x2f6ed40",
+      "geometry": "0x2fdc620",
+      "vertexCount": 1865848,
+      "facetCount": 3691133,
+      "matrices": [
+        "c0f57ee9ffffef3f7c1f1d3fcc68cfbe39c9ac6d4af9323ff6f789aab0b2b43f5831e4cb3f90cf3e1257eafeffffef3f2d0ec7f347a210bf0ad155367a9f8ebf8c32cd6749f932bf0c261c9f5aa2103f853c6be8ffffef3fc1a652f5b64e873f",
+        "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+      ],
+      "fields": [
+        {
+          "name": "positions.f32",
+          "elements": 5597544,
+          "actualSha256": "772def0aa58f00327ca5738f47823f51586248c328b2c70b17c3c725e408a119",
+          "expectedSha256": "772def0aa58f00327ca5738f47823f51586248c328b2c70b17c3c725e408a119",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 79.98320000000001
+        },
+        {
+          "name": "vertex-normals.f32",
+          "elements": 5597544,
+          "actualSha256": "b5fe68154a88974963a5b7849460d4e14891b1a92dfdd5a2b0e25576ffca8df9",
+          "expectedSha256": "b5fe68154a88974963a5b7849460d4e14891b1a92dfdd5a2b0e25576ffca8df9",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 83.21320000000003
+        },
+        {
+          "name": "facet-normals.f32",
+          "elements": 11073399,
+          "actualSha256": "05ed14df3c539c2480c327e4f04e4b24919b3944a1568d120c662c43645b35c4",
+          "expectedSha256": "05ed14df3c539c2480c327e4f04e4b24919b3944a1568d120c662c43645b35c4",
+          "exact": true,
+          "mismatchedWords": 0,
+          "maxAbsoluteDifference": 0,
+          "examples": [],
+          "elapsedMs": 152.3007
+        }
+      ],
+      "topologySha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+      "topologyUnchanged": true
+    }
+  ],
+  "exactFloat32Values": 40278222,
+  "resources": {
+    "jobMemoryLimitBytes": 4294967296,
+    "cpuRate": 2500,
+    "aggregatePeakJobMemoryBytes": 616837120,
+    "replayElapsedMs": 1287,
+    "ownerElapsedSeconds": 1.3709537999966415,
+    "childExited": true,
+    "childJobActive": 0,
+    "ownedHandlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcpCoverage": "Evidence-only checkpoint. The unchanged datum worker core is used by shared GUI/MCP global alignment. No schema, discovery or behavior changes; this replay did not execute the public GUI/MCP workflow.",
+  "limits": [
+    "R3 began from the already aligned R2 scene, not pristine inputs.",
+    "Matrices were captured at both wrapper and original-owner entry. Intermediate native geometry was not captured.",
+    "Final position, vertex-normal and facet-normal buffers match; all topology buffers are unchanged. Complete vertex records were rehashed but their other fields were not replayed.",
+    "Source and tool code hashes were checked before and after execution; data buffers were verified against the pinned before/after capture manifests.",
+    "The before/after reads are repeated non-atomic snapshots.",
+    "Sampling, correspondence generation, scheduling, convergence quality, rendering and public GUI/MCP acceptance are not established by this checkpoint."
+  ]
+}
