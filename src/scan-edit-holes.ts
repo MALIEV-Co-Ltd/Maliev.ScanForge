@@ -5,6 +5,9 @@ import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
 import { fitCurvatureSurface } from "./scan-defeature-surface";
 import { fairHolePatch } from "./scan-hole-fair";
+import { flatHoleTriangles } from "./scan-hole-flat";
+import { nativeHoleBoundaryWalks } from "./scan-hole-boundary-order";
+import { holeBoundaryDiameters } from "./scan-hole-diameter";
 import {
   bridgeAttachmentNormals,
   bridgeInsideBoundary,
@@ -30,8 +33,6 @@ import {
   dotProduct,
   edgeId,
   checkProgress,
-  finiteOutput,
-  inventoryOf,
   type ScanEditRequest,
   type ScanEditResult,
 } from "./scan-edit";
@@ -42,6 +43,18 @@ export function runHoleFill(
   t: MeshTopology,
   o: MeshProcessingOptions,
 ): ScanEditResult {
+  if (r.batch && (r.mode ?? "entire") !== "entire")
+    throw new Error("Batch filling requires entire holes.");
+  if (r.batch && r.algorithm !== undefined && r.algorithm !== "tangent")
+    throw new Error(
+      "Batch filling uses Tangent; omit the selected-hole algorithm.",
+    );
+  const requestedAlgorithm = r.batch ? "tangent" : (r.algorithm ?? "automatic");
+  if (
+    requestedAlgorithm === "surfaceRecovery" &&
+    (r.mode ?? "entire") !== "entire"
+  )
+    throw new Error("Surface recovery requires an entire closed hole.");
   const bridging = r.mode === "bridge";
   const boundaries = bridging
     ? [...t.boundaryLoops, ...t.boundaryChains]
@@ -71,10 +84,13 @@ export function runHoleFill(
     throw new Error(
       "Repair nonmanifold edges and inconsistent winding before filling holes.",
     );
-  const output: number[] = [],
-    inventory = inventoryOf(t);
-  const cachedVertices = o.topologyCache ? Array.from(t.vertices) : undefined;
-  const cachedTriangles = o.topologyCache ? Array.from(t.triangles) : undefined;
+  const output: number[] = [];
+  const diameters =
+    diameter && selected.length
+      ? holeBoundaryDiameters(t, o.signal)
+      : undefined;
+  let cachedVertices: number[] | undefined,
+    cachedTriangles: number[] | undefined;
   let filledHoles = 0,
     skippedHoles = 0,
     surfaceFitHoles = 0,
@@ -119,20 +135,39 @@ export function runHoleFill(
     if (batch) reportBatch();
   };
   checkProgress(o, 0, "Estimating boundary tangents");
-  const vertexNormals = bridging
-    ? new Float64Array(0)
-    : computeAngleWeightedNormals(t);
+  const vertexNormals =
+    bridging || !selected.length
+      ? new Float64Array(0)
+      : computeAngleWeightedNormals(t);
   for (const index of selected) {
     checkProgress(
       o,
       filledHoles / Math.max(1, ids.length),
       "Triangulating selected holes",
     );
-    if (diameter && inventory.boundaries[index].diameter > diameter) {
+    if (diameters && !(diameters[index] < diameter + 2 ** -23)) {
       skipHole();
       continue;
     }
-    const original = boundaries[index];
+    let original = boundaries[index];
+    const nativeAutomatic =
+      requestedAlgorithm === "automatic" && (r.mode ?? "entire") === "entire";
+    const nativeTangent =
+      (requestedAlgorithm === "tangent" ||
+        (nativeAutomatic && original.length <= 40)) &&
+      (r.mode ?? "entire") === "entire";
+    if (nativeTangent) {
+      const wanted = new Set(original);
+      const ordered = nativeHoleBoundaryWalks(t, o.signal).find(
+        (walk) =>
+          walk.length === original.length && walk.every((id) => wanted.has(id)),
+      );
+      if (!ordered) {
+        skipHole();
+        continue;
+      }
+      original = [...ordered];
+    }
     let loop = [...original];
     if (bridging) {
       const target = boundaries[destination];
@@ -300,12 +335,16 @@ export function runHoleFill(
       const alignment = dotProduct(normal, unit);
       return alignment > 0.2 && alignment < Math.cos((5 * Math.PI) / 180);
     });
-    const method =
-      r.algorithm === "automatic" || !r.algorithm
+    const method = nativeAutomatic
+      ? original.length <= 40
+        ? "tangent"
+        : "curvature"
+      : requestedAlgorithm === "automatic" ||
+          requestedAlgorithm === "surfaceRecovery"
         ? planar && !curvedTangents
           ? "flat"
           : "tangent"
-        : r.algorithm;
+        : requestedAlgorithm;
     if (method === "flat" && !planar) {
       if (bridging)
         throw new Error("A flat bridge requires coplanar attachment edges.");
@@ -313,6 +352,17 @@ export function runHoleFill(
       continue;
     }
     let triangles = ShapeUtils.triangulateShape(projected, []);
+    const nativeFlat =
+      r.algorithm === "flat" && (r.mode ?? "entire") === "entire";
+    if (nativeFlat) {
+      const patch = flatHoleTriangles(t, original, unit, o.signal);
+      if (!patch) {
+        skipHole();
+        continue;
+      }
+      const mapping = new Map(loop.map((id, i) => [id, i]));
+      triangles = patch.map((face) => face.map((id) => mapping.get(id)!));
+    }
     if (triangles.length !== points.length - 2) {
       if (bridging) throw new Error("Bridge edges cannot form a valid strip.");
       skipHole();
@@ -383,7 +433,7 @@ export function runHoleFill(
       !bridging &&
       (r.mode ?? "entire") === "entire" &&
       method !== "flat" &&
-      (!r.algorithm || r.algorithm === "automatic")
+      requestedAlgorithm === "surfaceRecovery"
     ) {
       const fitted = fitCurvatureSurface(t, original, {
         signal: o.signal,
@@ -416,10 +466,20 @@ export function runHoleFill(
     ) {
       const patch = repatchSpatialBoundary(t, original, {
         vertexNormals,
-        maxIterations: Math.min(10000, Math.max(64, original.length * 8)),
+        maxIterations: nativeTangent
+          ? 10000
+          : Math.min(10000, Math.max(64, original.length * 8)),
         signal: o.signal,
         onProgress: () => checkProgress(o, 0.25, "Interpolating hole surface"),
       });
+      if (nativeTangent && !patch.completed) {
+        if (selected.length <= 1)
+          throw new HoleRefinementError(
+            `Tangent filling could not close the boundary (${patch.reason}); the hole was left unchanged.`,
+          );
+        skipHole();
+        continue;
+      }
       if (patch.completed) {
         const mapping = new Map(loop.map((id, i) => [id, i]));
         const candidatePoints = [...points],
@@ -429,7 +489,7 @@ export function runHoleFill(
             delta = subtract(p, points[0]);
           const xy = new Vector2(dotProduct(delta, u), dotProduct(delta, v));
           mapping.set(t.vertices.length / 3 + i, candidatePoints.length);
-          candidatePoints.push(surface(xy));
+          candidatePoints.push(nativeTangent ? p : surface(xy));
           candidateProjection.push(xy);
         }
         const candidate: number[][] = [];
@@ -441,6 +501,13 @@ export function runHoleFill(
           points.push(...candidatePoints.slice(rimCount));
           projected.push(...candidateProjection.slice(rimCount));
           triangles = candidate;
+        } else if (nativeTangent) {
+          if (selected.length <= 1)
+            throw new HoleRefinementError(
+              "Tangent filling produced an invalid cap; the hole was left unchanged.",
+            );
+          skipHole();
+          continue;
         }
       }
     }
@@ -483,7 +550,7 @@ export function runHoleFill(
       }
     }
     // Partial arcs retain their chord contract; bridge rails are refined separately.
-    if ((r.mode ?? "entire") === "entire") {
+    if ((r.mode ?? "entire") === "entire" && !nativeFlat && !nativeTangent) {
       // Cap interior diagonals must not reuse edges already inside the retained
       // mesh. Such edges would acquire extra incident faces or duplicate facets.
       const forbiddenEdges = new Set<string>();
@@ -569,7 +636,9 @@ export function runHoleFill(
       const [a, b, c] = tri.map((i) => points[i]);
       output.push(...a, ...b, ...c);
     }
-    if (cachedVertices && cachedTriangles) {
+    if (o.topologyCache) {
+      cachedVertices ??= Array.from(t.vertices);
+      cachedTriangles ??= Array.from(t.triangles);
       const mapping = new Map(loop.map((id, i) => [i, id]));
       for (const tri of triangles)
         for (const id of tri) {
@@ -596,7 +665,16 @@ export function runHoleFill(
     if (batch) reportBatch();
   }
   if (batch) reportBatch("finalizing");
-  const positions = finiteOutput([...r.positions, ...output]);
+  let positions: Float32Array | undefined;
+  if (!output.length)
+    positions = r.positions instanceof Float32Array ? r.positions : undefined;
+  else {
+    positions = new Float32Array(r.positions.length + output.length);
+    positions.set(r.positions);
+    positions.set(output, r.positions.length);
+    if (positions.some((value) => !Number.isFinite(value)))
+      throw new Error("Coordinates exceed Float32 output precision.");
+  }
   if (o.topologyCache && cachedVertices && cachedTriangles) {
     // Appending a patch preserves every existing edge use. Copy the map, sharing
     // untouched immutable records, and copy only arrays receiving a new face.
@@ -635,6 +713,9 @@ export function runHoleFill(
   return {
     positions,
     diagnostics: {
+      algorithm: requestedAlgorithm,
+      batch: !!r.batch,
+      changed: filledHoles > 0,
       filledHoles,
       skippedHoles,
       addedTriangles: output.length / 9,

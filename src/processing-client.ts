@@ -294,7 +294,12 @@ function runProcessingRequest(
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
       scope.removeEventListener?.("pagehide", abort);
-      if (session) session.release(usable, successor);
+      if (session)
+        session.release(
+          usable,
+          successor,
+          request.kind === "scanEdit" ? request.sourceIndexed : undefined,
+        );
       else worker.terminate();
     };
     const fail = (error: unknown, usable = false) => {
@@ -523,28 +528,33 @@ function runProcessingRequest(
       if (
         (copied.kind === "paired" ||
           copied.kind === "icp" ||
-          copied.kind === "global") &&
+          copied.kind === "global" ||
+          copied.kind === "scanEdit") &&
         copied.sourceIndexed
       ) {
         const mesh = copied.sourceIndexed;
-        const sharedConnectivity =
-          copied.kind === "paired" &&
-          mesh.triangles instanceof Uint32Array &&
-          typeof SharedArrayBuffer !== "undefined" &&
-          mesh.triangles.buffer instanceof SharedArrayBuffer;
-        const triangles = sharedConnectivity
-          ? (mesh.triangles as Uint32Array)
-          : Uint32Array.from(mesh.triangles);
-        if (triangles.buffer instanceof ArrayBuffer)
-          transfers.push(triangles.buffer);
-        copied.sourceIndexed = {
-          vertices: clone(mesh.vertices),
-          triangles,
-          ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
-          ...(mesh.geometryNormals
-            ? { geometryNormals: clone(mesh.geometryNormals) }
-            : {}),
-        };
+        if (copied.kind === "scanEdit" && session?.indexedSource === mesh)
+          delete copied.sourceIndexed;
+        else {
+          const sharedConnectivity =
+            copied.kind === "paired" &&
+            mesh.triangles instanceof Uint32Array &&
+            typeof SharedArrayBuffer !== "undefined" &&
+            mesh.triangles.buffer instanceof SharedArrayBuffer;
+          const triangles = sharedConnectivity
+            ? (mesh.triangles as Uint32Array)
+            : Uint32Array.from(mesh.triangles);
+          if (triangles.buffer instanceof ArrayBuffer)
+            transfers.push(triangles.buffer);
+          copied.sourceIndexed = {
+            vertices: clone(mesh.vertices),
+            triangles,
+            ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+            ...(mesh.geometryNormals
+              ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
+          };
+        }
       }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);

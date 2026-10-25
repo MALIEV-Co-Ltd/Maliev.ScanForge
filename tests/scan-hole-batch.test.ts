@@ -45,7 +45,7 @@ const positions = Float32Array.from(
 const request = {
   kind: "scanEdit",
   action: "fillHoles",
-  algorithm: "flat",
+  algorithm: "curvature",
   positions,
 } as const;
 const failure = () =>
@@ -191,7 +191,11 @@ it("commits successful batch patches and exposes skipped holes through MCP", asy
   const response = (await createOperations(host).mesh_process(
     {
       entityId: "mesh",
-      operation: { kind: "scanEdit", action: "fillHoles", algorithm: "flat" },
+      operation: {
+        kind: "scanEdit",
+        action: "fillHoles",
+        algorithm: "curvature",
+      },
     },
     context,
   )) as { diagnostics: Record<string, unknown> };

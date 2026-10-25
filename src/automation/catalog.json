@@ -1207,7 +1207,14 @@
                 },
                 "algorithm": {
                   "type": "string",
-                  "enum": ["automatic", "flat", "tangent", "curvature"]
+                  "enum": [
+                    "automatic",
+                    "flat",
+                    "tangent",
+                    "curvature",
+                    "surfaceRecovery"
+                  ],
+                  "description": "Entire-hole Automatic selects Tangent for at most 40 rim edges and Curvature above 40. surfaceRecovery explicitly continues the retained collar with bounded fallback; it requires mode entire. Partial/bridge Automatic retains its boundary-based choice."
                 },
                 "mode": {
                   "type": "string",
@@ -1228,7 +1235,12 @@
                 },
                 "diameter": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "minimum": 0,
+                  "description": "Maximum enclosing-sphere diameter in mm for hole filling; 0 or omission includes all selected boundaries."
+                },
+                "batch": {
+                  "type": "boolean",
+                  "description": "Native multiple-hole Tangent dispatch, entire holes only. Omit algorithm or specify tangent; selected-hole Flat/Automatic/Curvature and surfaceRecovery require batch omitted or false. Optional indices restrict the batch."
                 },
                 "strength": {
                   "description": "Selected-area smoothing defaults to 0.5; boundary smoothing defaults to 0.3.",

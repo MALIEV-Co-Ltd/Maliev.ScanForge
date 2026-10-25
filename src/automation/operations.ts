@@ -79,6 +79,7 @@ import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
 import {
   retainIndexedMesh,
+  indexedMeshMatches,
   transformIndexedMesh,
   indexedRenderNormals,
 } from "../indexed-mesh";
@@ -1210,6 +1211,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanEdit")
         Object.assign(request, {
           selection,
+          ...(indexedMeshMatches(e.indexedMesh, e.positions)
+            ? { sourceIndexed: e.indexedMesh }
+            : {}),
           ...(a.targetId
             ? { target: sampledObject(s, a.targetId).positions }
             : {}),
@@ -1313,7 +1317,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         pointEdit?.selection ?? edit?.selection ?? result.selection;
       let next = s.entities;
       const created: Entity[] = [];
-      if (positions) {
+      if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
           (e.kind === "pointcloud"
@@ -1409,7 +1413,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
         entityIds: created.length
           ? created.map((x) => x.id)
-          : positions?.length
+          : edit?.diagnostics.changed === false || positions?.length
             ? [e.id]
             : [],
         diagnostics: edit?.diagnostics ?? result.diagnostics,
@@ -1432,7 +1436,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
       c.check();
-      if (positions || segments?.length)
+      if (
+        (positions && edit?.diagnostics.changed !== false) ||
+        segments?.length
+      )
         host.commit(
           next.map(retainIndexedMesh),
           `Mesh ${kind}`,

@@ -17,6 +17,8 @@ import {
 } from "../src/processing-client";
 import { getWorkingJobStatus } from "../src/working-job-status";
 import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
+import nativeHoleCups from "./fixtures/hole-fill-observed-cups.json";
+import { nativeStlTopology } from "../src/scan-native-stl-topology";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -430,6 +432,52 @@ describe("processing worker resource ownership", () => {
     retainProcessingGeometry(positions);
     expect(worker.terminated).toBe(true);
   });
+  it("copies trusted scan indices once per retained source and never transfers authored buffers", async () => {
+    const sourceIndexed = nativeStlTopology(positions);
+    const input = {
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+      sourceIndexed,
+    } as const;
+    const first = processMesh(input, { reuseTopology: true });
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent).toMatchObject({ kind: "scanEdit", sourceIndexed });
+    if (worker.sent?.kind !== "scanEdit") throw new Error("Expected scan edit");
+    expect(worker.sent.sourceIndexed!.vertices).not.toBe(
+      sourceIndexed.vertices,
+    );
+    expect(worker.sent.sourceIndexed!.triangles).not.toBe(
+      sourceIndexed.triangles,
+    );
+    expect(worker.transfers).not.toContain(
+      (sourceIndexed.vertices as Float32Array).buffer,
+    );
+    expect(worker.transfers).not.toContain(
+      (sourceIndexed.triangles as Uint32Array).buffer,
+    );
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await first;
+    const next = processMesh(input, { reuseTopology: true });
+    expect(ProcessingWorkerDouble.latest).toBe(worker);
+    expect(worker.sent).not.toHaveProperty("sourceIndexed");
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await next;
+    expect(sourceIndexed.vertices.length).toBe(9);
+    expect(sourceIndexed.triangles.length).toBe(3);
+  });
   it("disposes a geometry removed during processing when its active operation finishes", async () => {
     const pending = processMesh(request, { reuseTopology: true });
     const worker = ProcessingWorkerDouble.latest;
@@ -533,6 +581,90 @@ describe("processing worker resource ownership", () => {
     });
     expect(replies.at(-1).result.scanEdit.inventory.components[0].area).toBe(2);
     expect(replies.some((r) => r.stage === "Welding vertices")).toBe(false);
+  });
+  it("preserves imported native vertex identities when filling a hole after a generic inventory warmup", async () => {
+    const sample = nativeHoleCups.cases.find((row) => row.rimEdges === 40)!;
+    const source = new Float32Array(
+      sample.faces.flatMap((face) => face.flatMap((id) => sample.vertices[id])),
+    );
+    const replies: any[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: any }) => void) | null,
+      postMessage: (message: any, transfers: Transferable[] = []) =>
+        replies.push(structuredClone(message, { transfer: transfers })),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    await scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: source.slice(),
+        geometryKey: 72,
+      },
+    });
+    replies.length = 0;
+    await scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "fillHoles",
+        positions: new Float32Array(0),
+        sourceIndexed: nativeStlTopology(source),
+        indices: [0],
+        algorithm: "tangent",
+        geometryKey: 72,
+      },
+    });
+    expect(replies.at(-1).error).toBeUndefined();
+    expect(replies.at(-1).result.scanEdit.positions).toEqual(
+      new Float32Array(sample.output.flat(2)),
+    );
+    expect(source.length / 9).toBe(120);
+  });
+  it("keeps the canonical source after an empty hole fill without publishing a duplicate buffer", async () => {
+    const replies: any[] = [];
+    const scope = {
+      onmessage: null as ((event: { data: any }) => void) | null,
+      postMessage: (message: any, transfers: Transferable[] = []) =>
+        replies.push(structuredClone(message, { transfer: transfers })),
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: positions.slice(),
+        geometryKey: 71,
+      },
+    });
+    const inventory = replies.at(-1).result.scanEdit.inventory;
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "fillHoles",
+        indices: [],
+        algorithm: "flat",
+        positions: new Float32Array(0),
+        geometryKey: 71,
+      },
+    });
+    expect(replies.at(-1).result.scanEdit.diagnostics.changed).toBe(false);
+    expect(replies.at(-1).result.scanEdit.positions).toBeUndefined();
+    replies.length = 0;
+    scope.onmessage?.({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: new Float32Array(0),
+        geometryKey: 71,
+      },
+    });
+    expect(replies.at(-1).result.scanEdit.inventory).toEqual(inventory);
+    expect(replies.some((row) => row.stage === "Welding vertices")).toBe(false);
   });
   it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
     const selection = new Uint8Array([1]);

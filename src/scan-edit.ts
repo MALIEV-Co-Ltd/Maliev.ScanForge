@@ -1,4 +1,5 @@
 import { holeListOrder } from "./scan-hole-order";
+import { holeBoundaryDiameters } from "./scan-hole-diameter";
 import type { Positions, Vec3 } from "./types";
 import {
   analyzeMesh,
@@ -24,6 +25,8 @@ export interface ScanEditRequest {
   kind: "scanEdit";
   /** Internal read-only worker request; never adopts preview geometry. */
   previewOnly?: boolean;
+  /** Trusted application binding, never caller-supplied MCP geometry. */
+  sourceIndexed?: import("./types").IndexedMesh;
   positions: Positions;
   action:
     | "inventory"
@@ -39,13 +42,16 @@ export interface ScanEditRequest {
     | "split";
   selection?: Uint8Array;
   indices?: number[];
-  algorithm?: "automatic" | "flat" | "tangent" | "curvature";
+  algorithm?:
+    "automatic" | "flat" | "tangent" | "curvature" | "surfaceRecovery";
   mode?: "entire" | "partial" | "bridge";
   start?: number;
   end?: number;
   /** Destination inventory boundary for a bridge; defaults to the start boundary. */
   endBoundary?: number;
   diameter?: number;
+  /** Native multiple-hole Tangent path, separate from selected-hole algorithms. */
+  batch?: boolean;
   strength?: number;
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
@@ -107,7 +113,11 @@ export function finiteOutput(values: ArrayLike<number>): Float32Array {
     throw new Error("Coordinates exceed Float32 output precision.");
   return output;
 }
-export function inventoryOf(t: MeshTopology): ScanEditInventory {
+export function inventoryOf(
+  t: MeshTopology,
+  signal?: AbortSignal,
+): ScanEditInventory {
+  const diameters = holeBoundaryDiameters(t, signal);
   return {
     components: t.components.map((triangles) => ({
       triangles,
@@ -123,18 +133,12 @@ export function inventoryOf(t: MeshTopology): ScanEditInventory {
     boundaries: [
       ...t.boundaryLoops.map((ids) => ({ ids, closed: true })),
       ...t.boundaryChains.map((ids) => ({ ids, closed: false })),
-    ].map(({ ids, closed }) => {
+    ].map(({ ids, closed }, index) => {
       const points = ids.flatMap((id) => pointAt(t.vertices, id));
       const faces = new Set<number>();
       let length = 0;
-      const min = [Infinity, Infinity, Infinity],
-        max = [-Infinity, -Infinity, -Infinity];
       ids.forEach((id, i) => {
         const p = pointAt(t.vertices, id);
-        for (let a = 0; a < 3; a++) {
-          min[a] = Math.min(min[a], p[a]);
-          max[a] = Math.max(max[a], p[a]);
-        }
         if (i < ids.length - 1 || closed) {
           const next = ids[(i + 1) % ids.length];
           length += Math.hypot(...subtract(pointAt(t.vertices, next), p));
@@ -146,7 +150,7 @@ export function inventoryOf(t: MeshTopology): ScanEditInventory {
         points,
         triangles: [...faces],
         closed,
-        diameter: Math.hypot(...subtract(max as Vec3, min as Vec3)),
+        diameter: diameters[index],
         length,
       };
     }),
@@ -263,6 +267,13 @@ export function runScanEdit(
   options: ScanEditOptions = {},
 ): ScanEditResult {
   if (
+    r.batch !== undefined &&
+    (typeof r.batch !== "boolean" || r.action !== "fillHoles")
+  )
+    throw new Error(
+      "Batch is supported only for hole filling and must be boolean.",
+    );
+  if (
     ![
       "inventory",
       "componentExtract",
@@ -310,7 +321,7 @@ export function runScanEdit(
     );
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
-    const inventory = inventoryOf(t);
+    const inventory = inventoryOf(t, o.signal);
     inventory.holeOrder = holeListOrder(inventory.boundaries);
     return {
       inventory,
@@ -334,7 +345,7 @@ export function runScanEdit(
       },
     };
   if (r.action === "boundaryProject") {
-    const inventory = inventoryOf(t);
+    const inventory = inventoryOf(t, o.signal);
     if (!r.plane) throw new Error("Choose a projection plane.");
     const { origin, normal } = r.plane,
       n2 = dotProduct(normal, normal);

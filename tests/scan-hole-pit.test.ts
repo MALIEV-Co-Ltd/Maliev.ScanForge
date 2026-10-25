@@ -38,12 +38,42 @@ function steepLipFixture(uneven = false, rotated = false) {
   return { positions: source, hole, rotated };
 }
 
+it("exposes bounded surrounding-surface recovery as an explicit algorithm", () => {
+  const fixture = steepLipFixture();
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "fillHoles",
+    positions: fixture.positions,
+    indices: [fixture.hole],
+    algorithm: "surfaceRecovery",
+  });
+  expect(result.diagnostics.filledHoles).toBe(1);
+  expect(result.diagnostics.boundedFallbackHoles).toBe(1);
+  expect(result.diagnostics.surfaceFallbackReasons).toContain("sharp edge");
+  for (
+    let i = fixture.positions.length + 2;
+    i < result.positions!.length;
+    i += 3
+  )
+    expect(Math.abs(result.positions![i])).toBeLessThan(1e-6);
+  expect(() =>
+    runScanEdit({
+      kind: "scanEdit",
+      action: "fillHoles",
+      positions: fixture.positions,
+      indices: [fixture.hole],
+      algorithm: "surfaceRecovery",
+      mode: "partial",
+    }),
+  ).toThrow("entire closed hole");
+});
+
 it.each([
   [false, false],
   [true, false],
   [true, true],
 ])(
-  "automatic fill does not dig a pit at a steep scan lip (uneven %s, rotated %s)",
+  "surface recovery does not dig a pit at a steep scan lip (uneven %s, rotated %s)",
   (uneven, rotated) => {
     const fixture = steepLipFixture(uneven, rotated);
     const result = runScanEdit({
@@ -51,7 +81,7 @@ it.each([
       action: "fillHoles",
       positions: fixture.positions,
       indices: [fixture.hole],
-      algorithm: "automatic",
+      algorithm: "surfaceRecovery",
     });
     expect(result.diagnostics.filledHoles).toBe(1);
     expect(result.diagnostics.boundedFallbackHoles).toBe(1);

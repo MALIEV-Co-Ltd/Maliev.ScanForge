@@ -136,7 +136,8 @@ it("defaults to entire-hole automatic fill and excludes open boundary chains fro
     {
       action: "fillHoles",
       indices: [0],
-      algorithm: "automatic",
+      batch: true,
+      diameter: 0,
       mode: "entire",
       start: 0,
       end: 1,

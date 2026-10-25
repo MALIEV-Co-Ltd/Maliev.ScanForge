@@ -58,12 +58,13 @@ type ScanAction =
 export interface ScanPanelOperation {
   action: ScanAction;
   indices?: number[];
-  algorithm?: "automatic" | "flat" | "tangent" | "curvature";
+  algorithm?: ScanEditRequest["algorithm"];
   mode?: "entire" | "partial" | "bridge";
   start?: number;
   end?: number;
   endBoundary?: number;
   diameter?: number;
+  batch?: boolean;
   strength?: number;
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
@@ -74,6 +75,10 @@ const empty: ScanInventory = { components: [], boundaries: [] };
 
 /** Geometry-scoped worker ownership prevents a late operation from replacing another scan. */
 export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
+  const sourceIndexed = props.entities.find(
+    (entity) =>
+      entity.id === props.selectedId && entity.positions === props.positions,
+  )?.indexedMesh;
   const [inventory, setInventory] = useState<ScanInventory>(empty);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
@@ -99,6 +104,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       const request = {
         kind: "scanEdit",
         positions: props.positions,
+        sourceIndexed,
         tolerance: SCAN_TOPOLOGY_TOLERANCE,
         ...operation,
       } satisfies ScanEditRequest;
@@ -115,7 +121,8 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       if (!outcome) throw new Error("Scan editing worker returned no result.");
       if (outcome.inventory) setInventory(outcome.inventory);
       if (outcome.selection) props.onSelection(outcome.selection);
-      if (outcome.positions) props.onReplace(outcome.positions, label);
+      if (outcome.positions && outcome.diagnostics.changed !== false)
+        props.onReplace(outcome.positions, label);
       if (outcome.segments) props.onCreate(outcome.segments, label);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);
@@ -145,6 +152,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
           {
             kind: "scanEdit",
             positions: props.positions,
+            sourceIndexed,
             tolerance: SCAN_TOPOLOGY_TOLERANCE,
             ...operation,
           },
@@ -175,14 +183,14 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       bridge.dispose();
       if (bridgeOwner.current === bridge) bridgeOwner.current = null;
     };
-  }, [props.positions, props.selectedId]);
+  }, [props.positions, props.selectedId, sourceIndexed]);
   useEffect(() => {
     cancel();
     setInventory(empty);
     setBusy(false);
     void run({ action: "inventory" }, "Inspect mesh");
     return cancel;
-  }, [props.positions, props.selectedId]);
+  }, [props.positions, props.selectedId, sourceIndexed]);
   return (
     <ScanTopologyControls
       {...props}
@@ -387,22 +395,22 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       {
         action: "fillHoles",
         indices: multiple
-          ? items
-              .map((item) => item.index)
-              .filter(
-                (index) =>
-                  diameter <= 0 ||
-                  inventory.boundaries[index].diameter <= diameter,
-              )
+          ? items.map((item) => item.index)
           : current
             ? [current.index]
             : [],
-        algorithm,
+        ...(multiple && algorithm !== "surfaceRecovery"
+          ? { batch: true, diameter }
+          : { algorithm, ...(multiple ? { diameter } : {}) }),
         mode,
         start,
         end,
       },
-      multiple ? "Fill multiple holes" : "Fill selected hole",
+      multiple
+        ? algorithm === "surfaceRecovery"
+          ? "Recover multiple holes"
+          : "Fill multiple holes"
+        : "Fill selected hole",
     );
   return (
     <section
@@ -545,9 +553,12 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                 Fill mode
                 <AppSelect
                   value={mode}
-                  onChange={(event) =>
-                    setMode(event.target.value as typeof mode)
-                  }
+                  onChange={(event) => {
+                    const next = event.target.value as typeof mode;
+                    setMode(next);
+                    if (next !== "entire" && algorithm === "surfaceRecovery")
+                      setAlgorithm("automatic");
+                  }}
                 >
                   <option value="entire">Entire hole</option>
                   <option value="partial">Semi hole</option>
@@ -566,6 +577,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   <option value="flat">Flat</option>
                   <option value="tangent">Tangent</option>
                   <option value="curvature">Curvature</option>
+                  <option value="surfaceRecovery" disabled={mode !== "entire"}>
+                    Recover surface
+                  </option>
                 </AppSelect>
               </label>
               {mode === "bridge" && (
@@ -636,12 +650,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   </label>
                   <p className="scan-topology-summary">
                     0 includes every closed boundary.
+                    {algorithm === "surfaceRecovery"
+                      ? " Recovery applies to each included hole."
+                      : " Multiple-hole filling uses Tangent."}
                   </p>
                   <div className="scan-topology-actions">
                     <button
                       disabled={!boundary}
                       onClick={() => {
-                        setDiameter(boundary!.diameter);
+                        setDiameter(boundary!.diameter + 0.1);
                         props.onStatus(
                           `Hole diameter: ${boundary!.diameter.toFixed(3)} mm`,
                         );
@@ -653,7 +670,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                       disabled={!items.length || mode !== "entire"}
                       onClick={() => fill(true)}
                     >
-                      Fill multiple holes
+                      {algorithm === "surfaceRecovery"
+                        ? "Recover multiple holes"
+                        : "Fill multiple holes"}
                     </button>
                   </div>
                 </>

@@ -21,6 +21,7 @@ import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { extractSketchSection } from "./sketch-section";
 import {
   analyzeMesh,
+  analyzeIndexedMesh,
   classifyRegion,
   decimateMesh,
   repairMesh,
@@ -258,6 +259,22 @@ scope.onmessage = async ({ data: incoming }) => {
         summary: outcome.summary,
       });
     } else if (request.kind === "scanEdit") {
+      if (request.sourceIndexed) {
+        if (!indexedMeshMatches(request.sourceIndexed, request.positions))
+          throw new Error(
+            "Scan edit indices do not match the source geometry.",
+          );
+        const topology = analyzeIndexedMesh(
+          Float64Array.from(request.sourceIndexed.vertices),
+          Uint32Array.from(request.sourceIndexed.triangles),
+          { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
+        );
+        topologyCache = {
+          positions: request.positions,
+          tolerance: request.tolerance ?? 1e-6,
+          topology,
+        };
+      }
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
       if (request.action === "smoothSelected") {
         const topology = analyzeMesh(request.positions, {
@@ -283,6 +300,10 @@ scope.onmessage = async ({ data: incoming }) => {
           : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
+      // An unchanged source stays canonical in this worker. No scene/history
+      // successor exists, so do not allocate or transfer a duplicate buffer.
+      if (result.scanEdit.diagnostics.changed === false)
+        delete result.scanEdit.positions;
       if (request.action === "inventory" && topologyCache.topology)
         result.topology = summarize(topologyCache.topology);
     } else if (request.kind === "selectionMorphology") {

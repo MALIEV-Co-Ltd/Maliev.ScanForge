@@ -1,4 +1,4 @@
-import type { Positions } from "./types";
+import type { Positions, IndexedMesh } from "./types";
 
 // One geometry-scoped worker, never a background pool. The selected geometry
 // owns its adjacency until disposal, replacement, cancellation or page exit.
@@ -9,6 +9,7 @@ let retained:
       key: number;
       active: boolean;
       initialized: boolean;
+      indexedSource?: IndexedMesh;
       retire?: boolean;
     }
   | undefined;
@@ -45,7 +46,12 @@ export function acquireProcessingSession(
     worker: entry.worker,
     key: entry.key,
     initialized: entry.initialized,
-    release(usable: boolean, successor?: Positions) {
+    indexedSource: entry.indexedSource,
+    release(
+      usable: boolean,
+      successor?: Positions,
+      indexedSource?: IndexedMesh,
+    ) {
       entry.active = false;
       entry.worker.onmessage = null;
       entry.worker.onerror = null;
@@ -53,6 +59,7 @@ export function acquireProcessingSession(
       if (!usable || entry.retire) releaseProcessingSession();
       else {
         entry.initialized = true;
+        if (indexedSource) entry.indexedSource = indexedSource;
         if (successor) entry.positions = successor;
       }
     },

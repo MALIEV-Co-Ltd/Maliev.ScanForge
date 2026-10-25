@@ -1490,18 +1490,51 @@ hidden. This full text remains in `application_inspect.statuses`; the visible
 label exposes its stage and an accessible progressbar value. MCP `job_get` progress,
 request schemas, model/history semantics and geometry behavior are unchanged.
 
-## Automatic hole surface recovery
+## Hole algorithms and explicit surface recovery
 
-Automatic entire-hole filling (`algorithm: "automatic"`, `mode: "entire"`)
+`mesh_process` with `operation:{kind:"scanEdit",action:"fillHoles",batch:true,
+diameter:9}` uses native multiple-hole Tangent dispatch. It requires entire-hole
+mode; omit `algorithm` or specify `tangent`. Other explicit algorithms are
+rejected with `batch:true`. Optional `indices` restrict the batch. Omit `batch`
+for selected-hole algorithm behavior, including filling several selected rims
+with one explicit algorithm. GUI **Fill multiple holes** uses the batch path;
+**Recover multiple holes** explicitly applies surface recovery instead.
+
+Inventory boundary `diameter` and the fill filter use a Float32 enclosing sphere
+with native boundary traversal order, in mm. Diameter 0 or omission includes all
+selected boundaries; positive thresholds use the native comparison tolerance.
+GUI **Measure hole** displays the physical diameter and sets the filter with
+the native 0.1 mm margin. Requested boundary indices remain inventory indices.
+
+Imported indexed topology is bound internally by the application for GUI and
+MCP; agents continue referring to entity IDs rather than supplying index buffers.
+The retained worker receives an isolated index copy once for that source, even
+after generic diagnostic warmup. Empty/all-skipped fills report `changed:false`,
+preserve the original entity and add no model revision. Inspect `filledHoles`,
+`skippedHoles`, `addedTriangles`, `batch`, `algorithm` and `method` diagnostics.
+An empty `indices:[]` is an explicit no-op.
+
+Entire-hole Automatic (`algorithm: "automatic"`, the default) selects Tangent
+for at most 40 retained rim edges and Curvature for larger rims. Tangent uses
+the native ordered boundary walk and Float32 insertion arithmetic, without a
+second surface projection or density refinement. Exact native comparisons
+require retaining the imported indexed topology; another weld order can change
+strict corner ties. See [native controls and remaining bounds](NATIVE_HOLE_FILL.md).
+
+The observed native Automatic can extrapolate below a steep rim. Use explicit
+`algorithm: "surfaceRecovery"`, `mode: "entire"` (GUI **Recover surface**) for
+the former automatic collar-fitting behavior. This option
 fits a local quadratic to retained, connected scan faces when the collar is
 smooth and sufficiently supported. Steep, creased, underdetermined or poorly
 fitted collars use positive boundary-edge height interpolation instead of
 extrapolating scan normals into a pit. The fallback stays within the rim's
 height range in the cap frame; it cannot reconstruct missing curvature without
-reliable support. Existing rim and retained vertices stay fixed. Explicit flat,
-tangent and curvature algorithms, partial fills and bridges keep their behavior.
+reliable support. Existing rim and retained vertices stay fixed. Surface recovery
+requires an entire closed hole; partial and bridge requests reject it. Their
+Automatic option retains its existing boundary-based choice.
 Both GUI and MCP use the same `mesh_process` scan-edit operation. Successful
-results expose `diagnostics.surfaceFitHoles`, `surfaceFitMaxRms` (model units),
+results expose `diagnostics.algorithm` (the requested algorithm),
+`surfaceFitHoles`, `surfaceFitMaxRms` (model units),
 `boundedFallbackHoles` and `surfaceFallbackReasons`. These count accepted patches;
 `method` retains the selected algorithm category. The GUI reports how many holes
 were filled from the boundary. Unsupported or invalid disks still remain unchanged
@@ -1509,8 +1542,17 @@ and count as skipped.
 
 ## Constrained hole triangulation
 
-Entire-hole fills (`mesh_process` with `kind: "scanEdit"`, `action: "fillHoles"`,
-`mode: "entire"`) legalize cap diagonals before density refinement and during
+Explicit Flat entire-hole fills (`mesh_process` with `kind: "scanEdit"`,
+`action: "fillHoles"`, `mode: "entire"`, `algorithm: "flat"`) use native
+smallest-corner clipping, without inserting interior refinement vertices.
+The retained directed rim determines strict score ties. Invalid caps and
+diagonals that would reuse retained interior mesh edges remain rejected.
+GUI and MCP share this path and the existing diagnostics and history guards.
+The observed 39-edge cup matches all 154 oriented native triangles in a private
+probe; production and rendered acceptance are tracked in
+[the native comparison record](NATIVE_HOLE_FILL.md).
+
+Other entire-hole fills legalize cap diagonals before density refinement and during
 final fairing. A bounded, cancellable queue replaces long, thin ear-cut fans with
 local triangles, avoiding excessive subdivision on long narrow scan openings.
 Existing rim vertices stay fixed. Cap interior edges cannot reuse diagonals of

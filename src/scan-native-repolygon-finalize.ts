@@ -1,3 +1,4 @@
+import { NativeBoundaryTree } from "./scan-native-boundary-tree";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import type {
   ReconstructionIndexed,
@@ -6,176 +7,6 @@ import type {
   ReconstructionBoundary,
 } from "./scan-native-repolygon-types";
 import { nativeBuildAlignmentAdjacency as adjacency } from "./scan-native-alignment-adjacency";
-interface BoundaryNode {
-  black: boolean;
-  left: BoundaryNode;
-  right: BoundaryNode;
-  parent: BoundaryNode;
-  record?: ReconstructionBoundary;
-}
-class ReconstructionBoundaryTree {
-  private readonly nil: BoundaryNode;
-  private root: BoundaryNode;
-  size: number;
-  constructor() {
-    this.nil = { black: true } as BoundaryNode;
-    this.nil.left = this.nil.right = this.nil.parent = this.nil;
-    this.root = this.nil;
-    this.size = 0;
-  }
-  _left(x: BoundaryNode) {
-    const y = x.right;
-    x.right = y.left;
-    if (y.left !== this.nil) y.left.parent = x;
-    y.parent = x.parent;
-    if (x.parent === this.nil) this.root = y;
-    else if (x === x.parent.left) x.parent.left = y;
-    else x.parent.right = y;
-    y.left = x;
-    x.parent = y;
-  }
-  _right(x: BoundaryNode) {
-    const y = x.left;
-    x.left = y.right;
-    if (y.right !== this.nil) y.right.parent = x;
-    y.parent = x.parent;
-    if (x.parent === this.nil) this.root = y;
-    else if (x === x.parent.right) x.parent.right = y;
-    else x.parent.left = y;
-    y.right = x;
-    x.parent = y;
-  }
-  insert(record: ReconstructionBoundary) {
-    const compare = (a: ReconstructionBoundary, b: ReconstructionBoundary) =>
-      (a.start >>> 0) - (b.start >>> 0) || (a.end >>> 0) - (b.end >>> 0);
-    let parent = this.nil,
-      node = this.root,
-      direction = 0;
-    while (node !== this.nil) {
-      parent = node;
-      direction = compare(record, node.record!);
-      if (!direction) return false;
-      node = direction < 0 ? node.left : node.right;
-    }
-    let added: BoundaryNode = {
-      record,
-      black: false,
-      left: this.nil,
-      right: this.nil,
-      parent,
-    };
-    if (parent === this.nil) this.root = added;
-    else if (direction < 0) parent.left = added;
-    else parent.right = added;
-    this.size++;
-    while (!added.parent.black) {
-      const p = added.parent,
-        g = p.parent;
-      if (p === g.left) {
-        const uncle = g.right;
-        if (!uncle.black) {
-          p.black = uncle.black = true;
-          g.black = false;
-          added = g;
-        } else {
-          if (added === p.right) {
-            added = p;
-            this._left(added);
-          }
-          added.parent.black = true;
-          added.parent.parent.black = false;
-          this._right(added.parent.parent);
-        }
-      } else {
-        const uncle = g.left;
-        if (!uncle.black) {
-          p.black = uncle.black = true;
-          g.black = false;
-          added = g;
-        } else {
-          if (added === p.left) {
-            added = p;
-            this._right(added);
-          }
-          added.parent.black = true;
-          added.parent.parent.black = false;
-          this._left(added.parent.parent);
-        }
-      }
-    }
-    this.root.black = true;
-    return true;
-  }
-  _fixErase(node: BoundaryNode) {
-    while (node !== this.root && node.black) {
-      const left = node === node.parent.left;
-      let sibling = left ? node.parent.right : node.parent.left;
-      if (!sibling.black) {
-        sibling.black = true;
-        node.parent.black = false;
-        if (left) this._left(node.parent);
-        else this._right(node.parent);
-        sibling = left ? node.parent.right : node.parent.left;
-      }
-      let near = left ? sibling.left : sibling.right,
-        far = left ? sibling.right : sibling.left;
-      if (near.black && far.black) {
-        sibling.black = false;
-        node = node.parent;
-      } else {
-        if (far.black) {
-          near.black = true;
-          sibling.black = false;
-          if (left) this._right(sibling);
-          else this._left(sibling);
-          sibling = left ? node.parent.right : node.parent.left;
-        }
-        sibling.black = node.parent.black;
-        node.parent.black = true;
-        far = left ? sibling.right : sibling.left;
-        far.black = true;
-        if (left) this._left(node.parent);
-        else this._right(node.parent);
-        node = this.root;
-      }
-    }
-    node.black = true;
-  }
-  _erase(node: BoundaryNode) {
-    let removed = node;
-    if (node.left !== this.nil && node.right !== this.nil) {
-      removed = node.right;
-      while (removed.left !== this.nil) removed = removed.left;
-    }
-    const replacement =
-      removed.left !== this.nil ? removed.left : removed.right;
-    replacement.parent = removed.parent;
-    if (removed.parent === this.nil) this.root = replacement;
-    else if (removed === removed.parent.left) removed.parent.left = replacement;
-    else removed.parent.right = replacement;
-    if (removed.black) this._fixErase(replacement);
-    if (removed !== node) node.record = removed.record;
-    this.size--;
-  }
-  takeNextWalk() {
-    const records: ReconstructionBoundary[] = [];
-    if (!this.size) return records;
-    let next = this.root.record!.start >>> 0;
-    while (true) {
-      let node = this.root;
-      while (node !== this.nil && node.record!.start >>> 0 !== next)
-        node = node.record!.start >>> 0 < next ? node.right : node.left;
-      if (node === this.nil) break;
-      const record = node.record!;
-      next = record.end >>> 0;
-      this._erase(node);
-      if (next === 4294967295) break;
-      records.push(record);
-    }
-    return records;
-  }
-}
-
 export function reconstructionConnectTriangles(
   a: ReconstructionFace | null,
   b: ReconstructionFace | null,
@@ -328,7 +159,7 @@ export function reconstructionCompactFreshOutput(mesh: ReconstructionIndexed) {
 
 export function reconstructionCollectBoundaries(mesh: ReconstructionRecords) {
   // Requires supplied adjacency; the recovered adjacency preserves native directed-edge matching.
-  const tree = new ReconstructionBoundaryTree();
+  const tree = new NativeBoundaryTree<ReconstructionBoundary>();
   for (const triangle of mesh.triangles)
     for (let slot = 0; slot < 3; slot++)
       if (!triangle.neighbors[slot]) {

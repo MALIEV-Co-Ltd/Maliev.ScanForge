@@ -1377,3 +1377,24 @@ history boundaries remain authoritative.
 Native Re-polygonize binds visible or explicitly requested raw meshes in scene order and transports immutable indexed carriers through the existing disposable `mesh_process` worker. Admission accounts for source coordinates, copied indices and unshared vertex carriers before cloning. Authored/shared buffers are never transferred. Signed-field extraction and directed boundary repair precede the observed half-count native reduction; disposable field graphs retire before mutable output records allocate. Publication adopts indexed output in one history mutation, creates a distinct construction identity and hides unchanged input owners. Explicit replacement and the existing voxel method remain available. Source/reference selection, retry protection, lock checks, cancellation and failure rollback stay on the shared application boundary.
 
 Reconstruction publication records input visibility as modeling history metadata. GUI and public MCP undo/redo/timeline seek restore those visibility changes together with the owner, including after binary project save/reopen. Ordinary display toggles retain their existing independence from modeling history. Legacy project revisions without the optional metadata preserve their previous behavior.
+
+### Indexed scan repair and unchanged results
+
+GUI scan-edit requests and the shared MCP executor bind the current entity's
+validated imported indexed mesh internally. Geometry remains unavailable as a
+caller-supplied MCP parameter. `processing-client` isolates these buffers before
+transfer and records the original carrier identity in the geometry-scoped
+session. A repeated request for that carrier reuses the worker's authoritative
+index; the first indexed request replaces a generic welded warmup cache. The
+worker checks that indices expand to its canonical source before adopting them.
+Replacement, cancellation, failed transport and session retirement preserve the
+existing ownership boundaries.
+
+Hole-fill boundary ordering and enclosing-sphere measurement share the retained
+native boundary tree. Native batch Tangent and selected-hole algorithms are
+explicit shared request modes. Surface recovery retains its own discoverable
+algorithm. An empty or all-skipped fill reports `changed:false`; neither GUI nor
+MCP publishes a replacement or model revision. The retained worker keeps its
+canonical geometry and returns no duplicate successor buffer for that result.
+Successful patch publication allocates one Float32 successor and creates
+successor adjacency only after a patch is accepted.

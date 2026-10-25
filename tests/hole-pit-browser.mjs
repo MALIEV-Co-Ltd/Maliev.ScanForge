@@ -2,22 +2,41 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 import { holeSeamMetrics } from "./hole-seam-metrics.mjs";
 // Optional extracted single-hole component: positions, rim, center and radius.
 const fixturePath = process.env.SCANFORGE_HOLE_FIXTURE;
+const nativeBatch = process.env.SCANFORGE_HOLE_NATIVE_BATCH === "1";
+const nativeAlgorithm =
+  process.env.SCANFORGE_HOLE_NATIVE_ALGORITHM ??
+  (nativeBatch
+    ? "tangent"
+    : process.env.SCANFORGE_HOLE_NATIVE_FLAT === "1"
+      ? "flat"
+      : undefined);
+const observedNative = nativeAlgorithm !== undefined;
+const nativeFlat = nativeAlgorithm === "flat";
+const nativeEdges = Number(process.env.SCANFORGE_HOLE_NATIVE_RIM_EDGES ?? 39);
+assert(
+  !observedNative || ["flat", "tangent", "automatic"].includes(nativeAlgorithm),
+);
 const root = new URL("../", import.meta.url),
   out = new URL(
     process.env.SCANFORGE_HOLE_OUTPUT ??
-      (fixturePath
-        ? "../.resources/hole22-browser/"
-        : "../.resources/hole-pit-browser/"),
+      (observedNative
+        ? `../.resources/hole-native-${nativeAlgorithm}-browser/`
+        : fixturePath
+          ? "../.resources/hole22-browser/"
+          : "../.resources/hole-pit-browser/"),
     import.meta.url,
   );
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
+  : new URL("dist/", root);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -35,7 +54,7 @@ const token = randomBytes(32).toString("hex"),
     persistentData: false,
     resources: [],
   };
-let server, reserve, browserServer, browser, client, transport, failed;
+let server, reserve, browserServer, browser, client, transport, failed, page;
 function identity(pid) {
   const result = spawnSync(
     "powershell.exe",
@@ -60,10 +79,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -133,14 +151,13 @@ try {
     JSON.stringify(ledger, null, 2),
   );
   browser = await chromium.connect(browserServer.wsEndpoint());
-  const page = await browser.newPage({
-      viewport: { width: 1400, height: 900 },
-    }),
-    errors = [];
+  page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.setDefaultTimeout(15000);
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -199,9 +216,10 @@ try {
     return JSON.parse(Buffer.concat(chunks).toString());
   };
 
+  let panelId = "panel";
   const geometry = async () =>
     artifactJson(
-      (await call("object_get", { entityId: "panel", includeGeometry: true }))
+      (await call("object_get", { entityId: panelId, includeGeometry: true }))
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
@@ -223,9 +241,54 @@ try {
         t = point(i + 1, a, za);
       positions.push(...p, ...q, ...r, ...p, ...r, ...t);
     }
-  const fixture = fixturePath
-    ? JSON.parse(await readFile(fixturePath, "utf8"))
-    : undefined;
+  const nativeSample = nativeBatch
+    ? await (async () => {
+        const row = JSON.parse(
+          await readFile(
+            new URL(
+              "fixtures/hole-fill-observed-rectangles.json",
+              import.meta.url,
+            ),
+            "utf8",
+          ),
+        );
+        return {
+          ...row,
+          output: row.batchCoordinates,
+          outputFacets: row.batchCoordinates.length / 9,
+          nativeSha256: row.batchSha256,
+        };
+      })()
+    : observedNative
+      ? JSON.parse(
+          await readFile(
+            new URL("fixtures/hole-fill-observed-cups.json", import.meta.url),
+            "utf8",
+          ),
+        ).cases.find((row) => row.rimEdges === nativeEdges)
+      : undefined;
+  const fixture = nativeBatch
+    ? {
+        positions: nativeSample.positions,
+        rim: [-1, 4, 0, 1, 4, 0, 1, -4, 0, -1, -4, 0],
+        center: [6, 0, 0],
+        radius: 10,
+      }
+    : nativeSample
+      ? {
+          positions: nativeSample.faces.flatMap((face) =>
+            face.flatMap((id) => nativeSample.vertices[id]),
+          ),
+          rim: nativeSample.vertices
+            .filter((p) => p[2] === 0)
+            .reverse()
+            .flat(),
+          center: [0, 0, 0],
+          radius: 2,
+        }
+      : fixturePath
+        ? JSON.parse(await readFile(fixturePath, "utf8"))
+        : undefined;
   if (fixture) positions = fixture.positions;
   const center = fixture?.center ?? [0, 0, 0],
     normal = [0, 0, 0];
@@ -273,14 +336,18 @@ try {
   const project = {
     format: "maliev-scanforge",
     version: 1,
-    name: "Automatic hole surface parity",
+    name: observedNative
+      ? `Native ${nativeAlgorithm} cap parity`
+      : "Surface recovery parity",
     units: "mm",
     entities: [
       {
         id: "panel",
-        name: fixture
-          ? "Exported Hole 22 component"
-          : "Shallow panel with steep scan lip",
+        name: observedNative
+          ? `Native ${nativeEdges}-edge cup`
+          : fixture
+            ? "Exported Hole 22 component"
+            : "Shallow panel with steep scan lip",
         kind: "mesh",
         positions: Array.from(new Float32Array(positions)),
         visible: true,
@@ -289,12 +356,28 @@ try {
       },
     ],
   };
-  const bytes = Buffer.from(JSON.stringify(project));
+  let bytes = Buffer.from(JSON.stringify(project)),
+    uploadName = "panel.json";
+  assert(
+    !nativeSample || nativeFlat || process.env.SCANFORGE_HOLE_NATIVE_INPUT,
+    "Ordered native comparison requires the original binary STL through SCANFORGE_HOLE_NATIVE_INPUT.",
+  );
+  if (nativeSample && process.env.SCANFORGE_HOLE_NATIVE_INPUT) {
+    bytes = await readFile(process.env.SCANFORGE_HOLE_NATIVE_INPUT);
+    assert.equal(
+      createHash("sha256").update(bytes).digest("hex"),
+      nativeSample.inputSha256,
+    );
+    uploadName = nativeBatch
+      ? "native-rectangles.stl"
+      : `native-cup-${nativeEdges}.stl`;
+    ledger.originalStlSha256 = nativeSample.inputSha256;
+  }
   let upload;
   for (let offset = 0; offset < bytes.length; offset += 262144) {
     upload = (
       await call("artifact_put", {
-        name: "panel.json",
+        name: uploadName,
         offset,
         base64: bytes.subarray(offset, offset + 262144).toString("base64"),
         ...(upload ? { artifactId: upload.artifactId } : {}),
@@ -307,7 +390,14 @@ try {
       replace: true,
     }),
   );
-  await mutate("object_select", { entityId: "panel" });
+  if (uploadName.endsWith(".stl")) {
+    const meshes = (await call("project_get")).result.objects.filter(
+      (row) => row.kind === "mesh",
+    );
+    assert.equal(meshes.length, 1);
+    panelId = meshes[0].id;
+  }
+  await mutate("object_select", { entityId: panelId });
   await mutate("ui_set", {
     workspace: "mesh",
     mode: "brush",
@@ -326,12 +416,12 @@ try {
     beforeHistory = await history();
   const originalTopology = (
     await job(
-      await call("mesh_analyze", { entityId: "panel", tolerance: 0.001 }),
+      await call("mesh_analyze", { entityId: panelId, tolerance: 0.001 }),
     )
   ).result.topology;
   const inventoryJob = await job(
     await mutate("mesh_process", {
-      entityId: "panel",
+      entityId: panelId,
       operation: { kind: "scanEdit", action: "inventory", tolerance: 0.001 },
     }),
   );
@@ -350,9 +440,28 @@ try {
   await controls
     .getByRole("button", { name: new RegExp(`^Hole ${hole + 1} `) })
     .click();
+  await controls
+    .locator("label")
+    .filter({ hasText: "Fill algorithm" })
+    .getByRole("button")
+    .click();
+  const algorithmLabel =
+    nativeBatch || nativeAlgorithm === "flat"
+      ? "Flat"
+      : nativeAlgorithm === "tangent"
+        ? "Tangent"
+        : observedNative
+          ? "Automatically decided"
+          : "Recover surface";
+  await page.getByRole("option", { name: algorithmLabel, exact: true }).click();
+  if (nativeBatch)
+    await controls.getByLabel("Maximum hole diameter (mm)").fill("9");
   await page.screenshot({ path: fileURLToPath(new URL("before.png", out)) });
   await controls
-    .getByRole("button", { name: "Fill selected hole", exact: true })
+    .getByRole("button", {
+      name: nativeBatch ? "Fill multiple holes" : "Fill selected hole",
+      exact: true,
+    })
     .click();
   await page.waitForFunction(() =>
     document.querySelector('.scan-topology-panel[aria-busy="false"]'),
@@ -361,7 +470,13 @@ try {
     await new Promise((r) => setTimeout(r, 100));
   assert.equal(await history(), beforeHistory + 1);
   await page
-    .getByText(interpolation ? /1 holes filled/ : /1 filled from boundary/)
+    .getByText(
+      nativeBatch
+        ? /2 holes filled/
+        : interpolation || observedNative
+          ? /1 holes filled/
+          : /1 filled from boundary/,
+    )
     .waitFor();
   const gui = await geometry();
   assert.deepEqual(
@@ -378,6 +493,35 @@ try {
     );
   }
   assert(gui.positions.length > original.positions.length);
+  if (nativeSample) {
+    const triangleKeys = (p) => {
+      const keys = [];
+      for (let i = 0; i < p.length; i += 9) {
+        const corners = [0, 1, 2].map((k) =>
+          [0, 1, 2].map((a) => p[i + k * 3 + a]).join(","),
+        );
+        keys.push(
+          [0, 1, 2]
+            .map((start) =>
+              [...corners.slice(start), ...corners.slice(0, start)].join(";"),
+            )
+            .sort()[0],
+        );
+      }
+      return keys.sort();
+    };
+    if (nativeBatch)
+      assert.deepEqual(
+        triangleKeys(gui.positions),
+        triangleKeys(nativeSample.output),
+      );
+    else if (nativeFlat)
+      assert.deepEqual(
+        triangleKeys(gui.positions),
+        triangleKeys(nativeSample.flatOutput.flat()),
+      );
+    else assert.deepEqual(gui.positions, nativeSample.output.flat(2));
+  }
   if (fixture) {
     await writeFile(new URL("gui-geometry.json", out), JSON.stringify(gui));
     if (interpolation)
@@ -392,7 +536,7 @@ try {
   if (!fixture) assert(maximumHeight < 1e-6, `Pit depth ${maximumHeight}`);
   assert((gui.positions.length - original.positions.length) / 9 < 100000);
   const analyzed = await job(
-    await call("mesh_analyze", { entityId: "panel", tolerance: 0.001 }),
+    await call("mesh_analyze", { entityId: panelId, tolerance: 0.001 }),
   );
   const topology = analyzed.result.topology;
   for (const key of [
@@ -408,8 +552,13 @@ try {
       originalTopology[key],
       `${key}: ${JSON.stringify(topology)}`,
     );
-  assert.equal(topology.boundaryLoops, originalTopology.boundaryLoops - 1);
+  assert.equal(
+    topology.boundaryLoops,
+    originalTopology.boundaryLoops - (nativeBatch ? 2 : 1),
+  );
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
+  await controls.getByRole("button", { name: "Back", exact: true }).click();
+  await controls.waitFor({ state: "hidden" });
   await mutate("history_undo", {});
   assert.deepEqual((await geometry()).positions, original.positions);
   await mutate("history_redo", {});
@@ -417,12 +566,16 @@ try {
   await mutate("history_undo", {});
   const mcp = await job(
     await mutate("mesh_process", {
-      entityId: "panel",
+      entityId: panelId,
       operation: {
         kind: "scanEdit",
         action: "fillHoles",
-        indices: [hole],
-        algorithm: "automatic",
+        ...(nativeBatch
+          ? { batch: true, diameter: 9 }
+          : {
+              indices: [hole],
+              algorithm: nativeAlgorithm ?? "surfaceRecovery",
+            }),
         mode: "entire",
         tolerance: 0.001,
       },
@@ -430,12 +583,88 @@ try {
   );
   assert.equal(
     mcp.result.diagnostics.boundedFallbackHoles,
-    interpolation ? 0 : 1,
+    interpolation || observedNative ? 0 : 1,
   );
   if (interpolation)
     assert.equal(mcp.result.diagnostics.interpolatedSurfaceHoles, 1);
   assert.deepEqual((await geometry()).positions, gui.positions);
   assert.equal(await history(), beforeHistory + 1);
+  const noop = await job(
+    await mutate("mesh_process", {
+      entityId: panelId,
+      operation: {
+        kind: "scanEdit",
+        action: "fillHoles",
+        indices: [],
+        algorithm: "flat",
+      },
+    }),
+  );
+  assert.equal(noop.result.diagnostics.changed, false);
+  assert.deepEqual(noop.result.entityIds, [panelId]);
+  assert.equal(await history(), beforeHistory + 1);
+  assert.deepEqual((await geometry()).positions, gui.positions);
+  {
+    const cursor = await history();
+    await job(
+      await mutate("mesh_process", {
+        entityId: panelId,
+        operation: {
+          kind: "scanEdit",
+          action: "fillHoles",
+          indices: [999],
+          algorithm: nativeAlgorithm ?? "surfaceRecovery",
+        },
+      }),
+      "failed",
+    );
+    assert.equal(await history(), cursor);
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    const saved = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: saved.result.artifactId,
+        replace: true,
+      }),
+    );
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    await mutate("history_undo", {});
+    assert.deepEqual((await geometry()).positions, original.positions);
+    await mutate("history_redo", {});
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    if (nativeSample)
+      ledger.nativeComparison = {
+        algorithm: nativeAlgorithm,
+        batch: nativeBatch,
+        rimEdges: nativeEdges,
+        outputFacets: nativeFlat
+          ? nativeSample.flatOutputFacets
+          : nativeSample.outputFacets,
+        stlSha256: nativeFlat
+          ? nativeSample.flatStlSha256
+          : nativeSample.nativeSha256,
+        coordinatesSha256: nativeFlat
+          ? nativeSample.flatCoordinatesSha256
+          : createHash("sha256")
+              .update(
+                new Uint8Array(
+                  new Float32Array(nativeSample.output.flat(2)).buffer,
+                ),
+              )
+              .digest("hex"),
+        binaryReopen: true,
+        reopenedUndoRedo: true,
+        failureRollback: true,
+      };
+    else
+      ledger.surfaceRecovery = {
+        binaryReopen: true,
+        reopenedUndoRedo: true,
+        failureRollback: true,
+      };
+  }
   assert.deepEqual(errors, []);
   const inspection = [];
   if (interpolation && process.env.SCANFORGE_HOLE_BASELINE) {
@@ -500,7 +729,7 @@ try {
           replace: true,
         }),
       );
-      await mutate("object_select", { entityId: "panel" });
+      await mutate("object_select", { entityId: panelId });
       await mutate("ui_set", {
         workspace: "mesh",
         mode: "brush",
@@ -554,13 +783,25 @@ try {
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
   failed = error;
+  await writeFile(
+    new URL("failure-state.txt", out),
+    page
+      ? await page
+          .locator("body")
+          .innerText()
+          .catch(() => "Page unavailable")
+      : "Page not created",
+  );
+  await page
+    ?.screenshot({ path: fileURLToPath(new URL("failure.png", out)) })
+    .catch(() => {});
   throw error;
 } finally {
   clearTimeout(deadline);
-  await client?.close().catch(() => {});
-  await transport?.close().catch(() => {});
   await browser?.close().catch(() => {});
   await browserServer?.close().catch(() => {});
+  await client?.close().catch(() => {});
+  await transport?.close().catch(() => {});
   if (reserve?.listening)
     await new Promise((resolve) => reserve.close(resolve));
   if (server?.listening) await new Promise((resolve) => server.close(resolve));

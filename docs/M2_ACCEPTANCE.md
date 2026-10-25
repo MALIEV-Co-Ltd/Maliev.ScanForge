@@ -86,3 +86,29 @@ The same production build then passed the complete original-three-scan Re-polygo
 [The new native frame control](evidence/m2-unroll-frame-control-20261026.json) rotates the reference cylinder's imported seam tangent from +X to +Y. Native Unroll still produces the same complete 22-facet corner stream. Importing this actual STEP surface exposed an application defect: fitting its display triangles perturbed the exact radius. The shared GUI/MCP `cylinderId` route now reads analytic CAD parameters through the existing kernel query. Ambiguous bodies reject atomically; explicit numeric references remain supported. Build `scanforge-de47b3b68835ea10`, 160 focused tests, and the imported-reference GUI/public-MCP lifecycle pass, including a real GUI rerun after CAD save/reopen. All 2,802 enumerated source, asset and fixture files stayed unchanged across the build. The retained initial browser mismatch and TypeScript failure are distinct from the successful reruns. Native auxiliary Sketch/Roll-frame publication remains open.
 
 Three fresh Average exports compare opposite orders of two reference faces at equal distance from the same base, plus exact-radius exclusion. Both face orders at tolerance10 mm yield Z=-0.5 mm; tolerance1 mm preserves the original base. Production matches every ordered Float32 coordinate in all three exports. The sanitized fixture `average-observed-ties.json` pins inputs, outputs and digests. This closes those finite tie/radius controls, not every preparation class or the remaining M2 inventory.
+
+## Native hole-fill checkpoint, 2026-10-26
+
+[Hole-fill evidence](evidence/m2-native-holes-20261026.json) and the
+[native comparison notes](NATIVE_HOLE_FILL.md) bind build
+`scanforge-39813075d443eb00` to a complete unchanged 2820-file manifest. The
+combined shared implementation passed 82 focused tests, 185 affected repair
+tests, nine shared-tree Re-polygonize regressions, twelve TypeScript batches and
+Vite. Five frozen-asset GUI/public-MCP replays passed Flat39, Tangent40,
+Automatic39, the two-rectangle 9 mm native batch and guarded surface recovery.
+Each replay covers source preservation, Undo/Redo, empty-fill history,
+invalid-selection rollback, binary reopening and reopened history. All owned
+jobs exited with no live descendants or cleanup errors under the unchanged
+4 GiB aggregate / 25% CPU policy. The latest M2 dev server remains on port 5174.
+
+The correction preserves imported index identities after generic warmup,
+retains native Float32 arithmetic and boundary-tree order, uses an enclosing
+sphere for diameter and distinguishes native batch Tangent from selected-hole
+algorithms. The former guarded automatic fill is explicitly available as
+`surfaceRecovery` in GUI and MCP. Empty or all-skipped fills preserve model
+history and avoid a duplicate successor buffer.
+
+Native Curvature, partial/bridge and other inventory gates remain open. These
+finite passing controls do not close M2, replace full-candidate verification or
+prove arbitrary-rim native equivalence. Earlier failed probes and the affected
+suite's obsolete contract assumptions remain recorded with their corrections.
