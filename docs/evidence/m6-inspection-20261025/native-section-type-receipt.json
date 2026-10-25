@@ -1,9 +1,5 @@
 {
-  "command": [
-    "npm.cmd",
-    "run",
-    "typecheck"
-  ],
+  "command": ["npm.cmd", "run", "typecheck"],
   "jobLimitBytes": 4294967296,
   "leaseSeconds": 900,
   "exitCode": 0,

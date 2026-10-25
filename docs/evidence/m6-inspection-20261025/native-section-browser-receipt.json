@@ -1,8 +1,5 @@
 {
-  "command": [
-    "node",
-    "tests/m6-inspection-browser.mjs"
-  ],
+  "command": ["node", "tests/m6-inspection-browser.mjs"],
   "jobLimitBytes": 4294967296,
   "leaseSeconds": 900,
   "exitCode": 0,
