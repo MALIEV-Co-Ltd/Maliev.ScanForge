@@ -947,7 +947,7 @@ caches must be recomputed from the edited geometry.
 
 Join compatible patches with `surface_operation` using `entityId`,
 `operation:"join"`, exactly one of `referenceId` or `referencePatch`, and
-`options:{referenceBoundary:"u1",targetBoundary:"u0",continuity:"C1",reverse:false}`.
+`options:{referenceEdge:"u1",targetEdge:"u0",continuity:"C1",reverse:false}`.
 Boundaries are `u0`, `u1`, `v0` or `v1`; continuity is `C0` or `C1`.
 The target may be a mesh patch or exact CAD authored by a `surface` recipe.
 Raw references use the NurbsPatch structure above, bounded to 2–16 controls per
