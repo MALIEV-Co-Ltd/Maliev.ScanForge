@@ -1,5 +1,6 @@
 import type { Entity } from "./types";
 import { featureDependencies } from "./parametric";
+import { validateReferenceEntity } from "./reference-entity";
 
 export interface DatumDependencyCandidate {
   id: string;
@@ -64,6 +65,9 @@ export function datumEntityDependencies(
   return entities.map((entity) => ({
     id: entity.id,
     references: [
+      ...(validateReferenceEntity(entity)?.definition.sources.map(
+        (source) => source.id,
+      ) ?? []),
       ...(entity.surfaceScanId ? [entity.surfaceScanId] : []),
       ...(entity.parametric
         ? featureDependencies(entity.parametric.feature.recipe).flatMap(

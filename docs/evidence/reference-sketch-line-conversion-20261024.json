@@ -1,0 +1,553 @@
+{
+  "status": "Evaluated line conversion parameters implemented and tested; wire-body allocation/admission, owned child integration and public GUI/MCP authoring remain unfinished",
+  "priorEvidence": {
+    "path": "docs/evidence/reference-sketch-line-wire-provider-20261024.json",
+    "sha256": "5f28a86df1a7e802d7de159f20ad75cf12cdd498653fdb346b1bac03509a2ae3"
+  },
+  "sources": [
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "tests/kernel-circle-smoke.mjs",
+      "sha256": "292e3fb5da4b2a8955ced8ece7cf8a33ce028fc5bf07f5a7b147168d337e78a9"
+    },
+    {
+      "path": "tests/kernel-smoke.mjs",
+      "sha256": "b579376e9f0b67c4deba262fd5bfe222359ae9543172e77d3d604ef62f48bf2a"
+    },
+    {
+      "path": "tests/kernel-curves-smoke.mjs",
+      "sha256": "88b99e17b3273d68ef449e70533b19ed888b95733ae8b2f9baa59da46ce9b46e"
+    },
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "90360ac603f5c2eb3df9b7296ec0dfae10ab1268ea4c5fecef645b4226a3c2d5"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "tests/cad-client.test.ts",
+      "sha256": "6e9ebe743862a9bfd28316726eaff230ca022bb171e4cb70cc37bb1dedf35dc8"
+    },
+    {
+      "path": "tests/cad-create-selection.test.ts",
+      "sha256": "ef58430eecb879415c85f12dab813157726d476c3d40822a227ea89d1017a9b3"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "922dd1cafcd1c2c93df1b12acfe699f930c9a085ca808b5e0dcbe9c4855ebbdc"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "bacb904be3c86f3879360309b2e70d700a8ac2a4cbfbfc6370bec1efc929775a"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "0d7aa100295b01562d637e71fe3a525faa211f9cca0f4b7021537743845f4bea"
+    },
+    {
+      "path": "public/kernel/SOURCE_BUILD.md",
+      "sha256": "8d522f942a5620cd2743472221e5ab8ec0bbf7e5e91e4e16e5f24176cf640267"
+    },
+    {
+      "path": "public/kernel/opencascade.js",
+      "sha256": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+    },
+    {
+      "path": "src/sketch-arc-rebuild.ts",
+      "sha256": "0ce3da642542f1950d17ab0ebf35bad6fde2f07777dde9d9bc08c639b8724cea"
+    },
+    {
+      "path": "tests/sketch-arc-rebuild.test.ts",
+      "sha256": "70d577dc7b209681544cdf60e27a983d1ea1196771f2687e78f521d6e2c141ab"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "src/cad/sketch-arc-backend.ts",
+      "sha256": "1ea7858b19486e6e370e09ae63b6b8aeea78be749826809474675643a10afc5c"
+    },
+    {
+      "path": "tests/kernel-arc-smoke.mjs",
+      "sha256": "4c0746c8b900698ae72d6aac6fef84fa4eac07844367c59926ec66378d243241"
+    },
+    {
+      "path": "scripts/prepare-kernel.mjs",
+      "sha256": "ef707490f6ca4af41d94957fc0f5ae34245dacf5ebbadf9d3579d4c5f7cf2acd"
+    },
+    {
+      "path": "src/cad/sketch-conic-child.ts",
+      "sha256": "d70365d74b7a7e45cae3f91eca458a0c97ea1878e8fa9e23f69ba845fc051d39"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "7244a6e23e2220b0198e828c749959abe0f7da1f1a75f9f8003b84c166abf1fc"
+    },
+    {
+      "path": "tests/kernel-conic-child-smoke.mjs",
+      "sha256": "be6104119c747610a53df3366e660a1a719439f61f5e3c09c52f42b19a9c75e3"
+    },
+    {
+      "path": "tests/sketch-arc-local-replacement.test.ts",
+      "sha256": "14eb5682587023a0c8cfeae75e71147d478505334591bef55eaee95126812bbe"
+    },
+    {
+      "path": "tests/sketch-arc-placed-replacement.test.ts",
+      "sha256": "b78ea17b104bd98b8875b5a1cc93afa311938aaf1fe6dcfd16ea01f4091cd99a"
+    },
+    {
+      "path": "tests/sketch-arc-point-edit.test.ts",
+      "sha256": "02663c300687966050e32cc2edb1bb610aa7222ece6531be95edd2065ebf4a99"
+    },
+    {
+      "path": "tests/sketch-arc-edit-routes.test.ts",
+      "sha256": "60a6a7c4b5c416bd3a0fdfa986dd6e882cd15e7d9506542c521842d46217ff57"
+    },
+    {
+      "path": "tests/sketch-circle-edits.test.ts",
+      "sha256": "998ddcdb86f152a8f0b82f21cd2287207d8e07a7b09987164e0d60b9f0de1110"
+    },
+    {
+      "path": "tests/sketch-circle-radius.test.ts",
+      "sha256": "5f481d37f40b8903494a9156a53e92668daedb9235ca153e7156a15f2014daba"
+    },
+    {
+      "path": "tests/sketch-circle-records.test.ts",
+      "sha256": "ddf8d4e7f376b834e9b32987afad5eba5e039a64f44bff8e9d5f3c25ef188925"
+    },
+    {
+      "path": "tests/sketch-circle-placed-replacement.test.ts",
+      "sha256": "9799c9adad86559f58c5053485326ab0b90f0da4f44dfa8ecd463ac09aad8ab3"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "9804c97ef2717f23f854a3e3334563c68434210ff52d42b1fe700a3d9eee29b5"
+    },
+    {
+      "path": "src/cad/sketch-child-collection.ts",
+      "sha256": "32666eccc873176037104146da6b2b4e9ac6f7a1088e9784ba35bc95a37529a0"
+    },
+    {
+      "path": "tests/sketch-child-collection.test.ts",
+      "sha256": "09e350a88962448275f423ed1327da82d22f7d579a35c9c24186a2c341951604"
+    },
+    {
+      "path": "src/sketch-ellipse-rebuild.ts",
+      "sha256": "78e44d85ffffbf9f1e8bca279428caffd3ab7aad444229a272f3e5bba92932f8"
+    },
+    {
+      "path": "src/cad/sketch-ellipse-backend.ts",
+      "sha256": "3df30ea3c64de5a5e0e3ce5da67df043a55e5acde0fc15c0ae6e1fb0c8f54774"
+    },
+    {
+      "path": "src/cad/sketch-ellipse-child.ts",
+      "sha256": "36cacbceb61253885f61eaea2b5fcffaa8470637c19ee25250a7a452014f760b"
+    },
+    {
+      "path": "tests/sketch-ellipse-rebuild.test.ts",
+      "sha256": "952f89eff819d8c590e732b729575c9793310ca4f279d2307c48062956510e16"
+    },
+    {
+      "path": "tests/kernel-ellipse-smoke.mjs",
+      "sha256": "81465e3ea1c1644872831ee757211f37be83637f772bff19dc084f48710090c4"
+    },
+    {
+      "path": "tests/sketch-ellipse-edits.test.ts",
+      "sha256": "e94083392c9836bf757d87c6a2a0a3d9f54740077ca1c442a0ca8c5280e32063"
+    },
+    {
+      "path": "src/sketch-line-rebuild.ts",
+      "sha256": "d4621b57febd6d3d8b841f5d29f7f76dc3c0266041f2966b1e238ef7406abce2"
+    },
+    {
+      "path": "tests/sketch-line-rebuild.test.ts",
+      "sha256": "b3bd54753d9f857babfe6b1a3f052a660d3d0bdf457246068c15b9133f76afdf"
+    },
+    {
+      "path": "tests/sketch-line-edits.test.ts",
+      "sha256": "23d76cea23d5babc4c335e0c42f1798b5d1d01ca418bf05323f13e1932b0cf35"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "8d116557b23499ef490400e3b65b3c059743625432c2a9e589cb0f302cc7966e"
+    },
+    {
+      "path": "tests/kernel-line-curve-smoke.mjs",
+      "sha256": "c2904beae212ebe16c07143b032f446fb549d3cd296780d1989db7d23529619c"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "d82e131848326a26010fcba3d68310b3207f23b62f9fef36e2b9466def5a4c7f"
+    },
+    {
+      "path": "tests/sketch-line-conversion.test.ts",
+      "sha256": "f192b145c6af63bac2a086e625fff4be1e80524c7e8d8c7350393db2d79c69d9"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "artifact": "ConstructionLineWireAttachment.java",
+      "sha256": "18287285a7b78e56dfc86cd3a93f0011cbf443fab22af594f10c15ee9e9d366f"
+    },
+    {
+      "artifact": "construction-line-wire-attachment-noanalysis-r1.mjs",
+      "sha256": "967e91ed6885a368e5826d8d2f21ea00fccbe830f8caa584fa53ef82c25304a7"
+    },
+    {
+      "artifact": "run-construction-line-wire-attachment-noanalysis-r1.py",
+      "sha256": "85c4b4a6109d98e3b17984bb420aa8493b575081dc5027ec3d0ffb21710fc246"
+    },
+    {
+      "artifact": "line-wire-attachment-ranges-r1.json",
+      "sha256": "912d1a4f0ebd896c8b85fb121ed05cc4f77903d9608f26278e010e7abc7ca53a"
+    },
+    {
+      "artifact": "construction-line-wire-attachment-noanalysis-r1/evidence.json",
+      "sha256": "e558609bdbf23ddf8f35a48b63f76830b1aa583d9d79dd7e8c7eaf900b6bcb13"
+    },
+    {
+      "artifact": "verify-line-conversion-r1.py",
+      "sha256": "bb05ba4a5e4c93838af947fa906402ee30604ad63383020ee18a4a37d895796f"
+    },
+    {
+      "artifact": "verify-line-conversion-r2.py",
+      "sha256": "9851535a4c2a699924054c9dc50c7a391627711c3762e524fd8b55e2a21b987d"
+    },
+    {
+      "artifact": "line-conversion-verified-r2.json",
+      "sha256": "ab567a3b3ac2d1c2c514f588943528f9c6e3dcad8c165137cada6d141e9f540f"
+    },
+    {
+      "artifact": "run-sketch-line-conversion-r1.py",
+      "sha256": "833ad29c47dc19a781ec0b0373b37af2b568506bdbf01856e7bc4bf68f73fd6b"
+    }
+  ],
+  "nativeBasis": {
+    "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+    "applicationImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "attachmentProcedures": 3,
+    "attachmentListedInstructionsChecked": 969,
+    "attachmentDirectFlowsChecked": 223,
+    "normalizerInstructions": 35,
+    "arithmeticAnchors": 19,
+    "normalizationGuard": 2.220446049250313e-16,
+    "conversionLengthInclusive": 1e-8,
+    "normalizationPasses": 2,
+    "historicalMathImportMatches": 60,
+    "mode": "Static file-data inspection and historical import correlation only; no fresh process access or native execution",
+    "limitations": [
+      "Listed instruction counts do not prove full behavior or numerical equivalence.",
+      "Provider body topology/attachment/check failures and short-line admission remain unproven.",
+      "The wire tolerance is not used as a guessed minimum length."
+    ]
+  },
+  "implementation": {
+    "pureHelper": "prepareNativeSketchLineConversion",
+    "kernelQuery": "SketchLineCurve.prepareBodyConversion(scale)",
+    "inputs": "Actual evaluated first/last edge XYZ and explicit finite positive coordinate scale",
+    "result": "Detached scaled origin, twice-normalized direction and scaled source interval only",
+    "behavior": [
+      "Inclusive 1e-8 source-length threshold before scaling",
+      "XYZ squared-length accumulation and reciprocal multiplication twice",
+      "Scale evaluated origin and saved source length; no scaled-endpoint length recomputation",
+      "Preserve signed zero; reject malformed input and nonfinite arithmetic at the canonical boundary",
+      "Keep a scaled interval that underflows to zero for later body admission; do not fabricate success",
+      "Query failures preserve the owned primary edge and retire temporary handles"
+    ],
+    "providerBodyAllocated": false,
+    "publicRpcAdded": false
+  },
+  "validation": {
+    "focusedPassed": 259,
+    "focusedFiles": 19,
+    "newAnalyticTests": 11,
+    "lineKernel": {
+      "passed": true,
+      "checks": 18,
+      "scope": "Primary line curve construction/evaluation/conversion-parameter ownership only; no converted-body, native backend, GUI or MCP acceptance",
+      "helperSha256": "31d434af9b37b15d94c7cd89b9071dde4328738f15dc301bd3f1655ca1fa5fd2",
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284"
+    },
+    "conicKernel": {
+      "passed": true,
+      "checks": 47,
+      "helperSha256": "31d434af9b37b15d94c7cd89b9071dde4328738f15dc301bd3f1655ca1fa5fd2",
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+      "scope": "Real worker-local conic child ownership and outcomes; public editor/native parity not established"
+    },
+    "ellipseKernel": {
+      "passed": true,
+      "checks": 15,
+      "helperSha256": "31d434af9b37b15d94c7cd89b9071dde4328738f15dc301bd3f1655ca1fa5fd2",
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+      "scope": "Real bundled kernel ellipse geometry, separate records, failed-fit retention, staged ownership and fault cleanup; no native executable or public GUI/MCP acceptance"
+    },
+    "arcCircleCurvesCadSmokePassed": true,
+    "buildPassed": true,
+    "buildSeconds": 33.19560700000147,
+    "buildPeakAggregateBytes": 2535575552,
+    "buildHeapMiB": 3072,
+    "aggregateLimitBytes": 4294967296,
+    "cpuLimitPercent": 25,
+    "publicBundle": "scanforge-96df24cb70a59c4a",
+    "receipts": [
+      {
+        "artifact": "project-index-validation-construction-line-wire-attachment-noanalysis-r1-cad.receipt.json",
+        "sha256": "5f612ea3d9c6f2a86d6738d66f3d21adf7edb5f1eb9a9ec39c5e43bb9047b4ee",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 384,
+        "elapsedSeconds": 112.82462359999772,
+        "peakAggregateBytes": 1909882880,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-arc-mirror-focused.receipt.json",
+        "sha256": "98d0aa5d5746d7db5a13d9e93729d077839730d49937fc4e20588307b0c10e05",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.8649585999955889,
+        "peakAggregateBytes": 464154624,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-build-build.receipt.json",
+        "sha256": "00cbe2c04497ffc500ba45c5ce04376821961073e62d75942b3a9702a54c877c",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 3072,
+        "elapsedSeconds": 33.19560700000147,
+        "peakAggregateBytes": 2535575552,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-cad-cad.receipt.json",
+        "sha256": "08f78d01deeba17d111b66a73052c75f6718c2cde63a2a9ad1aa4b98e026f930",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 6.574015599995619,
+        "peakAggregateBytes": 761364480,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-circle-mirror-focused.receipt.json",
+        "sha256": "49f34d07387df19b370fc797ebf80d48a770dfd94b708eea9ce14de7c4fe5ece",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.7136442000046372,
+        "peakAggregateBytes": 463785984,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-conic-mirror-focused.receipt.json",
+        "sha256": "3450b9cbf443f1af49052469758e3e520fa2ecaa2d0d07c56504e307e7880f8d",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6642738000082318,
+        "peakAggregateBytes": 457195520,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-curves-mirror-focused.receipt.json",
+        "sha256": "8a471ebd5cea99d5e9be8138e3866dd751b5ecfc79891a8411ee6fa73989feba",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 1.4705937999824528,
+        "peakAggregateBytes": 692137984,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-ellipse-mirror-focused.receipt.json",
+        "sha256": "5ba4068212f516439cad59f57dadd661a65ba2b130b059cbb6a8e453f548309e",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6125519000052009,
+        "peakAggregateBytes": 458919936,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-format-final-mirror-focused.receipt.json",
+        "sha256": "a2a27dd4ece03624b954c7ca2cff53321301fa9af541cac91975a36a7b315b5b",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 1.067304399999557,
+        "peakAggregateBytes": 171376640,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-format-mirror-focused.receipt.json",
+        "sha256": "8e57b701a7fd814abd07b97d04002f1ab5cebc87c4c5996651f1e1b73307095d",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 1.3702572000038344,
+        "peakAggregateBytes": 171638784,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-kernel-final-mirror-focused.receipt.json",
+        "sha256": "0c823d9f9c2873839eafa56a27d9a3a8cfd5eff17cca71a9caf5fd16cbef588f",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.8189228999835905,
+        "peakAggregateBytes": 460943360,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-kernel-mirror-focused.receipt.json",
+        "sha256": "e5a659dce24d085b00333f64d19cd0bafb5c790f23dae738d4c9b7a14978bacc",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6121741000097245,
+        "peakAggregateBytes": 465203200,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-red-mirror-focused.receipt.json",
+        "sha256": "e5c917fe1a68e9bff5fbc6cc2d0600b058870a0d226d01874eeb3e790dfa2eab",
+        "exitCode": 1,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6121917999989819,
+        "peakAggregateBytes": 461017088,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "failureReason": "Expected absent generated prepareBodyConversion before implementation/build"
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-unit-final-mirror-focused.receipt.json",
+        "sha256": "080896faf4928eb3447a96b311bac0cab4cdc0f4d7682ecd31830bc0fd18bd52",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 3.0368232999753673,
+        "peakAggregateBytes": 351072256,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-unit-mirror-focused.receipt.json",
+        "sha256": "95f2cacffba18dd46f6f9120cc4b8610f3bf11efb6d8ee36f55927ad667d871e",
+        "exitCode": 1,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 3.08842369998456,
+        "peakAggregateBytes": 351490048,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "failureReason": "Analytic threshold test expected an unrounded decimal; corrected to the independently calculated binary64 multiplication result"
+      },
+      {
+        "artifact": "project-index-validation-sketch-line-conversion-r1-unit-red-mirror-focused.receipt.json",
+        "sha256": "50105088665505338c7ff8357fef212e27b5548734aa95dc1577f3b70a4719b6",
+        "exitCode": 1,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 3.0375497000059113,
+        "peakAggregateBytes": 349167616,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "failureReason": "Expected absent conversion module before implementation"
+      },
+      {
+        "artifact": "project-index-validation-verify-line-conversion-r1-cad.receipt.json",
+        "sha256": "8d2fab39702b7e5ff2b56d222f1d04bcbb71cb2bedf3314ee8de479bc7e1720d",
+        "exitCode": 1,
+        "effectiveNodeHeapMiB": 384,
+        "elapsedSeconds": 0.30931899999268353,
+        "peakAggregateBytes": 150794240,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "failureReason": "Verifier lacked equivalent SETNC/SETAE mnemonic alias; corrected in r2"
+      },
+      {
+        "artifact": "project-index-validation-verify-line-conversion-r2-cad.receipt.json",
+        "sha256": "9776f7a40c82380a3f062168960e83d8559edde161c9517fe412fd0cb7055e82",
+        "exitCode": 0,
+        "effectiveNodeHeapMiB": 384,
+        "elapsedSeconds": 0.3595309999946039,
+        "peakAggregateBytes": 195145728,
+        "descendantsRetired": true,
+        "handlesClosed": true
+      }
+    ],
+    "fullSuiteRerun": false,
+    "nativeNumericalReplay": false,
+    "nativeCompositeBackendAcceptance": false,
+    "renderedGuiMcpAcceptance": false,
+    "testScope": "Analytic binary64 rounding, XYZ/reversal, signed zero, threshold equality, explicit scale, malformed/overflow rejection and detached results; actual kernel evaluations, controlled evaluated-coordinate sourcing, query/overflow cleanup, primary-edge preservation, repeated rebuilds and independent disposal."
+  },
+  "workerBuild": {
+    "entry": "src/cad/sketch-backend.ts",
+    "generatedAsset": "kernel/sketch-backend.js",
+    "helperSha256": "31d434af9b37b15d94c7cd89b9071dde4328738f15dc301bd3f1655ca1fa5fd2",
+    "distMatchesTestedAsset": true,
+    "offlineManifestIncludesHelper": true,
+    "publicRpcAdded": false
+  },
+  "mcpCoverage": {
+    "publicContractChanged": false,
+    "publicDispatcherMatchesHead": true,
+    "existingTools": ["sketch_get", "sketch_set", "sketch_manage"],
+    "newOperationAdvertised": false,
+    "scope": "Internal support for the common sketch model. No GUI-only action added; full shared GUI/MCP authoring remains required before feature completion."
+  },
+  "remaining": [
+    "Equivalent provider curve allocation and wire-body topology/attachment/check/first-edge outcomes",
+    "Body-gated midpoint and owned line child attempt/cache/validity/display lifecycle",
+    "Remaining curve-kind behavior and authoritative ordered model/solver/trim/mirror",
+    "Shared GUI/MCP publication with document revisions, retry, lock, cancellation, resources, history and persistence",
+    "Original-native numerical/save-reopen and rendered GUI/MCP comparisons; all original nonlicensing feature families and GitHub milestones"
+  ]
+}

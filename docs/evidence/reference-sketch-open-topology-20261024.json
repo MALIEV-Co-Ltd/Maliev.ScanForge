@@ -1,0 +1,260 @@
+{
+  "date": "2026-10-24",
+  "scope": "Conditional ordinary no-neighbor open-edge branch and shared-kernel regression; full reconstruction remains active.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-line-self-connection.ts",
+      "sha256": "2461f7ea9cdb62c749147e88d7666c1a25e68754588275e67621bccd47ecb355"
+    },
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "81467d6e9ff29853269b38c2682d91cad8f7d187750441b5c6d8cebb605b4546"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "60557e4ee57f5e9d30e314d4675ff075cf446bed5941974b602b7df74a51f53d"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "a93564f2c9c4a5ad459f738050091a1bbed0b8f8bb3bd7757ce617513857d1f0"
+    },
+    {
+      "path": "src/sketch-line-prepared.ts",
+      "sha256": "9d02e8c3e784e6f5fceb2c94e0738057f162933086ecbec45825d58e218077ed"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "55fb3102eca7f67a6df5e80cf7ff266fb8cba40855568a423d90418ec5931c11"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "tests/sketch-line-self-connection.test.ts",
+      "sha256": "5f43865c9c312104224871035f7249ec47dde334c7dc64570d0af873c3639c7b"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "c546bcb1617efd88915276a1e715a3759ed9f8c1266984b34b31a632dd1c7b07"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "4e95283b24cadc55d15e06820ddaf32a4048d3b05115f1121666a9c25a5445ac"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "f718bdf0cadd42e26d7ad7177fdbd7e397a960d75066daf8070716061c1dbf6c"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "caf563ec3aa8b877995ac8d0b962c8c5a1dd22490d6464150c46e2abc8942e36"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "037c5103690829c3eb3f0189febac54f5bb54b334b7af78db002555e3eea5f7e"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "fea941e2d0271f120583ed1ef4549aa6a089f71f177329f33e3759c8196132f5"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "56c086237aa2f43e4b099d6ed50b0c495e7583da7775bd67ee7cd55dfc7109de"
+    },
+    {
+      "path": "src/sketch-line-projection.ts",
+      "sha256": "73756e5e3fb05d7afeda8820c8cc7f1bcfa951ee1e927260f96e8146169a0f75"
+    },
+    {
+      "path": "tests/sketch-line-projection.test.ts",
+      "sha256": "d2f22584386eb5b22f11a9d5a787029db2f3bf757d6cca21ddb82648160e6001"
+    },
+    {
+      "path": "src/cad/sketch-prepared-direction.ts",
+      "sha256": "05ce8a8874cad729f8c4ef4e0cbdd6f2ef744f4637e3b9ca1c4dd05bb4dea8da"
+    },
+    {
+      "path": "tests/kernel-line-direction-fidelity-smoke.mjs",
+      "sha256": "9e74533843f5399c662cca39e20dc98b98a838fd76bcb48e4e95ce130c0e5826"
+    },
+    {
+      "path": "docs/CAD_DIRECTION_FIDELITY.md",
+      "sha256": "ef5d142e933cccc8e34330cf2847a3f9566adfac40a060527c2e2025575b9aaf"
+    },
+    {
+      "path": "tests/kernel-line-open-topology-smoke.mjs",
+      "sha256": "cb0e5e6cfb95fccde3f4857a0f891eff01f67b0a5d12d20bc75540139178f14e"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "trace-line-open-topology-r1.py",
+      "sha256": "2ffcfe4c7a9798c5b5d666575376c1c608a6bcfd4f392b9e2320a7ffb24018d2"
+    },
+    {
+      "name": "line-open-topology-trace-r1.json",
+      "sha256": "5ffb845b831cb73461b6c5f750425050efda8763fd125673f6bce4680dc74504"
+    },
+    {
+      "name": "trace-line-open-topology-r2.py",
+      "sha256": "2146dbf9cdad858817d8e0d40378ceb94c6671dfb1ae42ffc34aaffa4ae058d3"
+    },
+    {
+      "name": "line-open-topology-trace-r2.json",
+      "sha256": "496aedcec8d26f4e5f15fbec1f44ab44e0c30d037cd6ea45b4b6a0fa97258036"
+    },
+    {
+      "name": "probe-line-open-topology-r1.mjs",
+      "sha256": "831b7393e1e5c70c927be32c3740d4371e2e617fff0019d484fc8008102b1e3e"
+    },
+    {
+      "name": "verify-line-open-topology-r1.py",
+      "sha256": "3e106cc0449d03d4ba1088d9a55ebe51ae13a9bf0ff099d5de6eb9c04a78fbab"
+    },
+    {
+      "name": "line-open-topology-verified-r1.json",
+      "sha256": "732ecde0bf6bafe1358dd7ef6fae264b237275b2e89ab1c07913322722b6d742"
+    },
+    {
+      "name": "run-sketch-open-topology-r1.py",
+      "sha256": "216aef7e7b25bf3fa9d3cd3f26a147905fde8a49b6a57a28bda6e37590734643"
+    },
+    {
+      "name": "record-line-open-topology-r1.py",
+      "sha256": "1185608872d9f46d0af0128d39f5a2c7e63346e90164f5c591a8a7f13d74a45d"
+    }
+  ],
+  "helperSha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "offlineCache": "scanforge-4c44ad16bec1e46d",
+  "static": {
+    "procedures": 5,
+    "distinctInstructionStarts": 3402,
+    "anchors": 50,
+    "preconditions": [
+      "Ordinary line record, null neighbors, no existing vertices.",
+      "Usable incoming status and one-edge count."
+    ],
+    "finding": "Forward construction, separate start/end allocations and reciprocal endpoint attachment; no closing decrement.",
+    "notProven": "Full command reachability or transitive allocator/COW/notification/geometry-status effects."
+  },
+  "validation": {
+    "newKernelGroups": 8,
+    "fixtures": 6,
+    "retirementCycles": 100,
+    "distinctUnderlyingEndpoints": true,
+    "exactPointsAndInterval": true,
+    "oneEdgeOpenWire": true,
+    "requestedTolerance": 5e-9,
+    "reportedKernelVertexTolerance": 1e-7,
+    "shortCheckedCandidateRejectedPrimaryRetained": true,
+    "runtimeImplementationChanged": false,
+    "buildOrUnitRerunThisTurn": false,
+    "priorResultsEvidence": "docs/evidence/reference-sketch-direction-fidelity-20261024.json",
+    "priorResultsReusedOnUnchangedRuntime": {
+      "focusedTests": 116,
+      "files": 8,
+      "directionFixtures": 100,
+      "bindingGuards": 6,
+      "draftGroups": 16,
+      "candidateGroups": 31,
+      "intervalWitnessGroups": 9,
+      "cadSmoke": true,
+      "buildPassed": true
+    },
+    "freshHttpCheckThisTurn": false,
+    "localPublicDistHelperMatchesPriorTestedHash": true,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false
+  },
+  "mcp": "Verification/docs-only; shared worker tested, public contracts/catalog/executor/adapter/dispatcher unchanged. No new advertised operation.",
+  "limitations": [
+    "Two occurrences alone do not prove two underlying vertices; tests check identity.",
+    "Requested semantic tolerance must not be replaced by the larger kernel tolerance floor.",
+    "Connected/closed profiles, complete native body admission and editor publication remain open.",
+    "All original feature-family milestones and GUI/MCP/history/persistence/native-rendered acceptance remain required."
+  ],
+  "recordingNote": "Combined recording command rejected by automatic tool review without a detailed reason; this local-only recorder performs no network access.",
+  "receipts": [
+    {
+      "name": "trace-line-open-topology-r1-cad",
+      "sha256": "de360458e726b5395bea8cdae1825e69e38341ab4934ccf3667825c10dabfa30",
+      "terminalClean": true,
+      "peakBytes": 134553600,
+      "seconds": 0.6633466999919619
+    },
+    {
+      "name": "probe-line-open-topology-r1-cad",
+      "sha256": "35ce083abd177018297e53967dddeb702d7b03e5a08246995a1ecd4d9e033d07",
+      "terminalClean": true,
+      "peakBytes": 448630784,
+      "seconds": 0.8146898999984842
+    },
+    {
+      "name": "trace-line-open-topology-r2-cad",
+      "sha256": "03f79df35b667959afa42017f0546929b6f80c024fe09231f2a191d239003286",
+      "terminalClean": true,
+      "peakBytes": 134459392,
+      "seconds": 0.4609259999997448
+    },
+    {
+      "name": "sketch-open-topology-r1-kernel-mirror-focused",
+      "sha256": "5796dc04dfc46feea124643b63f40c172d930803fb2d8f9db728ec2b4d1d2d6d",
+      "terminalClean": true,
+      "peakBytes": 487714816,
+      "seconds": 0.9149342000018805
+    },
+    {
+      "name": "sketch-open-topology-r1-format-mirror-focused",
+      "sha256": "4737050ba1556ccdd6bba04420d6a3c1c17feceda0b3caab67412d3167205c9d",
+      "terminalClean": true,
+      "peakBytes": 113565696,
+      "seconds": 0.3600962999917101
+    },
+    {
+      "name": "sketch-open-topology-r1-kernel-final-mirror-focused",
+      "sha256": "adafa2b784264b60b421d03a9afa82c6a3549eb8547204fc9f91753222add571",
+      "terminalClean": true,
+      "peakBytes": 481165312,
+      "seconds": 0.8648168999934569
+    },
+    {
+      "name": "verify-line-open-topology-r1-cad",
+      "sha256": "ee3fbcdef587079c482b98007b2c855bb26a0f2b187ffa934732908c48fd8333",
+      "terminalClean": true,
+      "peakBytes": 136867840,
+      "seconds": 0.30978830001549795
+    }
+  ]
+}

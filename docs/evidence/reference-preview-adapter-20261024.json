@@ -1,0 +1,204 @@
+{
+  "date": "2026-10-24",
+  "scope": "Production reference preview display, stable React host callback, viewport inspection and API lifetime",
+  "sources": [
+    {
+      "path": "src/reference-preview-display.ts",
+      "sha256": "b103fe1699cc4caf6291265cca98f0761ca0cde0b00d4f1265744204069dab37"
+    },
+    {
+      "path": "src/viewport.ts",
+      "sha256": "f819186e8ce2cef862182a622660458b87405e9229bf9e4585b6ba4ee2656c86"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "bca626853d1fe4b3216c8c4a6bf3585611b6169b34fd90e180f7a98c7bf5e3ca"
+    },
+    {
+      "path": "src/automation/use-workspace-api.ts",
+      "sha256": "de8dff00bc20c5133fbaf5e82f5d4dcb1bd1dd042f858b51fb3a937546812e47"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "9439de7a00456e35f8803d1d8911322a1079d0b2bbca8270bd9ed6947c8e85af"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "9b67a4c858db3095c99981607b651b991da5bd3958ae65191ee7b14826c4e1a9"
+    },
+    {
+      "path": "tests/reference-preview-display.test.ts",
+      "sha256": "e0895ffb0c51a7808233b40028f11414b5103117f85ea8372da27ca102530562"
+    },
+    {
+      "path": "tests/reference-preview-lifetime.test.ts",
+      "sha256": "b145a4454568fc4ec626792f359bf20b719f92a48afcbd4f3dde48937f55c348"
+    }
+  ],
+  "behavior": [
+    "Owner-scoped staged display uses semantic point/finite-line rendering and retryable resource retirement.",
+    "Preview geometry remains ephemeral, unselectable and outside persistent model/history/revision counts.",
+    "Viewport inspection reports owner/state/pending count, millimeters, exact geometry encoding and bounds.",
+    "Preview materials inherit global viewport clipping.",
+    "Stable React host proxy forwards to the latest imperative callback without flushSync during unmount.",
+    "Viewport and API disposal retire the owner; synchronous cleanup attempts all preview families and reports aggregated failures."
+  ],
+  "verification": {
+    "red": {
+      "sha256": "0d6a444e3768a262f1aeb65a32450aa9cbca98d7c6f0d6091e7b02cce05c69d4",
+      "exitCode": 1,
+      "elapsedSeconds": 0.6635529000195675,
+      "peakJobMemoryBytes": 290312192
+    },
+    "redReason": "Renderer adapter module absent.",
+    "lifetimeRed": {
+      "sha256": "d6761b706e81e19df2b368ffd31a4df2a2a332c79b108722e487cc4f97fa9a41",
+      "exitCode": 1,
+      "elapsedSeconds": 0.9660928999946918,
+      "peakJobMemoryBytes": 337281024
+    },
+    "lifetimeRedReason": "Three API owner cleanup failures before lifetime integration.",
+    "build": {
+      "sha256": "5bbe1d30d5f9e7d9e6f710ef02a6096442cf5794fe44d79c89c35b3b0ddce051",
+      "exitCode": 0,
+      "elapsedSeconds": 34.15458649999346,
+      "peakJobMemoryBytes": 2494337024
+    },
+    "focused": {
+      "sha256": "96866fdd8f2761b6a6b05f4b6150a4ca264c3c1c9446fee9b447066411bc85e0",
+      "exitCode": 0,
+      "elapsedSeconds": 2.9857379000168294,
+      "peakJobMemoryBytes": 374284288
+    },
+    "format": {
+      "sha256": "5dd552c4eba65e616214b1b743bc5665128dad4d3a1dbb659d7d544ce9012f14",
+      "exitCode": 0,
+      "elapsedSeconds": 1.4706221999949776,
+      "peakJobMemoryBytes": 185233408
+    },
+    "testsPassed": 90,
+    "newDisplayTests": 7,
+    "newLifetimeTests": 3,
+    "testFiles": [
+      {
+        "path": "tests/automation-api.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/interactive-host-adapter.test.ts",
+        "passed": 3
+      },
+      {
+        "path": "tests/reference-construction-preview.test.ts",
+        "passed": 25
+      },
+      {
+        "path": "tests/reference-display-cleanup.test.ts",
+        "passed": 7
+      },
+      {
+        "path": "tests/reference-preview-display.test.ts",
+        "passed": 7
+      },
+      {
+        "path": "tests/reference-preview-lifetime.test.ts",
+        "passed": 3
+      },
+      {
+        "path": "tests/reference-viewport.test.ts",
+        "passed": 12
+      }
+    ],
+    "browserFirst": {
+      "sha256": "f05d876b9c62a4a4f6cf8cb68fc5ceca7156ef599878f44f70a8cb64fcbd0b72",
+      "exitCode": 1,
+      "elapsedSeconds": 1.774423900002148,
+      "peakJobMemoryBytes": 484179968
+    },
+    "browserFirstFailure": "Harness read renderer geometry count before the edited frame; corrected to capture the actual frame before inspection.",
+    "browser": {
+      "sha256": "f7372cdcbcdd8ca50002007d2eb074698a561494ec03cd1b4ba4e661250906da",
+      "exitCode": 0,
+      "elapsedSeconds": 61.91515889999573,
+      "peakJobMemoryBytes": 488579072
+    },
+    "browserChecks": [
+      "WebGL renders point and finite line; shared project/object inspection reports semantic entities",
+      "GUI pointer and MCP viewport_pick identify the same semantic point and exact world coordinates",
+      "GUI/MCP finite-line picks agree within 0.02 mm; picks beyond its endpoint do not hit the line",
+      "Locked and hidden semantic point is excluded from object picks",
+      "Production clipping removes the point from WebGL pixels and MCP picks",
+      "MCP fit frames reference-only semantic bounds through production camera controls",
+      "Actual owner preview renders outside project/history/revision and picking; viewport_get exposes precise owner geometry and foreign clear does nothing",
+      "Stable React host proxy keeps the API/session and forwards edits to the latest callback without extra renderer geometry",
+      "Actual owned preview inherits and recovers from production viewport clipping",
+      "Real timer expiry attempts actual GPU cleanup without polling; an injected failure remains owner-bound and retry restores baseline geometry count",
+      "React hook unmount/API disposal releases the actual preview and preserves project history; final viewport disposal leaves zero geometries"
+    ],
+    "realLeaseSeconds": 60,
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "buildIdentitySha256": "2e6e410b000de81aa6493313cd214ffd2996706b13838665f54e07ef83b0b48b",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "rendered": {
+    "visibleGeometryCount": 3,
+    "persistentObjects": 2,
+    "editedGeometry": {
+      "kind": "point",
+      "position": [0.5, 0, 2.5]
+    },
+    "expiryReason": "expired",
+    "expiryCleanupPending": true,
+    "geometryCountAfterRetry": 2,
+    "hookUnmountReason": "disposed",
+    "geometryCountAfterHookUnmount": 2,
+    "finalViewportGeometryCount": 0,
+    "driverSha256": "8d1a6094a7eb77c33ff65a0913e09ab47c82412986799c48a2dc7bb022114ae5",
+    "fixtureSha256": "28c8f0d83150a484a7720a885a4a9668720ff78b48dcc0ebdee18440e6ae2cd4",
+    "resultSha256": "f20d3e69ab9dd5092da3b1de0319ef7b3274e4e9560be1cd584c0463c26726b7",
+    "screenshots": [
+      {
+        "artifact": "baseline.png",
+        "sha256": "c78cf855e6d5b9be37e4c6b47b6fd8f259a97984ee4960ab738594b8252ece48"
+      },
+      {
+        "artifact": "preview.png",
+        "sha256": "539ad5587535d1f57ff897e06f569b7fb9c51245dcefad9dd1fb834aa4e5ba08"
+      },
+      {
+        "artifact": "clipped.png",
+        "sha256": "21060d238c98a5901e29bd1d67925c975cc5d478b1be6c8ab7529433821cab95"
+      }
+    ]
+  },
+  "mcp": {
+    "schemaChanged": false,
+    "catalogChanged": false,
+    "readCapability": "viewport_get.referenceConstructionPreview when an internal owner is present; creation remains unadvertised.",
+    "verifiedOperations": [
+      "project_get",
+      "object_get",
+      "viewport_get",
+      "viewport_pick",
+      "viewport_control"
+    ],
+    "publicConstructionActivated": false
+  },
+  "remaining": [
+    "Reciprocal competing-preview admission and public session handlers with revision/retry/cancellation/source/lock checks",
+    "Shared construction editor and atomic identity/dependency/history Apply",
+    "Matched native source/provider/lifecycle and full GUI workflow acceptance"
+  ],
+  "acceptance": {
+    "actualOwnerDisplay": true,
+    "stableHostProxy": true,
+    "realExpiryAndGpuCleanupRetry": true,
+    "apiLifetime": true,
+    "publicSessionProtocol": false,
+    "fullGuiConstruction": false,
+    "nativeParity": false,
+    "milestoneComplete": false
+  }
+}

@@ -1,0 +1,720 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Selected conic source record paths established and internal circumcenter arithmetic implemented; full shared source integration remains incomplete",
+  "applicationBehaviorChanged": false,
+  "internalArithmeticAdded": true,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "575bc8dba384c98ca8d4fc24d23bfd8e1867d99e5523f11978fbed22b5c41926"
+    },
+    {
+      "path": "tests/reference-circumcenter.test.ts",
+      "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "136c64b15f783e8f813116128d44713dccb2353e2af89ea09a843c283a268222"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "b4b2c9ef9c18815c575afd89ba5b14cbae80d281086fe9b4a7d822c221bc0f77"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261024-sketch-conic-r1/evidence.json",
+        "sha256": "d58397762e9f10d4f4f6859f0004c547529a484f16375323dd0c2c460eed1ed9",
+        "matchedCodeBytesPerPass": 8226,
+        "twoReadsAgree": true,
+        "readBytes": 18196,
+        "regionQueries": 150,
+        "closed": true
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261024-sketch-conic-r2/evidence.json",
+        "sha256": "52beea7e28476c8aae628f66a3007eca0e76934f2d8b087c241c97bd6e586432",
+        "matchedCodeBytesPerPass": 12446,
+        "twoReadsAgree": true,
+        "readBytes": 27116,
+        "regionQueries": 218,
+        "closed": true
+      }
+    ],
+    "proceduresChecked": 21,
+    "instructionStartsChecked": 2648,
+    "directFlowsChecked": 239,
+    "selectedArithmeticAnchors": [
+      {
+        "address": "0x140214886",
+        "instruction": "addsd xmm3, xmm1",
+        "bytesSha256": "b095db9b863d8cb0936cbe62d7a1e1eb06ff22e0de5c4c72b49befd07e5a8c0f"
+      },
+      {
+        "address": "0x14021489f",
+        "instruction": "addsd xmm3, xmm2",
+        "bytesSha256": "b86e93bdc8647c019018b15373e6784cddd63c3d5e859ce2f667e0f39e3aa6cf"
+      },
+      {
+        "address": "0x1402148c4",
+        "instruction": "addsd xmm5, xmm1",
+        "bytesSha256": "a0849135e2882a2c1c8f11037670b0c4de62fd306fac8e976a7130ad2be28cc3"
+      },
+      {
+        "address": "0x1402148dd",
+        "instruction": "addsd xmm5, xmm2",
+        "bytesSha256": "7c697d374cf67c26a0733f07833c8652036f0aa139b16170fc381669f162369a"
+      },
+      {
+        "address": "0x140214904",
+        "instruction": "addsd xmm11, xmm1",
+        "bytesSha256": "4fda73fba1be771767d3b4ed71b305ac3fb01fc4e4324b5d9095c218f5aabf65"
+      },
+      {
+        "address": "0x140214915",
+        "instruction": "addsd xmm11, xmm2",
+        "bytesSha256": "ac1a77b7018fca2b2af16af55bae724cb7365f5d4a722b44069b4a9e04231565"
+      },
+      {
+        "address": "0x14021491e",
+        "instruction": "mulsd xmm11, xmm3",
+        "bytesSha256": "0eacbcf0848810014bd9988e6c31232423831986591563baf76592874aafa5fb"
+      },
+      {
+        "address": "0x140214923",
+        "instruction": "mulsd xmm2, xmm5",
+        "bytesSha256": "27e1d8d97fc56cc9f916348b2877de0a5726ea2919a744bca15763210c439832"
+      },
+      {
+        "address": "0x140214927",
+        "instruction": "mulsd xmm5, xmm3",
+        "bytesSha256": "8bb2521ff9278d8be20f21ed41a2e606713ebe5ab0331ceb35ca523fd8bf85a9"
+      },
+      {
+        "address": "0x14021492f",
+        "instruction": "addsd xmm8, xmm2",
+        "bytesSha256": "aea67d6aaedc530e006b4b1276b832c60300a3211266636dd99ac623b6d6c491"
+      },
+      {
+        "address": "0x140214938",
+        "instruction": "addsd xmm3, xmm5",
+        "bytesSha256": "f7e89f3c7a6d318ad5343ab2ea2e87fe0aa609398a84d76553c892c532067387"
+      },
+      {
+        "address": "0x140214946",
+        "instruction": "comisd xmm0, xmm1",
+        "bytesSha256": "a439ab865fccb5f2f210543e72348888b080a7136f014267a0ac093c50855b04"
+      },
+      {
+        "address": "0x14021494a",
+        "instruction": "jbe 0x140214996",
+        "bytesSha256": "a0664e7996db11b461acab314ff2cb99a254fbc0e082692ee47951aa5ab22841"
+      },
+      {
+        "address": "0x1402149a0",
+        "instruction": "divsd xmm0, xmm3",
+        "bytesSha256": "5d9090658eed4f2067aa6d980f55225f66344e5f1b1cf445b32a093fd489408b"
+      },
+      {
+        "address": "0x140214974",
+        "instruction": "divsd xmm4, xmm0",
+        "bytesSha256": "3b31dd099076a101d42e61af010059e2107671e6ada3c3ce0890b33d4fd171c2"
+      },
+      {
+        "address": "0x1402149d5",
+        "instruction": "addsd xmm4, xmm9",
+        "bytesSha256": "5eb0a857cad02cf786f662da2b94683cd035281691fb26f7a4b697deca062a4c"
+      },
+      {
+        "address": "0x1402149da",
+        "instruction": "addsd xmm4, xmm10",
+        "bytesSha256": "199f1bd289d656df108f57e966d1247bfdfacd191daef02c9d9b733a4528a03b"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad40",
+        "label": "circumcenter determinant threshold",
+        "f64": 2.220446049250313e-16,
+        "bytes": "000000000000b03c"
+      },
+      {
+        "address": "0x14126ae00",
+        "label": "backend circle radius threshold",
+        "f64": 1.1920928955078125e-7,
+        "bytes": "000000000000803e"
+      },
+      {
+        "address": "0x14126ae50",
+        "label": "rebuild squared-distance comparison",
+        "f64": 1e-5,
+        "bytes": "f168e388b5f8e43e"
+      },
+      {
+        "address": "0x14126ae90",
+        "label": "arc coincident input and ellipse diameter thresholds",
+        "f64": 0.0001,
+        "bytes": "2d431cebe2361a3f"
+      },
+      {
+        "address": "0x14126b170",
+        "label": "midpoint and circumcenter numerator",
+        "f64": 0.5,
+        "bytes": "000000000000e03f"
+      },
+      {
+        "address": "0x14126b370",
+        "label": "fallback centroid divisor",
+        "f64": 3.0,
+        "bytes": "0000000000000840"
+      }
+    ],
+    "installedModules": [
+      {
+        "name": "ucrtbase.dll",
+        "sha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca"
+      },
+      {
+        "name": "TKGeomBase.dll",
+        "sha256": "870f1edd2804b12bc24cc0112c781e0eea6a29e3d2a09bd809b5240c032f2b23"
+      }
+    ],
+    "imports": [
+      {
+        "slot": "0x140eaeb88",
+        "module": "ucrtbase.dll",
+        "targetRva": "0x4ef80",
+        "exportNames": ["sqrt"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eaeba8",
+        "module": "ucrtbase.dll",
+        "targetRva": "0x68960",
+        "exportNames": ["_dtest", "_ldtest"],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacd98",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x192f00",
+        "exportNames": ["??0GC_MakeArcOfCircle@@QEAA@AEBVgp_Pnt@@00@Z"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacd90",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x193890",
+        "exportNames": [
+          "?Operator@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Operator@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Operator@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Operator@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Operator@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Operator@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Operator@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Operator@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Operator@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Operator@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Operator@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Operator@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Operator@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Operator@gce_MakePln@@QEBAAEBVgp_Pln@@XZ",
+          "?Value@GCE2d_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeCircle@@QEBAAEBV?$handle@VGeom2d_Circle@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeEllipse@@QEBAAEBV?$handle@VGeom2d_Ellipse@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeHyperbola@@QEBAAEBV?$handle@VGeom2d_Hyperbola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeLine@@QEBAAEBV?$handle@VGeom2d_Line@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeParabola@@QEBAAEBV?$handle@VGeom2d_Parabola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeSegment@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeCircle@@QEBAAEBV?$handle@VGeom_Circle@@@opencascade@@XZ",
+          "?Value@GC_MakeConicalSurface@@QEBAAEBV?$handle@VGeom_ConicalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeCylindricalSurface@@QEBAAEBV?$handle@VGeom_CylindricalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeEllipse@@QEBAAEBV?$handle@VGeom_Ellipse@@@opencascade@@XZ",
+          "?Value@GC_MakeHyperbola@@QEBAAEBV?$handle@VGeom_Hyperbola@@@opencascade@@XZ",
+          "?Value@GC_MakeLine@@QEBAAEBV?$handle@VGeom_Line@@@opencascade@@XZ",
+          "?Value@GC_MakePlane@@QEBAAEBV?$handle@VGeom_Plane@@@opencascade@@XZ",
+          "?Value@GC_MakeSegment@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCone@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCylinder@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Value@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Value@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Value@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Value@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Value@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Value@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Value@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Value@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Value@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Value@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Value@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Value@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Value@gce_MakePln@@QEBAAEBVgp_Pln@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacdc8",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x194580",
+        "exportNames": ["??0GC_MakeCircle@@QEAA@AEBVgp_Circ@@@Z"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacdc0",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x193890",
+        "exportNames": [
+          "?Operator@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Operator@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Operator@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Operator@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Operator@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Operator@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Operator@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Operator@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Operator@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Operator@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Operator@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Operator@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Operator@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Operator@gce_MakePln@@QEBAAEBVgp_Pln@@XZ",
+          "?Value@GCE2d_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeCircle@@QEBAAEBV?$handle@VGeom2d_Circle@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeEllipse@@QEBAAEBV?$handle@VGeom2d_Ellipse@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeHyperbola@@QEBAAEBV?$handle@VGeom2d_Hyperbola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeLine@@QEBAAEBV?$handle@VGeom2d_Line@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeParabola@@QEBAAEBV?$handle@VGeom2d_Parabola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeSegment@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeCircle@@QEBAAEBV?$handle@VGeom_Circle@@@opencascade@@XZ",
+          "?Value@GC_MakeConicalSurface@@QEBAAEBV?$handle@VGeom_ConicalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeCylindricalSurface@@QEBAAEBV?$handle@VGeom_CylindricalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeEllipse@@QEBAAEBV?$handle@VGeom_Ellipse@@@opencascade@@XZ",
+          "?Value@GC_MakeHyperbola@@QEBAAEBV?$handle@VGeom_Hyperbola@@@opencascade@@XZ",
+          "?Value@GC_MakeLine@@QEBAAEBV?$handle@VGeom_Line@@@opencascade@@XZ",
+          "?Value@GC_MakePlane@@QEBAAEBV?$handle@VGeom_Plane@@@opencascade@@XZ",
+          "?Value@GC_MakeSegment@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCone@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCylinder@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Value@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Value@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Value@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Value@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Value@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Value@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Value@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Value@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Value@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Value@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Value@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Value@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Value@gce_MakePln@@QEBAAEBVgp_Pln@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacdb8",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x195490",
+        "exportNames": ["??0GC_MakeEllipse@@QEAA@AEBVgp_Elips@@@Z"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacdb0",
+        "module": "TKGeomBase.dll",
+        "targetRva": "0x193890",
+        "exportNames": [
+          "?Operator@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Operator@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Operator@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Operator@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Operator@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Operator@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Operator@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Operator@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Operator@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Operator@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Operator@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Operator@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Operator@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Operator@gce_MakePln@@QEBAAEBVgp_Pln@@XZ",
+          "?Value@GCE2d_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeCircle@@QEBAAEBV?$handle@VGeom2d_Circle@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeEllipse@@QEBAAEBV?$handle@VGeom2d_Ellipse@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeHyperbola@@QEBAAEBV?$handle@VGeom2d_Hyperbola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeLine@@QEBAAEBV?$handle@VGeom2d_Line@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeParabola@@QEBAAEBV?$handle@VGeom2d_Parabola@@@opencascade@@XZ",
+          "?Value@GCE2d_MakeSegment@@QEBAAEBV?$handle@VGeom2d_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfCircle@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfEllipse@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfHyperbola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeArcOfParabola@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeCircle@@QEBAAEBV?$handle@VGeom_Circle@@@opencascade@@XZ",
+          "?Value@GC_MakeConicalSurface@@QEBAAEBV?$handle@VGeom_ConicalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeCylindricalSurface@@QEBAAEBV?$handle@VGeom_CylindricalSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeEllipse@@QEBAAEBV?$handle@VGeom_Ellipse@@@opencascade@@XZ",
+          "?Value@GC_MakeHyperbola@@QEBAAEBV?$handle@VGeom_Hyperbola@@@opencascade@@XZ",
+          "?Value@GC_MakeLine@@QEBAAEBV?$handle@VGeom_Line@@@opencascade@@XZ",
+          "?Value@GC_MakePlane@@QEBAAEBV?$handle@VGeom_Plane@@@opencascade@@XZ",
+          "?Value@GC_MakeSegment@@QEBAAEBV?$handle@VGeom_TrimmedCurve@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCone@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@GC_MakeTrimmedCylinder@@QEBAAEBV?$handle@VGeom_RectangularTrimmedSurface@@@opencascade@@XZ",
+          "?Value@gce_MakeCirc2d@@QEBAAEBVgp_Circ2d@@XZ",
+          "?Value@gce_MakeCirc@@QEBAAEBVgp_Circ@@XZ",
+          "?Value@gce_MakeCone@@QEBAAEBVgp_Cone@@XZ",
+          "?Value@gce_MakeCylinder@@QEBAAEBVgp_Cylinder@@XZ",
+          "?Value@gce_MakeDir2d@@QEBAAEBVgp_Dir2d@@XZ",
+          "?Value@gce_MakeDir@@QEBAAEBVgp_Dir@@XZ",
+          "?Value@gce_MakeElips2d@@QEBAAEBVgp_Elips2d@@XZ",
+          "?Value@gce_MakeElips@@QEBAAEBVgp_Elips@@XZ",
+          "?Value@gce_MakeHypr2d@@QEBAAEBVgp_Hypr2d@@XZ",
+          "?Value@gce_MakeHypr@@QEBAAEBVgp_Hypr@@XZ",
+          "?Value@gce_MakeLin@@QEBAAEBVgp_Lin@@XZ",
+          "?Value@gce_MakeParab2d@@QEBAAEBVgp_Parab2d@@XZ",
+          "?Value@gce_MakeParab@@QEBAAEBVgp_Parab@@XZ",
+          "?Value@gce_MakePln@@QEBAAEBVgp_Pln@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      }
+    ],
+    "scope": "Static code and repeated passive code/metadata/IAT binding plus installed DLL export/entry-byte comparison. No native calls, target writes, geometry-buffer reads, UI input, native-image execution or DLL loading."
+  },
+  "sourceContracts": {
+    "threePointArcAndCircle": [
+      "first defining point",
+      "middle defining point",
+      "last defining point",
+      "computed center"
+    ],
+    "ellipse": [
+      "negative first-axis endpoint",
+      "positive first-axis endpoint",
+      "positive perpendicular endpoint",
+      "negative perpendicular endpoint",
+      "center"
+    ],
+    "ellipseDefinition": "First two local points define center, first axis and first radius; third point distance to their infinite line defines the second radius. Backend axis/radius swapping does not reorder child source records.",
+    "backendRecords": "Separate collections: arc has three defining points, circle has center, ellipse has four endpoints without the child center.",
+    "failureCaution": "Selected record writes precede provider success; complete outer publication/rollback remains unverified. Fewer than three ellipse records are retained as incomplete input with failure.",
+    "currentApplicationGap": "Sketch drawing discards the middle three-point pick and represents circles as two arcs. Geometry alone cannot recover missing native defining records or their provenance."
+  },
+  "implemented": [
+    "nativeReferenceCircumcenter preserves the recovered corner-dot products, determinant grouping and barycentric accumulation.",
+    "The determinant threshold is inclusive Number.EPSILON; degenerate input returns its ordered centroid with nondegenerate:false.",
+    "Inputs are not mutated and the returned center is detached. Callers retain canonical validation and provider-admission responsibility.",
+    "No existing drawing or reference publication path invokes the new internal helper yet."
+  ],
+  "verification": {
+    "red": "11 cases failed because nativeReferenceCircumcenter was absent.",
+    "build": {
+      "passed": true,
+      "heapMiB": 3072,
+      "jobLimitBytes": 4294967296,
+      "elapsedSeconds": 32.842615699977614,
+      "peakAggregateBytes": 2505760768,
+      "bundle": "scanforge-9f1d31f32b856ccc"
+    },
+    "focused": {
+      "passed": 263,
+      "files": 9,
+      "newAnalyticTests": 11
+    },
+    "full": {
+      "passed": 48288,
+      "skipped": 64,
+      "passedFiles": 613,
+      "skippedFiles": 18,
+      "elapsedSeconds": 263.0792478999938,
+      "peakAggregateBytes": 1004756992
+    },
+    "receipts": [
+      {
+        "label": "construction-sketch-conic-producers-r1",
+        "sha256": "b4c74f217724b6aa02463b73655fe344d296320b85fed502cce74f9316cbb69f",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.3595581000263337,
+        "peakAggregateBytes": 117096448,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-rebuild-noanalysis-r1",
+        "sha256": "7936d4118eea991894534364d0771b82e7fb44c925bfad5a494cfd0340136096",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.017095099989092,
+        "peakAggregateBytes": 854568960,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-create-noanalysis-r1",
+        "sha256": "d761dafc465a24ea9c1d8626713e0fb502418ec651069f255f578bf3996ba767",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.474077999999281,
+        "peakAggregateBytes": 761327616,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-geometry-noanalysis-r1",
+        "sha256": "54642f2467b3d6cbcf82d5c95b50b9bc6a87ca3787a2c66a1e9a52b843412200",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.424447900004452,
+        "peakAggregateBytes": 887861248,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-centers-noanalysis-r1",
+        "sha256": "97e993af697f6d7d89fdc91dea54068494eb7a4d694f5b7507ed4e6dca87c9ea",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.369773400016129,
+        "peakAggregateBytes": 874483712,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-backend-noanalysis-r1",
+        "sha256": "826817300c41f6a3ee6781217f5ff8ecb72648fe6f220bec14fff5e318222204",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 11.573071499995422,
+        "peakAggregateBytes": 889053184,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-bindings-r1",
+        "sha256": "52bcab73e90d390ec156b3ad6afdf4dff03d9046ece98ecd8587486bce7b2f04",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2588683000067249,
+        "peakAggregateBytes": 95748096,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-bindings-r2",
+        "sha256": "68a9d01ec4ddbc08830821446683041b82d0b835303176c00188dd431f80e3d8",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2586606999975629,
+        "peakAggregateBytes": 96882688,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-semantics-r1",
+        "sha256": "924a13df2eba33efa1c267a1c3a2d83595dc23aef502878e5cca0b123bcf89ad",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2582770000153687,
+        "peakAggregateBytes": 96854016,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-conic-exports-r1",
+        "sha256": "990fd4d369d7f1dcc967e39318058ec4df2452d20fa349a3d7b81543994a5554",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.20872560000861995,
+        "peakAggregateBytes": 44490752,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-circumcenter-r1-red",
+        "sha256": "e7b6e348daca5c2b8d2e163a5606f19811e294dbd2e07e2ebe0627ca2a84fa30",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "elapsedSeconds": 0.6123304000066128,
+        "peakAggregateBytes": 273956864,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-circumcenter-r1-format",
+        "sha256": "288b4bb349b8bd872abaa018068d1d83838d60234e5144738006a53aa4c8c6e7",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2082010000012815,
+        "peakAggregateBytes": 95404032,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-circumcenter-r1-build",
+        "sha256": "4152b58b676174f7bbacf82a499738f4964a9b83fbaa550efa931368aa9d177b",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 32.842615699977614,
+        "peakAggregateBytes": 2505760768,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-circumcenter-r1-green",
+        "sha256": "e6324bf8cac43184a0c2f3116cc95f10ce510daa4765d2944607074f26f4b79a",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 2.7328938999853563,
+        "peakAggregateBytes": 377393152,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-circumcenter-r1-full",
+        "sha256": "5ae1d8167b41b4bf058074df24ca1b2f6ef6c7b29fc8b9ded8542d472ad4edc3",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 263.0792478999938,
+        "peakAggregateBytes": 1004756992,
+        "cleanedUp": true
+      }
+    ],
+    "existingSketchAndMcpPinsVerifiedUnchanged": [
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+      },
+      {
+        "path": "src/sketch-frame.ts",
+        "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+      },
+      {
+        "path": "src/types.ts",
+        "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": {
+    "scope": "Internal common arithmetic dependency only; no GUI-only behavior or new advertised operation.",
+    "existingSharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "plannedSharedOperations": [
+      "reference_construction_sources",
+      "reference_construction_edit",
+      "reference_construction_get",
+      "reference_construction_apply"
+    ],
+    "requiredIntegration": "Extend source records, identities and placement through common validation/editor/worker operations, persistence/history and GUI/MCP outcomes together. Current catalog/schema/agent usage remain unchanged."
+  },
+  "limitations": [
+    "Center/radius circle creation, owner/pick placement and editor failure publication remain unresolved.",
+    "Analytic bounded-finite tests do not establish native numerical replay or malformed-native-input behavior.",
+    "Folded export aliases remain explicit and are resolved only with constructor/receiver context.",
+    "No complete spline/conic authoring integration, native save/reopen or rendered GUI/MCP acceptance is claimed.",
+    "The separate alternate-provider axis extent remains unresolved."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-sketch-conic-producers-r1.json",
+      "sha256": "763f2e5a932987cc5ced58eff2dc3cc5c916bad6086f94aa9517694bf18871a7"
+    },
+    {
+      "artifact": "construction-sketch-conic-rebuild-noanalysis-r1/evidence.json",
+      "sha256": "6138578d509c8bba30c1486c3a66de35462c14042f6f09428257c229ad7bf3ba"
+    },
+    {
+      "artifact": "construction-sketch-conic-create-noanalysis-r1/evidence.json",
+      "sha256": "4f2f03675b7a42c730077b6c44a615a082f95ca76095157d5a48e19c07594263"
+    },
+    {
+      "artifact": "construction-sketch-conic-geometry-noanalysis-r1/evidence.json",
+      "sha256": "0bc4a1d5667c552758411c03917428d1fc650d387c67fe40a437046a76c98ecc"
+    },
+    {
+      "artifact": "construction-sketch-conic-centers-noanalysis-r1/evidence.json",
+      "sha256": "974370fbc5f371996c2b88951f33794547c80927979de3bdc78c8009d0c21905"
+    },
+    {
+      "artifact": "construction-sketch-conic-backend-noanalysis-r1/evidence.json",
+      "sha256": "87aeb6dccc33e2a3129c71dc98c0ab5681d14646f7170e6ff93d5a1e6c5f28df"
+    },
+    {
+      "artifact": "construction-sketch-conic-code-bindings-r1.json",
+      "sha256": "2382506ccb0c084d0dda58f31dbcecc3f8240b94f49be80593900f0846629ae2"
+    },
+    {
+      "artifact": "construction-sketch-conic-code-bindings-r2.json",
+      "sha256": "887050bd872063be01c36e33cf35bb650ae9d2319b66e7aea350b4904c295f49"
+    },
+    {
+      "artifact": "construction-sketch-conic-semantics-r1.json",
+      "sha256": "78264b7e9aaa4739926e5957dcd2d9493a010a28c4d46ec8a3d5b02352c4f7c7"
+    },
+    {
+      "artifact": "construction-sketch-conic-exports-r1.json",
+      "sha256": "e29c113294001a5ed60c7124c375fad489544b31109ca272ac63614ebcdbd83f"
+    }
+  ]
+}

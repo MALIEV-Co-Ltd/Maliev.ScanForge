@@ -184,7 +184,7 @@ export function createInteractiveOperations(
               e.positions;
             const normals =
               placement?.sourceNormals ??
-              (e.indexedMesh ? e.indexedMesh.normals : e.normals);
+              (e.indexedMesh ? e.indexedMesh.geometryNormals : e.normals);
             return [
               id,
               {

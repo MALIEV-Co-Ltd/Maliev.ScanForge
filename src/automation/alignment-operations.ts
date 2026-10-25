@@ -1,5 +1,6 @@
 import type { Handler, WorkspaceHost } from "./api";
 import { evaluateCadAlignmentReference } from "../cad/alignment-reference";
+import { referenceDatumFeature } from "../alignment-reference-entity";
 import {
   nativeDatumFitFeature,
   nativeDatumPickedFeature,
@@ -7,7 +8,7 @@ import {
 
 export interface AlignmentReference {
   id: string;
-  source: "cadFace" | "fittedPrimitive";
+  source: "cadFace" | "fittedPrimitive" | "referenceConstruction";
   kind: "plane" | "direction" | "point" | "unsupported";
   point?: number[];
   direction?: number[];
@@ -44,6 +45,28 @@ export function createAlignmentOperations(
         throw new Error("Alignment reference object is not in this project.");
       context.check();
       let references: AlignmentReference[] = [];
+      const semantic = referenceDatumFeature(entity);
+      if (semantic) {
+        const kind = semantic.kind === "referencePoint" ? "point" : "direction";
+        const value = nativeDatumPickedFeature(semantic, kind);
+        if (
+          !value ||
+          !value.point.every(Number.isFinite) ||
+          (value.direction && !value.direction.every(Number.isFinite))
+        )
+          throw new Error(
+            "Reference datum geometry exceeds the finite numeric range.",
+          );
+        references.push({
+          id: `${entity.id}/reference/${kind}`,
+          source: "referenceConstruction",
+          kind,
+          point: value.point,
+          ...(value.direction ? { direction: value.direction } : {}),
+          ...(semantic.length !== undefined ? { length: semantic.length } : {}),
+          surfaceKind: semantic.kind,
+        });
+      }
       if (entity.kernelId) {
         context.progress(0.1, "Reading exact CAD faces");
         const inputs = await host.cad().alignmentReferences(entity.kernelId);

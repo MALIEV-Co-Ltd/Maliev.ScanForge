@@ -63,6 +63,22 @@ function at(c: Curve, t: number): UV {
         c.center![1] + c.radius! * Math.sin(c.start! + c.sweep! * t),
       ];
 }
+function retainedArcIsLine(c: Curve, lo: number, hi: number): boolean {
+  if (c.periodic) return false;
+  const middle = at(c, (lo + hi) * 0.5),
+    first = sub(at(c, lo), middle),
+    last = sub(at(c, hi), middle);
+  for (const chord of [first, last]) {
+    const length = Math.sqrt(chord[1] * chord[1] + chord[0] * chord[0]);
+    if (length >= 2 ** -52) {
+      const reciprocal = 1 / length;
+      chord[0] *= reciprocal;
+      chord[1] *= reciprocal;
+    }
+  }
+  // Installed CRT cosine at 0.0008726646259971648; equality retains an arc.
+  return Math.abs(first[1] * last[1] + first[0] * last[0]) > 0.9999996192282494;
+}
 function parameter(c: Curve, p: UV): number {
   if (c.kind === "line") {
     const d = sub(c.b, c.a);
@@ -674,6 +690,15 @@ export async function trimSketchStroke(
       );
       retainedCurveIds.push(id);
       if (c.kind === "line") segments.push({ ...c.sources[0], id, a, b });
+      else if (retainedArcIsLine(c, lo, hi))
+        segments.push({
+          id,
+          a,
+          b,
+          ...(c.sources[0].construction !== undefined
+            ? { construction: c.sources[0].construction }
+            : {}),
+        });
       else arcs.push({ ...(c.sources[0] as SketchArc), id, a, b });
       if (segments.length + arcs.length > SKETCH_TRIM_LIMITS.outputCurves)
         throw Error("Sketch trim output curve limit exceeded.");

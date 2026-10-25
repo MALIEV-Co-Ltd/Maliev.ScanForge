@@ -1,0 +1,249 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal shared scalar candidate test only; full reconstruction and native acceptance remain incomplete.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "d021d9ced4a34fb2063c91e1aeaeb6e46f1bfffa26514a930c20c95cfe860aac"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "fbd7e4e9e7a0a25343498bf77e2fd07f62157194f840afdee293be799ca6de4c"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "e5e2cf0473ad7c91e95b7b9fdbb6ca3fe57954288f63af1fdbe74e80e69ba1d8"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "55fb3102eca7f67a6df5e80cf7ff266fb8cba40855568a423d90418ec5931c11"
+    },
+    {
+      "path": "src/sketch-wire-validation.ts",
+      "sha256": "3600a9fce385cc924e7b8c3a6ce0803236413480e85cddd3d75b7402042437fb"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "f8924b5f1cffb76dad923a7b09e3dfc26aaaa3b2e691a26a1924af9bef26fa25"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "1399bb7fd7e0e0137831571b9617eb6b49116bcd4ba1e27cce9e9b541175a5af"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "0f3519b211991a33697bf792d40c00ffe2eddd2d82758076351b8ded311ea306"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "1270164254075cf693bd812afb348cbc353be74f8437ab8c8a94a2f92f076f8e"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "1270164254075cf693bd812afb348cbc353be74f8437ab8c8a94a2f92f076f8e"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "trace-line-self-connection-r1.py",
+      "sha256": "af625fa9f66b23da0bb9a38a619baadafd571a6eb1024d559e0e5f8d3fd97f8b"
+    },
+    {
+      "name": "trace-line-self-connection-r3.py",
+      "sha256": "edea4d21c20a817c59af1e2a6ff233b6c0f2a5ca1160c3b4a87b24439bd80915"
+    },
+    {
+      "name": "line-self-connection-trace-r1.json",
+      "sha256": "3cde7cdbe2b7520a79264d3e6cf2f033c6e157f9f29d92d382285439f3db8f01"
+    },
+    {
+      "name": "line-self-connection-trace-r3.json",
+      "sha256": "0b91417305e1d78255286ae659a2dd8ce641597c2fea4c10cd19f52cfac7e458"
+    },
+    {
+      "name": "verify-line-self-connection-r1.py",
+      "sha256": "25131d2099f129a14178070aeefe40109029f4b7c2466783cbe5fc764602c49f"
+    },
+    {
+      "name": "line-self-connection-verified-r1.json",
+      "sha256": "c5faf03477123559d859d250dd0c968ca5f61cde85ae533b3a4ae1d6bed87bbb"
+    },
+    {
+      "name": "run-sketch-self-connection-r1.py",
+      "sha256": "22b6ef09fc03caf4c0ef963b1eb4bf84696d2c876b32abeca77fd9ad5b36029e"
+    }
+  ],
+  "helperSha256": "1270164254075cf693bd812afb348cbc353be74f8437ab8c8a94a2f92f076f8e",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "static": {
+    "instructionStartsRechecked": 3421,
+    "anchorsChecked": 26,
+    "scopes": 6,
+    "unresolvedParameterResolverSwitch": true
+  },
+  "validation": {
+    "focusedTests": 86,
+    "focusedFiles": 6,
+    "newUnitTests": 8,
+    "kernelGroups": 5,
+    "primaryReplacementCycles": 100,
+    "draftKernelGroups": 16,
+    "candidateKernelGroups": 31,
+    "buildPassed": true,
+    "servedHelperMatchesLocal": true,
+    "serverPid": 28864,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false
+  },
+  "semantics": [
+    "Explicit finite nonnegative squared threshold; no default or inferred linear-tolerance conversion.",
+    "Strict endpoint distance less than threshold; lazy explicit witness; strict witness distances greater than threshold.",
+    "Y-X-Z accumulation without clamp; finite overflow guard is application policy.",
+    "Candidate only; no topology mutation, complete body admission or native sampler policy claimed."
+  ],
+  "mcp": "Common worker helper only; existing shared public contracts unchanged. No GUI-only capability or advertised unsupported tool.",
+  "limitations": [
+    "Full native sampler parameter resolution and downstream connection topology remain open.",
+    "Complete line backend, ordered sketch model, shared GUI/MCP editor and original-native/rendered acceptance remain required."
+  ],
+  "receipts": [
+    {
+      "name": "sketch-self-connection-r1-red-mirror-focused",
+      "sha256": "cd777438bd4df55054c0cc1e7667d37ef184d302c8259218085af7713a3886f1",
+      "exitCode": 1,
+      "peakBytes": 279674880,
+      "elapsedSeconds": 2.481503999995766,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-unit-mirror-focused",
+      "sha256": "833ee2c715bd4d04b8c809ac072a3abbd154ab71b97fc4cd6f69852865e7f288",
+      "exitCode": 0,
+      "peakBytes": 266575872,
+      "elapsedSeconds": 1.2694795999850612,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-format-mirror-focused",
+      "sha256": "677a17ccd60cdbcace239a6597140803e24b3e8db3fdf1ce4694a2953f5ef20b",
+      "exitCode": 0,
+      "peakBytes": 89939968,
+      "elapsedSeconds": 0.3089625000138767,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-format-final-mirror-focused",
+      "sha256": "7dbca64d3eade582709f8010591cf889ff307d7f4d9594891b29e7d7db372a28",
+      "exitCode": 0,
+      "peakBytes": 90382336,
+      "elapsedSeconds": 0.2590782000042964,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-build-build",
+      "sha256": "91f7d61fd7e1547a33cc45465ca1a29b324c7f2b8e5372654034efb817158f38",
+      "exitCode": 0,
+      "peakBytes": 2445922304,
+      "elapsedSeconds": 58.88297790000797,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-kernel-mirror-focused",
+      "sha256": "8112c99327fdba5d38ecb8bcc20fa5bb3d25fe04e3f1220dfdf630fd47d7c875",
+      "exitCode": 0,
+      "peakBytes": 447352832,
+      "elapsedSeconds": 0.6635353000019677,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-self-connection-r1-kernel-final-mirror-focused",
+      "sha256": "ffaa01a8cc4e41df6bc2177f0ac23adb9ac3e16eac029d0b420126ecbc55a6a0",
+      "exitCode": 0,
+      "peakBytes": 439562240,
+      "elapsedSeconds": 0.8142702999757603,
+      "terminalClean": true
+    },
+    {
+      "name": "verify-line-self-connection-r1-cad",
+      "sha256": "133e091682d304ce93b03b3087f1451ae4888e654283f12994ca6b80caf36234",
+      "exitCode": 0,
+      "peakBytes": 135610368,
+      "elapsedSeconds": 0.30910829998902045,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-child-self-connection-mirror-focused",
+      "sha256": "f427440521b79c9a9a01714462efa8b974122948d5037c1fc00ae0620cee7809",
+      "exitCode": 0,
+      "peakBytes": 479449088,
+      "elapsedSeconds": 0.8652342999994289,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-kernel-self-connection-mirror-focused",
+      "sha256": "b77f735a27e2d092eb81099f5b7b4225bca298eb5a55e36dbfe3cb3b393621fd",
+      "exitCode": 0,
+      "peakBytes": 482873344,
+      "elapsedSeconds": 0.8143032000225503,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-self-connection-r1-cad",
+      "sha256": "51e5edb4b73820c76692bccdd92f38047c101abcdad6bb2f049d174429117514",
+      "exitCode": 0,
+      "peakBytes": 136900608,
+      "elapsedSeconds": 0.8645239000034053,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-self-connection-r2-cad",
+      "sha256": "28e5d985c6df06955863c08aca24f377400f729e9f7d72deeac27a286ed17efd",
+      "exitCode": 1,
+      "peakBytes": 143667200,
+      "elapsedSeconds": 0.9683342000062112,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-self-connection-r3-cad",
+      "sha256": "dc69dfa1f3f1923f8b0762973aea39fab0d1d66b6cfa8a8b10bf7698689cbdca",
+      "exitCode": 0,
+      "peakBytes": 142897152,
+      "elapsedSeconds": 0.9154496999981347,
+      "terminalClean": true
+    }
+  ],
+  "expectedFailures": [
+    "Missing module before implementation.",
+    "Static trace r2 exclusive-output collision; existing r1 evidence preserved, corrected fresh r3 succeeded."
+  ]
+}

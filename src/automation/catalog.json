@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Indexed scanner normals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -145,7 +145,7 @@
   },
   {
     "name": "object_geometry_digest",
-    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
+    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Includes indexedMesh.geometryNormals separately from indexedMesh.normals when present. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties using shared project validation.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -192,6 +192,27 @@
               "type": "number",
               "minimum": 0,
               "maximum": 1
+            },
+            "pointSize": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Point-cloud diameter in screen pixels; default 1."
+            },
+            "pointAutoDensity": {
+              "type": "boolean",
+              "description": "Use stable camera-adaptive sampling; default true. False displays all eligible points."
+            },
+            "pointDensity": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 100,
+              "description": "Adaptive display density percentage, default 100. Larger values retain more source points. Existing saved values are preserved."
+            },
+            "pointColorMode": {
+              "type": "string",
+              "enum": ["source", "solid"],
+              "description": "source uses file RGB when present, otherwise object color; solid uses object color."
             },
             "visible": {
               "type": "boolean"
@@ -223,7 +244,7 @@
   },
   {
     "name": "object_duplicate",
-    "description": "Duplicate geometry without duplicating parametric identity.",
+    "description": "Duplicate geometry without duplicating parametric identity. A source carrying a saved constructionOrderKey receives a fresh key on its copy; inspect it with object_get. Reference construction duplication is not yet supported.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -252,7 +273,7 @@
   },
   {
     "name": "object_delete",
-    "description": "Delete one object; dependent feature integrity and locks are enforced.",
+    "description": "Delete objects atomically in one modeling history step, shared with Delete in the Objects workspace. Supply entityId or entityIds, or omit both to use current object selection. Empty, duplicate, stale, locked or dependent targets fail without partial deletion. Split outputs still require the feature workflow. Returns deleted entityIds and legacy entityId for a single target.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -263,6 +284,17 @@
           "minLength": 1,
           "maxLength": 200,
           "description": ""
+        },
+        "entityIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": "Objects to delete together; mutually exclusive with entityId. Omit both to use current object selection."
         },
         "expectedRevision": {
           "type": "integer",
@@ -275,7 +307,30 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId"],
+      "required": ["expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "scene_auto_color",
+    "description": "Assign a unique solid sRGB hex display color to every scene object in Objects-panel order, including hidden and locked objects. Shared with Auto colorize. Uses a restrained CAD-style palette with deterministic extensions, up to 10000 objects; unchanged scenes keep identical assignments on repeat. Disables Normals view to reveal object colors. Preserves geometry, selection, opacity, authored per-point RGB and modeling history. Empty/oversized scenes fail without changes. Returns changed, normalsDisplay:false and objects [{entityId,color}].",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Unique retry receipt; reuse only an identical request."
+        }
+      },
+      "required": ["expectedRevision", "requestId"],
       "additionalProperties": false
     }
   },
@@ -339,7 +394,7 @@
   },
   {
     "name": "selection_get",
-    "description": "Read current selection via an artifact of sorted triangle slots.",
+    "description": "Read current mesh or point-cloud selection as sorted original source slots in an artifact, with elementKind and count.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -3465,7 +3520,7 @@
   },
   {
     "name": "sketch_trim_stroke",
-    "description": "Paint away analytic line/arc/circle intervals between actual sketch intersections using an unsnapped UV millimetre stroke and radiusMm. Uses the active draft and one shared sketch edit; no-hit returns changed:false. Preserves unrelated geometry, placement and constraints; rejects affected constraints, ambiguous overlaps and exceeded work limits atomically. Circles stored as two arcs are periodic, so their storage seam is not a trim stop. Returns changed, removedCurveIds, retainedCurveIds and intersectionCount. Limits:4096 stroke points,32768 sketch points,4096 constraints,512 stored curves,65536 intersections,8192 output curves,2000000 work units.",
+    "description": "Paint away analytic line/arc/circle intervals between actual sketch intersections using an unsnapped UV millimetre stroke and radiusMm. Uses the active draft and one shared sketch edit; no-hit returns changed:false. Preserves unrelated geometry, placement and constraints; rejects affected constraints, ambiguous overlaps and exceeded work limits atomically. Retained nonperiodic arc pieces become straight segments when their absolute normalized midpoint-chord dot exceeds 0.9999996192282494; equality stays curved. This includes small and nearly full sweeps. IDs/construction flags survive conversion; inspect both segments and arcs in sketch_get. Circles stored as two arcs are periodic, so their storage seam is not a trim stop and this fallback does not apply. Returns changed, removedCurveIds, retainedCurveIds and intersectionCount. Limits:4096 stroke points,32768 sketch points,4096 constraints,512 stored curves,65536 intersections,8192 output curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3508,7 +3563,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside ±1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3525,10 +3580,17 @@
           "minItems": 1,
           "maxItems": 4096,
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
           "description": "Existing line/arc IDs to copy, excluding the axis. Include both semicircles for a stored two-arc circle."
         },
-        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
         "requestId": {
           "type": "string",
           "minLength": 1,
@@ -3694,7 +3756,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3739,7 +3801,7 @@
   },
   {
     "name": "project_import_batch",
-    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 512 MiB. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
+    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 1 GiB. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4008,7 +4070,7 @@
   },
   {
     "name": "artifact_put",
-    "description": "Create/append a local upload artifact with ordered base64 chunks (maximum 1 MiB decoded). Storage is bounded to 64 handles totaling 512 MiB, with a 15-minute inactivity lease. Append at the exact current byte offset; expired handles cannot be resumed. This grants no workspace edit.",
+    "description": "Create/append a local upload artifact with ordered base64 chunks (maximum 1 MiB decoded). Storage is bounded to 64 handles totaling 1 GiB, with a 15-minute inactivity lease. Large browser uploads checkpoint to temporary disk backing every 64 MiB; storage failure preserves the previous size. Append at the exact current byte offset; expired handles cannot be resumed. This grants no workspace edit.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -4256,8 +4318,214 @@
     }
   },
   {
+    "name": "scan_selection_get",
+    "description": "Inspect selected scan edit state: active editor, shape tool, through, clip (world mm), counts, selection history availability, sensitivity degrees and brush radius in CSS pixels. No geometry mutation.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "scan_selection_control",
+    "description": "Configure the shared Edit scan tool, see-through state or clipping box (world mm, null disables); hide/isolate/reveal elements or undo/redo selection history independently of geometry history. Requires an unlocked visible selected scan. Clipping is active while Edit scan is open. Does not commit model geometry. Read scan_selection_get after changes. revealSelected matches Show last hidden: reveal and reselect only the last hidden source slots, retaining earlier hidden batches.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "configure",
+            "hide",
+            "isolate",
+            "reveal",
+            "undo",
+            "redo",
+            "revealSelected"
+          ]
+        },
+        "tool": {
+          "type": "string",
+          "enum": ["wand", "brush", "freehand", "line", "rectangle", "circle"]
+        },
+        "through": {
+          "type": "boolean"
+        },
+        "clip": {
+          "oneOf": [
+            {
+              "type": "null",
+              "enum": [null]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -1000000000000.0,
+                    "maximum": 1000000000000.0
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "max": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -1000000000000.0,
+                    "maximum": 1000000000000.0
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["min", "max"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "angleDegrees": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90
+        },
+        "brushRadiusPx": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 500
+        },
+        "allConnected": {
+          "type": "boolean"
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId", "action"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "scan_select_region",
+    "description": "Cancellable shared GUI screen selection against the current selected scan/camera. Open Edit scan first. Coordinates are CSS pixels from viewport top-left, dimensions available from viewport_get. rectangle/circle use start/end; lasso is filled freehand; brush is an open stroke (two points form a straight stroke), radius in CSS pixels. Respects hidden slots, self-occlusion unless through:true, and active clipping. operation replaces (default), adds or subtracts. Original triangle/point IDs remain unchanged. One selection-history step, no model-history step. Poll job_get, cancel job_cancel; read selection_get artifact for exact source slots.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "region": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["rectangle", "circle"]
+                },
+                "start": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "end": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "required": ["kind", "start", "end"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["brush", "lasso"]
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "minimum": -100000,
+                      "maximum": 100000
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "minItems": 1,
+                  "maxItems": 4096
+                },
+                "radius": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 2000
+                }
+              },
+              "required": ["kind", "points", "radius"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "through": {
+          "type": "boolean"
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["replace", "add", "subtract"]
+        }
+      },
+      "required": ["entityId", "expectedRevision", "requestId", "region"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "selection_modify",
-    "description": "Select all, clear or invert triangles without transferring large slot arrays.",
+    "description": "Select all, clear or invert visible mesh triangle slots or point-cloud sample slots without transferring large arrays. Hidden source slots remain unselected.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4290,7 +4558,7 @@
   },
   {
     "name": "selection_saved",
-    "description": "Save, load or delete a persistent named triangle selection.",
+    "description": "Save, load or delete a persistent named mesh/point-cloud selection using original source slots. Loading excludes currently hidden slots.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4623,7 +4891,7 @@
   },
   {
     "name": "application_inspect",
-    "description": "Inspect current visible dialogs, bounded accessible controls, statuses/errors, GUI preview/progress, active panel and workspace. Credential/file-input values omitted. Use semantic tools instead of clicking.",
+    "description": "Reports contextMenuPolicy application-only: native browser right-click menus are suppressed throughout the document while application context handlers and existing semantic MCP actions remain available. Inspect current visible dialogs, bounded accessible controls, statuses/errors, GUI preview/progress, active panel and workspace. Credential/file-input values omitted. Use semantic tools instead of clicking.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -4704,7 +4972,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4876,19 +5144,24 @@
   },
   {
     "name": "viewport_get",
-    "description": "Read camera projection/position/target/up/zoom and copied projectionMatrix/cameraWorldMatrix (cameraMatrixFormat:column-major-4x4), session navigation.orbitMode and navigation.zoomWindowActive, visible scene bounds and CSS viewport dimensions. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
+    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Read camera projection/position/target/up/zoom and copied projectionMatrix/cameraWorldMatrix (cameraMatrixFormat:column-major-4x4), session navigation.orbitMode and navigation.zoomWindowActive, visible scene bounds and CSS viewport dimensions. Main view pointCloudDisplay reports visible clouds [{entityId,autoDensity,density,eligiblePoints,sampleFraction,estimatedDisplayedPoints,samplingMethod,cellSizePx,maxScreenOffsetPx}]. samplingMethod is stable-sample or full. Compatibility fields cellSizePx and maxScreenOffsetPx are always null and zero; retained points are not moved. Counts/fractions estimate sampled points before clipping/occlusion, not exact selected vertices or modified source data. Includes Interactive mirror readiness/failure diagnostics when its display provider is installed. No model geometry transfer. orbitCenter exposes the active mouse/SpaceMouse world-mm pivot and marker visibility. While the hole tool is open, bridge.mode distinguishes holes from bridge; hovered boundary references also report direct hole picking.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "view": {
+          "type": "string",
+          "enum": ["main", "moving", "fixed"]
+        }
+      },
       "required": [],
       "additionalProperties": false
     }
   },
   {
     "name": "viewport_control",
-    "description": "Frame all/object/active selection; zoom to a normalized rectangle; set session free/constrained orbit or arm/cancel window zoom; set projection; rotate by degrees (optionally around the surface at normalized x/y); orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
+    "description": "Point-cloud pointer hits bridge gaps between rendered scan dots using the nearest depth sample within 6 CSS pixels, keeping the pivot on the pointer ray. Only when that local hit test misses is the screen-center/model-depth fallback used. Normalized x/y rotation resolves a fresh pointer surface, then frame-center surface, then screen center at visible model bounds depth; empty-space misses never use a stale pivot or an unrelated camera look-at depth. Large point clouds use rendered depth with displayed point sizes, transforms and clipping. Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Frame all/object/active selection; zoom to a normalized rectangle; set session free/constrained orbit or arm/cancel window zoom; set projection; rotate by degrees (optionally around the surface at normalized x/y); orient to active sketch; or set an absolute world-mm camera pose. Uses editor camera controls and leaves model/history unchanged.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4896,6 +5169,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -4926,6 +5203,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -4979,6 +5260,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -5008,6 +5293,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -5056,6 +5345,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -5081,6 +5374,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -5102,6 +5399,10 @@
         {
           "type": "object",
           "properties": {
+            "view": {
+              "type": "string",
+              "enum": ["main", "moving", "fixed"]
+            },
             "expectedRevision": {
               "type": "integer",
               "minimum": 0,
@@ -5171,12 +5472,16 @@
   },
   {
     "name": "viewport_pick",
-    "description": "Inspect visible rendered mesh or point-cloud geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Read-only; native CAD edge/face IDs are separate.",
+    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Inspect visible rendered geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Semantic reference hits report referenceKind, triangleIndex:null and no cloud pointIndex; reference project admission remains gated. Respects visibility, protection and clipping. Read-only; native CAD edge/face IDs are separate.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "view": {
+          "type": "string",
+          "enum": ["main", "moving", "fixed"]
+        },
         "x": {
           "type": "number",
           "minimum": 0,
@@ -5311,7 +5616,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face or fitted primitive alignment references without changing geometry or history. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
+    "description": "Read exact CAD face, fitted primitive or stored semantic point/line alignment references without changing geometry or history. Semantic sources return referenceConstruction and object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. Semantic creation/import remains gated pending construction integration; discovery does not permit moving these sources. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -5347,7 +5652,7 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 100000000,
-          "description": "Optional original render triangle slot. Resolves exactly one CAD face using its half-open tessellation range; fitted-only objects cannot resolve a triangle."
+          "description": "Optional original render triangle slot. Resolves exactly one CAD face using its half-open tessellation range; fitted-only and semantic reference objects cannot resolve a triangle."
         }
       },
       "required": ["entityId"],
@@ -5356,7 +5661,7 @@
   },
   {
     "name": "alignment_preview",
-    "description": "Preview object coordinate alignment from one to three native plane/direction/point constraints. Targets are unlocked meshes, point clouds or exact CAD bodies. Ordered constraints build the reference frame; its rigid inverse transforms scans. Exact CAD uses verified OpenCascade axis-frame placement and retains exact topology. Model/history stay unchanged; preview_discard target datum restores the committed scene and releases temporary CAD handles. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
+    "description": "Preview object coordinate alignment from one to three native plane/direction/point constraints. Targets are unlocked meshes, point clouds or exact CAD bodies. Ordered constraints build the reference frame; its rigid inverse transforms scans. Exact CAD uses verified OpenCascade axis-frame placement and retains exact topology. Model/history stay unchanged; preview_discard target datum restores the committed scene and releases temporary CAD handles. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5593,7 +5898,7 @@
   },
   {
     "name": "alignment_apply",
-    "description": "Apply native coordinate-frame object alignment to unlocked meshes, point clouds or exact CAD bodies as one history transaction. Scan indexed topology and saved selections are preserved; exact CAD uses verified OpenCascade axis-frame placement, retains BRep topology and preserves fitted primitive parameters with verified native transforms and clears stale authoring/display-selection metadata. Same constraints as alignment_preview; source geometry is checked before commit. Cancellation releases temporary CAD outputs; committed source/result handles remain valid for Undo/Redo. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD/fitted inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
+    "description": "Apply native coordinate-frame object alignment to unlocked meshes, point clouds or exact CAD bodies as one history transaction. Scan indexed topology and saved selections are preserved; exact CAD uses verified OpenCascade axis-frame placement, retains BRep topology and preserves fitted primitive parameters with verified native transforms and clears stale authoring/display-selection metadata. Same constraints as alignment_preview; source geometry is checked before commit. Cancellation releases temporary CAD outputs; committed source/result handles remain valid for Undo/Redo. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5830,7 +6135,7 @@
   },
   {
     "name": "landmark_preview",
-    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations, evaluates analytic D1 positions and normals at their UV nodes, and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Moving point clouds retain their point type, immutable local buffers, normals and composed native double pose; large world-view transforms use at most two CPU workers. Their paired solve sends only picked coordinates to its worker. Cancel through job_cancel or preview_discard targeting landmarks. Refinement uses the session targetScope; visibleScene orders visible evaluated CAD roots before visible indexed scans, excludes superseded CAD inputs using authoring dependency update order, excludes the moving scan, and preserves the fixed geometry. Hidden evaluated consumers still suppress their CAD inputs; exempt construction primitives alone do not. Cyclic authoring dependencies are rejected. With no eligible refinement surfaces, an indexed moving scan retains coarse alignment and native grown selection, reports an accepted identity refinement with the native maximum-float error sentinel, and uses one physical worker without creating a correspondence pool. A successful ordinary preview contains one native matrix and locks repeat preview until landmark_edit action reset; reset retains picked points. This check occurs before CAD resolution or worker allocation. Alignment target trees use a 512 MiB estimate for object nodes, live memberships and packed query transport, separate from geometry buffers; there is no public override. Budget exhaustion reports OPERATION_FAILED with required and allowed estimated bytes. The test-process memory cap is separate.",
+    "description": "Solve the active picked-point session through the GUI preview worker without committing geometry or history. Returns a job; poll job_get. Raw indexed moving scans use native coarse registration, seeded region growth and refinement against indexed scans or exact CAD fixed targets. CAD conversion reuses kernel face triangulations, evaluates analytic D1 positions and normals at their UV nodes, and preserves the BRep. Publishes coarse registration, refinement, diagnostics and markers through landmark_get. Moving point clouds retain their point type, immutable local buffers, normals and composed native double pose; large world-view transforms use at most two CPU workers. Their paired solve sends only picked coordinates to its worker. Cancel through job_cancel or preview_discard targeting landmarks. Refinement uses the session targetScope; visibleScene orders visible evaluated CAD roots before visible indexed scans, excludes superseded CAD inputs using authoring dependency update order, excludes the moving scan, and preserves the fixed geometry. Hidden evaluated consumers still suppress their CAD inputs; exempt construction primitives alone do not. Cyclic authoring dependencies are rejected. With no eligible refinement surfaces, an indexed moving scan retains coarse alignment and native grown selection, reports an accepted identity refinement with the native maximum-float error sentinel, and uses one physical worker without creating a correspondence pool. A successful preview contains one native matrix. Repeat preview is permitted; editing cancels superseded calculations. Poll landmark_get.previewStatus for automatic previews scheduled by edits. Alignment target trees use a 512 MiB estimate for object nodes, live memberships and packed query transport, separate from geometry buffers; there is no public override. Budget exhaustion reports OPERATION_FAILED with required and allowed estimated bytes. The test-process memory cap is separate.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5886,7 +6191,7 @@
   },
   {
     "name": "landmark_get",
-    "description": "Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and preview lock state, with coarse registration, refinement and execution diagnostics when a preview exists. Point-cloud previews also expose pointCloudPose as a little-endian Float64 frame. Also reports optional fixedId (null for all references) and captured referenceIds. Does not mutate geometry or history. Reports canPreview, canReset, canRemove, candidateCount and candidateIndex for the ordinary native single-matrix preview state.",
+    "description": "Read active live session pairCount, previewStatus (idle/pending/ready/error), previewError, original picks, result markers and isolated moving/fixed view entityIds and original-pose markers. Edits auto-preview from three complete pairs; poll previewStatus until ready before acceptance. Read the active picked-point alignment session, original world-coordinate picks, transformed preview markers and editable preview state, with coarse registration, refinement and execution diagnostics when a preview exists. Point-cloud previews also expose pointCloudPose as a little-endian Float64 frame. Also reports optional fixedId (null for all references) and captured referenceIds. Does not mutate geometry or history. Reports canPreview, canReset, canRemove, candidateCount and candidateIndex for the ordinary native single-matrix preview state. In internal semantic workspaces, reference points and lines are exempt from dependency-priority suppression of their source; they are not refinement surfaces. Read ordered refinementTargetIds to verify scene target admission.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5898,22 +6203,33 @@
   },
   {
     "name": "landmark_edit",
-    "description": "Begin or edit the shared picked-point alignment session. Begin requires movingId; fixedId is optional and filters reference picking. With no fixedId, fixed points may come from any visible selectable unlocked reference in the captured scene. reference-target binds fixedId or clears it when omitted, resets picks and preview, and defaults cleared binding to visibleScene. pick requires entityId and a world-coordinate point in mm. Picked coordinates are rounded to native Float32 precision and stored as doubles; values outside the finite Float32 range are rejected. After preview, picking is rejected and removal/clear are no-ops; reset removes the preview and retains original picks. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId is an optional canvas picking filter. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope and refinementTargetIds. Scene geometry/order/visibility changes invalidate a scene-target preview. Point clouds are not mesh-facet refinement targets. Moving clouds use coarse registration and retained native poses. Complete original point-cloud dialog admission and workflow parity remain unverified.",
+    "description": "GUI uses the top-right fixed canvas and bottom-right moving canvas without pick modes. action remove-point requires entityId and zero-based pointIndex within that entity in landmark_get.picks order. remove-last and clear accept optional entityId to affect only that canvas; omit for legacy whole-session removal. Point edits invalidate and recompute the preview with the usual complete-pair rules. action view-layout sets referenceWidthPercent (finite percentage clamped to 20-50, default 32) without canceling previews or changing picks/history. landmark_get.layout reports configured percent, bounds and responsive minimum widths (reference 220px, result 360px where space permits). Begin or edit the shared picked-point alignment session. Begin requires movingId; fixedId is optional and filters reference picking. With no fixedId, fixed points may come from any visible selectable unlocked reference in the captured scene. reference-target binds fixedId or clears it when omitted, resets picks and preview, and defaults cleared binding to visibleScene. pick requires entityId and a world-coordinate point in mm. Picked coordinates are rounded to native Float32 precision and stored as doubles; values outside the finite Float32 range are rejected. Any number of ordered pairs is supported. Picks, removal and clear remain available after preview and invalidate the previous result. Three or more equally sized moving/fixed point groups automatically schedule a new preview; incomplete groups cannot be accepted. Poll landmark_get previewStatus (idle, pending, ready, error) and previewError. New edits cancel superseded work. reset cancels preview and retains original picks without auto-restarting. These edits do not create model history. Use landmark_preview to solve, landmark_accept to commit, and preview_discard to close/cancel. Begin defaults to visibleScene refinement against visible evaluated exact CAD roots and other visible indexed scans; fixedId is an optional canvas picking filter. Use targetScope fixed for single-target refinement. action target-scope changes scope and resets preview while retaining picks. landmark_get reports targetScope, refinementTargetIds, pairCount, previewStatus, previewError and views with original-pose markers and isolated entityIds. The GUI has a result view and independent moving/reference picking views. viewport_get/control/pick accept view main, moving or fixed. GUI starts with the first eligible reference selected; unbound sessions retain multi-reference agent picking, while the reference view displays the first eligible reference. Scene geometry/order/visibility changes invalidate a scene-target preview. Point clouds are not mesh-facet refinement targets. Moving clouds use coarse registration and retained native poses. Complete original point-cloud dialog admission and workflow parity remain unverified.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "pointIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-based point index within entityId picks; required for remove-point. Refresh landmark_get after edits."
+        },
+        "referenceWidthPercent": {
+          "type": "number",
+          "description": "Picking-view column width as a percentage of the alignment viewport; clamped to 20-50. Required for action view-layout."
+        },
         "action": {
           "type": "string",
           "enum": [
             "begin",
             "pick",
             "remove-last",
+            "remove-point",
             "clear",
             "reset",
             "target-scope",
-            "reference-target"
+            "reference-target",
+            "view-layout"
           ]
         },
         "movingId": {

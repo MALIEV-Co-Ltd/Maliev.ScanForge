@@ -1,7 +1,9 @@
 import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
+import { assertSampledGeometry, isReferenceEntity } from "../reference-entity";
 
 export interface ViewportCommand {
+  view?: "main" | "moving" | "fixed";
   action:
     | "fit"
     | "rotate"
@@ -45,6 +47,29 @@ export function coordinateAlignmentInterface(
   patch: InterfacePatch,
   selected?: Entity,
 ): InterfacePatch {
+  if (
+    selected &&
+    isReferenceEntity(selected) &&
+    (patch.mode === "brush" ||
+      patch.mode === "section" ||
+      [
+        "mesh",
+        "section",
+        "scanTools",
+        "fit",
+        "repairMesh",
+        "deviation",
+        "transform",
+        "processing",
+        "segmentMesh",
+        "smoothMesh",
+        "decimateMesh",
+        "pointNoise",
+        "pointReduce",
+        "fineAlign",
+      ].includes(patch.workspace ?? ""))
+  )
+    assertSampledGeometry(selected);
   if (!patch.datumAlignmentOpen) return patch;
   if (
     !selected ||
@@ -129,7 +154,7 @@ export function createWorkflowOperations(
       );
       return host.inspectApplication?.(100) ?? unavailable();
     },
-    viewport_get: () => host.inspectViewport?.() ?? unavailable(),
+    viewport_get: (a) => host.inspectViewport?.(a.view) ?? unavailable(),
     spacemouse_get: () => host.inspectSpaceMouse?.() ?? unavailable(),
     spacemouse_control: (a, c) => {
       if (
@@ -174,10 +199,10 @@ export function createWorkflowOperations(
       c.check();
       if (!host.controlViewport) unavailable();
       host.controlViewport(a as ViewportCommand);
-      return host.inspectViewport?.() ?? unavailable();
+      return host.inspectViewport?.(a.view) ?? unavailable();
     },
     viewport_pick: (a) =>
-      host.pickViewport?.(a.x, a.y, a.maxHits ?? 5) ?? unavailable(),
+      host.pickViewport?.(a.x, a.y, a.maxHits ?? 5, a.view) ?? unavailable(),
     screenshot_capture: async (a, c) => {
       if (!host.captureScreenshot) unavailable();
       const image = await host.captureScreenshot(a, c.signal);

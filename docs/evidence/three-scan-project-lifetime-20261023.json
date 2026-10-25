@@ -1,0 +1,867 @@
+{
+  "schema": 1,
+  "passed": true,
+  "publicGuiMcpWorkflowVerified": false,
+  "scope": "All three original PLY scans resident simultaneously, shared staged transforms, binary project save/reopen and history; actual supported non-browser fallback",
+  "files": [
+    {
+      "name": "ply-1.ply",
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "fixtureSha256": "7a36b469a2fde7cc07c0dff3ed4985c4e1921475ec2a02f00cad541ebcb05a0d",
+      "vertices": 140113,
+      "facets": 274154,
+      "sliceReads": 13,
+      "maxReadBytes": 1048567,
+      "wholeReads": 0
+    },
+    {
+      "name": "ply-2.ply",
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "fixtureSha256": "d70edd900f0f4761f48dc667ffb47645464cb5b68eaa9c0cd8be7f1a2af7b6f6",
+      "vertices": 1375494,
+      "facets": 2697877,
+      "sliceReads": 101,
+      "maxReadBytes": 1048567,
+      "wholeReads": 0
+    },
+    {
+      "name": "ply-3.ply",
+      "bytes": 92765339,
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "fixtureSha256": "6e247a1f693241fd8d20d25b3d8145be764c1a3e24fc013470d822b4852f77bf",
+      "vertices": 1865848,
+      "facets": 3691133,
+      "sliceReads": 136,
+      "maxReadBytes": 1048567,
+      "wholeReads": 0
+    }
+  ],
+  "phases": [
+    {
+      "name": "compiled",
+      "elapsedMs": 419,
+      "memory": {
+        "rss": 78880768,
+        "heapTotal": 15753216,
+        "heapUsed": 11419632,
+        "external": 3900316,
+        "arrayBuffers": 1601842
+      }
+    },
+    {
+      "name": "imported",
+      "elapsedMs": 532,
+      "memory": {
+        "rss": 113868800,
+        "heapTotal": 20209664,
+        "heapUsed": 10940008,
+        "external": 31986461,
+        "arrayBuffers": 29687968
+      },
+      "file": "ply-1.ply",
+      "residentScans": 1,
+      "retainedGeometryBytes": 28073004
+    },
+    {
+      "name": "imported",
+      "elapsedMs": 1241,
+      "memory": {
+        "rss": 389959680,
+        "heapTotal": 20733952,
+        "heapUsed": 10434336,
+        "external": 308121615,
+        "arrayBuffers": 305826750
+      },
+      "file": "ply-2.ply",
+      "residentScans": 2,
+      "retainedGeometryBytes": 304212456
+    },
+    {
+      "name": "imported",
+      "elapsedMs": 2228,
+      "memory": {
+        "rss": 767148032,
+        "heapTotal": 19947520,
+        "heapUsed": 10581640,
+        "external": 685348620,
+        "arrayBuffers": 683053755
+      },
+      "file": "ply-3.ply",
+      "residentScans": 3,
+      "retainedGeometryBytes": 681438156
+    },
+    {
+      "name": "all-originals-resident",
+      "elapsedMs": 2502,
+      "memory": {
+        "rss": 767148032,
+        "heapTotal": 19947520,
+        "heapUsed": 10621864,
+        "external": 685348620,
+        "arrayBuffers": 683053755
+      },
+      "retainedGeometryBytes": 681438156
+    },
+    {
+      "name": "aligned",
+      "elapsedMs": 3145,
+      "memory": {
+        "rss": 792350720,
+        "heapTotal": 19947520,
+        "heapUsed": 12461680,
+        "external": 710131704,
+        "arrayBuffers": 707836839
+      },
+      "file": "ply-1.ply",
+      "execution": {
+        "physicalWorkers": 0,
+        "chunkVertices": 262144,
+        "fallbackReason": "CPU workers unavailable"
+      },
+      "retainedGeometryBytes": 706221312
+    },
+    {
+      "name": "aligned",
+      "elapsedMs": 9449,
+      "memory": {
+        "rss": 1028448256,
+        "heapTotal": 13656064,
+        "heapUsed": 10471040,
+        "external": 953896632,
+        "arrayBuffers": 951601759
+      },
+      "file": "ply-2.ply",
+      "execution": {
+        "physicalWorkers": 0,
+        "chunkVertices": 262144,
+        "fallbackReason": "CPU workers unavailable"
+      },
+      "retainedGeometryBytes": 949986240
+    },
+    {
+      "name": "aligned",
+      "elapsedMs": 18086,
+      "memory": {
+        "rss": 1361735680,
+        "heapTotal": 13656064,
+        "heapUsed": 10285064,
+        "external": 1286828736,
+        "arrayBuffers": 1284533863
+      },
+      "file": "ply-3.ply",
+      "execution": {
+        "physicalWorkers": 0,
+        "chunkVertices": 262144,
+        "fallbackReason": "CPU workers unavailable"
+      },
+      "retainedGeometryBytes": 1282918344
+    },
+    {
+      "name": "save-start",
+      "elapsedMs": 18632,
+      "memory": {
+        "rss": 1361997824,
+        "heapTotal": 13656064,
+        "heapUsed": 10375512,
+        "external": 1286828736,
+        "arrayBuffers": 1284533863
+      }
+    },
+    {
+      "name": "saved",
+      "elapsedMs": 45424,
+      "memory": {
+        "rss": 2133155840,
+        "heapTotal": 47734784,
+        "heapUsed": 12616448,
+        "external": 1345501927,
+        "arrayBuffers": 2008690396
+      },
+      "backupBytes": 666971709
+    },
+    {
+      "name": "reopened",
+      "elapsedMs": 53780,
+      "memory": {
+        "rss": 3368902656,
+        "heapTotal": 48152576,
+        "heapUsed": 27966328,
+        "external": 2571322240,
+        "arrayBuffers": 3234491651
+      },
+      "cycle": 1,
+      "backupBytes": 666971709
+    },
+    {
+      "name": "reopen-function-returned",
+      "elapsedMs": 55442,
+      "memory": {
+        "rss": 3368955904,
+        "heapTotal": 48152576,
+        "heapUsed": 28144856,
+        "external": 2571322240,
+        "arrayBuffers": 3234491651
+      },
+      "cycle": 1
+    },
+    {
+      "name": "after-explicit-gc-and-event-loop",
+      "elapsedMs": 55479,
+      "memory": {
+        "rss": 2063605760,
+        "heapTotal": 48152576,
+        "heapUsed": 12663344,
+        "external": 1288387464,
+        "arrayBuffers": 1951556907
+      },
+      "cycle": 1,
+      "decodedProbeReleased": true
+    },
+    {
+      "name": "reopened",
+      "elapsedMs": 63430,
+      "memory": {
+        "rss": 3402711040,
+        "heapTotal": 48414720,
+        "heapUsed": 25438128,
+        "external": 2571305856,
+        "arrayBuffers": 3234475267
+      },
+      "cycle": 2,
+      "backupBytes": 666971709
+    },
+    {
+      "name": "reopen-function-returned",
+      "elapsedMs": 65106,
+      "memory": {
+        "rss": 3402711040,
+        "heapTotal": 48414720,
+        "heapUsed": 25592368,
+        "external": 2571305856,
+        "arrayBuffers": 3234475267
+      },
+      "cycle": 2
+    },
+    {
+      "name": "after-explicit-gc-and-event-loop",
+      "elapsedMs": 65143,
+      "memory": {
+        "rss": 2097344512,
+        "heapTotal": 48414720,
+        "heapUsed": 12685984,
+        "external": 1288387464,
+        "arrayBuffers": 1951556907
+      },
+      "cycle": 2,
+      "decodedProbeReleased": true
+    },
+    {
+      "name": "all-scene-references-released",
+      "elapsedMs": 65241,
+      "memory": {
+        "rss": 2097422336,
+        "heapTotal": 48414720,
+        "heapUsed": 13083576,
+        "external": 1292123016,
+        "arrayBuffers": 1955292459
+      }
+    },
+    {
+      "name": "final-after-explicit-gc",
+      "elapsedMs": 65261,
+      "memory": {
+        "rss": 856264704,
+        "heapTotal": 48414720,
+        "heapUsed": 12687512,
+        "external": 1292123016,
+        "arrayBuffers": 711824658
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "elapsedMs": 10018,
+      "currentExact": true,
+      "historyExact": true,
+      "undoRedoExact": true,
+      "topologyDeduplicated": true,
+      "displayBorrowsStoredNormals": true,
+      "sourceBuffersUnchanged": true
+    },
+    {
+      "cycle": 2,
+      "elapsedMs": 9627,
+      "currentExact": true,
+      "historyExact": true,
+      "undoRedoExact": true,
+      "topologyDeduplicated": true,
+      "displayBorrowsStoredNormals": true,
+      "sourceBuffersUnchanged": true
+    }
+  ],
+  "elapsedMs": 65262,
+  "preAbortedOperationsRejected": true,
+  "backupBytes": 666971709,
+  "retainedGeometryBytes": 1282918344,
+  "simultaneouslyResidentOriginalScans": 3,
+  "simultaneouslyResidentAlignedScans": 3,
+  "originalSignatures": [
+    {
+      "id": "0x5ca4e650",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 2467386,
+          "bytes": 9869544,
+          "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 2467386,
+          "bytes": 9869544,
+          "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 822462,
+          "bytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+        }
+      ]
+    },
+    {
+      "id": "0x5ca4e2f0",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 24280893,
+          "bytes": 97123572,
+          "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 24280893,
+          "bytes": 97123572,
+          "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 8093631,
+          "bytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+        }
+      ]
+    },
+    {
+      "id": "0x5ca4d690",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 33220197,
+          "bytes": 132880788,
+          "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 33220197,
+          "bytes": 132880788,
+          "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 11073399,
+          "bytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+        }
+      ]
+    }
+  ],
+  "alignedSignatures": [
+    {
+      "id": "0x5ca4e650",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 2467386,
+          "bytes": 9869544,
+          "sha256": "8db5f07e4e5acda84f5974d89a03fcc32d5836f395d16c787863a10bba54f065"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 2467386,
+          "bytes": 9869544,
+          "sha256": "73f99b3787eb2d9c765f8df2a4cd7f5a391dbbb3a8d57da93cc5390f7a290853"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "989146c136e537d2a37233e95c46b539590f4fbb60ae562579573b8cf2f77f3d"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 822462,
+          "bytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "e7203c562c1028e9423d09ac491a3fddab9d8eebed7015ffc36a7cf5523dcd75"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 420339,
+          "bytes": 1681356,
+          "sha256": "b5905a564d546a0edd08a9dc0c26120386d0a471dd250b8111f4ecd3088a194f"
+        }
+      ]
+    },
+    {
+      "id": "0x5ca4e2f0",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 24280893,
+          "bytes": 97123572,
+          "sha256": "e0d09978407196bb683f3242217ca6496b51c5b609eefafd052206b329345c85"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 24280893,
+          "bytes": 97123572,
+          "sha256": "eb7bc8779e7e64a563f22808680bb72efe92a68f6170dbca792dd4997c97dd41"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "094ae8cc4ea5a280044989865c491511db34e2a26e4ad6cf8073d0bb78a55ae6"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 8093631,
+          "bytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "2b254a118e7f39334e1c8adea3fef868708516c4279a33609ba993ab7e3cb4ef"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 4126482,
+          "bytes": 16505928,
+          "sha256": "63e5f91c0e5aed54f0f1f98acc74fc541129d3bc9312901b2bcb16ff67a51899"
+        }
+      ]
+    },
+    {
+      "id": "0x5ca4d690",
+      "fields": [
+        {
+          "name": "positions",
+          "type": "Float32Array",
+          "elements": 33220197,
+          "bytes": 132880788,
+          "sha256": "157a4cfa919daac4cfb5eb9e6cf8f6d7344370b36e1401a4d91e6c6e54fa0bcc"
+        },
+        {
+          "name": "normals",
+          "type": "Float32Array",
+          "elements": 33220197,
+          "bytes": 132880788,
+          "sha256": "20940c914281a0526a5dcd416cb057821d48a0d518cbf1ba40b621668884d778"
+        },
+        {
+          "name": "indexedMesh.vertices",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "f1cc8ee4e3c6fdddbe3c1f869d3d5432b542866d13b92f37f9be38304d6c726f"
+        },
+        {
+          "name": "indexedMesh.triangles",
+          "type": "Uint32Array",
+          "elements": 11073399,
+          "bytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "name": "indexedMesh.normals",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "f78519b718e495825e0b4ee9aaae989815d7dfcf041ac8c23a4aa42c5fc01e61"
+        },
+        {
+          "name": "indexedMesh.geometryNormals",
+          "type": "Float32Array",
+          "elements": 5597544,
+          "bytes": 22390176,
+          "sha256": "76cfa11f9b115dbdb7d6399274847ad137aa7d9e47daf4d6fb737b3811f3ea85"
+        }
+      ]
+    }
+  ],
+  "generatedControllerReportSha256": "52330ff7f4cab339b500f1512865b2e48b4965c473c955c9655ea53b58c15baa",
+  "compiledCoreSha256": "821883a80884bcd39efbd90f06ea08122350271b83f072d7ddac182960451b4d",
+  "sourcePins": [
+    {
+      "path": "node_modules/three/build/three.core.js",
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "path": "node_modules/three/build/three.module.js",
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "path": "src/datum-transform-scratch.ts",
+      "sha256": "2669e3d05a0c3069503f7e5babdfa237ffcc2ba7f3a24a888c678f13e50f4366"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/point-cloud-placement.ts",
+      "sha256": "6b20c2ab5f042f81c400a410051aaf6d14431175ca228c6d3a2efe0ba2ebc606"
+    },
+    {
+      "path": "node_modules/three/examples/jsm/loaders/STLLoader.js",
+      "sha256": "023ed97f848b633d8bcd53d4db3b996d29d0c644088700691297c552257d480b"
+    },
+    {
+      "path": "node_modules/three/examples/jsm/loaders/PLYLoader.js",
+      "sha256": "b824a6dda90cbfb37cabf8e5462ed1673e7693852bc1a6a7bab0465d7b634dfb"
+    },
+    {
+      "path": "src/import-readonly-buffer.ts",
+      "sha256": "286446ae36750c3bdb32d4491acb4222511fb8bbd024191ed058c5a2c1cacc79"
+    },
+    {
+      "path": "src/ply-binary-topology.ts",
+      "sha256": "c67a697d8fe0e2f5a19002da225226dd9ef898020aad028fa488133247e331f5"
+    },
+    {
+      "path": "src/ply-topology.ts",
+      "sha256": "70f2b11f696ce30011e96db71ac8984ffbd435f9498999321e1708e2172febd5"
+    },
+    {
+      "path": "node_modules/three/examples/jsm/loaders/OBJLoader.js",
+      "sha256": "e3ceb6a8ed48ca146049a8f0879c7acbf884d430f2e728779af26c6ea3a57c65"
+    },
+    {
+      "path": "node_modules/three/examples/jsm/exporters/STLExporter.js",
+      "sha256": "6508e5f79d120c7fdb677430342179609b27f59942dd6a2e215eef3ff60a7e60"
+    },
+    {
+      "path": "src/native-surface-quadrature.ts",
+      "sha256": "9f0a52496e11177db3f4d52b645cc02d41453e17f41cb0984172a4f2113bcd33"
+    },
+    {
+      "path": "src/native-surface-fitting.ts",
+      "sha256": "67e96225d176e547c7595d3e6a61ad4cd21a4616378e26b042c01d7dc5c4dc15"
+    },
+    {
+      "path": "src/surface-approximation.ts",
+      "sha256": "23595db4fa722474ed3be626e3cb5dfebc35d9c7de57195cb977bc78e80269e8"
+    },
+    {
+      "path": "src/surfaces.ts",
+      "sha256": "047a2e8fbafb313955c52b8936cb75c01857ff1c9e279745df315ee2ec129b95"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-reference.ts",
+      "sha256": "17fb3e32ea35cbc3b6e1c13cc399b80f4e5b66a5d680ea03e7211cee0095876d"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/parametric.ts",
+      "sha256": "bd0c17dc4377c640eda045dd5f899a4fdac9e3b421dc78a14582f18f837583b1"
+    },
+    {
+      "path": "src/parametric-entities.ts",
+      "sha256": "67a44503fd6c02ab52aa7ffe761178e716c0581226765ea657d82e716f9f579a"
+    },
+    {
+      "path": "src/geometry.ts",
+      "sha256": "268df7887f1332a1ff161b62da4af7e1f026124466c898fccda71d3526e37d30"
+    },
+    {
+      "path": "src/plane-frame.ts",
+      "sha256": "2893734aab0e29270267cd273cbb4dbaa1c43adf3d9924da34d1182825e388a9"
+    },
+    {
+      "path": "src/scan-native-noise.ts",
+      "sha256": "d72995f0feedc6eb717a0dee94c563bf24073b3239a19c193d40a3bf6cc64e6b"
+    },
+    {
+      "path": "src/mesh-geometry-normals.ts",
+      "sha256": "c47acd76e79c647ee0ab200dadabbdc035659887a6d2e7d4bb9a476ef050688c"
+    },
+    {
+      "path": "src/indexed-mesh.ts",
+      "sha256": "92de5e0bf74f5770d0aede27f45c498a635b1fd93378178e6bf345e2e2fe713c"
+    },
+    {
+      "path": "src/io.ts",
+      "sha256": "6faa08511808186239ac876dbf009c99b1e5c5c3a2cb663d603605e845839b5b"
+    },
+    {
+      "path": "src/scan-native-stl-vertices.ts",
+      "sha256": "b2cb5e00a2223cefdddd485d21defb8ff416aff5bb1fe51f2c22851ffa0603dc"
+    },
+    {
+      "path": "src/scan-native-stl-topology.ts",
+      "sha256": "2b7fcaed2c4a954b4951ed0d74167942dbcab6f2ee4e2d687024df2dfdd3148b"
+    },
+    {
+      "path": "src/ply-binary-file.ts",
+      "sha256": "91af47c46dac69eca5866171404298bbf8b639337eeb56b43354607430508208"
+    },
+    {
+      "path": "src/import-parser.ts",
+      "sha256": "53ecbac4ad1993c1d72f988d9ee412bad7f1293afe5cace61af9622966f458a7"
+    },
+    {
+      "path": "src/display-weld.ts",
+      "sha256": "c23d5d5dd5a31b9ecfa7088289bed628d3560695080499edf31f1143c5a0899d"
+    },
+    {
+      "path": "src/viewport-display.ts",
+      "sha256": "310a1a36bfe0d15047b06e4c65e2e2e738c61177b59b741db5ad45f15891d888"
+    },
+    {
+      "path": "src/scan-render-data.ts",
+      "sha256": "46aad2e3756a47e9127fd2e64aa5cb2efb0563d807934e93ca468d96e3f4a123"
+    },
+    {
+      "path": "src/scan-task.ts",
+      "sha256": "ac2b5fee00588c33517539ada55e42b7e9f408ae701513a76b18d0cc1f1f9759"
+    },
+    {
+      "path": "src/scan-native-datum-primitive.ts",
+      "sha256": "6cf8c0b467e82184e8a3c7af114ae132269150476f95592c0bc5d2ab5f7b1475"
+    },
+    {
+      "path": "src/datum-staged-scan.ts",
+      "sha256": "d7cb7865f209c0cfdb01ddcf0bcc971fe520522616bf58442340cc83d19a0742"
+    },
+    {
+      "path": "src/datum-transform-core.ts",
+      "sha256": "26f3899965cd81d523a8f57bfa6045136e7feba5fd61a6ee84e293dafb22eec9"
+    },
+    {
+      "path": "src/datum-transform-pool.ts",
+      "sha256": "b78bd0d02c9f8c8c3b829390847e0a4c14145e0f56755d426888e3a5be762108"
+    },
+    {
+      "path": "node_modules/@noble/hashes/_u64.js",
+      "sha256": "b09da8c07fe8187c07649494cdb7cd0bcf13df90b506a9473d19e4d5f8c2e102"
+    },
+    {
+      "path": "node_modules/@noble/hashes/utils.js",
+      "sha256": "037ad49adb78168b6b699598fd33f85f7877456b1d28b4d032e2a1a16807947c"
+    },
+    {
+      "path": "node_modules/@noble/hashes/_md.js",
+      "sha256": "60cf3010fda89e3e4d3f0e7ff1ce249e9c467f34b4fd41b6fd6101d9f69be763"
+    },
+    {
+      "path": "node_modules/@noble/hashes/sha2.js",
+      "sha256": "471746bba6ec4c6238ca41358d1d3b40b6ff31cf3363f0b4d550c649c1a8e83b"
+    },
+    {
+      "path": "src/project-value-stream.ts",
+      "sha256": "684e694cf7be2a85a026a2f14dceabf0aca4deab6b3ea09dff9456ea39a34a92"
+    },
+    {
+      "path": "src/project-file-codec.ts",
+      "sha256": "5281cd8a92adb33879686ebbe5cffec636686f901c7825ff78df19944521a094"
+    },
+    {
+      "path": "src/project-transport.ts",
+      "sha256": "f5f7668994bb32087f58277bb1eea66a18bde7ff0bf1a5591cda61a3dd5803e1"
+    },
+    {
+      "path": "src/project-encoding-snapshot.ts",
+      "sha256": "874f52a7c8084bccfc2e2e0df91664f21352047a07469ee225dc7ccd8498670e"
+    },
+    {
+      "path": "src/project-encoding-client.ts",
+      "sha256": "03e10eeed251f55a98f7e4c145717d5a8ca521e9a2bb1fb408b0329293e3bfd4"
+    },
+    {
+      "path": "src/project-decoding-client.ts",
+      "sha256": "cb8dee70d0000d7f166207c9b47fd9e729a53bb461f994d256cd35e2a688cd19"
+    },
+    {
+      "path": "src/scan-render-preparation.ts",
+      "sha256": "a24b9e6b3111f93568e1457c8e45d18edfe29342c81762c8e215ccadf8aa4329"
+    },
+    {
+      "path": "src/restored-scan-display.ts",
+      "sha256": "2bf5f7e4744bf8cd95f1ba8a152d05344b6cc213ad6f5b83ea4b764ac343c3e1"
+    },
+    {
+      "path": "src/project-file.ts",
+      "sha256": "840d392f11ce52d18fcde9ca5904343cb312d0280e00f003aaebe9a52f33ee12"
+    },
+    {
+      "path": "src/history.ts",
+      "sha256": "5ec925f034bf0c1a074b1dc8ae5e7026b7140ac13b4d211724174fd19db6efe0"
+    }
+  ],
+  "privateReportSha256": "0188e5a0dbaf4289aad37a1a63c7d01734ef55fb081c5bfb4def9a54d7347874",
+  "privateDriverSha256": "b9cd19a4a19b8165b46f2f5f1a6cd4b32f0f37833cb1caffc3c91d102c2dbcdc",
+  "nativeComparison": {
+    "evidence": "global-fine-stored-geometry-normals-final-20261023.json",
+    "sha256": "f0a86c384305703e7abf3db99514442c5767b2fe7621b0ba0b7acf666d331a0e",
+    "rows": [
+      {
+        "name": "ply-1.ply",
+        "importedComputedNormalsExact": true,
+        "stagedComputedNormalsExact": true,
+        "stagedIndexedPositionsExact": true
+      },
+      {
+        "name": "ply-2.ply",
+        "importedComputedNormalsExact": true,
+        "stagedComputedNormalsExact": true,
+        "stagedIndexedPositionsExact": true
+      },
+      {
+        "name": "ply-3.ply",
+        "importedComputedNormalsExact": true,
+        "stagedComputedNormalsExact": true,
+        "stagedIndexedPositionsExact": true
+      }
+    ]
+  },
+  "resources": {
+    "receiptSha256": "e79b280a3975fd94d0f7b2eb995d6fb61bac3a3eaf18268e492929920efe0044",
+    "jobMemoryLimitBytes": 4294967296,
+    "aggregatePeakJobMemoryBytes": 3716186112,
+    "cpuRate": 2500,
+    "ownerElapsedSeconds": 65.37422520000837,
+    "childJobActive": 0,
+    "allOwnedHandlesClosed": true,
+    "cleanupErrors": []
+  },
+  "settledArrayBufferBytes": 1951556907,
+  "initialAttempt": {
+    "receiptSha256": "629c7e734d2c1f86fd1ff0696d229ca58c8eb1be64dacad8dd6506b907bf93ca",
+    "driverSha256": "13480a81bc9e26b9f2245c3722af3fe4afc48b61ca464812ec354ccc4574f028",
+    "exitCode": 134,
+    "aggregatePeakJobMemoryBytes": 4345819136,
+    "outcome": "Second reopen failed allocation under the unchanged 4 GiB cap. The top-level async harness retained the previous decoded scene. Returning each verification scope and yielding before explicit GC released the decoded probe; no production code or memory guard changed.",
+    "cleanupErrors": []
+  },
+  "mcpCoverage": "Shared parser, staged entity transformation, project encode/decode and history activation underlie GUI/MCP workflows. Existing public contract tests are separate. No browser, public MCP request, File transfer or worker transport is exercised by this non-browser fallback run.",
+  "limitations": [
+    "Two reopen cycles are not a long-duration soak or production timing guarantee.",
+    "Reopen cleanup uses two event-loop yields and explicit garbage collection. It establishes reachability and settled buffer accounting, not automatic browser GC latency.",
+    "The source and aligned scenes remain resident together with the backup throughout both reopen checks.",
+    "Transforms use the supported zero-worker fallback and matrices from the pinned numerical controller replay; no live solver is executed in this measurement.",
+    "This run uses normal ArrayBuffers, not browser cross-origin-isolated SharedArrayBuffers.",
+    "Runtime peak and timings apply to this owned Node validation on Windows; GPU memory, frame times, automatic backup scheduling, browser transport and native GUI/MCP parity remain unverified here."
+  ]
+}

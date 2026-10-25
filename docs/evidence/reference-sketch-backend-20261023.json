@@ -1,0 +1,514 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "Active sketch backend, selected record-production paths and application model gaps established; full source resolution remains incomplete",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "nativeEvidence": {
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261023-sketch-backend-r1/evidence.json",
+        "sha256": "9590d0ac28d1ad559fd1817fe8377f0e9839cc76d01f47c45e1e527d45c89646",
+        "matchedCodeBytesPerPass": 4999,
+        "twoReadsAgree": true,
+        "totalReadBytes": 10830,
+        "regionQueries": 82,
+        "peakHelperMemoryBytes": 15233024,
+        "closed": true
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261023-sketch-backend-r2/evidence.json",
+        "sha256": "3e5f8da4545dd5d3ad371b8b5221caff8a8abc8ee621c37d32cd675e88b82757",
+        "matchedCodeBytesPerPass": 8721,
+        "twoReadsAgree": true,
+        "totalReadBytes": 19154,
+        "regionQueries": 160,
+        "peakHelperMemoryBytes": 15523840,
+        "closed": true
+      }
+    ],
+    "proceduresChecked": 13,
+    "instructionStartsChecked": 1969,
+    "directFlowsChecked": 249,
+    "selectedArithmeticAnchors": [
+      {
+        "address": "0x140276b33",
+        "instruction": "comisd xmm2, xmm6",
+        "bytesSha256": "4033e23559defe5fa8932acc8d4c8861ef7344183e2e5448a5ac4d288e8bb211"
+      },
+      {
+        "address": "0x140276b37",
+        "instruction": "jbe 0x140276ba3",
+        "bytesSha256": "bc97fe36c36e44dce196bbb95d37cc86b75271abdf79e54ed06f7039bf691f0c"
+      },
+      {
+        "address": "0x140276d18",
+        "instruction": "call 0x14016b080",
+        "bytesSha256": "b23c4cdb278a817f7fbb08a3dee5dc62bd55f6dcc6b38e1f03080867520e677a"
+      },
+      {
+        "address": "0x1402096d3",
+        "instruction": "divsd xmm8, xmm0",
+        "bytesSha256": "301f48f090ebb96db7ce22a10d86312eeadad6d7330059cef8a9cea2f12ba0b5"
+      },
+      {
+        "address": "0x140209705",
+        "instruction": "subsd xmm0, xmm10",
+        "bytesSha256": "5d0f4ca68f5d550439bc170f7edd9b92d713432a39cb6fa06db6da9faa122298"
+      },
+      {
+        "address": "0x140209711",
+        "instruction": "mulsd xmm0, xmm8",
+        "bytesSha256": "188c8569c0c8372354024145cdcb7f76b2bf62cde1aa16fd8c660e6ab552a208"
+      },
+      {
+        "address": "0x140209716",
+        "instruction": "mulsd xmm0, xmm7",
+        "bytesSha256": "bb15b71cd101f28e1e8213fdff2eb383ac0c981d5d6c2d7d5653670ecab79df1"
+      },
+      {
+        "address": "0x14020971a",
+        "instruction": "addsd xmm0, xmm9",
+        "bytesSha256": "9d589bad412e320d37daf888e42aa6d6d547df122545deab096186ce235068e2"
+      },
+      {
+        "address": "0x14020971f",
+        "instruction": "minsd xmm6, xmm0",
+        "bytesSha256": "e2fe2bfe85a56dd9998f4adc24c21cac988377088b857d2a18ab93e8738a2b53"
+      },
+      {
+        "address": "0x140209726",
+        "instruction": "call qword ptr [rax + 0x88]",
+        "bytesSha256": "306f88a5d6299f8f0ceac1c264fd02f5fd7d47c1dc284773c1260c32cc3ad9c2"
+      },
+      {
+        "address": "0x140209774",
+        "instruction": "add qword ptr [rbp + 0x10], 0x50",
+        "bytesSha256": "e2d9057973e2809df32bd9b7a45fd30bf049a1448fc508d527a1660c4db59eba"
+      },
+      {
+        "address": "0x140209781",
+        "instruction": "movsd qword ptr [rax - 0x10], xmm6",
+        "bytesSha256": "78ab63269a61d3ed30f45a7f6c547ffc88d6ce4e1b32fd8881ca7f0af5be3ca8"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ade0",
+        "label": "temporary adjacent-point squared-distance cutoff",
+        "f64": 1e-8,
+        "bytes": "3a8c30e28e79453e"
+      },
+      {
+        "address": "0x14126adf0",
+        "label": "two-point interpolation tolerance",
+        "f64": 1e-7,
+        "bytes": "48afbc9af2d77a3e"
+      },
+      {
+        "address": "0x14126b250",
+        "label": "knot mapping reciprocal numerator",
+        "f64": 1.0,
+        "bytes": "000000000000f03f"
+      }
+    ],
+    "installedModules": [
+      {
+        "name": "TKG3d.dll",
+        "sha256": "bb7648a9a47a863a1696914ea4c62572ddb7a0b3533297b13a2279a6fad3366f"
+      },
+      {
+        "name": "TKBRep.dll",
+        "sha256": "dabdeb5006ce55b3a9cbbc0aa7f73e428fff7e09216251f7f63c96b51189c4c5"
+      },
+      {
+        "name": "TKGeomAlgo.dll",
+        "sha256": "fbcc52a4da0cdc4b5b6b07c1cd9aa923630599574cf69acbd2d6d0cb0cfb6a19"
+      },
+      {
+        "name": "TKTopAlgo.dll",
+        "sha256": "6ffca3e4b8793e7569e19cdb88816cb8c6f2028d642795dc37be30e92ae9c3c8"
+      }
+    ],
+    "imports": [
+      {
+        "slot": "0x140eac328",
+        "module": "TKG3d.dll",
+        "targetRva": "0x15840",
+        "exportNames": ["?NbKnots@Geom_BSplineCurve@@QEBAHXZ"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eac348",
+        "module": "TKG3d.dll",
+        "targetRva": "0x150a0",
+        "exportNames": [
+          "?Knots@Geom_BSplineCurve@@QEBAAEBV?$NCollection_Array1@N@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacaf8",
+        "module": "TKG3d.dll",
+        "targetRva": "0xe830",
+        "exportNames": [
+          "??0Geom_BSplineCurve@@QEAA@AEBV?$NCollection_Array1@Vgp_Pnt@@@@AEBV?$NCollection_Array1@N@@AEBV?$NCollection_Array1@H@@H_N@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eab748",
+        "module": "TKBRep.dll",
+        "targetRva": "0x28410",
+        "exportNames": ["??0BRepAdaptor_Curve@@QEAA@AEBVTopoDS_Edge@@@Z"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eabc00",
+        "module": "TKBRep.dll",
+        "targetRva": "0x287c0",
+        "exportNames": [
+          "?BSpline@BRepAdaptor_Curve@@UEBA?AV?$handle@VGeom_BSplineCurve@@@opencascade@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacce8",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19cd40",
+        "exportNames": [
+          "??0GeomAPI_Interpolate@@QEAA@AEBV?$handle@VTColgp_HArray1OfPnt@@@opencascade@@_NN@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacb70",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19d6d0",
+        "exportNames": ["?Perform@GeomAPI_Interpolate@@QEAAXXZ"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacb80",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x164120",
+        "exportNames": [
+          "?HasConstraint@GeomFill_CornerState@@QEBA_NXZ",
+          "?IsDone@Geom2dAPI_Interpolate@@QEBA_NXZ",
+          "?IsDone@GeomAPI_Interpolate@@QEBA_NXZ",
+          "?IsDone@Law_Interpolate@@QEBA_NXZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacb78",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x1640e0",
+        "exportNames": [
+          "?Curve@Geom2dAPI_Interpolate@@QEBAAEBV?$handle@VGeom2d_BSplineCurve@@@opencascade@@XZ",
+          "?Curve@GeomAPI_Interpolate@@QEBAAEBV?$handle@VGeom_BSplineCurve@@@opencascade@@XZ",
+          "?Curve@Law_Interpolate@@QEBAAEBV?$handle@VLaw_BSpline@@@opencascade@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eadbf8",
+        "module": "TKTopAlgo.dll",
+        "targetRva": "0xead20",
+        "exportNames": [
+          "??0BRepBuilderAPI_MakeEdge@@QEAA@AEBV?$handle@VGeom_Curve@@@opencascade@@@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eadc00",
+        "module": "TKTopAlgo.dll",
+        "targetRva": "0xebd60",
+        "exportNames": [
+          "??BBRepBuilderAPI_MakeEdge2d@@QEAA?AVTopoDS_Edge@@XZ",
+          "??BBRepBuilderAPI_MakeEdge@@QEAA?AVTopoDS_Edge@@XZ",
+          "??BBRepBuilderAPI_MakePolygon@@QEAA?AVTopoDS_Wire@@XZ",
+          "??BBRepBuilderAPI_MakeSolid@@QEAA?AVTopoDS_Solid@@XZ",
+          "??BBRepBuilderAPI_MakeVertex@@QEAA?AVTopoDS_Vertex@@XZ",
+          "??BBRepBuilderAPI_MakeWire@@QEAA?AVTopoDS_Wire@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      }
+    ],
+    "scope": "Static instruction/flow checks, repeated read-only factory/vtable/code/IAT binding, and installed DLL export/entry-byte comparison. No target calls, geometry-buffer reads, native image execution or DLL loading."
+  },
+  "findings": [
+    "The sketch child base constructor obtains its backend through the active factory virtual slot 0x28; its current pointer and factory vtable agree with the static initializer.",
+    "Selected spline construction uses a temporary adjacent-point filter with strict squared-distance greater than 1e-8, while preserving the original input record container separately.",
+    "Builder dispatch distinguishes two points, three points, larger open/closed inputs and tangent-related options; these are not one generic interpolation call.",
+    "A conditional record export uses BRepAdaptor_Curve::BSpline, then Geom_BSplineCurve::Knots. It evaluates mapped knot parameters through the curve virtual evaluator and emits XYZ plus each parameter.",
+    "The knot map subtracts the first knot, multiplies by the reciprocal knot span, multiplies by the curve parameter span, then adds the first parameter. Native MINSD applies an upper-parameter comparison before evaluation. No lower clamp was observed in this helper.",
+    "Source records, control records, temporary filtered records and derived display subdivisions remain distinct. A universal substitution with poles, mesh/display points or knot samples would change some native paths."
+  ],
+  "applicationGap": {
+    "currentModel": "Sketch v1 has point records, separate segment and arc arrays, constraints and an optional rigid UV frame; no spline record carrier or common ordered child collection.",
+    "existingSharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "requiredIntegration": [
+      "Add the source representations and child ordering required by recovered curve behavior, preserving stable identity and authoritative records.",
+      "Resolve owner/pick frame provenance and scene-object binding before connecting source extraction.",
+      "Preserve shared GUI/MCP validation, state transitions, history, revision/retry protection and persistence for any model/schema extension."
+    ],
+    "agentDocumentationChanged": false,
+    "reason": "This evidence pass does not change agent usage or advertise unsupported operations."
+  },
+  "sources": [
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "8f3bc8cc89dd46d52cfb9ef40838579a0423102c72066b40cb52eef9c602352e"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "c0ba7578b425b0b11fc07a1c11635b5e125ac8b4c36d16bbfcf7c5b89faa02b5"
+    }
+  ],
+  "verification": {
+    "ownedJobs": [
+      {
+        "label": "construction-sketch-backend-factory-noanalysis-r1",
+        "sha256": "ac81722ebdae7d928fa5aab8c211450f7ce9d73fd5fe9b9e936232b652226b41",
+        "elapsedSeconds": 11.728986000001896,
+        "peakAggregateBytes": 746561536,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-refs-r1",
+        "sha256": "6c0c6f05ee414d6aea2f99a69c205e90b26a3c11994cbc53f4051c928134a35f",
+        "elapsedSeconds": 3.1896130999957677,
+        "peakAggregateBytes": 108838912,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-stores-r1",
+        "sha256": "ff2c1f156260cef41d3193e3a24266933e0c232b305a2e2ee178a277f63f6c2e",
+        "elapsedSeconds": 0.2588501999853179,
+        "peakAggregateBytes": 93552640,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-object-r1",
+        "sha256": "830712712a3aa6cb5d6a718fdf1277e0e7e778ac2ae4a44f0aab847a6e3a832f",
+        "elapsedSeconds": 3.0875314000004437,
+        "peakAggregateBytes": 108707840,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-vtable-r1",
+        "sha256": "438e24f11c56aa5af51b656675477eba368585e5c5e058130cf1739773da6c5b",
+        "elapsedSeconds": 0.25851099999272265,
+        "peakAggregateBytes": 93560832,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-vtable-r2",
+        "sha256": "5a4a5fd59dffa45d4a62498623ffe32c6e3d63795450f717acfa2225a47a3fef",
+        "elapsedSeconds": 0.25895519999903627,
+        "peakAggregateBytes": 94322688,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-factory-slots-r1",
+        "sha256": "8e58021daab838033339a72acaac63e2be4ad1200f13f3b123d5bd21ed843d82",
+        "elapsedSeconds": 0.25867949999519624,
+        "peakAggregateBytes": 95457280,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-object-noanalysis-r1",
+        "sha256": "916adf197d89c9b1dc2451f0fd6760b875c588847ab6e349db1520c11acfd5f3",
+        "elapsedSeconds": 11.322354200005066,
+        "peakAggregateBytes": 853360640,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-slots-r1",
+        "sha256": "a0e37ccdf21ece0721c99cf42210e444f5aa12e65cb905dbedcc03d22c8d94fb",
+        "elapsedSeconds": 0.25859710000804625,
+        "peakAggregateBytes": 93814784,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-curves-noanalysis-r1",
+        "sha256": "025421a5358b744af4903300f1684d482cc7ba0bb883d5e2659b29c42b8765ad",
+        "elapsedSeconds": 12.17935910000233,
+        "peakAggregateBytes": 910921728,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-bindings-r1",
+        "sha256": "b990de106f03b9d4ae9c3ac5117b716b3eb70f6fe4b35b83a4b1cd4a6baa0814",
+        "elapsedSeconds": 0.2592084000061732,
+        "peakAggregateBytes": 95666176,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-conversion-noanalysis-r1",
+        "sha256": "f1f638722b08d37e620afe5394c53bcf4be0beeccc17bf81773c83c20f1bc28e",
+        "elapsedSeconds": 11.12104990001535,
+        "peakAggregateBytes": 889278464,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-bindings-r2",
+        "sha256": "fdb16850e5e1a332229cf0d9a1a47a0b63eef683dfea4a53444759247d7d5af9",
+        "elapsedSeconds": 0.2589239999942947,
+        "peakAggregateBytes": 95911936,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-exports-r1",
+        "sha256": "5b0a216dd5e9b27cf6c28b8f803f593e5e9f162fbacb57198b801559aa679eca",
+        "elapsedSeconds": 0.2585866999870632,
+        "peakAggregateBytes": 45056000,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-backend-semantics-r1",
+        "sha256": "16cb16e0f5c4abfd6ec80a256faa59a5a33031e1e991ec2bf2c402027e4843c2",
+        "elapsedSeconds": 0.2598534999997355,
+        "peakAggregateBytes": 95932416,
+        "cleanedUp": true
+      }
+    ],
+    "priorCodePinsVerifiedUnchanged": [
+      {
+        "path": "src/reference-source-primitives.ts",
+        "sha256": "9e82f9ee0588f3501b30eb8a73a9b9c9a01f8d289332329a34dd5e8664a379de"
+      },
+      {
+        "path": "src/reference-construction-values.ts",
+        "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+      },
+      {
+        "path": "tests/reference-sketch-point.test.ts",
+        "sha256": "f72780eceef13d61a7e94c7768ad43d57617e5a1e62fadcfe6f373042da7f467"
+      },
+      {
+        "path": "tests/reference-source-primitives.test.ts",
+        "sha256": "e29cbf4606e789a891f93a08689e11fa3f0cf3ba499f19e085350f7d2a3072bb"
+      },
+      {
+        "path": "tests/reference-provider-axis.test.ts",
+        "sha256": "bb244af53c6de8b575191eb4a2f9c614df47e528a9c6c1083a93ac475763ecd8"
+      }
+    ],
+    "priorValidationArtifact": "docs/evidence/reference-sketch-point-20261023.json",
+    "buildOrTestsRerun": false,
+    "reason": "No application/test source was changed by this evidence-only pass. Prior full-suite results remain a historical code checkpoint, not native-output acceptance.",
+    "nativeNumericalReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "limitations": [
+    "Import aliases sharing an RVA are retained as alternatives; contextual constructor/receiver evidence is needed to choose one.",
+    "Fresh code/metadata matching does not demonstrate a native construction or spline rebuild invocation.",
+    "Remaining builder math, option/error behavior, arc/circle/ellipse source records and dependency refresh require additional evidence before publication.",
+    "Model integration, native numerical comparison, save/reopen and rendered GUI/MCP acceptance remain required."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-sketch-backend-factory-noanalysis-r1/evidence.json",
+      "sha256": "3a62c6f969e8b19da74a493c468a5ddb9fe78f1c8e819171f1186649c3ae4f99"
+    },
+    {
+      "artifact": "construction-sketch-factory-refs-r1.json",
+      "sha256": "5d4f8f2109977608cd785a81187221f8fe4f865627eb51ba3edf5d3923f89208"
+    },
+    {
+      "artifact": "construction-sketch-factory-stores-r1.json",
+      "sha256": "dbf8aeaa29abb457468ba563e89c45d860083c7c376c10db8323ee68d0fb3f7c"
+    },
+    {
+      "artifact": "construction-sketch-factory-object-r1.json",
+      "sha256": "79e800b0a096dea5fe3f972bcb7c4292e742360a631d5887f72c9d86bd9c4039"
+    },
+    {
+      "artifact": "construction-sketch-factory-vtable-r1.json",
+      "sha256": "5b3dffdfca9303ddd583c56cc04029c2e6cde2e11d3e4483d9730b965944beaa"
+    },
+    {
+      "artifact": "construction-sketch-factory-vtable-r2.json",
+      "sha256": "ae80ba0e5e9422003e6c9752ea0c3999e75b4a64ed8934a425844082cb4153e2"
+    },
+    {
+      "artifact": "construction-sketch-factory-slots-r1.json",
+      "sha256": "ca80ca19d7c4a321ecba5ea15e81c9abb8435da6a8be87f83f848846f0b414e5"
+    },
+    {
+      "artifact": "construction-sketch-backend-object-noanalysis-r1/evidence.json",
+      "sha256": "2602c130c8cb7f833a45133bcf0838c511785bbe04ad36355c28ff74241e1625"
+    },
+    {
+      "artifact": "construction-sketch-backend-slots-r1.json",
+      "sha256": "8eafc660560683b1b4f1f7f077f535036a4bd6d3571ab14b43895cc328d3c4f2"
+    },
+    {
+      "artifact": "construction-sketch-backend-curves-noanalysis-r1/evidence.json",
+      "sha256": "3b1d8223e5092d8e34c82a8f300e56a8fdb2c03e1baa62cdd360a6cfa7c4d60c"
+    },
+    {
+      "artifact": "construction-sketch-backend-conversion-noanalysis-r1/evidence.json",
+      "sha256": "2134ae74cf914d7a8f7c8c94b3355c5c788988e222cbf569d038b028b2963ce1"
+    },
+    {
+      "artifact": "construction-sketch-backend-code-bindings-r1.json",
+      "sha256": "cd1191b3ddc774d9da2b22a18fefcb4c7f21726c2902bc7bc2259c8b0c222719"
+    },
+    {
+      "artifact": "construction-sketch-backend-code-bindings-r2.json",
+      "sha256": "4f11c2860ef405c1b2782807e1b3558ce9525588c7ae7c7578cc59688f3992a3"
+    },
+    {
+      "artifact": "construction-sketch-backend-exports-r1.json",
+      "sha256": "aefe473d00e596e20337030d0611794532a09db099c2e06fcd1994be8d76a186"
+    },
+    {
+      "artifact": "construction-sketch-backend-semantics-r1.json",
+      "sha256": "5ba50488945a1d6a956653aa425da2cde2182e1f7a373d130a9ff93f9e23608c"
+    }
+  ]
+}

@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 1,
+  "status": "discovery_only",
+  "date": "2026-10-23",
+  "milestone": 4,
+  "nativeExecution": false,
+  "applicationBehaviorChanged": false,
+  "guiMcpAcceptance": false,
+  "numericParityAccepted": false,
+  "manual": {
+    "sha256": "acaeb787431300f8fbeaf0f12845d35008f0732b6d938e011c9798db014a6018",
+    "bytes": 20928811,
+    "pdfPages": 262,
+    "inspectedPdfPages": [40, 41, 42],
+    "printedPages": [34, 35, 36],
+    "privateExtraction": {
+      "privateArtifact": "construction-help-r1.json",
+      "sha256": "51235401aad586f5f7c4ca71bede2492937aa20b2501efe7827038722d18b30e",
+      "bytes": 2964
+    }
+  },
+  "native": {
+    "installedSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "captureEvidenceId": "ev_ac490def220a9b5d5a6b3e935cef11513a6f5182b2d032a381fc0c60f3e69b69",
+    "captureProvenanceSha256": "f6da9f5400f6d272a4d548fb052c11389c26bfa478f48e2f4ec036199bdefc77",
+    "imageScope": "Preserved static analysis carrier only; never execute or map for replay."
+  },
+  "literalDiscovery": {
+    "artifact": {
+      "privateArtifact": "construction-static-strings-r3.json",
+      "sha256": "c5cbeb4320e69c5b599419548474b17c2de6df2779ae645a068d47bfe8f00893",
+      "bytes": 18906
+    },
+    "matchingStrings": 39,
+    "ripRelativeLeaCandidates": 26,
+    "exceptionDirectoryMapped": false,
+    "completeReachabilityEstablished": false
+  },
+  "entryDiscovery": {
+    "artifact": {
+      "privateArtifact": "construction-entry-candidates-r1.json",
+      "sha256": "2a4e9e9be65d8345669eb07d5cbfb6c0ad3195b45d4ab71082bf805d34d35443",
+      "bytes": 77121
+    },
+    "candidates": [
+      {
+        "labelReference": "0x1405778ca",
+        "candidateStart": "0x1405776a0",
+        "precedingPaddingBytes": 8,
+        "pointerReferences": ["0x1411a6018"]
+      },
+      {
+        "labelReference": "0x14057e50f",
+        "candidateStart": "0x14057e500",
+        "precedingPaddingBytes": 8,
+        "pointerReferences": ["0x1411a6f68"]
+      },
+      {
+        "labelReference": "0x1406b235a",
+        "candidateStart": "0x1406b20e0",
+        "precedingPaddingBytes": 10,
+        "pointerReferences": ["0x1411d6428"]
+      },
+      {
+        "labelReference": "0x1406b9df6",
+        "candidateStart": "0x1406b9d70",
+        "precedingPaddingBytes": 10,
+        "pointerReferences": ["0x1411d6df0"]
+      }
+    ],
+    "completeFunctionBoundsEstablished": false
+  },
+  "broadAnalysisAttempts": [
+    {
+      "label": "rea-construction-handlers-r1",
+      "result": "provider_startup_timeout",
+      "failure": {
+        "privateArtifact": "rea-construction-handlers-r1/resolve-0x1405778ca.json",
+        "sha256": "b03244dcc21047cb2e09b1a23bd5f4457eee28dd87e12f01549b4c4c121380b3",
+        "bytes": 40023
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-rea-construction-handlers-r1-cad.receipt.json",
+        "sha256": "e0dcaa7e3de6da73ccea6160e5bb69d0f3c46e5135c65dd95dbc89ff127a1837",
+        "bytes": 1823,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 182.83532890000788,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 270,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 2801958912,
+        "childPeakJobMemoryBytes": 2786799616,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "sessionClosed": true
+    },
+    {
+      "label": "rea-construction-handlers-r2",
+      "result": "provider_startup_timeout",
+      "failure": {
+        "privateArtifact": "rea-construction-handlers-r2/resolve-0x1405778ca.json",
+        "sha256": "475737e8327b8d38a35a3458c1b25ec044d3632521afd78327f5ddc877abb384",
+        "bytes": 40021
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-rea-construction-handlers-r2-cad.receipt.json",
+        "sha256": "3b828d3c041577abcb3a2ebf24a5311d74fa73720d4b16724db76d2fc60cd7e8",
+        "bytes": 1823,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 182.79543090000516,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 270,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 2735149056,
+        "childPeakJobMemoryBytes": 2720194560,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "sessionClosed": true
+    }
+  ],
+  "focusedAnalysis": [
+    {
+      "label": "construction-focused-noanalysis-r2",
+      "artifact": {
+        "privateArtifact": "construction-focused-noanalysis-r2/evidence.json",
+        "sha256": "8c83826b0ba985d48709890cfc40a50e7211852c484092e3b6ed9fe110d482fc",
+        "bytes": 207432
+      },
+      "script": {
+        "privateArtifact": "ConstructionFocused.java",
+        "sha256": "95ffad23de46e345d695c16833dba5e9b215e8c8effaaa51316ef2804bde1786",
+        "bytes": 3270
+      },
+      "driver": {
+        "privateArtifact": "construction-focused-noanalysis-r2.mjs",
+        "sha256": "6ab0c0c2fadca843d74605f32dbe3f23c44120cfc41eeb2ccc4f6126bb8f35de",
+        "bytes": 2601
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-focused-noanalysis-r2-cad.receipt.json",
+        "sha256": "4e19c153335d259247bd0afe7c33b6830a9e8bdb433cd3a10330ac83ba281745",
+        "bytes": 1852,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.828844400006346,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 1090547712,
+        "childPeakJobMemoryBytes": 1075617792,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "records": [
+        {
+          "candidateAddress": "0x1405776a0",
+          "instructionCount": 141,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 1887
+        },
+        {
+          "candidateAddress": "0x14057e500",
+          "instructionCount": 32,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 636
+        },
+        {
+          "candidateAddress": "0x1406b20e0",
+          "instructionCount": 196,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 6118
+        },
+        {
+          "candidateAddress": "0x1406b9d70",
+          "instructionCount": 56,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 1208
+        },
+        {
+          "candidateAddress": "0x140573930",
+          "instructionCount": 432,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 10968
+        },
+        {
+          "candidateAddress": "0x14057fcd0",
+          "instructionCount": 340,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 8625
+        }
+      ]
+    },
+    {
+      "label": "construction-calculation-noanalysis-r1",
+      "artifact": {
+        "privateArtifact": "construction-calculation-noanalysis-r1/evidence.json",
+        "sha256": "881166f8f3587bab95fdaf616ae4ceb29700b03499b789e0ecc48e3f572db292",
+        "bytes": 441136
+      },
+      "script": {
+        "privateArtifact": "ConstructionCalculation.java",
+        "sha256": "9789aaee3281bfc2418fc803c21b55aaf77b89c2c2daeae9cf553fefb876e27f",
+        "bytes": 3274
+      },
+      "driver": {
+        "privateArtifact": "construction-calculation-noanalysis-r1.mjs",
+        "sha256": "3f5a1ee34e68a8ce179ffa41da76c479b08adc25d7ffeaacd1e771a59ec8ade3",
+        "bytes": 2609
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-calculation-noanalysis-r1-cad.receipt.json",
+        "sha256": "91f8c0096463a83a106a2aaccab8ee1c28277a669a8be4fb4cd867a012345f74",
+        "bytes": 1870,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.825523899999098,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 865198080,
+        "childPeakJobMemoryBytes": 849936384,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "records": [
+        {
+          "candidateAddress": "0x140573170",
+          "instructionCount": 457,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 11957
+        },
+        {
+          "candidateAddress": "0x14057f640",
+          "instructionCount": 397,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 10718
+        },
+        {
+          "candidateAddress": "0x1405716f0",
+          "instructionCount": 724,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 19589
+        },
+        {
+          "candidateAddress": "0x14057e590",
+          "instructionCount": 785,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 21915
+        },
+        {
+          "candidateAddress": "0x14040cd60",
+          "instructionCount": 112,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 2983
+        },
+        {
+          "candidateAddress": "0x14041a780",
+          "instructionCount": 72,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 2113
+        }
+      ]
+    },
+    {
+      "label": "construction-geometry-noanalysis-r1",
+      "artifact": {
+        "privateArtifact": "construction-geometry-noanalysis-r1/evidence.json",
+        "sha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0",
+        "bytes": 392835
+      },
+      "script": {
+        "privateArtifact": "ConstructionGeometry.java",
+        "sha256": "db44afc41ef7f334f39a758d957657fc18102319a8a665517138c7ca92ba0cc7",
+        "bytes": 3223
+      },
+      "driver": {
+        "privateArtifact": "construction-geometry-noanalysis-r1.mjs",
+        "sha256": "531eb76285ee5dd0d1fa1a3905c8ffe664d6a04546b1264cafd8ddad8a4fb04e",
+        "bytes": 2603
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-geometry-noanalysis-r1-cad.receipt.json",
+        "sha256": "53246268765925664ee14f5a0ed4fa4c20c8e9d8b1948d068b27d3658ac9d518",
+        "bytes": 1855,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.777149100002134,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 909381632,
+        "childPeakJobMemoryBytes": 894468096,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "records": [
+        {
+          "candidateAddress": "0x14040e340",
+          "instructionCount": 1347,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 40076
+        },
+        {
+          "candidateAddress": "0x14041b1e0",
+          "instructionCount": 955,
+          "decompileCompleted": true,
+          "pseudocodeCharacters": 24434
+        }
+      ]
+    }
+  ],
+  "dispatchDiscovery": {
+    "artifact": {
+      "privateArtifact": "construction-dispatch-r2.json",
+      "sha256": "3bc56f35b30c693041d2bb7c6fe1f9d5a8fe75011e58a99fdce67bcdfe828868",
+      "bytes": 4165
+    },
+    "tables": [
+      {
+        "semanticCandidate": "line",
+        "vtable": "0x14117cdf8",
+        "typeDescriptorMapped": false,
+        "slots": [
+          {
+            "slot": "0x68",
+            "address": "0x1404065b0"
+          },
+          {
+            "slot": "0x178",
+            "address": "0x140406530"
+          },
+          {
+            "slot": "0x188",
+            "address": "0x140406510"
+          },
+          {
+            "slot": "0x1a8",
+            "address": "0x140406f60"
+          },
+          {
+            "slot": "0x1b0",
+            "address": "0x140406f90"
+          },
+          {
+            "slot": "0x1d0",
+            "address": "0x140407000"
+          },
+          {
+            "slot": "0x1f0",
+            "address": "0x140406460"
+          },
+          {
+            "slot": "0x1f8",
+            "address": "0x14040e340"
+          },
+          {
+            "slot": "0x210",
+            "address": "0x1404063f0"
+          }
+        ]
+      },
+      {
+        "semanticCandidate": "point",
+        "vtable": "0x14117e220",
+        "typeDescriptorMapped": false,
+        "slots": [
+          {
+            "slot": "0x68",
+            "address": "0x1404065b0"
+          },
+          {
+            "slot": "0x178",
+            "address": "0x140406530"
+          },
+          {
+            "slot": "0x188",
+            "address": "0x140406510"
+          },
+          {
+            "slot": "0x1a8",
+            "address": "0x140406f60"
+          },
+          {
+            "slot": "0x1b0",
+            "address": "0x140406f90"
+          },
+          {
+            "slot": "0x1d0",
+            "address": "0x140407000"
+          },
+          {
+            "slot": "0x1f0",
+            "address": "0x140406460"
+          },
+          {
+            "slot": "0x1f8",
+            "address": "0x14041b1e0"
+          },
+          {
+            "slot": "0x210",
+            "address": "0x1404063f0"
+          }
+        ]
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad40",
+        "float64": 2.220446049250313e-16
+      },
+      {
+        "address": "0x14126b250",
+        "float64": 1.0
+      }
+    ]
+  },
+  "sourceHead": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "workingTreeSourcePins": [
+    {
+      "path": "src/ui/ribbon-model.ts",
+      "sha256": "c677a883b85a31a9ba8dcb88cf1945a177d0fcac5e45f07496670450f09cdf77"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8ed1fd4031b17da06423c4fa47e865542f4981866eb378bf951c4315f76edb9f"
+    },
+    {
+      "path": "src/io.ts",
+      "sha256": "6faa08511808186239ac876dbf009c99b1e5c5c3a2cb663d603605e845839b5b"
+    },
+    {
+      "path": "src/scan-native-datum-primitive.ts",
+      "sha256": "6cf8c0b467e82184e8a3c7af114ae132269150476f95592c0bc5d2ab5f7b1475"
+    },
+    {
+      "path": "src/automation/alignment-operations.ts",
+      "sha256": "ca6e59fe1eb7a769f316cf276eac4fe2af5075490a2a4c931c7abbf4cbf3f5a3"
+    },
+    {
+      "path": "src/automation/datum-operations.ts",
+      "sha256": "f4d32d515455a97db012a80d8a3b0b65afdfb321ac2322ba09d03742744ca499"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "48b681699e7e9a5c1420c6a19913b03adc7e5bf3cb9a6bdd6c4befeef557e2a4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "caf7bc579fe216861784694da6a9f698bfeb6a29ccbd526f8ad06669a4fab8b2"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "69505753f1dc0f5afc804f0816c9c3627b648b6b6a2a87cd905649dfcdfc7db4"
+    }
+  ],
+  "limits": [
+    "Manual and static analysis establish discovery facts, not live GUI behavior or numerical parity.",
+    "Focused analysis disables default automatic analysis; inferred function boundaries, argument types and indirect dispatch require independent verification.",
+    "Both RTTI type-name carriers lie outside the mapped captured sections. Constructor assignments and call sites establish candidates, not live object identity.",
+    "Full pair eligibility, degeneracy behavior, averaging order and numerical thresholds remain under investigation.",
+    "No public operation, schema or application capability is added by this evidence."
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "date": "2026-10-25",
+  "scope": "Internal semantic reference geometry delegates for native-style finite Float32 scene bounds; whole-scene provider remains incomplete.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "Uncommitted; not a shipped or pushed candidate"
+  },
+  "sources": [
+    {
+      "path": "src/reference-scene-bounds.ts",
+      "sha256": "21bd591c35d5737ccc4c96959e709695357555d81099d782144b5206dc895a62"
+    },
+    {
+      "path": "tests/reference-scene-bounds.test.ts",
+      "sha256": "4e47b7b2359e0d389e6f9a9ac3252d2b63cf1ec30c5f033dfc8b87527dab1708"
+    },
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "79fa38b726bf9d44dc52339f1f4fa410185414a1ee6f853497ffc25fb8241e38"
+    },
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "ab1f32309303d9517518e66a320f68219f323951e9ccda883e74a887f6ac8d97"
+    },
+    {
+      "path": "src/automation/reference-construction-preview.ts",
+      "sha256": "6d92efab36a5f08e402a29a433db24602eb2639597e3aea867464cd2dc88ed55"
+    },
+    {
+      "path": "src/automation/reference-construction-apply.ts",
+      "sha256": "28b579ba3abae9c225d19b53fae3ca3f0b52d5c0646d8e801ef42968161d19fe"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "d6cbff3cc3194b49e40bad437c8a525fcd28d5ee804596b94f2f21d35d76268c"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "7372b04f34a515e457d29751ca12c86d13a10b41a7a1baf2838fd131ec741027"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "mode": "Retained image static reads only; no original application execution, process reads, executable mapping or input.",
+    "geometryProcedures": 3,
+    "listedInstructionStartsChecked": 135,
+    "localBranchTargetsChecked": 12,
+    "geometryVerificationSha256": "e9108ad562c578ffbee989455851a9e6d80bc688fed8ca246580ca186fc70929",
+    "pointPaddingMm": 0.0010000000474974513,
+    "pointPaddingDoubleLittleEndian": "000000e04d62503f",
+    "sceneEnumeratorFinding": "Categories use ordered interface-specific enumeration or an ordered shared collector followed by category classification. The fallback collector receives the original root; zeroed SIMD registers do not establish a null receiver.",
+    "predicateFinding": "Two shared object predicates read separate low bits. Their user-facing meanings are not inferred solely from those bits. Outer reference bounds delegate to their inner geometry.",
+    "remainingScope": "Whole-scene collector exclusions, type meanings, placement and special-source backend records/children still require binding.",
+    "receipts": {
+      "construction-scene-enumerator-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 13.24254279996967,
+        "childPeakJobMemoryBytes": 767688704,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "construction-scene-candidate-parts-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.736840299970936,
+        "childPeakJobMemoryBytes": 742711296,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "reference-scene-predicates-query-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.2590315999696031,
+        "childPeakJobMemoryBytes": 83607552,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "reference-geometry-bounds-query-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.25990920001640916,
+        "childPeakJobMemoryBytes": 81723392,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "construction-reference-geometry-bounds-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 20.64099250000436,
+        "childPeakJobMemoryBytes": 910585856,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "construction-bounds-point-insert-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 14.88023599999724,
+        "childPeakJobMemoryBytes": 1123561472,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "reference-geometry-bounds-verifier-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.25864590000128374,
+        "childPeakJobMemoryBytes": 81743872,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "behavior": [
+    "Point coordinates round to Float32 first, promote for subtraction/addition of the promoted Float32 0.001 padding, then round each result to Float32.",
+    "Line endpoints use stored Float64 length, direction and start before Float32 conversion. Bounds do not normalize direction or add point padding.",
+    "Strict endpoint comparisons preserve the starting carrier when the rounded values tie, including opposite signed zero.",
+    "Malformed semantic values or bounds outside the finite Float32 profile reject explicitly. Original overflow/NaN behavior is not claimed.",
+    "Precise semantic entity bounds remain separate and unchanged. No viewport bounds are substituted for whole-scene bounds."
+  ],
+  "mcp": {
+    "publicConstructionTools": false,
+    "catalogChangedByThisCheckpoint": false,
+    "publicSchemaChangedByThisCheckpoint": false,
+    "coverage": "Internal prerequisite only. Neither GUI nor MCP construction activation is complete. Both must use the common source/editor lifecycle before this can be presented as a feature.",
+    "fixtureDisclosure": "The real App is copied with relocated module paths and a captured real API hook. Test-only replacement of an existing handler passes the actual shared API mutation context to cached Apply; discovery does not expose a construction command."
+  },
+  "validation": {
+    "red": "New module absent; observed import failure. Initial green run exposed typed-array versus plain-array expected-value mismatches; corrected test carriers. First build exposed tuple inference in invalid-input rows; fixed with satisfies ReferenceGeometry[].",
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 35.58154809998814,
+        "childPeakJobMemoryBytes": 2531401728,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "identitySha256": "9b54d7ec904da760d25a029216dff0f853f38b63821b71009fac95d6ee663e79",
+      "inputsStableDuringBuild": true
+    },
+    "focused": {
+      "passed": 161,
+      "failed": 0,
+      "files": 6,
+      "newCases": 13,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 1.8245626999996603,
+        "childPeakJobMemoryBytes": 337108992,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "browser": {
+      "passed": true,
+      "viewport": [1400, 950],
+      "engine": "Owned headless Chromium with software WebGL",
+      "browserPlugin": "Not listed; existing Playwright dependency used for isolated fixture. Codex in-app browser inspected separately.",
+      "checks": [
+        "Point cached Apply with locked-source identity migration and unchanged original buffer",
+        "Exact request retry adds no history",
+        "GUI Undo and API history_redo restore point and source key together",
+        "Point delegate bounds initialize the expected short line; rejected degenerate typed endpoints retain it",
+        "Cached line Apply publishes that exact seed",
+        "Precise point bounds retain signed zero and unpadded 2.5 mm coordinate",
+        "Zero-span seed remains cleared",
+        "Unmount removes canvas",
+        "No browser errors, warnings or failed responses"
+      ],
+      "inputsStableDuringBrowser": true,
+      "inputsChangedAfterBuildBeforeBrowser": [
+        "src/navigation-depth.ts",
+        "tests/m1-selection-browser.mjs",
+        "tests/navigation-depth.test.ts"
+      ],
+      "resultSha256": "6ae6c510b00c64d8cb3ca713e2410ede7773ce20635570ce8856e4e0eef1e9ac",
+      "screenshotSha256": "1f8b6e2b1d8e46d4e56b9a5e23e43e0c4b10e9907da361e5af9eed5c83c239a3",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 4.808861199999228,
+        "childPeakJobMemoryBytes": 602476544,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "fullSuiteRun": false,
+    "reason": "This adds an internal geometry delegate; focused arithmetic, registry, Apply and real-App integration cover the change. Historical full-suite counts are not presented as current validation.",
+    "formatCheck": {
+      "passed": true,
+      "files": [
+        "src/reference-scene-bounds.ts",
+        "tests/reference-scene-bounds.test.ts"
+      ]
+    }
+  },
+  "remaining": [
+    "Complete ordinary and special whole-scene provider bindings.",
+    "Wire exact source resolution, dependency refresh and common GUI/MCP editor operations.",
+    "Complete project/history admission, save/reopen and original/rendered acceptance.",
+    "Matched original three-scan reconstruction export is unavailable; native reconstruction comparison remains open.",
+    "All requested reconstruction milestones remain active; this prerequisite does not close M3 or M4."
+  ],
+  "liveApplication": {
+    "url": "http://127.0.0.1:5173/",
+    "serverPid": 28864,
+    "browser": "Prior tab handle no longer existed in the current browser session. A new current-source tab was opened and retained; startup backup list was closed without restoring or deleting a backup.",
+    "scene": "New browser tab has an empty scene; no original scene restoration is claimed.",
+    "servedSourcesMatchCurrentDisk": [
+      "src/ui/App.tsx",
+      "src/automation/api.ts",
+      "src/reference-scene-bounds.ts",
+      "src/navigation-depth.ts"
+    ]
+  }
+}

@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "partial-static-source-resolution-contract; implementation and acceptance pending",
+  "applicationBehaviorChanged": false,
+  "nativeFunctionsCalled": false,
+  "renderedGuiMcpAcceptance": false,
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "staticInputs": [
+    {
+      "privateArtifact": "construction-helpers-noanalysis-r1/evidence.json",
+      "sha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+    },
+    {
+      "privateArtifact": "construction-source-resolution-noanalysis-r1/evidence.json",
+      "sha256": "0481f48e17128c196f2f6c608ad03db6627320404b1b459a13b73fad15bc4c69"
+    }
+  ],
+  "verification": {
+    "privateArtifact": "reference-source-resolution-static-r1.json",
+    "sha256": "e704d19d8c16e661d2ffe289d2ad141d194921832db98a350ac4622773d7f5b6",
+    "scope": "Static source-extraction and selected CAD-provider wrapper corroboration. No native execution or live binding. Analyzer-listed instruction starts are not complete-function coverage; indirect provider contracts remain unresolved.",
+    "procedures": [
+      {
+        "entry": "0x14040d7d0",
+        "listedInstructionStarts": 165,
+        "instructionBytesSha256": "fe1ea7ab34231b8b13bfef2434911944b7c56c2abd2d366eeb9d02bf865f3ee4",
+        "checkedDirectFlows": 11
+      },
+      {
+        "entry": "0x14040da70",
+        "listedInstructionStarts": 267,
+        "instructionBytesSha256": "4b4bd0f5465cacd885d60b6e2d7cf484d0141929a2daa6fc62ea848160eb7b33",
+        "checkedDirectFlows": 25
+      },
+      {
+        "entry": "0x14040def0",
+        "listedInstructionStarts": 254,
+        "instructionBytesSha256": "ad958da7cbc2014b57de10d607d3dbae057931cf1cffcd1faa066a7584c20833",
+        "checkedDirectFlows": 21
+      },
+      {
+        "entry": "0x14041af20",
+        "listedInstructionStarts": 39,
+        "instructionBytesSha256": "783ec790aa7ce9ca448339f2431bb708a5bc2f6c0a16e930a65317b0a7add13a",
+        "checkedDirectFlows": 3
+      },
+      {
+        "entry": "0x14041afa0",
+        "listedInstructionStarts": 103,
+        "instructionBytesSha256": "456f0e807ed0ee1151a9fca2c572d519403620177dd230d5dcbc98ac91aa333a",
+        "checkedDirectFlows": 7
+      },
+      {
+        "entry": "0x14041b150",
+        "listedInstructionStarts": 40,
+        "instructionBytesSha256": "384764ba7b5fe314071dd685569dfb2ea7137a12306cade0237ccaeca432615c",
+        "checkedDirectFlows": 2
+      },
+      {
+        "entry": "0x14027d8c0",
+        "listedInstructionStarts": 134,
+        "instructionBytesSha256": "f5f6983411d18042a64d0cd5b1926c069b2b7cbcf929e809198af7bc20a4475f",
+        "checkedDirectFlows": 8
+      },
+      {
+        "entry": "0x14027e4e0",
+        "listedInstructionStarts": 156,
+        "instructionBytesSha256": "2a040b4bf2891a661ca38bdd5e36473013e191397c9e8dcdb04501816190e469",
+        "checkedDirectFlows": 16
+      },
+      {
+        "entry": "0x14027eb60",
+        "listedInstructionStarts": 381,
+        "instructionBytesSha256": "ef359dae7c161c477f4f1f975caf2f7c084753db23904ed047ca96978ace4138",
+        "checkedDirectFlows": 31
+      },
+      {
+        "entry": "0x14049cc00",
+        "listedInstructionStarts": 242,
+        "instructionBytesSha256": "f6640758bf716ba204a384bf71cc1ca65dbc32aeaaa078a405becdeac7cb7d59",
+        "checkedDirectFlows": 18
+      }
+    ],
+    "branches": [
+      {
+        "address": "0x14040dd45",
+        "target": "0x14040ddba",
+        "mnemonic": "jp",
+        "bytesSha256": "cbde028ae2a023fe5741850af56245ba2e653a963858e17ec63d1569b0dbb089"
+      },
+      {
+        "address": "0x14040dd60",
+        "target": "0x14040ddba",
+        "mnemonic": "ja",
+        "bytesSha256": "247a8d4ce5bdc3b3a5bbf4fbd392899c7b96d931553e2386b51e18373e33ef95"
+      },
+      {
+        "address": "0x14040ddaa",
+        "target": "0x14040ddba",
+        "mnemonic": "jbe",
+        "bytesSha256": "ecc8d5595a80b76ab870805226b8540c60b1468cf44317c8ffc030549e4db107"
+      },
+      {
+        "address": "0x14040de2e",
+        "target": "0x14040dec0",
+        "mnemonic": "je",
+        "bytesSha256": "e2228fef67988624b0e3781c2c1d75bd17248406fca652ed09eb54eadb7a2e1e"
+      },
+      {
+        "address": "0x14040e237",
+        "target": "0x14040e2c4",
+        "mnemonic": "jbe",
+        "bytesSha256": "95f7491825cdb4f753745e3e1e95030bc5f153f4db40f8d51091907dcdca2806"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad08",
+        "value": 1.1920928955078125e-7,
+        "format": "f",
+        "bytes": "00000034"
+      },
+      {
+        "address": "0x14126b6b0",
+        "value": 3.4028234663852886e38,
+        "format": "d",
+        "bytes": "000000e0ffffef47"
+      },
+      {
+        "address": "0x14126b250",
+        "value": 1.0,
+        "format": "d",
+        "bytes": "000000000000f03f"
+      },
+      {
+        "address": "0x14126ae00",
+        "value": 1.1920928955078125e-7,
+        "format": "d",
+        "bytes": "000000000000803e"
+      }
+    ],
+    "passed": true
+  },
+  "privateDrivers": [
+    {
+      "privateArtifact": "ConstructionSourceResolution.java",
+      "sha256": "841f533e957897e868b9771755acb5091f787c8c9ceb7c4fe5351cb72150859a"
+    },
+    {
+      "privateArtifact": "construction-source-resolution-noanalysis-r1.mjs",
+      "sha256": "5944d6a89afa6a6b77c8ad4ce4b5390e2b26dfa85dc057cf910b440efe0d0236"
+    },
+    {
+      "privateArtifact": "run-construction-source-resolution-noanalysis-r1.py",
+      "sha256": "3fad7a588a91b62181b3fbffc70d7a5f9254f14481bad84ae689688d61efeb7d"
+    },
+    {
+      "privateArtifact": "verify-reference-source-resolution-r1.py",
+      "sha256": "1989bdba31352dc0990ad8e55ed81f2a523fe46969a1efaa64ec6fdfa1aea638"
+    },
+    {
+      "privateArtifact": "verify-reference-source-resolution-r1.mjs",
+      "sha256": "16e9bbe9b3275d9212584ff25c29bb20a172548620e4cab50b84b9fca11654cc"
+    },
+    {
+      "privateArtifact": "run-verify-reference-source-resolution-r1.py",
+      "sha256": "ee0bc34677a518a142b3de5d408f9db20aa83aedfb037a6c021e2897cc849c12"
+    }
+  ],
+  "receipts": [
+    {
+      "privateArtifact": "project-index-validation-reference-point-fields-candidates-r1-cad.receipt.json",
+      "sha256": "9e029f3a8ab2fd8fae9c99daed01027a5a2e41c597b5fea183a0622b8f11960b",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.3095445000071777,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 96989184,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-construction-source-resolution-noanalysis-r1-cad.receipt.json",
+      "sha256": "d6807e4b00760fb632b015582539a693a94521a412bbdcda8dbe3a483bef84e5",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 11.524704600000405,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 180,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 886841344,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-verify-reference-source-resolution-r1-cad.receipt.json",
+      "sha256": "54dc66cb066a5cfbd512e1da0d1bb7622edb7ff519adb2246ed5fe06ebb1f3db",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.2589375999959884,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 95911936,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  ],
+  "extractorDispatch": [
+    {
+      "lineEntry": "0x14040d7d0",
+      "pointEntry": "0x14041af20",
+      "kind": "point",
+      "sharedPriority": ["sphere center", "reference point"],
+      "lineOnlyAdditionalDescriptor": "0x14114bbd0",
+      "pointPickInput": false
+    },
+    {
+      "lineEntry": "0x14040da70",
+      "pointEntry": "0x14041afa0",
+      "kind": "axis",
+      "sharedPriority": ["cylinder", "cone", "reference line"],
+      "lineOnlyAdditionalDescriptor": "0x14114bbf0",
+      "pointPickInput": false
+    },
+    {
+      "lineEntry": "0x14040def0",
+      "pointEntry": "0x14041b150",
+      "kind": "plane",
+      "sharedPriority": ["plane"],
+      "lineOnlyAdditionalDescriptor": "0x14114bbf0",
+      "pointPickInput": false
+    }
+  ],
+  "directAxisGeometry": [
+    {
+      "source": "cylinder",
+      "start": "stored origin",
+      "end": "length * direction + origin"
+    },
+    {
+      "source": "cone",
+      "start": "offset * direction + origin",
+      "end": "(length + offset) * direction + origin"
+    },
+    {
+      "source": "reference line",
+      "start": "stored start",
+      "end": "length * direction + start"
+    }
+  ],
+  "selectionRules": [
+    "Line source picks are Float32 XYZ promoted to double for distance arithmetic; the point extractors have no equivalent pick input.",
+    "Additional point-source candidates are traversed in increasing record order, transformed, and replaced only by strictly smaller squared distance; ties retain the first candidate.",
+    "Additional axis and plane candidates are traversed in outer then inner array order; candidate projection uses helper 0x14027d8c0 before eligibility extraction.",
+    "Initial best squared distance is 3.4028234663852886e38; equal or greater candidate distance does not replace the best.",
+    "Axis and plane candidate admission rejects NaN returned X and checks a Float32 sentinel-distance expression with threshold 2^-23 before distance comparison.",
+    "Axis conversion chooses the nearest candidate first, then tests eligibility with 0x14027e4e0 and extracts with 0x14027eb60. Failure does not retry the next-nearest candidate.",
+    "Plane conversion chooses first, extracts with 0x14049cc00, and accepts only abs(sqrt((ny*ny + nx*nx) + nz*nz) - 1) < 2^-23. Equality rejects; no renormalization or next-candidate retry occurs at this caller."
+  ],
+  "providerBoundary": {
+    "nearestProjection": "0x14027d8c0 calls imported provider functions, scales input/output through runtime globals, and accepts status zero with positive result count and first result code 0x475e. Later auxiliary parameter/derivative lookup failure does not invalidate accepted position. It initializes a one-byte flag and releases the result allocation.",
+    "axisEligibility": "0x14027e4e0 returns a Boolean in AL despite the decompiler void signature. With the alternate provider flag set it tries 0x14026adf0 then 0x14026afc0. The pointer-based path admits exactly classification codes 1, 2, 4 and 7; these codes do not establish CAD type names.",
+    "axisExtraction": "0x14027eb60 returns Boolean. Pointer-based classes 1/2 compute parameter endpoints and their distance; classes 4/7 normalize the supplied direction and write extent 1. The alternate provider path writes origin/direction without a visible extent-output write. Its caller ignores the return Boolean and reads the reused scratch as a double; a deterministic extent is not established.",
+    "planeExtraction": "0x14049cc00 zeroes twelve output doubles. The alternate provider with a nonzero handle delegates to 0x14026aaa0; otherwise the pointer-based path requires classification zero and constructs a frame from evaluated surface derivatives and three parameter-corner samples. Exact provider semantics remain open."
+  },
+  "staticAudit": {
+    "reviewer": "reference_numerics_final_review",
+    "artifactSha256": "0481f48e17128c196f2f6c608ad03db6627320404b1b459a13b73fad15bc4c69",
+    "finding": "Alternate-provider axis extent output is not visibly initialized; retain as an unresolved path rather than supplying an invented length.",
+    "nativeFailureObserved": false
+  },
+  "pointRetainedFieldInvestigation": {
+    "privateArtifact": "reference-point-fields-candidates-r1.json",
+    "sha256": "861de9476d6fe79b4fc9c73d94e5216c9a066a5c49d53ccfda8b074bbf8ee623",
+    "scope": "Narrow linear decode of 45 observed point-object/dialog unwind ranges found one candidate write to 0x2c4. This does not establish that retained fields are unused or recover their semantics."
+  },
+  "mcpCoverage": "No application behavior or discovery changed. Future source resolution must be shared by GUI and MCP and expose precise retained picks, source order, source identity and extraction diagnostics.",
+  "requiredTests": [
+    "Float32 pick quantization and coordinate-frame consistency",
+    "Repeated sources and stable equal-distance order",
+    "Finite initial distance limit",
+    "Nearest ineligible candidate fails without retry",
+    "Missing source versus failed extraction",
+    "Plane unit-normal threshold below/equal/above 2^-23",
+    "GUI/MCP exact-source resolution parity"
+  ],
+  "remaining": [
+    "Resolve additional descriptor identities and concrete virtual point-record targets",
+    "Recover 0x14026adf0, 0x14026afc0, 0x14026aaa0, 0x140212180 and the binding of 0x140d619e5",
+    "Recover provider result contracts, coordinate transforms, unit scales, sentinels and alternate-provider extent scratch behavior",
+    "Recover point retained fields and editing controls",
+    "Implement shared source resolution and versioned recipes",
+    "Compare original-code outputs and native save/reopen",
+    "Complete persistence, dependencies, GUI/MCP and rendered acceptance"
+  ],
+  "limitations": [
+    "Static carrier only; no new live binding",
+    "Listed instruction checks do not establish complete-function coverage",
+    "Decompiler inferred signatures are not authoritative",
+    "No exact native result or provider substitution equivalence claim",
+    "No source-resolution application operation is implemented or advertised"
+  ]
+}

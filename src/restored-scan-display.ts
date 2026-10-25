@@ -5,18 +5,21 @@ import { executeRenderPreparation } from "./scan-render-preparation";
 export function prepareRestoredScanDisplays(
   entities: readonly Entity[],
   signal?: AbortSignal,
-) {
-  for (const entity of entities) {
+): Entity[] {
+  return entities.map((entity) => {
     signal?.throwIfAborted();
     if (
       entity.kind === "mesh" &&
       !entity.kernelId &&
       entity.positions.length &&
-      !scanRenderData(entity.positions)
-    )
-      cacheScanRenderData(
-        entity.positions,
-        executeRenderPreparation({ positions: entity.positions }),
-      );
-  }
+      (!scanRenderData(entity.positions) ||
+        scanRenderData(entity.positions)?.indexedMesh !== entity.indexedMesh)
+    ) {
+      const data = executeRenderPreparation(entity, signal);
+      cacheScanRenderData(entity.positions, data);
+      if (data.indexedMesh && data.indexedMesh !== entity.indexedMesh)
+        return { ...entity, indexedMesh: data.indexedMesh };
+    }
+    return entity;
+  });
 }

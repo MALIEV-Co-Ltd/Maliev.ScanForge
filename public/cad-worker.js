@@ -33,6 +33,144 @@ function cleanup(handles) {
   for (let i = handles.length - 1; i >= 0; i--) handles[i]?.delete?.();
 }
 
+let sketchBackendConstructors;
+function loadSketchBackends() {
+  if (!sketchBackendConstructors) {
+    importScripts(new URL("kernel/sketch-backend.js", self.location.href).href);
+    sketchBackendConstructors = ScanForgeSketchBackend;
+  }
+  return sketchBackendConstructors;
+}
+
+function createSketchArcBackend(oc) {
+  return new (loadSketchBackends().SketchArcBackend)(oc);
+}
+
+function createSketchConicChild(kind, oc) {
+  if (kind !== "arc" && kind !== "circle")
+    throw new Error("Unsupported conic child kind.");
+  const constructors = loadSketchBackends();
+  const backend =
+    kind === "arc"
+      ? new constructors.SketchArcBackend(oc)
+      : new SketchCircleBackend(oc);
+  try {
+    return new constructors.SketchConicChild(kind, backend);
+  } catch (error) {
+    backend.dispose();
+    throw error;
+  }
+}
+
+/**
+ * Internal native-style circle backend, owned by a future sketch child session.
+ * It retains a CAD edge and center-only backend records, not the child's four
+ * defining/source records. It does not register scene shapes or add a worker
+ * command. GUI/MCP publication still belongs to the shared authoring lifecycle.
+ */
+class SketchCircleBackend {
+  #oc;
+  #edge;
+  #center;
+  #radius;
+  #disposed = false;
+
+  constructor(oc) {
+    this.#oc = oc;
+  }
+
+  #requireLive() {
+    if (this.#disposed) throw new Error("Sketch circle backend is disposed.");
+  }
+
+  #reset() {
+    const previous = this.#edge;
+    this.#edge = undefined;
+    this.#center = undefined;
+    this.#radius = undefined;
+    previous?.delete();
+  }
+
+  /** Borrowed within this worker only; invalidated by rebuild or disposal. */
+  get edge() {
+    this.#requireLive();
+    return this.#edge;
+  }
+
+  snapshot() {
+    return this.#edge
+      ? {
+          disposed: this.#disposed,
+          kind: "circle",
+          records: [[...this.#center]],
+          radius: this.#radius,
+        }
+      : { disposed: this.#disposed, kind: "empty", records: [] };
+  }
+
+  rebuild(input) {
+    this.#requireLive();
+    if (
+      !input ||
+      input.kind !== "circle" ||
+      !Array.isArray(input.center) ||
+      input.center.length !== 3 ||
+      !Number.isFinite(input.center[0]) ||
+      !Number.isFinite(input.center[1]) ||
+      !Number.isFinite(input.center[2]) ||
+      !Number.isFinite(input.radius)
+    )
+      throw new Error(
+        "Circle backend requires finite center and radius values.",
+      );
+    const center = [...input.center],
+      radius = input.radius;
+    // Canonical application validation precedes mutation. A finite failed-fit
+    // sentinel is a valid request: native reset precedes radius rejection.
+    this.#reset();
+    if (radius < 2 ** -23) return false;
+    const oc = this.#oc,
+      handles = [];
+    const keep = (handle) => (handles.push(handle), handle);
+    let candidate;
+    try {
+      try {
+        const origin = keep(new oc.gp_Pnt_3(...center));
+        const normal = keep(new oc.gp_Dir_4(0, 0, 1));
+        const xDirection = keep(new oc.gp_Dir_4(1, 0, 0));
+        const placement = keep(new oc.gp_Ax2_2(origin, normal, xDirection));
+        const circle = keep(new oc.gp_Circ_2(placement, radius));
+        const maker = keep(new oc.GC_MakeCircle_1(circle));
+        if (!maker.IsDone()) return false;
+        const circleHandle = keep(maker.Value());
+        if (circleHandle.IsNull()) return false;
+        const curveHandle = keep(
+          new oc.Handle_Geom_Curve_2(circleHandle.get()),
+        );
+        const edgeMaker = keep(new oc.BRepBuilderAPI_MakeEdge_24(curveHandle));
+        if (!edgeMaker.IsDone()) return false;
+        candidate = edgeMaker.Edge();
+      } finally {
+        cleanup(handles);
+      }
+      if (candidate.IsNull()) return false;
+      this.#center = center;
+      this.#radius = radius;
+      this.#edge = candidate;
+      candidate = undefined; // Ownership transfers only after temporary cleanup.
+      return true;
+    } finally {
+      candidate?.delete();
+    }
+  }
+
+  dispose() {
+    if (this.#disposed) return;
+    this.#disposed = true;
+    this.#reset();
+  }
+}
+
 function statusValue(status) {
   return status?.value ?? status;
 }

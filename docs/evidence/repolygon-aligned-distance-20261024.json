@@ -1,0 +1,722 @@
+{
+  "status": "complete-aligned-input-field-deviation-independently-verified",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeAcceptance": false,
+  "usableOutputAccepted": false,
+  "independentDistances": {
+    "status": "full-aligned-field-independent-deviation-completed",
+    "projectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "outputPositionsSha256": "2a36f1cdb3a554256371c9cb9dc0071fe72c7c1f3025e969142c9276b0f8ff8e",
+    "outputIndicesSha256": "ac0af9bccc1c6f76b6626792521278d32e8bbcf832d39725e95482d6e5d3eab7",
+    "selfTests": {
+      "analyticCases": 5,
+      "degenerateCase": true,
+      "indirectIndexPreserved": true
+    },
+    "weightedAggregationControlPassed": true,
+    "bruteControls": [
+      {
+        "direction": "source-to-field",
+        "source": "scan-1.stl",
+        "actual": 0.0021368195524189295,
+        "distance": 0.0021368195524246033,
+        "boundsChecked": 101918,
+        "trianglesChecked": 285
+      },
+      {
+        "direction": "source-to-field",
+        "source": "scan-2.stl",
+        "actual": 0.019179708377720272,
+        "distance": 0.019179708377727478,
+        "boundsChecked": 101918,
+        "trianglesChecked": 205
+      },
+      {
+        "direction": "source-to-field",
+        "source": "scan-3.stl",
+        "actual": 0.01553984873396777,
+        "distance": 0.015539848733956396,
+        "boundsChecked": 101918,
+        "trianglesChecked": 532
+      },
+      {
+        "direction": "field-to-all-sources",
+        "actual": 1.4570343308358946e-5,
+        "distance": 1.4570343343761906e-5,
+        "boundsChecked": 6147452,
+        "trianglesChecked": 360
+      }
+    ],
+    "sourceToField": {
+      "uniqueIndexedVertices": {
+        "count": 3121976,
+        "meanMm": 0.029934614341471405,
+        "rmsMm": 0.05533172549072691,
+        "maximumMm": 0.6765041908331403,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 155543
+          },
+          {
+            "mm": 0.01,
+            "count": 1300616
+          },
+          {
+            "mm": 0.05,
+            "count": 2594025
+          },
+          {
+            "mm": 0.1,
+            "count": 2899512
+          },
+          {
+            "mm": 0.25,
+            "count": 3098760
+          },
+          {
+            "mm": 0.5,
+            "count": 3121285
+          },
+          {
+            "mm": 1,
+            "count": 3121976
+          },
+          {
+            "mm": 2,
+            "count": 3121976
+          }
+        ]
+      },
+      "triangleCorners": {
+        "count": 18442356,
+        "meanMm": 0.029355034292253425,
+        "rmsMm": 0.05399914179610917,
+        "maximumMm": 0.6765041908331403,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 925492
+          },
+          {
+            "mm": 0.01,
+            "count": 7739476
+          },
+          {
+            "mm": 0.05,
+            "count": 15375755
+          },
+          {
+            "mm": 0.1,
+            "count": 17171779
+          },
+          {
+            "mm": 0.25,
+            "count": 18319886
+          },
+          {
+            "mm": 0.5,
+            "count": 18438914
+          },
+          {
+            "mm": 1,
+            "count": 18442356
+          },
+          {
+            "mm": 2,
+            "count": 18442356
+          }
+        ]
+      },
+      "scans": [
+        {
+          "name": "scan-1.stl",
+          "uniqueIndexedVertices": {
+            "count": 139338,
+            "meanMm": 0.02876467007148555,
+            "rmsMm": 0.06157860239598814,
+            "maximumMm": 0.6277840232038054,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 16335
+              },
+              {
+                "mm": 0.01,
+                "count": 74055
+              },
+              {
+                "mm": 0.05,
+                "count": 117923
+              },
+              {
+                "mm": 0.1,
+                "count": 129532
+              },
+              {
+                "mm": 0.25,
+                "count": 137305
+              },
+              {
+                "mm": 0.5,
+                "count": 139273
+              },
+              {
+                "mm": 1,
+                "count": 139338
+              },
+              {
+                "mm": 2,
+                "count": 139338
+              }
+            ]
+          },
+          "triangleCorners": {
+            "count": 819417,
+            "meanMm": 0.026828763203964393,
+            "rmsMm": 0.05674879554251103,
+            "maximumMm": 0.6277840232038054,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 97261
+              },
+              {
+                "mm": 0.01,
+                "count": 441379
+              },
+              {
+                "mm": 0.05,
+                "count": 700351
+              },
+              {
+                "mm": 0.1,
+                "count": 768004
+              },
+              {
+                "mm": 0.25,
+                "count": 810249
+              },
+              {
+                "mm": 0.5,
+                "count": 819191
+              },
+              {
+                "mm": 1,
+                "count": 819417
+              },
+              {
+                "mm": 2,
+                "count": 819417
+              }
+            ]
+          },
+          "worst": {
+            "vertex": 111210,
+            "pointMm": [
+              -26.211322784423828, 45.10429000854492, -327.6557922363281
+            ],
+            "distanceMm": 0.6277840232038054,
+            "nearestPointMm": [
+              -26.611934528732395, 45.57704152806064, -327.555149248954
+            ],
+            "nearestOutputFace": 85004
+          }
+        },
+        {
+          "name": "scan-2.stl",
+          "uniqueIndexedVertices": {
+            "count": 1299033,
+            "meanMm": 0.02828826387025013,
+            "rmsMm": 0.05182589612757809,
+            "maximumMm": 0.6765041908331403,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 64346
+              },
+              {
+                "mm": 0.01,
+                "count": 554121
+              },
+              {
+                "mm": 0.05,
+                "count": 1086440
+              },
+              {
+                "mm": 0.1,
+                "count": 1217755
+              },
+              {
+                "mm": 0.25,
+                "count": 1291786
+              },
+              {
+                "mm": 0.5,
+                "count": 1298719
+              },
+              {
+                "mm": 1,
+                "count": 1299033
+              },
+              {
+                "mm": 2,
+                "count": 1299033
+              }
+            ]
+          },
+          "triangleCorners": {
+            "count": 7642209,
+            "meanMm": 0.02821653362537751,
+            "rmsMm": 0.05171006884499001,
+            "maximumMm": 0.6765041908331403,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 381326
+              },
+              {
+                "mm": 0.01,
+                "count": 3280570
+              },
+              {
+                "mm": 0.05,
+                "count": 6391193
+              },
+              {
+                "mm": 0.1,
+                "count": 7163172
+              },
+              {
+                "mm": 0.25,
+                "count": 7599984
+              },
+              {
+                "mm": 0.5,
+                "count": 7640551
+              },
+              {
+                "mm": 1,
+                "count": 7642209
+              },
+              {
+                "mm": 2,
+                "count": 7642209
+              }
+            ]
+          },
+          "worst": {
+            "vertex": 938908,
+            "pointMm": [
+              41.693424224853516, -1.492936372756958, -317.39349365234375
+            ],
+            "distanceMm": 0.6765041908331403,
+            "nearestPointMm": [
+              41.04583078290105, -1.5919552752550428, -317.56224172226763
+            ],
+            "nearestOutputFace": 20568
+          }
+        },
+        {
+          "name": "scan-3.stl",
+          "uniqueIndexedVertices": {
+            "count": 1683605,
+            "meanMm": 0.03130172912574281,
+            "rmsMm": 0.057367418018122264,
+            "maximumMm": 0.6652296790363539,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 74862
+              },
+              {
+                "mm": 0.01,
+                "count": 672440
+              },
+              {
+                "mm": 0.05,
+                "count": 1389662
+              },
+              {
+                "mm": 0.1,
+                "count": 1552225
+              },
+              {
+                "mm": 0.25,
+                "count": 1669669
+              },
+              {
+                "mm": 0.5,
+                "count": 1683293
+              },
+              {
+                "mm": 1,
+                "count": 1683605
+              },
+              {
+                "mm": 2,
+                "count": 1683605
+              }
+            ]
+          },
+          "triangleCorners": {
+            "count": 9980730,
+            "meanMm": 0.030434186771005744,
+            "rmsMm": 0.055463380710319025,
+            "maximumMm": 0.6652296790363539,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 446905
+              },
+              {
+                "mm": 0.01,
+                "count": 4017527
+              },
+              {
+                "mm": 0.05,
+                "count": 8284211
+              },
+              {
+                "mm": 0.1,
+                "count": 9240603
+              },
+              {
+                "mm": 0.25,
+                "count": 9909653
+              },
+              {
+                "mm": 0.5,
+                "count": 9979172
+              },
+              {
+                "mm": 1,
+                "count": 9980730
+              },
+              {
+                "mm": 2,
+                "count": 9980730
+              }
+            ]
+          },
+          "worst": {
+            "vertex": 645379,
+            "pointMm": [
+              41.72389221191406, -1.5637683868408203, -317.51824951171875
+            ],
+            "distanceMm": 0.6652296790363539,
+            "nearestPointMm": [
+              41.085486506529634, -1.68783250402642, -317.6581665443859
+            ],
+            "nearestOutputFace": 20567
+          }
+        }
+      ]
+    },
+    "fieldToAllSources": {
+      "uniqueIndexedVertices": {
+        "count": 52703,
+        "meanMm": 0.01794718761703276,
+        "rmsMm": 0.05520310321372493,
+        "maximumMm": 1.0130738240370794,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 22700
+          },
+          {
+            "mm": 0.01,
+            "count": 38902
+          },
+          {
+            "mm": 0.05,
+            "count": 48504
+          },
+          {
+            "mm": 0.1,
+            "count": 49962
+          },
+          {
+            "mm": 0.25,
+            "count": 52021
+          },
+          {
+            "mm": 0.5,
+            "count": 52641
+          },
+          {
+            "mm": 1,
+            "count": 52702
+          },
+          {
+            "mm": 2,
+            "count": 52703
+          }
+        ]
+      },
+      "triangleCorners": {
+        "count": 305754,
+        "meanMm": 0.015236500934894604,
+        "rmsMm": 0.0480955585897341,
+        "maximumMm": 1.0130738240370794,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 134037
+          },
+          {
+            "mm": 0.01,
+            "count": 229619
+          },
+          {
+            "mm": 0.05,
+            "count": 285722
+          },
+          {
+            "mm": 0.1,
+            "count": 293382
+          },
+          {
+            "mm": 0.25,
+            "count": 302776
+          },
+          {
+            "mm": 0.5,
+            "count": 305543
+          },
+          {
+            "mm": 1,
+            "count": 305750
+          },
+          {
+            "mm": 2,
+            "count": 305754
+          }
+        ]
+      },
+      "worst": {
+        "vertex": 41384,
+        "pointMm": [11.062475204467773, 25.935712814331055, -323.5285339355469],
+        "distanceMm": 1.0130738240370794,
+        "nearestSource": "scan-2.stl",
+        "nearestSourceFace": 2156394,
+        "nearestPointMm": [
+          11.037529741193543, 26.018528045754632, -322.5191589139343
+        ]
+      }
+    },
+    "sourceAndOutputBuffersUnchanged": true,
+    "elapsedSeconds": 10.716,
+    "memory": {
+      "rss": 637952000,
+      "heapTotal": 323076096,
+      "heapUsed": 283078080,
+      "external": 265632637,
+      "arrayBuffers": 263587154
+    },
+    "nativeExecuted": false,
+    "nativeAcceptance": false,
+    "usabilityAccepted": false,
+    "scope": "Every indexed vertex against complete target triangle surfaces, including exact triangle-corner multiplicity weights. Unsigned vertex-to-triangle distances; not a continuous-surface Hausdorff bound, native equivalence, scanner accuracy or integrated GUI/MCP acceptance."
+  },
+  "retainedVoxelComparison": {
+    "sameSavedProjectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "inputTriangleCornersInBoth": 18442356,
+    "retainedVoxelSourceToOutput": {
+      "count": 18442356,
+      "meanMm": 0.32899799186061324,
+      "rmsMm": 0.3435247142031401,
+      "maximumMm": 0.7419500866126858,
+      "withinMm": [
+        {
+          "mm": 0.001,
+          "count": 0
+        },
+        {
+          "mm": 0.01,
+          "count": 48
+        },
+        {
+          "mm": 0.05,
+          "count": 365
+        },
+        {
+          "mm": 0.1,
+          "count": 2790
+        },
+        {
+          "mm": 0.25,
+          "count": 5190701
+        },
+        {
+          "mm": 0.5,
+          "count": 18059632
+        },
+        {
+          "mm": 1,
+          "count": 18442356
+        },
+        {
+          "mm": 2,
+          "count": 18442356
+        }
+      ]
+    },
+    "privateFieldSourceToOutput": {
+      "count": 18442356,
+      "meanMm": 0.029355034292253425,
+      "rmsMm": 0.05399914179610917,
+      "maximumMm": 0.6765041908331403,
+      "withinMm": [
+        {
+          "mm": 0.001,
+          "count": 925492
+        },
+        {
+          "mm": 0.01,
+          "count": 7739476
+        },
+        {
+          "mm": 0.05,
+          "count": 15375755
+        },
+        {
+          "mm": 0.1,
+          "count": 17171779
+        },
+        {
+          "mm": 0.25,
+          "count": 18319886
+        },
+        {
+          "mm": 0.5,
+          "count": 18438914
+        },
+        {
+          "mm": 1,
+          "count": 18442356
+        },
+        {
+          "mm": 2,
+          "count": 18442356
+        }
+      ]
+    },
+    "retainedVoxelOutputToSources": {
+      "count": 853050,
+      "meanMm": 0.37396266982466697,
+      "rmsMm": 0.39157553895359737,
+      "maximumMm": 0.64989414161088,
+      "withinMm": [
+        {
+          "mm": 0.001,
+          "count": 0
+        },
+        {
+          "mm": 0.01,
+          "count": 7
+        },
+        {
+          "mm": 0.05,
+          "count": 27
+        },
+        {
+          "mm": 0.1,
+          "count": 91
+        },
+        {
+          "mm": 0.25,
+          "count": 141992
+        },
+        {
+          "mm": 0.5,
+          "count": 715071
+        },
+        {
+          "mm": 1,
+          "count": 853050
+        },
+        {
+          "mm": 2,
+          "count": 853050
+        }
+      ]
+    },
+    "privateFieldOutputToSources": {
+      "count": 305754,
+      "meanMm": 0.015236500934894604,
+      "rmsMm": 0.0480955585897341,
+      "maximumMm": 1.0130738240370794,
+      "withinMm": [
+        {
+          "mm": 0.001,
+          "count": 134037
+        },
+        {
+          "mm": 0.01,
+          "count": 229619
+        },
+        {
+          "mm": 0.05,
+          "count": 285722
+        },
+        {
+          "mm": 0.1,
+          "count": 293382
+        },
+        {
+          "mm": 0.25,
+          "count": 302776
+        },
+        {
+          "mm": 0.5,
+          "count": 305543
+        },
+        {
+          "mm": 1,
+          "count": 305750
+        },
+        {
+          "mm": 2,
+          "count": 305754
+        }
+      ]
+    },
+    "retainedVoxelResultSha256": "72288eaa6c98fb50364ec227ee11c8e948c9ef6f93bfad532f51539eb780499e",
+    "baselineRerun": false,
+    "scope": "Same complete input-coordinate and input-corner population. Reverse output populations/tessellations differ. Metric improvement does not prove topology quality or native equivalence."
+  },
+  "topologyGate": {
+    "nonmanifoldEdges": 165,
+    "duplicateUnorientedTriangles": 7,
+    "boundaryEdges": 4249,
+    "selfIntersectionsChecked": false
+  },
+  "boundedJob": {
+    "receiptSha256": "094d1ce3b9417a09dff634be4e5b395e936ace8cce85d5ff69d6627607ac1304",
+    "limitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "peakOwnedJobBytes": 696524800,
+    "elapsedSeconds": 10.868278399982955,
+    "exitCode": 0,
+    "ownedDescendantsAtExit": 0,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privateDiagnosticsAdvertised": false,
+    "productionVoxelBackendReplaced": false
+  },
+  "limitations": [
+    "Every indexed vertex is queried against complete triangle surfaces. Triangle-corner weights are exact index incidence, not new geometric samples.",
+    "These unsigned vertex-to-triangle metrics are not continuous-surface Hausdorff bounds, scanner accuracy or a release tolerance.",
+    "The retained voxel baseline uses the same saved project; no fresh baseline solve was run. Its output tessellation and reverse weighting differ.",
+    "The private field output still fails topology and native-equivalence gates; lower RMS does not close those gates.",
+    "Full native controller/global values, point-cloud reconstruction and integrated GUI/MCP/history/cancel/save/rendered acceptance remain open.",
+    "No full application build was run because application behavior did not change."
+  ],
+  "privateProofSha256": "7681db3181c1abe66dcfc7057cd4097235c49170924f7c35f6582df240f46a9f"
+}

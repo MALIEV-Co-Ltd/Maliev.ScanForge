@@ -13,12 +13,8 @@ export interface LandmarkAlignmentDialogProps {
   session: LandmarkAlignment;
   targets: Entity[];
   busy: boolean;
-  pickSide: "moving" | "fixed";
-  onPickSide: (side: "moving" | "fixed") => void;
   onTarget: (id: string) => void;
   onTargetScope: (scope: LandmarkTargetScope) => void;
-  onRemoveLast: () => void;
-  onRemoveAll: () => void;
   onPreview: () => void;
   onAccept: () => void;
   onCancel: () => void;
@@ -28,12 +24,8 @@ export function LandmarkAlignmentDialog({
   session,
   targets,
   busy,
-  pickSide,
-  onPickSide,
   onTarget,
   onTargetScope,
-  onRemoveLast,
-  onRemoveAll,
   onPreview,
   onAccept,
   onCancel,
@@ -49,14 +41,14 @@ export function LandmarkAlignmentDialog({
           Moving scan: <strong>{session.moving.name}</strong>
         </p>
         <label className="select-field">
-          Fixed target (optional)
+          Reference object
           <AppSelect
             aria-label="Fixed alignment target"
             value={session.fixed?.id ?? ""}
-            disabled={busy || !!session.preview}
+            disabled={busy}
             onChange={(e) => onTarget(e.target.value)}
           >
-            <option value="">All visible references</option>
+            <option value="">First visible reference</option>
             {targets.map((e) => (
               <option key={e.id} value={e.id}>
                 {e.name}
@@ -91,52 +83,20 @@ export function LandmarkAlignmentDialog({
           <p>Matching points determine point-cloud alignment.</p>
         )}
         <p>
-          Pick at least three matching pairs, spread across the scans. Fixed
-          points can come from any visible reference. Choose a fixed target to
-          filter canvas picking to that object.
+          Click matching points in the top-right Fixed and bottom-right Moving
+          views, in the same order. Alignment updates after three complete
+          pairs. Click a numbered marker to deselect it, or use Undo point and
+          Clear in either view.
         </p>
-        <div className="button-row">
-          <button
-            disabled={busy || !!session.preview}
-            aria-pressed={pickSide === "moving"}
-            onClick={() => onPickSide("moving")}
-          >
-            Pick moving points
-          </button>
-          <button
-            disabled={busy || !!session.preview}
-            aria-pressed={pickSide === "fixed"}
-            onClick={() => onPickSide("fixed")}
-          >
-            Pick fixed points
-          </button>
-        </div>
-        <div className="tool-section">
-          <h3>Moving points (M)</h3>
-          <ol aria-label="Moving landmarks">
-            {pairs.moving.map((p, i) => (
-              <li key={i}>
-                M{i + 1}: {p.map((v) => v.toFixed(3)).join(", ")}
-              </li>
-            ))}
-          </ol>
-          <h3>Fixed points (F)</h3>
-          <ol aria-label="Fixed landmarks">
-            {pairs.fixed.map((p, i) => (
-              <li key={i}>
-                F{i + 1}: {p.map((v) => v.toFixed(3)).join(", ")}
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div className="button-row">
-          <button disabled={busy || !controls.canRemove} onClick={onRemoveLast}>
-            Remove last point
-          </button>
-          <button disabled={busy || !controls.canRemove} onClick={onRemoveAll}>
-            Remove all points
-          </button>
-        </div>
+        {session.previewStatus === "pending" && (
+          <p role="status">
+            Updating alignment preview… You can keep picking points.
+          </p>
+        )}
+        {session.previewError && <p role="alert">{session.previewError}</p>}
+        {pairs.moving.length !== pairs.fixed.length && (
+          <p role="status">Complete the matching pair to update the result.</p>
+        )}
         {session.preview?.registration && (
           <p role="status">
             Preview RMS: {session.preview.registration.rms.toPrecision(4)} mm.

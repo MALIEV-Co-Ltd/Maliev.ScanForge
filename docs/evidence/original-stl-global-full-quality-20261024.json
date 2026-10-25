@@ -1,0 +1,462 @@
+{
+  "date": "2026-10-24",
+  "scope": "Exhaustive independent physical distance and coordinate publication assessment on retained original-three STL coarse/global snapshots; not current application or native acceptance.",
+  "currentHead": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "retainedCandidate": {
+    "head": "7bbd3e8e79d3f01ab9b1ecb45e3cec81f78e95fe",
+    "tree": "01e2e12cc05599e5e43ef94cad7d89d7d9c52f7b",
+    "sourceManifestSha256": "062bc98819d2cd64c8e224d0df62697bee6b14a9e2b889212dc0aa08ff411aa1",
+    "hasRecordedWorkingChanges": true,
+    "browserSha256": "4306cda9e53ad9cfb07018264b5ebb5b70e6404717ca15897d1f4d5e33b04e57",
+    "ownerSha256": "c063b7e91f39241b7ab59b3a1dabc8c96bbda228e1b66f5c0daa3aae24edb9b6"
+  },
+  "sourcePins": [
+    {
+      "path": "docs/ORIGINAL_STL_GLOBAL_QUALITY.md",
+      "sha256": "5c22b6a83a19f97a9f61a6114deb0a48450fde7de9501d11fb8b5d104d4f624a"
+    },
+    {
+      "path": "docs/ORIGINAL_STL_WORKFLOW.md",
+      "sha256": "a323428435316e21e86311ab4e47a61206c104eb1c6a26360ee6e7c1ca3f71e1"
+    },
+    {
+      "path": "docs/IMPORT_GUI_MCP_PARITY.md",
+      "sha256": "deceb31e6de549ce05cc49369e4f8dea2816ebd176593f1f4e257ce0bcf79533"
+    },
+    {
+      "path": "src/scan-native-global-local.ts",
+      "sha256": "568c420fdf68895061f372622d8d07b48f323675d3b5781642dea1f0f3b5b1f8"
+    },
+    {
+      "path": "src/scan-native-global-outer.ts",
+      "sha256": "23e07f74e6be1914e9412f4f79de0781cde951f53fdfa0d02273c71213efb8cc"
+    },
+    {
+      "path": "src/scan-global-controller-core.ts",
+      "sha256": "deae025b0406c6983741d1f71c6ee1c827deeeab033d7db64d54d1e067d64727"
+    },
+    {
+      "path": "src/scan-global-registration.ts",
+      "sha256": "495ea666dabc99b6a39963a29336e5d457b4cdefe872dba503e2ccad35bdef83"
+    },
+    {
+      "path": "src/global-alignment-input-core.ts",
+      "sha256": "a85565e02b376169c4c6db300c3c43bc5ea8b537e4e432b2c8fe4e40ece61111"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/automation/global-alignment-operations.ts",
+      "sha256": "b54aad01f80a6c44d46c09c4f12ae8723c8dc8cf99289c6f78d5c582a02e566a"
+    },
+    {
+      "path": "src/ui/GlobalAlignmentTools.tsx",
+      "sha256": "a5467afe520ef37d50598cc4179f74edab366c8f4e28dc245b4bff27c7cf48eb"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    }
+  ],
+  "unchangedCurrentRuntimeEvidence": {
+    "path": "docs\\evidence\\reference-sketch-line-draft-fork-20261024.json",
+    "sha256": "2c0ef4fac0bee733b1dadad7edd62bd754a8bb6d88c927b872f5e5e33c4ba692",
+    "all43PinsReverified": true
+  },
+  "selectedCurrentVersusRetainedSources": [
+    {
+      "path": "src/scan-native-global-local.ts",
+      "currentSha256": "568c420fdf68895061f372622d8d07b48f323675d3b5781642dea1f0f3b5b1f8",
+      "retainedRunSha256": "568c420fdf68895061f372622d8d07b48f323675d3b5781642dea1f0f3b5b1f8",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/scan-native-global-outer.ts",
+      "currentSha256": "23e07f74e6be1914e9412f4f79de0781cde951f53fdfa0d02273c71213efb8cc",
+      "retainedRunSha256": "23e07f74e6be1914e9412f4f79de0781cde951f53fdfa0d02273c71213efb8cc",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/scan-global-controller-core.ts",
+      "currentSha256": "deae025b0406c6983741d1f71c6ee1c827deeeab033d7db64d54d1e067d64727",
+      "retainedRunSha256": "deae025b0406c6983741d1f71c6ee1c827deeeab033d7db64d54d1e067d64727",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/scan-global-registration.ts",
+      "currentSha256": "495ea666dabc99b6a39963a29336e5d457b4cdefe872dba503e2ccad35bdef83",
+      "retainedRunSha256": "495ea666dabc99b6a39963a29336e5d457b4cdefe872dba503e2ccad35bdef83",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/global-alignment-input-core.ts",
+      "currentSha256": "a85565e02b376169c4c6db300c3c43bc5ea8b537e4e432b2c8fe4e40ece61111",
+      "retainedRunSha256": "189af59aa438a8ca93c5fd147ec5a6aec29c51b9578b260eeb5a760a2172c2a0",
+      "matchesRetainedRun": false
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "currentSha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3",
+      "retainedRunSha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/automation/global-alignment-operations.ts",
+      "currentSha256": "b54aad01f80a6c44d46c09c4f12ae8723c8dc8cf99289c6f78d5c582a02e566a",
+      "retainedRunSha256": "fd94497da1f48c780f8c886b5cb6a4b5c7b63b840a71aeac1afe3d4276f90bd8",
+      "matchesRetainedRun": false
+    },
+    {
+      "path": "src/ui/GlobalAlignmentTools.tsx",
+      "currentSha256": "a5467afe520ef37d50598cc4179f74edab366c8f4e28dc245b4bff27c7cf48eb",
+      "retainedRunSha256": "a5467afe520ef37d50598cc4179f74edab366c8f4e28dc245b4bff27c7cf48eb",
+      "matchesRetainedRun": true
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "currentSha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921",
+      "retainedRunSha256": "93117b1f691231af6b047a80e42dba885f81ea600452aab9c9a941faf05ed581",
+      "matchesRetainedRun": false
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "global-stl-full-quality-r1.mjs",
+      "sha256": "359496be0404c1162956aa4652eb96156e84bfc4c4a0c0ef208533ec67798116"
+    },
+    {
+      "name": "run-global-stl-full-quality-r1.py",
+      "sha256": "56f7a7b70fe194e18a49f4894bb08ab2d4f7f2ced050a440f51bdbf542ab674e"
+    },
+    {
+      "name": "global-stl-full-quality-r1.json",
+      "sha256": "c7efaee0572fffb0c63ccb09459faed88f00888fe648dec9b5e9c1fc1a48c20c"
+    },
+    {
+      "name": "verify-global-stl-quality-r1.mjs",
+      "sha256": "bf1b7c1f6ef257a70461bba9f6f24de75c8ee412b6969567d43aa7d1717b9bfc"
+    },
+    {
+      "name": "run-verify-global-stl-quality-r1.py",
+      "sha256": "8de0f666df423cd8143bed285e956bbf3942efe1d36fe854b448917a37a5046d"
+    },
+    {
+      "name": "global-stl-full-quality-verified-r1.json",
+      "sha256": "45550deb7127d94a05d2eb1841c5a5a6a9f00f25b65e2be7daa844df49e12d2d"
+    },
+    {
+      "name": "record-global-stl-quality-r1.py",
+      "sha256": "7ea337d0284bc11dfee48f4a96d5cad75f79c822bb8c20a338045ecdf2fa8acb"
+    },
+    {
+      "name": "global-stl-full-quality-library-pins-r1.json",
+      "sha256": "4c990d16eb051eefda94aae0921b820063845ada640299cdba1cf84c14e00b77"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261023T023157164015Z-browser/evidence.json",
+      "sha256": "4306cda9e53ad9cfb07018264b5ebb5b70e6404717ca15897d1f4d5e33b04e57"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261023T023157164015Z-kernel/resource-ledger.json",
+      "sha256": "c063b7e91f39241b7ab59b3a1dabc8c96bbda228e1b66f5c0daa3aae24edb9b6"
+    },
+    {
+      "name": "global-after-coarse-three-stl-plan-source-20261023T023157164015Z.json",
+      "sha256": "1cedf2a809b8be2ce9508b93e5fee6a45b645fca1078184943eff8ac1dd327b2"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ScanForge-three-STL-aligned-memory-fix.scanforge",
+      "bytes": 410861843,
+      "sha256": "93701c5b8ef2afd4be2ef29d9b00bc9f908cdc79aafbdd73997b5a54fbddc0bc"
+    },
+    {
+      "name": "ScanForge-three-STL-global-memory-verified.scanforge",
+      "bytes": 666828179,
+      "sha256": "ab67731336431afa966e1fd8b2fde36a9f19828e0438a60fd2b3c25e1480a66f"
+    }
+  ],
+  "libraries": {
+    "three": "0.180.0",
+    "three-mesh-bvh": "0.9.16",
+    "sourceFilesPinned": 96,
+    "manifestSha256": "4c990d16eb051eefda94aae0921b820063845ada640299cdba1cf84c14e00b77",
+    "packageLockSha256": "2c5cac886fdfdf6408d2221c6cda5173c8265fb2d7ef8757cb5f8d9e40c9ccce"
+  },
+  "measurement": {
+    "sourceVerticesPerStage": 3121976,
+    "sourceVerticesEvaluated": 6243952,
+    "trianglesPerStage": 6147452,
+    "downsampled": false,
+    "metric": "Unsigned nearest full triangle union; vertex-weighted rather than area-weighted.",
+    "fixedSupportVertices": 2990647,
+    "fixedSupportCutoffMm": 0.5,
+    "fixedSupportRmsBeforeMm": 0.0651729743610334,
+    "fixedSupportRmsAfterMm": 0.05760443036345515,
+    "scans": [
+      {
+        "name": "scan-1.stl",
+        "id": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "sourceVertices": 139338,
+        "targetTriangles": 5874313,
+        "before": {
+          "count": 139338,
+          "withinHalfMm": 51039,
+          "withinHalfMmPercent": 36.629634414158375,
+          "meanMm": 1.3017942302760739,
+          "rmsMm": 1.6978826847644266,
+          "medianMm": 1.2525967058593175,
+          "p95Mm": 3.1041486729247176,
+          "p99Mm": 3.2309323067150206,
+          "maximumMm": 3.5145908910070953
+        },
+        "after": {
+          "count": 139338,
+          "withinHalfMm": 51310,
+          "withinHalfMmPercent": 36.82412550775811,
+          "meanMm": 1.2934565320469482,
+          "rmsMm": 1.6944084353034292,
+          "medianMm": 1.242270635497218,
+          "p95Mm": 3.136789237880466,
+          "p99Mm": 3.2259297114836567,
+          "maximumMm": 3.489406057765243
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 51039,
+            "withinHalfMm": 51039,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.11351109428461462,
+            "rmsMm": 0.16981523390443973,
+            "medianMm": 0.06256099264907986,
+            "p95Mm": 0.4113761080335161,
+            "p99Mm": 0.4822519613715226,
+            "maximumMm": 0.49998879502028415
+          },
+          "after": {
+            "count": 51039,
+            "withinHalfMm": 50547,
+            "withinHalfMmPercent": 99.03603127020514,
+            "meanMm": 0.10028436355210285,
+            "rmsMm": 0.1628749763450121,
+            "medianMm": 0.04029845731709159,
+            "p95Mm": 0.4013675613023431,
+            "p99Mm": 0.4982220770039491,
+            "maximumMm": 0.6400725960605886
+          }
+        },
+        "gainedWithinHalfMm": 763,
+        "lostWithinHalfMm": 492,
+        "beforeDistanceSha256": "ade95d346fd90f7754f9edb7670fcea88ffb61e8af5bb81dc55f9e3c593c67c5",
+        "afterDistanceSha256": "30b0bccbf476a3569e8a46ae8de2be06e74fa2ded7512ccf229f571a32f0b300"
+      },
+      {
+        "name": "scan-2.stl",
+        "id": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "sourceVertices": 1299033,
+        "targetTriangles": 3600049,
+        "before": {
+          "count": 1299033,
+          "withinHalfMm": 1272780,
+          "withinHalfMmPercent": 97.97903517462605,
+          "meanMm": 0.05280118961793716,
+          "rmsMm": 0.17241121916943042,
+          "medianMm": 0.023704623123264643,
+          "p95Mm": 0.09499724462106052,
+          "p99Mm": 1.0139294865665736,
+          "maximumMm": 2.4597275260773936
+        },
+        "after": {
+          "count": 1299033,
+          "withinHalfMm": 1272659,
+          "withinHalfMmPercent": 97.96972055367338,
+          "meanMm": 0.04408275744602378,
+          "rmsMm": 0.1710714434450838,
+          "medianMm": 0.01479826151017644,
+          "p95Mm": 0.07523727062480867,
+          "p99Mm": 1.0173287970525484,
+          "maximumMm": 2.473824170696992
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 1272780,
+            "withinHalfMm": 1272780,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.031596342222722916,
+            "rmsMm": 0.05208854833103278,
+            "medianMm": 0.02315068452534607,
+            "p95Mm": 0.07552987172805657,
+            "p99Mm": 0.232848206836102,
+            "maximumMm": 0.49993088450862133
+          },
+          "after": {
+            "count": 1272780,
+            "withinHalfMm": 1272398,
+            "withinHalfMmPercent": 99.96998695768318,
+            "meanMm": 0.022637033724861713,
+            "rmsMm": 0.04578198236156058,
+            "medianMm": 0.014444507867605927,
+            "p95Mm": 0.0567536445321946,
+            "p99Mm": 0.22748551758477162,
+            "maximumMm": 0.5578476485250088
+          }
+        },
+        "gainedWithinHalfMm": 261,
+        "lostWithinHalfMm": 382,
+        "beforeDistanceSha256": "da5b211c1f419bbd8778410ba79b48c8a8b622a59e51fbae10a2cee3f3b3e47d",
+        "afterDistanceSha256": "d82bc947f774fdd327a83ceaa7e45537d8400c518800c7f0c0f6e0231ddcfab3"
+      },
+      {
+        "name": "scan-3.stl",
+        "id": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "sourceVertices": 1683605,
+        "targetTriangles": 2820542,
+        "before": {
+          "count": 1683605,
+          "withinHalfMm": 1666828,
+          "withinHalfMmPercent": 99.00350735475364,
+          "meanMm": 0.04645105288002295,
+          "rmsMm": 0.10886194465760335,
+          "medianMm": 0.02541051924204565,
+          "p95Mm": 0.1359200225054338,
+          "p99Mm": 0.49915534519835736,
+          "maximumMm": 1.7901749280107686
+        },
+        "after": {
+          "count": 1683605,
+          "withinHalfMm": 1668270,
+          "withinHalfMmPercent": 99.08915689844115,
+          "meanMm": 0.03600864135954741,
+          "rmsMm": 0.10287505818223636,
+          "medianMm": 0.015646523893750684,
+          "p95Mm": 0.11798152373951645,
+          "p99Mm": 0.47844176229944047,
+          "maximumMm": 1.7921630236093786
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 1666828,
+            "withinHalfMm": 1666828,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.03891578707493332,
+            "rmsMm": 0.06830923460350262,
+            "medianMm": 0.025119797268013302,
+            "p95Mm": 0.11301135512836152,
+            "p99Mm": 0.3413899430364984,
+            "maximumMm": 0.4999817126238598
+          },
+          "after": {
+            "count": 1666828,
+            "withinHalfMm": 1666333,
+            "withinHalfMmPercent": 99.97030287468174,
+            "meanMm": 0.0285157042332245,
+            "rmsMm": 0.059505433462232145,
+            "medianMm": 0.015455186352567216,
+            "p95Mm": 0.08985917522875184,
+            "p99Mm": 0.3162927912421506,
+            "maximumMm": 0.5713046766180278
+          }
+        },
+        "gainedWithinHalfMm": 1937,
+        "lostWithinHalfMm": 495,
+        "beforeDistanceSha256": "67a7dbee11ba5457d8d426dcb7b3629932b4f766dfa177ec1a865569cdcf1c0a",
+        "afterDistanceSha256": "6b795abc1e51868855f04447aa5618f3fb3fedcf58c97097c560448b36ead5cc"
+      }
+    ],
+    "analyticCases": 5,
+    "realOracleCases": 6,
+    "oracleBoundsChecked": 24589808,
+    "oracleToleranceMm": 1e-6,
+    "maximumOracleDiscrepancyMm": 3.250004432242548e-14
+  },
+  "coordinateVerification": {
+    "fullIndexedElementsMatched": 9365928,
+    "fullExpandedElementsMatched": 55327068,
+    "unchangedTriangleIndexElements": 18442356,
+    "originalSTLFilesVerified": 3,
+    "exactFloat64MatrixBits": true,
+    "separateFloat32Stages": true,
+    "independentNormalsReconstruction": false
+  },
+  "retainedWorkflow": {
+    "completed": true,
+    "passes": 3,
+    "controllerConverged": false,
+    "states": [
+      {
+        "meanMm": 0.03829352560716696,
+        "coveragePercent": 73,
+        "converged": false,
+        "stable": true
+      },
+      {
+        "meanMm": 0.023716873388290274,
+        "coveragePercent": 88,
+        "converged": false,
+        "stable": true
+      },
+      {
+        "meanMm": 0.03834558513862367,
+        "coveragePercent": 81,
+        "converged": false,
+        "stable": true
+      }
+    ],
+    "peakJobMemoryBytes": 4065284096,
+    "ownedProcessesExited": 17,
+    "handlesClosed": true
+  },
+  "validation": {
+    "newBuildOrProductTestsRun": false,
+    "newBrowserWorkflowRun": false,
+    "productBehaviorChanged": false,
+    "nativeApplicationAccess": false,
+    "currentApplicationAcceptance": false,
+    "newAnalysisPeakBytes": 870703104,
+    "jobCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": "Analysis-only; retained GUI Preview/cached MCP Apply/Undo/Redo/history/saved data were assessed. Public application operations/catalog/schemas/agent usage unchanged.",
+  "githubReadOnlyAudit": {
+    "alignmentIssue": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/3",
+    "constructionIssue": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4",
+    "bothOpen": true,
+    "alignmentIntegrationPriority": true,
+    "mutated": false
+  },
+  "limitations": [
+    "Geometric improvement does not satisfy native convergence or certify physical scanner accuracy.",
+    "Distances are unsigned and vertex-weighted, without normal/boundary filtering or uniform-area weighting.",
+    "Not a native controller/setter replay or a fresh workflow on the current uncommitted candidate.",
+    "Remaining native, format/point-cloud, usable-output, reviewed-candidate and all milestone acceptance requirements remain open."
+  ],
+  "receipts": [
+    {
+      "name": "global-stl-full-quality-r1-self-test-cad",
+      "sha256": "ed56674000169cad7ae7529d2479097facf6d20d72cde78b112fd806ec05acef",
+      "terminalClean": true,
+      "seconds": 0.15818359999684617,
+      "peakBytes": 26808320
+    },
+    {
+      "name": "global-stl-full-quality-r1-full-full",
+      "sha256": "579060872ec7b0e6e9efc487c3f3ecf694dcf1c59e401b408b575f5ab566986b",
+      "terminalClean": true,
+      "seconds": 59.9193324999942,
+      "peakBytes": 870703104
+    },
+    {
+      "name": "verify-global-stl-quality-r1-cad",
+      "sha256": "e4a2aef4636477756fd491f5977713cd01a4c9bc17321a494f66db3f5f437d43",
+      "terminalClean": true,
+      "seconds": 3.188911700010067,
+      "peakBytes": 717185024
+    }
+  ]
+}

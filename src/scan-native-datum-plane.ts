@@ -1,4 +1,5 @@
 import { nativeDatumPrimaryDirection } from "./scan-native-datum-frame";
+import { nativeReferenceClosestLines } from "./reference-geometry-numerics";
 
 export interface NativeDatumPlaneState {
   matrix: number[];
@@ -232,18 +233,7 @@ function closestLines(
   b: readonly number[],
   v: readonly number[],
 ) {
-  const uv = v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
-  const uu = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
-  const vv = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-  const determinant = vv * uu - uv * uv;
-  if (!(2 ** -23 < Math.abs(determinant))) return undefined;
-  const dy = b[1] - a[1],
-    dz = b[2] - a[2];
-  const alongV = (b[0] - a[0]) * v[0] + dy * v[1] + dz * v[2];
-  const alongU = (b[0] - a[0]) * u[0] + dy * u[1] + dz * u[2];
-  const reciprocal = 1 / determinant;
-  const t = (alongU * vv - alongV * uv) * reciprocal;
-  return u.map((value, i) => value * t + a[i]);
+  return nativeReferenceClosestLines(a, u, b, v, 2 ** -23)?.first;
 }
 
 /** Native direction-reference construction and tertiary fallback. */

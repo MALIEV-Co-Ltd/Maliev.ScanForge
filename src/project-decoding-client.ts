@@ -1,6 +1,8 @@
 import type { ProjectSession } from "./project-file";
+import type { ProjectSharedChunk } from "./project-file-codec";
 import type { Positions } from "./types";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
+import { indexedMeshMatches } from "./indexed-mesh";
 import {
   restoreEncodingSnapshot,
   type ProjectEncodingSnapshot,
@@ -12,10 +14,17 @@ import {
 export interface DecodedProjectData {
   snapshot: ProjectEncodingSnapshot;
   displays: { positions: Positions; data: ScanRenderData }[];
+  sharedChunks?: ProjectSharedChunk[];
 }
+// Weak backing references do not keep a closed project alive. Reopening its
+// unchanged chunks can borrow them while earlier consumers or GC still own them.
+const sharedChunks = new Map<string, WeakRef<SharedArrayBuffer>>();
 let pending: Promise<unknown> = Promise.resolve(),
   generation = 0;
-globalThis.addEventListener?.("pagehide", () => generation++);
+globalThis.addEventListener?.("pagehide", () => {
+  generation++;
+  sharedChunks.clear();
+});
 /** File decoding, validation and display preparation finish before publication.
  * The main thread rebuilds large JS arrays in bounded cooperative chunks. */
 export function decodeProjectInBackground(
@@ -102,7 +111,16 @@ export function decodeProjectInBackground(
                   !display.positions ||
                   !r ||
                   !(r.normals instanceof Float32Array) ||
-                  r.normals.length !== display.positions.length ||
+                  (r.indexedMesh
+                    ? !session.project.entities.some(
+                        (e) =>
+                          e.positions === display.positions &&
+                          e.indexedMesh === r.indexedMesh,
+                      ) ||
+                      !indexedMeshMatches(r.indexedMesh, display.positions) ||
+                      r.normals !== r.indexedMesh.geometryNormals ||
+                      r.normals.length !== r.indexedMesh.vertices.length
+                    : r.normals.length !== display.positions.length) ||
                   !r.bounds?.every(Number.isFinite) ||
                   r.bounds.length !== 6 ||
                   !Number.isFinite(r.radius) ||
@@ -111,12 +129,42 @@ export function decodeProjectInBackground(
                   throw new Error("Invalid decoded mesh display.");
                 cacheScanRenderData(display.positions, r);
               }
+              if (
+                decoded.sharedChunks !== undefined &&
+                !Array.isArray(decoded.sharedChunks)
+              )
+                throw new Error("Invalid decoded project chunks.");
+              for (const chunk of decoded.sharedChunks ?? []) {
+                check();
+                if (
+                  typeof SharedArrayBuffer === "undefined" ||
+                  !(chunk?.buffer instanceof SharedArrayBuffer) ||
+                  !/^[a-f0-9]{64}$/.test(chunk.sha256)
+                )
+                  throw new Error("Invalid decoded project chunk.");
+              }
+              for (const chunk of decoded.sharedChunks ?? []) {
+                if (typeof WeakRef !== "undefined") {
+                  const key = `${chunk.sha256}:${chunk.buffer.byteLength}`;
+                  sharedChunks.delete(key);
+                  sharedChunks.set(key, new WeakRef(chunk.buffer));
+                  if (sharedChunks.size > 128)
+                    sharedChunks.delete(sharedChunks.keys().next().value!);
+                }
+              }
               finish(undefined, session);
             })().catch((error) =>
               finish(error instanceof Error ? error : new Error(String(error))),
             );
           };
-          worker.postMessage({ file });
+          const reusableChunks: ProjectSharedChunk[] = [];
+          for (const [key, reference] of sharedChunks) {
+            const buffer = reference.deref();
+            if (buffer)
+              reusableChunks.push({ sha256: key.slice(0, 64), buffer });
+            else sharedChunks.delete(key);
+          }
+          worker.postMessage({ file, reusableChunks });
         } catch (error) {
           finish(error instanceof Error ? error : new Error(String(error)));
         }

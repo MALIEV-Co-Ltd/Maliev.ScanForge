@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Open-spline math and three-point fallback contracts recovered; native output validation and shared integration remain incomplete",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "nativeEvidence": {
+    "capture": {
+      "artifact": "native-construction-source-metadata-20261023-sketch-spline-r2/evidence.json",
+      "sha256": "f51be81407ed1d3f3f3be1c8f373e4a78d00a88a6fcc89656f8b3a0fbc78c751",
+      "matchedCodeBytesPerPass": 11690,
+      "twoReadsAgree": true,
+      "totalReadBytes": 24772,
+      "regionQueries": 168,
+      "closed": true
+    },
+    "proceduresChecked": 12,
+    "instructionStartsChecked": 2731,
+    "directFlowsChecked": 343,
+    "selectedAnchors": [
+      {
+        "address": "0x140279c1a",
+        "instruction": "xor r14d, r14d",
+        "bytesSha256": "0385882cef4c3440ab67752cc28e1630e8fd267c66218b142a2ba5468d1da828"
+      },
+      {
+        "address": "0x140279d04",
+        "instruction": "mov dword ptr [rsp + 0x1c0], r14d",
+        "bytesSha256": "d174957599409af7dc3426c169cc8309ab5482b590ba0b4feeb6b0caa46ac7e4"
+      },
+      {
+        "address": "0x140279d58",
+        "instruction": "mov dword ptr [rsp + 0x150], r14d",
+        "bytesSha256": "c776a2ba870d0433577d1007357447a47443e27a9a5c620ace0c2189435e0409"
+      },
+      {
+        "address": "0x140279de1",
+        "instruction": "mov dword ptr [rsp + 0x20], 2",
+        "bytesSha256": "61cc818e62bb6f23d61c7fa9cb66ffc34a2b3b94cb3c9a9175b5a579c50c529c"
+      },
+      {
+        "address": "0x140279dfc",
+        "instruction": "call 0x140a54b50",
+        "bytesSha256": "b178a3da0c3b003e8cfe1e8ab22b89d85b0ede4377ae29e7af830368cd843325"
+      },
+      {
+        "address": "0x140279fd1",
+        "instruction": "cvtpd2ps xmm0, xmm0",
+        "bytesSha256": "27ec64048bd6579e11d790b46d2e6adb49685e3186d23762dbc878e31590f3c9"
+      },
+      {
+        "address": "0x140279fd5",
+        "instruction": "cvtps2pd xmm4, xmm0",
+        "bytesSha256": "0e4a552afc48693f3c3f79dd1d689b0723ad57d03f4449b07a1b0baf6d9ea72d"
+      },
+      {
+        "address": "0x140279fdf",
+        "instruction": "cvtpd2ps xmm1, xmm1",
+        "bytesSha256": "5a38a7eef661e5b598577339b08b7ab129483afecf791a29b3a083f7ad4c9884"
+      },
+      {
+        "address": "0x140279fe3",
+        "instruction": "cvtps2pd xmm3, xmm1",
+        "bytesSha256": "2c3e7db58ba20d1c470a486a1f4487408cf2ecf14757cf192195204e941e709f"
+      },
+      {
+        "address": "0x140279fec",
+        "instruction": "cvtpd2ps xmm0, xmm0",
+        "bytesSha256": "27ec64048bd6579e11d790b46d2e6adb49685e3186d23762dbc878e31590f3c9"
+      },
+      {
+        "address": "0x140279ff0",
+        "instruction": "cvtps2pd xmm2, xmm0",
+        "bytesSha256": "623ecaa5d248885a58aba53cdb18bda2536a38fccc41b89ba15b1c7fa2db71ff"
+      },
+      {
+        "address": "0x140b06dc9",
+        "instruction": "addsd xmm0, xmm2",
+        "bytesSha256": "433d0aa1e8c792be16f4503431359341aebb0e6661e37ba56c8b521903c27ec0"
+      },
+      {
+        "address": "0x140b06dcd",
+        "instruction": "addsd xmm0, xmm1",
+        "bytesSha256": "09ccdbc077a6e7b7b47fb8a93265b5de8c7abb99bbdc5af9f4702af1f89d8d48"
+      },
+      {
+        "address": "0x140b06dd1",
+        "instruction": "call 0x140d5cfac",
+        "bytesSha256": "eff00fad0f5db90d8df85c103d86aea4312c8654dee48d84b16ff1227de3eef0"
+      },
+      {
+        "address": "0x140b06df6",
+        "instruction": "movaps xmm0, xmm2",
+        "bytesSha256": "9f086eb582bdb68612ab91bb0a2375b67a8afff0d8d505732afaa52e40dc6e74"
+      },
+      {
+        "address": "0x140b06df9",
+        "instruction": "call 0x140d5cfdc",
+        "bytesSha256": "e0d52fcc2eb2f57ff0851d35118d2dc1286403800eebec9e2704ccd6869323a5"
+      },
+      {
+        "address": "0x140b06e03",
+        "instruction": "call 0x140d5cfac",
+        "bytesSha256": "9e6d80296c7fd502c5567f1416394fdea92c2bb3ad46e2905f10176841cccaa6"
+      },
+      {
+        "address": "0x140b06e12",
+        "instruction": "addsd xmm0, qword ptr [r14 + rdi*8 - 8]",
+        "bytesSha256": "9dd1d3adfe89dbf450d452890690b32025d227562e1c79d529d45e5b0a359546"
+      },
+      {
+        "address": "0x140b06128",
+        "instruction": "movsd xmm7, qword ptr [rcx]",
+        "bytesSha256": "9a5313d68424a788060773dc3ed8a7e49d3e662f86c1804c6a2ca06629cb9b01"
+      },
+      {
+        "address": "0x140b0620b",
+        "instruction": "call 0x140b05520",
+        "bytesSha256": "2f9a17e5f0388808bb1f05439c3b3b927aad37d92e162e242785e059bab2edfe"
+      },
+      {
+        "address": "0x140b0659a",
+        "instruction": "movsd xmm7, qword ptr [r8 + rcx*8 - 8]",
+        "bytesSha256": "1c6abd88e6bb98706d532941d00d4cf2166f04ded1f140252ff132be0a5f5a6c"
+      },
+      {
+        "address": "0x140b066ab",
+        "instruction": "call 0x140b05520",
+        "bytesSha256": "4532ab207fe459b8d14f0a41559d9ee3bd4c6a0f25dfc29f434bd1ca8cff4d1b"
+      },
+      {
+        "address": "0x140b05bba",
+        "instruction": "addsd xmm0, qword ptr [rbp - 0x40]",
+        "bytesSha256": "f2d5a544bf5d0e986f25ec84161bf6acf8267dd800c9c3ddf4570435f08f63f1"
+      },
+      {
+        "address": "0x140b05bc4",
+        "instruction": "addsd xmm2, xmm4",
+        "bytesSha256": "0cb45ec90f1abb8021e55fb3ddd96cc77ff2e9ac7a053bf481f03262adb580c2"
+      },
+      {
+        "address": "0x140b05867",
+        "instruction": "comisd xmm6, xmm0",
+        "bytesSha256": "cc1f563040737925136f5ceb824d611a3f369ebbd5a06c2b5c28159fa614d0d6"
+      },
+      {
+        "address": "0x140b0586b",
+        "instruction": "ja 0x140b05c6a",
+        "bytesSha256": "a59fc39a3b47ab1b5c683c58b2a4ea32219b3354a31e18ee8bab1386898ab2df"
+      },
+      {
+        "address": "0x140b057c9",
+        "instruction": "cmovbe rax, rdi",
+        "bytesSha256": "74f9cc108d1f05d02b278c8a90a8cae64da92f2ec50923e849ab3c017e971277"
+      },
+      {
+        "address": "0x140b06f08",
+        "instruction": "divsd xmm0, xmm2",
+        "bytesSha256": "b9c809098b1b0a1b804e79daa2a6db231dbbf7bfad0c338eafb8e8391121535d"
+      },
+      {
+        "address": "0x140b07217",
+        "instruction": "divsd xmm1, xmm0",
+        "bytesSha256": "982eb6e9d86a2ae84655557a0281239c1ea5a6b0b6f0af76e5ce16c91be6c036"
+      },
+      {
+        "address": "0x140b052ae",
+        "instruction": "jbe 0x140b052ef",
+        "bytesSha256": "1386336317c7913a683ffa98d64405e653e6980f1e58c367dd5c4aa23435f52a"
+      },
+      {
+        "address": "0x140b05396",
+        "instruction": "jbe 0x140b053b6",
+        "bytesSha256": "d15f7c8461a8699594a06d0badac86202a4a3f4395465be0eba77be6218441ed"
+      },
+      {
+        "address": "0x14027bb08",
+        "instruction": "mov dword ptr [rsp + 0x28], 3",
+        "bytesSha256": "8df6f67cc91695e1b74759b8dfaa32d0fdd6f50a68111c34bf66537f606abe63"
+      },
+      {
+        "address": "0x14027bb10",
+        "instruction": "mov dword ptr [rsp + 0x20], 3",
+        "bytesSha256": "9a4cfaaa0916486676f2bb426fa02d6f49b9bd1ade6b472739043d5923f08e5e"
+      },
+      {
+        "address": "0x14027bb18",
+        "instruction": "mov r9d, 3",
+        "bytesSha256": "28929dfcf0314f3ff0562eb19870f2e27b88b9aca2f6d22a51ca59c09f89db65"
+      },
+      {
+        "address": "0x14027bb1e",
+        "instruction": "lea r8d, [r9 - 1]",
+        "bytesSha256": "3c6e43814361352aefe9db74f5a8a1894c5f84e78a6f9931b954d5439ac3d576"
+      },
+      {
+        "address": "0x14027bb27",
+        "instruction": "call qword ptr [rip + 0xc311b3]",
+        "bytesSha256": "fc33454c110bd7e06d56bed2e0643a498e7ebda21e1780623f1013563fcb0e77"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad60",
+        "label": "basis denominator and endpoint tolerance; total-parameter and pivot failure threshold",
+        "f64": 1e-14,
+        "bytes": "9b2ba1869b84063d"
+      },
+      {
+        "address": "0x14126ae40",
+        "label": "three-point interpolation tolerance",
+        "f64": 1e-6,
+        "bytes": "8dedb5a0f7c6b03e"
+      },
+      {
+        "address": "0x14126b1e8",
+        "label": "power parameterization exponent",
+        "f64": 0.8,
+        "bytes": "9a9999999999e93f"
+      },
+      {
+        "address": "0x14126b6b0",
+        "label": "default boundary vector x",
+        "f64": 3.4028234663852886e38,
+        "bytes": "000000e0ffffef47"
+      },
+      {
+        "address": "0x14126b250",
+        "label": "unit parameter endpoint",
+        "f64": 1.0,
+        "bytes": "000000000000f03f"
+      },
+      {
+        "address": "0x14126b170",
+        "label": "longest-segment insertion midpoint scale",
+        "f64": 0.5,
+        "bytes": "000000000000e03f"
+      }
+    ],
+    "installedModules": [
+      {
+        "name": "TKG3d.dll",
+        "sha256": "bb7648a9a47a863a1696914ea4c62572ddb7a0b3533297b13a2279a6fad3366f"
+      },
+      {
+        "name": "TKGeomAlgo.dll",
+        "sha256": "fbcc52a4da0cdc4b5b6b07c1cd9aa923630599574cf69acbd2d6d0cb0cfb6a19"
+      }
+    ],
+    "imports": [
+      {
+        "slot": "0x140eacaf8",
+        "module": "TKG3d.dll",
+        "targetRva": "0xe830",
+        "exportNames": [
+          "??0Geom_BSplineCurve@@QEAA@AEBV?$NCollection_Array1@Vgp_Pnt@@@@AEBV?$NCollection_Array1@N@@AEBV?$NCollection_Array1@H@@H_N@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacce8",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19cd40",
+        "exportNames": [
+          "??0GeomAPI_Interpolate@@QEAA@AEBV?$handle@VTColgp_HArray1OfPnt@@@opencascade@@_NN@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacb70",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19d6d0",
+        "exportNames": ["?Perform@GeomAPI_Interpolate@@QEAAXXZ"],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacb80",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x164120",
+        "exportNames": [
+          "?HasConstraint@GeomFill_CornerState@@QEBA_NXZ",
+          "?IsDone@Geom2dAPI_Interpolate@@QEBA_NXZ",
+          "?IsDone@GeomAPI_Interpolate@@QEBA_NXZ",
+          "?IsDone@Law_Interpolate@@QEBA_NXZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacb78",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x1640e0",
+        "exportNames": [
+          "?Curve@Geom2dAPI_Interpolate@@QEBAAEBV?$handle@VGeom2d_BSplineCurve@@@opencascade@@XZ",
+          "?Curve@GeomAPI_Interpolate@@QEBAAEBV?$handle@VGeom_BSplineCurve@@@opencascade@@XZ",
+          "?Curve@Law_Interpolate@@QEBAAEBV?$handle@VLaw_BSpline@@@opencascade@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": false
+      },
+      {
+        "slot": "0x140eacce0",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19efa0",
+        "exportNames": [
+          "??0GeomAPI_PointsToBSpline@@QEAA@AEBV?$NCollection_Array1@Vgp_Pnt@@@@W4Approx_ParametrizationType@@HHW4GeomAbs_Shape@@N@Z"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      },
+      {
+        "slot": "0x140eacbe8",
+        "module": "TKGeomAlgo.dll",
+        "targetRva": "0x19f2f0",
+        "exportNames": [
+          "?Curve@GeomAPI_PointsToBSpline@@QEBAAEBV?$handle@VGeom_BSplineCurve@@@opencascade@@XZ"
+        ],
+        "entryBytesMatched": 32,
+        "uniqueExport": true
+      }
+    ],
+    "scope": "Static instruction/direct-flow checks, repeated read-only code/IAT/factory binding and installed DLL export/entry-byte comparison. No target calls, UI input, geometry-buffer reads, native image execution or DLL loading."
+  },
+  "constructionContract": {
+    "largerOpenBranch": {
+      "degree": 3,
+      "parameterization": "centripetal",
+      "parameterizationMode": 2,
+      "distanceSquaredOrder": "(dy*dy + dx*dx) + dz*dz",
+      "increment": "sqrt(sqrt(distanceSquared))",
+      "normalization": "each accumulated prefix divided by total",
+      "endpointRows": "second derivative at first and last data parameter equals zero",
+      "rowOrder": [
+        "first endpoint",
+        "all data points in source order",
+        "last endpoint"
+      ],
+      "controlCount": "n + 2",
+      "expandedKnotCount": "n + 6",
+      "interiorKnots": "For j=1..n-2: U[3+j]=(((0+t[j-1])+t[j])+t[j+1])/3",
+      "polePrecision": "Float64 solve; each XYZ converted to Float32 and promoted back to Float64 before curve creation",
+      "periodic": false,
+      "knotsForKernel": "Exact-equality grouping of expanded knots into unique values and multiplicities"
+    },
+    "basis": {
+      "activeDenominator": "strictly greater than 1e-14",
+      "finalKnotBaseCase": "strict absolute difference below 1e-14 selects last positive span",
+      "ordinaryBaseCase": "half-open knot interval"
+    },
+    "denseSolve": {
+      "pivot": "maximum absolute remaining column entry; first tie retained",
+      "singular": "absolute pivot strictly below 1e-14 throws",
+      "elimination": "pivot column inclusive; matrix and XYZ rows swapped together",
+      "backSubstitution": "descending rows, increasing column products accumulated in order"
+    },
+    "threePointBranch": {
+      "inputPrecision": "source XYZ copied directly",
+      "initial": "GeomAPI_Interpolate",
+      "periodic": false,
+      "tolerance": 1e-6,
+      "fallback": "GeomAPI_PointsToBSpline when IsDone is false",
+      "fallbackParameters": {
+        "parameterizationEnum": 2,
+        "degreeMin": 3,
+        "degreeMax": 3,
+        "continuityEnum": 3,
+        "tolerance": 1e-6
+      },
+      "enumNamesVerified": false
+    }
+  },
+  "mcpCoverage": {
+    "existingSharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "plannedConstructionOperations": [
+      "reference_construction_sources",
+      "reference_construction_edit",
+      "reference_construction_get",
+      "reference_construction_apply"
+    ],
+    "applicationOrSchemaChanged": false,
+    "agentDocumentationChanged": false,
+    "requiredIntegration": "Shared sketch model, validation, editor operations, CAD worker, source identities/records/placement, history/persistence and GUI/MCP outcomes must be extended together. Planned operations remain undiscoverable."
+  },
+  "sources": [
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "b4d9bb4d328b4bbf308c156e58b7eb13951a8b13606d1edfa9eb87a27d91baf2"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "b61fc7af9cec695c6e602ae67c5caeb002f987c5e7e8c707ea3d9f6af108ab10"
+    }
+  ],
+  "verification": {
+    "ownedJobs": [
+      {
+        "label": "construction-sketch-spline-builders-noanalysis-r1",
+        "sha256": "6330b794ec495f89be3c5ea9cfbc99becf37de986f36cb89c98a42bbec2c9b66",
+        "elapsedSeconds": 11.474669999995967,
+        "peakAggregateBytes": 884936704,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-solver-noanalysis-r1",
+        "sha256": "9188f7f2cd578f45d7b40da5d9ae9e16770959401bb63ae76021513d5f8db131",
+        "elapsedSeconds": 11.373739700007718,
+        "peakAggregateBytes": 1139773440,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-parameters-noanalysis-r1",
+        "sha256": "631a530e8b584bafdd9ca3f35517da90caaabffebf987f508785d32569a7c032",
+        "elapsedSeconds": 11.32135919999564,
+        "peakAggregateBytes": 868552704,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-basis-noanalysis-r1",
+        "sha256": "5c8773a1a4dd408bb24baf32ea208a60ec2ab583192ed79e96cd8d3de5895d74",
+        "elapsedSeconds": 12.030860200000461,
+        "peakAggregateBytes": 834129920,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-semantics-r1",
+        "sha256": "cd9aaf4d4f68331fda10ef4a4584a71559c2eee595252c12011e9401b26efeda",
+        "elapsedSeconds": 0.25997600000118837,
+        "peakAggregateBytes": 96804864,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-semantics-r2",
+        "sha256": "7c91dd4058008dca0b1523e6bf471b451f611c63412ba5ae047636e420bec7fe",
+        "elapsedSeconds": 0.25881159998243675,
+        "peakAggregateBytes": 96968704,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-bindings-r1",
+        "sha256": "6ebd924e282a8a957023d2d4deb4bbedd22abf3fa366d4670becd335383b1bc1",
+        "elapsedSeconds": 0.2590187000168953,
+        "peakAggregateBytes": 96784384,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-spline-exports-r1",
+        "sha256": "b65b25b8db7dbd963bef60bcf705f5d459a736ce58869e06304e3ed8e44b3a42",
+        "elapsedSeconds": 0.15785079999477603,
+        "peakAggregateBytes": 44888064,
+        "cleanedUp": true
+      }
+    ],
+    "passiveFailure": {
+      "sha256": "5040776740df848755e4773199cab55cdb1cc6d36ebc17aecb2368b05057fd57",
+      "error": "Sketch manifest changed",
+      "closed": true,
+      "resolution": "Fresh helper pins the correct manifest; final capture passed."
+    },
+    "priorCodePinsVerifiedUnchanged": [
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+      },
+      {
+        "path": "src/sketch-frame.ts",
+        "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+      },
+      {
+        "path": "src/types.ts",
+        "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+      }
+    ],
+    "buildOrTestsRerun": false,
+    "reason": "Only evidence and documentation changed; previous green tests are historical code checks, not native spline-output acceptance.",
+    "nativeNumericalReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "limitations": [
+    "Code matching and import binding do not demonstrate a construction invocation or numeric output.",
+    "Closed curves, complete tangent/curvature admission and failure propagation remain unresolved.",
+    "Arc/circle/ellipse stored-record production and owner/pick placement remain prerequisites for shared source integration.",
+    "Enum integer arguments are recorded without assigning names from an unverified SDK header.",
+    "The generic midpoint insertion and nondefault parameterization branches were traced but are not a claim of complete public spline behavior.",
+    "Public lifecycle, native numeric comparison, save/reopen and rendered GUI/MCP acceptance remain open."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-sketch-spline-builders-noanalysis-r1/evidence.json",
+      "sha256": "9cb66485568fa2e978361bef77733c42c180970f896627db95ac5ad0c8813463"
+    },
+    {
+      "artifact": "construction-sketch-spline-solver-noanalysis-r1/evidence.json",
+      "sha256": "e6abd31461f818f03ae85e95d040d005b7d64f364918848798388f896cd33ffa"
+    },
+    {
+      "artifact": "construction-sketch-spline-parameters-noanalysis-r1/evidence.json",
+      "sha256": "6968038bba68e6f9796c29ebde4d79041de5540465b3efc2eac7a5f62ec8d048"
+    },
+    {
+      "artifact": "construction-sketch-spline-basis-noanalysis-r1/evidence.json",
+      "sha256": "b263f39b9cafa671d5d5ee848b61a529581db53916d45e1440c03d56a3c3da22"
+    },
+    {
+      "artifact": "construction-sketch-backend-conversion-noanalysis-r1/evidence.json",
+      "sha256": "2134ae74cf914d7a8f7c8c94b3355c5c788988e222cbf569d038b028b2963ce1"
+    },
+    {
+      "artifact": "construction-sketch-spline-code-bindings-r1.json",
+      "sha256": "d3284a1ba80b1b7332add66d9968377dee20eef2ebf576d5dddc93c60494b8c6"
+    },
+    {
+      "artifact": "construction-sketch-spline-exports-r1.json",
+      "sha256": "dc5d96d6e1ec01de2ac55f5d1cdb3be93b2f3c719f0f7ef98338cc7b5b9c6c02"
+    },
+    {
+      "artifact": "construction-sketch-spline-semantics-r2.json",
+      "sha256": "4b0faa81c8e84a3b4b86274d5e71666fc6936933dd812f98b28da0ac0dc396e5"
+    }
+  ]
+}

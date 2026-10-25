@@ -2,6 +2,7 @@ import { expect, it, vi } from "vitest";
 import * as THREE from "three";
 import {
   navigationDepthPoint,
+  nearestNavigationDepth,
   pickNavigationDepth,
 } from "../src/navigation-depth";
 
@@ -35,16 +36,27 @@ it.each([false, true])(
   },
 );
 
-it.each([false, true])(
-  "restores renderer and releases borrowed depth resources even on failure (%s)",
-  (fail) => {
+it.each(
+  [false, true].flatMap((fail) =>
+    [false, true].map((points) => ({ fail, points })),
+  ),
+)(
+  "restores renderer and releases borrowed depth resources (%o)",
+  ({ fail, points }) => {
     const geometry = new THREE.BoxGeometry();
     geometry.computeBoundingBox();
-    const source = new THREE.MeshStandardMaterial({
+    const SourceMaterial = points
+      ? THREE.PointsMaterial
+      : THREE.MeshStandardMaterial;
+    const source = new SourceMaterial({
       side: THREE.DoubleSide,
       clippingPlanes: [new THREE.Plane(new THREE.Vector3(1, 0, 0), -0.1)],
     });
-    const mesh = new THREE.Mesh(geometry, source);
+    const compile = vi.fn();
+    source.onBeforeCompile = compile;
+    const mesh = points
+      ? new THREE.Points(geometry, source)
+      : new THREE.Mesh(geometry, source);
     mesh.position.set(5, 6, 7);
     const previousTarget = new THREE.WebGLRenderTarget(10, 10);
     const camera = new THREE.PerspectiveCamera(45, 2, 1, 101);
@@ -62,7 +74,10 @@ it.each([false, true])(
       getClearColor: (color: THREE.Color) => color.set(0x123456),
       getClearAlpha: () => 0.4,
       getDrawingBufferSize: (size: THREE.Vector2) => size.set(1600, 800),
+      getPixelRatio: () => 2,
       setRenderTarget: vi.fn((target) => {
+        if (points && target !== previousTarget)
+          expect(target.width).toBeGreaterThan(25);
         if (target !== previousTarget)
           target.addEventListener("dispose", targetDisposed);
       }),
@@ -71,6 +86,27 @@ it.each([false, true])(
         expect(cropped.far - cropped.near).toBeLessThan(2);
         const proxy = scene.children[0];
         expect(proxy.geometry).toBe(geometry);
+        expect(proxy instanceof THREE.Points).toBe(points);
+        if (points) {
+          expect(proxy.material.vertexShader).toContain(
+            "#include <logdepthbuf_vertex>",
+          );
+          expect(proxy.material.fragmentShader).toContain(
+            "#include <logdepthbuf_fragment>",
+          );
+          expect(proxy.material.vertexShader).toContain(
+            "#include <fog_vertex>",
+          );
+          proxy.material.onBeforeCompile(
+            { uniforms: {}, vertexShader: "" },
+            renderer,
+          );
+          expect(compile).toHaveBeenCalledOnce();
+          expect(proxy.material.uniforms.pointScale.value).toBe(200);
+          expect(proxy.material.uniforms.pointSize.value).toBe(
+            (source as THREE.PointsMaterial).size * 2,
+          );
+        }
         expect(proxy.matrix.elements).toEqual(mesh.matrixWorld.elements);
         expect(proxy.material.side).toBe(source.side);
         expect(proxy.material.clippingPlanes).toBe(source.clippingPlanes);
@@ -84,7 +120,10 @@ it.each([false, true])(
         if (fail) throw Error("readback failed");
       }),
       readRenderTargetPixels: vi.fn((_target, _x, _y, _w, _h, bytes) =>
-        bytes.set([128, 0, 0, 0]),
+        bytes.set(
+          [128, 0, 0, 0],
+          (Math.floor(_h / 2) * _w + Math.floor(_w / 2)) * 4,
+        ),
       ),
     };
     try {
@@ -114,3 +153,13 @@ it.each([false, true])(
     }
   },
 );
+
+it("uses the nearest rendered neighbor across tiny point-cloud pixel gaps, with a bounded radius", () => {
+  const bytes = new Uint8Array(7 * 7 * 4).fill(255);
+  bytes.set([128, 0, 0, 0], (3 * 7 + 4) * 4);
+  bytes.set([64, 0, 0, 0], (3 * 7 + 6) * 4);
+  expect([...nearestNavigationDepth(bytes, 7, 2)!]).toEqual([128, 0, 0, 0]);
+  expect(nearestNavigationDepth(bytes, 7, 0)).toBeUndefined();
+  bytes.set([192, 0, 0, 0], (3 * 7 + 3) * 4);
+  expect([...nearestNavigationDepth(bytes, 7, 2)!]).toEqual([192, 0, 0, 0]);
+});

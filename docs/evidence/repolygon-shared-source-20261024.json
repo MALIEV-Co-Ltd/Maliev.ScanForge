@@ -1,0 +1,189 @@
+{
+  "status": "shared-packed-source-preparation-original-three-verified",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeReconstructionAcceptance": false,
+  "sharedProviderReuse": {
+    "adjacency": "Existing alignment packed adjacency and directed-edge directory",
+    "faceNormals": "Existing global facet-normal generator",
+    "stlTopology": "Existing optimized binary STL topology reconstruction",
+    "sourceFilesPinned": 19,
+    "bundleSha256": "fe8401d898df75c8fdf6f8cd818e45f50c4f4f1c815411b4bb752565f6e8603a",
+    "bundleWarnings": 0,
+    "providerBucketTolerance": 1.1920928955078125e-7,
+    "currentNativeEpsilonResolved": false
+  },
+  "focusedValidation": {
+    "passed": 82,
+    "failed": 0,
+    "retainedNativeFacetCases": 42,
+    "retainedNativeAdjacencyCases": 33,
+    "integrationAndValidationControls": 7,
+    "redBridgeFailuresObserved": 40,
+    "corpusFixturesPinnedBeforeAndAfter": true
+  },
+  "originalThreeSourcePreparation": {
+    "rawStlFacets": 6147454,
+    "acceptedTriangles": 6147452,
+    "vertices": 3121976,
+    "allAcceptedTrianglesVisited": true,
+    "sourceFileIdentityRecheckedBeforeAndAfter": true,
+    "canonicalIndexedBuffersMatchRetainedNativeHashes": true,
+    "allFacetNormalsMatchRetainedNativeHashes": true,
+    "allNeighbourPresenceMasksMatchRetainedNativeHashes": true,
+    "authoredBuffersUnchanged": true,
+    "rejectedRepeatedIdentityFacets": 2,
+    "scans": [
+      {
+        "scan": 1,
+        "status": "original-full-source-preparation-verified",
+        "sourceFile": "scan-1.stl",
+        "originalSourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "rawFaces": 273139,
+        "acceptedFaces": 273139,
+        "vertices": 139338,
+        "verticesSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+        "trianglesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+        "facetNormalsSha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+        "neighborMasksSha256": "a6157d76c9c7530b5187c70c5995398a1436239a632759dd52f53a8a1f9d78ad",
+        "derivedSourceBoundaryMaskSha256": "e8cf04b0ff469de05cb52a2b3cc7000fbbdc340d05a5f02b71d3a0a749b6624c",
+        "allSourceTrianglesVisited": 273139,
+        "sourceViewsBorrowCanonicalBuffers": true,
+        "authoredBuffersUnchanged": true,
+        "originalFileIdentityRechecked": true,
+        "providerBucketTolerance": 1.1920928955078125e-7,
+        "nativeGlobalValueResolved": false,
+        "nativeExecuted": false,
+        "nativeReconstructionAcceptance": false,
+        "elapsedSeconds": 0.5173492
+      },
+      {
+        "scan": 2,
+        "status": "original-full-source-preparation-verified",
+        "sourceFile": "scan-2.stl",
+        "originalSourceSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+        "rawFaces": 2547405,
+        "acceptedFaces": 2547403,
+        "vertices": 1299033,
+        "verticesSha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9",
+        "trianglesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+        "facetNormalsSha256": "1b96dc7754b17760c1f11d7d54ba9ca266e9d85a1bb84435b691942d665ef703",
+        "neighborMasksSha256": "054a3a1446daa4308eba3d598f8130dbb6f55a645d330bbfc4c2bb1bad78f035",
+        "derivedSourceBoundaryMaskSha256": "6e637199780d8ea90bcdeb420eaa4b6379dd7ae5439ddc34c0cd23af65905ff5",
+        "allSourceTrianglesVisited": 2547403,
+        "sourceViewsBorrowCanonicalBuffers": true,
+        "authoredBuffersUnchanged": true,
+        "originalFileIdentityRechecked": true,
+        "providerBucketTolerance": 1.1920928955078125e-7,
+        "nativeGlobalValueResolved": false,
+        "nativeExecuted": false,
+        "nativeReconstructionAcceptance": false,
+        "elapsedSeconds": 5.1835446
+      },
+      {
+        "scan": 3,
+        "status": "original-full-source-preparation-verified",
+        "sourceFile": "scan-3.stl",
+        "originalSourceSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+        "rawFaces": 3326910,
+        "acceptedFaces": 3326910,
+        "vertices": 1683605,
+        "verticesSha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1",
+        "trianglesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+        "facetNormalsSha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118",
+        "neighborMasksSha256": "8589cedf2c08aba1063f451691598e9f214b6552a4a0ff7fc823d537a771f731",
+        "derivedSourceBoundaryMaskSha256": "6b82649de136be16c29021aff09fa3dbc0b7eb19a0d937a96e7407b1e40b0d48",
+        "allSourceTrianglesVisited": 3326910,
+        "sourceViewsBorrowCanonicalBuffers": true,
+        "authoredBuffersUnchanged": true,
+        "originalFileIdentityRechecked": true,
+        "providerBucketTolerance": 1.1920928955078125e-7,
+        "nativeGlobalValueResolved": false,
+        "nativeExecuted": false,
+        "nativeReconstructionAcceptance": false,
+        "elapsedSeconds": 6.9309892
+      }
+    ]
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-shared-preparation-bundle-r1",
+      "receiptSha256": "c13ab6ce171715a35e699c4bb457e29cf8a3e26c70ad0c504ceedb0274d0a29c",
+      "expectedExitCode": 0,
+      "peakBytes": 117678080,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-shared-source-r1-red",
+      "receiptSha256": "2b99947433d53d2c56858ac6150bdc5496aa5cf03f60e4bd0a06a98bfb0ae74b",
+      "expectedExitCode": 1,
+      "peakBytes": 35753984,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-shared-source-r1-green",
+      "receiptSha256": "16676095d6fabbe1df8d098f16ab83d666c7745816583196f4bd583683a1a76b",
+      "expectedExitCode": 0,
+      "peakBytes": 41959424,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-shared-source-corpus-r1",
+      "receiptSha256": "2c8d1643fbebcb146e9db92f245715128156c3cfd2953be05a0d1ab7d910f68c",
+      "expectedExitCode": 0,
+      "peakBytes": 42033152,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-original-source-scan1-r1",
+      "receiptSha256": "c9fecfb067b2f44327168fdb9cc4f341fef48a50a6ac81e136d07234f5655c5f",
+      "expectedExitCode": 0,
+      "peakBytes": 152780800,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-original-source-scan2-r1",
+      "receiptSha256": "6b05f61e461e52a2ba621f86dc81daf08c5da3b1980fb34b4bd8813973fa27f8",
+      "expectedExitCode": 0,
+      "peakBytes": 493121536,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-original-source-scan3-r1",
+      "receiptSha256": "6033882d23fcd6083f675f0bf9994c08c8cf8cf2516042eda7b10324b0e45540",
+      "expectedExitCode": 0,
+      "peakBytes": 618008576,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "peakOwnedJobBytes": 618008576,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "privateBridgeExposedAsCapability": false,
+    "existingReconstructionBackendReplaced": false
+  },
+  "remaining": [
+    "Route a complete translated reconstruction kernel through the shared application operation; current GUI/MCP reconstruction backend is still the documented voxel shell.",
+    "Run full original reconstruction and native output comparison with equivalent settings and actual controller behavior.",
+    "Resolve native mutable globals, partitioned scheduling and source-counter/deletion-pointer lifetime.",
+    "Close exact-lattice/finite-boundary quality questions and complete required point-cloud reconstruction.",
+    "Verify integrated history, cancellation, persistence and rendered output."
+  ],
+  "limitations": [
+    "This validates full-size source preparation, not full Re-polygonize output or alignment convergence.",
+    "Retained native corpus and owner hashes were produced with explicit scheduling/allocator adapters and a supplied bucket tolerance. No native binary was executed in this checkpoint.",
+    "The source iterator uses application-generated facet normals and neighbor links; original Re-polygonize controller invocation/cached import state has not been compared.",
+    "The 82 focused controls do not close the known field quality failures or establish production GUI/MCP integration.",
+    "The compiled provider slice had zero bundler warnings; no full application build or browser acceptance was run because production code was unchanged."
+  ],
+  "privateProofSha256": "2c7fb8ae1a1ba5265340279545aad0bf3a5e798b6d6969ff2d71e06e03ae7024"
+}

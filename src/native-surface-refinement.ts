@@ -1,5 +1,6 @@
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import {
   nativeRefineAlignmentMeshes,
@@ -179,17 +180,19 @@ export function refineNativeSurface(
   progress: (fraction: number, stage: string) => void,
 ) {
   const { flags, mask, region } = prepareRequest(request, progress);
-  const result = runRefinement(request, progress, flags, mask);
-  return { ...finishRefinement(request, progress, result), region };
+  const normals = meshGeometryNormals(request.sourceIndexed);
+  const result = runRefinement(request, progress, flags, mask, normals);
+  return { ...finishRefinement(request, progress, result, normals), region };
 }
 function runRefinement(
   request: NativeSurfaceRefinementRequest,
   progress: (fraction: number, stage: string) => void,
   flags: Uint32Array | undefined,
   mask: Uint8Array | undefined,
+  normals: Float32Array,
 ) {
   return nativeRefineAlignmentMeshes(
-    [{ ...request.sourceIndexed, flags }],
+    [{ ...request.sourceIndexed, normals, flags }],
     request.additionalTargets?.length
       ? [
           request.targetIndexed,
@@ -211,8 +214,9 @@ export async function refineNativeSurfaceAsync(
   progress: (fraction: number, stage: string) => void,
 ) {
   const { flags, mask, region } = prepareRequest(request, progress);
+  const normals = meshGeometryNormals(request.sourceIndexed);
   const result = await nativeRefineAlignmentMeshesAsync(
-    [{ ...request.sourceIndexed, flags }],
+    [{ ...request.sourceIndexed, normals, flags }],
     request.additionalTargets?.length
       ? [
           request.targetIndexed,
@@ -229,7 +233,7 @@ export async function refineNativeSurfaceAsync(
     },
   );
   return {
-    ...finishRefinement(request, progress, result),
+    ...finishRefinement(request, progress, result, normals),
     region,
     execution: {
       physicalWorkers: result.physicalWorkers,
@@ -242,6 +246,7 @@ function finishRefinement(
   request: NativeSurfaceRefinementRequest,
   progress: (fraction: number, stage: string) => void,
   result: ReturnType<typeof nativeRefineAlignmentMeshes>,
+  normals: Float32Array,
 ) {
   const transform = (coordinates: Positions): Float32Array => {
     const output = new Float32Array(coordinates.length),
@@ -279,6 +284,17 @@ function finishRefinement(
           indexedMesh: {
             vertices: transform(request.sourceIndexed.vertices),
             triangles: Uint32Array.from(request.sourceIndexed.triangles),
+            geometryNormals: rotateIndexedNormals(normals, [
+              result.matrix[0],
+              result.matrix[1],
+              result.matrix[2],
+              result.matrix[4],
+              result.matrix[5],
+              result.matrix[6],
+              result.matrix[8],
+              result.matrix[9],
+              result.matrix[10],
+            ]),
             ...(request.sourceIndexed.normals
               ? {
                   normals: rotateIndexedNormals(request.sourceIndexed.normals, [

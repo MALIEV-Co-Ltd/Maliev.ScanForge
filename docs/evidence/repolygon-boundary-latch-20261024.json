@@ -1,0 +1,178 @@
+{
+  "status": "per-source-boundary-latch-corrected-quality-open",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "reAuditedInstructionStarts": 32,
+  "newFunctionsDecompiled": 0,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "correction": {
+    "affectedPrivatePaths": [
+      "Selected-cell reference",
+      "Single-frontier sparse admission"
+    ],
+    "before": "A later successful interior nearest sample cleared the source boundary classification.",
+    "after": "Successful strict-nearest updates retain an already-set source boundary flag; rejected farther/equal samples cannot set it.",
+    "observableControl": "An ordered boundary-then-interior source is excluded in favor of another interior source at the inspected corner, changing the reduced distance from -0.25 to -0.375. Reversing the triangle order retains the expected -0.25.",
+    "lifetime": "Per source corner record; not shared across different sources."
+  },
+  "newControls": {
+    "passed": 8,
+    "failed": 0,
+    "redFailuresObserved": 4
+  },
+  "affectedRegressions": {
+    "passed": 51,
+    "failedQualityControlsRetained": 1,
+    "suites": [
+      {
+        "name": "cell",
+        "passed": 8,
+        "failed": 0
+      },
+      {
+        "name": "connected-cells",
+        "passed": 12,
+        "failed": 0
+      },
+      {
+        "name": "sparse-admission",
+        "passed": 9,
+        "failed": 0
+      },
+      {
+        "name": "field-output",
+        "passed": 6,
+        "failed": 1
+      },
+      {
+        "name": "triangle-source",
+        "passed": 11,
+        "failed": 0
+      },
+      {
+        "name": "adjacency-integration",
+        "passed": 5,
+        "failed": 0
+      }
+    ]
+  },
+  "correctedGeometryProbe": {
+    "status": "corrected-boundary-latch-quality-open",
+    "nativeRuntimeParity": false,
+    "geometryAcceptance": false,
+    "initializerSuppliedAsZero": true,
+    "adjacencyEpsilonSuppliedAsZero": true,
+    "sourceBoundaryFlagsDerived": true,
+    "rows": [
+      {
+        "sources": [0],
+        "sourceBoundaryMasks": [[7, 7]],
+        "dataLeaves": 9,
+        "sharedCorners": 32,
+        "negativeCorners": 0,
+        "caseHistogram": {
+          "0": 9
+        },
+        "rawVertices": 0,
+        "compactedVertices": 0,
+        "triangles": 0,
+        "area": 0,
+        "maxPlaneDeviation": null,
+        "boundaryLoopLengths": []
+      },
+      {
+        "sources": [0.25],
+        "sourceBoundaryMasks": [[7, 7]],
+        "dataLeaves": 9,
+        "sharedCorners": 32,
+        "negativeCorners": 16,
+        "caseHistogram": {
+          "51": 9
+        },
+        "rawVertices": 9,
+        "compactedVertices": 9,
+        "triangles": 8,
+        "area": 1,
+        "maxPlaneDeviation": 0,
+        "boundaryLoopLengths": [8]
+      },
+      {
+        "sources": [0.25, 0.375],
+        "sourceBoundaryMasks": [
+          [7, 7],
+          [7, 7]
+        ],
+        "dataLeaves": 9,
+        "sharedCorners": 32,
+        "negativeCorners": 16,
+        "caseHistogram": {
+          "51": 9
+        },
+        "rawVertices": 16,
+        "compactedVertices": 15,
+        "triangles": 16,
+        "area": 1.0074281174590158,
+        "maxPlaneDeviation": 7.155537605285645e-5,
+        "boundaryLoopLengths": [12]
+      }
+    ]
+  },
+  "historicalEvidence": {
+    "earlierSourceHashesSupersededForCurrentCode": true,
+    "earlierResultsRetainedAsHistorical": true,
+    "priorQualityFailuresClosed": false
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-boundary-latch-r1-red",
+      "receiptSha256": "2db2f27d60bedb92f68aab8e4258c7ee9be47a3796cc9a365f915d6b5d8cceb6",
+      "expectedExitCode": 1,
+      "peakBytes": 37060608,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-latch-r1-green",
+      "receiptSha256": "dfa628ab4fb5c292d33a417f953ceb113ed5b5e2475e14cf09fbdd70c790a690",
+      "expectedExitCode": 0,
+      "peakBytes": 36642816,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-latch-regressions-r1-verify",
+      "receiptSha256": "1b8857c75553bbe184cf0d793285bc977d2ba4cd97fd551295ac6f7848a0368f",
+      "expectedExitCode": 0,
+      "peakBytes": 53915648,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-corrected-field-quality-r1-verify",
+      "receiptSha256": "6dedc18c96f5e49542420ff764d6db7964553c24e428b0074283c68976bae285",
+      "expectedExitCode": 0,
+      "peakBytes": 38227968,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Resolve the exact-lattice no-surface probe; the latch correction does not fix it.",
+    "Validate finite-boundary fusion against complete native behavior; the existing two-source planar quality expectation still fails.",
+    "Resolve mutable globals, imported source cache equivalence, reconstruction work frontiers and deletion pointer lifetime.",
+    "Integrate the complete shared GUI/MCP path and verify all original/native geometry, history, cancellation, persistence and rendered state."
+  ],
+  "limitations": [
+    "The boundary write and control-flow guard are static evidence; no fresh native execution or geometry read occurred.",
+    "The corrected probes derive boundary endpoint flags and face normals, but still explicitly supply zero direction initializer and adjacency epsilon.",
+    "The two-source probe has a twelve-edge boundary; it is not repaired by a three-edge-only branch.",
+    "Passing component controls do not establish point-cloud reconstruction or full original-scan/native acceptance."
+  ],
+  "privateProofSha256": "fb1a3c14240bb0b40835db56052f7f610ffb58c9d818ebfce8821e1a916cdc82"
+}

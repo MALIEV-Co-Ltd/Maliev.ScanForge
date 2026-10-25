@@ -1,5 +1,11 @@
 # Project loading memory and responsiveness
 
+The [current three-scan lifetime measurement](THREE_SCAN_PROJECT_LIFETIME.md)
+holds all original scans and their alignment history together, then verifies two
+binary project reopens under the 4 GiB cap. It adds exact buffer and cleanup
+evidence for the shared non-browser path; the browser measurements below retain
+their original workload and source scope.
+
 Project restoration previously decoded and repeatedly validated large arrays on the UI thread, then rebuilt uncached display normals using ordinary JavaScript coordinate arrays and string-key welding tables. Automatic backup also structured-cloned large ordinary arrays into its encoder worker. Those temporary allocations survived until garbage collection; their lifetime explains a heap rise followed by a later drop. This is allocation pressure, not by itself evidence of a retained-memory leak. Collection and synchronous processing both interrupt navigation.
 
 Restoration now performs decoding, validation and current mesh display preparation in a disposable worker. A typed hash table preserves the previous weld order and Float32 normal arithmetic. Large ordinary numeric arrays use lossless transferable staging buffers; reconstruction yields between bounded chunks. Existing authored/history buffers never detach. File format 2/3 and public GUI/MCP contracts remain unchanged.

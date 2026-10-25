@@ -113,52 +113,56 @@ it("defaults to the selected scan even when the multi-selection list is empty, a
     releaseInteractiveSession(h.host);
   }
 });
-it("uses native face-derived visibility for the session pivot and exposes source-state diagnostics", async () => {
-  const h = harness();
-  const vertices = new Float32Array([
-    0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 2, 0, 3, 3, 0, 999, 999, 999,
-  ]);
-  const triangles = new Uint32Array([0, 1, 2, 2, 3, 4]);
-  h.base[0] = {
-    ...h.base[0],
-    positions: Float32Array.from(
-      Array.from(triangles).flatMap((i) =>
-        Array.from(vertices.subarray(i * 3, i * 3 + 3)),
-      ),
-    ),
-    indexedMesh: {
-      vertices,
-      triangles,
-      normals: Float32Array.from({ length: 18 }, (_, i) =>
-        i % 3 === 2 ? 1 : 0,
-      ),
-    },
-    meshSelection: { hidden: [1], saved: [] },
-  };
-  h.host.snapshot = () => ({
-    ...h.snapshot(),
-    selection: new Uint8Array([1, 0]),
-  });
-  try {
-    const result = await h.edit({ action: "begin", parallel: false });
-    expect(result.pivot).toEqual([1, 1, 0]);
-    expect(result.displaySources).toEqual([
-      {
-        entityId: "scan",
-        vertices: 6,
-        normalsAvailable: true,
-        ready: true,
-        selected: 1,
-        hidden: 1,
-        visibleFaces: 1,
-      },
+it.each([true, false])(
+  "uses native face-derived visibility and reports computed normal readiness (stored=%s)",
+  async (stored) => {
+    const h = harness();
+    const vertices = new Float32Array([
+      0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 2, 0, 3, 3, 0, 999, 999, 999,
     ]);
-    expect(h.commit).not.toHaveBeenCalled();
-    expect(h.base[0].indexedMesh!.vertices).toBe(vertices);
-  } finally {
-    releaseInteractiveSession(h.host);
-  }
-});
+    const triangles = new Uint32Array([0, 1, 2, 2, 3, 4]);
+    h.base[0] = {
+      ...h.base[0],
+      positions: Float32Array.from(
+        Array.from(triangles).flatMap((i) =>
+          Array.from(vertices.subarray(i * 3, i * 3 + 3)),
+        ),
+      ),
+      indexedMesh: {
+        vertices,
+        triangles,
+        normals: Float32Array.from({ length: 18 }, (_, i) =>
+          i % 3 === 2 ? 1 : 0,
+        ),
+        ...(stored ? { geometryNormals: new Float32Array(18).fill(0.25) } : {}),
+      },
+      meshSelection: { hidden: [1], saved: [] },
+    };
+    h.host.snapshot = () => ({
+      ...h.snapshot(),
+      selection: new Uint8Array([1, 0]),
+    });
+    try {
+      const result = await h.edit({ action: "begin", parallel: false });
+      expect(result.pivot).toEqual([1, 1, 0]);
+      expect(result.displaySources).toEqual([
+        {
+          entityId: "scan",
+          vertices: 6,
+          normalsAvailable: stored,
+          ready: true,
+          selected: 1,
+          hidden: 1,
+          visibleFaces: 1,
+        },
+      ]);
+      expect(h.commit).not.toHaveBeenCalled();
+      expect(h.base[0].indexedMesh!.vertices).toBe(vertices);
+    } finally {
+      releaseInteractiveSession(h.host);
+    }
+  },
+);
 it("installs a session-owned mirror provider, prepares normals before configuration, and invalidates it on release", async () => {
   const h = harness();
   let installed: InteractiveMirrorBackend | null = null;

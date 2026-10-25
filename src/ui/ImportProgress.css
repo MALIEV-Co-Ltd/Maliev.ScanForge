@@ -36,6 +36,7 @@
 .status-import-cancel {
   width: 20px;
   height: 20px;
+  min-height: 20px;
   padding: 0;
   line-height: 1;
   font-size: 15px;

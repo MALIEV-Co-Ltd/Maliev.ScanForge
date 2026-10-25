@@ -262,7 +262,6 @@ conversion; a simple unit multiplier is not established. Shared collinear
 constraint support is an implementation prerequisite. This is evidence progress
 for M4, with no added application behavior or MCP operation.
 
-
 The subsequent [collinear application slice](SKETCH_COLLINEAR.md) implements kind
 19's geometric capability through the shared GUI/MCP sketch constraint path.
 Analytic tests and actual rendered/public-MCP workflows validate its documented

@@ -1,0 +1,459 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Real internal arc backend and compiled shared worker helper validated; public GUI/MCP authoring and native acceptance remain incomplete",
+  "applicationAssetChanged": true,
+  "userFacingCapabilityChanged": false,
+  "workerMessageContractChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "nativeProgramExecuted": false,
+  "browserValidationPerformed": false,
+  "sources": [
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "729c06d1d9611a931937c4fd4049665d4cfba8c650ce8d4b42609763d852aea5"
+    },
+    {
+      "path": "tests/kernel-circle-smoke.mjs",
+      "sha256": "292e3fb5da4b2a8955ced8ece7cf8a33ce028fc5bf07f5a7b147168d337e78a9"
+    },
+    {
+      "path": "tests/kernel-smoke.mjs",
+      "sha256": "b579376e9f0b67c4deba262fd5bfe222359ae9543172e77d3d604ef62f48bf2a"
+    },
+    {
+      "path": "tests/kernel-curves-smoke.mjs",
+      "sha256": "88b99e17b3273d68ef449e70533b19ed888b95733ae8b2f9baa59da46ce9b46e"
+    },
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "0f2d10218d9a3e9d17d2239fa494f9aba1623e8e569d380306f46a880337832e"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "tests/cad-client.test.ts",
+      "sha256": "6e9ebe743862a9bfd28316726eaff230ca022bb171e4cb70cc37bb1dedf35dc8"
+    },
+    {
+      "path": "tests/cad-create-selection.test.ts",
+      "sha256": "ef58430eecb879415c85f12dab813157726d476c3d40822a227ea89d1017a9b3"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "44c654ab8ce458edf3e694b17cdcf3104792747ca0ab72d95b1ee9878af85368"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "b8caa6fcba2bc98a2299b5edbf75a689679b9c68a63322657410fc97983d2ce3"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "06e2db70968280b8cef5da2d50fa5f5620cae0f4c5e012c84b5f00d6caa69522"
+    },
+    {
+      "path": "public/kernel/SOURCE_BUILD.md",
+      "sha256": "8d522f942a5620cd2743472221e5ab8ec0bbf7e5e91e4e16e5f24176cf640267"
+    },
+    {
+      "path": "public/kernel/opencascade.js",
+      "sha256": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+    },
+    {
+      "path": "src/sketch-arc-rebuild.ts",
+      "sha256": "d4ff4dfffe4e660c43b3c31302d16e5b3b156dc6bb47ba88c991f6d7f8c892da"
+    },
+    {
+      "path": "tests/sketch-arc-rebuild.test.ts",
+      "sha256": "c3a8d792dcec096960108b8a81da3628981dd3288be6ca0d4a6573ced11b804d"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "src/cad/sketch-arc-backend.ts",
+      "sha256": "1ea7858b19486e6e370e09ae63b6b8aeea78be749826809474675643a10afc5c"
+    },
+    {
+      "path": "tests/kernel-arc-smoke.mjs",
+      "sha256": "4c0746c8b900698ae72d6aac6fef84fa4eac07844367c59926ec66378d243241"
+    },
+    {
+      "path": "scripts/prepare-kernel.mjs",
+      "sha256": "666326fc25416a470a8735733373c191d25c288d42f4e182bbe6d7d857869a44"
+    }
+  ],
+  "nativeBasis": {
+    "priorEvidence": {
+      "path": "docs/evidence/reference-sketch-arc-rebuild-20261024.json",
+      "sha256": "4a44656f1e6772693b1de5f881db8c922affdfa5d22eb71ed2a045b583074d67"
+    },
+    "backendAdmission": {
+      "artifact": "construction-arc-backend-gate-verified-r1.json",
+      "sha256": "3698cadd954e04b030d4e206ce892607bcfbb453261dfbf1542ec03df77d7018",
+      "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+      "anchors": [
+        {
+          "address": "0x14027589f",
+          "instruction": "call qword ptr [rax + 0x18]",
+          "bytesSha256": "22558207d1d705fcbda49d89be5b34ebe09d409878b0bf88e6819b7724e29e96"
+        },
+        {
+          "address": "0x1402758c3",
+          "instruction": "call 0x1402147d0",
+          "bytesSha256": "68f32fa04d5ff37b1f7961f0c2e196ad91842ec987f250ecca2d15efd3927d81"
+        },
+        {
+          "address": "0x1402758ca",
+          "instruction": "je 0x140275ce9",
+          "bytesSha256": "ef01073c85223763181a495b26d3c8b43c8ae527561c56e2c950724f1cee4f5d"
+        },
+        {
+          "address": "0x1402758f8",
+          "instruction": "addsd xmm0, xmm2",
+          "bytesSha256": "433d0aa1e8c792be16f4503431359341aebb0e6661e37ba56c8b521903c27ec0"
+        },
+        {
+          "address": "0x140275900",
+          "instruction": "addsd xmm0, xmm1",
+          "bytesSha256": "09ccdbc077a6e7b7b47fb8a93265b5de8c7abb99bbdc5af9f4702af1f89d8d48"
+        },
+        {
+          "address": "0x140275924",
+          "instruction": "ja 0x140275ce9",
+          "bytesSha256": "775e0241253bed49d28aea01851d00ae8e71a486e15641d4addfcecc985eef3b"
+        },
+        {
+          "address": "0x1402759d4",
+          "instruction": "movsd qword ptr [rsp + 0x38], xmm3",
+          "bytesSha256": "d20c24647ed421b2cffbc5e0466b7e7c04c4cb0f8f88ca8dc9a438f28d798f02"
+        },
+        {
+          "address": "0x1402759da",
+          "instruction": "movsd qword ptr [rsp + 0x40], xmm0",
+          "bytesSha256": "08ff8b6d637c23060d193197f89469e21528be896dfd4b83d3c4c634d66f066f"
+        },
+        {
+          "address": "0x1402759e0",
+          "instruction": "movsd qword ptr [rsp + 0x48], xmm1",
+          "bytesSha256": "861d3b3d7126080d2fe0d4cb3b513db3e9b2b9f0ba657935dc95942d5ae68750"
+        },
+        {
+          "address": "0x1402759e6",
+          "instruction": "lea rcx, [rsp + 0x38]",
+          "bytesSha256": "62430a956cd046679d6b81a476c534f28bc602aa89213c94a6b287ab0748cf3a"
+        },
+        {
+          "address": "0x1402759eb",
+          "instruction": "call 0x140154070",
+          "bytesSha256": "4aa36fc7468f9998ffc451506c1c77136386df9a4c1430b71b1c57f784d43596"
+        },
+        {
+          "address": "0x140275a0d",
+          "instruction": "lea rcx, [rsp + 0x38]",
+          "bytesSha256": "62430a956cd046679d6b81a476c534f28bc602aa89213c94a6b287ab0748cf3a"
+        },
+        {
+          "address": "0x140275a12",
+          "instruction": "call 0x140154070",
+          "bytesSha256": "c22a471f8f4eeb47b3a8a173c9a2f6050a08c3ddc55bf0852c1ace879e99cb39"
+        },
+        {
+          "address": "0x140275a1c",
+          "instruction": "mulsd xmm10, qword ptr [rsp + 0x38]",
+          "bytesSha256": "1839f1e02036f74527b1d4a223103e151006191fb3b19caf7bc16d9bc1b271d7"
+        },
+        {
+          "address": "0x140275a2d",
+          "instruction": "addsd xmm10, xmm0",
+          "bytesSha256": "4ffb9e7b29ffacda8c53d26d06278cc01e5b30f1c1b9ac4f712ae9069ed294d5"
+        },
+        {
+          "address": "0x140275a3c",
+          "instruction": "addsd xmm10, xmm1",
+          "bytesSha256": "1b989dd1c0cd37e6eac057fc8a51dddc9b721e53f690f05b099b14f3414c53f4"
+        },
+        {
+          "address": "0x140275a51",
+          "instruction": "subsd xmm1, xmm10",
+          "bytesSha256": "0c97f2a73b4b745c435d6483240a78964ee80a5a05f849d9a3072c3b7e49de27"
+        },
+        {
+          "address": "0x140275a62",
+          "instruction": "ja 0x140275ce9",
+          "bytesSha256": "e0152db7831f9fc31b35dcb29ea8b6629cf40b0418039d1182acc6cfe769cdd8"
+        },
+        {
+          "address": "0x140275aa0",
+          "instruction": "call qword ptr [rip + 0xc372f2]",
+          "bytesSha256": "6ed03bceb3bf8d0bc2592432b6f81ead770f078b17bb7eec74a5aa663158c46a"
+        }
+      ],
+      "constants": [
+        {
+          "address": "0x14126ae00",
+          "value": 1.1920928955078125e-7,
+          "bytes": "000000000000803e"
+        },
+        {
+          "address": "0x14126b250",
+          "value": 1.0,
+          "bytes": "000000000000f03f"
+        }
+      ],
+      "scope": "Static arc backend reset, shared fit, radius and twice-normalized first-chord admission. No fresh live binding or native numerical execution."
+    },
+    "newLiveBinding": false,
+    "originalNativeNumericalReplay": false
+  },
+  "workerBuild": {
+    "source": "src/cad/sketch-arc-backend.ts",
+    "sharedNumerics": "src/reference-geometry-numerics.ts",
+    "preparation": "scripts/prepare-kernel.mjs",
+    "generatedAsset": "kernel/sketch-backend.js",
+    "helperSha256": "c250385f0aa730b998c98d8fb68f60480b098a196a69226fa7eb57c0cd825089",
+    "distMatchesTestedAsset": true,
+    "offlineManifestIncludesHelper": true,
+    "nativeHandlesExposedToMcp": false
+  },
+  "validation": {
+    "buildPassed": true,
+    "buildHeapMiB": 3072,
+    "aggregateJobBytes": 4294967296,
+    "arcKernelSmoke": {
+      "passed": true,
+      "checks": 21,
+      "replacementCycles": 32,
+      "helperSha256": "c250385f0aa730b998c98d8fb68f60480b098a196a69226fa7eb57c0cd825089",
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+      "scope": "Real bundled-kernel arcs and ownership; native numerical parity remains unverified"
+    },
+    "circleSmokePassed": true,
+    "curvedSketchSmokePassed": true,
+    "cadSmokePassed": true,
+    "fullSuitePassed": 48399,
+    "fullSuiteSkipped": 64,
+    "filesPassed": 619,
+    "filesSkipped": 18,
+    "publicBundle": "scanforge-b7ddd40280459e39",
+    "browserLoadedBundleVerified": false,
+    "receipts": [
+      {
+        "artifact": "project-index-validation-construction-arc-backend-gate-r1-cad.receipt.json",
+        "sha256": "ddb4b652d963f23a6dd985059be5426e2b0563a24f780bba2e0856ccb4cfcc85",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 384,
+        "elapsedSeconds": 0.2586795999959577,
+        "peakAggregateBytes": 95703040,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-build-build.receipt.json",
+        "sha256": "283a56b1f47c686908e9c4efad2772fe694a86d7d61a9b424d1953e778abf2c0",
+        "exitCode": 0,
+        "environmentHeapMiB": 3072,
+        "effectiveNodeHeapMiB": 3072,
+        "elapsedSeconds": 32.84003150000353,
+        "peakAggregateBytes": 2512019456,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-cad-cad.receipt.json",
+        "sha256": "35667dcb95bea4a8cdaaa867f7d9a2145aaa125c23e770fc20e99db2bf018af6",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 6.727175500011072,
+        "peakAggregateBytes": 748929024,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-circle-mirror-focused.receipt.json",
+        "sha256": "b09ddafbf9d2d312297c49e4ea1573c267ffdf67ca0c3f95b9b51d2f9f95f5a9",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.7133695000084117,
+        "peakAggregateBytes": 467087360,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-curves-mirror-focused.receipt.json",
+        "sha256": "46f7ac50f03325e5fb765e84fe7d9cc3ce812626f5afb0acac61b17cd87b8185",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 1.4196706999791786,
+        "peakAggregateBytes": 693104640,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-format-mirror-focused.receipt.json",
+        "sha256": "bd577721164956500c3f6c3a36794875251943f20d89b495ebe7162337c7f9f9",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 0.3596354000037536,
+        "peakAggregateBytes": 129708032,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-format-r2-mirror-focused.receipt.json",
+        "sha256": "23b92fe86284230697b9977a217c32d22ff0ed6744cf616f2c037f687f35bb70",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 0.36043190001510084,
+        "peakAggregateBytes": 130695168,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-format-r3-mirror-focused.receipt.json",
+        "sha256": "ea722499b1ad63754679a84f86a4aaaf87d01c3c78f0e3620fd4b716941978a7",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 0.3596483000146691,
+        "peakAggregateBytes": 129933312,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-full-full.receipt.json",
+        "sha256": "ac685deb647fc326b8095f4ee6764066214a828d038acf41c9efcda66248aad2",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 264.69122109998716,
+        "peakAggregateBytes": 992083968,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-kernel-mirror-focused.receipt.json",
+        "sha256": "f3d0bf66c0d54f3bd22a47a27f8cfa05f8ddfddea0e1f0b99d2e0ec3fcf50faf",
+        "exitCode": 1,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.8145826999971177,
+        "peakAggregateBytes": 452984832,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-kernel-r2-mirror-focused.receipt.json",
+        "sha256": "55ce80a9a0483fb4e9c37af50bf1242b1f01f7e4232e585096ae03e4be3a4f36",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.662891000014497,
+        "peakAggregateBytes": 463552512,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-kernel-r3-mirror-focused.receipt.json",
+        "sha256": "a54d5168d43a238f6c440d214df48d4b7c784acdd088314d12983ca381278235",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6629004999995232,
+        "peakAggregateBytes": 463613952,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-kernel-r4-mirror-focused.receipt.json",
+        "sha256": "b61e5d909f94a9c32dea461ab6e6df22c3d8c7b85f5868200965013dca76b7ea",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.8651634000125341,
+        "peakAggregateBytes": 463196160,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-backend-r1-red-mirror-focused.receipt.json",
+        "sha256": "cfec3fd0f3652d454c439003af65aff7fe2cc1e4a171a1bf4f0953a31e9328a5",
+        "exitCode": 1,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.6126862000091933,
+        "peakAggregateBytes": 450519040,
+        "childrenRetired": true,
+        "handlesClosed": true
+      }
+    ],
+    "failedAttempts": [
+      "Expected missing worker arc factory before implementation",
+      "Unit-radius major-arc test incorrectly expected acceptance despite native scale-dependent gate; retained it as rejection and used radius two for major-arc construction"
+    ],
+    "ownershipScope": "Actual constructor and returned trimmed-curve handles, previous edges and final edges checked retired; controlled Value exception and edge IsDone false. Not exhaustive leak proof or original-native failure replay."
+  },
+  "mcpCoverage": {
+    "existingTools": ["sketch_get", "sketch_set", "sketch_manage"],
+    "catalogAndSharedExecutorUnchanged": true,
+    "architectureDocumentationUpdated": true,
+    "status": "Internal worker backend only; no new command or advertised capability. Shared child-session and GUI/MCP publication remain unfinished."
+  },
+  "remaining": [
+    "Shared worker child-session ownership and cancellation",
+    "Preparation/backend outcome propagation through common editor transactions",
+    "Coherent curve/source constraints, trim, mirror, history and project persistence",
+    "Original native numerical comparison, outer rollback and save/reopen",
+    "Rendered GUI/MCP acceptance"
+  ]
+}

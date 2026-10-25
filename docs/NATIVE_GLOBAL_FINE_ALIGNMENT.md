@@ -1,5 +1,60 @@
 # Native Global Fine Align
 
+## Original-file and shared-staging comparison (2026-10-23)
+
+The actual parser now has a full comparison against the same-run native baseline
+for all three original PLY files. Indexed positions, ordered topology and derived
+alignment normals match exactly. Applying the generated controller matrices
+through the actual shared entity-staging operation matches all 70,112,841 final
+indexed and expanded position values.
+
+Authored scanner normals remain distinct from native computed normals. The
+actual display-normal cache also differs from the native geometry-normal buffer;
+its native renderer binding and visual effect remain unverified. The exact
+normal results in the numerical replay below apply to derived geometry-normal
+streams, not every normal field stored or displayed by the application.
+See [original PLY staging](NATIVE_GLOBAL_ORIGINAL_PLY_STAGING.md) for the measured
+comparisons, resource receipts and remaining public GUI/MCP boundary.
+
+## Complete same-run numerical replay (2026-10-23)
+
+The source-mask candidate now reproduces the captured original-three run through
+all numerical stages using only its recorded clocks as environmental inputs.
+The shared cores generate all 45 query poses and results, six local results,
+three final controller states and six geometry-application matrices. Their final
+position, vertex-normal and facet-normal buffers match all 40,278,222 native
+Float32 values byte for byte. Captured query poses, correspondence records and
+final matrices are used only for comparison.
+
+See the [complete numerical replay](NATIVE_GLOBAL_COMPLETE_NUMERICAL_REPLAY.md)
+for source hashes, resources and scope. The public browser coordinator and
+rendered GUI/MCP workflow remain unverified for this candidate; this result does
+not close application acceptance or the wider alignment milestone.
+
+## Source preparation and correspondence correction (2026-10-23)
+
+The native group command uses source mask zero. The earlier mask-one
+interpretation confused its raw target-index stride with the separate source
+mask. Static constructor/settings checks and a later passive GUI preparation
+capture establish the corrected fields. All three observed temporary groups
+return null for the direct mesh interface, skipping boundary marking.
+
+The shared GUI/MCP preparation candidate now retains boundary vertices and
+omits boundary-adjacency allocation. Its connected input, scene and query-core
+replay matches all 96 angular sample counts and all 45 native query results:
+31,463 records bit for bit. The app-derived vertex normals independently match
+all 10,144,365 captured Float32 values. This replay uses recorded native clocks
+and query-entry poses; it does not prove public coordinator scheduling or
+rendered workflow equivalence.
+
+All 114 focused tests and 47,709 full-suite tests passed (64 skips), as did the
+production build and CAD smoke. The existing MCP operations expose the changed
+shared behavior and report `inputSummary.mask: 0`. Rendered GUI/MCP comparison
+remains outstanding, so the application change is an uncommitted candidate.
+See [source eligibility](GLOBAL_ALIGNMENT_SOURCE_FLAGS.md) and the
+[sanitized evidence](evidence/global-fine-source-mask-query-replay-20261023.json)
+for scope, hashes, resource receipts and limitations.
+
 ## Same-run geometry application (2026-10-23)
 
 A subsequent native GUI run at 0.500 mm captured the matrices forwarded from

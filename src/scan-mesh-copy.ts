@@ -1,4 +1,5 @@
 import type { Entity } from "./types";
+import { assertSampledGeometry } from "./reference-entity";
 /** Leave native CAD intact. Supplied immutable output is adopted by reference;
  * omitting it preserves independent-copy semantics. */
 export function scanMeshCopy(
@@ -6,6 +7,7 @@ export function scanMeshCopy(
   id: string,
   positions?: Entity["positions"],
 ): Entity {
+  assertSampledGeometry(source);
   return {
     id,
     name: `${source.name} — mesh copy`,

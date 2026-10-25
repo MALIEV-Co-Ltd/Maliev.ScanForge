@@ -1,0 +1,217 @@
+{
+  "date": "2026-10-24",
+  "scope": "Static identity/initial-value/setter and coupled envelope checkpoint only; runtime unchanged; full reconstruction remains active.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-line-self-connection.ts",
+      "sha256": "2461f7ea9cdb62c749147e88d7666c1a25e68754588275e67621bccd47ecb355"
+    },
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "edf71ec8c2e518b2d92e5a133c088d52b53317b3cc5bc155405d02a3cc8cfb38"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "60557e4ee57f5e9d30e314d4675ff075cf446bed5941974b602b7df74a51f53d"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "a93564f2c9c4a5ad459f738050091a1bbed0b8f8bb3bd7757ce617513857d1f0"
+    },
+    {
+      "path": "src/sketch-line-prepared.ts",
+      "sha256": "9d02e8c3e784e6f5fceb2c94e0738057f162933086ecbec45825d58e218077ed"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "55fb3102eca7f67a6df5e80cf7ff266fb8cba40855568a423d90418ec5931c11"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "tests/sketch-line-self-connection.test.ts",
+      "sha256": "5f43865c9c312104224871035f7249ec47dde334c7dc64570d0af873c3639c7b"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "c546bcb1617efd88915276a1e715a3759ed9f8c1266984b34b31a632dd1c7b07"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "de9b43daec3e51b36277bd2d56cb09488119092ef1a8df461d60c9c1578b68f3"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "db364a49a22fd1e822b26578512601d70d4cb258516ad94e265b934df81767a6"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "124dc008d82c21a84b1cd0cc7299beda42594c54eb458e803282b40128fceb1b"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "b955060a8f6cdd7864e4a44ea30b366b08cde1d7b0c6c5aa547596223f0bd3cb"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "cb21f99453e74bb7e2ba2dba2cee41f6d64e27ba658baffc132bac1aaa8f1037"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "cb21f99453e74bb7e2ba2dba2cee41f6d64e27ba658baffc132bac1aaa8f1037"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "7afc204feb9d8460913c6e44a2a42d9876fdd6a59186f86c22454da6c9b0346d"
+    },
+    {
+      "path": "src/sketch-line-projection.ts",
+      "sha256": "73756e5e3fb05d7afeda8820c8cc7f1bcfa951ee1e927260f96e8146169a0f75"
+    },
+    {
+      "path": "tests/sketch-line-projection.test.ts",
+      "sha256": "d2f22584386eb5b22f11a9d5a787029db2f3bf757d6cca21ddb82648160e6001"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "trace-line-parameter-threshold-r1.py",
+      "sha256": "6aecbe3b21cf14fb73073755d33d1b989c7a4592eaf0b9fc341bb2f59d837519"
+    },
+    {
+      "name": "line-parameter-threshold-trace-r1.json",
+      "sha256": "a2ac8694d1a62bbb78d3582188dab946340e95cb0564e44854421812059701fa"
+    },
+    {
+      "name": "trace-line-parameter-threshold-r2.py",
+      "sha256": "4b2076a5ef5f7b4c5c4430568b36af2f623601be1a927de168d9b2d6bae3b9a7"
+    },
+    {
+      "name": "line-parameter-threshold-trace-r2.json",
+      "sha256": "41dbf04ce480f659910b41395e9489308c8bef92138aa2278b1011cb10797a6e"
+    },
+    {
+      "name": "trace-line-parameter-threshold-r3.py",
+      "sha256": "ec1d3d3980dcb02633c7009afa4eb7437dd3827557a4703ed03a786e51e8e4a2"
+    },
+    {
+      "name": "line-parameter-threshold-trace-r3.json",
+      "sha256": "f7f8b519a8a7d2f3421c323dd2839d06b40201b9727c9f315130fc920a4931e2"
+    },
+    {
+      "name": "verify-line-parameter-threshold-r1.py",
+      "sha256": "8b0ed7a3c82ff6fa0f689c6698ae4019234742f0006f215f22a1dbc5deb682da"
+    },
+    {
+      "name": "line-parameter-threshold-verified-r1.json",
+      "sha256": "e12fc1442c131485fc0f56fb5b39963f574f4dc2e7951719a399bb72a91bb8f3"
+    }
+  ],
+  "helperSha256": "cb21f99453e74bb7e2ba2dba2cee41f6d64e27ba658baffc132bac1aaa8f1037",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "offlineCache": "scanforge-b22d89018c8d6320",
+  "static": {
+    "distinctInstructionStarts": 2983,
+    "selectedAnchors": 24,
+    "reachedWriterStores": 3,
+    "selectedConstants": 9,
+    "namedSessionApiOwners": 2,
+    "numericProfileInitialValue": 1e-11,
+    "finiteSetterScalarBoundsInclusive": [1e-11, 1e-5],
+    "setterCoupledConstraint": "Per-thread endpoint tolerance <= (runtime bound * 0.1) * requested angular precision, preserving multiplication order.",
+    "coordinateEnvelope": "endpointTolerance / angularPrecision before subsequent ratio multipliers",
+    "derivedFixture": {
+      "endpointTolerance": 1e-8,
+      "angularPrecision": 1e-11,
+      "coordinateEnvelope": 1000.0000000000001,
+      "envelopeBits": "408f400000000001"
+    },
+    "contextFieldRoute": "A separately traced route loads a context field and calls the same setter. Full lifecycle semantics are not inferred.",
+    "writeInventoryScope": "Selected legacy RIP-memory opcode candidate scan of executable PE sections. Not exhaustive for indirect, pointer-based or other instruction-family writes.",
+    "activeApplicationValueBound": false
+  },
+  "validation": {
+    "runtimeImplementationChanged": false,
+    "buildOrApplicationTestsRunThisTurn": false,
+    "priorValidationEvidence": "docs/evidence/reference-sketch-line-input-interval-20261024.json",
+    "priorResultsReusedOnUnchangedRuntime": {
+      "focusedTests": 116,
+      "focusedFiles": 8,
+      "kernelGroups": 9,
+      "draftKernelGroups": 16,
+      "candidateKernelGroups": 31,
+      "cadSmoke": true,
+      "buildPassed": true
+    },
+    "servedHelperMatchesLocal": true,
+    "serverPid": 28864,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false
+  },
+  "mcp": "Static/docs-only. Public catalog/schema/executor/adapter/dispatcher unchanged; existing sketch_get/sketch_set/sketch_manage contracts preserved. No GUI-only or newly advertised operation.",
+  "limitations": [
+    "No current session value inferred from initialization writes.",
+    "All transitive lifecycle/context/callback/protected-error effects and complete native settings admission remain unproven.",
+    "No native execution, live process/settings/geometry reads or executable mapping.",
+    "Known line scalar diagnostics remain explicit; native setter constraints differ from their arithmetic test domain.",
+    "Complete connection topology/body admission, ordered model/shared GUI-MCP editor and all original milestone acceptance remain required."
+  ],
+  "receipts": [
+    {
+      "name": "trace-line-parameter-threshold-r1-cad",
+      "sha256": "42a6c2188ac2dd19e3e4cc9d7e99ac9d748706e1a930905fb4678677d3fe3b3a",
+      "peakBytes": 210374656,
+      "seconds": 4.735742699995171,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-parameter-threshold-r2-cad",
+      "sha256": "f6f99f809709f1224d44dd74cc0cbde1a28a6ca03702dd21f9ddff195818fd62",
+      "peakBytes": 214421504,
+      "seconds": 1.7239994000119623,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-parameter-threshold-r3-cad",
+      "sha256": "77b5b986134ef2b99c682b1d035898a4d2e9b38ecc398f301b200637898923e7",
+      "peakBytes": 146735104,
+      "seconds": 2.4821838999923784,
+      "terminalClean": true
+    },
+    {
+      "name": "verify-line-parameter-threshold-r1-cad",
+      "sha256": "9f441b4b5374bab6738e4a49819e6b50bb2441bb520f39f9061f59aa0572445a",
+      "peakBytes": 144474112,
+      "seconds": 0.35961070001940243,
+      "terminalClean": true
+    }
+  ]
+}

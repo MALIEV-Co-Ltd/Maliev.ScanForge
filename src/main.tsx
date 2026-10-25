@@ -2,6 +2,14 @@ import { createRoot } from "react-dom/client";
 import { App } from "./ui/App";
 import "./ui/styles.css";
 import { clearDevelopmentCache } from "./development-cache";
+// Suppress browser UI even when a captured pan ends outside its canvas.
+// Keep propagation intact so application and portal context menus still work.
+document.addEventListener(
+  "contextmenu",
+  (event) => event.preventDefault(),
+  true,
+);
+
 async function mount() {
   if (import.meta.env.DEV && "serviceWorker" in navigator) {
     try {

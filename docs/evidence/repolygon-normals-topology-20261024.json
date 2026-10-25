@@ -1,0 +1,102 @@
+{
+  "status": "vertex-normals-ported-boundary-order-open",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 6,
+  "newInstructionAddressesIndependentlyDecoded": 639,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "privateVertexNormals": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "redFailuresObserved": 9,
+    "coverage": [
+      "Winding and unused vertices",
+      "Cached face normals and explicit recomputation",
+      "Angle rather than area weighting",
+      "Strict squared-edge threshold and tiny accumulated normals",
+      "Float32 accumulation order and input immutability"
+    ],
+    "limitations": [
+      "Fresh output, not arbitrary existing native normal/flag state.",
+      "JavaScript acos is not proven bit-identical to the historical native CRT."
+    ]
+  },
+  "findings": [
+    "Final coordinator point cleanup clears flags; it is not an additional geometric smoothing stage.",
+    "The small-hole adjacency helper selects reciprocal slots using a shared vertex identifier.",
+    "Boundary records are inserted into a balanced tree keyed by directed start/end vertex identifiers; walking searches by the next start vertex and removes each visited edge.",
+    "The boundary walk starts from a tree-root record; exact root selection and ambiguous-vertex behavior remain required for output-order fidelity.",
+    "Triangle removal disconnects reciprocal adjacency and replaces the removed record with the last triangle, updating back-references. Stable triangle deletion would differ."
+  ],
+  "finitePlaneExplanation": {
+    "status": "boundary-blending-explains-planar-mean-deviation",
+    "nativeRuntimeParity": false,
+    "initializerSuppliedAsZero": true,
+    "idealUnroundedBoundaryPoint": [0.3124284298435971, 0.9962866129722854, 1],
+    "portedBoundaryPoint": [0.31242844462394714, 0.9962866306304932, 1],
+    "maxCoordinateDifference": 1.7658207784876367e-8,
+    "interpretation": "Averaging signed-distance magnitudes and normalized directions separately does not preserve the arithmetic-mean plane at a finite boundary, even without Float32 rounding. This explains the prototype deviation under the reconstructed semantics; it does not establish native output parity or close geometric acceptance."
+  },
+  "failedPlanarExpectationRetained": true,
+  "boundedJobs": [
+    {
+      "label": "repolygon-topology-r1",
+      "receiptSha256": "0fe3ed7a0fc882d10cad8d47953a91d8aecaf6cc128bb254f4705bab312ad2aa",
+      "expectedExitCode": 0,
+      "peakBytes": 748060672,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-walk-r1",
+      "receiptSha256": "4f95c6182480eb4bb1337ad93ba169a62a7d48c9b650e9a28f780eb6b073eaf1",
+      "expectedExitCode": 0,
+      "peakBytes": 859967488,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-vertex-normals-r1-red",
+      "receiptSha256": "13733f838ce0dc2b537a2eaff26140bd9a0fee9590a81528c32a4b41f35058d7",
+      "expectedExitCode": 1,
+      "peakBytes": 34840576,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-vertex-normals-r1-green",
+      "receiptSha256": "9ec7788a37fcd52a5c0fb51355f63ae78726c00d7e53947923102471abb7a7be",
+      "expectedExitCode": 0,
+      "peakBytes": 33136640,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-fusion-provenance-r1-probe",
+      "receiptSha256": "3aefdf40dd9cb1a45a4e21299219aef79cf0d4c8a9d869de25208d5a4705cc72",
+      "expectedExitCode": 0,
+      "peakBytes": 34725888,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Port topology construction, ordered boundary traversal and three-edge repair without substituting a general hole filler or stable triangle deletion.",
+    "Resolve exact-lattice no-crossing behavior, source preparation, mutable initializer and partitioned frontiers.",
+    "Validate native finite-boundary behavior and original scan geometry; the analytic explanation is not native-output acceptance.",
+    "Integrate the complete shared GUI/MCP operation and verify original inputs, history, cancellation, saved projects and rendered state."
+  ],
+  "limitations": [
+    "Candidate function boundaries and decompiler types remain inferred. Independent decoding covers reported instruction starts only.",
+    "Historical import attribution uses retained module-base metadata and exact matching module bytes; no fresh process was opened.",
+    "The prior ideal-mean-plane expectation is not implied by the separately averaged distance/direction formulas at finite boundaries. It remains recorded as a failed quality expectation pending the complete/native comparison."
+  ],
+  "privateProofSha256": "939e28020e0466a0a9feb2b651e27e444891787ed7afa5127f99ca5af8cc34df"
+}

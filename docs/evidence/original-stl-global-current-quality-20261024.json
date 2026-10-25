@@ -1,0 +1,539 @@
+{
+  "schema": 1,
+  "scope": "Fresh current-candidate original-three coarse-placed STL GUI Preview, public MCP cached Apply, complete current-buffer/history/save workflow and independent full-geometry assessment. Not full native or milestone acceptance.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "tree": "6c9b1ca451672d6ef492ace4c7160d5fbfefaa37",
+    "sourceManifestSha256": "aa3868414a44301046783fe5a9acc066975e3741fb20bdf93d6d46109e821195",
+    "frozenInputsReverified": 2251,
+    "workingChangesPresent": true,
+    "buildSourceFiles": 1978
+  },
+  "sourcePins": [
+    {
+      "path": "src/global-alignment-input-core.ts",
+      "sha256": "a85565e02b376169c4c6db300c3c43bc5ea8b537e4e432b2c8fe4e40ece61111"
+    },
+    {
+      "path": "src/global-alignment-input.ts",
+      "sha256": "5a672eb98b89ab72b775d671ece555cd83c3734f830523f921546dd80da1ee5d"
+    },
+    {
+      "path": "src/automation/global-alignment-operations.ts",
+      "sha256": "b54aad01f80a6c44d46c09c4f12ae8723c8dc8cf99289c6f78d5c582a02e566a"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/datum-staged-scan.ts",
+      "sha256": "d7cb7865f209c0cfdb01ddcf0bcc971fe520522616bf58442340cc83d19a0742"
+    },
+    {
+      "path": "src/history.ts",
+      "sha256": "bd93063075982c2e3eb4f51f92ee4a6ae806ab967f23abd0779cbadb2516369b"
+    },
+    {
+      "path": "src/project-file-codec.ts",
+      "sha256": "31b0031ad6b24f6cad1c524ddaea1330d66a62c5c581c39971e0b6f51a8d8ee2"
+    },
+    {
+      "path": "src/mesh-geometry-normals.ts",
+      "sha256": "c47acd76e79c647ee0ab200dadabbdc035659887a6d2e7d4bb9a476ef050688c"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "f9c69b56fe8c227347c1fc91b95eeb9c92b67b3f7195512eab6ecef2e5beba06"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "a108253e08b8dda3de32845d1683aad63bc5c32ac7833139abbc6f4fa9e44e3a"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T045353763851Z-browser/evidence.json",
+      "sha256": "d155cb05a0625cf4d78f36c0f038bcbc87df98f53deaa49c636c2ebf0c31d8e9"
+    },
+    {
+      "name": "global-after-coarse-three-stl-evidence-20261024T045353763851Z-kernel/resource-ledger.json",
+      "sha256": "f747bacf167bd2b7c0a8930128b0ab38210974c8d23fe0454d6ca1bd13266e84"
+    },
+    {
+      "name": "global-after-coarse-three-stl-plan-source-20261024T045353763851Z.json",
+      "sha256": "0784473da467cbace022777d424e3707f111f1f61e369494724b75d53471e8b9"
+    },
+    {
+      "name": "global-after-coarse-three-stl-plan-dist-20261024T045353763851Z.json",
+      "sha256": "57a9410e03d4eaf26600c96f119e74013ed08a830b532527cb58857482ab5719"
+    },
+    {
+      "name": "global-after-coarse-three-stl-plan-20261024T045353763851Z.json",
+      "sha256": "2c1b2ed170cab4658e05dfa5ab2e4362b6dcf581e1b07d272fddbc768500a3e1"
+    },
+    {
+      "name": "global-after-coarse-three-stl-current-r3.mjs",
+      "sha256": "e906c21b076f5a3ebb1d0656740bba024c89de56f1f13c64444ddec394a776c3"
+    },
+    {
+      "name": "global-after-coarse-three-stl-bind-current-r3.py",
+      "sha256": "e2f13000335700f596e14eaf472ac0e59e584bb7707a7a4674f03d78d7933f5c"
+    },
+    {
+      "name": "global-after-coarse-three-stl-runner.py",
+      "sha256": "5599b4ff1978be913bdb7e0c7cbce82c338f4c8f4e95e7f11b83075dd875c106"
+    },
+    {
+      "name": "prepare-global-observer-r3.py",
+      "sha256": "a8583bbacc4675eefeb0c80c5f8bc5f065665e6cf67b6b090b250d7df8675652"
+    },
+    {
+      "name": "global-current-build-verified-r1.json",
+      "sha256": "795edddf09762507eb1d811ff4bb33c491883cdf74f53c97454f4b992fc2d683"
+    },
+    {
+      "name": "global-stl-current-quality-r3.mjs",
+      "sha256": "ca4545aa3e4cc232860d87051c8f002b3029fc3a083b7e001b5537a114f11453"
+    },
+    {
+      "name": "verify-global-stl-current-quality-r3.mjs",
+      "sha256": "61e9e5afd95257bf7e65152c939ce18d211d13b358054d64ed07c2b1efe4805f"
+    },
+    {
+      "name": "global-stl-current-quality-r3.json",
+      "sha256": "79e5a756ec565dddd279adbd930677fdea373b9993975bbc15ccd22082138af9"
+    },
+    {
+      "name": "global-stl-current-quality-verified-r3.json",
+      "sha256": "bae52f2e7b8563c08c97a4b2fa7aea10f1d39782408b9ae95da51f8d659ac67f"
+    },
+    {
+      "name": "global-stl-full-quality-library-pins-r1.json",
+      "sha256": "4c990d16eb051eefda94aae0921b820063845ada640299cdba1cf84c14e00b77"
+    },
+    {
+      "name": "run-global-current-quality-r3.py",
+      "sha256": "c24ea356d6661272077e93ac03929e6d50d09fc54a896bcfe51ea899a961e823"
+    },
+    {
+      "name": "run-global-current-focused-r1.py",
+      "sha256": "108e23085f5fd9f7099331a6e44bf7fc513f0e8139744486a4b865dfdaf5e621"
+    },
+    {
+      "name": "record-global-current-quality-r3.py",
+      "sha256": "43092c9b267ff92b36969213c9a48fd555b9ec51142bcff58d8d64f115bac588"
+    }
+  ],
+  "workflow": {
+    "passed": true,
+    "geometryCarrierCount": 16,
+    "authoredBaselineCarriersComparedToRetainedCoarseRun": 13,
+    "historyCursorBefore": 5,
+    "historyCursorAfter": 6,
+    "exactUndoRedo": true,
+    "publicMatrixFloat64Bits": true,
+    "cachedApplyWithoutNewSolve": true,
+    "savedProject": {
+      "name": "global-after-coarse-three-stl.scanforge",
+      "bytes": 736091936,
+      "sha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea"
+    },
+    "controllerConverged": false,
+    "passes": 2,
+    "states": [
+      {
+        "id": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "matrix": [
+          0.9999996567175637, -0.0008264431657681848, -5.963596582055638e-5,
+          0.027541257142194228, 0.0008264711543853566, 0.9999995476293184,
+          0.00047083605358076437, 0.1415719886424866, 5.9246819604314784e-5,
+          -0.00047088517935653146, 0.9999998873784748, -0.0096820492922574
+        ],
+        "matrixBits": "089fb347ffffef3feca33a2fb5144bbf2eabd32e34440fbf3ca5dd7ac6339c3fd852224af1144b3f9ea5220dffffef3fce2eb07351db3e3f96e49fea071fc23f85708238f90f0f3fd4c50c7224dc3ebf5a6a89c3ffffef3f9a4c8ca82ed483bf",
+        "pointCount": 139338,
+        "mean": 0.03911303418818813,
+        "std": 73,
+        "coveragePercent": 73,
+        "converged": false,
+        "stable": true
+      },
+      {
+        "id": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "matrix": [
+          0.9999995260083789, 0.0007968151021744541, -0.000559525433194618,
+          -0.1613031078764696, -0.0007971114915748538, 0.9999995420193853,
+          -0.0005296926368651247, -0.18058833118747442, 0.0005591031098502515,
+          0.0005301383899478809, 0.999999703178456, -0.030483706282201664
+        ],
+        "matrixBits": "70168701ffffef3f71a003672b1c4a3fc7bceab7a35542bfdb4a898a94a5c4bf046acfe4a71e4abfa59f1f0affffef3f5eb5b046625b41bf4ca53eb8841dc7bf3afa33c91852423f92000a861f5f413f5a28a560ffffef3fc4f42be61e379fbf",
+        "pointCount": 1299033,
+        "mean": 0.023783302862130554,
+        "std": 89,
+        "coveragePercent": 89,
+        "converged": false,
+        "stable": true
+      },
+      {
+        "id": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "matrix": [
+          0.9999999994838575, 2.581538050269699e-5, 1.912722948467601e-5,
+          -0.014820953642222651, -2.5807788127974723e-5, 0.9999999209281196,
+          -0.00039683461622916133, -0.1187228599932817, -1.9137472408864607e-5,
+          0.00039683412239285214, 0.9999999210782151, -0.023377213744324946
+        ],
+        "matrixBits": "da0fb9ffffffef3fad5f9c70c311fb3e1dd19b336d0ef43eaad282b9725a8ebf576724b2b90ffbbe8a718cd5ffffef3fd615d9b2c7013abf716ff5109f64bebf346009172d11f4be8c85de93c5013a3f8e12a1d5ffffef3f918f034232f097bf",
+        "pointCount": 1683605,
+        "mean": 0.039778916999598304,
+        "std": 81,
+        "coveragePercent": 81,
+        "converged": false,
+        "stable": true
+      }
+    ],
+    "jobPeakBytes": 3157667840,
+    "ownedProcessesExited": 17,
+    "finalActiveProcesses": 0,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "measurement": {
+    "sourceVerticesEvaluated": 6243952,
+    "trianglesPerStage": 6147452,
+    "downsampled": false,
+    "metric": "Unsigned nearest full triangle union; vertex-weighted rather than area-weighted.",
+    "fixedSupportVertices": 2990647,
+    "fixedSupportRmsBeforeMm": 0.0651729743610334,
+    "fixedSupportRmsAfterMm": 0.05791800973628678,
+    "scans": [
+      {
+        "name": "scan-1.stl",
+        "id": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "sourceVertices": 139338,
+        "targetTriangles": 5874313,
+        "before": {
+          "count": 139338,
+          "withinHalfMm": 51039,
+          "withinHalfMmPercent": 36.629634414158375,
+          "meanMm": 1.3017942302760739,
+          "rmsMm": 1.6978826847644266,
+          "medianMm": 1.2525967058593175,
+          "p95Mm": 3.1041486729247176,
+          "p99Mm": 3.2309323067150206,
+          "maximumMm": 3.5145908910070953
+        },
+        "after": {
+          "count": 139338,
+          "withinHalfMm": 51198,
+          "withinHalfMmPercent": 36.74374542479438,
+          "meanMm": 1.2956984083804783,
+          "rmsMm": 1.6967249103703121,
+          "medianMm": 1.2468437189878048,
+          "p95Mm": 3.125731726943312,
+          "p99Mm": 3.2240130487882785,
+          "maximumMm": 3.518301318290391
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 51039,
+            "withinHalfMm": 51039,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.11351109428461462,
+            "rmsMm": 0.16981523390443973,
+            "medianMm": 0.06256099264907986,
+            "p95Mm": 0.4113761080335161,
+            "p99Mm": 0.4822519613715226,
+            "maximumMm": 0.49998879502028415
+          },
+          "after": {
+            "count": 51039,
+            "withinHalfMm": 50664,
+            "withinHalfMmPercent": 99.26526773643684,
+            "meanMm": 0.1004293453122991,
+            "rmsMm": 0.16330299667357598,
+            "medianMm": 0.03930340836526318,
+            "p95Mm": 0.40509551488982426,
+            "p99Mm": 0.4903806992552599,
+            "maximumMm": 0.6164370630667956
+          }
+        },
+        "gainedWithinHalfMm": 534,
+        "lostWithinHalfMm": 375,
+        "beforeDistanceSha256": "ade95d346fd90f7754f9edb7670fcea88ffb61e8af5bb81dc55f9e3c593c67c5",
+        "afterDistanceSha256": "667190b924089af1143a6ac3d0c6c4f334743c2f8606adaccdac21a1d228ebb7"
+      },
+      {
+        "name": "scan-2.stl",
+        "id": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "sourceVertices": 1299033,
+        "targetTriangles": 3600049,
+        "before": {
+          "count": 1299033,
+          "withinHalfMm": 1272780,
+          "withinHalfMmPercent": 97.97903517462605,
+          "meanMm": 0.05280118961793716,
+          "rmsMm": 0.17241121916943042,
+          "medianMm": 0.023704623123264643,
+          "p95Mm": 0.09499724462106052,
+          "p99Mm": 1.0139294865665736,
+          "maximumMm": 2.4597275260773936
+        },
+        "after": {
+          "count": 1299033,
+          "withinHalfMm": 1272692,
+          "withinHalfMmPercent": 97.9722609048423,
+          "meanMm": 0.043620638715218686,
+          "rmsMm": 0.17078652328113395,
+          "medianMm": 0.014377370321531,
+          "p95Mm": 0.07385783504086076,
+          "p99Mm": 1.0151802042235056,
+          "maximumMm": 2.4647722923658972
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 1272780,
+            "withinHalfMm": 1272780,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.031596342222722916,
+            "rmsMm": 0.05208854833103278,
+            "medianMm": 0.02315068452534607,
+            "p95Mm": 0.07552987172805657,
+            "p99Mm": 0.232848206836102,
+            "maximumMm": 0.49993088450862133
+          },
+          "after": {
+            "count": 1272780,
+            "withinHalfMm": 1272418,
+            "withinHalfMmPercent": 99.97155832115527,
+            "meanMm": 0.02219764966131345,
+            "rmsMm": 0.045476880426288585,
+            "medianMm": 0.01402606733874194,
+            "p95Mm": 0.05551518248793471,
+            "p99Mm": 0.22800836318097822,
+            "maximumMm": 0.5585296880581464
+          }
+        },
+        "gainedWithinHalfMm": 274,
+        "lostWithinHalfMm": 362,
+        "beforeDistanceSha256": "da5b211c1f419bbd8778410ba79b48c8a8b622a59e51fbae10a2cee3f3b3e47d",
+        "afterDistanceSha256": "d693252e88a7dabe660f25ac89af4791156c551e04774815c247ba18285afa26"
+      },
+      {
+        "name": "scan-3.stl",
+        "id": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "sourceVertices": 1683605,
+        "targetTriangles": 2820542,
+        "before": {
+          "count": 1683605,
+          "withinHalfMm": 1666828,
+          "withinHalfMmPercent": 99.00350735475364,
+          "meanMm": 0.04645105288002295,
+          "rmsMm": 0.10886194465760335,
+          "medianMm": 0.02541051924204565,
+          "p95Mm": 0.1359200225054338,
+          "p99Mm": 0.49915534519835736,
+          "maximumMm": 1.7901749280107686
+        },
+        "after": {
+          "count": 1683605,
+          "withinHalfMm": 1667711,
+          "withinHalfMmPercent": 99.0559543360824,
+          "meanMm": 0.035908739399950394,
+          "rmsMm": 0.10359640501121081,
+          "medianMm": 0.015235547995307708,
+          "p95Mm": 0.11947689139445644,
+          "p99Mm": 0.4858694588228897,
+          "maximumMm": 1.7921856636841758
+        },
+        "fixedBeforeSupport": {
+          "definition": "All indexed vertex IDs with before-global unsigned nearest-union distance strictly below0.5mm; the exact same IDs are evaluated after without threshold clipping.",
+          "before": {
+            "count": 1666828,
+            "withinHalfMm": 1666828,
+            "withinHalfMmPercent": 100,
+            "meanMm": 0.03891578707493332,
+            "rmsMm": 0.06830923460350262,
+            "medianMm": 0.025119797268013302,
+            "p95Mm": 0.11301135512836152,
+            "p99Mm": 0.3413899430364984,
+            "maximumMm": 0.4999817126238598
+          },
+          "after": {
+            "count": 1666828,
+            "withinHalfMm": 1666344,
+            "withinHalfMmPercent": 99.97096281079992,
+            "meanMm": 0.0283517859277033,
+            "rmsMm": 0.06019035511851151,
+            "medianMm": 0.015049105835070924,
+            "p95Mm": 0.08962956835189821,
+            "p99Mm": 0.323409466334028,
+            "maximumMm": 0.5738696988227778
+          }
+        },
+        "gainedWithinHalfMm": 1367,
+        "lostWithinHalfMm": 484,
+        "beforeDistanceSha256": "67a7dbee11ba5457d8d426dcb7b3629932b4f766dfa177ec1a865569cdcf1c0a",
+        "afterDistanceSha256": "19c0ff35f22be34dc8f48f24464e5c8b19abb9de0f1d14480b20ad588a2882e7"
+      }
+    ],
+    "analyticCases": 5,
+    "oracleControls": [
+      {
+        "stage": "before",
+        "source": "scan-1.stl",
+        "actual": 2.27247710806877,
+        "distance": 2.27247710806877,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 338
+      },
+      {
+        "stage": "before",
+        "source": "scan-2.stl",
+        "actual": 0.07225631127856388,
+        "distance": 0.07225631127858005,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 143
+      },
+      {
+        "stage": "before",
+        "source": "scan-3.stl",
+        "actual": 0.006899553571003812,
+        "distance": 0.006899553570971312,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 212
+      },
+      {
+        "stage": "after",
+        "source": "scan-1.stl",
+        "actual": 2.2541869857537087,
+        "distance": 2.2541869857537087,
+        "boundsChecked": 5874313,
+        "trianglesChecked": 363
+      },
+      {
+        "stage": "after",
+        "source": "scan-2.stl",
+        "actual": 0.03735476176226531,
+        "distance": 0.03735476176228314,
+        "boundsChecked": 3600049,
+        "trianglesChecked": 137
+      },
+      {
+        "stage": "after",
+        "source": "scan-3.stl",
+        "actual": 0.01688735294173102,
+        "distance": 0.016887352941747813,
+        "boundsChecked": 2820542,
+        "trianglesChecked": 209
+      }
+    ],
+    "elapsedMs": 58673
+  },
+  "coordinateVerification": {
+    "indexedElements": 9365928,
+    "expandedElements": 55327068,
+    "unchangedIndexElements": 18442356,
+    "originalSTLFilesVerified": 3,
+    "twoFloat32Stages": true,
+    "independentNormalReconstruction": false
+  },
+  "libraries": {
+    "three": "0.180.0",
+    "three-mesh-bvh": "0.9.16",
+    "sourceFilesReverified": 96
+  },
+  "receipts": [
+    {
+      "name": "project-index-validation-global-current-r1-build.receipt.json",
+      "sha256": "571dd199dac714add204790155b71c6aa85d95312ebe253d50ae636310fa778a",
+      "exitCode": 0,
+      "elapsedSeconds": 33.853392199991504,
+      "childPeakBytes": 2492637184,
+      "outerPeakBytes": 2511187968,
+      "heapMiB": 3072,
+      "leaseSeconds": 300,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-global-current-focused-r1-full.receipt.json",
+      "sha256": "5be6b454501fe2efbf58503239157610a2350d2fdedf7be694f896d00b7769ac",
+      "exitCode": 0,
+      "elapsedSeconds": 3.5417116999742575,
+      "childPeakBytes": 322412544,
+      "outerPeakBytes": 339206144,
+      "heapMiB": 1024,
+      "leaseSeconds": 300,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-global-current-quality-r3-full-full.receipt.json",
+      "sha256": "cb53f81bf65d9b61886c4bf140a4246d5b3e2051849321b5164d2fffac30dec0",
+      "exitCode": 0,
+      "elapsedSeconds": 58.80762939999113,
+      "childPeakBytes": 866758656,
+      "outerPeakBytes": 883666944,
+      "heapMiB": 768,
+      "leaseSeconds": 600,
+      "terminalCleanupVerified": true
+    },
+    {
+      "name": "project-index-validation-global-current-quality-r3-verify-cad.receipt.json",
+      "sha256": "064479b55b80b288b0c94ee5f9a3371cc53934d78f8ec318ea8b2f69cf744ee8",
+      "exitCode": 0,
+      "elapsedSeconds": 3.138546400004998,
+      "childPeakBytes": 760999936,
+      "outerPeakBytes": 777822208,
+      "heapMiB": 768,
+      "leaseSeconds": 180,
+      "terminalCleanupVerified": true
+    }
+  ],
+  "focusedTests": {
+    "files": 8,
+    "passed": 106
+  },
+  "failedAttemptsPreserved": [
+    {
+      "browser": "global-after-coarse-three-stl-evidence-20261024T044044523415Z-browser/evidence.json",
+      "browserSha256": "f3100e4d4100311fd2741faa60796d5a64694288994bd2c4a06794e0b4d5394f",
+      "owner": "global-after-coarse-three-stl-evidence-20261024T044044523415Z-kernel/resource-ledger.json",
+      "ownerSha256": "865e1b45c13732b8e2582bd24ecb1a044dd98723d6b43cc7a80b33cf91e829ae",
+      "passed": false,
+      "reason": "Final worker-record observation exceeded 1.5 seconds after complete geometry/history/save workflow; outer cleanup confirmed all processes exited.",
+      "ownedProcessesExited": true
+    },
+    {
+      "browser": "global-after-coarse-three-stl-evidence-20261024T045141598226Z-browser/evidence.json",
+      "browserSha256": "159cacf35e997596925f6ca638ce5b3a78cf120a273110f0c0327edc57e6d5e3",
+      "owner": "global-after-coarse-three-stl-evidence-20261024T045141598226Z-kernel/resource-ledger.json",
+      "ownerSha256": "961ab791978884e39a08ec35bcd631e94ec33630dc25d008a148d73805bf29c5",
+      "passed": false,
+      "reason": "Harness copy used Windows default encoding, corrupting the exact UI middle-dot text; preview succeeded but GUI readiness match timed out before Apply.",
+      "ownedProcessesExited": true
+    }
+  ],
+  "harnessCorrection": "Only the final worker-record observation budget changed from 1500ms to 6000ms. UTF-8 round-trip and exact single-line diff verified. Overall 900s lease, 60s cleanup reserve, CPU25% and 4GiB Job unchanged.",
+  "mcpCoverage": "GUI Global Fine Align Preview shares operations with MCP. This run observes public job/state/transform receipts and uses MCP cached Apply plus revision-aware Undo/Redo/history/digests; it does not independently run a fresh MCP preview solve.",
+  "limitations": [
+    "Controller convergence remains false; geometric improvement is not a convergence pass.",
+    "No original-native final controller/setter comparison in this workflow.",
+    "Other formats, point-cloud and usable combined-output workflows remain open.",
+    "Independent publication verification covers coordinates and indices; normals are checked by full workflow digests/history, not independently reconstructed here.",
+    "Reviewed-candidate, M1 dependency and full milestone acceptance remain open."
+  ],
+  "productCodeChangedThisStep": false,
+  "nativeApplicationAccessThisStep": false,
+  "githubMutated": false,
+  "jobCapBytes": 4294967296,
+  "cpuPercent": 25
+}

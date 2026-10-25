@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "scope": "Incremental project encoder payload checkpoints shared by GUI Save, automatic backup and MCP project_export",
+  "sourceSha256": "b6af67f08b7f2f3ef1a477fb7fbd1064cd8b6b3748b6a5d54c9bcdffd2637eb0",
+  "validation": {
+    "focusedTestFiles": 10,
+    "focusedTests": 77,
+    "focusedPassed": true,
+    "buildExitCode": 0,
+    "typecheckExitCode": 0,
+    "persistentBrowser": {
+      "bytes": 113118064,
+      "sourceBytes": 134217792,
+      "sha256": "3f72ab60119d9b5dd209d08f10a5bb7e3142b355f57fc69c3b1a47cd79ab5751",
+      "checkpoints": [84836900],
+      "remainingRecords": 0,
+      "byteExact": true,
+      "historyPreserved": true,
+      "errors": []
+    },
+    "encoderBrowser": {
+      "byteExact": true,
+      "bytes": 1454,
+      "authoredBuffersIntact": true,
+      "cloudPoseRetained": true,
+      "invalidGeometryRejected": true,
+      "queueRecovered": true,
+      "cancellationReleased": true,
+      "errors": [],
+      "workersReleased": true
+    },
+    "mcpSmokePassed": true,
+    "mcpCleanup": [
+      {
+        "port": 60151,
+        "closed": true
+      },
+      {
+        "port": 60152,
+        "closed": true
+      },
+      {
+        "pid": 30788,
+        "exited": true
+      },
+      {
+        "pid": 34656,
+        "exited": true
+      }
+    ]
+  },
+  "limits": [
+    "Original 736091936-byte project round trip under 4 GiB was not rerun for this incremental change.",
+    "Pending checkpoint threshold is 64 MiB plus its final payload; individual compression output is not bounded by this threshold.",
+    "Private/incognito IndexedDB remains memory backed."
+  ]
+}

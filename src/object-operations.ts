@@ -1,4 +1,85 @@
 import type { Entity } from "./types";
+import { resolveConstructionIdentities } from "./reference-construction-identity";
+import { isReferenceEntity } from "./reference-entity";
+import type { ConstructionIdentityAssignment } from "./reference-construction-identity";
+
+/** Trusted commit metadata, never a caller-editable transport field. */
+export interface ModelCommitPolicy {
+  readonly constructionIdentityMigration?: readonly ConstructionIdentityAssignment[];
+}
+
+function migratedSourceIds(
+  before: Entity[],
+  after: Entity[],
+  policy?: ModelCommitPolicy,
+): Set<string> {
+  const supplied = policy?.constructionIdentityMigration;
+  if (supplied === undefined) return new Set();
+  if (!Array.isArray(supplied))
+    throw new Error("Invalid construction identity migration.");
+  const ids = new Set<string>();
+  for (const assignment of supplied) {
+    if (
+      !assignment ||
+      typeof assignment.id !== "string" ||
+      typeof assignment.constructionOrderKey !== "string" ||
+      Object.keys(assignment).length !== 2 ||
+      ids.has(assignment.id)
+    )
+      throw new Error("Invalid or duplicate construction identity migration.");
+    ids.add(assignment.id);
+  }
+  const expected = new Map(
+    resolveConstructionIdentities(before, [...ids]).assignments.map((row) => [
+      row.id,
+      row.constructionOrderKey,
+    ]),
+  );
+  resolveConstructionIdentities(after, []);
+  for (const assignment of supplied) {
+    const old = before.find((row) => row.id === assignment.id),
+      next = after.find((row) => row.id === assignment.id);
+    if (
+      !old ||
+      !next ||
+      old.constructionOrderKey !== undefined ||
+      expected.get(assignment.id) !== assignment.constructionOrderKey ||
+      next.constructionOrderKey !== assignment.constructionOrderKey
+    )
+      throw new Error(
+        "Construction identity migration must add the deterministic missing source key.",
+      );
+    const oldKeys = Reflect.ownKeys(old).filter(
+      (key) => key !== "constructionOrderKey",
+    );
+    const nextKeys = Reflect.ownKeys(next).filter(
+      (key) => key !== "constructionOrderKey",
+    );
+    if (
+      oldKeys.length !== nextKeys.length ||
+      oldKeys.some(
+        (key) =>
+          !nextKeys.includes(key) ||
+          !Object.is(Reflect.get(old, key), Reflect.get(next, key)),
+      )
+    )
+      throw new Error(
+        "Construction identity migration may change only the source key.",
+      );
+  }
+  for (const old of before) {
+    const next = after.find((row) => row.id === old.id);
+    if (
+      next &&
+      old.constructionOrderKey !== next.constructionOrderKey &&
+      !ids.has(old.id)
+    )
+      throw new Error(
+        "Construction identity migration cannot replace another object key.",
+      );
+  }
+  return ids;
+}
 
 /** Flip each target once, retaining geometry, selection and unselected identities. */
 export function toggleObjectVisibility(
@@ -28,6 +109,21 @@ export function duplicateObject(
   id: string,
   entities: Entity[],
 ): Entity {
+  if (isReferenceEntity(source))
+    throw new Error("Reference construction duplication is not yet supported.");
+  const constructionOrderKey =
+    source.constructionOrderKey === undefined
+      ? undefined
+      : resolveConstructionIdentities(
+          [
+            ...entities,
+            ...(entities.some((entity) => entity.id === source.id)
+              ? []
+              : [source]),
+            { id },
+          ],
+          [id],
+        ).orderedSources[0].constructionOrderKey;
   let name = `${source.name} copy`;
   for (let index = 2; entities.some((entity) => entity.name === name); index++)
     name = `${source.name} copy ${index}`;
@@ -39,6 +135,7 @@ export function duplicateObject(
     locked: false,
     selectable: true,
     parametric: undefined,
+    ...(constructionOrderKey !== undefined ? { constructionOrderKey } : {}),
   };
 }
 
@@ -46,7 +143,9 @@ export function duplicateObject(
 export function lockedObjectEdit(
   before: Entity[],
   after: Entity[],
+  policy?: ModelCommitPolicy,
 ): Entity | undefined {
+  const migrations = migratedSourceIds(before, after, policy);
   const editable = new Set([
     "name",
     "color",
@@ -63,6 +162,7 @@ export function lockedObjectEdit(
       Object.keys({ ...old, ...next }).some(
         (key) =>
           !editable.has(key) &&
+          !(key === "constructionOrderKey" && migrations.has(old.id)) &&
           old[key as keyof Entity] !== next[key as keyof Entity],
       )
     );

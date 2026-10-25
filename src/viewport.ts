@@ -28,6 +28,8 @@ import { modelGridSpacing, viewportScale } from "./viewport-scale";
 import { ViewportScaleOverlay } from "./viewport-scale-overlay";
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
+import { AdaptivePointDisplay } from "./adaptive-point-display";
+import { DEFAULT_POINT_SIZE } from "./appearance";
 import { SelectionProcessingHighlight } from "./selection-processing-highlight";
 import { matchesLocalShortcut } from "./shortcut-registry";
 import { createNoiseComparisonOverlay } from "./noise-comparison-overlay";
@@ -50,6 +52,14 @@ import type {
   ScanBridgeSession,
 } from "./scan-bridge-gesture";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
+import { isReferenceEntity } from "./reference-entity";
+import { ReferencePreviewDisplay } from "./reference-preview-display";
+import type { ReferenceConstructionCachedPreview } from "./reference-construction-session";
+import {
+  createReferenceDisplay,
+  updateReferenceDisplay,
+  type ReferenceDisplay,
+} from "./reference-display";
 import { scanRenderData } from "./scan-render-data";
 import {
   scanDisplayBuffers,
@@ -139,6 +149,7 @@ import {
 } from "./sketch-drawing";
 
 type Item = {
+  pointDisplay?: AdaptivePointDisplay;
   pointCloud?: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>;
   pointColors?: Uint8Array;
   pointDeviation?: {
@@ -207,6 +218,9 @@ export class Viewport {
   private readonly controls: TrackballControls;
   private readonly observer: ResizeObserver;
   private readonly objects = new Map<string, Item>();
+  private referenceObjects = new Map<string, ReferenceDisplay>();
+  private referenceDisposals = new Set<ReferenceDisplay>();
+  private referenceConstructionDisplay?: ReferencePreviewDisplay;
   private interactivePosePreview?: InteractivePosePreview;
   private interactiveMirror?: InteractiveMirrorController;
   private interactiveMirrorBackend?: InteractiveMirrorBackend;
@@ -612,6 +626,8 @@ export class Viewport {
           ).unproject(this.camera);
         },
         selection: () => {
+          const reference = this.referenceObjects?.get(this.selectedId ?? "");
+          if (reference?.object.visible) return reference.bounds.clone();
           const item = this.objects.get(this.selectedId ?? "");
           if (!item?.mesh.visible) return;
           const box = new THREE.Box3().setFromObject(
@@ -644,6 +660,8 @@ export class Viewport {
       const scene = new THREE.Box3();
       for (const item of visible)
         scene.union(new THREE.Box3().setFromObject(item.mesh));
+      for (const reference of this.referenceObjects?.values() ?? [])
+        if (reference.object.visible) scene.union(reference.bounds);
       const selected = this.selectedId
         ? this.objects.get(this.selectedId)
         : undefined;
@@ -653,6 +671,11 @@ export class Viewport {
           ? new THREE.Box3().setFromObject(this.triangleSelection)
           : new THREE.Box3().setFromObject(selected.mesh);
       }
+      const selectedReference = this.referenceObjects?.get(
+        this.selectedId ?? "",
+      );
+      if (selectedReference?.object.visible)
+        selection = selectedReference.bounds.clone();
       this.navigationPivot.update(
         now,
         scene,
@@ -693,12 +716,20 @@ export class Viewport {
     this.raycaster.setFromCamera(screen, this.camera);
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(false));
     // Render one depth pixel rather than silently retaining a stale pivot or
     // scanning a large unindexed mesh. Include every mesh to retain occlusion.
-    if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) {
-      if (meshes.some((mesh) => mesh instanceof THREE.Points)) return;
-      return this.navigationDepthPoint(meshes as THREE.Mesh[], screen);
+    if (
+      meshes.some(
+        (mesh) =>
+          mesh instanceof THREE.Points || !canQueryNavigationSurface(mesh),
+      )
+    ) {
+      return this.navigationDepthPoint(meshes, screen);
     }
     for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
     return this.raycaster
@@ -715,7 +746,31 @@ export class Viewport {
       )?.point;
   }
 
-  private navigationDepthPoint(meshes: THREE.Mesh[], screen: THREE.Vector2) {
+  private navigationFramePoint(): THREE.Vector3 {
+    const surface = this.navigationSurfacePoint(true);
+    if (surface) return surface;
+    // The look-at target can have a different depth after prior surface orbits.
+    // Keep the fallback on the center ray, at the visible model's depth plane.
+    const center =
+      this.bounds && !this.bounds.isEmpty()
+        ? this.bounds.getCenter(new THREE.Vector3())
+        : this.controls.target;
+    this.camera.updateMatrixWorld();
+    this.raycaster.setFromCamera(new THREE.Vector2(), this.camera);
+    const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+      this.camera.getWorldDirection(new THREE.Vector3()),
+      center,
+    );
+    return (
+      this.raycaster.ray.intersectPlane(plane, new THREE.Vector3()) ??
+      this.controls.target.clone()
+    );
+  }
+
+  private navigationDepthPoint(
+    meshes: (THREE.Mesh | THREE.Points | THREE.Line)[],
+    screen: THREE.Vector2,
+  ) {
     return pickNavigationDepth(this.renderer, this.camera, meshes, screen);
   }
 
@@ -741,8 +796,27 @@ export class Viewport {
       this.container.clientWidth,
       this.container.clientHeight,
     );
+    const referencePreview = this.inspectReferenceConstructionPreview();
     return {
       ...view,
+      ...(referencePreview.active
+        ? { referenceConstructionPreview: referencePreview }
+        : {}),
+      pointCloudDisplay: [...this.objects.entries()].flatMap(
+        ([entityId, item]) =>
+          item.pointCloud?.visible && item.mesh.visible && item.pointDisplay
+            ? [
+                {
+                  entityId,
+                  ...item.pointDisplay.inspect(
+                    this.camera,
+                    this.container.clientWidth,
+                    this.container.clientHeight,
+                  ),
+                },
+              ]
+            : [],
+      ),
       navigation: {
         orbitMode: this.orbitMode ?? "free",
         zoomWindowActive: !!this.zoomWindowActive,
@@ -784,12 +858,10 @@ export class Viewport {
       const pivot =
         command.x === undefined
           ? undefined
-          : this.navigationSurfacePoint(
+          : (this.navigationSurfacePoint(
               false,
               new THREE.Vector2(command.x * 2 - 1, 1 - command.y! * 2),
-            );
-      if (command.x !== undefined && !pivot)
-        throw new Error("No mesh surface at the requested orbit point.");
+            ) ?? this.navigationFramePoint());
       this.rotateView(command.direction!, command.degrees!, pivot);
     } else if (command.action === "projection")
       this.setProjection(command.projection!);
@@ -825,7 +897,10 @@ export class Viewport {
     this.advanceViewTransition(performance.now() + 1000);
     return pickCamera(
       this.camera,
-      [...this.objects.values()].map((item) => item.mesh),
+      [
+        ...[...this.objects.values()].map((item) => item.mesh),
+        ...this.referenceCandidates(false),
+      ],
       x,
       y,
       maxHits,
@@ -1448,10 +1523,10 @@ export class Viewport {
     ) {
       this.cancelViewTransition();
       // Pick once at button-down, then preserve the world-space pivot until
-      // release. Empty space retains the last surface pivot (or old target).
-      const surface =
-        this.navigationSurfacePoint() ?? this.navigationSurfacePoint(true);
-      if (surface) this.mouseOrbitPivot = surface.clone();
+      // release. Every new gesture resolves a fresh pivot, never a stale hit.
+      this.mouseOrbitPivot = (
+        this.navigationSurfacePoint() ?? this.navigationFramePoint()
+      ).clone();
       this.mouseOrbitPointer = event.pointerId;
       this.mouseOrbitButton = event.button;
       if (this.orbitMode === "constrained" && event.pointerType !== "touch") {
@@ -2674,6 +2749,53 @@ export class Viewport {
     const id = this.pickAt(event as PointerEvent);
     if (id) this.onEditScan?.(id);
   }
+  async selectScanRegion(
+    id: string,
+    region: ScreenRegion,
+    through: boolean,
+    signal?: AbortSignal,
+    clip?: ScanClipBounds | null,
+  ): Promise<Uint8Array> {
+    signal?.throwIfAborted();
+    const item = this.objects.get(id);
+    if (!item?.mesh.visible || id !== this.selectedId)
+      throw new Error("Select a visible scan first.");
+    item.selectionIndex ??= new AsyncScreenSelectionIndex(
+      item.positions,
+      item.hidden,
+      !!item.pointCloud,
+    );
+    const index = item.selectionIndex;
+    const generation = this.selectionGeneration;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const abort = () => index.cancel();
+    signal?.addEventListener("abort", abort, { once: true });
+    try {
+      const mask = await index.select(this.camera, region, {
+        width: rect.width,
+        height: rect.height,
+        through,
+        clippingPlanes: (clip === undefined
+          ? item.mesh.material.clippingPlanes
+          : clip
+            ? scanClipPlanes(clip)
+            : []
+        )?.map((p) => [p.normal.x, p.normal.y, p.normal.z, p.constant]),
+      });
+      signal?.throwIfAborted();
+      if (
+        this.disposed ||
+        generation !== this.selectionGeneration ||
+        this.objects.get(id) !== item ||
+        item.selectionIndex !== index ||
+        this.selectedId !== id
+      )
+        throw new DOMException("Selection superseded.", "AbortError");
+      return mask;
+    } finally {
+      signal?.removeEventListener("abort", abort);
+    }
+  }
   private applyScreenRegion(event: PointerEvent, region: ScreenRegion): void {
     const id = this.selectedId,
       item = id ? this.objects.get(id) : undefined;
@@ -2684,23 +2806,11 @@ export class Viewport {
         item.hidden,
         !!item.pointCloud,
       );
-      const rect = this.renderer.domElement.getBoundingClientRect();
       const index = item.selectionIndex;
       const generation = this.selectionGeneration;
       const remove = subtractSelection(this.subtract, event.altKey);
       this.onSelectionStatus?.("pending");
-      void index
-        .select(this.camera, region, {
-          width: rect.width,
-          height: rect.height,
-          through: this.selectThrough,
-          clippingPlanes: item.mesh.material.clippingPlanes?.map((plane) => [
-            plane.normal.x,
-            plane.normal.y,
-            plane.normal.z,
-            plane.constant,
-          ]),
-        })
+      void this.selectScanRegion(id, region, this.selectThrough)
         .then((mask) => {
           if (
             !this.disposed &&
@@ -2786,7 +2896,11 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(true));
     const hit = this.raycaster
       .intersectObjects(candidates, false)
       .find((candidate) =>
@@ -2840,6 +2954,20 @@ export class Viewport {
     this.pickTargetId = entityId;
   }
 
+  private referenceCandidates(pickable: boolean) {
+    if (pickable && this.brushing) return [];
+    return [...(this.referenceObjects?.values() ?? [])]
+      .map((display) => display.object)
+      .filter(
+        (object) =>
+          object.visible &&
+          (!pickable ||
+            (object.userData.objectPickable !== false &&
+              (!this.pickTargetId ||
+                object.userData.entityId === this.pickTargetId))),
+      );
+  }
+
   selectionChoicesAt(
     event: Pick<PointerEvent, "clientX" | "clientY">,
   ): CanvasPickChoice[] {
@@ -2870,7 +2998,11 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(true));
     return this.raycaster
       .intersectObjects(meshes, false)
       .filter((hit) =>
@@ -2889,10 +3021,15 @@ export class Viewport {
           id,
           label: hit.object.name || id,
           choose: () => {
-            if (!this.objects.get(id)?.mesh.visible) return;
+            if (!(
+              this.objects.get(id)?.mesh.visible ||
+              this.referenceObjects?.get(id)?.object.visible
+            ))
+              return;
             this.onSelect(id);
+            const point = pickedWorldPoint(hit);
             this.onPick(
-              [hit.point.x, hit.point.y, hit.point.z],
+              [point.x, point.y, point.z],
               id,
               hit.faceIndex == null
                 ? undefined
@@ -2904,19 +3041,75 @@ export class Viewport {
       });
   }
 
+  inspectReferenceConstructionPreview() {
+    return (
+      this.referenceConstructionDisplay?.inspect() ?? { active: false as const }
+    );
+  }
+  setReferenceConstructionPreview(
+    owner: string,
+    candidate: ReferenceConstructionCachedPreview | null,
+  ): void {
+    if (candidate && this.disposed)
+      throw new Error("Viewport has been disposed.");
+    try {
+      if (candidate) {
+        const display = (this.referenceConstructionDisplay ??=
+          new ReferencePreviewDisplay(this.scene));
+        display.setClippingPlanes(this.clipping ? [this.clippingPlane] : []);
+        display.show(owner, candidate);
+      } else this.referenceConstructionDisplay?.clear(owner);
+    } finally {
+      this.invalidate();
+    }
+  }
+  private retireReferenceDisplay(display: ReferenceDisplay): void {
+    this.referenceDisposals ??= new Set();
+    this.referenceDisposals.add(display);
+    display.dispose();
+    this.referenceDisposals.delete(display);
+    const id = display.object.userData.entityId;
+    if (this.referenceObjects?.get(id) === display)
+      this.referenceObjects.delete(id);
+  }
+  private drainReferenceDisposals(): void {
+    const errors: unknown[] = [];
+    for (const display of [...(this.referenceDisposals ?? [])]) {
+      try {
+        this.retireReferenceDisplay(display);
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    if (errors.length)
+      throw new AggregateError(
+        errors,
+        "Reference display retirement is incomplete.",
+      );
+  }
   setEntities(
     entities: Entity[],
     selectedId: string | null,
     selectedIds: readonly string[] = selectedId ? [selectedId] : [],
   ): void {
+    this.drainReferenceDisposals();
     if (this.interactivePosePreview) this.setInteractivePreview(null);
     this.setNoiseComparison();
     this.holdMenu?.close();
     if (selectedId !== this.selectedId) this.clearDeviations();
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
+    const referenceIds = new Set(
+      entities.filter(isReferenceEntity).map((entity) => entity.id),
+    );
+    this.referenceObjects ??= new Map();
+    for (const [id, display] of this.referenceObjects) {
+      if (!referenceIds.has(id)) {
+        this.retireReferenceDisplay(display);
+      }
+    }
     for (const [id, item] of this.objects?.entries() ?? []) {
-      if (!ids.has(id)) {
+      if (!ids.has(id) || referenceIds.has(id)) {
         this.scene.remove(item.mesh);
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
@@ -2932,6 +3125,30 @@ export class Viewport {
     }
     this.bounds.makeEmpty();
     for (const entity of entities) {
+      if (isReferenceEntity(entity)) {
+        let display = this.referenceObjects.get(entity.id);
+        if (!display || display.data !== entity.reference) {
+          const next = createReferenceDisplay(entity);
+          try {
+            if (display) this.retireReferenceDisplay(display);
+          } catch (error) {
+            try {
+              this.retireReferenceDisplay(next);
+            } catch (retirement) {
+              throw new AggregateError(
+                [error, retirement],
+                "Reference replacement and staged cleanup failed.",
+              );
+            }
+            throw error;
+          }
+          this.referenceObjects.set(entity.id, next);
+          this.scene.add(next.object);
+          display = next;
+        } else updateReferenceDisplay(display, entity);
+        if (entity.visible) this.bounds.union(display.bounds);
+        continue;
+      }
       let item = this.objects.get(entity.id);
       if (!item) {
         const material = new THREE.MeshStandardMaterial({
@@ -2969,6 +3186,7 @@ export class Viewport {
           item.pointCloud.geometry.dispose();
           item.pointCloud.material.dispose();
           item.pointCloud = undefined;
+          item.pointDisplay = undefined;
         }
         const prepared =
           entity.kind === "pointcloud"
@@ -3048,11 +3266,12 @@ export class Viewport {
             pointsGeometry,
             new THREE.PointsMaterial({
               color: entity.color,
-              size: 2,
+              size: entity.pointSize ?? DEFAULT_POINT_SIZE,
               sizeAttenuation: false,
             }),
           );
           item.pointCloud.userData.entityId = entity.id;
+          item.pointDisplay = new AdaptivePointDisplay(item.pointCloud);
           item.mesh.add(item.pointCloud);
           geometry.setDrawRange(0, 0);
         }
@@ -3114,11 +3333,13 @@ export class Viewport {
         }
         item.edgePositions = edgePositions;
       }
-      if (item.pointCloud && item.pointColors !== entity.pointColors) {
-        const colorAttribute = entity.pointColors
-          ? new THREE.BufferAttribute(entity.pointColors, 4, true)
+      const pointColors =
+        entity.pointColorMode === "solid" ? undefined : entity.pointColors;
+      if (item.pointCloud && item.pointColors !== pointColors) {
+        const colorAttribute = pointColors
+          ? new THREE.BufferAttribute(pointColors, 4, true)
           : undefined;
-        item.pointColors = entity.pointColors;
+        item.pointColors = pointColors;
         if (item.pointDeviation) {
           // Keep the transient overlay visible, but restore the latest authored baseline.
           item.pointDeviation.colorAttribute = colorAttribute;
@@ -3138,6 +3359,8 @@ export class Viewport {
       item.color = entity.color;
       if (item.pointCloud) {
         item.pointCloud.name = entity.name;
+        item.pointCloud.material.size = entity.pointSize ?? DEFAULT_POINT_SIZE;
+        item.pointDisplay?.setOptions(entity);
         item.pointCloud.material.color.set(
           item.pointDeviation || item.pointColors ? 0xffffff : entity.color,
         );
@@ -3205,6 +3428,9 @@ export class Viewport {
           this.bounds.getSize(new THREE.Vector3()).length() / 800,
           0.05,
         );
+      if (this.raycaster)
+        this.raycaster.params.Line.threshold =
+          this.raycaster.params.Points.threshold;
       this.extent = Math.max(
         this.bounds.getSize(new THREE.Vector3()).length(),
         0.01,
@@ -3292,10 +3518,13 @@ export class Viewport {
     if (this.zoomWindowActive) this.setZoomWindowActive(false);
     this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
-    if (entityId && !item) return;
+    const reference = entityId
+      ? this.referenceObjects?.get(entityId)
+      : undefined;
+    if (entityId && !item && !reference) return;
     let bounds = item
       ? (item.worldBounds?.clone() ?? new THREE.Box3().setFromObject(item.mesh))
-      : this.bounds;
+      : (reference?.bounds.clone() ?? this.bounds);
     if (
       item &&
       selection &&
@@ -3416,11 +3645,15 @@ export class Viewport {
     if (!Number.isFinite(degrees)) return;
     this.viewTransition = undefined;
     const pixels = THREE.MathUtils.degToRad(degrees) / 0.008;
-    updateSurfaceOrbit(this.camera, this.controls.target, pivot, () =>
-      this.rotateNavigation(
-        direction === "left" ? pixels : direction === "right" ? -pixels : 0,
-        direction === "up" ? pixels : direction === "down" ? -pixels : 0,
-      ),
+    updateSurfaceOrbit(
+      this.camera,
+      this.controls.target,
+      pivot ?? this.navigationFramePoint(),
+      () =>
+        this.rotateNavigation(
+          direction === "left" ? pixels : direction === "right" ? -pixels : 0,
+          direction === "up" ? pixels : direction === "down" ? -pixels : 0,
+        ),
     );
     this.controls.update();
     this.invalidate();
@@ -3477,6 +3710,18 @@ export class Viewport {
     this.invalidate();
   }
   private applyClipPlanes(): void {
+    this.referenceConstructionDisplay?.setClippingPlanes(
+      this.clipping ? [this.clippingPlane] : [],
+    );
+    for (const [id, display] of this.referenceObjects?.entries() ?? []) {
+      display.object.material.clippingPlanes = [
+        ...(this.clipping ? [this.clippingPlane] : []),
+        ...(this.clipBoxState?.id === id
+          ? scanClipPlanes(this.clipBoxState.bounds)
+          : []),
+      ];
+      display.object.material.needsUpdate = true;
+    }
     for (const [id, item] of this.objects?.entries() ?? []) {
       item.mesh.material.clippingPlanes = [
         ...(this.clipping ? [this.clippingPlane] : []),
@@ -4259,14 +4504,32 @@ export class Viewport {
     }
     this.invalidate();
   }
-  setAlignmentMarkers(markers: { point: Vec3; label: string }[]): void {
+  setAlignmentMarkers(
+    markers: { point: Vec3; label: string }[],
+    onRemove?: (pointIndex: number) => void,
+  ): void {
     this.landmarkOverlay.replaceChildren();
-    this.landmarkLabels = markers.map((marker) => {
-      const element = document.createElement("span");
+    this.landmarkLabels = markers.map((marker, pointIndex) => {
+      const element = document.createElement(onRemove ? "button" : "span");
       element.textContent = marker.label;
-      element.setAttribute("role", "img");
-      element.setAttribute("aria-label", `Alignment landmark ${marker.label}`);
+      element.setAttribute("role", onRemove ? "button" : "img");
+      element.setAttribute(
+        "aria-label",
+        `${onRemove ? "Remove alignment landmark" : "Alignment landmark"} ${marker.label}`,
+      );
       element.style.cssText = `position:absolute;transform:translate(-50%,-50%);padding:3px 5px;border-radius:3px;color:#111;background:${marker.label.startsWith("M") ? "#9dddac" : "#edc98f"};font-weight:700;font-size:12px`;
+      if (onRemove) {
+        element.style.cssText +=
+          ";pointer-events:auto;min-height:0;border:0;cursor:pointer";
+        element.title = "Click to deselect this point";
+        element.addEventListener("pointerdown", (event) =>
+          event.stopPropagation(),
+        );
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          onRemove(pointIndex);
+        });
+      }
       this.landmarkOverlay.appendChild(element);
       return { point: marker.point, element };
     });
@@ -4395,6 +4658,25 @@ export class Viewport {
   }
 
   dispose(): void {
+    if (this.disposed) {
+      const errors: unknown[] = [];
+      try {
+        this.drainReferenceDisposals();
+      } catch (error) {
+        errors.push(error);
+      }
+      try {
+        this.referenceConstructionDisplay?.dispose();
+      } catch (error) {
+        errors.push(error);
+      }
+      if (errors.length)
+        throw new AggregateError(
+          errors,
+          "Viewport reference cleanup is incomplete; retry disposal.",
+        );
+      return;
+    }
     this.cancelSketchDrag();
     this.cancelBridgeDrag();
     this.bridgeSession = null;
@@ -4457,6 +4739,23 @@ export class Viewport {
       item.pointCloud?.material.dispose();
     }
     this.objects.clear();
+    const referenceErrors: unknown[] = [];
+    try {
+      this.referenceConstructionDisplay?.dispose();
+    } catch (error) {
+      referenceErrors.push(error);
+    }
+    for (const display of new Set([
+      ...(this.referenceObjects?.values() ?? []),
+      ...(this.referenceDisposals ?? []),
+    ])) {
+      try {
+        this.retireReferenceDisplay(display);
+      } catch (error) {
+        referenceErrors.push(error);
+      }
+    }
+    this.referenceObjects?.clear();
     this.clearGroup(this.section);
     this.clearGroup(this.measurement);
     this.clearGroup(this.triangleSelection);
@@ -4480,5 +4779,10 @@ export class Viewport {
     this.pivotMarker.remove();
     this.scaleOverlay?.dispose();
     this.landmarkLabels = [];
+    if (referenceErrors.length)
+      throw new AggregateError(
+        referenceErrors,
+        "Viewport reference cleanup is incomplete; retry disposal.",
+      );
   }
 }

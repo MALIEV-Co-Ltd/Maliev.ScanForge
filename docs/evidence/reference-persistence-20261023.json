@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "structural semantic persistence; reference construction feature incomplete",
+  "applicationBehaviorChanged": true,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "5e22ef34a68eefd5da10ae54df39f0f4b387fc94a1a9513b44422b4d9deadee8"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/io.ts",
+      "sha256": "6184177d447b6b4e114a90dbd28e4d836489ddd9c124a0381079dd23d8f1fa37"
+    },
+    {
+      "path": "src/project-file-codec.ts",
+      "sha256": "31b0031ad6b24f6cad1c524ddaea1330d66a62c5c581c39971e0b6f51a8d8ee2"
+    },
+    {
+      "path": "src/project-file.ts",
+      "sha256": "7988c91230c41ef30836673aa74623622b962504daea459abf6ad93e17015ac9"
+    },
+    {
+      "path": "src/project-decoding-worker.ts",
+      "sha256": "9464de058778e4a4847332a50de496e96ee2b7c52488add0576795b5163d74fa"
+    },
+    {
+      "path": "src/project-decoding-client.ts",
+      "sha256": "cb8dee70d0000d7f166207c9b47fd9e729a53bb461f994d256cd35e2a688cd19"
+    },
+    {
+      "path": "src/project-encoding-snapshot.ts",
+      "sha256": "874f52a7c8084bccfc2e2e0df91664f21352047a07469ee225dc7ccd8498670e"
+    },
+    {
+      "path": "src/project-transport.ts",
+      "sha256": "f5f7668994bb32087f58277bb1eea66a18bde7ff0bf1a5591cda61a3dd5803e1"
+    },
+    {
+      "path": "src/history.ts",
+      "sha256": "bd93063075982c2e3eb4f51f92ee4a6ae806ab967f23abd0779cbadb2516369b"
+    },
+    {
+      "path": "src/object-operations.ts",
+      "sha256": "dc4454ec6c2df0810638c19a1c60d22816c4e08c8a253d4874e80b842319beb9"
+    },
+    {
+      "path": "src/geometry-digest.ts",
+      "sha256": "a7b733bd68668e86512cadf3fb62ad589c6253a71f0be5f6d8aff98e7189d28d"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "6eb1ced793b3b6311d7693233a927310a713c3f33c849a7a7ec041baec1d4d0f"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "be6b6eb3f2770b7d74b19e9072cd9346c5616872ded1b7779ca245f0ce80ce1c"
+    },
+    {
+      "path": "tests/reference-project.test.ts",
+      "sha256": "647c82baeca6fa3e4edca7eeb5926a8dfa8c8d169983d69f31a9af76c4247506"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "980af48281fbb2fb72625d3ae17dfda0411e2ffb33b0402b0f136a73f14791e2"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "7c89b710b2134bde80155b32439b4b033190f038c95389e99660be10e00798a6"
+    }
+  ],
+  "coverage": [
+    "JSON string and Blob version 3 and binary manifest version 5 preserve exact semantic payloads and saved source identities",
+    "Binary current, Undo and Redo states retain distinct semantic snapshots and state-local key uniqueness",
+    "Version 5 retains cloud placement and RGBA attributes; legacy tags reject construction metadata",
+    "Recipe-only changes affect model history and API revision; geometry digests use authoritative Float64 values",
+    "GUI and MCP share keyed ordinary-object duplication, new identities and exact retry protection",
+    "Shared local/browser decode and actual decoder-worker module reject reference-bearing current/history/future states",
+    "MCP project_import and backup_restore preserve workspace on reference admission failure",
+    "Original serializer inputs and raw binary records reject incompatible reference metadata before normalization"
+  ],
+  "review": {
+    "agent": "reference_integration_audit",
+    "findingsFixed": [
+      "serializer validation followed topology stripping",
+      "binary decoding stripped forbidden falsy metadata"
+    ],
+    "red": "18 new regressions failed; other 54 tests passed",
+    "focused": "255 tests passed across 12 files after fixes and additional backup parity coverage",
+    "full": {
+      "passedTests": 48127,
+      "skippedTests": 64,
+      "passedFiles": 605,
+      "skippedFiles": 18,
+      "failedTests": 0
+    },
+    "initialRed": "Missing reference-entity module before the persistence implementation",
+    "fullReceipt": "project-index-validation-reference-persistence-r1-full-final-full.receipt.json"
+  },
+  "validation": [
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-build-build.receipt.json",
+      "sha256": "8efc2b928af03d23ff98eac570ab3cbaa83d8c1f3a3ad2e7926eb12e7131b4c7",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 33.30437620000157,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2448871424,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-build-contract-build.receipt.json",
+      "sha256": "89db1a3465e44cbbe269a6f00fa9962790f811adacc765270f9b61c81cb403d3",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.994365599995945,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2435153920,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-build-final-build.receipt.json",
+      "sha256": "96e18f753273bcfb3fcab61eaefa1ac40f2f0b9ce757f4aae62b2e3e429dd983",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.49109489998955,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2495119360,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-build-normalization-build.receipt.json",
+      "sha256": "fd9eaf87e53d79990231dc98381268767c430a56110ed870a58a0653e602bc3d",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.745504100006656,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2508406784,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-format-contract-mirror-focused.receipt.json",
+      "sha256": "c4fdb68978d3c7bfac98124da6c54995a777d14bbbe8e2a428d4408be969be7c",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.6623846000002231,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 163614720,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-format-final-mirror-focused.receipt.json",
+      "sha256": "b5789275e3ea1d1af01bd10397e2460e41cca856ec47f90331062ea4fdf4adde",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 1.1680174000066472,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 171712512,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-format-mirror-focused.receipt.json",
+      "sha256": "e8d4e90284e56a92a442032ee0548db1010779a7ba4cf1e9de4ed6a74654b48a",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.7141364999988582,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 134189056,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-format-normalization-mirror-focused.receipt.json",
+      "sha256": "888a9e0cce957995ee93a41d868dbb4970ed3cc4c971a26e7764f779c02d868f",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.8165952999988804,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 163700736,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-full-final-full.receipt.json",
+      "sha256": "6c6509395ef2282856abd53dc3f83cf376e20aecfdff55265c5746efd9387a0f",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 262.54916540000704,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 600,
+      "outerPeakJobMemoryBytes": 1004310528,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-green-final-mirror-focused.receipt.json",
+      "sha256": "1cb2e9ea660df115500dd7f3293a711408ac6c60c5d739f12777250cb4bd5bab",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 5.056755499987048,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 391737344,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-green-mirror-focused.receipt.json",
+      "sha256": "afdebb2e6fe15c3233618bb5c2e5616c25669c4c9017876b0e482ae3e5fd3df4",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 4.401695299995481,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 391049216,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-green-normalization-mirror-focused.receipt.json",
+      "sha256": "bbef44e489c923e7c20b890022364bab6540fd7026e8db2817cfe705f20f060d",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 4.804120100001455,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 413605888,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-red-mirror-focused.receipt.json",
+      "sha256": "3c8ba5976af548e737c513c8c833b507440b6b84e57e1f4d62d934be49580b66",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 0.612407799999346,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 262578176,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-persistence-r1-red-normalization-mirror-focused.receipt.json",
+      "sha256": "bce29596e939a3298ce4b279b014f8a21ea09c62db5bf12a25f7bf7197c05f9c",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.8249529000022449,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 433139712,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  ],
+  "mcpCoverage": "Existing object_get, object_duplicate, project_import, backup_restore, history and project codecs share behavior with GUI entry points. Catalog and agent documentation describe identity semantics and temporary reference import rejection. No new schema or reference creation command.",
+  "remaining": [
+    "Exact native scene/source/pick resolution and controller editing semantics",
+    "Semantic inspection/bounds, operation eligibility, rendering and picking",
+    "Shared construction preview/edit/apply lifecycle and dependency propagation",
+    "Native output/save-reopen acceptance and rendered GUI/MCP comparison"
+  ],
+  "limitations": [
+    "No native image executed",
+    "No browser access occurred",
+    "No feature completion or commit claim"
+  ]
+}
