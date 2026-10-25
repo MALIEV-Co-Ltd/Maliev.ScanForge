@@ -489,8 +489,12 @@ h3 {
 }
 .measurement {
   position: absolute;
-  top: 54px;
-  left: 14px;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: calc(100% - 28px);
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 12px;

@@ -185,3 +185,17 @@ it("preserves mesh palette and clearing behavior", () => {
     material.dispose();
   }
 });
+
+it("colors unmatched deviation samples gray rather than implying zero error", () => {
+  const { view, points } = setup(false);
+  try {
+    view.setDeviation("cloud", new Float32Array([NaN, 0, 1, 2]), 1);
+    const colors = points.geometry.getAttribute("color");
+    expect(Array.from(colors.array).slice(0, 3)).toEqual(
+      Array.from(new Float32Array(new THREE.Color("#808080").toArray())),
+    );
+  } finally {
+    view.setDeviation("", null, 1);
+    view.setEntities([], null);
+  }
+});

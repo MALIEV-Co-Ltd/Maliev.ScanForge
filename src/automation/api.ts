@@ -1,3 +1,7 @@
+import {
+  releaseInspectionDisplay,
+  type InspectionDisplay,
+} from "./inspection-operations";
 import type { ImportBatchProgress } from "../import-batch";
 import {
   validateScanPreviewOperation,
@@ -61,6 +65,13 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  showMeasurement?(
+    measurement: import("../inspection").MeasurementInput | null,
+  ): void;
+  showSection?(
+    section: { entityId: string; axis: "x" | "y" | "z"; offset: number } | null,
+  ): void;
+  showInspection?(display: InspectionDisplay | null): void;
   inspectScanSelection?(): unknown;
   controlScanSelection?(
     command: import("./scan-selection-operations").ScanSelectionControl,
@@ -460,6 +471,7 @@ export class ApplicationApi {
         identity(s.sketch),
       ]),
       activeSketchId: next.authoring.activeSketchId,
+      inspections: next.authoring.inspections,
       settings,
     });
     if (this.stateKey !== undefined && key !== this.stateKey) this.revision++;
@@ -877,6 +889,7 @@ export class ApplicationApi {
         controller: new AbortController(),
         timer: undefined!,
       };
+      const createdArtifacts: string[] = [];
       const context: CommandContext = {
         jobId: job.jobId,
         signal: job.controller.signal,
@@ -901,7 +914,9 @@ export class ApplicationApi {
         },
         artifact: (data, name, mime) => {
           context.check();
-          return this.storeArtifact(data, name, mime);
+          const artifact = this.storeArtifact(data, name, mime);
+          createdArtifacts.push(artifact.artifactId);
+          return artifact;
         },
         artifactBlob: (id) => {
           context.check();
@@ -966,6 +981,8 @@ export class ApplicationApi {
             error.name === "AbortError"
           )
             job.controller.abort(error);
+          for (const artifactId of createdArtifacts)
+            this.artifacts.delete(artifactId);
           job.status = job.controller.signal.aborted ? "cancelled" : "failed";
           const failure = this.failure(error);
           job.error = failure.error;
@@ -1072,6 +1089,7 @@ export class ApplicationApi {
     for (const release of [
       () => releaseInteractiveSession(this.host),
       () => releaseScanPreviewOperation(this.host),
+      () => releaseInspectionDisplay(this.host),
       () => releaseGlobalAlignmentPreview(this.host),
       () => disposeReferenceConstructionPreview(this.host),
     ]) {

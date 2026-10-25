@@ -52,6 +52,7 @@ if (
 const setterFactory = new Function(
   "sketchUndoSessions",
   "setSavedSketches",
+  "setSavedInspections",
   "setActiveSketchId",
   "legacySketch",
   "setSketchDraft",
@@ -78,6 +79,16 @@ function setup(activeSketchId: string) {
     future: [],
     authoring: {
       sketch: edited,
+      inspections: [
+        {
+          id: "inspection",
+          name: "Retained",
+          definition: {
+            kind: "measurement",
+            measurement: { first: [0, 0, 0], second: [1, 0, 0] },
+          },
+        },
+      ],
       activeSketchId,
       sketches: ["a", "b"].map((id) => ({ id, name: id, sketch: edited })),
     },
@@ -92,6 +103,9 @@ function setup(activeSketchId: string) {
     { current: sessions },
     (items: NonNullable<WorkspaceSnapshot["authoring"]["sketches"]>) => {
       state.authoring.sketches = items;
+    },
+    (items: WorkspaceSnapshot["authoring"]["inspections"]) => {
+      state.authoring.inspections = items;
     },
     (id: string | null) => {
       state.authoring.activeSketchId = id ?? undefined;
@@ -121,6 +135,7 @@ it("MCP deletion releases the active saved session through the actual App setter
   h.operations.sketch_manage({ action: "delete", sketchId: "a" }, h.context);
   expect(h.state.authoring.sketches?.map((item) => item.id)).toEqual(["b"]);
   expect(h.state.authoring.activeSketchId).toBeUndefined();
+  expect(h.state.authoring.inspections?.[0].name).toBe("Retained");
   expect(h.state.sketchDraft).toBe(h.edited);
   expect(h.sessions.has("saved:a")).toBe(false);
   expect(h.sessions.get("saved:b")).toBe(survivor);

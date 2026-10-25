@@ -116,6 +116,7 @@ export interface Project {
   units: "mm";
   entities: Entity[];
   authoring?: {
+    inspections?: import("./inspection-definition").SavedInspection[];
     sketch?: Sketch;
     sketches?: SavedSketch[];
     activeSketchId?: string;

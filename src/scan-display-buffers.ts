@@ -21,8 +21,13 @@ export function indexedDisplayValues(
   const seen = new Uint8Array(output.length);
   for (let slot = 0; slot < values.length; slot++) {
     const vertex = mesh.triangles[slot];
-    const value = Number.isFinite(values[slot]) ? values[slot] : 0;
-    if (seen[vertex] && output[vertex] !== value) return;
+    const value = Number.isFinite(values[slot]) ? values[slot] : NaN;
+    if (
+      seen[vertex] &&
+      output[vertex] !== value &&
+      !(Number.isNaN(output[vertex]) && Number.isNaN(value))
+    )
+      return;
     output[vertex] = value;
     seen[vertex] = 1;
   }

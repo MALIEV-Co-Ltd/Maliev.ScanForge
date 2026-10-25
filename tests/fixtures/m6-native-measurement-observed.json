@@ -1,0 +1,15 @@
+{
+  "application": "QUICKSURFACE Pro 8.0.123",
+  "date": "2026-10-25",
+  "windowId": 11667504,
+  "geometry": "m6-open-plane.stl",
+  "geometrySha256": "37e5acda5ad9864cceb95b16289d0a5eef8c1ca37669780dfc8b5deef56d9ec3",
+  "units": "mm",
+  "nativeMode": "3D Distance; Point coordinate annotations",
+  "first": [8.2494, 7.2214, 0],
+  "second": [14.8694, 13.8415, 0],
+  "distance": 9.3622,
+  "absoluteToleranceMm": 0.0002,
+  "scope": "Observed native GUI annotations rounded to four decimal places, not unrounded internal-coordinate or binary parity. Points are the same screen picks on the identical one-triangle open plane.",
+  "screenshot": "native-open-plane-distance.png"
+}
