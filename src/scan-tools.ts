@@ -1,3 +1,4 @@
+import type { ReconstructionInput } from "./scan-reconstruction-input";
 import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
 import type { Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
@@ -43,7 +44,13 @@ export type ScanToolOperation =
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
   | { kind: "flipNormals" }
-  | { kind: "repolygonize"; resolution?: number; targets?: Positions[] }
+  | {
+      kind: "repolygonize";
+      resolution?: number;
+      targets?: Positions[];
+      inputKind?: ReconstructionInput["kind"];
+      targetInputs?: ReconstructionInput[];
+    }
   | { kind: "averageMesh"; targets: Positions[]; tolerance?: number }
   | { kind: "mirrorMesh"; center: Vec3; normal: Vec3; tangent?: Vec3 }
   | {

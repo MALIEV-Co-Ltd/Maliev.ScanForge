@@ -199,10 +199,11 @@ export function ScanToolsPanel({
   const targets = entities.filter(
     (e) =>
       e.id !== selected?.id &&
-      e.kind === "mesh" &&
+      (e.kind === "mesh" ||
+        (tool === "repolygonize" && e.kind === "pointcloud")) &&
       !e.kernelId &&
       !e.parametric &&
-      e.positions.length >= 9,
+      e.positions.length >= (e.kind === "pointcloud" ? 3 : 9),
   );
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
@@ -215,14 +216,24 @@ export function ScanToolsPanel({
     }
     if (tool === "unroll") setCylinderId(pickedReferenceId);
   }, [pickedReferenceId, tool]);
-  const count = Math.floor((selected?.positions.length ?? 0) / 9);
+  const pointCloud = selected?.kind === "pointcloud";
+  const count = Math.floor(
+    (selected?.positions.length ?? 0) / (pointCloud ? 3 : 9),
+  );
   const positive = (n: number) => Number.isFinite(n) && n > 0;
   let problem = !selected
-    ? "Select a mesh to use this tool."
-    : selected.kernelId || selected.parametric || selected.kind !== "mesh"
+    ? tool === "repolygonize"
+      ? "Select a mesh or point cloud to reconstruct."
+      : "Select a mesh to use this tool."
+    : selected.kernelId ||
+        selected.parametric ||
+        (selected.kind !== "mesh" && !(tool === "repolygonize" && pointCloud))
       ? "Create an explicit mesh copy of the CAD object before using mesh tools."
       : "";
-  if (!problem && count === 0) problem = "The selected mesh has no triangles.";
+  if (!problem && count === 0)
+    problem = pointCloud
+      ? "The selected cloud has no points."
+      : "The selected mesh has no triangles.";
   if (!problem) {
     if (
       tool === "reducePolygons" &&
@@ -394,7 +405,7 @@ export function ScanToolsPanel({
       <div className="tool-panel-content">
         {selected && (
           <div className="scan-tools-summary">
-            <span>Triangles</span>
+            <span>{pointCloud ? "Points" : "Triangles"}</span>
             <strong>{count.toLocaleString()}</strong>
           </div>
         )}
@@ -645,10 +656,10 @@ export function ScanToolsPanel({
                 step={0.1}
                 onChange={setResolution}
               />
-              <p>Additional aligned meshes (optional; retained unchanged)</p>
+              <p>Additional aligned scans (optional; retained unchanged)</p>
               <div
                 className="scan-tools-references"
-                aria-label="Additional reconstruction meshes"
+                aria-label="Additional reconstruction scans"
               >
                 {targets.map((e) => (
                   <label className="scan-tools-check" key={e.id}>
@@ -669,13 +680,17 @@ export function ScanToolsPanel({
               </div>
               <p className="muted">
                 Voxel reconstruction closes small gaps and fills enclosed
-                cavities. Open scans become thick shells; the surface can move
-                by about 0.75 times point resolution. Results are checked for
-                closed, manifold topology; separated regions can remain separate
-                closed components. Self-intersections are not checked. Undo
-                restores the original. Finer spacing retains smaller details; it
-                is not a maximum-deviation tolerance. Reconstruction supports up
-                to one billion grid points and sixteen million output triangles.
+                cavities. Open scans become thick shells; mesh input surfaces
+                can move by about 0.75 times point resolution. Results are
+                checked for closed, manifold topology; separated regions can
+                remain separate closed components. Self-intersections are not
+                checked. Undo restores the original. Finer spacing retains
+                smaller details; it is not a maximum-deviation tolerance.
+                Reconstruction supports up to one billion grid points and
+                sixteen million output triangles. Point clouds use every XYZ
+                point with a 0.866-times-resolution sphere radius; scanner
+                normals are not used. Sparse clouds can leave gaps or separate
+                components. Reconstruction produces a mesh.
               </p>
             </>
           )}

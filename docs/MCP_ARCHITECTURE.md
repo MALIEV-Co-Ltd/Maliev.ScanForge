@@ -1349,3 +1349,7 @@ It does not stop propagation, so React/custom menu handlers and body portals
 still receive the event. This closes the native-menu leak when right-pan capture
 ends outside a canvas. application_inspect reports contextMenuPolicy as
 application-only; existing semantic MCP menu actions remain unchanged.
+
+Reconstruction binds explicit `points` or `triangles` records from current workspace entity kinds. GUI request binding and the shared executor use the same admission rules; external schemas reject internal geometry records. The processing client preserves those kinds while borrowing immutable shared views or cloning private inputs into a disposable worker. The mixed sampler unions point-distance occupancy into the existing triangle bitset with a combined candidate budget, then reuses filling, extraction and topology verification. All-mesh calls retain the legacy sampler and output. Publishing a cloud reconstruction creates a clean mesh through the shared commit path and never carries point-cloud metadata into the mesh.
+
+An internal optional global alignment environment can supply retained sampler clock streams by prepared scan ID and the outer clock callback. It is absent from public schemas and ordinary editor construction. It supplies environmental clocks only; captured geometry, queries, matrices and results are never injected into the solve. Supplied-host controller tests remain distinct from production editor/stdio and native setter-entry observation.

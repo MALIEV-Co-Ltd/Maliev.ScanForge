@@ -1,6 +1,9 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { createScanPreviewOperation } from "./scan-preview-operations";
-import { reconstructionTargets } from "../scan-reconstruction-targets";
+import {
+  reconstructionTargets,
+  reconstructionScanInputs,
+} from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
@@ -992,13 +995,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      const reconstruction =
+        kind === "scanTools" && op.operation?.kind === "repolygonize";
       if (
         e.kind === "pointcloud" &&
-        !["paired", "global", "icp", "pointCloudEdit"].includes(kind)
+        !["paired", "global", "icp", "pointCloudEdit"].includes(kind) &&
+        !reconstruction
       )
         throw new Error("This operation requires triangle mesh geometry.");
       if (kind === "pointCloudEdit" && e.kind !== "pointcloud")
         throw new Error("Point-cloud editing requires a point cloud.");
+      if (reconstruction && a.selectionOnly)
+        throw Error("Reconstruction uses whole inputs; omit selectionOnly.");
       const readonly =
         [
           "report",
@@ -1200,7 +1208,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           sampled: isSampledScan(e.scanSource),
         });
       if (kind === "scanTools") {
-        if ("targets" in op.operation || "selection" in op.operation)
+        if (
+          "targets" in op.operation ||
+          "selection" in op.operation ||
+          "targetInputs" in op.operation ||
+          "inputKind" in op.operation
+        )
           throw new Error("Inner geometry must refer to workspace objects.");
         if (op.operation.kind === "shrinkwrap") {
           if (a.targetId || a.selectionOnly !== undefined)
@@ -1228,10 +1241,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             throw new Error(
               "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
             );
-          op.operation.targets = reconstructionTargets(
-            e,
-            (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
+          const targets = (a.targetIds ?? []).map((id: string) =>
+            sampledObject(s, id),
           );
+          if (
+            [e, ...targets].some(
+              (entity: Entity) => entity.kind === "pointcloud",
+            )
+          ) {
+            op.operation.inputKind =
+              e.kind === "pointcloud" ? "points" : "triangles";
+            op.operation.targetInputs = reconstructionScanInputs(e, targets);
+          } else op.operation.targets = reconstructionTargets(e, targets);
         }
         if (op.operation.kind === "averageMesh") {
           if (!a.targetId) throw new Error("Average mesh requires targetId.");
@@ -1262,35 +1283,44 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (positions) {
         const updated =
           result.cloudPreview ??
-          (e.kind === "pointcloud"
+          (reconstruction && e.kind === "pointcloud"
             ? {
-                ...e,
-                positions,
-                pointColors: pointEdit ? pointEdit.pointColors : e.pointColors,
-                pointCloudPlacement: pointEdit
-                  ? undefined
-                  : e.pointCloudPlacement,
-                meshSelection: pointEdit ? undefined : e.meshSelection,
-                normals: pointEdit
-                  ? pointEdit.normals
-                    ? Array.from(pointEdit.normals)
-                    : undefined
-                  : e.normals && result.registration
-                    ? rotatePointNormals(
-                        e.normals,
-                        result.registration.transform.rotation,
-                      )
-                    : e.normals,
+                ...scanMeshCopy(e, e.id, positions),
+                name: e.name,
+                visible: e.visible,
+                constructionOrderKey: e.constructionOrderKey,
               }
-            : {
-                ...meshEdited(e, positions),
-                ...(result.indexedMesh
-                  ? {
-                      indexedMesh: result.indexedMesh,
-                      normals: indexedRenderNormals(result.indexedMesh),
-                    }
-                  : {}),
-              });
+            : e.kind === "pointcloud"
+              ? {
+                  ...e,
+                  positions,
+                  pointColors: pointEdit
+                    ? pointEdit.pointColors
+                    : e.pointColors,
+                  pointCloudPlacement: pointEdit
+                    ? undefined
+                    : e.pointCloudPlacement,
+                  meshSelection: pointEdit ? undefined : e.meshSelection,
+                  normals: pointEdit
+                    ? pointEdit.normals
+                      ? Array.from(pointEdit.normals)
+                      : undefined
+                    : e.normals && result.registration
+                      ? rotatePointNormals(
+                          e.normals,
+                          result.registration.transform.rotation,
+                        )
+                      : e.normals,
+                }
+              : {
+                  ...meshEdited(e, positions),
+                  ...(result.indexedMesh
+                    ? {
+                        indexedMesh: result.indexedMesh,
+                        normals: indexedRenderNormals(result.indexedMesh),
+                      }
+                    : {}),
+                });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (a.createNew) {

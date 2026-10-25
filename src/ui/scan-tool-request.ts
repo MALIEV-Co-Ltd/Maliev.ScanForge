@@ -1,5 +1,8 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
-import { reconstructionTargets } from "../scan-reconstruction-targets";
+import {
+  reconstructionTargets,
+  reconstructionScanInputs,
+} from "../scan-reconstruction-targets";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
 import type { ScanToolParameters } from "./ScanToolsPanel";
@@ -12,7 +15,12 @@ export function scanToolRequest(
   entities: Entity[],
   selection?: Uint8Array | null,
 ): ScanToolsRequest {
-  if (source.kind !== "mesh" || source.kernelId || source.parametric)
+  if (
+    (source.kind !== "mesh" &&
+      !(source.kind === "pointcloud" && parameters.kind === "repolygonize")) ||
+    source.kernelId ||
+    source.parametric
+  )
     throw new Error(
       "Create a separate mesh copy before using Scan Data tools on CAD.",
     );
@@ -29,11 +37,20 @@ export function scanToolRequest(
           throw new Error("Reconstruction reference no longer exists.");
         return entity;
       });
-      operation = {
-        kind: parameters.kind,
-        resolution: parameters.resolution,
-        targets: reconstructionTargets(source, targets),
-      };
+      operation =
+        source.kind === "pointcloud" ||
+        targets.some((e) => e.kind === "pointcloud")
+          ? {
+              kind: parameters.kind,
+              resolution: parameters.resolution,
+              inputKind: source.kind === "pointcloud" ? "points" : "triangles",
+              targetInputs: reconstructionScanInputs(source, targets),
+            }
+          : {
+              kind: parameters.kind,
+              resolution: parameters.resolution,
+              targets: reconstructionTargets(source, targets),
+            };
       break;
     }
     case "averageMesh": {

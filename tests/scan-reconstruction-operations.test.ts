@@ -151,3 +151,128 @@ it("rejects invalid MCP reconstruction references atomically", async () => {
     expect(h.host.commit).not.toHaveBeenCalled();
   }
 });
+
+it.each([false, true])(
+  "publishes cloud reconstruction as a clean mesh with createNew=%s",
+  async (createNew) => {
+    const source = entity({
+      kind: "pointcloud",
+      positions: new Float32Array([0, 0, 0, 1, 1, 1]),
+      normals: [1, 0, 0, 1, 0, 0],
+      pointColors: new Uint8Array(8),
+      pointSize: 4,
+      pointAutoDensity: false,
+      pointDensity: 70,
+      pointColorMode: "source",
+      ascAttributes: "xyz-normal",
+      pointCloudPlacement: {
+        matrixBits: "original-pose",
+        sourcePositions: [0, 0, 0, 1, 1, 1],
+      },
+      meshSelection: { hidden: [0], saved: [] },
+    });
+    const target = entity({ id: "target" });
+    const h = harness([source, target]);
+    vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+      expect(request).toMatchObject({
+        kind: "scanTools",
+        operation: {
+          kind: "repolygonize",
+          inputKind: "points",
+          targetInputs: [{ kind: "triangles", positions: target.positions }],
+        },
+      });
+      return {
+        kind: "scanTools",
+        positions: new Float32Array(triangle),
+        diagnostics: { inputPoints: 2, representedPoints: 2 },
+      };
+    });
+    const response = (await h.ops.mesh_process(
+      {
+        entityId: source.id,
+        targetIds: [target.id],
+        createNew,
+        operation: {
+          kind: "scanTools",
+          operation: { kind: "repolygonize", resolution: 0.5 },
+        },
+      },
+      h.context,
+    )) as { entityIds: string[]; diagnostics: Record<string, number> };
+    const output = h.state.entities.find(
+      (e) => e.id === response.entityIds[0],
+    )!;
+    expect(output.kind).toBe("mesh");
+    expect(output.positions).toEqual(new Float32Array(triangle));
+    for (const key of [
+      "pointColors",
+      "pointCloudPlacement",
+      "pointSize",
+      "pointAutoDensity",
+      "pointDensity",
+      "pointColorMode",
+      "ascAttributes",
+      "normals",
+      "meshSelection",
+    ])
+      expect(output[key as keyof Entity]).toBeUndefined();
+    expect(h.state.entities.find((e) => e.id === target.id)).toBe(target);
+    if (createNew) expect(h.state.entities[0]).toBe(source);
+    else expect(output.id).toBe(source.id);
+    expect(h.host.commit).toHaveBeenCalledOnce();
+    expect(h.state.history[0].entities[0]).toBe(source);
+    expect(response.diagnostics.representedPoints).toBe(2);
+  },
+);
+
+it("binds cloud targets from workspace objects for a mesh source", async () => {
+  const source = entity(),
+    target = entity({ id: "cloud", kind: "pointcloud", positions: [1, 2, 3] });
+  const h = harness([source, target]);
+  vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+    expect(request).toMatchObject({
+      operation: {
+        inputKind: "triangles",
+        targetInputs: [{ kind: "points", positions: target.positions }],
+      },
+    });
+    return {
+      kind: "scanTools",
+      positions: new Float32Array(triangle),
+      diagnostics: {},
+    };
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: source.id,
+      targetIds: [target.id],
+      operation: { kind: "scanTools", operation: { kind: "repolygonize" } },
+    },
+    h.context,
+  );
+  expect(h.state.entities[1]).toBe(target);
+});
+
+it.each(["targets", "targetInputs", "inputKind"])(
+  "rejects injected reconstruction field %s atomically",
+  async (field) => {
+    const h = harness();
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: {
+            kind: "scanTools",
+            operation: {
+              kind: "repolygonize",
+              [field]: field === "inputKind" ? "points" : [],
+            },
+          },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow(/geometry|workspace/i);
+    expect(h.host.commit).not.toHaveBeenCalled();
+  },
+);

@@ -12,7 +12,7 @@ import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
 import {
-  admitReconstructionInputs,
+  admitReconstructionRecords,
   isBorrowableReconstructionInput,
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
@@ -193,9 +193,21 @@ export function processMesh(
     request.operation.kind === "repolygonize"
   ) {
     try {
-      admitReconstructionInputs([
-        request.positions,
-        ...(request.operation.targets ?? []),
+      if (
+        request.operation.targets !== undefined &&
+        request.operation.targetInputs !== undefined
+      )
+        throw Error("Use only one reconstruction target representation.");
+      admitReconstructionRecords([
+        {
+          kind: request.operation.inputKind ?? "triangles",
+          positions: request.positions,
+        },
+        ...(request.operation.targetInputs ??
+          (request.operation.targets ?? []).map((positions) => ({
+            kind: "triangles" as const,
+            positions,
+          }))),
       ]);
     } catch (error) {
       return Promise.reject(error);
@@ -560,6 +572,10 @@ function runProcessingRequest(
           copied.operation.kind === "shrinkwrap"
         )
           copied.operation.targets = copied.operation.targets?.map(clone);
+        if (copied.operation.kind === "repolygonize")
+          copied.operation.targetInputs = copied.operation.targetInputs?.map(
+            (r) => ({ ...r, positions: clone(r.positions) }),
+          );
         if (
           (copied.operation.kind === "reduceNoise" ||
             copied.operation.kind === "shrinkwrap") &&

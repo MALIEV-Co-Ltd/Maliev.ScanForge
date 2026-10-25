@@ -186,3 +186,62 @@ it("rejects oversized private payload before cloning or creating a worker", asyn
   );
   expect(WorkerDouble.instances).toHaveLength(0);
 });
+
+it.each([true, false])(
+  "preserves typed mixed reconstruction records with shared=%s",
+  async (borrow) => {
+    const source = borrow
+      ? shared().subarray(0, 3)
+      : new Float32Array([0, 0, 0]);
+    const target = borrow
+      ? shared().subarray(0, 6)
+      : new Float32Array([1, 0, 0, 2, 0, 0]);
+    const before = Array.from(target);
+    const pending = processMesh({
+      kind: "scanTools",
+      positions: source,
+      operation: {
+        kind: "repolygonize",
+        inputKind: "points",
+        targetInputs: [{ kind: "points", positions: target }],
+      },
+    });
+    const worker = await started();
+    const request = worker.delivered!;
+    if (
+      request.kind !== "scanTools" ||
+      request.operation.kind !== "repolygonize"
+    )
+      throw Error("Wrong request");
+    expect(request.operation.inputKind).toBe("points");
+    expect(request.operation.targetInputs?.[0].kind).toBe("points");
+    const delivered = request.operation.targetInputs![0]
+      .positions as Float32Array;
+    expect(Array.from(delivered)).toEqual(before);
+    expect(delivered.buffer).toBeInstanceOf(
+      borrow ? SharedArrayBuffer : ArrayBuffer,
+    );
+    expect(worker.transfers).toHaveLength(borrow ? 0 : 2);
+    if (borrow) expect(delivered.byteOffset).toBe(target.byteOffset);
+    worker.complete();
+    await pending;
+    expect(worker.terminated).toBe(true);
+    expect(Array.from(target)).toEqual(before);
+  },
+);
+
+it("rejects ambiguous typed and legacy targets before worker creation", async () => {
+  await expect(
+    processMesh({
+      kind: "scanTools",
+      positions: new Float32Array([0, 0, 0]),
+      operation: {
+        kind: "repolygonize",
+        inputKind: "points",
+        targets: [],
+        targetInputs: [],
+      },
+    }),
+  ).rejects.toThrow(/one.*representation/);
+  expect(WorkerDouble.instances).toHaveLength(0);
+});

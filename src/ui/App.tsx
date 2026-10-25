@@ -2527,7 +2527,7 @@ export function App() {
       setError("This tool requires sampled scan geometry.");
       return;
     }
-    if (selected?.kind === "pointcloud") {
+    if (selected?.kind === "pointcloud" && tool !== "repolygonize") {
       if (tool !== "reducePolygons" && tool !== "reduceNoise") {
         setError(
           "This tool requires a triangle mesh. Select a mesh to use it.",

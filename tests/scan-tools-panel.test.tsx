@@ -93,6 +93,30 @@ it("uses the requested millimetre defaults", () => {
   expect(render("averageMesh")).toContain('value="10"');
   expect(render("unroll")).toContain('value="0"');
 });
+
+it("admits a two-point cloud only for reconstruction and lists aligned cloud targets", () => {
+  const cloud: Entity = {
+    ...mesh,
+    id: "cloud",
+    kind: "pointcloud",
+    positions: [0, 0, 0, 1, 1, 1],
+  };
+  const target: Entity = {
+    ...cloud,
+    id: "cloud-target",
+    name: "Aligned cloud target",
+  };
+  const html = render("repolygonize", cloud, [cloud, target, mesh]);
+  expect(html).toContain("Points</span><strong>2</strong>");
+  expect(html).toContain("Aligned cloud target");
+  expect(html).not.toContain('disabled="">Apply');
+  expect(html).toContain("0.866");
+  expect(html).toContain("scanner normals");
+  expect(render("averageMesh", mesh, [mesh, target])).not.toContain(
+    "Aligned cloud target",
+  );
+  expect(render("flipNormals", cloud)).toContain('disabled="">Apply');
+});
 it("offers factor and percentage Scale input while retaining the origin default", () => {
   const html = render("scaleMesh");
   expect(html).toContain("Scale by");
@@ -237,12 +261,12 @@ it("reports a clear triangle count without repeating the selected filename and g
   expect(comparison).toContain("Comparison tolerance (mm)");
 });
 
-it("offers additional reconstruction meshes with measured closure and shape-change guidance", () => {
+it("offers additional reconstruction scans with measured closure and shape-change guidance", () => {
   const html = render("repolygonize", mesh, [
     mesh,
     { ...mesh, id: "second", name: "Aligned scan" },
   ]);
-  expect(html).toContain('aria-label="Additional reconstruction meshes"');
+  expect(html).toContain('aria-label="Additional reconstruction scans"');
   expect(html).toContain("Aligned scan");
   expect(html).toContain("retained unchanged");
   expect(html).toContain("separate closed components");

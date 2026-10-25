@@ -1,5 +1,9 @@
 import type { Entity, Positions } from "./types";
-import { admitReconstructionInputs } from "./scan-reconstruction-input";
+import {
+  admitReconstructionInputs,
+  admitReconstructionRecords,
+  type ReconstructionInput,
+} from "./scan-reconstruction-input";
 /** Resolve additional read-only scans identically for GUI and MCP. */
 export function reconstructionTargets(
   source: Entity,
@@ -33,4 +37,29 @@ export function reconstructionTargets(
     );
   admitReconstructionInputs(inputs);
   return targets.map((e) => e.positions);
+}
+
+/** Bind explicit record kinds from workspace geometry for reconstruction only. */
+export function reconstructionScanInputs(
+  source: Entity,
+  targets: Entity[],
+): ReconstructionInput[] {
+  const entities = [source, ...targets];
+  if (
+    targets.length > 32 ||
+    new Set(entities.map((e) => e.id)).size !== entities.length ||
+    entities.some(
+      (e) =>
+        !["mesh", "pointcloud"].includes(e.kind) || e.kernelId || e.parametric,
+    )
+  )
+    throw Error(
+      "Reconstruction requires raw scans and up to 32 distinct additional scans.",
+    );
+  const records: ReconstructionInput[] = entities.map((e) => ({
+    kind: e.kind === "pointcloud" ? "points" : "triangles",
+    positions: e.positions,
+  }));
+  admitReconstructionRecords(records);
+  return records.slice(1);
 }

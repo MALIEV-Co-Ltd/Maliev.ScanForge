@@ -728,7 +728,7 @@
                         "resolution": {
                           "type": "number",
                           "exclusiveMinimum": 0,
-                          "description": "Sampling spacing in mm, default 0.5. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload; immutable Float32 shared buffers are borrowed by a disposable worker. This payload limit is not a process memory bound. Surface-local sampling retains one billion grid points, 500 million sampling candidates and sixteen million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
+                          "description": "Sampling spacing in mm, default 0.5. Accepts raw meshes and XYZ point clouds, including mixed inputs. Point clouds use every XYZ point with radius sqrt(0.75) times spacing; scanner normals are not used. Produces a mesh; sparse scans may remain disconnected. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload; immutable Float32 shared buffers are borrowed by a disposable worker. This payload limit is not a process memory bound. Surface-local sampling retains one billion grid points, 500 million sampling candidates and sixteen million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
                         }
                       },
                       "required": ["kind"],
@@ -1361,7 +1361,7 @@
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
+          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize: optional additional aligned visible raw mesh or point-cloud IDs, retained unchanged. Whole-scope shrinkwrap accepts raw meshes only. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"
