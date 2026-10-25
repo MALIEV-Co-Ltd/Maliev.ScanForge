@@ -31,11 +31,10 @@ their coordinates at the application's existing Float32 mesh publication precisi
 This is a triangle-mesh reconstruction, not a new CAD surface or a guarantee of
 mathematical G1/G2 continuity for arbitrary noisy scans.
 
-Work is bounded to 2048 rim vertices, 8192 connected support faces, 4096 inserted
-vertices, 12 refinement rounds and 24 diagonal-improvement passes per round.
+Work is bounded to2048 rim vertices,8192 connected support faces,4096 inserted vertices and12 refinement rounds. Diagonal legalization reuses the hole patch's bounded edge queue (at most max4096,64 times the patch facet count candidate visits). Updating only affected edges finishes the triangulation instead of refining long slivers left by24 global flip passes. The normalized sampling density and all existing geometry/process memory limits remain unchanged.
 Support collection stops expanding at its budget; a dense collar can still be
 fitted. Singular fits, sharp/overhanging collars, unsupported boundaries and
-refinement limits fall back to the existing spatial-fill path. Fits require
+unrecoverable refinement limits fall back to the existing spatial-fill path. Fits require
 support RMS error at most 1% of patch radius and rim deviation at most 2%.
 The selection should not include an intended crease or span multiple surfaces.
 If both reconstruction paths fail, the operation fails without adopting a
@@ -61,3 +60,5 @@ native-reference fixture. `node tests/defeature-curvature-browser.mjs` exercises
 the real contextual GUI command and MCP on identical facets, compares their exact
 output, checks undo/redo and writes screenshots plus a cleanup ledger under
 `.resources/defeature-curvature-browser/`.
+
+A manufactured32768-facet panel with an18425-facet selected patch reproduced the previous refinement-budget/iteration-limit failure. The bounded regression now checks closure, consistent winding, unchanged retained Float32 coordinates and less than0.02mm analytic surface error at patch triangle centroids. This is the same selection size and failure class; the original reported selection remains unavailable and no native comparison is inferred from this manufactured control.

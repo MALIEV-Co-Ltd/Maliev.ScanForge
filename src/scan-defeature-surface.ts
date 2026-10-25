@@ -1,3 +1,5 @@
+import { Vector2 } from "three";
+import { legalizeHolePatch, HoleRefinementError } from "./scan-hole-refine";
 import type { MeshTopology } from "./mesh-processing";
 import type { Vec3 } from "./types";
 import { interpolateHoleSurface } from "./scan-hole-surface";
@@ -290,65 +292,22 @@ export function repatchCurvatureSurface(
   // Legalize interior diagonals before/after subdivision. Otherwise an ear fan
   // on a dense rim creates thousands of long slivers when refined.
   const legalize = () => {
-    for (let pass = 0; pass < 24; pass++) {
-      cancel();
-      const edges = new Map<
-        string,
-        { face: number; a: number; b: number; c: number }[]
-      >();
-      triangles.forEach(([a, b, c], face) => {
-        for (const [u, v, w] of [
-          [a, b, c],
-          [b, c, a],
-          [c, a, b],
-        ]) {
-          const key = edge(u, v),
-            uses = edges.get(key) ?? [];
-          uses.push({ face, a: u, b: v, c: w });
-          edges.set(key, uses);
-        }
-      });
-      const changed = new Set<number>();
-      for (const uses of edges.values()) {
-        if (uses.length !== 2) continue;
-        const [u, v] = uses;
-        if (
-          changed.has(u.face) ||
-          changed.has(v.face) ||
-          boundary.has(edge(u.a, u.b))
-        )
-          continue;
-        const a = coords.get(u.a)!,
-          b = coords.get(u.b)!,
-          c = coords.get(u.c)!,
-          d = coords.get(v.c)!;
-        const ax = a[0] - d[0],
-          ay = a[1] - d[1],
-          bx = b[0] - d[0],
-          by = b[1] - d[1],
-          cx = c[0] - d[0],
-          cy = c[1] - d[1];
-        const determinant =
-          (ax * ax + ay * ay) * (bx * cy - by * cx) -
-          (bx * bx + by * by) * (ax * cy - ay * cx) +
-          (cx * cx + cy * cy) * (ax * by - ay * bx);
-        const first = [u.c, v.c, u.b],
-          second = [v.c, u.c, u.a];
-        if (
-          determinant <= 1e-12 ||
-          signedArea(first) <= 1e-12 ||
-          signedArea(second) <= 1e-12
-        )
-          continue;
-        triangles[u.face] = first;
-        triangles[v.face] = second;
-        changed.add(u.face);
-        changed.add(v.face);
-      }
-      if (!changed.size) break;
+    const projected: Vector2[] = [];
+    for (const [id, p] of coords) projected[id] = new Vector2(p[0], p[1]);
+    try {
+      legalizeHolePatch(
+        projected,
+        triangles,
+        { signal: options.signal },
+        boundary,
+      );
+      return true;
+    } catch (error) {
+      if (error instanceof HoleRefinementError) return false;
+      throw error;
     }
   };
-  legalize();
+  if (!legalize()) return reject("patch triangulation budget exceeded");
   const perimeter = rim.reduce(
     (s, p, i) => s + Math.hypot(...sub(p, rim[(i + 1) % rim.length])),
     0,
@@ -408,7 +367,7 @@ export function repatchCurvatureSurface(
       }
     }
     triangles = refined;
-    legalize();
+    if (!legalize()) return reject("patch triangulation budget exceeded");
     if (pass === 11) return reject("patch refinement iteration limit");
   }
   const inserted: number[] = [];

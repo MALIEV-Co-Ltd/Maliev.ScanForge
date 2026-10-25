@@ -7,8 +7,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+const largePatch = process.env.SCANFORGE_DEFEATURE_LARGE === "1";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/defeature-curvature-browser/", import.meta.url);
+  out = new URL(
+    largePatch
+      ? "../.resources/defeature-large-browser/"
+      : "../.resources/defeature-curvature-browser/",
+    import.meta.url,
+  );
 const builtRoot = process.env.SCANFORGE_QA_DIST
   ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
   : new URL("dist/", root);
@@ -195,16 +201,18 @@ try {
       requestId: randomUUID(),
     });
   const job = async (receipt, expected = "succeeded") => {
+    let lastState;
     for (let i = 0; i < 120; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
+      lastState=state;
       if (state.status !== "running") {
         assert.equal(state.status, expected, JSON.stringify(state));
         return state;
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    throw Error("Geometry job timeout");
+    throw Error("Geometry job timeout: "+JSON.stringify(lastState));
   };
 
   const artifactJson = async (artifact) => {
@@ -234,15 +242,23 @@ try {
   const history = async () => (await call("history_get")).result.cursor;
   const positions = [],
     selected = [];
-  const height = (x, y) => 0.035 * x * x + 0.018 * y * y + 0.012 * x * y;
+  const height = (x, y) =>
+    largePatch
+      ? 0.001 * x * x + 0.0007 * y * y + 0.0004 * x * y
+      : 0.035 * x * x + 0.018 * y * y + 0.012 * x * y;
   const point = (x, y) => [
     x,
     y,
     height(x, y) +
-      (Math.abs(x) < 3 && Math.abs(y) < 3 ? 2 + 0.4 * Math.cos(x * y) : 0),
+      (Math.abs(x) < (largePatch ? 44 : 3) &&
+      Math.abs(y) < (largePatch ? 44 : 3)
+        ? largePatch
+          ? 2 + 0.3 * Math.cos(x * 0.1) * Math.cos(y * 0.1)
+          : 2 + 0.4 * Math.cos(x * y)
+        : 0),
   ];
-  for (let y = -8; y < 8; y++)
-    for (let x = -8; x < 8; x++) {
+  for (let y = largePatch ? -64 : -8; y < (largePatch ? 64 : 8); y++)
+    for (let x = largePatch ? -64 : -8; x < (largePatch ? 64 : 8); x++) {
       const face = positions.length / 9;
       positions.push(
         ...point(x, y),
@@ -252,8 +268,18 @@ try {
         ...point(x + 1, y + 1),
         ...point(x, y + 1),
       );
-      if (x >= -3 && x < 3 && y >= -3 && y < 3) selected.push(face, face + 1);
+      if (
+        x >= (largePatch ? -48 : -3) &&
+        x < (largePatch ? 48 : 3) &&
+        y >= (largePatch ? -48 : -3) &&
+        y < (largePatch ? 48 : 3)
+      )
+        selected.push(face, face + 1);
     }
+  if (largePatch) {
+    selected.splice(0, 7);
+    assert.equal(selected.length, 18425);
+  }
   const project = {
     format: "maliev-scanforge",
     version: 1,
@@ -271,13 +297,17 @@ try {
       },
     ],
   };
-  const upload = (
-    await call("artifact_put", {
-      name: "panel.json",
-      offset: 0,
-      base64: Buffer.from(JSON.stringify(project)).toString("base64"),
-    })
-  ).result;
+  const payload = Buffer.from(JSON.stringify(project));
+  let upload;
+  for (let offset = 0; offset < payload.length; offset += 262144)
+    upload = (
+      await call("artifact_put", {
+        name: "panel.json",
+        ...(upload ? { artifactId: upload.artifactId } : {}),
+        offset,
+        base64: payload.subarray(offset, offset + 262144).toString("base64"),
+      })
+    ).result;
   await job(
     await mutate("project_import", {
       artifactId: upload.artifactId,
@@ -292,7 +322,7 @@ try {
   });
   await mutate("viewport_control", {
     action: "camera",
-    position: [0, 0, 45],
+    position: [0, 0, largePatch ? 340 : 45],
     target: [0, 0, 0],
     up: [0, 1, 0],
     zoom: 1,
@@ -428,9 +458,24 @@ try {
     }),
   );
   assert.deepEqual((await geometry()).positions, gui.positions);
+  if (largePatch) {
+    await mutate("viewport_control", {
+      action: "camera",
+      position: [180, -150, 160],
+      target: [0, 0, 0],
+      up: [0, 0, 1],
+      zoom: 1,
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("after-angled.png", out)),
+    });
+  }
   assert.deepEqual(errors, []);
   ledger.result = {
     defeatureCanvasOnlyStatus: true,
+    largePatch,
+    selectedFacets: selected.length,
+    manufacturedFailureClassOnly: largePatch,
     guiMcpEqual: true,
     undoRedo: true,
     sourcePreserved: true,

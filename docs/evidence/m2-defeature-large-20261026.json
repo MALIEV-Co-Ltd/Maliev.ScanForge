@@ -1,0 +1,230 @@
+{
+  "status": "manufactured-large-failure-class-fixed-native-and-original-case-gates-open",
+  "assetBuildId": "scanforge-d8a85032a1b0df29",
+  "scope": "Manufactured18425selected-facet control, not the unavailable original selection and not native comparison. Current GUI/public MCP, retained source, camera/history/cancel/error/persistence and bounded cleanup verified.",
+  "driver": "tests/defeature-curvature-browser.mjs",
+  "environment": "SCANFORGE_DEFEATURE_LARGE=1",
+  "rootCause": "Twenty-four global legalization sweeps left long ear-fan slivers; density subdivision exhausted4096 new vertices. Reuse existing bounded incident-edge queue; preserve normalized spacing and all geometry/process caps.",
+  "results": {
+    "defeatureCanvasOnlyStatus": true,
+    "largePatch": true,
+    "selectedFacets": 18425,
+    "manufacturedFailureClassOnly": true,
+    "guiMcpEqual": true,
+    "undoRedo": true,
+    "sourcePreserved": true,
+    "cancellationRollback": true,
+    "failureRollback": true,
+    "saveReopen": true,
+    "beforeViewport": {
+      "projection": "orthographic",
+      "position": [
+        0,
+        0,
+        340
+      ],
+      "target": [
+        0,
+        0,
+        0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "zoom": 1,
+      "near": -10000,
+      "far": 10000,
+      "cameraMatrixFormat": "column-major-4x4",
+      "projectionMatrix": [
+        0.0056953770593025825,
+        0,
+        0,
+        0,
+        0,
+        0.009355518512399054,
+        0,
+        0,
+        0,
+        0,
+        -0.0001,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "cameraWorldMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        340,
+        1
+      ],
+      "viewport": {
+        "width": 1140,
+        "height": 694,
+        "coordinates": "normalized top-left x/y in [0,1]"
+      },
+      "bounds": {
+        "min": [
+          -64,
+          -64,
+          1.2777999639511108
+        ],
+        "max": [
+          64,
+          64,
+          8.60159969329834
+        ]
+      },
+      "pointCloudDisplay": [],
+      "navigation": {
+        "orbitMode": "free",
+        "zoomWindowActive": false
+      },
+      "orbitCenter": {
+        "source": null,
+        "point": null,
+        "markerVisible": false
+      }
+    },
+    "afterViewport": {
+      "projection": "orthographic",
+      "position": [
+        0,
+        0,
+        340
+      ],
+      "target": [
+        0,
+        0,
+        0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "zoom": 1,
+      "near": -10000,
+      "far": 10000,
+      "cameraMatrixFormat": "column-major-4x4",
+      "projectionMatrix": [
+        0.0056953770593025825,
+        0,
+        0,
+        0,
+        0,
+        0.009355518512399054,
+        0,
+        0,
+        0,
+        0,
+        -0.0001,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "cameraWorldMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        340,
+        1
+      ],
+      "viewport": {
+        "width": 1140,
+        "height": 694,
+        "coordinates": "normalized top-left x/y in [0,1]"
+      },
+      "bounds": {
+        "min": [
+          -64,
+          -64,
+          1.6707849681552034e-07
+        ],
+        "max": [
+          64,
+          64,
+          8.60159969329834
+        ]
+      },
+      "pointCloudDisplay": [],
+      "navigation": {
+        "orbitMode": "free",
+        "zoomWindowActive": false
+      },
+      "orbitCenter": {
+        "source": null,
+        "point": null,
+        "markerVisible": false
+      }
+    },
+    "worstDeviation": 6.477640813962182e-06,
+    "diagnostics": {
+      "removedTriangles": 18425,
+      "prunedTriangles": 0,
+      "filledHoles": 1,
+      "fillAttempts": 1,
+      "insertedVertices": 3529,
+      "curvaturePatches": 1,
+      "curvatureFitRms": 6.176065845264893e-06,
+      "curvatureFallback": "",
+      "method": "Curvature-fitted surface reconstruction with retained indexed adjacency",
+      "topologyCache": "memory-hit"
+    },
+    "pageErrors": []
+  },
+  "peakAggregateBytes": 1254219776,
+  "seconds": 14.005197599995881,
+  "cleanup": [
+    {
+      "port": 53883,
+      "closed": true
+    },
+    {
+      "pid": 50512,
+      "exited": true
+    },
+    {
+      "port": 53884,
+      "closed": true
+    },
+    {
+      "pid": 59480,
+      "exited": true
+    }
+  ],
+  "receiptSha256": "bddef2e65ca6813a0653816e635e7c56ccaacb82d9e18161c1faa1fa9c6621f5",
+  "ledgerSha256": "04f8a41762ac4ab41458af64c438b2810d3136cb683c8d2e38246c7eab12c202",
+  "retainedFailedRuns": [
+    "m2-defeature-budget-red-20261025-r1: genuine production budget failure",
+    "m2-defeature-large-browser-20261026-r3:12-second small-fixture polling deadline expired at invalid-whole-scan job; diagnostic rerunr4passed without changing production"
+  ]
+}

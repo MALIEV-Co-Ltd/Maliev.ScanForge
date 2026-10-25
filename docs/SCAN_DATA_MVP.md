@@ -42,7 +42,7 @@ or all, and project to XY/YZ/XZ or an existing reference plane. Projection creat
 editable line sketches with properly closed point graphs. Fit tolerance controls
 polyline approximation independently of topology welding.
 
-Selected-area smoothing pins the seam, open edges and nonmanifold vertices.
+Selected-area smoothing marks vertices referenced by selected facets, including vertices shared with unselected facets. Unmarked vertices remain unchanged. The default six passes at strength0.5 equal three native two-pass clicks on the observed fan control; boundary corners follow the recovered boundary rules. Disconnected fans retain first-facet traversal. General nonmanifold-edge pairing remains an acceptance gap.
 Defeature removes a bounded selected patch and triangulates its new closed seam.
 Selecting the whole object or a patch joined to an existing open boundary is
 rejected rather than replacing unrelated surfaces.
