@@ -1,5 +1,17 @@
 # ScanForge shared application API and MCP
 
+## CAD GUI job dispatch
+
+Recipe-based GUI CAD operations and rebuilds use `runApplicationJobCommand`
+against `cad_create`/`cad_rebuild`, including Boolean, revolve and grouped split
+outputs. The API owns busy state and the transaction; GUI handlers do not wrap
+these calls in a second busy owner or publish native results themselves. Existing
+feature references or imported entity aliases are resolved inside the shared
+operation without a separate binding transaction. Input hiding is keyed by both
+feature ID and output index, so deriving from a split output preserves siblings.
+The GUI consumes shared cleanup diagnostics after rebuilding. This dispatch does
+not widen the deliberate ribbon verification allowlist.
+
 ## Exact surface trimming
 
 The GUI Trim surfaces panel submits the `trimSurfaces` recipe through the shared

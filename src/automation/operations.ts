@@ -148,7 +148,11 @@ export async function createCadFeature(
     ...mesh,
     id: id(),
     name:
-      rebuilt.results[feature.id].length > 1 ? `${name} ${output + 1}` : name,
+      recipe.kind === "split"
+        ? `${name} ${output === 0 ? "inside" : "outside"}`
+        : rebuilt.results[feature.id].length > 1
+          ? `${name} ${output + 1}`
+          : name,
     kind: "cad",
     color: DEFAULT_PART_COLOR,
     visible: true,
@@ -157,7 +161,9 @@ export async function createCadFeature(
     surfacePatch: recipe.kind === "surface" ? recipe.patch : undefined,
   }));
   const inputIds = new Set(
-    featureDependencies(recipe).map((ref) => ref.featureId),
+    featureDependencies(recipe).map(
+      (ref) => `${ref.featureId}:${ref.output ?? 0}`,
+    ),
   );
   return {
     created,
@@ -165,7 +171,7 @@ export async function createCadFeature(
       ...entities.map((e) =>
         options.hideInputs &&
         e.parametric &&
-        inputIds.has(e.parametric.feature.id)
+        inputIds.has(`${e.parametric.feature.id}:${e.parametric.output}`)
           ? { ...e, visible: false }
           : e,
       ),

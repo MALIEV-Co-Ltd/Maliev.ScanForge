@@ -17,6 +17,62 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Guarded CAD GUI dispatch
+
+Review found direct GUI writes for recipe-based CAD creation, rebuilding,
+Boolean, revolve and split. They now submit shared `cad_create`/`cad_rebuild`
+jobs. The [red browser receipt](evidence/m5-20261025/cad-dispatch-red.txt) records
+zero shared jobs for a GUI loft before the fix. The [passing combined replay](evidence/m5-20261025/cad-dispatch-browser.json)
+uses build `scanforge-334e87c94a77663a` and verifies one discoverable shared job
+and one history entry for each GUI operation, with public-MCP geometry digest
+equality: loft, sweep, revolve, subtract/union, split, fillet, chamfer, shell and
+polygon extrusion. GUI exact control editing also produces a shared rebuild job.
+Analytic loft/extrusion volume is 12,000 mm³, straight sweep is 1,440 mm³,
+revolve is 4,500π mm³ and matched-box subtraction is 500 mm³.
+
+Review also caught hiding of unused sibling outputs when deriving from one
+split result. Shared input hiding now matches feature ID and output index.
+Both [red regressions](evidence/m5-20261025/cad-output-red.txt) and
+[51 passing focused checks](evidence/m5-20261025/cad-output-green.txt) are retained.
+The browser verifies unused sibling preservation through GUI and MCP Boolean
+operations. Split output names retain their inside/outside roles. Static review
+confirmed both corrections. Ordinary ribbon admission, arbitrary edge selection,
+native parity and the broader operation matrix remain separate gates: these
+core CAD panels were deliberately opened through `ui_set` in this receipt.
+
+Real-input limitation found on further audit: the earlier first-200-triangle
+sample has area 5.913158692150287 mm² but spans approximately 63 × 99 × 18 mm.
+It contains scattered regions. Its fitting/exchange receipts establish those
+specific transaction/geometry checks; they do not establish a useful connected
+scan-derived part. A connected local region and matched native comparison are
+still required before closing the real-part acceptance gate.
+
+The follow-up [connected-region replay](evidence/m5-20261025/connected-region-browser.json)
+uses the source-SHA-fenced [200-facet selection](../tests/fixtures/m5-connected-region.json),
+connected by shared vertices with normal agreement ≥0.9 in a 4 mm seed radius.
+It spans 3.365 × 2.047 × 0.311 mm and has source area 5.7779869601387475 mm².
+Projected 4×4 fitting over 600 samples gives RMS 0.006583489565586009 mm and
+maximum 0.03186297917528691 mm. Its exact surface area is 6.942309509295891 mm²;
+the fitted rectangular domain extends beyond the selected facets. Thickening
+by -0.1 mm yields a valid six-face solid with volume 0.6959681191105266 mm³.
+GUI/MCP complete geometry digests match; STEP round-trip and editable project
+reopen retain topology and analytic properties within 1e-8 relative / 1e-6 absolute.
+The complete source digest remains unchanged. Native r3 fixtures are prepared
+under `C:/repo/alignment-example-files/m5-native-validation-20261026-01a1737c-r3`;
+earlier scattered-region packages remain preserved. This closes the local-region
+fixture gap, not whole-part, sketch-chain or native acceptance.
+The [rendered connected solid](evidence/m5-20261025/connected-region.png) was
+visually inspected after fitting the camera to the visible exact body.
+
+Dispatch candidate checks: standard twelve-batch build/typecheck passes; full unit
+suite passes 48,983 tests with 64 skipped (672 passed files, 18 skipped; 283.26 s);
+CAD smoke, changed-file formatting and diff checks pass. Retained raw
+[build](evidence/m5-20261025/cad-dispatch-build.txt),
+[unit](evidence/m5-20261025/cad-dispatch-unit.txt) and
+[CAD](evidence/m5-20261025/cad-dispatch-cad.txt) receipts identify actual commands.
+The preceding trim commit `f02a924` passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40215075254);
+new dispatch changes require their own hosted run after pushing.
+
 ### Retained-region exact surface trim
 
 The Surfacing ribbon now opens a shared `trimSurfaces` recipe editor. The worker

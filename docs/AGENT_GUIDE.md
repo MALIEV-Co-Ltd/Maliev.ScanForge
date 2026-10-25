@@ -974,6 +974,16 @@ that no longer identify a region must be corrected. Cancellation uses `job_cance
 The GUI also cancels pending picking/work when its panel closes. Projects retain
 the editable recipe and exact BREP; STEP retains the exact trimmed shape.
 
+GUI recipe-based CAD creation, Boolean, revolve, split and parametric rebuilding
+submit the same `cad_create`/`cad_rebuild` jobs used by agents. Inspect them with
+`session_get`, poll `job_get` and cancel with `job_cancel`. Their revision fences,
+validation, late-result cleanup and one-commit history are shared. `hideInputs`
+hides only referenced feature outputs, preserving unused siblings from a split.
+A split's ordered output 0 is named `<name> inside` and output 1 `<name> outside`.
+Several CAD ribbon commands remain gated pending full workflow verification;
+experimental panel access is not evidence that their ordinary ribbon entry or
+native-reference behavior is accepted.
+
 Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
 kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,
 resource exhaustion and changed revision fail without modifying model/history.

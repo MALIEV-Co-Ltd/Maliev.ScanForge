@@ -541,6 +541,9 @@ try {
   );
   const faceId = face.entityIds[0];
   const faceBefore = (await call("project_get")).result;
+  const beforeRebuildJobs = new Set(
+    (await call("session_get")).result.jobs.map((x) => x.jobId),
+  );
   await zControl.fill("3");
   await eventually(async () =>
     assert.equal(
@@ -551,6 +554,13 @@ try {
   );
   const faceAfter = (await call("project_get")).result;
   assert.equal(faceAfter.undo, faceBefore.undo + 1);
+  const guiRebuildJobs = (await call("session_get")).result.jobs.filter(
+    (x) => !beforeRebuildJobs.has(x.jobId) && x.command === "cad_rebuild",
+  );
+  if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
+    assert.equal(guiRebuildJobs.length, 1);
+    assert.equal(guiRebuildJobs[0].status, "succeeded");
+  }
   const guiFace = await geometry(faceId);
   assert(guiFace.object.exactCad && guiFace.object.hasBrep);
   await mutate("history_undo", {});
@@ -649,6 +659,22 @@ try {
   });
   if (process.env.SCANFORGE_TEST_REAL_SCAN) {
     const file = await readFile(process.env.SCANFORGE_TEST_REAL_SCAN);
+    const connectedRegion =
+      process.env.SCANFORGE_TEST_CONNECTED_REGION === "1"
+        ? JSON.parse(
+            await readFile(
+              new URL("fixtures/m5-connected-region.json", import.meta.url),
+              "utf8",
+            ),
+          )
+        : null;
+    if (connectedRegion)
+      assert.equal(
+        createHash("sha256").update(file).digest("hex"),
+        "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      );
+    const realTriangleIds =
+      connectedRegion?.triangleIds ?? Array.from({ length: 200 }, (_, i) => i);
     assert(
       file.length <= 16 * 1024 * 1024,
       "Real-input replay is bounded to 16 MiB",
@@ -677,7 +703,7 @@ try {
     await mutate("object_select", { entityId: scan.id });
     await mutate("selection_set", {
       entityId: scan.id,
-      triangles: Array.from({ length: 200 }, (_, i) => i),
+      triangles: realTriangleIds,
     });
     await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
     await page
@@ -722,7 +748,7 @@ try {
     await mutate("object_select", { entityId: scan.id });
     await mutate("selection_set", {
       entityId: scan.id,
-      triangles: Array.from({ length: 200 }, (_, i) => i),
+      triangles: realTriangleIds,
     });
     const realFit = await job(
       await mutate("surface_fit", {
@@ -878,7 +904,7 @@ try {
     await mutate("object_select", { entityId: scan.id });
     await mutate("selection_set", {
       entityId: scan.id,
-      triangles: Array.from({ length: 200 }, (_, i) => i),
+      triangles: realTriangleIds,
     });
     const copiedRegion = (
       await mutate("selection_edit", { entityId: scan.id, operation: "copy" })
@@ -942,6 +968,7 @@ try {
       JSON.stringify(
         {
           patch: realMcpPatch,
+          connectedRegion,
           options: {
             countU: 4,
             countV: 4,
@@ -978,6 +1005,7 @@ try {
         sha256: createHash("sha256").update(file).digest("hex"),
       },
       selectedFacets: 200,
+      connectedRegion,
       guiMcpPatchEquality: true,
       fit: realFit,
       exactFace: true,
@@ -998,6 +1026,218 @@ try {
     await mutate("viewport_control", {
       action: "fit",
       entityId: solidId,
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("real-region-solid.png", out)),
+    });
+  }
+  if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
+    const before = (await call("project_get")).result;
+    const oldJobs = new Set(
+      (await call("session_get")).result.jobs.map((x) => x.jobId),
+    );
+    // Experimental panel entry is explicit until the full ribbon matrix passes.
+    await mutate("ui_set", {
+      workspace: "loft",
+      ribbonTab: "surfacing",
+      toolPanelOpen: true,
+    });
+    await page
+      .getByRole("button", { name: "Create exact loft", exact: true })
+      .click();
+    const guiId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, before.objects.length + 1);
+      assert.equal(current.undo, before.undo + 1);
+      return current.objects.find(
+        (x) => !before.objects.some((y) => y.id === x.id),
+      ).id;
+    });
+    const guiJobs = (await call("session_get")).result.jobs.filter(
+      (x) => !oldJobs.has(x.jobId) && x.command === "cad_create",
+    );
+    assert.equal(
+      guiJobs.length,
+      1,
+      "GUI loft must publish through one shared cad_create job",
+    );
+    assert.equal(guiJobs[0].status, "succeeded");
+    const recipe = (await call("object_get", { entityId: guiId })).result
+      .parametric.feature.recipe;
+    const digest = await geometryDigest(guiId);
+    const guiReport = await job(await call("cad_inspect", { entityId: guiId }));
+    assert(
+      guiReport.valid &&
+        guiReport.solids === 1 &&
+        Math.abs(guiReport.volumeMm3 - 12000) < 1e-6,
+    );
+    await mutate("history_undo", {});
+    const mcp = await job(
+      await mutate("cad_create", { recipe, name: "MCP loft" }),
+    );
+    assert.deepEqual(await geometryDigest(mcp.entityIds[0]), digest);
+    ledger.scenarios.push({
+      guardedCadLoft: {
+        sharedGuiJob: guiJobs[0].jobId,
+        guiMcpGeometryEquality: true,
+        report: guiReport,
+        entry: "ui_set experimental panel; ribbon acceptance remains open",
+      },
+    });
+    const matrix = [];
+    async function checkGuiCad(workspace, button, options = {}) {
+      await mutate("ui_set", { workspace, toolPanelOpen: true });
+      if (options.prepare) await options.prepare();
+      const before = (await call("project_get")).result;
+      const oldJobs = new Set(
+        (await call("session_get")).result.jobs.map((x) => x.jobId),
+      );
+      await page.getByRole("button", { name: button, exact: true }).click();
+      const added = await eventually(async () => {
+        const current = (await call("project_get")).result;
+        const added = current.objects.filter(
+          (x) => !before.objects.some((y) => y.id === x.id),
+        );
+        assert.equal(added.length, options.outputs ?? 1);
+        assert.equal(current.undo, before.undo + 1);
+        return added;
+      });
+      const jobs = (await call("session_get")).result.jobs.filter(
+        (x) => !oldJobs.has(x.jobId) && x.command === "cad_create",
+      );
+      assert.equal(jobs.length, 1);
+      assert.equal(jobs[0].status, "succeeded");
+      const objects = await Promise.all(
+        added.map(
+          async (x) => (await call("object_get", { entityId: x.id })).result,
+        ),
+      );
+      const reports = [],
+        digests = [];
+      for (const item of added) {
+        reports.push(
+          await job(await call("cad_inspect", { entityId: item.id })),
+        );
+        digests.push(await geometryDigest(item.id));
+      }
+      assert(reports.every((r) => r.valid && r.solids === 1));
+      if (options.volume !== undefined)
+        assert(Math.abs(reports[0].volumeMm3 - options.volume) < 1e-6);
+      await mutate("history_undo", {});
+      const mcp = await job(
+        await mutate("cad_create", {
+          recipe: objects[0].parametric.feature.recipe,
+          name: objects[0].parametric.feature.name,
+          hideInputs: options.hideInputs ?? false,
+          selectCreated: true,
+        }),
+      );
+      assert.equal(mcp.entityIds.length, added.length);
+      for (let i = 0; i < added.length; i++)
+        assert.deepEqual(await geometryDigest(mcp.entityIds[i]), digests[i]);
+      matrix.push({
+        workspace,
+        sharedGuiJob: jobs[0].jobId,
+        guiMcpGeometryEquality: true,
+        reports,
+        outputNames: objects.map((x) => x.name),
+      });
+      return mcp.entityIds;
+    }
+    await checkGuiCad("sweep", "Create exact sweep", { volume: 1440 });
+    await checkGuiCad("revolve", "Revolve profile to CAD", {
+      volume: 4500 * Math.PI,
+    });
+    const base = await job(
+      await mutate("cad_create", {
+        name: "Matrix base",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [0, 0, 0], size: [10, 10, 10] },
+        },
+      }),
+    );
+    const tool = await job(
+      await mutate("cad_create", {
+        name: "Matrix cutter",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [5, 0, 0], size: [10, 10, 10] },
+        },
+      }),
+    );
+    await mutate("object_select", { entityId: base.entityIds[0] });
+    await checkGuiCad("boolean", "Create boolean result", {
+      volume: 500,
+      hideInputs: true,
+      prepare: async () => {
+        await page
+          .getByRole("button", { name: "Boolean tool body", exact: true })
+          .click();
+        await page
+          .getByRole("option", { name: "Matrix cutter", exact: true })
+          .click();
+      },
+    });
+    await mutate("object_select", { entityId: base.entityIds[0] });
+    const splitOutputs = await checkGuiCad(
+      "splitSolid",
+      "Split into inside / outside",
+      {
+        outputs: 2,
+        volume: 500,
+        hideInputs: true,
+        prepare: async () => {
+          await page
+            .getByRole("button", { name: "Split cutting solid", exact: true })
+            .click();
+          await page
+            .getByRole("option", { name: "Matrix cutter", exact: true })
+            .click();
+        },
+      },
+    );
+    await mutate("object_select", { entityId: splitOutputs[0] });
+    await checkGuiCad("boolean", "Create boolean result", {
+      volume: 1000,
+      hideInputs: true,
+      prepare: async () => {
+        await page
+          .getByRole("button", { name: "Boolean operation", exact: true })
+          .click();
+        await page.getByRole("option", { name: "Union", exact: true }).click();
+        await page
+          .getByRole("button", { name: "Boolean tool body", exact: true })
+          .click();
+        await page
+          .getByRole("option", { name: "Matrix cutter", exact: true })
+          .click();
+      },
+    });
+    assert.equal(
+      (await call("object_get", { entityId: splitOutputs[1] })).result.visible,
+      true,
+    );
+    assert.equal(
+      (await call("object_get", { entityId: splitOutputs[0] })).result.visible,
+      false,
+    );
+    matrix.push({ unusedSplitSiblingPreserved: true });
+    for (const [workspace, button] of [
+      ["fillet", "Create fillet"],
+      ["chamfer", "Create chamfer"],
+      ["shell", "Create hollow shell"],
+    ]) {
+      await mutate("object_select", { entityId: base.entityIds[0] });
+      await checkGuiCad(workspace, button);
+    }
+    await checkGuiCad("extrude", "Extrude sketch to CAD", { volume: 12000 });
+    ledger.scenarios.push({
+      guardedCadMatrix: {
+        entry:
+          "ui_set experimental panels; ribbon and arbitrary edge selection remain open",
+        matrix,
+      },
     });
   }
   if (process.env.SCANFORGE_TEST_SURFACE_TRIM === "1") {

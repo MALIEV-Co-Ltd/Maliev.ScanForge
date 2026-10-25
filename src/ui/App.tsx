@@ -35,6 +35,7 @@ import { entityDisplayStats } from "../entity-display-stats";
 import { GeometryStatistics } from "./GeometryStatistics";
 import { CadDiagnostics } from "./CadDiagnostics";
 import { SurfaceTrimTools } from "./SurfaceTrimTools";
+import { runApplicationJobCommand } from "./application-job-command";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -72,7 +73,7 @@ import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
 import { RIBBON_TABS } from "./ribbon-model";
-import { createCadFeature, rebuildCadFeature } from "../automation/operations";
+import { createCadFeature } from "../automation/operations";
 import {
   duplicateObject,
   lockedObjectEdit,
@@ -247,13 +248,7 @@ import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { ImportUnitsDialog } from "./ImportUnitsDialog";
 import { SCAN_UNITS, type ScanUnit } from "../import-units";
-import type {
-  Entity,
-  FitResult,
-  KernelPrimitive,
-  KernelMesh,
-  Vec3,
-} from "../types";
+import type { Entity, FitResult, KernelPrimitive, Vec3 } from "../types";
 import { Viewport } from "../viewport";
 import { applyWandRegion } from "../wand-selection";
 import { Field, Panel, VectorField } from "./controls";
@@ -295,11 +290,7 @@ import { EditScanDialog } from "./EditScanDialog";
 import { ScanQuickTools } from "./ScanQuickTools";
 import { AdvancedCadTools } from "./AdvancedCadTools";
 import { ParametricTools } from "./ParametricTools";
-import {
-  bindFeatureInputs,
-  entityFeatureModel,
-  entityFeatureState,
-} from "../parametric-entities";
+import { entityFeatureModel, entityFeatureState } from "../parametric-entities";
 import {
   createCadEvaluator,
   rebuildParametric,
@@ -3809,14 +3800,6 @@ export function App() {
     if (selected?.kernelId) {
       cadOperation(
         "Transform body",
-        () =>
-          cad.current!.transform(
-            selected.kernelId!,
-            translation,
-            rotation,
-            scale,
-          ),
-        undefined,
         (refs) => ({
           kind: "transform",
           source: refs[0],
@@ -3866,42 +3849,21 @@ export function App() {
     operation: "union" | "subtract" | "intersect",
     otherId: string,
   ) {
-    void action(`CAD ${operation}…`, async () => {
-      const other = entities.find((e) => e.id === otherId);
-      if (!selected?.kernelId || !other?.kernelId)
-        throw new Error("Select two exact CAD bodies.");
-      const result = await cad.current!.boolean(
+    if (!selected?.kernelId) {
+      setError("Select two exact CAD bodies.");
+      return;
+    }
+    cadOperation(
+      operation + " result",
+      (refs) => ({
+        kind: "boolean",
         operation,
-        selected.kernelId,
-        other.kernelId,
-      );
-      const bound = bindFeatureInputs(entities, [selected.id, other.id]);
-      const entity: Entity = {
-        id: crypto.randomUUID(),
-        name: `${operation} result`,
-        kind: "cad",
-        ...result,
-        color: DEFAULT_PART_COLOR,
-        visible: true,
-        opacity: 1,
-        parametric: featureBinding(`${operation} result`, {
-          kind: "boolean",
-          operation,
-          first: bound.refs[0],
-          second: bound.refs[1],
-        }),
-      };
-      commit([
-        ...bound.entities.map((e) =>
-          e.id === selected.id || e.id === other.id
-            ? { ...e, visible: false }
-            : e,
-        ),
-        entity,
-      ]);
-      setSelectedId(entity.id);
-      setMessage(`Created exact ${operation} result`);
-    });
+        first: refs[0],
+        second: refs[1],
+      }),
+      [selected.id, otherId],
+      true,
+    );
   }
   function cancelSketchCreation() {
     sketchSectionAbort.current?.abort();
@@ -4190,84 +4152,66 @@ export function App() {
   }
   function cadOperation(
     label: string,
-    run: () => Promise<KernelMesh>,
-    patch?: NurbsPatch,
-    recipe?: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
+    recipe: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
     inputIds: string[] = [],
     hideInputs = false,
   ) {
-    void action(label, async () => {
-      const bound = bindFeatureInputs(entities, inputIds);
-      if (recipe) {
-        const resolved =
-          typeof recipe === "function" ? recipe(bound.refs) : recipe;
-        const result = await createCadFeature(
-          cad.current!,
-          bound.entities,
-          resolved,
-          label.replace(/…$/, ""),
-          { hideInputs },
-        );
-        commit(result.entities);
-        setSelectedId(result.created[0].id);
-        setMessage(`${result.created[0].name} created as exact CAD`);
-        return;
-      }
-      const result = await run();
-      const entity: Entity = {
-        ...result,
-        id: crypto.randomUUID(),
-        name: label.replace(/…$/, ""),
-        kind: "cad",
-        color: DEFAULT_PART_COLOR,
-        opacity: 1,
-        visible: true,
-        surfacePatch: patch,
-        parametric: undefined,
-      };
-      commit([
-        ...bound.entities.map((input) =>
-          hideInputs && inputIds.includes(input.id)
-            ? { ...input, visible: false }
-            : input,
-        ),
-        entity,
-      ]);
-      setSelectedId(entity.id);
-      setMessage(`${entity.name} created as exact CAD`);
-    });
+    if (busy) return;
+    setError("");
+    void (async () => {
+      const refs = inputIds.map((id): FeatureRef => {
+        const input = entities.find((entity) => entity.id === id);
+        if (!input?.kernelId) throw Error("Choose available exact CAD inputs.");
+        return {
+          featureId: input.parametric?.feature.id ?? input.id,
+          output: input.parametric?.output ?? 0,
+        };
+      });
+      await runApplicationJobCommand(
+        workspaceApi,
+        "cad_create",
+        {
+          recipe: typeof recipe === "function" ? recipe(refs) : recipe,
+          name: label.replace(/…$/, ""),
+          hideInputs,
+          selectCreated: true,
+        },
+        {
+          cancelledMessage: "CAD creation cancelled.",
+          leaseMessage: "CAD creation exceeded its time limit.",
+        },
+      );
+      setMessage(label + " created as exact CAD");
+    })().catch((failure) => setError(errorText(failure)));
   }
-  function featureBinding(
-    label: string,
-    recipe: ParametricRecipe,
-  ): NonNullable<Entity["parametric"]> {
-    return {
-      feature: {
-        id: crypto.randomUUID(),
-        name: label,
-        recipe: structuredClone(recipe),
-      },
-      output: 0,
-    };
-  }
+
   function rebuildFeature(recipe: ParametricRecipe) {
-    void action("Rebuilding parametric features…", async () => {
-      if (!selected) throw new Error("Select a parametric body.");
-      const result = await rebuildCadFeature(
-        cad.current!,
-        entities,
-        history,
-        future,
-        selected.id,
-        recipe,
-      );
-      commit(result.entities);
-      if (result.cleanupFailures.length)
-        setError(result.cleanupFailures.map((f) => f.message).join("; "));
-      setMessage(
-        `Rebuilt ${result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
-      );
-    });
+    if (busy) return;
+    if (!selected) {
+      setError("Select a parametric body.");
+      return;
+    }
+    setError("");
+    void runApplicationJobCommand(
+      workspaceApi,
+      "cad_rebuild",
+      { entityId: selected.id, recipe },
+      {
+        cancelledMessage: "CAD rebuild cancelled.",
+        leaseMessage: "CAD rebuild exceeded its time limit.",
+      },
+    )
+      .then((result) => {
+        const failures = result.cleanupFailures as { message: string }[];
+        if (failures.length)
+          setError(failures.map((f) => f.message).join("; "));
+        setMessage(
+          "Rebuilt " +
+            (result.rebuiltFeatureIds as string[]).length +
+            " dependent features · previous CAD retained for Undo",
+        );
+      })
+      .catch((failure) => setError(errorText(failure)));
   }
   function save() {
     setSaveDialogOpen(true);
@@ -4291,27 +4235,26 @@ export function App() {
     });
   }
   function revolve(points: [number, number][], angle: number) {
-    void action("Revolving profile…", async () => {
-      const result = await cad.current!.revolve(points, angle);
-      const entity: Entity = {
-        id: crypto.randomUUID(),
+    if (busy) return;
+    setError("");
+    void runApplicationJobCommand(
+      workspaceApi,
+      "cad_create",
+      {
         name: "Revolved solid",
-        kind: "cad",
-        ...result,
-        color: DEFAULT_PART_COLOR,
-        visible: true,
-        opacity: 1,
-        parametric: featureBinding("Revolved solid", {
-          kind: "revolve",
-          points,
-          angleDegrees: angle,
-        }),
-      };
-      commit([...entities, entity]);
-      setSelectedId(entity.id);
-      setMessage("Profile revolved to exact CAD");
-      requestAnimationFrame(() => viewport.current?.fitView());
-    });
+        recipe: { kind: "revolve", points, angleDegrees: angle },
+        selectCreated: true,
+      },
+      {
+        cancelledMessage: "Revolve cancelled.",
+        leaseMessage: "Revolve exceeded its time limit.",
+      },
+    )
+      .then(() => {
+        setMessage("Profile revolved to exact CAD");
+        requestAnimationFrame(() => viewport.current?.fitView());
+      })
+      .catch((failure) => setError(errorText(failure)));
   }
   function exportStep() {
     void action("Exporting exact CAD…", async () => {
@@ -6576,12 +6519,11 @@ export function App() {
                         createMesh(positions, label)
                       }
                       onCreateClosedCad={(patches, tolerance) =>
-                        cadOperation(
-                          "Closed patch solid",
-                          () => cad.current!.closedShell(patches, tolerance),
-                          undefined,
-                          { kind: "closedShell", patches, tolerance },
-                        )
+                        cadOperation("Closed patch solid", {
+                          kind: "closedShell",
+                          patches,
+                          tolerance,
+                        })
                       }
                       onExportPatch={(json) =>
                         download(
@@ -6597,12 +6539,10 @@ export function App() {
                     <button
                       disabled={busy || !selected?.surfacePatch}
                       onClick={() =>
-                        cadOperation(
-                          "NURBS CAD face",
-                          () => cad.current!.surface(selected!.surfacePatch!),
-                          selected?.surfacePatch,
-                          { kind: "surface", patch: selected!.surfacePatch! },
-                        )
+                        cadOperation("NURBS CAD face", {
+                          kind: "surface",
+                          patch: selected!.surfacePatch!,
+                        })
                       }
                     >
                       Create exact NURBS CAD face
@@ -6762,19 +6702,11 @@ export function App() {
                       disabled={busy}
                       onError={setError}
                       onLoft={(profiles, ruled) =>
-                        cadOperation(
-                          "Loft",
-                          () => cad.current!.loft(profiles, ruled),
-                          undefined,
-                          { kind: "loft", profiles, ruled },
-                        )
+                        cadOperation("Loft", { kind: "loft", profiles, ruled })
                       }
                       onPattern={(pattern) =>
                         cadOperation(
                           `${pattern.kind} pattern`,
-                          () =>
-                            cad.current!.pattern(selected!.kernelId!, pattern),
-                          undefined,
                           (refs) => ({
                             kind: "pattern",
                             source: refs[0],
@@ -6786,13 +6718,6 @@ export function App() {
                       onMirror={(origin, normal) =>
                         cadOperation(
                           "Mirror body",
-                          () =>
-                            cad.current!.mirror(
-                              selected!.kernelId!,
-                              origin,
-                              normal,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "mirror",
                             source: refs[0],
@@ -6803,69 +6728,27 @@ export function App() {
                         )
                       }
                       onSplit={(cutterId) => {
-                        void action("Splitting solid…", async () => {
-                          const cutter = entities.find(
-                            (entity) => entity.id === cutterId,
-                          );
-                          if (!selected?.kernelId || !cutter?.kernelId)
-                            throw new Error("Choose two exact CAD bodies.");
-                          const bound = bindFeatureInputs(entities, [
-                            selected.id,
-                            cutter.id,
-                          ]);
-                          const binding = featureBinding("Split solid", {
+                        if (!selected?.kernelId) {
+                          setError("Choose two exact CAD bodies.");
+                          return;
+                        }
+                        cadOperation(
+                          "Split",
+                          (refs) => ({
                             kind: "split",
-                            source: bound.refs[0],
-                            cutter: bound.refs[1],
-                          });
-                          const results = await cad.current!.split(
-                            selected.kernelId,
-                            cutter.kernelId,
-                          );
-                          const created = results.map(
-                            (result, index): Entity => ({
-                              ...result,
-                              id: crypto.randomUUID(),
-                              name: `Split ${index === 0 ? "inside" : "outside"}`,
-                              kind: "cad",
-                              color: DEFAULT_PART_COLOR,
-                              visible: true,
-                              opacity: 1,
-                              parametric: { ...binding, output: index },
-                            }),
-                          );
-                          commit([
-                            ...bound.entities.map((entity) =>
-                              entity.id === selected.id ||
-                              entity.id === cutter.id
-                                ? { ...entity, visible: false }
-                                : entity,
-                            ),
-                            ...created,
-                          ]);
-                          setSelectedId(created[0].id);
-                          setMessage("Created exact inside and outside bodies");
-                        });
+                            source: refs[0],
+                            cutter: refs[1],
+                          }),
+                          [selected.id, cutterId],
+                          true,
+                        );
                       }}
                       onSweep={(points, path) =>
-                        cadOperation(
-                          "Sweep",
-                          () => cad.current!.sweep(points, path),
-                          undefined,
-                          { kind: "sweep", points, path },
-                        )
+                        cadOperation("Sweep", { kind: "sweep", points, path })
                       }
                       onEdges={(indices, amount, operation) =>
                         cadOperation(
                           operation,
-                          () =>
-                            cad.current!.edgeTreatment(
-                              selected!.kernelId!,
-                              indices,
-                              amount,
-                              operation,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "edges",
                             source: refs[0],
@@ -6879,9 +6762,6 @@ export function App() {
                       onOffset={(distance) =>
                         cadOperation(
                           "Offset",
-                          () =>
-                            cad.current!.offset(selected!.kernelId!, distance),
-                          undefined,
                           (refs) => ({
                             kind: "offset",
                             source: refs[0],
@@ -6893,16 +6773,6 @@ export function App() {
                       onSew={(ids, tolerance) =>
                         cadOperation(
                           "Sew surfaces",
-                          () =>
-                            cad.current!.sew(
-                              ids.map(
-                                (id) =>
-                                  entities.find((entity) => entity.id === id)!
-                                    .kernelId!,
-                              ),
-                              tolerance,
-                            ),
-                          undefined,
                           (refs) => ({ kind: "sew", sources: refs, tolerance }),
                           ids,
                         )
@@ -6910,13 +6780,6 @@ export function App() {
                       onShell={(indices, thickness) =>
                         cadOperation(
                           "Shell",
-                          () =>
-                            cad.current!.shell(
-                              selected!.kernelId!,
-                              indices,
-                              thickness,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "shell",
                             source: refs[0],
@@ -6929,12 +6792,6 @@ export function App() {
                       onThicken={(thickness) =>
                         cadOperation(
                           "Thicken",
-                          () =>
-                            cad.current!.thicken(
-                              selected!.kernelId!,
-                              thickness,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "thicken",
                             source: refs[0],
