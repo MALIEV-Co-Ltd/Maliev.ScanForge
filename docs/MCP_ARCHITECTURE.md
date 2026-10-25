@@ -1350,6 +1350,7 @@ revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
 checks remain active.
 
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+
 ### Unroll publication
 
 `runUnrollCommand` routes the GUI through `mesh_process`, including the shared worker and terminal publication. The public scan-tool schema exposes `instances` alongside cylinder center, axis, radius and angular offset. Unroll and Average create a new owner by default; explicit `createNew:false` retains replacement. Unroll does not publish partial seam-removal or repetition results. Its original-cylinder tangent binding remains an acceptance gap documented in the agent guide.

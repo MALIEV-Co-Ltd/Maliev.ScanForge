@@ -18,77 +18,26 @@
     "saveReopen": true,
     "beforeViewport": {
       "projection": "orthographic",
-      "position": [
-        0,
-        0,
-        340
-      ],
-      "target": [
-        0,
-        0,
-        0
-      ],
-      "up": [
-        0,
-        1,
-        0
-      ],
+      "position": [0, 0, 340],
+      "target": [0, 0, 0],
+      "up": [0, 1, 0],
       "zoom": 1,
       "near": -10000,
       "far": 10000,
       "cameraMatrixFormat": "column-major-4x4",
       "projectionMatrix": [
-        0.0056953770593025825,
-        0,
-        0,
-        0,
-        0,
-        0.009355518512399054,
-        0,
-        0,
-        0,
-        0,
-        -0.0001,
-        0,
-        0,
-        0,
-        0,
-        1
+        0.0056953770593025825, 0, 0, 0, 0, 0.009355518512399054, 0, 0, 0, 0,
+        -0.0001, 0, 0, 0, 0, 1
       ],
-      "cameraWorldMatrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        340,
-        1
-      ],
+      "cameraWorldMatrix": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 340, 1],
       "viewport": {
         "width": 1140,
         "height": 694,
         "coordinates": "normalized top-left x/y in [0,1]"
       },
       "bounds": {
-        "min": [
-          -64,
-          -64,
-          1.2777999639511108
-        ],
-        "max": [
-          64,
-          64,
-          8.60159969329834
-        ]
+        "min": [-64, -64, 1.2777999639511108],
+        "max": [64, 64, 8.60159969329834]
       },
       "pointCloudDisplay": [],
       "navigation": {
@@ -103,77 +52,26 @@
     },
     "afterViewport": {
       "projection": "orthographic",
-      "position": [
-        0,
-        0,
-        340
-      ],
-      "target": [
-        0,
-        0,
-        0
-      ],
-      "up": [
-        0,
-        1,
-        0
-      ],
+      "position": [0, 0, 340],
+      "target": [0, 0, 0],
+      "up": [0, 1, 0],
       "zoom": 1,
       "near": -10000,
       "far": 10000,
       "cameraMatrixFormat": "column-major-4x4",
       "projectionMatrix": [
-        0.0056953770593025825,
-        0,
-        0,
-        0,
-        0,
-        0.009355518512399054,
-        0,
-        0,
-        0,
-        0,
-        -0.0001,
-        0,
-        0,
-        0,
-        0,
-        1
+        0.0056953770593025825, 0, 0, 0, 0, 0.009355518512399054, 0, 0, 0, 0,
+        -0.0001, 0, 0, 0, 0, 1
       ],
-      "cameraWorldMatrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        340,
-        1
-      ],
+      "cameraWorldMatrix": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 340, 1],
       "viewport": {
         "width": 1140,
         "height": 694,
         "coordinates": "normalized top-left x/y in [0,1]"
       },
       "bounds": {
-        "min": [
-          -64,
-          -64,
-          1.6707849681552034e-07
-        ],
-        "max": [
-          64,
-          64,
-          8.60159969329834
-        ]
+        "min": [-64, -64, 1.6707849681552034e-7],
+        "max": [64, 64, 8.60159969329834]
       },
       "pointCloudDisplay": [],
       "navigation": {
@@ -186,7 +84,7 @@
         "markerVisible": false
       }
     },
-    "worstDeviation": 6.477640813962182e-06,
+    "worstDeviation": 6.477640813962182e-6,
     "diagnostics": {
       "removedTriangles": 18425,
       "prunedTriangles": 0,
@@ -194,7 +92,7 @@
       "fillAttempts": 1,
       "insertedVertices": 3529,
       "curvaturePatches": 1,
-      "curvatureFitRms": 6.176065845264893e-06,
+      "curvatureFitRms": 6.176065845264893e-6,
       "curvatureFallback": "",
       "method": "Curvature-fitted surface reconstruction with retained indexed adjacency",
       "topologyCache": "memory-hit"

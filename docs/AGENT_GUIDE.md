@@ -2140,6 +2140,7 @@ definition using `inspection_manage` `action:"delete"` and its `inspectionId`.
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
 
 Inspection heatmaps use the same blue/cyan/green/yellow/red palette and right-hand vertical scale as mesh reduction. The retained report tolerance sets the saturated blue/red endpoints; hidden or unmatched samples remain gray. The inspection scale is read-only; change tolerance through the analysis parameters and recompute. `inspection_display` and MCP captures render this same scale.
+
 ## Average meshes
 
 The GUI's Average mesh and `mesh_process` use the same public operation. Pass

@@ -425,6 +425,38 @@ try {
   ).result;
   assert.equal(reopenedReference.exactCad, true);
   assert.equal(reopenedReference.hasBrep, true);
+  // Rebind the cylinder through the GUI after exact CAD restoration, then rerun.
+  const restoredIds = new Set(
+    (await call("project_get")).result.objects.map((o) => o.id),
+  );
+  await mutate("object_select", { entityId: first.id });
+  await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
+  await page.getByRole("button", { name: "Unroll", exact: true }).click();
+  await panel.waitFor();
+  await panel.locator("button[aria-haspopup='listbox']").click();
+  await page
+    .getByRole("option", { name: "Cylinder reference", exact: true })
+    .click();
+  await panel.getByLabel("Instances", { exact: true }).fill("2");
+  await panel.getByLabel("Angular offset (degrees)", { exact: true }).fill("0");
+  await panel.getByRole("button", { name: "Apply", exact: true }).click();
+  let restoredOutput;
+  for (let i = 0; i < 150; i++) {
+    restoredOutput = (await call("project_get")).result.objects.find(
+      (o) => !restoredIds.has(o.id),
+    );
+    if (restoredOutput) break;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  assert(restoredOutput, "Unroll must execute after CAD reopen");
+  const restoredPositions = (await geometry(restoredOutput.id)).positions;
+  assert.equal(restoredPositions.length, gui.length);
+  for (let i = 0; i < gui.length; i++) {
+    if (i % 3 === 1) assert(Math.abs(restoredPositions[i] - gui[i]) < 1e-12);
+    else assert.equal(restoredPositions[i], gui[i]);
+  }
+  await mutate("history_undo", {});
+
   for (const input of inputs)
     await mutate("object_update", {
       entityId: input.id,
@@ -457,6 +489,7 @@ try {
     cancellationRollback: true,
     failureRollback: true,
     saveReopen: true,
+    rerunAfterCadReopen: true,
     baseEntityId: base.id,
     referenceEntityIds: [reference.id],
     outputCoordinates: gui,

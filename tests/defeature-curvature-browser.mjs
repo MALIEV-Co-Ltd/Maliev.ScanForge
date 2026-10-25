@@ -205,14 +205,14 @@ try {
     for (let i = 0; i < 120; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
-      lastState=state;
+      lastState = state;
       if (state.status !== "running") {
         assert.equal(state.status, expected, JSON.stringify(state));
         return state;
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    throw Error("Geometry job timeout: "+JSON.stringify(lastState));
+    throw Error("Geometry job timeout: " + JSON.stringify(lastState));
   };
 
   const artifactJson = async (artifact) => {
