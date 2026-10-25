@@ -25,8 +25,8 @@ const tests = parsed.fileNames.filter((name) =>
 );
 const source = parsed.fileNames.filter((name) => !tests.includes(name));
 const batches = [source];
-for (let offset = 0; offset < tests.length; offset += 32)
-  batches.push([...source, ...tests.slice(offset, offset + 32)]);
+for (let offset = 0; offset < tests.length; offset += 64)
+  batches.push([...source, ...tests.slice(offset, offset + 64)]);
 const outputRoot = join(root, ".resources");
 await mkdir(outputRoot, { recursive: true });
 const temporary = await mkdtemp(join(outputRoot, "typecheck-"));

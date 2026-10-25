@@ -181,6 +181,7 @@ export async function createBridge({
         res.once("close", abort);
         const waitUntil = Date.now() + waitMs;
         const checkDeadline = () => {
+          if (timer) clearTimeout(timer);
           const now = Date.now();
           expire(now);
           if (pollWaiter !== waiter) return;
