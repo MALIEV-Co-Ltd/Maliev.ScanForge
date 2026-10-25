@@ -68,6 +68,47 @@ afterEach(() => {
   vi.useRealTimers();
   vi.clearAllMocks();
 });
+it.each([
+  { kind: "reduceNoise", iterations: 2, selectionOnly: true },
+  { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+  { kind: "scaleMesh", factor: 2, center: [0, 0, 0] },
+  { kind: "mirrorMesh", plane: "OXY" },
+])(
+  "shares $kind preview creation and acceptance with the GUI",
+  async (operation) => {
+    const h = setup();
+    const created = (await h.execute(
+      { action: "create", entityId: "mesh", operation },
+      h.context,
+    )) as { previewId: string };
+    expect(h.host.commit).not.toHaveBeenCalled();
+    expect(h.host.showScanPreview).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({ kind: operation.kind }),
+      }),
+    );
+    const request = vi.mocked(processMesh).mock.calls.at(-1)![0];
+    if (operation.kind === "reduceNoise")
+      expect(request).toMatchObject({
+        operation: { selection: new Uint8Array([1]) },
+      });
+    await h.execute(
+      { action: "accept", entityId: "mesh", previewId: created.previewId },
+      h.context,
+    );
+    expect(h.host.commit).toHaveBeenCalledOnce();
+    if (operation.kind === "reduceNoise")
+      expect(h.host.commit).toHaveBeenLastCalledWith(
+        expect.any(Array),
+        "Reduce noise",
+        { preserveFacetSelectionFor: "mesh" },
+      );
+    expect(h.state.entities[0].id).toBe(h.source.id);
+    expect(h.state.entities[0].name).toBe(h.source.name);
+    expect(h.state.entities[0].positions).not.toBe(h.source.positions);
+    expect(h.host.clearScanPreview).toHaveBeenCalledWith(created.previewId);
+  },
+);
 it("creates an immutable GUI-visible MCP preview, compares and accepts a new object in one history write", async () => {
   const h = setup();
   const created = (await h.execute(
@@ -221,57 +262,66 @@ it("either surface accepts only once and reference edits reject the retained pre
   expect(h.host.commit).toHaveBeenCalledOnce();
 });
 
-it("GUI create is accepted through MCP and MCP create is accepted through GUI using one API controller", async () => {
-  const h = setup();
-  const api = new ApplicationApi(h.host, { scan_preview: h.execute });
-  try {
-    const gui = await runShrinkwrapPreviewCommand(api, {
-      action: "create",
-      entityId: "mesh",
-      operation: { kind: "shrinkwrap" },
-    });
-    const accepted = await api.invoke("scan_preview", {
-      action: "accept",
-      entityId: "mesh",
-      previewId: gui.previewId,
-      createNew: true,
-      expectedRevision: api.currentRevision(),
-      requestId: crypto.randomUUID(),
-    });
-    expect(accepted.ok).toBe(true);
-    expect(h.host.commit).toHaveBeenCalledOnce();
-    const receipt = await api.invoke("scan_preview", {
-      action: "create",
-      entityId: "mesh",
-      operation: { kind: "shrinkwrap" },
-      expectedRevision: api.currentRevision(),
-      requestId: crypto.randomUUID(),
-    });
-    if (!receipt.ok) throw Error(receipt.error.message);
-    const completed = await api.invoke("job_get", {
-      jobId: (receipt.result as { jobId: string }).jobId,
-    });
-    if (!completed.ok) throw Error(completed.error.message);
-    const previewId = (completed.result as { result: { previewId: string } })
-      .result.previewId;
-    await runShrinkwrapPreviewCommand(api, {
-      action: "accept",
-      entityId: "mesh",
-      previewId,
-      createNew: true,
-    });
-    expect(h.host.commit).toHaveBeenCalledTimes(2);
-    await expect(
-      runShrinkwrapPreviewCommand(api, {
+it.each([
+  { kind: "shrinkwrap" },
+  { kind: "reduceNoise", iterations: 1 },
+  { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+  { kind: "scaleMesh", factor: 2 },
+  { kind: "mirrorMesh", plane: "OXY" },
+])(
+  "GUI and MCP interchange $kind previews using one API controller",
+  async (operation) => {
+    const h = setup();
+    const api = new ApplicationApi(h.host, { scan_preview: h.execute });
+    try {
+      const gui = await runShrinkwrapPreviewCommand(api, {
+        action: "create",
+        entityId: "mesh",
+        operation,
+      });
+      const accepted = await api.invoke("scan_preview", {
+        action: "accept",
+        entityId: "mesh",
+        previewId: gui.previewId,
+        createNew: true,
+        expectedRevision: api.currentRevision(),
+        requestId: crypto.randomUUID(),
+      });
+      expect(accepted.ok).toBe(true);
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      const receipt = await api.invoke("scan_preview", {
+        action: "create",
+        entityId: "mesh",
+        operation,
+        expectedRevision: api.currentRevision(),
+        requestId: crypto.randomUUID(),
+      });
+      if (!receipt.ok) throw Error(receipt.error.message);
+      const completed = await api.invoke("job_get", {
+        jobId: (receipt.result as { jobId: string }).jobId,
+      });
+      if (!completed.ok) throw Error(completed.error.message);
+      const previewId = (completed.result as { result: { previewId: string } })
+        .result.previewId;
+      await runShrinkwrapPreviewCommand(api, {
         action: "accept",
         entityId: "mesh",
         previewId,
-      }),
-    ).rejects.toThrow(/expired/i);
-  } finally {
-    api.dispose();
-  }
-});
+        createNew: true,
+      });
+      expect(h.host.commit).toHaveBeenCalledTimes(2);
+      await expect(
+        runShrinkwrapPreviewCommand(api, {
+          action: "accept",
+          entityId: "mesh",
+          previewId,
+        }),
+      ).rejects.toThrow(/expired/i);
+    } finally {
+      api.dispose();
+    }
+  },
+);
 
 it("GUI acceptance survives its own source-positions change while external changes still cancel ordinary previews", async () => {
   const h = setup();

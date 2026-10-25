@@ -101,7 +101,7 @@ import {
   StatusBar,
   OperationStatus,
 } from "./StatusFeedback";
-import { linearProgress, type ReductionStatistics } from "../reduction-report";
+import type { ReductionStatistics } from "../reduction-report";
 import { holeFillCounts, holeFillOutcomes } from "../hole-fill-progress";
 import { ReductionColorScale } from "./ReductionResults";
 import { toleranceCoverage } from "../reduction-display";
@@ -123,7 +123,6 @@ import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { transformPlaneFrame } from "../plane-frame";
 import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
-import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
@@ -588,7 +587,7 @@ export function App() {
     entityId: string;
     source: Entity["positions"];
     output: Float32Array;
-    settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+    settings?: import("../scan-preview-request").ScanPreviewParameters;
   } | null>(null);
   const [pickedScanReference, setPickedScanReference] = useState<string>();
   const scanToolAbort = useRef<AbortController | null>(null);
@@ -1097,11 +1096,9 @@ export function App() {
     activeScanPreview,
   ]);
   useEffect(() => {
-    if (scanPreview?.kind === "shrinkwrap")
-      queueMicrotask(() => workspaceApi.validateScanPreview());
+    if (scanPreview) queueMicrotask(() => workspaceApi.validateScanPreview());
     if (scanPreview && !activeScanPreview) {
-      if (scanPreview.kind === "shrinkwrap")
-        queueMicrotask(() => workspaceApi.discardScanPreview(scanPreview.id));
+      queueMicrotask(() => workspaceApi.discardScanPreview(scanPreview.id));
       setScanPreview(null);
       releaseProcessingSession();
     }
@@ -2585,7 +2582,7 @@ export function App() {
   }
   function dismissScanTool() {
     workspaceApi.discardScanPreview();
-    if (scanPreview?.kind === "shrinkwrap")
+    if (scanPreview)
       releaseProcessingPreview(scanPreview.source, scanPreview.id);
     setScanToolFraction(undefined);
     setScanPreview(null);
@@ -2621,6 +2618,7 @@ export function App() {
       showTools(tool === "reduceNoise" ? "pointNoise" : "pointReduce");
       return;
     }
+    workspaceApi.discardScanPreview();
     setScanToolFraction(undefined);
     setScanPreview(null);
     releaseProcessingSession();
@@ -2677,7 +2675,7 @@ export function App() {
     setPickedScanReference(undefined);
     setScanToolResult("");
   }, [selected?.id]);
-  async function runGuiShrinkwrap(args: Record<string, unknown>) {
+  async function runGuiScanPreview(args: Record<string, unknown>) {
     const controller = new AbortController();
     scanToolAccepting.current = args.action === "accept";
     scanToolAbort.current = controller;
@@ -2686,6 +2684,7 @@ export function App() {
       return await runShrinkwrapPreviewCommand(workspaceApi, args, {
         signal: controller.signal,
         onProgress: (fraction, stage) => {
+          setScanToolFraction(fraction);
           setScanToolProgress(`${stage}   ${Math.round(fraction * 100)}%`);
         },
       });
@@ -2798,224 +2797,91 @@ export function App() {
       }
       return;
     }
-    if (parameters.kind === "shrinkwrap") {
-      const { targetIds, ...operation } = parameters;
-      await runGuiShrinkwrap({
+    if (parameters.kind !== "flipNormals") {
+      const { targetIds, ...operation } =
+        parameters.kind === "shrinkwrap"
+          ? parameters
+          : { ...parameters, targetIds: undefined };
+      const created = await runGuiScanPreview({
         action: "create",
         entityId: selected.id,
         operation,
         ...(targetIds?.length ? { targetIds } : {}),
       });
+      if (
+        created &&
+        (parameters.kind === "reducePolygons" ||
+          (parameters.kind === "reduceNoise" && parameters.measureDeviation))
+      )
+        await runGuiScanPreview({
+          action: "compare",
+          entityId: selected.id,
+          previewId: created.previewId,
+          deviation: parameters.deviation,
+          paletteThreshold:
+            parameters.kind === "reducePolygons"
+              ? parameters.paletteThreshold
+              : parameters.deviation,
+        });
       return;
     }
-    const source = selected;
     const controller = new AbortController();
-    const reduction = parameters.kind === "reducePolygons";
-    const reportEvent = (fraction: number, stage: string) => {
-      if (controller.signal.aborted) return;
-      setScanToolFraction(reduction ? fraction : undefined);
-      setScanToolProgress(
-        reduction ? stage : `${stage} · ${Math.round(fraction * 100)}%`,
-      );
-      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
-    };
-    const report = reduction
-      ? linearProgress(reportEvent)
-      : (_start: number, _end: number) => reportEvent;
-    setScanToolFraction(reduction ? 0 : undefined);
-    setScanToolProgress(
-      `Preparing ${scanToolTitles[parameters.kind].toLowerCase()}`,
-    );
+    scanToolAbort.current = controller;
+    setProcessingBusy(true);
+    setError("");
     try {
-      const request = scanToolRequest(
-        source,
-        parameters,
-        entities,
-        triangleMask,
-      );
-      const isPreview =
-        parameters.kind === "reduceNoise" ||
-        parameters.kind === "reducePolygons" ||
-        parameters.kind === "scaleMesh" ||
-        parameters.kind === "mirrorMesh";
-      const previewId = crypto.randomUUID();
-      setScanPreview(null);
-      scanToolAbort.current = controller;
-      setNoiseComparison(null);
-      setProcessingBusy(true);
-      setError("");
-      setScanToolResult("");
       const result = await processMesh(
-        isPreview
-          ? {
-              kind: "scanPreview",
-              phase: "create",
-              previewId,
-              positions: source.positions,
-              operation: request.operation,
-            }
-          : request,
+        scanToolRequest(selected, parameters, entities, triangleMask),
         {
           signal: controller.signal,
           reuseTopology: true,
-          onProgress: report(0, reduction ? 0.75 : 1),
+          onProgress: (fraction, stage) =>
+            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
         },
       );
       if (controller.signal.aborted || !result.positions) return;
-      let summary = String(result.diagnostics.summary ?? "Mesh tool complete");
-      if (isPreview) {
-        setScanPreview({
-          id: previewId,
-          kind: parameters.kind as
-            | "reduceNoise"
-            | "reducePolygons"
-            | "scaleMesh"
-            | "mirrorMesh"
-            | "shrinkwrap",
-          entityId: source.id,
-          source: source.positions,
-          output: result.positions,
-        });
-        if (
-          parameters.kind === "reducePolygons" ||
-          (parameters.kind === "reduceNoise" && parameters.measureDeviation)
-        ) {
-          const compared = await processMesh(
-            {
-              kind: "scanPreview",
-              phase: "compare",
-              positions: source.positions,
-              previewId,
-              deviation: parameters.deviation,
-              displayRange: reduction ? parameters.deviation : undefined,
-              paletteThreshold:
-                parameters.kind === "reducePolygons"
-                  ? parameters.paletteThreshold
-                  : parameters.deviation,
-            },
-            {
-              signal: controller.signal,
-              reuseTopology: true,
-              onProgress: report(reduction ? 0.75 : 0, reduction ? 0.99 : 1),
-            },
-          );
-          if (controller.signal.aborted) return;
-          summary += ` ${String(compared.diagnostics.summary)}`;
-          if (compared.noiseComparison)
-            setNoiseComparison({
-              kind: parameters.kind,
-              entityId: source.id,
-              source: source.positions,
-              output: result.positions,
-              ...compared.noiseComparison,
-              visible: true,
-            });
-        }
-      } else {
-        replaceScanPositions(
-          result.positions,
-          scanToolTitles[parameters.kind],
-          false,
-        );
-        scanToolOutput.current = result.positions;
-      }
-      if (
-        (parameters.kind === "reduceNoise" ||
-          parameters.kind === "reducePolygons") &&
-        result.noiseComparison
-      )
-        setNoiseComparison({
-          kind: parameters.kind,
-          entityId: source.id,
-          source: source.positions,
-          output: result.positions,
-          ...result.noiseComparison,
-          visible: true,
-        });
-      setScanToolResult(summary);
-      setMessage(summary);
-      if (reduction) report(1, 1)(1, "Reduction and comparison complete");
+      replaceScanPositions(
+        result.positions,
+        scanToolTitles[parameters.kind],
+        false,
+      );
+      scanToolOutput.current = result.positions;
+      setScanToolResult(
+        String(result.diagnostics.summary ?? "Mesh tool complete"),
+      );
     } catch (error) {
-      if (controller.signal.aborted)
-        setMessage("Mesh operation cancelled; original geometry retained.");
-      else setError(errorText(error));
-      setScanToolFraction(undefined);
-      setScanToolProgress("");
+      if (!controller.signal.aborted) setError(errorText(error));
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
         setProcessingBusy(false);
-        if (!reduction) setScanToolProgress("");
-        if (controller.signal.aborted) setScanToolFraction(undefined);
+        setScanToolProgress("");
       }
     }
   }
   async function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
-    if (activeScanPreview.kind === "shrinkwrap") {
-      const result = await runGuiShrinkwrap({
-        action: "accept",
-        entityId: activeScanPreview.entityId,
-        previewId: activeScanPreview.id,
-        createNew: options?.createNewObject ?? false,
-      });
-      if (result) {
-        dismissScanTool();
-        setMessage("Mesh preview accepted.");
-      }
-      return;
-    }
     if (
       activeScanPreview.kind === "reducePolygons" &&
       !activeNoiseComparison?.statistics
     )
       return;
-    if (
-      (activeScanPreview.kind === "scaleMesh" ||
-        activeScanPreview.kind === "mirrorMesh") &&
-      options?.createNewObject &&
-      selected
-    ) {
-      const copy = (
-        activeScanPreview.kind === "mirrorMesh"
-          ? mirroredMeshCopy
-          : scaledMeshCopy
-      )(selected, activeScanPreview.output, crypto.randomUUID());
-      operationLabel.current = `${scanToolTitles[activeScanPreview.kind]} · create new object`;
-      try {
-        commit([...entities, copy]);
-        setSelectedId(copy.id);
-      } finally {
-        operationLabel.current = null;
-      }
-    } else {
-      replaceScanPositions(
-        activeScanPreview.output,
-        scanToolTitles[activeScanPreview.kind],
-        activeScanPreview.kind === "reduceNoise",
-      );
+    const result = await runGuiScanPreview({
+      action: "accept",
+      entityId: activeScanPreview.entityId,
+      previewId: activeScanPreview.id,
+      createNew: options?.createNewObject ?? false,
+    });
+    if (result) {
+      dismissScanTool();
+      setMessage("Mesh preview accepted.");
     }
-    scanToolOutput.current = activeScanPreview.output;
-    setScanPreview(null);
-    setNoiseComparison(null);
-    closeScanTool();
-    setMessage("Mesh preview accepted.");
   }
   async function updateScanComparison(
     deviation: number,
     paletteThreshold: number,
   ) {
     const preview = activeScanPreview;
-    if (preview?.kind === "shrinkwrap") {
-      if (!busy && !scanToolAbort.current)
-        await runGuiShrinkwrap({
-          action: "compare",
-          entityId: preview.entityId,
-          previewId: preview.id,
-          deviation,
-        });
-      return;
-    }
     if (
       !preview ||
       preview.kind === "scaleMesh" ||
@@ -3024,59 +2890,14 @@ export function App() {
       scanToolAbort.current
     )
       return;
-    const controller = new AbortController();
-    scanToolAbort.current = controller;
-    setProcessingBusy(true);
-    setError("");
-    const report = linearProgress((fraction, stage) => {
-      setScanToolFraction(
-        preview.kind === "reducePolygons" ? fraction : undefined,
-      );
-      setScanToolProgress(stage);
-      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+    await runGuiScanPreview({
+      action: "compare",
+      entityId: preview.entityId,
+      previewId: preview.id,
+      deviation,
+      paletteThreshold:
+        preview.kind === "reduceNoise" ? deviation : paletteThreshold,
     });
-    report(0, 1)(0, "Preparing surface comparison");
-    try {
-      const result = await processMesh(
-        {
-          kind: "scanPreview",
-          phase: "compare",
-          positions: preview.source,
-          previewId: preview.id,
-          deviation,
-          displayRange:
-            preview.kind === "reducePolygons" ? deviation : undefined,
-          paletteThreshold:
-            preview.kind === "reduceNoise" ? deviation : paletteThreshold,
-        },
-        {
-          signal: controller.signal,
-          reuseTopology: true,
-          onProgress: report(0, 0.99),
-        },
-      );
-      if (!controller.signal.aborted && result.noiseComparison) {
-        setNoiseComparison({
-          kind: preview.kind,
-          entityId: preview.entityId,
-          source: preview.source,
-          output: preview.output,
-          ...result.noiseComparison,
-          visible: true,
-        });
-        setScanToolResult(String(result.diagnostics.summary));
-        report(1, 1)(1, "Surface comparison complete");
-      }
-    } catch (error) {
-      if (!controller.signal.aborted) setError(errorText(error));
-      setScanToolFraction(undefined);
-    } finally {
-      if (scanToolAbort.current === controller) {
-        scanToolAbort.current = null;
-        setProcessingBusy(false);
-        if (preview.kind !== "reducePolygons") setScanToolProgress("");
-      }
-    }
   }
   function cancelSurfaceFit() {
     surfaceFitAbort.current?.abort();
@@ -4685,9 +4506,7 @@ export function App() {
     launchCommand: runRepeatable,
     clearScanPreview: (previewId) => {
       setScanPreview((current) => (current?.id === previewId ? null : current));
-      setNoiseComparison((current) =>
-        current?.kind === "shrinkwrap" ? null : current,
-      );
+      setNoiseComparison(null);
     },
     showScanPreview: (preview) => {
       if (!preview) {
@@ -4697,21 +4516,25 @@ export function App() {
       }
       workspaceApi.requireReferencePreviewIdle();
       setSelectedId(preview.entityId);
-      setScanTool("shrinkwrap");
+      setScanTool(preview.settings.kind);
       setMode("inspect");
       showTools("scanTools");
       setScanPreview({
         id: preview.id,
-        kind: "shrinkwrap",
+        kind: preview.settings.kind,
         entityId: preview.entityId,
         source: preview.source,
         output: preview.output,
         settings: preview.settings,
       });
       setScanToolResult(preview.summary);
-      if (preview.comparison)
+      if (
+        preview.comparison &&
+        preview.settings.kind !== "scaleMesh" &&
+        preview.settings.kind !== "mirrorMesh"
+      )
         setNoiseComparison({
-          kind: "shrinkwrap",
+          kind: preview.settings.kind,
           entityId: preview.entityId,
           source: preview.source,
           output: preview.output,
@@ -4920,9 +4743,28 @@ export function App() {
           `Unlock ${protectedObject.name} before editing or deleting it.`,
         );
       entityFeatureModel(next);
+      const preserveId = policy?.preserveFacetSelectionFor;
+      if (preserveId) {
+        const source = entities.find((e) => e.id === preserveId);
+        const output = next.find((e) => e.id === preserveId);
+        if (
+          !source ||
+          !output ||
+          source.kind !== "mesh" ||
+          output.kind !== "mesh" ||
+          source.positions.length !== output.positions.length
+        )
+          throw Error(
+            "Facet selection retention requires unchanged mesh facet identities.",
+          );
+        selectionSessions.current.set(preserveId, {
+          positions: output.positions,
+          session: sessionFor(source),
+        });
+      }
       operationLabel.current = label;
       try {
-        commit(next, undefined, policy);
+        commit(next, preserveId, policy);
       } finally {
         operationLabel.current = null;
       }

@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1â€“10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10â€“100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3626,7 +3626,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside Â±1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5029,7 +5029,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -6667,7 +6667,7 @@
   },
   {
     "name": "scan_preview",
-    "description": "Preview ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply.",
+    "description": "Preview Reduce noise, Reduce polygons, Scale mesh, Mirror mesh or ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply. Mirror uses a principal plane or referenceId with plane=object. Noise selectionOnly resolves the current source selection. Reduction GUI compares after create; agents can explicitly compare the same retained output before acceptance. Threshold changes never rerun the geometry operation.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -6686,49 +6686,159 @@
           "minLength": 1
         },
         "operation": {
-          "type": "object",
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": ["shrinkwrap"]
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["shrinkwrap"]
+                },
+                "sampleInterval": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Requested sampling spacing in mm; never silently coarsened."
+                },
+                "gapFill": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+                },
+                "organicShape": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "extraThickness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Additional outward offset in mm, tapering at local fixed seams."
+                },
+                "maxDeviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.1,
+                  "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": ["whole", "selected", "isolated"],
+                  "default": "whole",
+                  "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "sampleInterval": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.5,
-              "description": "Requested sampling spacing in mm; never silently coarsened."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reduceNoise"]
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "selectionOnly": {
+                  "type": "boolean"
+                },
+                "applyBoundaryEdges": {
+                  "type": "boolean"
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "gapFill": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reducePolygons"]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["triangles", "percentage", "deviation"]
+                },
+                "targetTriangles": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "percentage": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "paletteThreshold": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind", "mode"],
+              "additionalProperties": false
             },
-            "organicShape": {
-              "type": "boolean",
-              "default": false
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["scaleMesh"]
+                },
+                "factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "center": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["kind", "factor"],
+              "additionalProperties": false
             },
-            "extraThickness": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Additional outward offset in mm, tapering at local fixed seams."
-            },
-            "maxDeviation": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.1,
-              "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
-            },
-            "scope": {
-              "type": "string",
-              "enum": ["whole", "selected", "isolated"],
-              "default": "whole",
-              "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["mirrorMesh"]
+                },
+                "plane": {
+                  "type": "string",
+                  "enum": ["OXY", "OYZ", "OXZ", "object"]
+                },
+                "referenceId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": ["kind", "plane"],
+              "additionalProperties": false
             }
-          },
-          "required": ["kind"],
-          "additionalProperties": false
+          ]
         },
         "targetIds": {
           "type": "array",
@@ -6757,6 +6867,16 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200
+        },
+        "paletteThreshold": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison color threshold in mm; defaults to deviation."
+        },
+        "displayRange": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison display range in mm; defaults to deviation for polygon reduction."
         }
       },
       "required": ["action", "entityId", "expectedRevision", "requestId"],
@@ -6765,7 +6885,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {

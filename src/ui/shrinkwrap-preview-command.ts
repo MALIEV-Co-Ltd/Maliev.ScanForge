@@ -11,9 +11,9 @@ export async function runShrinkwrapPreviewCommand(
 ) {
   return runApplicationJobCommand(api, "scan_preview", args, {
     ...options,
-    cancelledMessage: "ShrinkWrap operation cancelled.",
+    cancelledMessage: "Mesh preview operation cancelled.",
     leaseMessage:
-      "ShrinkWrap reached its operation lease; retry with a smaller region.",
+      "Mesh preview reached its operation lease; retry with a smaller region.",
   });
 }
 /** Accept commits intentionally replace source positions. Other source changes cancel work. */

@@ -335,6 +335,38 @@ try {
   );
   const mcpGeometrySha256 = await geometryHash();
   assert.equal(guiGeometrySha256, mcpGeometrySha256);
+  await mutate("history_seek", { index: imported.undo });
+  const staged = await job(
+    await mutate("scan_preview", {
+      action: "create",
+      entityId: object.id,
+      operation: {
+        kind: "reduceNoise",
+        iterations: 1,
+        measureDeviation: true,
+        deviation: 0.05,
+        applyBoundaryEdges: true,
+      },
+    }),
+  );
+  console.log("Comparing retained output through public scan_preview");
+  await job(
+    await mutate("scan_preview", {
+      action: "compare",
+      entityId: object.id,
+      previewId: staged.result.previewId,
+      deviation: 0.05,
+    }),
+  );
+  await job(
+    await mutate("scan_preview", {
+      action: "accept",
+      entityId: object.id,
+      previewId: staged.result.previewId,
+    }),
+  );
+  const previewGeometrySha256 = await geometryHash();
+  assert.equal(guiGeometrySha256, previewGeometrySha256);
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -342,6 +374,7 @@ try {
     previewMs,
     guiGeometrySha256,
     mcpGeometrySha256,
+    previewGeometrySha256,
     comparisonBeforePreview: true,
     errors: [...errors],
   };

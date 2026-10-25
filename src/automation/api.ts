@@ -133,7 +133,7 @@ export interface WorkspaceHost {
       source: Entity["positions"];
       output: Float32Array;
       summary: string;
-      settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+      settings: import("../scan-preview-request").ScanPreviewParameters;
       comparison?: NonNullable<
         import("../processing-client").ProcessingResult["noiseComparison"]
       >;

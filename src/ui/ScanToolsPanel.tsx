@@ -105,7 +105,7 @@ export interface ScanToolsPanelProps {
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
-  previewSettings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+  previewSettings?: import("../scan-preview-request").ScanPreviewParameters;
   onAccept?: (options?: { createNewObject?: boolean }) => void;
   onInvalidatePreview?: () => void;
   onCompare?: (deviation: number, paletteThreshold: number) => void;
@@ -174,13 +174,32 @@ export function ScanToolsPanel({
   const [targetIds, setTargetIds] = useState<string[]>([]);
   useEffect(() => {
     if (!previewSettings) return;
-    setSampleInterval(previewSettings.sampleInterval ?? 0.5);
-    setGapFill(previewSettings.gapFill ?? 0);
-    setOrganicShape(previewSettings.organicShape ?? false);
-    setExtraThickness(previewSettings.extraThickness ?? 0);
-    setMaxDeviation(previewSettings.maxDeviation ?? 0.1);
-    setScope(previewSettings.scope ?? "whole");
-    setTargetIds(previewSettings.targetIds ?? []);
+    if (previewSettings.kind === "shrinkwrap") {
+      setSampleInterval(previewSettings.sampleInterval ?? 0.5);
+      setGapFill(previewSettings.gapFill ?? 0);
+      setOrganicShape(previewSettings.organicShape ?? false);
+      setExtraThickness(previewSettings.extraThickness ?? 0);
+      setMaxDeviation(previewSettings.maxDeviation ?? 0.1);
+      setScope(previewSettings.scope ?? "whole");
+      setTargetIds(previewSettings.targetIds ?? []);
+    } else if (previewSettings.kind === "reduceNoise") {
+      setIterations(previewSettings.iterations ?? 1);
+      setDeviation(previewSettings.deviation ?? 0.05);
+      setSelectionOnly(previewSettings.selectionOnly ?? false);
+      setApplyBoundaryEdges(previewSettings.applyBoundaryEdges ?? true);
+      setMeasureDeviation(previewSettings.measureDeviation ?? false);
+    } else if (previewSettings.kind === "reducePolygons") {
+      setMode(previewSettings.mode);
+      setTargetTriangles(previewSettings.targetTriangles ?? 100000);
+      setPercentage(previewSettings.percentage ?? 50);
+      setDeviation(previewSettings.deviation ?? 0.05);
+    } else if (previewSettings.kind === "scaleMesh") {
+      setFactor(previewSettings.factor);
+      setCenter(previewSettings.center ?? [0, 0, 0]);
+    } else {
+      setPlane(previewSettings.plane);
+      setReferenceId(previewSettings.referenceId ?? "");
+    }
   }, [previewSettings]);
   const [plane, setPlane] = useState<"OXY" | "OYZ" | "OXZ" | "object">("OXY");
   const planes = useMemo(

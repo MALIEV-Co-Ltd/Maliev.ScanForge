@@ -12,7 +12,7 @@
 
 ## Constraints
 
-- Edit the primary checkout; the validation checkout remains read-only.
+- Work in the managed M2 worktree on `codex/m2-repair-processing`, based on merged M1. Preserve the dirty primary checkout and read-only validation checkout.
 - Preserve M1 changes and the existing user dev server.
 - Run heavy checks serially under the existing aggregate 4 GiB / 25% CPU policy and finite leases. Build heap is 3072 MiB; test heap is 1024 MiB.
 - Retained native images remain static analysis data: no executable replay or instrumentation. The user subsequently authorized operating the installed native GUI to import the manufactured fixtures and export comparison results.

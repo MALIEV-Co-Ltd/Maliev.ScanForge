@@ -1366,3 +1366,7 @@ creates a result owner by default (explicit replacement remains available), then
 commits once and selects the created owner. Structured results identify the base,
 references and output. Existing job, revision, request, cancellation, lock and
 history boundaries remain authoritative.
+
+### Shared Scan Data preview owner
+
+`createScanPreviewOperation` owns Noise, Reduction, Scale, Mirror and ShrinkWrap previews for both GUI and MCP. It binds workspace references/selection, retains immutable worker output and comparison state under a 60-second lease, validates source/reference identity, and commits acceptance as one tracked mutation. The editor adapter only presents that owner. Comparison threshold updates reuse worker caches. A trusted commit policy preserves facet selection only for noise replacement with unchanged facet identities; transport callers cannot supply this policy.
