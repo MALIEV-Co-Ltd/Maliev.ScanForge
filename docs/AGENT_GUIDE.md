@@ -455,6 +455,11 @@ In ScanForge, open **Settings → AI agent access**, enter `http://127.0.0.1:518
 
 The bridge binds only to `127.0.0.1`. Browser requests require the exact allowed origin, loopback Host and Bearer token. CORS preflight grants no workspace access. One paired browser owns a bridge at a time; a second browser receives HTTP 409. Polling renews a 60-second ownership lease. The server exits its HTTP service on client shutdown and after its eight-hour maximum lifetime; restart and pair again when needed. Different simultaneous workspaces require distinct ports/tokens/client configurations.
 
+An idle long poll checks its actual wait and ownership deadlines after every timer
+wake. An early timer is rearmed; expired ownership ends the pending response with
+HTTP 409 and releases it before a new browser pairs. The 8000 ms maximum poll
+wait and existing command/session limits remain unchanged.
+
 A hosted HTTPS page may be subject to browser local-network permission or connection restrictions. Grant the browser's local-network permission where supported; if blocked, serve the application locally on an allowed origin. Remote/hosted MCP transport and OAuth are not provided by this local integration.
 
 ## Agent operating procedure

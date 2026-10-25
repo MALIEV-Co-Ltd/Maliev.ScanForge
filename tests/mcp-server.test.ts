@@ -186,6 +186,40 @@ describe("opt-in bounded long polling", () => {
     expect((await request(bridge, `/poll?sessionId=${next}`)).status).toBe(200);
   });
 
+  it("keeps an early timer wake pending until the lease actually expires", async () => {
+    const bridge = await setup({ leaseMs: 120 });
+    const sessionId = await connect(bridge);
+    const schedule = globalThis.setTimeout;
+    let earlyWake = false;
+    const timers = vi.spyOn(globalThis, "setTimeout").mockImplementation(((
+      callback,
+      delay,
+      ...args
+    ) => {
+      const early = !earlyWake && Number(delay) > 1 && Number(delay) <= 120;
+      if (early) earlyWake = true;
+      return schedule(callback, early ? 1 : delay, ...args);
+    }) as typeof setTimeout);
+    try {
+      const response = await request(
+        bridge,
+        `/poll?sessionId=${sessionId}&waitMs=8000`,
+      );
+      expect(earlyWake).toBe(true);
+      expect(response.status).toBe(409);
+      await expect(bridge.dispatch("project_get")).rejects.toThrow(
+        "No ScanForge",
+      );
+      const next = await connect(bridge);
+      expect(next).not.toBe(sessionId);
+      expect((await request(bridge, `/poll?sessionId=${next}`)).status).toBe(
+        200,
+      );
+    } finally {
+      timers.mockRestore();
+    }
+  });
+
   it("releases a pending waiter on disconnect and on server close", async () => {
     const bridge = await setup();
     let sessionId = await connect(bridge);
