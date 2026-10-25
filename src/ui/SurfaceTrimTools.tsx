@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ApplicationApi } from "../automation/api";
 import type { Entity, Vec3 } from "../types";
 import { runApplicationJobCommand } from "./application-job-command";
+import { CadJobCancel } from "./CadJobCancel";
 
 export function SurfaceTrimTools({
   entity,
@@ -211,9 +212,11 @@ export function SurfaceTrimTools({
       >
         Apply surface trim
       </button>
-      <button onClick={cancel}>
-        {busy ? "Cancel surface trim" : "Cancel trimming"}
-      </button>
+      {busy ? (
+        <CadJobCancel label="Cancel surface trim" onCancel={cancel} />
+      ) : (
+        <button onClick={cancel}>Cancel trimming</button>
+      )}
       <p className="muted">
         Retained regions stay exact CAD surfaces. Boundary points are ambiguous;
         use Split solid for volume cutting.

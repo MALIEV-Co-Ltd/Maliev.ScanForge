@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/reconstruction-ui-command.test.ts (17 tests | 1 failed) 21ms
+   × retains an inspected CAD reference revision instead of silently refreshing it 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reconstruction-ui-command.test.ts > retains an inspected CAD reference revision instead of silently refreshing it
+AssertionError: expected 7 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 7
+
+ ❯ tests/reconstruction-ui-command.test.ts:32:52
+     30|   const api=apiWith(invoke);
+     31|   await runApplicationJobCommand(api,"cad_create",{name:"Fillet",recip…
+     32|   expect(invoke.mock.calls[0][1].expectedRevision).toBe(3);
+       |                                                    ^
+     33|   expect(api.currentRevision).not.toHaveBeenCalled();
+     34| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  00:55:55
+   Duration  184ms (transform 55%, tests 26%, import 15%, worker 4%)
+

@@ -4323,6 +4323,7 @@ export function App() {
     recipe: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
     inputIds: string[] = [],
     hideInputs = false,
+    expectedRevision?: number,
   ) {
     if (busy) return;
     setError("");
@@ -4347,6 +4348,7 @@ export function App() {
         {
           cancelledMessage: "CAD creation cancelled.",
           leaseMessage: "CAD creation exceeded its time limit.",
+          expectedRevision,
         },
       );
       setMessage(label + " created as exact CAD");
@@ -7178,7 +7180,9 @@ export function App() {
                 {workspaceGroup(workspace) === "advancedCad" && (
                   <div className="advanced-cad-panels">
                     <AdvancedCadTools
-                      key={`${workspace}:${selected?.id}`}
+                      key={`${workspace}:${selected?.id}:${selected?.kernelId}`}
+                      api={workspaceApi}
+                      active={toolPanelOpen}
                       entities={entities}
                       selected={selected}
                       disabled={busy}
@@ -7228,7 +7232,12 @@ export function App() {
                       onSweep={(points, path) =>
                         cadOperation("Sweep", { kind: "sweep", points, path })
                       }
-                      onEdges={(indices, amount, operation) =>
+                      onEdges={(
+                        indices,
+                        amount,
+                        operation,
+                        inspectedRevision,
+                      ) =>
                         cadOperation(
                           operation,
                           (refs) => ({
@@ -7239,6 +7248,8 @@ export function App() {
                             operation,
                           }),
                           [selected!.id],
+                          false,
+                          inspectedRevision,
                         )
                       }
                       onOffset={(distance) =>

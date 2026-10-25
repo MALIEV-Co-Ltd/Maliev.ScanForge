@@ -17,6 +17,50 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Exact edge discovery and reachable cancellation
+
+Existing read-only `cad_inspect` now optionally returns bounded edge-reference
+pages and the inspected revision. Omission preserves its original summary.
+References include curve kind/type, degeneracy, parameter-order endpoints,
+tolerance-inclusive bounds and analytic length. GUI Fillet/Chamfer use the same
+operation and retain its revision through the shared modeling request.
+
+The [kernel receipt](evidence/m5-20261025/edge-discovery-cad.txt) verifies saved-BREP
+inspection indices against live treatment order for a box, cylinder seam, sphere
+degenerates, all Boolean outcomes and split outputs. Straight, circular and
+quarter-circle lengths match analytic expectations. Fillet/chamfer using a
+discovered index remove the intended supporting edge. Default inspection,
+page bounds, native-store preservation and temporary-file cleanup pass. Retained
+[worker red](evidence/m5-20261025/edge-discovery-red.txt),
+[MCP schema red](evidence/m5-20261025/edge-api-red.txt) and
+[revision-adapter red](evidence/m5-20261025/edge-revision-red.txt) receipts distinguish
+the reproduced gaps from passing checks.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/edge-discovery-browser.json)
+(`scanforge-7d1184beaf6be387`) uses actual Fillet/Chamfer ribbon entry, reads exact
+edge references and selects index 1. Modeling results match complete MCP geometry
+digests. A 36-edge compound exercises GUI pages 32 → 4 → 32 → 4, selection
+retention and unchanged geometry/revision/history. A source revision change
+disables stale GUI application and the public stale request rejects; refreshing
+inspection restores application. The [rendered edge controls](evidence/m5-20261025/cad-edges-fillet.png)
+were visually checked with the source body isolated in the viewport.
+
+The cancellation regression holds the owned diagnostic worker script, clicks
+[Cancel outside the inert panel](evidence/m5-20261025/edge-cancellation.png), verifies
+the shared job is cancelled without scene/history/revision changes, then inspects
+and models successfully. This verifies pending diagnostic cancellation, not every
+mid-algorithm modeling cancellation case. CAD summary inspection and surface trim
+also use this reachable owned-job cancel control. The modeling kernel is retained.
+
+The [standard build](evidence/m5-20261025/edge-discovery-build.txt) passes all twelve
+typecheck batches; [full unit suite](evidence/m5-20261025/edge-discovery-unit.txt)
+passes 49,031 tests, 64 skipped (678 passed files, 18 skipped; 277.13 s). Focused
+contracts, CAD smoke, formatting and diff checks pass. Both static API/worker and
+GUI reviews found no actionable issue. The preceding integrated commit `6cc92cd`
+passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40217826303);
+the new edge candidate needs its own hosted run. Compatible join contracts,
+native/continuity/blend acceptance, sketch chain and M4 dependency remain open.
+
 ### Integrated ordinary CAD ribbon access
 
 Merged current main `fcf6e3b` (shared foundation/metrology/style changes) into the

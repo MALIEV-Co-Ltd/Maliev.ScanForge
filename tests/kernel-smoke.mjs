@@ -743,6 +743,188 @@ try {
   assert.equal(boxInspection.vertices, 8);
   close(boxInspection.areaMm2, 2200, "Exact inspection box area");
   close(boxInspection.volumeMm3, 6000, "Exact inspection box volume");
+  async function verifyEdgeReferences(body) {
+    const handles = [],
+      unique = [],
+      expected = [];
+    const keep = (handle) => (handles.push(handle), handle);
+    try {
+      const shape = vm.runInContext(
+        `shapes.get(${JSON.stringify(body.kernelId)})`,
+        context,
+      );
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum.TopAbs_EDGE,
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      for (; explorer.More(); explorer.Next()) {
+        const current = keep(explorer.Current()),
+          edge = keep(oc.TopoDS.Edge_1(current));
+        if (unique.some((prior) => prior.IsSame(edge))) continue;
+        unique.push(edge);
+        const degenerate = oc.BRep_Tool.Degenerated(edge);
+        if (degenerate) {
+          expected.push({ degenerate: true });
+          continue;
+        }
+        const curve = keep(new oc.BRepAdaptor_Curve_2(edge));
+        const a = keep(curve.Value(curve.FirstParameter())),
+          b = keep(curve.Value(curve.LastParameter()));
+        const props = keep(new oc.GProp_GProps_1());
+        oc.BRepGProp.LinearProperties(edge, props, true, false);
+        expected.push({
+          degenerate: false,
+          curveType: curve.GetType().value,
+          lengthMm: props.Mass(),
+          endpoints: [
+            [a.X(), a.Y(), a.Z()],
+            [b.X(), b.Y(), b.Z()],
+          ],
+        });
+      }
+      const actual = [];
+      for (let offset = 0; offset < expected.length; offset += 5) {
+        const report = await request("inspectBrep", {
+          brep: body.brep,
+          edgeOffset: offset,
+          edgeLimit: 5,
+        });
+        assert.equal(report.edgeReferences.total, expected.length);
+        assert.equal(
+          report.edgeReferences.nextOffset,
+          offset + 5 < expected.length ? offset + 5 : null,
+        );
+        actual.push(...report.edgeReferences.items);
+      }
+      assert.equal(actual.length, expected.length);
+      actual.forEach((edge, index) => {
+        assert.equal(edge.index, index);
+        assert.equal(edge.degenerate, expected[index].degenerate);
+        if (edge.degenerate) return;
+        assert.equal(edge.curveType, expected[index].curveType);
+        close(
+          edge.lengthMm,
+          expected[index].lengthMm,
+          "Saved BREP edge length keeps live treatment index",
+        );
+        for (let end = 0; end < 2; end++)
+          for (let axis = 0; axis < 3; axis++)
+            close(
+              edge.endpoints[end][axis],
+              expected[index].endpoints[end][axis],
+              "Saved BREP endpoint keeps live treatment index",
+            );
+      });
+      return actual;
+    } finally {
+      context.cleanup(handles);
+    }
+  }
+  const allBoxEdges = await verifyEdgeReferences(box);
+  const cylinderEdgesBody = await request("primitive", {
+    kind: "cylinder",
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    radius: 3,
+    height: 8,
+  });
+  const cylinderEdges = await verifyEdgeReferences(cylinderEdgesBody);
+  const circleEdges = cylinderEdges.filter((edge) => edge.kind === "circle");
+  assert.equal(circleEdges.length, 2);
+  circleEdges.forEach((edge) =>
+    close(edge.lengthMm, 6 * Math.PI, "Circular edge analytic circumference"),
+  );
+  assert.equal(
+    cylinderEdges.filter((edge) => edge.kind === "line").length,
+    1,
+    "Cylinder seam retains one unique edge index",
+  );
+  const targetEdge = allBoxEdges[0],
+    a = targetEdge.endpoints[0],
+    direction = targetEdge.endpoints[1].map((v, i) => v - a[i]);
+  const distanceToLine = (p) => {
+    const v = p.map((x, i) => x - a[i]);
+    return (
+      Math.hypot(
+        v[1] * direction[2] - v[2] * direction[1],
+        v[2] * direction[0] - v[0] * direction[2],
+        v[0] * direction[1] - v[1] * direction[0],
+      ) / Math.hypot(...direction)
+    );
+  };
+  for (const operation of ["fillet", "chamfer"]) {
+    const treated = await request("edges", {
+      kernelId: box.kernelId,
+      edgeIndices: [targetEdge.index],
+      amount: 0.5,
+      operation,
+    });
+    const treatedEdges = await verifyEdgeReferences(treated);
+    if (operation === "fillet") {
+      const arcs = treatedEdges.filter((edge) => edge.kind === "circle");
+      assert.equal(arcs.length, 2);
+      arcs.forEach((edge) =>
+        close(
+          edge.lengthMm,
+          Math.PI / 4,
+          "Quarter-circle fillet edge analytic length",
+        ),
+      );
+    }
+    assert(
+      !treatedEdges.some(
+        (edge) =>
+          edge.kind === "line" &&
+          edge.endpoints.every((point) => distanceToLine(point) < 1e-7),
+      ),
+      "Discovered treatment index removes the intended supporting edge",
+    );
+    await request("release", [treated.kernelId]);
+  }
+  await request("release", [cylinderEdgesBody.kernelId]);
+  const sphereEdgesBody = await request("primitive", {
+    kind: "sphere",
+    center: [0, 0, 0],
+    radius: 3,
+  });
+  const sphereEdges = await verifyEdgeReferences(sphereEdgesBody);
+  assert(
+    sphereEdges.some((edge) => edge.degenerate),
+    "Degenerate sphere edges retain discovery indices",
+  );
+  await request("release", [sphereEdgesBody.kernelId]);
+  assert.equal(boxInspection.edgeReferences, undefined);
+  const boxEdges = await request("inspectBrep", {
+    brep: box.brep,
+    edgeOffset: 0,
+    edgeLimit: 5,
+  });
+  assert.equal(boxEdges.edgeReferences.total, 12);
+  assert.equal(boxEdges.edgeReferences.nextOffset, 5);
+  assert.deepEqual(
+    Array.from(boxEdges.edgeReferences.items, (e) => e.index),
+    [0, 1, 2, 3, 4],
+  );
+  for (const edge of boxEdges.edgeReferences.items) {
+    assert.equal(edge.kind, "line");
+    assert.equal(edge.degenerate, false);
+    close(
+      Math.hypot(...edge.endpoints[1].map((v, i) => v - edge.endpoints[0][i])),
+      edge.lengthMm,
+      "Straight edge analytic length",
+    );
+  }
+  await assert.rejects(
+    request("inspectBrep", { brep: box.brep, edgeLimit: 129 }),
+    /128/,
+  );
+  await assert.rejects(
+    request("inspectBrep", { brep: box.brep, edgeOffset: -1 }),
+    /offset/i,
+  );
   await assert.rejects(request("inspectBrep", { brep: "not BREP" }), /BREP/);
   assert.equal(vm.runInContext("shapes.size", context), shapesBeforeInspection);
   assert.equal(oc.FS.analyzePath("check.brp").exists, false);
@@ -1134,6 +1316,7 @@ try {
       secondId: second.kernelId,
     });
     close(volume(result.positions), expectedVolume, `${operation} volume`);
+    await verifyEdgeReferences(result);
     assert.ok(result.brep.length > 100);
     const encoded = await request("export", [result.kernelId]);
     const roundtrip = await request("import", {
@@ -1856,8 +2039,10 @@ try {
     cutterId: second.kernelId,
   });
   assert.equal(splitParts.length, 2);
-  for (const part of splitParts)
+  for (const part of splitParts) {
     close(exactVolume(part.kernelId), 500, "Split half native volume");
+    await verifyEdgeReferences(part);
+  }
   close(
     splitParts.reduce((sum, part) => sum + exactVolume(part.kernelId), 0),
     exactVolume(first.kernelId),

@@ -83,6 +83,12 @@ describe("CAD tool panels", () => {
       const html = renderToStaticMarkup(
         <ToolWorkspace.Provider value={tool}>
           <AdvancedCadTools
+            api={{
+              currentRevision: () => 0,
+              invoke: async () => {
+                throw Error("Unused in static panel rendering");
+              },
+            }}
             entities={[]}
             disabled={false}
             onLoft={noop}

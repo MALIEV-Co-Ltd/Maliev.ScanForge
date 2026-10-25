@@ -6,6 +6,10 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  fillet:
+    "docs/M5_ACCEPTANCE.md: revision-fenced exact edge discovery, intended native edge treatment and GUI/public MCP geometry equality",
+  chamfer:
+    "docs/M5_ACCEPTANCE.md: revision-fenced exact edge discovery, intended native edge treatment and GUI/public MCP geometry equality",
   loft: "docs/M5_ACCEPTANCE.md: shared CAD jobs, analytic loft volume and GUI/public MCP exact geometry equality",
   sweep:
     "docs/M5_ACCEPTANCE.md: shared CAD jobs, straight sweep volume and GUI/public MCP exact geometry equality",

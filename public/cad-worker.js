@@ -601,7 +601,114 @@ function importFile(oc, payload, onProgress = () => {}) {
   }
 }
 
+function inspectCadEdge(oc, shape, index) {
+  const handles = [];
+  const keep = (handle) => (handles.push(handle), handle);
+  const coordinates = (point, bounded = true) => {
+    const value = [point.X(), point.Y(), point.Z()];
+    if (
+      !value.every(
+        (v) => Number.isFinite(v) && (!bounded || Math.abs(v) <= 1e9),
+      )
+    )
+      throw Error(
+        "CAD edge reference coordinates are outside the supported range.",
+      );
+    return value;
+  };
+  try {
+    const edge = keep(oc.TopoDS.Edge_1(shape));
+    const degenerate = oc.BRep_Tool.Degenerated(edge);
+    const bounds = keep(new oc.Bnd_Box_1());
+    oc.BRepBndLib.Add(edge, bounds, false);
+    const boundsMm = bounds.IsVoid()
+      ? undefined
+      : {
+          min: coordinates(keep(bounds.CornerMin()), false),
+          max: coordinates(keep(bounds.CornerMax()), false),
+        };
+    if (degenerate)
+      return {
+        index,
+        kind: "degenerate",
+        curveType: null,
+        degenerate: true,
+        lengthMm: 0,
+        ...(boundsMm ? { boundsMm } : {}),
+      };
+    const curve = keep(new oc.BRepAdaptor_Curve_2(edge));
+    const curveType = curve.GetType().value;
+    const kinds = [
+      "Line",
+      "Circle",
+      "Ellipse",
+      "Hyperbola",
+      "Parabola",
+      "BezierCurve",
+      "BSplineCurve",
+      "OffsetCurve",
+      "OtherCurve",
+    ];
+    const names = [
+      "line",
+      "circle",
+      "ellipse",
+      "hyperbola",
+      "parabola",
+      "bezier",
+      "bspline",
+      "offset",
+      "other",
+    ];
+    const kind =
+      names[
+        kinds.findIndex(
+          (name) => oc.GeomAbs_CurveType[`GeomAbs_${name}`].value === curveType,
+        )
+      ] ?? "other";
+    const first = curve.FirstParameter(),
+      last = curve.LastParameter();
+    if (![first, last].every(Number.isFinite))
+      throw Error("CAD edge reference has unbounded parameters.");
+    const endpoints = [
+      coordinates(keep(curve.Value(first))),
+      coordinates(keep(curve.Value(last))),
+    ];
+    const properties = keep(new oc.GProp_GProps_1());
+    oc.BRepGProp.LinearProperties(edge, properties, true, false);
+    const lengthMm = properties.Mass();
+    if (!Number.isFinite(lengthMm) || lengthMm < 0)
+      throw Error("CAD edge reference has invalid analytic length.");
+    return {
+      index,
+      kind,
+      curveType,
+      degenerate: false,
+      endpoints,
+      lengthMm,
+      boundsMm,
+    };
+  } finally {
+    cleanup(handles);
+  }
+}
+
 function inspectBrep(oc, input) {
+  const includeEdges =
+    input.edgeOffset !== undefined || input.edgeLimit !== undefined;
+  const edgeOffset = input.edgeOffset ?? 0,
+    edgeLimit = input.edgeLimit ?? 32;
+  if (
+    includeEdges &&
+    (!Number.isInteger(edgeOffset) || edgeOffset < 0 || edgeOffset > 200000)
+  )
+    throw Error("CAD edge offset must be an integer from 0 to 200000.");
+  if (
+    includeEdges &&
+    (!Number.isInteger(edgeLimit) || edgeLimit < 1 || edgeLimit > 128)
+  )
+    throw Error("CAD edge page limit must be an integer from 1 to 128.");
+  const edgeItems = [];
   if (
     typeof input.brep !== "string" ||
     !input.brep.length ||
@@ -637,13 +744,26 @@ function inspectBrep(oc, input) {
           throw new Error(
             "CAD inspection exceeds its 200000 topology-visit resource limit.",
           );
-        const current = keep(explorer.Current());
-        const hash = current.HashCode(2147483647);
-        const bucket = buckets.get(hash) ?? [];
-        if (!bucket.some((prior) => prior.IsSame(current))) {
-          bucket.push(current);
-          buckets.set(hash, bucket);
-          total++;
+        const current = explorer.Current();
+        let retained = false;
+        try {
+          const hash = current.HashCode(2147483647);
+          const bucket = buckets.get(hash) ?? [];
+          if (!bucket.some((prior) => prior.IsSame(current))) {
+            bucket.push(keep(current));
+            retained = true;
+            buckets.set(hash, bucket);
+            if (
+              includeEdges &&
+              kind === "TopAbs_EDGE" &&
+              total >= edgeOffset &&
+              total < edgeOffset + edgeLimit
+            )
+              edgeItems.push(inspectCadEdge(oc, current, total));
+            total++;
+          }
+        } finally {
+          if (!retained) current.delete();
         }
       }
       return total;
@@ -675,6 +795,19 @@ function inspectBrep(oc, input) {
       signedVolumeMm3,
       volumeMm3: Math.abs(signedVolumeMm3),
       topologyVisits: visits,
+      ...(includeEdges
+        ? {
+            edgeReferences: {
+              offset: edgeOffset,
+              total: edges,
+              nextOffset:
+                edgeOffset + edgeItems.length < edges
+                  ? edgeOffset + edgeItems.length
+                  : null,
+              items: edgeItems,
+            },
+          }
+        : {}),
     };
   } finally {
     cleanup(handles);

@@ -1597,6 +1597,18 @@
     "inputSchema": {
       "type": "object",
       "properties": {
+        "edgeOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200000,
+          "description": "Request an edge-reference page starting at this zero-based index. If either paging field is supplied, omitted edgeOffset is 0 and omitted edgeLimit is 32. Omit both to preserve the summary-only response."
+        },
+        "edgeLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128,
+          "description": "Maximum edge references in the requested page. References include treatment index, curve kind/type, degeneracy, parameter-order endpoints, tolerance-inclusive kernel bounds and analytic lengthMm. The response adds inspectedRevision; rebuilds invalidate prior references."
+        },
         "entityId": {
           "type": "string",
           "minLength": 1,

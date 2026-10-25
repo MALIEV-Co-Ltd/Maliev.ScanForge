@@ -25,6 +25,26 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+it("retains an inspected CAD reference revision instead of silently refreshing it", async () => {
+  const invoke = vi.fn(
+    async (command: string, _args: Record<string, unknown>) =>
+      command === "job_get" ? done() : ok({ jobId: "cad-job" }),
+  );
+  const api = apiWith(invoke);
+  await runApplicationJobCommand(
+    api,
+    "cad_create",
+    { name: "Fillet", recipe: {} },
+    {
+      expectedRevision: 3,
+      cancelledMessage: "cancelled",
+      leaseMessage: "expired",
+    },
+  );
+  expect(invoke.mock.calls[0][1].expectedRevision).toBe(3);
+  expect(api.currentRevision).not.toHaveBeenCalled();
+});
+
 it("routes the GUI reconstruction branch through the shared application job", () => {
   const app = readFileSync(
     new URL("../src/ui/App.tsx", import.meta.url),

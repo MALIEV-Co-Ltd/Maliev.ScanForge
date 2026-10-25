@@ -566,6 +566,8 @@ try {
       boolean: "Boolean tools",
       splitSolid: "Split solid",
       shell: "Shell",
+      fillet: "Fillet",
+      chamfer: "Chamfer",
     };
     const command = (await call("command_get")).result.commands.find(
       (x) => x.name === `ribbon:${workspace}`,
@@ -1255,13 +1257,275 @@ try {
       ["shell", "Create hollow shell"],
     ]) {
       await mutate("object_select", { entityId: base.entityIds[0] });
-      await checkGuiCad(workspace, button);
+      await checkGuiCad(
+        workspace,
+        button,
+        process.env.SCANFORGE_TEST_CAD_EDGES === "1" && workspace !== "shell"
+          ? {
+              prepare: async () => {
+                const edgePanel = page.getByRole("region", {
+                  name: "Exact CAD edge references",
+                  exact: true,
+                });
+                for (const object of (await call("project_get")).result
+                  .objects) {
+                  const visible = object.id === base.entityIds[0];
+                  if (object.visible !== visible)
+                    await mutate("object_update", {
+                      entityId: object.id,
+                      patch: { visible },
+                    });
+                }
+                await mutate("viewport_control", {
+                  action: "fit",
+                  entityId: base.entityIds[0],
+                });
+                const beforeEdges = await call("project_get");
+                if (workspace === "fillet") {
+                  let release;
+                  const held = new Promise((resolve) => {
+                    release = resolve;
+                  });
+                  const routeHandler = async (route) => {
+                    await held;
+                    await route.continue().catch(() => {});
+                  };
+                  await page.route("**/cad-worker.js", routeHandler);
+                  try {
+                    const oldJobs = new Set(
+                      (await call("session_get")).result.jobs.map(
+                        (x) => x.jobId,
+                      ),
+                    );
+                    await edgePanel
+                      .getByRole("button", {
+                        name: "Inspect CAD edges",
+                        exact: true,
+                      })
+                      .click();
+                    await page.screenshot({
+                      path: fileURLToPath(
+                        new URL("edge-cancellation.png", out),
+                      ),
+                    });
+                    await page
+                      .getByRole("button", {
+                        name: "Cancel edge inspection",
+                        exact: true,
+                      })
+                      .click();
+                    await eventually(async () => {
+                      const session = (await call("session_get")).result;
+                      assert.equal(session.activeJobId, null);
+                      assert(
+                        session.jobs.some(
+                          (x) =>
+                            !oldJobs.has(x.jobId) &&
+                            x.command === "cad_inspect" &&
+                            x.status === "cancelled",
+                        ),
+                      );
+                    });
+                  } finally {
+                    release();
+                    await page.unroute("**/cad-worker.js", routeHandler);
+                  }
+                  const afterCancel = await call("project_get");
+                  assert.equal(afterCancel.revision, beforeEdges.revision);
+                  assert.equal(
+                    afterCancel.result.undo,
+                    beforeEdges.result.undo,
+                  );
+                }
+                const discovered = await job(
+                  await call("cad_inspect", {
+                    entityId: base.entityIds[0],
+                    edgeOffset: 0,
+                    edgeLimit: 32,
+                  }),
+                );
+                assert.equal(discovered.edgeReferences.total, 12);
+                await edgePanel
+                  .getByRole("button", {
+                    name: "Inspect CAD edges",
+                    exact: true,
+                  })
+                  .click();
+                await eventually(async () =>
+                  assert.equal(
+                    await edgePanel.getByRole("checkbox").count(),
+                    12,
+                  ),
+                );
+                await edgePanel
+                  .getByRole("checkbox", { name: "Edge 0 line", exact: true })
+                  .uncheck();
+                await edgePanel
+                  .getByRole("checkbox", { name: "Edge 1 line", exact: true })
+                  .check();
+                assert.equal(
+                  await page
+                    .getByRole("textbox", {
+                      name: "CAD edge indices",
+                      exact: true,
+                    })
+                    .inputValue(),
+                  "1",
+                );
+                await page.screenshot({
+                  path: fileURLToPath(
+                    new URL(`cad-edges-${workspace}.png`, out),
+                  ),
+                });
+                if (workspace === "fillet") {
+                  await mutate("object_update", {
+                    entityId: base.entityIds[0],
+                    patch: { name: "Matrix base updated" },
+                  });
+                  assert(
+                    await page
+                      .getByRole("button", { name: button, exact: true })
+                      .isDisabled(),
+                  );
+                  const response = await client.callTool({
+                    name: "cad_create",
+                    arguments: {
+                      name: "Stale edge test",
+                      recipe: {
+                        kind: "edges",
+                        source: { featureId: base.entityIds[0], output: 0 },
+                        edgeIndices: [1],
+                        amount: 1,
+                        operation: "fillet",
+                      },
+                      expectedRevision: discovered.inspectedRevision,
+                      requestId: randomUUID(),
+                    },
+                  });
+                  const wire =
+                    response.structuredContent ??
+                    JSON.parse(response.content[0].text);
+                  assert(
+                    !wire.ok && wire.error.code === "REVISION_CONFLICT",
+                    JSON.stringify(wire),
+                  );
+                  await edgePanel
+                    .getByRole("button", {
+                      name: "Inspect CAD edges",
+                      exact: true,
+                    })
+                    .click();
+                  await eventually(async () =>
+                    assert(
+                      await page
+                        .getByRole("button", { name: button, exact: true })
+                        .isEnabled(),
+                    ),
+                  );
+                }
+                ledger.scenarios.push({
+                  edgeDiscovery: {
+                    workspace,
+                    discoveredIndex: 1,
+                    reference: discovered.edgeReferences.items[1],
+                    unchangedHistory: true,
+                    staleRevisionRejected: workspace === "fillet",
+                    reachableCancellation: workspace === "fillet",
+                  },
+                });
+              },
+            }
+          : {},
+      );
+    }
+    if (process.env.SCANFORGE_TEST_CAD_EDGES === "1") {
+      const patterned = await job(
+        await mutate("cad_create", {
+          name: "Paged edge source",
+          selectCreated: true,
+          recipe: {
+            kind: "pattern",
+            source: { featureId: base.entityIds[0], output: 0 },
+            pattern: { kind: "linear", count: 3, step: [20, 0, 0] },
+          },
+        }),
+      );
+      await openCad("fillet");
+      const edgePanel = page.getByRole("region", {
+        name: "Exact CAD edge references",
+        exact: true,
+      });
+      const before = await call("project_get"),
+        digest = await geometryDigest(patterned.entityIds[0]);
+      const metadata = await job(
+        await call("cad_inspect", {
+          entityId: patterned.entityIds[0],
+          edgeOffset: 32,
+          edgeLimit: 32,
+        }),
+      );
+      assert.equal(metadata.edgeReferences.total, 36);
+      assert.equal(metadata.edgeReferences.items.length, 4);
+      assert.equal(metadata.edgeReferences.nextOffset, null);
+      await edgePanel
+        .getByRole("button", { name: "Inspect CAD edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 32),
+      );
+      await edgePanel
+        .getByRole("button", { name: "Next edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 4),
+      );
+      await page
+        .getByRole("textbox", { name: "CAD edge indices", exact: true })
+        .fill("");
+      await edgePanel
+        .getByRole("checkbox", { name: "Edge 35 line", exact: true })
+        .check();
+      assert.equal(
+        await page
+          .getByRole("textbox", { name: "CAD edge indices", exact: true })
+          .inputValue(),
+        "35",
+      );
+      await edgePanel
+        .getByRole("button", { name: "Previous edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 32),
+      );
+      await edgePanel
+        .getByRole("button", { name: "Next edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert(
+          await edgePanel
+            .getByRole("checkbox", { name: "Edge 35 line", exact: true })
+            .isChecked(),
+        ),
+      );
+      const after = await call("project_get");
+      assert.equal(after.revision, before.revision);
+      assert.equal(after.result.undo, before.result.undo);
+      assert.deepEqual(await geometryDigest(patterned.entityIds[0]), digest);
+      ledger.scenarios.push({
+        edgePaging: {
+          total: 36,
+          pageSizes: [32, 4, 32, 4],
+          selectedIndex: 35,
+          unchangedHistory: true,
+          geometryUnchanged: true,
+          reference: metadata.edgeReferences.items[3],
+        },
+      });
     }
     await checkGuiCad("extrude", "Extrude sketch to CAD", { volume: 12000 });
     ledger.scenarios.push({
       guardedCadMatrix: {
-        entry:
-          "actual ribbon except fillet/chamfer experimental panels; arbitrary edge selection remains open",
+        entry: "actual CAD ribbon with optional exact edge discovery",
         matrix,
       },
     });

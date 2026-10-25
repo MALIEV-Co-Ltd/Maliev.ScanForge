@@ -3,6 +3,7 @@ import type { ApplicationApi } from "../automation/api";
 export interface ApplicationJobOptions {
   signal?: AbortSignal;
   readOnly?: boolean;
+  expectedRevision?: number;
   onProgress?: (fraction: number, stage: string) => void;
 }
 
@@ -21,7 +22,7 @@ export async function runApplicationJobCommand(
     ...args,
     ...(!options.readOnly
       ? {
-          expectedRevision: api.currentRevision(),
+          expectedRevision: options.expectedRevision ?? api.currentRevision(),
           requestId: crypto.randomUUID(),
         }
       : {}),

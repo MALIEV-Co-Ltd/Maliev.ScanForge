@@ -989,8 +989,28 @@ verification, source-selection and busy gates. A disabled experimental ribbon
 entry is no longer advertised as an available command. The underlying shared
 modeling tools remain discoverable independently. Loft, sweep, polygon extrusion,
 revolve, Boolean, solid split and shell have matched ordinary ribbon/public-MCP
-workflow receipts. Fillet/chamfer ribbon entries remain gated pending usable edge
-discovery, despite numeric-index modeling support through `cad_create`.
+workflow receipts. Fillet/chamfer use the exact edge discovery described below.
+
+For edge treatment, call `cad_inspect` with `{entityId,edgeOffset:0,edgeLimit:32}`.
+Supplying either paging field requests `edgeReferences:{offset,total,nextOffset,items}`
+and `inspectedRevision`; omitted offset is 0 and omitted limit is 32. Limits are
+offset 0–200,000 and 1–128 items per page. Omit both fields to retain the existing
+summary-only result. Each item has treatment `index`, curve `kind`/numeric
+`curveType`, `degenerate`, analytic `lengthMm`, and available `endpoints` and
+`boundsMm:{min,max}`. Endpoints follow curve parameter order, not topological
+orientation; a closed curve can have equal endpoints. Bounds include kernel
+tolerance. Degenerate edges retain indices but have kind `degenerate`, null
+curve type, zero length and no editable curve endpoints.
+
+Use discovered indices in the existing `edges` recipe with `operation:"fillet"`
+or `"chamfer"`, positive `amount` in mm and the source feature/output reference.
+Pass the report's `inspectedRevision` as `expectedRevision`. Rebuilds invalidate
+references; re-inspect instead of replacing the old revision with the current
+one. GUI Fillet/Chamfer use these same paged references, show curve geometry and
+retain the inspected revision through Apply. Both ordinary ribbon entries now
+have matched GUI/public-MCP discovery and modeling receipts. Owned CAD inspection
+and trim cancellation stays reachable outside the busy tool panel and uses the
+existing job cancellation path, preserving the live modeling kernel.
 
 Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
 kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,

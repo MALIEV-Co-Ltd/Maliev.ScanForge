@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ApplicationApi } from "../automation/api";
 import type { CadInspection } from "../cad/client";
 import { runApplicationJobCommand } from "./application-job-command";
+import { CadJobCancel } from "./CadJobCancel";
 
 export function CadDiagnostics({
   entityId,
@@ -50,9 +51,10 @@ export function CadDiagnostics({
         Inspect exact CAD
       </button>
       {busy && (
-        <button onClick={() => controller.current?.abort()}>
-          Cancel CAD inspection
-        </button>
+        <CadJobCancel
+          label="Cancel CAD inspection"
+          onCancel={() => controller.current?.abort()}
+        />
       )}
       {error && <p role="alert">{error}</p>}
       {result && (

@@ -15,9 +15,20 @@ export function createCadInspectionOperation(host: WorkspaceHost): Handler {
     const cancel = () => client.dispose();
     context.signal.addEventListener("abort", cancel, { once: true });
     try {
-      const result = await client.inspectBrep(entity.brep);
+      const includeEdges =
+        args.edgeOffset !== undefined || args.edgeLimit !== undefined;
+      const result = includeEdges
+        ? await client.inspectBrep(entity.brep, {
+            edgeOffset: args.edgeOffset ?? 0,
+            edgeLimit: args.edgeLimit ?? 32,
+          })
+        : await client.inspectBrep(entity.brep);
       context.check();
-      return { entityId: entity.id, ...result };
+      return {
+        entityId: entity.id,
+        ...result,
+        ...(includeEdges ? { inspectedRevision: context.revision } : {}),
+      };
     } finally {
       context.signal.removeEventListener("abort", cancel);
       client.dispose();

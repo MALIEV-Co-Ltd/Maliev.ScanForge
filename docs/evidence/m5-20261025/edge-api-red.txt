@@ -1,0 +1,62 @@
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/cad-inspection.test.ts (8 tests | 2 failed) 15ms
+   × forwards bounded edge pages and fences them with the inspected revision 4ms
+   × admits edge discovery through the MCP schema and rejects oversized pages before a worker 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/cad-inspection.test.ts > forwards bounded edge pages and fences them with the inspected revision
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'BREP', …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "BREP",
+-   {
+-     "edgeLimit": 5,
+-     "edgeOffset": 5,
+-   },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/cad-inspection.test.ts:159:19
+    157|   inspect.mockResolvedValue({valid:true,edgeReferences:{offset:5,total…
+    158|   const result=await h.operation({entityId:"cad",edgeOffset:5,edgeLimi…
+    159|   expect(inspect).toHaveBeenCalledWith("BREP",{edgeOffset:5,edgeLimit:…
+       |                   ^
+    160|   expect(result).toMatchObject({entityId:"cad",inspectedRevision:17,ed…
+    161|   expect(dispose).toHaveBeenCalledOnce();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/cad-inspection.test.ts > admits edge discovery through the MCP schema and rejects oversized pages before a worker
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/cad-inspection.test.ts:173:24
+    171|     expect(inspect).not.toHaveBeenCalled();
+    172|     const receipt=await api.invoke("cad_inspect",{entityId:"cad",edgeL…
+    173|     expect(receipt.ok).toBe(true);
+       |                        ^
+    174|     if(!receipt.ok)return;
+    175|     await vi.waitFor(()=>expect(inspect).toHaveBeenCalledWith("BREP",{…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  00:51:46
+   Duration  665ms (transform 71%, import 26%, tests 3%, worker 1%)
+

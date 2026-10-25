@@ -14,6 +14,19 @@ export type CadPattern =
       axis: Vec3;
       angleDegrees: number;
     };
+export interface CadEdgeReference {
+  index: number;
+  kind: string;
+  curveType: number | null;
+  degenerate: boolean;
+  endpoints?: [Vec3, Vec3];
+  boundsMm?: { min: Vec3; max: Vec3 };
+  lengthMm: number;
+}
+export interface CadInspectionOptions {
+  edgeOffset?: number;
+  edgeLimit?: number;
+}
 export interface CadInspection {
   units: "mm";
   valid: boolean;
@@ -26,6 +39,12 @@ export interface CadInspection {
   signedVolumeMm3: number;
   volumeMm3: number;
   topologyVisits: number;
+  edgeReferences?: {
+    offset: number;
+    total: number;
+    nextOffset: number | null;
+    items: CadEdgeReference[];
+  };
 }
 type Result =
   | KernelMesh
@@ -74,8 +93,14 @@ export class CadClient {
   }
 
   /** Read saved topology in a caller-owned diagnostic worker, without display meshing. */
-  inspectBrep(brep: string): Promise<CadInspection> {
-    return this.request("inspectBrep", { brep }) as Promise<CadInspection>;
+  inspectBrep(
+    brep: string,
+    options: CadInspectionOptions = {},
+  ): Promise<CadInspection> {
+    return this.request("inspectBrep", {
+      brep,
+      ...options,
+    }) as Promise<CadInspection>;
   }
 
   trimSurfaces(

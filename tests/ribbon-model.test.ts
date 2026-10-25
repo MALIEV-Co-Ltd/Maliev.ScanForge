@@ -209,8 +209,6 @@ describe("ribbon command inventory", () => {
     for (const id of [
       "quadObj",
       "nurbsSurface",
-      "fillet",
-      "chamfer",
       "repairMesh",
       "segmentMesh",
       "sketch2d",

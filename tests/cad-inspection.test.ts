@@ -151,3 +151,59 @@ it("rejects oversized BREP before admitting a diagnostic worker", async () => {
   expect(inspect).not.toHaveBeenCalled();
   expect(dispose).not.toHaveBeenCalled();
 });
+
+it("forwards bounded edge pages and fences them with the inspected revision", async () => {
+  const h = setup();
+  inspect.mockResolvedValue({
+    valid: true,
+    edgeReferences: { offset: 5, total: 12, nextOffset: 10, items: [] },
+  });
+  const result = await h.operation(
+    { entityId: "cad", edgeOffset: 5, edgeLimit: 5 },
+    { ...h.context, revision: 17 },
+  );
+  expect(inspect).toHaveBeenCalledWith("BREP", { edgeOffset: 5, edgeLimit: 5 });
+  expect(result).toMatchObject({
+    entityId: "cad",
+    inspectedRevision: 17,
+    edgeReferences: { offset: 5, total: 12 },
+  });
+  expect(dispose).toHaveBeenCalledOnce();
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+it("admits edge discovery through the MCP schema and rejects oversized pages before a worker", async () => {
+  const h = setup();
+  const api = new ApplicationApi(h.host, { cad_inspect: h.operation });
+  try {
+    inspect.mockResolvedValue({
+      valid: true,
+      edgeReferences: { offset: 0, total: 0, nextOffset: null, items: [] },
+    });
+    const rejected = await api.invoke("cad_inspect", {
+      entityId: "cad",
+      edgeLimit: 129,
+    });
+    expect(rejected.ok).toBe(false);
+    expect(inspect).not.toHaveBeenCalled();
+    const receipt = await api.invoke("cad_inspect", {
+      entityId: "cad",
+      edgeLimit: 5,
+    });
+    expect(receipt.ok).toBe(true);
+    if (!receipt.ok) return;
+    await vi.waitFor(() =>
+      expect(inspect).toHaveBeenCalledWith("BREP", {
+        edgeOffset: 0,
+        edgeLimit: 5,
+      }),
+    );
+    const reply = await api.invoke("job_get", {
+      jobId: (receipt.result as any).jobId,
+    });
+    expect(reply.ok && (reply.result as any).result.inspectedRevision).toBe(
+      api.currentRevision(),
+    );
+  } finally {
+    api.dispose();
+  }
+});

@@ -1,5 +1,23 @@
 # ScanForge shared application API and MCP
 
+## Paged exact edge references
+
+Optional `cad_inspect` edge paging extends its existing isolated diagnostic worker.
+The EDGE topology pass preserves first-unique `IsSame` encounter order (including
+degenerate edges), matching live edge-treatment indexing. Duplicate wrappers are
+deleted immediately; only requested items allocate adaptors, bounds, points and
+GProp objects, all retired in finally. The existing BREP/visit/time bounds remain;
+pages admit at most 128 items. Length uses analytic `BRepGProp.LinearProperties`,
+not endpoint distance. No shape registration or tessellation is added.
+
+`CommandContext.revision` exposes the API-owned snapshot revision. Paged reports
+return it only after `context.check`; default summary replies remain unchanged.
+The GUI job adapter can retain an inspected `expectedRevision` rather than
+refreshing it at dispatch. Edge controls reset on source/kernel change, abort
+their owned read job on unmount, and reject stale references. Owned CAD cancel
+controls render outside the inert tool panel so cancellation remains reachable.
+The same existing `job_cancel` contract serves agents and GUI abort signals.
+
 ## CAD GUI job dispatch
 
 Recipe-based GUI CAD operations and rebuilds use `runApplicationJobCommand`
