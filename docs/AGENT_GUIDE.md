@@ -2140,3 +2140,36 @@ definition using `inspection_manage` `action:"delete"` and its `inspectionId`.
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
 
 Inspection heatmaps use the same blue/cyan/green/yellow/red palette and right-hand vertical scale as mesh reduction. The retained report tolerance sets the saturated blue/red endpoints; hidden or unmatched samples remain gray. The inspection scale is read-only; change tolerance through the analysis parameters and recompute. `inspection_display` and MCP captures render this same scale.
+## Average meshes
+
+The GUI's Average mesh and `mesh_process` use the same public operation. Pass
+`operation:{kind:"scanTools",operation:{kind:"averageMesh",tolerance:10}}`,
+`entityId` for one participating raw mesh and `targetIds` for one to 32 additional
+distinct raw meshes. The legacy singular `targetId` remains an alias; omit it when
+using `targetIds`. Meshes must already be aligned. The input with the most facets
+becomes the base; ties and reference contributions follow object-list order.
+
+Average creates and selects a new mesh by default, retaining every input. Explicit
+`createNew:false` retains the replacement capability and replaces the chosen base.
+The result's `average.baseEntityId` and `average.referenceEntityIds` identify the
+actual inputs; `entityIds` identifies the output. Use revision/request guards and
+poll `job_get`. Locks, cancellation, errors and one-step geometry history remain
+enforced; cancellation or failure publishes no partial result.
+
+Search tolerance is narrowed to positive finite Float32 millimetres (the existing
+application default remains 10 mm). Matches exactly at that radius and closest
+hits on an open boundary region are excluded. Each accepted surface point and
+the original base point contribute equally, with Float32 accumulation in object
+order. Original indexed vertex identities are retained during query preparation;
+duplicate seam vertices are not welded together. Plain facet streams use the
+recovered STL indexing path. The existing three-million aggregate input-facet
+limit remains. These corrections do not establish full native dialog/default or
+original-scan parity; see [the M2 ledger](M2_ACCEPTANCE.md).
+
+## Cylindrical Unroll
+
+Use `mesh_process` with `operation:{kind:"scanTools",operation:{kind:"unroll",center:[0,0,0],axis:[0,0,1],radius:2,offsetDegrees:90,instances:2}}`. Coordinates and radius are millimetres; the offset is degrees. `instances` defaults to 1 and must be a positive safe integer. The conservative input-times-instances bound is 3 million facets. There is no resource-limit override.
+
+Positive offsets rotate the radial frame. Radial frame components narrow to Float32 before the acos/sign calculation. Facets touching both the first and last angular quadrants are removed, using swap-last deletion order; no seam triangles are synthesized. Copies translate along X using a Float32 circumference translation. Output XY contains arc length and axial distance, with radial residual in Z. The GUI invokes the same public operation and shared worker. A successful operation creates and selects a separate mesh owner by default, preserving the original. `createNew:false` retains explicit replacement support. Read `entityIds` and diagnostics from the terminal job result. Existing revision, retry, cancellation, lock, history and persistence checks apply.
+
+The radial frame projects world X onto the axis-normal plane, using world Y when the axis is near world X. The original cylinder's reference tangent is currently not retained by the reference binding. Observed exports verify a +Z cylinder at 0 and 90 degrees and two instances; arbitrary imported tangent/frame conventions remain an acceptance gap. Finite Float32 output and triangle-collapse checks remain enforced. If every facet crosses the seam, the operation fails without publication. Cap and axis points follow the same mapping; geometrically collapsed results fail atomically.

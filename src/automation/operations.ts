@@ -1,6 +1,7 @@
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
+import { bindAverageMeshes } from "../scan-average-request";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
@@ -46,6 +47,7 @@ import {
   type ParametricFeature,
 } from "../parametric";
 import { duplicateObject, toggleObjectVisibility } from "../object-operations";
+import { resolveConstructionIdentities } from "../reference-construction-identity";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { partitionMeshSelection } from "../mesh-selection-edit";
 import {
@@ -986,10 +988,27 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     mesh_process: async (a, c) => {
       const bridgePreview = validateBridgePreview(a);
-      const s = host.snapshot(),
-        e = sampledObject(s, a.entityId);
+      const s = host.snapshot();
+      let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      let average: ReturnType<typeof bindAverageMeshes> | undefined;
+      if (kind === "scanTools" && op.operation.kind === "averageMesh") {
+        if (a.selectionOnly)
+          throw new Error(
+            "Average mesh processes whole inputs; omit selectionOnly.",
+          );
+        editable(e, true);
+        if (a.targetId && a.targetIds !== undefined)
+          throw new Error(
+            "Average mesh accepts targetId or targetIds, not both.",
+          );
+        const targetIds = a.targetIds ?? (a.targetId ? [a.targetId] : []);
+        if (Array.isArray(targetIds))
+          for (const targetId of targetIds) sampledObject(s, targetId);
+        average = bindAverageMeshes(e, targetIds, s.entities);
+        e = average.source;
+      }
       if (
         e.kind === "pointcloud" &&
         !["paired", "global", "icp", "pointCloudEdit"].includes(kind)
@@ -1054,11 +1073,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         kind !== "nativeRefine" &&
         !(
           kind === "scanTools" &&
-          ["repolygonize", "shrinkwrap"].includes(op.operation.kind)
+          ["repolygonize", "shrinkwrap", "averageMesh"].includes(
+            op.operation.kind,
+          )
         )
       )
         throw new Error(
-          "targetIds is supported only for surface refinement or re-polygonize.",
+          "targetIds is supported only for surface refinement, re-polygonize, ShrinkWrap or Average mesh.",
         );
       if (
         selection &&
@@ -1187,7 +1208,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           sampled: isSampledScan(e.scanSource),
         });
       if (kind === "scanTools") {
-        if ("targets" in op.operation || "selection" in op.operation)
+        if (
+          "targets" in op.operation ||
+          "targetTopology" in op.operation ||
+          "sourceTopology" in op.operation ||
+          "selection" in op.operation
+        )
           throw new Error("Inner geometry must refer to workspace objects.");
         if (op.operation.kind === "shrinkwrap") {
           if (a.targetId || a.selectionOnly !== undefined)
@@ -1221,8 +1247,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           );
         }
         if (op.operation.kind === "averageMesh") {
-          if (!a.targetId) throw new Error("Average mesh requires targetId.");
-          op.operation.targets = [sampledObject(s, a.targetId).positions];
+          op.operation.targets = average!.references.map(
+            (entity) => entity.positions,
+          );
+          op.operation.targetTopology = average!.references.map(
+            (entity) => entity.indexedMesh,
+          );
+          op.operation.sourceTopology = average!.source.indexedMesh;
         }
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
@@ -1280,9 +1311,22 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
-        else if (a.createNew) {
+        else if (
+          a.createNew ??
+          (!!average ||
+            (kind === "scanTools" && op.operation.kind === "unroll"))
+        ) {
           updated.id = id();
-          updated.name = `${e.name} ${kind}`;
+          if (updated.constructionOrderKey !== undefined)
+            updated.constructionOrderKey = resolveConstructionIdentities(
+              [...s.entities, { id: updated.id }],
+              [updated.id],
+            ).orderedSources[0].constructionOrderKey;
+          updated.name = average
+            ? "Average mesh"
+            : kind === "scanTools" && op.operation.kind === "unroll"
+              ? `${e.name} - Unrolled`
+              : `${e.name} ${kind}`;
           created.push(updated);
           next = [...next, updated];
         } else next = next.map((x) => (x.id === e.id ? updated : x));
@@ -1299,6 +1343,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         next = [...next, ...created.filter((x) => !next.includes(x))];
       }
       const response = {
+        ...(average
+          ? {
+              average: {
+                baseEntityId: average.source.id,
+                referenceEntityIds: average.references.map(
+                  (entity) => entity.id,
+                ),
+              },
+            }
+          : {}),
         entityIds: created.length
           ? created.map((x) => x.id)
           : positions?.length
@@ -1326,6 +1380,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       c.check();
       if (positions || segments?.length)
         host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
+      if (average && created.length) host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;
     },

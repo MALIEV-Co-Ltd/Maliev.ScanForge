@@ -1,5 +1,6 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
+import { bindAverageMeshes } from "../scan-average-request";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
 import type { ScanToolParameters } from "./ScanToolsPanel";
@@ -37,23 +38,19 @@ export function scanToolRequest(
       break;
     }
     case "averageMesh": {
-      const ids = new Set(parameters.targetIds);
-      const targets = entities.filter(
-        (e) =>
-          ids.has(e.id) &&
-          e.id !== source.id &&
-          e.kind === "mesh" &&
-          !e.kernelId &&
-          !e.parametric,
-      );
-      if (!ids.size || targets.length !== ids.size)
-        throw new Error("Choose valid reference meshes to average.");
+      const bound = bindAverageMeshes(source, parameters.targetIds, entities);
       operation = {
         kind: parameters.kind,
         tolerance: parameters.tolerance,
-        targets: targets.map((e) => e.positions),
+        targets: bound.references.map((e) => e.positions),
+        sourceTopology: bound.source.indexedMesh,
+        targetTopology: bound.references.map((e) => e.indexedMesh),
       };
-      break;
+      return {
+        kind: "scanTools",
+        positions: bound.source.positions,
+        operation,
+      };
     }
     case "mirrorMesh": {
       const entity = entities.find(
@@ -87,6 +84,7 @@ export function scanToolRequest(
         kind: parameters.kind,
         ...reference,
         offsetDegrees: parameters.offsetDegrees,
+        instances: parameters.instances,
       };
       break;
     }

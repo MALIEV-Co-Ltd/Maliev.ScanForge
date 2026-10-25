@@ -743,7 +743,8 @@
                         },
                         "tolerance": {
                           "type": "number",
-                          "exclusiveMinimum": 0
+                          "exclusiveMinimum": 0,
+                          "description": "Search radius in mm, narrowed to positive finite Float32 (default 10). Boundary-region hits on open edges and hits exactly at the radius are excluded. Contributions accumulate in Float32 in object-list order."
                         }
                       },
                       "required": ["kind"],
@@ -812,7 +813,15 @@
                           "exclusiveMinimum": 0
                         },
                         "offsetDegrees": {
-                          "type": "number"
+                          "type": "number",
+                          "description": "Positive rotation of the cylinder radial frame in degrees. Seam-crossing facets are removed, using native swap-last deletion order."
+                        },
+                        "instances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3000000,
+                          "default": 1,
+                          "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
                         }
                       },
                       "required": ["kind", "center", "axis", "radius"],
@@ -1348,7 +1357,7 @@
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
+          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. For scanTools/averageMesh: one to 32 additional raw mesh IDs; the member with the most facets is the base (first in object-list order on ties), and all other members contribute in object-list order. Average creates and selects a new mesh by default; explicit createNew:false replaces the chosen base. Its result reports average.baseEntityId and referenceEntityIds. Up to 32 distinct IDs, excluding entityId; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"

@@ -26,6 +26,7 @@ export { repolygonizeScanMesh } from "./scan-tools-remesh";
 
 export interface ScanToolResult {
   positions: Float32Array;
+  indexedMesh?: import("./types").IndexedMesh;
   summary: string;
   topology?: import("./processing-client").TopologySummary;
   diagnostics?: Record<string, number | string | boolean>;

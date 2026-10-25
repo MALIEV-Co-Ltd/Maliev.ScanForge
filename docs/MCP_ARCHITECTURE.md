@@ -1350,3 +1350,19 @@ revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
 checks remain active.
 
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+### Unroll publication
+
+`runUnrollCommand` routes the GUI through `mesh_process`, including the shared worker and terminal publication. The public scan-tool schema exposes `instances` alongside cylinder center, axis, radius and angular offset. Unroll and Average create a new owner by default; explicit `createNew:false` retains replacement. Unroll does not publish partial seam-removal or repetition results. Its original-cylinder tangent binding remains an acceptance gap documented in the agent guide.
+
+Average mesh submits the GUI action through `runAverageCommand` and
+`runApplicationJobCommand` to public `mesh_process`. `bindAverageMeshes` resolves
+the participating raw meshes in scene order and chooses the first greatest-facet
+base. The executor binds reference positions and their original indexed topology;
+these private numeric carriers cannot be supplied through the public schema.
+Worker transport clones coordinates and indices without detaching authored data.
+The common numeric kernel uses ordered native surface queries, open-boundary
+rejection, strict radius exclusion and Float32 accumulation. The common executor
+creates a result owner by default (explicit replacement remains available), then
+commits once and selects the created owner. Structured results identify the base,
+references and output. Existing job, revision, request, cancellation, lock and
+history boundaries remain authoritative.

@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { admitAverageInputs } from "./scan-average-request";
 import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
 import { beginWorkingJob } from "./working-job-status";
@@ -176,6 +177,21 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (
+    request.kind === "scanTools" &&
+    request.operation.kind === "averageMesh"
+  ) {
+    try {
+      admitAverageInputs(
+        request.positions,
+        request.operation.targets,
+        request.operation.sourceTopology,
+        request.operation.targetTopology,
+      );
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
   if (request.kind === "pointCloudEdit") {
     try {
       validatePointColors(request.pointColors, request.positions.length / 3);
@@ -540,6 +556,24 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "averageMesh") {
+          if (copied.operation.sourceTopology) {
+            const mesh = copied.operation.sourceTopology;
+            const triangles = Uint32Array.from(mesh.triangles);
+            transfers.push(triangles.buffer);
+            copied.operation.sourceTopology = {
+              vertices: clone(mesh.vertices),
+              triangles,
+            };
+          }
+          copied.operation.targetTopology =
+            copied.operation.targetTopology?.map((mesh) => {
+              if (!mesh) return undefined;
+              const triangles = Uint32Array.from(mesh.triangles);
+              transfers.push(triangles.buffer);
+              return { vertices: clone(mesh.vertices), triangles };
+            });
+        }
         if (
           copied.operation.kind === "averageMesh" ||
           copied.operation.kind === "repolygonize" ||

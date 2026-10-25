@@ -537,7 +537,18 @@ describe("processing worker resource ownership", () => {
   it("clones Scan Data reference surfaces and selection masks and releases its worker", async () => {
     const selection = new Uint8Array([1]);
     for (const operation of [
-      { kind: "averageMesh" as const, targets: [positions], tolerance: 10 },
+      {
+        kind: "averageMesh" as const,
+        targets: [positions],
+        tolerance: 10,
+        targetTopology: [
+          { vertices: positions, triangles: new Uint32Array([0, 1, 2]) },
+        ],
+        sourceTopology: {
+          vertices: positions,
+          triangles: new Uint32Array([0, 1, 2]),
+        },
+      },
       { kind: "reduceNoise" as const, selection, selectionOnly: true },
     ]) {
       const pending = processMesh({ kind: "scanTools", positions, operation });
@@ -548,7 +559,21 @@ describe("processing worker resource ownership", () => {
       expect(worker.sent.positions).not.toBe(positions);
       if (worker.sent.operation.kind === "averageMesh") {
         expect(worker.sent.operation.targets[0]).not.toBe(positions);
-        expect(worker.transfers).toHaveLength(2);
+        expect(worker.sent.operation.targetTopology?.[0]?.vertices).not.toBe(
+          positions,
+        );
+        if (operation.kind !== "averageMesh")
+          throw new Error("Expected average");
+        expect(worker.sent.operation.targetTopology?.[0]?.triangles).not.toBe(
+          operation.targetTopology[0].triangles,
+        );
+        expect(worker.sent.operation.sourceTopology?.vertices).not.toBe(
+          positions,
+        );
+        expect(worker.sent.operation.sourceTopology?.triangles).not.toBe(
+          operation.sourceTopology.triangles,
+        );
+        expect(worker.transfers).toHaveLength(6);
       } else if (worker.sent.operation.kind === "reduceNoise") {
         expect(worker.sent.operation.selection).not.toBe(selection);
         expect(worker.transfers).toHaveLength(2);
@@ -565,6 +590,31 @@ describe("processing worker resource ownership", () => {
       expect(vi.getTimerCount()).toBe(0);
       expect(selection[0]).toBe(1);
     }
+  });
+  it("rejects oversized Average carriers before constructing or copying to a worker", async () => {
+    const before = ProcessingWorkerDouble.creates;
+    await expect(
+      processMesh({
+        kind: "scanTools",
+        positions: { length: 27_000_000 } as Float32Array,
+        operation: { kind: "averageMesh", targets: [positions] },
+      }),
+    ).rejects.toThrow(/limit/);
+    await expect(
+      processMesh({
+        kind: "scanTools",
+        positions,
+        operation: {
+          kind: "averageMesh",
+          targets: [positions],
+          sourceTopology: {
+            vertices: { length: 27_000_001 } as Float32Array,
+            triangles: [0, 1, 2],
+          },
+        },
+      }),
+    ).rejects.toThrow(/Indexed reference/);
+    expect(ProcessingWorkerDouble.creates).toBe(before);
   });
   it("dispatches Scan Data geometry through the real worker and transfers its result", async () => {
     const replies: { message: any; transfers?: Transferable[] }[] = [];

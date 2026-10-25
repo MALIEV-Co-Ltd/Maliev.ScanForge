@@ -58,7 +58,12 @@ export type ScanToolParameters =
       plane: "OXY" | "OYZ" | "OXZ" | "object";
       referenceId?: string;
     }
-  | { kind: "unroll"; cylinderId: string; offsetDegrees: number };
+  | {
+      kind: "unroll";
+      cylinderId: string;
+      offsetDegrees: number;
+      instances?: number;
+    };
 
 export const scanToolTitles: Record<ScanToolId, string> = {
   reducePolygons: "Reduce polygons",
@@ -207,6 +212,7 @@ export function ScanToolsPanel({
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
   const [offsetDegrees, setOffsetDegrees] = useState(0);
+  const [instances, setInstances] = useState(1);
   useEffect(() => {
     if (!pickedReferenceId) return;
     if (tool === "mirrorMesh") {
@@ -303,10 +309,12 @@ export function ScanToolsPanel({
     if (
       tool === "unroll" &&
       (!cylinders.some((e) => e.id === cylinderId) ||
-        !Number.isFinite(offsetDegrees))
+        !Number.isFinite(offsetDegrees) ||
+        !Number.isSafeInteger(instances) ||
+        instances < 1)
     )
       problem =
-        "Select a fitted cylinder with a valid radius and enter a finite angle.";
+        "Select a fitted cylinder, enter a finite angle and a positive whole instance count.";
   }
   const blocked = disabled || busy || !!problem;
   const readyToAccept =
@@ -375,7 +383,7 @@ export function ScanToolsPanel({
         });
         break;
       case "unroll":
-        onApply({ kind: tool, cylinderId, offsetDegrees });
+        onApply({ kind: tool, cylinderId, offsetDegrees, instances });
         break;
     }
   }
@@ -681,6 +689,11 @@ export function ScanToolsPanel({
           )}
           {tool === "averageMesh" && (
             <>
+              <p className="hint">
+                Creates a new mesh using the input with the most facets. All
+                inputs are retained; reference contributions follow object-list
+                order. Open boundary hits are excluded.
+              </p>
               <Field
                 label="Search tolerance (mm)"
                 value={tolerance}
@@ -777,7 +790,9 @@ export function ScanToolsPanel({
             <>
               <p className="muted">
                 Unroll cylindrical side surfaces into local XY. Remove end caps
-                first; cap faces cannot be flattened without collapsing.
+                first; cap faces cannot be flattened without collapsing. Facets
+                crossing the angular seam are removed. Instances repeat the
+                flattened surface along the arc-length axis.
               </p>
               <label>
                 Cylinder
@@ -806,6 +821,12 @@ export function ScanToolsPanel({
                 value={offsetDegrees}
                 step={1}
                 onChange={setOffsetDegrees}
+              />
+              <Field
+                label="Instances"
+                value={instances}
+                step={1}
+                onChange={setInstances}
               />
             </>
           )}

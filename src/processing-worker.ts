@@ -250,6 +250,7 @@ scope.onmessage = async ({ data: incoming }) => {
             })
           : runScanTool(request, options);
       result.positions = outcome.positions;
+      result.indexedMesh = outcome.indexedMesh;
       if ("noiseComparison" in outcome)
         result.noiseComparison = outcome.noiseComparison;
       result.topology = outcome.topology;
@@ -664,7 +665,7 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.selection) transfers.push(result.selection.buffer);
     // Display borrows the computed state already transformed with the mesh.
     if (result.indexedMesh && result.positions) {
-      progress(0.99, "Preparing aligned mesh display");
+      progress(0.99, "Preparing mesh display");
       result.renderData = prepareScanRenderData(
         result.positions,
         result.indexedMesh,

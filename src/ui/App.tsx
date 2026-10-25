@@ -12,6 +12,8 @@ import {
   runShrinkwrapPreviewCommand,
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
+import { runAverageCommand } from "./average-command";
+import { runUnrollCommand } from "./unroll-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
 import { primitiveFitSamples } from "../primitive-fit-samples";
 import { getWorkingJobStatus } from "../working-job-status";
@@ -2704,7 +2706,11 @@ export function App() {
   async function applyScanTool(parameters: ScanToolParameters) {
     if (!selected || busy || scanToolAbort.current) return;
     if (!referencePreviewAllowsTools()) return;
-    if (parameters.kind === "repolygonize") {
+    if (
+      parameters.kind === "repolygonize" ||
+      parameters.kind === "averageMesh" ||
+      parameters.kind === "unroll"
+    ) {
       const sourceId = selected.id;
       const controller = new AbortController();
       scanToolAbort.current = controller;
@@ -2712,35 +2718,71 @@ export function App() {
       setError("");
       setScanToolResult("");
       setScanToolFraction(undefined);
-      setScanToolProgress("Preparing reconstruction");
+      setScanToolProgress(
+        `Preparing ${scanToolTitles[parameters.kind].toLowerCase()}`,
+      );
       try {
-        const result = await runReconstructionCommand(
-          workspaceApi,
-          {
-            entityId: sourceId,
-            resolution: parameters.resolution,
-            ...(parameters.targetIds?.length
-              ? { targetIds: parameters.targetIds }
-              : {}),
+        const options = {
+          signal: controller.signal,
+          onProgress: (fraction: number, stage: string) => {
+            const message = `${stage} · ${Math.round(fraction * 100)}%`;
+            setScanToolProgress(message);
+            setMessage(message);
           },
-          {
-            signal: controller.signal,
-            onProgress: (fraction, stage) => {
-              const message = `${stage} · ${Math.round(fraction * 100)}%`;
-              setScanToolProgress(message);
-              setMessage(message);
-            },
-          },
-        );
+        };
+        const result = await (parameters.kind === "repolygonize"
+          ? runReconstructionCommand(
+              workspaceApi,
+              {
+                entityId: sourceId,
+                resolution: parameters.resolution,
+                ...(parameters.targetIds?.length
+                  ? { targetIds: parameters.targetIds }
+                  : {}),
+              },
+              options,
+            )
+          : parameters.kind === "unroll"
+            ? (() => {
+                const request = scanToolRequest(
+                  selected,
+                  parameters,
+                  entitiesRef.current,
+                );
+                if (request.operation.kind !== "unroll")
+                  throw new Error("Expected Unroll operation.");
+                return runUnrollCommand(
+                  workspaceApi,
+                  sourceId,
+                  request.operation,
+                  options,
+                );
+              })()
+            : runAverageCommand(
+                workspaceApi,
+                {
+                  entityId: sourceId,
+                  targetIds: parameters.targetIds,
+                  tolerance: parameters.tolerance,
+                },
+                options,
+              ));
         const diagnostics = result.diagnostics as
           Record<string, unknown> | undefined;
         const summary = String(
-          diagnostics?.summary ?? "Reconstruction complete.",
+          diagnostics?.summary ??
+            `${scanToolTitles[parameters.kind]} complete.`,
         );
         // The shared host commit flushes React before its terminal job receipt.
         scanToolOutput.current =
-          entitiesRef.current.find((entity) => entity.id === sourceId)
-            ?.positions ?? null;
+          entitiesRef.current.find(
+            (entity) =>
+              entity.id ===
+              (parameters.kind !== "repolygonize" &&
+              Array.isArray(result.entityIds)
+                ? result.entityIds[0]
+                : sourceId),
+          )?.positions ?? null;
         setScanToolResult(summary);
         setMessage(summary);
       } catch (error) {
