@@ -1536,6 +1536,20 @@
     }
   },
   {
+    "name": "cad_inspect",
+    "description": "Inspect saved exact CAD in an isolated temporary kernel without changing model/history or the live modeling kernel. Returns units:mm, BRepCheck validity, unique solid/shell/face/edge/vertex counts, analytic areaMm2, signedVolumeMm3 and absolute volumeMm3 (zero for surfaces), plus topologyVisits. Bounds: 64 MiB UTF-8 BREP, 200000 topology visits and the existing 90-second kernel lease. Cancellation/failure disposes only the diagnostic worker. Validity is the kernel BRepCheck result, not a global self-intersection or native application equivalence certificate.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": { "type": "string", "minLength": 1, "maxLength": 200 }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "cad_create",
     "description": "Create exact CAD from a validated recipe. Dependency refs use featureId/output from project_get; use cad_bind for imported exact bodies. Edge/face indices are valid only at expectedRevision. Analytic sketch-curves and legacy sketch extrusion recipes join exactly equal local UV endpoints in the derived wire even when point IDs differ; authored IDs, constraints and recipe graphs remain unchanged. Real gaps are not snapped, and zero-length edges, branches and disconnected cycles are rejected.",
     "readOnly": false,

@@ -733,6 +733,40 @@ try {
     size: [10, 20, 30],
   });
   assert.equal(box.positions.length, 108);
+  const shapesBeforeInspection = vm.runInContext("shapes.size", context);
+  const boxInspection = await request("inspectBrep", { brep: box.brep });
+  assert.equal(boxInspection.valid, true);
+  assert.equal(boxInspection.solids, 1);
+  assert.equal(boxInspection.shells, 1);
+  assert.equal(boxInspection.faces, 6);
+  assert.equal(boxInspection.edges, 12);
+  assert.equal(boxInspection.vertices, 8);
+  close(boxInspection.areaMm2, 2200, "Exact inspection box area");
+  close(boxInspection.volumeMm3, 6000, "Exact inspection box volume");
+  await assert.rejects(request("inspectBrep", { brep: "not BREP" }), /BREP/);
+  assert.equal(vm.runInContext("shapes.size", context), shapesBeforeInspection);
+  assert.equal(oc.FS.analyzePath("check.brp").exists, false);
+  const reversedBox = vm.runInContext(
+    `shapes.get(${JSON.stringify(box.kernelId)}).Reversed()`,
+    context,
+  );
+  try {
+    const reversed = await request("inspectBrep", {
+      brep: context.serializeBrep(oc, reversedBox),
+    });
+    close(
+      reversed.signedVolumeMm3,
+      -6000,
+      "Inspection retains reversed solid orientation",
+    );
+    close(
+      reversed.volumeMm3,
+      6000,
+      "Inspection reports absolute volume separately",
+    );
+  } finally {
+    reversedBox.delete();
+  }
   assert.equal(
     box.planeFrame,
     undefined,
@@ -1278,6 +1312,11 @@ try {
     weights: [1, 1, 1, 1],
   };
   const nurbs = await request("surface", patch);
+  const faceInspection = await request("inspectBrep", { brep: nurbs.brep });
+  assert.equal(faceInspection.valid, true);
+  assert.equal(faceInspection.solids, 0);
+  assert.equal(faceInspection.faces, 1);
+  assert.equal(faceInspection.volumeMm3, 0);
   assert.ok(nurbs.planeFrame, "Planar NURBS retains an exact UV plane frame");
   assertPlaneFrame(nurbs);
   [5, 10, 0].forEach((value, axis) =>

@@ -2,6 +2,7 @@ import type { ApplicationApi } from "../automation/api";
 
 export interface ApplicationJobOptions {
   signal?: AbortSignal;
+  readOnly?: boolean;
   onProgress?: (fraction: number, stage: string) => void;
 }
 
@@ -18,8 +19,12 @@ export async function runApplicationJobCommand(
   options.signal?.throwIfAborted();
   const receipt = await api.invoke(command, {
     ...args,
-    expectedRevision: api.currentRevision(),
-    requestId: crypto.randomUUID(),
+    ...(!options.readOnly
+      ? {
+          expectedRevision: api.currentRevision(),
+          requestId: crypto.randomUUID(),
+        }
+      : {}),
   });
   if (!receipt.ok) throw Error(receipt.error.message);
   const { jobId } = receipt.result as { jobId: string };

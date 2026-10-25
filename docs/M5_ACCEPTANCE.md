@@ -86,6 +86,57 @@ or exact mass properties. Matching display digests alone does not certify a
 valid solid boundary. Add shared exact inspection needed by GUI/MCP acceptance,
 then verify the real-region output and exchange with that stronger evidence.
 
+### Exact inspection and real-region exchange
+
+The shared `cad_inspect` operation and Properties inspection panel now expose
+saved exact BREP validity, unique topology counts and analytic mass properties.
+Inspection runs in a disposable kernel, so cancellation or timeout does not
+reset the live model. Source limits, cancellation, stale revision rejection,
+read-only history/revision behavior and native-handle/virtual-file cleanup are
+covered. Box area/volume and topology, surface-only zero volume and reversed
+signed solid volume passed actual OpenCascade tests. Static review found no
+actionable defect.
+
+Build `scanforge-b3dd01c1e92112e4` passed all 12 bounded typecheck batches.
+The full suite passed **48,974 tests / 64 skipped**, across 669 passed and 18
+skipped files, in 277.99 seconds. CAD smoke and repository formatting passed.
+Retained [build](evidence/m5-20261025/inspection-build.log),
+[unit](evidence/m5-20261025/inspection-unit.log),
+[CAD](evidence/m5-20261025/inspection-cad.log) and
+[format](evidence/m5-20261025/inspection-format.log) receipts identify this
+inspection slice. Earlier suite counts above remain historical.
+
+The [public-MCP/browser exchange receipt](evidence/m5-20261025/exact-inspection-exchange.json)
+and [GUI inspection screenshot](evidence/m5-20261025/cad-inspection.png) verify:
+
+- GUI and MCP exact inspection agree and leave revision/history unchanged.
+- The real 200-facet region produces matching GUI/MCP fitted patches and
+  thickening digests, including Undo/Redo. Kernel inspection reports valid BREP,
+  one solid, one shell, six faces, twelve edges and eight vertices.
+- Analytic area is 156773.02271710781 mm² and signed volume is
+  7849.205500441478 mm³. STEP reopen retains those topology counts and properties
+  within 1e-8 relative / 1e-6 absolute tolerance. Project reopen reproduces them
+  exactly and retains the editable thickening recipe and original scan digest.
+- The native-input STL is exported through shared selection copy, then reopened
+  and refitted to prove identical controls. Source/region digests and derived
+  STL/STEP file hashes are retained. Inputs and expected outputs are saved outside
+  Git at `C:/repo/alignment-example-files/m5-native-validation-20261025-01a1737c-r1`.
+
+An earlier expanded replay exceeded the fixture's five-second job observation
+budget during project reopen. The failed receipt remains in `.resources/m5`.
+The harness now polls within the existing 90-second kernel lease plus five
+seconds for settlement; application/resource guards and the three-minute outer
+browser lease are unchanged. The complete replay subsequently passed.
+
+Native capture remains unrun: both computer-use runtimes fail initialization
+with `failed to write kernel assets: The system cannot find the path specified.
+(os error 3)`, including after reset. No native window was opened or operated.
+The coordinator's M2/M4/M6 exclusive native input slots remain respected.
+Exact OpenCascade inspection is not native QuickSurface workflow equivalence or
+a global self-intersection certificate. General trimming/blends, complete
+scan-to-sketch/whole-part operation-matrix acceptance and M4's dependency gate
+remain open; M5 merge and closure are still pending.
+
 M1 issue #1 is closed with reviewed evidence and merge #10. M4 issue #4 remains open as of this audit and must satisfy its dependency gate. The native QuickSurface window is shared with M2–M6 coordination; do not clear or operate it without an ownership handoff. M5 needs a dedicated native scan-fitting/surface/CAD/exchange validation window.
 
 Remaining: complete the approved operation matrix and prepared fixes, real scan-to-sketch-to-surface-to-solid workflow, matching native settings/tolerances, solid validity/seams/normals, complete exact exchange round-trips, resource/recovery coverage, final review and exact-candidate CI. Merge and tracker closure follow verified acceptance; neither has been performed for M5.

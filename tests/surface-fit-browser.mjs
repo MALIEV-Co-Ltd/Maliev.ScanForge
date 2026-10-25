@@ -203,7 +203,8 @@ try {
   }
   async function job(receipt) {
     const jobId = receipt.result.jobId;
-    for (let i = 0; i < 100; i++) {
+    const expires = Date.now() + 95000;
+    while (Date.now() < expires) {
       const status = (await call("job_get", { jobId })).result;
       if (status.status !== "running") {
         assert.equal(status.status, "succeeded", JSON.stringify(status));
@@ -250,6 +251,24 @@ try {
         sha256,
       }),
     );
+  }
+  async function artifactBytes(artifact) {
+    const chunks = [];
+    let offset = 0;
+    while (offset < 16 * 1024 * 1024) {
+      const part = (
+        await call("artifact_read", {
+          artifactId: artifact.artifactId,
+          offset,
+          length: 65536,
+        })
+      ).result;
+      chunks.push(Buffer.from(part.base64, "base64"));
+      if (part.eof) return Buffer.concat(chunks);
+      assert(part.nextOffset > offset);
+      offset = part.nextOffset;
+    }
+    throw Error("Native fixture export exceeds the 16 MiB read budget");
   }
   // Authored planar grid plus one deliberately unselected remote outlier.
   const triangles = [];
@@ -597,6 +616,35 @@ try {
     patch: { visible: false },
   });
   await mutate("viewport_control", { action: "fit", entityId: faceId });
+  const faceReport = await job(await call("cad_inspect", { entityId: faceId }));
+  assert(faceReport.valid && faceReport.solids === 0 && faceReport.faces === 1);
+  await mutate("object_select", { entityId: faceId });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  const inspectionPanel = page.getByRole("region", {
+    name: "Exact CAD inspection",
+    exact: true,
+  });
+  const beforeInspection = await call("project_get");
+  await inspectionPanel
+    .getByRole("button", { name: "Inspect exact CAD", exact: true })
+    .click();
+  await inspectionPanel.getByText("Valid BREP", { exact: true }).waitFor();
+  assert(
+    await inspectionPanel
+      .getByText(faceReport.areaMm2.toPrecision(10), { exact: true })
+      .isVisible(),
+  );
+  const afterInspection = await call("project_get");
+  assert.equal(afterInspection.revision, beforeInspection.revision);
+  assert.equal(afterInspection.result.undo, beforeInspection.result.undo);
+  await page.screenshot({
+    path: fileURLToPath(new URL("cad-inspection.png", out)),
+  });
+  ledger.scenarios.push({
+    exactInspectionGuiMcpEquality: true,
+    unchangedRevision: true,
+    report: faceReport,
+  });
   if (process.env.SCANFORGE_TEST_REAL_SCAN) {
     const file = await readFile(process.env.SCANFORGE_TEST_REAL_SCAN);
     assert(
@@ -725,6 +773,9 @@ try {
     const guiSolidDigest = await geometryDigest(guiSolidId);
     assert(guiSolid.exactCad && guiSolid.hasBrep);
     await mutate("history_undo", {});
+    await mutate("history_redo", {});
+    assert.deepEqual(await geometryDigest(guiSolidId), guiSolidDigest);
+    await mutate("history_undo", {});
     const realSolid = await job(
       await mutate("cad_create", {
         name: "Real scan thickened part",
@@ -740,6 +791,166 @@ try {
       guiSolidDigest,
     );
     assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
+    const solidReport = await job(
+      await call("cad_inspect", { entityId: realSolid.entityIds[0] }),
+    );
+    assert(
+      solidReport.valid &&
+        solidReport.solids === 1 &&
+        solidReport.volumeMm3 > 0,
+      JSON.stringify(solidReport),
+    );
+    const compareExact = (report) => {
+      assert(report.valid);
+      for (const key of ["solids", "shells", "faces", "edges", "vertices"])
+        assert.equal(report[key], solidReport[key], key);
+      for (const key of ["areaMm2", "signedVolumeMm3"])
+        assert(
+          Math.abs(report[key] - solidReport[key]) <=
+            Math.max(1e-6, Math.abs(solidReport[key]) * 1e-8),
+          `${key}: ${report[key]} versus ${solidReport[key]}`,
+        );
+    };
+    const solidId = realSolid.entityIds[0];
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== solidId && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const realStep = await job(
+      await call("project_export", { format: "step" }),
+    );
+    const beforeStep = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", { artifactId: realStep.artifactId }),
+    );
+    const stepId = (await call("project_get")).result.objects.find(
+      (x) => !beforeStep.has(x.id),
+    ).id;
+    const stepReport = await job(
+      await call("cad_inspect", { entityId: stepId }),
+    );
+    compareExact(stepReport);
+    const realProject = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: realProject.artifactId,
+        replace: true,
+      }),
+    );
+    const reopenedSolid = await job(
+      await call("cad_inspect", { entityId: solidId }),
+    );
+    compareExact(reopenedSolid);
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
+    assert.equal(
+      (await call("object_get", { entityId: solidId })).result.parametric
+        .feature.recipe.kind,
+      "thicken",
+    );
+    await mutate("object_update", {
+      entityId: scan.id,
+      patch: { visible: true },
+    });
+    await mutate("object_select", { entityId: scan.id });
+    await mutate("selection_set", {
+      entityId: scan.id,
+      triangles: Array.from({ length: 200 }, (_, i) => i),
+    });
+    const copiedRegion = (
+      await mutate("selection_edit", { entityId: scan.id, operation: "copy" })
+    ).result.entityId;
+    const regionDigest = await geometryDigest(copiedRegion);
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== copiedRegion && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const regionStl = await job(
+      await call("project_export", { format: "stl" }),
+    );
+    const beforeCommonInput = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: regionStl.artifactId,
+        unit: "mm",
+        placeAtOrigin: false,
+      }),
+    );
+    const commonInputId = (await call("project_get")).result.objects.find(
+      (x) => !beforeCommonInput.has(x.id),
+    ).id;
+    const commonFit = await job(
+      await mutate("surface_fit", {
+        entityId: commonInputId,
+        options: {
+          countU: 4,
+          countV: 4,
+          degree: 3,
+          projection: "xy",
+          sampleLimit: 10000,
+        },
+      }),
+    );
+    assert.deepEqual(
+      (await call("surface_get", { entityId: commonFit.entityId })).result
+        .patch,
+      realMcpPatch,
+    );
+    const nativeFiles = [];
+    for (const [filename, artifact] of [
+      ["real-region-input.stl", regionStl],
+      ["real-region-solid.step", realStep],
+    ]) {
+      const bytes = await artifactBytes(artifact);
+      await writeFile(new URL(filename, out), bytes);
+      nativeFiles.push({
+        filename,
+        bytes: bytes.length,
+        sha256: createHash("sha256").update(bytes).digest("hex"),
+      });
+    }
+    await writeFile(
+      new URL("real-region-fit.json", out),
+      JSON.stringify(
+        {
+          patch: realMcpPatch,
+          options: {
+            countU: 4,
+            countV: 4,
+            degree: 3,
+            projection: "xy",
+            sampleLimit: 10000,
+          },
+          thicknessMm: -0.1,
+          report: solidReport,
+          sourceDigest,
+          regionDigest,
+          files: nativeFiles,
+        },
+        null,
+        2,
+      ),
+    );
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== solidId && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    await mutate("object_update", {
+      entityId: solidId,
+      patch: { visible: true },
+    });
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
     ledger.scenarios.push({
       realInput: {
         name,
@@ -751,12 +962,21 @@ try {
       fit: realFit,
       exactFace: true,
       thickenedRegionGuiMcpEquality: true,
+      solidReport,
+      stepReport,
+      projectReport: reopenedSolid,
+      exchangeTolerance: { relative: 1e-8, absolute: 1e-6 },
+      sourceDigestPreservedAfterReopen: true,
+      sourceDigest,
+      regionDigest,
+      nativeFiles,
+      commonNativeInputRefitEquality: true,
       limitation:
-        "A local real scan region; not whole-part reconstruction, solid validity or native application parity.",
+        "A selected real scan region with kernel validity and exchange checks; not whole-part reconstruction, a global self-intersection certificate or native application parity.",
     });
     await mutate("viewport_control", {
       action: "fit",
-      entityId: realCad.entityIds[0],
+      entityId: solidId,
     });
   }
   assert.deepEqual(errors, []);

@@ -945,6 +945,23 @@ or `surface_operation` invalidate derived normals, edges, fitted-plane and scan
 count caches while retaining the editable patch and source association. These
 caches must be recomputed from the edited geometry.
 
+Use read-only job `cad_inspect` with `{entityId}` to inspect the object's saved
+exact BREP. Poll `job_get`; `job_cancel` stops its separate diagnostic worker.
+The Properties panel's **Inspect exact CAD** button calls this same operation.
+It returns `units:"mm"`, BRepCheck `valid`, unique `solids`, `shells`, `faces`,
+`edges`, `vertices`, analytic `areaMm2`, `signedVolumeMm3`, absolute `volumeMm3`,
+and `topologyVisits`. Surface-only objects have zero solids and volume. Negative
+signed volume remains visible instead of being silently reoriented. This is a
+kernel validity report, not a global self-intersection or native-reference
+equivalence certificate. Compare properties and topology after exact exchange;
+display mesh counts and volume estimates are separate observations.
+
+Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
+kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,
+resource exhaustion and changed revision fail without modifying model/history.
+Failure, timeout and cancellation dispose only the inspection worker; the live
+modeling kernel and Undo-owned handles remain intact.
+
 Surface fitting additionally accepts `method:"projected-grid"|"approximate"`.
 Omitting it preserves projected-grid behavior. Approximate uses the recovered
 XYZ basis, derivative penalties and column-normalized LU through the same worker,

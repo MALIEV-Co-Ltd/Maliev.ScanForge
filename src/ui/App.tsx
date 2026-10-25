@@ -33,6 +33,7 @@ import {
 } from "../import-batch";
 import { entityDisplayStats } from "../entity-display-stats";
 import { GeometryStatistics } from "./GeometryStatistics";
+import { CadDiagnostics } from "./CadDiagnostics";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -6088,6 +6089,13 @@ export function App() {
                               </p>
                             )}
                           <GeometryStatistics stats={stats} />
+                          {selected.kernelId && selected.brep && (
+                            <CadDiagnostics
+                              key={`${selected.id}:${selected.kernelId}`}
+                              entityId={selected.id}
+                              api={workspaceApi}
+                            />
+                          )}
                         </Panel>
                       </ToolSection>
                       {workspace === "properties" &&

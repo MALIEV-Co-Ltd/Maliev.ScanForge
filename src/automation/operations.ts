@@ -1,4 +1,5 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
+import { createCadInspectionOperation } from "./cad-inspection";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
@@ -553,6 +554,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     return publishImportedEntity(entity, a, c, fit);
   }
   const operations: Record<string, Handler> = {
+    cad_inspect: createCadInspectionOperation(host),
     scan_preview: createScanPreviewOperation(host),
     ...createAlignmentOperations(host),
     ...createDatumOperations(host),

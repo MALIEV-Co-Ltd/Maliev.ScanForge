@@ -2,6 +2,18 @@
 
 ## Freeform patch edits
 
+`cad_inspect` is a read-only asynchronous operation used by MCP and the GUI
+properties panel. It snapshots saved BREP and opens a dedicated CadClient worker,
+parses the BREP without tessellation or shape registration, and reads unique
+topology counts, BRepCheck validity and analytic GProp mass properties. Native
+wrappers and the temporary virtual file are retired in finally; the shared
+operation disposes its worker on success, failure or abort and fences late
+results by the normal revision check. Its timeout cannot reset the live modeling
+client. Bounds are 64 MiB UTF-8 input and 200,000 topology visits before analysis,
+plus the existing kernel lease. This adds no modeling transaction or history.
+The GUI job adapter can omit mutation guards for explicitly read-only jobs;
+mutating callers retain their existing revision and retry fields.
+
 The GUI control-grid editor dispatches `surface_set` through the existing shared
 API, preserving revision admission, retry receipts, locks and model history.
 Optional `scanId` records an existing mesh/point-cloud source on creation or

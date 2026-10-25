@@ -592,6 +592,87 @@ function importFile(oc, payload, onProgress = () => {}) {
   }
 }
 
+function inspectBrep(oc, input) {
+  if (
+    typeof input.brep !== "string" ||
+    !input.brep.length ||
+    input.brep.length > 64 * 1024 * 1024
+  )
+    throw new Error("CAD inspection requires BREP text up to 64 MiB.");
+  const bytes = new TextEncoder().encode(input.brep);
+  if (bytes.length > 64 * 1024 * 1024)
+    throw new Error("CAD inspection BREP exceeds the 64 MiB resource limit.");
+  const path = "check.brp",
+    handles = [];
+  const keep = (handle) => (handles.push(handle), handle);
+  try {
+    oc.FS.writeFile(path, bytes);
+    const shape = keep(new oc.TopoDS_Shape());
+    const builder = keep(new oc.BRep_Builder());
+    const progress = keep(new oc.Handle_Message_ProgressIndicator_1());
+    if (!oc.BRepTools.Read_2(shape, path, builder, progress) || shape.IsNull())
+      throw new Error("BREP inspection could not read an exact shape.");
+    let visits = 0;
+    const count = (kind) => {
+      const buckets = new Map();
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum[kind],
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      let total = 0;
+      for (; explorer.More(); explorer.Next()) {
+        if (++visits > 200000)
+          throw new Error(
+            "CAD inspection exceeds its 200000 topology-visit resource limit.",
+          );
+        const current = keep(explorer.Current());
+        const hash = current.HashCode(2147483647);
+        const bucket = buckets.get(hash) ?? [];
+        if (!bucket.some((prior) => prior.IsSame(current))) {
+          bucket.push(current);
+          buckets.set(hash, bucket);
+          total++;
+        }
+      }
+      return total;
+    };
+    const solids = count("TopAbs_SOLID"),
+      shells = count("TopAbs_SHELL"),
+      faces = count("TopAbs_FACE"),
+      edges = count("TopAbs_EDGE"),
+      vertices = count("TopAbs_VERTEX");
+    const checker = keep(new oc.BRepCheck_Analyzer(shape, true));
+    const area = keep(new oc.GProp_GProps_1()),
+      volume = keep(new oc.GProp_GProps_1());
+    oc.BRepGProp.SurfaceProperties_1(shape, area, true, false);
+    if (solids)
+      oc.BRepGProp.VolumeProperties_1(shape, volume, true, true, false);
+    const areaMm2 = area.Mass(),
+      signedVolumeMm3 = solids ? volume.Mass() : 0;
+    if (![areaMm2, signedVolumeMm3].every(Number.isFinite))
+      throw new Error("CAD inspection produced non-finite mass properties.");
+    return {
+      units: "mm",
+      valid: checker.IsValid_2(),
+      solids,
+      shells,
+      faces,
+      edges,
+      vertices,
+      areaMm2,
+      signedVolumeMm3,
+      volumeMm3: Math.abs(signedVolumeMm3),
+      topologyVisits: visits,
+    };
+  } finally {
+    cleanup(handles);
+    if (oc.FS.analyzePath(path).exists) oc.FS.unlink(path);
+  }
+}
+
 function primitive(oc, input) {
   const handles = [];
   const keep = (handle) => {
@@ -2177,6 +2258,7 @@ self.onmessage = (event) => {
       let result;
       if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
+      else if (operation === "inspectBrep") result = inspectBrep(oc, payload);
       else if (operation === "alignmentReferences")
         result = alignmentReferences(oc, payload);
       else if (operation === "alignmentMesh") {

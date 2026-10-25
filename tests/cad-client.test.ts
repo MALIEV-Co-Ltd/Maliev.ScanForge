@@ -76,6 +76,7 @@ describe("CAD worker ownership and cancellation", () => {
       [0, 2],
     ];
     const cases: [() => Promise<unknown>, string, unknown][] = [
+      [() => client.inspectBrep("BREP"), "inspectBrep", { brep: "BREP" }],
       [
         () =>
           client.transformDatum(
