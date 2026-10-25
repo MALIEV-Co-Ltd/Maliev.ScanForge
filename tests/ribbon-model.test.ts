@@ -208,7 +208,6 @@ describe("ribbon command inventory", () => {
       expect(getRibbonToolMetadata(id)?.action, id).toBe(action);
     for (const id of [
       "quadObj",
-      "nurbsSurface",
       "repairMesh",
       "segmentMesh",
       "sketch2d",

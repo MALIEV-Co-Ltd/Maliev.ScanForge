@@ -1,0 +1,7 @@
+
+> scanforge@0.1.0 test:cad
+> node --max-old-space-size=768 tests/kernel-smoke.mjs
+
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.

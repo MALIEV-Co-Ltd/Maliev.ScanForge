@@ -945,6 +945,28 @@ or `surface_operation` invalidate derived normals, edges, fitted-plane and scan
 count caches while retaining the editable patch and source association. These
 caches must be recomputed from the edited geometry.
 
+Join compatible patches with `surface_operation` using `entityId`,
+`operation:"join"`, exactly one of `referenceId` or `referencePatch`, and
+`options:{referenceBoundary:"u1",targetBoundary:"u0",continuity:"C1",reverse:false}`.
+Boundaries are `u0`, `u1`, `v0` or `v1`; continuity is `C0` or `C1`.
+The target may be a mesh patch or exact CAD authored by a `surface` recipe.
+Raw references use the NurbsPatch structure above, bounded to 2–16 controls per
+direction and degrees 1–5. Seam degree, control count and normalized knots must
+match. The reference stays fixed; locked workspace references remain readable.
+Self-reference and exact-target downstream references reject before rebuilding.
+Target and affected dependent locks also reject without publication.
+
+The result includes `entityId`, `representation`, applied `options`,
+`referenceSource` and `changedControlIndices`. Exact joins also return
+`rebuiltIds` and `cleanupFailures` from the ordinary atomic CAD rebuild path.
+One accepted join adds one model-history step; identical request retries reuse
+the result. Use `job_cancel` to cancel. The GUI's NURBS surface panel submits this
+same operation and exposes its owned cancellation outside the busy panel.
+The joined patch is materialized, with no persistent seam dependency. C1 matches
+transverse homogeneous derivatives in normalized parameters; it is not a general
+surface blend or a native-reference equivalence claim. Other exact freeform
+operations still use `cad_rebuild` with the computed replacement surface recipe.
+
 Use read-only job `cad_inspect` with `{entityId}` to inspect the object's saved
 exact BREP. Poll `job_get`; `job_cancel` stops its separate diagnostic worker.
 The Properties panel's **Inspect exact CAD** button calls this same operation.

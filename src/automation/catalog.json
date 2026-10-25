@@ -4914,7 +4914,7 @@
   },
   {
     "name": "surface_operation",
-    "description": "Use editor NURBS helpers: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining.",
+    "description": "Use editor NURBS helpers: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining. Join accepts exactly one workspace referenceId or bounded referencePatch, preserves that reference, and edits mesh or exact authored surface targets through the shared transaction. C0/C1 are compatible normalized-parameter boundary joins, not general surface blends. Returns representation, applied options, reference source, changed control indices and exact rebuild/cleanup results.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4993,7 +4993,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200,
-          "description": ""
+          "description": "Fixed workspace NURBS reference for operation:join. Must differ from the target; exact joins reject downstream references. Locked references are readable."
         },
         "options": {
           "type": "object",
@@ -5026,6 +5026,91 @@
           "minLength": 1,
           "maxLength": 200,
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "referencePatch": {
+          "type": "object",
+          "description": "Fixed compatible NURBS reference value for operation:join. Supply exactly one of referencePatch or referenceId. Target must be a mesh patch or an exact authored surface recipe; no persistent seam dependency is created.",
+          "properties": {
+            "format": {
+              "type": "string",
+              "enum": ["scanforge-nurbs"]
+            },
+            "version": {
+              "type": "integer",
+              "enum": [1]
+            },
+            "countU": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "countV": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "degreeU": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "degreeV": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "knotsU": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 22
+            },
+            "knotsV": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 22
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "minItems": 4,
+              "maxItems": 256
+            },
+            "weights": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "minItems": 4,
+              "maxItems": 256
+            }
+          },
+          "required": [
+            "format",
+            "version",
+            "countU",
+            "countV",
+            "degreeU",
+            "degreeV",
+            "knotsU",
+            "knotsV",
+            "points",
+            "weights"
+          ],
+          "additionalProperties": false
         }
       },
       "required": ["operation", "expectedRevision", "requestId"],

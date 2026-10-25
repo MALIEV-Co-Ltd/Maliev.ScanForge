@@ -6991,6 +6991,35 @@ export function App() {
                 {workspaceGroup(workspace) === "surface" && (
                   <div className="surface-panels">
                     <SurfaceTools
+                      active={toolPanelOpen}
+                      onJoin={async (referencePatch, options, signal) => {
+                        setError("");
+                        const result = await runApplicationJobCommand(
+                          workspaceApi,
+                          "surface_operation",
+                          {
+                            entityId: selected?.id,
+                            operation: "join",
+                            referencePatch,
+                            options,
+                          },
+                          {
+                            signal,
+                            cancelledMessage: "Surface join cancelled.",
+                            leaseMessage:
+                              "Surface join exceeded its time limit.",
+                          },
+                        );
+                        const failures = result.cleanupFailures as
+                          { message: string }[] | undefined;
+                        if (failures?.length)
+                          setError(
+                            failures
+                              .map((failure) => failure.message)
+                              .join("; "),
+                          );
+                        return result;
+                      }}
                       selectionId={selected?.id}
                       scan={
                         entities.find(

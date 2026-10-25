@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { replaySurfaceJoins } from "./helpers/surface-join-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -492,7 +493,10 @@ try {
   });
   await save();
   await mutate("object_select", { entityId: mcpResult.entityId });
-  await mutate("ui_set", { workspace: "surface", toolPanelOpen: true });
+  await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+  await page
+    .getByRole("button", { name: "NURBS surface", exact: true })
+    .click();
   const surfacePanel = page.locator(".surface-panels");
   const beforeControl = (await call("project_get")).result;
   const zControl = surfacePanel
@@ -689,6 +693,18 @@ try {
     unchangedRevision: true,
     report: faceReport,
   });
+  if (process.env.SCANFORGE_TEST_SURFACE_JOIN === "1")
+    await replaySurfaceJoins({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
   if (process.env.SCANFORGE_TEST_REAL_SCAN) {
     const file = await readFile(process.env.SCANFORGE_TEST_REAL_SCAN);
     const connectedRegion =

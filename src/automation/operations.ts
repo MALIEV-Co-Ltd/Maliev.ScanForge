@@ -383,6 +383,47 @@ function meshEdited(e: Entity, positions: Positions): Entity {
 }
 
 /** The UI and MCP call these same operation handlers; geometry always comes from the owning workspace. */
+function commitEntities(
+  host: WorkspaceHost,
+  c: CommandContext,
+  entities: Entity[],
+  label: string,
+) {
+  const write = () => host.commit(entities.map(retainIndexedMesh), label);
+  if (c.mutate) c.mutate(write);
+  else {
+    c.check();
+    write();
+  }
+}
+
+/** One context-aware rebuild publication path for MCP and compound application operations. */
+export function createCadRebuildOperation(host: WorkspaceHost) {
+  return async (a: Parameters<Handler>[0], c: CommandContext) => {
+    const s = host.snapshot(),
+      cad = host.cad();
+    const result = await rebuildCadFeature(
+      cad,
+      s.entities,
+      s.history,
+      s.future,
+      a.entityId,
+      a.recipe,
+      c.signal,
+    );
+    try {
+      commitEntities(host, c, result.entities, "Rebuild CAD feature");
+    } catch (error) {
+      await releaseCreated(cad, result.entities, s.entities);
+      throw error;
+    }
+    return {
+      rebuiltFeatureIds: result.rebuiltFeatureIds,
+      cleanupFailures: result.cleanupFailures,
+    };
+  };
+}
+
 export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   const finishSelectionEdit = (
     source: Entity,
@@ -405,12 +446,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       host.select(source.kind === "pointcloud" ? null : (next[0]?.id ?? null));
   };
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
-    const write = () => host.commit(entities.map(retainIndexedMesh), label);
-    if (c.mutate) c.mutate(write);
-    else {
-      c.check();
-      write();
-    }
+    commitEntities(host, c, entities, label);
   };
   async function publishImportedEntity(
     entity: Entity,
@@ -1433,29 +1469,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         featureId: result.created[0].parametric!.feature.id,
       };
     },
-    cad_rebuild: async (a, c) => {
-      const s = host.snapshot(),
-        cad = host.cad(),
-        result = await rebuildCadFeature(
-          cad,
-          s.entities,
-          s.history,
-          s.future,
-          a.entityId,
-          a.recipe,
-          c.signal,
-        );
-      try {
-        commit(c, result.entities, "Rebuild CAD feature");
-      } catch (error) {
-        await releaseCreated(cad, result.entities, s.entities);
-        throw error;
-      }
-      return {
-        rebuiltFeatureIds: result.rebuiltFeatureIds,
-        cleanupFailures: result.cleanupFailures,
-      };
-    },
+    cad_rebuild: createCadRebuildOperation(host),
     sketch_get: () => {
       const s = host.snapshot();
       return {

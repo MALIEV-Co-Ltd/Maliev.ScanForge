@@ -17,6 +17,41 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Shared compatible patch joins
+
+GUI joins now submit `surface_operation` with a bounded raw reference; agents can
+use that same input or an existing workspace reference. Mesh and exact `surface`
+recipe targets share one join calculation. Exact publication reuses the ordinary
+guarded rebuild handler and late-result cleanup. Reference geometry stays fixed;
+self/downstream references and target/dependent locks reject before native work.
+The GUI awaits completion, owns cancellation and uses ordinary NURBS ribbon entry.
+
+The [combined built GUI/public-MCP receipt](evidence/m5-20261025/compatible-join-browser.json)
+(`scanforge-ec90a019b73ac134`) exercises C0 and C1 on both representations,
+raw-reference and workspace-reference equality, incompatible seams, unchanged
+failure revision/history/geometry, one accepted history step, source/reference
+preservation, Undo/Redo and editable project reopen. Exact joined faces pass
+BREP inspection and STEP round-trip area/topology checks. The
+[rendered exact controls](evidence/m5-20261025/exact-surface-join.png) were checked.
+The same replay includes edge discovery/cancellation, CAD operations, trim,
+connected real-scan fitting/exchange and invalid BREP rejection.
+
+The [standard twelve-batch build](evidence/m5-20261025/compatible-join-build.txt),
+[full suite](evidence/m5-20261025/compatible-join-unit.txt) (49,038 passed, 64 skipped;
+679 passed files, 18 skipped; 274.13 s) and
+[CAD smoke](evidence/m5-20261025/compatible-join-cad.txt) pass. API/domain and GUI
+static reviews found no actionable defect. Earlier failed browser attempts are
+retained in `.resources/m5/surface-join-browser*.log`; they exposed selector,
+background preparation metadata and mixed-scene STEP fixture assumptions.
+
+This proves authored compatible joins, not persistent seam constraints, general
+blends or native continuity equivalence. The GUI currently skips mesh references
+in STEP export while MCP rejects mixed scenes; that export parity gap remains
+open. Other exact freeform operation admission, native operation/continuity/blend
+acceptance, the sketch chain, resource/recovery coverage and M4 remain gates.
+The preceding edge commit `a533596` passed hosted run `40220590721`; the new join
+candidate still requires its own hosted CI before integration.
+
 ### Exact edge discovery and reachable cancellation
 
 Existing read-only `cad_inspect` now optionally returns bounded edge-reference

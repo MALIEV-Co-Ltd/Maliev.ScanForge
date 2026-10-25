@@ -71,6 +71,20 @@ plane/fit metadata and scan-count caches are invalidated on patch edits, includi
 `surface_operation`. Exact parametric surfaces use `cad_rebuild` and retain their
 BREP and dependent-feature rebuild semantics.
 
+Compatible joins dispatch `surface_operation` from both the GUI and MCP. Its
+bounded raw `referencePatch` alternative lets the panel submit its imported
+reference without creating another workspace object. Workspace reference IDs
+remain supported, including locked readable references. The operation rejects
+self/downstream references and target/dependent locks before native work.
+It evaluates `joinPatchBoundary` once, then either commits a mesh patch or invokes
+the extracted `createCadRebuildOperation` handler with the same command context.
+This preserves the existing revision fence, cancellation, dependency transaction
+and late-created handle cleanup without nesting jobs. Exact targets must have a
+`surface` recipe. Structured results report applied join options, representation,
+reference source and changed control indices. The reference is a fixed input,
+not a persistent dependency. The GUI awaits publication before success and aborts
+its owned job on close/unmount; its cancel control remains outside inert content.
+
 Project restore copies shared text chunks into an ordinary byte view before
 UTF-8 decoding, because browser TextDecoder rejects SharedArrayBuffer views.
 Numeric geometry chunks retain their original immutable shared backing and

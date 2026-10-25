@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  nurbsSurface:
+    "docs/M5_ACCEPTANCE.md: shared mesh/exact patch edits and compatible C1 joins, reference preservation, history and exact exchange",
   fillet:
     "docs/M5_ACCEPTANCE.md: revision-fenced exact edge discovery, intended native edge treatment and GUI/public MCP geometry equality",
   chamfer:
