@@ -1,0 +1,288 @@
+{
+  "owner": "scanforge-m6-inspection-validation",
+  "startedAt": "2026-10-25T17:41:22.798Z",
+  "expiresAt": "2026-10-25T17:45:22.798Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 51980,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-25T17:41:22.798Z",
+      "port": 51104,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 19804,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-25T17:41:23.037Z",
+      "port": 51105,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 33724,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-25T17:41:23.196Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "cleanup": [
+    {
+      "port": 51104,
+      "closed": true
+    },
+    {
+      "port": 51105,
+      "closed": true
+    },
+    {
+      "pid": 19804,
+      "exited": true
+    },
+    {
+      "pid": 33724,
+      "exited": true
+    }
+  ],
+  "distance": {
+    "kind": "distance",
+    "distance": 4.029587454760298,
+    "value": 4.029587454760298,
+    "units": "mm",
+    "points": [
+      [
+        -2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ]
+    ]
+  },
+  "angle": {
+    "kind": "angle",
+    "angle": 90,
+    "value": 90,
+    "units": "deg",
+    "points": [
+      [
+        -2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        -1.6946465018016788,
+        2.5
+      ]
+    ]
+  },
+  "radius": {
+    "kind": "radius",
+    "radius": 2.4284486599832293,
+    "diameter": 4.856897319966459,
+    "center": [
+      0,
+      -0.33892930036033575,
+      2.5
+    ],
+    "value": 2.4284486599832293,
+    "units": "mm",
+    "points": [
+      [
+        -2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        -1.6946465018016788,
+        2.5
+      ]
+    ]
+  },
+  "diameter": {
+    "kind": "diameter",
+    "radius": 2.4284486599832293,
+    "diameter": 4.856897319966459,
+    "center": [
+      0,
+      -0.33892930036033575,
+      2.5
+    ],
+    "value": 4.856897319966459,
+    "units": "mm",
+    "points": [
+      [
+        -2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        1.0167879010810073,
+        2.5
+      ],
+      [
+        2.014793727380149,
+        -1.6946465018016788,
+        2.5
+      ]
+    ]
+  },
+  "sectionDisplay": {
+    "entityId": "c65cdb24-41fe-4bf2-b23f-85e82e4b431d",
+    "axis": "x",
+    "offset": 0,
+    "units": "mm",
+    "length": 50,
+    "segments": 8
+  },
+  "deviation": {
+    "version": 1,
+    "entityId": "c65cdb24-41fe-4bf2-b23f-85e82e4b431d",
+    "units": "mm",
+    "semantics": "oriented-analytic-surface",
+    "sampleOrder": "source-triangle-corners",
+    "fit": {
+      "kind": "plane",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "rms": 0,
+      "maxError": 0
+    },
+    "tolerance": 1,
+    "samples": 36,
+    "excluded": 0,
+    "minimum": -2.5,
+    "maximum": 2.5,
+    "mean": 0,
+    "rms": 2.5,
+    "maxError": 2.5,
+    "withinTolerance": 0,
+    "coverage": 1,
+    "limits": "Vertex samples against infinite analytic surfaces; not a continuous error bound or watertight inside/outside test.",
+    "inspectionId": "b66b627e-8447-41aa-b220-c6527aba17f0",
+    "artifact": {
+      "artifactId": "6f477f9c-6be3-4c83-8525-26e9c53f1629",
+      "name": "deviations.json",
+      "mime": "application/json",
+      "bytes": 163
+    },
+    "report": {
+      "artifactId": "a0e316b0-85ef-46a5-8152-b66372552524",
+      "name": "deviation-report.json",
+      "mime": "application/json",
+      "bytes": 670
+    }
+  },
+  "referenceComparison": {
+    "version": 1,
+    "entityId": "c65cdb24-41fe-4bf2-b23f-85e82e4b431d",
+    "referenceId": "312f7262-cc02-43e2-919d-d68ee7631146",
+    "units": "mm",
+    "semantics": "unsigned-reference-distance",
+    "sampleOrder": "source-triangle-corners",
+    "tolerance": 1,
+    "maxDistance": 5,
+    "signed": false,
+    "referenceGeometry": "Float32-display-triangles",
+    "samples": 36,
+    "eligible": 36,
+    "excluded": 0,
+    "unmatched": 0,
+    "coverage": 1,
+    "minimum": 1,
+    "maximum": 3,
+    "mean": 2,
+    "rms": 2.23606797749979,
+    "maxError": 3,
+    "withinTolerance": 18,
+    "limits": "Source vertex samples strictly within maxDistance of visible reference display triangles. Null means hidden or unmatched. Local winding sign is not watertight containment. CAD tessellation, sparse sampling and open boundaries limit accuracy; not exact BREP distance or a continuous error bound.",
+    "inspectionId": "0fa98b44-10ca-4f36-93c4-da626b2310b3",
+    "artifact": {
+      "artifactId": "b9976a21-c305-4183-9e24-422e0e459bda",
+      "name": "deviations.json",
+      "mime": "application/json",
+      "bytes": 73
+    },
+    "report": {
+      "artifactId": "da4bfff3-1977-4779-8cd0-d285d029240f",
+      "name": "deviation-report.json",
+      "mime": "application/json",
+      "bytes": 966
+    }
+  },
+  "persistence": {
+    "definition": {
+      "id": "f64e4812-e3e4-4abb-9857-435f6553d373",
+      "name": "Saved reference fixture",
+      "definition": {
+        "kind": "deviation",
+        "entityId": "c65cdb24-41fe-4bf2-b23f-85e82e4b431d",
+        "tolerance": 1,
+        "referenceId": "312f7262-cc02-43e2-919d-d68ee7631146",
+        "maxDistance": 5,
+        "signed": false
+      }
+    },
+    "reportIdenticalAfterBinaryReopen": true
+  },
+  "mapping": {
+    "indexedVertices": 4,
+    "sourceCorners": 6,
+    "hiddenSamples": 3,
+    "staleReportRejected": true,
+    "transformUndoRedoAndEditMapping": true
+  },
+  "nativeTetrahedronSection": {
+    "sourceSha256": "98b797f4517178ce63f61f5cd68de40d10b73ed7bb12bd0d60d80898e2882ab4",
+    "axis": "x",
+    "offset": 2,
+    "segments": 3,
+    "length": 27.31370849898476,
+    "guiMcpCsvIdentical": true
+  },
+  "cancellation": {
+    "samples": 100000,
+    "status": "cancelled",
+    "historyUnchanged": true,
+    "noResultArtifacts": true
+  },
+  "steps": [
+    "public MCP and GUI distance/angle/radius/diameter export equality",
+    "rendered three-point measurement controls",
+    "public MCP signed analytic deviation statistics",
+    "read-only analysis preserves history",
+    "reference comparison GUI/public-MCP report equality and shared show/clear heatmap",
+    "saved inspection metadata preserves history and binary project save/reopen reproduces GUI report",
+    "retained report tolerance controls legend and heatmap independently of GUI input",
+    "indexed source corner mapping, hidden face filtering, stale rejection, alignment transform, edit and Undo/Redo"
+  ],
+  "passed": true
+}

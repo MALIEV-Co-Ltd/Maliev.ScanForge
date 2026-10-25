@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import circleAngle from "./fixtures/m6-native-circle-angle-observed.json";
 import sparse from "./fixtures/m6-native-sparse-observed.json";
+import section from "./fixtures/m6-native-section-observed.json";
 import { inspectDeviation, inspectSection } from "../src/inspection";
 import distance from "./fixtures/m6-native-measurement-observed.json";
 import offset from "./fixtures/m6-native-offset-observed.json";
@@ -125,7 +126,33 @@ it("matches the native perpendicular-line angle proposal on exported endpoints",
   ).toBeLessThanOrEqual(a.absoluteToleranceDegrees);
 });
 
-it("prepares an analytic tetrahedron section for the pending native comparison", () => {
+it("matches the saved native tetrahedron section points and perimeter", () => {
+  const nativeProject = readFileSync(
+    new URL(
+      "../docs/evidence/m6-inspection-20261025/m6-native-tetrahedron-section.qsf",
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(nativeProject).digest("hex")).toBe(
+    section.qsfSha256,
+  );
+  const nativePoints = section.closedPolyline.map((_, point) =>
+    [0, 1, 2].map((axis) =>
+      nativeProject.readFloatLE(
+        section.polylineByteOffset + point * 12 + axis * 4,
+      ),
+    ),
+  );
+  expect(nativePoints).toEqual(section.closedPolyline);
+  expect(nativePoints[0]).toEqual(nativePoints.at(-1));
+  const nativeLength = nativePoints
+    .slice(1)
+    .reduce(
+      (length, point, index) =>
+        length +
+        Math.hypot(...point.map((v, axis) => v - nativePoints[index][axis])),
+      0,
+    );
   const stl = readFileSync(
     new URL("./fixtures/m6-section-tetrahedron.stl", import.meta.url),
     "utf8",
@@ -147,4 +174,26 @@ it("prepares an analytic tetrahedron section for the pending native comparison",
   const report = inspectSection(source, "x", 2);
   expect(report.segments.length / 6).toBe(3);
   expect(report.length).toBeCloseTo(16 + Math.sqrt(128), 12);
+  expect(Math.abs(report.length - nativeLength)).toBeLessThanOrEqual(
+    section.absoluteToleranceMm,
+  );
+  const expectedEdges = new Set(
+    nativePoints
+      .slice(1)
+      .map((point, index) =>
+        [point.join(","), nativePoints[index].join(",")].sort().join("|"),
+      ),
+  );
+  const actualEdges = new Set<string>();
+  for (let index = 0; index < report.segments.length; index += 6) {
+    actualEdges.add(
+      [
+        Array.from(report.segments.slice(index, index + 3)).join(","),
+        Array.from(report.segments.slice(index + 3, index + 6)).join(","),
+      ]
+        .sort()
+        .join("|"),
+    );
+  }
+  expect(actualEdges).toEqual(expectedEdges);
 });
