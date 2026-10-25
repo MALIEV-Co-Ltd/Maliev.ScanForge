@@ -11,6 +11,7 @@ import {
 } from "../src/automation/global-alignment-operations";
 import catalog from "../src/automation/catalog.json";
 import type { Entity } from "../src/types";
+import { executeGlobalAlignmentInputPreparation } from "../src/global-alignment-input-core";
 
 const solver = vi.hoisted(() => ({ prepare: vi.fn(), refine: vi.fn() }));
 vi.mock("../src/global-alignment-input", async (importOriginal) => ({
@@ -158,9 +159,57 @@ function setup() {
 beforeEach(() => vi.resetAllMocks());
 afterEach(async () => {
   for (const api of apis.splice(0)) api.dispose();
+  vi.unstubAllGlobals();
   // Abort-aware mock jobs settle and execute their finally blocks on disposal.
   await Promise.resolve();
   await Promise.resolve();
+});
+
+it("exposes the group-command source mask through real shared preparation and MCP state", async () => {
+  const h = setup();
+  const actual = await vi.importActual<
+    typeof import("../src/global-alignment-input")
+  >("../src/global-alignment-input");
+  // Unit transport harness executes the real worker core, including transferred inputs.
+  // This does not stand in for browser-worker or full solver integration validation.
+  vi.stubGlobal(
+    "Worker",
+    class {
+      onmessage?: (event: { data: unknown }) => void;
+      terminate() {}
+      postMessage(
+        packet: Parameters<typeof executeGlobalAlignmentInputPreparation>[0],
+        transfer: ArrayBuffer[],
+      ) {
+        const copy = structuredClone(packet, { transfer });
+        queueMicrotask(() => {
+          try {
+            this.onmessage?.({
+              data: { result: executeGlobalAlignmentInputPreparation(copy) },
+            });
+          } catch (error) {
+            this.onmessage?.({ data: { error: (error as Error).message } });
+          }
+        });
+      }
+    },
+  );
+  solver.prepare.mockImplementation(actual.prepareGlobalAlignmentInput);
+  const before = h.state.entities.map((entity) => entity.positions.slice());
+  const jobId = await h.start();
+  await h.settled(jobId, "succeeded");
+  expect(solver.refine.mock.calls[0][0]).toMatchObject({ mask: 0 });
+  for (const scan of solver.refine.mock.calls[0][0].scans)
+    expect(scan.geometry.flags).toEqual(new Uint32Array(3));
+  expect(await h.api.invoke("global_alignment_state", {})).toMatchObject({
+    ok: true,
+    result: { state: "preview", inputSummary: { mask: 0, scanCount: 2 } },
+  });
+  expect(h.host.commit).not.toHaveBeenCalled();
+  expect(h.state.entities.map((entity) => entity.positions)).toEqual(before);
+  expect(
+    await h.api.invoke("global_alignment_cancel", h.mutation()),
+  ).toMatchObject({ ok: true });
 });
 
 it("discovers the four shared global alignment operations with their runtime schemas", async () => {
@@ -434,6 +483,29 @@ it("applies the staged objects once through API dispatch and retry protection", 
   expect(h.state.entities[0]).toBe(h.output[0]);
   expect(h.state.entities[1]).toBe(h.output[1]);
   expect(solver.refine).toHaveBeenCalledOnce();
+});
+
+it("invalidates a preview when the computed normal carrier is replaced", async () => {
+  const h = setup(),
+    source = h.state.entities[0];
+  source.indexedMesh = {
+    vertices: source.positions,
+    triangles: new Uint32Array([0, 1, 2]),
+    geometryNormals: new Float32Array(9).fill(0.25),
+  };
+  await h.settled(await h.start(), "succeeded");
+  const preview = value<{ previewId: string }>(
+    await h.api.invoke("global_alignment_state", {}),
+  );
+  source.indexedMesh.geometryNormals = new Float32Array(9).fill(0.5);
+  expect(
+    await h.api.invoke("global_alignment_apply", {
+      ...h.mutation(),
+      previewId: preview.previewId,
+    }),
+  ).toMatchObject({ ok: false });
+  expect(h.host.commit).not.toHaveBeenCalled();
+  expect(inspectGlobalAlignmentPreview(h.host).state).toBe("idle");
 });
 
 it.each(["alignment_apply", "alignment_preview"])(

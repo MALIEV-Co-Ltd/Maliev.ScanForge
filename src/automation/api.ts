@@ -4,11 +4,19 @@ import {
   releaseScanPreviewOperation,
 } from "./scan-preview-operations";
 import { releaseInteractiveSession } from "./interactive-alignment-operations";
+import {
+  disposeReferenceConstructionPreview,
+  inspectReferenceConstructionPreview,
+} from "./reference-construction-preview";
 import type { InteractiveAlignmentState } from "../interactive-alignment-session";
 import type { InteractiveDragInput } from "../interactive-alignment-math";
 import type { InteractivePointerDrag } from "../interactive-camera";
 import type { InteractiveMirrorBackend } from "../interactive-mirror-backend";
 import catalog from "./catalog.json";
+import {
+  diskBackedBlob,
+  DISK_BLOB_BLOCK_BYTES,
+} from "../transient-blob-storage";
 import { cloudPlacement } from "../point-cloud-placement";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
@@ -53,6 +61,16 @@ export interface WorkspaceSnapshot {
   settings: Record<string, unknown>;
 }
 export interface WorkspaceHost {
+  inspectScanSelection?(): unknown;
+  controlScanSelection?(
+    command: import("./scan-selection-operations").ScanSelectionControl,
+  ): void;
+  selectScanRegion?(
+    entityId: string,
+    region: import("../screen-selection").ScreenRegion,
+    through: boolean,
+    signal: AbortSignal,
+  ): Promise<Uint8Array>;
   installInteractiveMirror?(backend: InteractiveMirrorBackend | null): void;
   publishInteractive?(state: InteractiveAlignmentState | null): void;
   inspectInteractive?(): InteractiveAlignmentState | null;
@@ -78,7 +96,11 @@ export interface WorkspaceHost {
   launchCommand?(name?: string): unknown;
   snapshot(): WorkspaceSnapshot;
   cad(): CadClient;
-  commit(entities: Entity[], label: string): void;
+  commit(
+    entities: Entity[],
+    label: string,
+    policy?: import("../object-operations").ModelCommitPolicy,
+  ): void;
   replace(
     project: Project,
     cad?: CadClient,
@@ -87,6 +109,12 @@ export interface WorkspaceHost {
   select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
   present?(signal?: AbortSignal): Promise<void>;
   showDatumPreview?(entities: Entity[] | null): void;
+  showReferenceConstructionPreview?(
+    owner: string,
+    candidate:
+      | import("../reference-construction-session").ReferenceConstructionCachedPreview
+      | null,
+  ): void;
   showScanPreview?(
     preview: {
       id: string;
@@ -119,14 +147,19 @@ export interface WorkspaceHost {
   deleteBackup?(id: string): Promise<void>;
   inspectApplication?(maxControls: number): unknown;
   setInterface?(patch: InterfacePatch): void;
-  inspectViewport?(): unknown;
+  inspectViewport?(view?: ViewportCommand["view"]): unknown;
   inspectSpaceMouse?(): unknown;
   controlSpaceMouse?(
     command: import("../spacemouse").SpaceMouseCommand,
     signal: AbortSignal,
   ): Promise<unknown>;
   controlViewport?(command: ViewportCommand): void;
-  pickViewport?(x: number, y: number, maxHits: number): unknown;
+  pickViewport?(
+    x: number,
+    y: number,
+    maxHits: number,
+    view?: ViewportCommand["view"],
+  ): unknown;
   captureScreenshot?(
     options: VisualCaptureOptions,
     signal: AbortSignal,
@@ -183,7 +216,7 @@ export type ApiResult =
       error: { code: string; message: string };
     };
 type Schema = Record<string, any>;
-const ARTIFACT_BYTES = 512 * 1024 * 1024;
+const ARTIFACT_BYTES = 1024 * 1024 * 1024;
 const ARTIFACT_COUNT = 64;
 const ARTIFACT_CHUNK_BYTES = 1024 * 1024;
 const ARTIFACT_LEASE_MS = 900000;
@@ -330,13 +363,54 @@ export class ApplicationApi {
   >();
   private active?: Job;
   private disposed = false;
+  private ownerDetached = false;
+  private ownerLeased = false;
+  private ownerGeneration = 0;
+  private ownerEpoch = 0;
   constructor(
     private host: WorkspaceHost,
     private handlers: Record<string, Handler>,
   ) {}
 
+  /** React may synchronously replay cleanup/setup while retaining this gateway. */
+  retainOwner(): () => void {
+    if (this.disposed) throw new Error("Application API has been disposed.");
+    if (this.ownerLeased)
+      throw new Error("Application API already has an owner.");
+    const generation = ++this.ownerGeneration;
+    this.ownerLeased = true;
+    this.ownerDetached = false;
+    let released = false;
+    return () => {
+      if (released || generation !== this.ownerGeneration) return;
+      released = true;
+      this.ownerLeased = false;
+      this.ownerDetached = true;
+      this.ownerEpoch++;
+      this.cancelActive();
+      try {
+        this.releasePreviews();
+      } finally {
+        queueMicrotask(() => {
+          if (generation !== this.ownerGeneration || !this.ownerDetached)
+            return;
+          this.disposed = true;
+          this.artifacts.clear();
+          this.requests.clear();
+        });
+      }
+    };
+  }
+
+  private checkOwner(epoch: number) {
+    if (this.disposed || this.ownerDetached || epoch !== this.ownerEpoch)
+      throw new ApiError("DISCONNECTED", "Workspace owner closed.");
+  }
+
   currentRevision() {
     const next = this.host.snapshot();
+    // Camera/layout measurements can change while a geometry job is running.
+    const { scale, effectiveGridSpacing, ...settings } = next.settings;
     const identity = (value?: object | null) => {
       if (!value) return 0;
       if (!this.identities.has(value))
@@ -349,7 +423,13 @@ export class ApplicationApi {
         e.id,
         e.name,
         e.kind,
+        e.constructionOrderKey,
+        identity(e.reference),
         e.color,
+        e.pointSize,
+        e.pointAutoDensity,
+        e.pointDensity,
+        e.pointColorMode,
         e.opacity,
         e.visible,
         e.locked,
@@ -380,7 +460,7 @@ export class ApplicationApi {
         identity(s.sketch),
       ]),
       activeSketchId: next.authoring.activeSketchId,
-      settings: next.settings,
+      settings,
     });
     if (this.stateKey !== undefined && key !== this.stateKey) this.revision++;
     this.stateKey = key;
@@ -399,12 +479,27 @@ export class ApplicationApi {
   inspectGlobalAlignmentPreview() {
     return inspectGlobalAlignmentPreview(this.host);
   }
+  /** Shared admission for GUI producers and MCP preview commands. */
+  requireReferencePreviewIdle() {
+    const reference = inspectReferenceConstructionPreview(this.host);
+    const application = this.host.inspectApplication?.(0) as
+      { previews?: { referenceConstruction?: boolean } } | undefined;
+    if (
+      reference.active ||
+      ("cleanupPending" in reference && reference.cleanupPending) ||
+      application?.previews?.referenceConstruction
+    )
+      throw new ApiError(
+        "BUSY",
+        "Finish or discard the reference construction preview before starting another preview.",
+      );
+  }
   async invoke(
     command: string,
     args: Record<string, unknown> = {},
   ): Promise<ApiResult> {
     try {
-      if (this.disposed)
+      if (this.disposed || this.ownerDetached)
         throw new ApiError(
           "DISCONNECTED",
           "Application API has been disposed.",
@@ -449,12 +544,25 @@ export class ApplicationApi {
     asynchronous: boolean,
   ): Promise<ApiResult> {
     try {
+      const ownerEpoch = this.ownerEpoch;
       let startRevision = this.currentRevision();
       if (!readOnly && args.expectedRevision !== startRevision)
         throw new ApiError(
           "REVISION_CONFLICT",
           "Workspace changed; inspect project_get and use its current revision with a new requestId.",
         );
+      if (
+        [
+          "alignment_preview",
+          "global_alignment_preview",
+          "landmark_preview",
+        ].includes(command) ||
+        (command === "scan_preview" && args.action === "create") ||
+        (command === "interactive_alignment_edit" && args.action === "begin") ||
+        (command === "landmark_edit" &&
+          !["reset", "clear", "view-layout"].includes(String(args.action)))
+      )
+        this.requireReferencePreviewIdle();
       if (command === "global_alignment_cancel") {
         const scoped = args.jobId !== undefined;
         const ownsActive =
@@ -520,6 +628,7 @@ export class ApplicationApi {
           releaseGlobalAlignmentPreview(this.host);
         }
         if (args.target === "datum") await releaseDatumPreview(this.host);
+        this.checkOwner(ownerEpoch);
         if (args.target === "interactive") {
           if (this.active?.command.startsWith("interactive_alignment_"))
             this.active.controller.abort();
@@ -652,6 +761,7 @@ export class ApplicationApi {
             "Upload chunks cannot exceed 1 MiB decoded.",
           );
         let blob = new Blob([data]);
+        let priorEntry: ReturnType<ApplicationApi["getArtifact"]> | undefined;
         if (args.artifactId) {
           const prior = this.artifacts.get(args.artifactId as string);
           if (!prior || prior.info.name !== args.name)
@@ -665,11 +775,34 @@ export class ApplicationApi {
               "Chunk offset must equal artifact size.",
             );
           blob = new Blob([prior.blob, data]);
+          priorEntry = prior;
         } else if (args.offset !== 0)
           throw new ApiError(
             "UPLOAD_CONFLICT",
             "First chunk offset must be zero.",
           );
+        const previousBytes = priorEntry?.blob.size ?? 0;
+        if (
+          Math.floor(blob.size / DISK_BLOB_BLOCK_BYTES) >
+          Math.floor(previousBytes / DISK_BLOB_BLOCK_BYTES)
+        ) {
+          blob = await diskBackedBlob(blob);
+          this.checkOwner(ownerEpoch);
+          this.sweepArtifacts();
+          if (args.artifactId && !this.artifacts.has(args.artifactId as string))
+            throw new ApiError(
+              "NOT_FOUND",
+              "Upload artifact expired or was deleted.",
+            );
+          if (
+            args.artifactId &&
+            this.artifacts.get(args.artifactId as string) !== priorEntry
+          )
+            throw new ApiError(
+              "UPLOAD_CONFLICT",
+              "Upload changed while its chunk was stored; retry from the current size.",
+            );
+        }
         const result = this.storeArtifact(
           blob,
           args.name as string,
@@ -691,12 +824,16 @@ export class ApplicationApi {
             .slice(offset, offset + ((args.length as number) ?? 65536))
             .arrayBuffer(),
         );
-        let text = "";
-        for (const byte of data) text += String.fromCharCode(byte);
+        this.checkOwner(ownerEpoch);
+        // Bound conversion scratch; per-byte concatenation creates a string
+        // node for every byte during repeated full-project downloads.
+        const text: string[] = [];
+        for (let start = 0; start < data.length; start += 8192)
+          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text),
+          base64: btoa(text.join("")),
           nextOffset: offset + data.length,
           eof: offset + data.length === entry.blob.size,
         });
@@ -750,8 +887,7 @@ export class ApplicationApi {
         },
         check: () => {
           job.controller.signal.throwIfAborted();
-          if (this.disposed)
-            throw new ApiError("DISCONNECTED", "Workspace closed.");
+          this.checkOwner(ownerEpoch);
           if (this.currentRevision() !== startRevision)
             throw new ApiError(
               "REVISION_CONFLICT",
@@ -763,16 +899,23 @@ export class ApplicationApi {
           write();
           startRevision = this.currentRevision();
         },
-        artifact: (data, name, mime) => this.storeArtifact(data, name, mime),
+        artifact: (data, name, mime) => {
+          context.check();
+          return this.storeArtifact(data, name, mime);
+        },
         artifactBlob: (id) => {
+          context.check();
           const entry = this.getArtifact(id);
           return new File([entry.blob], entry.info.name, {
             type: entry.info.mime,
           });
         },
       };
-      if (readOnly && !asynchronous)
-        return this.success(await handler(args, context));
+      if (readOnly && !asynchronous) {
+        const result = await handler(args, context);
+        this.checkOwner(ownerEpoch);
+        return this.success(result);
+      }
       if (this.active || this.host.busy())
         throw new ApiError(
           "BUSY",
@@ -780,8 +923,11 @@ export class ApplicationApi {
         );
       // Launchers delegate progress and busy ownership to the normal GUI/domain
       // command. Setting API activity here would block that command itself.
-      if (command === "command_run" || command === "command_repeat")
-        return this.success(await handler(args, context));
+      if (command === "command_run" || command === "command_repeat") {
+        const result = await handler(args, context);
+        this.checkOwner(ownerEpoch);
+        return this.success(result);
+      }
       // A single admission lane also protects native read operations from concurrent edits.
       this.active = job;
       const fastInteractive =
@@ -807,6 +953,8 @@ export class ApplicationApi {
       const run = async () => {
         try {
           job.result = await handler(args, context);
+          job.controller.signal.throwIfAborted();
+          this.checkOwner(ownerEpoch);
           job.status = "succeeded";
           job.progress = 1;
           job.stage = "Completed";
@@ -896,7 +1044,7 @@ export class ApplicationApi {
     )
       throw new ApiError(
         "RESOURCE_LIMIT",
-        "Artifact storage exceeds 64 artifacts or 512 MiB; delete artifacts before retrying.",
+        "Artifact storage exceeds 64 artifacts or 1 GiB; delete artifacts before retrying.",
       );
     const info = { artifactId: id, name, mime, bytes: blob.size };
     this.artifacts.set(id, { info, blob, used: Date.now() });
@@ -907,13 +1055,35 @@ export class ApplicationApi {
   }
   dispose() {
     this.disposed = true;
+    this.ownerDetached = true;
+    this.ownerLeased = false;
+    this.ownerGeneration++;
+    this.ownerEpoch++;
     this.cancelActive();
-    releaseInteractiveSession(this.host);
-    releaseScanPreviewOperation(this.host);
-    releaseGlobalAlignmentPreview(this.host);
+    try {
+      this.releasePreviews();
+    } finally {
+      this.artifacts.clear();
+      this.requests.clear();
+    }
+  }
+  private releasePreviews() {
+    const errors: unknown[] = [];
+    for (const release of [
+      () => releaseInteractiveSession(this.host),
+      () => releaseScanPreviewOperation(this.host),
+      () => releaseGlobalAlignmentPreview(this.host),
+      () => disposeReferenceConstructionPreview(this.host),
+    ]) {
+      try {
+        release();
+      } catch (error) {
+        errors.push(error);
+      }
+    }
     void releaseDatumPreview(this.host).catch(() => {});
-    this.artifacts.clear();
-    this.requests.clear();
+    if (errors.length)
+      throw new AggregateError(errors, "Workspace preview cleanup failed.");
   }
 }
 

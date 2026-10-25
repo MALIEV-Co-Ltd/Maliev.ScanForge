@@ -4,6 +4,7 @@ import type {
   AlignmentReferencePage,
 } from "../automation/alignment-operations";
 import type { Entity } from "../types";
+import { hasAlignmentReferences } from "../alignment-reference-entity";
 
 export function DatumReferencePicker({
   entities,
@@ -121,13 +122,11 @@ export function DatumReferencePicker({
           }}
         >
           <option value="">Manual coordinates</option>
-          {entities
-            .filter((entity) => entity.kernelId || entity.fit)
-            .map((entity) => (
-              <option key={entity.id} value={entity.id}>
-                {entity.name}
-              </option>
-            ))}
+          {entities.filter(hasAlignmentReferences).map((entity) => (
+            <option key={entity.id} value={entity.id}>
+              {entity.name}
+            </option>
+          ))}
         </select>
       </label>
       {source && (
@@ -158,7 +157,9 @@ export function DatumReferencePicker({
               >
                 {reference.source === "cadFace"
                   ? `Face ${(reference.faceIndex ?? 0) + 1}`
-                  : "Fitted feature"}{" "}
+                  : reference.source === "referenceConstruction"
+                    ? "Construction reference"
+                    : "Fitted feature"}{" "}
                 · {reference.surfaceKind} · {reference.kind}
               </option>
             ))}

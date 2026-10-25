@@ -1,6 +1,9 @@
-import type { ScanImportOptions, ScanSource } from "./import-parser";
+import type {
+  ImportedIndexedMesh,
+  ScanImportOptions,
+  ScanSource,
+} from "./import-parser";
 import type { ScanUnit } from "./import-units";
-import type { parsePlyTopology } from "./ply-topology";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
 import { beginPriorityScanPreparation } from "./scan-background-preparation";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
@@ -56,7 +59,7 @@ export function importScan(
         source?: ScanSource;
         pointCloud?: { normals?: Float32Array; pointColors?: Uint8Array };
         meshNormals?: Float32Array;
-        indexedMesh?: ReturnType<typeof parsePlyTopology>;
+        indexedMesh?: ImportedIndexedMesh;
         error?: string;
       }>,
     ) => {

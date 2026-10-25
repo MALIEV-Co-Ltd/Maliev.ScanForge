@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "Internal alternate-provider axis snapshot implemented; public construction and native acceptance remain incomplete",
+  "applicationBehaviorChanged": false,
+  "internalResolverAdded": true,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "d8a60e2dae74b581d2befb975681273244f4037d905ae1e25c74e606d21fca63"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "2301f66092d90b25018348895f09a62039969005e5c8481548196e4555142bff"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "tests/reference-provider-axis.test.ts",
+      "sha256": "bb244af53c6de8b575191eb4a2f9c614df47e528a9c6c1083a93ac475763ecd8"
+    },
+    {
+      "path": "tests/reference-source-primitives.test.ts",
+      "sha256": "e29cbf4606e789a891f93a08689e11fa3f0cf3ba499f19e085350f7d2a3072bb"
+    },
+    {
+      "path": "tests/reference-geometry-numerics.test.ts",
+      "sha256": "e024c813191b5aaf2f84643abe03526027e66677b2f382173f79ef9d74995608"
+    },
+    {
+      "path": "tests/reference-construction-evaluation.test.ts",
+      "sha256": "b6717d722721e874b829a0bafd4666c70178b61cf6cb05d532a0d19a77e3c3cc"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261023-provider-r1/evidence.json",
+        "sha256": "67a8cd798c2452b1dcf136ae778d8af1eeb78630e9a1b61b983452b8ae4758d8",
+        "matchedHelperInstructionBytesPerPass": 5663,
+        "twoReadsAgree": true,
+        "readBytes": 24034,
+        "regionQueries": 666,
+        "elapsedSeconds": 0.04939490000833757,
+        "peakHelperMemoryBytes": 15720448,
+        "closed": true
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261023-provider-r2/evidence.json",
+        "sha256": "e50858a4c46857129eec55fe13bac86710851a1e1679d548d487567796ac6513",
+        "matchedHelperInstructionBytesPerPass": 5663,
+        "twoReadsAgree": true,
+        "readBytes": 24114,
+        "regionQueries": 670,
+        "elapsedSeconds": 0.04908139997860417,
+        "peakHelperMemoryBytes": 15646720,
+        "closed": true
+      }
+    ],
+    "instructionStartsCorroborated": 985,
+    "selectedAnchorsChecked": 19,
+    "kernelDllSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+    "runtimeDllSha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca",
+    "imports": [
+      {
+        "slot": "0x140eab2c8",
+        "targetRva": "0x25e6b0",
+        "exportName": "PK_FACE_ask_surf",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab380",
+        "targetRva": "0x2470c0",
+        "exportName": "PK_ENTITY_ask_class",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab358",
+        "targetRva": "0x1fec20",
+        "exportName": "PK_CYL_ask",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab1b8",
+        "targetRva": "0x1c9810",
+        "exportName": "PK_CONE_ask",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab310",
+        "targetRva": "0x254c30",
+        "exportName": "PK_ENTITY_range_vector",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab300",
+        "targetRva": "0x4200b0",
+        "exportName": "PK_SURF_eval_with_normal",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eab318",
+        "targetRva": "0x2559e0",
+        "exportName": "PK_ENTITY_range_vector_r_f",
+        "entryBytesMatched": 32
+      },
+      {
+        "slot": "0x140eaeb78",
+        "targetRva": "0xacc70",
+        "exportName": "tan",
+        "entryBytesMatched": 32
+      }
+    ],
+    "callerExtentSlot": {
+      "entryRspOffset": 8,
+      "projectionWriteBytes": 1,
+      "endpointReadBytes": 8,
+      "activeExtractionWritesExtent": false,
+      "upperBytesInitializedInCallerPrologue": false
+    },
+    "scope": "Static original code and repeated read-only runtime metadata binding. No native geometry execution, target writes, GUI actions, native image loading or save/reopen."
+  },
+  "implemented": [
+    "Cylinder location scales by the explicitly supplied unit factor; direction uses the existing native normalization arithmetic.",
+    "Cone offset evaluates tan(pi/2 - semiAngle) * radius * unitScale in the recovered order; scaled origin subtracts the first-normalized direction times this offset.",
+    "Cone direction is normalized again after origin construction, retaining the observed second-pass rounding behavior.",
+    "Finite snapshot validation and detached outputs preserve precise geometry. The result reports extentWritten:false and has no length or endpoint."
+  ],
+  "extentFinding": "The caller passes entry RSP+8 as the projection flag output and later as the axis extent output. Projection writes one byte; the active axis extraction branch does not write extent; endpoint construction then reads eight bytes. The caller prologue does not initialize the upper seven bytes. Their caller-entry values and actual native output are not established. No deterministic extent is inferred.",
+  "verification": {
+    "red": "13 failures because the new extraction function was absent.",
+    "initialFocused": "234 passed; one fixture incorrectly assumed [1,2,3] changed under a second normalization. Replaced it with [1,2,5] and explicit distinct expected values.",
+    "build": {
+      "passed": true,
+      "heapMiB": 3072,
+      "jobLimitBytes": 4294967296,
+      "elapsedSeconds": 32.53619510002318,
+      "peakAggregateBytes": 2497327104,
+      "bundle": "scanforge-9f1d31f32b856ccc"
+    },
+    "focused": {
+      "passed": 235,
+      "files": 7,
+      "newAnalyticTests": 13
+    },
+    "full": {
+      "passed": 48260,
+      "skipped": 64,
+      "elapsedSeconds": 261.16516870001215,
+      "peakAggregateBytes": 995708928
+    },
+    "receipts": [
+      {
+        "label": "construction-alternate-provider-noanalysis-r1",
+        "sha256": "a62ac042882672de36dade6881b5e1a21887e728d6fcaa497a7c3ba122fa2300",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 16.02184169998509,
+        "peakAggregateBytes": 729186304,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-provider-binding-r1",
+        "sha256": "9de71d7062f972f0b55b627c1b14e0a1cf4a7b45aa34513a3ff27174b556edec",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2596215999801643,
+        "peakAggregateBytes": 93794304,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-provider-exports-r1",
+        "sha256": "d32d63c863c2052db3ecb9f1914a28f5c23dc4ab3f5a747574cc60a044f9196f",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2588493999792263,
+        "peakAggregateBytes": 43360256,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-provider-math-r1",
+        "sha256": "3f05cb3b8a9d7218ffa6c31131edd85670ef39dff4606c742ca45de72b569123",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.25852869998198,
+        "peakAggregateBytes": 93560832,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-provider-exports-r2",
+        "sha256": "1479b8b6d0ce5228460ed03499324da990b71f2277a75a30967d8d0566f7fc15",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.15774210001109168,
+        "peakAggregateBytes": 43356160,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-provider-semantics-r1",
+        "sha256": "d18bca05b503314d6bdd78a732ec368173321ecab3412b68cdea7858832b6765",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.2582461999845691,
+        "peakAggregateBytes": 95768576,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-red-initial",
+        "sha256": "16d921c1c3ff558abacc5dee451ade325e289f465c14e43a2e8599fa2fe1b32d",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "elapsedSeconds": 0.6125562000088394,
+        "peakAggregateBytes": 276774912,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-format-initial",
+        "sha256": "9627182f4366882614a2c8c4c387f03e0dd82577b948385e1cd488c75b75f379",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.20804550001048483,
+        "peakAggregateBytes": 103567360,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-build-initial",
+        "sha256": "ce2a5df38b8c39269d008c33bd1552bc92c9c9f75bef1eace04fa2ba40da4b42",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 32.79934930001036,
+        "peakAggregateBytes": 2498580480,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-green-initial",
+        "sha256": "5e17849d58a557b817e605f23ecb5364ddac799fae5b4e97750f8072b06781e2",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "elapsedSeconds": 2.5315769000153523,
+        "peakAggregateBytes": 378249216,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-format-final",
+        "sha256": "92c0abcae8da6edc2dcc3fd4548f86c093617a4b9074d9636bf22d2b8315ad0e",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 0.20816169999307021,
+        "peakAggregateBytes": 94150656,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-build-final",
+        "sha256": "8430dd95fedfa85596d9fbe7ab845f13154727a7d248b54fb7a7550956a153d0",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 32.53619510002318,
+        "peakAggregateBytes": 2497327104,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-green-final",
+        "sha256": "324e2acc103b7dafe8f0ccff2caaf0f6229891dd5791cfee05a8d33cd3604ac9",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 2.480517299991334,
+        "peakAggregateBytes": 376786944,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-provider-axis-r1-full-final",
+        "sha256": "7cf9b0f17998a74aaa91fc4f447f36071ba0a085df393ccbfe8f89c73f3629a0",
+        "exitCode": 0,
+        "expectedExitCode": 0,
+        "elapsedSeconds": 261.16516870001215,
+        "peakAggregateBytes": 995708928,
+        "cleanupErrors": []
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": "This adds an internal resolver dependency only. There is no new GUI-only behavior or advertised command. Planned reference_construction_sources/edit/get/apply must consume the same shared resolver when the required source/caller/publication semantics and acceptance are complete; current API schemas and agent usage are unchanged.",
+  "limitations": [
+    "Analytic tests do not prove bitwise equivalence between JavaScript Math.tan and the bound native CRT tan implementation.",
+    "The helper consumes already successful surface snapshots; provider errors, face selection, coordinate acquisition and dependency refresh remain upstream work.",
+    "Native extent/caller-state observation and the existing source, lifecycle, save/reopen and rendered acceptance gates remain required."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-alternate-provider-noanalysis-r1/evidence.json",
+      "sha256": "f52761a0440a7f2ff1a8037c20830a0c1323a19cbaebf6096942fbf817770016"
+    },
+    {
+      "artifact": "construction-provider-code-bindings-r1.json",
+      "sha256": "949acf51d1c55e4eaaae01b4b22378b519e58b0d84be6b0068997d3ce2c52019"
+    },
+    {
+      "artifact": "construction-provider-exports-r1.json",
+      "sha256": "710a55b4f12157e2ae8f1649950b39a1e3b054f09d3d00e14ee1e9bf39830f73"
+    },
+    {
+      "artifact": "construction-provider-exports-r2.json",
+      "sha256": "4741e1f31b7a9f9854af3f080fb1107de38592fc4c41dabd3bf9caa1b1c49b75"
+    },
+    {
+      "artifact": "construction-provider-math-r1.json",
+      "sha256": "785cf17befb7464e5b4fd846abd788744abf5646f59ff857cec611ae41eb3233"
+    },
+    {
+      "artifact": "construction-provider-semantics-r1.json",
+      "sha256": "de5c57b6c52414b47409215749c4d9952cdfb66d71bb8847e7eb2f544a18d1a9"
+    }
+  ]
+}

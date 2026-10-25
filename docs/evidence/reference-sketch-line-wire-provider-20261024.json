@@ -1,0 +1,470 @@
+{
+  "status": "Wire-body provider options statically recovered; equivalent line-body implementation, GUI/MCP publication and native numerical acceptance remain unfinished",
+  "priorEvidence": {
+    "path": "docs/evidence/reference-sketch-line-curve-20261024.json",
+    "sha256": "c30b84429fabe91ba80d1c431383db46e0194f789b5755e421e1bef4b0e58387"
+  },
+  "sources": [
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "tests/kernel-circle-smoke.mjs",
+      "sha256": "292e3fb5da4b2a8955ced8ece7cf8a33ce028fc5bf07f5a7b147168d337e78a9"
+    },
+    {
+      "path": "tests/kernel-smoke.mjs",
+      "sha256": "b579376e9f0b67c4deba262fd5bfe222359ae9543172e77d3d604ef62f48bf2a"
+    },
+    {
+      "path": "tests/kernel-curves-smoke.mjs",
+      "sha256": "88b99e17b3273d68ef449e70533b19ed888b95733ae8b2f9baa59da46ce9b46e"
+    },
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "90360ac603f5c2eb3df9b7296ec0dfae10ab1268ea4c5fecef645b4226a3c2d5"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "tests/cad-client.test.ts",
+      "sha256": "6e9ebe743862a9bfd28316726eaff230ca022bb171e4cb70cc37bb1dedf35dc8"
+    },
+    {
+      "path": "tests/cad-create-selection.test.ts",
+      "sha256": "ef58430eecb879415c85f12dab813157726d476c3d40822a227ea89d1017a9b3"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "9c4b7d985533d13ae5ad904410e2577a9988d0593d787c59c12220b609f9285d"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "9fff9645c5bc485797a91f48767d8df2cf497d99ce033a11dc1e974c2ec88d56"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "696da751faa502295b4621d0314a27a9fabc08c04593c0e8a41f67ec34d419a6"
+    },
+    {
+      "path": "public/kernel/SOURCE_BUILD.md",
+      "sha256": "8d522f942a5620cd2743472221e5ab8ec0bbf7e5e91e4e16e5f24176cf640267"
+    },
+    {
+      "path": "public/kernel/opencascade.js",
+      "sha256": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+    },
+    {
+      "path": "src/sketch-arc-rebuild.ts",
+      "sha256": "0ce3da642542f1950d17ab0ebf35bad6fde2f07777dde9d9bc08c639b8724cea"
+    },
+    {
+      "path": "tests/sketch-arc-rebuild.test.ts",
+      "sha256": "70d577dc7b209681544cdf60e27a983d1ea1196771f2687e78f521d6e2c141ab"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "src/cad/sketch-arc-backend.ts",
+      "sha256": "1ea7858b19486e6e370e09ae63b6b8aeea78be749826809474675643a10afc5c"
+    },
+    {
+      "path": "tests/kernel-arc-smoke.mjs",
+      "sha256": "4c0746c8b900698ae72d6aac6fef84fa4eac07844367c59926ec66378d243241"
+    },
+    {
+      "path": "scripts/prepare-kernel.mjs",
+      "sha256": "ef707490f6ca4af41d94957fc0f5ae34245dacf5ebbadf9d3579d4c5f7cf2acd"
+    },
+    {
+      "path": "src/cad/sketch-conic-child.ts",
+      "sha256": "d70365d74b7a7e45cae3f91eca458a0c97ea1878e8fa9e23f69ba845fc051d39"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "7244a6e23e2220b0198e828c749959abe0f7da1f1a75f9f8003b84c166abf1fc"
+    },
+    {
+      "path": "tests/kernel-conic-child-smoke.mjs",
+      "sha256": "be6104119c747610a53df3366e660a1a719439f61f5e3c09c52f42b19a9c75e3"
+    },
+    {
+      "path": "tests/sketch-arc-local-replacement.test.ts",
+      "sha256": "14eb5682587023a0c8cfeae75e71147d478505334591bef55eaee95126812bbe"
+    },
+    {
+      "path": "tests/sketch-arc-placed-replacement.test.ts",
+      "sha256": "b78ea17b104bd98b8875b5a1cc93afa311938aaf1fe6dcfd16ea01f4091cd99a"
+    },
+    {
+      "path": "tests/sketch-arc-point-edit.test.ts",
+      "sha256": "02663c300687966050e32cc2edb1bb610aa7222ece6531be95edd2065ebf4a99"
+    },
+    {
+      "path": "tests/sketch-arc-edit-routes.test.ts",
+      "sha256": "60a6a7c4b5c416bd3a0fdfa986dd6e882cd15e7d9506542c521842d46217ff57"
+    },
+    {
+      "path": "tests/sketch-circle-edits.test.ts",
+      "sha256": "998ddcdb86f152a8f0b82f21cd2287207d8e07a7b09987164e0d60b9f0de1110"
+    },
+    {
+      "path": "tests/sketch-circle-radius.test.ts",
+      "sha256": "5f481d37f40b8903494a9156a53e92668daedb9235ca153e7156a15f2014daba"
+    },
+    {
+      "path": "tests/sketch-circle-records.test.ts",
+      "sha256": "ddf8d4e7f376b834e9b32987afad5eba5e039a64f44bff8e9d5f3c25ef188925"
+    },
+    {
+      "path": "tests/sketch-circle-placed-replacement.test.ts",
+      "sha256": "9799c9adad86559f58c5053485326ab0b90f0da4f44dfa8ecd463ac09aad8ab3"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "5f915ccd1ae8f3cbce544d6c7b527a90c1f4de8d7ec43662fa24523b7de64ad4"
+    },
+    {
+      "path": "src/cad/sketch-child-collection.ts",
+      "sha256": "32666eccc873176037104146da6b2b4e9ac6f7a1088e9784ba35bc95a37529a0"
+    },
+    {
+      "path": "tests/sketch-child-collection.test.ts",
+      "sha256": "09e350a88962448275f423ed1327da82d22f7d579a35c9c24186a2c341951604"
+    },
+    {
+      "path": "src/sketch-ellipse-rebuild.ts",
+      "sha256": "78e44d85ffffbf9f1e8bca279428caffd3ab7aad444229a272f3e5bba92932f8"
+    },
+    {
+      "path": "src/cad/sketch-ellipse-backend.ts",
+      "sha256": "3df30ea3c64de5a5e0e3ce5da67df043a55e5acde0fc15c0ae6e1fb0c8f54774"
+    },
+    {
+      "path": "src/cad/sketch-ellipse-child.ts",
+      "sha256": "36cacbceb61253885f61eaea2b5fcffaa8470637c19ee25250a7a452014f760b"
+    },
+    {
+      "path": "tests/sketch-ellipse-rebuild.test.ts",
+      "sha256": "952f89eff819d8c590e732b729575c9793310ca4f279d2307c48062956510e16"
+    },
+    {
+      "path": "tests/kernel-ellipse-smoke.mjs",
+      "sha256": "81465e3ea1c1644872831ee757211f37be83637f772bff19dc084f48710090c4"
+    },
+    {
+      "path": "tests/sketch-ellipse-edits.test.ts",
+      "sha256": "e94083392c9836bf757d87c6a2a0a3d9f54740077ca1c442a0ca8c5280e32063"
+    },
+    {
+      "path": "src/sketch-line-rebuild.ts",
+      "sha256": "d4621b57febd6d3d8b841f5d29f7f76dc3c0266041f2966b1e238ef7406abce2"
+    },
+    {
+      "path": "tests/sketch-line-rebuild.test.ts",
+      "sha256": "b3bd54753d9f857babfe6b1a3f052a660d3d0bdf457246068c15b9133f76afdf"
+    },
+    {
+      "path": "tests/sketch-line-edits.test.ts",
+      "sha256": "23d76cea23d5babc4c335e0c42f1798b5d1d01ca418bf05323f13e1932b0cf35"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "99f041a89685b10d348f8f3f20995f1c10a8a5ac08df40961050380353fbd0f4"
+    },
+    {
+      "path": "tests/kernel-line-curve-smoke.mjs",
+      "sha256": "dda4db8a0c7e8cf2ec4bf8e2510ad28daa64552ea1b573808657b37f8aa14339"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "artifact": "ConstructionLineWireProvider.java",
+      "sha256": "36f5be3e0c25800f1254ba7684c43e0f164a6cf72763f95a504eeddbbbf9815e"
+    },
+    {
+      "artifact": "construction-line-wire-provider-noanalysis-r1.mjs",
+      "sha256": "8caad17f8ee3ae9b22b98d89e130254cf498ff7fb463141ca84d2271b1116c96"
+    },
+    {
+      "artifact": "run-construction-line-wire-provider-noanalysis-r1.py",
+      "sha256": "bf9e16ba033e6af74cfebee5241f3df9bcc071971a78bacc4b16e7c10aff9a41"
+    },
+    {
+      "artifact": "ConstructionLineWireCore.java",
+      "sha256": "2c7468d386d4e56c37e0e0ad1443b3c698b415acc0bbb8d8d881a893dfda7873"
+    },
+    {
+      "artifact": "construction-line-wire-core-noanalysis-r1.mjs",
+      "sha256": "f954452565931b2fc83f660eaae6c796788a4ea45ad15a2127fdcad02aeec551"
+    },
+    {
+      "artifact": "run-construction-line-wire-core-noanalysis-r1.py",
+      "sha256": "933ed8217ebed7e197f302ee3f1325acdea7499012e24266aff3bcda9c0311f7"
+    },
+    {
+      "artifact": "ConstructionLineWireAdmission.java",
+      "sha256": "c580fe142734f3b8debcaa01ff07de224d99fe6b9ed3fca2f6d15b8d29385c5b"
+    },
+    {
+      "artifact": "construction-line-wire-admission-noanalysis-r1.mjs",
+      "sha256": "e1a34830bdca531735bce25bc1c3c8880a8f93245617898ba58f13def6a42f2e"
+    },
+    {
+      "artifact": "run-construction-line-wire-admission-noanalysis-r1.py",
+      "sha256": "13a1d7e42c720b6e8cd543ad2f247c2e2bce41bcd9cbb4e33617d50f6d2c7b64"
+    },
+    {
+      "artifact": "ConstructionLineWireTopology.java",
+      "sha256": "3be7bd5b7cdb22a11242c681f45ab663941f55f5de9d8906890512adee193328"
+    },
+    {
+      "artifact": "construction-line-wire-topology-noanalysis-r1.mjs",
+      "sha256": "b00b72dab8aa0501e8712c2e5ac27c40ed0ca337e89c4a7acdfd007093c1a563"
+    },
+    {
+      "artifact": "run-construction-line-wire-topology-noanalysis-r1.py",
+      "sha256": "e0e07b1a21584722e0a7a0af9b481578b4ab89b32b42da861b933da21b2fd1d3"
+    },
+    {
+      "artifact": "construction-line-wire-provider-noanalysis-r1/evidence.json",
+      "sha256": "6934492588b011e5ae5442b3475db0f38164c7c1265254a358e127a54a73589f"
+    },
+    {
+      "artifact": "construction-line-wire-core-noanalysis-r1/evidence.json",
+      "sha256": "cec7adc34e69a40693baec4eed638288fde6077be64ae13d0d22343f473c1778"
+    },
+    {
+      "artifact": "construction-line-wire-admission-noanalysis-r1/evidence.json",
+      "sha256": "68030e82fee11e9141fb371b0986f24932b3069159f74059dc9734f09a56962b"
+    },
+    {
+      "artifact": "construction-line-wire-topology-noanalysis-r1/evidence.json",
+      "sha256": "5616065e43c64c033b503015ac417c29dcb48948d8e0a67e2fe3cc6c32d42927"
+    },
+    {
+      "artifact": "verify-line-wire-provider-r1.py",
+      "sha256": "e2a95c571db52f92d15c2fbe36bd14297c5c3c005076eaf12d9953c56fc252ef"
+    },
+    {
+      "artifact": "verify-line-wire-provider-r2.py",
+      "sha256": "76b62b48c5d78436c523a8921cc2cc8bea48a42e692751836cea3051ba8f31cb"
+    },
+    {
+      "artifact": "verify-line-wire-provider-r3.py",
+      "sha256": "a502f966c7154b7607a1455bd4e719ef17f70165d9c45d1dcd0e60bb33b50894"
+    },
+    {
+      "artifact": "line-wire-provider-verified-r1.json",
+      "sha256": "c48cbf531e186bb930b746c818c492578a6d74e8b5a5678ddaf72c52d447bbff"
+    },
+    {
+      "artifact": "line-wire-provider-verified-r3.json",
+      "sha256": "729aa7e959930855a915decf89d8465d8b7ee7e84e4d05f737057c5319deb09c"
+    },
+    {
+      "artifact": "line-wire-unwind-ranges-r2.json",
+      "sha256": "4ae971a541a27b4eec59d4511ef0799b515418d1147939374a7bc5b3a4c5773a"
+    },
+    {
+      "artifact": "line-wire-topology-ranges-r1.json",
+      "sha256": "244c30f3d5a4959f66042650ab00c50b9ea74ac20f22ddd13adb08f50cfb3e30"
+    }
+  ],
+  "nativeBasis": {
+    "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+    "mode": "Static file-data inspection only; no DLL loading, native execution or process access",
+    "wrapperInstructionsDecoded": 1974,
+    "wrapperDirectFlowsDecoded": 488,
+    "secondaryProcedures": 6,
+    "secondaryListedInstructionsChecked": 1293,
+    "secondaryDirectFlowsChecked": 210,
+    "optionFieldAnchors": 7,
+    "callerAnchors": 5,
+    "limitations": [
+      "Three unresolved indirect jumps in the wire wrapper are retained; direct-flow counts do not prove full switch coverage.",
+      "Initial Ghidra function snapshots listed only one entry instruction despite larger decompilations; those snapshots are not full-function instruction proof.",
+      "Unwind ranges can contain embedded switch data; linear disassembly was excluded as behavioral evidence.",
+      "The supplied wire tolerance is not a proven minimum line length or a substitute for mutable provider modeling tolerances."
+    ]
+  },
+  "recoveredCallerOptions": {
+    "version": 3,
+    "toleranceInProviderCoordinates": 1e-6,
+    "allowDisjoint": true,
+    "allowGeneral": false,
+    "check": true,
+    "wantEdges": true,
+    "wantIndices": false,
+    "sequentialMode": "Separate enum field identified; selected value retained in private evidence; no inferred public API."
+  },
+  "implementation": {
+    "applicationBehaviorChanged": false,
+    "documentationUpdated": [
+      "docs/MCP_ARCHITECTURE.md",
+      "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "docs/SKETCH_MODEL_INTEGRATION.md",
+      "docs/superpowers/plans/2026-10-23-reference-construction.md"
+    ],
+    "lineBodyStillRequired": true
+  },
+  "validation": {
+    "staticVerifierPassed": true,
+    "receipts": [
+      {
+        "label": "construction-line-wire-provider-noanalysis-r1",
+        "receiptSha256": "e7bd8e0e0b7a550b307342e4c864eb5996d8a61dbfc05c0427535a006e4e0255",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 112.27080219998606,
+        "peakAggregateBytes": 1963134976,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-line-wire-core-noanalysis-r1",
+        "receiptSha256": "ff66fe92d86d967bb62816537a01a1301e8ee09ccf750331a9b30fbda92f5a55",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 114.48507880000398,
+        "peakAggregateBytes": 2007973888,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-line-wire-admission-noanalysis-r1",
+        "receiptSha256": "ae7f61e3b164f80b0f18164ea73de769139f4675b480c4c1af736aa5fe610d3e",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 112.56727329999558,
+        "peakAggregateBytes": 1905668096,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "construction-line-wire-topology-noanalysis-r1",
+        "receiptSha256": "5ce922c8de5b7e5d2b7408fa2a6df96217a381267fa3b18b080796bd8b8c4e0e",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 115.46411600001738,
+        "peakAggregateBytes": 1868636160,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "verify-line-wire-provider-r1",
+        "receiptSha256": "6eb6c604950908243e7346225e3e647a4c6ec231f4a0c097a4f19d861589894e",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.8655938000010792,
+        "peakAggregateBytes": 159883264,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "verify-line-wire-provider-r2",
+        "receiptSha256": "42e55970a4804dac8b1c54e1b7621569ad48adb74ae62b8a56156217bcd9ce12",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 1.0669890000135638,
+        "peakAggregateBytes": 161263616,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": [],
+        "expectedFailure": "Verifier lacked the equivalent CMOVNZ/CMOVNE mnemonic alias; corrected in r3."
+      },
+      {
+        "label": "verify-line-wire-provider-r3",
+        "receiptSha256": "ac9aa0af93240b6b6d15755a7a702ec4f503ba705a4697841e56a66c2be7afa6",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 2.077582900004927,
+        "peakAggregateBytes": 204390400,
+        "descendantsRetired": true,
+        "handlesClosed": true,
+        "cleanupErrors": []
+      }
+    ],
+    "aggregateMemoryLimitBytes": 4294967296,
+    "cpuLimitPercent": 25,
+    "analysisNodeHeapMiB": 384,
+    "analysisJvmHeapMiB": 1536,
+    "analysisLeaseSeconds": 180,
+    "buildOrApplicationTestsRun": false,
+    "reason": "This checkpoint changes analysis evidence and documentation only; prior application/kernel tests remain historical."
+  },
+  "workerBuild": {
+    "entry": "src/cad/sketch-backend.ts",
+    "generatedAsset": "kernel/sketch-backend.js",
+    "helperSha256": "97da95080c5afd70eb949573f051ba33950e581492ce308894d5d14a6018b568",
+    "distMatchesTestedAsset": true,
+    "offlineManifestIncludesHelper": true,
+    "primaryLineCurveExported": true,
+    "publicRpcAdded": false,
+    "reusedUnchangedPriorBuild": true,
+    "freshBrowserValidation": false
+  },
+  "mcpCoverage": {
+    "publicContractChanged": false,
+    "publicDispatcherMatchesHead": true,
+    "existingTools": ["sketch_get", "sketch_set", "sketch_manage"],
+    "newOperationAdvertised": false,
+    "scope": "Unfinished internal support for the common sketch model. Full shared GUI/MCP authoring remains required; static recovery is not a GUI-only feature or completed parity."
+  },
+  "remaining": [
+    "Finish single-line interval/topology construction and degenerate failure semantics before implementing the equivalent wire-body stage.",
+    "Integrate body-gated midpoint, owned line child attempts, cache/validity/display behavior and remaining curve kinds into the ordered model.",
+    "Complete shared GUI/MCP transaction, history, persistence, solver/trim/mirror and original-native numerical/save-reopen/rendered acceptance.",
+    "All original nonlicensing feature families and GitHub milestones remain in scope."
+  ]
+}

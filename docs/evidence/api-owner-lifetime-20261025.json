@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-25",
+  "scope": "Shared application API owner lifetime under React effect replay",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "uncommitted; not attributed to pushed main"
+  },
+  "sources": [
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "997bb5153f1274f0240f95abe60d6ae0e082591c7708a3bcd15238e2bf900c52"
+    },
+    {
+      "path": "src/automation/use-workspace-api.ts",
+      "sha256": "86b7e1944e6fb987f4739d311e26806e9ab8a06db5cdbd059723d238d80e817a"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "479c70ec9c118a0c53f562db227b3db44d16dfbdd456fd54e9519505be9dac6d"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "26f8c5051311de9f7b9546408222c3b66a805801ef259d839d82b5bc9cc184ef"
+    },
+    {
+      "path": "tests/automation-api-owner.test.ts",
+      "sha256": "d5b1036c9cd73238f7e5b1c1260880f27cddefbea7114de4d8e4883444eebade"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "3173fa00cf18db6a560c6107e0d5c3919763639225a4aecc21cf21b39d5593d0"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "dbef0a2dcf8916e9471f8b880c7aec2332eb79e9d86f309a6b3f59a1591e7284"
+    }
+  ],
+  "behavior": [
+    "Immediate disconnect, active-job cancellation and owned preview cleanup on owner release.",
+    "Synchronous reattachment preserves the gateway, revisions, artifacts and exact request retry receipts.",
+    "Previous-owner asynchronous results and artifact callbacks are fenced by an epoch.",
+    "Microtask finalization permanently closes true unmount; explicit disposal cannot be revived.",
+    "Main App pagehide disposes permanently; effect cleanup uses the hook owner lease."
+  ],
+  "mcp": {
+    "coverage": "Same shared ApplicationApi and host adapter used by GUI and MCP; existing catalog and schemas unchanged.",
+    "tests": [
+      "Actual invoke project_get/object_get/object_update, revision and request conflicts, old asynchronous contexts, artifact callbacks, cancellation and preview teardown."
+    ],
+    "publicReferenceConstruction": "Still unpublished and incomplete; no construction tools added."
+  },
+  "validation": {
+    "red": {
+      "unitTestsFailed": 9,
+      "strictFixtureResult": "DISCONNECTED after effect replay",
+      "realAppResult": "DISCONNECTED and disposed owner React error; initial red driver also failed its canvas assertion after component teardown."
+    },
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 34.915168999985326,
+        "childPeakJobMemoryBytes": 2469244928,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "inputIdentitySha256": "134ddc519fc58253ce114df30e649303316a7879e7b2488f428ed26f24f7ad75"
+    },
+    "focused": {
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/** with six absolute test paths",
+      "passed": 134,
+      "failed": 0,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.087578799983021,
+        "childPeakJobMemoryBytes": 372740096,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48877,
+      "skipped": 64,
+      "failed": 0,
+      "files": 679,
+      "scope": "Final API/hook code; before the subsequent App cleanup caller correction. Focused tests, rebuild and real-App browser checks followed that correction.",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 271.28521360002924,
+        "childPeakJobMemoryBytes": 995545088,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "browser": {
+      "fixture": "Real hook, ApplicationApi, semantic Viewport and reference preview registry under StrictMode.",
+      "sameApiOnRerender": true,
+      "previewPixels": 55,
+      "unmountDisconnected": "DISCONNECTED",
+      "finalGeometries": 0,
+      "errors": [],
+      "warnings": [],
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 1.4212154999841005,
+        "childPeakJobMemoryBytes": 454131712,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "realApp": {
+      "fixture": "Production App source with module paths relocated and hook wrapped solely to capture the gateway; StrictMode root.",
+      "projectRead": true,
+      "viewportRead": true,
+      "canvasCount": 1,
+      "unmountDisconnected": "DISCONNECTED",
+      "errors": [],
+      "warnings": [],
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 2.128428799973335,
+        "childPeakJobMemoryBytes": 534663168,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "format": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.3098861000034958,
+      "childPeakJobMemoryBytes": 115568640,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "limits": [
+    "No native geometry behavior changed or newly compared.",
+    "Live hot module replacement was not directly validated; verified React StrictMode setup/cleanup replay and normal rerender/unmount.",
+    "Reference construction editor, public transport, dependency updates and native end-to-end acceptance remain incomplete.",
+    "User confirmed no matched native reconstruction export is available; three-scan native reconstruction comparison remains unverified."
+  ]
+}

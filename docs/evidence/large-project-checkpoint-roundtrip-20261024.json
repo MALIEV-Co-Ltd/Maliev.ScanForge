@@ -1,0 +1,857 @@
+{
+  "schema": 1,
+  "status": "PASSED_WITH_NARROW_HEADROOM",
+  "scope": "Original 736091936-byte three-STL full-history GUI reopen and public MCP export/download/upload/reimport under unchanged 4 GiB aggregate Windows Job cap",
+  "run": "20261024T072655174588Z",
+  "source": {
+    "snapshot": "C:\\repo\\Maliev.ScanForge\\.resources\\736mb-snapshot-20261024T072316910198Z",
+    "memoryPathsMatchCurrentWorkspace": true,
+    "pins": [
+      {
+        "path": "src/project-file-codec.ts",
+        "sha256": "b6af67f08b7f2f3ef1a477fb7fbd1064cd8b6b3748b6a5d54c9bcdffd2637eb0",
+        "bytes": 18262,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/project-file.ts",
+        "sha256": "7988c91230c41ef30836673aa74623622b962504daea459abf6ad93e17015ac9",
+        "bytes": 1554,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/project-encoding-client.ts",
+        "sha256": "3ada25ed2f267bd1dbfe2be8b1b5890f1f8a7806f3ec4bc21710be7ff109bfbd",
+        "bytes": 8082,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/project-decoding-client.ts",
+        "sha256": "cb8dee70d0000d7f166207c9b47fd9e729a53bb461f994d256cd35e2a688cd19",
+        "bytes": 5616,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/project-decoding-worker.ts",
+        "sha256": "9464de058778e4a4847332a50de496e96ee2b7c52488add0576795b5163d74fa",
+        "bytes": 1654,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/automatic-project-backup.ts",
+        "sha256": "408e6e9786f44bd118d4d4f16387d9c587686bb69a16c5c697b751503b8ca9e5",
+        "bytes": 2345,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/project-backup.ts",
+        "sha256": "9d1898919b9cccb900efaa3c66f38be8a3493ed3712a36977c263a2e4d396e7c",
+        "bytes": 6626,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/ui/useProjectBackups.ts",
+        "sha256": "c360241277d0b397ecb276d67467917131890a62facfbc0112b5081645550df2",
+        "bytes": 4100,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/automation/api.ts",
+        "sha256": "eadb31cde5b051d3623478e9fd9594a247a1361bd0739f1b3132bb422662c23f",
+        "bytes": 33707,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/transient-blob-storage.ts",
+        "sha256": "278c1a48d4f2bd1238a379926cecb371a4fcedc32b7f50733a8ab7bc8b42688e",
+        "bytes": 3781,
+        "matchesCurrentWorkspace": true
+      },
+      {
+        "path": "src/io.ts",
+        "sha256": "9d1287961221db821f7f35de55a7e703d511c1d93d0d2007b7097df0d19043f9",
+        "bytes": 25713,
+        "matchesCurrentWorkspace": true
+      }
+    ],
+    "buildReceipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\encoder-checkpoint-snapshot-20261024T072316910198Z.build.json",
+      "bytes": 350789,
+      "sha256": "fe30d0fa17425c0a99ac8d35d67054ee3b747c48c858d5781740db457b3e4920"
+    },
+    "sourceReceipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-plan-source-20261024T072655174588Z.json",
+      "bytes": 399870,
+      "sha256": "e95ba21c7079b941802ecb325a5c386d2026ec097c070875fe8719335ef0893e"
+    },
+    "distReceipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-plan-dist-20261024T072655174588Z.json",
+      "bytes": 49807,
+      "sha256": "97e43a9f0945517f3ff87ec67682742e002a8f8bbf37c6c1cedf1ba92ec9644b"
+    },
+    "isolation": "Current working source copied to a private snapshot because other chats were editing the shared workspace. Independently built with compiler inputs unchanged; no clean-commit claim.",
+    "harnessAdaptations": [
+      "Bind runner to exact isolated snapshot directory.",
+      "Check ignored source subdirectories relative to snapshot root so .resources in its absolute path does not skip validation."
+    ],
+    "memoryCapRaised": false,
+    "forcedGarbageCollection": false
+  },
+  "receipts": {
+    "browser": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T072655174588Z-browser\\evidence.json",
+      "bytes": 929614,
+      "sha256": "d88bd4ccda4ce79dd45e431dc64be997bcf6efbcf3a62632ccb61b8e9c2c5766"
+    },
+    "owner": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T072655174588Z-kernel\\resource-ledger.json",
+      "bytes": 31202,
+      "sha256": "42c30d157ea71822d96a3230ea4eb13786339a3ba69278f4c6f72bb6bfaec76d"
+    },
+    "plan": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-plan-20261024T072655174588Z.json",
+      "bytes": 6783,
+      "sha256": "4e7f158679e9ef86689593f052460d5b7a8ca023f0c2c2bc8b2ac34fe0c74904"
+    },
+    "runner": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\encoder-checkpoint-snapshot-runner-20261024T072316910198Z.py",
+      "bytes": 30172,
+      "sha256": "52e04ac4d2ddb12c172d6d3e540b29986cd2c614bc1175abb2eba3ef99671745"
+    }
+  },
+  "workflow": {
+    "context": {
+      "mode": "isolated-persistent-default-context",
+      "reason": "Normal app storage; browser.newPage creates an incognito context whose IndexedDB stays in memory"
+    },
+    "inputProject": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T045353763851Z-browser\\global-after-coarse-three-stl.scanforge",
+      "sha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+      "bytes": 736091936,
+      "route": "GUI project file input; original full-size accepted coarse/refinement geometry and six history steps including Global Fine Align"
+    },
+    "guiReopenAndHistoryPassed": true,
+    "historyRetryPassed": true,
+    "staleRevisionRejected": true,
+    "download": {
+      "file": "mcp-full-history-roundtrip.scanforge",
+      "bytes": 736091936,
+      "sha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+      "chunks": 2808,
+      "maxChunkBytes": 262144
+    },
+    "upload": {
+      "bytes": 736091936,
+      "chunks": 702,
+      "maxChunkBytes": 1048576
+    },
+    "mcpReimportCompleted": true,
+    "matchingGeometryCarriers": 16,
+    "restoredHistorySteps": 6,
+    "reopened": [
+      {
+        "entityId": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "jobId": "8bfb3557-8d09-4d1f-b915-604e99b66bdc",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "9e6b106bb99cbd40a0222e5d52dfac3bc93d9f00917ff4328a44c06b0e13e4c7"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "2591ac8d8f6797f0a938f3bfa9e2136af048658dcb1db7e09eadf95027192fe4"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "2591ac8d8f6797f0a938f3bfa9e2136af048658dcb1db7e09eadf95027192fe4",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 9833004,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 1672056,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 3277668,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "9e6b106bb99cbd40a0222e5d52dfac3bc93d9f00917ff4328a44c06b0e13e4c7",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 1672056,
+            "shared": true
+          }
+        ]
+      },
+      {
+        "entityId": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "jobId": "84eb2965-b101-441e-960f-0c67c31f4df2",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 91706508,
+            "shared": true
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 91706508,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 30568836,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          }
+        ]
+      },
+      {
+        "entityId": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "jobId": "9935ef4b-c8de-43de-ac94-ffd4b4318bc7",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 119768760,
+            "shared": true
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 119768760,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 39922920,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          }
+        ]
+      }
+    ],
+    "reimported": [
+      {
+        "entityId": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "jobId": "8e8a9c16-0704-42c1-8262-47b86676e409",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "9e6b106bb99cbd40a0222e5d52dfac3bc93d9f00917ff4328a44c06b0e13e4c7"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "2591ac8d8f6797f0a938f3bfa9e2136af048658dcb1db7e09eadf95027192fe4"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "2591ac8d8f6797f0a938f3bfa9e2136af048658dcb1db7e09eadf95027192fe4",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 9833004,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 1672056,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 3277668,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "9e6b106bb99cbd40a0222e5d52dfac3bc93d9f00917ff4328a44c06b0e13e4c7",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 1672056,
+            "shared": true
+          }
+        ]
+      },
+      {
+        "entityId": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "jobId": "ecf37387-994f-47a3-b3a0-10eb5ccdb9f6",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 91706508,
+            "shared": true
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 91706508,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 30568836,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "byteOffset": 0,
+            "backingBytes": 15588396,
+            "shared": true
+          }
+        ]
+      },
+      {
+        "entityId": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "jobId": "26b58ce4-c468-462c-b24c-50830c21bd23",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "byteOffset": 0,
+            "backingBytes": 119768760,
+            "shared": true
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "byteOffset": 0,
+            "backingBytes": 119768760,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "byteOffset": 0,
+            "backingBytes": 39922920,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "byteOffset": 0,
+            "backingBytes": 20203260,
+            "shared": true
+          }
+        ]
+      }
+    ],
+    "transferArtifactsRemaining": 0,
+    "renderedScreenshot": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T072655174588Z-browser\\global-mcp-project-roundtrip.png",
+      "bytes": 150359,
+      "sha256": "0ffdae3af1e27816957a8b3661bd2e9df012799a9e635b1b853f103132fe73dd"
+    },
+    "screenshotVisuallyInspected": true
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "jobPeakMemoryBytes": 4236947456,
+    "cpuPercent": 25,
+    "exitCode": 0,
+    "allObservedExited": true,
+    "allJobChildrenObserved": true,
+    "handlesClosed": true,
+    "completionPortClosed": true,
+    "finalJobAccounting": {
+      "totalProcesses": 17,
+      "activeProcesses": 0
+    },
+    "captureErrors": [],
+    "cleanupErrors": [],
+    "headroomBytes": 58019840,
+    "peakGiB": 3.945964813232422,
+    "headroomMiB": 55.33203125
+  },
+  "limits": [
+    "Normal persistent browser profile only; private/incognito storage retains its previously documented memory limitation.",
+    "Peak headroom remains narrow; this is one successful original-size run, not a larger-project guarantee.",
+    "Destination was cleared before MCP import; populated replacement and in-flight cancellation are separate scenarios.",
+    "No additional runtime memory failure reproduced, so no further application fix was needed for this rerun."
+  ],
+  "focusedRegressions": {
+    "command": "npx vitest run [10 project/backup/artifact test files] --exclude **/.resources/** --maxWorkers=1",
+    "files": 10,
+    "tests": 77,
+    "passed": true,
+    "snapshotDirectoriesExcluded": true
+  }
+}

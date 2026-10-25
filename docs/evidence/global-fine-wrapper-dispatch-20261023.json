@@ -320,19 +320,10 @@
     },
     {
       "elapsedMs": 12397,
-      "nonnullQiReturns": [
-        3,
-        3
-      ],
-      "qiReturns": [
-        3,
-        3
-      ],
+      "nonnullQiReturns": [3, 3],
+      "qiReturns": [3, 3],
       "type": "outer-metadata-return",
-      "virtualCallSites": [
-        3,
-        3
-      ]
+      "virtualCallSites": [3, 3]
     },
     {
       "cleanupErrors": [],
@@ -343,25 +334,16 @@
       "ignoredSites": 0,
       "matrixOrGeometryPayloadsRead": false,
       "nativeFunctionsCalled": false,
-      "nonnullQiReturns": [
-        3,
-        3
-      ],
+      "nonnullQiReturns": [3, 3],
       "outerCount": 1,
       "outerReturned": true,
       "postDetachCodeAnchorsVerified": true,
-      "qiReturns": [
-        3,
-        3
-      ],
+      "qiReturns": [3, 3],
       "rangeChecks": 83,
       "readBytes": 1632,
       "reason": "one-outer-invocation-returned",
       "type": "qi-setter-metadata-terminal",
-      "virtualCallSites": [
-        3,
-        3
-      ],
+      "virtualCallSites": [3, 3],
       "wholeAcceptance": false
     }
   ],

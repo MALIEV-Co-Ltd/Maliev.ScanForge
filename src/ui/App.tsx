@@ -31,7 +31,8 @@ import {
   importConcurrency,
   validateImportBatch,
 } from "../import-batch";
-import { displayMeshStats } from "../scan-render-data";
+import { entityDisplayStats } from "../entity-display-stats";
+import { GeometryStatistics } from "./GeometryStatistics";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -40,6 +41,12 @@ import {
 } from "../object-selection";
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
+import { hasAlignmentReferences } from "../alignment-reference-entity";
+import {
+  encodeReferenceEntityData,
+  supportsSampledGeometry,
+  assertSampledGeometry,
+} from "../reference-entity";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
 import { GlobalAlignmentTools } from "./GlobalAlignmentTools";
 import { inspectGlobalAlignmentCandidates } from "../global-alignment-input";
@@ -68,6 +75,7 @@ import {
   duplicateObject,
   lockedObjectEdit,
   objectPickable,
+  type ModelCommitPolicy,
 } from "../object-operations";
 import { SaveProjectDialog } from "./SaveProjectDialog";
 import {
@@ -134,6 +142,10 @@ import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import type { ScanClipBounds } from "../scan-clip-box";
+import {
+  validateScanSelectionControl,
+  type ScanSelectionControl,
+} from "../automation/scan-selection-operations";
 import type { ScanEditRequest } from "../scan-edit";
 import { boundarySketches } from "../scan-boundary-sketch";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
@@ -171,6 +183,7 @@ import {
   DEFAULT_PART_COLOR,
   DEFAULT_FREEFORM_COLOR,
   DEFAULT_REFERENCE_COLOR,
+  DEFAULT_POINT_DENSITY,
 } from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
 import { processMesh } from "../processing-client";
@@ -200,11 +213,8 @@ import {
   type SpaceMousePreferences,
 } from "../spacemouse";
 import { PointCloudTools } from "./PointCloudTools";
-import {
-  editPointCloud,
-  type PointCloudEditRequest,
-} from "../point-cloud-processing";
-import { partitionTriangles, selectionCount } from "../selection";
+import { type PointCloudEditRequest } from "../point-cloud-processing";
+import { selectionCount } from "../selection";
 import { fittedPrimitive } from "../fitted-primitive";
 import {
   cleanupMesh,
@@ -260,16 +270,19 @@ import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
+import {
+  LandmarkPickingViews,
+  type LandmarkView,
+} from "./LandmarkPickingViews";
 import { releaseProcessingPreview } from "../processing-session";
 import type { WorkspaceHost } from "../automation/api";
-import { pointCloudStats } from "../point-cloud";
 import {
   beginLandmarkAlignment,
-  pickLandmark,
   prepareLandmarkRequest,
   landmarkSceneUnchanged,
   acceptLandmarkAlignment,
   landmarkMarkers,
+  landmarkPairs,
   editLandmarks,
   landmarkState,
   type LandmarkAlignment,
@@ -399,12 +412,10 @@ export function App() {
     }
   }, [selectedId]);
   const [nPoints, setNPoints] = useState<LandmarkAlignment | null>(null);
-  const [landmarkPickSide, setLandmarkPickSide] = useState<"moving" | "fixed">(
-    "moving",
-  );
   const nPointsRef = useRef(nPoints);
   nPointsRef.current = nPoints;
   const landmarkAbort = useRef<AbortController | null>(null);
+  const landmarkViewports = useRef<Partial<Record<LandmarkView, Viewport>>>({});
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsSection, setSettingsSection] =
@@ -722,6 +733,16 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  const sampledSelected = supportsSampledGeometry(selected);
+  useEffect(() => {
+    if (!selected || sampledSelected) return;
+    try {
+      coordinateAlignmentInterface({ workspace, mode }, selected);
+    } catch {
+      setMode("inspect");
+      setWorkspace("properties");
+    }
+  }, [selected?.id, sampledSelected, mode, workspace]);
   useEffect(() => {
     if (selected && !objectPickable(selected)) setSelectedId(null);
   }, [selected]);
@@ -759,7 +780,7 @@ export function App() {
     selected?.parametric,
   ]);
   brushRef.current = {
-    entity: selected,
+    entity: sampledSelected ? selected : undefined,
     radius: brushRadius,
     subtract: subtractBrush,
     tool: selectionTool,
@@ -767,24 +788,19 @@ export function App() {
   };
   wandRef.current = (mask, remove) => growSelection(mask, remove);
   const selectedTriangleCount = useMemo(
-    () => (triangleMask ? selectionCount(triangleMask) : 0),
-    [triangleMask],
+    () => (sampledSelected && triangleMask ? selectionCount(triangleMask) : 0),
+    [sampledSelected, triangleMask],
   );
   const stats = useMemo(
-    () =>
-      selected
-        ? selected.kind === "pointcloud"
-          ? pointCloudStats(selected.positions)
-          : displayMeshStats(selected.positions)
-        : null,
-    [selected?.positions],
+    () => (selected ? entityDisplayStats(selected) : null),
+    [selected?.kind, selected?.positions, selected?.reference],
   );
   const section = useMemo(
     () =>
-      mode === "section" && selected
+      mode === "section" && selected && sampledSelected
         ? sectionMesh(selected.positions, axis, offset)
         : { segments: [], length: 0 },
-    [mode, selected?.positions, axis, offset],
+    [mode, selected?.positions, sampledSelected, axis, offset],
   );
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -820,20 +836,8 @@ export function App() {
             return;
           }
           if (surfaceFitRef.current || createSketchRef.current) return;
-          if (nPointsRef.current) {
-            if (nPointsRef.current.preview) {
-              setMessage(
-                "Choose a point-picking mode to return to the original pose before editing landmarks.",
-              );
-              return;
-            }
-            try {
-              setNPoints(pickLandmark(nPointsRef.current, id, point));
-            } catch (error) {
-              setError(errorText(error));
-            }
-            return;
-          }
+          // Landmarks are picked only in isolated original-pose views.
+          if (nPointsRef.current) return;
           if (pickScanReference.current(id)) return;
           setSelectedId(id);
           if (modeRef.current === "measure")
@@ -976,7 +980,8 @@ export function App() {
         } catch (error) {
           console.error("SpaceMouse cleanup failed", error);
         }
-        workspaceApi.dispose();
+        // Effect cleanup releases the hook's owner lease; page exit is permanent.
+        if (event) workspaceApi.dispose();
         datumPreview.current = null;
         datumPointPick.current = null;
         datumFacePick.current = null;
@@ -1020,11 +1025,7 @@ export function App() {
             )
           : nPoints?.preview?.positions &&
               landmarkSceneUnchanged(nPoints, entities)
-            ? entities.map((e) =>
-                e.id === nPoints.moving.id
-                  ? { ...e, positions: nPoints.preview!.positions! }
-                  : e,
-              )
+            ? acceptLandmarkAlignment(nPoints, entities)
             : surfaceFit?.preview &&
                 surfaceFitSourceUnchanged(surfaceFit, entities)
               ? [
@@ -1038,13 +1039,7 @@ export function App() {
     viewport.current?.setAlignmentMarkers(
       nPoints ? landmarkMarkers(nPoints) : [],
     );
-    viewport.current?.setPickTarget(
-      nPoints
-        ? landmarkPickSide === "moving"
-          ? nPoints.moving.id
-          : (nPoints.fixed?.id ?? null)
-        : null,
-    );
+    viewport.current?.setPickTarget(null);
     if (pendingImportFit.current !== undefined) {
       viewport.current?.fitView(pendingImportFit.current ?? undefined);
       pendingImportFit.current = undefined;
@@ -1053,8 +1048,11 @@ export function App() {
     entities,
     selectedId,
     selectedIds,
-    nPoints,
-    landmarkPickSide,
+    nPoints?.moving,
+    nPoints?.fixed,
+    nPoints?.pickScene,
+    nPoints?.picks,
+    nPoints?.preview,
     surfaceFit,
     activeScanPreview,
   ]);
@@ -1121,6 +1119,7 @@ export function App() {
   useEffect(() => {
     viewport.current?.setBrush(
       mode === "brush" &&
+        sampledSelected &&
         workspace === "mesh" &&
         toolPanelOpen &&
         !busy &&
@@ -1134,6 +1133,7 @@ export function App() {
     toolPanelOpen,
     busy,
     selected?.kernelId,
+    sampledSelected,
     scanPanel,
     scanBoundaryPaths,
   ]);
@@ -1174,14 +1174,14 @@ export function App() {
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
   useEffect(() => {
-    if (!selected) {
+    if (!selected || !sampledSelected) {
       setTriangleMask(null);
       return;
     }
     const session = sessionFor(selected);
     setTriangleMask(new Uint8Array(session.state.mask));
     setSelectionVersion((v) => v + 1);
-  }, [selectedId, selected?.positions]);
+  }, [selectedId, selected?.positions, sampledSelected]);
   useEffect(() => {
     const origin = wandRegion.current;
     if (!origin || selected?.kind === "pointcloud") return;
@@ -1463,6 +1463,7 @@ export function App() {
         .catch((e) => setError(`CAD cleanup: ${errorText(e)}`));
   }, [entities, history, future]);
   function sessionFor(entity: Entity): SelectionSession {
+    assertSampledGeometry(entity);
     let record = selectionSessions.current.get(entity.id);
     const key = cloudSelectionSource(entity);
     if (!record || record.positions !== key) {
@@ -1478,11 +1479,13 @@ export function App() {
     return record.session;
   }
   function applySelectionState(entity: Entity, state: SelectionState) {
+    assertSampledGeometry(entity);
     setTriangleMask(new Uint8Array(state.mask));
     setSelectionVersion((v) => v + 1);
     setEntities((previous) =>
       previous.map((e) => {
         if (e.id !== entity.id) return e;
+        if (!supportsSampledGeometry(e)) return e;
         const old = e.meshSelection?.hidden ?? [];
         if (
           old.length === state.hidden.length &&
@@ -1503,9 +1506,6 @@ export function App() {
     next:
       Uint8Array | null | ((previous: Uint8Array | null) => Uint8Array | null),
   ) {
-    setScanBoundaryPaths([]);
-    wandRegion.current = null;
-    wandRefreshAbort.current?.abort();
     const entity = brushRef.current.entity;
     if (!entity) return;
     const session = sessionFor(entity);
@@ -1514,6 +1514,13 @@ export function App() {
       new Uint8Array(
         entity.positions.length / (entity.kind === "pointcloud" ? 3 : 9),
       );
+    publishScanSelection(entity, mask);
+  }
+  function publishScanSelection(entity: Entity, mask: Uint8Array) {
+    setScanBoundaryPaths([]);
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
+    const session = sessionFor(entity);
     const hidden = new Set(session.state.hidden);
     session.set({
       mask: Uint8Array.from(mask, (v, i) => (hidden.has(i) ? 0 : v)),
@@ -1521,10 +1528,29 @@ export function App() {
     });
     applySelectionState(entity, session.state);
   }
-  function selectionVisibility(operation: "hide" | "isolate" | "reveal") {
+  function configureScanSelection(command: ScanSelectionControl) {
+    validateScanSelectionControl(command);
+    if (command.tool !== undefined) {
+      setScanBoundaryPaths([]);
+      setSelectionTool(command.tool);
+      setMode("brush");
+    }
+    if (command.through !== undefined) setSelectThrough(command.through);
+    if (command.clip !== undefined) setMeshClip(command.clip);
+    if (command.angleDegrees !== undefined)
+      setSelectionAngle(command.angleDegrees);
+    if (command.brushRadiusPx !== undefined)
+      setBrushRadius(command.brushRadiusPx);
+    if (command.allConnected !== undefined)
+      setAllConnected(command.allConnected);
+  }
+  function selectionVisibility(
+    operation: "hide" | "isolate" | "reveal",
+    owned = false,
+  ) {
     wandRegion.current = null;
     wandRefreshAbort.current?.abort();
-    if (!selected || busy) return;
+    if (!selected || !sampledSelected || (busy && !owned)) return;
     const session = sessionFor(selected);
     if (operation === "hide")
       lastHiddenSelection.current = maskIndices(session.state.mask);
@@ -1536,8 +1562,8 @@ export function App() {
     applySelectionState(selected, session.state);
     setDirty(true);
   }
-  function revealSelectedTriangles() {
-    if (!selected || busy) return;
+  function revealSelectedTriangles(owned = false) {
+    if (!selected || !sampledSelected || (busy && !owned)) return;
     const session = sessionFor(selected),
       revealed = new Set(lastHiddenSelection.current);
     session.set({
@@ -1606,7 +1632,7 @@ export function App() {
     label: string,
     retainFacetSelection = false,
   ) {
-    if (!selected) return;
+    if (!selected || !sampledSelected) return;
     if (!positions.length) {
       operationLabel.current = label;
       commit(entities.filter((entity) => entity.id !== selected.id));
@@ -1716,7 +1742,7 @@ export function App() {
     operation: Omit<ScanEditRequest, "kind" | "positions">,
     label: string,
   ) {
-    if (!selected || busy || scanEditAbort.current) return;
+    if (!selected || !sampledSelected || busy || scanEditAbort.current) return;
     if (selected.kind === "pointcloud") {
       if (operation.action === "smoothSelected")
         await runPointEdit({
@@ -1802,11 +1828,11 @@ export function App() {
     setDirty(true);
     setMessage(`${created.length} projected boundary sketch(es) created`);
   }
-  function selectionUndo(redo = false) {
+  function selectionUndo(redo = false, owned = false) {
     wandRegion.current = null;
     wandRefreshAbort.current?.abort();
     const entity = brushRef.current.entity;
-    if (!entity || busyRef.current) return;
+    if (!entity || (busyRef.current && !owned)) return;
     const session = sessionFor(entity);
     applySelectionState(entity, redo ? session.redo() : session.undo());
     setDirty(true);
@@ -1855,10 +1881,15 @@ export function App() {
     applySelectionState(entity, session.state);
     setMessage(`Restored selection ${saved.name}`);
   }
-  const selectionSession = selected ? sessionFor(selected) : undefined;
+  const selectionSession =
+    selected && sampledSelected ? sessionFor(selected) : undefined;
   void selectionVersion;
   useEffect(() => {
-    const live = new Map(entities.map((e) => [e.id, cloudSelectionSource(e)]));
+    const live = new Map(
+      entities
+        .filter(supportsSampledGeometry)
+        .map((e) => [e.id, cloudSelectionSource(e)]),
+    );
     for (const [id, record] of selectionSessions.current)
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
@@ -1897,6 +1928,7 @@ export function App() {
     align: openAlignment,
     transform: () => showTools("transform"),
     section: () => {
+      if (!sampledSelected) return;
       setMode("section");
       showTools("section");
     },
@@ -1923,15 +1955,25 @@ export function App() {
       setSplitMeshOpen(true);
     },
     editScan: () => {
+      if (!sampledSelected) return;
       setMode("brush");
       showTools("mesh");
     },
     select: () => {
+      if (!sampledSelected) return;
       setMode("brush");
       showTools("mesh");
     },
     wireframe: () => setWireframe(!wireframe),
     objectColor: () => showTools("objectColor"),
+    autoColorize: entities.length
+      ? () => {
+          void uiCommand("scene_auto_color").then((result) => {
+            if (result.ok)
+              setMessage("Unique colors assigned to all scene objects");
+          });
+        }
+      : undefined,
     loft: () => showTools("loft"),
     sweep: () => showTools("sweep"),
     fillet: () => showTools("fillet"),
@@ -1989,6 +2031,7 @@ export function App() {
     mirrorBody: () => showTools("mirrorBody"),
   };
   const excludedRepeatCommands = new Set([
+    "autoColorize",
     "newDocument",
     "open",
     "save",
@@ -2034,6 +2077,9 @@ export function App() {
     return result;
   }
   const actions: Partial<Record<ShortcutActionId, (() => void) | undefined>> = {
+    "align-interactive": !interactiveTargetError
+      ? ribbonActions.alignInteractive
+      : undefined,
     new: requestNewDocument,
     open: () => fileInput.current?.click(),
     save,
@@ -2072,6 +2118,7 @@ export function App() {
             name: selectedIds.length === 1 ? (selected?.name ?? "") : "",
           })
       : undefined,
+    "delete-objects": selectedIds.length ? deleteSelected : undefined,
     "toggle-selected-visibility": selectedIds.length
       ? () => {
           void uiCommand("object_visibility_toggle").then((result) => {
@@ -2089,13 +2136,14 @@ export function App() {
       : undefined,
     "new-sketch": selected ? openSketchCreation : undefined,
     compare: selected ? () => showTools("deviation") : undefined,
-    "selection-wand": selected
-      ? () => {
-          setMode("brush");
-          setSelectionTool("wand");
-          showTools("mesh");
-        }
-      : undefined,
+    "selection-wand":
+      selected && sampledSelected
+        ? () => {
+            setMode("brush");
+            setSelectionTool("wand");
+            showTools("mesh");
+          }
+        : undefined,
     "fit-plane": selected ? () => runFit("plane") : undefined,
     "fit-cylinder": selected ? () => runFit("cylinder") : undefined,
     "fit-cone": selected ? () => runFit("cone") : undefined,
@@ -2123,6 +2171,7 @@ export function App() {
         : undefined,
   };
   const excludedShortcutCommands = new Set([
+    "delete-objects",
     "new",
     "open",
     "save",
@@ -2313,23 +2362,26 @@ export function App() {
       },
       remove: () => {
         if (!target) return;
-        try {
-          commit(entities.filter((entity) => entity.id !== target.id));
-          if (selectedId === target.id) setSelectedId(null);
-        } catch (error) {
-          setError(errorText(error));
-        }
+        void uiCommand("object_delete", { entityId: target.id });
       },
     });
   }
-  function commit(next: Entity[], preserveSelectionFor?: string) {
+  function commit(
+    next: Entity[],
+    preserveSelectionFor?: string,
+    policy?: ModelCommitPolicy,
+  ) {
     if (interactiveStore.getSnapshot())
       throw new Error(
         "Apply or cancel Interactive alignment before editing the model.",
       );
     next = next.map((entity) => canonicalCloud(retainIndexedMesh(entity)));
-    const protectedObject = lockedObjectEdit(entities, next);
+    const protectedObject = lockedObjectEdit(entities, next, policy);
     if (protectedObject) {
+      if (policy)
+        throw new Error(
+          `Unlock ${protectedObject.name} before editing or deleting it.`,
+        );
       setError(`Unlock ${protectedObject.name} before editing or deleting it.`);
       return;
     }
@@ -2430,6 +2482,12 @@ export function App() {
           reconstruct: "extrude",
         } as Record<string, string>
       )[nextWorkspace] ?? nextWorkspace;
+    try {
+      coordinateAlignmentInterface({ workspace: nextWorkspace }, selected);
+    } catch (error) {
+      setError(errorText(error));
+      return;
+    }
     setSplitMeshOpen(false);
     if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
     cancelLandmarks();
@@ -2454,7 +2512,21 @@ export function App() {
     setToolPanelOpen(false);
     setMode("inspect");
   }
+  function referencePreviewAllowsTools() {
+    try {
+      workspaceApi.requireReferencePreviewIdle();
+      return true;
+    } catch (error) {
+      setError(errorText(error));
+      return false;
+    }
+  }
   function openScanTool(tool: ScanToolId) {
+    if (!referencePreviewAllowsTools()) return;
+    if (selected && !sampledSelected) {
+      setError("This tool requires sampled scan geometry.");
+      return;
+    }
     if (selected?.kind === "pointcloud") {
       if (tool !== "reducePolygons" && tool !== "reduceNoise") {
         setError(
@@ -2550,6 +2622,7 @@ export function App() {
   }
   async function applyScanTool(parameters: ScanToolParameters) {
     if (!selected || busy || scanToolAbort.current) return;
+    if (!referencePreviewAllowsTools()) return;
     if (parameters.kind === "repolygonize") {
       const sourceId = selected.id;
       const controller = new AbortController();
@@ -2891,6 +2964,7 @@ export function App() {
   function openSurfaceFit() {
     if (!selected) return;
     try {
+      workspaceApi.requireReferencePreviewIdle();
       const session = beginSurfaceFit(
         selected,
         triangleMask,
@@ -2908,6 +2982,7 @@ export function App() {
   async function previewSurfaceFit(options: SurfaceFitOptions) {
     const session = surfaceFitRef.current;
     if (!session || surfaceFitAbort.current) return;
+    if (!referencePreviewAllowsTools()) return;
     const controller = new AbortController();
     surfaceFitAbort.current = controller;
     setProcessingBusy(true);
@@ -2946,6 +3021,19 @@ export function App() {
       operationLabel.current = null;
     }
   }
+  function alignmentViewport(view: "main" | "moving" | "fixed" = "main") {
+    const target =
+      view === "main"
+        ? viewport.current
+        : nPointsRef.current
+          ? landmarkViewports.current[view]
+          : undefined;
+    if (!target)
+      throw new Error(
+        `The ${view} viewport is not available. Open N-points alignment for picking views.`,
+      );
+    return target;
+  }
   function cancelLandmarks() {
     landmarkAbort.current?.abort();
     nPointsRef.current = null;
@@ -2955,6 +3043,8 @@ export function App() {
   function editLandmarkSession(
     edit: Parameters<NonNullable<WorkspaceHost["editLandmarks"]>>[0],
   ) {
+    if (!["reset", "clear", "view-layout"].includes(edit.action))
+      workspaceApi.requireReferencePreviewIdle();
     let next: LandmarkAlignment;
     if (edit.action === "begin") {
       if (nPointsRef.current)
@@ -2967,7 +3057,6 @@ export function App() {
         targetScope: edit.targetScope,
         scene: entitiesRef.current,
       });
-      setLandmarkPickSide("moving");
       setMode("inspect");
       setToolPanelOpen(true);
     } else {
@@ -2975,9 +3064,23 @@ export function App() {
         throw new Error("No active landmark alignment session.");
       next = editLandmarks(nPointsRef.current, edit, entitiesRef.current);
     }
+    if (edit.action === "view-layout") {
+      nPointsRef.current = next;
+      setNPoints(next);
+      return landmarkState(next);
+    }
+    landmarkAbort.current?.abort();
     nPointsRef.current = next;
     setNPoints(next);
-    return landmarkState(next);
+    const pairs = landmarkPairs(next);
+    if (
+      edit.action !== "reset" &&
+      pairs.moving.length >= 3 &&
+      pairs.moving.length === pairs.fixed.length
+    ) {
+      void runLandmarkPreview().catch(() => {});
+    }
+    return landmarkState(nPointsRef.current);
   }
   function openLandmarks() {
     try {
@@ -2993,6 +3096,12 @@ export function App() {
       editLandmarkSession({
         action: "begin",
         movingId: moving.id,
+        fixedId: entitiesRef.current.find(
+          (entity) =>
+            entity.id !== moving.id &&
+            objectPickable(entity) &&
+            entity.positions.length >= 3,
+        )?.id,
       });
       setSelectedId(moving.id);
     } catch (error) {
@@ -3002,9 +3111,19 @@ export function App() {
   async function runLandmarkPreview(
     options: Parameters<NonNullable<WorkspaceHost["previewLandmarks"]>>[0] = {},
   ) {
-    const session = nPointsRef.current;
-    if (!session) throw new Error("No active landmark alignment session.");
+    workspaceApi.requireReferencePreviewIdle();
+    const current = nPointsRef.current;
+    if (!current) throw new Error("No active landmark alignment session.");
     options.signal?.throwIfAborted();
+    landmarkAbort.current?.abort();
+    const session: LandmarkAlignment = {
+      ...current,
+      preview: undefined,
+      previewStatus: "pending",
+      previewError: undefined,
+    };
+    nPointsRef.current = session;
+    setNPoints(session);
     const controller = new AbortController();
     const abort = () => controller.abort();
     options.signal?.addEventListener("abort", abort, { once: true });
@@ -3034,18 +3153,38 @@ export function App() {
       controller.signal.throwIfAborted();
       options.check?.();
       if (
-        nPointsRef.current !== session ||
+        nPointsRef.current?.picks !== session.picks ||
         !landmarkSceneUnchanged(session, entitiesRef.current)
       )
         throw new Error(
           "The landmark session or geometry changed during preview.",
         );
-      const next = { ...session, preview: result };
+      const next: LandmarkAlignment = {
+        ...nPointsRef.current!,
+        preview: result,
+        previewStatus: "ready",
+      };
       flushSync(() => {
         nPointsRef.current = next;
         setNPoints(next);
       });
       return landmarkState(next);
+    } catch (error) {
+      if (
+        landmarkAbort.current === controller &&
+        nPointsRef.current?.picks === session.picks
+      ) {
+        const next: LandmarkAlignment = {
+          ...nPointsRef.current!,
+          previewStatus: controller.signal.aborted ? "idle" : "error",
+          previewError: controller.signal.aborted
+            ? undefined
+            : errorText(error),
+        };
+        nPointsRef.current = next;
+        setNPoints(next);
+      }
+      throw error;
     } finally {
       options.signal?.removeEventListener("abort", abort);
       if (landmarkAbort.current === controller) landmarkAbort.current = null;
@@ -3129,21 +3268,18 @@ export function App() {
     });
   }
   function deleteSelected() {
-    if (!selected || selected.locked) return;
-    try {
-      entityFeatureModel(
-        entities.filter((entity) => entity.id !== selected.id),
-      );
-    } catch {
-      setError(
-        "This body is used by a parametric feature. Remove its dependent features first.",
-      );
-      return;
-    }
-    commit(entities.filter((entity) => entity.id !== selected.id));
-    setSelectedId(null);
-    setMeasure([]);
-    setMessage("Object deleted");
+    if (!selectedIds.length) return;
+    void uiCommand("object_delete", { entityIds: [...selectedIds] }).then(
+      (result) => {
+        if (!result.ok) return;
+        setMeasure([]);
+        setMessage(
+          selectedIds.length === 1
+            ? "Object deleted"
+            : "Selected objects deleted",
+        );
+      },
+    );
   }
   function exportMesh() {
     void action("Exporting mesh…", () => {
@@ -3561,124 +3697,23 @@ export function App() {
     });
   }
   function editSelection(operation: "copy" | "cut" | "delete") {
-    if ((selected?.parametric || selected?.kernelId) && operation !== "copy") {
-      setError(
-        "Parametric bodies retain exact CAD dependencies. Use a separate mesh copy for triangle edits.",
-      );
-      return;
-    }
     if (!selected || !triangleMask || !selectedTriangleCount) return;
-    if (selected.kind === "pointcloud") {
-      try {
-        const request = {
-          kind: "pointCloudEdit" as const,
-          positions: selected.positions,
-          normals: selected.normals,
-          pointColors: selected.pointColors,
-          selection: triangleMask,
-        };
-        const picked =
-          operation !== "delete"
-            ? editPointCloud({ ...request, action: "extract" })
-            : undefined;
-        const remainder =
-          operation !== "copy"
-            ? editPointCloud({ ...request, action: "delete" })
-            : undefined;
-        let next = entities;
-        if (remainder)
-          next = remainder.positions!.length
-            ? next.map((entity) =>
-                entity.id === selected.id
-                  ? {
-                      ...entity,
-                      positions: remainder.positions!,
-                      pointColors: remainder.pointColors,
-                      pointCloudPlacement: undefined,
-                      normals: remainder.normals
-                        ? Array.from(remainder.normals)
-                        : undefined,
-                      meshSelection: undefined,
-                    }
-                  : entity,
-              )
-            : next.filter((entity) => entity.id !== selected.id);
-        if (picked) {
-          const created: Entity = {
-            ...selected,
-            id: crypto.randomUUID(),
-            name: `${selected.name} selection`,
-            positions: picked.positions!,
-            pointColors: picked.pointColors,
-            pointCloudPlacement: undefined,
-            normals: picked.normals ? Array.from(picked.normals) : undefined,
-            meshSelection: undefined,
-          };
-          next = [...next, created];
-          setSelectedId(created.id);
-        } else if (!remainder?.positions?.length) setSelectedId(null);
-        operationLabel.current = `${operation} ${selectedTriangleCount} points`;
-        commit(next);
-        operationLabel.current = null;
-        setMessage(
-          `${selectedTriangleCount} points ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
-        );
-      } catch (error) {
-        setError(errorText(error));
-      }
-      return;
-    }
-    const { selected: picked, remainder } = partitionTriangles(
-      selected.positions,
-      triangleMask,
-    );
-    let next = [...entities];
-    if (operation !== "copy")
-      next = next.flatMap((entity) =>
-        entity.id !== selected.id
-          ? [entity]
-          : remainder.length
-            ? [
-                {
-                  ...entity,
-                  positions: remainder,
-                  kind: "mesh" as const,
-                  kernelId: undefined,
-                  brep: undefined,
-                  surfacePatch: undefined,
-                  surfaceScanId: undefined,
-                  fit: undefined,
-                },
-              ]
-            : [],
-      );
-    if (operation !== "delete") {
-      const created: Entity = {
-        ...selected,
-        id: crypto.randomUUID(),
-        name: `${selected.name} selection`,
-        kind: "mesh",
-        positions: picked,
-        meshSelection: undefined,
-        kernelId: undefined,
-        brep: undefined,
-        surfacePatch: undefined,
-        surfaceScanId: undefined,
-        fit: undefined,
-        parametric: undefined,
-      };
-      next.push(created);
-      setSelectedId(created.id);
-    } else if (!remainder.length) setSelectedId(next[0]?.id ?? null);
-    operationLabel.current = `${operation === "copy" ? "Copy" : operation === "cut" ? "Cut" : "Delete"} ${selectedTriangleCount} triangles`;
-    commit(next);
-    operationLabel.current = null;
-    changeSelection(null);
-    setMessage(
-      `${selectedTriangleCount} triangles ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
+    const count = selectedTriangleCount;
+    const unit = selected.kind === "pointcloud" ? "points" : "triangles";
+    void uiCommand("selection_edit", { entityId: selected.id, operation }).then(
+      (result) => {
+        if (result.ok)
+          setMessage(
+            `${count} ${unit} ${operation === "delete" ? "deleted" : operation === "copy" ? "copied" : "cut"}`,
+          );
+      },
     );
   }
   function runFit(kind: "plane" | "sphere" | "cylinder" | "cone") {
+    if (selected && !sampledSelected) {
+      setError("Fitting requires sampled mesh or point-cloud geometry.");
+      return;
+    }
     setWorkspace("fit");
     setToolPanelOpen(true);
     void action(`Fitting ${kind}…`, () => {
@@ -3919,6 +3954,7 @@ export function App() {
   }
   function openScanSketchCreation() {
     if (busy) return;
+    if (!referencePreviewAllowsTools()) return;
     if (!selected || selected.kind !== "mesh" || selected.surfacePatch) {
       showTools("sketch");
       setError(
@@ -3938,6 +3974,7 @@ export function App() {
   async function applySketchSection(options: SketchSectionOptions) {
     const session = createSketchRef.current;
     if (!session || busy) return;
+    if (!referencePreviewAllowsTools()) return;
     setCreateSketch({ ...session, preview: undefined });
     await action("Extracting sketch reference section…", async () => {
       const controller = new AbortController();
@@ -4291,6 +4328,8 @@ export function App() {
       : null;
   function setInterface(input: InterfacePatch) {
     const patch = coordinateAlignmentInterface(input, selected);
+    if (patch.datumAlignmentOpen || patch.globalAlignmentOpen)
+      workspaceApi.requireReferencePreviewIdle();
     if (
       interactiveStore.getSnapshot() &&
       (patch.workspace !== undefined ||
@@ -4410,6 +4449,7 @@ export function App() {
         setNoiseComparison(null);
         return;
       }
+      workspaceApi.requireReferencePreviewIdle();
       setSelectedId(preview.entityId);
       setScanTool("shrinkwrap");
       setMode("inspect");
@@ -4434,7 +4474,15 @@ export function App() {
         });
       else setNoiseComparison(null);
     },
+    showReferenceConstructionPreview: (owner, candidate) => {
+      if (!viewport.current) {
+        if (candidate) throw new Error("Viewport is not mounted.");
+        return;
+      }
+      viewport.current.setReferenceConstructionPreview(owner, candidate);
+    },
     showDatumPreview: (next) => {
+      if (next) workspaceApi.requireReferencePreviewIdle();
       datumPreview.current = next ? { base: entities, entities: next } : null;
       viewport.current?.setEntities(next ?? entities, selectedId, selectedIds);
     },
@@ -4460,6 +4508,7 @@ export function App() {
       if (!root) throw new Error("Application is not mounted.");
       const globalAlignment = workspaceApi.inspectGlobalAlignmentPreview();
       return {
+        contextMenuPolicy: "application-only",
         name,
         commands: commandRepeat.current.inspect(),
         selectedId,
@@ -4477,6 +4526,8 @@ export function App() {
         settingsOpen,
         settingsSection,
         previews: {
+          referenceConstruction:
+            !!viewport.current?.inspectReferenceConstructionPreview().active,
           interactive: !!interactiveStore.getSnapshot(),
           landmarkSession: !!nPoints,
           sketchSection: !!createSketch,
@@ -4506,20 +4557,19 @@ export function App() {
       };
     },
     setInterface,
-    inspectViewport: () => {
-      if (!viewport.current) throw new Error("Viewport is not ready.");
-      return viewport.current.inspectAgentView();
-    },
+    inspectViewport: (view) => alignmentViewport(view).inspectAgentView(),
     inspectSpaceMouse,
     controlSpaceMouse,
     controlViewport: (command) => {
-      if (!viewport.current) throw new Error("Viewport is not ready.");
-      viewport.current.controlAgentView(command, triangleMask ?? undefined);
+      alignmentViewport(command.view).controlAgentView(
+        command,
+        command.view && command.view !== "main"
+          ? undefined
+          : (triangleMask ?? undefined),
+      );
     },
-    pickViewport: (x, y, maxHits) => {
-      if (!viewport.current) throw new Error("Viewport is not ready.");
-      return viewport.current.pickAgentView(x, y, maxHits);
-    },
+    pickViewport: (x, y, maxHits, view) =>
+      alignmentViewport(view).pickAgentView(x, y, maxHits),
     captureScreenshot: (options, signal) => {
       const root = viewportHost.current?.closest<HTMLElement>(".workbench");
       if (!root || !viewportHost.current || !viewport.current)
@@ -4537,6 +4587,46 @@ export function App() {
     renameProject: (nextName) => {
       setName(nextName);
       setDirty(true);
+    },
+    inspectScanSelection: () => ({
+      entityId: selectedId,
+      active: workspace === "mesh" && toolPanelOpen,
+      tool: selectionTool,
+      through: selectThrough,
+      clip: meshClip,
+      elementKind: selected?.kind === "pointcloud" ? "points" : "triangles",
+      selectedCount: selectedTriangleCount,
+      hiddenCount: selected?.meshSelection?.hidden.length ?? 0,
+      canUndo: !!selectionSession?.canUndo,
+      canRedo: !!selectionSession?.canRedo,
+      angleDegrees: selectionAngle,
+      brushRadiusPx: brushRadius,
+      allConnected,
+      boundaryPathCount: scanBoundaryPaths.length,
+      boundaryCoordinateCount: scanBoundaryPaths.reduce(
+        (sum, path) => sum + path.points.length,
+        0,
+      ),
+    }),
+    controlScanSelection: (command) => {
+      if (command.action === "configure") configureScanSelection(command);
+      else if (command.action === "revealSelected")
+        revealSelectedTriangles(true);
+      else if (command.action === "undo" || command.action === "redo")
+        selectionUndo(command.action === "redo", true);
+      else selectionVisibility(command.action, true);
+    },
+    selectScanRegion: (entityId, region, through, signal) => {
+      if (workspace !== "mesh" || !toolPanelOpen)
+        throw new Error("Open Edit scan before screen selection.");
+      if (!viewport.current) throw new Error("Viewport unavailable.");
+      return viewport.current.selectScanRegion(
+        entityId,
+        region,
+        through,
+        signal,
+        meshClip,
+      );
     },
     snapshot: () => ({
       projectId,
@@ -4563,14 +4653,22 @@ export function App() {
         originVisible,
         importPlaceAtOrigin: placeImportAtOrigin,
         importAscAttributes,
+        scanSelection: {
+          tool: selectionTool,
+          through: selectThrough,
+          clip: meshClip,
+          angleDegrees: selectionAngle,
+          brushRadiusPx: brushRadius,
+          allConnected,
+        },
       },
     }),
     cad: () => {
       if (!cad.current) throw new Error("CAD runtime is unavailable");
       return cad.current;
     },
-    commit: (next, label) => {
-      const protectedObject = lockedObjectEdit(entities, next);
+    commit: (next, label, policy) => {
+      const protectedObject = lockedObjectEdit(entities, next, policy);
       if (protectedObject)
         throw new Error(
           `Unlock ${protectedObject.name} before editing or deleting it.`,
@@ -4578,7 +4676,7 @@ export function App() {
       entityFeatureModel(next);
       operationLabel.current = label;
       try {
-        commit(next);
+        commit(next, undefined, policy);
       } finally {
         operationLabel.current = null;
       }
@@ -4621,10 +4719,8 @@ export function App() {
     setSelection: (entityId, mask) => {
       const entity = entities.find((e) => e.id === entityId);
       if (!entity) throw new Error("Selection object disappeared");
-      const session = sessionFor(entity);
-      session.set({ ...session.state, mask });
       setSelectedId(entityId);
-      applySelectionState(entity, session.state);
+      publishScanSelection(entity, mask);
     },
     setSketch: updateSketchDraft,
     setAuthoring: (authoring) => {
@@ -4849,6 +4945,7 @@ export function App() {
         interactiveTargetError={interactiveTargetError}
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
+        selectionKind={selected?.kind}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -5020,8 +5117,9 @@ export function App() {
                         },
                         {
                           label: "Edit scan selection",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
+                            if (!sampledSelected) return;
                             setMode("brush");
                             setWorkspace("mesh");
                             setToolPanelOpen(true);
@@ -5029,9 +5127,9 @@ export function App() {
                         },
                         {
                           label: "Select all triangles",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
-                            if (selected)
+                            if (selected && sampledSelected)
                               changeSelection(
                                 new Uint8Array(
                                   selected.positions.length /
@@ -5042,9 +5140,9 @@ export function App() {
                         },
                         {
                           label: "Invert triangle selection",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
-                            if (selected)
+                            if (selected && sampledSelected)
                               changeSelection(
                                 Uint8Array.from(
                                   {
@@ -5363,8 +5461,63 @@ export function App() {
             )}
           </div>
         </aside>
-        <section className="canvas-area" aria-label="3D viewport">
-          <div ref={viewportHost} className="viewport" />
+        <section
+          className={`canvas-area${nPoints ? " landmark-alignment-active" : ""}`}
+          aria-label="3D viewport"
+          style={
+            nPoints
+              ? ({
+                  "--landmark-reference-width": `${nPoints.referenceWidthPercent ?? 32}%`,
+                } as import("react").CSSProperties)
+              : undefined
+          }
+        >
+          <div
+            ref={viewportHost}
+            className="viewport"
+            role={nPoints ? "region" : undefined}
+            aria-label={nPoints ? "Alignment result" : undefined}
+          />
+          {nPoints && (
+            <>
+              <LandmarkPickingViews
+                session={nPoints}
+                onResize={(referenceWidthPercent) =>
+                  editLandmarkSession({
+                    action: "view-layout",
+                    referenceWidthPercent,
+                  })
+                }
+                theme={resolvedTheme}
+                disabled={busy}
+                onPick={(entityId, point) => {
+                  try {
+                    editLandmarkSession({ action: "pick", entityId, point });
+                  } catch (error) {
+                    setError(errorText(error));
+                  }
+                }}
+                onRemovePoint={(entityId, pointIndex) =>
+                  editLandmarkSession({
+                    action: "remove-point",
+                    entityId,
+                    pointIndex,
+                  })
+                }
+                onRemoveLast={(entityId) =>
+                  editLandmarkSession({ action: "remove-last", entityId })
+                }
+                onClear={(entityId) =>
+                  editLandmarkSession({ action: "clear", entityId })
+                }
+                onViewport={(side, view) => {
+                  if (view) landmarkViewports.current[side] = view;
+                  else delete landmarkViewports.current[side];
+                }}
+                onError={setError}
+              />
+            </>
+          )}
           {activeNoiseComparison?.kind === "reducePolygons" &&
             activeNoiseComparison.visible &&
             activeNoiseComparison.statistics && (
@@ -5514,10 +5667,6 @@ export function App() {
                 e.positions.length >= 3,
             )}
             busy={busy}
-            pickSide={landmarkPickSide}
-            onPickSide={(side) => {
-              setLandmarkPickSide(side);
-            }}
             onTarget={(id) => {
               editLandmarkSession({
                 action: "reference-target",
@@ -5527,8 +5676,6 @@ export function App() {
             onTargetScope={(targetScope) =>
               editLandmarkSession({ action: "target-scope", targetScope })
             }
-            onRemoveLast={() => editLandmarkSession({ action: "remove-last" })}
-            onRemoveAll={() => editLandmarkSession({ action: "clear" })}
             onReset={() => editLandmarkSession({ action: "reset" })}
             onPreview={previewLandmarks}
             onAccept={acceptLandmarks}
@@ -5707,7 +5854,10 @@ export function App() {
                 busy={busy}
                 onApply={runPointEdit}
               />
-            ) : workspace === "mesh" && selected && splitMeshOpen ? (
+            ) : workspace === "mesh" &&
+              selected &&
+              sampledSelected &&
+              splitMeshOpen ? (
               <SplitMeshPanel
                 key={selected.id}
                 cutters={entities.filter((entity) => entity.id !== selected.id)}
@@ -5738,7 +5888,10 @@ export function App() {
                   setSplitMeshOpen(false);
                 }}
               />
-            ) : workspace === "mesh" && selected && scanPanel ? (
+            ) : workspace === "mesh" &&
+              selected &&
+              sampledSelected &&
+              scanPanel ? (
               <ScanTopologyPanels
                 key={`${selected.id}-${scanPanel}`}
                 section={scanPanel}
@@ -5761,7 +5914,7 @@ export function App() {
                 onWireframe={setWireframe}
                 onOpacity={(opacity) => updateSelected({ opacity })}
               />
-            ) : workspace === "mesh" && selected ? (
+            ) : workspace === "mesh" && selected && sampledSelected ? (
               <EditScanDialog
                 key={selected.id}
                 name={selected.name}
@@ -5780,19 +5933,39 @@ export function App() {
                 onConnected={() => growSelection(undefined, false, true)}
                 tool={selectionTool}
                 onTool={(tool) => {
-                  setScanBoundaryPaths([]);
-                  setSelectionTool(tool);
-                  setMode("brush");
+                  configureScanSelection({
+                    entityId: selected.id,
+                    action: "configure",
+                    tool,
+                  });
                 }}
                 angle={selectionAngle}
-                onAngle={setSelectionAngle}
+                onAngle={(angleDegrees) =>
+                  configureScanSelection({
+                    entityId: selected.id,
+                    action: "configure",
+                    angleDegrees,
+                  })
+                }
                 allConnected={allConnected}
-                onAllConnected={setAllConnected}
+                onAllConnected={(allConnected) =>
+                  configureScanSelection({
+                    entityId: selected.id,
+                    action: "configure",
+                    allConnected,
+                  })
+                }
                 brushRadius={brushRadius}
                 quickTools={quickToolsEnabled}
                 onQuickTools={setQuickToolsEnabled}
                 through={selectThrough}
-                onThrough={setSelectThrough}
+                onThrough={(through) =>
+                  configureScanSelection({
+                    entityId: selected.id,
+                    action: "configure",
+                    through,
+                  })
+                }
                 busy={busy}
                 onTopology={setScanPanel}
                 onMorph={morphSelection}
@@ -5804,12 +5977,18 @@ export function App() {
                     ).fill(1),
                   )
                 }
-                onRevealSelected={revealSelectedTriangles}
+                onRevealSelected={() => revealSelectedTriangles()}
                 clip={meshClip}
                 clipFull={
                   stats ? { min: stats.min, max: stats.max } : undefined
                 }
-                onClip={setMeshClip}
+                onClip={(clip) =>
+                  configureScanSelection({
+                    entityId: selected.id,
+                    action: "configure",
+                    clip,
+                  })
+                }
                 selectedCount={selectedTriangleCount}
                 hiddenCount={selected.meshSelection?.hidden.length ?? 0}
                 wireframe={wireframe}
@@ -5869,11 +6048,17 @@ export function App() {
                             </strong>
                           )}
                           <small>
-                            {selected.kernelId
-                              ? "Exact CAD + display mesh"
-                              : selected.kind === "plane"
-                                ? "Reference surface"
-                                : "Triangle mesh"}{" "}
+                            {selected.kind === "referencePoint"
+                              ? "Reference point"
+                              : selected.kind === "referenceLine"
+                                ? "Reference line"
+                                : selected.kind === "pointcloud"
+                                  ? "Point cloud"
+                                  : selected.kernelId
+                                    ? "Exact CAD + display mesh"
+                                    : selected.kind === "plane"
+                                      ? "Reference surface"
+                                      : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
@@ -5900,42 +6085,13 @@ export function App() {
                                 sampled geometry, not the complete source.
                               </p>
                             )}
-                          <dl>
-                            <dt>
-                              {selected.kind === "pointcloud"
-                                ? "Points"
-                                : "Vertices (triangle soup)"}
-                            </dt>
-                            <dd>{number(stats.vertices)}</dd>
-                            {selected.kind !== "pointcloud" && (
-                              <>
-                                <dt>Triangles</dt>
-                                <dd>{number(stats.triangles)}</dd>
-                              </>
-                            )}
-                            <dt>Bounds (mm)</dt>
-                            <dd>{stats.size.map(number).join(" × ")}</dd>
-                            {selected.kind !== "pointcloud" && (
-                              <>
-                                <dt>Surface area (mm²)</dt>
-                                <dd>{number(stats.area)}</dd>
-                                <dt>Volume estimate (mm³)</dt>
-                                <dd>{number(stats.volume)}</dd>
-                              </>
-                            )}
-                          </dl>
-                          {selected.kind !== "pointcloud" && (
-                            <p className="muted">
-                              Volume assumes a closed, consistently oriented
-                              mesh.
-                            </p>
-                          )}
+                          <GeometryStatistics stats={stats} />
                         </Panel>
                       </ToolSection>
                       {workspace === "properties" &&
-                        (selected.kernelId || selected.fit) && (
+                        hasAlignmentReferences(selected) && (
                           <AlignmentReferences
-                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.fit)}`}
+                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.reference ? encodeReferenceEntityData(selected.reference) : selected.fit)}`}
                             entityId={selected.id}
                             onRead={(offset, signal) =>
                               readAlignmentReferences(
@@ -5984,6 +6140,103 @@ export function App() {
                           }
                           className="display-panel"
                         >
+                          {selected.kind === "pointcloud" && (
+                            <>
+                              <label className="check">
+                                <input
+                                  type="checkbox"
+                                  aria-label="Auto density"
+                                  checked={selected.pointAutoDensity ?? true}
+                                  onChange={(e) =>
+                                    void uiCommand("object_update", {
+                                      entityId: selected.id,
+                                      patch: {
+                                        pointAutoDensity: e.target.checked,
+                                      },
+                                    })
+                                  }
+                                />
+                                Auto density
+                              </label>
+                              <label className="slider-row">
+                                <span>Display density</span>
+                                <input
+                                  type="range"
+                                  aria-label="Display density"
+                                  min="10"
+                                  max="100"
+                                  step="5"
+                                  disabled={selected.pointAutoDensity === false}
+                                  value={
+                                    selected.pointDensity ??
+                                    DEFAULT_POINT_DENSITY
+                                  }
+                                  onChange={(e) =>
+                                    void uiCommand("object_update", {
+                                      entityId: selected.id,
+                                      patch: {
+                                        pointDensity: Number(e.target.value),
+                                      },
+                                    })
+                                  }
+                                />
+                                <output>
+                                  {selected.pointDensity ??
+                                    DEFAULT_POINT_DENSITY}
+                                  %
+                                </output>
+                              </label>
+                              <p className="muted">
+                                {selected.pointAutoDensity === false
+                                  ? "Showing all points."
+                                  : "Zoom in to reveal more points. Scan data stays intact."}
+                              </p>
+                              <label className="slider-row">
+                                <span>Point size (px)</span>
+                                <input
+                                  aria-label="Point size (px)"
+                                  type="range"
+                                  min="1"
+                                  max="10"
+                                  step="0.5"
+                                  value={selected.pointSize ?? 1}
+                                  onChange={(e) =>
+                                    void uiCommand("object_update", {
+                                      entityId: selected.id,
+                                      patch: {
+                                        pointSize: Number(e.target.value),
+                                      },
+                                    })
+                                  }
+                                />
+                                <output>{selected.pointSize ?? 1}</output>
+                              </label>
+                              {selected.pointColors && (
+                                <label className="color-field">
+                                  Point colors
+                                  <select
+                                    aria-label="Point colors"
+                                    value={selected.pointColorMode ?? "source"}
+                                    onChange={(e) =>
+                                      void uiCommand("object_update", {
+                                        entityId: selected.id,
+                                        patch: {
+                                          pointColorMode: e.target.value,
+                                        },
+                                      })
+                                    }
+                                  >
+                                    <option value="source">
+                                      File RGB colors
+                                    </option>
+                                    <option value="solid">
+                                      Solid object color
+                                    </option>
+                                  </select>
+                                </label>
+                              )}
+                            </>
+                          )}
                           <ToolSection tools={["properties"]}>
                             <label className="slider-row">
                               <span>Opacity</span>
@@ -6027,7 +6280,15 @@ export function App() {
                               type="color"
                               value={selected.color}
                               onChange={(e) =>
-                                updateSelected({ color: e.target.value })
+                                void uiCommand("object_update", {
+                                  entityId: selected.id,
+                                  patch: {
+                                    color: e.target.value,
+                                    ...(selected.kind === "pointcloud"
+                                      ? { pointColorMode: "solid" }
+                                      : {}),
+                                  },
+                                })
                               }
                             />
                           </label>
@@ -7009,14 +7270,11 @@ export function App() {
             ? `Importing ${importProgress.name}${importProgress.fraction === null ? "…" : ` · ${Math.round(importProgress.fraction * 100)}%`}`
             : message
         }
-        facets={
-          selected && selected.kind !== "pointcloud"
-            ? selected.positions.length / 9
-            : undefined
-        }
-        points={
-          selected?.kind === "pointcloud"
-            ? selected.positions.length / 3
+        facets={stats?.kind === "mesh" ? stats.triangles : undefined}
+        points={stats?.kind === "pointcloud" ? stats.vertices : undefined}
+        reference={
+          stats?.kind === "reference"
+            ? { points: stats.points, lines: stats.lines }
             : undefined
         }
         shortcuts={shortcutContext}
@@ -7057,6 +7315,7 @@ export function App() {
               planePicking,
               mode,
               brushActive:
+                sampledSelected &&
                 toolPanelOpen &&
                 workspace === "mesh" &&
                 mode === "brush" &&
@@ -7071,8 +7330,7 @@ export function App() {
                 workspace === "sketch" && toolPanelOpen && !createSketch
                   ? sketchDrawingTool
                   : undefined,
-              landmarkSide: nPoints ? landmarkPickSide : undefined,
-              landmarkPreview: !!nPoints?.preview,
+              landmarkAlignment: !!nPoints,
               reference: scanReferencePick.current ?? undefined,
               panel:
                 workspace === "mesh" && toolPanelOpen

@@ -41,6 +41,60 @@ const session = (entities: Entity[]): ProjectSession => ({
   future: [],
 });
 
+it("decompresses directly into shared geometry without copying each decoded numeric chunk", async () => {
+  vi.stubGlobal("crossOriginIsolated", true);
+  const original = mesh();
+  const file = await encodeProjectFileLocally(session([original]));
+  const floats = vi.spyOn(Float32Array.prototype, "set");
+  const indices = vi.spyOn(Uint32Array.prototype, "set");
+  try {
+    const restored = await decodeProjectContents(file, {
+      sharedReadonlyBuffers: true,
+    });
+    expect(floats).not.toHaveBeenCalled();
+    expect(indices).not.toHaveBeenCalled();
+    const entity = restored.project.entities[0];
+    expect((entity.positions as Float32Array).buffer).toBeInstanceOf(
+      SharedArrayBuffer,
+    );
+    const contents = async (value: Entity) =>
+      (await digestEntityGeometry(value)).buffers.map(
+        ({ path, sha256, elements, encoding }) => ({
+          path,
+          sha256,
+          elements,
+          encoding,
+        }),
+      );
+    expect(await contents(entity)).toEqual(await contents(original));
+    expect(restored.history[0].entities[0].positions).toBe(entity.positions);
+  } finally {
+    floats.mockRestore();
+    indices.mockRestore();
+    vi.unstubAllGlobals();
+  }
+});
+
+it("still rejects a damaged chunk hash when decoding into shared backing", async () => {
+  const file = await encodeProjectFileLocally(session([mesh()]));
+  const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const view = new DataView(header.buffer);
+  const length = view.getUint32(8, true);
+  const manifest = JSON.parse(await file.slice(16, 16 + length).text());
+  manifest.chunks[0].sha256 = "0".repeat(64);
+  const changed = new TextEncoder().encode(JSON.stringify(manifest));
+  view.setUint32(8, changed.byteLength, true);
+  const damaged = new Blob([header, changed, file.slice(16 + length)]);
+  vi.stubGlobal("crossOriginIsolated", true);
+  try {
+    await expect(
+      decodeProjectContents(damaged, { sharedReadonlyBuffers: true }),
+    ).rejects.toThrow("Invalid or damaged");
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
 it("restores binary topology without widening it and retains current/history aliases", async () => {
   const original = mesh();
   const restored = await decodeProjectContents(

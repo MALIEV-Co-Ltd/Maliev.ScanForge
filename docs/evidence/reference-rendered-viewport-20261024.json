@@ -1,0 +1,188 @@
+{
+  "date": "2026-10-24",
+  "scope": "Rendered production viewport/API foundation with an isolated pre-admission semantic fixture",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "uncommitted": true,
+    "buildIdentitySha256": "5ebb4f0f3ae9fa8e5a13ff30b35222d1a63edf8acf3bd5a11776bc35b1c1e23b",
+    "buildInputManifestSha256": "f07dc67a60721e5bf2a18aebff92adcb0cfd8159641966930412aa063b6dc880",
+    "allBuildInputsMatchedBeforeAndAfter": true
+  },
+  "sources": [
+    {
+      "path": "src/reference-display.ts",
+      "sha256": "7238efed197084f4f59a9ae3cf1b1017504ffab9bcf932a9b7a8a51e3e89b9c7"
+    },
+    {
+      "path": "src/viewport.ts",
+      "sha256": "4b13a907d84304e418b9f7326a4323e0d379272dbe78c46868ef774e0975068c"
+    },
+    {
+      "path": "src/viewport-agent.ts",
+      "sha256": "6c7f6608b657b413ecad48d1cf5fab71c36d191e4769cb9abc530e414e8cfb99"
+    },
+    {
+      "path": "src/viewport-picking.ts",
+      "sha256": "c56a930e9c5f65ce331fac1757f185872f9b7af41b634c30d0a6e9ddb8a0c87c"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "112b4fd497924761ed5f9556b7a312320f79c902964e8dd54738045bf8f2f7be"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "e514013593ade3c25183f6190036bb81e706be6b017da4257a0072faee8861a7"
+    },
+    {
+      "path": "src/automation/workflow-operations.ts",
+      "sha256": "93c19e70ebde111bf353be4dd9cd411252e352310b5c897660f26fa5720eef76"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "9b67a4c858db3095c99981607b651b991da5bd3958ae65191ee7b14826c4e1a9"
+    }
+  ],
+  "fixture": {
+    "entities": "One semantic point and one finite line; no mesh triangles or point-cloud carrier.",
+    "viewportPixels": [900, 600],
+    "browserViewportPixels": [960, 730],
+    "pixelRatio": 1,
+    "browserPath": "Playwright 1.64.0; Browser plugin unavailable; owned headless Chromium with software WebGL.",
+    "htmlSha256": "dcbafc09ada07f220eb41106cad6923fb65278dedd245722421158d08fd2ff90",
+    "moduleSha256": "3de9f9fa1a0694b26b81bb87cdfde8c3a28e65059d4508f7d07870d8adbaaea6",
+    "driverSha256": "74794b6d74f842b097960b84196fe5e0d775feda2fafb0c4d20ced00560a6af6",
+    "host": "Production Viewport plus ApplicationApi/createOperations/createWorkflowOperations with a fixture host; not the full React application editor."
+  },
+  "checks": [
+    "WebGL renders point and finite line; shared project/object inspection reports semantic entities",
+    "GUI pointer and MCP viewport_pick identify the same semantic point and exact world coordinates",
+    "GUI/MCP finite-line picks agree within 0.02 mm; picks beyond its endpoint do not hit the line",
+    "Locked and hidden semantic point is excluded from object picks",
+    "Production clipping removes the point from WebGL pixels and MCP picks",
+    "MCP fit frames reference-only semantic bounds through production camera controls",
+    "Repeated semantic replacement retains geometry count; removing/disposing releases reference objects and canvas"
+  ],
+  "mcp": {
+    "operations": [
+      "project_get",
+      "object_get",
+      "viewport_get",
+      "viewport_pick",
+      "viewport_control"
+    ],
+    "pointGuiAndApiExactCoordinates": [0, 0, 1.5],
+    "lineGuiAndApiMaxCoordinateDifferenceMm": 6.377878895347244e-5,
+    "lineToleranceMm": 0.02,
+    "schemaChanged": false,
+    "publicConstructionActivated": false
+  },
+  "render": {
+    "baselinePixels": {
+      "width": 900,
+      "height": 600,
+      "green": 783,
+      "magenta": 55
+    },
+    "clippedPixels": {
+      "width": 900,
+      "height": 600,
+      "green": 783,
+      "magenta": 0
+    },
+    "screenshots": [
+      {
+        "artifact": "baseline.png",
+        "sha256": "ea381e63ce305d17074b1b999a88b3caa06f0d9eb49d9d86467768c95c135d0c"
+      },
+      {
+        "artifact": "clipped.png",
+        "sha256": "21060d238c98a5901e29bd1d67925c975cc5d478b1be6c8ab7529433821cab95"
+      }
+    ],
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "resources": {
+    "before": {
+      "geometries": 2,
+      "referenceCount": 2,
+      "canvasCount": 1
+    },
+    "after": {
+      "geometries": 2,
+      "referenceCount": 2,
+      "canvasCount": 1
+    },
+    "empty": {
+      "geometries": 0,
+      "referenceCount": 0,
+      "canvasCount": 1
+    },
+    "disposed": {
+      "geometries": 0,
+      "referenceCount": 0,
+      "canvasCount": 0
+    }
+  },
+  "validation": {
+    "ownedJobs": [
+      {
+        "label": "r1",
+        "sha256": "93663b547a397d15b41677fe24125e53ca3138031b54f9607fb518383d69305b",
+        "exitCode": 1,
+        "elapsedSeconds": 2.1278854999982286,
+        "peakJobMemoryBytes": 478662656
+      },
+      {
+        "label": "r2",
+        "sha256": "44122365992b616a89ccf998ccd821e89efb68d4ccbc748b4933e3d8dadd5536",
+        "exitCode": 1,
+        "elapsedSeconds": 1.5222493000037502,
+        "peakJobMemoryBytes": 480399360
+      },
+      {
+        "label": "r3",
+        "sha256": "6777bd16b69ddec8d5b0e1aac93ba47e411f26510e1b2c69e06c752b4eda258f",
+        "exitCode": 1,
+        "elapsedSeconds": 1.4715193000156432,
+        "peakJobMemoryBytes": 473677824
+      },
+      {
+        "label": "r4",
+        "sha256": "2ccc3588febd3033a6a31a74611d26dac769fc5a664adfacc7de2e1a9ebc194f",
+        "exitCode": 0,
+        "elapsedSeconds": 1.7238287999934983,
+        "peakJobMemoryBytes": 471703552
+      },
+      {
+        "label": "r5",
+        "sha256": "ed00be465f712b801a6c38767bc2ae3ba5d3289e8d50253a0551f670fa1888ad",
+        "exitCode": 0,
+        "elapsedSeconds": 1.4714644000050612,
+        "peakJobMemoryBytes": 480481280
+      }
+    ],
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500,
+    "harnessCorrections": [
+      "r1 omitted production workflow handlers; API correctly returned unsupported.",
+      "r2/r3 used an unfitted default orthographic camera and failed a pixel-count expectation; r3 screenshot established that the geometry rendered at that scale.",
+      "r4 set an explicit perspective camera and passed five checks.",
+      "r5 additionally verified finite-line pointer/API agreement, endpoint rejection and MCP Fit; seven checks passed."
+    ]
+  },
+  "limitations": [
+    "No native rendering/output comparison.",
+    "No public construction/import/preview/apply/save/reopen acceptance.",
+    "Mixed sampled/reference scenes and full React editor wiring remain unverified in this rendered run.",
+    "Fixture metadata changes exercise the viewport consumer; they do not prove a public authoring operation.",
+    "Owned browser was closed; existing user tab and dev server were not changed."
+  ],
+  "acceptance": {
+    "renderedViewportFoundation": true,
+    "guiAndMcpPickComparison": true,
+    "fullReferenceWorkflow": false,
+    "nativeParity": false,
+    "milestoneComplete": false
+  }
+}

@@ -1,0 +1,356 @@
+{
+  "date": "2026-10-24",
+  "scope": "Native wrapper direct-data-flow evidence and own-kernel prepared converted-line direction preservation; full reconstruction remains active.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-line-self-connection.ts",
+      "sha256": "2461f7ea9cdb62c749147e88d7666c1a25e68754588275e67621bccd47ecb355"
+    },
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "81467d6e9ff29853269b38c2682d91cad8f7d187750441b5c6d8cebb605b4546"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "60557e4ee57f5e9d30e314d4675ff075cf446bed5941974b602b7df74a51f53d"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "a93564f2c9c4a5ad459f738050091a1bbed0b8f8bb3bd7757ce617513857d1f0"
+    },
+    {
+      "path": "src/sketch-line-prepared.ts",
+      "sha256": "9d02e8c3e784e6f5fceb2c94e0738057f162933086ecbec45825d58e218077ed"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "55fb3102eca7f67a6df5e80cf7ff266fb8cba40855568a423d90418ec5931c11"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "tests/sketch-line-self-connection.test.ts",
+      "sha256": "5f43865c9c312104224871035f7249ec47dde334c7dc64570d0af873c3639c7b"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "c546bcb1617efd88915276a1e715a3759ed9f8c1266984b34b31a632dd1c7b07"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "c9d2752b72f6e1387c38aca56ca109b241325e663b3c0d529d5986f6392be7fa"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "bc7bfe656a563b9843faf3c0cb4ea79bdb665af15368bf1dcd6478bcb4723c51"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "a84483baecea885f73c91ffcc0e56674c344e0bfa1ad3ca9d69bb0361969a570"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "3246946d48befb753e64a9574f18acc8e65a7853a09372a3fb47fd5692c337da"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "d67ca1bfde2aada7a8a754106a761bdcbe5c2681ab7bc973fb40c068f8c85a9b"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "56c086237aa2f43e4b099d6ed50b0c495e7583da7775bd67ee7cd55dfc7109de"
+    },
+    {
+      "path": "src/sketch-line-projection.ts",
+      "sha256": "73756e5e3fb05d7afeda8820c8cc7f1bcfa951ee1e927260f96e8146169a0f75"
+    },
+    {
+      "path": "tests/sketch-line-projection.test.ts",
+      "sha256": "d2f22584386eb5b22f11a9d5a787029db2f3bf757d6cca21ddb82648160e6001"
+    },
+    {
+      "path": "src/cad/sketch-prepared-direction.ts",
+      "sha256": "05ce8a8874cad729f8c4ef4e0cbdd6f2ef744f4637e3b9ca1c4dd05bb4dea8da"
+    },
+    {
+      "path": "tests/kernel-line-direction-fidelity-smoke.mjs",
+      "sha256": "9e74533843f5399c662cca39e20dc98b98a838fd76bcb48e4e95ce130c0e5826"
+    },
+    {
+      "path": "docs/CAD_DIRECTION_FIDELITY.md",
+      "sha256": "d5f66146cc380259e64521c512a9d10ac6687486bad6652109d7366693598117"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "trace-line-interval-wrapper-r1.py",
+      "sha256": "73eb9b0ac1f1dfdda09bfaec4de1a5255a2bc4404bdd50d47683350c52b14644"
+    },
+    {
+      "name": "line-interval-wrapper-trace-r1.json",
+      "sha256": "112905ea21da79031c5c9b94cd91d71ab2f7907c28b9954830a7f8ca34fdae72"
+    },
+    {
+      "name": "verify-line-interval-wrapper-r1.py",
+      "sha256": "04f1e17588a3a0be80e175ea6e454591ee2b9e6a624e9ca6f62421ebf42209d3"
+    },
+    {
+      "name": "line-interval-wrapper-verified-r1.json",
+      "sha256": "3a885ddd672244f21b31e365d256472a7b8c2e5f52260675cfccd53aea7d8324"
+    },
+    {
+      "name": "probe-line-curve-fidelity-r1.mjs",
+      "sha256": "af9914d31dd5d318b28bb969c0e324f88c26dc0f255ea1d0ad9f56dd776d7d47"
+    },
+    {
+      "name": "line-curve-fidelity-probe-r1.json",
+      "sha256": "d292f9396c50641074a34ed590943a909140d0cbf867f27343204075aff9307d"
+    },
+    {
+      "name": "probe-line-curve-fidelity-r2.mjs",
+      "sha256": "3806db891added915689d10453ebc11650b60485aa0556a175be52eb8d549ffd"
+    },
+    {
+      "name": "line-curve-fidelity-probe-r2.json",
+      "sha256": "ee39ab983c033131ff9ec1e8ebeea314a4ff90eb974f97f8193b17db2a76245e"
+    },
+    {
+      "name": "probe-line-direction-access-r1.mjs",
+      "sha256": "a6d0e4b66fe9c8d947ca3734288d74c6167a936ebdc3b63e8b2e55d93197a77b"
+    },
+    {
+      "name": "run-sketch-direction-fidelity-r1.py",
+      "sha256": "1c7117312cd71aa7f58d147d45298f8e555bd41d6fcba7823ac63e34d1416761"
+    }
+  ],
+  "helperSha256": "0c55c7ec6b361ca724a61fb74cf94a35df4de71a35d6282e62af3ab0d0bccc41",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "offlineCache": "scanforge-4c44ad16bec1e46d",
+  "static": {
+    "wrapperInstructionStarts": 94,
+    "dataFlowAnchors": 17,
+    "unresolvedDirectFlow": false,
+    "scope": "Direct stores preserve supplied curve pointer, both endpoints and parameters; allocator/COW transitive effects and full admission remain unproven."
+  },
+  "baseline": {
+    "fixturesChecked": 100,
+    "retainedCounterexamples": 12,
+    "counterexampleRecordLimit": 12,
+    "mismatchRateMeasured": false,
+    "cause": "Ordinary kernel direction constructor normalizes an already prepared vector again, changing some direction/endpoint bits."
+  },
+  "correction": {
+    "implementation": "One checked adapter in shared converted-line candidate builder.",
+    "memoryScope": "Only three coordinate doubles in a newly owned object in our own bundled kernel memory; no original-native process memory or vendor WASM edits.",
+    "guards": [
+      "Near-unit prepared-vector invariant at 32 * Number.EPSILON squared-norm difference.",
+      "Fast path returns without heap access when public getters already match.",
+      "Float64 view, exact binding type metadata, safe aligned in-bounds pointer.",
+      "Existing heap coordinates must match public getters before writing.",
+      "Exact getter readback; restore old coordinates on failed readback.",
+      "Preserve cleanup errors and primary cause."
+    ],
+    "replacementRequirement": "Kernel binding changes must pass the direction-fidelity smoke or adapt this checked bridge; never bypass checks."
+  },
+  "validation": {
+    "buildPassed": true,
+    "buildSeconds": 52.67482159999781,
+    "buildPeakBytes": 2529017856,
+    "buildHeapMiB": 3072,
+    "aggregateJobGiB": 4,
+    "focusedTests": 116,
+    "focusedFiles": 8,
+    "actualKernelFixtures": 100,
+    "exactDirectionOriginEndpointMatches": 100,
+    "guardChecks": 6,
+    "draftKernelGroups": 16,
+    "candidateKernelGroups": 31,
+    "intervalWitnessKernelGroups": 9,
+    "cadSmoke": true,
+    "workerDispatcherMatchesHead": true,
+    "servedHelperMatchesLocal": true,
+    "serverPid": 28864,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false
+  },
+  "expectedFailures": [
+    "Bit-exact real-kernel regression failed before adapter; retained 12 counterexamples with cap12.",
+    "Initial fault harness tried overriding a nonconfigurable binding property; corrected to a facade with bound real cleanup. Implementation unchanged for this harness repair."
+  ],
+  "mcp": "Same compiled worker candidate path, no GUI-only implementation/public schema/catalog change or new advertised operation. Internal line authoring remains unfinished.",
+  "limitations": [
+    "The adapter is tied to checked bundled binding layout and must be verified on kernel replacements.",
+    "Prepared-line bit preservation is not complete native body admission, connection topology, editor publication or GUI/MCP workflow acceptance.",
+    "All original feature-family milestones, lifecycle/persistence/history/agent parity and native/rendered acceptance remain required."
+  ],
+  "receipts": [
+    {
+      "name": "trace-line-interval-wrapper-r1-cad",
+      "sha256": "e1be9401e4152c4cbebdc21493c2c4b3359e9ebec797ce7fb59038db10f16da5",
+      "exitCode": 0,
+      "peakBytes": 134582272,
+      "seconds": 0.4614558000175748,
+      "terminalClean": true
+    },
+    {
+      "name": "probe-line-curve-fidelity-r1-cad",
+      "sha256": "cc12e50f36de0c4996c325bcb0e1034d751cb87d7e632c659c651847dcc019eb",
+      "exitCode": 0,
+      "peakBytes": 485388288,
+      "seconds": 0.6631565999996383,
+      "terminalClean": true
+    },
+    {
+      "name": "probe-line-direction-access-r1-cad",
+      "sha256": "96c0686a44e093550a2a0a9dbc23d99c077408fa6f620ccd4a5a81efcc9d8cef",
+      "exitCode": 0,
+      "peakBytes": 448618496,
+      "seconds": 0.6628097000066191,
+      "terminalClean": true
+    },
+    {
+      "name": "probe-line-curve-fidelity-r2-cad",
+      "sha256": "6325c4870a9f04792e171c82b0ae39f7327dfa079bc65c51dff142d709658b94",
+      "exitCode": 0,
+      "peakBytes": 481177600,
+      "seconds": 0.9159707999788225,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-kernel-red-mirror-focused",
+      "sha256": "740d0e9b0eb0a62b124a44d1a99e9da7b31460e476e2effc5f81c958962e2769",
+      "exitCode": 1,
+      "peakBytes": 488558592,
+      "seconds": 0.7142003999906592,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-format-mirror-focused",
+      "sha256": "b854660411a851aef440b0a034ddcd05176cbff1e7d0ba9d6e49896778778a82",
+      "exitCode": 0,
+      "peakBytes": 113553408,
+      "seconds": 0.36038460000418127,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-build-build",
+      "sha256": "18d2bcf5673da07046b252cbc84ec6dee784437eacea6b0a72c8fd92edf87aa0",
+      "exitCode": 0,
+      "peakBytes": 2529017856,
+      "seconds": 52.67482159999781,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-format-final-mirror-focused",
+      "sha256": "2cf57ffad2e6bbcd8b61b0ed4e1435c9dbb9fe6b1b47b9432f339a37fec68044",
+      "exitCode": 0,
+      "peakBytes": 114012160,
+      "seconds": 0.35989759999210946,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-kernel-mirror-focused",
+      "sha256": "35e10c96018100b7cfb357f4abefb5f5a1589c02e18d4bb8c87d8a1ec43ea641",
+      "exitCode": 1,
+      "peakBytes": 486662144,
+      "seconds": 0.9166530999937095,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-format-facade-mirror-focused",
+      "sha256": "ab9aeea925ff55f102957a3afb0d4f86c9cbe0b747f191246ff137986d2cc0ef",
+      "exitCode": 0,
+      "peakBytes": 112701440,
+      "seconds": 0.41147320001618937,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-kernel-final-mirror-focused",
+      "sha256": "410fd06e63c88bd70c38f1d4fad04526fb6f5980fdb7e1ea4946f760e5761a39",
+      "exitCode": 0,
+      "peakBytes": 554074112,
+      "seconds": 1.0173119999817573,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-direction-fidelity-r1-unit-mirror-focused",
+      "sha256": "469f55f68608f58f0c73729a7bfcae7bf371ccd8c7e7e6d677314d2362831d24",
+      "exitCode": 0,
+      "peakBytes": 285786112,
+      "seconds": 1.5220996999996714,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-child-direction-fidelity-mirror-focused",
+      "sha256": "289b967233962b195dd95e2cef6f7dd928bc872f10e04841978ddc03d36b49de",
+      "exitCode": 0,
+      "peakBytes": 484839424,
+      "seconds": 0.6641302999923937,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-kernel-direction-fidelity-mirror-focused",
+      "sha256": "c804277b9959085060752815efea795b943e7949cad6daeea8f4beb91de8cefd",
+      "exitCode": 0,
+      "peakBytes": 478294016,
+      "seconds": 0.8657048000022769,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-input-interval-r1-kernel-direction-fidelity-mirror-focused",
+      "sha256": "1735ce25f8889abffe329760f75d5f0383841953a0aedae7a3cc681e7554012e",
+      "exitCode": 0,
+      "peakBytes": 450383872,
+      "seconds": 0.814987799996743,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-cad-direction-fidelity-cad",
+      "sha256": "ba3cd800fd0f8bf331fe724faef7de90385622b73044c61ac54206864ddb890e",
+      "exitCode": 0,
+      "peakBytes": 755322880,
+      "seconds": 6.576500800001668,
+      "terminalClean": true
+    },
+    {
+      "name": "verify-line-interval-wrapper-r1-cad",
+      "sha256": "6df2e7638ce6981edfc9aad7352964b0cab31f74150338642a3a98bccc02144d",
+      "exitCode": 0,
+      "peakBytes": 134639616,
+      "seconds": 0.46082310000201687,
+      "terminalClean": true
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "connectedMeshSelection": true,
+  "rectangleSelection": 182,
+  "deletedPoints": 3,
+  "reducedPoints": 100,
+  "selectionOnlyMcpSmoothing": true,
+  "normalsPreserved": true,
+  "pointDisplayGuiMcpParity": true,
+  "adaptiveDisplay": {
+    "autoPixels": 789,
+    "fullPixels": 8598,
+    "farDensity": {
+      "entityId": "dense",
+      "autoDensity": true,
+      "density": 10,
+      "eligiblePoints": 10000,
+      "sampleFraction": 0.020022324662133058,
+      "estimatedDisplayedPoints": 200,
+      "samplingMethod": "screen-grid",
+      "cellSizePx": 6.324555320336759,
+      "maxScreenOffsetPx": 5.179242736186127
+    },
+    "nearDensity": {
+      "entityId": "dense",
+      "autoDensity": true,
+      "density": 100,
+      "eligiblePoints": 10000,
+      "sampleFraction": 1,
+      "estimatedDisplayedPoints": 10000,
+      "samplingMethod": "full",
+      "cellSizePx": null,
+      "maxScreenOffsetPx": 0
+    },
+    "uniformCells": {
+      "occupied": 1640,
+      "total": 1640,
+      "coverage": 1
+    },
+    "sourcePoints": 10000
+  },
+  "importRecovery": {
+    "recoveredCamera": {
+      "target": [2009.5, 1009.5, -300],
+      "bounds": {
+        "min": [2000, 1000, -300],
+        "max": [2019, 1019, -300]
+      }
+    },
+    "importedCamera": {
+      "target": [2009.5, 1009.5, -300],
+      "bounds": {
+        "min": [2000, 1000, -300],
+        "max": [2019, 1019, -300]
+      }
+    },
+    "mcpImportedCamera": {
+      "target": [2009.5, 1009.5, -300],
+      "bounds": {
+        "min": [2000, 1000, -300],
+        "max": [2019, 1019, -300]
+      }
+    },
+    "realImport": {
+      "points": 140113,
+      "camera": {
+        "target": [19.925050735473633, 17.178050994873047, -296.7279968261719],
+        "bounds": {
+          "min": [-32.873600006103516, -38.4989013671875, -331.614990234375],
+          "max": [72.72370147705078, 72.8550033569336, -261.84100341796875]
+        }
+      },
+      "greenPixels": 2907,
+      "uniformBottom": {
+        "display": {
+          "entityId": "e0ea751b-d358-4023-885c-a89b82c00615",
+          "autoDensity": true,
+          "density": 100,
+          "eligiblePoints": 140113,
+          "sampleFraction": 0.2911727252826128,
+          "estimatedDisplayedPoints": 40797,
+          "samplingMethod": "screen-grid",
+          "cellSizePx": 2,
+          "maxScreenOffsetPx": 2.1213203435596424
+        },
+        "greenPixels": 11657
+      }
+    }
+  },
+  "errors": []
+}

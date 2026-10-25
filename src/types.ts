@@ -3,12 +3,15 @@ import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
 import type { ParametricFeature } from "./parametric";
 import type { ScanSourceCounts } from "./scan-source";
+import type { ReferenceEntityData } from "./reference-entity";
 export type Positions = number[] | Float32Array;
 export interface IndexedMesh {
   vertices: Positions;
   triangles: number[] | Uint32Array;
   /** Scanner normals in original vertex order, including unused vertices. */
   normals?: Positions;
+  /** Stored computed geometry normals, distinct from scanner-authored vectors. */
+  geometryNormals?: Positions;
 }
 /** Triangle slots refer to the current triangulation and must be sorted and unique. */
 export interface MeshSelectionState {
@@ -23,12 +26,18 @@ export type EntityKind =
   | "sphere"
   | "cylinder"
   | "cone"
-  | "box";
+  | "box"
+  | "referencePoint"
+  | "referenceLine";
 export interface Entity {
   id: string;
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Stable raw ordering identity, assigned only in an accepted transaction. */
+  constructionOrderKey?: string;
+  /** Authoritative reference geometry and recipe; positions is empty for these kinds. */
+  reference?: ReferenceEntityData;
   /** Immutable local cloud buffers and native accumulated pose; positions remains a world-space view. */
   pointCloudPlacement?: {
     matrixBits: string;
@@ -41,6 +50,14 @@ export interface Entity {
   normals?: Positions;
   /** Opaque RGBA bytes in point order; colors do not change under cloud poses. */
   pointColors?: Uint8Array;
+  /** Screen-space point diameter in pixels (1–10); unset uses 1 px. */
+  pointSize?: number;
+  /** Display-only adaptive sampling; unset enables automatic density. */
+  pointAutoDensity?: boolean;
+  /** Adaptive screen coverage, 10–100 percent; unset uses 100. */
+  pointDensity?: number;
+  /** Unset uses imported RGB when available, otherwise the object color. */
+  pointColorMode?: "source" | "solid";
   /** Explicit interpretation selected when importing ASC records. */
   ascAttributes?: "xyz-normal" | "xyz-rgb";
   /** Paired world-space points sampled from exact CAD topological edges. */

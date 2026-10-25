@@ -1,0 +1,282 @@
+{
+  "date": "2026-10-25",
+  "feature": "Dense point-cloud pointer hits before frame fallback",
+  "passed": true,
+  "reproducedBeforeFix": {
+    "view": "fixed",
+    "projection": "perspective",
+    "pointer": [0.37, 0.57],
+    "incorrectPivotScreen": [0.5, 0.5],
+    "fixture": "40401 points, default pointSize=1, regular scan grid"
+  },
+  "fix": "Prioritize exact rendered pixel, then nearest visible depth within a bounded 6 CSS-pixel neighborhood. Unproject on the original pointer ray; frame/model-depth fallback only on a local miss. All cloud sizes share GUI/MCP GPU path.",
+  "validation": {
+    "focusedTests": {
+      "files": 16,
+      "tests": 263,
+      "passed": true
+    },
+    "fullProductionBuild": "npm run build passed (TypeScript, Vite, offline manifest)",
+    "densePointerCases": [
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [
+          -2.9977236740350044, -1.4685195748123987, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [
+          -2.05107186368345, -0.9345122161940524, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [
+          -1.1044253473905843, -1.6020207530789339, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [
+          -1.7238997837686811, -0.8445009789950401, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [
+          -1.1795090964934072, -0.5374095755989636, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [
+          -0.6351214536703982, -0.9212734494998904, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [
+          -2.9977236740350044, -1.4685195748123987, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [
+          -2.05107186368345, -0.9345122161940524, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [
+          -1.1044253473905843, -1.6020220758550379, -1.7763568394002505e-15
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [
+          -1.7238997837686811, -0.8445009789950401, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [
+          -1.1795090964934072, -0.5374095755989636, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [
+          -0.6351214536703982, -0.9212742101882285, 2.3437523033464913e-7
+        ]
+      },
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [-3.03410813609442, -1.5729977172776461, 0]
+      },
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [-2.075968426906463, -1.0009985473585021, 0]
+      },
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [-1.1178293463856905, -1.715997509757432, 0]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "x": 0.31,
+        "y": 0.61,
+        "pivot": [
+          -1.6289329572895341, -0.8445011543698734, 2.343752285582923e-7
+        ]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "x": 0.37,
+        "y": 0.57,
+        "pivot": [-1.11453291616473, -0.5374098255081012, 2.343752285582923e-7]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "x": 0.43,
+        "y": 0.62,
+        "pivot": [-0.600133212554823, -0.9212739865853166, 2.343752285582923e-7]
+      }
+    ],
+    "gpuMeshAndLargeCloudChecks": {
+      "passed": true,
+      "unreadyIndex": true,
+      "triangles": 20736,
+      "deviceScaleFactor": 2,
+      "results": [
+        {
+          "projection": "orthographic",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 2.1462398796255083e-7,
+          "mcpDrift": 3.3910564044024265e-6
+        },
+        {
+          "projection": "orthographic",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 2.187085660697109e-6,
+          "mcpDrift": 5.935447236415785e-6
+        },
+        {
+          "projection": "perspective",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 1.3206167826103467e-7,
+          "mcpDrift": 4.068796144474252e-7
+        },
+        {
+          "projection": "perspective",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 9.767901845934417e-7,
+          "mcpDrift": 4.657558665504456e-6
+        }
+      ],
+      "errors": []
+    },
+    "largeCloudCases": [
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "pointerPivot": [1.999993584528165, 0.9999995200394494, 0],
+        "emptyFramePivot": [30, 30, 0]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000000774978783, 0.9999998611617202, 3.705814375365435e-7
+        ],
+        "emptyFramePivot": [30, 30, 0]
+      },
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "pointerPivot": [
+          7.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [30, 30, 0.5]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "pointerPivot": [
+          7.000000974516382, 0.9999999037764387, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [30, 30, 0.5]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "pointerPivot": [
+          2.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [30, 30, 0.5]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000009745163823, 1.0000006644647523, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [30, 30, 0.5]
+      }
+    ],
+    "alignmentBrowserRegression": "passed",
+    "review": "Crop-extent review finding corrected: render crop includes tolerance plus sprite extent, readback remains bounded",
+    "notRun": ["full repository suite", "million-point performance benchmark"]
+  },
+  "screenshot": ".resources/surface-orbit/dense-pointer-orbit.png",
+  "resourceCleanup": [
+    {
+      "port": 64679,
+      "closed": true
+    },
+    {
+      "pid": 50080,
+      "exited": true
+    },
+    {
+      "port": 64680,
+      "closed": true
+    },
+    {
+      "pid": 11980,
+      "exited": true
+    }
+  ]
+}

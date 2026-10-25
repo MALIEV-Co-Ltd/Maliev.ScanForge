@@ -3,7 +3,10 @@ import { convertScanUnits, type ScanUnit } from "./import-units";
 import { placeScanOnOrigin } from "./import-origin";
 import { readAscPointCloud, type AscAttributes } from "./asc-import";
 import type { parsePlyTopology } from "./ply-topology";
-import { prepareScanRenderData } from "./scan-render-data";
+import {
+  prepareScanRenderData,
+  prepareStoredScanRenderData,
+} from "./scan-render-data";
 
 const scope = self as unknown as {
   onmessage: (
@@ -78,7 +81,7 @@ scope.onmessage = async ({ data }) => {
         indexedMesh ? [indexedMesh.vertices] : [],
       );
     scope.postMessage({ progress: 0.9 });
-    const renderData = prepareScanRenderData(positions, indexedMesh);
+    const renderData = prepareStoredScanRenderData(positions, indexedMesh);
     scope.postMessage({ progress: 0.95 });
     const transfers = [positions.buffer as ArrayBuffer];
     if (meshNormals) transfers.push(meshNormals.buffer as ArrayBuffer);
@@ -92,8 +95,14 @@ scope.onmessage = async ({ data }) => {
     if (indexedMesh?.normals instanceof Float32Array)
       transfers.push(indexedMesh.normals.buffer as ArrayBuffer);
     scope.postMessage(
-      { positions, source, indexedMesh, renderData, meshNormals },
-      transfers.filter((buffer) => buffer instanceof ArrayBuffer),
+      {
+        positions,
+        source,
+        indexedMesh: renderData.indexedMesh,
+        renderData,
+        meshNormals,
+      },
+      [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
     );
   } catch (error) {
     scope.postMessage({

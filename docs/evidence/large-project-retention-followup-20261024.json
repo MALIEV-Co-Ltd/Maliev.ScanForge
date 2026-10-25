@@ -1,0 +1,387 @@
+{
+  "schema": 1,
+  "status": "incomplete",
+  "run": "20261024T063314116586Z",
+  "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "candidate": "Local working changes; not attributed to pushed main",
+  "sourcePins": [
+    {
+      "path": "src/project-backup.ts",
+      "bytes": 6626,
+      "sha256": "9d1898919b9cccb900efaa3c66f38be8a3493ed3712a36977c263a2e4d396e7c"
+    },
+    {
+      "path": "src/ui/useProjectBackups.ts",
+      "bytes": 4100,
+      "sha256": "c360241277d0b397ecb276d67467917131890a62facfbc0112b5081645550df2"
+    },
+    {
+      "path": "src/project-file-codec.ts",
+      "bytes": 17787,
+      "sha256": "847a01bd09d97c4b7047e41856a33fbd06453514607a15f13d40163d3c63c46a"
+    },
+    {
+      "path": "src/project-decoding-client.ts",
+      "bytes": 5616,
+      "sha256": "cb8dee70d0000d7f166207c9b47fd9e729a53bb461f994d256cd35e2a688cd19"
+    },
+    {
+      "path": "src/project-encoding-client.ts",
+      "bytes": 7618,
+      "sha256": "36933111ad1c4cf12d06dd7db507df408b785ab96b8ba13431ed98fdea7c36a0"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "bytes": 32564,
+      "sha256": "3e1e5470746894802c0e490cb91fa13803e21d5de5d5cc642845e052f7530c4c"
+    },
+    {
+      "path": "tests/project-index-storage.test.ts",
+      "bytes": 8225,
+      "sha256": "cb5d374c907dd2e1532e6af7ae84e41e9cc11db70ac2dd5138f2fc1767844ef7"
+    },
+    {
+      "path": "tests/project-backup-interval.test.ts",
+      "bytes": 5675,
+      "sha256": "e27ef8ac6132c8c455ec680a8a67ec56bd1a33b3efcb498966e39c98aadb8c37"
+    },
+    {
+      "path": "tests/project-backup-lifetime.test.ts",
+      "bytes": 2361,
+      "sha256": "9d19cb0213add7c10056c412809da9e3daecdc9fa5582e77f8cf9c46915fd88e"
+    }
+  ],
+  "build": {
+    "receipt": "decode-direct-side-build-r2-verified.json",
+    "sha256": "383692439a5d36344d01fdf2ca522d96771799b529e8fec79d1a959eb9701317",
+    "compilerInputs": 1979,
+    "distIndexSha256": "b6f3e026c700670a72df8e9b6930e889ccdc33d338ab9a8e6ac61077acce3ed4"
+  },
+  "checks": [
+    {
+      "receipt": "project-index-validation-backup-retention-r1-prior-red-full.receipt.json",
+      "sha256": "e3fa83818d39e6cd350252b82b0e9ca7f8034d12fa2ecd0787a391018cdf9bee",
+      "completed": false,
+      "exitCode": 1,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-backup-retention-r1-current-focused-full.receipt.json",
+      "sha256": "efe5b82dc6519082f6195517ade982ce3b032d6bdb82d492b5ef8c12f1a6c2da",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-decode-direct-side-green-r3-full.receipt.json",
+      "sha256": "8094990c557bcb461392bb0229a9b559bae68a1efe6a64f0f80aad829971c0fa",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-decode-direct-side-build-r2-build.receipt.json",
+      "sha256": "799e954a4ceab743470f2aa684058ec92051f626768cd405506616ee126188f9",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "focusedTests": {
+    "retentionAndEncoding": {
+      "files": 10,
+      "tests": 90,
+      "passed": true
+    },
+    "decoderAndBackup": {
+      "files": 11,
+      "tests": 90,
+      "passed": true
+    },
+    "countsAreOverlappingNotAdditive": true,
+    "priorControllerRegressionFailures": 2
+  },
+  "workflow": {
+    "guiReopenAndHistoryPassed": true,
+    "download": {
+      "file": "mcp-full-history-roundtrip.scanforge",
+      "bytes": 736091936,
+      "sha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+      "chunks": 2808,
+      "maxChunkBytes": 262144
+    },
+    "upload": {
+      "bytes": 736091936,
+      "chunks": 702,
+      "maxChunkBytes": 1048576
+    },
+    "terminalPhase": "mcp-full-history-reimport",
+    "mcpReimportCompleted": false,
+    "largeProjectRoundtripPassed": false
+  },
+  "resources": {
+    "jobLimitBytes": 4294967296,
+    "jobPeakBytes": 4328476672,
+    "cpuPercent": 25,
+    "captureErrors": [
+      "AssertionError('Time/memory/unknown Job completion event')"
+    ],
+    "activeProcesses": 0,
+    "allRetainedObservedExited": true,
+    "handlesClosed": true,
+    "completionPortClosed": true,
+    "cleanupErrors": [],
+    "normalIdentityCoveragePassed": false
+  },
+  "measurements": {
+    "run": "20261024T063314116586Z",
+    "jobPeakBytes": 4328476672,
+    "chunkCount": 33,
+    "decodedChunkBytes": 1408041588,
+    "storedChunkBytes": 736075209,
+    "stages": [
+      {
+        "stage": "before-export",
+        "at": 1792823715607,
+        "bytes": 0,
+        "mainHeapMiB": 9.94,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 101.5
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1528.77
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.02
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 23.87
+          }
+        ]
+      },
+      {
+        "stage": "after-export",
+        "at": 1792823754744,
+        "bytes": 0,
+        "mainHeapMiB": 9.32,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 898.67
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1531.34
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.05
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 24.03
+          }
+        ]
+      },
+      {
+        "stage": "download",
+        "at": 1792823796721,
+        "bytes": 704643072,
+        "mainHeapMiB": 12.94,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 974.01
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1884.87
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.04
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 25.32
+          }
+        ]
+      },
+      {
+        "stage": "download-complete",
+        "at": 1792823798920,
+        "bytes": 736091936,
+        "mainHeapMiB": 23.21,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 964.32
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1931.71
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.04
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 25.32
+          }
+        ]
+      },
+      {
+        "stage": "export-artifact-deleted",
+        "at": 1792823798928,
+        "bytes": 736091936,
+        "mainHeapMiB": 23.24,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 963.07
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1931.84
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.04
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 25.32
+          }
+        ]
+      },
+      {
+        "stage": "scene-cleared",
+        "at": 1792823798956,
+        "bytes": 0,
+        "mainHeapMiB": 24.38,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 963.07
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1931.84
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 298.04
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 25.32
+          }
+        ]
+      },
+      {
+        "stage": "upload",
+        "at": 1792823836113,
+        "bytes": 671088640,
+        "mainHeapMiB": 28.88,
+        "processes": [
+          {
+            "pid": 3992,
+            "type": "browser",
+            "privateMiB": 1557.85
+          },
+          {
+            "pid": 32940,
+            "type": "renderer",
+            "privateMiB": 1897.57
+          },
+          {
+            "pid": 33348,
+            "type": "renderer",
+            "privateMiB": 18.26
+          },
+          {
+            "pid": 32004,
+            "type": "GPU",
+            "privateMiB": 154.16
+          },
+          {
+            "pid": 27808,
+            "type": "network.mojom.NetworkService",
+            "privateMiB": 24.96
+          }
+        ]
+      }
+    ],
+    "scope": "Sampled per-process private bytes near numeric trace events; no exact allocation attribution"
+  },
+  "limits": [
+    "Sampled process memory does not establish exact allocation ownership.",
+    "No forced collection, smaller acceptance input, or process-cap increase.",
+    "No final native comparison, successful registration, full format/cancellation acceptance or combined output proved.",
+    "Full unit and CAD suites were not rerun."
+  ]
+}

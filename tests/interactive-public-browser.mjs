@@ -12,7 +12,7 @@ if (freemem() < 3072 * 1048576)
   throw Error("Requires 3072 MiB free; do not lower this admission guard");
 const root = new URL("../", import.meta.url),
   out = new URL(".resources/interactive-public-browser/", root),
-  origin = "http://127.0.0.1:5173";
+  origin = process.env.SCANFORGE_TEST_ORIGIN ?? "http://127.0.0.1:5173";
 const sourceRoot = process.env.SCANFORGE_ALIGNMENT_EXAMPLES;
 assert(sourceRoot, "Set SCANFORGE_ALIGNMENT_EXAMPLES");
 await mkdir(out, { recursive: true });
@@ -128,6 +128,7 @@ async function run() {
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill("http://127.0.0.1:" + port);
@@ -165,6 +166,17 @@ async function run() {
       ...(await session()),
       ...args,
     });
+  const waitJob = async (jobId) => {
+    for (let i = 0; i < 900; i++) {
+      const job = (await call("job_get", { jobId })).result;
+      if (job.status !== "running") {
+        assert.equal(job.status, "succeeded", JSON.stringify(job));
+        return job.result;
+      }
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    throw Error("Interactive Apply did not finish");
+  };
   const compareBounds = (state, transform) => {
     assert.equal(state.bounds.length, 3);
     for (let i = 0; i < state.entityIds.length; i++) {
@@ -276,16 +288,53 @@ async function run() {
   const undo = baseline.result.undo;
   await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
   await page.getByRole("button", { name: "Interactive", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Interactive alignment", exact: true })
+    .waitFor();
+  const ribbonSession = (await call("interactive_alignment_get")).result;
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Interactive alignment", exact: true })
+    .waitFor({ state: "hidden" });
+  await page.keyboard.press("r");
   let begun;
   for (let i = 0; i < 200; i++) {
     begun = await call("interactive_alignment_get");
     if (begun.result.active) break;
     await new Promise((r) => setTimeout(r, 50));
   }
-  assert(
-    begun.result.active,
-    "Enabled ribbon did not begin the shared session",
+  assert(begun.result.active, "R shortcut did not begin the shared session");
+  assert.deepEqual(begun.result.entityIds, ribbonSession.entityIds);
+  assert(ribbonSession.targets.length > 0);
+  assert.deepEqual(begun.result.targets, ribbonSession.targets);
+  check(
+    "R shortcut and ribbon begin identical MCP-visible alignment targets and poses",
   );
+  if (process.argv.includes("--shortcut-only")) {
+    await mutate("preview_discard", { target: "interactive" });
+    const mcpSession = await mutate("interactive_alignment_edit", {
+      action: "begin",
+    });
+    assert.deepEqual(mcpSession.result.targets, begun.result.targets);
+    assert.deepEqual(mcpSession.result.pivot, begun.result.pivot);
+    await page
+      .getByRole("complementary", {
+        name: "Interactive alignment",
+        exact: true,
+      })
+      .waitFor();
+    assert.deepEqual(errors, []);
+    await page.screenshot({
+      path: fileURLToPath(new URL("shortcut.png", out)),
+    });
+    await mutate("preview_discard", { target: "interactive" });
+    assert.equal((await call("project_get")).result.undo, undo);
+    check(
+      "R, ribbon and MCP begin share targets and pivot without changing history; cancellation releases the session",
+    );
+    report.passed = true;
+    return;
+  }
   // Begin measures the pivot without publishing measured bounds. A zero step
   // requests fresh bounds through the same public operation used by real steps.
   begun = await edit("step", { kind: "translatePositive", axis: 0, value: 0 });
@@ -392,6 +441,7 @@ async function run() {
   );
   await mutate("viewport_control", { action: "fit" });
   await page.getByRole("button", { name: "Apply", exact: true }).click();
+  await page.setViewportSize({ width: 1183, height: 1064 });
   await page
     .getByRole("complementary", { name: "Interactive alignment", exact: true })
     .waitFor({ state: "hidden", timeout: 90000 });
@@ -415,7 +465,7 @@ async function run() {
     .waitFor({ state: "hidden" });
   assert.equal((await call("project_get")).result.undo, undo + 1);
   check(
-    "GUI Apply baked once; reopening matched native transformed bounds; Escape cancelled without another history entry",
+    "GUI Apply survived viewport resize and baked once; reopening matched native transformed bounds; Escape cancelled without another history entry",
   );
   await mutate("history_undo");
   begun = await mutate("interactive_alignment_edit", {
@@ -431,6 +481,35 @@ async function run() {
   check(
     "MCP Undo restored all native identity bounds; MCP cancellation preserved redo",
   );
+  await mutate("interactive_alignment_edit", {
+    action: "begin",
+    entityIds: ids,
+    parallel: true,
+  });
+  await edit("step", { kind: "translatePositive", axis: 0, value: 3.125 });
+  await edit("step", { kind: "translateNegative", axis: 1, value: 2.5 });
+  await edit("step", { kind: "translatePositive", axis: 2, value: 50000 });
+  await edit("step", { kind: "translatePositive", axis: 2, value: 0.1 });
+  const applied = await mutate("interactive_alignment_apply", {
+    ...(await session()),
+    parallel: true,
+  });
+  await page.setViewportSize({ width: 1183, height: 944 });
+  assert.deepEqual(await waitJob(applied.result.jobId), {
+    applied: true,
+    entityIds: ids,
+    geometryBakedOnce: true,
+  });
+  assert.equal((await call("project_get")).result.undo, undo + 1);
+  begun = await mutate("interactive_alignment_edit", {
+    action: "begin",
+    entityIds: ids,
+    parallel: true,
+  });
+  begun = await edit("step", { kind: "translatePositive", axis: 0, value: 0 });
+  compareBounds(begun.result, 1);
+  await mutate("preview_discard", { target: "interactive" });
+  check("MCP Apply survived viewport resize and matched GUI geometry/history");
   assert.deepEqual(errors, []);
   report.browserErrors = errors;
   await page.screenshot({ path: fileURLToPath(new URL("gui.png", out)) });

@@ -1,6 +1,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { projectValueBytes } from "./project-value-stream";
 import type { Entity, Positions } from "./types";
+import { validateReferenceEntity } from "./reference-entity";
 
 export interface GeometryDigestBuffer {
   path: string;
@@ -62,12 +63,23 @@ export async function digestEntityGeometry(
       encoding: integer ? "u32" : value instanceof Float32Array ? "f32" : "f64",
     });
   };
-  add("positions", entity.positions);
+  const reference = validateReferenceEntity(entity);
+  if (reference) {
+    const geometry = reference.geometry;
+    if (geometry.kind === "point")
+      add("reference.geometry.position", [...geometry.position]);
+    else {
+      add("reference.geometry.start", [...geometry.start]);
+      add("reference.geometry.direction", [...geometry.direction]);
+      add("reference.geometry.length", [geometry.length]);
+    }
+  } else add("positions", entity.positions);
   add("normals", entity.normals);
   if (entity.indexedMesh) {
     add("indexedMesh.vertices", entity.indexedMesh.vertices);
     add("indexedMesh.triangles", entity.indexedMesh.triangles, true);
     add("indexedMesh.normals", entity.indexedMesh.normals);
+    add("indexedMesh.geometryNormals", entity.indexedMesh.geometryNormals);
   }
   add("edgePositions", entity.edgePositions);
   add(

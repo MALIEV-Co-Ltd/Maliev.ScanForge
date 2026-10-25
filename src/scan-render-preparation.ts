@@ -1,17 +1,17 @@
-import type { Positions } from "./types";
-import { prepareScanRenderData } from "./scan-render-data";
-import { meshStats } from "./geometry";
+import type { IndexedMesh, Positions } from "./types";
+import { prepareStoredScanRenderData } from "./scan-render-data";
 export interface RenderPreparationInput {
   positions: Positions;
+  indexedMesh?: IndexedMesh;
 }
 /** The worker owns only clones and derived display buffers; authored data is immutable. */
-export function executeRenderPreparation(input: RenderPreparationInput) {
-  const positions =
-    input.positions instanceof Float32Array
-      ? input.positions
-      : Float32Array.from(input.positions);
-  const result = prepareScanRenderData(positions);
-  if (!(input.positions instanceof Float32Array))
-    result.stats = meshStats(input.positions);
-  return result;
+export function executeRenderPreparation(
+  input: RenderPreparationInput,
+  signal?: AbortSignal,
+) {
+  return prepareStoredScanRenderData(
+    input.positions,
+    input.indexedMesh,
+    signal,
+  );
 }

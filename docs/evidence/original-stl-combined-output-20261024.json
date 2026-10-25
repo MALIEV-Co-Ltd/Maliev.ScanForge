@@ -1,0 +1,1137 @@
+{
+  "schema": 1,
+  "status": "workflow-verified-geometric-acceptance-open",
+  "run": "20261024T075034484092Z",
+  "scope": "Full saved aligned original-three accepted STL geometry, actual GUI/MCP Re-polygonize at0.5mm, full output export, independent topology and exhaustive corner distances",
+  "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "candidate": "Pinned uncommitted validation snapshot; primary continues independent edits; not pushed main",
+  "sourceManifestSha256": "764d4421c0f27f0e9572792745b0c08a0d0298e6942765e8f8b449008e742d4c",
+  "snapshotBuildInputs": 2578,
+  "applicationSourceChangedForThisCheckpoint": false,
+  "input": {
+    "projectBytes": 736091936,
+    "projectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "objects": 3,
+    "indexedVertices": 3121976,
+    "acceptedTriangles": 6147452,
+    "resolutionMm": 0.5,
+    "noSamplingOrGeometryReduction": true
+  },
+  "workflow": {
+    "guiAndMcpOutputDigestsMatch": true,
+    "bothReferenceObjectsUnchanged": true,
+    "undoRestoresAll16InputCarriers": true,
+    "redoRestoresFullOutput": true,
+    "historyBefore": 6,
+    "historyAfter": 7,
+    "exactlyOneReconstructionCommitPerCommand": true,
+    "borrowedFloat32Inputs": 3,
+    "inputTransfers": 0,
+    "outputGeometry": [
+      {
+        "entityId": "856ae383-3308-4bdf-aafd-e196c6cf2eb4",
+        "jobId": "965c8b64-a73b-443c-9ef7-429c7e7b36bc",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2559150,
+            "rawBytes": 10236600,
+            "sha256": "5c11ed78a2a7e5cfdf89ba94df29d9edfda2735f966964d3cb35c636c344c274"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2559150,
+            "rawBytes": 10236600,
+            "sha256": "5c11ed78a2a7e5cfdf89ba94df29d9edfda2735f966964d3cb35c636c344c274",
+            "storage": "array-buffer",
+            "backingId": 0,
+            "shared": false,
+            "byteOffset": 0,
+            "backingBytes": 10236600
+          }
+        ]
+      },
+      {
+        "entityId": "d6b404b1-7766-4380-85e4-1be21f2af27a",
+        "jobId": "41154b5e-27fb-438b-8e13-281b0e316d56",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "0ce9b9fe6245a2cb0d3444e0b37179d4114071844b795524257965e5fa840e1b",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 91706508
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5a52a48502251d8014c24339ef234c843eea49c12c54e430849244c6d8e66d3d",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 91706508
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 15588396
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 30568836
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "ea397a18a5891ef733670152ba7fb4470d9080ed852920c6a3848ceb51ed1b28",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 15588396
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "b45c10fca4a0537b317757e82931d121b3b306bd02af6612f674f62d81daa56e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 15588396
+          }
+        ]
+      },
+      {
+        "entityId": "e3f062e8-9212-4ee0-8b33-87b389d82a0d",
+        "jobId": "2595a78a-722e-4e08-81cc-b4c6a84a8f9c",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c3412d8029096cd50a789104eb73fe2a9f270e5c11565cdd8e36855f16a9135e",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 119768760
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "c53ed44a01e5402846404dc51fee6d7f3239c7240bdb072e2eb5c9d4cb4ab3b4",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 119768760
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 20203260
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 39922920
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "17c9b276df3111e13ad0a440a705cecfd602723a8826b0ee9e0ba12a23f6b5fc",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 20203260
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "0de7d6ea52fb60affb6563f7109dc596ea7b654def67b192d053e4b4284e288e",
+            "storage": "shared-array-buffer",
+            "backingId": 5,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 20203260
+          }
+        ]
+      }
+    ],
+    "topology": {
+      "vertices": 142097,
+      "triangles": 284350,
+      "components": 2,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    },
+    "diagnostics": {
+      "watertight": true,
+      "inputMeshes": 3,
+      "resolution": 0.5,
+      "gridPoints": 3193674,
+      "distanceTests": 1927058,
+      "samplingCandidates": 26264707,
+      "verification": "streamed-edge-pairing-and-vertex-fans",
+      "extraction": "face-consistent-cube-contours",
+      "peakTopologyFrontierEdges": 3062,
+      "weldTolerance": 1e-6,
+      "selfIntersectionsChecked": false,
+      "summary": "Verified watertight voxel surface: 2 closed components at 0.5 mm point resolution; 9 enclosed samples filled. Surface offset approximately 0.375 mm. Enclosed regions fused and filled."
+    },
+    "outputSTL": {
+      "file": "combined-original-three.stl",
+      "bytes": 14217584,
+      "sha256": "13a7c09ecf659877b5423dd1e6e9da2297037161c9c745f693ff7945b9c63e6c",
+      "chunks": 55,
+      "maximumChunkBytes": 262144
+    },
+    "temporaryTransferArtifactsRemaining": 0
+  },
+  "resources": {
+    "jobLimitBytes": 4294967296,
+    "jobPeakBytes": 2501636096,
+    "cpuPercent": 25,
+    "exitCode": 0,
+    "processes": 17,
+    "activeProcesses": 0,
+    "allObservedExited": true,
+    "allJobChildrenObserved": true,
+    "handlesClosed": true,
+    "completionPortClosed": true,
+    "captureErrors": [],
+    "cleanupErrors": []
+  },
+  "independentTopology": {
+    "canonicalPositionsSha256": "5c11ed78a2a7e5cfdf89ba94df29d9edfda2735f966964d3cb35c636c344c274",
+    "canonicalPositionsMatch": true,
+    "topology": {
+      "vertices": 142097,
+      "triangles": 284350,
+      "components": 2,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "vertexFansChecked": true,
+      "watertight": true
+    },
+    "components": [
+      {
+        "triangles": 283768,
+        "vertices": 141804,
+        "areaMm2": 28290.988121846425,
+        "signedVolumeMm3": 10449.332344370583,
+        "boundsMm": [
+          -60.10711669921875, -51.48409652709961, -334.88916015625,
+          61.39288330078125, 66.01589965820312, -311.38916015625
+        ],
+        "areaFraction": 0.9981879025813979
+      },
+      {
+        "triangles": 582,
+        "vertices": 293,
+        "areaMm2": 51.359094227374335,
+        "signedVolumeMm3": 10.119791666666666,
+        "boundsMm": [
+          -37.10711669921875, -13.48409652709961, -323.88916015625,
+          -23.10711669921875, -9.48409652709961, -322.38916015625
+        ],
+        "areaFraction": 0.0018120974186021915
+      }
+    ],
+    "normalChecks": {
+      "triangles": 284350,
+      "minimumUnitDirectionDot": 0.9999999999999991,
+      "maximumUnitLengthError": 4.354853810895065e-8
+    },
+    "topologyMatchesApplication": true,
+    "disagreements": [],
+    "scope": "Exact Float32-coordinate welding; complete edge incidence and vertex links; no self-intersection or geometric-deviation acceptance"
+  },
+  "independentDistances": {
+    "inputProjectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "outputSTLSha256": "13a7c09ecf659877b5423dd1e6e9da2297037161c9c745f693ff7945b9c63e6c",
+    "selfTests": {
+      "analyticCases": 5,
+      "degenerateCase": true,
+      "indirectIndexPreserved": true
+    },
+    "weightedStatisticsControl": true,
+    "bruteForceAudits": [
+      {
+        "distanceMm": 0,
+        "absoluteErrorMm": 0,
+        "trianglesChecked": 284350
+      },
+      {
+        "distanceMm": 14.630873095885844,
+        "absoluteErrorMm": 0,
+        "trianglesChecked": 284350
+      },
+      {
+        "distanceMm": 31.778529438015415,
+        "absoluteErrorMm": 0,
+        "trianglesChecked": 284350
+      }
+    ],
+    "forward": {
+      "allStoredIndexedVertices": {
+        "count": 3121976,
+        "meanMm": 0.32853585202422797,
+        "rmsMm": 0.3430733418809575,
+        "maximumMm": 0.7419500866126858,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 0
+          },
+          {
+            "mm": 0.01,
+            "count": 21
+          },
+          {
+            "mm": 0.05,
+            "count": 145
+          },
+          {
+            "mm": 0.1,
+            "count": 956
+          },
+          {
+            "mm": 0.25,
+            "count": 880807
+          },
+          {
+            "mm": 0.5,
+            "count": 3057949
+          },
+          {
+            "mm": 1,
+            "count": 3121976
+          },
+          {
+            "mm": 2,
+            "count": 3121976
+          }
+        ]
+      },
+      "allExpandedTriangleCorners": {
+        "count": 18442356,
+        "meanMm": 0.32899799186061324,
+        "rmsMm": 0.3435247142031401,
+        "maximumMm": 0.7419500866126858,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 0
+          },
+          {
+            "mm": 0.01,
+            "count": 48
+          },
+          {
+            "mm": 0.05,
+            "count": 365
+          },
+          {
+            "mm": 0.1,
+            "count": 2790
+          },
+          {
+            "mm": 0.25,
+            "count": 5190701
+          },
+          {
+            "mm": 0.5,
+            "count": 18059632
+          },
+          {
+            "mm": 1,
+            "count": 18442356
+          },
+          {
+            "mm": 2,
+            "count": 18442356
+          }
+        ]
+      },
+      "sources": [
+        {
+          "name": "scan-1.stl",
+          "allStoredIndexedVertices": {
+            "count": 139338,
+            "meanMm": 0.31791076945218166,
+            "rmsMm": 0.3319513502660118,
+            "maximumMm": 0.7025051882661281,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 11
+              },
+              {
+                "mm": 0.05,
+                "count": 44
+              },
+              {
+                "mm": 0.1,
+                "count": 216
+              },
+              {
+                "mm": 0.25,
+                "count": 41662
+              },
+              {
+                "mm": 0.5,
+                "count": 137763
+              },
+              {
+                "mm": 1,
+                "count": 139338
+              },
+              {
+                "mm": 2,
+                "count": 139338
+              }
+            ]
+          },
+          "allExpandedTriangleCorners": {
+            "count": 819417,
+            "meanMm": 0.3190064790038536,
+            "rmsMm": 0.3328856438434413,
+            "maximumMm": 0.7025051882661281,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 26
+              },
+              {
+                "mm": 0.05,
+                "count": 104
+              },
+              {
+                "mm": 0.1,
+                "count": 546
+              },
+              {
+                "mm": 0.25,
+                "count": 242514
+              },
+              {
+                "mm": 0.5,
+                "count": 810114
+              },
+              {
+                "mm": 1,
+                "count": 819417
+              },
+              {
+                "mm": 2,
+                "count": 819417
+              }
+            ]
+          },
+          "differingExpandedCorners": 0,
+          "additionalExactCoordinates": 0
+        },
+        {
+          "name": "scan-2.stl",
+          "allStoredIndexedVertices": {
+            "count": 1299033,
+            "meanMm": 0.3302538293140545,
+            "rmsMm": 0.3450649309170129,
+            "maximumMm": 0.7419500866126858,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 0
+              },
+              {
+                "mm": 0.05,
+                "count": 26
+              },
+              {
+                "mm": 0.1,
+                "count": 190
+              },
+              {
+                "mm": 0.25,
+                "count": 367708
+              },
+              {
+                "mm": 0.5,
+                "count": 1268867
+              },
+              {
+                "mm": 1,
+                "count": 1299033
+              },
+              {
+                "mm": 2,
+                "count": 1299033
+              }
+            ]
+          },
+          "allExpandedTriangleCorners": {
+            "count": 7642209,
+            "meanMm": 0.3306040620282282,
+            "rmsMm": 0.3454445070867997,
+            "maximumMm": 0.7419500866126858,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 0
+              },
+              {
+                "mm": 0.05,
+                "count": 55
+              },
+              {
+                "mm": 0.1,
+                "count": 568
+              },
+              {
+                "mm": 0.25,
+                "count": 2164047
+              },
+              {
+                "mm": 0.5,
+                "count": 7462279
+              },
+              {
+                "mm": 1,
+                "count": 7642209
+              },
+              {
+                "mm": 2,
+                "count": 7642209
+              }
+            ]
+          },
+          "differingExpandedCorners": 0,
+          "additionalExactCoordinates": 0
+        },
+        {
+          "name": "scan-3.stl",
+          "allStoredIndexedVertices": {
+            "count": 1683605,
+            "meanMm": 0.32808964793401,
+            "rmsMm": 0.3424371795503344,
+            "maximumMm": 0.7366090099372646,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 10
+              },
+              {
+                "mm": 0.05,
+                "count": 75
+              },
+              {
+                "mm": 0.1,
+                "count": 550
+              },
+              {
+                "mm": 0.25,
+                "count": 471437
+              },
+              {
+                "mm": 0.5,
+                "count": 1651319
+              },
+              {
+                "mm": 1,
+                "count": 1683605
+              },
+              {
+                "mm": 2,
+                "count": 1683605
+              }
+            ]
+          },
+          "allExpandedTriangleCorners": {
+            "count": 9980730,
+            "meanMm": 0.32858853199154237,
+            "rmsMm": 0.3429100191612739,
+            "maximumMm": 0.7366090099372646,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 22
+              },
+              {
+                "mm": 0.05,
+                "count": 206
+              },
+              {
+                "mm": 0.1,
+                "count": 1676
+              },
+              {
+                "mm": 0.25,
+                "count": 2784140
+              },
+              {
+                "mm": 0.5,
+                "count": 9787239
+              },
+              {
+                "mm": 1,
+                "count": 9980730
+              },
+              {
+                "mm": 2,
+                "count": 9980730
+              }
+            ]
+          },
+          "differingExpandedCorners": 0,
+          "additionalExactCoordinates": 0
+        }
+      ]
+    },
+    "reverse": {
+      "allOutputVertices": {
+        "count": 142097,
+        "meanMm": 0.3740090367616359,
+        "rmsMm": 0.3917011106930239,
+        "maximumMm": 0.64989414161088,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 0
+          },
+          {
+            "mm": 0.01,
+            "count": 1
+          },
+          {
+            "mm": 0.05,
+            "count": 4
+          },
+          {
+            "mm": 0.1,
+            "count": 14
+          },
+          {
+            "mm": 0.25,
+            "count": 23704
+          },
+          {
+            "mm": 0.5,
+            "count": 119112
+          },
+          {
+            "mm": 1,
+            "count": 142097
+          },
+          {
+            "mm": 2,
+            "count": 142097
+          }
+        ]
+      },
+      "allOutputTriangleCorners": {
+        "count": 853050,
+        "meanMm": 0.37396266982466697,
+        "rmsMm": 0.39157553895359737,
+        "maximumMm": 0.64989414161088,
+        "withinMm": [
+          {
+            "mm": 0.001,
+            "count": 0
+          },
+          {
+            "mm": 0.01,
+            "count": 7
+          },
+          {
+            "mm": 0.05,
+            "count": 27
+          },
+          {
+            "mm": 0.1,
+            "count": 91
+          },
+          {
+            "mm": 0.25,
+            "count": 141992
+          },
+          {
+            "mm": 0.5,
+            "count": 715071
+          },
+          {
+            "mm": 1,
+            "count": 853050
+          },
+          {
+            "mm": 2,
+            "count": 853050
+          }
+        ]
+      },
+      "components": [
+        {
+          "boundsMm": [
+            -60.10711669921875, -51.48409652709961, -334.88916015625,
+            61.39288330078125, 66.01589965820312, -311.38916015625
+          ],
+          "allVertices": {
+            "count": 141804,
+            "meanMm": 0.3739929808662715,
+            "rmsMm": 0.3916843414503845,
+            "maximumMm": 0.64989414161088,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 1
+              },
+              {
+                "mm": 0.05,
+                "count": 4
+              },
+              {
+                "mm": 0.1,
+                "count": 14
+              },
+              {
+                "mm": 0.25,
+                "count": 23658
+              },
+              {
+                "mm": 0.5,
+                "count": 118873
+              },
+              {
+                "mm": 1,
+                "count": 141804
+              },
+              {
+                "mm": 2,
+                "count": 141804
+              }
+            ]
+          },
+          "allTriangleCorners": {
+            "count": 851304,
+            "meanMm": 0.3739579407187412,
+            "rmsMm": 0.3915700200712128,
+            "maximumMm": 0.64989414161088,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 7
+              },
+              {
+                "mm": 0.05,
+                "count": 27
+              },
+              {
+                "mm": 0.1,
+                "count": 91
+              },
+              {
+                "mm": 0.25,
+                "count": 141706
+              },
+              {
+                "mm": 0.5,
+                "count": 713620
+              },
+              {
+                "mm": 1,
+                "count": 851304
+              },
+              {
+                "mm": 2,
+                "count": 851304
+              }
+            ]
+          }
+        },
+        {
+          "boundsMm": [
+            -37.10711669921875, -13.48409652709961, -323.88916015625,
+            -23.10711669921875, -9.48409652709961, -322.38916015625
+          ],
+          "allVertices": {
+            "count": 293,
+            "meanMm": 0.3817796517317916,
+            "rmsMm": 0.3997344159647127,
+            "maximumMm": 0.6199563305712444,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 0
+              },
+              {
+                "mm": 0.05,
+                "count": 0
+              },
+              {
+                "mm": 0.1,
+                "count": 0
+              },
+              {
+                "mm": 0.25,
+                "count": 46
+              },
+              {
+                "mm": 0.5,
+                "count": 239
+              },
+              {
+                "mm": 1,
+                "count": 293
+              },
+              {
+                "mm": 2,
+                "count": 293
+              }
+            ]
+          },
+          "allTriangleCorners": {
+            "count": 1746,
+            "meanMm": 0.37626845836475953,
+            "rmsMm": 0.3942572003763596,
+            "maximumMm": 0.6199563305712444,
+            "withinMm": [
+              {
+                "mm": 0.001,
+                "count": 0
+              },
+              {
+                "mm": 0.01,
+                "count": 0
+              },
+              {
+                "mm": 0.05,
+                "count": 0
+              },
+              {
+                "mm": 0.1,
+                "count": 0
+              },
+              {
+                "mm": 0.25,
+                "count": 286
+              },
+              {
+                "mm": 0.5,
+                "count": 1451
+              },
+              {
+                "mm": 1,
+                "count": 1746
+              },
+              {
+                "mm": 2,
+                "count": 1746
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "elapsedMs": 18037,
+    "scope": "Unsigned point-to-triangle distances, all stored indexed vertices and every expanded triangle corner with exact duplicate-coordinate memoization; no sampling or geometry reduction",
+    "limits": [
+      "Not a continuous surface Hausdorff bound.",
+      "No self-intersection or native comparison.",
+      "No geometric acceptance threshold is invented; native offset and component interpretation remain open."
+    ]
+  },
+  "independentLibraryFilesPinned": 104,
+  "checks": [
+    {
+      "receipt": "project-index-validation-combined-output-metrics-r1-red-full.receipt.json",
+      "sha256": "b986d451d281f9e1e1f5efa182471130d4476b991e2e6a632f3ed6461c572e37",
+      "completed": false,
+      "exitCode": 1,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-combined-output-metrics-r1-green-full.receipt.json",
+      "sha256": "4d447d852e054bb56dfc824a09c196178e75f2e2556ef3092dd691b80a860cae",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-combined-output-metrics-r1-analyze-full.receipt.json",
+      "sha256": "dc2ab246b3fd26fdccd9db63881783db0020f025bef4c27e4ed45434668a6dbd",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-combined-distance-r1-full.receipt.json",
+      "sha256": "17384d7e244f12276c27e9e9a24907044fae50304bbe786d75d2a058c98e1581",
+      "completed": true,
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "receipts": [
+    {
+      "name": "evidence.json",
+      "sha256": "ea72fe2e73aa32ec4f38d04d32c8270d9248cf06e154a71fe8c9c80ccc2842e6"
+    },
+    {
+      "name": "resource-ledger.json",
+      "sha256": "6238f2ae5a09d47ae70a096b9fd7c6f532d7e5d66177133aca9b0f807b741d04"
+    },
+    {
+      "name": "combined-output-metrics-r1.json",
+      "sha256": "9b44c4f8932cd001e5c12df7b3e1fa49ad49c97cfb6f944d7b6d8fd363aa66e5"
+    },
+    {
+      "name": "combined-distance-r1.json",
+      "sha256": "72288eaa6c98fb50364ec227ee11c8e948c9ef6f93bfad532f51539eb780499e"
+    },
+    {
+      "name": "combined-distance-source-proof-r1.json",
+      "sha256": "9c5bf72d2b51b52bca70fc5d1609462af821a0f0d4020f7ff2f4eb9f746bf5c7"
+    },
+    {
+      "name": "combined-stl-live-preview-qa-r1.json",
+      "sha256": "8daa9ce69b26ed60ac3d894c0316c7216e72ee7157db3c5f01ae2687ccc7e04d"
+    }
+  ],
+  "livePreview": {
+    "schema": 1,
+    "observedAt": "2026-10-24T08:15:01.072826+00:00",
+    "url": "http://127.0.0.1:5173/",
+    "title": "ScanForge - Reverse Engineering on Browser",
+    "browser": "Codex in-app browser via CUA",
+    "tabId": "4",
+    "viewport": [1280, 720],
+    "primaryCheckout": "C:/repo/Maliev.ScanForge",
+    "flow": "Open / Import -> combined-original-three.stl -> Millimeter -> Import -> one object ready",
+    "objects": 1,
+    "facets": 284350,
+    "units": "mm",
+    "historyImportSteps": 1,
+    "consoleWarningsOrErrors": [],
+    "frameworkOverlayObserved": false,
+    "backupActions": "Closed chooser; no restore or delete",
+    "screenshot": {
+      "sha256": "56a828dfb49f7cff16b6f4b3117461c9a88cd970184aafef7caecbcd6d917c00",
+      "name": "combined-stl-live-preview-20261024-r1.png"
+    },
+    "markedDeliverable": true,
+    "scope": "Visible current-primary import/render smoke only; not frozen-source geometry/API acceptance"
+  },
+  "candidateArtifact": {
+    "name": "ScanForge-combined-STL-candidate-20261024T075034.stl",
+    "bytes": 14217584,
+    "sha256": "13a7c09ecf659877b5423dd1e6e9da2297037161c9c745f693ff7945b9c63e6c"
+  },
+  "nativeAcceptance": false,
+  "usableSinglePartAccepted": false,
+  "limits": [
+    "Two closed components remain; no component was removed or silently classified as noise.",
+    "Unsigned corner-to-triangle distances are not a continuous Hausdorff bound or a native comparison.",
+    "Reconstruction diagnostics report approximately0.375mm offset; no geometric acceptance tolerance was invented.",
+    "Self-intersections are not checked.",
+    "No fresh alignment solve or strict convergence acceptance.",
+    "No reconstructed .scanforge save/reopen, raw-format lifecycle or backup restore acceptance.",
+    "Full unit/CAD suites were not rerun for this checkpoint.",
+    "Live primary preview is separate from the frozen-source GUI/MCP run; milestones and full reconstruction goal remain open."
+  ]
+}

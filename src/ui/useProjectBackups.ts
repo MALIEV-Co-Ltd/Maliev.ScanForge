@@ -84,22 +84,6 @@ export function useProjectBackups(
       });
     const timer = setInterval(() => {
       if (!ready || deleting.current || hasPriorityScanPreparation()) return;
-      const { session: snapshot, enabled: eligible } = latest.current;
-      if (!snapshot.projectId) return;
-      writer.update(
-        snapshot.projectId,
-        snapshot,
-        [
-          snapshot.project.name,
-          snapshot.project.entities,
-          snapshot.project.authoring?.sketch,
-          snapshot.project.authoring?.sketches,
-          snapshot.project.authoring?.activeSketchId,
-          snapshot.history,
-          snapshot.future,
-        ],
-        eligible,
-      );
       void writer.tick();
     }, BACKUP_INTERVAL_MS);
     return () => {
@@ -110,6 +94,24 @@ export function useProjectBackups(
       controller.current = null;
     };
   }, []);
+  // Release a replaced project's current snapshot immediately, rather than
+  // retaining its geometry until the next 30-second backup interval.
+  useEffect(() => {
+    controller.current?.update(
+      session.projectId ?? "",
+      session,
+      [
+        session.project.name,
+        session.project.entities,
+        session.project.authoring?.sketch,
+        session.project.authoring?.sketches,
+        session.project.authoring?.activeSketchId,
+        session.history,
+        session.future,
+      ],
+      enabled && !!session.projectId,
+    );
+  }, [session, enabled]);
   return {
     backups,
     status,

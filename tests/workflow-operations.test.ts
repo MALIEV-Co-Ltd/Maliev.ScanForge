@@ -638,3 +638,99 @@ it("retains MCP revision and retry protection for navigation settings", async ()
     api.dispose();
   }
 });
+
+it("routes MCP camera inspection, control and ray picks to isolated landmark views", async () => {
+  const { api, host, mutate } = setup();
+  host.inspectViewport = vi.fn((view) => ({ view }));
+  host.controlViewport = vi.fn();
+  host.pickViewport = vi.fn((_x, _y, _limit, view) => ({ view, hits: [] }));
+  try {
+    expect(await api.invoke("viewport_get", { view: "moving" })).toMatchObject({
+      ok: true,
+      result: { view: "moving" },
+    });
+    expect(
+      await mutate("viewport_control", { view: "fixed", action: "fit" }),
+    ).toMatchObject({ ok: true, result: { view: "fixed" } });
+    expect(host.controlViewport).toHaveBeenCalledWith(
+      expect.objectContaining({ view: "fixed", action: "fit" }),
+    );
+    expect(
+      await api.invoke("viewport_pick", { view: "moving", x: 0.5, y: 0.5 }),
+    ).toMatchObject({ ok: true, result: { view: "moving" } });
+    expect(host.pickViewport).toHaveBeenCalledWith(0.5, 0.5, 5, "moving");
+    expect(await api.invoke("viewport_get", { view: "other" })).toMatchObject({
+      ok: false,
+    });
+  } finally {
+    api.dispose();
+  }
+});
+
+it("exposes retry-protected landmark layout edits through the existing MCP contract", async () => {
+  const { api, host } = setup();
+  host.editLandmarks = vi.fn(() => ({ layout: { referenceWidthPercent: 40 } }));
+  const request = {
+    action: "view-layout",
+    referenceWidthPercent: 40,
+    expectedRevision: api.currentRevision(),
+    requestId: "resize-landmarks",
+  };
+  try {
+    const result = await api.invoke("landmark_edit", request);
+    expect(result).toMatchObject({
+      ok: true,
+      result: { layout: { referenceWidthPercent: 40 } },
+    });
+    expect(await api.invoke("landmark_edit", request)).toEqual(result);
+    expect(host.editLandmarks).toHaveBeenCalledOnce();
+    expect(host.editLandmarks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "view-layout",
+        referenceWidthPercent: 40,
+      }),
+    );
+    expect(
+      await api.invoke("landmark_edit", {
+        ...request,
+        requestId: "stale-layout",
+        expectedRevision: api.currentRevision() + 1,
+      }),
+    ).toMatchObject({ ok: false, error: { code: "REVISION_CONFLICT" } });
+  } finally {
+    api.dispose();
+  }
+});
+
+it("exposes indexed and per-canvas point deselection through MCP", async () => {
+  const { api, host, mutate } = setup();
+  host.editLandmarks = vi.fn(() => ({ active: true, preview: false }));
+  try {
+    expect(
+      await mutate("landmark_edit", {
+        action: "remove-point",
+        entityId: "moving",
+        pointIndex: 1,
+      }),
+    ).toMatchObject({ ok: true });
+    expect(host.editLandmarks).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        action: "remove-point",
+        entityId: "moving",
+        pointIndex: 1,
+      }),
+    );
+    expect(
+      await mutate("landmark_edit", { action: "clear", entityId: "fixed" }),
+    ).toMatchObject({ ok: true });
+    expect(
+      await mutate("landmark_edit", {
+        action: "remove-point",
+        entityId: "moving",
+        pointIndex: -1,
+      }),
+    ).toMatchObject({ ok: false });
+  } finally {
+    api.dispose();
+  }
+});

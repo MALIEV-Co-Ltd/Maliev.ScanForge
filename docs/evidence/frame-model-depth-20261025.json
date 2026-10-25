@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-25",
+  "feature": "Off-model rotation at screen center and model depth",
+  "clarifiedRequirement": "Screen center at the model depth, even when the model is panned off center",
+  "passed": true,
+  "validation": {
+    "focusedTests": {
+      "files": 16,
+      "tests": 262,
+      "passed": true
+    },
+    "fullProductionBuild": "npm run build passed (TypeScript, Vite, offline manifest)",
+    "mouseAndMcpGpuChecks": [
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "pointerPivot": [1.999993584528165, 0.9999995200394494, 0],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000000774978783, 0.9999998611617202, 3.705814375365435e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "pointerPivot": [
+          7.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [20, 20, 0.5]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "pointerPivot": [
+          7.000000974516382, 0.9999999037764387, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [20, 20, 0.5]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "pointerPivot": [
+          2.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [20, 20, 0.5]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000009745163823, 1.0000006644647523, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [20, 20, 0.5]
+      }
+    ],
+    "meshGpuChecks": {
+      "passed": true,
+      "unreadyIndex": true,
+      "triangles": 20736,
+      "deviceScaleFactor": 2,
+      "results": [
+        {
+          "projection": "orthographic",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 2.1462398796255083e-7,
+          "mcpDrift": 3.3910564044024265e-6
+        },
+        {
+          "projection": "orthographic",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 2.187085661577537e-6,
+          "mcpDrift": 5.9354472329402245e-6
+        },
+        {
+          "projection": "perspective",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 1.3206167826103467e-7,
+          "mcpDrift": 4.068796144474252e-7
+        },
+        {
+          "projection": "perspective",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 9.767901845934417e-7,
+          "mcpDrift": 4.657558665504456e-6
+        }
+      ],
+      "errors": []
+    },
+    "alignmentBrowserRegression": "passed",
+    "review": "Read-only review found no actionable issues",
+    "notRun": ["full repository test suite", "million-point benchmark"]
+  },
+  "behavior": "Use pointer surface when hit. On a miss use center surface, otherwise the middle ray at a camera-facing depth plane through cached visible model bounds center. Only no-model/no-forward-depth uses the camera target.",
+  "regression": "Browser camera target deliberately z=9 while model depth is z=0 or z=0.5; all main/fixed/moving and ortho/perspective fallbacks resolve model depth rather than target depth.",
+  "resourceCleanup": [
+    {
+      "port": 63756,
+      "closed": true
+    },
+    {
+      "pid": 45948,
+      "exited": true
+    },
+    {
+      "port": 63757,
+      "closed": true
+    },
+    {
+      "pid": 37344,
+      "exited": true
+    }
+  ]
+}

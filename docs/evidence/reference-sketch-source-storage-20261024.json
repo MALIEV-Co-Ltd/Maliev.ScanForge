@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Internal ordered source-record storage and resolver round-trip verified; editable sketch and GUI/MCP publication remain incomplete",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "nativeExecutionPerformed": false,
+  "browserAccessPerformed": false,
+  "sources": [
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+    },
+    {
+      "path": "tests/reference-construction-resolver.test.ts",
+      "sha256": "8bed5ea0be9ad77489aa88fb53dd961f2ca18f5eb6081f65db2e3dd607ccf0f3"
+    },
+    {
+      "path": "tests/reference-sketch-pick-acquisition.test.ts",
+      "sha256": "07908f5c39dc3e1c847b24500573fa32a6558011d62b42d439ba98e2fece4364"
+    },
+    {
+      "path": "tests/reference-sketch-point.test.ts",
+      "sha256": "f72780eceef13d61a7e94c7768ad43d57617e5a1e62fadcfe6f373042da7f467"
+    },
+    {
+      "path": "tests/reference-construction.test.ts",
+      "sha256": "dd63cbf87a8d6fc95f07d227e8cef042174fbdf3d59fc72bf72d1b0f4a8d3ef7"
+    },
+    {
+      "path": "tests/reference-construction-evaluation.test.ts",
+      "sha256": "b6717d722721e874b829a0bafd4666c70178b61cf6cb05d532a0d19a77e3c3cc"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/sketch-undo.ts",
+      "sha256": "618747118fcac82c40edf0fd33aa5e5d0ddd9c0fd9924567e87f4b7e8a2a2384"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "0987727cbc79f1ef7be847d36767f91f434dd6ff1bc88d586dd160b416e7b456"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "a1c48dafa0b35e611ea061cb43834d47ffde68ed9486a30e3169453c71b23ef0"
+    }
+  ],
+  "validation": {
+    "buildPassed": true,
+    "buildHeapMiB": 3072,
+    "aggregateJobBytes": 4294967296,
+    "cpuRate": 2500,
+    "focusedPassed": 154,
+    "focusedFiles": 6,
+    "newSourceRecordCases": 31,
+    "fullSuiteRerun": false,
+    "scope": "Exact application storage, atomic child replacement and analytic integration with the selected-sketch resolver; no native output or rendered acceptance",
+    "publicBundle": "scanforge-9f1d31f32b856ccc",
+    "failedAttempts": [
+      "Expected absent-module red suite",
+      "First build rejected two intentional mutation-test casts; casts corrected",
+      "First focused run exposed a nearer ellipse record in the shared fixture; isolated precision case and retained a separate nearest-winner regression"
+    ],
+    "receipts": [
+      {
+        "name": "project-index-validation-sketch-source-records-r1-build-build.receipt.json",
+        "sha256": "73f14ad8f9b8403744bf4d65ca1fb8ae48ce5adaaa378ff5e28918496f9d5e05",
+        "exitCode": 2,
+        "heapMiB": 3072,
+        "elapsedSeconds": 23.699249299999792,
+        "peakAggregateBytes": 2510032896,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-build-r2-build.receipt.json",
+        "sha256": "226ca0a1295b78cbccbe07085b498461bc59070192b7a0a93eb784a0ae5a93f2",
+        "exitCode": 0,
+        "heapMiB": 3072,
+        "elapsedSeconds": 33.09469599998556,
+        "peakAggregateBytes": 2504278016,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-build-r3-build.receipt.json",
+        "sha256": "87b2bc905038c616f8575b2ba1dd1865413a19996d7e57e95d65e6ae6078933c",
+        "exitCode": 0,
+        "heapMiB": 3072,
+        "elapsedSeconds": 32.739466999977594,
+        "peakAggregateBytes": 2512076800,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-format-mirror-focused.receipt.json",
+        "sha256": "7746bb38068f732d0bd78adab3ee0f3ec9d03c4308bcc2cfc6ac07af8fbcc4dc",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.25871169997844845,
+        "peakAggregateBytes": 107544576,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-format-r2-mirror-focused.receipt.json",
+        "sha256": "9014e8f1cf3e2943fc232b9a30c2f037d5ec7d4b9a70bef06d27c0295963936c",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.2590827999811154,
+        "peakAggregateBytes": 108007424,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-green-mirror-focused.receipt.json",
+        "sha256": "f02466ce50fef0bb41aa4ee794b86bb09056584815a0baddc9b06d41157487e8",
+        "exitCode": 1,
+        "heapMiB": 1024,
+        "elapsedSeconds": 1.4712069999950472,
+        "peakAggregateBytes": 350507008,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-green-r2-mirror-focused.receipt.json",
+        "sha256": "df03fe10df250c0d76811b248e3b2705533865a1d343fd9997cd5f2adae76cf8",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 1.4717138999840245,
+        "peakAggregateBytes": 349884416,
+        "retired": true
+      },
+      {
+        "name": "project-index-validation-sketch-source-records-r1-red-mirror-focused.receipt.json",
+        "sha256": "ad335e3d20a915f944163028c816f7d3faeedc7c8724ee4594f0c48c25814c85",
+        "exitCode": 1,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.6126266000210308,
+        "peakAggregateBytes": 264519680,
+        "retired": true
+      }
+    ]
+  },
+  "storage": {
+    "version": 1,
+    "precision": "Finite Float64 little-endian hex preserving signed zero",
+    "orderedChildren": true,
+    "missingEmptyIncompleteDistinct": true,
+    "nestedGroupsSupported": false,
+    "limits": {
+      "children": 8192,
+      "records": 32768,
+      "authority": "Application resource policy, not a native inferred limit"
+    }
+  },
+  "memoryPolicy": {
+    "newReusableRunner": "run-owned-validation-v2.py",
+    "sha256": "b6fb5f084b6cff3bc08e039c5441908eba387322f7b742436ed60061bab575c4",
+    "defaultBuildHeapMiB": 3072,
+    "defaultTestHeapMiB": 1024,
+    "aggregateJobBytes": 4294967296,
+    "historicalPinnedRunnerPreserved": true
+  },
+  "remaining": [
+    "Native curve rebuild state and backend validity outcomes",
+    "Coherent geometry/source-record updates through constraints, trim, mirror and history",
+    "Project persistence and shared GUI/MCP source discovery and construction lifecycle",
+    "Nested-group selection and remaining CAD/scan source behavior",
+    "Native numerical, native save/reopen and rendered GUI/MCP acceptance"
+  ]
+}

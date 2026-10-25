@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-25",
+  "feature": "Application-only context-menu policy",
+  "passed": true,
+  "implementation": "Document capture cancels native contextmenu default action without stopping propagation; application and portal handlers remain active.",
+  "mcp": "application_inspect.contextMenuPolicy reports application-only; existing semantic actions remain available.",
+  "validation": {
+    "redBeforeFix": "Synthetic cancelable context events on body/workbench/button/portal-input were all uncanceled",
+    "browser": [
+      "Default prevented throughout app and portal input",
+      "Custom target context handler still reached",
+      "Actual right-pan crossing canvas to ribbon cannot invoke native menu",
+      "Stationary ribbon right-click default canceled",
+      "Stationary canvas right-click opens application menu and Escape dismisses it",
+      "Existing mesh/cloud alignment regression passed"
+    ],
+    "focusedTests": {
+      "files": 12,
+      "tests": 96,
+      "passed": true
+    },
+    "productionBuild": "npm run build passed with TypeScript, Vite and offline manifest",
+    "review": "Read-only review found no actionable issues",
+    "notRun": ["full repository test suite"]
+  },
+  "resourceCleanup": [
+    {
+      "port": 60508,
+      "closed": true
+    },
+    {
+      "port": 60509,
+      "closed": true
+    },
+    {
+      "pid": 21892,
+      "exited": true
+    },
+    {
+      "pid": 34588,
+      "exited": true
+    }
+  ]
+}

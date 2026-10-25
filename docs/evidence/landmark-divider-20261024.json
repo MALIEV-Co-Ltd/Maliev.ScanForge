@@ -1,0 +1,58 @@
+{
+  "feature": "Adjustable N-point alignment divider and panel overlap fix",
+  "date": "2026-10-24",
+  "passed": true,
+  "layout": {
+    "defaultReferenceWidthPercent": 32,
+    "minPercent": 20,
+    "maxPercent": 50,
+    "minReferenceWidthPx": 220,
+    "minResultWidthPx": 360
+  },
+  "validation": {
+    "productionBuild": "npm run build passed with TypeScript, Vite and offline manifest",
+    "focusedTests": {
+      "files": 16,
+      "tests": 154,
+      "passed": true
+    },
+    "browser": [
+      "Actual mesh and point-cloud canvas clicks preserve native Float32 pick records",
+      "Three independent views isolate moving/reference geometry and original-pose picks",
+      "Divider drag, keyboard limits and MCP resizing preserve preview, picks, cameras and history; pending solves retain resized layout",
+      "No result caption overlaps behind the panel",
+      "Third and fourth complete pairs update automatically; incomplete edits invalidate acceptance",
+      "Read-only MCP ray queries agree with GUI picks",
+      "Picking and cancel preserve modeling history",
+      "Ribbon and MCP command share source eligibility and active-session admission",
+      "Real canvas picks produce equal GUI/MCP previews; accept translates only the moving scan; undo restores it"
+    ],
+    "review": "Independent read-only review found no actionable issues",
+    "notRun": [
+      "full repository test suite",
+      "million-point performance benchmark"
+    ]
+  },
+  "resourceCleanup": [
+    {
+      "port": 64279,
+      "closed": true
+    },
+    {
+      "port": 64280,
+      "closed": true
+    },
+    {
+      "pid": 28160,
+      "exited": true
+    },
+    {
+      "pid": 44648,
+      "exited": true
+    }
+  ],
+  "screenshots": [
+    ".resources/landmark-canvas-browser/mesh-three-views-dark.png",
+    ".resources/landmark-canvas-browser/pointcloud-three-views-dark.png"
+  ]
+}

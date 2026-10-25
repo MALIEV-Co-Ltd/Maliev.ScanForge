@@ -1,0 +1,175 @@
+{
+  "status": "ordered-boundary-ports-analytic-integration-verified",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 2,
+  "newInstructionAddressesIndependentlyDecoded": 268,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "privatePorts": [
+    {
+      "name": "topology-records",
+      "passed": 19,
+      "failed": 0
+    },
+    {
+      "name": "three-edge-repair",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "name": "boundary-tree",
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "name": "boundary-collector",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "findings": [
+    "Reciprocal adjacency connection uses the supplied shared vertex to select slots; the low-level helper does not require an additional shared-edge test.",
+    "Triangle deletion preserves the destination record identity, disconnects matching reciprocal pointers and moves the last record into the hole.",
+    "Three-edge repair reverses supplied boundary records; all-one-triangle loops remove a triangle, all-distinct cases append a cap, and mixed or repeated-vertex cases do not append.",
+    "The appended cap uses Float32 differences, products and normalization; this differs from the source face-normal worker.",
+    "Boundary-tree erasure detaches a successor, rebalances and copies its payload into the selected node. Root-seeded traversal must follow the resulting tree.",
+    "A reserved invalid destination is erased but not appended to the walk. The initial test using it as an ordinary high identifier failed; that attempt remains retained."
+  ],
+  "analyticIntegration": [
+    "A three-side tetrahedron fixture with supplied reciprocal adjacency closes its triangular opening, with every resulting edge linked reciprocally in opposite directions.",
+    "Compaction and vertex-normal generation accept the repaired tetrahedron and produce finite unit vertex normals within the fixture tolerance.",
+    "An isolated triangle is removed and compaction drops its orphan positions.",
+    "A quad retains its four-edge boundary; it is not fed into the three-edge helper.",
+    "Duplicate directed boundary keys retain the first inserted triangle record."
+  ],
+  "treeValidation": {
+    "currentControls": 13,
+    "insertionAndErasurePermutations": 8,
+    "recordsPerPermutation": 127,
+    "invariantsCheckedAfterEachInsertionAndWalk": [
+      "Root black",
+      "No red-red parent/child",
+      "Equal black height",
+      "Unsigned lexicographic key order",
+      "Stored count"
+    ],
+    "earlierFailedAttemptRetained": true
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-boundary-erase-r1",
+      "receiptSha256": "54ee528cd16867bba07a9a23b40fc2b4120eb7eb432d02919f50dfa0888dcdc2",
+      "expectedExitCode": 0,
+      "peakBytes": 730906624,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-fixup-r1",
+      "receiptSha256": "661274a9fb0f3abb6e2651d26bb74c099f9aff0d92044d33e754c18a7a0626c6",
+      "expectedExitCode": 0,
+      "peakBytes": 875266048,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-topology-records-r1-red",
+      "receiptSha256": "6a87f2f1049af100808413ae9295dec79991e4da5f946a3fc7f0a3025e14fa85",
+      "expectedExitCode": 1,
+      "peakBytes": 35618816,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-topology-records-r1-green",
+      "receiptSha256": "a3ca3f5ef747830c7c1d60647e29aa69695f6e786399c06bd44fe62fb8a154b8",
+      "expectedExitCode": 0,
+      "peakBytes": 32964608,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-three-edge-repair-r1-red",
+      "receiptSha256": "415b9ac7514bc8c9ce240c61a8d2f4c9bb816086bb869e7c3bd26315004e55c2",
+      "expectedExitCode": 1,
+      "peakBytes": 33013760,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-three-edge-repair-r1-green",
+      "receiptSha256": "d4f046f1476a50c3739e24d36629085bd8cb6a1b09d11a10ff477a471f52cad8",
+      "expectedExitCode": 0,
+      "peakBytes": 33009664,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-tree-r1-red2",
+      "receiptSha256": "9a43427ca3ce44fb21c2257cb25586ec72ac4e007a5242fdb554cfe672fa8c76",
+      "expectedExitCode": 1,
+      "peakBytes": 37875712,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-tree-r1-green2",
+      "receiptSha256": "74c48e0314fd8e8d402fa1cb0466dba80ee01275c134fc4b03f89e7bbbeac359",
+      "expectedExitCode": 0,
+      "peakBytes": 37261312,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-collector-r1-red",
+      "receiptSha256": "dd77181527a4ac2d575c6c32cfd9d4b20f20246b65c987255a446c0e28041cf4",
+      "expectedExitCode": 1,
+      "peakBytes": 32878592,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-collector-r1-green",
+      "receiptSha256": "09f0ea02ad9a8df34ebb64632b4521eb6083140301fa5ecf0ef1f1e890a37012",
+      "expectedExitCode": 0,
+      "peakBytes": 32903168,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-tree-r1-red",
+      "receiptSha256": "5aa51e9654d32acbdc73e61455279e8608cf7d5c211712c7d4d55171d90f2325",
+      "expectedExitCode": 1,
+      "peakBytes": 34148352,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-boundary-tree-r1-green",
+      "receiptSha256": "dbf70763eb739e5c093049e94e1a9ceb04d90b54f32f69146e1c0fd705dbd31d",
+      "expectedExitCode": 1,
+      "peakBytes": 37642240,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Resolve and port the native virtual adjacency builder; analytic integration currently supplies its links explicitly.",
+    "Verify coordinator lifetime semantics for pre-collected triangle pointers when deletion moves records.",
+    "Resolve exact-lattice behavior, source preparation, mutable initializer and parallel frontiers.",
+    "Integrate a complete shared GUI/MCP reconstruction operation and validate original/native geometry, history, cancellation, saved projects and rendered output."
+  ],
+  "limitations": [
+    "Synthetic explicit topology and historical static bytes; no fresh native runtime output or original-scan acceptance.",
+    "Tree NIL-black behavior follows the recovered balancing invariants; allocation/pool layout and full native metadata are not modeled.",
+    "The private triangle-index and boundary-length guards are validation safeguards, not established native GUI admission rules.",
+    "The earlier two-source ideal-planar quality expectation remains recorded as failing. Its analytic boundary-blending explanation does not close native acceptance."
+  ],
+  "privateProofSha256": "a518a8bfec3b8915de3b6ec31a4ebacc9412239576afa5b1d2ddc7890d467f3b"
+}

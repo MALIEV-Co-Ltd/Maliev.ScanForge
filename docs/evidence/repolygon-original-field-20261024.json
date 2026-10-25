@@ -1,0 +1,203 @@
+{
+  "status": "original-full-field-feasibility-and-topology-audited",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeReconstructionAcceptance": false,
+  "scan1": {
+    "status": "original-scan1-field-feasibility-completed",
+    "sourceFile": "scan-1.stl",
+    "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "acceptedInputTriangles": 273139,
+    "spacing": 0.5,
+    "workRoots": 64,
+    "dataLeaves": 47928,
+    "cornerRecords": 103144,
+    "diagnostics": {
+      "nodeCount": 134257,
+      "candidateVisits": 808346,
+      "admittedVisits": 718436,
+      "triangleCornerUpdates": 3892548,
+      "repeatedTriangleCornerSkips": 1854940,
+      "outsideRootVisits": 0,
+      "clampedFrontierVisits": 92064,
+      "frontierBoundsRejects": 17170358
+    },
+    "outputVertices": 33832,
+    "outputTriangles": 64204,
+    "outputPositionsSha256": "3ad2d75b0f180e84881b85ab1462ab2bbde610a6dff7e415250acefd17827d10",
+    "outputIndicesSha256": "b68b44707468133cbda9eab9f29a94509c829300d5ddafa7158e6b6fc5c43ea1",
+    "sourcePasses": 65,
+    "fieldSeconds": 17.1106008,
+    "elapsedSeconds": 17.560771999999996,
+    "memory": {
+      "rss": 310591488,
+      "heapTotal": 230510592,
+      "heapUsed": 195151872,
+      "external": 32233838,
+      "arrayBuffers": 30189727
+    },
+    "sourceBuffersUnchanged": true,
+    "initializerSuppliedAsZero": true,
+    "providerBucketTolerance": 1.1920928955078125e-7,
+    "nativeExecuted": false,
+    "nativeReconstructionAcceptance": false,
+    "scope": "Full first original STL feasibility only; no downsampling, source omission, complete finalization, native output comparison or original-three acceptance."
+  },
+  "originalThree": {
+    "status": "original-three-field-feasibility-completed",
+    "inputs": [
+      {
+        "sourceFile": "scan-1.stl",
+        "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "rawFaces": 273139,
+        "acceptedFaces": 273139,
+        "vertices": 139338
+      },
+      {
+        "sourceFile": "scan-2.stl",
+        "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+        "rawFaces": 2547405,
+        "acceptedFaces": 2547403,
+        "vertices": 1299033
+      },
+      {
+        "sourceFile": "scan-3.stl",
+        "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+        "rawFaces": 3326910,
+        "acceptedFaces": 3326910,
+        "vertices": 1683605
+      }
+    ],
+    "acceptedInputTriangles": 6147452,
+    "spacing": 0.5,
+    "inputPoses": "Original STL coordinates; no registration transform applied in this probe",
+    "workRoots": 64,
+    "dataLeaves": 127409,
+    "cornerRecords": 266923,
+    "diagnostics": {
+      "nodeCount": 357065,
+      "candidateVisits": 9049703,
+      "admittedVisits": 8842195,
+      "triangleCornerUpdates": 60515252,
+      "repeatedTriangleCornerSkips": 10222308,
+      "outsideRootVisits": 0,
+      "clampedFrontierVisits": 379246,
+      "frontierBoundsRejects": 387021386
+    },
+    "outputVertices": 89494,
+    "outputTriangles": 167010,
+    "outputPositionsSha256": "af1d909ac87d334a9f598458b32aa862f8f79d6ddd5b8d18d207b420d6fcdae8",
+    "outputIndicesSha256": "c4719800ef10e0191703178ce5a3170812827741612711dfc2e61a26c7d7a55f",
+    "sourcePasses": [65, 65, 65],
+    "fieldSeconds": 344.1640283,
+    "elapsedSeconds": 355.7488068,
+    "memory": {
+      "rss": 956370944,
+      "heapTotal": 572481536,
+      "heapUsed": 532893072,
+      "external": 326303667,
+      "arrayBuffers": 324259556
+    },
+    "sourceBuffersUnchanged": true,
+    "initializerSuppliedAsZero": true,
+    "providerBucketTolerance": 1.1920928955078125e-7,
+    "nativeExecuted": false,
+    "nativeReconstructionAcceptance": false,
+    "scope": "Full original-three field feasibility only; no downsampling, source omission, complete finalization, aligned-project/native output comparison or GUI/MCP acceptance."
+  },
+  "independentPreFinalizationTopology": {
+    "status": "original-three-field-independent-topology-audited",
+    "controlsPassed": 3,
+    "positionsSha256": "af1d909ac87d334a9f598458b32aa862f8f79d6ddd5b8d18d207b420d6fcdae8",
+    "indicesSha256": "c4719800ef10e0191703178ce5a3170812827741612711dfc2e61a26c7d7a55f",
+    "vertices": 89494,
+    "triangles": 167010,
+    "usedVertices": 89494,
+    "edges": 256679,
+    "edgeIncidenceHistogram": {
+      "1": 12397,
+      "2": 244235,
+      "3": 25,
+      "4": 22
+    },
+    "boundaryEdges": 12397,
+    "nonmanifoldEdges": 47,
+    "windingConflicts": 1,
+    "repeatedIndexTriangles": 0,
+    "zeroAreaTriangles": 0,
+    "duplicateUnorientedTriangles": 11,
+    "edgeConnectedComponentTriangles": [
+      166832, 144, 8, 4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1
+    ],
+    "boundaryVertexDegreeHistogram": {
+      "1": 31,
+      "2": 12282,
+      "3": 3,
+      "4": 46,
+      "6": 1
+    },
+    "surfaceArea": 21452.36847895321,
+    "selfIntersectionsChecked": false,
+    "nativeAcceptance": false,
+    "scope": "Independent pre-finalization field-output topology audit; original coordinates, explicit globals, no native comparison."
+  },
+  "rootDepthAudit": {
+    "rootDepth": 0,
+    "depthOneHypothesisContradicted": true,
+    "basis": "Retained static instruction explicitly initializes the root depth to zero. This does not explain the exact-lattice plane failure."
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-original-field-scan1-r1",
+      "receiptSha256": "bbd83d1da70e2f43ea9486890ed4c541f433eb42e520d060e40797119d99bf5d",
+      "elapsedSeconds": 17.68955590002588,
+      "peakOwnedJobBytes": 299053056,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-original-three-field-r1",
+      "receiptSha256": "691a80ddeef3ad833b5037c3c6af84a427cac0dfd2c86be2894eaa649176943d",
+      "elapsedSeconds": 355.8891736000078,
+      "peakOwnedJobBytes": 952770560,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-original-three-field-topology-r1",
+      "receiptSha256": "0b1682858748bbc24f9d6e447d3f7aaaa503969ed380491d993ede05b5793ea7",
+      "elapsedSeconds": 0.5620272000087425,
+      "peakOwnedJobBytes": 121561088,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    }
+  ],
+  "aggregateJobLimitBytes": 4294967296,
+  "cpuRatePercent": 25,
+  "peakOwnedJobBytes": 952770560,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "existingVoxelReconstructionBackendReplaced": false,
+    "privateFieldPortAdvertised": false
+  },
+  "limitations": [
+    "All three full original STL sources are included in their original coordinates; no registration transform was applied.",
+    "Direction initializer is explicitly zero and provider tolerance explicitly Float32 epsilon; unresolved native globals remain unresolved.",
+    "These are private field extraction and compaction results, before complete native finalization, native output comparison or integrated GUI/MCP acceptance.",
+    "The output contains nonmanifold edges, duplicate faces and boundaries. It is not accepted as usable combined geometry. Self intersections were not checked.",
+    "The root-depth hypothesis is ruled out by retained static evidence; exact-lattice and multi-source quality questions remain open.",
+    "No full application build or new rendered acceptance was run because application behavior did not change."
+  ],
+  "next": [
+    "Trace and integrate the recovered finalization sequence against this pinned full-size output, preserving native deletion and boundary semantics.",
+    "Resolve remaining arithmetic/global/scheduling questions and compare equivalent native output.",
+    "Integrate the accepted kernel through the shared GUI/MCP operation, with history, cancellation, save/reopen and rendered verification.",
+    "Complete required point-cloud reconstruction."
+  ],
+  "privateProofSha256": "f0b09f856eb01ae0d61cd151d5647515752ed07f073d8762389755e2bc224271"
+}

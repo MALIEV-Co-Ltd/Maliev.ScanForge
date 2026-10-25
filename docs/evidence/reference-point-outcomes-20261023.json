@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "static-outcome-contract; not construction execution acceptance",
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "newConstructionOperationAdvertised": false,
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "staticVerification": {
+    "privateArtifact": "reference-point-outcomes-static-r2.json",
+    "sha256": "10d7947ee5e186aa81365ceac2756eb9cbe9026466100dde45a681205e75da03",
+    "bytes": 6527,
+    "driver": {
+      "privateArtifact": "verify-reference-point-outcomes-r2.py",
+      "sha256": "9aa383a3f08252b877ebb86e6eccf88ab9e2f45b36485f0d9f66c4c6102ed64a",
+      "bytes": 5167
+    },
+    "sources": [
+      {
+        "privateArtifact": "construction-geometry-noanalysis-r1/evidence.json",
+        "sha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+      },
+      {
+        "privateArtifact": "construction-calculation-noanalysis-r1/evidence.json",
+        "sha256": "881166f8f3587bab95fdaf616ae4ceb29700b03499b789e0ecc48e3f572db292"
+      },
+      {
+        "privateArtifact": "construction-helpers-noanalysis-r1/evidence.json",
+        "sha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      }
+    ],
+    "procedures": [
+      {
+        "entry": "0x14041b1e0",
+        "listedInstructionStarts": 955,
+        "instructionBytesSha256": "48191bc655d1fe855f62296b0e7619986f8750617399c45e2293861449ad2dd0",
+        "checkedDirectFlows": 105
+      },
+      {
+        "entry": "0x14057f640",
+        "listedInstructionStarts": 397,
+        "instructionBytesSha256": "48171b4ea094a96e929c5a4490b554f724e93565940b414db93adffc2203ac75",
+        "checkedDirectFlows": 44
+      },
+      {
+        "entry": "0x14041af20",
+        "listedInstructionStarts": 39,
+        "instructionBytesSha256": "783ec790aa7ce9ca448339f2431bb708a5bc2f6c0a16e930a65317b0a7add13a",
+        "checkedDirectFlows": 3
+      },
+      {
+        "entry": "0x14041afa0",
+        "listedInstructionStarts": 103,
+        "instructionBytesSha256": "456f0e807ed0ee1151a9fca2c572d519403620177dd230d5dcbc98ac91aa333a",
+        "checkedDirectFlows": 7
+      },
+      {
+        "entry": "0x14041b150",
+        "listedInstructionStarts": 40,
+        "instructionBytesSha256": "384764ba7b5fe314071dd685569dfb2ea7137a12306cade0237ccaeca432615c",
+        "checkedDirectFlows": 2
+      }
+    ],
+    "branches": [
+      {
+        "address": "0x14041b26a",
+        "target": "0x14041c249",
+        "bytesSha256": "551cddc1c2bcfb12d1aeaadadcf0fa17f47c65c4423c050cef652bd00dc017c9",
+        "staticInterpretation": "guard rejects: no geometry or completion-word write"
+      },
+      {
+        "address": "0x14041b362",
+        "target": "0x14041c23f",
+        "bytesSha256": "cd6c8bb21a9bc4121571faf5a0cd1380303dee7261d9ac56d479643059378129",
+        "staticInterpretation": "mode 2: retain coordinates, write completion word"
+      },
+      {
+        "address": "0x14041b39b",
+        "target": "0x14041bf09",
+        "bytesSha256": "83fd65ee4d967411718a674817352de781bc037a5aa8d3238588cd9efba6f829",
+        "staticInterpretation": "single-source missing: zero-coordinate write path"
+      },
+      {
+        "address": "0x14041b4c7",
+        "target": "0x14041bf09",
+        "bytesSha256": "94b0a0479f59db6532d98aad976b8ecfe82054f278484f3aebafffe057271d1d",
+        "staticInterpretation": "pair source count below two: zero-coordinate write path"
+      },
+      {
+        "address": "0x14041b72e",
+        "target": "0x14041c249",
+        "bytesSha256": "fc557db4163619757167406e6592494396891cd95405b3a5aca01a3a128a6e12",
+        "staticInterpretation": "plane-axis threshold rejects: retain geometry and completion word"
+      },
+      {
+        "address": "0x14041b95e",
+        "target": "0x14041c249",
+        "bytesSha256": "98060e24dfaffa01c655f89c3a3940d35c14cb0e0f54dce13a19c25a17e9ee30",
+        "staticInterpretation": "axis-plane threshold rejects: retain geometry and completion word"
+      },
+      {
+        "address": "0x14041bf36",
+        "target": "0x14041c23f",
+        "bytesSha256": "bf67be8270ab23fbbf63d5b9945f9fb2e0757bebe6aadb0b1fc77aa4e01d2645",
+        "staticInterpretation": "other modes except 2/3/4: retain coordinates, write completion word"
+      },
+      {
+        "address": "0x14041bf57",
+        "target": "0x14041c228",
+        "bytesSha256": "56d9d5efeefe8d308fee857d720e5a202bb422b354ffc832a2dd7746e66858f1",
+        "staticInterpretation": "three-plane source count not three: zero-coordinate write path"
+      },
+      {
+        "address": "0x14041c133",
+        "target": "0x14041c228",
+        "bytesSha256": "276c420c2054843a3499d2f0a43781bb5f44bcc172d7be29a6293aef4804ba4f",
+        "staticInterpretation": "first-two-plane intersection rejected: zero-coordinate write path"
+      },
+      {
+        "address": "0x14041c1b2",
+        "target": "0x14041c228",
+        "bytesSha256": "56af4bde70a47ae7d0f1ebb30e45ed336165d5c9ec00ba9a92311e33a4256d74",
+        "staticInterpretation": "third-plane threshold rejected: zero-coordinate write path"
+      }
+    ],
+    "stores": [
+      {
+        "address": "0x14041bf1c",
+        "bytesSha256": "c44ba0c2cfacc1a2fd0b19998d8d693b5cefe9cd724669bcbd3ac80fb8cd8b03",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041bf22",
+        "bytesSha256": "c256703cc2af71eaec3fff44a346dde9a04f2142b57e10cc9ba42c9a8109dc2b",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041bf28",
+        "bytesSha256": "c7144b4d92a789d31c2574174fb42cca0b6f2c3427e292eeeec0cc38aa6f98d8",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041c22f",
+        "bytesSha256": "91da064a99efa0d779d1f88b3bb5730fc1a0028fd6c36fddb68f51159be168e3",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041c234",
+        "bytesSha256": "115110fa2ce8b3515cc02164a43a554e7a3a300570bdb6138e5a7936460727d3",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041c23a",
+        "bytesSha256": "36789660448cd1f44de63438af552c90cd3826e32c60f4f4bfb5829661712e4e",
+        "role": "point coordinate"
+      },
+      {
+        "address": "0x14041c23f",
+        "bytesSha256": "3c7575601c76a17b80850e11e8fe60b22a371b9e15ed44e763a23afbe1812fa0",
+        "role": "completion flag word"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ae90",
+        "value": 0.0001,
+        "littleEndianFloat64": "2d431cebe2361a3f"
+      },
+      {
+        "address": "0x14126aee8",
+        "value": 0.001,
+        "littleEndianFloat64": "fca9f1d24d62503f"
+      },
+      {
+        "address": "0x14126ae00",
+        "value": 1.1920928955078125e-7,
+        "littleEndianFloat64": "000000000000803e"
+      },
+      {
+        "address": "0x14126b170",
+        "value": 0.5,
+        "littleEndianFloat64": "000000000000e03f"
+      },
+      {
+        "address": "0x14126ad40",
+        "value": 2.220446049250313e-16,
+        "littleEndianFloat64": "000000000000b03c"
+      }
+    ],
+    "receipt": {
+      "privateArtifact": "project-index-validation-verify-reference-point-outcomes-r2-cad.receipt.json",
+      "sha256": "f4a83a8de20fdec649017aef354f11471b3f50eeda32b9522d480fae4a63ec7f",
+      "bytes": 1849,
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.25887420000799466,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 97681408,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  },
+  "earlierRuntimeCodeBinding": {
+    "repositoryEvidence": "reference-geometry-numerics-20261023.json",
+    "evidenceSha256": "f43ea1b01b8af56bb3f25ba2317093b98edf3ae00f94a8352a35bf856603e259",
+    "anchors": [
+      {
+        "address": "0x14041b1e0",
+        "bytes": 4314,
+        "sha256": "00f656d010c7b0a5eb4ca8aed6ee59d86e40be5555ba6795590b724a03e015d6",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+      },
+      {
+        "address": "0x14041af20",
+        "bytes": 142,
+        "sha256": "b12105de0c7ad214fcf0a3a93f691c228859640352ea0e3ac33daeec3efb61e1",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14041afa0",
+        "bytes": 439,
+        "sha256": "2b6f5b6db168f51e4acd7012b18190543c384d878b3e4d2389049d177049aef5",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14041b150",
+        "bytes": 155,
+        "sha256": "a8602c7dd73619596f648e05036a61b8c2cce1813ea22ffb8e3bbe5ef1207a50",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      }
+    ],
+    "scope": "Previously recorded read-only code identity. No fresh process read or native execution in this outcome audit."
+  },
+  "pointModes": [
+    {
+      "mode": 2,
+      "meaning": "typed coordinates",
+      "geometry": "controller writes unit-converted XYZ; geometry evaluator retains them",
+      "stateWord": "ordinary 0x100 store"
+    },
+    {
+      "mode": 3,
+      "submode": 0,
+      "meaning": "single primitive",
+      "inputs": "first identity in the ordered source set",
+      "geometry": "axis midpoint, else reference-point/sphere center, else origin",
+      "stateWord": "ordinary 0x100 store"
+    },
+    {
+      "mode": 3,
+      "submode": "nonzero",
+      "meaning": "primitive pair",
+      "inputs": "first two identities in the ordered source set; repeated identities collapse",
+      "geometry": "pair matrix below",
+      "stateWord": "ordinary 0x100 store except early-return axis/plane rejection"
+    },
+    {
+      "mode": 4,
+      "meaning": "three planes",
+      "inputs": "exactly three identities in ordered source set",
+      "geometry": "first-two-plane intersection then intersection with third; rejected/missing/ineligible cases write origin",
+      "stateWord": "ordinary 0x100 store"
+    }
+  ],
+  "pairMatrix": [
+    {
+      "inputs": ["point-like", "point-like"],
+      "result": "arithmetic midpoint"
+    },
+    {
+      "inputs": ["point-like", "axis"],
+      "result": "projection of point onto unbounded axis; denominator is squared endpoint difference",
+      "symmetricCategories": true
+    },
+    {
+      "inputs": ["point-like", "plane"],
+      "result": "point minus plane equation value times stored normal; no normal-squared divisor",
+      "symmetricCategories": true
+    },
+    {
+      "inputs": ["axis", "axis"],
+      "result": "midpoint of two closest points when normalized absolute direction dot <= cos(1 degree) and closest-line helper accepts; otherwise midpoint of segment midpoints"
+    },
+    {
+      "inputs": ["axis", "plane"],
+      "result": "line-plane intersection only when squared normalized direction/normal dot > squared direction length * 0.0001; otherwise keep prior geometry AND skip state-word store",
+      "symmetricCategories": true
+    },
+    {
+      "inputs": ["plane", "plane"],
+      "result": "origin via ineligible second-input extraction"
+    }
+  ],
+  "stateTransitions": {
+    "ordinaryGeometryStore": "0x14041bf15",
+    "threePlaneGeometryStore": "0x14041c228",
+    "ordinaryStateWordStore": "0x14041c23f",
+    "earlyReturn": "0x14041c249",
+    "ordinaryStateWord": 256,
+    "nativeFieldOffset": "0x2b0",
+    "stateWordSemantics": "Two-byte observed store; higher-level flag interpretation is not established by this audit."
+  },
+  "limits": [
+    "Interpretations derive from static code and independently decoded branch/store targets, not executed native outputs.",
+    "Floating-point arithmetic order remains function-specific; symmetric input categories do not imply bitwise equality after input reordering.",
+    "Point-like extraction is reference point or sphere center; axis extraction is cylinder, cone or reference line. Complete CAD/pick eligibility is a separate unresolved boundary.",
+    "Zero-length/overflow/non-finite intermediate behavior is not validated here; API admission must not be inferred from evaluator branches.",
+    "No proof of native GUI admission, acceptance, deletion, specialized refresh, save/reopen or rendered GUI/MCP equivalence.",
+    "Other mode values skip geometry and reach the ordinary state-word store; they are not thereby supported construction modes."
+  ],
+  "mcpCoverage": {
+    "existingCapabilityChanged": false,
+    "constructionToolsAdvertised": false,
+    "requiredIntegration": "One shared construction evaluator/editor and semantic project lifecycle, including structured fallback/unchanged diagnostics."
+  },
+  "attempts": [
+    {
+      "status": "failed verification helper",
+      "receipt": {
+        "privateArtifact": "project-index-validation-verify-reference-point-outcomes-r1-cad.receipt.json",
+        "sha256": "b40f1234182c83b65b94ae8f29b9c489a6d9bb08f401ce937d988c608b407536",
+        "bytes": 1850
+      },
+      "reason": "Local mnemonic variable shadowed the static image buffer; corrected with a separate variable in r2. No target process was accessed."
+    },
+    {
+      "status": "passed",
+      "receipt": {
+        "privateArtifact": "project-index-validation-verify-reference-point-outcomes-r2-cad.receipt.json",
+        "sha256": "f4a83a8de20fdec649017aef354f11471b3f50eeda32b9522d480fae4a63ec7f",
+        "bytes": 1849
+      }
+    }
+  ]
+}

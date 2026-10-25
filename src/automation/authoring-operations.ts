@@ -17,6 +17,7 @@ import { validateSketch, rectangleSketch } from "../sketch";
 import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 import { lockedObjectEdit } from "../object-operations";
+import { assertSampledGeometry } from "../reference-entity";
 
 /** Authoring tools reuse the same helpers as the editor's surface/sketch/selection controls. */
 export function createAuthoringOperations(
@@ -28,6 +29,7 @@ export function createAuthoringOperations(
     return e;
   };
   const editable = (e: Entity) => {
+    assertSampledGeometry(e);
     if (e.locked || e.kernelId || e.parametric)
       throw new Error("Use an unlocked mesh copy before this operation");
   };
@@ -83,16 +85,20 @@ export function createAuthoringOperations(
     selection_modify: (a, c) => {
       const s = host.snapshot(),
         e = find(a.entityId);
+      assertSampledGeometry(e);
       if (e.locked || e.selectable === false)
         throw new Error("Object cannot be selected");
+      const count = e.positions.length / (e.kind === "pointcloud" ? 3 : 9);
+      const hidden = new Set(e.meshSelection?.hidden ?? []);
       const prior =
-        s.selectedId === e.id && s.selection?.length === e.positions.length / 9
+        s.selectedId === e.id && s.selection?.length === count
           ? s.selection
-          : new Uint8Array(e.positions.length / 9);
+          : new Uint8Array(count);
       const mask = new Uint8Array(prior.length);
       for (let i = 0; i < mask.length; i++)
-        mask[i] =
-          a.operation === "all"
+        mask[i] = hidden.has(i)
+          ? 0
+          : a.operation === "all"
             ? 1
             : a.operation === "invert"
               ? prior[i]
@@ -107,8 +113,10 @@ export function createAuthoringOperations(
       const s = host.snapshot(),
         e = find(a.entityId),
         saved = e.meshSelection?.saved ?? [];
+      assertSampledGeometry(e);
+      const count = e.positions.length / (e.kind === "pointcloud" ? 3 : 9);
       const selection =
-        s.selectedId === e.id && s.selection?.length === e.positions.length / 9
+        s.selectedId === e.id && s.selection?.length === count
           ? s.selection
           : null;
       if (a.action === "load") {
@@ -116,14 +124,18 @@ export function createAuthoringOperations(
         if (!entry) throw new Error("Saved selection does not exist");
         if (e.locked || e.selectable === false)
           throw new Error("Object cannot be selected");
-        const mask = new Uint8Array(e.positions.length / 9);
+        const mask = new Uint8Array(count);
+        const hidden = new Set(e.meshSelection?.hidden ?? []);
         for (const t of entry.triangles) {
           if (t >= mask.length) throw new Error("Saved selection is stale");
-          mask[t] = 1;
+          if (!hidden.has(t)) mask[t] = 1;
         }
         c.check();
         host.setSelection(e.id, mask);
-        return { selectionId: entry.id, count: entry.triangles.length };
+        return {
+          selectionId: entry.id,
+          count: mask.reduce((sum, value) => sum + value, 0),
+        };
       }
       let next = saved,
         selectionId = a.selectionId;

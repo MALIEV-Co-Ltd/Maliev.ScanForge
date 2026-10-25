@@ -52,8 +52,29 @@ its owned Java process exited. Independent review found no blocking issue in
 the scoped ordinary nondegenerate arc reconstruction.
 
 This establishes a replacement-state rule needed by the pending through-point
-model correction. The current shared `sketch_trim_stroke` remains the analytic
-application implementation described above; native through-point and line
-replacement parity is not claimed. No application/MCP behavior changed, and no
-build, unit/CAD suite or browser workflow was rerun for this evidence-only work.
+model correction. That evidence-only checkpoint did not change application/MCP
+behavior or rerun a build, unit/CAD suite or browser workflow.
 See [the structured arc trim contract](evidence/sketch-paint-trim-arc-contract.json).
+
+## Shared ordinary-arc classification candidate
+
+The pending application change applies the chord-direction line fallback to
+retained nonperiodic arcs in the shared trim helper. It uses evaluated start,
+parameter midpoint and end positions, guarded reciprocal normalization and
+the strict threshold `0.9999996192282494`. Small and nearly full sweeps can
+both qualify. The installed system CRT cosine component returned this exact
+Float64 value (little-endian `0c219333ffffef3f`) for the angle above. The
+component capture verified the installed DLL hash, export RVA and loaded entry
+bytes before calling it; this does not establish a live reference-process
+binding or native trim numerical equivalence.
+
+GUI preview and the guarded `sketch_trim_stroke` executor share the helper;
+`sketch_get` exposes the resulting segment, curve ID and construction flag.
+Periodic circles retain their existing policy. Centers are pruned only when
+unreferenced, and existing constraint rejection, cancellation, resource bounds,
+revision checks and retry semantics remain in the shared operation.
+
+This candidate still requires rendered GUI/MCP boundary verification before
+acceptance. The earlier application validation record describes its own
+checkpoint, not this candidate. Native through-point reconstruction, complete
+trim numerical equivalence and relation-transfer parity remain open.

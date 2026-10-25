@@ -334,6 +334,98 @@ h3 {
 .viewport canvas {
   display: block;
 }
+.landmark-alignment-active {
+  --landmark-view-width: clamp(
+    220px,
+    var(--landmark-reference-width, 32%),
+    max(220px, calc(100% - 360px))
+  );
+}
+.landmark-alignment-active > .viewport {
+  position: relative;
+  width: calc(100% - var(--landmark-view-width));
+}
+.landmark-picking-views {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: var(--landmark-view-width);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  border-left: 1px solid var(--border);
+}
+.landmark-picking-view {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.landmark-view-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 10px;
+  z-index: 30;
+  cursor: col-resize;
+  touch-action: none;
+}
+.landmark-view-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0 4px;
+  background: var(--border);
+}
+.landmark-view-divider:hover::after,
+.landmark-view-divider:focus-visible::after,
+.landmark-view-divider:active::after {
+  background: var(--accent);
+}
+.landmark-view-divider:focus-visible {
+  outline: 1px solid var(--accent);
+}
+.landmark-picking-view header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--surface);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.landmark-view-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.landmark-view-actions button {
+  min-height: 26px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+.landmark-picking-view header span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.landmark-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  touch-action: none;
+}
+.landmark-picking-view:focus-within {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+.landmark-alignment-active > .viewport-tools-container {
+  left: calc((100% - var(--landmark-view-width)) / 2);
+}
+.landmark-alignment-active > .view-controls {
+  right: calc(var(--landmark-view-width) + 14px);
+}
 .view-controls {
   position: absolute;
   top: 12px;

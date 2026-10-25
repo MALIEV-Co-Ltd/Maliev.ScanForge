@@ -1,0 +1,182 @@
+{
+  "status": "output-normal-compaction-ported-quality-open",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 8,
+  "newInstructionAddressesIndependentlyDecoded": 997,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "findings": [
+    "The source triangle iterator exposes stored face normals; appending triangles initializes but does not calculate them.",
+    "The face-normal worker promotes Float32 coordinates before double subtraction and rounds the double cross-product length to Float32 before normalization.",
+    "Fresh emitted vertices are compacted in original vertex order after marking triangle references; equal positions are not welded by this stage.",
+    "Vertex normals are accumulated with corner-angle weights; that full stage remains untranslated.",
+    "The traced repair handles three-edge boundary loops, with separate removal and triangle-addition cases; it is not a general hole filler."
+  ],
+  "privatePorts": [
+    {
+      "name": "field-output",
+      "passed": 6,
+      "failed": 1,
+      "total": 7
+    },
+    {
+      "name": "compaction",
+      "passed": 6,
+      "failed": 0,
+      "total": 6
+    },
+    {
+      "name": "face-normal",
+      "passed": 8,
+      "failed": 0,
+      "total": 8
+    }
+  ],
+  "geometryProbe": {
+    "singleSource": {
+      "sources": [0.25],
+      "rawVertices": 9,
+      "compactedVertices": 9,
+      "triangles": 8,
+      "area": 1,
+      "projectedArea": 1,
+      "maxPlaneDeviation": 0,
+      "boundaryEdges": 8,
+      "nonmanifoldEdges": 0,
+      "diagnostics": {
+        "activeLeaves": 9,
+        "skippedRepeatedIndexFaces": 10,
+        "skippedAreaFaces": 0
+      }
+    },
+    "twoSources": {
+      "sources": [0.25, 0.375],
+      "rawVertices": 16,
+      "compactedVertices": 15,
+      "triangles": 16,
+      "area": 1.0074281174590158,
+      "projectedArea": 0.9925732612609863,
+      "maxPlaneDeviation": 7.155537605285645e-5,
+      "boundaryEdges": 12,
+      "nonmanifoldEdges": 0,
+      "diagnostics": {
+        "activeLeaves": 9,
+        "skippedRepeatedIndexFaces": 0,
+        "skippedAreaFaces": 2
+      }
+    },
+    "workerNormalsAndTopologicalBoundaryMasksProduceSameResult": true,
+    "initializerSuppliedAsZero": true,
+    "failedPlanarExpectationRetained": true,
+    "nativeDefectEstablished": false
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-source-normals-r1",
+      "receiptSha256": "f9559e08f71c1fb3b9fb9190c3823f7db22e2c96e1361ddd6ce568dedb3f8345",
+      "expectedExitCode": 0,
+      "peakBytes": 1080041472,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-finalization-r1",
+      "receiptSha256": "c8cc5fff3e4ebae83b8136b5778c1ee89becacb78ecea0613b189cc3dd656650",
+      "expectedExitCode": 0,
+      "peakBytes": 1011929088,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-normal-worker-r1",
+      "receiptSha256": "8d5ac0522677745489d3cc3ba42ffab823ed7965ac9d1b25953fdf508d911db3",
+      "expectedExitCode": 0,
+      "peakBytes": 879886336,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-field-output-r1-red",
+      "receiptSha256": "e2cb0c0c2274e0b2300c2f5451bdf6f135ae992fdca52a3a8ea499924e0fca42",
+      "expectedExitCode": 1,
+      "peakBytes": 34619392,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-field-output-r1-green",
+      "receiptSha256": "8feb95a3d0df186c59cfe7bc0ac3e628e09eafaf97ef31264e22368b823ddfec",
+      "expectedExitCode": 1,
+      "peakBytes": 38133760,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-compaction-r1-red",
+      "receiptSha256": "7eb822fe5c2e70b6d8991c1f295f2236f104a639036ef2d8fc39c2c853ed9bf9",
+      "expectedExitCode": 1,
+      "peakBytes": 33099776,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-compaction-r1-green",
+      "receiptSha256": "815dc8cd900805811282d242efd67f3a26f18e0a602a5e96f8cd7552df29b8e2",
+      "expectedExitCode": 0,
+      "peakBytes": 32993280,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-face-normal-r1-red",
+      "receiptSha256": "36e787febc6fa62b239c3400aef8a80ebe8bd1b5c7d800b0573c4bd7464e968e",
+      "expectedExitCode": 1,
+      "peakBytes": 33173504,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-face-normal-r1-green",
+      "receiptSha256": "505ac5b8ec1eb5961553f7d234d1b3cb217f059acaa5b4a5ff65a9607ebca1a5",
+      "expectedExitCode": 0,
+      "peakBytes": 33075200,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-fusion-r1-probe",
+      "receiptSha256": "c66147668e693ce8a8c0982bf5295865e45ccd575fa2563a093d32f29129659a",
+      "expectedExitCode": 0,
+      "peakBytes": 38277120,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-fusion-r2-probe",
+      "receiptSha256": "9afcd45100ff183629570907e20a4a3640400bc19e6ef4d0cc6029ae0cb4b49a",
+      "expectedExitCode": 0,
+      "peakBytes": 37531648,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Resolve finite-plane fusion boundary mismatch and exact-lattice no-crossing probe without unverified offsets or relaxed geometry gates.",
+    "Resolve source preparation, accumulator initializer and partitioned frontier behavior.",
+    "Port full normal generation, topology finalization and boundary repair.",
+    "Integrate a coherent shared GUI/MCP replacement and validate full original scans, history, cancellation, save/reopen and rendered output."
+  ],
+  "limitations": [
+    "Static instruction decoding verifies reported instruction starts, not complete function boundaries, inferred types or runtime dispatch.",
+    "Fresh-output compaction does not cover arbitrary predeleted native vertex flags.",
+    "Finite Float32 face-normal controls are arithmetic evidence, not full source-preparation or native-output acceptance.",
+    "The raw-output test suite still fails its two-source planar geometry expectation; passing compaction and normal controls do not close it."
+  ],
+  "privateProofSha256": "0f65e84f5ab241e82665005c977fcb83d8505ab10183f2150b60672eba599a38"
+}

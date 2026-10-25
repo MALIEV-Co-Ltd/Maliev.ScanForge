@@ -27,15 +27,16 @@ class Encoder {
     this.onmessage!({ data: { file: new Blob(["backup"]) } });
   }
 }
-const session = {
-  project: { name: "original", entities: [] },
-  history: [],
-  future: [],
-} as unknown as ProjectSession;
+let session: ProjectSession;
 const flush = async () => {
   for (let i = 0; i < 12; i++) await Promise.resolve();
 };
 beforeEach(() => {
+  session = {
+    project: { name: "original", entities: [] },
+    history: [],
+    future: [],
+  } as unknown as ProjectSession;
   vi.useFakeTimers();
   vi.stubGlobal("document", {});
   vi.stubGlobal("Worker", Encoder);
@@ -198,6 +199,23 @@ it("retries the latest session on the next interval after preemption", async () 
 
 it("cancels a queued automatic encoder without cancelling an explicit export", async () => {
   const explicit = encodeProjectInBackground(session);
+  const automatic = writeAutomaticProjectBackup(
+    "project",
+    { ...session, project: { ...session.project, name: "Queued backup" } },
+    () => true,
+  );
+  await flush();
+  const release = beginPriorityScanPreparation();
+  expect(Encoder.instances[0].terminate).not.toHaveBeenCalled();
+  Encoder.instances[0].complete();
+  await explicit;
+  expect(await automatic).toBe(false);
+  expect(Encoder.instances).toHaveLength(1);
+  release();
+});
+
+it("cancels only the automatic consumer of a shared export when priority arrives", async () => {
+  const explicit = encodeProjectInBackground(session);
   const automatic = writeAutomaticProjectBackup("project", session, () => true);
   await flush();
   const release = beginPriorityScanPreparation();
@@ -207,6 +225,17 @@ it("cancels a queued automatic encoder without cancelling an explicit export", a
   expect(await automatic).toBe(false);
   expect(Encoder.instances).toHaveLength(1);
   release();
+});
+
+it("reuses a retained completed export for the later automatic backup", async () => {
+  const explicit = encodeProjectInBackground(session);
+  await flush();
+  Encoder.instances[0].complete();
+  const file = await explicit;
+  await vi.advanceTimersByTimeAsync(30_000);
+  await writeAutomaticProjectBackup("project", session, () => true);
+  expect(Encoder.instances).toHaveLength(1);
+  expect(writeBackup).toHaveBeenCalledWith(expect.objectContaining({ file }));
 });
 
 it.each(["unmount", "delete"])(

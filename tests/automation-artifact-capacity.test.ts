@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import * as diskStorage from "../src/transient-blob-storage";
 import {
   ApplicationApi,
   type ApiResult,
@@ -105,15 +106,91 @@ const append = (artifact: Artifact, offset: number, base64 = "Ug==") =>
     base64,
   });
 
+it("preserves the previous upload when temporary disk storage fails at a large-block boundary", async () => {
+  const original = success<Artifact>(await store(64 * MiB - 1, "upload.bin"));
+  vi.stubGlobal("indexedDB", {
+    open: () => {
+      throw new Error("Temporary storage unavailable");
+    },
+  });
+  expect(await append(original, original.bytes)).toMatchObject({
+    ok: false,
+    error: { code: "OPERATION_FAILED" },
+  });
+  expect((await artifacts())[0].bytes).toBe(original.bytes);
+});
+
+it("does not resurrect an upload deleted while a disk checkpoint is pending", async () => {
+  const original = success<Artifact>(await store(64 * MiB - 1, "upload.bin"));
+  let release!: () => void;
+  const checkpoint = vi
+    .spyOn(diskStorage, "diskBackedBlob")
+    .mockImplementationOnce(
+      (blob) =>
+        new Promise((resolve) => {
+          release = () => resolve(blob);
+        }),
+    );
+  try {
+    const pending = append(original, original.bytes);
+    await api.invoke("artifact_delete", { artifactId: original.artifactId });
+    release();
+    expect(await pending).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect(await artifacts()).toEqual([]);
+  } finally {
+    checkpoint.mockRestore();
+  }
+});
+
+it("rejects an obsolete checkpoint after a concurrent append succeeds", async () => {
+  const original = success<Artifact>(await store(64 * MiB - 1, "upload.bin"));
+  let release!: () => void;
+  const checkpoint = vi
+    .spyOn(diskStorage, "diskBackedBlob")
+    .mockImplementationOnce(
+      (blob) =>
+        new Promise((resolve) => {
+          release = () => resolve(blob);
+        }),
+    );
+  try {
+    const pending = append(original, original.bytes);
+    const newer = success<Artifact>(
+      await append(original, original.bytes, "Uw=="),
+    );
+    release();
+    expect(await pending).toMatchObject({
+      ok: false,
+      error: { code: "UPLOAD_CONFLICT" },
+    });
+    expect((await artifacts())[0]).toMatchObject(newer);
+  } finally {
+    checkpoint.mockRestore();
+  }
+});
+
 it("admits an 80 MiB completed artifact using logical metadata without a large backing allocation", async () => {
   const artifact = success<Artifact>(await store(80 * MiB));
   expect(artifact.bytes).toBe(80 * MiB);
   expect(await artifacts()).toHaveLength(1);
 });
 
-it("admits exactly 512 MiB aggregate and rejects one additional byte without losing prior artifacts", async () => {
-  const a = success<Artifact>(await store(256 * MiB, "first.bin"));
-  const b = success<Artifact>(await store(256 * MiB, "second.bin"));
+it("admits a full-size aligned project larger than 512 MiB", async () => {
+  const artifact = success<Artifact>(
+    await store(736091936, "three-scans.scanforge"),
+  );
+  expect(artifact.bytes).toBe(736091936);
+  const retained = await artifacts();
+  expect(retained).toHaveLength(1);
+  expect(retained[0]).toMatchObject(artifact);
+});
+
+it("admits exactly 1 GiB aggregate and rejects one additional byte without losing prior artifacts", async () => {
+  const a = success<Artifact>(await store(512 * MiB, "first.bin"));
+  const b = success<Artifact>(await store(512 * MiB, "second.bin"));
   expect(await store(1, "excess.bin")).toMatchObject({
     ok: false,
     error: { code: "RESOURCE_LIMIT" },
@@ -121,18 +198,18 @@ it("admits exactly 512 MiB aggregate and rejects one additional byte without los
   expect(
     (await artifacts()).map(({ artifactId, bytes }) => ({ artifactId, bytes })),
   ).toEqual([
-    { artifactId: a.artifactId, bytes: 256 * MiB },
-    { artifactId: b.artifactId, bytes: 256 * MiB },
+    { artifactId: a.artifactId, bytes: 512 * MiB },
+    { artifactId: b.artifactId, bytes: 512 * MiB },
   ]);
 });
 
 it("counts append replacement once and preserves the exact previous artifact when the next byte exceeds capacity", async () => {
-  const original = success<Artifact>(await store(256 * MiB, "upload.bin"));
-  success<Artifact>(await store(256 * MiB - 1, "other.bin"));
+  const original = success<Artifact>(await store(512 * MiB, "upload.bin"));
+  success<Artifact>(await store(512 * MiB - 1, "other.bin"));
   const replaced = success<Artifact>(await append(original, original.bytes));
   expect(replaced).toMatchObject({
     artifactId: original.artifactId,
-    bytes: 256 * MiB + 1,
+    bytes: 512 * MiB + 1,
   });
   expect(await append(replaced, replaced.bytes)).toMatchObject({
     ok: false,
@@ -152,20 +229,20 @@ it("counts append replacement once and preserves the exact previous artifact whe
     ),
   ).toMatchObject({ bytes: replaced.bytes, base64: "UVI=" });
   expect((await artifacts()).reduce((sum, item) => sum + item.bytes, 0)).toBe(
-    512 * MiB,
+    1024 * MiB,
   );
 });
 
 it("releases deleted artifact capacity for a new large output", async () => {
-  const a = success<Artifact>(await store(256 * MiB, "first.bin"));
-  success<Artifact>(await store(256 * MiB, "second.bin"));
+  const a = success<Artifact>(await store(512 * MiB, "first.bin"));
+  success<Artifact>(await store(512 * MiB, "second.bin"));
   success(await api.invoke("artifact_delete", { artifactId: a.artifactId }));
   expect(
     await api.invoke("artifact_read", { artifactId: a.artifactId }),
   ).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
   success<Artifact>(await store(80 * MiB, "replacement.bin"));
   expect((await artifacts()).reduce((sum, item) => sum + item.bytes, 0)).toBe(
-    336 * MiB,
+    592 * MiB,
   );
 });
 
@@ -237,9 +314,38 @@ it("publishes byte, handle, chunk and lease limits through capabilities", async 
   expect(
     success<{ limits: unknown }>(await api.invoke("capabilities_get")).limits,
   ).toMatchObject({
-    artifactBytes: 512 * MiB,
+    artifactBytes: 1024 * MiB,
     artifactCount: 64,
     artifactChunkBytes: MiB,
     artifactLeaseSeconds: 900,
   });
+});
+
+it("encodes a complete read chunk without allocating one string node per byte", async () => {
+  const payload = Uint8Array.from({ length: 262144 }, (_, i) => i & 255);
+  nextBlob = new LogicalBlob([payload]);
+  nextName = "all-byte-values.bin";
+  const artifact = success<Artifact>(
+    await api.invoke("object_get", { entityId: "resource-fixture" }),
+  );
+  const convert = vi.spyOn(String, "fromCharCode");
+  try {
+    const result = success<{
+      base64: string;
+      nextOffset: number;
+      eof: boolean;
+    }>(
+      await api.invoke("artifact_read", {
+        artifactId: artifact.artifactId,
+        offset: 0,
+        length: payload.length,
+      }),
+    );
+    expect(Buffer.from(result.base64, "base64")).toEqual(Buffer.from(payload));
+    expect(result.nextOffset).toBe(payload.length);
+    expect(result.eof).toBe(true);
+    expect(convert.mock.calls.length).toBeLessThanOrEqual(32);
+  } finally {
+    convert.mockRestore();
+  }
 });

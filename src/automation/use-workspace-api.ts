@@ -1,5 +1,6 @@
 import { interactiveHostAdapter } from "./interactive-host-adapter";
 import { useEffect, useRef } from "react";
+import { createScanSelectionOperations } from "./scan-selection-operations";
 import { flushSync } from "react-dom";
 import { ApplicationApi, type WorkspaceHost } from "./api";
 import { createOperations } from "./operations";
@@ -14,6 +15,23 @@ export function useWorkspaceApi(host: WorkspaceHost) {
   if (!api.current) {
     const mutate = <T>(run: () => T): T => flushSync(run);
     const proxy: WorkspaceHost = {
+      inspectScanSelection: () => current.current.inspectScanSelection?.(),
+      controlScanSelection: (command) =>
+        mutate(() => {
+          if (!current.current.controlScanSelection)
+            throw new Error("Scan selection editor unavailable.");
+          current.current.controlScanSelection(command);
+        }),
+      selectScanRegion: (entityId, region, through, signal) => {
+        if (!current.current.selectScanRegion)
+          throw new Error("Scan selection viewport unavailable.");
+        return current.current.selectScanRegion(
+          entityId,
+          region,
+          through,
+          signal,
+        );
+      },
       previewLandmarks: (options) => {
         if (!current.current.previewLandmarks)
           throw new Error("Landmark preview unavailable");
@@ -44,6 +62,11 @@ export function useWorkspaceApi(host: WorkspaceHost) {
         mutate(() => current.current.showScanPreview?.(preview)),
       clearScanPreview: (previewId) =>
         mutate(() => current.current.clearScanPreview?.(previewId)),
+      showReferenceConstructionPreview: (owner, candidate) => {
+        if (!current.current.showReferenceConstructionPreview)
+          throw new Error("Reference construction preview unavailable");
+        current.current.showReferenceConstructionPreview(owner, candidate);
+      },
       showDatumPreview: (entities) =>
         mutate(() => {
           if (!current.current.showDatumPreview)
@@ -64,7 +87,7 @@ export function useWorkspaceApi(host: WorkspaceHost) {
             throw new Error("Interface control unavailable");
           current.current.setInterface(patch);
         }),
-      inspectViewport: () => current.current.inspectViewport?.(),
+      inspectViewport: (view) => current.current.inspectViewport?.(view),
       inspectSpaceMouse: () => current.current.inspectSpaceMouse?.(),
       controlSpaceMouse: (command, signal) => {
         if (!current.current.controlSpaceMouse)
@@ -76,8 +99,8 @@ export function useWorkspaceApi(host: WorkspaceHost) {
           throw new Error("Viewport control unavailable");
         current.current.controlViewport(command);
       },
-      pickViewport: (x, y, limit) =>
-        current.current.pickViewport?.(x, y, limit),
+      pickViewport: (x, y, limit, view) =>
+        current.current.pickViewport?.(x, y, limit, view),
       captureScreenshot: (options, signal) => {
         if (!current.current.captureScreenshot)
           throw new Error("Screenshot capture unavailable");
@@ -95,8 +118,12 @@ export function useWorkspaceApi(host: WorkspaceHost) {
         await current.current.deleteBackup(id);
       },
       cad: () => current.current.cad(),
-      commit: (entities, label) =>
-        mutate(() => current.current.commit(entities, label)),
+      commit: (entities, label, policy) =>
+        mutate(() =>
+          policy === undefined
+            ? current.current.commit(entities, label)
+            : current.current.commit(entities, label, policy),
+        ),
       replace: (project, cad, session) =>
         mutate(() => current.current.replace(project, cad, session)),
       select: (id, modifiers) =>
@@ -136,8 +163,9 @@ export function useWorkspaceApi(host: WorkspaceHost) {
       ...createOperations(proxy),
       ...createAuthoringOperations(proxy),
       ...createWorkflowOperations(proxy),
+      ...createScanSelectionOperations(proxy),
     });
   }
-  useEffect(() => () => api.current?.dispose(), []);
+  useEffect(() => api.current!.retainOwner(), []);
   return api.current;
 }

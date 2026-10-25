@@ -1,0 +1,529 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Selected sketch-record pick acquisition implemented internally; native line acceptance transition traced but shared publication remains incomplete",
+  "applicationBehaviorChanged": false,
+  "internalArithmeticAdded": true,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+    },
+    {
+      "path": "tests/reference-circle-inputs.test.ts",
+      "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+    },
+    {
+      "path": "tests/reference-circumcenter.test.ts",
+      "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "3c315e560fd53fb82281c8f79d9aa9537c1d75e0857135b0841ae05d2e77745d"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "4a1009d72407d70f7f5fcad5c7ebe118ac130e568498fdcbcf1edfc767f96772"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+    },
+    {
+      "path": "tests/reference-sketch-pick-acquisition.test.ts",
+      "sha256": "07908f5c39dc3e1c847b24500573fa32a6558011d62b42d439ba98e2fece4364"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "capture": {
+      "artifact": "native-construction-source-metadata-20261024-line-picks-r1/evidence.json",
+      "sha256": "7a32245e1af13559edeec0e4215e3c84bc3c3ec3bf74e20ef3b5e961be3e941a",
+      "matchedCodeConstantAndMetadataBytesPerPass": 6235,
+      "twoReadsAgree": true,
+      "readBytes": 13654,
+      "regionQueries": 104,
+      "closed": true
+    },
+    "proceduresChecked": 6,
+    "instructionStartsChecked": 1430,
+    "directFlowsChecked": 182,
+    "selectedArithmeticAndAcceptanceAnchors": [
+      {
+        "address": "0x1406b2a85",
+        "instruction": "call qword ptr [rdx + 0x170]",
+        "bytesSha256": "3f6df0cbc47d04418060b852c907bd442cc79ddc8bdf96f9977bf4c28f352f17"
+      },
+      {
+        "address": "0x1406b2aad",
+        "instruction": "cvtpd2ps xmm0, xmm0",
+        "bytesSha256": "27ec64048bd6579e11d790b46d2e6adb49685e3186d23762dbc878e31590f3c9"
+      },
+      {
+        "address": "0x1406b2ab1",
+        "instruction": "cvtpd2ps xmm1, xmm1",
+        "bytesSha256": "5a38a7eef661e5b598577339b08b7ab129483afecf791a29b3a083f7ad4c9884"
+      },
+      {
+        "address": "0x1406b2ac0",
+        "instruction": "cvtpd2ps xmm0, xmm0",
+        "bytesSha256": "27ec64048bd6579e11d790b46d2e6adb49685e3186d23762dbc878e31590f3c9"
+      },
+      {
+        "address": "0x1406b2aec",
+        "instruction": "addsd xmm2, xmm0",
+        "bytesSha256": "881c0cb2ff936ac2305434d47845a82804cd409be920a4cfbe1c80bfe319f041"
+      },
+      {
+        "address": "0x1406b2afd",
+        "instruction": "addsd xmm2, xmm1",
+        "bytesSha256": "e75262fafec0e3955c1811eaa178944f8b0bc25eb2e13d9530686abc7b666210"
+      },
+      {
+        "address": "0x1406b2b16",
+        "instruction": "addsd xmm2, qword ptr [rax + 0x38]",
+        "bytesSha256": "18816e12976689d90aae17306d84476595cdc4e8bce218c7ec1d5d47e667767e"
+      },
+      {
+        "address": "0x1406b2b23",
+        "instruction": "cvtpd2ps xmm4, xmm2",
+        "bytesSha256": "f4ca4b2de12a445d83f3d405f6aa16d5da71a801833360461f16aa71fdbaae4b"
+      },
+      {
+        "address": "0x1406b2b34",
+        "instruction": "cvtpd2ps xmm0, xmm7",
+        "bytesSha256": "c96643c0e69979ab58494a888df52c89579da1fc1540e38fd87b1cb2f194be21"
+      },
+      {
+        "address": "0x1406b2b40",
+        "instruction": "cvtpd2ps xmm2, xmm3",
+        "bytesSha256": "8585de30be103b16c06ce90383daa29ec14f1576446a6b69289c6f1d0667b6d7"
+      },
+      {
+        "address": "0x1406b2be3",
+        "instruction": "movsd qword ptr [rax + 0x3720], xmm6",
+        "bytesSha256": "17601ae8379ebb62d14dd3da89f01b194a62dc6953ce508ed1b610ede696cbc2"
+      },
+      {
+        "address": "0x1406b2c4d",
+        "instruction": "movsd qword ptr [rax + 0x372c], xmm6",
+        "bytesSha256": "a28903f777ae1592329e9685caaee8acdbad6eb2ab23b0d19116549d0904797e"
+      },
+      {
+        "address": "0x140573b22",
+        "instruction": "call qword ptr [rax + 0x178]",
+        "bytesSha256": "bbe55e3e1ada841ada70dd3131eb805e9e2f8951e44a929ebd49b1bfb8684193"
+      },
+      {
+        "address": "0x140573c31",
+        "instruction": "jne 0x140573c59",
+        "bytesSha256": "0713227015418cc213ab72663fb7e97eecbd37475376361917869b88e2bf2933"
+      },
+      {
+        "address": "0x140573c57",
+        "instruction": "je 0x140573c5e",
+        "bytesSha256": "58b821595e7051b1409a38f7c48f7b1153019dce5f9e8b78241111e6dd4a67cb"
+      },
+      {
+        "address": "0x140573e09",
+        "instruction": "mov dword ptr [rax + 0x2b8], 2",
+        "bytesSha256": "7a441f8e06cc392ab3300d4fb180165c3f34ed236586749cc37254b63005c327"
+      },
+      {
+        "address": "0x140573e13",
+        "instruction": "jmp 0x140573cdf",
+        "bytesSha256": "a0c77b508a6347b5d4cde9c5707d87bb4ad74b58616a27825d3c20026b99088d"
+      },
+      {
+        "address": "0x140573d08",
+        "instruction": "call 0x140575100",
+        "bytesSha256": "16d7a720d34735b73614d54b95875abe2ce562bf5fe740db4c0ea56e04d42124"
+      }
+    ],
+    "scope": "Static decoding plus identity-bound repeated passive code, vtable, descriptors and selected exception-entry reads. No target calls, writes, geometry-buffer reads, UI input or preserved-image execution."
+  },
+  "contracts": {
+    "sketchRecordAcquisition": "Selected cached sketch owner, child and record index other than -1 branch reads a stored 80-byte record. Round local XYZ to Float32, promote to double, apply the owner frame with explicit addition order, then round world XYZ to Float32 for retained pick storage. Index admission upstream remains unverified.",
+    "recordResolution": "Nearest stored-record resolution independently transforms original Float64 records; do not replace it with the selected record or pre-round every source record.",
+    "selectorState": "First successful pair source selection arms second; second clears selection. Preview copies identities and coordinates in selector order into 28-byte records.",
+    "pairAcceptance": "After preview update and geometry copy, remove old dependency backlinks and clear common inputs. If either resolved pair source is a sketch, store endpoint mode and re-add neither dependency. Otherwise re-add resolved pair sources. Copy retained pick vector even after mode becomes endpoints.",
+    "averageAcceptance": "Copy common input identities from preview and retain the ordered pick vector.",
+    "transactionBoundary": "Scene publication and exception rollback are not established by the selected acceptance branch."
+  },
+  "implemented": [
+    "acquireSketchReferencePick computes finite retained world coordinates for an already selected sketch record.",
+    "Shared frame validation also remains used by the existing nearest-record resolver.",
+    "No public GUI/MCP source selection, hit testing or construction publication changes."
+  ],
+  "verification": {
+    "red": "Six positive analytic cases failed because the helper was absent; six rejection cases were not independent red evidence.",
+    "initialBuild": "Failed with TS2352 in malformed-frame test cast; fixed through explicit unknown conversion. No heap change.",
+    "build": {
+      "passed": true,
+      "heapMiB": 3072,
+      "jobLimitBytes": 4294967296,
+      "elapsedSeconds": 32.7412874000147,
+      "peakAggregateBytes": 2503282688,
+      "bundle": "scanforge-9f1d31f32b856ccc"
+    },
+    "focused": {
+      "passed": 287,
+      "files": 11,
+      "newAnalyticTests": 12
+    },
+    "full": {
+      "passed": 48312,
+      "skipped": 64,
+      "passedFiles": 615,
+      "skippedFiles": 18,
+      "elapsedSeconds": 263.9326050999807,
+      "peakAggregateBytes": 965255168
+    },
+    "receipts": [
+      {
+        "label": "construction-line-pick-fieldrefs-r1",
+        "sha256": "d0bdd2de977a33aa8e1c19a109160ea721f88918cb0bf8a469c6a54828c2a559",
+        "exitCode": 0,
+        "elapsedSeconds": 0.3593510999926366,
+        "peakAggregateBytes": 116281344,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-pick-fieldrefs-r2",
+        "sha256": "ff8907a6b196aa33a8453b16fe52553c17dda403d4b206e36665d18d9d314028",
+        "exitCode": 0,
+        "elapsedSeconds": 0.35996739999973215,
+        "peakAggregateBytes": 116301824,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-pick-callback-noanalysis-r1",
+        "sha256": "6f8b54e5a79b77feb8201c9fdcbefc738a5b2ff73da647c12702c2b75434de2b",
+        "exitCode": 0,
+        "elapsedSeconds": 11.624272699991707,
+        "peakAggregateBytes": 877989888,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-selector-table-r1",
+        "sha256": "d11d9634ee78241c1c1daf1a02ccbcc1bdfe1db28fb69b8dcf109e9ecd13b95c",
+        "exitCode": 0,
+        "elapsedSeconds": 0.2593496000044979,
+        "peakAggregateBytes": 93831168,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-selector-table-r2",
+        "sha256": "5a83b934337d7c0d026ec79acffb097d36c09eb45ef03ba58f8666ae82e12023",
+        "exitCode": 0,
+        "elapsedSeconds": 0.25864019998698495,
+        "peakAggregateBytes": 94908416,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-selector-callback-noanalysis-r1",
+        "sha256": "81b4b04946055cfd153d67655904caf5ffe8acda852e72b84ce68e15cd0f7bae",
+        "exitCode": 0,
+        "elapsedSeconds": 11.271640400023898,
+        "peakAggregateBytes": 870776832,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-dialog-fieldwrites-r1",
+        "sha256": "c2d28b3464d2df03c105a7d59d52201983df0c25d5952cf0039f8c2ca26a633b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.3094602000201121,
+        "peakAggregateBytes": 96735232,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-selector-events-noanalysis-r1",
+        "sha256": "a1d810819d1501fea19c41e1df461180847192b632405efbbcff822e1139d13b",
+        "exitCode": 0,
+        "elapsedSeconds": 11.069062900001882,
+        "peakAggregateBytes": 870690816,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-pick-routing-noanalysis-r1",
+        "sha256": "c0d601a086d12ee2729a5e594cb91c57967cdc04174f0e3bba906506c30c67f3",
+        "exitCode": 0,
+        "elapsedSeconds": 12.535172100004274,
+        "peakAggregateBytes": 825413632,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-message-map-r1",
+        "sha256": "bd43f786484eb60b8df95b16e88cf640f1a38ac58b282bae13eb8b545d48a6c5",
+        "exitCode": 0,
+        "elapsedSeconds": 0.259037800016813,
+        "peakAggregateBytes": 94760960,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-pick-buttons-noanalysis-r1",
+        "sha256": "3bfcbc98ec73760746baca263788fe0fb4a15406ab2c97299197dbbeb3660dc6",
+        "exitCode": 0,
+        "elapsedSeconds": 11.069888199999696,
+        "peakAggregateBytes": 907456512,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-viewport-pick-noanalysis-r1",
+        "sha256": "a0eeb6f59c39510487208cca0043b5296d3064b1c30af7d41de914ae71fc61ed",
+        "exitCode": 0,
+        "elapsedSeconds": 12.23127889999887,
+        "peakAggregateBytes": 949313536,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-pick-anchors-r1",
+        "sha256": "9dcc908ed4454ce1f26cb710bf7a1865d523c6ea67f9666c8b179089a6fa6ceb",
+        "exitCode": 0,
+        "elapsedSeconds": 0.25810559999081306,
+        "peakAggregateBytes": 102572032,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-picks-semantics-r1",
+        "sha256": "d7da7a09502d5dba16176dd849ccde8dacaec87eb143f8464f7b06d0697cb69b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.25867109998944215,
+        "peakAggregateBytes": 97452032,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-picks-bindings-r1",
+        "sha256": "016d135efca155bd7aaa6c1f49992532579cbb589d8608736fb7e31571d153c7",
+        "exitCode": 0,
+        "elapsedSeconds": 0.30938329998753034,
+        "peakAggregateBytes": 102367232,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-red",
+        "sha256": "53062590408425d996f4b613b16eaf86ce7ba1ec1c617c81ef5b659f3fcea90e",
+        "exitCode": 1,
+        "elapsedSeconds": 0.6129380999773275,
+        "peakAggregateBytes": 276922368,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-build",
+        "sha256": "88bc71cfb40da9f2e463753abe1bbc2328aaa4c4dfbde09d1deaab06af03bd17",
+        "exitCode": 2,
+        "elapsedSeconds": 23.549959399999352,
+        "peakAggregateBytes": 2504495104,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-format",
+        "sha256": "32a1530ffc5d734623cc9ad59db6b85c7bb15b23382a98a863591b8989f3c215",
+        "exitCode": 0,
+        "elapsedSeconds": 0.20815059999586083,
+        "peakAggregateBytes": 107315200,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-build-types-fixed",
+        "sha256": "68662db92ab7771166a656730f860a704ff278d9233da12573f55af3c4f4bb6b",
+        "exitCode": 0,
+        "elapsedSeconds": 32.7412874000147,
+        "peakAggregateBytes": 2503282688,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-green",
+        "sha256": "33e4b8c2caf24ab0771b3b732d9dab1e965c2d0f8bb263261543e4d64ecad704",
+        "exitCode": 0,
+        "elapsedSeconds": 2.98691899998812,
+        "peakAggregateBytes": 373329920,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-sketch-pick-acquisition-r1-full",
+        "sha256": "e0ec7d00ed071674c86099fcfe743a7a2453c39a3488c7d37d3db9ef2189d123",
+        "exitCode": 0,
+        "elapsedSeconds": 263.9326050999807,
+        "peakAggregateBytes": 965255168,
+        "cleanedUp": true
+      }
+    ],
+    "unchangedPriorSourcePins": [
+      {
+        "path": "src/reference-geometry-numerics.ts",
+        "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+      },
+      {
+        "path": "tests/reference-circle-inputs.test.ts",
+        "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+      },
+      {
+        "path": "tests/reference-circumcenter.test.ts",
+        "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+      },
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+      },
+      {
+        "path": "src/sketch-frame.ts",
+        "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+      },
+      {
+        "path": "src/types.ts",
+        "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+      },
+      {
+        "path": "docs/AGENT_GUIDE.md",
+        "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+      },
+      {
+        "path": "docs/MCP_ARCHITECTURE.md",
+        "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": {
+    "scope": "Internal source arithmetic only; no published application capability or schema changes.",
+    "existingSharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "plannedSharedOperations": [
+      "reference_construction_sources",
+      "reference_construction_edit",
+      "reference_construction_get",
+      "reference_construction_apply"
+    ],
+    "requiredIntegration": "Use shared source resolution and publication for GUI/MCP, preserve native mode/dependency transition, retained records, copied geometry, revision/retry/cancellation, history/persistence and structured inspection. Public tools remain undiscoverable pending complete implementation and acceptance."
+  },
+  "limitations": [
+    "Native numerical output, original-native save/reopen and rendered GUI/MCP acceptance are not proven.",
+    "Upstream hover/selection admission of cached owner, child and record index remains to be traced.",
+    "Generic viewport-hit coordinates and other pick branches require their own provenance.",
+    "The viewport handler spans multiple exception fragments; selected entry metadata alone does not describe its whole extent.",
+    "Raw frame arithmetic is not authorization for arbitrary public sketch transforms.",
+    "Negative byte-pattern and access-flag scans do not prove absence of other pick writers.",
+    "Outer transaction exceptions, dependency refresh and result publication remain incomplete."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-line-viewport-pick-noanalysis-r1/evidence.json",
+      "sha256": "d1375e9123a50d8d5ee7beee17e142734cc54c025280bc1679bff0788cdf1f5e"
+    },
+    {
+      "artifact": "construction-line-pick-callback-noanalysis-r1/evidence.json",
+      "sha256": "2e08e0b1e5028a3cef7fc664ae93508fe7f489a190d796088c648a1dc525f40b"
+    },
+    {
+      "artifact": "construction-line-selector-events-noanalysis-r1/evidence.json",
+      "sha256": "94303d346f5fc955830fc31a107b158ad270a72b5625c491ae0d3de2a5e46035"
+    },
+    {
+      "artifact": "construction-calculation-noanalysis-r1/evidence.json",
+      "sha256": "881166f8f3587bab95fdaf616ae4ceb29700b03499b789e0ecc48e3f572db292"
+    },
+    {
+      "artifact": "construction-line-pick-buttons-noanalysis-r1/evidence.json",
+      "sha256": "83c73c7cb0b2bc4fe94cde1197413cca37574b37906986b1fc98e9b9e2ff78e3"
+    },
+    {
+      "artifact": "construction-line-picks-semantics-r1.json",
+      "sha256": "2d07f1c58a6fa61ac4cc14feef7ad2ac42485431a3ab8c72c017075fab1a53de"
+    },
+    {
+      "artifact": "construction-line-picks-code-bindings-r1.json",
+      "sha256": "453992976a02adf8c66799260e1f7d092c707aa4baf6de025bd4fda96796151b"
+    },
+    {
+      "artifact": "construction-line-pick-anchors-r1.json",
+      "sha256": "2cd2f9ddaf17f870c571537505e98a9a2d325e55c764e149c5ae78b7d38f8ab2"
+    },
+    {
+      "artifact": "construction-line-message-map-r1.json",
+      "sha256": "675681264c0069f2324e389f669fce509241eee85f671e66aa6581cfbfd3fe99"
+    },
+    {
+      "artifact": "construction-line-pick-fieldrefs-r1.json",
+      "sha256": "c37ae071899edef44b4ec92a7a66cab1e130d749eb551cde2cccf92c4d931c84"
+    },
+    {
+      "artifact": "construction-line-pick-fieldrefs-r2.json",
+      "sha256": "21ea6b9faf7abf060a643777231fe0e8ccf24b8b9fc955521fff1d6bfbcab438"
+    },
+    {
+      "artifact": "construction-line-selector-table-r1.json",
+      "sha256": "9207dcce02e904086aa0f76ae8e3f33c0bc838331f0d40b1b7bd21134a4fb175"
+    },
+    {
+      "artifact": "construction-line-selector-table-r2.json",
+      "sha256": "bebb2a0342b06ad45ce2e82297d29e8ccde6a15f003954da32e0acb0c94719c7"
+    },
+    {
+      "artifact": "construction-line-dialog-fieldwrites-r1.json",
+      "sha256": "f94d08ba51ca38a4d511f55cf8454e67d1792dfcb87ae1131852d44e6f664ac9"
+    },
+    {
+      "artifact": "construction-line-pick-routing-noanalysis-r1/evidence.json",
+      "sha256": "754fe2049c318fd8e350ea47794b50d9e037f2ac02f1874a148cd075f1d557a9"
+    },
+    {
+      "artifact": "construction-line-selector-callback-noanalysis-r1/evidence.json",
+      "sha256": "b7f96b8fe5438af0bd529e9347099f59b014ff113c09bc0ae3877bc0c5220e70"
+    }
+  ]
+}
