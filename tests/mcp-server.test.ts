@@ -192,9 +192,7 @@ describe("opt-in bounded long polling", () => {
     const schedule = globalThis.setTimeout;
     let earlyWake = false;
     const timers = vi.spyOn(globalThis, "setTimeout").mockImplementation(((
-      callback,
-      delay,
-      ...args
+      ...[callback, delay, ...args]: Parameters<typeof setTimeout>
     ) => {
       const early = !earlyWake && Number(delay) > 1 && Number(delay) <= 120;
       if (early) earlyWake = true;
