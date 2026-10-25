@@ -30,6 +30,16 @@ import test. The bounded driver starts the child suspended in a 4 GiB Windows
 Job, enforces a 15-minute lease and records aggregate peak memory, total owned
 processes, exit status and zero remaining processes. Closing the Job releases
 owned descendants on failure. Existing application admission guards remain active.
+Each original uses a short-lived reference process, then streams upload chunks;
+reference geometry is released before the browser imports its own geometry.
+The earlier combined-reference run exceeded the same Job limit on PLY3 and is
+retained as a failed harness run, not acceptance evidence.
+
+The build typechecks every original source and test root. Fresh compiler processes
+check the source plus batches of 32 tests with a 1536 MiB heap each, avoiding the
+hosted runner single-process heap exhaustion without raising memory limits.
+A deliberately invalid source assignment was rejected with TS2322 before the
+guard was removed. The full bounded typecheck passed all 23 batches.
 
 ## Evidence boundaries
 
