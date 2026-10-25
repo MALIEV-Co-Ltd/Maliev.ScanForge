@@ -2,6 +2,16 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
+Latest code candidate: `1594c78a98937911b90bd001f95f51b3fd94dfab`, build
+`scanforge-853c3b899398f72d`. Its
+[hosted run](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807)
+failed before execution: GitHub reports recent account payments failed or the
+spending limit needs increasing. The [check annotations](evidence/m5-20261025/hosted-ci-billing-block.json)
+confirm no job started. This is not a source/test failure or a passing hosted
+validation. Account-owner action is required before exact-head CI can run.
+Native QuickSurface UI initialization and M4 acceptance also remain unavailable.
+Local checks are retained below; M5 is not merged or closed.
+
 ## Operation matrix
 
 | Required area                                           | Application/shared MCP path                                                           | Evidence and remaining gate                                                                                                                                                                                                                                         |
