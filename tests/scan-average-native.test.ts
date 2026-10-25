@@ -1,5 +1,6 @@
 import observed from "./fixtures/average-observed-planes.json";
 import rimObserved from "./fixtures/average-observed-open-rim.json";
+import tieObserved from "./fixtures/average-observed-ties.json";
 import { expect, it } from "vitest";
 import { averageScanMesh } from "../src/scan-tools-transforms";
 import type { IndexedMesh } from "../src/types";
@@ -7,6 +8,17 @@ import type { IndexedMesh } from "../src/types";
 const source = new Float32Array([0, 0, 1, 1, 0, 1, 0, 1, 1]);
 const plane = (z: number) =>
   new Float32Array([-10, -10, z, 10, -10, z, 0, 10, z]);
+
+it.each([
+  { name: "positive-first", ...tieObserved },
+  ...tieObserved.additionalCases,
+])("matches the observed native projection tie: $name", (sample) => {
+  const result = averageScanMesh(tieObserved.base, {
+    targets: [sample.reference],
+    tolerance: sample.tolerance,
+  });
+  expect(Array.from(result.positions)).toEqual(sample.positions);
+});
 
 it("matches the observed three-plane export with the 10 mm default", () => {
   const base = Float32Array.from(observed.inputs["base-scan"]);

@@ -272,25 +272,33 @@ try {
       replace: true,
     }),
   );
+  // Same cylindrical side used in the native seam-tangent discrimination run.
+  const referenceUpload = (
+    await call("artifact_put", {
+      name: "reference-cylinder-frame90.step",
+      offset: 0,
+      base64: (
+        await readFile(
+          new URL("./fixtures/unroll-reference-frame90.step", import.meta.url),
+        )
+      ).toString("base64"),
+    })
+  ).result;
   const cylinder = await job(
-    await mutate("cad_create", {
-      name: "Cylinder reference",
-      recipe: {
-        kind: "primitive",
-        input: {
-          kind: "cylinder",
-          center: [0, 0, 0],
-          axis: [0, 0, 1],
-          radius: 2,
-          height: 1,
-        },
-      },
+    await mutate("project_import", {
+      artifactId: referenceUpload.artifactId,
+      unit: "mm",
     }),
   );
+  const cylinderId = cylinder.result.entityId;
+  await mutate("object_update", {
+    entityId: cylinderId,
+    patch: { name: "Cylinder reference" },
+  });
   reference = mesh(
-    cylinder.result.entityIds[0],
+    cylinderId,
     "Cylinder reference",
-    (await geometry(cylinder.result.entityIds[0])).positions,
+    (await geometry(cylinderId)).positions,
   );
   inputs.push(reference);
   await mutate("object_select", { entityId: first.id });
@@ -342,9 +350,7 @@ try {
       kind: "scanTools",
       operation: {
         kind: "unroll",
-        center: [0, 0, 0],
-        axis: [0, 0, 1],
-        radius: 2,
+        cylinderId: reference.id,
         instances: 2,
       },
     },
@@ -357,6 +363,9 @@ try {
     requestId,
   });
   const replay = await job(receipt);
+  assert.equal(replay.result.unroll.cylinderEntityId, reference.id);
+  assert.equal(replay.result.unroll.referenceKind, "exact-cad");
+  assert.equal(replay.result.unroll.radius, 2);
   assert.deepEqual(
     await call("mesh_process", {
       ...request,
@@ -490,6 +499,7 @@ try {
     failureRollback: true,
     saveReopen: true,
     rerunAfterCadReopen: true,
+    importedReferenceSeamTangent: "+Y",
     baseEntityId: base.id,
     referenceEntityIds: [reference.id],
     outputCoordinates: gui,

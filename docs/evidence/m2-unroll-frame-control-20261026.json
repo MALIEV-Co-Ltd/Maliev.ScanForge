@@ -1,0 +1,78 @@
+{
+  "status": "bounded-native-frame-control-observed-auxiliary-publication-open",
+  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "nativeExeSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "units": "mm",
+  "settings": {
+    "offsetDegrees": 0,
+    "instances": 1,
+    "radius": 2,
+    "center": [0, 0, 0],
+    "axis": [0, 0, 1],
+    "importedSurfaceSeamTangent": [0, 1, 0]
+  },
+  "files": {
+    "source-cylinder.stl": "99bd87ca47cc4d09da5cd59c4765f080cc7ab41f70503a8adc64308f4279575e",
+    "reference-cylinder-frame90.step": "e6665a64a82901930d593fbc74054da999d5ae88ff9fbe0485d08bb89fb164c7",
+    "native-frame90-unroll0.stl": "34414ff8e25012d33d1e4ea7efbd9bb0a90bfd5b68a7a04ee92a7398dce3397c",
+    "native-frame90-unroll0.qsf": "557494b57c4e006aa5a4d079ffce2bd87ba036de7918d6032664f033a50f8e47",
+    "native-frame90-auxiliary-sketch.iges": "27de9da740ba86571c283b1dea441280ce550edfb313efc7185917ce1999467b",
+    "native-frame90-ownership.png": "3ef1006db0dde3eb1d73bc809b41944b4a24966e724dd3bb477d374f729aa2dc",
+    "native-frame90-ownership-ax.txt": "2ace0cb36a00a2ba9c9847fd5a55516a727cdee471b750e94cc872b5355ff5ef"
+  },
+  "comparison": {
+    "facets": 22,
+    "priorReferenceSeamTangent": [1, 0, 0],
+    "allOrderedCoordinateBytesEqual": true,
+    "orderedCoordinateSha256": "65cdee01679906761a56fde3252aeee1b31e847fdac5699b8397e04759374433"
+  },
+  "ownership": {
+    "newMesh": true,
+    "originalsRetained": true,
+    "sketchCreated": true,
+    "hiddenRollFrameCreated": true,
+    "sketchPlaneObserved": "OXY at offset0",
+    "exportedSketchLine": {
+      "start": [12.566370614, -1.665334537e-16, 0],
+      "end": [12.566370614, 1, 0]
+    },
+    "constructionLineDisplay": "dashed with endpoint markers"
+  },
+  "remaining": "Roll-frame numeric recipe, auxiliary sketch/frame production publication and complete M2 acceptance remain open. Seam-tangent invariance is established only for this+Z control.",
+  "application": {
+    "assetBuildId": "scanforge-de47b3b68835ea10",
+    "rootCause": "Display-triangle cylinder fit perturbed exact imported CAD radius.",
+    "priorFirstArcCoordinate": 0.5234062671661377,
+    "nativeFirstArcCoordinate": 0.5235987901687622,
+    "sharedFix": "GUI and MCP cylinderId binding uses existing analytic CAD face query; explicit numeric requests retained.",
+    "focusedTests": 160,
+    "checks": [
+      {
+        "label": "m2-exact-unroll-build-20261026-r2",
+        "receiptSha256": "f74296bc52bf0d924f9059c009458f606890824f6cccd3ebfd5894aaa43312f2",
+        "peakAggregateBytes": 1716133888,
+        "cleanupComplete": true
+      },
+      {
+        "label": "m2-exact-unroll-controls-20261026-r2",
+        "receiptSha256": "8715519712290a8f3270ebe3950130e29795c5cd3b0e33e80a3a8e20ba7f8513",
+        "peakAggregateBytes": 417964032,
+        "cleanupComplete": true
+      },
+      {
+        "label": "m2-native-frame90-browser-20261026-r2",
+        "receiptSha256": "4d3696036cabf919977b8e468285355d2ab2f487f198806ebc695c5d5eb835c1",
+        "peakAggregateBytes": 1521041408,
+        "cleanupComplete": true
+      }
+    ],
+    "buildSourceBeforeSha256": "280c85590e5a18e7f32244325258943b255549489d2223236f96d67918968e00",
+    "buildSourceAfterSha256": "9d95f78df83732698e77125172dd3d6b1959712084eeb5c40e627f49f0c0d21d",
+    "browserDriverChangedAfterBuild": "Direct MCP replay now uses cylinderId and checks resolved exact-CAD diagnostics; runtime source unchanged.",
+    "retainedFailures": [
+      "m2-native-frame90-browser-20261026-r1",
+      "m2-exact-unroll-reference-red-20261026-r1",
+      "m2-exact-unroll-build-20261026-r1"
+    ]
+  }
+}

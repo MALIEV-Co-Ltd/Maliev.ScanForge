@@ -1,0 +1,48 @@
+{
+  "scope": "Observed installed native GUI Average exports with equal-distance projections, opposite reference face orders and strict-radius exclusion.",
+  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "units": "mm",
+  "tolerance": 10,
+  "base": [
+    -0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.5,
+    0.5, 0
+  ],
+  "reference": [
+    -10, -10, 1, 10, -10, 1, 0, 10, 1, -10, -10, -1, 10, -10, -1, 0, 10, -1
+  ],
+  "positions": [
+    -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5,
+    0.5, -0.5, -0.5, 0.5, -0.5
+  ],
+  "inputSha256": {
+    "base": "c36e668ba3b855b73fa1026cb744aad03f8d70b67ddf8e4b2ef2e8be024862b6",
+    "reference": "0e8785891f12f3bc0aea06c0f8d7e42c530df3cc8d9352b789d5e292132c7135"
+  },
+  "exportSha256": "e511a02fa5d284e968be05d9e41bca62733fbf864ca98b458e32190443b03e46",
+  "additionalCases": [
+    {
+      "name": "negative-first",
+      "reference": [
+        -10, -10, -1, 10, -10, -1, 0, 10, -1, -10, -10, 1, 10, -10, 1, 0, 10, 1
+      ],
+      "tolerance": 10,
+      "positions": [
+        -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5,
+        0.5, 0.5, -0.5, -0.5, 0.5, -0.5
+      ],
+      "exportSha256": "e511a02fa5d284e968be05d9e41bca62733fbf864ca98b458e32190443b03e46"
+    },
+    {
+      "name": "exact-radius exclusion",
+      "reference": [
+        -10, -10, 1, 10, -10, 1, 0, 10, 1, -10, -10, -1, 10, -10, -1, 0, 10, -1
+      ],
+      "tolerance": 1,
+      "positions": [
+        -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5,
+        0.5, 0.0, -0.5, 0.5, 0.0
+      ],
+      "exportSha256": "ddfce599f29adf64f82cb7cf0b36784944b609059b23e69976260c4e8e3e9011"
+    }
+  ]
+}

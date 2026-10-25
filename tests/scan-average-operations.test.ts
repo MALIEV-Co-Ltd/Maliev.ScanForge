@@ -11,6 +11,7 @@ import type { Entity } from "../src/types";
 import { processMesh } from "../src/processing-client";
 import { runScanTool } from "../src/scan-tools";
 import { runAverageCommand } from "../src/ui/average-command";
+import unrollObserved from "./fixtures/unroll-observed-cylinder.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 const triangle = [0, 0, 1, 1, 0, 1, 0, 1, 1];
 function entity(patch: Partial<Entity> = {}): Entity {
@@ -28,6 +29,7 @@ function entity(patch: Partial<Entity> = {}): Entity {
 function harness(entities: Entity[] = [entity()]) {
   let sequence = 0;
   const cad = {
+    alignmentReferences: vi.fn(),
     primitive: vi.fn(async () => ({
       kernelId: `native-${++sequence}`,
       positions: [...triangle],
@@ -97,6 +99,113 @@ beforeEach(() => {
         diagnostics: { summary: result.summary },
       };
     });
+});
+
+it("binds Unroll to exact imported CAD parameters through GUI and MCP", async () => {
+  const { runUnrollCommand } = await import("../src/ui/unroll-command");
+  const source = entity({
+    positions: Float32Array.from(unrollObserved.source),
+  });
+  const reference = entity({ id: "reference", kind: "cad", kernelId: "exact" });
+  const h = harness([source, reference]);
+  vi.mocked(h.cad.alignmentReferences).mockResolvedValue([
+    {
+      kind: "cylinder",
+      faceIndex: 0,
+      firstTriangle: 0,
+      triangleCount: 24,
+      location: [0, 0, 0],
+      axis: [0, 0, 1],
+      firstV: 0,
+      lastV: 1,
+      radius: 2,
+      semiAngle: 0,
+    },
+  ]);
+  const result = await runUnrollCommand(
+    new ApplicationApi(h.host, h.ops),
+    source.id,
+    {
+      kind: "unroll",
+      cylinderId: reference.id,
+      instances: 1,
+    },
+  );
+  expect(h.cad.alignmentReferences).toHaveBeenCalledExactlyOnceWith("exact");
+  const request = vi.mocked(processMesh).mock.calls[0][0];
+  expect(request).toMatchObject({
+    operation: {
+      kind: "unroll",
+      center: [0, 0, 0],
+      axis: [0, 0, 1],
+      radius: 2,
+      instances: 1,
+    },
+  });
+  expect(request).not.toHaveProperty("operation.cylinderId");
+  expect(result.unroll).toMatchObject({
+    cylinderEntityId: reference.id,
+    referenceKind: "exact-cad",
+    faceIndex: 0,
+    radius: 2,
+  });
+  const output = h.state.entities.at(-1)!;
+  const expected = unrollObserved.cases.find(
+    (sample) => sample.instances === 1 && sample.offsetDegrees === 0,
+  )!;
+  for (let i = 0; i < output.positions.length; i++) {
+    if (i % 3 === 1)
+      expect(
+        Math.abs(output.positions[i] - expected.positions[i]),
+      ).toBeLessThan(1e-12);
+    else expect(output.positions[i]).toBe(expected.positions[i]);
+  }
+  expect(h.state.entities[0]).toBe(source);
+  expect(h.state.entities[1]).toBe(reference);
+});
+
+it("rejects ambiguous exact Unroll references and cancels before geometry work", async () => {
+  const source = entity({
+    positions: Float32Array.from(unrollObserved.source),
+  });
+  const reference = entity({ id: "reference", kind: "cad", kernelId: "exact" });
+  const h = harness([source, reference]);
+  const face = {
+    kind: "cylinder" as const,
+    faceIndex: 0,
+    firstTriangle: 0,
+    triangleCount: 24,
+    location: [0, 0, 0] as [number, number, number],
+    axis: [0, 0, 1] as [number, number, number],
+    firstV: 0,
+    lastV: 1,
+    radius: 2,
+    semiAngle: 0,
+  };
+  const args = {
+    entityId: source.id,
+    operation: {
+      kind: "scanTools",
+      operation: { kind: "unroll", cylinderId: reference.id },
+    },
+  };
+  vi.mocked(h.cad.alignmentReferences).mockResolvedValue([
+    face,
+    { ...face, faceIndex: 1 },
+  ]);
+  await expect(h.ops.mesh_process(args, h.context)).rejects.toThrow(
+    /single.*cylinder/i,
+  );
+  expect(processMesh).not.toHaveBeenCalled();
+  vi.mocked(h.cad.alignmentReferences).mockImplementation(async () => {
+    h.controller.abort();
+    return [face];
+  });
+  await expect(h.ops.mesh_process(args, h.context)).rejects.toThrow(
+    /cancel|abort/i,
+  );
+  expect(processMesh).not.toHaveBeenCalled();
+  expect(h.host.commit).not.toHaveBeenCalled();
 });
 const plane = (id: string, z: number, facets = 1) =>
   entity({

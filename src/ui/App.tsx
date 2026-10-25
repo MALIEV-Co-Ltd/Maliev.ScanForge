@@ -2764,21 +2764,19 @@ export function App() {
               options,
             )
           : parameters.kind === "unroll"
-            ? (() => {
-                const request = scanToolRequest(
-                  selected,
-                  parameters,
-                  entitiesRef.current,
-                );
-                if (request.operation.kind !== "unroll")
-                  throw new Error("Expected Unroll operation.");
-                return runUnrollCommand(
-                  workspaceApi,
-                  sourceId,
-                  request.operation,
-                  options,
-                );
-              })()
+            ? runUnrollCommand(
+                workspaceApi,
+                sourceId,
+                {
+                  kind: "unroll",
+                  cylinderId: parameters.cylinderId,
+                  offsetDegrees: parameters.offsetDegrees,
+                  ...(parameters.instances !== undefined
+                    ? { instances: parameters.instances }
+                    : {}),
+                },
+                options,
+              )
             : runAverageCommand(
                 workspaceApi,
                 {

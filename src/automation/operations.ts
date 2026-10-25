@@ -2,6 +2,7 @@ import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { bindAverageMeshes } from "../scan-average-request";
+import { bindUnrollReference } from "../scan-unroll-reference";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
@@ -995,6 +996,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      let unroll: Awaited<ReturnType<typeof bindUnrollReference>> | undefined;
       let average: ReturnType<typeof bindAverageMeshes> | undefined;
       let reconstruction:
         ReturnType<typeof bindNativeReconstruction> | undefined;
@@ -1102,6 +1104,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         throw new Error(
           "Selection-only processing requires createNew:true for this operation.",
         );
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        op.operation.cylinderId !== undefined
+      ) {
+        unroll = await bindUnrollReference(
+          op.operation,
+          e,
+          s.entities,
+          (kernelId) => host.cad().alignmentReferences(kernelId),
+          () => c.check(),
+        );
+        op.operation = unroll.operation;
+      }
       const request = {
         ...op,
         ...(bridgePreview ? { previewOnly: true } : {}),
@@ -1372,6 +1388,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         next = [...next, ...created.filter((x) => !next.includes(x))];
       }
       const response = {
+        ...(unroll ? { unroll: unroll.reference } : {}),
         ...(reconstruction
           ? {
               reconstruction: {

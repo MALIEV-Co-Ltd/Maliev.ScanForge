@@ -1,5 +1,5 @@
 import type { ApplicationApi } from "../automation/api";
-import type { ScanToolOperation } from "../scan-tools";
+import type { UnrollCommandInput } from "../scan-unroll-reference";
 import {
   runApplicationJobCommand,
   type ApplicationJobOptions,
@@ -9,7 +9,7 @@ import {
 export function runUnrollCommand(
   api: Pick<ApplicationApi, "invoke" | "currentRevision">,
   entityId: string,
-  operation: Extract<ScanToolOperation, { kind: "unroll" }>,
+  operation: UnrollCommandInput,
   options: ApplicationJobOptions = {},
 ) {
   return runApplicationJobCommand(
