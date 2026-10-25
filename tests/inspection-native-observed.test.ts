@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import circleAngle from "./fixtures/m6-native-circle-angle-observed.json";
 import sparse from "./fixtures/m6-native-sparse-observed.json";
@@ -82,6 +84,15 @@ it("matches native sparse-cloud extrema against the identical typed-in plane", (
 });
 
 it("matches native exported circle radius and displayed diameter on identical geometry", () => {
+  const exported = readFileSync(
+    new URL(
+      "../docs/evidence/m6-inspection-20261025/m6-native-angle-circle.iges",
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(exported).digest("hex")).toBe(
+    circleAngle.igesSha256,
+  );
   const {
     center: [x, y, z],
     radiusMm: r,
@@ -115,23 +126,20 @@ it("matches the native perpendicular-line angle proposal on exported endpoints",
 });
 
 it("prepares an analytic tetrahedron section for the pending native comparison", () => {
-  const v = [
-      [0, 0, 0],
-      [10, 0, 0],
-      [0, 10, 0],
-      [0, 0, 10],
-    ],
-    f = [
-      [0, 2, 1],
-      [0, 1, 3],
-      [0, 3, 2],
-      [1, 2, 3],
-    ];
+  const stl = readFileSync(
+    new URL("./fixtures/m6-section-tetrahedron.stl", import.meta.url),
+    "utf8",
+  );
+  const coordinates = Array.from(
+    stl.matchAll(/vertex\s+(\S+)\s+(\S+)\s+(\S+)/g),
+    (match) => match.slice(1).map(Number),
+  ).flat();
+  expect(coordinates).toHaveLength(36);
   const source: Entity = {
     id: "tetra",
     name: "tetra",
     kind: "mesh",
-    positions: new Float32Array(f.flatMap((face) => face.flatMap((i) => v[i]))),
+    positions: new Float32Array(coordinates),
     visible: true,
     color: "#fff",
     opacity: 1,
