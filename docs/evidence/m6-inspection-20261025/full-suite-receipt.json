@@ -1,0 +1,20 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--maxWorkers=1",
+    "--exclude",
+    "**/.resources/**",
+    "--reporter=json",
+    "--outputFile=.resources/m6-inspection/full-suite-results.json"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 1,
+  "peakJobBytes": 1021071360,
+  "totalProcesses": 818,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 291.5590587000479
+}

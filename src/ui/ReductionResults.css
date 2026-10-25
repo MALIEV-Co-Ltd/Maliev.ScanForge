@@ -128,3 +128,18 @@
     display: none;
   }
 }
+
+.reduction-color-scale[data-read-only="true"] .reduction-color-scale-body {
+  margin: 12px 0 0;
+}
+@media (max-width: 700px) {
+  .reduction-color-scale[data-read-only="true"] {
+    display: block;
+    top: 90px;
+    right: 8px;
+    width: 88px;
+  }
+  .reduction-color-scale[data-read-only="true"] .reduction-color-scale-body {
+    height: min(30vh, 200px);
+  }
+}

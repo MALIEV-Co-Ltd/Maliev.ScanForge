@@ -1,3 +1,5 @@
+import { createInspectionOperations } from "./inspection-operations";
+import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { createCadInspectionOperation } from "./cad-inspection";
 import { createScanPreviewOperation } from "./scan-preview-operations";
@@ -58,8 +60,6 @@ import {
   fitSphere,
   fitCylinder,
   fitCone,
-  deviations,
-  sectionMesh,
 } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
@@ -1386,20 +1386,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     analysis_section: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
-      if (e.positions.length > 2_250_000 && !a.selectionOnly)
-        throw new Error(
-          "Section analysis is limited to 250,000 triangles; select a region or reduce a mesh copy first.",
-        );
-      const section = sectionMesh(
-        selectedPositions(s, e, a.selectionOnly),
-        a.axis,
-        a.offset,
-      );
+      c.check();
+      const section = inspectSection(e, a.axis, a.offset);
       const rows = ["x1,y1,z1,x2,y2,z2"];
       for (let i = 0; i < section.segments.length; i += 6)
         rows.push(section.segments.slice(i, i + 6).join(","));
       c.check();
       return {
+        units: "mm",
+        axis: a.axis,
+        offset: a.offset,
+        scope: "visible-triangles",
         length: section.length,
         segments: section.segments.length / 6,
         csv: c.artifact(rows.join("\n"), "section.csv", "text/csv"),
@@ -1414,61 +1411,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
     },
-    analysis_deviation: (a, c) => {
-      const s = host.snapshot(),
-        e = object(s, a.entityId);
-      assertSampledGeometry(e);
-      if (e.positions.length > 2_250_000)
-        throw new Error(
-          "Deviation analysis is limited to 250,000 triangles; reduce a mesh copy first.",
-        );
-      const fit = a.fit;
-      if (
-        !fit ||
-        !["plane", "sphere", "cylinder", "cone"].includes(fit.kind) ||
-        !Array.isArray(fit.center) ||
-        fit.center.length !== 3 ||
-        !fit.center.every(Number.isFinite) ||
-        !Array.isArray(fit.axis) ||
-        fit.axis.length !== 3 ||
-        !fit.axis.every(Number.isFinite) ||
-        !Math.hypot(...fit.axis)
-      )
-        throw new Error(
-          "Deviation requires a valid fit result with finite center and nonzero axis.",
-        );
-      if (
-        fit.kind !== "plane" &&
-        (!(fit.radius > 0) || !Number.isFinite(fit.radius))
-      )
-        throw new Error("Deviation requires a positive finite fitted radius.");
-      if (
-        fit.kind === "cone" &&
-        (!(fit.height > 0) ||
-          !Number.isFinite(fit.height) ||
-          !(fit.topRadius >= 0) ||
-          !Number.isFinite(fit.topRadius))
-      )
-        throw new Error("Cone deviation requires finite height and topRadius.");
-      const d = deviations(e.positions, fit);
-      let sum = 0,
-        max = 0;
-      for (const v of d) {
-        sum += v * v;
-        max = Math.max(max, Math.abs(v));
-      }
-      return {
-        rms: Math.sqrt(sum / d.length),
-        maxError: max,
-        artifact: json(c, Array.from(d), "deviations.json"),
-      };
-    },
-    analysis_measure: (a) => ({
-      distance: Math.hypot(
-        ...a.first.map((v: number, i: number) => v - a.second[i]),
-      ),
-      units: "mm",
-    }),
+    ...createInspectionOperations(host),
+    analysis_measure: (a) =>
+      measureGeometry(a as import("../inspection").MeasurementInput),
     cad_create: async (a, c) => {
       const s = host.snapshot(),
         cad = host.cad(),

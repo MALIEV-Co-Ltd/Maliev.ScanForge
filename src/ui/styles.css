@@ -489,8 +489,12 @@ h3 {
 }
 .measurement {
   position: absolute;
-  top: 54px;
-  left: 14px;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: calc(100% - 28px);
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -503,26 +507,6 @@ h3 {
   min-height: 25px;
   padding: 2px;
   border: 0;
-}
-.deviation-legend {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  position: absolute;
-  bottom: 48px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: var(--text);
-  background: var(--surface);
-  padding: 6px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-.deviation-legend i {
-  width: 100px;
-  height: 8px;
-  background: linear-gradient(90deg, #2479de, #4bb78c, #e56b47);
 }
 .selected-title {
   padding: 16px;
@@ -983,9 +967,6 @@ dd {
   }
   .view-controls {
     justify-content: flex-end;
-  }
-  .deviation-legend {
-    font-size: 9px;
   }
 }
 .sketch-preview {

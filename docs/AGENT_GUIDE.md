@@ -917,7 +917,7 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 | Triangle selection       | Set/read/copy/cut/delete, all/clear/invert, persistent named selection save/load/delete; slots target a specific current triangulation                                                                                                                          |
 | Scan processing          | `mesh_process`: polygon/noise reduction, scale, winding flip, repolygonize, average, mirror, unroll; repair, smoothing, decimation, segmentation; paired/ICP/global registration; scan components, eligible hole fill, boundary processing, defeature and split |
 | Region operations        | Connected selection, morphology and scan section extraction through `mesh_process`; `selectionOnly` uses the selection on the specified selected object                                                                                                         |
-| Analysis                 | Mesh topology, primitive fitting, sections, deviations, point distance                                                                                                                                                                                          |
+| Analysis                 | Mesh topology, primitive fitting, sections, signed primitive deviations, distance/angle/radius/diameter measurements                                                                                                                                            |
 | Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                                                   |
 | Parametric edits         | `cad_rebuild`, persistent feature/output references, dependency validation and rollback                                                                                                                                                                         |
 | Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit extrusion of solved profiles                                                                                                                |
@@ -1030,7 +1030,7 @@ This shared workflow does not establish numerical parity with the native fitter.
 - One operation admission lane protects the owning model. Lightweight state reads and job/artifact tools remain available while a job runs. A second geometry operation returns `BUSY`.
 - Jobs expire after 15 minutes; mesh/surface/import workers also retain their existing shorter inactivity/hard leases. CAD retains its existing 90-second per-operation timeout. Cancellation is cooperative: synchronous native CAD may finish before its output is discarded and the lane is released. Poll the terminal job status; do not assume `job_cancel` completed native cleanup immediately.
 - The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 1 GiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
-- Primitive fits use at most 20,000 sampled vertices. Point-cloud selection slots identify XYZ records; mesh selection slots identify facets. Existing `analysis_fit` arithmetic is retained: `selectionOnly:true` extracts selected coordinates into Float32 storage before sampling; omitted/false uses original whole-source coordinates. Hidden metadata does not independently filter this primitive-fit operation. GUI empty selection retains whole-input fallback, while explicit MCP selection requires a nonempty mask. Synchronous section/deviation analysis is capped at 250,000 triangles; reduce a separate copy or a supported selected region when needed. Modeling estimates are not certified metrology.
+- Primitive fits use at most 20,000 sampled vertices. Point-cloud selection slots identify XYZ records; mesh selection slots identify facets. Existing `analysis_fit` arithmetic is retained: `selectionOnly:true` extracts selected coordinates into Float32 storage before sampling; omitted/false uses original whole-source coordinates. Hidden metadata does not independently filter this primitive-fit operation. GUI empty selection retains whole-input fallback, while explicit MCP selection requires a nonempty mask. Section/deviation analysis is capped at 2,250,000 coordinates (250,000 triangles or 750,000 point samples); reduce a separate copy when needed. Modeling estimates are not certified metrology.
 - Locked objects and affected locked dependents cannot be edited. Geometry changes invalidate stale triangle selection/authoring where applicable. Individual split outputs cannot be deleted alone.
 - Edge/face references remain kernel indices. Refresh state and revision after topology changes. Persistent topology naming is not implemented.
 - Unsupported geometry features remain unsupported: arbitrary automatic scan-to-solid reconstruction, scanner drivers are not created by MCP integration. ASC point clouds are supported by `project_import`; triangle-only processing rejects them. Browser-owned device permission dialogs and file choosers remain human/browser interactions; use file artifacts and semantic commands instead.
@@ -2118,3 +2118,85 @@ right-button pan outside its canvas cannot invoke browser UI. App context-menu
 handlers retain their normal events and actions. Agents continue to use the
 existing semantic tools for those actions; `application_inspect.contextMenuPolicy`
 reports `application-only`. No native browser-menu capability is exposed.
+
+## Inspection measurements and signed primitive reports
+
+`analysis_measure` uses the same calculation as the GUI measurement selector.
+Omit `kind` for existing two-point distance calls; pass `kind:"distance"` with
+`first`/`second`, or `angle`, `radius`, `diameter` with `third`. Points are world
+XYZ millimetres. Angles are included angles in degrees with `second` as the vertex.
+Circle measurements use three noncollinear points in any plane; responses retain
+center, radius and diameter. All responses retain `kind`, `value`, `units` and
+ordered `points`; distance/angle also retain their named scalar. Invalid picks
+fail without geometry/history changes. GUI exports the same JSON value.
+
+`analysis_deviation` accepts an analytic `fit` and optional positive finite
+`tolerance` in mm (default 0.1). GUI and MCP use one report builder. Results expose
+`samples`, `excluded`, `coverage`, signed minimum/maximum/mean, RMS, maximum absolute
+error and `withinTolerance`. `artifact` retains the distance array for existing
+callers; `report` is a reproducible JSON report including the fit, tolerance,
+statistics, sample order, units and limits. Hidden samples are `null` in the full
+original source order: point indices for clouds, triangle corners for surfaces.
+Coverage is the fraction of visible source samples, not spatial/area coverage.
+Distances describe oriented infinite analytic surfaces, including open planes;
+positive means along the plane normal or outside radial surfaces. They do not
+certify watertight inside/outside, finite cap distances, general scan-to-CAD
+surface distances or continuous surface-error bounds. GUI exports the same report.
+
+`analysis_section` and GUI sections exclude hidden triangles and use world-mm
+axis/offset settings. Results include `units`, `axis`, `offset`,
+`scope:"visible-triangles"`, length, segment count and CSV/DXF artifacts. Point
+clouds are rejected because point order does not define a triangle surface.
+Inspection admission retains the existing 2,250,000 coordinate limit: 750,000
+point/corner samples, or 250,000 triangles. Reduce a copy when the limit is
+exceeded. Analysis is read-only, adds no model-history entry, and exported report
+files retain parameters independently of ephemeral GUI previews. These operations
+alone do not imply that M6 native and milestone acceptance has passed.
+
+### Reference-surface deviation and shared heatmaps
+
+Instead of `fit`, pass `referenceId` and a required positive `maxDistance` in mm
+to `analysis_deviation`. The reference must be a distinct triangle surface. Both
+objects are limited to 2,250,000 coordinates. Hidden source samples and hidden
+reference triangles are excluded. `signed` defaults to false; true uses the
+nearest reference triangle winding. Search is exclusive: distances equal to
+`maxDistance` are unmatched. Reports retain `referenceId`, `maxDistance`,
+`signed`, `referenceGeometry`, `eligible`, `unmatched` and `referenceTriangles`
+(the original reference triangle slot per source sample, null when unmatched).
+Per-sample mappings remain in the report artifact instead of inline responses.
+Zero matches return null error statistics and zero coverage, not a zero error.
+CAD references use their Float32 display tessellation, not exact BREP distances.
+Sparse samples, open boundaries and local winding signs limit interpretation.
+
+Select the report source with `object_select`, then use `inspection_display`
+`action:"show"` with the returned `inspectionId`, current `expectedRevision` and
+unique `requestId`. GUI Compare uses these same operations. `action:"clear"`
+releases the display. Gray means unmatched; blue/green/red encode negative/zero/
+positive distances relative to tolerance. Display requires the original entity
+identities; edits, hidden-face changes or replacement make old reports unusable.
+The most recent report is retained for 15 minutes, replaced by another analysis,
+and released on API disposal. No geometry is adopted or modeling history added.
+Primitive deviation jobs yield between bounded chunks; reference comparison
+yields around index construction and every 4096 source samples. `job_cancel`
+waits for cooperative settlement and publishes no partial result.
+
+### Saved inspection definitions
+
+`inspection_manage` with `action:"save"`, `name` and `definition` saves up to 32
+small project definitions. A deviation definition is
+`{kind:"deviation",entityId,fit,tolerance}` or
+`{kind:"deviation",entityId,referenceId,maxDistance,tolerance,signed}`. A measurement
+definition is `{kind:"measurement",measurement:{kind,first,second,third}}`; omit
+`third` for distance. The same GUI Save actions use this operation. `inspection_get`
+reads definitions and `inspection_run` with `inspectionId` returns a cancellable
+job with the normal measurement or deviation result. The source must still exist.
+Run explicitly to recompute against current geometry; old heatmap buffers/native
+handles are not persisted. Project JSON, binary project files and backups retain
+`authoring.inspections`. Exported report JSON retains the independent numeric
+result snapshot. Save/delete use revision/retry guards and preserve other authoring
+metadata; they mark the project dirty without adding modeling history. Delete a
+definition using `inspection_manage` `action:"delete"` and its `inspectionId`.
+
+`inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+
+Inspection heatmaps use the same blue/cyan/green/yellow/red palette and right-hand vertical scale as mesh reduction. The retained report tolerance sets the saturated blue/red endpoints; hidden or unmatched samples remain gray. The inspection scale is read-only; change tolerance through the analysis parameters and recompute. `inspection_display` and MCP captures render this same scale.

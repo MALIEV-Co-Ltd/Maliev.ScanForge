@@ -1,0 +1,23 @@
+{
+  "application": "QUICKSURFACE Pro 8.0.123",
+  "date": "2026-10-25",
+  "units": "mm/degrees",
+  "nativeMode": "Edit Sketch, Dimensions",
+  "circle": {
+    "center": [14.601421833, 8.181137562, 0],
+    "radiusMm": 7.57485,
+    "diameterMm": 15.1497,
+    "source": "IGES type100 circle with type124 world transform; GUI diameter dimension",
+    "absoluteToleranceMm": 1e-9
+  },
+  "angle": {
+    "first": [-8.123128891, -13.596557617, 0],
+    "vertex": [6.07971549, -13.596557617, 0],
+    "third": [6.07971549, -4.127994061, 0],
+    "degrees": 90,
+    "absoluteToleranceDegrees": 1e-9,
+    "scope": "Observed 90deg native dimension proposal on two snapped perpendicular lines. Accepting a redundant constraint raises an overdefined-sketch warning; constraint acceptance parity is excluded."
+  },
+  "igesSha256": "210d0c233483dfb180c52876ef71da73f6cc4718e98572f9724bd24ff97b9b0c",
+  "scope": "World coordinates from native IGES export. Radius is the native exported circle parameter, diameter also has a GUI annotation. No native 3-point mouse-pick or solver parity claimed."
+}

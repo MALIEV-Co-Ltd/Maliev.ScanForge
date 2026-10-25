@@ -69,7 +69,7 @@ it.each([false, true])(
       expect(Array.from(index!.array)).toEqual([0, 2, 3]);
       expect(points.material.vertexColors).toBe(true);
       expect(points.material.color.getHex()).toBe(0xffffff);
-      const expected = ["#2479de", "#4bb78c", "#e56b47", "#e56b47"].flatMap(
+      const expected = ["#0000ff", "#00ff00", "#ff0000", "#ff0000"].flatMap(
         (value) => new THREE.Color(value).toArray(),
       );
       expect(Array.from(points.geometry.getAttribute("color").array)).toEqual(
@@ -171,7 +171,7 @@ it("preserves mesh palette and clearing behavior", () => {
     expect(Array.from(geometry.getAttribute("color").array)).toEqual(
       Array.from(
         new Float32Array(
-          ["#2479de", "#4bb78c", "#e56b47"].flatMap((value) =>
+          ["#0000ff", "#00ff00", "#ff0000"].flatMap((value) =>
             new THREE.Color(value).toArray(),
           ),
         ),
@@ -183,5 +183,19 @@ it("preserves mesh palette and clearing behavior", () => {
   } finally {
     geometry.dispose();
     material.dispose();
+  }
+});
+
+it("colors unmatched deviation samples gray rather than implying zero error", () => {
+  const { view, points } = setup(false);
+  try {
+    view.setDeviation("cloud", new Float32Array([NaN, 0, 1, 2]), 1);
+    const colors = points.geometry.getAttribute("color");
+    expect(Array.from(colors.array).slice(0, 3)).toEqual(
+      Array.from(new Float32Array(new THREE.Color("#808080").toArray())),
+    );
+  } finally {
+    view.setDeviation("", null, 1);
+    view.setEntities([], null);
   }
 });

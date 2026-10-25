@@ -1390,3 +1390,24 @@ It does not stop propagation, so React/custom menu handlers and body portals
 still receive the event. This closes the native-menu leak when right-pan capture
 ends outside a canvas. application_inspect reports contextMenuPolicy as
 application-only; existing semantic MCP menu actions remain unchanged.
+
+## Inspection parity
+
+`inspection.ts` owns measurement and analytic signed report calculations;
+`inspection-reference.ts` reuses the existing comparison BVH/numerical leaf against
+visible display triangles. `automation/inspection-operations.ts` owns the bounded
+report lease, analysis jobs, guarded display, and saved definitions. GUI reference
+comparison invokes the same analysis/display operations through ApplicationApi.
+The editor host publishes source-bound heatmaps; API disposal clears their lease.
+Unknown/unmatched samples preserve source order and render gray. Reports expose
+sampling, search-radius, tessellation and local-normal limits explicitly.
+
+`authoring.inspections` persists only validated small definitions (maximum 32),
+using the existing project/session/backup metadata carrier. Inspection metadata
+participates in API revision identity. Replays recompute against current geometry;
+result JSON artifacts are independent snapshots. Analysis and display add no model
+history. Save/delete retain authoring fields and mark the document dirty. Existing
+revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
+checks remain active.
+
+`inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.

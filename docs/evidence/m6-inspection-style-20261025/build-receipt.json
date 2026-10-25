@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "build"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 1573789696,
+  "totalProcesses": 32,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 118.95027110003866
+}

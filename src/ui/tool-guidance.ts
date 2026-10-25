@@ -7,6 +7,7 @@ export interface ToolGuidanceContext {
   interactiveAlignment?: boolean;
   planePicking?: boolean;
   mode: "inspect" | "measure" | "section" | "brush";
+  measurementKind?: "distance" | "angle" | "radius" | "diameter";
   brushActive?: boolean;
   selectionTool?:
     "brush" | "freehand" | "line" | "rectangle" | "circle" | "wand";
@@ -82,6 +83,14 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
     const tool = context.selectionTool ?? "brush";
     return `${tools[tool]} · ${context.subtract ? "Subtract mode" : "Alt subtracts"}${context.selectThrough ? " · Select through enabled" : ""}${["brush", "freehand", "line"].includes(tool) ? " · Ctrl+wheel changes brush size" : ""}`;
   }
+  if (context.mode === "measure" && context.measurementKind === "angle")
+    return "Left-click three surface points measures angle; second point is vertex � Next click starts new measurement";
+  if (
+    context.mode === "measure" &&
+    (context.measurementKind === "radius" ||
+      context.measurementKind === "diameter")
+  )
+    return `Left-click three noncollinear surface points measures ${context.measurementKind} � Next click starts new measurement`;
   if (context.mode === "measure")
     return `Left-click two surface points measures distance · Next click starts new measurement`;
   if (context.mode === "section")

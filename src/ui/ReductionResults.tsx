@@ -10,6 +10,7 @@ export function ReductionColorScale({
   upperTolerance = Math.min(threshold, tolerance),
   onToleranceChange,
   disabled = false,
+  readOnly = false,
 }: {
   threshold: number;
   tolerance: number;
@@ -17,6 +18,7 @@ export function ReductionColorScale({
   upperTolerance?: number;
   onToleranceChange?: (lower: number, upper: number) => void;
   disabled?: boolean;
+  readOnly?: boolean;
 }) {
   const range = threshold;
   const body = useRef<HTMLDivElement>(null);
@@ -50,6 +52,7 @@ export function ReductionColorScale({
   return (
     <aside
       className="reduction-color-scale"
+      data-read-only={readOnly || undefined}
       aria-label="Signed deviation colour scale"
       onPointerDown={(event) => event.stopPropagation()}
     >
@@ -66,11 +69,11 @@ export function ReductionColorScale({
             <span
               key={f}
               style={{
-                visibility: bounds.some(
-                  (bound) => Math.abs(f - bound / range) < 0.13,
-                )
-                  ? "hidden"
-                  : "visible",
+                visibility:
+                  !readOnly &&
+                  bounds.some((bound) => Math.abs(f - bound / range) < 0.13)
+                    ? "hidden"
+                    : "visible",
               }}
             >
               {f > 0 ? "+" : f < 0 ? "−" : ""}
@@ -78,7 +81,7 @@ export function ReductionColorScale({
             </span>
           ))}
         </div>
-        {[1, 0].map((index) => (
+        {(readOnly ? [] : [1, 0]).map((index) => (
           <div
             key={index}
             className="reduction-tolerance-marker"

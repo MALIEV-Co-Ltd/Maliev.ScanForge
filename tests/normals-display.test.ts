@@ -126,3 +126,35 @@ it("keeps selections visible and preserves deviation colors with default normals
   expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
   material.dispose();
 });
+
+it("inspection colors override orientation shading and restore it after clearing", () => {
+  const material = new THREE.MeshStandardMaterial();
+  material.userData.normalsMesh = true;
+  const update = installNormalsDisplay(material),
+    shader = compile(material);
+  const geometry = new THREE.BufferGeometry().setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([0, 0, 0, 1, 0, 0, 0, 1, 1], 3),
+  );
+  const mesh = new THREE.Mesh(geometry, material),
+    view = Object.create(Viewport.prototype) as Viewport;
+  Object.assign(view, {
+    objects: new Map([["scan", { mesh, color: "#fff" }]]),
+    selectedId: "scan",
+    normalsMaterials: new WeakMap([[material, update]]),
+    invalidate: vi.fn(),
+  });
+  try {
+    view.setNormalsDisplay(true);
+    expect(shader.uniforms.normalsDisplayEnabled.value).toBe(true);
+    view.setDeviation("scan", new Float32Array([-1, 0, 1]), 1);
+    expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
+    view.setNormalsDisplay(true);
+    expect(shader.uniforms.normalsDisplayEnabled.value).toBe(false);
+    view.setDeviation("scan", null, 1);
+    expect(shader.uniforms.normalsDisplayEnabled.value).toBe(true);
+  } finally {
+    geometry.dispose();
+    material.dispose();
+  }
+});

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "tests/kernel-smoke.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 738430976,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 6.644338899990544
+}
