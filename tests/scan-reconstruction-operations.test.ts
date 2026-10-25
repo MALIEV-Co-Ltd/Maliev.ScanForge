@@ -84,14 +84,19 @@ function harness(entities: Entity[] = [entity()]) {
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
 
-it("routes GUI and MCP through identical multi-mesh reconstruction and diagnostics", async () => {
+it("routes GUI and MCP through identical explicit voxel reconstruction and diagnostics", async () => {
   const source = entity(),
     target = entity({ id: "target", positions: triangle });
   const h = harness([source, target]);
   const gui = runScanTool(
     scanToolRequest(
       source,
-      { kind: "repolygonize", resolution: 0.5, targetIds: [target.id] },
+      {
+        kind: "repolygonize",
+        method: "voxel",
+        resolution: 0.5,
+        targetIds: [target.id],
+      },
       h.state.entities,
     ),
   );
@@ -111,7 +116,7 @@ it("routes GUI and MCP through identical multi-mesh reconstruction and diagnosti
       targetIds: [target.id],
       operation: {
         kind: "scanTools",
-        operation: { kind: "repolygonize", resolution: 0.5 },
+        operation: { kind: "repolygonize", method: "voxel", resolution: 0.5 },
       },
     },
     h.context,
