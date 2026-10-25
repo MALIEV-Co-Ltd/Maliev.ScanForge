@@ -958,7 +958,7 @@ Target and affected dependent locks also reject without publication.
 
 The result includes `entityId`, `representation`, applied `options`,
 `referenceSource` and `changedControlIndices`. Exact joins also return
-`rebuiltIds` and `cleanupFailures` from the ordinary atomic CAD rebuild path.
+`rebuiltFeatureIds` and `cleanupFailures` from the ordinary atomic CAD rebuild path.
 One accepted join adds one model-history step; identical request retries reuse
 the result. Use `job_cancel` to cancel. The GUI's NURBS surface panel submits this
 same operation and exposes its owned cancellation outside the busy panel.
