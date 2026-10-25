@@ -1,0 +1,18 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/inspection-native-observed.test.ts",
+    "tests/inspection-reference-native-replay.test.ts",
+    "--maxWorkers=1"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 302596096,
+  "totalProcesses": 9,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 3.4729772999999113
+}

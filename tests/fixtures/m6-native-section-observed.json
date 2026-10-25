@@ -1,0 +1,18 @@
+{
+  "application": "QUICKSURFACE Pro 8.0.123",
+  "date": "2026-10-26",
+  "units": "mm",
+  "axis": "x",
+  "offset": 2,
+  "nativeMode": "Create Sketch, OYZ, offset 2 mm, Apply, Create; Ignore scan data off",
+  "polylineByteOffset": 1078,
+  "qsfSha256": "2f7cf3671e711052f5281bfc2de6990413a5921d58e74062f5efd2f8acc5fe13",
+  "closedPolyline": [
+    [2, 8, 0],
+    [2, 0, 8],
+    [2, 0, 0],
+    [2, 8, 0]
+  ],
+  "absoluteToleranceMm": 1e-9,
+  "scope": "Four little-endian Float32 world points in this exact saved native project, including repeated closure. Fixed-offset observation for this fixture only; not a general QSF decoder. Sketch reference section, not fitted sketch curves or CAD solver parity."
+}

@@ -710,6 +710,72 @@ try {
     transformUndoRedoAndEditMapping: true,
   };
 
+  // Replay the exact STL used by the native section observation through both boundaries.
+  const beforeTetra = new Set(
+    (await call("project_get")).result.objects.map((object) => object.id),
+  );
+  const tetraBytes = await readFile(
+    new URL("tests/fixtures/m6-section-tetrahedron.stl", root),
+  );
+  const tetraUpload = await call("artifact_put", {
+    name: "m6-section-tetrahedron.stl",
+    offset: 0,
+    base64: tetraBytes.toString("base64"),
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: tetraUpload.result.artifactId,
+      placeAtOrigin: false,
+    }),
+  );
+  const tetraId = (await call("project_get")).result.objects.find(
+    (object) => !beforeTetra.has(object.id),
+  ).id;
+  await mutate("object_select", { entityId: tetraId });
+  await mutate("ui_set", {
+    workspace: "measure",
+    mode: "measure",
+    toolPanelOpen: true,
+  });
+  const tetraDisplay = await mutate("inspection_display", {
+    action: "section",
+    entityId: tetraId,
+    axis: "x",
+    offset: 2,
+  });
+  const tetraAnalysis = await job(
+    await call("analysis_section", { entityId: tetraId, axis: "x", offset: 2 }),
+  );
+  assert.equal(tetraAnalysis.segments, 3);
+  assert(Math.abs(tetraAnalysis.length - (16 + Math.sqrt(128))) <= 1e-9);
+  assert.equal(tetraDisplay.result.length, tetraAnalysis.length);
+  const tetraDownload = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export section CSV", exact: true })
+    .click();
+  const tetraChunks = [];
+  for await (const chunk of await (await tetraDownload).createReadStream())
+    tetraChunks.push(chunk);
+  const tetraArtifact = (
+    await call("artifact_read", {
+      artifactId: tetraAnalysis.csv.artifactId,
+      offset: 0,
+    })
+  ).result;
+  assert.equal(
+    Buffer.concat(tetraChunks).toString(),
+    Buffer.from(tetraArtifact.base64, "base64").toString(),
+  );
+  ledger.nativeTetrahedronSection = {
+    sourceSha256: createHash("sha256").update(tetraBytes).digest("hex"),
+    axis: "x",
+    offset: 2,
+    segments: tetraAnalysis.segments,
+    length: tetraAnalysis.length,
+    guiMcpCsvIdentical: true,
+  };
+  await mutate("inspection_display", { action: "clear" });
+
   const beforeCancelIds = new Set(
     (await call("project_get")).result.objects.map((object) => object.id),
   );
