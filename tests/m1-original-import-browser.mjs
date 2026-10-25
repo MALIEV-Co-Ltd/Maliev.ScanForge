@@ -7,8 +7,61 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+
+// Fresh owned processes per original avoid making harness retention part of import.
+if (!process.env.SCANFORGE_M1_FILES) {
+  const names = [
+    "scan-1.stl",
+    "scan-2.stl",
+    "scan-3.stl",
+    "ply-1.ply",
+    "ply-2.ply",
+    "ply-3.ply",
+    "asc-1.asc",
+    "asc-2.asc",
+    "asc-3.asc",
+  ];
+  const results = [];
+  for (const name of names) {
+    const child = spawnSync(
+      process.execPath,
+      [...process.execArgv, fileURLToPath(import.meta.url)],
+      {
+        env: { ...process.env, SCANFORGE_M1_FILES: name },
+        stdio: "inherit",
+        timeout: 180000,
+      },
+    );
+    assert.equal(
+      child.status,
+      0,
+      `${name}: ${child.error?.message ?? "original acceptance failed"}`,
+    );
+    const result = JSON.parse(
+      await readFile(
+        new URL(
+          `../.resources/m1-original-import/${name}/original-import-results.json`,
+          import.meta.url,
+        ),
+      ),
+    );
+    results.push(...result.results);
+  }
+  await writeFile(
+    new URL(
+      "../.resources/m1-original-import/original-import-results.json",
+      import.meta.url,
+    ),
+    JSON.stringify({ passed: true, results }, null, 2),
+  );
+  console.log(JSON.stringify({ passed: true, originals: results.length }));
+  process.exit(0);
+}
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/m1-original-import/", import.meta.url);
+  out = new URL(
+    `../.resources/m1-original-import/${process.env.SCANFORGE_M1_FILES.split(",").length === 1 ? process.env.SCANFORGE_M1_FILES + "/" : ""}`,
+    import.meta.url,
+  );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
