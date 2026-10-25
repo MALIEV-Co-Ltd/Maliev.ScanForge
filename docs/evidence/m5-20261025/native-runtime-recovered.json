@@ -1,0 +1,23 @@
+{
+  "observedAtUtc": "2026-10-25T19:56:02Z",
+  "runtime": "mcp__cua_repl",
+  "initialization": "succeeded; app and browser inventory returned",
+  "previousFailure": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
+  "quickSurfaceWindows": [
+    {
+      "id": 5115682,
+      "title": "QUICKSURFACE Pro 8.0.123 - two-rectangular-holes",
+      "m5Owned": false
+    },
+    {
+      "id": 11667504,
+      "title": "QUICKSURFACE Pro 8.0.123 - m6-native-angle-circle.qsf",
+      "m5Owned": false
+    },
+    { "id": 131075094, "title": "QUICKSURFACE Pro 8.0.123", "m5Owned": false }
+  ],
+  "readOnlyObservation": "Binding window 131075094 reported it minimized. It was not restored or activated.",
+  "nativeInputPerformed": false,
+  "nativeEquivalenceEstablished": false,
+  "nextAction": "Await explicit human authorization to message the coordination chat and reserve a native input slot; preserve other windows and scenes."
+}

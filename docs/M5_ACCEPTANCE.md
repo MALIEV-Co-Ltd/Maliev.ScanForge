@@ -9,7 +9,11 @@ failed before execution: GitHub reports recent account payments failed or the
 spending limit needs increasing. The [check annotations](evidence/m5-20261025/hosted-ci-billing-block.json)
 confirm no job started. This is not a source/test failure or a passing hosted
 validation. Account-owner action is required before exact-head CI can run.
-Native QuickSurface UI initialization and M4 acceptance also remain unavailable.
+Native QuickSurface UI initialization recovered at 19:56 UTC on 2026-10-25
+([observation](evidence/m5-20261025/native-runtime-recovered.json)). No native
+input was sent: existing windows are owned by other work or have unknown
+ownership. Human authorization to coordinate an input slot is pending; native
+acceptance and M4 acceptance remain incomplete.
 Local checks are retained below; M5 is not merged or closed.
 
 ## Operation matrix
