@@ -11,6 +11,12 @@ plane/fit metadata and scan-count caches are invalidated on patch edits, includi
 `surface_operation`. Exact parametric surfaces use `cad_rebuild` and retain their
 BREP and dependent-feature rebuild semantics.
 
+Project restore copies shared text chunks into an ordinary byte view before
+UTF-8 decoding, because browser TextDecoder rejects SharedArrayBuffer views.
+Numeric geometry chunks retain their original immutable shared backing and
+reuse/aliasing behavior. The shared project import and GUI open/backup paths use
+this same codec; no format or transport contract changes.
+
 ## Scan selection and reference preview admission
 
 Scan screen selection is shared by GUI gestures and MCP `scan_select_region`

@@ -454,9 +454,12 @@ export async function decodeProjectContents(
     if (cached !== undefined) return cached;
     const bytes = data[ref.chunk];
     let result: ProjectValue;
-    if (ref.type === "text")
-      result = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-    else if (ref.type === "u8") result = bytes;
+    if (ref.type === "text") {
+      // Browser TextDecoder rejects shared views; numeric chunks keep their backing.
+      const textBytes =
+        bytes.buffer instanceof ArrayBuffer ? bytes : bytes.slice();
+      result = new TextDecoder("utf-8", { fatal: true }).decode(textBytes);
+    } else if (ref.type === "u8") result = bytes;
     else {
       const width = ref.type === "f64" ? 8 : 4;
       if (bytes.length % width) return invalid();

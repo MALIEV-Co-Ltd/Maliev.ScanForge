@@ -237,6 +237,20 @@ try {
     ).result;
     return { object, geometry: await artifactJson(object.geometry) };
   }
+  async function geometryDigest(entityId) {
+    const digest = await job(
+      await call("object_geometry_digest", { entityId }),
+    );
+    return digest.buffers.map(
+      ({ path, encoding, elements, rawBytes, sha256 }) => ({
+        path,
+        encoding,
+        elements,
+        rawBytes,
+        sha256,
+      }),
+    );
+  }
   // Authored planar grid plus one deliberately unselected remote outlier.
   const triangles = [];
   const point = (x, y) => [x, y, 2 + x / 8 + y / 4];
@@ -301,10 +315,9 @@ try {
   });
   const selected = (await call("selection_get", { entityId: sourceId })).result;
   const selectedIds = await artifactJson(selected.artifact);
-  // selection_set preserves explicitly supplied slots, including hidden ones.
-  // The fitting operation must exclude hidden facets from this actual mask.
-  assert.equal(selected.count, planarFacets);
-  assert(selectedIds.includes(0));
+  // Shared selection admission excludes hidden slots even when explicitly requested.
+  assert.equal(selected.count, planarFacets - 1);
+  assert(!selectedIds.includes(0));
   assert(!selectedIds.includes(planarFacets));
   const original = await geometry(sourceId);
   const before = (await call("project_get")).result;
@@ -436,7 +449,7 @@ try {
     guiLaunch:
       "public command_run ribbon:fitSurface; actual Apply/Analysis/OK buttons",
     hiddenState:
-      "one facet hidden through Edit Scan; explicit public selection retains it and both fitting paths exclude it",
+      "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
     requestedTriangles: requestedSelection.length,
     fittedTriangles: mcpResult.samples / 3,
     selectedIds,
@@ -610,6 +623,7 @@ try {
       (x) => !idsBefore.has(x.id),
     );
     assert(scan && scan.triangles >= 200);
+    const sourceDigest = await geometryDigest(scan.id);
     await mutate("object_select", { entityId: scan.id });
     await mutate("selection_set", {
       entityId: scan.id,
@@ -683,6 +697,49 @@ try {
     const exact = (await call("object_get", { entityId: realCad.entityIds[0] }))
       .result;
     assert(exact.exactCad && exact.hasBrep);
+    await mutate("object_select", { entityId: realCad.entityIds[0] });
+    await mutate("command_run", { name: "ribbon:surfaceThicken" });
+    const thickenPanel = page.getByRole("region", {
+      name: "Thicken surface",
+      exact: true,
+    });
+    await thickenPanel
+      .getByRole("spinbutton", {
+        name: "Signed wall thickness (mm)",
+        exact: true,
+      })
+      .fill("-0.1");
+    const beforeThicken = (await call("project_get")).result;
+    await thickenPanel
+      .getByRole("button", { name: "Thicken surface", exact: true })
+      .click();
+    const guiSolidId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, beforeThicken.objects.length + 1);
+      return current.objects.find(
+        (x) => !beforeThicken.objects.some((prior) => prior.id === x.id),
+      ).id;
+    });
+    const guiSolid = (await call("object_get", { entityId: guiSolidId }))
+      .result;
+    const guiSolidDigest = await geometryDigest(guiSolidId);
+    assert(guiSolid.exactCad && guiSolid.hasBrep);
+    await mutate("history_undo", {});
+    const realSolid = await job(
+      await mutate("cad_create", {
+        name: "Real scan thickened part",
+        recipe: {
+          kind: "thicken",
+          source: { featureId: realCad.featureId, output: 0 },
+          thickness: -0.1,
+        },
+      }),
+    );
+    assert.deepEqual(
+      await geometryDigest(realSolid.entityIds[0]),
+      guiSolidDigest,
+    );
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
     ledger.scenarios.push({
       realInput: {
         name,
@@ -693,6 +750,7 @@ try {
       guiMcpPatchEquality: true,
       fit: realFit,
       exactFace: true,
+      thickenedRegionGuiMcpEquality: true,
       limitation:
         "A local real scan region; not whole-part reconstruction, solid validity or native application parity.",
     });

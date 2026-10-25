@@ -37,6 +37,42 @@ Independent static review found no actionable defects in the initial patch; subs
 
 Remote `main` was refreshed and is `7e42e81da07d9677a24b8d17c07aecf3e94456ec` (M1 merged). Integrate it into this isolated branch and repeat source/build, application and public MCP checks before any final merge. Earlier evidence belongs to its earlier source only.
 
+### Integration follow-up
+
+Local commit `3fa039e` integrates that main into the M5 branch. The only merge
+conflict was an additive documentation section; both sets of content were kept.
+M1's shared hidden-selection admission is retained; the browser test now expects
+hidden facet 0 to be filtered from explicitly requested selections.
+
+Actual browser project reopen then found a release-relevant codec failure:
+shared BREP text bytes reached TextDecoder, which browsers reject. The codec now
+copies only shared text bytes for decoding. Numeric shared buffer reuse and
+aliasing remain intact. A browser-contract regression failed before the fix;
+33 project/transport/surface tests passed afterward. The actual browser exact
+CAD reopen passed after the fix. Independent review found no actionable defect.
+
+Integrated development-source replay:
+`.resources/surface-fit/25e27b87-6bf9-4004-8370-468b272ec431/ledger.json`.
+Both GUI and public MCP thickened the real scan region by -0.1 mm and produced
+identical complete geometry digests. The original full scan digest was unchanged.
+Browser errors/warnings were empty and both owned browser/MCP processes exited.
+This remains a local real region, not whole-part reconstruction or native
+application parity. Final frozen-source build/suite and exchange/solid-validity
+acceptance remain separate gates.
+
+The final integrated build passed all 12 bounded typecheck batches and Vite,
+with 272 offline assets and identity `scanforge-0cfe7f2dc3750e24`.
+Its production preview on port 5195 passed the same real-region replay:
+[built application receipt](evidence/m5-20261025/built-real-region.json).
+[Build](evidence/m5-20261025/integrated-build.log),
+[CAD smoke](evidence/m5-20261025/integrated-cad.log),
+[formatting](evidence/m5-20261025/integrated-format.log),
+[BREP failure](evidence/m5-20261025/brep-browser-failure.log),
+[red regression](evidence/m5-20261025/brep-shared-red.log) and
+[green regressions](evidence/m5-20261025/brep-shared-green.log) are retained.
+This production check is application/public-MCP evidence; it does not run the
+native reference application or certify exact solid validity.
+
 M1 issue #1 is closed with reviewed evidence and merge #10. M4 issue #4 remains open as of this audit and must satisfy its dependency gate. The native QuickSurface window is shared with M2–M6 coordination; do not clear or operate it without an ownership handoff. M5 needs a dedicated native scan-fitting/surface/CAD/exchange validation window.
 
 Remaining: complete the approved operation matrix and prepared fixes, real scan-to-sketch-to-surface-to-solid workflow, matching native settings/tolerances, solid validity/seams/normals, complete exact exchange round-trips, resource/recovery coverage, final review and exact-candidate CI. Merge and tracker closure follow verified acceptance; neither has been performed for M5.
