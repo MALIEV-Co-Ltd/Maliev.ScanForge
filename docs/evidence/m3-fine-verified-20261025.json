@@ -2,7 +2,8 @@
   "date": "2026-10-25",
   "scope": "Verified Fine Align slice toward M3; not complete milestone acceptance",
   "baseCommit": "7e42e81da07d9677a24b8d17c07aecf3e94456ec",
-  "uncommittedCandidate": true,
+  "uncommittedCandidate": false,
+  "verifiedSourceCommit": "80a1a2c67f0c73929784bce164dc4cd4e18308ea",
   "buildId": "scanforge-d18ed0e0020a5831",
   "sourceFiles": [
     {

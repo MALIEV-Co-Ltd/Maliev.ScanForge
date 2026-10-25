@@ -27,6 +27,8 @@ Catalog contracts are in `src/automation/catalog.json`; usage and architecture a
 
 ## Current validation
 
+Fine Align source checkpoint: `80a1a2c67f0c73929784bce164dc4cd4e18308ea`. Its committed source/test bytes match the verified receipt's LF-normalized hashes. This pins one completed implementation slice; it does not close M3.
+
 The [verified Fine Align checkpoint](evidence/m3-fine-verified-20261025.json) supersedes the initial Fine Align checks below. Build `scanforge-d18ed0e0020a5831` passed with zero warnings/errors; 48,987 tests passed, 64 skipped, zero failed across 673 passed and 18 skipped files. The skipped entries do not satisfy native/original-file gates. CAD smoke passed, including 338 native datum matrices, and formatting passed. Its final focused regression batch passed 24 tests across six files.
 
 The final synthetic GUI/public-MCP replay also covers indexed mesh targets: 2,166 source triangle corners against all 400 referenced target vertices, excluding an unused ghost vertex. Complete output equality and Undo/Redo pass. Exact subtree-bound pruning preserves independent brute-force distance checks and reduces a deterministic unmatched-region regression from 96,180 direct distance evaluations to below 30,000 without removing any points. The shared target binder rejects stale coordinates/indices; its GUI errors now pass through the normal error callback, proven RED then GREEN.
