@@ -767,6 +767,85 @@ try {
   } finally {
     reversedBox.delete();
   }
+  const invalidHandles = [];
+  try {
+    const wire = context.polygonWire(
+      oc,
+      [
+        [0, 0, 0],
+        [2, 2, 0],
+        [0, 2, 0],
+        [2, 0, 0],
+      ],
+      invalidHandles,
+    );
+    const maker = new oc.BRepBuilderAPI_MakeFace_15(wire, true);
+    invalidHandles.push(maker);
+    const face = maker.Face();
+    invalidHandles.push(face);
+    const invalid = await request("inspectBrep", {
+      brep: context.serializeBrep(oc, face),
+    });
+    assert.equal(
+      invalid.valid,
+      false,
+      "Self-crossing exact face must be reported invalid",
+    );
+    assert.equal(
+      vm.runInContext("shapes.size", context),
+      shapesBeforeInspection,
+    );
+  } finally {
+    context.cleanup(invalidHandles);
+  }
+  const reversedFaceHandles = [];
+  try {
+    const builder = new oc.BRep_Builder(),
+      shell = new oc.TopoDS_Shell();
+    reversedFaceHandles.push(builder, shell);
+    builder.MakeShell(shell);
+    const boxShape = vm.runInContext(
+      `shapes.get(${JSON.stringify(box.kernelId)})`,
+      context,
+    );
+    const explorer = new oc.TopExp_Explorer_2(
+      boxShape,
+      oc.TopAbs_ShapeEnum.TopAbs_FACE,
+      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+    );
+    reversedFaceHandles.push(explorer);
+    let firstFace = true;
+    for (; explorer.More(); explorer.Next()) {
+      const face = explorer.Current();
+      reversedFaceHandles.push(face);
+      const placed = firstFace ? face.Reversed() : face;
+      if (firstFace) reversedFaceHandles.push(placed);
+      builder.Add(shell, placed);
+      firstFace = false;
+    }
+    const maker = new oc.BRepBuilderAPI_MakeSolid_1();
+    reversedFaceHandles.push(maker);
+    maker.Add(shell);
+    const invalidSolid = maker.Solid();
+    reversedFaceHandles.push(invalidSolid);
+    const brep = context.serializeBrep(oc, invalidSolid);
+    if (process.env.SCANFORGE_CAD_INVALID_FIXTURE === "1")
+      writeFileSync(new URL(".resources/m5/invalid-one-face.brep", root), brep);
+    assert.equal((await request("inspectBrep", { brep })).valid, false);
+    await assert.rejects(
+      request("import", {
+        data: new TextEncoder().encode(brep),
+        extension: "brep",
+      }),
+      /invalid/i,
+    );
+    assert.equal(
+      vm.runInContext("shapes.size", context),
+      shapesBeforeInspection,
+    );
+  } finally {
+    context.cleanup(reversedFaceHandles);
+  }
   assert.equal(
     box.planeFrame,
     undefined,

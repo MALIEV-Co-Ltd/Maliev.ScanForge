@@ -514,6 +514,15 @@ function register(oc, shape, onProgress = () => {}) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
+    const checker = new oc.BRepCheck_Analyzer(shape, true);
+    try {
+      if (!checker.IsValid_2())
+        throw new Error(
+          "CAD shape has invalid topology or geometry. Repair the input or change the operation parameters.",
+        );
+    } finally {
+      checker.delete();
+    }
     const { positions, normals, edgePositions, planeFrame } = mesh(
       oc,
       shape,

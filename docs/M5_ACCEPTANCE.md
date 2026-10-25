@@ -77,8 +77,8 @@ Candidate `be256edce438e3767fd609147d7d1a2dcd8ad506` passed the final
 [integrated full suite](evidence/m5-20261025/integrated-unit.log): 48,968 passed,
 64 skipped, 668 passed files and 18 skipped files, in 274.81 seconds. The skipped
 entries are not substitutes for any required M5 acceptance replay. This candidate
-includes main `7e42e81`, the shared freeform fix and the BREP decoder fix. It has
-not been pushed, merged to main or used to close M5.
+includes main `7e42e81`, the shared freeform fix and the BREP decoder fix. It was
+unpublished at that checkpoint; the later pushed inspection candidate includes it.
 
 Next verification gap: thickening currently checks the maker's completion and
 non-null result, but `register` does not expose exact validity, solid/shell counts
@@ -136,6 +136,37 @@ Exact OpenCascade inspection is not native QuickSurface workflow equivalence or
 a global self-intersection certificate. General trimming/blends, complete
 scan-to-sketch/whole-part operation-matrix acceptance and M4's dependency gate
 remain open; M5 merge and closure are still pending.
+
+The verified inspection source is commit
+`4bd9cc4f157bc405b4b70370950d792e7002d499`, pushed on branch
+`codex/m5-surfaces-cad` and attached as draft [PR #12](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/pull/12).
+Hosted validation run `40208687084` passed for that exact head. The PR
+remains a work-in-progress M5 candidate; all remaining acceptance gates must pass
+before merge or tracker closure.
+
+### Invalid CAD publication guard
+
+Inspection found a renderable but invalid box with one reversed face was accepted
+by CAD import. The [red regression](evidence/m5-20261025/invalid-publication-red.log)
+reproduces that missing rejection. The common kernel registration boundary now
+runs BRepCheck before meshing or handle publication; rejected shapes are deleted.
+The [green CAD suite](evidence/m5-20261025/invalid-publication-green.log) passes all
+existing operation/exchange checks plus invalid topology, signed orientation and
+unchanged native-store checks.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/invalid-publication-browser.json)
+confirms both import paths reject the same invalid BREP, preserve revision/history
+and retain live modeling handles for subsequent exact reference inspection. The
+complete positive real-region/exchange replay also passed after the guard. This
+JavaScript-worker-only runtime delta passed an affected Vite build (identity
+`scanforge-da02130741814812`); TypeScript sources are unchanged from the preceding
+12-batch build/full suite. New exact-head hosted CI is required after pushing it.
+
+The prepared native STL remains byte-identical to the newer replay. STEP payloads
+also match after removing only the FILE_NAME header timestamp; raw STEP hashes
+differ because export times differ. Both hashes and the normalized comparison
+are [retained separately](evidence/m5-20261025/fixture-header-comparison.json).
+The earlier private native fixtures are preserved, not overwritten.
 
 M1 issue #1 is closed with reviewed evidence and merge #10. M4 issue #4 remains open as of this audit and must satisfy its dependency gate. The native QuickSurface window is shared with M2–M6 coordination; do not clear or operate it without an ownership handoff. M5 needs a dedicated native scan-fitting/surface/CAD/exchange validation window.
 

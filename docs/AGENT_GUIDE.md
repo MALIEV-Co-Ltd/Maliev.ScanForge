@@ -962,6 +962,11 @@ resource exhaustion and changed revision fail without modifying model/history.
 Failure, timeout and cancellation dispose only the inspection worker; the live
 modeling kernel and Undo-owned handles remain intact.
 
+CAD import and modeling results pass BRepCheck before display tessellation or
+native-handle publication. Invalid topology/geometry fails with the same repair
+message through GUI and MCP, preserving the current model and history. Maker
+completion or a renderable mesh alone is insufficient for exact CAD acceptance.
+
 Surface fitting additionally accepts `method:"projected-grid"|"approximate"`.
 Omitting it preserves projected-grid behavior. Approximate uses the recovered
 XYZ basis, derivative penalties and column-normalized LU through the same worker,

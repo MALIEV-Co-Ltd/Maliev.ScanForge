@@ -14,6 +14,12 @@ plus the existing kernel lease. This adds no modeling transaction or history.
 The GUI job adapter can omit mutation guards for explicitly read-only jobs;
 mutating callers retain their existing revision and retry fields.
 
+The kernel's common `register` boundary checks BRepCheck validity before meshing
+or storing a shape. Every import and modeled result uses that boundary. Rejection
+deletes the unpublished shape; import finally retires its temporary virtual file.
+The diagnostic parser stays separate so it can report invalid BREP as invalid
+without publishing it. GUI and MCP receive the same failure from the worker.
+
 The GUI control-grid editor dispatches `surface_set` through the existing shared
 API, preserving revision admission, retry receipts, locks and model history.
 Optional `scanId` records an existing mesh/point-cloud source on creation or

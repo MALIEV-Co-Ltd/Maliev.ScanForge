@@ -979,6 +979,64 @@ try {
       entityId: solidId,
     });
   }
+  if (process.env.SCANFORGE_TEST_INVALID_BREP) {
+    const bad = await readFile(process.env.SCANFORGE_TEST_INVALID_BREP);
+    assert(bad.length <= 1048576);
+    const upload = await call("artifact_put", {
+      name: "invalid-one-face.brep",
+      offset: 0,
+      base64: bad.toString("base64"),
+    });
+    const beforeInvalid = await call("project_get");
+    const receipt = await mutate("project_import", {
+      artifactId: upload.result.artifactId,
+    });
+    const expires = Date.now() + 95000;
+    let failed;
+    do {
+      failed = (await call("job_get", { jobId: receipt.result.jobId })).result;
+      if (failed.status !== "running") break;
+      await pause();
+    } while (Date.now() < expires);
+    assert.equal(failed.status, "failed", JSON.stringify(failed));
+    assert.match(failed.error.message, /invalid topology or geometry/i);
+    const afterInvalid = await call("project_get");
+    assert.equal(afterInvalid.revision, beforeInvalid.revision);
+    assert.deepEqual(afterInvalid.result.objects, beforeInvalid.result.objects);
+    assert.equal(afterInvalid.result.undo, beforeInvalid.result.undo);
+    await page
+      .locator('input[type=file][accept*=".stl"]')
+      .setInputFiles(process.env.SCANFORGE_TEST_INVALID_BREP);
+    const guiError = page.locator(".error-banner");
+    await guiError
+      .filter({ hasText: /invalid topology or geometry/i })
+      .waitFor();
+    assert((await guiError.textContent()).includes(failed.error.message));
+    const afterGuiInvalid = await call("project_get");
+    assert.equal(afterGuiInvalid.revision, beforeInvalid.revision);
+    assert.equal(afterGuiInvalid.result.undo, beforeInvalid.result.undo);
+    await page
+      .getByRole("button", { name: "Dismiss error", exact: true })
+      .click();
+    const references = await job(
+      await call("alignment_references", {
+        entityId: faceId,
+        offset: 0,
+        limit: 10,
+      }),
+    );
+    assert(
+      references.total > 0,
+      "The live modeling kernel must retain its pre-error exact handles",
+    );
+    ledger.scenarios.push({
+      invalidBrepRejectedBeforePublication: true,
+      guiMcpSameFailure: true,
+      unchangedRevisionAndHistory: true,
+      liveKernelHandlesPreserved: true,
+      fixtureSha256: createHash("sha256").update(bad).digest("hex"),
+    });
+  }
   assert.deepEqual(errors, []);
   assert.deepEqual(consoleErrors, []);
   ledger.consoleErrors = consoleErrors;
