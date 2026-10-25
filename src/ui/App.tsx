@@ -4272,6 +4272,27 @@ export function App() {
     setSelectedId(entity.id);
     setMessage(`${label} created`);
   }
+  async function runSurfaceOperation(
+    args: Record<string, unknown>,
+    signal: AbortSignal,
+  ) {
+    setError("");
+    const result = await runApplicationJobCommand(
+      workspaceApi,
+      "surface_operation",
+      { entityId: selected?.id, ...args },
+      {
+        signal,
+        cancelledMessage: "Surface edit cancelled.",
+        leaseMessage: "Surface edit exceeded its time limit.",
+      },
+    );
+    const failures = result.cleanupFailures as
+      { message: string }[] | undefined;
+    if (failures?.length)
+      setError(failures.map((failure) => failure.message).join("; "));
+    return result;
+  }
   function editSurface(patch: NurbsPatch) {
     if (selected?.parametric?.feature.recipe.kind === "surface") {
       rebuildFeature({ kind: "surface", patch });
@@ -7029,34 +7050,18 @@ export function App() {
                   <div className="surface-panels">
                     <SurfaceTools
                       active={toolPanelOpen}
-                      onJoin={async (referencePatch, options, signal) => {
-                        setError("");
-                        const result = await runApplicationJobCommand(
-                          workspaceApi,
-                          "surface_operation",
-                          {
-                            entityId: selected?.id,
-                            operation: "join",
-                            referencePatch,
-                            options,
-                          },
-                          {
-                            signal,
-                            cancelledMessage: "Surface join cancelled.",
-                            leaseMessage:
-                              "Surface join exceeded its time limit.",
-                          },
-                        );
-                        const failures = result.cleanupFailures as
-                          { message: string }[] | undefined;
-                        if (failures?.length)
-                          setError(
-                            failures
-                              .map((failure) => failure.message)
-                              .join("; "),
-                          );
-                        return result;
-                      }}
+                      onJoin={(referencePatch, options, signal) =>
+                        runSurfaceOperation(
+                          { operation: "join", referencePatch, options },
+                          signal,
+                        )
+                      }
+                      onSnap={(index, signal) =>
+                        runSurfaceOperation(
+                          { operation: "snap", index },
+                          signal,
+                        )
+                      }
                       selectionId={selected?.id}
                       scan={
                         entities.find(

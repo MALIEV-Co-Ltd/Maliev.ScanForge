@@ -6,7 +6,14 @@ import {
 } from "../src/automation/api";
 import { createAuthoringOperations } from "../src/automation/authoring-operations";
 import { createOperations } from "../src/automation/operations";
-import { createGridPatch, tessellatePatch } from "../src/surfaces";
+import {
+  createGridPatch,
+  tessellatePatch,
+  insertPatchKnot,
+  preparePatchCrease,
+  snapControlPoint,
+  importQuadGridObj,
+} from "../src/surfaces";
 import type { CadClient } from "../src/cad/client";
 
 function setup(exact = false) {
@@ -101,6 +108,93 @@ async function settle(api: ApplicationApi, receipt: any) {
   }
   throw Error("Join did not settle");
 }
+for (const operation of [
+  "grid",
+  "knot",
+  "crease",
+  "snap",
+  "quadImport",
+] as const)
+  it(`admits the GUI's exact ${operation} edit through the shared rebuild transaction`, async () => {
+    const h = setup(true);
+    try {
+      const source = {
+        ...h.state.entities[1],
+        id: "original-scan",
+        kind: "pointcloud" as const,
+        positions: [9, 8, 7],
+        surfacePatch: undefined,
+      };
+      h.state.entities.push(source);
+      const originalSource = structuredClone(source);
+      const args: Record<string, unknown> = { entityId: "target", operation };
+      let expected;
+      if (operation === "grid") {
+        Object.assign(args, {
+          countU: 3,
+          countV: 3,
+          width: 12,
+          height: 15,
+          degree: 2,
+        });
+        expected = createGridPatch(3, 3, 12, 15, 2);
+      } else if (operation === "knot") {
+        Object.assign(args, { axis: "u", parameter: 0.5, repetitions: 1 });
+        expected = insertPatchKnot(h.target, "u", 0.5, 1);
+      } else if (operation === "crease") {
+        Object.assign(args, { axis: "v", parameter: 0.5 });
+        expected = preparePatchCrease(h.target, "v", 0.5);
+      } else if (operation === "snap") {
+        args.index = 0;
+        expected = snapControlPoint(h.target, 0, source.positions);
+      } else {
+        const obj = "v 0 0 0\nv 1 0 0\nv 0 1 0\nv 1 1 1\nf 1 2 4 3";
+        const uploaded = await h.api.invoke("artifact_put", {
+          name: "grid.obj",
+          offset: 0,
+          base64: btoa(obj),
+        });
+        if (!uploaded.ok) throw Error(uploaded.error.message);
+        Object.assign(args, {
+          artifactId: (uploaded.result as any).artifactId,
+          countU: 2,
+          countV: 2,
+          degree: 1,
+        });
+        expected = importQuadGridObj(obj, 2, 2, 1);
+      }
+      Object.assign(args, {
+        expectedRevision: h.api.currentRevision(),
+        requestId: `exact-${operation}`,
+      });
+      const receipt = await h.api.invoke("surface_operation", args);
+      const result = await settle(h.api, receipt);
+      expect(result).toMatchObject({
+        status: "succeeded",
+        result: {
+          entityId: "target",
+          rebuiltFeatureIds: ["target-feature"],
+          cleanupFailures: [],
+        },
+      });
+      expect(h.state.entities[0]).toMatchObject({
+        kind: "cad",
+        kernelId: "new-target",
+        brep: "new-brep",
+        surfacePatch: expected,
+        surfaceScanId: "original-scan",
+        parametric: {
+          feature: { recipe: { kind: "surface", patch: expected } },
+        },
+      });
+      expect(h.state.entities[2]).toEqual(originalSource);
+      expect(h.state.history).toHaveLength(1);
+      expect(await h.api.invoke("surface_operation", args)).toEqual(receipt);
+      expect(h.cad.surface).toHaveBeenCalledTimes(1);
+    } finally {
+      h.api.dispose();
+    }
+  });
 for (const exact of [false, true])
   it(`joins ${exact ? "exact" : "mesh"} surfaces from the GUI's raw reference contract in one retry-safe transaction`, async () => {
     const h = setup(exact),
@@ -142,6 +236,100 @@ for (const exact of [false, true])
         expect(h.state.entities[0].brep).toBe("new-brep");
         expect(h.cad.release).not.toHaveBeenCalled();
       }
+    } finally {
+      h.api.dispose();
+    }
+  });
+
+it("defaults exact snapping to display geometry when its scan is unavailable, but rejects an explicit missing source", async () => {
+  const h = setup(true);
+  try {
+    const request = {
+      entityId: "target",
+      operation: "snap",
+      index: 5,
+      expectedRevision: h.api.currentRevision(),
+    };
+    const failed = await settle(
+      h.api,
+      await h.api.invoke("surface_operation", {
+        ...request,
+        scanId: "missing",
+        requestId: "explicit-missing",
+      }),
+    );
+    expect(failed.status).toBe("failed");
+    expect(h.cad.surface).not.toHaveBeenCalled();
+    expect(h.state.history).toHaveLength(0);
+    const expected = snapControlPoint(
+      h.target,
+      5,
+      h.state.entities[0].positions,
+    );
+    const result = await settle(
+      h.api,
+      await h.api.invoke("surface_operation", {
+        ...request,
+        requestId: "display-fallback",
+      }),
+    );
+    expect(result.status).toBe("succeeded");
+    expect(h.state.entities[0].surfacePatch).toEqual(expected);
+  } finally {
+    h.api.dispose();
+  }
+});
+
+for (const associated of [false, true])
+  it(`rejects a downstream ${associated ? "associated" : "explicit"} exact snap source without changing it`, async () => {
+    const h = setup(true);
+    try {
+      h.state.entities[1] = {
+        ...h.state.entities[1],
+        locked: false,
+        kind: "cad",
+        kernelId: "source-native",
+        parametric: {
+          feature: {
+            id: "source-feature",
+            name: "Dependent source",
+            recipe: {
+              kind: "offset",
+              source: { featureId: "target-feature" },
+              distance: 1,
+            },
+          },
+          output: 0,
+        },
+      };
+      h.cad.offset = vi.fn(async () => ({
+        kernelId: "new-source",
+        brep: "new-source-brep",
+        positions: Array.from(tessellatePatch(h.reference)),
+      }));
+      if (associated) h.state.entities[0].surfaceScanId = "reference";
+      const before = structuredClone(h.state.entities);
+      const result = await settle(
+        h.api,
+        await h.api.invoke("surface_operation", {
+          entityId: "target",
+          operation: "snap",
+          index: 0,
+          ...(!associated ? { scanId: "reference" } : {}),
+          expectedRevision: h.api.currentRevision(),
+          requestId: "downstream-snap",
+        }),
+      );
+      expect(result).toMatchObject({
+        status: "failed",
+        error: {
+          message:
+            "A fixed snap reference cannot depend on the target being rebuilt.",
+        },
+      });
+      expect(h.state.entities).toEqual(before);
+      expect(h.state.history).toHaveLength(0);
+      expect(h.cad.surface).not.toHaveBeenCalled();
     } finally {
       h.api.dispose();
     }

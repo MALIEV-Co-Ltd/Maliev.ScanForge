@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { replaySurfaceJoins } from "./helpers/surface-join-browser.mjs";
 import { replayStepExport } from "./helpers/step-export-browser.mjs";
+import { replayExactFreeform } from "./helpers/exact-freeform-browser.mjs";
+import { replayCadTimeout } from "./helpers/cad-timeout-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -152,8 +154,15 @@ try {
     await page.addInitScript(() => {
       window.__m5HoldStepExport = false;
       window.__m5HeldStepExports = [];
+      window.__m5ExportWorkerTerminations = 0;
       const send = Worker.prototype.postMessage;
+      const terminate = Worker.prototype.terminate;
+      Worker.prototype.terminate = function (...args) {
+        if (this.__m5CadExportWorker) window.__m5ExportWorkerTerminations++;
+        return terminate.apply(this, args);
+      };
       Worker.prototype.postMessage = function (...args) {
+        if (args[0]?.operation === "export") this.__m5CadExportWorker = true;
         if (window.__m5HoldStepExport && args[0]?.operation === "export") {
           window.__m5HeldStepExports.push(() => send.apply(this, args));
           return;
@@ -187,7 +196,7 @@ try {
   await page
     .getByRole("button", { name: "Close settings", exact: true })
     .click();
-  const call = async (name, args = {}) => {
+  const call = async (name, args = {}, allowFailure = false) => {
     lease.signal.throwIfAborted();
     const response = await client.callTool(
       { name, arguments: args },
@@ -196,7 +205,7 @@ try {
     );
     const wire =
       response.structuredContent ?? JSON.parse(response.content[0].text);
-    assert(wire.ok, JSON.stringify(wire));
+    if (!allowFailure) assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
   const mutate = async (name, args) =>
@@ -707,6 +716,18 @@ try {
     unchangedRevision: true,
     report: faceReport,
   });
+  if (process.env.SCANFORGE_TEST_EXACT_FREEFORM === "1")
+    await replayExactFreeform({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
   if (process.env.SCANFORGE_TEST_STEP_EXPORT === "1")
     await replayStepExport({
       page,
@@ -719,6 +740,16 @@ try {
       ledger,
       out,
       sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_CAD_TIMEOUT === "1")
+    await replayCadTimeout({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
     });
   if (process.env.SCANFORGE_TEST_SURFACE_JOIN === "1")
     await replaySurfaceJoins({

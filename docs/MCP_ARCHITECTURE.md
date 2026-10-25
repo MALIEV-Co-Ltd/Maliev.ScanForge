@@ -98,6 +98,15 @@ reference source and changed control indices. The reference is a fixed input,
 not a persistent dependency. The GUI awaits publication before success and aborts
 its owned job on close/unmount; its cancel control remains outside inert content.
 
+The same authored-surface guard and rebuild dispatch cover `grid`, `quadImport`,
+`knot`, `crease` and `snap`. Mesh-only/point-cloud guards remain for unsupported
+targets. Snapping resolves explicit source IDs or the GUI's associated-source /
+own-display fallback, then uses the shared fixed-reference dependency check.
+It rejects downstream read sources before rebuilding; this prevents the source
+from changing as a dependent. GUI snapping uses this same operation and shares
+the panel's existing owned join cancellation lifecycle. Both join and snap
+report success only after the shared job resolves.
+
 Project restore copies shared text chunks into an ordinary byte view before
 UTF-8 decoding, because browser TextDecoder rejects SharedArrayBuffer views.
 Numeric geometry chunks retain their original immutable shared backing and

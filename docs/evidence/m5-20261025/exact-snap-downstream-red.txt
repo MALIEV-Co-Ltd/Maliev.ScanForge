@@ -1,0 +1,36 @@
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/surface-join-api.test.ts (15 tests | 2 failed) 261ms
+   × rejects a downstream explicit exact snap source without changing it 21ms
+   × rejects a downstream associated exact snap source without changing it 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/surface-join-api.test.ts > rejects a downstream explicit exact snap source without changing it
+ FAIL  tests/surface-join-api.test.ts > rejects a downstream associated exact snap source without changing it
+AssertionError: expected { …(6) } to match object { status: 'failed', …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "error": {
+-     "message": "A fixed snap reference cannot depend on the target being rebuilt.",
+-   },
+-   "status": "failed",
++   "status": "succeeded",
+  }
+
+ ❯ tests/surface-join-api.test.ts:292:20
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 13 passed (15)
+   Start at  02:45:02
+   Duration  1.41s (transform 63%, tests 20%, import 17%)
+

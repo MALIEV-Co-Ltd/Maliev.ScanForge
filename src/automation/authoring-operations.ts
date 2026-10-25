@@ -21,6 +21,40 @@ import { assertSampledGeometry } from "../reference-entity";
 import { createCadRebuildOperation } from "./operations";
 import { featureDependencies } from "../parametric";
 
+function fixedSurfaceReference(
+  entities: Entity[],
+  target: Entity,
+  reference: Entity | undefined,
+  operation: string,
+) {
+  if (!target.kernelId || !reference?.parametric || target.id === reference.id)
+    return;
+  const targetId = target.parametric!.feature.id;
+  const features = new Map(
+    entities.flatMap((entity) =>
+      entity.parametric
+        ? [[entity.parametric.feature.id, entity.parametric.feature] as const]
+        : [],
+    ),
+  );
+  const pending = [reference.parametric.feature.id],
+    seen = new Set<string>();
+  while (pending.length) {
+    const id = pending.pop()!;
+    if (id === targetId)
+      throw Error(
+        `A fixed ${operation} reference cannot depend on the target being rebuilt.`,
+      );
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const feature = features.get(id);
+    if (feature)
+      pending.push(
+        ...featureDependencies(feature.recipe).map((ref) => ref.featureId),
+      );
+  }
+}
+
 /** Authoring tools reuse the same helpers as the editor's surface/sketch/selection controls. */
 export function createAuthoringOperations(
   host: WorkspaceHost,
@@ -247,11 +281,11 @@ export function createAuthoringOperations(
       let e = a.entityId ? find(a.entityId) : undefined;
       let patch: NurbsPatch;
       let joinResult: Record<string, unknown> | undefined;
-      if (e && a.operation === "join" && (e.kernelId || e.parametric)) {
+      if (e && (e.kernelId || e.parametric)) {
         if (e.locked) throw Error("Surface object is locked");
         if (!e.kernelId || e.parametric?.feature.recipe.kind !== "surface")
           throw Error(
-            "Exact joins require an authored parametric NURBS surface target.",
+            "Exact surface edits require an authored parametric NURBS surface target.",
           );
       } else if (e) editable(e);
       if (e?.kind === "pointcloud")
@@ -280,9 +314,16 @@ export function createAuthoringOperations(
           patch = insertPatchKnot(patch, a.axis, a.parameter, a.repetitions);
         else if (a.operation === "crease")
           patch = preparePatchCrease(patch, a.axis, a.parameter);
-        else if (a.operation === "snap")
-          patch = snapControlPoint(patch, a.index, find(a.scanId).positions);
-        else if (a.operation === "join") {
+        else if (a.operation === "snap") {
+          const associatedScanId = e.surfaceScanId;
+          const scan =
+            a.scanId !== undefined
+              ? find(a.scanId)
+              : (s.entities.find((entity) => entity.id === associatedScanId) ??
+                e);
+          fixedSurfaceReference(s.entities, e, scan, "snap");
+          patch = snapControlPoint(patch, a.index, scan.positions);
+        } else if (a.operation === "join") {
           const hasId = a.referenceId !== undefined,
             hasRaw = a.referencePatch !== undefined;
           if (hasId === hasRaw)
@@ -298,39 +339,7 @@ export function createAuthoringOperations(
             ? referenceEntity?.surfacePatch
             : a.referencePatch;
           if (!reference) throw new Error("Reference has no NURBS patch");
-          if (e.kernelId && referenceEntity?.parametric) {
-            const targetId = e.parametric!.feature.id;
-            const features = new Map(
-              s.entities.flatMap((entity) =>
-                entity.parametric
-                  ? [
-                      [
-                        entity.parametric.feature.id,
-                        entity.parametric.feature,
-                      ] as const,
-                    ]
-                  : [],
-              ),
-            );
-            const pending = [referenceEntity.parametric.feature.id],
-              seen = new Set<string>();
-            while (pending.length) {
-              const id = pending.pop()!;
-              if (id === targetId)
-                throw Error(
-                  "A fixed join reference cannot depend on the target being rebuilt.",
-                );
-              if (seen.has(id)) continue;
-              seen.add(id);
-              const feature = features.get(id);
-              if (feature)
-                pending.push(
-                  ...featureDependencies(feature.recipe).map(
-                    (ref) => ref.featureId,
-                  ),
-                );
-            }
-          }
+          fixedSurfaceReference(s.entities, e, referenceEntity, "join");
           c.check();
           const original = patch;
           patch = joinPatchBoundary(reference, patch, a.options);
@@ -348,14 +357,14 @@ export function createAuthoringOperations(
                 : [],
             ),
           };
-          if (e.kernelId) {
-            const rebuilt = await rebuildExact(
-              { entityId: e.id, recipe: { kind: "surface", patch } },
-              c,
-            );
-            return { entityId: e.id, ...joinResult, ...rebuilt };
-          }
         } else throw new Error("Unsupported surface operation");
+      }
+      if (e?.kernelId) {
+        const rebuilt = await rebuildExact(
+          { entityId: e.id, recipe: { kind: "surface", patch } },
+          c,
+        );
+        return { entityId: e.id, ...joinResult, ...rebuilt };
       }
       e ??= {
         id: crypto.randomUUID(),

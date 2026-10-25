@@ -973,8 +973,31 @@ the result. Use `job_cancel` to cancel. The GUI's NURBS surface panel submits th
 same operation and exposes its owned cancellation outside the busy panel.
 The joined patch is materialized, with no persistent seam dependency. C1 matches
 transverse homogeneous derivatives in normalized parameters; it is not a general
-surface blend or a native-reference equivalence claim. Other exact freeform
-operations still use `cad_rebuild` with the computed replacement surface recipe.
+surface blend or a native-reference equivalence claim.
+
+`surface_operation` also accepts exact authored `surface` targets for `grid`,
+`quadImport`, `knot`, `crease` and `snap`, using the same dependent rebuild path.
+Grid/quad control counts are bounded by the surface validator to 2–16 per axis,
+with degrees 1–5. Quad import reads an uploaded ordered OBJ artifact; refinement
+uses `axis:"u"|"v"` and a normalized interior `parameter`, with optional knot
+`repetitions`. Snap takes the control `index` and optional `scanId`. Omission
+reads the associated source if present, otherwise the target's display geometry,
+matching the panel. Explicit missing IDs reject. External downstream CAD snap
+sources reject before native work so the rebuild cannot change the read source;
+own-display snapping remains available. GUI snapping submits this same job and
+awaits publication with an owned cancel control. Other GUI control edits use the
+same pure surface helpers followed by `surface_set` or `cad_rebuild`. Exact
+results include `rebuiltFeatureIds` and `cleanupFailures`; all edits retain the
+editable recipe, BREP, dependency locks and one-commit history semantics.
+
+If a modeling job reports **CAD operation exceeded 90 seconds; kernel reset**,
+its worker and native handles have been retired. Saved BREP, display geometry
+and model history remain in the workspace. Export `format:"project"`, then
+reopen that artifact with `project_import` and `replace:true` to restore exact
+handles before further modeling or STEP export. GUI recovery uses Save project
+and Open that `.scanforge` file. Preserve unsaved work with that project export;
+do not replace the scene with a display-mesh export. The bounded browser timeout
+test verifies project reopen, exact validity and subsequent GUI STEP export.
 
 Use read-only job `cad_inspect` with `{entityId}` to inspect the object's saved
 exact BREP. Poll `job_get`; `job_cancel` stops its separate diagnostic worker.

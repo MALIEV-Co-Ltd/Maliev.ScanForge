@@ -9,7 +9,6 @@ import {
   preparePatchCrease,
   parsePatch,
   serializePatch,
-  snapControlPoint,
   tessellatePatch,
   type NurbsPatch,
   type SurfaceFitOptions,
@@ -33,6 +32,7 @@ export interface SurfaceToolsProps {
     options: PatchJoinOptions,
     signal: AbortSignal,
   ) => Promise<unknown>;
+  onSnap: (index: number, signal: AbortSignal) => Promise<unknown>;
   active?: boolean;
   onCreateMesh: (positions: Float32Array, name: string) => void;
   onExportPatch: (json: string) => void;
@@ -49,6 +49,7 @@ export function SurfaceTools({
   patch,
   onPatchChange,
   onJoin,
+  onSnap,
   active = true,
   onCreateMesh,
   onExportPatch,
@@ -60,6 +61,7 @@ export function SurfaceTools({
   const fitting = useRef<AbortController | null>(null);
   const joining = useRef<AbortController | null>(null);
   const [joinBusy, setJoinBusy] = useState(false);
+  const [cancelLabel, setCancelLabel] = useState("Cancel surface join");
   useEffect(() => {
     setJoinBusy(false);
     return () => {
@@ -137,26 +139,25 @@ export function SurfaceTools({
       onError?.(text);
     }
   };
-  async function join() {
-    if (!referencePatch || !patch || joinBusy || !active) return;
+  async function edit(
+    task: (signal: AbortSignal) => Promise<unknown>,
+    pending: string,
+    success: string,
+    cancel: string,
+  ) {
+    if (joinBusy || !active) return;
     const controller = new AbortController();
     joining.current = controller;
     setJoinBusy(true);
-    setMessage("Joining compatible patch boundaries…");
+    setCancelLabel(cancel);
+    setMessage(pending);
     try {
-      await onJoin(
-        referencePatch,
-        { referenceEdge, targetEdge, continuity, reverse: reverseSeam },
-        controller.signal,
-      );
-      if (!controller.signal.aborted)
-        setMessage(
-          `${continuity} boundary applied to active patch. Reference remains fixed.`,
-        );
+      await task(controller.signal);
+      if (!controller.signal.aborted) setMessage(success);
     } catch (error) {
       if (controller.signal.aborted) {
         if (joining.current === controller)
-          setMessage("Surface join cancellation requested.");
+          setMessage("Surface edit cancellation requested.");
       } else {
         const text = error instanceof Error ? error.message : String(error);
         setMessage(text);
@@ -168,6 +169,20 @@ export function SurfaceTools({
         setJoinBusy(false);
       }
     }
+  }
+  async function join() {
+    if (!referencePatch || !patch) return;
+    await edit(
+      (signal) =>
+        onJoin(
+          referencePatch,
+          { referenceEdge, targetEdge, continuity, reverse: reverseSeam },
+          signal,
+        ),
+      "Joining compatible patch boundaries…",
+      `${continuity} boundary applied to active patch. Reference remains fixed.`,
+      "Cancel surface join",
+    );
   }
   const fitScan = async () => {
     if (!scan?.length || fitting.current) return;
@@ -342,8 +357,11 @@ export function SurfaceTools({
             <button
               disabled={!scan?.length}
               onClick={() =>
-                run(() =>
-                  onPatchChange(snapControlPoint(patch, controlIndex, scan!)),
+                void edit(
+                  (signal) => onSnap(controlIndex, signal),
+                  "Snapping control point to source…",
+                  "Control point snapped to source.",
+                  "Cancel surface snap",
                 )
               }
             >
@@ -798,7 +816,7 @@ export function SurfaceTools({
       </fieldset>
       {joinBusy && active && (
         <CadJobCancel
-          label="Cancel surface join"
+          label={cancelLabel}
           onCancel={() => joining.current?.abort()}
         />
       )}

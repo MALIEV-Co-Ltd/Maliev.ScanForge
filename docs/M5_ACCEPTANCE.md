@@ -17,6 +17,52 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Exact freeform admission and timeout recovery
+
+`surface_operation` now admits grid/quad import, knot/crease and snapping on
+authored exact surface targets through the same guarded dependent rebuild used
+by ordinary CAD edits. Snap defaults match the panel's associated-source or
+own-display input. Review found downstream snap sources could change during
+rebuild; the shared fixed-reference guard now rejects them before native work.
+The GUI Snap control submits this same job and shares owned join cancellation.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/exact-freeform-browser.json)
+(`scanforge-853c3b899398f72d`) uses actual grid, knot, crease, snap and ordered
+quad import controls. All five produce identical editable patches and complete
+geometry digests through MCP, one history step, valid exact faces, Undo/Redo and
+project/BREP reopen. Source geometry stays unchanged. Invalid normalized endpoint
+parameters reject before publication through both paths (GUI helper and public
+schema validation). The same run also replays C0/C1 joins and STEP parity.
+
+The [downstream-source red receipt](evidence/m5-20261025/exact-snap-downstream-red.txt)
+reproduces successful mutation of explicit and associated downstream sources.
+The [passing focused checks](evidence/m5-20261025/exact-freeform-focused.txt)
+verify rejection before native work, own-display fallback, explicit missing IDs,
+all five exact helpers, retry/history, source preservation, locks and join cleanup.
+Both static reviews confirm the corrected guard and owned GUI Snap lifecycle.
+
+The separate [timeout/recovery replay](evidence/m5-20261025/cad-timeout-browser.json)
+holds one owned export request until the unchanged 90-second kernel lease fires
+(observed 90.153 s). It verifies worker termination, unchanged source geometry,
+revision/history and no late scene publication. Shared project export/reopen
+restores all exact handles and valid BREP; GUI STEP export then succeeds.
+This is an injected transport stall on bounded authored fixtures, not a native
+algorithm timing or full-project peak-memory claim. Existing admission, kernel
+and three-minute browser guards remain unchanged. Browser/bridge cleanup passes.
+
+An earlier standard build found a TypeScript narrowing error in the snap-source
+callback; capturing its source ID resolves it. The failed build remains in
+`.resources/m5/exact-freeform-build.log`. Provisional receipts are retained and
+are not substituted for the final build. Native operation/continuity/blend
+acceptance, the complete real scan/sketch chain and M4 dependency remain open.
+
+The [final standard build](evidence/m5-20261025/exact-freeform-build.txt) passes
+all twelve typecheck batches. The [full suite](evidence/m5-20261025/exact-freeform-unit.txt)
+passes 49,048 tests, 64 skipped (680 passed files, 18 skipped; 278.58 s).
+The preceding STEP commit `6385d16` passed
+[hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40226919973).
+This new candidate requires its own hosted run; M5 is not ready to merge or close.
+
 ### Shared exact-only STEP export
 
 The GUI's exact-only STEP behavior is now an explicit `cadOnly:true` option on

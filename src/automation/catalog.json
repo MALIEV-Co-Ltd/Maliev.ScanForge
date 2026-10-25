@@ -4918,7 +4918,7 @@
   },
   {
     "name": "surface_operation",
-    "description": "Use editor NURBS helpers: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining. Join accepts exactly one workspace referenceId or bounded referencePatch, preserves that reference, and edits mesh or exact authored surface targets through the shared transaction. C0/C1 are compatible normalized-parameter boundary joins, not general surface blends. Returns representation, applied options, reference source, changed control indices and exact rebuild/cleanup results.",
+    "description": "Use shared editor NURBS helpers on mesh patches or exact authored surface targets: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining. Exact edits use the ordinary guarded dependent rebuild and return rebuiltFeatureIds/cleanupFailures. Snap defaults to the associated scan, or the target display geometry. Join accepts exactly one workspace referenceId or bounded referencePatch, preserves that reference and additionally returns representation, applied options, reference source and changed control indices. C0/C1 are compatible normalized-parameter boundary joins, not general surface blends.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
