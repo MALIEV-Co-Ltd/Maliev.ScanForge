@@ -1,10 +1,15 @@
 import type { Entity } from "./types";
 import type { ProjectSession } from "./project-file";
-import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import {
+  cloudPlacement,
+  cloudWorldNormalsTyped,
+  placedCloud,
+} from "./point-cloud-placement";
 
 export interface ProjectEncodingSnapshot {
   session: ProjectSession;
   localClouds: Entity[];
+  typedNormalClouds?: Entity[];
 }
 
 /** Preserve local cloud buffers without invoking their lazy world-coordinate getters. */
@@ -13,6 +18,7 @@ export function projectEncodingSnapshot(
 ): ProjectEncodingSnapshot {
   const cache = new Map<Entity, Entity>();
   const localClouds: Entity[] = [];
+  const typedNormalClouds: Entity[] = [];
   const entity = (source: Entity) => {
     if (cache.has(source)) return cache.get(source)!;
     const placement = cloudPlacement(source);
@@ -29,12 +35,14 @@ export function projectEncodingSnapshot(
         normals: placement.sourceNormals,
       } as Entity;
       localClouds.push(result);
+      if (cloudWorldNormalsTyped(placement)) typedNormalClouds.push(result);
     }
     cache.set(source, result);
     return result;
   };
   return {
     localClouds,
+    typedNormalClouds,
     session: {
       ...session,
       project: {
@@ -59,13 +67,19 @@ export function restoreEncodingSnapshot(
 ): ProjectSession {
   const { session } = snapshot;
   const localClouds = new Set(snapshot.localClouds);
+  const typedNormalClouds = new Set(snapshot.typedNormalClouds ?? []);
   const cache = new Map<Entity, Entity>();
   const entity = (source: Entity) => {
     if (!cache.has(source))
       cache.set(
         source,
         localClouds.has(source) && source.pointCloudPlacement
-          ? placedCloud(source, source.pointCloudPlacement)
+          ? placedCloud(
+              source,
+              source.pointCloudPlacement,
+              undefined,
+              typedNormalClouds.has(source),
+            )
           : source,
       );
     return cache.get(source)!;

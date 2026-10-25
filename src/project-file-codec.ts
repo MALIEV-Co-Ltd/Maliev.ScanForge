@@ -11,7 +11,11 @@ import {
   DISK_BLOB_BLOCK_BYTES,
   diskBackedBlob,
 } from "./transient-blob-storage";
-import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import {
+  cloudPlacement,
+  cloudWorldNormalsTyped,
+  placedCloud,
+} from "./point-cloud-placement";
 import {
   encodeReferenceEntityData,
   decodeReferenceEntityData,
@@ -60,6 +64,7 @@ type RecordData = Omit<
   reference?: EncodedReferenceEntityData;
   positions: Ref;
   cloudPoseBits?: string;
+  cloudNormalsTyped?: boolean;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
@@ -205,6 +210,9 @@ export async function encodeProjectFileLocally(
             : {}),
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
+          ...(placement && cloudWorldNormalsTyped(placement)
+            ? { cloudNormalsTyped: true }
+            : {}),
           ...(pointColors !== undefined
             ? {
                 pointColors: await store(validatePointCloudAttributes(entity)!),
@@ -512,6 +520,12 @@ export async function decodeProjectContents(
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
+    if (
+      record.cloudNormalsTyped !== undefined &&
+      (typeof record.cloudNormalsTyped !== "boolean" ||
+        record.cloudPoseBits === undefined)
+    )
+      return invalid();
     assertReferenceCompatibleMetadata(record);
     if (
       (record.pointColors !== undefined ||
@@ -527,8 +541,9 @@ export async function decodeProjectContents(
       m.version !== 5
     )
       return invalid();
+    const { cloudNormalsTyped: _normalCarrier, ...metadata } = record;
     const entity = {
-      ...record,
+      ...metadata,
       ...(record.reference !== undefined
         ? { reference: decodeReferenceEntityData(record.reference) }
         : {}),
@@ -567,11 +582,16 @@ export async function decodeProjectContents(
     if (record.cloudPoseBits !== undefined) {
       if (![3, 4, 5].includes(m.version) || entity.kind !== "pointcloud")
         return invalid();
-      return placedCloud(entity, {
-        matrixBits: record.cloudPoseBits,
-        sourcePositions: entity.positions,
-        sourceNormals: entity.normals,
-      });
+      return placedCloud(
+        entity,
+        {
+          matrixBits: record.cloudPoseBits,
+          sourcePositions: entity.positions,
+          sourceNormals: entity.normals,
+        },
+        undefined,
+        record.cloudNormalsTyped ?? false,
+      );
     }
     return entity;
   });
