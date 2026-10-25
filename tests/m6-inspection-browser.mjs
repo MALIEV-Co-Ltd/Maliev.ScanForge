@@ -490,7 +490,33 @@ try {
     action: "show",
     inspectionId: differentTolerance.inspectionId,
   });
-  assert((await page.locator(".deviation-legend").innerText()).includes("5"));
+  const scale = page.locator('.reduction-color-scale[data-read-only="true"]');
+  assert((await scale.innerText()).includes("+5.000"));
+  assert((await scale.innerText()).includes("−5.000"));
+  assert.equal(await scale.getByRole("slider").count(), 0);
+  const scaleBox = await scale.boundingBox(),
+    canvasBox = await canvas.boundingBox();
+  assert(
+    scaleBox && canvasBox && scaleBox.x > canvasBox.x + canvasBox.width * 0.75,
+    "inspection scale is not on the right of the viewport",
+  );
+  assert(scaleBox.height > scaleBox.width, "inspection scale is not vertical");
+  await page.setViewportSize({ width: 600, height: 800 });
+  assert(
+    await scale.isVisible(),
+    "inspection scale disappeared on narrow screens",
+  );
+  const narrowScale = await scale.boundingBox();
+  assert(
+    narrowScale &&
+      narrowScale.x >= 0 &&
+      narrowScale.x + narrowScale.width <= 600,
+    "narrow inspection scale is clipped",
+  );
+  await page.screenshot({
+    path: fileURLToPath(new URL("inspection-scale-narrow.png", artifactDir)),
+  });
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.screenshot({
     path: fileURLToPath(new URL("report-tolerance.png", artifactDir)),
   });

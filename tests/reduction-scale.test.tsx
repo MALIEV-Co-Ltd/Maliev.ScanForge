@@ -89,3 +89,15 @@ it("shows the essential results without duplicate method, tolerance and sample d
   expect(html).not.toContain("Original coordinates");
   expect(html).not.toContain("Signed original-vertex distances");
 });
+
+it("reuses the right-hand reduction scale as a read-only inspection legend", () => {
+  const html = renderToStaticMarkup(
+    <ReductionColorScale threshold={2} tolerance={2} readOnly />,
+  );
+  expect(html).toContain('data-read-only="true"');
+  expect(html).toContain("+2.000");
+  expect(html).toContain("−2.000");
+  expect(html).toContain("0.000");
+  expect(html).not.toContain('role="slider"');
+  expect(html).not.toContain("<input");
+});

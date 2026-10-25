@@ -69,7 +69,7 @@ it.each([false, true])(
       expect(Array.from(index!.array)).toEqual([0, 2, 3]);
       expect(points.material.vertexColors).toBe(true);
       expect(points.material.color.getHex()).toBe(0xffffff);
-      const expected = ["#2479de", "#4bb78c", "#e56b47", "#e56b47"].flatMap(
+      const expected = ["#0000ff", "#00ff00", "#ff0000", "#ff0000"].flatMap(
         (value) => new THREE.Color(value).toArray(),
       );
       expect(Array.from(points.geometry.getAttribute("color").array)).toEqual(
@@ -171,7 +171,7 @@ it("preserves mesh palette and clearing behavior", () => {
     expect(Array.from(geometry.getAttribute("color").array)).toEqual(
       Array.from(
         new Float32Array(
-          ["#2479de", "#4bb78c", "#e56b47"].flatMap((value) =>
+          ["#0000ff", "#00ff00", "#ff0000"].flatMap((value) =>
             new THREE.Color(value).toArray(),
           ),
         ),
