@@ -1,3 +1,9 @@
 * text=auto eol=lf
 # Preserve historical analysis source hashes across checkout platforms.
 tools/continuation/reference/** -text -whitespace
+
+# Preserve native M6 export bytes referenced by evidence SHA-256 identities.
+docs/evidence/m6-inspection-20261025/*.obj -text -whitespace
+docs/evidence/m6-inspection-20261025/*.mtl -text -whitespace
+docs/evidence/m6-inspection-20261025/*.iges -text -whitespace
+tests/fixtures/m6-sparse-cloud.asc -text -whitespace
