@@ -42,7 +42,6 @@ export function projectEncodingSnapshot(
   };
   return {
     localClouds,
-    typedNormalClouds,
     session: {
       ...session,
       project: {
@@ -58,6 +57,8 @@ export function projectEncodingSnapshot(
         entities: r.entities.map(entity),
       })),
     },
+    // Mapping every state above populates this optional carrier membership.
+    ...(typedNormalClouds.length ? { typedNormalClouds } : {}),
   };
 }
 
