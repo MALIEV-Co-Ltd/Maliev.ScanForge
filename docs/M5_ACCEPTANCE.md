@@ -12,8 +12,10 @@ validation. Account-owner action is required before exact-head CI can run.
 Native QuickSurface UI initialization recovered at 19:56 UTC on 2026-10-25
 ([observation](evidence/m5-20261025/native-runtime-recovered.json)). No native
 input was sent: existing windows are owned by other work or have unknown
-ownership. Human authorization to coordinate an input slot is pending; native
-acceptance and M4 acceptance remain incomplete.
+ownership. The user subsequently authorized coordination, and the first fresh
+owned session imported/saved the connected scan region with verified cleanup
+([receipt](evidence/m5-20261025/native-import-r1.json)). Fitting control routing
+failed before acceptance; native geometry and M4 acceptance remain incomplete.
 Local checks are retained below; M5 is not merged or closed.
 
 ## Operation matrix
@@ -30,6 +32,23 @@ Local checks are retained below; M5 is not merged or closed.
 | Resources                                               | Existing admission guards, owned browser/MCP process leases                           | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
 
 ## Candidate history and validation
+
+### First owned native session: import and retained fitting-control failure
+
+After explicit coordinator release, a fresh installed QuickSurface 8.0.123
+instance ran under the unchanged 4 GiB / 25% CPU Job and finite lease. Exact
+PID33172/HWND114756374 ownership was checked before input. The connected-region
+STL imported as 200 triangles with explicit millimetre units. The native GUI
+saved `m5-imported-connected-region.qsf` (5,322 bytes; SHA-256 and private output
+path are in the [receipt](evidence/m5-20261025/native-import-r1.json)).
+
+Fitting was not accepted: accessibility indices were unavailable after refresh,
+and coordinate routing around an offscreen window/floating panel was unreliable.
+The existing three windows were left untouched. Authenticated early finish
+completed before the input deadline: native handles closed, no cleanup errors,
+zero active Job processes, peak Job allocation 685,514,752 bytes. Actual cleanup
+was reported to the coordinator before releasing the slot. This establishes
+native import/save and bounded lifecycle only, not fit/continuity/STEP parity.
 
 ### Exact freeform admission and timeout recovery
 
