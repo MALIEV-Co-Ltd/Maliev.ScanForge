@@ -73,6 +73,19 @@ Its production preview on port 5195 passed the same real-region replay:
 This production check is application/public-MCP evidence; it does not run the
 native reference application or certify exact solid validity.
 
+Candidate `be256edce438e3767fd609147d7d1a2dcd8ad506` passed the final
+[integrated full suite](evidence/m5-20261025/integrated-unit.log): 48,968 passed,
+64 skipped, 668 passed files and 18 skipped files, in 274.81 seconds. The skipped
+entries are not substitutes for any required M5 acceptance replay. This candidate
+includes main `7e42e81`, the shared freeform fix and the BREP decoder fix. It has
+not been pushed, merged to main or used to close M5.
+
+Next verification gap: thickening currently checks the maker's completion and
+non-null result, but `register` does not expose exact validity, solid/shell counts
+or exact mass properties. Matching display digests alone does not certify a
+valid solid boundary. Add shared exact inspection needed by GUI/MCP acceptance,
+then verify the real-region output and exchange with that stronger evidence.
+
 M1 issue #1 is closed with reviewed evidence and merge #10. M4 issue #4 remains open as of this audit and must satisfy its dependency gate. The native QuickSurface window is shared with M2–M6 coordination; do not clear or operate it without an ownership handoff. M5 needs a dedicated native scan-fitting/surface/CAD/exchange validation window.
 
 Remaining: complete the approved operation matrix and prepared fixes, real scan-to-sketch-to-surface-to-solid workflow, matching native settings/tolerances, solid validity/seams/normals, complete exact exchange round-trips, resource/recovery coverage, final review and exact-candidate CI. Merge and tracker closure follow verified acceptance; neither has been performed for M5.
