@@ -1459,7 +1459,7 @@
   },
   {
     "name": "analysis_section",
-    "description": "Compute an axis section and CSV/DXF artifacts in world millimetres.",
+    "description": "Compute a section of visible triangles and CSV/DXF artifacts in world millimetres. Hidden faces are excluded; point clouds are rejected. Limited to 250000 triangles.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1485,30 +1485,72 @@
   },
   {
     "name": "analysis_deviation",
-    "description": "Evaluate deviations against a supplied validated primitive fit; report via artifact.",
+    "description": "Compare visible source points/triangle corners in world mm against either an infinite analytic fit or a distinct visible reference triangle surface (referenceId + required maxDistance). Optional signed:true uses local reference winding; default reference distances are unsigned. Returns statistics, coverage, retained parameters, legacy distance artifact and reproducible JSON report. Hidden/unmatched samples are null in source order. CAD reference uses Float32 display tessellation, not exact BREP distance; neither mode certifies continuous bounds or solid containment. Limit 2250000 coordinates per object.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
-      "type": "object",
-      "properties": {
-        "entityId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200,
-          "description": ""
-        },
-        "fit": {
+      "oneOf": [
+        {
           "type": "object",
-          "description": "FitResult from analysis_fit"
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": ""
+            },
+            "fit": {
+              "type": "object",
+              "description": "FitResult from analysis_fit"
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Symmetric acceptance/color threshold in mm; default 0.1."
+            }
+          },
+          "required": ["entityId", "fit"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": ""
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Symmetric acceptance/color threshold in mm; default 0.1."
+            },
+            "referenceId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "maxDistance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Exclusive search radius in world mm. Unmatched samples remain null and reduce coverage."
+            },
+            "signed": {
+              "type": "boolean",
+              "description": "Default false. True uses nearest reference triangle winding, not watertight inside/outside."
+            }
+          },
+          "required": ["entityId", "referenceId", "maxDistance"],
+          "additionalProperties": false
         }
-      },
-      "required": ["entityId", "fit"],
-      "additionalProperties": false
+      ],
+      "type": "object"
     }
   },
   {
     "name": "analysis_measure",
-    "description": "Measure distance between two world points in millimetres.",
+    "description": "Measure world-mm distance, included angle in degrees (second point is vertex), or three-point circle radius/diameter. Returns points, value and units; circles also return center, radius and diameter. Degenerate picks fail without changes.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -1523,6 +1565,18 @@
           "maxItems": 3
         },
         "second": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["distance", "angle", "radius", "diameter"]
+        },
+        "third": {
           "type": "array",
           "items": {
             "type": "number"
@@ -6805,6 +6859,390 @@
       "type": "object",
       "properties": {},
       "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "inspection_display",
+    "description": "Show or clear the most recent retained deviation report on its original source geometry using the editor heatmap. Read analysis_deviation.inspectionId first. Requires revision/retry guards; adds no modeling history. Reports expire after 15 minutes, another analysis, source/reference edits or API disposal. Gray denotes hidden/unmatched samples. Recompute stale reports. Actions measurement and section display validated world picks or the selected visible triangle section using the same GUI controls; clear also removes these overlays.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["show"]
+            },
+            "inspectionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "inspectionId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["clear"]
+            }
+          },
+          "required": ["expectedRevision", "requestId", "action"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["measurement"]
+            },
+            "measurement": {
+              "type": "object",
+              "properties": {
+                "first": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "second": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["distance", "angle", "radius", "diameter"]
+                },
+                "third": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["first", "second"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "measurement"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["section"]
+            },
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "axis": {
+              "type": "string",
+              "enum": ["x", "y", "z"]
+            },
+            "offset": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "entityId",
+            "axis",
+            "offset"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "name": "inspection_get",
+    "description": "Read the up-to-32 project-persistent measurement/deviation definitions. Definitions retain parameters, not stale heatmap buffers. Run explicitly to recompute against current referenced geometry.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "inspection_manage",
+    "description": "Save a named inspection definition or delete one, using revision/retry guards. Retains project authoring and survives save/reopen/backups; no modeling history entry. At most 32 definitions; invalid/degenerate definitions fail atomically.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["save"]
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "definition": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "entityId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": ""
+                    },
+                    "fit": {
+                      "type": "object",
+                      "description": "FitResult from analysis_fit"
+                    },
+                    "tolerance": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Symmetric acceptance/color threshold in mm; default 0.1."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["deviation"]
+                    }
+                  },
+                  "required": ["entityId", "fit", "kind"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "entityId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": ""
+                    },
+                    "tolerance": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Symmetric acceptance/color threshold in mm; default 0.1."
+                    },
+                    "referenceId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "maxDistance": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Exclusive search radius in world mm. Unmatched samples remain null and reduce coverage."
+                    },
+                    "signed": {
+                      "type": "boolean",
+                      "description": "Default false. True uses nearest reference triangle winding, not watertight inside/outside."
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["deviation"]
+                    }
+                  },
+                  "required": [
+                    "entityId",
+                    "referenceId",
+                    "maxDistance",
+                    "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["measurement"]
+                    },
+                    "measurement": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "second": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": ["distance", "angle", "radius", "diameter"]
+                        },
+                        "third": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": ["first", "second"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["kind", "measurement"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "action",
+            "name",
+            "definition",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "type": "string",
+              "enum": ["delete"]
+            },
+            "inspectionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "action",
+            "inspectionId",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "inspection_run",
+    "description": "Recompute a saved definition against current geometry. Measurement results retain ordered world picks; deviation jobs return the same statistics/artifacts/inspectionId as analysis_deviation. Missing referenced objects fail. Poll/cancel the normal job; adds no history.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inspectionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["inspectionId"],
       "additionalProperties": false
     }
   }

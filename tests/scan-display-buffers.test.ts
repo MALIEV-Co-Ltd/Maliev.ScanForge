@@ -1,5 +1,8 @@
 import { expect, it } from "vitest";
-import { scanDisplayBuffers } from "../src/scan-display-buffers";
+import {
+  scanDisplayBuffers,
+  indexedDisplayValues,
+} from "../src/scan-display-buffers";
 import type { ScanRenderData } from "../src/scan-render-data";
 import type { IndexedMesh } from "../src/types";
 
@@ -144,4 +147,20 @@ it("rejects hidden indices outside complete authored face IDs", () => {
     expect(() =>
       scanDisplayBuffers(f.positions, f.mesh, f.prepared, [face]),
     ).toThrow(RangeError);
+});
+
+it("preserves unmatched indexed deviation state and expands conflicting corner states", () => {
+  const mesh = {
+    vertices: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+    triangles: new Uint32Array([0, 1, 2, 0, 2, 1]),
+  };
+  const unmatched = indexedDisplayValues(
+    new Float32Array([NaN, NaN, NaN, NaN, NaN, NaN]),
+    mesh,
+  );
+  expect(unmatched).toBeDefined();
+  expect(Array.from(unmatched!).every(Number.isNaN)).toBe(true);
+  expect(
+    indexedDisplayValues(new Float32Array([0, 0, 0, NaN, 0, 0]), mesh),
+  ).toBeUndefined();
 });

@@ -1,0 +1,27 @@
+{
+  "application": "QUICKSURFACE Pro 8.0.123",
+  "date": "2026-10-25",
+  "geometry": "m6-sparse-cloud.asc",
+  "geometrySha256": "03a407f24d8d694376402dc1abd6e7ee541193c6e00fc5c94d01ea171498ac04",
+  "points": [
+    [1, 1, -1],
+    [2, 1, 0],
+    [1, 2, 1],
+    [2, 2, 3],
+    [5, 5, -2]
+  ],
+  "reference": {
+    "kind": "plane",
+    "normal": [0, 0, 1],
+    "offset": 0
+  },
+  "units": "mm",
+  "nativeMode": "Select constructed plane, Analysis Compare, Discrete (fast)",
+  "toleranceMm": 1,
+  "displayRangeMm": [-5, 5],
+  "minimumMm": -2,
+  "maximumMm": 3,
+  "absoluteToleranceMm": 5e-5,
+  "scope": "Observed native GUI min/max labels on the exact five-point cloud against the typed-in plane. The visible zero-height triangle cannot change either extremum. Native OBJ export omits cloud samples; no complete native per-point scalar dump claimed.",
+  "screenshot": "native-sparse-plane-extrema.png"
+}

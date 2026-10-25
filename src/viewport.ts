@@ -3381,7 +3381,7 @@ export class Viewport {
       material.userData.normalsInactive =
         selectedIds.length > 0 && !selectedIds.includes(entity.id);
       updateNormals(
-        this.normalsDisplay && entity.kind === "mesh",
+        this.normalsDisplay && entity.kind === "mesh" && !material.vertexColors,
         material.userData.normalsInactive,
       );
       applyMeshFocus(
@@ -3466,7 +3466,9 @@ export class Viewport {
         this.normalsMaterials?.get(child.material)?.(false);
     for (const { mesh } of this.objects.values())
       this.normalsMaterials?.get(mesh.material)?.(
-        enabled && mesh.material.userData.normalsMesh,
+        enabled &&
+          mesh.material.userData.normalsMesh &&
+          !mesh.material.vertexColors,
         mesh.material.userData.normalsInactive,
       );
     this.invalidate();
@@ -4557,6 +4559,10 @@ export class Viewport {
       if (!item.mesh.material.vertexColors) continue;
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
+      this.normalsMaterials?.get(item.mesh.material)?.(
+        this.normalsDisplay && item.mesh.material.userData.normalsMesh,
+        item.mesh.material.userData.normalsInactive,
+      );
       applyMeshFocus(
         item.mesh.material,
         item.color,
@@ -4634,9 +4640,11 @@ export class Viewport {
         const signed = Number.isFinite(displayValues[i])
           ? Math.max(-1, Math.min(1, displayValues[i] / limit))
           : 0;
-        color
-          .copy(zero)
-          .lerp(signed < 0 ? negative : positive, Math.abs(signed));
+        if (!Number.isFinite(displayValues[i])) color.set("#808080");
+        else
+          color
+            .copy(zero)
+            .lerp(signed < 0 ? negative : positive, Math.abs(signed));
         color.toArray(colors, i * 3);
       }
       rendered.geometry.setAttribute(
@@ -4652,6 +4660,12 @@ export class Viewport {
       item.mesh.material,
       item.color,
       !!this.selectedId && entityId !== this.selectedId,
+    );
+    this.normalsMaterials?.get(item.mesh.material)?.(
+      this.normalsDisplay &&
+        item.mesh.material.userData.normalsMesh &&
+        !item.mesh.material.vertexColors,
+      item.mesh.material.userData.normalsInactive,
     );
     rendered.material.needsUpdate = true;
     this.invalidate();

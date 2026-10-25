@@ -1,0 +1,20 @@
+{
+  "application": "QUICKSURFACE Pro 8.0.123",
+  "date": "2026-10-25",
+  "units": "mm",
+  "nativeMode": "Compare to other meshes / Discrete (fast)",
+  "toleranceMm": 1,
+  "displayRangeMm": [-5, 5],
+  "sourcePositions": [0.0, 0.0, 2.0, 40.0, 0.0, 2.0, 0.0, 30.0, 2.0],
+  "referencePositions": [0, 0, 0, 40, 0, 0, 0, 30, 0],
+  "normals": [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0],
+  "paletteUV": [
+    [0.7, 0.5],
+    [0.7, 0.5],
+    [0.7, 0.5]
+  ],
+  "objSha256": "db84e5d136e6a11663539f7fe0b029b008bbbc4fd44d07b791ecd58b4618d495",
+  "distanceMm": 2,
+  "absoluteToleranceMm": 1e-12,
+  "scope": "Native exported three source vertices and their palette coordinates on identical parallel open triangles. Distance is encoded by the native signed palette range; no internal unrounded native scalar dump or complete native metrology parity claimed."
+}

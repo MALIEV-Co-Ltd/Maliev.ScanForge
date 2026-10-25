@@ -1,0 +1,220 @@
+{
+  "owner": "scanforge-m6-inspection-validation",
+  "startedAt": "2026-10-25T16:03:05.274Z",
+  "expiresAt": "2026-10-25T16:07:05.274Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 28196,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-25T16:03:05.274Z",
+      "port": 53090,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 24524,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-25T16:03:05.486Z",
+      "port": 53091,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 38888,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-25T16:03:05.644Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "cleanup": [
+    {
+      "port": 53090,
+      "closed": true
+    },
+    {
+      "port": 53091,
+      "closed": true
+    },
+    {
+      "pid": 24524,
+      "exited": true
+    },
+    {
+      "pid": 38888,
+      "exited": true
+    }
+  ],
+  "distance": {
+    "kind": "distance",
+    "distance": 4.029587454760298,
+    "value": 4.029587454760298,
+    "units": "mm",
+    "points": [
+      [-2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, 1.0167879010810073, 2.5]
+    ]
+  },
+  "angle": {
+    "kind": "angle",
+    "angle": 90,
+    "value": 90,
+    "units": "deg",
+    "points": [
+      [-2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, -1.6946465018016788, 2.5]
+    ]
+  },
+  "radius": {
+    "kind": "radius",
+    "radius": 2.4284486599832293,
+    "diameter": 4.856897319966459,
+    "center": [0, -0.33892930036033575, 2.5],
+    "value": 2.4284486599832293,
+    "units": "mm",
+    "points": [
+      [-2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, -1.6946465018016788, 2.5]
+    ]
+  },
+  "diameter": {
+    "kind": "diameter",
+    "radius": 2.4284486599832293,
+    "diameter": 4.856897319966459,
+    "center": [0, -0.33892930036033575, 2.5],
+    "value": 4.856897319966459,
+    "units": "mm",
+    "points": [
+      [-2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, 1.0167879010810073, 2.5],
+      [2.014793727380149, -1.6946465018016788, 2.5]
+    ]
+  },
+  "sectionDisplay": {
+    "entityId": "1571e163-e461-4e57-b395-3923da1d0807",
+    "axis": "x",
+    "offset": 0,
+    "units": "mm",
+    "length": 50,
+    "segments": 8
+  },
+  "deviation": {
+    "version": 1,
+    "entityId": "1571e163-e461-4e57-b395-3923da1d0807",
+    "units": "mm",
+    "semantics": "oriented-analytic-surface",
+    "sampleOrder": "source-triangle-corners",
+    "fit": {
+      "kind": "plane",
+      "center": [0, 0, 0],
+      "axis": [0, 0, 1],
+      "rms": 0,
+      "maxError": 0
+    },
+    "tolerance": 1,
+    "samples": 36,
+    "excluded": 0,
+    "minimum": -2.5,
+    "maximum": 2.5,
+    "mean": 0,
+    "rms": 2.5,
+    "maxError": 2.5,
+    "withinTolerance": 0,
+    "coverage": 1,
+    "limits": "Vertex samples against infinite analytic surfaces; not a continuous error bound or watertight inside/outside test.",
+    "inspectionId": "1d401279-6086-426b-ae1e-33cadcad8470",
+    "artifact": {
+      "artifactId": "4e72d048-6272-4e21-b2eb-cf7b9c9d5916",
+      "name": "deviations.json",
+      "mime": "application/json",
+      "bytes": 163
+    },
+    "report": {
+      "artifactId": "35bdd4c5-0765-4d51-81cd-10033a4f1f65",
+      "name": "deviation-report.json",
+      "mime": "application/json",
+      "bytes": 670
+    }
+  },
+  "referenceComparison": {
+    "version": 1,
+    "entityId": "1571e163-e461-4e57-b395-3923da1d0807",
+    "referenceId": "9c4d7ce0-e20d-4ef8-a992-93d4f240c03b",
+    "units": "mm",
+    "semantics": "unsigned-reference-distance",
+    "sampleOrder": "source-triangle-corners",
+    "tolerance": 1,
+    "maxDistance": 5,
+    "signed": false,
+    "referenceGeometry": "Float32-display-triangles",
+    "samples": 36,
+    "eligible": 36,
+    "excluded": 0,
+    "unmatched": 0,
+    "coverage": 1,
+    "minimum": 1,
+    "maximum": 3,
+    "mean": 2,
+    "rms": 2.23606797749979,
+    "maxError": 3,
+    "withinTolerance": 18,
+    "limits": "Source vertex samples strictly within maxDistance of visible reference display triangles. Null means hidden or unmatched. Local winding sign is not watertight containment. CAD tessellation, sparse sampling and open boundaries limit accuracy; not exact BREP distance or a continuous error bound.",
+    "inspectionId": "2497d5fb-d657-44e8-9231-8bd69010056f",
+    "artifact": {
+      "artifactId": "829fa93c-daf9-4b71-9939-66100684062f",
+      "name": "deviations.json",
+      "mime": "application/json",
+      "bytes": 73
+    },
+    "report": {
+      "artifactId": "56f807e7-9c2c-4a6a-92ad-0aeef82e4204",
+      "name": "deviation-report.json",
+      "mime": "application/json",
+      "bytes": 966
+    }
+  },
+  "persistence": {
+    "definition": {
+      "id": "6e423d54-2508-4102-8c7d-8e1a1a1efbd5",
+      "name": "Saved reference fixture",
+      "definition": {
+        "kind": "deviation",
+        "entityId": "1571e163-e461-4e57-b395-3923da1d0807",
+        "tolerance": 1,
+        "referenceId": "9c4d7ce0-e20d-4ef8-a992-93d4f240c03b",
+        "maxDistance": 5,
+        "signed": false
+      }
+    },
+    "reportIdenticalAfterBinaryReopen": true
+  },
+  "mapping": {
+    "indexedVertices": 4,
+    "sourceCorners": 6,
+    "hiddenSamples": 3,
+    "staleReportRejected": true,
+    "transformUndoRedoAndEditMapping": true
+  },
+  "cancellation": {
+    "samples": 100000,
+    "status": "cancelled",
+    "historyUnchanged": true,
+    "noResultArtifacts": true
+  },
+  "steps": [
+    "public MCP and GUI distance/angle/radius/diameter export equality",
+    "rendered three-point measurement controls",
+    "public MCP signed analytic deviation statistics",
+    "read-only analysis preserves history",
+    "reference comparison GUI/public-MCP report equality and shared show/clear heatmap",
+    "saved inspection metadata preserves history and binary project save/reopen reproduces GUI report",
+    "retained report tolerance controls legend and heatmap independently of GUI input",
+    "indexed source corner mapping, hidden face filtering, stale rejection, alignment transform, edit and Undo/Redo"
+  ],
+  "passed": true
+}

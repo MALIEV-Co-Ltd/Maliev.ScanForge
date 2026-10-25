@@ -15,6 +15,24 @@ export function useWorkspaceApi(host: WorkspaceHost) {
   if (!api.current) {
     const mutate = <T>(run: () => T): T => flushSync(run);
     const proxy: WorkspaceHost = {
+      showInspection: (display) =>
+        mutate(() => {
+          if (display && !current.current.showInspection)
+            throw new Error("Inspection display is unavailable.");
+          current.current.showInspection?.(display);
+        }),
+      showMeasurement: (measurement) =>
+        mutate(() => {
+          if (measurement && !current.current.showMeasurement)
+            throw new Error("Measurement display is unavailable.");
+          current.current.showMeasurement?.(measurement);
+        }),
+      showSection: (section) =>
+        mutate(() => {
+          if (section && !current.current.showSection)
+            throw new Error("Section display is unavailable.");
+          current.current.showSection?.(section);
+        }),
       inspectScanSelection: () => current.current.inspectScanSelection?.(),
       controlScanSelection: (command) =>
         mutate(() => {
