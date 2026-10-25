@@ -20,8 +20,10 @@ from the handler refactor alone.
       build, affected tests and review. Add broader matrix evidence separately.
       48,983 tests pass, 64 skipped; standard build and CAD smoke pass. Review
       corrections preserve split names and unused sibling output visibility.
-- [ ] Reconcile command discovery with deliberate ribbon availability without
+- [x] Reconcile command discovery with deliberate ribbon availability without
       silently removing useful existing agent modeling operations.
+      Shared selection/busy/verification gates; actual core CAD ribbon matrix
+      passes. Fillet/chamfer remain explicit experimental checks pending edges.
 
 Separate acceptance gaps: usable edge identities for edge treatments; compatible
 join input contracts; real scan/sketch workflow; native operation matrix and M4.

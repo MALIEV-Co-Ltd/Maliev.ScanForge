@@ -17,6 +17,29 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Integrated ordinary CAD ribbon access
+
+Merged current main `fcf6e3b` (shared foundation/metrology/style changes) into the
+M5 branch as `9abe1e5`. The [integrated browser receipt](evidence/m5-20261025/ribbon-cad-browser.json)
+uses build `scanforge-d3b3a71d7aca46d3` and actual ribbon buttons for loft, sweep,
+extrude, revolve, Boolean, split and shell. It retains the same shared-job,
+history, exact geometry, analytic solid, connected real-input and exchange
+checks. Fillet/chamfer remain explicit `ui_set` experimental checks; arbitrary
+edge discovery is still open. Reference/native and blend/continuity gates are
+unchanged. Disabled commands now have matching `command_get` availability;
+repeat launchers retain missing handlers as unavailable. Underlying MCP geometry
+operations remain available. Unit tests cover busy/selection/verification gates.
+
+The [integrated standard build](evidence/m5-20261025/integrated-ribbon-build.txt)
+passes all twelve typecheck batches. The [full suite](evidence/m5-20261025/integrated-ribbon-unit.txt)
+passes 49,028 tests, 64 skipped; 678 passed files, 18 skipped (288.12 s).
+The [M6 browser replay](evidence/m5-20261025/integrated-m6-browser.txt) also passes
+measurement/export equality, read-only history, signed/reference deviation,
+heatmap, indexed-source visibility and project reopen. Static review found no
+remaining defect in this ribbon/discovery delta. The preceding dispatch commit
+`85350f7` passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40216697554);
+the new integrated candidate needs its own hosted run after pushing.
+
 ### Guarded CAD GUI dispatch
 
 Review found direct GUI writes for recipe-based CAD creation, rebuilding,

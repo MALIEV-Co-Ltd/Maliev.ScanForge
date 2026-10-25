@@ -80,7 +80,7 @@ import { SettingsTabs, type SettingsSection } from "./SettingsTabs";
 import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
-import { RIBBON_TABS } from "./ribbon-model";
+import { RIBBON_TABS, ribbonCommandAvailability } from "./ribbon-model";
 import { createCadFeature } from "../automation/operations";
 import {
   duplicateObject,
@@ -2119,26 +2119,14 @@ export function App() {
     "exportStl",
     "settings",
   ]);
-  const globalRibbonCommands = new Set([
-    "globalFineAlign",
-    "fitView",
-    "iso",
-    "top",
-    "bottom",
-    "left",
-    "right",
-    "front",
-    "back",
-    "primitive",
-    "wireframe",
-    "newFreeform",
-  ]);
   const repeatableRibbonActions = Object.fromEntries(
     Object.entries(ribbonActions).map(([name, run]) => [
       name,
       excludedRepeatCommands.has(name)
         ? run
-        : () => launchRepeatable(`ribbon:${name}`),
+        : run
+          ? () => launchRepeatable(`ribbon:${name}`)
+          : undefined,
     ]),
   ) as typeof ribbonActions;
   function launchRepeatable(name?: string) {
@@ -2261,13 +2249,23 @@ export function App() {
       .filter(([name]) => !excludedRepeatCommands.has(name))
       .map(([name, run]) => [
         `ribbon:${name}`,
-        name === "alignNPoints"
-          ? landmarkSource
-            ? run
-            : undefined
-          : selected || globalRibbonCommands.has(name)
-            ? run
-            : undefined,
+        ribbonCommandAvailability(
+          name,
+          {
+            disabled:
+              editingBlocked || !!nPoints || !!surfaceFit || !!createSketch,
+            interactiveTargetError,
+            globalAlignmentError,
+            hasSelection: !!selected,
+            selectionKind: selected?.kind,
+            landmarkSourceId: landmarkSource?.id ?? null,
+            canUndo: !!history.length,
+            canRedo: !!future.length,
+          },
+          ribbonActions,
+        ).available
+          ? run
+          : undefined,
       ]),
     ...Object.entries(actions)
       .filter(

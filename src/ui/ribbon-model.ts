@@ -609,3 +609,15 @@ export function ribbonToolAvailability(
     return { available: false, reason: "Nothing to redo" };
   return { available: true, reason: tool.label };
 }
+
+/** Agent launchers and the visible ribbon share verification and selection gates. */
+export function ribbonCommandAvailability(
+  name: string,
+  state: RibbonState,
+  actions: RibbonActions,
+): { available: boolean; reason: string } {
+  const tool = getRibbonToolMetadata(name);
+  return tool
+    ? ribbonToolAvailability(tool, state, actions)
+    : { available: false, reason: "Not implemented yet" };
+}

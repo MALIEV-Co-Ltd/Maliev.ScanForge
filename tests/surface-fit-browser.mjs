@@ -492,7 +492,7 @@ try {
   });
   await save();
   await mutate("object_select", { entityId: mcpResult.entityId });
-  await mutate("command_run", { name: "ribbon:newFreeform" });
+  await mutate("ui_set", { workspace: "surface", toolPanelOpen: true });
   const surfacePanel = page.locator(".surface-panels");
   const beforeControl = (await call("project_get")).result;
   const zControl = surfacePanel
@@ -557,6 +557,36 @@ try {
   const guiRebuildJobs = (await call("session_get")).result.jobs.filter(
     (x) => !beforeRebuildJobs.has(x.jobId) && x.command === "cad_rebuild",
   );
+  async function openCad(workspace) {
+    const labels = {
+      loft: "Loft",
+      sweep: "Sweep",
+      extrude: "Extrude",
+      revolve: "Revolve",
+      boolean: "Boolean tools",
+      splitSolid: "Split solid",
+      shell: "Shell",
+    };
+    const command = (await call("command_get")).result.commands.find(
+      (x) => x.name === `ribbon:${workspace}`,
+    );
+    if (!labels[workspace]) {
+      assert.equal(command.available, false);
+      await mutate("ui_set", { workspace, toolPanelOpen: true });
+      return "ui_set experimental panel; arbitrary edge selection remains open";
+    }
+    assert.equal(command.available, true, workspace);
+    await page
+      .getByRole("tab", {
+        name: ["loft", "sweep"].includes(workspace) ? "Surfacing" : "CAD",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("button", { name: labels[workspace], exact: true })
+      .click();
+    return "actual ribbon entry with matching command_get availability";
+  }
   if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
     assert.equal(guiRebuildJobs.length, 1);
     assert.equal(guiRebuildJobs[0].status, "succeeded");
@@ -1036,12 +1066,7 @@ try {
     const oldJobs = new Set(
       (await call("session_get")).result.jobs.map((x) => x.jobId),
     );
-    // Experimental panel entry is explicit until the full ribbon matrix passes.
-    await mutate("ui_set", {
-      workspace: "loft",
-      ribbonTab: "surfacing",
-      toolPanelOpen: true,
-    });
+    const loftEntry = await openCad("loft");
     await page
       .getByRole("button", { name: "Create exact loft", exact: true })
       .click();
@@ -1081,12 +1106,12 @@ try {
         sharedGuiJob: guiJobs[0].jobId,
         guiMcpGeometryEquality: true,
         report: guiReport,
-        entry: "ui_set experimental panel; ribbon acceptance remains open",
+        entry: loftEntry,
       },
     });
     const matrix = [];
     async function checkGuiCad(workspace, button, options = {}) {
-      await mutate("ui_set", { workspace, toolPanelOpen: true });
+      const entry = await openCad(workspace);
       if (options.prepare) await options.prepare();
       const before = (await call("project_get")).result;
       const oldJobs = new Set(
@@ -1137,6 +1162,7 @@ try {
         assert.deepEqual(await geometryDigest(mcp.entityIds[i]), digests[i]);
       matrix.push({
         workspace,
+        entry,
         sharedGuiJob: jobs[0].jobId,
         guiMcpGeometryEquality: true,
         reports,
@@ -1235,7 +1261,7 @@ try {
     ledger.scenarios.push({
       guardedCadMatrix: {
         entry:
-          "ui_set experimental panels; ribbon and arbitrary edge selection remain open",
+          "actual ribbon except fillet/chamfer experimental panels; arbitrary edge selection remains open",
         matrix,
       },
     });

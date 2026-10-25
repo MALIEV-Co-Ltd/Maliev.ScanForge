@@ -6,6 +6,19 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  loft: "docs/M5_ACCEPTANCE.md: shared CAD jobs, analytic loft volume and GUI/public MCP exact geometry equality",
+  sweep:
+    "docs/M5_ACCEPTANCE.md: shared CAD jobs, straight sweep volume and GUI/public MCP exact geometry equality",
+  extrude:
+    "docs/M5_ACCEPTANCE.md: shared polygon extrusion, analytic volume, exact geometry and history",
+  revolve:
+    "docs/M5_ACCEPTANCE.md: shared full revolution, analytic volume, exact geometry and history",
+  boolean:
+    "docs/M5_ACCEPTANCE.md: shared subtract/union, output-aware input hiding and exact GUI/public MCP equality",
+  splitSolid:
+    "docs/M5_ACCEPTANCE.md: grouped inside/outside outputs, one shared job/history entry and exact geometry equality",
+  shell:
+    "docs/M5_ACCEPTANCE.md: shared hollow shell creation, valid exact topology and GUI/public MCP equality",
   trimSurfaces:
     "docs/M5_ACCEPTANCE.md: exact retained-region trimming; tests/kernel-smoke.mjs and GUI/public MCP trim workflow",
   fitSurface:

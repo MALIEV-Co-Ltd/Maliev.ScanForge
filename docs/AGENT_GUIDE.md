@@ -984,6 +984,14 @@ Several CAD ribbon commands remain gated pending full workflow verification;
 experimental panel access is not evidence that their ordinary ribbon entry or
 native-reference behavior is accepted.
 
+`command_get`/`command_run` ribbon launchers now share the visible ribbon's
+verification, source-selection and busy gates. A disabled experimental ribbon
+entry is no longer advertised as an available command. The underlying shared
+modeling tools remain discoverable independently. Loft, sweep, polygon extrusion,
+revolve, Boolean, solid split and shell have matched ordinary ribbon/public-MCP
+workflow receipts. Fillet/chamfer ribbon entries remain gated pending usable edge
+discovery, despite numeric-index modeling support through `cad_create`.
+
 Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
 kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,
 resource exhaustion and changed revision fail without modifying model/history.
