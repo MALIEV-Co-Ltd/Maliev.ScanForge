@@ -1,0 +1,24 @@
+{
+  "candidate": "5221114cb0180aeb0efd1c595caec09a8f07f117",
+  "hostedRun": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40212743747",
+  "failedTests": [
+    {
+      "name": "maps equal corner deviation values to compact vertices without changing color precision",
+      "message": "AssertionError: expected Float32Array[ 0, 0, 1, \u2026(15.950293432921171) ] to deeply equal Float32Array[ \u2026(15.982358045876026) ]\n    at C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/tests/viewport-indexed-display.test.ts:138:59\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dis"
+    },
+    {
+      "name": "preserves conflicting corner colors in an expanded overlay and releases it (remove=false)",
+      "message": "AssertionError: expected Float32Array[ 0, 0, 1, 0, 1, 0, \u2026(18) ] to deeply equal Float32Array[ \u2026(18.982358045876026) ]\n    at C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/tests/viewport-indexed-display.test.ts:161:50\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks"
+    },
+    {
+      "name": "preserves conflicting corner colors in an expanded overlay and releases it (remove=true)",
+      "message": "AssertionError: expected Float32Array[ 0, 0, 1, 0, 1, 0, \u2026(18) ] to deeply equal Float32Array[ \u2026(18.982358045876026) ]\n    at C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/tests/viewport-indexed-display.test.ts:161:50\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///C:/Users/Shoung/.codex/worktrees/m6-measurement-deviation/Maliev.ScanForge/node_modules/vitest/dist/chunks"
+    }
+  ],
+  "cause": "Indexed-display test helper still encoded the previous blue/green/red palette. Runtime palette and browser display were intentional; mapping and disposal assertions remain unchanged.",
+  "focusedAfterFix": {
+    "passed": 20,
+    "files": 3
+  },
+  "fullRerun": "pending"
+}

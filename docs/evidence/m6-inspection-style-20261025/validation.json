@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-25",
+  "baseCommit": "a8fd1a63b4464b460e7659aecfe3262076fcf476",
+  "buildId": "scanforge-7dcae5440136f466",
+  "sourceSha256CanonicalLF": {
+    "src/ui/App.tsx": "627fe108fa92e9cd67a8e353f9bce0ccc0e9c32eed7a9c2c8d1f5321a4ac13d5",
+    "src/ui/ReductionResults.tsx": "056430edfbf6e6d25f96d78278c4d350d41ab044989a450e8d17251ab23d0163",
+    "src/ui/ReductionResults.css": "7e6929b08ceeb5740c869aa3665bcd0f81b8671a3a18ff18908201f89de6df32",
+    "src/ui/styles.css": "d6a1c44d66134bbfe576db34504c49275a13b7e7441ab14d02981992b50ebc56",
+    "src/viewport.ts": "6ef0d73ba48ddca69d4ec8820f3c9fb2ab56604202c8b8e6ffa4af10d135c0bc",
+    "src/reduction-display.ts": "0ef29fd447bafc95670293f0577e5368548e0963eeb59a7652398734c198f2aa"
+  },
+  "tests": {
+    "passed": 76,
+    "failed": 0,
+    "files": 6
+  },
+  "browser": {
+    "desktop": [1440, 1000],
+    "narrow": [600, 800],
+    "rightHandVerticalScale": true,
+    "unclippedOnNarrowScreen": true,
+    "officialPublicMcpAndGui": true,
+    "reportToleranceControlsLabels": true,
+    "historyPersistenceMappingCancellationPassed": true
+  },
+  "mcpCoverage": "Existing analysis_deviation and inspection_display drive the shared Viewport.setDeviation palette and ReductionColorScale. Numerical report/artifact contracts are unchanged.",
+  "review": "No confirmed blockers; independent27 tests plus whitespace check passed. Desktop/narrow rendered evidence verified by primary agent."
+}

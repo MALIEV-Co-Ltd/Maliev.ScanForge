@@ -5851,12 +5851,12 @@ export function App() {
               </button>
             </div>
           )}
-          {deviationReport && (
-            <div className="deviation-legend">
-              <span>−{number(deviationReport.tolerance)} mm</span>
-              <i />
-              <span>+{number(deviationReport.tolerance)} mm</span>
-            </div>
+          {deviationReport && !activeNoiseComparison?.visible && (
+            <ReductionColorScale
+              threshold={deviationReport.tolerance}
+              tolerance={deviationReport.tolerance}
+              readOnly
+            />
           )}
           <CanvasError message={error} onDismiss={() => setError("")} />
         </section>

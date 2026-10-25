@@ -1,0 +1,24 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/reduction-scale.test.tsx",
+    "tests/point-cloud-deviation-display.test.ts",
+    "tests/normals-display.test.ts",
+    "tests/automation-api.test.ts",
+    "tests/reduction-report.test.tsx",
+    "tests/scan-display-buffers.test.ts",
+    "--maxWorkers=1",
+    "--reporter=json",
+    "--outputFile=.resources/m6-inspection/style-unit-results.json"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 357343232,
+  "totalProcesses": 13,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 3.5034717000089586
+}

@@ -1,3 +1,4 @@
+import { reductionDisplayColor } from "./reduction-display";
 import {
   canQueryNavigationSurface,
   prepareViewportPicking,
@@ -4632,19 +4633,13 @@ export class Viewport {
       }
       const colors = new Float32Array(count * 3);
       const color = new THREE.Color();
-      const negative = new THREE.Color("#2479de");
-      const zero = new THREE.Color("#4bb78c");
-      const positive = new THREE.Color("#e56b47");
       const limit = Math.max(Math.abs(tolerance), 0.000001);
       for (let i = 0; i < count; i++) {
-        const signed = Number.isFinite(displayValues[i])
-          ? Math.max(-1, Math.min(1, displayValues[i] / limit))
-          : 0;
         if (!Number.isFinite(displayValues[i])) color.set("#808080");
-        else
-          color
-            .copy(zero)
-            .lerp(signed < 0 ? negative : positive, Math.abs(signed));
+        else {
+          const [r, g, b] = reductionDisplayColor(displayValues[i], limit);
+          color.setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+        }
         color.toArray(colors, i * 3);
       }
       rendered.geometry.setAttribute(

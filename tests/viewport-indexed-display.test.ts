@@ -112,15 +112,20 @@ it("filters indexed hidden facets without changing original triangle-slot mappin
 });
 
 function colors(values: readonly number[]) {
+  // Independent sRGB fixtures for the shared reduction palette at these distances.
+  const palette = new Map<number, string>([
+    [-1, "#0000ff"],
+    [0, "#00ff00"],
+    [1, "#ff0000"],
+    [0.5, "#ffff00"],
+    [2, "#ff0000"],
+    [0.123456789123, "#3fff00"],
+  ]);
   return Float32Array.from(
     values.flatMap((value) => {
-      const color = new THREE.Color("#4bb78c");
-      return color
-        .lerp(
-          new THREE.Color(value < 0 ? "#2479de" : "#e56b47"),
-          Math.min(1, Math.abs(value)),
-        )
-        .toArray();
+      const color = palette.get(value);
+      if (!color) throw new Error("Missing palette fixture.");
+      return new THREE.Color(color).toArray();
     }),
   );
 }
