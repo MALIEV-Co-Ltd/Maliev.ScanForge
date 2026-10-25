@@ -1,4 +1,6 @@
 import { expect, it } from "vitest";
+import sparse from "./fixtures/m6-native-sparse-observed.json";
+import { inspectDeviation } from "../src/inspection";
 import distance from "./fixtures/m6-native-measurement-observed.json";
 import offset from "./fixtures/m6-native-offset-observed.json";
 import { measureGeometry } from "../src/inspection";
@@ -51,4 +53,29 @@ it("replays native exported offset-plane source slots and signed palette coordin
     coverage: 1,
     withinTolerance: 0,
   });
+});
+
+it("matches native sparse-cloud extrema against the identical typed-in plane", () => {
+  const source: Entity = {
+    id: "sparse",
+    name: "sparse",
+    kind: "pointcloud",
+    positions: new Float32Array(sparse.points.flat()),
+    visible: true,
+    color: "#fff",
+    opacity: 1,
+  };
+  const report = inspectDeviation(
+    source,
+    { kind: "plane", center: [0, 0, 0], axis: [0, 0, 1], rms: 0, maxError: 0 },
+    sparse.toleranceMm,
+  );
+  expect(Math.abs(report.minimum - sparse.minimumMm)).toBeLessThanOrEqual(
+    sparse.absoluteToleranceMm,
+  );
+  expect(Math.abs(report.maximum - sparse.maximumMm)).toBeLessThanOrEqual(
+    sparse.absoluteToleranceMm,
+  );
+  expect(report.distances).toEqual([-1, 0, 1, 3, -2]);
+  expect(report.samples).toBe(5);
 });
