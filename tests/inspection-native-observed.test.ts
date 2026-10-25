@@ -114,6 +114,15 @@ it("matches native exported circle radius and displayed diameter on identical ge
 });
 it("matches the native perpendicular-line angle proposal on exported endpoints", () => {
   const a = circleAngle.angle;
+  const label = readFileSync(
+    new URL(
+      `../docs/evidence/m6-inspection-20261025/${a.labelScreenshot}`,
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(label).digest("hex")).toBe(
+    a.labelScreenshotSha256,
+  );
   expect(
     Math.abs(
       measureGeometry({
