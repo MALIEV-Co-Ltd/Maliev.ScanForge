@@ -1,6 +1,9 @@
 import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
-import { assertSampledGeometry, isReferenceEntity } from "../reference-entity";
+import {
+  assertSampledGeometry,
+  supportsSampledGeometry,
+} from "../reference-entity";
 
 export interface ViewportCommand {
   view?: "main" | "moving" | "fixed";
@@ -49,7 +52,7 @@ export function coordinateAlignmentInterface(
 ): InterfacePatch {
   if (
     selected &&
-    isReferenceEntity(selected) &&
+    !supportsSampledGeometry(selected) &&
     (patch.mode === "brush" ||
       patch.mode === "section" ||
       [

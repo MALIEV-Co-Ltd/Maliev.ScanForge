@@ -1,5 +1,12 @@
 import { validateInspectionDefinitions } from "./inspection-definition";
+import {
+  copyReferenceFrame,
+  encodeReferenceFrame,
+  decodeReferenceFrame,
+  validateReferenceFrameEntity,
+} from "./reference-frame";
 import * as THREE from "three";
+import { copyFitResult } from "./fitted-primitive";
 import {
   validatePointCloudDisplay,
   DEFAULT_POINT_CLOUD_COLOR,
@@ -26,6 +33,7 @@ import {
   validateConstructionOrderKeys,
   encodeReferenceEntityData,
   decodeReferenceEntityData,
+  supportsSampledGeometry,
 } from "./reference-entity";
 
 /** Validate imported cloud attributes before converting untrusted JSON bytes. */
@@ -199,6 +207,7 @@ export function parseProject(text: string): Project {
     input.entities = input.entities.map((entity: Entity) => {
       if (
         entity?.reference !== undefined ||
+        entity?.coordinateFrame !== undefined ||
         entity?.constructionOrderKey !== undefined
       ) {
         if (input.version !== 3)
@@ -209,6 +218,9 @@ export function parseProject(text: string): Project {
           ...entity,
           ...(entity.reference !== undefined
             ? { reference: decodeReferenceEntityData(entity.reference) }
+            : {}),
+          ...(entity.coordinateFrame !== undefined
+            ? { coordinateFrame: decodeReferenceFrame(entity.coordinateFrame) }
             : {}),
         };
       }
@@ -235,7 +247,11 @@ export function validateProject(value: unknown): Project {
   validateConstructionOrderKeys(input.entities);
   const entities: Entity[] = input.entities.map((entity) => {
     const reference = validateReferenceEntity(entity);
-    if (!isReferenceEntity(entity))
+    const coordinateFrame =
+      entity.kind === "referenceFrame"
+        ? copyReferenceFrame(entity.coordinateFrame)
+        : undefined;
+    if (!isReferenceEntity(entity) && entity.kind !== "referenceFrame")
       validatePositions(entity.positions, entity.kind === "pointcloud");
     const pointColors = validatePointCloudAttributes(entity);
     if (
@@ -260,6 +276,7 @@ export function validateProject(value: unknown): Project {
         "box",
         "referencePoint",
         "referenceLine",
+        "referenceFrame",
       ].includes(entity.kind) ||
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
@@ -359,6 +376,7 @@ export function validateProject(value: unknown): Project {
         ? { constructionOrderKey: entity.constructionOrderKey }
         : {}),
       ...(reference !== undefined ? { reference } : {}),
+      ...(coordinateFrame !== undefined ? { coordinateFrame } : {}),
       indexedMesh: entity.indexedMesh,
       normals: entity.normals,
       ...(pointColors !== undefined ? { pointColors } : {}),
@@ -366,6 +384,7 @@ export function validateProject(value: unknown): Project {
         ? { ascAttributes: entity.ascAttributes }
         : {}),
       edgePositions: entity.edgePositions,
+      ...(entity.fit !== undefined ? { fit: copyFitResult(entity.fit) } : {}),
       planeFrame:
         entity.planeFrame === undefined
           ? undefined
@@ -557,7 +576,10 @@ export function serializeProject(
   return JSON.stringify({
     format: "maliev-scanforge",
     version: entities.some(
-      (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
+      (e) =>
+        e.reference !== undefined ||
+        e.coordinateFrame !== undefined ||
+        e.constructionOrderKey !== undefined,
     )
       ? 3
       : entities.some(
@@ -568,10 +590,14 @@ export function serializeProject(
     name,
     units: "mm",
     authoring,
-    entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
+    entities: entities.map(({ kernelId: _kernelId, ...entity }) => ({
       ...entity,
+      ...(entity.fit !== undefined ? { fit: copyFitResult(entity.fit) } : {}),
       ...(entity.reference !== undefined
         ? { reference: encodeReferenceEntityData(entity.reference) }
+        : {}),
+      ...(entity.coordinateFrame !== undefined
+        ? { coordinateFrame: encodeReferenceFrame(entity.coordinateFrame) }
         : {}),
       positions: Array.from(entity.positions),
       ...(entity.pointColors !== undefined
@@ -611,7 +637,10 @@ export async function serializeProjectBlob(
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   const version = entities.some(
-    (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
+    (e) =>
+      e.reference !== undefined ||
+      e.coordinateFrame !== undefined ||
+      e.constructionOrderKey !== undefined,
   )
     ? 3
     : entities.some(
@@ -625,7 +654,6 @@ export async function serializeProjectBlob(
   for (let index = 0; index < entities.length; index++) {
     const {
       kernelId: _kernelId,
-      fit: _fit,
       positions,
       normals,
       pointColors,
@@ -633,7 +661,8 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
-    if (!isReferenceEntity(metadata))
+    if (metadata.fit !== undefined) metadata.fit = copyFitResult(metadata.fit);
+    if (!isReferenceEntity(metadata) && metadata.kind !== "referenceFrame")
       validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
@@ -648,6 +677,9 @@ export async function serializeProjectBlob(
         ...metadata,
         ...(metadata.reference !== undefined
           ? { reference: encodeReferenceEntityData(metadata.reference) }
+          : {}),
+        ...(metadata.coordinateFrame !== undefined
+          ? { coordinateFrame: encodeReferenceFrame(metadata.coordinateFrame) }
           : {}),
         pointCloudPlacement: cloudPlacementJson(entities[index]),
       }).slice(0, -1),
@@ -732,7 +764,12 @@ export async function serializeProjectBlob(
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();
   for (const entity of entities) {
-    if (entity.kind === "pointcloud") continue;
+    if (entity.kind === "referenceFrame") {
+      validateReferenceFrameEntity(entity);
+      continue;
+    }
+    if (entity.kind === "pointcloud" || !supportsSampledGeometry(entity))
+      continue;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(
       "position",

@@ -43,6 +43,7 @@ export function modelChanged(before: Entity[], after: Entity[]): boolean {
       old.kind !== next.kind ||
       old.constructionOrderKey !== next.constructionOrderKey ||
       old.reference !== next.reference ||
+      old.coordinateFrame !== next.coordinateFrame ||
       cloudPlacement(old)?.matrixBits !== cloudPlacement(next)?.matrixBits ||
       old.positions !== next.positions ||
       old.kernelId !== next.kernelId ||
@@ -111,6 +112,7 @@ export function changeLabel(before: Entity[], after: Entity[]): string {
     if (
       old.positions !== next.positions ||
       old.reference !== next.reference ||
+      old.coordinateFrame !== next.coordinateFrame ||
       old.constructionOrderKey !== next.constructionOrderKey
     )
       return `Modify ${next.name}`;

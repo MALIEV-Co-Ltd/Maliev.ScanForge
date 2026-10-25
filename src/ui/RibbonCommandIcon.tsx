@@ -10,13 +10,15 @@ import "./RibbonCommandIcon.css";
 const gold = "#edbe48",
   light = "#ffe294",
   shade = "#b98628";
-/** Each command has independently generated raster artwork. */
-export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> =
-  Object.fromEntries(
+/** Commands with the same geometric result may share their local raster artwork. */
+export const RIBBON_ICON_ARTWORK: Readonly<Record<string, string>> = {
+  ...Object.fromEntries(
     requests
       .filter(({ id }) => id.startsWith("ribbon-"))
       .map(({ id }) => [id.slice(7), id]),
-  );
+  ),
+  referencePlane: "ribbon-fitPlane",
+};
 const freeformCommands = new Set(
   RIBBON_TABS.find((tab) => tab.id === "freeform")!
     .groups.flatMap((group) => group.tools.map((tool) => tool.id))
@@ -28,6 +30,7 @@ const surfaceCommands = new Set(
     .concat(["surfacingTools"]),
 );
 const primitiveCommands = new Set([
+  "referencePlane",
   "fitPlane",
   "fitCylinder",
   "fitCone",

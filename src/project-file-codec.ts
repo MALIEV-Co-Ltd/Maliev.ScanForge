@@ -4,6 +4,11 @@ import {
   validatePointCloudAttributes,
 } from "./io";
 import type { Entity, Project } from "./types";
+import {
+  encodeReferenceFrame,
+  decodeReferenceFrame,
+  type EncodedCoordinateFrame,
+} from "./reference-frame";
 import type { Revision } from "./history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
@@ -56,8 +61,10 @@ type RecordData = Omit<
   | "pointCloudPlacement"
   | "pointColors"
   | "reference"
+  | "coordinateFrame"
 > & {
   reference?: EncodedReferenceEntityData;
+  coordinateFrame?: EncodedCoordinateFrame;
   positions: Ref;
   cloudPoseBits?: string;
   edgePositions?: Ref;
@@ -163,7 +170,6 @@ export async function encodeProjectFileLocally(
       if (id === undefined) {
         const {
           kernelId: _kernel,
-          fit: _fit,
           positions,
           edgePositions,
           brep,
@@ -173,6 +179,7 @@ export async function encodeProjectFileLocally(
           indexedMesh,
           pointCloudPlacement: _placement,
           reference,
+          coordinateFrame,
           ...metadata
         } = entity;
         const selection: RecordData["meshSelection"] = meshSelection
@@ -195,6 +202,7 @@ export async function encodeProjectFileLocally(
           cloudAttributes = true;
         if (
           reference !== undefined ||
+          coordinateFrame !== undefined ||
           entity.constructionOrderKey !== undefined
         )
           constructionMetadata = true;
@@ -202,6 +210,9 @@ export async function encodeProjectFileLocally(
           ...metadata,
           ...(reference !== undefined
             ? { reference: encodeReferenceEntityData(reference) }
+            : {}),
+          ...(coordinateFrame !== undefined
+            ? { coordinateFrame: encodeReferenceFrame(coordinateFrame) }
             : {}),
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
@@ -523,6 +534,7 @@ export async function decodeProjectContents(
       return invalid();
     if (
       (record.reference !== undefined ||
+        record.coordinateFrame !== undefined ||
         record.constructionOrderKey !== undefined) &&
       m.version !== 5
     )
@@ -531,6 +543,9 @@ export async function decodeProjectContents(
       ...record,
       ...(record.reference !== undefined
         ? { reference: decodeReferenceEntityData(record.reference) }
+        : {}),
+      ...(record.coordinateFrame !== undefined
+        ? { coordinateFrame: decodeReferenceFrame(record.coordinateFrame) }
         : {}),
       positions: read(record.positions),
       indexedMesh: record.indexedMesh

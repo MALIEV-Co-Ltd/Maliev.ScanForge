@@ -6,6 +6,26 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  referencePlane:
+    "tests/primitive-fitting-browser.mjs; tests/datum-construction-api.test.ts: named numeric plane GUI/MCP frame equality, edit/Cancel/history/reopen and detached sketch placement; native equivalence remains open",
+  coordinateSystem:
+    "tests/primitive-fitting-browser.mjs; tests/reference-datum.test.tsx: named coordinate frame GUI/MCP edit/history/reopen, visible axes/picking, XY/YZ/XZ sketch placement and current alignment references; native equivalence remains open",
+  referenceAxis:
+    "tests/reference-construction-browser.mjs: finite directed axis uses the same referenceLine/typed line geometry, GUI Apply, public MCP preview, history and project persistence; no infinite-axis claim",
+  sketch2d:
+    "tests/primitive-fitting-browser.mjs; tests/sketch-plane-source-api.test.ts: shared rigid sketch placement, original PLY plane frame, constraints, history and reopen; full native sketch equivalence remains open",
+  fitPlane:
+    "tests/primitive-fitting-browser.mjs: shared GUI/MCP analytic and original-PLY plane fit/materialization, history and persistence; native solver equivalence remains open",
+  fitSphere:
+    "tests/primitive-fitting-browser.mjs: shared analytic GUI/MCP fitting, actual CAD creation and project reopen; native solver equivalence remains open",
+  fitCylinder:
+    "tests/primitive-fitting-browser.mjs: shared analytic GUI/MCP fitting, actual CAD creation and project reopen; native solver equivalence remains open",
+  fitCone:
+    "tests/primitive-fitting-browser.mjs: shared analytic GUI/MCP fitting, actual CAD creation and project reopen; native solver equivalence remains open",
+  referencePoint:
+    "tests/reference-construction-browser.mjs: numeric point and single stored-line midpoint GUI/MCP Preview, Apply, Cancel, dependent refresh, history and reopen; other derived modes and native equivalence remain open",
+  referenceLine:
+    "tests/reference-construction-browser.mjs: typed finite line GUI/MCP Preview, Apply, Cancel and project reopen only",
   sketchFromSection:
     "docs/AGENT_GUIDE.md: scan section references; tests/create-sketch-dialog.test.tsx and automation section original-slot parity; GUI/MCP section workflow",
   globalFineAlign:

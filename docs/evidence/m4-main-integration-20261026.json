@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "status": "intermediate-uncommitted-integration-checkpoint",
+  "baseCommit": "fcf6e3b209052f5c6bf606dc9f61a8935e8f9f2a",
+  "buildIdentity": "scanforge-20aed0e955624da9",
+  "sourcePinned": false,
+  "milestoneComplete": false,
+  "runs": {
+    "build-integrated-r1": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 2,
+      "peakJobBytes": 1222135808,
+      "totalProcesses": 23,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 101.18613360001473
+    },
+    "build-integrated-r2": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1703055360,
+      "totalProcesses": 32,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 119.01049309998052
+    },
+    "focused-integrated-r1": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/reference-midpoint.test.ts",
+        "tests/reference-midpoint-api.test.ts",
+        "tests/reference-midpoint-dialog.test.tsx",
+        "tests/reference-construction-api.test.ts",
+        "tests/reference-construction-apply.test.ts",
+        "tests/reference-construction-preview.test.ts",
+        "tests/reference-construction-binding.test.ts",
+        "tests/reference-stored-source-binding.test.ts",
+        "tests/reference-project.test.ts",
+        "tests/reference-dependencies.test.ts",
+        "tests/reference-preview-admission.test.ts",
+        "tests/primitive-fit-samples.test.ts",
+        "tests/primitive-fit-create-api.test.ts",
+        "tests/sketch-plane-source.test.ts",
+        "tests/sketch-plane-source-api.test.ts",
+        "tests/sketch-plane-dialog.test.tsx",
+        "tests/sketch-authoring-host-history.test.ts",
+        "tests/sketch-child-state.test.ts",
+        "tests/sketch-child-collection.test.ts",
+        "tests/sketch-line-child.test.ts",
+        "tests/ribbon-model.test.ts",
+        "tests/mcp-server.test.ts",
+        "tests/automation-api.test.ts",
+        "tests/authoring-operations.test.ts",
+        "tests/object-delete-api.test.ts",
+        "tests/mesh-selection-fidelity.test.ts",
+        "tests/scan-selection-api.test.ts",
+        "tests/point-cloud-automation-edit.test.ts",
+        "tests/point-cloud-deviation-display.test.ts",
+        "tests/viewport-indexed-display.test.ts",
+        "tests/normals-display.test.ts",
+        "tests/reduction-scale.test.tsx",
+        "tests/project-index-storage.test.ts",
+        "tests/inspection.test.ts",
+        "tests/inspection-reference.test.ts",
+        "tests/inspection-reference-native-replay.test.ts",
+        "tests/inspection-native-observed.test.ts",
+        "tests/inspection-definition.test.ts",
+        "--maxWorkers=1"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 606289920,
+      "totalProcesses": 45,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 16.769966599997133
+    },
+    "reference-browser-integrated-r1": {
+      "command": ["node", "tests/reference-construction-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 919216128,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 5.726060799963307
+    },
+    "primitive-browser-integrated-r1": {
+      "command": ["node", "tests/primitive-fitting-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 1065951232,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 6.455580000008922
+    },
+    "primitive-browser-integrated-r2": {
+      "command": ["node", "tests/primitive-fitting-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1835556864,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 13.480675200000405
+    },
+    "m6-browser-integrated-r1": {
+      "command": ["node", "tests/m6-inspection-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1596702720,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 10.228997999976855
+    },
+    "m1-selection-integrated-r1": {
+      "command": ["node", "tests/m1-selection-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 902369280,
+      "totalProcesses": 18,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 50.478468400018755
+    },
+    "sketch-child-kernel-r1": {
+      "command": [
+        "node",
+        "--max-old-space-size=768",
+        "tests/sketch-child-state-kernel.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 447238144,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 1.1259905999759212
+    }
+  },
+  "focusedTests": {
+    "passed": 459,
+    "filesPassed": 38
+  },
+  "failuresRetained": {
+    "build-integrated-r1": "Minimal test WorkspaceHost stub needed explicit unknown cast; corrected before r2.",
+    "primitive-browser-integrated-r1": "Harness attempted object_select while imported geometry still had busy presentation. Shared admission correctly rejected BUSY. Read-only busy wait added at each GUI import before r2."
+  },
+  "applicationKernelScope": "Real generated worker/OCCT restoration and fork preserve retained BREP across failed latest preparations;11children/9borrowed edges retired. No original native equivalence.",
+  "unverified": [
+    "Full test suite on this new integration tree",
+    "Final candidate source pin and review",
+    "Remaining release-critical construction/sketch inventory",
+    "Original native frame/fit/curve/constraint comparisons",
+    "Actual native project reopen",
+    "Merge and merged-main verification"
+  ]
+}

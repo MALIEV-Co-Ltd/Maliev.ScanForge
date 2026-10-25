@@ -12,7 +12,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 // Reuses the live application server in an entirely disposable browser profile.
-// No server at 5173 is created, stopped or reconfigured by this validation.
+// The selected server is never created, stopped or reconfigured by this validation.
 const root = new URL("../", import.meta.url);
 const origin =
   process.env.SCANFORGE_SKETCH_HISTORY_ORIGIN ?? "http://127.0.0.1:5173";
@@ -166,6 +166,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -275,7 +276,7 @@ try {
     ledger.cleanup.push({ port: bridgePort, closed });
     if (!closed) failure ??= Error("Owned bridge port remains open");
   }
-  ledger.existingApplicationPreserved = await portOpen(5173);
+  ledger.existingApplicationPreserved = await portOpen(targetPort);
   if (!ledger.existingApplicationPreserved)
     failure ??= Error(
       "Existing application server is unavailable after validation",

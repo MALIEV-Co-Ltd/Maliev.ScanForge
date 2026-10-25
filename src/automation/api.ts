@@ -22,6 +22,8 @@ import {
   DISK_BLOB_BLOCK_BYTES,
 } from "../transient-blob-storage";
 import { cloudPlacement } from "../point-cloud-placement";
+import { encodeReferenceFrame } from "../reference-frame";
+import { SketchDrawResourceLimit } from "../sketch-draw-intent";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
   inspectGlobalAlignmentPreview,
@@ -436,6 +438,10 @@ export class ApplicationApi {
         e.kind,
         e.constructionOrderKey,
         identity(e.reference),
+        identity(e.coordinateFrame),
+        e.coordinateFrame === undefined
+          ? undefined
+          : encodeReferenceFrame(e.coordinateFrame),
         e.color,
         e.pointSize,
         e.pointAutoDensity,
@@ -565,10 +571,14 @@ export class ApplicationApi {
         );
       if (
         [
+          "datum_construct",
+          "sketch_draw",
           "alignment_preview",
           "global_alignment_preview",
           "landmark_preview",
         ].includes(command) ||
+        (command === "sketch_manage" &&
+          ["create", "activate"].includes(String(args.action))) ||
         (command === "scan_preview" && args.action === "create") ||
         (command === "interactive_alignment_edit" && args.action === "begin") ||
         (command === "landmark_edit" &&
@@ -1017,11 +1027,13 @@ export class ApplicationApi {
       revision: this.currentRevision(),
       error: {
         code:
-          error instanceof ApiError || error instanceof VisualCaptureError
-            ? error.code
-            : error instanceof DOMException && error.name === "AbortError"
-              ? "CANCELLED"
-              : "OPERATION_FAILED",
+          error instanceof SketchDrawResourceLimit
+            ? "RESOURCE_LIMIT"
+            : error instanceof ApiError || error instanceof VisualCaptureError
+              ? error.code
+              : error instanceof DOMException && error.name === "AbortError"
+                ? "CANCELLED"
+                : "OPERATION_FAILED",
         message: error instanceof Error ? error.message : String(error),
       },
     };

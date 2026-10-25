@@ -119,7 +119,11 @@ function setup(activeSketchId: string) {
     // Baseline has no helper; its actual callback does not reference this value.
     Reflect.get(sketchUndo, "pruneSketchUndoSessions"),
   ) as NonNullable<WorkspaceHost["setAuthoring"]>;
-  const host = { snapshot: () => state, setAuthoring } as WorkspaceHost;
+  const host = {
+    snapshot: () => state,
+    setAuthoring,
+    select: vi.fn(),
+  } as unknown as WorkspaceHost;
   const operations = createAuthoringOperations(host);
   const context = {
     check: vi.fn(),

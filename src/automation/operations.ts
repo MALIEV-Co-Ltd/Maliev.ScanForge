@@ -5,6 +5,15 @@ import { createScanPreviewOperation } from "./scan-preview-operations";
 import { reconstructionTargets } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
+import { createReferenceConstructionOperations } from "./reference-construction-operations";
+import { createDatumConstructionOperations } from "./datum-construction-operations";
+import { analyzePrimitiveFit, createFittedPlane } from "../primitive-fitting";
+import { fittedPrimitive } from "../fitted-primitive";
+import { entityDisplayStats } from "../entity-display-stats";
+import { selectStepExportEntities } from "../step-export";
+import { referenceDeletionDependents } from "../reference-midpoint";
+import { inspectReferenceFrame } from "../reference-frame";
+import { transformPlaneFrame, validatePlaneFrame } from "../plane-frame";
 import { isSampledScan } from "../scan-source";
 import { renameObjects } from "../object-renaming";
 import { autoColorScene } from "../scene-auto-color";
@@ -53,13 +62,7 @@ import {
   inspectReferenceEntity,
 } from "../reference-entity";
 import { partitionTriangles, selectionCount } from "../selection";
-import {
-  meshStats,
-  fitPlane,
-  fitSphere,
-  fitCylinder,
-  fitCone,
-} from "../geometry";
+import { meshStats } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
@@ -68,6 +71,10 @@ import { cornerTrimSketch } from "../sketch-corner";
 import { filletSketchCorner } from "../sketch-fillet";
 import { trimSketchStroke } from "../sketch-trim";
 import { mirrorSketch } from "../sketch-mirror";
+import {
+  applySketchDrawIntent,
+  type SketchDrawIntent,
+} from "../sketch-draw-intent";
 import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
@@ -267,7 +274,8 @@ function editable(entity: Entity, meshOnly = false) {
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
 function summary(e: Entity, scene: readonly Entity[]) {
-  const reference = inspectReferenceEntity(e, scene);
+  const reference =
+    inspectReferenceEntity(e, scene) ?? inspectReferenceFrame(e);
   const {
     positions,
     normals: _normals,
@@ -405,6 +413,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       write();
     }
   };
+  const fitSelection = (
+    state: WorkspaceSnapshot,
+    entity: Entity,
+    selectionOnly?: boolean,
+  ) =>
+    selectionOnly === true ||
+    (selectionOnly === undefined &&
+      state.selectedId === entity.id &&
+      state.selection?.some(Boolean))
+      ? mask(state, entity)
+      : undefined;
   async function publishImportedEntity(
     entity: Entity,
     a: { replace?: boolean },
@@ -558,6 +577,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     ...createDatumOperations(host),
     ...createGlobalAlignmentOperations(host),
     ...createInteractiveOperations(host),
+    ...createReferenceConstructionOperations(host),
+    ...createDatumConstructionOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {
@@ -650,30 +671,37 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       semantic: details.reference.geometry,
                       encoding: details.reference.geometryEncoding,
                     }
-                  : {
-                      positions: Array.from(e.positions),
-                      indexedMesh: e.indexedMesh
-                        ? {
-                            vertices: Array.from(e.indexedMesh.vertices),
-                            triangles: Array.from(e.indexedMesh.triangles),
-                            ...(e.indexedMesh.normals
-                              ? { normals: Array.from(e.indexedMesh.normals) }
-                              : {}),
-                            ...(e.indexedMesh.geometryNormals
-                              ? {
-                                  geometryNormals: Array.from(
-                                    e.indexedMesh.geometryNormals,
-                                  ),
-                                }
-                              : {}),
-                          }
-                        : undefined,
-                      normals: e.normals ? Array.from(e.normals) : undefined,
-                      pointColors: e.pointColors
-                        ? Array.from(e.pointColors)
-                        : undefined,
-                      edgePositions: e.edgePositions,
-                    },
+                  : "coordinateFrameEncoding" in details
+                    ? {
+                        units: "mm",
+                        coordinateFrame: details.coordinateFrame,
+                        coordinateFrameEncoding:
+                          details.coordinateFrameEncoding,
+                      }
+                    : {
+                        positions: Array.from(e.positions),
+                        indexedMesh: e.indexedMesh
+                          ? {
+                              vertices: Array.from(e.indexedMesh.vertices),
+                              triangles: Array.from(e.indexedMesh.triangles),
+                              ...(e.indexedMesh.normals
+                                ? { normals: Array.from(e.indexedMesh.normals) }
+                                : {}),
+                              ...(e.indexedMesh.geometryNormals
+                                ? {
+                                    geometryNormals: Array.from(
+                                      e.indexedMesh.geometryNormals,
+                                    ),
+                                  }
+                                : {}),
+                            }
+                          : undefined,
+                        normals: e.normals ? Array.from(e.normals) : undefined,
+                        pointColors: e.pointColors
+                          ? Array.from(e.pointColors)
+                          : undefined,
+                        edgePositions: e.edgePositions,
+                      },
                 "geometry.json",
               ),
             }
@@ -791,9 +819,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const targets = new Set(ids);
       if (targets.size !== ids.length)
         throw new Error("Object IDs must be unique.");
+      const dependentReferences = referenceDeletionDependents(s.entities, ids);
+      if (dependentReferences.length)
+        throw new Error(
+          "Remove dependent reference objects first: " +
+            dependentReferences.join(", "),
+        );
       for (const id of ids) {
         const e = object(s, id);
-        editable(e);
+        if (e.locked) throw new Error("Object is locked.");
         if (
           e.parametric &&
           s.entities.some(
@@ -1333,47 +1367,107 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const s = host.snapshot(),
         e = object(s, a.entityId);
       editable(e, true);
+      const storedPlane = e.kind === "plane" ? e.planeFrame : undefined;
+      if (storedPlane) validatePlaneFrame(storedPlane, e.positions, e.kind);
       const transformed = transformIndexedMesh(
         e,
         a.translation,
         a.rotation,
         a.scale,
       );
+      const updated: Entity = {
+        ...meshEdited(e, transformed.positions),
+        indexedMesh: transformed.indexedMesh,
+        normals: transformed.normals,
+      };
+      if (storedPlane) {
+        if (
+          transformed.positions.some(
+            (value) => !Number.isFinite(value) || Math.abs(value) > 1e9,
+          )
+        )
+          throw new Error(
+            "Transformed plane display coordinates exceed world bounds (+/-1e9 mm).",
+          );
+        const planeFrame = transformPlaneFrame(
+          storedPlane,
+          a.translation,
+          a.rotation,
+          a.scale,
+        );
+        validatePlaneFrame(planeFrame, transformed.positions, "plane");
+        updated.kind = "plane";
+        updated.planeFrame = planeFrame;
+      }
       commit(
         c,
-        s.entities.map((x) =>
-          x.id === e.id
-            ? {
-                ...meshEdited(e, transformed.positions),
-                indexedMesh: transformed.indexedMesh,
-                normals: transformed.normals,
-              }
-            : x,
-        ),
+        s.entities.map((x) => (x.id === e.id ? updated : x)),
         "Transform mesh",
       );
       return { entityId: e.id };
     },
     analysis_fit: (a, c) => {
       const s = host.snapshot(),
-        e = object(s, a.entityId),
-        p = selectedPositions(s, e, a.selectionOnly);
+        e = object(s, a.entityId);
       c.check();
-      const fitters = {
-        plane: fitPlane,
-        sphere: fitSphere,
-        cylinder: fitCylinder,
-        cone: fitCone,
-      };
-      const sampled: number[] = [];
-      const stride = Math.max(1, Math.ceil(p.length / 3 / 20_000));
-      for (let i = 0; i < p.length; i += stride * 3)
-        sampled.push(p[i], p[i + 1], p[i + 2]);
-      return {
-        fit: fitters[a.kind as keyof typeof fitters](sampled),
-        samples: sampled.length / 3,
-        totalVertices: p.length / 3,
-      };
+      const result = analyzePrimitiveFit(
+        e,
+        a.kind,
+        fitSelection(s, e, a.selectionOnly),
+        a.region,
+      );
+      c.check();
+      return result;
+    },
+    primitive_fit_create: async (a, c) => {
+      const snapshot = host.snapshot(),
+        source = object(snapshot, a.entityId);
+      c.check();
+      const result = analyzePrimitiveFit(
+        source,
+        a.kind,
+        fitSelection(snapshot, source, a.selectionOnly),
+        a.region,
+      );
+      c.check();
+      let created: Entity;
+      if (result.fit.kind === "plane") {
+        created = createFittedPlane(
+          result.fit,
+          Math.max(...entityDisplayStats(source).size),
+          a.name,
+        );
+        commit(c, [...snapshot.entities, created], "Create fitted plane");
+      } else {
+        const cad = host.cad();
+        const built = await createCadFeature(
+          cad,
+          snapshot.entities,
+          { kind: "primitive", input: fittedPrimitive(result.fit) },
+          a.name ?? `Fitted ${result.fit.kind}`,
+          { signal: c.signal },
+        );
+        created = {
+          ...built.created[0],
+          kind: result.fit.kind,
+          opacity: 0.85,
+          fit: result.fit,
+        };
+        try {
+          commit(
+            c,
+            built.entities.map((entity) =>
+              entity.id === created.id ? created : entity,
+            ),
+            `Create fitted ${result.fit.kind}`,
+          );
+        } catch (error) {
+          await releaseCreated(cad, built.entities, snapshot.entities);
+          throw error;
+        }
+      }
+      host.select(created.id);
+      return { entityId: created.id, sourceEntityId: source.id, ...result };
     },
     analysis_section: (a, c) => {
       const s = host.snapshot(),
@@ -1454,6 +1548,39 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         sketch: s.sketchDraft ?? s.authoring.sketch,
         sketches: s.authoring.sketches,
         activeSketchId: s.authoring.activeSketchId,
+      };
+    },
+    sketch_draw: (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      if (!c.mutate)
+        throw new Error("Sketch drawing requires the shared mutation context.");
+      const {
+        expectedRevision: _revision,
+        requestId: _requestId,
+        ...intent
+      } = a;
+      const result = applySketchDrawIntent(
+        sketch,
+        intent as SketchDrawIntent,
+        {
+          enabled: (state.settings.snapGrid ?? false) as boolean,
+          spacingMm: (state.settings.gridSpacing ?? 10) as number,
+        },
+        { check: c.check, signal: c.signal },
+      );
+      c.check();
+      if (result.changed) c.mutate(() => host.setSketch(result.sketch));
+      const { sketch: _sketch, ...diagnostics } = result;
+      return {
+        ...diagnostics,
+        units: "mm",
+        coordinateSystem: "sketch-local-UV",
+        grid: {
+          enabled: state.settings.snapGrid ?? false,
+          spacingMm: state.settings.gridSpacing ?? 10,
+        },
       };
     },
     sketch_set: (a, c) => {
@@ -1691,11 +1818,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {
-        if (!entities.length || entities.some((e) => !e.kernelId))
-          throw new Error(
-            "STEP export requires exact CAD for every exported object.",
-          );
-        data = await host.cad().exportStep(entities.map((e) => e.kernelId!));
+        const shapes = selectStepExportEntities(
+          s.entities,
+          a.visible !== false,
+        );
+        data = await host.cad().exportStep(shapes.map((e) => e.kernelId!));
         name = `${s.name}.step`;
         mime = "application/step";
       } else {

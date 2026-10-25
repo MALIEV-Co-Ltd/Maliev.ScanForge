@@ -6,8 +6,12 @@ import {
   copyReferenceEntityData,
   validateReferenceEntity,
 } from "../reference-entity";
-import { datumEntityDependencies } from "../datum-dependencies";
 import { lockedObjectEdit } from "../object-operations";
+import {
+  evaluateReferenceMidpoint,
+  refreshReferenceMidpoints,
+  REFERENCE_MIDPOINT_LIMIT,
+} from "../reference-midpoint";
 
 export type ReferenceConstructionApplyTarget =
   | {
@@ -54,6 +58,7 @@ export function applyReferenceConstructionToWorkspace(
     | {
         entityId: string;
         assignedSources: { id: string; constructionOrderKey: string }[];
+        refreshedEntityIds: string[];
       }
     | undefined;
   const result = applyReferenceConstructionPreview(
@@ -62,9 +67,14 @@ export function applyReferenceConstructionToWorkspace(
     request.version,
     (candidate) => {
       context.check();
+      const midpoint =
+        candidate.definition.kind === "point" &&
+        candidate.definition.mode === "center" &&
+        candidate.definition.sources.length === 1;
       if (
         candidate.definition.mode !== "coordinates" &&
-        candidate.definition.mode !== "endpoints"
+        candidate.definition.mode !== "endpoints" &&
+        !midpoint
       )
         throw new Error(
           "Derived reference acceptance requires source-specific finalization.",
@@ -75,6 +85,14 @@ export function applyReferenceConstructionToWorkspace(
       );
       if (target.kind === "create" && existing)
         throw new Error("Reference destination already exists.");
+      if (
+        midpoint &&
+        target.kind === "create" &&
+        snapshot.entities.length >= REFERENCE_MIDPOINT_LIMIT
+      )
+        throw new Error(
+          "Reference midpoint creation would exceed the scene limit.",
+        );
       if (target.kind === "edit") {
         if (!existing || existing.locked || !validateReferenceEntity(existing))
           throw new Error(
@@ -85,14 +103,6 @@ export function applyReferenceConstructionToWorkspace(
           candidate.preview.geometry.kind
         )
           throw new Error("Reference edit cannot change its geometric kind.");
-        if (
-          datumEntityDependencies(snapshot.entities).some(
-            (row) => row.id !== target.id && row.references.includes(target.id),
-          )
-        )
-          throw new Error(
-            "Reference dependency rebuild is required before editing this source.",
-          );
       }
       if (
         candidate.definition.sources.some((source) => source.id === target.id)
@@ -109,10 +119,40 @@ export function applyReferenceConstructionToWorkspace(
         throw new Error("Reference source identity binding changed.");
       const reference = copyReferenceEntityData({
         version: 1,
-        definition: candidate.definition,
+        definition: midpoint
+          ? candidate.definition
+          : { ...candidate.definition, sources: [] },
         geometry: candidate.preview.geometry,
-        evaluation: candidate.preview.state,
+        evaluation: { completionWord: 0x100 },
       });
+      if (midpoint) {
+        if (
+          candidate.preview.outcome !== "updated" ||
+          candidate.preview.diagnostics.reason !== "center"
+        )
+          throw new Error("Only a successful midpoint preview can be applied.");
+        const finalized = evaluateReferenceMidpoint(
+          snapshot.entities,
+          reference.definition,
+          { geometry: reference.geometry, state: { completionWord: 1 } },
+        );
+        if (
+          reference.geometry.kind !== "point" ||
+          finalized.geometry.kind !== "point" ||
+          !reference.geometry.position.every((value, index) =>
+            Object.is(
+              value,
+              finalized.geometry.kind === "point"
+                ? finalized.geometry.position[index]
+                : undefined,
+            ),
+          )
+        )
+          throw new Error(
+            "Reference midpoint no longer matches the cached preview.",
+          );
+        reference.evaluation = finalized.state;
+      }
       const entity: Entity =
         target.kind === "edit"
           ? { ...existing!, reference }
@@ -136,35 +176,25 @@ export function applyReferenceConstructionToWorkspace(
               selectable: true,
             };
       validateReferenceEntity(entity);
-      const assigned = new Map(
-        identities.assignments.map((source) => [
-          source.id,
-          source.constructionOrderKey,
-        ]),
-      );
       const next = snapshot.entities.map((source) =>
-        source.id === target.id
-          ? entity
-          : assigned.has(source.id)
-            ? { ...source, constructionOrderKey: assigned.get(source.id)! }
-            : source,
+        source.id === target.id ? entity : source,
       );
       if (target.kind === "create") next.push(entity);
-      const policy = { constructionIdentityMigration: identities.assignments };
-      if (lockedObjectEdit(snapshot.entities, next, policy))
+      const refreshed = refreshReferenceMidpoints(next, entity.id, () =>
+        context.check(),
+      );
+      if (lockedObjectEdit(snapshot.entities, refreshed.entities))
         throw new Error("Reference Apply would edit locked geometry.");
       mutate(() =>
         host.commit(
-          next,
+          refreshed.entities,
           `${target.kind === "create" ? "Create" : "Edit"} reference ${reference.geometry.kind}`,
-          policy,
         ),
       );
       publication = {
         entityId: entity.id,
-        assignedSources: identities.assignments.map((source) => ({
-          ...source,
-        })),
+        assignedSources: [],
+        refreshedEntityIds: refreshed.refreshedEntityIds,
       };
     },
   );

@@ -140,14 +140,11 @@ import {
   type SketchTrimStroke,
 } from "./sketch-trim";
 import {
-  drawSketchLine,
-  drawSketchCircle,
-  drawThreePointCurve,
   previewSketchCurve,
-  moveSketchEndpoint,
   type SketchDrawingTool,
   type SketchUV,
 } from "./sketch-drawing";
+import type { SketchDrawIntent } from "./sketch-draw-intent";
 
 type Item = {
   pointDisplay?: AdaptivePointDisplay;
@@ -166,6 +163,7 @@ type Item = {
   selectionIndex?: AsyncScreenSelectionIndex;
   positions: Positions;
   renderPositions?: Positions;
+  renderPlaneOrigin?: Vec3;
   renderTopology?: Entity["indexedMesh"];
   displayBuffers?: ReturnType<typeof scanDisplayBuffers>;
   deviationGeometry?: THREE.BufferGeometry;
@@ -266,7 +264,11 @@ export class Viewport {
       request: SketchTrimStroke,
       revision: number,
     ) => void | Promise<void>;
-    onChange: (sketch: Sketch) => void;
+    beginDraw: () => number;
+    onDraw: (
+      intent: SketchDrawIntent,
+      revision: number,
+    ) => void | Promise<void>;
     onError: (message: string) => void;
   };
   private sketchDrag?: {
@@ -275,6 +277,9 @@ export class Viewport {
     end: SketchUV;
     pointId?: string;
     tolerance: number;
+    rawStart?: SketchUV;
+    rawEnd?: SketchUV;
+    revision?: number;
     trim?: { stroke: SketchUV[]; radiusMm: number; revision: number };
   };
   private trimPreviewController?: AbortController;
@@ -282,6 +287,8 @@ export class Viewport {
   private trimPreviewPending = false;
   private trimPreviewVersion = 0;
   private sketchCurvePoints: SketchUV[] = [];
+  private sketchCurveRawPoints: SketchUV[] = [];
+  private sketchCurveRevision?: number;
   private sketchCurveHover?: SketchUV;
   private readonly landmarkOverlay = document.createElement("div");
   private readonly navigationPivot = new NavigationPivot();
@@ -596,6 +603,11 @@ export class Viewport {
       item.cadEdges?.material.color.set(
         theme === "dark" ? "#20282c" : "#3b454d",
       );
+    for (const item of this.sketchGeometry.children)
+      if (item instanceof THREE.LineSegments)
+        (item.material as THREE.LineBasicMaterial).color.set(
+          theme === "dark" ? "#eeeeee" : "#243746",
+        );
     this.invalidate();
   }
 
@@ -1736,6 +1748,9 @@ export class Viewport {
       const hit = this.sketchPlanePoint(event.clientX, event.clientY);
       if (hit) {
         this.sketchDrag.end = hit;
+        this.sketchDrag.rawEnd =
+          this.sketchPlanePoint(event.clientX, event.clientY, false) ??
+          this.sketchDrag.rawEnd;
         this.renderSketchDrag();
       }
       return;
@@ -1900,43 +1915,54 @@ export class Viewport {
       }
       const end =
         this.sketchPlanePoint(event.clientX, event.clientY) ?? drag.end;
+      const rawEnd =
+        this.sketchPlanePoint(event.clientX, event.clientY, false) ??
+        drag.rawEnd ??
+        end;
       const threePoint = editor.tool === "circle3" || editor.tool === "arc3";
+      const revision = threePoint ? this.sketchCurveRevision : drag.revision;
       this.cancelSketchDrag(!threePoint);
       try {
+        if (revision === undefined)
+          throw new Error("Sketch drawing has no captured gesture revision.");
+        const submit = (intent: SketchDrawIntent) => {
+          Promise.resolve(editor.onDraw(intent, revision)).catch((error) =>
+            editor.onError(
+              error instanceof Error ? error.message : "Sketch drawing failed.",
+            ),
+          );
+        };
         if (threePoint) {
           this.sketchCurvePoints.push(end);
+          this.sketchCurveRawPoints.push(rawEnd);
           this.sketchCurveHover = undefined;
           if (this.sketchCurvePoints.length < 3) {
             this.renderSketchDrag();
             return;
           }
-          const picked = [...this.sketchCurvePoints] as [
+          const picked = [...this.sketchCurveRawPoints] as [
             SketchUV,
             SketchUV,
             SketchUV,
           ];
           this.cancelSketchDrag();
-          editor.onChange(
-            drawThreePointCurve(
-              editor.sketch,
-              picked,
-              editor.tool as "circle3" | "arc3",
-            ),
-          );
+          submit({ kind: editor.tool as "circle3" | "arc3", points: picked });
           return;
         }
-        editor.onChange(
+        submit(
           drag.pointId
-            ? moveSketchEndpoint(editor.sketch, drag.pointId, end)
+            ? { kind: "move", pointId: drag.pointId, position: rawEnd }
             : editor.tool === "circle"
-              ? drawSketchCircle(editor.sketch, drag.start, end)
-              : drawSketchLine(
-                  editor.sketch,
-                  drag.start,
-                  end,
-                  drag.tolerance,
-                  editor.constraints,
-                ),
+              ? {
+                  kind: "circle",
+                  points: [drag.rawStart ?? drag.start, rawEnd],
+                }
+              : {
+                  kind: "line",
+                  points: [drag.rawStart ?? drag.start, rawEnd],
+                  snapToleranceMm: drag.tolerance,
+                  autoConstraints: editor.constraints,
+                },
         );
       } catch (error) {
         editor.onError(
@@ -2078,11 +2104,12 @@ export class Viewport {
           );
         if (arc.construction) constructionEnds.push(constructionLines.length);
       }
-      this.addSketchLines(this.sketchGeometry, lines, "#eeeeee");
+      const curveColor = this.theme === "dark" ? "#eeeeee" : "#243746";
+      this.addSketchLines(this.sketchGeometry, lines, curveColor);
       this.addSketchLines(
         this.sketchGeometry,
         constructionLines,
-        "#eeeeee",
+        curveColor,
         true,
         constructionEnds,
       );
@@ -2290,10 +2317,15 @@ export class Viewport {
         ? new THREE.LineDashedMaterial({
             color,
             depthTest: false,
+            transparent: true,
             dashSize: 1 / 32,
             gapSize: 1 / 32,
           })
-        : new THREE.LineBasicMaterial({ color, depthTest: false }),
+        : new THREE.LineBasicMaterial({
+            color,
+            depthTest: false,
+            transparent: true,
+          }),
     );
     lines.renderOrder = 10;
     group.add(lines);
@@ -2416,12 +2448,34 @@ export class Viewport {
         return true;
       }
     }
+    let revision: number;
+    try {
+      const threePoint = editor.tool === "circle3" || editor.tool === "arc3";
+      revision =
+        threePoint && this.sketchCurvePoints.length
+          ? this.sketchCurveRevision!
+          : editor.beginDraw();
+      if (threePoint && !this.sketchCurvePoints.length)
+        this.sketchCurveRevision = revision;
+    } catch (error) {
+      editor.onError(
+        error instanceof Error
+          ? error.message
+          : "Sketch drawing could not start.",
+      );
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return true;
+    }
     this.sketchDrag = {
       id: event.pointerId,
       start,
       end: start,
       pointId,
       tolerance,
+      rawStart,
+      rawEnd: rawStart,
+      revision,
     };
     this.pointer = null;
     this.renderer.domElement.setPointerCapture(event.pointerId);
@@ -2518,7 +2572,11 @@ export class Viewport {
     this.sketchGeometry.visible = true;
     if (drag && this.renderer.domElement.hasPointerCapture(drag.id))
       this.renderer.domElement.releasePointerCapture(drag.id);
-    if (resetCurvePoints) this.sketchCurvePoints = [];
+    if (resetCurvePoints) {
+      this.sketchCurvePoints = [];
+      this.sketchCurveRawPoints = [];
+      this.sketchCurveRevision = undefined;
+    }
     this.sketchCurveHover = undefined;
     this.clearGroup(this.sketchPreview);
     this.invalidate();
@@ -3101,7 +3159,12 @@ export class Viewport {
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
     const referenceIds = new Set(
-      entities.filter(isReferenceEntity).map((entity) => entity.id),
+      entities
+        .filter(
+          (entity) =>
+            isReferenceEntity(entity) || entity.kind === "referenceFrame",
+        )
+        .map((entity) => entity.id),
     );
     this.referenceObjects ??= new Map();
     for (const [id, display] of this.referenceObjects) {
@@ -3126,9 +3189,12 @@ export class Viewport {
     }
     this.bounds.makeEmpty();
     for (const entity of entities) {
-      if (isReferenceEntity(entity)) {
+      if (isReferenceEntity(entity) || entity.kind === "referenceFrame") {
         let display = this.referenceObjects.get(entity.id);
-        if (!display || display.data !== entity.reference) {
+        if (
+          !display ||
+          display.data !== (entity.coordinateFrame ?? entity.reference)
+        ) {
           const next = createReferenceDisplay(entity);
           try {
             if (display) this.retireReferenceDisplay(display);
@@ -3169,7 +3235,21 @@ export class Viewport {
       const renderPositions = placement?.sourcePositions ?? entity.positions;
       const renderTopology = placement ? undefined : entity.indexedMesh;
       const renderNormals = placement?.sourceNormals ?? entity.normals;
+      const planeOrigin =
+        entity.kind === "plane" &&
+        entity.planeFrame &&
+        !entity.kernelId &&
+        !entity.parametric
+          ? entity.planeFrame.center
+          : undefined;
+      const planeOriginChanged = planeOrigin
+        ? !item.renderPlaneOrigin ||
+          planeOrigin.some(
+            (value, i) => !Object.is(value, item.renderPlaneOrigin![i]),
+          )
+        : item.renderPlaneOrigin !== undefined;
       if (
+        planeOriginChanged ||
         item.renderPositions !== renderPositions ||
         item.renderTopology !== renderTopology ||
         item.hidden !== entity.meshSelection?.hidden
@@ -3190,7 +3270,7 @@ export class Viewport {
           item.pointDisplay = undefined;
         }
         const prepared =
-          entity.kind === "pointcloud"
+          entity.kind === "pointcloud" || planeOrigin
             ? undefined
             : scanRenderData(entity.positions);
         const display = scanDisplayBuffers(
@@ -3201,12 +3281,19 @@ export class Viewport {
             ? []
             : (entity.meshSelection?.hidden ?? []),
         );
+        // Subtract the binary64 datum origin before narrowing GPU vertices.
+        const gpuPositions = planeOrigin
+          ? Float32Array.from(
+              display.positions,
+              (value, i) => value - planeOrigin[i % 3],
+            )
+          : display.positions;
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
-          display.positions instanceof Float32Array
-            ? new THREE.BufferAttribute(display.positions, 3)
-            : new THREE.Float32BufferAttribute(display.positions, 3),
+          gpuPositions instanceof Float32Array
+            ? new THREE.BufferAttribute(gpuPositions, 3)
+            : new THREE.Float32BufferAttribute(gpuPositions, 3),
         );
         if (display.index)
           geometry.setIndex(new THREE.BufferAttribute(display.index, 1));
@@ -3230,7 +3317,9 @@ export class Viewport {
           geometry.setAttribute(
             "normal",
             new THREE.BufferAttribute(
-              smoothDisplayNormals(entity.positions),
+              smoothDisplayNormals(
+                planeOrigin ? gpuPositions : entity.positions,
+              ),
               3,
             ),
           );
@@ -3281,6 +3370,20 @@ export class Viewport {
           void prepareViewportPicking(item.mesh);
         item.positions = entity.positions;
         item.renderPositions = renderPositions;
+        item.renderPlaneOrigin = planeOrigin ? [...planeOrigin] : undefined;
+        if (planeOrigin) {
+          const worldBounds = new THREE.Box3(),
+            point = new THREE.Vector3();
+          for (let i = 0; i < entity.positions.length; i += 3)
+            worldBounds.expandByPoint(
+              point.set(
+                entity.positions[i],
+                entity.positions[i + 1],
+                entity.positions[i + 2],
+              ),
+            );
+          item.worldBounds = worldBounds;
+        }
         item.renderTopology = renderTopology;
         item.displayBuffers = display;
         item.mesh.material.vertexColors = false;
@@ -3291,7 +3394,7 @@ export class Viewport {
         item.positions = entity.positions;
         item.worldBounds = undefined;
       }
-      item.mesh.matrixAutoUpdate = !placement;
+      item.mesh.matrixAutoUpdate = !placement && !planeOrigin;
       if (placement) {
         const m = cloudPoseMatrix(placement.matrixBits);
         item.mesh.matrix.set(
@@ -3303,6 +3406,9 @@ export class Viewport {
           0,
           1,
         );
+        item.mesh.updateMatrixWorld(true);
+      } else if (planeOrigin) {
+        item.mesh.matrix.makeTranslation(...planeOrigin);
         item.mesh.updateMatrixWorld(true);
       } else {
         item.mesh.matrix.identity();
@@ -3410,7 +3516,8 @@ export class Viewport {
         item.mesh.geometry.boundingBox &&
         entity.positions.length > 0
       ) {
-        if (placement) {
+        if (planeOrigin) this.bounds.union(item.worldBounds!);
+        else if (placement) {
           item.worldBounds ??= new THREE.Box3().setFromBufferAttribute(
             new THREE.BufferAttribute(
               entity.positions instanceof Float32Array
@@ -4366,6 +4473,12 @@ export class Viewport {
   setTriangleSelection(positions?: Positions, mask?: Uint8Array): void {
     this.clearGroup(this.triangleSelection);
     this.triangleSelection.visible = !this.noiseComparison;
+    const planeOrigin = this.objects?.get(
+      this.selectedId ?? "",
+    )?.renderPlaneOrigin;
+    this.triangleSelection.position.set(
+      ...(planeOrigin ?? ([0, 0, 0] as Vec3)),
+    );
     // A selection reset can render one effect after the newly selected geometry.
     // Never upload stale triangle slots from the previous object.
     const points = !!this.objects?.get(this.selectedId ?? "")?.pointCloud;
@@ -4379,7 +4492,9 @@ export class Viewport {
         for (let i = 0; i < mask.length; i++)
           if (mask[i])
             for (let j = 0; j < stride; j++)
-              buffer[next++] = positions[i * stride + j];
+              buffer[next++] = planeOrigin
+                ? positions[i * stride + j] - planeOrigin[j % 3]
+                : positions[i * stride + j];
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.BufferAttribute(buffer, 3));
         const overlay = points
@@ -4408,7 +4523,8 @@ export class Viewport {
         const processingOutline =
           this.selectionProcessing?.install(overlay.material, geometry) ?? [];
         this.triangleSelection.add(overlay);
-        this.triangleSelection.add(...processingOutline);
+        if (processingOutline.length)
+          this.triangleSelection.add(...processingOutline);
       }
     }
     this.applyClipPlanes();
@@ -4600,12 +4716,18 @@ export class Viewport {
           item.hidden ?? [],
           true,
         );
+        const gpuPositions = item.renderPlaneOrigin
+          ? Float32Array.from(
+              display.positions,
+              (value, i) => value - item.renderPlaneOrigin![i % 3],
+            )
+          : display.positions;
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
-          display.positions instanceof Float32Array
-            ? new THREE.BufferAttribute(display.positions, 3)
-            : new THREE.Float32BufferAttribute(display.positions, 3),
+          gpuPositions instanceof Float32Array
+            ? new THREE.BufferAttribute(gpuPositions, 3)
+            : new THREE.Float32BufferAttribute(gpuPositions, 3),
         );
         if (display.normals)
           geometry.setAttribute(

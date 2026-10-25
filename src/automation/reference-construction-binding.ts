@@ -1,4 +1,5 @@
 import type { WorkspaceHost, WorkspaceSnapshot } from "./api";
+import { encodeReferenceFrame } from "../reference-frame";
 import {
   encodeReferenceEntityData,
   validateReferenceEntity,
@@ -45,6 +46,7 @@ function capture(snapshot: WorkspaceSnapshot): unknown[] {
       entity.surfacePatch,
       entity.fit,
       entity.planeFrame,
+      entity.coordinateFrame,
       entity.meshSelection,
       entity.meshSelection?.hidden,
       entity.authoringLinks,
@@ -67,6 +69,10 @@ function capture(snapshot: WorkspaceSnapshot): unknown[] {
         hiddenTriangles: entity.meshSelection?.hidden.length,
         scanSource: entity.scanSource,
         reference: reference ? encodeReferenceEntityData(reference) : undefined,
+        coordinateFrame:
+          entity.coordinateFrame === undefined
+            ? undefined
+            : encodeReferenceFrame(entity.coordinateFrame),
       }),
     );
   }

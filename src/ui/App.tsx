@@ -13,7 +13,7 @@ import {
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
-import { primitiveFitSamples } from "../primitive-fit-samples";
+import { analyzePrimitiveFit } from "../primitive-fitting";
 import { getWorkingJobStatus } from "../working-job-status";
 import {
   ToolWorkspace,
@@ -40,6 +40,7 @@ import {
   validateImportBatch,
 } from "../import-batch";
 import { entityDisplayStats } from "../entity-display-stats";
+import { selectStepExportEntities } from "../step-export";
 import { GeometryStatistics } from "./GeometryStatistics";
 import {
   selectObject,
@@ -123,7 +124,14 @@ import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
@@ -148,6 +156,11 @@ import { SaveProjectButton } from "./SaveProjectButton";
 import "./workspace-chrome.css";
 import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
+import type { SketchPlaneSelection } from "../sketch-plane-source";
+import { ReferenceConstructionDialog } from "./ReferenceConstructionDialog";
+import { DatumConstructionDialog } from "./DatumConstructionDialog";
+import { encodeReferenceFrame } from "../reference-frame";
+import { runApplicationJobCommand } from "./application-job-command";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import type { ScanClipBounds } from "../scan-clip-box";
 import {
@@ -190,7 +203,6 @@ import {
 import {
   DEFAULT_PART_COLOR,
   DEFAULT_FREEFORM_COLOR,
-  DEFAULT_REFERENCE_COLOR,
   DEFAULT_POINT_DENSITY,
 } from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
@@ -223,20 +235,8 @@ import {
 import { PointCloudTools } from "./PointCloudTools";
 import { type PointCloudEditRequest } from "../point-cloud-processing";
 import { selectionCount } from "../selection";
-import { fittedPrimitive } from "../fitted-primitive";
-import {
-  cleanupMesh,
-  fitCylinder,
-  fitCone,
-  fitPlane,
-  fitSphere,
-} from "../geometry";
-import {
-  download,
-  exportStl,
-  geometryPositions,
-  validatePositions,
-} from "../io";
+import { cleanupMesh } from "../geometry";
+import { download, exportStl, validatePositions } from "../io";
 import {
   retainIndexedMesh,
   transformIndexedMesh,
@@ -344,6 +344,15 @@ export function App() {
   const selectedIds = objectSelection.ids;
   const [interactiveStore] = useState(() => new InteractiveAlignmentStore());
   const [interactiveOpen, setInteractiveOpen] = useState(false);
+  const [datumDialog, setDatumDialog] = useState<{
+    entity?: Entity;
+    kind?: "plane" | "frame";
+  }>();
+  const [referenceDialog, setReferenceDialog] = useState<{
+    kind: "point" | "line";
+    finiteAxis?: boolean;
+    entity?: Entity;
+  }>();
   const interactiveTargetError = useMemo(
     () => interactiveAlignmentTargetError(entities, selectedIds),
     [entities, selectedIds],
@@ -685,6 +694,13 @@ export function App() {
   const [localFit, setLocalFit] = useState(false);
   const [fitRadius, setFitRadius] = useState(12);
   const [fit, setFit] = useState<FitResult | null>(null);
+  const fitRequest = useRef<{
+    entityId: string;
+    kind: FitResult["kind"];
+    selectionOnly: boolean;
+    region?: { center: Vec3; radius: number };
+    revision: number;
+  } | null>(null);
   const [inspectionReferenceId, setInspectionReferenceId] = useState("");
   const [inspectionMaxDistance, setInspectionMaxDistance] = useState(10);
   const [inspectionSigned, setInspectionSigned] = useState(false);
@@ -824,7 +840,12 @@ export function App() {
   );
   const stats = useMemo(
     () => (selected ? entityDisplayStats(selected) : null),
-    [selected?.kind, selected?.positions, selected?.reference],
+    [
+      selected?.kind,
+      selected?.positions,
+      selected?.reference,
+      selected?.coordinateFrame,
+    ],
   );
   const section = useMemo(
     () =>
@@ -1211,7 +1232,8 @@ export function App() {
       view.onMeshClipChange = undefined;
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
-  useEffect(() => {
+  // Publish selection initialization with the shared GUI/MCP snapshot.
+  useLayoutEffect(() => {
     if (!selected || !sampledSelected) {
       setTriangleMask(null);
       return;
@@ -1397,7 +1419,15 @@ export function App() {
               });
               if (!result.ok) throw new Error(result.error.message);
             },
-            onChange: updateSketchDraft,
+            beginDraw: () => workspaceApi.currentRevision(),
+            onDraw: async (intent, expectedRevision) => {
+              const result = await workspaceApi.invoke("sketch_draw", {
+                ...intent,
+                expectedRevision,
+                requestId: crypto.randomUUID(),
+              });
+              if (!result.ok) throw new Error(result.error.message);
+            },
             onError: setError,
           }
         : undefined,
@@ -1419,7 +1449,9 @@ export function App() {
     if (viewport.current)
       viewport.current.onOriginPlane = (plane) => {
         if (!planePicking || busyRef.current) return;
-        createPlaneSketch(coordinateSketchFrame(plane, 0));
+        void createPlaneSketch({
+          frame: coordinateSketchFrame(plane, 0),
+        }).catch((error) => setError(errorText(error)));
       };
   }, [originVisible, planePicking, savedSketches.length]);
   useEffect(() => {
@@ -1988,6 +2020,11 @@ export function App() {
       "Choose 2–32 visible, unlocked raw meshes.";
   const [, setCommandVersion] = useState(0);
   const ribbonActions = {
+    referencePlane: () => setDatumDialog({}),
+    coordinateSystem: () => setDatumDialog({ kind: "frame" }),
+    referencePoint: () => setReferenceDialog({ kind: "point" }),
+    referenceLine: () => setReferenceDialog({ kind: "line" }),
+    referenceAxis: () => setReferenceDialog({ kind: "line", finiteAxis: true }),
     newDocument: requestNewDocument,
     open: () => fileInput.current?.click(),
     save,
@@ -2124,6 +2161,12 @@ export function App() {
     "settings",
   ]);
   const globalRibbonCommands = new Set([
+    "sketch2d",
+    "referencePlane",
+    "coordinateSystem",
+    "referencePoint",
+    "referenceLine",
+    "referenceAxis",
     "globalFineAlign",
     "fitView",
     "iso",
@@ -2215,7 +2258,7 @@ export function App() {
             ? selectionVisibility("hide")
             : updateSelected({ visible: false })
       : undefined,
-    "new-sketch": selected ? openSketchCreation : undefined,
+    "new-sketch": openSketchCreation,
     compare: selected ? () => showTools("deviation") : undefined,
     "selection-wand":
       selected && sampledSelected
@@ -2296,6 +2339,8 @@ export function App() {
         surfaceFit ||
         createSketch ||
         primitiveDialog ||
+        referenceDialog ||
+        datumDialog ||
         settingsOpen ||
         saveDialogOpen ||
         newDocumentDialog ||
@@ -2325,6 +2370,8 @@ export function App() {
       surfaceFit ||
       createSketch ||
       primitiveDialog ||
+      referenceDialog ||
+      datumDialog ||
       settingsOpen ||
       saveDialogOpen ||
       newDocumentDialog ||
@@ -3895,23 +3942,26 @@ export function App() {
           );
         if (fitRadius <= 0) throw new Error("Region radius must be positive.");
       }
-      const positions = primitiveFitSamples(
+      const result = analyzePrimitiveFit(
         selected,
+        kind,
         triangleMask,
         localFit && anchor ? { center: anchor, radius: fitRadius } : undefined,
       );
-      const fitted =
-        kind === "plane"
-          ? fitPlane(positions)
-          : kind === "sphere"
-            ? fitSphere(positions)
-            : kind === "cylinder"
-              ? fitCylinder(positions)
-              : fitCone(positions);
+      const fitted = result.fit;
+      fitRequest.current = {
+        entityId: selected.id,
+        kind,
+        selectionOnly: !!triangleMask?.some(Boolean),
+        ...(localFit && anchor
+          ? { region: { center: [...anchor], radius: fitRadius } }
+          : {}),
+        revision: workspaceApi.currentRevision(),
+      };
       setFit(fitted);
       setShowDeviation(true);
       setMessage(
-        `Fitted ${kind} · RMS ${number(fitted.rms)} mm · ${positions.length / 3} sampled vertices`,
+        `Fitted ${kind} · RMS ${number(fitted.rms)} mm · ${result.samples} sampled vertices`,
       );
     });
   }
@@ -3929,48 +3979,50 @@ export function App() {
     setMessage(`${label} created as exact CAD`);
   }
   function materializeFit() {
-    void action("Creating fitted geometry…", async () => {
-      if (!fit || !stats) throw new Error("Fit a surface first.");
-      if (fit.kind === "plane") {
-        const geometry = new THREE.PlaneGeometry(
-          Math.max(...stats.size),
-          Math.max(...stats.size),
-        );
-        const q = new THREE.Quaternion().setFromUnitVectors(
-          new THREE.Vector3(0, 0, 1),
-          new THREE.Vector3(...fit.axis),
-        );
-        geometry.applyQuaternion(q);
-        geometry.translate(...fit.center);
-        try {
-          const entity: Entity = {
-            id: crypto.randomUUID(),
-            name: "Fitted plane reference",
-            kind: "plane",
-            planeFrame: {
-              center: [...fit.center],
-              normal: [...fit.axis],
-              tangent: new THREE.Vector3(1, 0, 0)
-                .applyQuaternion(q)
-                .toArray() as Vec3,
-            },
-            positions: geometryPositions(geometry),
-            color: DEFAULT_REFERENCE_COLOR,
-            visible: true,
-            opacity: 0.5,
-          };
-          commit([...entities, entity]);
-          setSelectedId(entity.id);
-          setMessage(
-            "Reference plane created · mesh reference, excluded from STEP",
+    void (async () => {
+      try {
+        const draft = fitRequest.current;
+        if (!fit || !draft) throw new Error("Fit a surface first.");
+        if (workspaceApi.currentRevision() !== draft.revision)
+          throw new Error(
+            "Workspace or selection changed; fit the surface again before creating geometry.",
           );
-        } finally {
-          geometry.dispose();
-        }
-      } else await addPrimitive(fittedPrimitive(fit), `Fitted ${fit.kind}`);
-    });
+        const { revision: _revision, ...args } = draft;
+        await runApplicationJobCommand(
+          workspaceApi,
+          "primitive_fit_create",
+          args,
+          {
+            cancelledMessage: "Fitted geometry creation cancelled.",
+            leaseMessage: "Fitted geometry creation exceeded its lease.",
+          },
+        );
+        setMessage(
+          fit.kind === "plane"
+            ? "Reference plane created; mesh reference, excluded from STEP"
+            : `Fitted ${fit.kind} created as exact CAD`,
+        );
+      } catch (failure) {
+        setError(failure instanceof Error ? failure.message : String(failure));
+      }
+    })();
   }
   function applyTransform() {
+    if (
+      selected?.kind === "plane" &&
+      selected.planeFrame &&
+      !selected.kernelId
+    ) {
+      void uiCommand("mesh_transform", {
+        entityId: selected.id,
+        translation,
+        rotation,
+        scale,
+      }).then((result) => {
+        if (result.ok) setMessage("Reference plane transform applied");
+      });
+      return;
+    }
     if (selected?.kernelId) {
       cadOperation(
         "Transform body",
@@ -4082,45 +4134,42 @@ export function App() {
     setPlanePicking(true);
     setMessage("Select the plane for your sketch");
   }
-  function createPlaneSketch(frame: SketchFrame) {
-    try {
-      validateSketchFrame(frame);
-      const worldPlane = ORIGIN_PLANES.find((plane) => {
-        const base = coordinateSketchFrame(plane, 0);
-        return (
-          base.u.every((n, i) => n === frame.u[i]) &&
-          base.v.every((n, i) => n === frame.v[i])
-        );
-      });
-      if (worldPlane) setOriginPlane(worldPlane);
-      const item: SavedSketch = {
-        id: crypto.randomUUID(),
-        name: `Sketch ${savedSketches.length + 1}`,
-        sketch: {
-          version: 1,
-          points: [],
-          segments: [],
-          constraints: [],
-          frame,
-        },
-      };
-      setSavedSketches((previous) => [...previous, item]);
-      setSketchDraft(item.sketch);
-      setSelectedId(null);
-      setActiveSketchId(item.id);
-      setSketchDrawingTool("line");
-      setSketchPlaneDialog(false);
-      setPlanePicking(false);
-      setMode("inspect");
-      setDirty(true);
-      showTools("sketch");
-      viewport.current?.viewReferencePlane(frame);
-      setMessage(
-        "Sketch created · coordinates and dimensions are in the selected plane",
+  async function createPlaneSketch(selection: SketchPlaneSelection) {
+    if ("frame" in selection) validateSketchFrame(selection.frame);
+    const receipt = await uiCommand("sketch_manage", {
+      action: "create",
+      name: `Sketch ${savedSketches.length + 1}`,
+      ...("frame" in selection
+        ? {
+            sketch: {
+              version: 1,
+              points: [],
+              segments: [],
+              constraints: [],
+              frame: selection.frame,
+            },
+          }
+        : selection),
+    });
+    if (!receipt.ok) throw new Error(receipt.error.message);
+    const frame = (receipt.result as { frame: SketchFrame }).frame;
+    const worldPlane = ORIGIN_PLANES.find((plane) => {
+      const base = coordinateSketchFrame(plane, 0);
+      return (
+        base.u.every((n, i) => n === frame.u[i]) &&
+        base.v.every((n, i) => n === frame.v[i])
       );
-    } catch (e) {
-      setError(errorText(e));
-    }
+    });
+    if (worldPlane) setOriginPlane(worldPlane);
+    setSketchDrawingTool("line");
+    setSketchPlaneDialog(false);
+    setPlanePicking(false);
+    setMode("inspect");
+    showTools("sketch");
+    viewport.current?.viewReferencePlane(frame);
+    setMessage(
+      "Sketch created · coordinates and dimensions are in the selected plane",
+    );
   }
   function openScanSketchCreation() {
     if (busy) return;
@@ -4191,8 +4240,8 @@ export function App() {
       )
     )
       return;
-    const item: SavedSketch = {
-      id: crypto.randomUUID(),
+    void uiCommand("sketch_manage", {
+      action: "create",
       name: `Sketch ${savedSketches.length + 1}`,
       sketch: {
         version: 1,
@@ -4202,18 +4251,16 @@ export function App() {
         frame: session.preview.frame,
         reference: session.preview.reference,
       },
-    };
-    setSavedSketches((previous) => [...previous, item]);
-    setSketchDraft(item.sketch);
-    setSelectedId(null);
-    setActiveSketchId(item.id);
-    setDirty(true);
-    cancelSketchCreation();
-    showTools("sketch");
-    setMessage(
-      "Sketch reference section created · draw or fit editable curves",
-    );
+    }).then((receipt) => {
+      if (!receipt.ok) return;
+      cancelSketchCreation();
+      showTools("sketch");
+      setMessage(
+        "Sketch reference section created \u00b7 draw or fit editable curves",
+      );
+    });
   }
+
   function updateSketchDraft(sketch: Sketch) {
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     let session = sketchUndoSessions.current.get(key);
@@ -4478,11 +4525,7 @@ export function App() {
   }
   function exportStep() {
     void action("Exporting exact CAD…", async () => {
-      const shapes = entities.filter((e) => e.visible && e.kernelId);
-      if (!shapes.length)
-        throw new Error(
-          "Create or import exact CAD first. Scan meshes cannot be exported as editable STEP solids.",
-        );
+      const shapes = selectStepExportEntities(entities);
       const data = await cad.current!.exportStep(
         shapes.map((e) => e.kernelId!),
       );
@@ -4737,6 +4780,8 @@ export function App() {
           sketchSection: !!createSketch,
           dialog: !!(
             primitiveDialog ||
+            referenceDialog ||
+            datumDialog ||
             saveDialogOpen ||
             newDocumentDialog ||
             pendingScanImport ||
@@ -5684,6 +5729,13 @@ export function App() {
             role={nPoints ? "region" : undefined}
             aria-label={nPoints ? "Alignment result" : undefined}
           />
+          {planePicking && !sketchPlaneDialog && (
+            <div style={{ position: "absolute", top: 12, left: 12, zIndex: 6 }}>
+              <button onClick={() => setSketchPlaneDialog(true)}>
+                Reference or custom plane…
+              </button>
+            </div>
+          )}
           {nPoints && (
             <>
               <LandmarkPickingViews
@@ -6299,23 +6351,65 @@ export function App() {
                             </strong>
                           )}
                           <small>
-                            {selected.kind === "referencePoint"
-                              ? "Reference point"
-                              : selected.kind === "referenceLine"
-                                ? "Reference line"
-                                : selected.kind === "pointcloud"
-                                  ? "Point cloud"
-                                  : selected.kernelId
-                                    ? "Exact CAD + display mesh"
-                                    : selected.kind === "plane"
-                                      ? "Reference surface"
-                                      : "Triangle mesh"}{" "}
+                            {selected.kind === "referenceFrame"
+                              ? "Coordinate system"
+                              : selected.kind === "referencePoint"
+                                ? "Reference point"
+                                : selected.kind === "referenceLine"
+                                  ? "Reference line"
+                                  : selected.kind === "pointcloud"
+                                    ? "Point cloud"
+                                    : selected.kernelId
+                                      ? "Exact CAD + display mesh"
+                                      : selected.kind === "plane"
+                                        ? "Reference surface"
+                                        : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
                       </div>
                       <ToolSection tools={["properties", "measure"]}>
                         <Panel title="Geometry" className="geometry-panel">
+                          {selected.kind === "referenceFrame" && (
+                            <button
+                              disabled={selected.locked}
+                              onClick={() =>
+                                setDatumDialog({
+                                  entity: selected,
+                                  kind: "frame",
+                                })
+                              }
+                            >
+                              Edit coordinate system
+                            </button>
+                          )}
+                          {selected.kind === "plane" &&
+                            selected.planeFrame &&
+                            !selected.fit &&
+                            !selected.kernelId &&
+                            !selected.parametric && (
+                              <button
+                                disabled={selected.locked}
+                                onClick={() =>
+                                  setDatumDialog({ entity: selected })
+                                }
+                              >
+                                Edit reference plane
+                              </button>
+                            )}
+                          {selected.reference && (
+                            <button
+                              disabled={selected.locked}
+                              onClick={() =>
+                                setReferenceDialog({
+                                  kind: selected.reference!.geometry.kind,
+                                  entity: selected,
+                                })
+                              }
+                            >
+                              Edit reference
+                            </button>
+                          )}
                           {selected.fit && (
                             <p className="muted">
                               {selected.fit.kind} fit · RMS{" "}
@@ -6342,7 +6436,7 @@ export function App() {
                       {workspace === "properties" &&
                         hasAlignmentReferences(selected) && (
                           <AlignmentReferences
-                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.reference ? encodeReferenceEntityData(selected.reference) : selected.fit)}`}
+                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.coordinateFrame ? encodeReferenceFrame(selected.coordinateFrame) : selected.reference ? encodeReferenceEntityData(selected.reference) : (selected.planeFrame ?? selected.fit))}`}
                             entityId={selected.id}
                             onRead={(offset, signal) =>
                               readAlignmentReferences(
@@ -7838,6 +7932,22 @@ export function App() {
           />
         }
       />
+      {datumDialog && (
+        <DatumConstructionDialog
+          api={workspaceApi}
+          entity={datumDialog.entity}
+          kind={datumDialog.kind}
+          onClose={() => setDatumDialog(undefined)}
+        />
+      )}
+      {referenceDialog && (
+        <ReferenceConstructionDialog
+          api={workspaceApi}
+          entities={entities}
+          {...referenceDialog}
+          onClose={() => setReferenceDialog(undefined)}
+        />
+      )}
       {primitiveDialog && (
         <div className="modal-backdrop">
           <section

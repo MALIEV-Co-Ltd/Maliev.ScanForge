@@ -1,11 +1,88 @@
-import type { RetainedReferenceLinePick } from "./reference-construction";
+import {
+  copyReferenceConstruction,
+  type ReferenceConstructionDefinition,
+  type RetainedReferenceLinePick,
+} from "./reference-construction";
+import type { Entity } from "./types";
+import type { ResolvedReferenceConstructionInputs } from "./reference-construction-evaluation";
+import { resolveConstructionIdentities } from "./reference-construction-identity";
+import { validateReferenceEntity } from "./reference-entity";
 import type { ReferenceVector } from "./reference-construction-values";
 import type { NativeReferenceLineRecord } from "./reference-line-evaluation";
 import {
   acquireSketchReferencePick,
+  resolveDirectReferencePrimitive,
   resolvePickedSketchReferencePoint,
   type PickedSketchReferenceSource,
 } from "./reference-source-primitives";
+
+/**
+ * Bind already refreshed stored point/line geometry, never display samples.
+ * The host still owns dependency refresh, revision/eligibility and cancellation.
+ * Unresolved CAD/sketch/scan branches reject rather than fabricate extraction.
+ */
+export function resolveStoredReferenceConstructionInputs(
+  scene: readonly Entity[],
+  input: ReferenceConstructionDefinition,
+): ResolvedReferenceConstructionInputs {
+  const definition = copyReferenceConstruction(input);
+  const identities = resolveConstructionIdentities(
+    scene,
+    definition.sources.map((source) => source.id),
+  );
+  for (let index = 0; index < definition.sources.length; index++) {
+    const expected = definition.sources[index],
+      actual = identities.orderedSources[index];
+    if (
+      actual.id !== expected.id ||
+      actual.constructionOrderKey !== expected.constructionOrderKey
+    )
+      throw new Error("Construction source identity changed.");
+  }
+  const byId = new Map(scene.map((entity) => [entity.id, entity]));
+  const primitive = (id: string): NativeReferenceLineRecord => {
+    const entity = byId.get(id);
+    if (!entity) throw new Error("Missing construction record source.");
+    const data = validateReferenceEntity(entity);
+    if (!data)
+      throw new Error(
+        "Construction source family is not bound to stored semantic geometry.",
+      );
+    const geometry = data.geometry;
+    return resolveDirectReferencePrimitive(
+      geometry.kind === "point"
+        ? { kind: "referencePoint", origin: geometry.position }
+        : {
+            kind: "referenceLine",
+            origin: geometry.start,
+            direction: geometry.direction,
+            length: geometry.length,
+          },
+    );
+  };
+  if (definition.kind === "point")
+    return {
+      kind: "point",
+      sources:
+        definition.mode === "coordinates"
+          ? []
+          : definition.sources.map((source) => ({
+              source,
+              primitive: primitive(source.id),
+            })),
+    };
+  return {
+    kind: "line",
+    records:
+      definition.mode === "endpoints" ||
+      (definition.mode === "average" && definition.sources.length === 0)
+        ? []
+        : definition.records.map((record) => ({
+            record,
+            primitive: primitive(record.entityId),
+          })),
+  };
+}
 
 /** Exact source records, supplied in owner child order by the scene adapter. */
 export interface ReferenceSketchSourceSnapshot {

@@ -1,0 +1,212 @@
+{
+  "date": "2026-10-25",
+  "scope": "Native-style finalization of the internal cached numeric point/endpoint Apply path.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "Uncommitted; not shipped or pushed"
+  },
+  "problem": "Numeric Apply previously retained inactive common sources and assigned missing source keys. It also copied preview completion flags directly. Native acceptance clears common inputs, does not reinsert them for numeric mode, and specialized numeric refresh writes the final state without changing copied geometry.",
+  "supersedes": {
+    "evidence": [
+      "reference-cached-apply-20261025.json",
+      "reference-numeric-initialization-20261025.json"
+    ],
+    "scope": "Only the numeric source-key migration and cached completion-state acceptance assumptions are superseded. Constructor arithmetic, draft/storage retention, preview lifetime and trusted migration-guard behavior remain separate."
+  },
+  "sources": [
+    {
+      "path": "src/automation/reference-construction-apply.ts",
+      "sha256": "2a0c486b3a3e44fc178dfa1e4cc657b1f63077f83ef8d638114d65e556cfd1b2"
+    },
+    {
+      "path": "tests/reference-construction-apply.test.ts",
+      "sha256": "083dd95bed89f333c234b80be8bba5b4a8ba3ac51c6e48f0890776208d78f20c"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "290892cf42ce5ee7ec76277c93d63560a23f8350bc81cab92b6514a7c8cd679a"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "6161e684e4549b5186f269db0d9d9d055c19de11ddd1cb96078e88db51e3ac03"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "ae3c3e37852c7ce3d03974b6d803f3d491f92d22e2cf6322dc9c654b9e2eb320"
+    }
+  ],
+  "nativeEvidence": {
+    "mode": "Retained image static instruction/table/control-flow checks only. No new native execution, emulation, fresh process reads or original numerical comparison.",
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "procedures": 7,
+    "listedInstructionStarts": 3120,
+    "localBranchTargets": 247,
+    "verificationSha256": "2814560f2d60f19d6c40e4a904ae5befc3248ece642ed1298517fe0edc23046a",
+    "checked": [
+      "Both acceptance handlers clear common inputs before derived-mode reinsertion branches",
+      "Numeric mode bypasses both reinsertion alternatives",
+      "Common input clear/getter and dirty/refresh table bindings agree for both families",
+      "Specialized numeric mode branches directly to the final word 0x100 store"
+    ],
+    "receipt": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.30925250001018867,
+      "childPeakJobMemoryBytes": 94072832,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    }
+  },
+  "behavior": [
+    "Validate the cached draft source identity binding before publication.",
+    "Copy cached geometry without re-evaluating endpoint or point arithmetic.",
+    "Publish numeric definitions with empty common sources and final completion word 0x100.",
+    "Retain ordered line picks, including duplicate records and negative zero; the draft keeps its own inactive collections.",
+    "Do not assign keys or edit inactive source objects; use an ordinary host commit with existing lock protection.",
+    "Keep exact retry receipts, failure-before-commit retry, cleanup-pending results and dependency-rebuild guards."
+  ],
+  "mcp": {
+    "catalogChanged": false,
+    "schemaChanged": false,
+    "publicConstructionActivated": false,
+    "coverage": "The shared internal Apply operation uses the actual API mutation/retry context and App host. Existing history_redo and GUI Undo verify canonical accepted state. Common public construction commands/editor remain gated.",
+    "documentationUpdated": ["AGENT_GUIDE.md", "MCP_ARCHITECTURE.md"],
+    "fixtureDisclosure": "The real App is copied with relocated module paths/captured API hook. A test-only existing handler passes the actual shared context to internal Apply; no public constructor command is claimed."
+  },
+  "validation": {
+    "red": "Four acceptance regressions failed before the fix: numeric source migration, numeric edit unlinking, point flag finalization, and line source/pick/state finalization.",
+    "build": {
+      "command": "npm run build",
+      "applicationInputsStable": true,
+      "identitySha256": "cd774a9cb0cccd693a865500fb9af13e4759d9ace6110f6b471cfd4881db1e2d",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 35.0634327000007,
+        "childPeakJobMemoryBytes": 2525597696,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "focused": {
+      "passed": 182,
+      "failed": 0,
+      "files": 9,
+      "acceptanceRegressions": 4,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.4931776000303216,
+        "childPeakJobMemoryBytes": 357703680,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "browser": {
+      "passed": true,
+      "viewport": [1400, 950],
+      "engine": "Owned headless Chromium with software WebGL",
+      "browserPlugin": "Not listed; existing Playwright dependency used for the isolated fixture. Live Codex browser inspected separately.",
+      "checks": [
+        "Point accepted sources empty with unchanged locked source object/buffer/key",
+        "Exact API retry adds no history",
+        "GUI Undo and API history_redo restore accepted point and negative zero without source-key migration",
+        "Disabled-evaluation line preview word 0x324 becomes accepted word 0x100",
+        "Degenerate typed endpoints retain the exact six-mm cached segment",
+        "Both ordered inactive line picks and their negative zero survive acceptance",
+        "Line accepted sources and assignedSources response are empty",
+        "Zero-span preview remains cleared",
+        "Unmount removes canvas; no errors/warnings/failed responses"
+      ],
+      "inputsMatchedBuildAndStable": true,
+      "resultSha256": "24c8e005d8d24b5d878c526bf351b17f39e0061a899a9e9e6ecff9f9d19282cd",
+      "screenshotSha256": "4815142e27ff6d1182b0e88f41be836d77a51c786babaf0b75380fb8f08b3c93",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 4.653717499983031,
+        "childPeakJobMemoryBytes": 603893760,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "format": {
+      "passed": true,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.2592132999561727,
+        "childPeakJobMemoryBytes": 92557312,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48987,
+      "failed": 0,
+      "skipped": 64,
+      "canonicalFiles": 690,
+      "applicationInputsReenumeratedAndStable": true,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 297.97337429999607,
+        "childPeakJobMemoryBytes": 984301568,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "resources": {
+    "aggregateJobBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "buildHeapMiB": 3072,
+    "testHeapMiB": 1024,
+    "allListedJobsTerminalAndClean": true
+  },
+  "remaining": [
+    "Host-owned dependency refresh and derived-mode finalization.",
+    "Missing-link recovery, source/provider admission and common GUI/MCP editor.",
+    "Project admission, complete save/reopen and matched original/rendered acceptance.",
+    "Original three-scan comparison and full M3/M4/reconstruction acceptance remain open."
+  ],
+  "liveApplication": {
+    "url": "http://127.0.0.1:5173/",
+    "serverPid": 28864,
+    "keepRunning": true,
+    "browserTab": 5,
+    "servedSourcesMatchCurrentDisk": [
+      "src/ui/App.tsx",
+      "src/automation/api.ts",
+      "src/automation/reference-construction-apply.ts"
+    ],
+    "browserErrors": [],
+    "browserWarnings": [],
+    "backupRestoredOrDeleted": false
+  }
+}

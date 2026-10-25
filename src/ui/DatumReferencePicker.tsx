@@ -155,11 +155,12 @@ export function DatumReferencePicker({
                 value={reference.id}
                 disabled={reference.kind === "unsupported"}
               >
-                {reference.source === "cadFace"
-                  ? `Face ${(reference.faceIndex ?? 0) + 1}`
-                  : reference.source === "referenceConstruction"
-                    ? "Construction reference"
-                    : "Fitted feature"}{" "}
+                {reference.label ??
+                  (reference.source === "cadFace"
+                    ? `Face ${(reference.faceIndex ?? 0) + 1}`
+                    : reference.source === "referenceConstruction"
+                      ? "Construction reference"
+                      : "Fitted feature")}{" "}
                 · {reference.surfaceKind} · {reference.kind}
               </option>
             ))}

@@ -2,6 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { Viewport } from "../src/viewport";
 import { pickCamera } from "../src/viewport-agent";
+import {
+  createNumericDatumPlane,
+  numericDatumFrame,
+} from "../src/datum-construction";
+import { createFittedPlane } from "../src/primitive-fitting";
 import { createReferenceDisplay } from "../src/reference-display";
 import type { Entity } from "../src/types";
 
@@ -379,3 +384,216 @@ describe("semantic reference viewport integration", () => {
     }
   });
 });
+
+it("canvas and MCP pick a coordinate frame without triangle or cloud indices", () => {
+  const { view, state } = fixture();
+  const frame: Entity = {
+    id: "frame",
+    name: "Named frame",
+    kind: "referenceFrame",
+    positions: [],
+    visible: true,
+    color: "#ffbb44",
+    opacity: 1,
+    coordinateFrame: {
+      version: 1,
+      frame: {
+        origin: [0, 0, 0],
+        u: [1, 0, 0],
+        v: [0, 1, 0],
+        normal: [0, 0, 1],
+      },
+      displaySize: 2,
+    },
+  };
+  try {
+    view.setEntities([frame], frame.id);
+    expect(state.objects.size).toBe(0);
+    const hit = view.pickAgentView(0.5, 0.5, 1).hits[0];
+    expect(hit).toMatchObject({
+      entityId: "frame",
+      referenceKind: "frame",
+      triangleIndex: null,
+    });
+    expect(hit).not.toHaveProperty("pointIndex");
+    expect(state.pickAt({ clientX: 50, clientY: 50 })).toBe("frame");
+    expect(state.onPick).toHaveBeenCalledWith(hit.point, "frame", undefined);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("renders and picks a small numeric plane at a large origin without narrowing world geometry", () => {
+  const { view, state, camera, target } = fixture();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1], [1, 0, 0]),
+    0.125,
+    "plane",
+    "Precise plane",
+  );
+  const source = plane.positions,
+    before = Array.from(source);
+  target.set(100000000.125, -20, 30);
+  camera.position.set(100000000.125, -20, 40);
+  camera.lookAt(target);
+  camera.updateMatrixWorld(true);
+  try {
+    view.setEntities([plane], plane.id);
+    const item = state.objects.get(plane.id),
+      mesh = item.mesh;
+    expect(Array.from(mesh.geometry.getAttribute("position").array)).toEqual([
+      -0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0, -0.0625,
+      -0.0625, 0, 0.0625, 0.0625, 0, -0.0625, 0.0625, 0,
+    ]);
+    expect(state.bounds.min.toArray()).toEqual([100000000.0625, -20.0625, 30]);
+    expect(state.bounds.max.toArray()).toEqual([100000000.1875, -19.9375, 30]);
+    expect(view.pickAgentView(0.5, 0.5, 1).hits[0]).toMatchObject({
+      entityId: "plane",
+      point: [100000000.125, -20, 30],
+    });
+    expect(state.pickAt({ clientX: 50, clientY: 50 })).toBe("plane");
+    expect(plane.positions).toBe(source);
+    expect(Array.from(source)).toEqual(before);
+    view.setEntities(
+      [{ ...plane, kind: "mesh", planeFrame: undefined }],
+      plane.id,
+    );
+    expect(state.objects.get(plane.id).mesh.matrix.elements).toEqual(
+      new THREE.Matrix4().elements,
+    );
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("keeps numeric-plane selection overlays in the same precise local coordinate space", () => {
+  const { view, state } = fixture();
+  state.triangleSelection = new THREE.Group();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1]),
+    0.125,
+    "p",
+    "p",
+  );
+  try {
+    view.setEntities([plane], plane.id);
+    view.setTriangleSelection(plane.positions, Uint8Array.of(1, 0));
+    expect(state.triangleSelection.position.toArray()).toEqual([
+      100000000.125, -20, 30,
+    ]);
+    expect(
+      Array.from(
+        state.triangleSelection.children[0].geometry.getAttribute("position")
+          .array,
+      ),
+    ).toEqual([-0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0]);
+    view.setEntities(
+      [{ ...plane, kind: "mesh", planeFrame: undefined }],
+      plane.id,
+    );
+    view.setTriangleSelection(plane.positions, Uint8Array.of(1, 0));
+    expect(state.triangleSelection.position.toArray()).toEqual([0, 0, 0]);
+  } finally {
+    view.setTriangleSelection();
+    view.setEntities([], null);
+  }
+});
+it("keeps expanded indexed-plane deviation geometry local and restores its compact carrier", () => {
+  const { view, state } = fixture();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1]),
+    0.125,
+    "p",
+    "p",
+  );
+  plane.indexedMesh = {
+    vertices: [
+      100000000.0625, -20.0625, 30, 100000000.1875, -20.0625, 30,
+      100000000.1875, -19.9375, 30, 100000000.0625, -19.9375, 30,
+    ],
+    triangles: new Uint32Array([0, 1, 2, 0, 2, 3]),
+    geometryNormals: new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]),
+  };
+  try {
+    view.setEntities([plane], plane.id);
+    const mesh = state.objects.get(plane.id).mesh,
+      original = mesh.geometry;
+    expect(original.getAttribute("position").count).toBe(4);
+    view.setDeviation(plane.id, [1, 2, 3, 4, 5, 6], 1);
+    expect(mesh.geometry).not.toBe(original);
+    expect(Array.from(mesh.geometry.getAttribute("position").array)).toEqual([
+      -0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0, -0.0625,
+      -0.0625, 0, 0.0625, 0.0625, 0, -0.0625, 0.0625, 0,
+    ]);
+    view.setDeviation(plane.id, null, 1);
+    expect(mesh.geometry).toBe(original);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("uses the same local render precision for fitted planes", () => {
+  const { view, state } = fixture();
+  const plane = createFittedPlane(
+    {
+      kind: "plane",
+      center: [100000000.125, -20, 30],
+      axis: [0, 0, 1],
+      rms: 0,
+      maxError: 0,
+    },
+    0.125,
+  );
+  try {
+    view.setEntities([plane], plane.id);
+    expect(
+      state.objects
+        .get(plane.id)
+        .mesh.geometry.getAttribute("position")
+        .getX(0),
+    ).toBe(-0.0625);
+    expect(state.bounds.max.x - state.bounds.min.x).toBe(0.125);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it.each(["numeric", "fitted"] as const)(
+  "retains unit display normals on a small %s plane at a large origin",
+  (kind) => {
+    const { view, state } = fixture();
+    const plane =
+      kind === "numeric"
+        ? createNumericDatumPlane(
+            numericDatumFrame([100000000.125, -20, 30], [0, 0, 1], [1, 0, 0]),
+            0.125,
+            "plane",
+            "Precise plane",
+          )
+        : createFittedPlane(
+            {
+              kind: "plane",
+              center: [100000000.125, -20, 30],
+              axis: [0, 0, 1],
+              rms: 0,
+              maxError: 0,
+            },
+            0.125,
+          );
+    try {
+      view.setEntities([plane], plane.id);
+      const normals = state.objects
+        .get(plane.id)
+        .mesh.geometry.getAttribute("normal");
+      expect(normals.count).toBe(plane.positions.length / 3);
+      for (let i = 0; i < normals.count; i++) {
+        const normal = [normals.getX(i), normals.getY(i), normals.getZ(i)];
+        expect(normal.every(Number.isFinite)).toBe(true);
+        expect(Math.hypot(...normal)).toBeCloseTo(1, 7);
+        expect(normal).toEqual([0, 0, 1]);
+      }
+    } finally {
+      view.setEntities([], null);
+    }
+  },
+);

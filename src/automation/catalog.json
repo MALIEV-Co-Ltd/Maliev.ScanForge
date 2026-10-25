@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Typed point/line references and single-source midpoints of semantic stored endpoints lines are supported in current, Undo and Redo states. Unsupported derived modes or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -1377,7 +1377,7 @@
   },
   {
     "name": "mesh_transform",
-    "description": "Transform an editable triangle object (XYZ rotation radians, translation mm).",
+    "description": "Transform an unlocked editable triangle object: positive uniform scale about the world origin, XYZ rotation in degrees (X then Y then Z), then world-mm translation. Source geometry buffers remain immutable. A kind:plane object with stored planeFrame retains its plane kind and transformed center/normal/tangent; obsolete fit diagnostics are cleared, so a transformed fitted plane becomes a detached reference plane. Plane frames and all prospective display coordinates (within +/-1e9 mm) are validated before one model-history commit; failure leaves prior geometry unchanged. Other triangle meshes keep existing mesh-transform behavior. Exact CAD, point clouds and semantic point/line/frame references require their supported operations. Revision/retry guards, lock checks, Undo/Redo and project persistence apply.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -1433,7 +1433,7 @@
   },
   {
     "name": "analysis_fit",
-    "description": "Fit a plane/sphere/cylinder/cone; analytical residuals are estimates, not certified metrology.",
+    "description": "Fit a plane/sphere/cylinder/cone using the same source-precision sampling and fitter as the GUI. Optional selectionOnly requires a nonempty current point/triangle mask. Optional region filters world XYZ points within its inclusive spherical radius in millimeters; it composes with selection. Up to 20,000 eligible samples are retained in source order. totalVertices counts eligible vertices before sampling; samples is the retained count. Hidden metadata does not independently modify the chosen mask. Read-only: no geometry, selection or model history changes. Analytical residuals are estimates, not certified metrology. Omitted selectionOnly follows a nonempty mask of the active source, matching the GUI; false explicitly fits the whole source, and true requires a nonempty current mask. A mask belonging to another object is never used.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1450,7 +1450,27 @@
           "enum": ["plane", "sphere", "cylinder", "cone"]
         },
         "selectionOnly": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Omitted uses the active source nonempty mask, otherwise whole input; false explicitly fits the whole source; true requires a nonempty current source mask."
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "center": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["center", "radius"],
+          "additionalProperties": false
         }
       },
       "required": ["entityId", "kind"],
@@ -3444,6 +3464,132 @@
     }
   },
   {
+    "name": "sketch_draw",
+    "description": "Append a line, center/radius circle, three-point circle or three-point arc, or move an endpoint in the active Sketch v1 using the same operation as canvas gestures. Coordinates are raw local UV millimetres, not screen pixels. kind:line uses two points and requires explicit autoConstraints and snapToleranceMm; autoConstraints enables existing-endpoint/origin reuse and automatic horizontal/vertical relations within that tolerance. kind:circle uses center then radius point; circle3/arc3 use start, a point on the curve, then end. Circles are stored as two analytic arcs; arc direction follows the three supplied points. kind:move uses pointId and position, solves a temporary fixed target and removes that temporary relation before publication. Current settings_set snapGrid (default false) and gridSpacing (default 10 mm) snap raw inputs before construction. Curves do not gain endpoint snapping or extra automatic constraints. Existing constraints are solved; degeneracy, conflicts, invalid coordinates or work limits reject without changing the draft/revision/history. Prospective local and world coordinates must remain within +/-1e9 mm. One changed result publishes one scoped sketch-history edit, preserving model history, placement, references and unrelated geometry. Exact retry receipts avoid duplicate UUID geometry. GUI captures the revision at the first pointer/pick and submits once on release/third pick; Escape discards unfinished input without a call. Returns changed, created point/curve/constraint IDs, grid-snapped usedPoints (before line endpoint/axis decisions), grid settings and work/count diagnostics; inspect full geometry through sketch_get. No-op movement returns changed:false. Busy, reference-preview ownership and revision/retry guards apply. Limits per draw:256 points,512 curves,512 constraints including a temporary move constraint,2000000 reference coordinates,2000000 validation work,262144 dense solver cells and2000000 solver work. RESOURCE_LIMIT preserves prior state: use a smaller sketch or split the operation. Synchronous solving cannot be interrupted in flight; admission bounds work before allocation/solve. Native sketch cloning and retained ordered source-pick provenance are not exposed.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "type": "string", "enum": ["line"] },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "autoConstraints": { "type": "boolean" },
+            "snapToleranceMm": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "expectedRevision": { "type": "integer", "minimum": 0 },
+            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+          },
+          "required": [
+            "kind",
+            "points",
+            "autoConstraints",
+            "snapToleranceMm",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "type": "string", "enum": ["circle"] },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": { "type": "integer", "minimum": 0 },
+            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+          },
+          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "type": "string", "enum": ["circle3", "arc3"] },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "expectedRevision": { "type": "integer", "minimum": 0 },
+            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+          },
+          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "type": "string", "enum": ["move"] },
+            "pointId": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "position": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": { "type": "integer", "minimum": 0 },
+            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+          },
+          "required": [
+            "kind",
+            "pointId",
+            "position",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
     "name": "sketch_set",
     "description": "Replace the active sketch draft with a validated Sketch v1; With solve:true, solve and apply atomically; conflicting constraints leave the draft unchanged. Returns solution diagnostics when solving. Supports collinear constraints {id,kind:'collinear',first,second} on two distinct finite straight segments of length at least 1e-10 mm: both supporting lines coincide, including disjoint or reversed segments, without welding endpoints or equating lengths. Collinear residuals are signed endpoint-to-line distances in local UV millimetres. CAD remains unchanged until rebuild/extrude.",
     "readOnly": false,
@@ -3804,7 +3950,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Typed point/line references and single-source midpoints of semantic stored endpoints lines are supported in current, Undo and Redo states. Unsupported derived modes or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3896,7 +4042,7 @@
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STEP exports exact CAD kernel shapes only, excluding scans and reference/datum display geometry, matching GUI Export STEP. Omitted visible or true exports visible exact CAD; visible:false includes hidden exact CAD too. No eligible CAD fails with the same create/import-exact-CAD error as the GUI. Project format retains the full project independently of visible. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -4651,7 +4797,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "description": "Create/activate/rename/delete a saved sketch through the shared editor. Create accepts either an explicit validated sketch or planeSourceId (mutually exclusive). Sources include reference planes and named coordinate systems. A reference plane's stored planeFrame preserves its tangent orientation; legacy fitted planes without planeFrame use their fitted center/normal. A coordinate system supplies its rigid saved frame. Optional framePlane selects XY (default), YZ or XZ of a coordinate system; ordinary reference planes accept only XY. planeSourceId creates an empty sketch at a detached rigid placement, with optional normalOffset in world millimetres along the selected plane normal (default 0). Returns sketchId and the created frame. Later source edits do not move the sketch. normalOffset and framePlane require planeSourceId; all source-placement fields are create-only. Omit sketch and planeSourceId for the legacy default rectangle.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4675,6 +4821,23 @@
         },
         "sketch": {
           "type": "object"
+        },
+        "planeSourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Reference plane or referenceFrame object ID from project_get; mutually exclusive with sketch."
+        },
+        "framePlane": {
+          "type": "string",
+          "enum": ["XY", "YZ", "XZ"],
+          "description": "Coordinate-system sketch plane, default XY. Requires planeSourceId; ordinary reference planes accept only XY."
+        },
+        "normalOffset": {
+          "type": "number",
+          "minimum": -1000000000,
+          "maximum": 1000000000,
+          "description": "Signed distance along the source plane normal in millimetres; requires planeSourceId."
         },
         "expectedRevision": {
           "type": "integer",
@@ -5520,7 +5683,7 @@
   },
   {
     "name": "viewport_pick",
-    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Inspect visible rendered geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Semantic reference hits report referenceKind, triangleIndex:null and no cloud pointIndex; reference project admission remains gated. Respects visibility, protection and clipping. Read-only; native CAD edge/face IDs are separate.",
+    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Inspect visible rendered geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Semantic point, finite-line and coordinate-frame hits report referenceKind (point/line/frame), triangleIndex:null and no cloud pointIndex. Respects visibility, protection and clipping. Read-only; native CAD edge/face IDs are separate.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5664,7 +5827,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face, fitted primitive or stored semantic point/line alignment references without changing geometry or history. Semantic sources return referenceConstruction and object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. Semantic creation/import remains gated pending construction integration; discovery does not permit moving these sources. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
+    "description": "Read exact CAD face, fitted primitive, stored numeric plane, semantic point/line or named coordinate-frame alignment references without changing geometry or history. Semantic sources return referenceConstruction. Numeric planes expose their stored plane; coordinate frames expose true origin, X/Y/Z directions and XY/YZ/XZ planes independently of display size. Existing point/line sources retain object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. Typed creation and single semantic stored-line midpoint creation use reference_construct and support project import; other source-derived modes and moving these sources remain gated. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -7243,6 +7406,227 @@
         }
       },
       "required": ["inspectionId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_get",
+    "description": "Inspect the shared typed point/line construction session: exact millimeter geometry, definition, version, expiry and evaluation diagnostics. Preview is ephemeral and non-pickable; object_get inspects accepted geometry. Inactive sessions report their termination reason and cleanup failures.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construct",
+    "description": "Create/edit typed reference points, finite endpoint lines, or a point with mode:midpoint and sourceEntityId referencing one semantic stored endpoints line. Midpoint excludes numeric position/start/end and CAD/fitted/scan/sketch source families. Omitted mode requires position (point) or start/end (line), world XYZ mm within +/-1e9; endpoints must be nondegenerate. Preview uses an owned 60-second session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Update using sessionId/version; destination/name stay fixed. Apply publishes the exact cached geometry and refreshes supported dependent midpoints atomically in one history step. A locked or unsupported dependent rejects the whole edit. Cancel creates no history. Source/model/history changes invalidate previews; selection/camera do not. Revision/retry protection, project/backup/history persistence and structured source bindings apply. Midpoint retains its active source; changing to coordinates unlinks it. Reading a locked source is allowed. Midpoint creation/affected refresh limits:10000 scene objects and 2000000 refresh work units; numeric-only construction and unrelated project admission do not inherit this scene cap. Semantic transform/duplicate remain gated. Delete accepts unlocked leaf references or a complete source/dependent set; surviving dependent references reject atomically. Other derived modes/picks remain unavailable. Inspect object_get after Apply. Cleanup failures retain owner-scoped Cancel recovery.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["preview", "apply", "cancel"]
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["point", "line"]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["midpoint"]
+        },
+        "sourceEntityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Single semantic referenceLine ID with accepted endpoints mode and a saved construction key; midpoint point previews only."
+        },
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "start": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "end": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "datum_construct",
+    "description": "Create or edit one named numeric reference plane (kind:plane) or coordinate system (kind:frame) in world millimetres through the shared GUI operation. Supply origin, nonzero normal (the frame Z axis) and positive displaySize (at most 2e9 mm). Optional nonzero xDirection is projected perpendicular to normal to preserve rotation about Z; a parallel direction rejects. Omitted xDirection uses the same deterministic datumFrame basis as the GUI. Coordinates, plane display vertices and positive frame-axis endpoints must stay within +/-1e9 mm. displaySize is the plane side length or each positive coordinate-axis length. Omit entityId to create, with optional name (default Reference plane or Coordinate system). entityId edits the same unlocked numeric datum kind: planes require planeFrame and no fit or exact CAD metadata; frames require a valid referenceFrame payload. Presentation and identity are preserved. name is create-only; rename through object_update. Apply creates one model-history step and selects the datum; cancelling the GUI form creates nothing. Returns entityId, rigid frame, units:mm and displaySize. Placement is detached with no source dependency or fabricated fit residuals. Reference preview ownership, revision/retry guards, locks and project/history persistence apply. object_get/project_get expose coordinateFrame plus binary64 frame encoding. sketch_manage planeSourceId creates a detached sketch on a plane or a coordinate system's XY/YZ/XZ plane. Planes are mesh references excluded from STEP; coordinate systems carry no mesh/CAD geometry and are excluded from STL/STEP and sampled-geometry tools. World origin is unchanged. Infinite axes and relational datum construction are not implemented by this operation.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["plane", "frame"] },
+        "entityId": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "origin": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "normal": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "xDirection": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "displaySize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 2000000000
+        },
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+      },
+      "required": [
+        "kind",
+        "origin",
+        "normal",
+        "displaySize",
+        "expectedRevision",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "primitive_fit_create",
+    "description": "Fit and create a plane reference or exact sphere/cylinder/cone using the same source-precision sampler, optional world-mm spherical region and current selection as GUI fitting. Recomputes at the supplied current revision; a GUI fit preview must be refreshed after workspace or selection changes. Creates and selects one independent object in one model history step, preserving the source and its buffers even when locked. Returns entityId, sourceEntityId, fit parameters/residuals, samples and eligible totalVertices. Planes retain an explicit rigid planeFrame and are mesh references excluded from STEP; other kinds retain exact parametric CAD and fit diagnostics. Cancel/failure/stale source preserve the scene and release newly owned kernel handles. Use job_get/job_cancel, history_undo/history_redo and project export/reopen. This independently authored fitter does not establish native solver equivalence or automatic dependent refitting. Omitted selectionOnly follows a nonempty mask of the active source, matching the GUI; false explicitly fits the whole source, and true requires a nonempty current mask. A mask belonging to another object is never used.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["plane", "sphere", "cylinder", "cone"]
+        },
+        "selectionOnly": {
+          "type": "boolean",
+          "description": "Omitted uses the active source nonempty mask, otherwise whole input; false explicitly fits the whole source; true requires a nonempty current source mask."
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "center": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["center", "radius"],
+          "additionalProperties": false
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityId", "kind", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
   }

@@ -18,6 +18,7 @@ import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 import { lockedObjectEdit } from "../object-operations";
 import { assertSampledGeometry } from "../reference-entity";
+import { resolveSketchPlaneSource } from "../sketch-plane-source";
 
 /** Authoring tools reuse the same helpers as the editor's surface/sketch/selection controls. */
 export function createAuthoringOperations(
@@ -183,8 +184,40 @@ export function createAuthoringOperations(
         sketches = [...(authoring.sketches ?? [])];
       let sketchId = a.sketchId;
       const index = sketches.findIndex((s) => s.id === sketchId);
+      if (
+        a.action !== "create" &&
+        (a.planeSourceId !== undefined ||
+          a.normalOffset !== undefined ||
+          a.framePlane !== undefined)
+      )
+        throw new Error(
+          "Plane source and normal offset are only accepted when creating a sketch.",
+        );
       if (a.action === "create") {
-        const sketch = a.sketch ?? rectangleSketch();
+        if (
+          (a.normalOffset !== undefined || a.framePlane !== undefined) &&
+          a.planeSourceId === undefined
+        )
+          throw new Error("Normal offset requires a plane source.");
+        if (a.planeSourceId !== undefined && a.sketch !== undefined)
+          throw new Error(
+            "Supply a plane source or an explicit sketch, not both.",
+          );
+        const sketch =
+          a.planeSourceId !== undefined
+            ? {
+                version: 1 as const,
+                points: [],
+                segments: [],
+                constraints: [],
+                frame: resolveSketchPlaneSource(
+                  state.entities,
+                  a.planeSourceId,
+                  a.normalOffset,
+                  a.framePlane,
+                ),
+              }
+            : (a.sketch ?? rectangleSketch());
         validateSketch(sketch);
         if (!a.name) throw new Error("Sketch name required");
         sketchId = crypto.randomUUID();
@@ -209,7 +242,13 @@ export function createAuthoringOperations(
       authoring.sketches = sketches;
       c.check();
       host.setAuthoring(authoring);
-      return { sketchId };
+      if (a.action === "create" || a.action === "activate") host.select(null);
+      return {
+        sketchId,
+        ...(a.action === "create"
+          ? { frame: sketches[sketches.length - 1].sketch.frame }
+          : {}),
+      };
     },
     mesh_quick: (a, c) => {
       const s = host.snapshot(),
