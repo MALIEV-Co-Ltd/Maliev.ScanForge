@@ -54,6 +54,13 @@ export type ParametricRecipe =
     }
   | { readonly kind: "surface"; readonly patch: NurbsPatch }
   | {
+      readonly kind: "trimSurfaces";
+      readonly source: FeatureRef;
+      readonly cutters: FeatureRef[];
+      readonly keepPoints: Vec3[];
+      readonly toleranceMm?: number;
+    }
+  | {
       readonly kind: "closedShell";
       readonly patches: NurbsPatch[];
       readonly tolerance: number;
@@ -219,6 +226,7 @@ export function featureDependencies(
 ): readonly FeatureRef[] {
   if (recipe.kind === "boolean") return [recipe.first, recipe.second];
   if (recipe.kind === "split") return [recipe.source, recipe.cutter];
+  if (recipe.kind === "trimSurfaces") return [recipe.source, ...recipe.cutters];
   if (recipe.kind === "sew") return recipe.sources;
   return "source" in recipe ? [recipe.source] : [];
 }
@@ -234,6 +242,7 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     loft: ["profiles", "ruled"],
     sweep: ["points", "path"],
     surface: ["patch"],
+    trimSurfaces: ["source", "cutters", "keepPoints", "toleranceMm"],
     closedShell: ["patches", "tolerance"],
     pattern: ["source", "pattern"],
     mirror: ["source", "planeOrigin", "normal"],
@@ -327,6 +336,39 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     case "surface":
       validatePatch(value.patch as NurbsPatch);
       break;
+    case "trimSurfaces": {
+      requireRef(value.source);
+      if (
+        !Array.isArray(value.cutters) ||
+        !value.cutters.length ||
+        value.cutters.length > 16
+      )
+        throw new Error("Surface trim requires 1 to 16 cutter references.");
+      value.cutters.forEach(requireRef);
+      const key = (ref: FeatureRef) => `${ref.featureId}:${ref.output ?? 0}`;
+      const refs = [value.source, ...value.cutters] as FeatureRef[];
+      if (new Set(refs.map(key)).size !== refs.length)
+        throw new Error("Surface trim source and cutters must be distinct.");
+      if (
+        !Array.isArray(value.keepPoints) ||
+        !value.keepPoints.length ||
+        value.keepPoints.length > 128
+      )
+        throw new Error("Surface trim requires 1 to 128 retained points.");
+      for (const point of value.keepPoints) {
+        requireVector(point, "Retained point");
+        if (point.some((n) => Math.abs(n) > 1e9))
+          throw new Error("Retained point exceeds world coordinate limits.");
+      }
+      if (value.toleranceMm !== undefined) {
+        requirePositive(value.toleranceMm, "Surface trim tolerance");
+        if (value.toleranceMm > 1e6)
+          throw new Error(
+            "Surface trim tolerance exceeds one million millimetres.",
+          );
+      }
+      break;
+    }
     case "closedShell":
       if (!Array.isArray(value.patches) || value.patches.length < 2)
         throw new Error("Closed shell requires at least two patches.");
@@ -724,6 +766,14 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
           break;
         case "surface":
           output = await client.surface(r.patch);
+          break;
+        case "trimSurfaces":
+          output = await client.trimSurfaces(
+            first,
+            inputs.slice(1).map((input) => input.kernelId),
+            r.keepPoints,
+            r.toleranceMm,
+          );
           break;
         case "closedShell":
           output = await client.closedShell(r.patches, r.tolerance);

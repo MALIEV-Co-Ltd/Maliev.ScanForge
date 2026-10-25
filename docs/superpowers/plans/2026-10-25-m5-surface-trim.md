@@ -47,17 +47,21 @@ all existing process/resource guards. Register only BRepCheck-valid output.
 
 ## Implementation and verification
 
-- [ ] Add failing actual-kernel cases: plane/plane retained halves, multiple kept
+- [x] Add failing actual-kernel cases: plane/plane retained halves, multiple kept
       regions, curved surface/cutter, ambiguous and off-surface seeds, no intersection,
-      exact input BREP preservation, invalid result rejection and native cleanup.
-- [ ] Implement bounded copied-input splitting and typed CadClient request.
-- [ ] Add recipe dependencies/validation/evaluation and both catalog recipe
-      schemas; test deterministic rebuild, lock/revision/retry/error atomicity.
-- [ ] Add discoverable GUI command/panel and point-pick lifecycle, using the
+      exact input BREP preservation and failed-result handle cleanup.
+- [x] Implement bounded copied-input splitting and typed CadClient request.
+- [x] Add recipe dependencies/validation/evaluation and both catalog recipe
+      schemas; test deterministic rebuild, locked rebuild, retry/error atomicity
+      and cancellation with disposal of late native results.
+- [x] Add discoverable GUI command/panel and point-pick lifecycle, using the
       shared operation. Update agent guide, architecture and capability matrix.
-- [ ] Replay GUI/public MCP with actual point clicks and exact area/topology
-      comparison, Undo/Redo, dependency rebuild, STEP/project persistence and failure
-      recovery. Run affected build/checks and review before pushing.
+- [x] Replay GUI/public MCP with actual point clicks and exact area/topology
+      comparison, Undo/Redo, dependency rebuild, STEP/project persistence.
+      Cover Escape and close/reopen cancellation. Static review correction verified.
+- [x] Finish full candidate build/unit checks and retain receipts before pushing:
+      48,981 unit tests passed, 64 skipped; 671 passed files, 18 skipped;
+      standard 12-batch typecheck/build, CAD smoke and changed-file formatting pass.
 - [ ] Compare approved native workflow/settings using matched real input once
       native ownership and computer-use initialization are available. Keep this gate
       explicit; synthetic/OC tests cannot establish QuickSurface equivalence.

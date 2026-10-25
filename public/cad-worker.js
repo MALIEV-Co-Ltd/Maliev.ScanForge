@@ -682,6 +682,167 @@ function inspectBrep(oc, input) {
   }
 }
 
+function trimSurfaces(oc, input) {
+  const tolerance = input.toleranceMm ?? 0.1;
+  if (
+    !Array.isArray(input.cutterIds) ||
+    !input.cutterIds.length ||
+    input.cutterIds.length > 16 ||
+    new Set(input.cutterIds).size !== input.cutterIds.length ||
+    input.cutterIds.includes(input.kernelId)
+  )
+    throw new Error(
+      "Surface trim requires distinct source and cutter objects (at most 16 cutters).",
+    );
+  if (
+    !Array.isArray(input.keepPoints) ||
+    !input.keepPoints.length ||
+    input.keepPoints.length > 128 ||
+    !input.keepPoints.every(
+      (point) =>
+        Array.isArray(point) &&
+        point.length === 3 &&
+        point.every(
+          (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
+        ),
+    )
+  )
+    throw new Error(
+      "Choose 1 to 128 finite retained-region points in world millimetres.",
+    );
+  if (!Number.isFinite(tolerance) || tolerance <= 0 || tolerance > 1e6)
+    throw new Error(
+      "Surface trim point tolerance must be positive and at most one million millimetres.",
+    );
+  const source = getShape(input.kernelId),
+    cutters = input.cutterIds.map(getShape);
+  const handles = [],
+    keep = (handle) => (handles.push(handle), handle);
+  let output,
+    handedOff = false;
+  try {
+    const facesOf = (shape, maximum) => {
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum.TopAbs_FACE,
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      const faces = [],
+        buckets = new Map();
+      let visits = 0;
+      for (; explorer.More(); explorer.Next()) {
+        if (++visits > maximum * 2)
+          throw new Error(
+            "Surface trim exceeds its topology visit resource limit.",
+          );
+        const face = keep(explorer.Current()),
+          hash = face.HashCode(2147483647),
+          bucket = buckets.get(hash) ?? [];
+        if (bucket.some((prior) => prior.IsSame(face))) continue;
+        bucket.push(face);
+        buckets.set(hash, bucket);
+        faces.push(face);
+        if (faces.length > maximum)
+          throw new Error(
+            "Surface trim exceeds its face-count resource limit.",
+          );
+      }
+      return faces;
+    };
+    const sourceCount = facesOf(source, 4096).length;
+    const toolCount = cutters.reduce(
+      (total, shape) => total + facesOf(shape, 4096).length,
+      0,
+    );
+    if (!sourceCount || !toolCount)
+      throw new Error("Surface trim inputs must contain exact CAD faces.");
+    if (toolCount > 4096 || sourceCount * toolCount > 1000000)
+      throw new Error(
+        "Surface trim exceeds its source/cutter pair resource limit.",
+      );
+    const copy = (shape) => {
+      // Splitter's non-destructive flag alone can change input BREP flags/caches.
+      const maker = keep(new oc.BRepBuilderAPI_Copy_2(shape, true, false));
+      return keep(maker.Shape());
+    };
+    const sourceCopy = copy(source),
+      sourceFaces = facesOf(sourceCopy, 4096);
+    const argumentsList = keep(new oc.TopTools_ListOfShape_1()),
+      tools = keep(new oc.TopTools_ListOfShape_1());
+    for (const face of sourceFaces) argumentsList.Append_1(face);
+    for (const cutter of cutters) tools.Append_1(copy(cutter));
+    const splitter = keep(new oc.BRepAlgoAPI_Splitter_1());
+    splitter.SetArguments(argumentsList);
+    splitter.SetTools(tools);
+    splitter.SetNonDestructive(true);
+    splitter.Build();
+    if (!splitter.IsDone())
+      throw new Error(
+        "Surface intersection failed. Check the source and cutters.",
+      );
+    const split = keep(splitter.Shape());
+    if (split.IsNull())
+      throw new Error("Surface trim produced no surface regions.");
+    const regions = facesOf(split, 16384);
+    if (regions.length <= sourceCount)
+      throw new Error(
+        "Cutters must intersect the source to create distinct surface regions.",
+      );
+    if (regions.length * input.keepPoints.length > 65536)
+      throw new Error(
+        "Surface trim exceeds its retained-point query resource limit.",
+      );
+    const selected = new Set(),
+      tie = Math.max(1e-7, tolerance * 1e-6);
+    for (const [pointIndex, point] of input.keepPoints.entries()) {
+      const position = keep(new oc.gp_Pnt_3(...point)),
+        maker = keep(new oc.BRepBuilderAPI_MakeVertex(position)),
+        vertex = keep(maker.Vertex());
+      const query = keep(new oc.BRepExtrema_DistShapeShape_1());
+      query.LoadS1(vertex);
+      let nearest = Infinity,
+        index = -1,
+        ambiguous = false;
+      for (const [regionIndex, region] of regions.entries()) {
+        query.LoadS2(region);
+        query.Perform();
+        if (!query.IsDone())
+          throw new Error(
+            "Could not locate a retained point on the split surfaces.",
+          );
+        const distance = query.Value();
+        if (!Number.isFinite(distance))
+          throw new Error("Surface trim distance is not finite.");
+        if (distance < nearest - tie) {
+          nearest = distance;
+          index = regionIndex;
+          ambiguous = false;
+        } else if (Math.abs(distance - nearest) <= tie) ambiguous = true;
+      }
+      if (nearest > tolerance || index < 0)
+        throw new Error(
+          `Retained point ${pointIndex + 1} is outside the surface tolerance (${nearest} mm).`,
+        );
+      if (ambiguous)
+        throw new Error(
+          `Retained point ${pointIndex + 1} is ambiguous at a surface boundary; choose a region interior.`,
+        );
+      selected.add(index);
+    }
+    const builder = keep(new oc.BRep_Builder());
+    output = new oc.TopoDS_Compound();
+    builder.MakeCompound(output);
+    for (const index of selected) builder.Add(output, regions[index]);
+    handedOff = true;
+    return register(oc, output);
+  } finally {
+    if (output && !handedOff) output.delete();
+    cleanup(handles);
+  }
+}
+
 function primitive(oc, input) {
   const handles = [];
   const keep = (handle) => {
@@ -2268,6 +2429,7 @@ self.onmessage = (event) => {
       if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
       else if (operation === "inspectBrep") result = inspectBrep(oc, payload);
+      else if (operation === "trimSurfaces") result = trimSurfaces(oc, payload);
       else if (operation === "alignmentReferences")
         result = alignmentReferences(oc, payload);
       else if (operation === "alignmentMesh") {

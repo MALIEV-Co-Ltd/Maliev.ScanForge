@@ -1,5 +1,17 @@
 # ScanForge shared application API and MCP
 
+## Exact surface trimming
+
+The GUI Trim surfaces panel submits the `trimSurfaces` recipe through the shared
+`cad_create` job; `cad_rebuild` evaluates the same recipe and dependency graph.
+Both catalog schemas expose source/cutter references, retained world points and
+distance tolerance. The worker deep-copies exact inputs before face splitting,
+selects unique face regions by bounded distance queries, and publishes one valid
+surface compound through the common BRepCheck gate. Copies prevent splitter
+flags from mutating BREP owned by inputs or history. Temporary native wrappers
+are retired on every exit; existing job cancellation and revision fences govern
+publication. Panel unmount cancels picking and its owned pending job.
+
 ## Freeform patch edits
 
 `cad_inspect` is a read-only asynchronous operation used by MCP and the GUI

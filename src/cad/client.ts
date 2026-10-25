@@ -78,6 +78,20 @@ export class CadClient {
     return this.request("inspectBrep", { brep }) as Promise<CadInspection>;
   }
 
+  trimSurfaces(
+    kernelId: string,
+    cutterIds: string[],
+    keepPoints: Vec3[],
+    toleranceMm = 0.1,
+  ): Promise<KernelMesh> {
+    return this.request("trimSurfaces", {
+      kernelId,
+      cutterIds,
+      keepPoints,
+      toleranceMm,
+    }) as Promise<KernelMesh>;
+  }
+
   /** Read exact face inputs for shared alignment conversion; does not mutate the body. */
   alignmentReferences(kernelId: string): Promise<CadAlignmentInput[]> {
     return this.request("alignmentReferences", { kernelId }) as Promise<

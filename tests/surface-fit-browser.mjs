@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import http from "node:http";
 import net from "node:net";
 import { chromium } from "playwright";
+import { Matrix4, Vector3 } from "three";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
@@ -347,7 +348,8 @@ try {
     ),
     JSON.stringify(commands),
   );
-  await mutate("command_run", { name: "ribbon:fitSurface" });
+  await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+  await page.getByRole("button", { name: "Fit surface", exact: true }).click();
   const panel = page.getByRole("complementary", {
     name: "Fit Surface",
     exact: true,
@@ -466,7 +468,7 @@ try {
   assert(mcpResult.maxError < 1e-5, JSON.stringify(mcpResult));
   ledger.scenarios.push({
     guiLaunch:
-      "public command_run ribbon:fitSurface; actual Apply/Analysis/OK buttons",
+      "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
     hiddenState:
       "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
     requestedTriangles: requestedSelection.length,
@@ -677,7 +679,10 @@ try {
       entityId: scan.id,
       triangles: Array.from({ length: 200 }, (_, i) => i),
     });
-    await mutate("command_run", { name: "ribbon:fitSurface" });
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Fit surface", exact: true })
+      .click();
     const realPanel = page.getByRole("complementary", {
       name: "Fit Surface",
       exact: true,
@@ -745,8 +750,21 @@ try {
     const exact = (await call("object_get", { entityId: realCad.entityIds[0] }))
       .result;
     assert(exact.exactCad && exact.hasBrep);
+    const surfaceReport = await job(
+      await call("cad_inspect", { entityId: realCad.entityIds[0] }),
+    );
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== realCad.entityIds[0] && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const realSurfaceStep = await job(
+      await call("project_export", { format: "step" }),
+    );
     await mutate("object_select", { entityId: realCad.entityIds[0] });
-    await mutate("command_run", { name: "ribbon:surfaceThicken" });
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page.getByRole("button", { name: "Thicken", exact: true }).click();
     const thickenPanel = page.getByRole("region", {
       name: "Thicken surface",
       exact: true,
@@ -908,6 +926,7 @@ try {
     const nativeFiles = [];
     for (const [filename, artifact] of [
       ["real-region-input.stl", regionStl],
+      ["real-region-surface.step", realSurfaceStep],
       ["real-region-solid.step", realStep],
     ]) {
       const bytes = await artifactBytes(artifact);
@@ -932,6 +951,7 @@ try {
           },
           thicknessMm: -0.1,
           report: solidReport,
+          surfaceReport,
           sourceDigest,
           regionDigest,
           files: nativeFiles,
@@ -963,6 +983,7 @@ try {
       exactFace: true,
       thickenedRegionGuiMcpEquality: true,
       solidReport,
+      surfaceReport,
       stepReport,
       projectReport: reopenedSolid,
       exchangeTolerance: { relative: 1e-8, absolute: 1e-6 },
@@ -977,6 +998,284 @@ try {
     await mutate("viewport_control", {
       action: "fit",
       entityId: solidId,
+    });
+  }
+  if (process.env.SCANFORGE_TEST_SURFACE_TRIM === "1") {
+    const patch = (width = 10) => ({
+      format: "scanforge-nurbs",
+      version: 1,
+      countU: 2,
+      countV: 2,
+      degreeU: 1,
+      degreeV: 1,
+      knotsU: [0, 0, 1, 1],
+      knotsV: [0, 0, 1, 1],
+      weights: [1, 1, 1, 1],
+      points: [
+        [-width / 2, -5, 0],
+        [width / 2, -5, 0],
+        [-width / 2, 5, 0],
+        [width / 2, 5, 0],
+      ],
+    });
+    for (const item of (await call("project_get")).result.objects)
+      if (item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const source = await job(
+      await mutate("cad_create", {
+        name: "Trim source",
+        recipe: { kind: "surface", patch: patch() },
+        selectCreated: true,
+      }),
+    );
+    const cutterPatch = {
+      ...patch(),
+      points: [
+        [0, -10, -10],
+        [0, 10, -10],
+        [0, -10, 10],
+        [0, 10, 10],
+      ],
+    };
+    const cutter = await job(
+      await mutate("cad_create", {
+        name: "Trim cutter",
+        recipe: { kind: "surface", patch: cutterPatch },
+      }),
+    );
+    const sourceId = source.entityIds[0],
+      cutterId = cutter.entityIds[0];
+    await mutate("object_update", {
+      entityId: cutterId,
+      patch: { visible: false },
+    });
+    const sourceDigest = await geometryDigest(sourceId),
+      cutterDigest = await geometryDigest(cutterId);
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Trim surfaces", exact: true })
+      .click();
+    const trimPanel = page.getByRole("region", {
+      name: "Trim surfaces",
+      exact: true,
+    });
+    await trimPanel
+      .getByRole("checkbox", { name: "Trim cutter", exact: true })
+      .check();
+    const beforeRejectedTrim = await call("project_get");
+    await trimPanel
+      .getByRole("textbox", { name: "Retained points (world mm)", exact: true })
+      .fill("[[100,0,0]]");
+    await trimPanel
+      .getByRole("button", { name: "Apply surface trim", exact: true })
+      .click();
+    const trimError = page.locator(".error-banner");
+    await trimError.filter({ hasText: /tolerance|surface/i }).waitFor();
+    const guiTrimError = await trimError.textContent();
+    const invalidTrim = await mutate("cad_create", {
+      name: "Invalid trim",
+      recipe: {
+        kind: "trimSurfaces",
+        source: { featureId: sourceId, output: 0 },
+        cutters: [{ featureId: cutterId, output: 0 }],
+        keepPoints: [[100, 0, 0]],
+        toleranceMm: 0.1,
+      },
+    });
+    const rejectedTrim = await eventually(async () => {
+      const result = (
+        await call("job_get", { jobId: invalidTrim.result.jobId })
+      ).result;
+      assert.equal(result.status, "failed");
+      return result;
+    });
+    assert(guiTrimError.includes(rejectedTrim.error.message));
+    const afterRejectedTrim = await call("project_get");
+    assert.equal(afterRejectedTrim.revision, beforeRejectedTrim.revision);
+    assert.deepEqual(
+      afterRejectedTrim.result.objects,
+      beforeRejectedTrim.result.objects,
+    );
+    assert.equal(afterRejectedTrim.result.undo, beforeRejectedTrim.result.undo);
+    await mutate("ui_set", { dismissError: true });
+    await trimPanel
+      .getByRole("textbox", { name: "Retained points (world mm)", exact: true })
+      .fill("[]");
+    await mutate("viewport_control", {
+      action: "camera",
+      position: [0, -15, 20],
+      target: [0, 0, 0],
+    });
+    const camera = (await call("viewport_get")).result;
+    const world = new Vector3(-2, 0, 0)
+      .applyMatrix4(new Matrix4().fromArray(camera.cameraWorldMatrix).invert())
+      .applyMatrix4(new Matrix4().fromArray(camera.projectionMatrix));
+    const canvas = page.locator("canvas").first(),
+      box = await canvas.boundingBox();
+    assert(box);
+    const clickPoint = {
+      x: (box.width * (world.x + 1)) / 2,
+      y: (box.height * (1 - world.y)) / 2,
+    };
+    const beforePick = (await call("project_get")).result;
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await page.keyboard.press("Escape");
+    await canvas.click({ position: clickPoint });
+    assert.equal(
+      await trimPanel
+        .getByRole("textbox", {
+          name: "Retained points (world mm)",
+          exact: true,
+        })
+        .inputValue(),
+      "[]",
+    );
+    assert.equal((await call("project_get")).result.undo, beforePick.undo);
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Close tool options", exact: true })
+      .click();
+    await canvas.click({ position: clickPoint });
+    await page
+      .getByRole("button", { name: "Trim surfaces", exact: true })
+      .click();
+    assert.equal(
+      await trimPanel
+        .getByRole("textbox", {
+          name: "Retained points (world mm)",
+          exact: true,
+        })
+        .inputValue(),
+      "[]",
+    );
+    await trimPanel
+      .getByRole("checkbox", { name: "Trim cutter", exact: true })
+      .check();
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await canvas.click({ position: clickPoint });
+    const picked = await eventually(async () => {
+      const points = JSON.parse(
+        await trimPanel
+          .getByRole("textbox", {
+            name: "Retained points (world mm)",
+            exact: true,
+          })
+          .inputValue(),
+      );
+      assert.equal(points.length, 1);
+      return points;
+    });
+    const before = (await call("project_get")).result;
+    await trimPanel
+      .getByRole("button", { name: "Apply surface trim", exact: true })
+      .click();
+    const guiId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, before.objects.length + 1);
+      return current.objects.find(
+        (item) => !before.objects.some((old) => old.id === item.id),
+      ).id;
+    });
+    assert.equal((await call("project_get")).result.undo, before.undo + 1);
+    const guiGeometry = await geometryDigest(guiId),
+      guiObject = (await call("object_get", { entityId: guiId })).result;
+    const guiReport = await job(await call("cad_inspect", { entityId: guiId }));
+    assert(guiReport.valid && Math.abs(guiReport.areaMm2 - 50) < 1e-6);
+    assert.deepEqual(guiObject.parametric.feature.recipe.keepPoints, picked);
+    await mutate("history_undo", {});
+    const mcp = await job(
+      await mutate("cad_create", {
+        name: "MCP retained surface",
+        recipe: guiObject.parametric.feature.recipe,
+        hideInputs: true,
+      }),
+    );
+    const trimId = mcp.entityIds[0];
+    assert.deepEqual(await geometryDigest(trimId), guiGeometry);
+    assert.deepEqual(await geometryDigest(sourceId), sourceDigest);
+    assert.deepEqual(await geometryDigest(cutterId), cutterDigest);
+    await job(
+      await mutate("cad_rebuild", {
+        entityId: sourceId,
+        recipe: { kind: "surface", patch: patch(8) },
+      }),
+    );
+    let report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 40) < 1e-6);
+    await mutate("history_undo", {});
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 50) < 1e-6);
+    await mutate("history_redo", {});
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 40) < 1e-6);
+    const savedTrim = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: savedTrim.artifactId,
+        replace: true,
+      }),
+    );
+    const restored = (await call("object_get", { entityId: trimId })).result;
+    assert.equal(restored.parametric.feature.recipe.kind, "trimSurfaces");
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(report.valid && Math.abs(report.areaMm2 - 40) < 1e-6);
+    const trimStep = await job(
+      await call("project_export", { format: "step" }),
+    );
+    const beforeStep = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", { artifactId: trimStep.artifactId }),
+    );
+    const stepId = (await call("project_get")).result.objects.find(
+      (x) => !beforeStep.has(x.id),
+    ).id;
+    const stepReport = await job(
+      await call("cad_inspect", { entityId: stepId }),
+    );
+    assert(
+      stepReport.valid &&
+        stepReport.solids === 0 &&
+        stepReport.faces === 1 &&
+        Math.abs(stepReport.areaMm2 - 40) < 1e-6,
+    );
+    await mutate("object_update", {
+      entityId: stepId,
+      patch: { visible: false },
+    });
+    ledger.scenarios.push({
+      surfaceTrim: {
+        actualRibbonEntry: true,
+        actualViewportPick: true,
+        escapeNoCommit: true,
+        closeReopenCancelsPick: true,
+        guiMcpFailureEquality: true,
+        rejectedKeepPointMessage: rejectedTrim.error.message,
+        picked,
+        guiMcpGeometryEquality: true,
+        sourceDigest,
+        cutterDigest,
+        dependencyRebuildAreas: [50, 40, 50, 40],
+        projectRecipePreserved: true,
+        stepReport,
+        report,
+      },
+    });
+    await mutate("viewport_control", { action: "fit", entityId: trimId });
+    await page.screenshot({
+      path: fileURLToPath(new URL("surface-trim.png", out)),
     });
   }
   if (process.env.SCANFORGE_TEST_INVALID_BREP) {

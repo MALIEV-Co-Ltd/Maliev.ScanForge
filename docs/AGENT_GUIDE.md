@@ -956,6 +956,24 @@ kernel validity report, not a global self-intersection or native-reference
 equivalence certificate. Compare properties and topology after exact exchange;
 display mesh counts and volume estimates are separate observations.
 
+Trim exact surfaces with `cad_create` (or edit with `cad_rebuild`) using
+`recipe:{kind:"trimSurfaces",source:{featureId,output:0},cutters:[{featureId,output:0}],keepPoints:[[-2,0,0]],toleranceMm:0.1}`.
+The source and cutters must resolve to exact CAD. The Surfacing **Trim surfaces**
+panel uses this same recipe; its point picker records world coordinates in mm.
+Keep points choose the nearest unique split face region within the tolerance.
+Use multiple points to retain multiple regions. Output is one exact surface
+compound; this operation does not create solid caps. Inputs remain unchanged.
+Use `hideInputs` and `selectCreated` on `cad_create` for presentation options.
+
+Limits are 1–16 distinct cutters, 1–128 finite keep points, positive tolerance up
+to 1,000,000 mm, 4,096 source faces, 4,096 total cutter faces, 1,000,000 face
+pairs, 16,384 output regions and 65,536 region/point queries. Ambiguous points
+on cut boundaries, off-surface points and nonintersecting cutters fail without
+committing history. Source/cutter dependencies rebuild atomically; world points
+that no longer identify a region must be corrected. Cancellation uses `job_cancel`.
+The GUI also cancels pending picking/work when its panel closes. Projects retain
+the editable recipe and exact BREP; STEP retains the exact trimmed shape.
+
 Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
 kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,
 resource exhaustion and changed revision fail without modifying model/history.

@@ -6,6 +6,12 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  trimSurfaces:
+    "docs/M5_ACCEPTANCE.md: exact retained-region trimming; tests/kernel-smoke.mjs and GUI/public MCP trim workflow",
+  fitSurface:
+    "docs/M5_ACCEPTANCE.md: matched built GUI/public MCP projected and approximate fitting, source preservation and exact conversion",
+  surfaceThicken:
+    "docs/M5_ACCEPTANCE.md: real-region GUI/public MCP thickening, valid solid inspection and exact exchange",
   sketchFromSection:
     "docs/AGENT_GUIDE.md: scan section references; tests/create-sketch-dialog.test.tsx and automation section original-slot parity; GUI/MCP section workflow",
   globalFineAlign:

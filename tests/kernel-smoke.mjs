@@ -873,6 +873,129 @@ try {
     ],
     weights: [1, 1, 1, 1],
   });
+  const trimSource = await request(
+    "surface",
+    planarPatch([-5, -5, 0], [10, 0, 0], [0, 10, 0]),
+  );
+  const trimCutter = await request(
+    "surface",
+    planarPatch([0, -10, -10], [0, 20, 0], [0, 0, 20]),
+  );
+  const exactBrep = (kernelId) =>
+    context.serializeBrep(
+      oc,
+      vm.runInContext(`shapes.get(${JSON.stringify(kernelId)})`, context),
+    );
+  const sourceBeforeTrim = exactBrep(trimSource.kernelId),
+    cutterBeforeTrim = exactBrep(trimCutter.kernelId);
+  const leftTrim = await request("trimSurfaces", {
+    kernelId: trimSource.kernelId,
+    cutterIds: [trimCutter.kernelId],
+    keepPoints: [[-2, 0, 0]],
+    toleranceMm: 0.001,
+  });
+  const leftReport = await request("inspectBrep", { brep: leftTrim.brep });
+  assert(leftReport.valid && leftReport.solids === 0 && leftReport.faces === 1);
+  close(leftReport.areaMm2, 50, "Retained exact plane region area");
+  assert.deepEqual(bounds(leftTrim.positions), [-5, -5, 0, 0, 5, 0]);
+  assert.equal(exactBrep(trimSource.kernelId), sourceBeforeTrim);
+  assert.equal(exactBrep(trimCutter.kernelId), cutterBeforeTrim);
+  const bothTrim = await request("trimSurfaces", {
+    kernelId: trimSource.kernelId,
+    cutterIds: [trimCutter.kernelId],
+    keepPoints: [
+      [-2, 0, 0],
+      [2, 0, 0],
+    ],
+    toleranceMm: 0.001,
+  });
+  close(
+    (await request("inspectBrep", { brep: bothTrim.brep })).areaMm2,
+    100,
+    "Multiple retained regions preserve exact area",
+  );
+  const beforeBadTrim = vm.runInContext("shapes.size", context);
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: [[0, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /ambiguous/i,
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: [[100, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /surface|tolerance/i,
+  );
+  assert.equal(vm.runInContext("shapes.size", context), beforeBadTrim);
+  assert.equal(exactBrep(trimSource.kernelId), sourceBeforeTrim);
+  assert.equal(exactBrep(trimCutter.kernelId), cutterBeforeTrim);
+  const disjointCutter = await request(
+    "surface",
+    planarPatch([20, -10, -10], [0, 20, 0], [0, 0, 20]),
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [disjointCutter.kernelId],
+      keepPoints: [[-2, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /intersect/i,
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: Array.from({ length: 129 }, () => [-2, 0, 0]),
+      toleranceMm: 0.001,
+    }),
+    /128/,
+  );
+  const quadrant = await request("surface", {
+    format: "scanforge-nurbs",
+    version: 1,
+    countU: 3,
+    countV: 2,
+    degreeU: 2,
+    degreeV: 1,
+    knotsU: [0, 0, 0, 1, 1, 1],
+    knotsV: [0, 0, 1, 1],
+    weights: [1, Math.SQRT1_2, 1, 1, Math.SQRT1_2, 1],
+    points: [
+      [1, 0, 0],
+      [1, 1, 0],
+      [0, 1, 0],
+      [1, 0, 2],
+      [1, 1, 2],
+      [0, 1, 2],
+    ],
+  });
+  const crossPlane = await request(
+    "surface",
+    planarPatch([-2, -2, 1], [4, 0, 0], [0, 4, 0]),
+  );
+  const curvedTrim = await request("trimSurfaces", {
+    kernelId: quadrant.kernelId,
+    cutterIds: [crossPlane.kernelId],
+    keepPoints: [[Math.SQRT1_2, Math.SQRT1_2, 0.5]],
+    toleranceMm: 0.001,
+  });
+  const curvedReport = await request("inspectBrep", { brep: curvedTrim.brep });
+  assert(
+    curvedReport.valid && curvedReport.faces === 1 && curvedReport.solids === 0,
+  );
+  close(
+    curvedReport.areaMm2,
+    Math.PI / 2,
+    "Trim retains exact rational curved surface area",
+  );
   const shellPatches = [
     planarPatch([0, 0, 0], [0, 0, 30], [0, 20, 0]),
     planarPatch([10, 0, 0], [0, 20, 0], [0, 0, 30]),

@@ -34,6 +34,7 @@ import {
 import { entityDisplayStats } from "../entity-display-stats";
 import { GeometryStatistics } from "./GeometryStatistics";
 import { CadDiagnostics } from "./CadDiagnostics";
+import { SurfaceTrimTools } from "./SurfaceTrimTools";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -1983,6 +1984,9 @@ export function App() {
     sewSurfaces: () => showTools("sewSurfaces"),
     shell: () => showTools("shell"),
     surfaceThicken: () => showTools("surfaceThicken"),
+    trimSurfaces: selected?.kernelId
+      ? () => showTools("trimSurfaces")
+      : undefined,
     fitSurface: openSurfaceFit,
     nurbsSurface: () => showTools("surface"),
     newFreeform: () => showTools("surface"),
@@ -6730,6 +6734,25 @@ export function App() {
                     />
                   </div>
                 )}
+                {toolPanelOpen &&
+                  workspace === "trimSurfaces" &&
+                  selected?.kernelId && (
+                    <SurfaceTrimTools
+                      key={`${selected.id}:${selected.kernelId}`}
+                      entity={selected}
+                      entities={entities}
+                      api={workspaceApi}
+                      disabled={busy}
+                      onError={setError}
+                      onPickPoint={(callback) => {
+                        datumPointPick.current = callback;
+                        if (callback) {
+                          datumFacePick.current = null;
+                          setMode("inspect");
+                        }
+                      }}
+                    />
+                  )}
                 {workspaceGroup(workspace) === "advancedCad" && (
                   <div className="advanced-cad-panels">
                     <AdvancedCadTools

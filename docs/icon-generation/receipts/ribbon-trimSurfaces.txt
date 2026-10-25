@@ -1,0 +1,10 @@
+Workflow: built-in image_gen.imagegen (no CLI/API fallback)
+Date: 2026-10-25
+Asset: public/icons/generated/ribbon-trimSurfaces.png
+Request: {"id":"ribbon-trimSurfaces","name":"trimSurfaces"}
+Transparent background: transparent_background=true; generated alpha preserved in 128x128 RGBA PNG.
+Prompt: Use case: stylized-concept. Asset type: ScanForge CAD ribbon toolbar raster icon, square compact composition. Primary request: an open gold CAD curved sheet surface trimmed by a crossing steel-blue plane, the discarded smaller surface piece visibly separated and faded. Input images: three existing ribbon icons are style references only, not edit targets. Match their technical CAD illustration style: crisp thin navy edges, subtle simple shaded gold active surface, restrained blue cutting plane, sparse isoparametric curves. Show a large retained gently curved gold sheet on the left, a small discarded faded piece offset to the right across a clear trim edge, and one thin vertical crossing blue plane showing the trimming tool. Isometric three-quarter view. Strong simple silhouette readable at 20 and 40 pixels. Centered isolated single icon occupies about 85 percent of the square with clear padding. Scene/backdrop: genuinely transparent background with alpha, no environment. No text, labels, letters, numbers, watermark, panel, shadows outside geometry, glossy emoji, or extra objects. Preserve generated transparency.
+Reference images (style only): public/icons/generated/ribbon-trim.png; public/icons/generated/ribbon-fitSurface.png; public/icons/generated/ribbon-surfaceThicken.png
+Source: C:\Users\Shoung\.codex\generated_images\01a173f4-65ca-7803-aa05-576b7cedef2b\exec-5381867d-f90f-4c9c-aafc-25772d7d6879.png
+Postprocessing: resized the generated 1280x1280 image to the existing ribbon asset size of 128x128 using System.Drawing high-quality bicubic interpolation and SourceCopy into Format32bppArgb; no geometry edits or background replacement.
+Visual verification: gold curved open sheet, crossing blue plane, faded separated discarded sheet portion, no text. Matched against the three existing 128x128 ribbon reference assets.
