@@ -1462,6 +1462,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     surface_set: (a, c) => {
       const s = host.snapshot();
+      if (a.scanId !== undefined) {
+        const source = object(s, a.scanId);
+        if (source.kind !== "mesh" && source.kind !== "pointcloud")
+          throw new Error("Surface source must be a mesh or point cloud.");
+      }
       const e = a.entityId
         ? object(s, a.entityId)
         : ({
@@ -1484,12 +1489,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 ? {
                     ...meshEdited(e, positions),
                     surfacePatch: structuredClone(a.patch),
+                    surfaceScanId: a.scanId ?? e.surfaceScanId,
                   }
                 : x,
             )
           : [
               ...s.entities,
-              { ...e, positions, surfacePatch: structuredClone(a.patch) },
+              {
+                ...e,
+                positions,
+                surfacePatch: structuredClone(a.patch),
+                surfaceScanId: a.scanId,
+              },
             ],
         "Update surface",
       );

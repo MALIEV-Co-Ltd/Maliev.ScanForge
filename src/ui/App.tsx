@@ -292,7 +292,7 @@ import {
   type ParametricRecipe,
   type ParametricProfile,
 } from "../parametric";
-import { tessellatePatch, type NurbsPatch } from "../surfaces";
+import type { NurbsPatch } from "../surfaces";
 import { rectangleSketch, type Sketch } from "../sketch";
 const number = (n: number) =>
   n.toLocaleString("en", { maximumFractionDigits: 3 });
@@ -4101,19 +4101,21 @@ export function App() {
       rebuildFeature({ kind: "surface", patch });
       return;
     }
-    void action("Editing NURBS control grid…", () => {
-      const positions = tessellatePatch(patch, 32, 32);
-      if (selected?.surfacePatch)
-        updateSelected({
-          positions,
-          surfacePatch: patch,
-          kind: "mesh",
-          kernelId: undefined,
-          brep: undefined,
-        });
-      else createMesh(positions, "NURBS surface", patch);
+    void (async () => {
+      const response = await uiCommand("surface_set", {
+        ...(selected?.surfacePatch ? { entityId: selected.id } : {}),
+        ...(!selected?.surfacePatch &&
+        (selected?.kind === "mesh" || selected?.kind === "pointcloud")
+          ? { scanId: selected.id }
+          : {}),
+        patch,
+      });
+      if (!response.ok) return;
+      setSelectedId((response.result as { entityId: string }).entityId);
       setMessage("NURBS patch updated · control grid retained in project");
-    });
+    })().catch((error: unknown) =>
+      setError(error instanceof Error ? error.message : String(error)),
+    );
   }
   function createSegments(
     parts: Float32Array[],

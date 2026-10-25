@@ -736,6 +736,16 @@ Sketch v1 contains `version:1`, `points:[{id,x,y}]`, `segments:[{id,a,b,construc
 
 NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`, `degreeU`, `degreeV`, `knotsU`, `knotsV`, row-major `points:[[x,y,z],...]`, and `weights`. Surface fitting takes `options:{countU,countV,degree?,projection:"xy"|"xz"|"yz",sampleLimit}`. Knots and weights must satisfy the existing rational surface validator.
 
+`surface_set` also accepts optional `scanId`, the ID of an existing mesh or
+point-cloud source. `surface_get` returns that association as `scanId`; omitted
+updates retain it. Missing sources and CAD sources fail before publication. The
+GUI's freeform control-grid editor uses this same revision/retry guarded write;
+each accepted edit adds one model-history step. Exact parametric CAD faces still
+use `cad_rebuild` with a `surface` recipe. Mesh patch edits through `surface_set`
+or `surface_operation` invalidate derived normals, edges, fitted-plane and scan
+count caches while retaining the editable patch and source association. These
+caches must be recomputed from the edited geometry.
+
 Surface fitting additionally accepts `method:"projected-grid"|"approximate"`.
 Omitting it preserves projected-grid behavior. Approximate uses the recovered
 XYZ basis, derivative penalties and column-normalized LU through the same worker,

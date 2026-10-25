@@ -1,5 +1,16 @@
 # ScanForge shared application API and MCP
 
+## Freeform patch edits
+
+The GUI control-grid editor dispatches `surface_set` through the existing shared
+API, preserving revision admission, retry receipts, locks and model history.
+Optional `scanId` records an existing mesh/point-cloud source on creation or
+update; omission retains an existing association. `surface_get` exposes it.
+Source validation precedes geometry publication. Derived mesh normals, edges,
+plane/fit metadata and scan-count caches are invalidated on patch edits, including
+`surface_operation`. Exact parametric surfaces use `cad_rebuild` and retain their
+BREP and dependent-feature rebuild semantics.
+
 ## Intent and scope
 
 Provide semantic control of supported ScanForge modeling features through a standardized MCP interface while preserving the browser-local geometry runtime, existing editing semantics and unrelated work. The UI and agents share native CAD creation/rebuild use cases, geometry workers, validation and the project/history commit boundary. Existing GUI interaction code is retained; this integration does not relocate the entire React state tree or introduce a headless/cloud engine.

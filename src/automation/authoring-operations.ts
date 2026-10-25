@@ -232,6 +232,10 @@ export function createAuthoringOperations(
       let e = a.entityId ? find(a.entityId) : undefined;
       let patch: NurbsPatch;
       if (e) editable(e);
+      if (e?.kind === "pointcloud")
+        throw new Error(
+          "Surface edits require a triangle mesh target; create a new patch from the point cloud instead.",
+        );
       if (a.operation === "grid")
         patch = createGridPatch(
           a.countU,
@@ -275,6 +279,12 @@ export function createAuthoringOperations(
         ...e,
         positions: tessellatePatch(patch),
         surfacePatch: patch,
+        normals: undefined,
+        edgePositions: undefined,
+        fit: undefined,
+        planeFrame: undefined,
+        scanSource: undefined,
+        indexedMesh: undefined,
         meshSelection: undefined,
       };
       const next = a.entityId
