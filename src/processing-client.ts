@@ -13,7 +13,7 @@ import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
 import {
-  admitReconstructionInputs,
+  admitReconstructionTransport,
   isBorrowableReconstructionInput,
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
@@ -204,10 +204,25 @@ export function processMesh(
     request.operation.kind === "repolygonize"
   ) {
     try {
-      admitReconstructionInputs([
-        request.positions,
-        ...(request.operation.targets ?? []),
-      ]);
+      if (
+        request.operation.targetTopology &&
+        request.operation.targetTopology.length !==
+          (request.operation.targets?.length ?? 0)
+      )
+        throw Error(
+          "Reconstruction topology references must match its inputs.",
+        );
+      admitReconstructionTransport(
+        [request.positions, ...(request.operation.targets ?? [])],
+        [
+          request.operation.sourceTopology,
+          ...(request.operation.targets ?? []).map((_, i) =>
+            request.operation.kind === "repolygonize"
+              ? request.operation.targetTopology?.[i]
+              : undefined,
+          ),
+        ],
+      );
     } catch (error) {
       return Promise.reject(error);
     }
@@ -556,7 +571,10 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
-        if (copied.operation.kind === "averageMesh") {
+        if (
+          copied.operation.kind === "averageMesh" ||
+          copied.operation.kind === "repolygonize"
+        ) {
           if (copied.operation.sourceTopology) {
             const mesh = copied.operation.sourceTopology;
             const triangles = Uint32Array.from(mesh.triangles);

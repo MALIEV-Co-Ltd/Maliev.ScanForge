@@ -1,7 +1,43 @@
-import type { Positions } from "./types";
+import type { IndexedMesh, Positions } from "./types";
 
 export const RECONSTRUCTION_MAX_INPUT_COORDINATES = 500_000_000;
 export const RECONSTRUCTION_MAX_PRIVATE_BYTES = 256 * 1024 * 1024;
+
+/** Include preserved indexed carriers in the same pre-clone numeric transport budget. */
+export function admitReconstructionTransport(
+  inputs: Positions[],
+  topology: (IndexedMesh | undefined)[],
+) {
+  const admitted = admitReconstructionInputs(inputs);
+  if (topology.length !== inputs.length)
+    throw Error("Reconstruction topology references must match its inputs.");
+  let privateBytes = admitted.privateBytes;
+  for (let i = 0; i < topology.length; i++) {
+    const mesh = topology[i];
+    if (!mesh) continue;
+    if (
+      !Number.isSafeInteger(mesh.vertices.length) ||
+      mesh.vertices.length % 3 ||
+      !Number.isSafeInteger(mesh.triangles.length) ||
+      mesh.triangles.length * 3 !== inputs[i].length
+    )
+      throw Error(
+        "Reconstruction indexed carriers do not match the source dimensions.",
+      );
+    const bytes =
+      (isBorrowableReconstructionInput(mesh.vertices)
+        ? 0
+        : mesh.vertices.length *
+          (mesh.vertices instanceof Float32Array ? 4 : 8)) +
+      mesh.triangles.length * 4;
+    if (bytes > RECONSTRUCTION_MAX_PRIVATE_BYTES - privateBytes)
+      throw Error(
+        "Reconstruction private numeric transport payload including topology exceeds 256 MiB.",
+      );
+    privateBytes += bytes;
+  }
+  return { ...admitted, privateBytes };
+}
 
 /** Only the disposable read-only reconstruction worker may borrow these views. */
 export function isBorrowableReconstructionInput(

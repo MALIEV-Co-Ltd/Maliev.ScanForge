@@ -1,0 +1,138 @@
+{
+  "status": "native-core-and-integrated-gui-mcp-compared-final-m2-gates-open",
+  "nativeApplication": "QUICKSURFACE Pro 8.0.123",
+  "units": "mm",
+  "nativeResolution": 0.5,
+  "targetExecutedForAnalysis": false,
+  "nativeGuiExecuted": true,
+  "inProcessInstrumentation": false,
+  "nativeThreeScan": {
+    "inputProjectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "inputMeshes": 3,
+    "inputVertices": 3121976,
+    "inputTriangles": 6147452,
+    "exportSha256": "2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d",
+    "exportTriangles": 50895,
+    "expandedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+    "everyOrderedCoordinateByteMatches": true,
+    "sourceBuffersUnchanged": true,
+    "coreInputManifestSha256": "ffd2460784a844b18c4ea31ae89caaef1ce018624c068e8adae11cf33124c3b7",
+    "coreReceiptSha256": "f22f5f388da25ee71a2df72d966449f8cb890deb7d1cac417c1faec4377aae7a",
+    "coreResultsSha256": "7300072de4afedfd9f395734951d45f8a5fcff018acbdfe749ce7b89d23baa7c",
+    "peakOwnedJobBytes": 1091997696,
+    "seconds": 76.35932970000431,
+    "topology": {
+      "vertices": 27170,
+      "triangles": 50895,
+      "components": 140,
+      "boundaryLoops": 211,
+      "boundaryChains": 484,
+      "boundaryEdges": 4189,
+      "nonManifoldEdges": 166,
+      "nonManifoldVertices": 441,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 0,
+      "duplicateTriangles": 4,
+      "watertight": false
+    }
+  },
+  "nativeTiltedBox": {
+    "inputVertices": 8,
+    "inputTriangles": 12,
+    "outputTriangles": 136,
+    "nativeExportSha256": "24c6783e94b750340fc706719eb3c8959a553de2a555c1c497d0b4139550fb04",
+    "expandedCoordinateSha256": "9d47de99166be40ef14bfc0ce984971bcf859a91403e7831a35f694af3e9c51f",
+    "everyOrderedCoordinateByteMatches": true,
+    "fixture": "tests/fixtures/repolygonize-observed-tilted-box.json"
+  },
+  "nativeCallerFinding": "The retained GUI command reads Preferences / Simplify Polygonized Mesh, defaults enabled, and passes faceCount >> 1 to the existing reduction wrapper after field extraction. This explains the prior half-count discrepancy.",
+  "resourcePolicy": {
+    "aggregateBytes": 4294967296,
+    "cpuRate": 2500,
+    "rootExited": true,
+    "ownedDescendantsFinal": 0,
+    "ownedHandlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcp": {
+    "tool": "mesh_process",
+    "operation": "scanTools/repolygonize",
+    "methodDefault": "native",
+    "legacyMethod": "voxel",
+    "orderedWorkspaceInputs": true,
+    "indexedCarriersPrivate": true,
+    "defaultNewOwner": true,
+    "originalInputsRetainedAndHidden": true
+  },
+  "remaining": [
+    "Fresh final source/build identity and complete static/regression checks.",
+    "Rendered GUI/public-MCP equality, retry, cancellation/failure rollback, history and save/reopen on final candidate.",
+    "Full original-input browser/worker resource evidence.",
+    "Other M2 native/inventory gates and missing historical defeature selection disposition."
+  ],
+  "scope": "The full core comparison preceded later formatting, transport binding and presentation changes; its manifest pins that exact core candidate. No complete milestone acceptance or watertightness is claimed.",
+  "integratedBrowser": {
+    "assetBuildId": "scanforge-1148d75be3ce1ff0",
+    "fullBuildPrecedingNormalCacheFix": "scanforge-fc7eb170972e84a6",
+    "scope": "Full typecheck/production build and actual production assets/public MCP bridge. Small fixture covers cancellation/failure/retry/persistence; original three scans cover GUI/MCP/native ordered output, all source-buffer digests and visibility undo.",
+    "driver": "tests/scan-repolygonize-browser.mjs",
+    "originalInputEnvironment": "SCANFORGE_RECONSTRUCTION_INPUT_DIR",
+    "receiptSha256": "faab29b6512dc21c5c35174e26fa1167e4856a28b6f3e05a27e73c7d26817889",
+    "ledgerSha256": "c5613d366b346a575776f52824f14cd895f9cd59b2b2c56ac63b7e63dce9adef",
+    "postInputManifestSha256": "8a1dc39636800e61448e574b2dd345fbc75f412d1288de63a14cab7ae0d6e0c3",
+    "manifestCapture": "after run; not a before-and-after immutability receipt",
+    "seconds": 157.25396329996875,
+    "peakAggregateBytes": 2276892672,
+    "results": {
+      "guiMcpNativeOrderedCoordinatesEqual": true,
+      "facetCount": 136,
+      "newOwner": true,
+      "hiddenUnchangedInputs": true,
+      "undoRedo": true,
+      "retryProtected": true,
+      "cancellationRollback": true,
+      "failureRollback": true,
+      "indexedSaveReopen": true,
+      "pageErrors": [],
+      "originalThreeScans": {
+        "inputTriangles": 6147452,
+        "outputTriangles": 50895,
+        "orderedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+        "guiMcpNativeEqual": true,
+        "allSourceBuffersUnchanged": true,
+        "historyVisibilityRollback": true
+      }
+    },
+    "cleanup": [
+      {
+        "port": 57431,
+        "closed": true
+      },
+      {
+        "pid": 54348,
+        "exited": true
+      },
+      {
+        "port": 57432,
+        "closed": true
+      },
+      {
+        "pid": 54680,
+        "exited": true
+      }
+    ],
+    "rootExited": true,
+    "ownedDescendantsFinal": 0,
+    "cleanupErrors": [],
+    "screenshots": {
+      "repolygonize.png": "d727eb21384ee683b3dc371c50cf5453916d05cecbcdf1280c1b600d95ad7a25",
+      "repolygonize-three-scans.png": "3260c247e8cf7ca2e259dd3416264cf23dd872f42ca42b090adfba756d362726"
+    },
+    "finalFullBuild": {
+      "id": "scanforge-1148d75be3ce1ff0",
+      "receiptSha256": "a2771bdbf0f1d392fbdab777bb4d8155fdf78f3224da7512d0cee32032845d33",
+      "exitCode": 0,
+      "cleanupErrors": []
+    }
+  }
+}

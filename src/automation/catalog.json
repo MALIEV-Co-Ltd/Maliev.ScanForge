@@ -552,7 +552,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -729,6 +729,12 @@
                           "type": "number",
                           "exclusiveMinimum": 0,
                           "description": "Sampling spacing in mm, default 0.5. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload; immutable Float32 shared buffers are borrowed by a disposable worker. This payload limit is not a process memory bound. Surface-local sampling retains one billion grid points, 500 million sampling candidates and sixteen million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": ["native", "voxel"],
+                          "default": "native",
+                          "description": "Native signed field with measured topology, or the existing closed voxel shell."
                         }
                       },
                       "required": ["kind"],
@@ -1354,10 +1360,10 @@
             "minLength": 1,
             "maxLength": 200
           },
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. For scanTools/averageMesh: one to 32 additional raw mesh IDs; the member with the most facets is the base (first in object-list order on ties), and all other members contribute in object-list order. Average creates and selects a new mesh by default; explicit createNew:false replaces the chosen base. Its result reports average.baseEntityId and referenceEntityIds. Up to 32 distinct IDs, excluding entityId; mutually exclusive with targetId."
+          "description": "Re-polygonize native: omitted includes visible raw meshes in scene order; [] uses the source alone. Other modes retain their existing target requirements."
         },
         "selectionOnly": {
           "type": "boolean"

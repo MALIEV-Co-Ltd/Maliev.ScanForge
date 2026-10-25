@@ -1,4 +1,5 @@
 import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
+import { nativeRepolygonizeScanMesh } from "./scan-native-repolygonize";
 import type { IndexedMesh, Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { weldScanSamples } from "./scan-resident-samples";
@@ -43,7 +44,14 @@ export type ScanToolOperation =
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
   | { kind: "flipNormals" }
-  | { kind: "repolygonize"; resolution?: number; targets?: Positions[] }
+  | {
+      kind: "repolygonize";
+      resolution?: number;
+      targets?: Positions[];
+      sourceTopology?: IndexedMesh;
+      targetTopology?: (IndexedMesh | undefined)[];
+      method?: "native" | "voxel";
+    }
   | {
       kind: "averageMesh";
       targets: Positions[];
@@ -78,7 +86,15 @@ export function runScanTool(
     case "shrinkwrap":
       return shrinkwrapScanMesh(positions, { ...operation, ...options });
     case "repolygonize":
-      return repolygonizeScanMesh(positions, { ...operation, ...options });
+      if (
+        operation.method !== undefined &&
+        operation.method !== "native" &&
+        operation.method !== "voxel"
+      )
+        throw Error("Unknown reconstruction method.");
+      return operation.method === "voxel"
+        ? repolygonizeScanMesh(positions, { ...operation, ...options })
+        : nativeRepolygonizeScanMesh(positions, { ...operation, ...options });
     case "scaleMesh":
       return scaleScanMesh(positions, { ...operation, ...options });
     case "flipNormals":

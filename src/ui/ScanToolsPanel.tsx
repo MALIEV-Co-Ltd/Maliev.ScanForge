@@ -51,7 +51,12 @@ export type ScanToolParameters =
       scope: "whole" | "selected" | "isolated";
       targetIds?: string[];
     }
-  | { kind: "repolygonize"; resolution: number; targetIds?: string[] }
+  | {
+      kind: "repolygonize";
+      resolution: number;
+      targetIds?: string[];
+      method?: "native" | "voxel";
+    }
   | { kind: "averageMesh"; targetIds: string[]; tolerance: number }
   | {
       kind: "mirrorMesh";
@@ -170,6 +175,9 @@ export function ScanToolsPanel({
     "whole",
   );
   const [resolution, setResolution] = useState(0.5);
+  const [reconstructionMethod, setReconstructionMethod] = useState<
+    "native" | "voxel"
+  >("native");
   const [tolerance, setTolerance] = useState(10);
   const [targetIds, setTargetIds] = useState<string[]>([]);
   useEffect(() => {
@@ -228,6 +236,14 @@ export function ScanToolsPanel({
       !e.parametric &&
       e.positions.length >= 9,
   );
+  useEffect(() => {
+    if (tool === "repolygonize")
+      setTargetIds(
+        reconstructionMethod === "native"
+          ? targets.filter((e) => e.visible).map((e) => e.id)
+          : [],
+      );
+  }, [tool, selected?.id, reconstructionMethod]);
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
   const [offsetDegrees, setOffsetDegrees] = useState(0);
@@ -385,7 +401,12 @@ export function ScanToolsPanel({
         });
         break;
       case "repolygonize":
-        onApply({ kind: tool, resolution, targetIds });
+        onApply({
+          kind: tool,
+          resolution,
+          targetIds,
+          method: reconstructionMethod,
+        });
         break;
       case "averageMesh":
         onApply({
@@ -665,6 +686,21 @@ export function ScanToolsPanel({
           )}
           {tool === "repolygonize" && (
             <>
+              <label>
+                Reconstruction method
+                <AppSelect
+                  aria-label="Reconstruction method"
+                  value={reconstructionMethod}
+                  onChange={(event) =>
+                    setReconstructionMethod(
+                      event.target.value as "native" | "voxel",
+                    )
+                  }
+                >
+                  <option value="native">Native field</option>
+                  <option value="voxel">Closed voxel shell</option>
+                </AppSelect>
+              </label>
               <Field
                 label="Point resolution (mm)"
                 value={resolution}
@@ -694,16 +730,27 @@ export function ScanToolsPanel({
                   </label>
                 ))}
               </div>
-              <p className="muted">
-                Voxel reconstruction closes small gaps and fills enclosed
-                cavities. Open scans become thick shells; the surface can move
-                by about 0.75 times point resolution. Results are checked for
-                closed, manifold topology; separated regions can remain separate
-                closed components. Self-intersections are not checked. Undo
-                restores the original. Finer spacing retains smaller details; it
-                is not a maximum-deviation tolerance. Reconstruction supports up
-                to one billion grid points and sixteen million output triangles.
-              </p>
+              {reconstructionMethod === "native" ? (
+                <p className="muted">
+                  Creates a new field surface from the checked meshes and hides
+                  the originals. Half-count optimization is enabled by default.
+                  Boundary and nonmanifold diagnostics are reported; the result
+                  may require repair before solid use. Point resolution is
+                  spacing, not a maximum-deviation bound.
+                </p>
+              ) : (
+                <p className="muted">
+                  Voxel reconstruction closes small gaps and fills enclosed
+                  cavities. Open scans become thick shells; the surface can move
+                  by about 0.75 times point resolution. Results are checked for
+                  closed, manifold topology; separated regions can remain
+                  separate closed components. Self-intersections are not
+                  checked. Undo restores the original. Finer spacing retains
+                  smaller details; it is not a maximum-deviation tolerance.
+                  Reconstruction supports up to one billion grid points and
+                  sixteen million output triangles.
+                </p>
+              )}
             </>
           )}
           {tool === "averageMesh" && (

@@ -245,7 +245,9 @@ it("offers additional reconstruction meshes with measured closure and shape-chan
   expect(html).toContain('aria-label="Additional reconstruction meshes"');
   expect(html).toContain("Aligned scan");
   expect(html).toContain("retained unchanged");
-  expect(html).toContain("separate closed components");
-  expect(html).toContain("one billion grid points");
-  expect(html).toContain("not a maximum-deviation tolerance");
+  expect(html).toContain("Native field");
+  expect(html).toContain("Closed voxel shell");
+  expect(html).toContain("Half-count optimization is enabled by default");
+  expect(html).toContain("Boundary and nonmanifold diagnostics are reported");
+  expect(html).toContain("not a maximum-deviation bound");
 });

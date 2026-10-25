@@ -9,7 +9,7 @@ import {
 import {
   cancelScanToolOnSourceChange,
   cancelShrinkwrapOperation,
-  runShrinkwrapPreviewCommand,
+  runScanPreviewCommand,
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
 import { runAverageCommand } from "./average-command";
@@ -2483,7 +2483,16 @@ export function App() {
     }
     const label =
       operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
-    setHistory((previous) => [...previous, { entities, label }]);
+    setHistory((previous) => [
+      ...previous,
+      {
+        entities,
+        label,
+        ...(policy?.modelVisibilityFor?.length
+          ? { restoreVisibilityFor: [...policy.modelVisibilityFor] }
+          : {}),
+      },
+    ]);
     setFuture([]);
     setEntities(next);
     setDirty(true);
@@ -2508,8 +2517,14 @@ export function App() {
   function undoModel() {
     if (history.length) {
       const next = history[history.length - 1];
-      setFuture((p) => [{ entities, label: next.label }, ...p]);
-      setEntities(restoreModelDisplay(next.entities, entities));
+      setFuture((p) => [{ ...next, entities }, ...p]);
+      setEntities(
+        restoreModelDisplay(
+          next.entities,
+          entities,
+          new Set(next.restoreVisibilityFor),
+        ),
+      );
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -2523,8 +2538,14 @@ export function App() {
   function redoModel() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p, { entities, label: next.label }]);
-      setEntities(restoreModelDisplay(next.entities, entities));
+      setHistory((p) => [...p, { ...next, entities }]);
+      setEntities(
+        restoreModelDisplay(
+          next.entities,
+          entities,
+          new Set(next.restoreVisibilityFor),
+        ),
+      );
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -2681,7 +2702,7 @@ export function App() {
     scanToolAbort.current = controller;
     setError("");
     try {
-      return await runShrinkwrapPreviewCommand(workspaceApi, args, {
+      return await runScanPreviewCommand(workspaceApi, args, {
         signal: controller.signal,
         onProgress: (fraction, stage) => {
           setScanToolFraction(fraction);
@@ -2735,7 +2756,8 @@ export function App() {
               {
                 entityId: sourceId,
                 resolution: parameters.resolution,
-                ...(parameters.targetIds?.length
+                method: parameters.method,
+                ...(parameters.targetIds !== undefined
                   ? { targetIds: parameters.targetIds }
                   : {}),
               },
@@ -2777,8 +2799,7 @@ export function App() {
           entitiesRef.current.find(
             (entity) =>
               entity.id ===
-              (parameters.kind !== "repolygonize" &&
-              Array.isArray(result.entityIds)
+              (Array.isArray(result.entityIds)
                 ? result.entityIds[0]
                 : sourceId),
           )?.positions ?? null;

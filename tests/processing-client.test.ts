@@ -591,6 +591,35 @@ describe("processing worker resource ownership", () => {
       expect(selection[0]).toBe(1);
     }
   });
+  it("clones reconstruction indices without detaching canonical topology", async () => {
+    const topology = {
+      vertices: positions,
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    const pending = processMesh({
+      kind: "scanTools",
+      positions,
+      operation: { kind: "repolygonize", sourceTopology: topology },
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent;
+    worker.reply({
+      result: {
+        kind: "scanTools",
+        positions: positions.slice(),
+        diagnostics: { summary: "Done" },
+      },
+    });
+    await pending;
+    if (sent?.kind !== "scanTools" || sent.operation.kind !== "repolygonize")
+      throw Error("Expected reconstruction");
+    expect(sent.operation.sourceTopology?.vertices).not.toBe(positions);
+    expect(sent.operation.sourceTopology?.triangles).not.toBe(
+      topology.triangles,
+    );
+    expect(topology.triangles).toEqual(new Uint32Array([0, 1, 2]));
+    expect(worker.terminated).toBe(true);
+  });
   it("rejects oversized Average carriers before constructing or copying to a worker", async () => {
     const before = ProcessingWorkerDouble.creates;
     await expect(

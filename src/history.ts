@@ -5,6 +5,8 @@ import { meshGeometryNormals } from "./mesh-geometry-normals";
 export interface Revision {
   entities: Entity[];
   label: string;
+  /** Visibility changed by the modeling operation itself, rather than a display toggle. */
+  restoreVisibilityFor?: string[];
 }
 /** Seek atomically across both undo and redo snapshots, without replaying edits. */
 export function seekModelRevision(
@@ -17,23 +19,28 @@ export function seekModelRevision(
   if (!Number.isInteger(index) || index < 0 || index > count)
     throw new RangeError("Model revision is outside the retained timeline");
   if (index === history.length) return { history, entities, future };
-  const labels = [...history, ...future].map((revision) => revision.label);
+  const revisions = [...history, ...future];
+  const visibility = new Set(
+    revisions
+      .slice(Math.min(index, history.length), Math.max(index, history.length))
+      .flatMap((r) => r.restoreVisibilityFor ?? []),
+  );
   const states = [
     ...history.map((revision) => revision.entities),
     entities,
     ...future.map((revision) => revision.entities),
   ];
   return {
-    history: labels
+    history: revisions
       .slice(0, index)
-      .map((label, i) => ({ label, entities: states[i] })),
-    entities: restoreModelDisplay(states[index], entities),
-    future: labels
+      .map((revision, i) => ({ ...revision, entities: states[i] })),
+    entities: restoreModelDisplay(states[index], entities, visibility),
+    future: revisions
       .slice(index)
-      .map((label, i) => ({ label, entities: states[index + i + 1] })),
+      .map((revision, i) => ({ ...revision, entities: states[index + i + 1] })),
   };
 }
-/** Display and selection authoring changes never enter the modeling timeline. */
+/** Ordinary display and selection changes do not enter the modeling timeline. */
 export function modelChanged(before: Entity[], after: Entity[]): boolean {
   if (before.length !== after.length) return true;
   return after.some((next) => {
@@ -55,6 +62,7 @@ export function modelChanged(before: Entity[], after: Entity[]): boolean {
 export function restoreModelDisplay(
   target: Entity[],
   current: Entity[],
+  restoreVisibilityFor: ReadonlySet<string> = new Set(),
 ): Entity[] {
   return target.map((entity) => {
     // Legacy history is initialized only when activated. Preserve the retained
@@ -84,7 +92,9 @@ export function restoreModelDisplay(
       pointDensity: live.pointDensity,
       pointColorMode: live.pointColorMode,
       opacity: live.opacity,
-      visible: live.visible,
+      visible: restoreVisibilityFor.has(entity.id)
+        ? entity.visible
+        : live.visible,
       selectable: live.selectable,
       locked: live.locked,
       meshSelection:

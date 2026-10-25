@@ -3,7 +3,10 @@ import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { bindAverageMeshes } from "../scan-average-request";
 import { createScanPreviewOperation } from "./scan-preview-operations";
-import { reconstructionTargets } from "../scan-reconstruction-targets";
+import {
+  reconstructionTargets,
+  bindNativeReconstruction,
+} from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
@@ -993,6 +996,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
       let average: ReturnType<typeof bindAverageMeshes> | undefined;
+      let reconstruction:
+        ReturnType<typeof bindNativeReconstruction> | undefined;
       if (kind === "scanTools" && op.operation.kind === "averageMesh") {
         if (a.selectionOnly)
           throw new Error(
@@ -1234,17 +1239,32 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           if (
             a.targetIds !== undefined &&
             (!Array.isArray(a.targetIds) ||
-              a.targetIds.length < 1 ||
+              (a.targetIds.length < 1 && op.operation.method === "voxel") ||
               a.targetIds.length > 32 ||
               a.targetIds.some((id: unknown) => typeof id !== "string"))
           )
             throw new Error(
               "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
             );
-          op.operation.targets = reconstructionTargets(
-            e,
-            (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
-          );
+          if (op.operation.method !== "voxel") {
+            reconstruction = bindNativeReconstruction(
+              e,
+              a.targetIds,
+              s.entities,
+            );
+            request.positions = reconstruction.source.positions;
+            op.operation.sourceTopology = reconstruction.source.indexedMesh;
+            op.operation.targetTopology = reconstruction.references.map(
+              (e) => e.indexedMesh,
+            );
+            op.operation.targets = reconstruction.references.map(
+              (e) => e.positions,
+            );
+          } else
+            op.operation.targets = reconstructionTargets(
+              e,
+              (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
+            );
         }
         if (op.operation.kind === "averageMesh") {
           op.operation.targets = average!.references.map(
@@ -1314,6 +1334,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         else if (
           a.createNew ??
           (!!average ||
+            !!reconstruction ||
             (kind === "scanTools" && op.operation.kind === "unroll"))
         ) {
           updated.id = id();
@@ -1322,13 +1343,21 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               [...s.entities, { id: updated.id }],
               [updated.id],
             ).orderedSources[0].constructionOrderKey;
-          updated.name = average
-            ? "Average mesh"
-            : kind === "scanTools" && op.operation.kind === "unroll"
-              ? `${e.name} - Unrolled`
-              : `${e.name} ${kind}`;
+          updated.name = reconstruction
+            ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
+            : average
+              ? "Average mesh"
+              : kind === "scanTools" && op.operation.kind === "unroll"
+                ? `${e.name} - Unrolled`
+                : `${e.name} ${kind}`;
           created.push(updated);
           next = [...next, updated];
+          if (reconstruction) {
+            const inputIds = new Set(reconstruction.inputs.map((e) => e.id));
+            next = next.map((e) =>
+              inputIds.has(e.id) ? { ...e, visible: false } : e,
+            );
+          }
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
       if (segments?.length) {
@@ -1343,6 +1372,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         next = [...next, ...created.filter((x) => !next.includes(x))];
       }
       const response = {
+        ...(reconstruction
+          ? {
+              reconstruction: {
+                inputEntityIds: reconstruction.inputs.map((e) => e.id),
+                method: "native",
+              },
+            }
+          : {}),
         ...(average
           ? {
               average: {
@@ -1379,8 +1416,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       };
       c.check();
       if (positions || segments?.length)
-        host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
-      if (average && created.length) host.select(created[0].id);
+        host.commit(
+          next.map(retainIndexedMesh),
+          `Mesh ${kind}`,
+          reconstruction && created.length
+            ? { modelVisibilityFor: reconstruction.inputs.map((e) => e.id) }
+            : undefined,
+        );
+      if ((average || reconstruction) && created.length)
+        host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;
     },

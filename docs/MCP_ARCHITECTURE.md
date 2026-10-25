@@ -1370,3 +1370,9 @@ history boundaries remain authoritative.
 ### Shared Scan Data preview owner
 
 `createScanPreviewOperation` owns Noise, Reduction, Scale, Mirror and ShrinkWrap previews for both GUI and MCP. It binds workspace references/selection, retains immutable worker output and comparison state under a 60-second lease, validates source/reference identity, and commits acceptance as one tracked mutation. The editor adapter only presents that owner. Comparison threshold updates reuse worker caches. A trusted commit policy preserves facet selection only for noise replacement with unchanged facet identities; transport callers cannot supply this policy.
+
+### Native reconstruction publication
+
+Native Re-polygonize binds visible or explicitly requested raw meshes in scene order and transports immutable indexed carriers through the existing disposable `mesh_process` worker. Admission accounts for source coordinates, copied indices and unshared vertex carriers before cloning. Authored/shared buffers are never transferred. Signed-field extraction and directed boundary repair precede the observed half-count native reduction; disposable field graphs retire before mutable output records allocate. Publication adopts indexed output in one history mutation, creates a distinct construction identity and hides unchanged input owners. Explicit replacement and the existing voxel method remain available. Source/reference selection, retry protection, lock checks, cancellation and failure rollback stay on the shared application boundary.
+
+Reconstruction publication records input visibility as modeling history metadata. GUI and public MCP undo/redo/timeline seek restore those visibility changes together with the owner, including after binary project save/reopen. Ordinary display toggles retain their existing independence from modeling history. Legacy project revisions without the optional metadata preserve their previous behavior.

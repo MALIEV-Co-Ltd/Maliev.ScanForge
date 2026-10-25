@@ -1,7 +1,7 @@
 import { runApplicationJobCommand } from "./application-job-command";
 import type { ApplicationApi } from "../automation/api";
 /** GUI calls the same guarded, cancellable API job as an MCP client. */
-export async function runShrinkwrapPreviewCommand(
+export async function runScanPreviewCommand(
   api: Pick<ApplicationApi, "invoke" | "currentRevision">,
   args: Record<string, unknown>,
   options: {
@@ -14,6 +14,22 @@ export async function runShrinkwrapPreviewCommand(
     cancelledMessage: "Mesh preview operation cancelled.",
     leaseMessage:
       "Mesh preview reached its operation lease; retry with a smaller region.",
+  });
+}
+/** Retain the existing ShrinkWrap adapter's exact recovery messages. */
+export async function runShrinkwrapPreviewCommand(
+  api: Pick<ApplicationApi, "invoke" | "currentRevision">,
+  args: Record<string, unknown>,
+  options: {
+    signal?: AbortSignal;
+    onProgress?: (fraction: number, stage: string) => void;
+  } = {},
+) {
+  return runApplicationJobCommand(api, "scan_preview", args, {
+    ...options,
+    cancelledMessage: "ShrinkWrap operation cancelled.",
+    leaseMessage:
+      "ShrinkWrap reached its operation lease; retry with a smaller region.",
   });
 }
 /** Accept commits intentionally replace source positions. Other source changes cancel work. */

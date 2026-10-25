@@ -5,6 +5,8 @@ import type { ConstructionIdentityAssignment } from "./reference-construction-id
 
 /** Trusted commit metadata, never a caller-editable transport field. */
 export interface ModelCommitPolicy {
+  /** Shared modeling publication may hide inputs atomically with its geometry edit. */
+  readonly modelVisibilityFor?: readonly string[];
   /** Trusted noise preview: same facet IDs, selection follows the new coordinates. */
   readonly preserveFacetSelectionFor?: string;
   readonly constructionIdentityMigration?: readonly ConstructionIdentityAssignment[];

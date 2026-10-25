@@ -65,3 +65,17 @@ it("reduces selected surface noise more than the old preset without moving unsel
     runScanEdit({ ...request, iterations: 1, strength: 0.25 }).positions,
   ).not.toEqual(current);
 });
+
+it("matches three observed native Smooth clicks with the six-pass application preset", async () => {
+  const fixture = (await import("./fixtures/smooth-six-passes-observed.json"))
+    .default;
+  const positions = new Float32Array(fixture.positions);
+  const output = runScanEdit({
+    kind: "scanEdit",
+    action: "smoothSelected",
+    positions,
+    selection: new Uint8Array(fixture.selection),
+  }).positions!;
+  expect(Array.from(output)).toEqual(fixture.nativeOutput);
+  expect(Array.from(positions)).toEqual(fixture.positions);
+});

@@ -1,5 +1,8 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
-import { reconstructionTargets } from "../scan-reconstruction-targets";
+import {
+  reconstructionTargets,
+  bindNativeReconstruction,
+} from "../scan-reconstruction-targets";
 import { bindAverageMeshes } from "../scan-average-request";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
@@ -24,6 +27,31 @@ export function scanToolRequest(
       break;
     }
     case "repolygonize": {
+      if (parameters.method !== "voxel") {
+        const bound = bindNativeReconstruction(
+          source,
+          parameters.targetIds,
+          entities,
+        );
+        return {
+          kind: "scanTools",
+          positions: bound.source.positions,
+          operation: {
+            kind: "repolygonize",
+            resolution: parameters.resolution,
+            ...(parameters.method !== undefined
+              ? { method: parameters.method }
+              : {}),
+            targets: bound.references.map((e) => e.positions),
+            ...(bound.source.indexedMesh
+              ? { sourceTopology: bound.source.indexedMesh }
+              : {}),
+            ...(bound.references.some((e) => e.indexedMesh)
+              ? { targetTopology: bound.references.map((e) => e.indexedMesh) }
+              : {}),
+          },
+        };
+      }
       const targets = (parameters.targetIds ?? []).map((id) => {
         const entity = entities.find((e) => e.id === id);
         if (!entity)
@@ -33,6 +61,7 @@ export function scanToolRequest(
       operation = {
         kind: parameters.kind,
         resolution: parameters.resolution,
+        method: "voxel",
         targets: reconstructionTargets(source, targets),
       };
       break;
