@@ -80,11 +80,22 @@ controls and do not add transport commands or bypass revision and request guards
 ## Intent and scope
 
 The shared restore worker accepts optional immutable shared chunk candidates
-from the decoder client's bounded weak cache. It reads and validates the entire
+from a shared bounded weak registry. Successful restore and encoding workers
+seed the same registry; encoder candidates are published only after file storage
+completes, with cancellation, page-generation and lease fencing. Encoding registers
+only complete immutable SAB views with canonical matching binary type and
+little-endian bytes, using the actual encoded chunk hash. Ordinary buffers,
+subviews and converted values are excluded. An operation-local list of at most
+128 original SAB wrappers travels in the same structured-clone graph as the
+encoding snapshot/transport. The worker returns validated hashes and source
+tokens only; successful storage rebinds these to the original live wrappers.
+Thus weak-cache reachability follows editor ownership rather than temporary
+worker-returned wrappers. Malformed or sparse token replies fail before storage
+or cache publication. It reads and validates the entire
 incoming file even on a cache hit: matching streamed bytes borrow the earlier
 backing, mismatches allocate an independent chunk, and the final SHA-256 remains
 mandatory. Worker transport preserves SharedArrayBuffer backing without transfer
-or detachment. Only successfully restored chunks are published to the client's
+or detachment. Successful operations publish backing into the shared
 128-entry weak cache; page exit clears it. GUI opening, MCP `project_import` and
 `backup_restore` share this implementation, including ordinary-buffer fallback,
 leases, cancellation and atomic workspace replacement. Public contracts remain
@@ -1355,3 +1366,5 @@ Reconstruction binds explicit `points` or `triangles` records from current works
 An internal optional global alignment environment can supply retained sampler clock streams by prepared scan ID and the outer clock callback. It is absent from public schemas and ordinary editor construction. It supplies environmental clocks only; captured geometry, queries, matrices and results are never injected into the solve. Supplied-host controller tests remain distinct from production editor/stdio and native setter-entry observation.
 
 Cloud placement caches retain a boolean describing the world-normal carrier alongside weak buffer references; reclaiming historical views does not erase this storage choice or add a strong geometry reference. Project encoding snapshots carry optional `typedNormalClouds` entity references through structured cloning, preserving existing deduplication identities. Binary cloud records use optional `cloudNormalsTyped` independently of local normal storage. Decoding strips that internal flag from entity metadata, validates its type/pose prerequisite and restores the world carrier. Omitted flags retain the legacy array fallback; file versions and public tool schemas remain unchanged. GUI history and public MCP export/restore use these same paths.
+
+Computed scan facets use the shared optional `IndexedMesh.facetNormals` Float32 carrier (XYZ per triangle), distinct from scanner and computed vertex normals. Import/render preparation initializes it, shared rigid transforms rotate it stage by stage, and immutable history/project transport retain its bits and aliases. Global input and query admission count its backing storage; GUI and MCP invoke the same production evaluator path. Geometry inspection exposes the carrier through `object_get` and `object_geometry_digest`. Geometry JSON receives a UTF-8 size preflight against the existing 1 GiB artifact capacity before typed-array expansion; larger payloads use binary project export or bounded digest inspection. Derived triangle-soup topology is published only when it expands exactly to the source; the nonmatching legacy geometry fallback remains uncached.

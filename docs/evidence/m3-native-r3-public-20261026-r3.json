@@ -1,0 +1,523 @@
+{
+  "schema": 1,
+  "passed": true,
+  "run": "native-r3-production-public-r3",
+  "evidence": ".resources\\m3\\native-r3-production-public-r3\\evidence.json",
+  "evidenceSha256": "9b97cd954bed5435d2282437c1d3b55ad714b400f7b189abe07a407270064f39",
+  "receipt": ".resources\\m3\\native-r3-production-public-r3.receipt.json",
+  "receiptSha256": "704db5e152d7bab73c5ef55c8218bcc85a3624260c8510286d912582026a98df",
+  "buildId": "scanforge-02f14fce13af5f4c",
+  "build": {
+    "selectedLabel": "m3-legacy-pinned-build-r1",
+    "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac",
+    "sourcePath": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/m3-legacy-pinned-build-r1.source.json",
+    "sourceFileSha256": "cdd5b481b84883b6d99ee1049fdf0b7dc71e25d8b5d0a0209e75374584649ea2",
+    "buildReceiptPath": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/m3-legacy-pinned-build-r1.build.json",
+    "buildReceiptSha256": "4ae53f0f75cffd8ae4e5af99422c1529c57817045b8d4cdfd371669e7790c70b"
+  },
+  "fullR1FreshFacetValues": 19989492,
+  "samplingClocks": 3903,
+  "queries": 38,
+  "correspondenceRecords": 27420,
+  "localEntryExitPairs": 6,
+  "sameR3ObservedSetterComparisons": 6,
+  "fullR3AfterSupportedValues": 40278222,
+  "expandedPositionValues": 59968476,
+  "scope": {
+    "testWorkspaceHost": true,
+    "actualReactEditor": false,
+    "stdioMcp": false,
+    "rendering": false,
+    "nativeSetterEntryObserved": true,
+    "nativeBaseline": "R3-before equals full R2-after; originals are not pristine here",
+    "initialBaselineStorage": "Immutable SAB using production readonly allocation; ordinary-buffer r1 admission failure retained separately",
+    "observerInstrumentedController": true,
+    "oracleInputsSuppliedToController": false,
+    "nativeFacetNormalComparison": "Fresh complete original R1 import and production complete R3-before/after carriers",
+    "nativeFacetNormalField": true,
+    "completeNativeParity": false
+  },
+  "checks": {
+    "originalImportedFullGeometry": true,
+    "nativeR2PrealignedInputSnapshot": true,
+    "publicApplicationApi": true,
+    "isolatedController": true,
+    "realQueryAndSetterWorkers": true,
+    "nativeFinalStatesAndSupportedBuffers": true,
+    "immutableR3BaselineStreams": true,
+    "exactCachedApply": true,
+    "retryCommittedOnce": true,
+    "historyEntries": 1,
+    "outerClockCalls": 1,
+    "unresolvedOwnedWorkers": 0
+  },
+  "sourceInputsUnchanged": true,
+  "observerTransforms": [
+    {
+      "path": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/src/scan-global-controller-core.ts",
+      "sourceSha256": "deae025b0406c6983741d1f71c6ee1c827deeeab033d7db64d54d1e067d64727",
+      "transformedSha256": "f6b2af42a79f974c84680cca15f3b0e0912a6607e7680e444eeef64c262d6f7c",
+      "scope": "Copies computed query/local entry/exit observations only; no expected data is present in controller code or messages"
+    }
+  ],
+  "ownedCleanup": {
+    "elapsedSeconds": 29.323961700021755,
+    "childPeakJobMemoryBytes": 2068652032,
+    "outerPeakJobMemoryBytes": 2082586624,
+    "childJobFinalActive": 0,
+    "cleanupErrors": [],
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true
+  },
+  "priorRuns": {
+    "r1": "Ordinary captured-baseline buffers exceeded unchanged 512 MiB query admission; failed evidence and exact harness retained.",
+    "r2": "Passed earlier build scanforge-49942ea230ea3ec5; original evidence and exact harness archive are unchanged."
+  },
+  "exactHarnessArchive": ".resources\\m3\\native-r3-production-public-r3\\harness",
+  "nativeEvidence": {
+    "sameRun": "Native R3 on original three owners after native R2 prealignment; no pristine convergence claim",
+    "tracePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/native-same-run-alignment-32152-r3-final-rea.json",
+    "evidenceId": "ev_8a48b5006c04e097832c1f9ea4c6915018910358f23b2a7734d1fd4414b56000",
+    "baseline": "native-base-ply-32152-before-r3/evidence.json; complete fields equal native R2-after, topology equals original R1",
+    "after": "native-base-ply-32152-after-r3/evidence.json",
+    "setterObservations": "Six ordered wrapper/owner matrix entries and paired returns in the same R3 trace"
+  },
+  "normalSemantics": {
+    "geometryNormals": "Computed per-vertex Float32 vectors, independently compared to full same-R3 native vertex-normal buffers",
+    "facetNormals": "Computed per-triangle Float32 vectors; all fresh original-import R1 values compared, then legitimate stored R3-before state retained and complete R3-after values compared",
+    "authoredScannerNormals": "R2-world authored attribute bytes were not captured; omitted from the R3 baseline and never substituted with computed vectors"
+  },
+  "limitations": [
+    "Observer-instrumented supplied WorkspaceHost/ApplicationApi route; React editor, stdio MCP and rendered geometry are outside this run.",
+    "Captured R3-before initial geometry is already native R2-aligned and uses production immutable SAB allocation; this does not establish pristine-import convergence or ordinary-buffer capacity acceptance.",
+    "Supported position, computed vertex/facet normal and topology carriers are compared fully; opaque native object/vertex-record layouts and unobserved scanner attributes are not claimed equivalent.",
+    "No complete milestone, geometric quality, native usability or original-file dialog acceptance claim."
+  ],
+  "originalImports": [
+    {
+      "file": "ply-1.ply",
+      "owner": 49737776,
+      "facetNormals": {
+        "values": 822462,
+        "mismatchedWords": 0
+      },
+      "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+    },
+    {
+      "file": "ply-2.ply",
+      "owner": 49740032,
+      "facetNormals": {
+        "values": 8093631,
+        "mismatchedWords": 0
+      },
+      "sourceSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+    },
+    {
+      "file": "ply-3.ply",
+      "owner": 49737024,
+      "facetNormals": {
+        "values": 11073399,
+        "mismatchedWords": 0
+      },
+      "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2"
+    }
+  ],
+  "geometry": [
+    {
+      "file": "ply-1.ply",
+      "descriptor": "0x5ca4de70",
+      "entityId": "68e19c78-d2c9-421b-aa48-c02edc5de4d8",
+      "indexedPositions": {
+        "values": 420339,
+        "mismatchedWords": 0
+      },
+      "geometryNormals": {
+        "values": 420339,
+        "mismatchedWords": 0
+      },
+      "facetNormals": {
+        "values": 822462,
+        "mismatchedWords": 0
+      },
+      "expandedPositionValues": 2467386,
+      "expandedMismatches": 0,
+      "authoredScannerNormalsCompared": false,
+      "topologyCarrierPreserved": true,
+      "r3BaselineStreamsUnchanged": true,
+      "computedDisplayNormalsBorrowStoredCarrier": true
+    },
+    {
+      "file": "ply-2.ply",
+      "descriptor": "0x5ca4e2f0",
+      "entityId": "4f390b0f-4398-47fc-b595-4f0b3917d953",
+      "indexedPositions": {
+        "values": 4126482,
+        "mismatchedWords": 0
+      },
+      "geometryNormals": {
+        "values": 4126482,
+        "mismatchedWords": 0
+      },
+      "facetNormals": {
+        "values": 8093631,
+        "mismatchedWords": 0
+      },
+      "expandedPositionValues": 24280893,
+      "expandedMismatches": 0,
+      "authoredScannerNormalsCompared": false,
+      "topologyCarrierPreserved": true,
+      "r3BaselineStreamsUnchanged": true,
+      "computedDisplayNormalsBorrowStoredCarrier": true
+    },
+    {
+      "file": "ply-3.ply",
+      "descriptor": "0x5ca4e9b0",
+      "entityId": "680f4ed7-30e1-4406-a767-2e9ac92a2b73",
+      "indexedPositions": {
+        "values": 5597544,
+        "mismatchedWords": 0
+      },
+      "geometryNormals": {
+        "values": 5597544,
+        "mismatchedWords": 0
+      },
+      "facetNormals": {
+        "values": 11073399,
+        "mismatchedWords": 0
+      },
+      "expandedPositionValues": 33220197,
+      "expandedMismatches": 0,
+      "authoredScannerNormalsCompared": false,
+      "topologyCarrierPreserved": true,
+      "r3BaselineStreamsUnchanged": true,
+      "computedDisplayNormalsBorrowStoredCarrier": true
+    }
+  ],
+  "queryComparisons": [
+    {
+      "id": 1,
+      "localId": 1,
+      "records": 249,
+      "exact": true
+    },
+    {
+      "id": 2,
+      "localId": 1,
+      "records": 248,
+      "exact": true
+    },
+    {
+      "id": 3,
+      "localId": 1,
+      "records": 248,
+      "exact": true
+    },
+    {
+      "id": 4,
+      "localId": 1,
+      "records": 250,
+      "exact": true
+    },
+    {
+      "id": 5,
+      "localId": 1,
+      "records": 251,
+      "exact": true
+    },
+    {
+      "id": 6,
+      "localId": 2,
+      "records": 988,
+      "exact": true
+    },
+    {
+      "id": 7,
+      "localId": 2,
+      "records": 987,
+      "exact": true
+    },
+    {
+      "id": 8,
+      "localId": 3,
+      "records": 990,
+      "exact": true
+    },
+    {
+      "id": 9,
+      "localId": 3,
+      "records": 998,
+      "exact": true
+    },
+    {
+      "id": 10,
+      "localId": 3,
+      "records": 996,
+      "exact": true
+    },
+    {
+      "id": 11,
+      "localId": 3,
+      "records": 996,
+      "exact": true
+    },
+    {
+      "id": 12,
+      "localId": 3,
+      "records": 998,
+      "exact": true
+    },
+    {
+      "id": 13,
+      "localId": 3,
+      "records": 1000,
+      "exact": true
+    },
+    {
+      "id": 14,
+      "localId": 3,
+      "records": 1001,
+      "exact": true
+    },
+    {
+      "id": 15,
+      "localId": 3,
+      "records": 1000,
+      "exact": true
+    },
+    {
+      "id": 16,
+      "localId": 3,
+      "records": 1003,
+      "exact": true
+    },
+    {
+      "id": 17,
+      "localId": 4,
+      "records": 1003,
+      "exact": true
+    },
+    {
+      "id": 18,
+      "localId": 4,
+      "records": 1003,
+      "exact": true
+    },
+    {
+      "id": 19,
+      "localId": 4,
+      "records": 1006,
+      "exact": true
+    },
+    {
+      "id": 20,
+      "localId": 4,
+      "records": 1006,
+      "exact": true
+    },
+    {
+      "id": 21,
+      "localId": 4,
+      "records": 1006,
+      "exact": true
+    },
+    {
+      "id": 22,
+      "localId": 4,
+      "records": 1005,
+      "exact": true
+    },
+    {
+      "id": 23,
+      "localId": 4,
+      "records": 1008,
+      "exact": true
+    },
+    {
+      "id": 24,
+      "localId": 4,
+      "records": 1009,
+      "exact": true
+    },
+    {
+      "id": 25,
+      "localId": 4,
+      "records": 1006,
+      "exact": true
+    },
+    {
+      "id": 26,
+      "localId": 5,
+      "records": 249,
+      "exact": true
+    },
+    {
+      "id": 27,
+      "localId": 5,
+      "records": 253,
+      "exact": true
+    },
+    {
+      "id": 28,
+      "localId": 5,
+      "records": 249,
+      "exact": true
+    },
+    {
+      "id": 29,
+      "localId": 5,
+      "records": 251,
+      "exact": true
+    },
+    {
+      "id": 30,
+      "localId": 5,
+      "records": 250,
+      "exact": true
+    },
+    {
+      "id": 31,
+      "localId": 5,
+      "records": 250,
+      "exact": true
+    },
+    {
+      "id": 32,
+      "localId": 5,
+      "records": 250,
+      "exact": true
+    },
+    {
+      "id": 33,
+      "localId": 5,
+      "records": 246,
+      "exact": true
+    },
+    {
+      "id": 34,
+      "localId": 5,
+      "records": 244,
+      "exact": true
+    },
+    {
+      "id": 35,
+      "localId": 6,
+      "records": 978,
+      "exact": true
+    },
+    {
+      "id": 36,
+      "localId": 6,
+      "records": 980,
+      "exact": true
+    },
+    {
+      "id": 37,
+      "localId": 6,
+      "records": 982,
+      "exact": true
+    },
+    {
+      "id": 38,
+      "localId": 6,
+      "records": 983,
+      "exact": true
+    }
+  ],
+  "localComparisons": [
+    {
+      "localId": 1,
+      "exact": true
+    },
+    {
+      "localId": 2,
+      "exact": true
+    },
+    {
+      "localId": 3,
+      "exact": true
+    },
+    {
+      "localId": 4,
+      "exact": true
+    },
+    {
+      "localId": 5,
+      "exact": true
+    },
+    {
+      "localId": 6,
+      "exact": true
+    }
+  ],
+  "observedSetterCommands": [
+    {
+      "id": "4f390b0f-4398-47fc-b595-4f0b3917d953",
+      "matrix": [
+        0.9999999631303328, 1.4627521113246558e-5, 0.00027115561704854846,
+        0.07805916098803242, -1.4611425209604143e-5, 0.9999999981313131,
+        -5.936227765350855e-5, -0.014931115141724453, -0.00027115648486481317,
+        5.935831349482245e-5, 0.999999961475375, 0.009349933824883624
+      ],
+      "matrixBits": "e9ab34ecffffef3f49f1953117adee3e28b4e1813cc5313fc6c79867affbb33f72a652fd72a4eebe6d2bfffeffffef3f3e1a4054781f0fbf1ce8cf5934948ebf42440e3c40c531bfce4f241ff01e0f3f423751ebffffef3f582afbdf0e26833f"
+    },
+    {
+      "id": "68e19c78-d2c9-421b-aa48-c02edc5de4d8",
+      "matrix": [
+        0.9999998273414459, 9.780549171037144e-6, 0.0005875554605998192,
+        0.17518556491557358, -9.775107448092545e-6, 0.9999999999093081,
+        -9.264503827339534e-6, -0.004598715198179822, -0.0005875555511584678,
+        9.258758809984621e-6, 0.99999982734636, 0.009548523538725855
+      ],
+      "matrixBits": "30fd4da3ffffef3fca524471e482e43ec44672bec540433f189705087b6cc63fe878a989f87fe4be1089f3ffffffef3f6028e1b5d76de3beafa913361ad672bff0453bf0c54043bfbd1e0d1fc26ae33e16aa4ea3ffffef3f166097222d8e833f"
+    },
+    {
+      "id": "680f4ed7-30e1-4406-a767-2e9ac92a2b73",
+      "matrix": [
+        0.9999999580829169, -3.7442882722427958e-6, 0.0002895170888904844,
+        0.0808515945772966, 3.7626592465143313e-6, 0.9999999979797585,
+        -6.3453332535928e-5, -0.01495261648481307, -0.00028951685071802106,
+        6.345441923030093e-5, 0.999999956076764, 0.011380605088862851
+      ],
+      "matrixBits": "c0f57ee9ffffef3f7c1f1d3fcc68cfbe39c9ac6d4af9323ff6f789aab0b2b43f5831e4cb3f90cf3e1257eafeffffef3f2d0ec7f347a210bf0ad155367a9f8ebf8c32cd6749f932bf0c261c9f5aa2103f853c6be8ffffef3fc1a652f5b64e873f"
+    },
+    {
+      "id": "4f390b0f-4398-47fc-b595-4f0b3917d953",
+      "matrix": [
+        0.9999999580829169, 3.7626592465143313e-6, -0.00028951685071802106,
+        -0.08084824004968832, -3.7442882722427958e-6, 0.9999999979797585,
+        6.345441923030093e-5, 0.014952197036596138, 0.0002895170888904844,
+        -6.3453332535928e-5, 0.999999956076764, -0.011404961300630113
+      ],
+      "matrixBits": "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+    },
+    {
+      "id": "68e19c78-d2c9-421b-aa48-c02edc5de4d8",
+      "matrix": [
+        0.9999999580829169, 3.7626592465143313e-6, -0.00028951685071802106,
+        -0.08084824004968832, -3.7442882722427958e-6, 0.9999999979797585,
+        6.345441923030093e-5, 0.014952197036596138, 0.0002895170888904844,
+        -6.3453332535928e-5, 0.999999956076764, -0.011404961300630113
+      ],
+      "matrixBits": "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+    },
+    {
+      "id": "680f4ed7-30e1-4406-a767-2e9ac92a2b73",
+      "matrix": [
+        0.9999999580829169, 3.7626592465143313e-6, -0.00028951685071802106,
+        -0.08084824004968832, -3.7442882722427958e-6, 0.9999999979797585,
+        6.345441923030093e-5, 0.014952197036596138, 0.0002895170888904844,
+        -6.3453332535928e-5, 0.999999956076764, -0.011404961300630113
+      ],
+      "matrixBits": "c0f57ee9ffffef3f5831e4cb3f90cf3e8c32cd6749f932bf8cdbf36278b2b4bf7c1f1d3fcc68cfbe1257eafeffffef3f0c261c9f5aa2103f4d4834ea419f8e3f39c9ac6d4af9323f2d0ec7f347a210bf853c6be8ffffef3f5a0663fe7b5b87bf"
+    }
+  ],
+  "artifactIntegrity": {
+    "allBeforeAfterNativePayloadHashesVerified": true,
+    "allOriginalFileHashesVerified": true,
+    "allActualSourcePackageInputsMatchSelectedBuild": true,
+    "allRuntimeInputSourceHashesUnchangedAtEnd": true,
+    "observerReadsNoOracleInput": true
+  }
+}

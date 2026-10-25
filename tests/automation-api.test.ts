@@ -565,3 +565,131 @@ describe("published sketch-section options", () => {
     expect(() => validateInput(schema, args(invalid))).toThrow();
   });
 });
+
+it("exposes stored computed facet carriers through actual object_get and geometry digest API jobs", async () => {
+  const { api, state } = setup();
+  const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  state.entities = [
+    {
+      id: "facets",
+      name: "Facets",
+      kind: "mesh",
+      color: "#888888",
+      opacity: 1,
+      visible: true,
+      positions,
+      indexedMesh: {
+        vertices: positions,
+        triangles: new Uint32Array([0, 1, 2]),
+        facetNormals: new Float32Array([-0, 0.6, 0.8]),
+      },
+    },
+  ];
+  try {
+    const inspected = await api.invoke("object_get", {
+      entityId: "facets",
+      includeGeometry: true,
+    });
+    expect(inspected.ok).toBe(true);
+    const artifactId = (inspected as any).result.geometry.artifactId;
+    const artifact = await api.invoke("artifact_read", { artifactId });
+    const geometry = JSON.parse(atob((artifact as any).result.base64));
+    expect(geometry.indexedMesh.facetNormals).toEqual([
+      0,
+      Math.fround(0.6),
+      Math.fround(0.8),
+    ]);
+    const job = await api.invoke("object_geometry_digest", {
+      entityId: "facets",
+    });
+    const jobId = (job as any).result.jobId;
+    let receipt: any;
+    await vi.waitFor(async () => {
+      receipt = await api.invoke("job_get", { jobId });
+      expect(receipt.result.status).toBe("succeeded");
+    });
+    expect(
+      receipt.result.result.buffers.find(
+        (b: any) => b.path === "indexedMesh.facetNormals",
+      ),
+    ).toMatchObject({ encoding: "f32", elements: 3, rawBytes: 12 });
+    expect(state.history).toHaveLength(0);
+  } finally {
+    api.dispose();
+  }
+});
+it("rejects oversized geometry JSON including its facet carrier before expanding any coordinates", async () => {
+  const { api, state } = setup();
+  const facetNormals = new Proxy(new Array(600_000_000), {
+    get(target, key, receiver) {
+      if (key === "0") throw Error("must reject before coordinate expansion");
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  state.entities = [
+    {
+      id: "large",
+      name: "Large",
+      kind: "mesh",
+      color: "#888888",
+      opacity: 1,
+      visible: true,
+      positions: [],
+      indexedMesh: { vertices: [], triangles: [], facetNormals },
+    },
+  ];
+  try {
+    expect(
+      await api.invoke("object_get", {
+        entityId: "large",
+        includeGeometry: true,
+      }),
+    ).toMatchObject({
+      ok: false,
+      error: {
+        code: "RESOURCE_LIMIT",
+        message: expect.stringContaining("1 GiB"),
+      },
+    });
+  } finally {
+    api.dispose();
+  }
+});
+
+it("preserves the established typed edgePositions JSON object representation", async () => {
+  const { api, state } = setup();
+  state.entities = [
+    {
+      id: "edges",
+      name: "Edges",
+      kind: "mesh",
+      color: "#888888",
+      opacity: 1,
+      visible: true,
+      positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+      // Preserve the runtime JSON shape of legacy typed metadata.
+      edgePositions: new Float32Array([
+        1, 2, 3, 4, 5, 6,
+      ]) as unknown as number[],
+    },
+  ];
+  try {
+    const response: any = await api.invoke("object_get", {
+      entityId: "edges",
+      includeGeometry: true,
+    });
+    const read: any = await api.invoke("artifact_read", {
+      artifactId: response.result.geometry.artifactId,
+    });
+    expect(JSON.parse(atob(read.result.base64)).edgePositions).toEqual({
+      0: 1,
+      1: 2,
+      2: 3,
+      3: 4,
+      4: 5,
+      5: 6,
+    });
+  } finally {
+    api.dispose();
+  }
+});

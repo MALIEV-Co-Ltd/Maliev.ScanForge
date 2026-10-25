@@ -1,3 +1,4 @@
+import { validateMeshFacetNormals } from "./mesh-geometry-normals";
 import {
   parseProject,
   validateProject,
@@ -28,6 +29,7 @@ import {
   projectValueBlob,
   type ProjectValue,
 } from "./project-value-stream";
+import { encodedProjectSharedChunk } from "./project-shared-chunks";
 
 export interface ProjectSession {
   projectId?: string;
@@ -74,6 +76,7 @@ type RecordData = Omit<
     triangles: Ref;
     normals?: Ref;
     geometryNormals?: Ref;
+    facetNormals?: Ref;
   };
   meshSelection?: {
     hidden: Ref;
@@ -100,6 +103,7 @@ async function digest(bytes: Uint8Array): Promise<string> {
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
 export async function encodeProjectFileLocally(
   session: ProjectSession,
+  options: { onSharedChunk?: (chunk: ProjectSharedChunk) => void } = {},
 ): Promise<Blob> {
   const chunks: Chunk[] = [],
     payloads: Blob[] = [],
@@ -130,6 +134,13 @@ export async function encodeProjectFileLocally(
       if (cached?.type === type) return cached;
     }
     const { sha256, rawBytes } = projectValueHash(value, type);
+    if (options.onSharedChunk) {
+      const candidate = encodedProjectSharedChunk(value, type, {
+        sha256,
+        rawBytes,
+      });
+      if (candidate) options.onSharedChunk(candidate);
+    }
     let chunk = chunkIds.get(sha256);
     if (chunk === undefined) {
       const zipped = await projectValueBlob(value, type, true),
@@ -160,6 +171,8 @@ export async function encodeProjectFileLocally(
   }
   async function state(entities: Entity[]): Promise<number[]> {
     for (const entity of entities) validateReferenceEntity(entity);
+    for (const entity of entities)
+      if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
     entities = entities.map(retainIndexedMesh);
     validateProject({ ...session.project, entities });
     const ids: number[] = [];
@@ -237,6 +250,9 @@ export async function encodeProjectFileLocally(
                   triangles: await store(indexedMesh.triangles, true),
                   ...(indexedMesh.normals
                     ? { normals: await store(indexedMesh.normals) }
+                    : {}),
+                  ...(indexedMesh.facetNormals
+                    ? { facetNormals: await store(indexedMesh.facetNormals) }
                     : {}),
                   ...(indexedMesh.geometryNormals
                     ? {
@@ -554,6 +570,9 @@ export async function decodeProjectContents(
             triangles: read(record.indexedMesh.triangles, true),
             ...(record.indexedMesh.normals
               ? { normals: read(record.indexedMesh.normals) }
+              : {}),
+            ...(record.indexedMesh.facetNormals
+              ? { facetNormals: read(record.indexedMesh.facetNormals) }
               : {}),
             ...(record.indexedMesh.geometryNormals
               ? { geometryNormals: read(record.indexedMesh.geometryNormals) }

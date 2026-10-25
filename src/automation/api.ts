@@ -216,7 +216,7 @@ export type ApiResult =
       error: { code: string; message: string };
     };
 type Schema = Record<string, any>;
-const ARTIFACT_BYTES = 1024 * 1024 * 1024;
+export const ARTIFACT_BYTES = 1024 * 1024 * 1024;
 const ARTIFACT_COUNT = 64;
 const ARTIFACT_CHUNK_BYTES = 1024 * 1024;
 const ARTIFACT_LEASE_MS = 900000;
@@ -240,7 +240,7 @@ const discoveryIndex = catalog.map((tool) => ({
     .join(" ")
     .toLowerCase(),
 }));
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     readonly code: string,
     message: string,

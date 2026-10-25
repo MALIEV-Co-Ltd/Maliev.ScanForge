@@ -159,6 +159,7 @@ function sourceGuard(
     e.indexedMesh?.triangles,
     e.indexedMesh?.normals,
     e.indexedMesh?.geometryNormals,
+    e.indexedMesh?.facetNormals,
     e.pointCloudPlacement,
     e.pointCloudPlacement?.sourcePositions,
     e.pointCloudPlacement?.sourceNormals,

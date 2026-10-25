@@ -479,6 +479,9 @@ function runProcessingRequest(
               ...(target.indexedMesh.geometryNormals
                 ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
                 : {}),
+              ...(target.indexedMesh.facetNormals
+                ? { facetNormals: clone(target.indexedMesh.facetNormals) }
+                : {}),
             },
           };
         });
@@ -492,6 +495,9 @@ function runProcessingRequest(
             ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
             ...(mesh.geometryNormals
               ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
+            ...(mesh.facetNormals
+              ? { facetNormals: clone(mesh.facetNormals) }
               : {}),
           };
         }
@@ -510,6 +516,9 @@ function runProcessingRequest(
                 : {}),
               ...(target.indexedMesh.geometryNormals
                 ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
+                : {}),
+              ...(target.indexedMesh.facetNormals
+                ? { facetNormals: clone(target.indexedMesh.facetNormals) }
                 : {}),
             },
           };
@@ -538,6 +547,9 @@ function runProcessingRequest(
           ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
           ...(mesh.geometryNormals
             ? { geometryNormals: clone(mesh.geometryNormals) }
+            : {}),
+          ...(mesh.facetNormals
+            ? { facetNormals: clone(mesh.facetNormals) }
             : {}),
         };
       }

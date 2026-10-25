@@ -561,7 +561,16 @@ serialized separately. The last completed file has only a weak cache reference;
 existing consumers own its lifetime, and a collected result is encoded afresh.
 
 GUI opening, MCP `project_import` and `backup_restore` can reuse matching immutable
-shared chunk backing from an earlier restore. The decoder still reads every
+shared chunk backing from an earlier restore or a completed GUI/MCP export or
+backup encoding. First reimport can therefore reuse still-live original imports;
+no preceding restore is required. Export candidates require complete immutable
+SharedArrayBuffer views whose type and little-endian bytes match the encoded
+chunk. Subviews, ordinary buffers and converted numeric representations retain
+independent decoding. Failed, cancelled or expired encoding/storage publishes no
+new candidates. The encoding request assigns at most 128 internal source tokens
+to original live buffers in the same clone graph as the snapshot. Worker hashes
+return with those tokens, so the weak registry references the editor's original
+wrappers rather than collectible worker-returned wrappers. The decoder still reads every
 incoming payload, compares its bytes and verifies its SHA-256 before publication.
 A differing cached chunk receives independent backing without modifying its old
 consumer. The browser keeps at most 128 weak backing references; this cache does
@@ -2108,3 +2117,13 @@ Every XYZ point contributes to an unsigned occupancy union at radius `sqrt(0.75)
 The result is a mesh with cloud colors, point display settings, scanner normals and cloud placement metadata cleared. `createNew:true` retains the cloud and creates a separate mesh; otherwise Undo restores it. Additional targets always remain unchanged. Diagnostics expose `inputPoints`, `inputTriangles`, `inputPointClouds`, `inputMeshes`, `processedPoints`, `representedPoints`, `field`, `pointRadius`, `triangleRadius`, sampling work and topology. A result is rejected if any input point was not represented. Radii are in millimetres (zero when that input kind is absent); all counts are whole records, not sampled estimates.
 
 Cloud pose history and binary project/backup restoration preserve the world-normal buffer carrier independently of immutable local normals. A typed world stream remains Float32 after historical cache reclamation, Undo/Redo, encoding-worker transport and reopen; legacy number-array streams retain their storage and numeric bits. Existing `object_geometry_digest` reports the carrier encoding and complete buffer hashes for verification. This shared correction changes no tool parameters, units or point identities. Older saved records without the optional internal carrier metadata retain their previous number-array fallback.
+
+### Stored computed mesh facet normals
+
+Indexed scan geometry may include `indexedMesh.facetNormals`: immutable Float32 XYZ vectors in triangle order, separate from scanner vertex `normals` and computed vertex `geometryNormals`. Import/render preparation derives missing facets on the original coordinates. Whole-mesh rigid alignment rotates retained facets through each Float32 coordinate stage; it does not recompute them from rounded output triangles. GUI and MCP Global Fine Align use the same carriers, workers and history path. Binary projects preserve their bits and buffer aliases through current, Undo and Redo states; legacy projects derive the missing state when activated. Coordinate/topology edits invalidate stale indexed state.
+
+`object_get(includeGeometry:true)` exposes facets with the other geometry. It measures the full UTF-8 JSON before expanding typed coordinates; a payload over the existing 1 GiB artifact limit fails with `RESOURCE_LIMIT`. Aggregate occupied artifact capacity remains authoritative. Use `object_geometry_digest` for bounded, cancellable byte verification or `project_export` for binary geometry transport. The digest includes `indexedMesh.facetNormals` independently. Query input admission includes the complete facet backing and shared worker transport preserves its aliases.
+
+For a mesh without indexed topology, Global Fine Align retains derived topology and both normal caches only when its expansion exactly matches the source coordinates. Native topology preparation can merge coordinate keys or drop degenerate triangles; nonmatching legacy soups preserve their original geometry and existing uncached fallback. Stored-cache bit parity is not claimed for that fallback. This does not change native quality or milestone acceptance gates.
+
+The shared scan import concurrency heuristic reserves file bytes times 16 (including the additional computed facet stream) against its existing 512 MiB parallel-preparation/headroom policy. Borderline batches parse serially; this heuristic is not a single-file acceptance limit or process-memory bound.

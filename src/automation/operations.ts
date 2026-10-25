@@ -1,3 +1,4 @@
+import { geometryArtifact } from "./geometry-artifact";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
@@ -647,7 +648,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         ...details,
         ...(a.includeGeometry
           ? {
-              geometry: json(
+              geometry: geometryArtifact(
                 c,
                 "reference" in details
                   ? {
@@ -656,30 +657,29 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       encoding: details.reference.geometryEncoding,
                     }
                   : {
-                      positions: Array.from(e.positions),
+                      positions: e.positions,
                       indexedMesh: e.indexedMesh
                         ? {
-                            vertices: Array.from(e.indexedMesh.vertices),
-                            triangles: Array.from(e.indexedMesh.triangles),
+                            vertices: e.indexedMesh.vertices,
+                            triangles: e.indexedMesh.triangles,
                             ...(e.indexedMesh.normals
-                              ? { normals: Array.from(e.indexedMesh.normals) }
+                              ? { normals: e.indexedMesh.normals }
+                              : {}),
+                            ...(e.indexedMesh.facetNormals
+                              ? { facetNormals: e.indexedMesh.facetNormals }
                               : {}),
                             ...(e.indexedMesh.geometryNormals
                               ? {
-                                  geometryNormals: Array.from(
+                                  geometryNormals:
                                     e.indexedMesh.geometryNormals,
-                                  ),
                                 }
                               : {}),
                           }
                         : undefined,
-                      normals: e.normals ? Array.from(e.normals) : undefined,
-                      pointColors: e.pointColors
-                        ? Array.from(e.pointColors)
-                        : undefined,
+                      normals: e.normals ? e.normals : undefined,
+                      pointColors: e.pointColors ? e.pointColors : undefined,
                       edgePositions: e.edgePositions,
                     },
-                "geometry.json",
               ),
             }
           : {}),

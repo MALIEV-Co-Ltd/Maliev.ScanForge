@@ -83,6 +83,8 @@ function prepareFacetNormals(
 export interface NativeGlobalEvaluatorMesh {
   vertices: Float32Array;
   triangles: Uint32Array;
+  /** Stored computed face vectors, including native Float32 setter history. */
+  facetNormals?: Float32Array;
   flags?: Uint8Array;
   cachedBounds?: ArrayLike<number>;
   minimumExtent?: number;
@@ -155,12 +157,21 @@ function prepare(
     typeof input.compactNormals !== "boolean"
   )
     throw Error("Invalid evaluator normal storage policy.");
-  const { normals, degenerate } = prepareFacetNormals(
+  if (
+    input.facetNormals !== undefined &&
+    (!(input.facetNormals instanceof Float32Array) ||
+      input.facetNormals.length !== triangles.length ||
+      !input.facetNormals.every(Number.isFinite))
+  )
+    throw Error("Invalid stored evaluator facet normals.");
+  const computed = prepareFacetNormals(
     vertices,
     triangles,
     options,
-    input.compactNormals ?? false,
+    input.facetNormals !== undefined || (input.compactNormals ?? false),
   );
+  const normals = input.facetNormals ?? computed.normals;
+  const degenerate = computed.degenerate;
   const meshBounds: number[] = [
     maximum,
     maximum,
@@ -315,7 +326,9 @@ function prepare(
     normals,
     bounds: bounds ?? new Float32Array(nativeTargetStorage(vertices, 0)),
     deriveBounds: compactBounds,
-    ...(input.compactNormals ? { deriveNormals: true } : {}),
+    ...(input.compactNormals && !input.facetNormals
+      ? { deriveNormals: true }
+      : {}),
     flags,
   };
   check(options);
@@ -361,7 +374,9 @@ export function resumeNativeGlobalMeshEvaluator(
       typeof input.compactNormals !== "boolean") ||
     (surface.deriveNormals !== undefined &&
       typeof surface.deriveNormals !== "boolean") ||
-    !!surface.deriveNormals !== !!input.compactNormals
+    !!surface.deriveNormals !==
+      (!!input.compactNormals && !input.facetNormals) ||
+    (input.facetNormals !== undefined && surface.normals !== input.facetNormals)
   )
     throw Error("Prepared evaluator normal policy mismatch.");
   const seen = new Set<NativeGlobalEvaluatorIndexNode>(),

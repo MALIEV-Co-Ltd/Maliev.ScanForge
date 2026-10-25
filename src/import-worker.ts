@@ -87,6 +87,8 @@ scope.onmessage = async ({ data }) => {
     if (meshNormals) transfers.push(meshNormals.buffer as ArrayBuffer);
     if (renderData.normals)
       transfers.push(renderData.normals.buffer as ArrayBuffer);
+    if (renderData.indexedMesh?.facetNormals instanceof Float32Array)
+      transfers.push(renderData.indexedMesh.facetNormals.buffer as ArrayBuffer);
     if (indexedMesh)
       transfers.push(
         indexedMesh.vertices.buffer as ArrayBuffer,

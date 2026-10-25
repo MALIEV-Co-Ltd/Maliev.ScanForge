@@ -219,7 +219,7 @@ export async function createGlobalQueryPool(
             ...mesh,
             packedNodes: true,
             compactBounds: true,
-            compactNormals: true,
+            compactNormals: mesh.facetNormals === undefined,
           })),
         },
       })),

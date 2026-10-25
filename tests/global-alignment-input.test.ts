@@ -111,7 +111,8 @@ it("counts reused backing carriers once and admits the full indexed three-scan d
     (a.indexedMesh!.vertices as Float32Array).byteLength +
       (a.indexedMesh!.triangles as Uint32Array).byteLength +
       (a.indexedMesh!.normals as Float32Array).byteLength +
-      2 * a.indexedMesh!.vertices.length * (4 + 4 / 3),
+      2 * a.indexedMesh!.vertices.length * (4 + 4 / 3) +
+      2 * a.indexedMesh!.triangles.length * 4,
   );
   const indexed = (id: string, vertices: number, triangles: number) =>
     ({
@@ -502,7 +503,7 @@ it("admits generated normal output and copied topology even when scanner normals
   const admission = globalAlignmentInputAdmission([a]);
   const v = a.indexedMesh!.vertices.length * 4;
   const t = a.indexedMesh!.triangles.length * 4;
-  expect(admission.retainedBytes).toBe(v + t + v + v + v / 3);
+  expect(admission.retainedBytes).toBe(v + t + v + v + t + v / 3);
   expect(admission.peakPreparationBytes).toBe(v + t + 1048576);
 });
 
@@ -537,7 +538,12 @@ it("reserves existing carriers and prepared outputs without charging future deri
   const normals = a.indexedMesh!.vertices.length * 4;
   const clones = normals + a.indexedMesh!.triangles.length * 4;
   expect(packets.map((p) => p.storage?.reserved)).toEqual([
-    admission.retainedBytes - normals - flags * 2 + clones + 1048576,
+    admission.retainedBytes -
+      normals -
+      a.indexedMesh!.triangles.length * 4 -
+      flags * 2 +
+      clones +
+      1048576,
     admission.retainedBytes - flags + clones + 1048576,
   ]);
 });
@@ -563,3 +569,62 @@ it("rejects a worker response missing the source exclusion flags", async () => {
   ).rejects.toThrow(/worker buffers/);
   expect(terminate).toHaveBeenCalledOnce();
 });
+
+it("publishes exact derived soup topology with immutable computed facets for subsequent whole-mesh stages", async () => {
+  const a = { ...mesh("a"), positions: points(), indexedMesh: undefined };
+  const result = await prepareGlobalAlignmentInput([a, mesh("b")]);
+  const prepared = result.entities[0];
+  expect(prepared.positions).toBe(a.positions);
+  expect(prepared.indexedMesh!.facetNormals).toBe(
+    result.input.scans[0].geometry.targetMeshes![0].facetNormals,
+  );
+  expect(a.indexedMesh).toBeUndefined();
+});
+it("preserves a soup when native topology would remove a degenerate facet", async () => {
+  const a = {
+    ...mesh("a"),
+    positions: new Float32Array([...points(), 0, 0, 0, 0, 0, 0, 0, 1, 0]),
+    indexedMesh: undefined,
+  };
+  const result = await prepareGlobalAlignmentInput([a, mesh("b")]);
+  expect(result.entities[0]).toBe(a);
+});
+
+it("borrows both computed normal carriers without starting a derivation worker", async () => {
+  const a = mesh("a"),
+    b = mesh("b");
+  for (const entity of [a, b]) {
+    entity.indexedMesh!.geometryNormals = new Float32Array(
+      entity.indexedMesh!.vertices.length,
+    ).fill(0.25);
+    entity.indexedMesh!.facetNormals = new Float32Array([0, 0.6, 0.8]);
+  }
+  vi.stubGlobal(
+    "Worker",
+    class {
+      constructor() {
+        throw Error("must borrow stored computed normals");
+      }
+    },
+  );
+  const result = await prepareGlobalAlignmentInput([a, b]);
+  expect(result.summary.preparation.physicalWorkers).toBe(0);
+  expect(result.entities[0]).toBe(a);
+  expect(result.input.scans[0].geometry.targetMeshes![0].facetNormals).toBe(
+    a.indexedMesh!.facetNormals,
+  );
+});
+it.each(
+  [new Float32Array(2), [NaN, 0, 1], [1e40, 0, 1], new Array(3)].map(
+    (facets) => ({ facets }),
+  ),
+)(
+  "rejects malformed cached facets before global query publication (%s)",
+  async ({ facets }) => {
+    const a = mesh("a");
+    a.indexedMesh!.facetNormals = facets;
+    await expect(prepareGlobalAlignmentInput([a, mesh("b")])).rejects.toThrow(
+      /facet|finite/i,
+    );
+  },
+);

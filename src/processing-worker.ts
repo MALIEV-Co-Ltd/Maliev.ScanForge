@@ -45,7 +45,7 @@ import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
 import { prepareScanRenderData } from "./scan-render-data";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -521,6 +521,10 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = {
           vertices,
           triangles: Uint32Array.from(request.sourceIndexed.triangles),
+          facetNormals: rotateIndexedNormals(
+            meshFacetNormals(request.sourceIndexed),
+            registration.transform.rotation,
+          ),
           geometryNormals: rotateIndexedNormals(
             meshGeometryNormals(request.sourceIndexed),
             registration.transform.rotation,
@@ -706,6 +710,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.indexedMesh.normals.buffer);
     if (result.indexedMesh?.geometryNormals instanceof Float32Array)
       transfers.push(result.indexedMesh.geometryNormals.buffer);
+    if (result.indexedMesh?.facetNormals instanceof Float32Array)
+      transfers.push(result.indexedMesh.facetNormals.buffer);
     if (result.indexedMesh?.triangles instanceof Uint32Array)
       transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)
