@@ -1,5 +1,18 @@
 # ScanForge shared application API and MCP
 
+## Shared STEP export and local artifact delivery
+
+GUI STEP export dispatches the existing read-only `project_export` job with
+`cadOnly:true`. The shared operation filters its visibility scope, reports
+excluded non-CAD IDs and rejects empty exact selections. Omitted/false `cadOnly`
+retains strict agent defaults; supplying it for another format rejects.
+The GUI receives the same leased artifact via `ApplicationApi.readArtifactBlob`,
+which checks owner state and refreshes the existing artifact lease. Blob bytes
+are immutable and need no base64 transport or copy; agents retain `artifact_read`.
+The GUI downloads then deletes its artifact. Existing quota/admission/revision
+and late-cancellation checks apply to both paths. An owned abort controller and
+cancel portal retire pending GUI work on cancellation or unmount.
+
 ## Paged exact edge references
 
 Optional `cad_inspect` edge paging extends its existing isolated diagnostic worker.

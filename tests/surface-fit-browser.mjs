@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { replaySurfaceJoins } from "./helpers/surface-join-browser.mjs";
+import { replayStepExport } from "./helpers/step-export-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -147,6 +148,19 @@ try {
     viewport: { width: 1400, height: 1000 },
   });
   const page = await context.newPage();
+  if (process.env.SCANFORGE_TEST_STEP_EXPORT === "1")
+    await page.addInitScript(() => {
+      window.__m5HoldStepExport = false;
+      window.__m5HeldStepExports = [];
+      const send = Worker.prototype.postMessage;
+      Worker.prototype.postMessage = function (...args) {
+        if (window.__m5HoldStepExport && args[0]?.operation === "export") {
+          window.__m5HeldStepExports.push(() => send.apply(this, args));
+          return;
+        }
+        return send.apply(this, args);
+      };
+    });
   page.setDefaultTimeout(10000);
   page.setDefaultNavigationTimeout(20000);
   const errors = [];
@@ -693,6 +707,19 @@ try {
     unchangedRevision: true,
     report: faceReport,
   });
+  if (process.env.SCANFORGE_TEST_STEP_EXPORT === "1")
+    await replayStepExport({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      artifactBytes,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
   if (process.env.SCANFORGE_TEST_SURFACE_JOIN === "1")
     await replaySurfaceJoins({
       page,

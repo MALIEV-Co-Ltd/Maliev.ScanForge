@@ -17,6 +17,41 @@ Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForg
 
 ## Candidate history and validation
 
+### Shared exact-only STEP export
+
+The GUI's exact-only STEP behavior is now an explicit `cadOnly:true` option on
+the existing shared `project_export` job. Strict agent defaults still reject
+mixed scenes. Exact-only export reports excluded IDs within the visibility
+scope and rejects an empty exact selection. GUI delivery uses the same leased,
+quota-bounded immutable artifact and deletes it after download. Owned
+cancellation remains reachable outside inert content.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/step-export-browser.json)
+(`scanforge-5486a5e4f93f43bf`) downloads an actual GUI STEP with a visible scan
+reference and compares it to the agent export. Only FILE_NAME header fields and
+the OpenCascade translator product export counter are normalized. Both files
+reopen as valid one-solid, six-face boxes, with area 600 mm² and volume
+1,000 mm³. Empty-selection GUI/MCP errors match; strict mixed-scene rejection is
+retained. A held owned worker transport enables GUI cancellation before releasing
+the late native reply; no artifact publishes and a subsequent export succeeds.
+Export success/cancellation leaves source geometry, revision and history unchanged.
+This is a bounded transport-cancellation test, not a native algorithm stall.
+
+The [focused API/owner/artifact checks](evidence/m5-20261025/step-export-focused.txt)
+pass 33 tests, including local Blob lifetime, disposed-owner rejection, visibility
+scope, unchanged strict defaults and rejection of this option on other formats.
+Both static reviews found no actionable issue. Earlier harness failures remain
+in `.resources/m5/step-export-browser*.log`: remote download path handling,
+translator counter normalization and a missing upload offset. No failed run is
+counted as a pass. Native operation/continuity/blend acceptance, the full sketch
+chain, other exact freeform admission, resource/recovery and M4 remain open.
+
+The [standard build](evidence/m5-20261025/step-export-build.txt) passes all twelve
+typecheck batches; the [full suite](evidence/m5-20261025/step-export-unit.txt)
+passes 49,040 tests with 64 skipped (680 passed files, 18 skipped; 284.79 s).
+Native UI initialization was retried after this replay and still fails with the
+same kernel-assets path error; no QuickSurface interaction was performed.
+
 ### Shared compatible patch joins
 
 GUI joins now submit `surface_operation` with a bounded raw reference; agents can

@@ -420,6 +420,12 @@ export class ApplicationApi {
       throw new ApiError("DISCONNECTED", "Workspace owner closed.");
   }
 
+  /** Immutable local GUI delivery of the same leased artifact exposed by artifact_read. */
+  readArtifactBlob(id: string): Blob {
+    this.checkOwner(this.ownerEpoch);
+    return this.getArtifact(id).blob;
+  }
+
   currentRevision() {
     const next = this.host.snapshot();
     // Camera/layout measurements can change while a geometry job is running.
