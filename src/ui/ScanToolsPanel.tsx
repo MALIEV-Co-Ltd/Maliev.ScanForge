@@ -419,7 +419,7 @@ export function ScanToolsPanel({
         onApply({
           kind: tool,
           plane,
-          referenceId: plane === "object" ? referenceId : undefined,
+          ...(plane === "object" ? { referenceId } : {}),
         });
         break;
       case "unroll":
