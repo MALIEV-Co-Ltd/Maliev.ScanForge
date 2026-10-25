@@ -552,7 +552,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -968,6 +968,19 @@
                   "type": "string",
                   "enum": ["icp"]
                 },
+                "overlapPercent": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100,
+                  "default": 85,
+                  "description": "Expected portion of eligible source points to match (percent). Must have this many points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
+                },
+                "targetRms": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Desired overlap RMS in mm against the full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
+                },
                 "maxDistance": {
                   "type": "number",
                   "exclusiveMinimum": 0
@@ -980,7 +993,8 @@
                 "sampleSize": {
                   "type": "integer",
                   "minimum": 3,
-                  "maximum": 100000
+                  "maximum": 100000,
+                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point."
                 },
                 "targetSampleSize": {
                   "type": "integer",
@@ -1003,8 +1017,7 @@
                 "maxIterations",
                 "sampleSize",
                 "targetSampleSize",
-                "tolerance",
-                "trimFraction"
+                "tolerance"
               ],
               "additionalProperties": false
             },

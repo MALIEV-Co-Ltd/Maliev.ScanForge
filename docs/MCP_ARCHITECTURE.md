@@ -1,5 +1,25 @@
 # ScanForge shared application API and MCP
 
+Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
+`mesh_process`. Fitting uses bounded source samples and every target point;
+independent final evaluation measures all eligible source points and separates
+requested-overlap accuracy from whole-cloud error. The shared adapter supplies
+an internal output placement for clouds so diagnostics describe the same composed
+Float32 geometry that the datum executor publishes. Agents cannot supply that
+internal placement. Mesh masks exclude hidden triangles through the same
+`alignmentTriangleMask` helper used by the GUI. Existing job cancellation,
+revision/retry fencing, preview publication and history semantics remain in use.
+This adds accuracy parameters and structured results to the existing operation,
+not a separate GUI or agent implementation.
+
+Fine alignment target binding shares `registrationTargetPoints` between GUI and
+MCP. Raw indexed meshes use referenced canonical vertices, preserving the complete
+target surface point set without allocating repeated triangle corners. Unused
+vertices are excluded and cloud/exact-CAD carriers retain their existing route.
+The exact nearest-point tree stores Float64 subtree bounds to prune unmatched
+regions; conservative workspace admission includes those bounds. Its public
+`distanceTests` result makes direct distance work observable.
+
 Scan screen selection is shared by GUI gestures and MCP `scan_select_region`
 through `Viewport.selectScanRegion` and the existing asynchronous screen-selection
 index. The gateway fences publication by owner/revision/cancellation and routes

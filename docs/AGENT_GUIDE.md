@@ -1,5 +1,45 @@
 # ScanForge MCP agent guide
 
+## Fine alignment accuracy
+
+`mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.
+`sampleSize` controls source fitting samples (3–100000); the full target is used
+for matching. Legacy `targetSampleSize` is accepted without decimating the target.
+Indexed mesh targets use every referenced canonical vertex, omitting repeated
+triangle corners and unused vertices; clouds retain all point slots.
+Set `overlapPercent` (greater than zero through 100, default 85) or legacy
+`trimFraction`, never both. `targetRms` is a positive overlap RMS in millimetres
+(default 0.5), separate from the numerical stopping `tolerance`.
+
+Read `overlapSatisfied` and `targetReached` before accepting an accuracy claim.
+`converged` can also mean a plateau above the requested accuracy; inspect
+`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`).
+`overlapRms`/`overlapPoints` evaluate the closest requested proportion of eligible
+source points within `maxDistance`; `requiredOverlapPoints` prevents a tiny gated
+subset from satisfying the target. `wholeCloudRms` (also legacy `rms`), `maxError`
+and `pairs` evaluate every eligible source point without trimming or rejection.
+`inlierRms`/`inlierPairs` alias overlap metrics. `sampleSize`, `fittingSamples`,
+`overlapPercent`, `overlapFraction`, `rejectedPoints` and `targetRmsBasis:"overlap"`
+make the metric basis explicit.
+`distanceTests` counts direct point-distance evaluations across fitting and
+verification. Exact subtree bounds prune impossible matches without sampling.
+Extra solver workspace is conservatively admitted as 64 bytes per target point,
+8 per source point and 1024 per requested fitting sample, with a 256 MiB limit.
+Input transport and model buffers have separate admission. Exceeding the limit
+fails explicitly rather than silently decimating the target.
+
+Mesh fitting and final evaluation exclude hidden triangles. Set
+`selectionOnly:true` to fit the current selected visible triangles, matching GUI
+selection priority; otherwise all visible triangles drive alignment. The complete
+scan moves. Point-cloud registration
+requires whole-cloud scope and preserves its immutable local buffers and composed
+pose. The worker verifies cloud accuracy against the final Float32 pose output.
+Revision, request retry, lock, cancellation and one-transaction history behavior
+are unchanged. This ICP contract is application behavior; it does not establish
+native solver equivalence or M3 acceptance. Improve coarse placement or search
+distance after insufficient correspondences; use a fresh request ID after fixing
+rejected input.
+
 Scan selection uses original point/triangle slots throughout. `selection_modify`
 and `selection_saved` support point clouds as well as meshes and exclude hidden
 slots when selecting. `selection_set` also excludes hidden slots.

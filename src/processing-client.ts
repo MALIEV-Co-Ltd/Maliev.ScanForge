@@ -108,8 +108,12 @@ export type ProcessingRequest =
       maxIterations: number;
       sampleSize: number;
       targetSampleSize: number;
+      targetRms?: number;
+      overlapPercent?: number;
+      /** Internal native cloud output model used for final verification. */
+      outputPlacement?: import("./fine-registration").FineAlignmentOptions["outputPlacement"];
       tolerance: number;
-      trimFraction: number;
+      trimFraction?: number;
     };
 export interface TopologySummary {
   vertices: number;
@@ -151,7 +155,8 @@ export interface ProcessingResult {
   segmentClassifications?: RegionClassification[];
   repairSheets?: MeshSheetDiagnostics[];
   topology?: TopologySummary;
-  registration?: RegistrationResult;
+  registration?:
+    RegistrationResult | import("./fine-registration").FineAlignmentResult;
   diagnostics: Record<string, number | string | boolean>;
 }
 export type ProcessingResponse =
@@ -438,6 +443,15 @@ function runProcessingRequest(
               target: clone(request.target),
             }
           : { ...request, positions: source };
+      if (copied.kind === "icp" && copied.outputPlacement) {
+        copied.outputPlacement = {
+          matrix: copied.outputPlacement.matrix.slice(),
+          sourcePositions:
+            copied.outputPlacement.sourcePositions === request.positions
+              ? source
+              : clone(copied.outputPlacement.sourcePositions),
+        };
+      }
       if (copied.kind === "nativeRefine") {
         copied.additionalTargets = copied.additionalTargets?.map((target) => {
           const triangles = Uint32Array.from(target.indexedMesh.triangles);

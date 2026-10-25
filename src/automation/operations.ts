@@ -62,6 +62,8 @@ import {
 } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
+import { alignmentTriangleMask } from "../registration-selection";
+import { registrationTargetPoints } from "../registration-target";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { cornerTrimSketch } from "../sketch-corner";
@@ -1023,6 +1025,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "additionalTargets" in op ||
         "refinementTargets" in op ||
         "deferCloudTransform" in op ||
+        "outputPlacement" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -1116,8 +1119,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
         Object.assign(request, {
-          target: sampledObject(s, a.targetId).positions,
-          sourceTriangleMask: selection,
+          target:
+            kind === "icp"
+              ? registrationTargetPoints(sampledObject(s, a.targetId))
+              : sampledObject(s, a.targetId).positions,
+          sourceTriangleMask:
+            kind === "icp" && e.kind !== "pointcloud"
+              ? alignmentTriangleMask(
+                  e.positions.length / 9,
+                  selection,
+                  e.meshSelection?.hidden,
+                )
+              : selection,
         });
       }
       if (kind === "paired" && op.refineSurface) {
